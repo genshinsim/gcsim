@@ -44,7 +44,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(c.Core.Combat.Player(), 2),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -103,7 +103,7 @@ func (c *char) wolfBurst() {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget),
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
 			1,
 			1,
 		)

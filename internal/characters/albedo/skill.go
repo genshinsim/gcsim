@@ -40,7 +40,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	//TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), skillHitmark)
+	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillHitmark)
 
 	//snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -108,7 +108,7 @@ func (c *char) skillHook() {
 				Write("final dmg", snap.Stats[attributes.DmgP])
 		}
 
-		c.Core.QueueAttackWithSnap(c.skillAttackInfo, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 1)
+		c.Core.QueueAttackWithSnap(c.skillAttackInfo, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), 1)
 
 		//67% chance to generate 1 geo orb
 		if c.Core.Rand.Float64() < 0.67 {

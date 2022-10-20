@@ -41,7 +41,7 @@ func (c *char) a4() {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			c.ozSnapshot.Snapshot,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 			3)
 
 		return false

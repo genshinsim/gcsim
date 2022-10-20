@@ -63,7 +63,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				0,
 				0,
 			)
@@ -96,7 +96,7 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.03 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
 
 	defer c.AdvanceNormalIndex()
 

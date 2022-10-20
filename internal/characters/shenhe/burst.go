@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), burstHitmark, burstHitmark)
 
 	// duration is 12 second (extended by c2 by 6s)
 	count := 6
@@ -67,8 +67,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		snap := c.Snapshot(&ai)
 		for i := 0; i < count; i++ {
 			hitmark := 82 + i*117
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark)
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark+30+burstTickOffset[i])
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), hitmark)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), hitmark+30+burstTickOffset[i])
 		}
 	}, burstStart)
 

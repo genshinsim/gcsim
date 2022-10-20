@@ -90,7 +90,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:       flowriderDmg,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 2.5, false, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 2.5), 0, 1)
 
 		w.procCount++
 		c.Log.NewEvent("endoftheline proc", glog.LogWeaponEvent, char.Index).

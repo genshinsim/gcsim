@@ -213,7 +213,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// TODO: Does Itto CA snapshot at the start of CA? (rn assuming he does)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), r),
 		0,
 		chargeHitmarks[c.slashState]-windup,
 	)

@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Durability: 100,
 			Mult:       dmg,
 		}
-		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key(), combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 1)
 
 		return false
 	}, fmt.Sprintf("halberd-%v", char.Base.Key.String()))

@@ -74,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Durability: 100,
 			Mult:       1.25,
 		}
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 2, true, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 1)
 
 		char.AddStatus(icdKey, cd, true)
 

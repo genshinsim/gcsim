@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       0,
 		NoImpulse:  true,
 	}
-	c.Core.QueueAttack(auraCheck, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy), burstHitmark, burstHitmark, burstCB)
+	c.Core.QueueAttack(auraCheck, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), burstHitmark, burstHitmark, burstCB)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -66,7 +66,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	//TODO: does heizou burst snapshot?
 	//TODO: heizou burst travel time parameter
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), burstHitmark, burstHitmark)
 
 	//TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(action.ActionBurst, 12*60)
@@ -116,5 +116,5 @@ func (c *char) irisDmg(t combat.Target) {
 		).Write("target", t.Index())
 	}
 
-	c.Core.QueueAttack(aiAbs, combat.NewCircleHit(t, 2.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 40) //if any of this is wrong blame Koli
+	c.Core.QueueAttack(aiAbs, combat.NewCircleHit(t, 2.5), 0, 40) //if any of this is wrong blame Koli
 }

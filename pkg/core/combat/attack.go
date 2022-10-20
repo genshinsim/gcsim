@@ -10,7 +10,7 @@ import (
 
 // attack returns true if the attack lands
 func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
-	willHit, reason := t.AttackWillLand(a.Pattern, a.Info.DamageSrc)
+	willHit, reason := t.AttackWillLand(a.Pattern, a.Info.NoSelfHarm, a.Info.DamageSrc)
 	if !willHit {
 		// Move target logs into the "Sim" event log to avoid cluttering main display for stuff like Guoba
 		// And obvious things like "Fischl A4 is single target so it didn't hit targets 2-4"
@@ -98,33 +98,33 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 	// died := false
 	var total float64
 	var landed bool
-	if a.Pattern.Targets[TargettablePlayer] {
+	// check player
+	if a.Info.PlayerHarm {
 		//TODO: we don't check for landed here since attack that hit player should never generate hitlag?
 		h.attack(h.player, a)
+		return total
 	}
-	if a.Pattern.Targets[TargettableEnemy] {
-		for _, v := range h.enemies {
-			if v == nil {
-				continue
-			}
-			if !v.IsAlive() {
-				continue
-			}
-			a, l := h.attack(v, a)
-			total += a
-			if l {
-				landed = true
-			}
+	// check enemies
+	for _, v := range h.enemies {
+		if v == nil {
+			continue
+		}
+		if !v.IsAlive() {
+			continue
+		}
+		a, l := h.attack(v, a)
+		total += a
+		if l {
+			landed = true
 		}
 	}
-	if a.Pattern.Targets[TargettableGadget] {
-		for i := 0; i < len(h.gadgets); i++ {
-			//sanity check here; possible gadgets died and have not been cleaned up yet
-			if h.gadgets[i] == nil {
-				continue
-			}
-			h.attack(h.gadgets[i], a)
+	// check gadgets
+	for i := 0; i < len(h.gadgets); i++ {
+		//sanity check here; possible gadgets died and have not been cleaned up yet
+		if h.gadgets[i] == nil {
+			continue
 		}
+		h.attack(h.gadgets[i], a)
 	}
 	//add hitlag to actor but ignore if this is deployable
 	if h.EnableHitlag && landed && !a.Info.IsDeployable {

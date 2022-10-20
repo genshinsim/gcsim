@@ -69,7 +69,7 @@ func (p *panda) breath() {
 	p.Core.QueueAttackWithSnap(
 		p.ai,
 		p.snap,
-		combat.NewCircleHit(p, 0.5, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(p, 0.5),
 		10,
 		p.c.c1,
 		part,

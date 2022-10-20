@@ -10,10 +10,6 @@ func WillCollide(p AttackPattern, t Target, key TargetKey) bool {
 	if p.Shape == nil {
 		panic("unexpected nil shape")
 	}
-	//shape can't be nil now, check if type matches
-	if !p.Targets[t.Type()] {
-		return false
-	}
 
 	//check if shape matches
 	switch v := p.Shape.(type) {
@@ -33,6 +29,7 @@ func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 
 	// check targets for collision first
 	for _, e := range prio {
+		// TODO: absorb check should also check for gadgets because of DMC Q
 		for _, x := range c.enemies {
 			t, ok := x.(TargetWithAura)
 			if !ok {

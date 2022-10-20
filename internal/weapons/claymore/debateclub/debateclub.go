@@ -82,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Durability: 100,
 			Mult:       dmg,
 		}
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 3, true, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 3), 0, 1)
 
 		return false
 	}, fmt.Sprintf("debate-club-proc-%v", char.Base.Key.String()))

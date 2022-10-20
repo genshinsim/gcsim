@@ -75,7 +75,7 @@ func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.Attack
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
 	}
 }
 
@@ -85,7 +85,7 @@ func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.Targ
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewDefSingleTarget(trg, combat.TargettableEnemy),
+		Pattern: combat.NewDefSingleTarget(trg),
 	}
 
 }
@@ -99,7 +99,7 @@ type testTarget struct {
 }
 
 func (t *testTarget) Type() combat.TargettableType { return t.typ }
-func (t *testTarget) AttackWillLand(a combat.AttackPattern, src combat.TargetKey) (bool, string) {
+func (t *testTarget) AttackWillLand(a combat.AttackPattern, noSelfHarm bool, src combat.TargetKey) (bool, string) {
 	return true, ""
 }
 

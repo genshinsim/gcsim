@@ -52,7 +52,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			}
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				attackHitmarks[c.NormalCounter][i],
 				attackHitmarks[c.NormalCounter][i]+travel,
 			)
@@ -73,7 +73,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai.Mult = mult[c.TalentLvlAttack()]
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				attackHitmarks[c.NormalCounter][i],
 				attackHitmarks[c.NormalCounter][i]+travel,
 			)

@@ -79,7 +79,7 @@ func (c *char) a1Ticks(startFrame int, snap combat.Snapshot) {
 	c.Core.QueueAttackWithSnap(
 		c.a1AttackInfo(),
 		snap,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 5),
 		0,
 	)
 	c.Core.Tasks.Add(func() {

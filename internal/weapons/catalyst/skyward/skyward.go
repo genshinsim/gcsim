@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		snap := char.Snapshot(&ai)
 		for i := 0; i < 6; i++ {
-			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), i*150)
+			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 0.1), i*150)
 		}
 		char.AddStatus(icdKey, icd, true)
 		return false

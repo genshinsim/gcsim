@@ -47,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewDefBoxHit(1, -2, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewDefBoxHit(1, -2),
 				0,
 			) // TODO: accurate hitbox
 

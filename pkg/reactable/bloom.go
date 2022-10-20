@@ -99,12 +99,13 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 
 	explode := func() {
 		ai := NewBloomAttack(char, s)
-		c.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(s, 5), -1, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		ai.PlayerHarm = true
+		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5), -1, 1)
 	}
 	s.Gadget.OnExpiry = explode
 	s.Gadget.OnKill = explode
@@ -133,12 +134,13 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		x, y := s.Gadget.Pos()
 		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
-			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, false, combat.TargettableEnemy), -1, 5)
+			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1), -1, 5)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
 			ai.FlatDmg = 0.05 * ai.FlatDmg
-			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, true, combat.TargettablePlayer), -1, 5)
+			ai.PlayerHarm = true
+			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1), -1, 5)
 		}
 
 		s.Gadget.OnKill = nil
@@ -149,12 +151,13 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// self damage
 		ai := NewBurgeonAttack(char, s)
 
-		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
+		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5), -1, 1)
 
 		// queue self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		ai.PlayerHarm = true
+		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5), -1, 1)
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()

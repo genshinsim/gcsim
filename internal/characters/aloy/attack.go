@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel)
 	}

@@ -89,7 +89,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai.HitlagHaltFrames = 0.12 * 60
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitDelay, hitDelay)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), hitDelay, hitDelay)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{

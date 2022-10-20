@@ -54,7 +54,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), r),
 			0,
 			0,
 			cb,

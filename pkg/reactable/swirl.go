@@ -38,7 +38,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
+		combat.NewDefSingleTarget(r.self.Key()),
 		1,
 	)
 	//next is aoe - hydro swirls never do AoE damage, as they only spread the element
@@ -47,10 +47,11 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	}
 	ai.Durability = dur
 	ai.Abil = string(rt) + " (aoe)"
+	ai.NoSelfHarm = true
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(r.self, 5, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(r.self, 5),
 		1,
 	)
 }

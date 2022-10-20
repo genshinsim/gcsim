@@ -93,7 +93,7 @@ func (c *char) burstTickerFunc(ai combat.AttackInfo, snap combat.Snapshot, src i
 			return
 		}
 		// do icicle dmg
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0)
 		// queue up icicle tick
 		c.Core.Tasks.Add(c.burstTickerFunc(ai, snap, src), 120)
 	}

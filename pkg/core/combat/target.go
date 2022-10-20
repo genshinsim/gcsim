@@ -19,7 +19,7 @@ type Target interface {
 	Pos() (float64, float64) // center of target
 	SetPos(x, y float64)     // move target
 	IsAlive() bool
-	AttackWillLand(a AttackPattern, src TargetKey) (bool, string)
+	AttackWillLand(a AttackPattern, noSelfHarm bool, src TargetKey) (bool, string)
 	Attack(*AttackEvent, glog.Event) (float64, bool)
 	ApplyDamage(*AttackEvent, float64)
 	Tick() //called every tick

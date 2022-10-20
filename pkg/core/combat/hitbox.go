@@ -1,58 +1,31 @@
 package combat
 
 type AttackPattern struct {
-	Shape    Shape
-	Targets  [TargettableTypeCount]bool
-	SelfHarm bool
+	Shape Shape
 }
 
-func NewDefSingleTarget(ind TargetKey, typ TargettableType) AttackPattern {
-	var arr [TargettableTypeCount]bool
-	arr[typ] = true
+func NewDefSingleTarget(ind TargetKey) AttackPattern {
 	return AttackPattern{
-		Shape:    &SingleTarget{Target: ind},
-		SelfHarm: true,
-		Targets:  arr,
+		Shape: &SingleTarget{Target: ind},
 	}
 }
 
-func NewCircleHit(trg Positional, r float64, self bool, targets ...TargettableType) AttackPattern {
-	var arr [TargettableTypeCount]bool
-
-	for _, v := range targets {
-		if v < TargettableTypeCount {
-			arr[v] = true
-		}
-	}
+func NewCircleHit(trg Positional, r float64) AttackPattern {
 	x, y := trg.Pos()
-
 	return AttackPattern{
 		Shape: &Circle{
 			x: x,
 			y: y,
 			r: r,
 		},
-		Targets:  arr,
-		SelfHarm: self,
 	}
 }
 
-func NewDefBoxHit(w, h float64, self bool, targets ...TargettableType) AttackPattern {
-	var arr [TargettableTypeCount]bool
-
-	for _, v := range targets {
-		if v < TargettableTypeCount {
-			arr[v] = true
-		}
-	}
-
+func NewDefBoxHit(w, h float64) AttackPattern {
 	return AttackPattern{
 		Shape: &Rectangle{
 			w: w,
 			h: h,
 		},
-		Targets:  arr,
-		SelfHarm: self,
 	}
 }
-

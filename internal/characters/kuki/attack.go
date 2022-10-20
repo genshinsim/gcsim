@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// no multihits so no need for char queue here
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), .3, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), .3),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)
