@@ -81,3 +81,12 @@ func (c *char) onExitField() {
 		return false
 	}, "yanfei-exit")
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "seal-count":
+		return c.sealCount, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
