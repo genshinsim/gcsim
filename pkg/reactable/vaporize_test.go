@@ -73,7 +73,7 @@ func TestPyroVaporize(t *testing.T) {
 	c.Tick()
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
-			Element:    attributes.Hydro,
+			Element:    attributes.Pyro,
 			Durability: 50,
 		},
 		Pattern: combat.NewCircleHit(trg, 100),
