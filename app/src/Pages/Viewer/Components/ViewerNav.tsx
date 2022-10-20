@@ -1,21 +1,26 @@
-import { Button, ButtonGroup, Intent, Tab, Tabs, Toaster, Icon, Dialog, Classes, Position, Callout, Checkbox } from "@blueprintjs/core";
+import { Button, ButtonGroup, Intent, Tab, Tabs, Toaster, Icon, Dialog, Classes, Position, Callout, Checkbox, InputGroup, Label } from "@blueprintjs/core";
+import axios from "axios";
 import classNames from "classnames";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import Pako from "pako";
+import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
-import { updateCfg } from "~src/Pages/Sim";
+import { bytesToBase64 } from "~src/Components/Viewer/base64";
+import { pool, updateCfg } from "~src/Pages/Sim";
 import { useAppDispatch } from "~src/store";
+import { SimResults } from "../SimResults";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
+  data: SimResults | null;
   tabState: [string, Dispatch<SetStateAction<string>>];
-  config?: string;
 };
 
-export default ({ tabState, config }: NavProps ) => {
+export default ({ tabState, data }: NavProps ) => {
   const { t } = useTranslation();
   const [tabId, setTabId] = tabState;
+  const copyToast = useRef<Toaster>(null);
 
   return (
     <Tabs selectedTabId={tabId} onChange={(s) => setTabId(s as string)}>
@@ -25,16 +30,17 @@ export default ({ tabState, config }: NavProps ) => {
       <Tab id="debug" title={t("viewer.debug")} className="focus:outline-none" />
       <Tabs.Expander />
       <ButtonGroup>
-        <CopyToClipboard config={config} />
-        <SendToSim config={config} />
-        <Share />
+        <CopyToClipboard copyToast={copyToast} config={data?.config_file} />
+        <SendToSim config={data?.config_file} />
+        <Share copyToast={copyToast} data={data} />
       </ButtonGroup>
+      <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Tabs>
   );
 };
 
-const CopyToClipboard = ({ config }: { config?: string }) => {
-  const copyToast = useRef<Toaster>(null);
+const CopyToClipboard = ({ copyToast, config }:
+    { copyToast: RefObject<Toaster>, config?: string }) => {
   const { t } = useTranslation();
   
   const action = () => {
@@ -55,7 +61,6 @@ const CopyToClipboard = ({ config }: { config?: string }) => {
           disabled={config == null}>
         <div className={btnClass}>{t("viewer.copy")}</div>
       </Button>
-      <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </>
   );
 };
@@ -117,15 +122,96 @@ const SendToSim = ({ config }: { config?: string }) => {
   );
 };
 
-const Share = () => {
+const Share = ({ copyToast, data }: { copyToast: RefObject<Toaster>, data: SimResults | null}) => {
   const { t } = useTranslation();
+  const [isOpen, setOpen] = useState(false);
+  const [isRunning, setRunning] = useState(true);
+  const [shareLink, setShareLink] = useState<string | null>(null);
+
+  useEffect(() => {
+    const check = setInterval(() => {
+      setRunning(pool.running());
+    }, 250);
+    return () => clearInterval(check);
+  }, []);
+
+  const convert = () => {
+    const cpy = Object.assign({}, data);
+    // including debug data goes over hastebin limits
+    cpy.debug = undefined;
+    return {
+      data: bytesToBase64(Pako.deflate(JSON.stringify(cpy))),
+      meta: {
+        char_names: data?.character_details?.map(c => c.name),
+        dps: data?.statistics?.dps,
+        sim_duration: data?.statistics?.duration,
+        itr: data?.statistics?.iterations,
+        char_details: data?.character_details
+        // TODO:
+        // - dps_by_target
+        // - runtime
+        // - num_targets
+      }
+    };
+  };
+
+  const handleShare = () => {
+    const out = convert();
+    console.log(JSON.stringify(out));
+    axios.post("/hastebin/post", out).then((resp) => {
+      setShareLink(
+          window.location.protocol + "//" + window.location.host
+          + "/viewer/share/" + "hb-" + resp.data.key);
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+
+  const copy = () => {
+    navigator.clipboard.writeText(shareLink ?? "").then(() => {
+      copyToast.current?.show({
+        message: "Link copied to clipboard!",
+        intent: Intent.SUCCESS,
+        timeout: 2000
+      });
+    });
+  };
 
   return (
-    <Button
-        icon={<Icon icon="link" className="!mr-0" />}
-        intent={Intent.PRIMARY}
-        disabled={true}>
-      <div className={btnClass}>{t("viewer.share")}</div>
-    </Button>
+    <>
+      <Button
+          icon={<Icon icon="link" className="!mr-0" />}
+          intent={Intent.PRIMARY}
+          disabled={isRunning || data == null}
+          onClick={() => {
+            handleShare();
+            setOpen(true);
+          }}>
+        <div className={btnClass}>{t("viewer.share")}</div>
+      </Button>
+      <Dialog
+          isOpen={isOpen}
+          onClose={() => setOpen(false)}
+          title={t("viewer.create_a_shareable")}
+          icon="link"
+          className="!pb-0">
+        <div className={classNames(Classes.DIALOG_BODY, "flex flex-col justify-center gap-2")}>
+          <Label>
+            Hastebin (7 day retention)
+            <InputGroup
+                readOnly={true}
+                fill={true}
+                onFocus={(e) => {
+                  e.target.select();
+                  copy();
+                }}
+                value={shareLink ?? ""}
+                className={classNames({ "bp4-skeleton": shareLink == null })}
+                large={true}
+                rightElement={<Button icon="duplicate" onClick={() => copy()} />} />
+          </Label>
+        </div>
+      </Dialog>
+    </>
   );
 };

@@ -1,5 +1,20 @@
 {
   "/api": {
-    "target": "http://localhost:3030"
+    "target": "https://gcsim.app",
+    "changeOrigin": "true"
+  },
+  "/hastebin/post": {
+    "target": "https://hastebin.com/documents",
+    "changeOrigin": "true",
+    "pathRewrite": {
+      "^/hastebin/post": ""
+    }
+  },
+  "/hastebin/get": {
+    "target": "https://hastebin.com/raw/",
+    "changeOrigin": "true",
+    "pathRewrite": {
+      "^/hastebin/get": ""
+    }
   }
 }

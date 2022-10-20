@@ -31,6 +31,10 @@ export class WorkerPool {
     return this.aggregatorReady && this.count() >= this.workers.length && !this.isRunning;
   }
 
+  public running(): boolean {
+    return this.isRunning;
+  }
+
   private loaded(): Worker[] {
     return this.workers.filter((_, i) => this.workersReady[i]);
   }

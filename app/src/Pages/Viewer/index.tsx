@@ -7,8 +7,7 @@ import { SimResults } from "./SimResults";
 import UpgradeDialog from "./UpgradeDialog";
 import Viewer from "./Viewer";
 import { viewerActions } from "./viewerSlice";
-
-axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*';
+import { validate as uuidValidate } from 'uuid';
 
 export const VIEWER_THROTTLE = 100;
 
@@ -44,9 +43,25 @@ export const ViewerLoader = ({ type, id }: LoaderProps) => {
       return <FromUrl url='http://127.0.0.1:8381/data' redirect="/viewer" />;
     case ViewTypes.Share:
       // TODO: process url function + more request props for supporting more endpoints (hastebin)
-      return <FromUrl url={'/api/view/' + id} redirect="/viewer" id={id} />;
+      return <FromUrl url={processUrl(id)} redirect="/viewer" id={id} />;
   }
 };
+
+function processUrl(id?: string): string {
+  if (id == null) {
+    throw "share is missing id (should never happen)";
+  }
+
+  if (uuidValidate(id)) {
+    return "/api/view/" + id;
+  }
+  const type = id.substring(0, id.indexOf("-"));
+  id = id.substring(id.indexOf("-") + 1);
+  if (type == "hb") {
+    return "/hastebin/get/" + id;
+  }
+  return "";
+}
 
 function Base64ToJson(base64: string) {
   const bytes = Uint8Array.from(window.atob(base64), (v) => v.charCodeAt(0));
