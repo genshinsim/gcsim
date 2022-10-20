@@ -1,6 +1,6 @@
 import { Button, Classes, Intent, Position, ProgressBar, Toaster } from "@blueprintjs/core";
 import classNames from "classnames";
-import React, { RefObject, useCallback, useEffect, useRef } from "react";
+import { MutableRefObject, RefObject, useCallback, useEffect, useRef } from "react";
 import { pool } from "~src/Pages/Sim";
 import { ResultSource } from "..";
 
@@ -16,7 +16,7 @@ export default ({ src, error, current, total }: Props) => {
   const loadingToast = useRef<Toaster>(null);
   const key = useRef<string | undefined>(undefined);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error != null) {
       loadingToast.current?.clear();
       return;
@@ -44,11 +44,16 @@ export default ({ src, error, current, total }: Props) => {
       return;
     }
 
+    if (key.current == null) {
+      return;
+    }
+
     key.current = loadingToast.current?.show({
       message: (
           <ProgressToast
               current={current}
               total={total}
+              toastKey={key}
               loadingToast={loadingToast} />
       ),
       className: "w-full !max-w-2xl",
@@ -61,8 +66,11 @@ export default ({ src, error, current, total }: Props) => {
   return <Toaster ref={loadingToast} position={Position.TOP} />;
 };
 
-const ProgressToast = ({ current, total, loadingToast }:
-    {current: number, total: number, loadingToast: RefObject<Toaster> }) => {
+const ProgressToast = ({ current, total, toastKey, loadingToast }: {
+    current: number,
+    total: number,
+    toastKey: MutableRefObject<string | undefined>,
+    loadingToast: RefObject<Toaster> }) => {
   
   const cancel = useCallback(() => pool.cancel(), []);
   useEffect(() => {
@@ -79,12 +87,16 @@ const ProgressToast = ({ current, total, loadingToast }:
           })}
           intent={val < 1 ? Intent.PRIMARY : Intent.SUCCESS}
           value={val}/>
-      {action(val, loadingToast, cancel)}
+      {action(val, toastKey, loadingToast, cancel)}
     </div>
   );
 };
 
-function action(val: number, loadingToast: React.RefObject<Toaster>, cancel: () => void) {
+function action(
+    val: number,
+    key: MutableRefObject<string | undefined>,
+    loadingToast: RefObject<Toaster>,
+    cancel: () => void) {
   if (val >= 1) {
     return null;
   }
@@ -96,6 +108,7 @@ function action(val: number, loadingToast: React.RefObject<Toaster>, cancel: () 
         onClick={() => {
           cancel();
           loadingToast.current?.clear();
+          key.current = undefined;
         }} />
   );
 }
