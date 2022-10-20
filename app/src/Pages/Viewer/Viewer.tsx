@@ -32,7 +32,7 @@ export default ({ data, error, src, redirect, retry }: ViewerProps) => {
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-bp4-dark-gray-100">
+    <div className="flex flex-col flex-grow w-full bg-bp4-dark-gray-100">
       <div className="px-2 py-4 w-full 2xl:mx-auto 2xl:container">
         <ViewerNav tabState={[tabId, setTabId]} data={data} />
       </div>

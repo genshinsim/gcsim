@@ -29,7 +29,7 @@ export default function App() {
   return (
     <div className="bp4-dark h-screen flex flex-col">
       <Nav />
-      <div className="flex flex-col flex-auto overflow-x-clip">
+      <div className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
         <Switch>
           <Route path="/" component={Dash} />
           <Route path="/simple">
