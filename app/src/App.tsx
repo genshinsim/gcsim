@@ -1,5 +1,5 @@
-import React from 'react';
-import { Redirect, Route, Switch } from 'wouter';
+import React, { useRef } from 'react';
+import { Redirect, Route, Switch, useLocation } from 'wouter';
 import Footer from '/src/Components/Footer/Footer';
 import Nav from '/src/Components/Nav/Nav';
 import { Dash } from '/src/Pages/Dash';
@@ -16,6 +16,8 @@ import { RedirectDB } from './Pages/DB/RedirectDB';
 
 export default function App() {
   useTranslation();
+  const content = useRef<HTMLDivElement>(null);
+  const [location,] = useLocation();
 
   React.useEffect(() => {
     let loc = window.location.href;
@@ -26,10 +28,17 @@ export default function App() {
     }
   }, []);
 
+  // every time you change location, scroll to top of page. This is necessary since the outer
+  // content div will never rerender through the entire lifespan of the app and will always retain
+  // its scroll position.
+  React.useEffect(() => {
+    content.current?.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <div className="bp4-dark h-screen flex flex-col">
       <Nav />
-      <div className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
+      <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
         <Switch>
           <Route path="/" component={Dash} />
           <Route path="/simple">
