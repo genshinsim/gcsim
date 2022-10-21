@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <Navbar />
       <main className="flex flex-col h-full m-2 w-full xs:w-full sm:w-[640px] hd:w-full wide:w-[1160px] ml-auto mr-auto ">
-        <div className="bg-yellow-100 border border-yellow-400 px-4 py-3 rounded relative">
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative">
           <strong className="font-bold">Warning: </strong>
           <span className="block sm:inline">
             The purpose of this database is to aid users in writing their own configs by providing samples.
