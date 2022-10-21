@@ -55,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatus(icdKey, 18, true)
-		if char.StatModIsActive(buffKey) {
+		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
 		if w.stacks < 4 {

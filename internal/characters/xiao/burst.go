@@ -30,13 +30,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// TODO: No indication of that in library though
 	c.AddStatus(burstBuffKey, 900+burstStart, true)
 	c.qStarted = c.Core.F
+	c.a1()
 
 	// HP Drain - removes HP every 1 second tick after burst is activated
 	// Per gameplay video, HP ticks start after animation is finished
 	for i := burstStart + 60; i < 900+burstStart; i++ {
 		c.Core.Tasks.Add(func() {
 			if c.StatusIsActive(burstBuffKey) && c.Core.F >= HPicd {
-				//TODO: not sure if this is affected by hitlag
+				// TODO: not sure if this is affected by hitlag
 				HPicd = c.Core.F + 60
 				c.Core.Player.Drain(player.DrainInfo{
 					ActorIndex: c.Index,
@@ -62,6 +63,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
 		c.DeleteStatus(burstBuffKey)
+		c.DeleteStatus(a1Key)
 		return false
 	}, "xiao-exit")
 }

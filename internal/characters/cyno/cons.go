@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	c1Key = "cyno-c1"
-	c6Key = "cyno-c6"
+	c1Key    = "cyno-c1"
+	c6Key    = "cyno-c6"
+	c6ICDKey = "cyno-c6-icd"
 )
 
 // After using Sacred Rite: Wolf's Swiftness, Cyno's Normal Attack SPD will be increased by 20% for 10s.
@@ -128,6 +129,12 @@ func (c *char) c6() {
 		if !c.StatusIsActive(c6Key) {
 			return false
 		}
+		if c.StatusIsActive(c6ICDKey) {
+			return false
+		}
+
+		c.AddStatus(c6ICDKey, 24, true)
+
 		// technically should use ICDGroupCynoC6, but it's just reskinned standard ICD
 		ai := combat.AttackInfo{
 			ActorIndex:   c.Index,
