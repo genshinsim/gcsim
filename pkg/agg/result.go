@@ -4,6 +4,9 @@ type Result struct {
 	// metadata
 	MinSeed    string  `json:"min_seed"`
 	MaxSeed    string  `json:"max_seed"`
+	P25Seed    string  `json:"p25_seed"`
+	P50Seed    string  `json:"p50_seed"`
+	P75Seed    string  `json:"p75_seed"`
 	Runtime    float64 `json:"runtime"`
 	Iterations int     `json:"iterations"`
 

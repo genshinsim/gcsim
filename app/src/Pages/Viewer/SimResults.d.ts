@@ -26,6 +26,9 @@ export interface CharacterDetail {
 export interface Statistics {
   min_seed?: string
   max_seed?: string
+  p25_seed?: string
+  p50_seed?: string
+  p75_seed?: string
   runtime?: number
   iterations?: number
 

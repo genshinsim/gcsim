@@ -70,17 +70,29 @@ const Generate = ({ data, debug, running }:
     case data.statistics?.max_seed:
       startValue = "max";
       break;
+    case data.statistics?.p25_seed:
+      startValue = "q1";
+      break;
+    case data.statistics?.p50_seed:
+      startValue = "q2";
+      break;
+    case data.statistics?.p75_seed:
+      startValue = "q3";
+      break;
   }
   const [value, setValue] = useState(startValue);
   const options: OptionProps[] = [
     { label: "Debug Seed", value: "debug" },
     { label: "Random", value: "rand" },
     { label: "Min Seed", value: "min" },
-    { label: "Max Seed", value: "max" }
+    { label: "Max Seed", value: "max" },
+    { label: "P25 Seed", value: "q1" },
+    { label: "P50 Seed", value: "q2" },
+    { label: "P75 Seed", value: "q3" },
   ];
 
   const disabled = () => {
-    return running && ["min", "max"].includes(value);
+    return running && ["min", "max", "q1", "q2", "q3"].includes(value);
   };
 
   const click = () => {
@@ -97,6 +109,15 @@ const Generate = ({ data, debug, running }:
         break;
       case "max":
         seed = data.statistics?.max_seed ?? seed;
+        break;
+      case "q1":
+        seed = data.statistics?.p25_seed ?? seed;
+        break;
+      case "q2":
+        seed = data.statistics?.p50_seed ?? seed;
+        break;
+      case "q3":
+        seed = data.statistics?.p75_seed ?? seed;
         break;
     }
 
