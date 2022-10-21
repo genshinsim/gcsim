@@ -10,8 +10,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-
-	"github.com/genshinsim/gcsim/pkg/result"
 )
 
 type Simulation struct {
@@ -20,7 +18,11 @@ type Simulation struct {
 	IsPermanent bool   `json:"is_permanent"`
 }
 
-func (s *Simulation) DecodeViewer() (*result.Summary, error) {
+type Result struct {
+	Config string `json:"config_file"`
+}
+
+func (s *Simulation) DecodeViewer() (*Result, error) {
 	//base64 zlib encoded string
 	z, err := base64.StdEncoding.DecodeString(s.ViewerFile)
 	if err != nil {
@@ -37,7 +39,7 @@ func (s *Simulation) DecodeViewer() (*result.Summary, error) {
 		return nil, err
 	}
 
-	var target result.Summary
+	var target Result
 	err = json.Unmarshal(b, &target)
 	return &target, err
 }

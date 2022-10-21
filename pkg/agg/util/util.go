@@ -66,7 +66,7 @@ func (b *FloatBuffer) Flush() agg.FloatStat {
 		for _, e := range b.entries {
 			variance += (e - b.mean) * (e - b.mean)
 		}
-		out.SD = math.Sqrt(variance / float64(b.n-1))
+		out.SD = math.Sqrt(variance / math.Max(float64(b.n-1), 1))
 	}
 
 	return out

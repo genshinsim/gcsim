@@ -22,6 +22,7 @@ type char struct {
 	c2buff   []float64
 	c2stack  int
 	c4buff   []float64
+	savedNormalCounter int
 }
 
 const eWindowKey = "diluc-e-window"

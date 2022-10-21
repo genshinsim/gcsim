@@ -38,12 +38,16 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i, mult := range attack[c.NormalCounter] {
+		icdGroup := combat.ICDGroupDefault
+		if c.NormalCounter == 4 {
+			icdGroup = combat.ICDGroupPoleExtraAttack // N5 has a different ICDGroup
+		}
 		ai := combat.AttackInfo{
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			ActorIndex:         c.Index,
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
+			ICDGroup:           icdGroup,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       attackHitlagFactor[c.NormalCounter][i],
