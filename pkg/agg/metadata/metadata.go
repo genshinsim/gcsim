@@ -2,6 +2,7 @@ package metadata
 
 import (
 	"math"
+	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -43,7 +44,7 @@ func (b *buffer) Add(result stats.Result) {
 }
 
 func (b buffer) Flush(result *agg.Result) {
-	result.MinSeed = b.minRun.seed
-	result.MaxSeed = b.maxRun.seed
+	result.MinSeed = strconv.FormatUint(b.minRun.seed, 10)
+	result.MaxSeed = strconv.FormatUint(b.maxRun.seed, 10)
 	result.Iterations = b.count
 }

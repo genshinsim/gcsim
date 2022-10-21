@@ -1,67 +1,129 @@
-import { Button, ButtonGroup, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
-import { useMemo, useState } from "react";
+import { Button, ButtonGroup, HTMLSelect, Intent, NonIdealState, OptionProps, Spinner, SpinnerSize } from "@blueprintjs/core";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AdvancedPreset, AllDebugOptions, DebugPreset, DefaultDebugOptions, SimplePreset, VerbosePreset } from "~src/Components/Viewer/debugOptions";
 import { Debugger } from "~src/Components/Viewer/DebugView";
 import { Options } from "~src/Components/Viewer/Options";
 import { DebugRow } from "~src/Components/Viewer/parse";
-import { parseLogV2 } from "~src/Components/Viewer/parsev2";
+import { LogDetails, parseLogV2 } from "~src/Components/Viewer/parsev2";
+import { pool } from "~src/Pages/Sim";
 import { SimResults } from "../SimResults";
 
 const SAVED_DEBUG_KEY = "gcsim-debug-settings";
 
+type UseDebugData = {
+  logs: LogDetails[] | null;
+  parsed: DebugRow[] | null;
+  seed: string | null;
+  settings: string[];
+  generating: boolean;
+  setGenerating: (val: boolean) => void;
+  setLogs: (debug: LogDetails[]) => void;
+  setSettings: (val: string[]) => void;
+  setSeed: (val: string | null) => void;
+}
+
 type Props = {
   data: SimResults | null;
-  parsed: DebugRow[] | null;
-  settingsState: [string[], (val: string[]) => void]; 
+  debug: UseDebugData;
+  running: boolean;
 };
 
+// TODO: translation
 // TODO: The debugger should be refactored. This is a mess of passing around info
-export default ({ data, parsed, settingsState }: Props) => {
-  const [settings, setSettings] = settingsState;
-  if (parsed == null || data?.character_details == null ) {
+export default ({ data, debug, running }: Props) => {
+  if (data?.character_details == null || data?.config_file == null || debug.generating) {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
   }
 
-  const names = data?.character_details?.map(c => c.name);
+  if (debug.parsed == null) {
+    return (
+      <NonIdealState
+          icon="helper-management"
+          action={<Generate data={data} debug={debug} running={running} />} />
+    );
+  }
+
+  const names = data.character_details.map(c => c.name);
   return (
     <div className="flex flex-grow flex-col h-full gap-2 px-4">
-      <Debugger data={parsed} team={names} searchable={{}} />
-      <DebugOptions settings={settings} setSettings={setSettings} />
+      <Generate data={data} debug={debug} running={running} />
+      <Debugger data={debug.parsed} team={names} searchable={{}} />
+      <DebugOptions settings={debug.settings} setSettings={debug.setSettings} />
     </div>
   );
 };
 
-export function useDebugParser(data: SimResults | null, selected: string[]): DebugRow[] | null {
-  return useMemo(() => {
-    if (data?.initial_character == null || data.character_details == null || data?.debug == null) {
-      return null;
-    }
+const Generate = ({ data, debug, running }:
+    { data: SimResults, debug: UseDebugData, running: boolean }) => {
+  let startValue = "rand";
+  switch (debug.seed) {
+    case null:
+      startValue = "debug";
+      break;
+    case data.debug_seed:
+      startValue = "debug";
+      break;
+    case data.statistics?.min_seed:
+      startValue = "min";
+      break;
+    case data.statistics?.max_seed:
+      startValue = "max";
+      break;
+  }
+  const [value, setValue] = useState(startValue);
+  const options: OptionProps[] = [
+    { label: "Debug Seed", value: "debug" },
+    { label: "Random", value: "rand" },
+    { label: "Min Seed", value: "min" },
+    { label: "Max Seed", value: "max" }
+  ];
 
-    return parseLogV2(
-        data.initial_character,
-        data?.character_details?.map(c => c.name),
-        data.debug,
-        selected);
-  }, [data?.debug, data?.initial_character, data?.character_details, selected]);
-}
-
-export function useDebugSettings(): [string[], (val: string[]) => void] {
-  const [selected, setSelected] = useState<string[]>(() => {
-    const saved = localStorage.getItem(SAVED_DEBUG_KEY);
-    if (saved) {
-      const initialValue = JSON.parse(saved);
-      return initialValue || DefaultDebugOptions;
-    }
-    return DefaultDebugOptions;
-  });
-
-  const setAndStore = (val: string[]) => {
-    setSelected(val);
-    localStorage.setItem(SAVED_DEBUG_KEY, JSON.stringify(val));
+  const disabled = () => {
+    return running && ["min", "max"].includes(value);
   };
-  return [selected, setAndStore];
-}
+
+  const click = () => {
+    let seed = "0";
+    switch (value) {
+      case "debug":
+        seed = data.debug_seed ?? seed;
+        break;
+      case "rand":
+        seed = "" + Math.floor(Number.MAX_SAFE_INTEGER * Math.random());
+        break;
+      case "min":
+        seed = data.statistics?.min_seed ?? seed;
+        break;
+      case "max":
+        seed = data.statistics?.max_seed ?? seed;
+        break;
+    }
+
+    debug.setGenerating(true);
+    debug.setSeed(seed);
+    pool.debug(data.config_file ?? "", seed).then((out) => {
+      debug.setLogs(out);
+      debug.setGenerating(false);
+    });
+  };
+
+  return (
+    <>
+      <HTMLSelect
+          options={options}
+          value={value}
+          onChange={(e) => setValue(e.currentTarget.value)} />
+      <Button
+          large={true}
+          text="Generate"
+          icon="refresh"
+          intent={Intent.PRIMARY}
+          disabled={disabled()}
+          onClick={click} />
+    </>
+  );
+};
 
 const DebugOptions = ({settings, setSettings}:
     {settings: string[], setSettings: (val: string[]) => void}) => {
@@ -97,7 +159,7 @@ const DebugOptions = ({settings, setSettings}:
   };
 
   return (
-    <div className="w-full p-2">
+    <div className="w-full p-2 pb-0">
       <ButtonGroup fill>
         <Button
             onClick={() => setOpen(true)}
@@ -117,3 +179,59 @@ const DebugOptions = ({settings, setSettings}:
     </div>
   );
 };
+
+export function useDebug(running: boolean, data: SimResults | null): UseDebugData {
+  const [selected, setSelected] = useState<string[]>(() => {
+    const saved = localStorage.getItem(SAVED_DEBUG_KEY);
+    if (saved) {
+      const initialValue = JSON.parse(saved);
+      return initialValue || DefaultDebugOptions;
+    }
+    return DefaultDebugOptions;
+  });
+
+  const setAndStore = (val: string[]) => {
+    setSelected(val);
+    localStorage.setItem(SAVED_DEBUG_KEY, JSON.stringify(val));
+  };
+
+  const [debug, setDebug] = useState<LogDetails[] | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [seed, setSeed] = useState<string | null>(null);
+
+  // Special case where sim is rerunning. Want to reset any generated debug state
+  useEffect(() => {
+    if (running) {
+      setDebug(null);
+    }
+  }, [running]);
+
+  const parsed = useMemo(() => {
+    if (data?.initial_character == null || data.character_details == null) {
+      return null;
+    }
+
+    const debugData = debug != null ? debug : data.debug;
+    if (debugData == null) {
+      return null;
+    }
+
+    return parseLogV2(
+        data.initial_character,
+        data?.character_details?.map(c => c.name),
+        debugData,
+        selected);
+  }, [debug, data?.debug, data?.initial_character, data?.character_details, selected]);
+
+  return {
+    logs: debug,
+    parsed: parsed,
+    seed: seed,
+    settings: selected,
+    generating: generating,
+    setGenerating: setGenerating,
+    setLogs: setDebug,
+    setSettings: setAndStore,
+    setSeed: setSeed,
+  };
+}

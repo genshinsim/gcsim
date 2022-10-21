@@ -1,6 +1,6 @@
 import { DebugRow, DebugItem, eventColor, strFrameWithSec } from './parse';
 
-type LogDetails = {
+export type LogDetails = {
   char_index: number;
   ended: number;
   event: string;
@@ -22,7 +22,7 @@ const replacer = (k: string, v: any) => {
 export function parseLogV2(
   active?: string,
   team?: string[],
-  log?: string | [any],
+  log?: string | LogDetails[] | any[],
   selected?: string[]
 ) {
   let activeIndex = team.findIndex((e) => e === active);

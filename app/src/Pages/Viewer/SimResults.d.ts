@@ -1,3 +1,5 @@
+import { LogDetails } from "~src/Components/Viewer/parsev2";
+
 export interface SimResults {
   schema_version?: Version
   max_iterations?: number
@@ -6,7 +8,8 @@ export interface SimResults {
   character_details?: CharacterDetail[]
 
   config_file?: string
-  debug?: [unknown]
+  debug?: LogDetails[]
+  debug_seed?: string
 
   statistics?: Statistics
 }
@@ -21,6 +24,9 @@ export interface CharacterDetail {
 }
 
 export interface Statistics {
+  min_seed?: string
+  max_seed?: string
+  runtime?: number
   iterations?: number
 
   duration?: FloatStat

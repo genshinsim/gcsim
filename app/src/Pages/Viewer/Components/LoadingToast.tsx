@@ -5,6 +5,7 @@ import { pool } from "~src/Pages/Sim";
 import { ResultSource } from "..";
 
 type Props = {
+  running: boolean;
   src: ResultSource;
   error: string | null;
   current?: number;
@@ -12,7 +13,7 @@ type Props = {
 };
 
 // TODO: Add translations + number format
-export default ({ src, error, current, total }: Props) => {
+export default ({ running, src, error, current, total }: Props) => {
   const loadingToast = useRef<Toaster>(null);
   const key = useRef<string | undefined>(undefined);
 
@@ -44,7 +45,11 @@ export default ({ src, error, current, total }: Props) => {
       return;
     }
 
-    if (key.current == null) {
+    // TODO: bug with loading toast where it'll immediately reappear after cancel due to delayed
+    //    flush from the throttled set calls. Need to find a way to have it ignore these cases
+    //    or disappear on its own. This check "fixes" it but makes success timeout not correct.
+    if (!running) {
+      loadingToast.current?.clear();
       return;
     }
 
@@ -61,7 +66,7 @@ export default ({ src, error, current, total }: Props) => {
       isCloseButtonShown: current >= total,
       timeout: current < total ? 0 : 2000
     }, key.current);
-  }, [current, total, src, error]);
+  }, [current, total, src, error, running]);
 
   return <Toaster ref={loadingToast} position={Position.TOP} />;
 };

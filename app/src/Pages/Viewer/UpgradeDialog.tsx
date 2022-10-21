@@ -168,6 +168,7 @@ const UpgradeButton = ({ cfg, setResult, setError }: {
     }
 
     setResult(null);
+    setError(null);
     pool.run(cfg, (result) => {
       setResult(result);
     }).catch((err) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
 export namespace Aggregator {
   export enum Request {
@@ -87,6 +88,28 @@ export namespace Aggregator {
   export function ResultResponse(result: any): ResultResponse {
     return { type: Response.Result, result: result };
   }
+}
+
+export namespace Helper {
+  export enum Request {
+    Validate = "validate",
+    GenerateDebug = "gen_debug",
+  }
+
+  export enum Response {
+    Failed = "failed",
+    Validate = "validated",
+    GenerateDebug = "gen_debug",
+  }
+
+  export interface FailedResponse {
+    type: Response.Failed;
+    reason: string;
+  }
+
+  export function FailedResponse(reason: string): FailedResponse {
+    return { type: Response.Failed, reason: reason };
+  }
 
   export interface ValidateRequest {
     type: Request.Validate;
@@ -94,7 +117,7 @@ export namespace Aggregator {
   }
 
   export function ValidateRequest(cfg: string): ValidateRequest {
-    return { type: Request.Validate, cfg: cfg };
+    return { type: Helper.Request.Validate, cfg: cfg };
   }
 
   export interface ValidateResponse {
@@ -104,6 +127,21 @@ export namespace Aggregator {
 
   export function ValidateResponse(cfg: any): ValidateResponse {
     return { type: Response.Validate, cfg: cfg };
+  }
+
+  export interface GenerateDebugRequest {
+    type: Request.GenerateDebug;
+    cfg: string;
+    seed: string;
+  }
+
+  export function GenerateDebugRequest(cfg: string, seed: string): GenerateDebugRequest {
+    return { type: Helper.Request.GenerateDebug, cfg: cfg, seed: seed };
+  }
+
+  export interface GenerateDebugResponse {
+    type: Response.GenerateDebug;
+    debug: any[];
   }
 }
 

@@ -84,7 +84,7 @@ func main() {
 		GZIPResult:       opt.gz,
 		Version:          sha1ver,
 		BuildDate:        buildTime,
-		DebugMinMax:      opt.debugMinMax,
+		Debug:            true,
 	}
 
 	if opt.substatOptim {

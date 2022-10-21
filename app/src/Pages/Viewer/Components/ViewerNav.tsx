@@ -2,11 +2,12 @@ import { Button, ButtonGroup, Intent, Tab, Tabs, Toaster, Icon, Dialog, Classes,
 import axios from "axios";
 import classNames from "classnames";
 import Pako from "pako";
-import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { bytesToBase64 } from "~src/Components/Viewer/base64";
-import { pool, updateCfg } from "~src/Pages/Sim";
+import { LogDetails } from "~src/Components/Viewer/parsev2";
+import { updateCfg } from "~src/Pages/Sim";
 import { useAppDispatch } from "~src/store";
 import { SimResults } from "../SimResults";
 
@@ -14,10 +15,12 @@ const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
   data: SimResults | null;
+  debug: LogDetails[] | null;
   tabState: [string, Dispatch<SetStateAction<string>>];
+  running: boolean;
 };
 
-export default ({ tabState, data }: NavProps ) => {
+export default ({ tabState, data, debug, running }: NavProps ) => {
   const { t } = useTranslation();
   const [tabId, setTabId] = tabState;
   const copyToast = useRef<Toaster>(null);
@@ -32,7 +35,7 @@ export default ({ tabState, data }: NavProps ) => {
       <ButtonGroup>
         <CopyToClipboard copyToast={copyToast} config={data?.config_file} />
         <SendToSim config={data?.config_file} />
-        <Share copyToast={copyToast} data={data} />
+        <Share copyToast={copyToast} data={data} debug={debug} running={running} />
       </ButtonGroup>
       <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Tabs>
@@ -122,18 +125,15 @@ const SendToSim = ({ config }: { config?: string }) => {
   );
 };
 
-const Share = ({ copyToast, data }: { copyToast: RefObject<Toaster>, data: SimResults | null}) => {
+// TODO: assign/store debug in share locations that support (gcsim backend)
+const Share = ({ running, copyToast, data, debug }: {
+    running: boolean,
+    copyToast: RefObject<Toaster>,
+    data: SimResults | null,
+    debug: LogDetails[] | null }) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
-  const [isRunning, setRunning] = useState(true);
   const [shareLink, setShareLink] = useState<string | null>(null);
-
-  useEffect(() => {
-    const check = setInterval(() => {
-      setRunning(pool.running());
-    }, 250);
-    return () => clearInterval(check);
-  }, []);
 
   const convert = () => {
     const cpy = Object.assign({}, data);
@@ -182,7 +182,7 @@ const Share = ({ copyToast, data }: { copyToast: RefObject<Toaster>, data: SimRe
       <Button
           icon={<Icon icon="link" className="!mr-0" />}
           intent={Intent.PRIMARY}
-          disabled={isRunning || data == null}
+          disabled={running || data == null}
           onClick={() => {
             handleShare();
             setOpen(true);

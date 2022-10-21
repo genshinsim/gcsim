@@ -9,6 +9,7 @@ import (
 	"log"
 	"path"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -26,7 +27,7 @@ type Options struct {
 	ConfigPath       string // path to the config file to read
 	Version          string
 	BuildDate        string
-	DebugMinMax      bool // whether to additional include debug logs for min/max-DPS runs
+	Debug            bool // whether to include debug logs
 }
 
 var start time.Time
@@ -130,6 +131,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 
 // Note: this generation should be iteration independent (iterations do not change output)
 func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
+	debugSeed := CryptoRandSeed()
 	result := result.Summary{
 		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
 		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES
@@ -144,7 +146,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		BuildDate:        opts.BuildDate,
 		MaxIterations:    simcfg.Settings.Iterations,
 		Config:           cfg,
-		DebugSeed:        CryptoRandSeed(),
+		DebugSeed:        strconv.FormatUint(uint64(debugSeed), 10),
 		TargetDetails:    simcfg.Targets,
 		InitialCharacter: simcfg.InitialChar.String(),
 	}
@@ -157,11 +159,13 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 
 	//run one debug
 	//debug call will clone before running
-	debugOut, err := GenerateDebugLogWithSeed(simcfg, result.DebugSeed)
-	if err != nil {
-		return result, err
+	if opts.Debug {
+		debugOut, err := GenerateDebugLogWithSeed(simcfg, debugSeed)
+		if err != nil {
+			return result, err
+		}
+		result.Debug = debugOut
 	}
-	result.Debug = debugOut
 	return result, nil
 }
 

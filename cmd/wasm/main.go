@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
+	"strconv"
 	"syscall/js"
 	"time"
 
@@ -35,8 +35,8 @@ func main() {
 	ch := make(chan struct{}, 0)
 
 	// Helper Functions (stateless, no init call needed)
+	js.Global().Set("debug", js.FuncOf(debug))
 	js.Global().Set("validateConfig", js.FuncOf(validateConfig))
-	js.Global().Set("buildInfo", js.FuncOf(buildInfo))
 
 	// Worker Functions
 	js.Global().Set("initializeWorker", js.FuncOf(initializeWorker))
@@ -52,9 +52,28 @@ func main() {
 
 // static helper functions (stateless)
 
-// buildInfo() -> string
-func buildInfo(this js.Value, args []js.Value) interface{} {
-	return fmt.Sprintf(`{"hash":"%v","date":"%v"}`, sha1ver, buildTime)
+// debug(cfg: string, seed: string) -> string
+func debug(this js.Value, args []js.Value) interface{} {
+	cfg := args[0].String()
+	seed, _ := strconv.ParseUint(args[1].String(), 10, 64)
+
+	parser := ast.New(cfg)
+	simcfg, err := parser.Parse()
+	if err != nil {
+		return marshal(err)
+	}
+
+	data, err := simulator.GenerateDebugLogWithSeed(simcfg, int64(seed))
+	if err != nil {
+		return marshal(err)
+	}
+
+	out, err := json.Marshal(data)
+	if err != nil {
+		return marshal(err)
+	}
+
+	return string(out)
 }
 
 // validateConfig(cfg: string) -> string
@@ -141,7 +160,7 @@ func initializeAggregator(this js.Value, args []js.Value) interface{} {
 	opts := simulator.Options{
 		Version:          sha1ver,
 		BuildDate:        buildTime,
-		DebugMinMax:      false,
+		Debug:            false,
 		GZIPResult:       false,
 		ResultSaveToPath: "",
 		ConfigPath:       "",

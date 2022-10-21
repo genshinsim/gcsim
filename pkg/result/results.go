@@ -21,9 +21,8 @@ type Summary struct {
 	CharacterDetails []simulation.CharacterDetail `json:"character_details"`
 	TargetDetails    []enemy.EnemyProfile         `json:"target_details"`
 
-	// TODO: Debug data should be removed from final output. Instead gen on pagload from saved seed
 	Config    string                   `json:"config_file"`
-	DebugSeed int64                    `json:"debug_seed"`
+	DebugSeed string                   `json:"debug_seed"`
 	Debug     []map[string]interface{} `json:"debug"`
 
 	// calculations/simulation data

@@ -12,7 +12,7 @@ declare global {
   }
   
   // Helper functions
-  declare function buildInfo(): string;
+  declare function debug(cfg: string, seed: string): string;
   declare function validateConfig(cfg: string): string;
 
   // Aggregator functions

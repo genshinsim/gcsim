@@ -1,9 +1,9 @@
 import { throttle } from "lodash";
-import { pool } from "./Pages/Sim";
+import { LogDetails } from "./Components/Viewer/parsev2";
 import { VIEWER_THROTTLE } from "./Pages/Viewer";
 import { SimResults } from "./Pages/Viewer/SimResults";
 import { ParsedResult } from "./types";
-import { Aggregator, SimWorker } from "./Workers/common";
+import { Aggregator, Helper, SimWorker } from "./Workers/common";
 
 export class WorkerPool {
   private aggregator: Worker;
@@ -22,7 +22,7 @@ export class WorkerPool {
     this.isRunning = false;
 
     // TODO: make a new helper worker script with only stateless functions
-    this.helper = new Worker(new URL("./Workers/aggregator.ts", import.meta.url));
+    this.helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
   }
 
   public count(): number {
@@ -85,7 +85,6 @@ export class WorkerPool {
     if (diff < 0) {
       this.workersReady.splice(diff);
       this.workers.splice(diff).forEach((w) => w.terminate());
-      console.log(pool);
       return readycb(count);
     }
 
@@ -101,18 +100,37 @@ export class WorkerPool {
   public validate(cfg: string): Promise<ParsedResult> {
     return new Promise((resolve, reject) => {
       this.helper.onmessage = (ev) => {
-        switch (ev.data.type as Aggregator.Response) {
-          case Aggregator.Response.Validate:
-            resolve((ev.data as Aggregator.ValidateResponse).cfg);
+        switch (ev.data.type as Helper.Response) {
+          case Helper.Response.Validate:
+            resolve((ev.data as Helper.ValidateResponse).cfg);
             return;
-          case Aggregator.Response.Failed:
-            reject((ev.data as Aggregator.FailedResponse).reason);
+          case Helper.Response.Failed:
+            reject((ev.data as Helper.FailedResponse).reason);
             return;
           default:
             reject("unknown validate response: " + ev.data);
         }
       };
-      this.helper.postMessage(Aggregator.ValidateRequest(cfg));
+      console.log(Helper.Request);
+      this.helper.postMessage(Helper.ValidateRequest(cfg));
+    });
+  }
+
+  public debug(cfg: string, seed: string): Promise<LogDetails[]> {
+    return new Promise((resolve, reject) => {
+      this.helper.onmessage = (ev) => {
+        switch (ev.data.type as Helper.Response) {
+          case Helper.Response.GenerateDebug:
+            resolve((ev.data as Helper.GenerateDebugResponse).debug);
+            return;
+          case Helper.Response.Failed:
+            reject((ev.data as Helper.FailedResponse).reason);
+            return;
+          default:
+            reject("unknown generate debug response: " + ev.data);
+        }
+      };
+      this.helper.postMessage(Helper.GenerateDebugRequest(cfg, seed));
     });
   }
 
@@ -162,9 +180,11 @@ export class WorkerPool {
 
     // 3. after all initializes complete, start execution
     return Promise.all(initPromises).then(() => {
-      const throttledFlush = throttle(
-          () => this.aggregator.postMessage(Aggregator.FlushRequest(startTime)),
-          VIEWER_THROTTLE, { leading: true, trailing: true });
+      const throttledFlush = throttle(() => {
+        if (this.isRunning) {
+          this.aggregator.postMessage(Aggregator.FlushRequest(startTime));
+        }
+      }, VIEWER_THROTTLE, { leading: true, trailing: true });
   
       let completed = 0;
       let requested = 0;
@@ -185,7 +205,12 @@ export class WorkerPool {
             throttledFlush();
             return;
           case Aggregator.Response.Failed:
-            throw (ev.data as Aggregator.FailedResponse).reason;
+            // TODO: bug with throttled flush where a flush may happen after a cancel request.
+            //    When this happens, the existing aggregator has no data and fails to flush.
+            //    this doesnt cause any problems (yet) and just produces an error in console.
+            if (this.isRunning) {
+              throw (ev.data as Aggregator.FailedResponse).reason;
+            }
         }
       };
 
