@@ -9,11 +9,12 @@ function App() {
     <div className="App">
       <Navbar />
       <main className="flex flex-col h-full m-2 w-full xs:w-full sm:w-[640px] hd:w-full wide:w-[1160px] ml-auto mr-auto ">
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative">
-          <strong className="font-bold">Experimental: </strong>
+        <div className="bg-yellow-100 border border-yellow-400 px-4 py-3 rounded relative">
+          <strong className="font-bold">Warning: </strong>
           <span className="block sm:inline">
-            This database is currently a work in progress and experimental.
-            Expect things to be broken.
+            The purpose of this database is to aid users in writing their own configs by providing samples.
+            By no means does it claim to be a DPS leaderboard or follow any standards.
+            The UI is also a work in progress, expect things to be broken.
           </span>
         </div>
         <Switch>
