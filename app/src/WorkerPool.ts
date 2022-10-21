@@ -1,4 +1,6 @@
+import { throttle } from "lodash";
 import { pool } from "./Pages/Sim";
+import { VIEWER_THROTTLE } from "./Pages/Viewer";
 import { SimResults } from "./Pages/Viewer/SimResults";
 import { ParsedResult } from "./types";
 import { Aggregator, SimWorker } from "./Workers/common";
@@ -160,9 +162,13 @@ export class WorkerPool {
 
     // 3. after all initializes complete, start execution
     return Promise.all(initPromises).then(() => {
-      this.isRunning = true;
+      const throttledFlush = throttle(
+          () => this.aggregator.postMessage(Aggregator.FlushRequest(startTime)),
+          VIEWER_THROTTLE, { leading: true, trailing: true });
+  
       let completed = 0;
       let requested = 0;
+      this.isRunning = true;
       this.aggregator.onmessage = (ev) => {
         switch (ev.data.type as Aggregator.Response) {
           case Aggregator.Response.Result:
@@ -176,10 +182,7 @@ export class WorkerPool {
             return;
           case Aggregator.Response.Done:
             completed += 1;
-            // TODO: make this flush rate configurable?
-            if (completed == 1 || completed % 3 == 0 || completed >= maxIterations) {
-              this.aggregator.postMessage(Aggregator.FlushRequest(startTime));
-            }
+            throttledFlush();
             return;
           case Aggregator.Response.Failed:
             throw (ev.data as Aggregator.FailedResponse).reason;

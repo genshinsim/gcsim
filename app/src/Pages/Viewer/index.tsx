@@ -9,6 +9,7 @@ import Viewer from "./Viewer";
 import { viewerActions } from "./viewerSlice";
 import { validate as uuidValidate } from 'uuid';
 
+// TODO: make this flush rate configurable?
 export const VIEWER_THROTTLE = 100;
 
 export enum ResultSource {
