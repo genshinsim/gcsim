@@ -3,6 +3,7 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -16,7 +17,11 @@ func (c *char) c6() {
 	c.c6buff = make([]float64, attributes.EndStatType)
 	c.c6buff[attributes.CR] = 1
 	// check for C6 proc on hurt
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerDamage, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if di.Amount <= 0 {
+			return false
+		}
 		c.checkc6(false)
 		return false
 	}, "hutao-c6")

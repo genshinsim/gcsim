@@ -26,10 +26,8 @@ func WillCollide(p AttackPattern, t Target, key TargetKey) bool {
 }
 
 func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attributes.Element {
-
 	// check targets for collision first
 	for _, e := range prio {
-		// TODO: absorb check should also check for gadgets because of DMC Q
 		for _, x := range c.enemies {
 			t, ok := x.(TargetWithAura)
 			if !ok {
@@ -42,6 +40,22 @@ func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 					-1,
 				).
 					Write("source", "enemy").
+					Write("key", t.Key())
+				return e
+			}
+		}
+		for _, x := range c.gadgets {
+			t, ok := x.(TargetWithAura)
+			if !ok {
+				continue
+			}
+			if WillCollide(p, t, t.Key()) && t.AuraContains(e) {
+				c.Log.NewEvent(
+					"infusion check picked up "+e.String(),
+					glog.LogElementEvent,
+					-1,
+				).
+					Write("source", "gadget").
 					Write("key", t.Key())
 				return e
 			}

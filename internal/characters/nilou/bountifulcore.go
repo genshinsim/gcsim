@@ -24,13 +24,16 @@ func newBountifulCore(c *core.Core, x float64, y float64, a *combat.AttackEvent)
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
 		ai := reactable.NewBloomAttack(char, b)
-		c.QueueAttack(ai, combat.NewCircleHit(b, 6.5), -1, 1)
+		ap := combat.NewCircleHit(b.Gadget, 6.5)
+		c.QueueAttack(ai, ap, -1, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ai.PlayerHarm = true
-		c.QueueAttack(ai, combat.NewCircleHit(b.Gadget, 6.5), -1, 1)
+		ap.Targets[combat.TargettablePlayer] = false
+		ap.Targets[combat.TargettableEnemy] = true
+		ap.Targets[combat.TargettableGadget] = true
+		c.QueueAttack(ai, ap, -1, 1)
 	}
 	b.Gadget.OnExpiry = explode
 	b.Gadget.OnKill = explode
@@ -42,5 +45,7 @@ func (b *BountifulCore) Tick() {
 	//this is needed since gadget tick
 	b.Gadget.Tick()
 }
+
+func (b *BountifulCore) HandleAttack(atk *combat.AttackEvent) float64           { return 0 }
 func (b *BountifulCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (b *BountifulCore) ApplyDamage(*combat.AttackEvent, float64)               {}

@@ -1,6 +1,7 @@
 package enemy
 
 import (
+	"log"
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -10,6 +11,66 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
+
+func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
+	//at this point attack will land
+	e.Core.Combat.Events.Emit(event.OnAttackWillLand, e, atk)
+
+	var amp string
+	var cata string
+	var dmg float64
+	var crit bool
+
+	evt := e.Core.Combat.Log.NewEvent(atk.Info.Abil, glog.LogDamageEvent, atk.Info.ActorIndex).
+		Write("target", e.Index()).
+		Write("attack-tag", atk.Info.AttackTag).
+		Write("ele", atk.Info.Element.String()).
+		Write("damage", &dmg).
+		Write("crit", &crit).
+		Write("amp", &amp).
+		Write("cata", &cata).
+		Write("abil", atk.Info.Abil).
+		Write("source_frame", atk.SourceFrame)
+	evt.WriteBuildMsg(atk.Snapshot.Logs...)
+
+	if !atk.Info.SourceIsSim {
+		if atk.Info.ActorIndex < 0 {
+			log.Println(atk)
+		}
+		preDmgModDebug := e.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).ApplyAttackMods(atk, e)
+		evt.Write("pre_damage_mods", preDmgModDebug)
+	}
+
+	dmg, crit = e.Attack(atk, evt)
+
+	//delay damage event to end of the frame
+	e.Core.Combat.Tasks.Add(func() {
+		//apply the damage
+		e.ApplyDamage(atk, dmg)
+		e.Core.Combat.Events.Emit(event.OnDamage, e, atk, dmg, crit)
+		//callbacks
+		cb := combat.AttackCB{
+			Target:      e,
+			AttackEvent: atk,
+			Damage:      dmg,
+			IsCrit:      crit,
+		}
+		for _, f := range atk.Callbacks {
+			f(cb)
+		}
+	}, 0)
+
+	// this works because string in golang is a slice underneath, so the &amp points to the slice info
+	// that's why when the underlying string in amp changes (has to be reallocated) the pointer doesn't
+	// change since it's just pointing to the slice "header"
+	if atk.Info.Amped {
+		amp = string(atk.Info.AmpType)
+	}
+	if atk.Info.Catalyzed {
+		cata = string(atk.Info.CatalyzedType)
+	}
+	return dmg
+}
 
 func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//if target is frozen prior to attack landing, set impulse to 0

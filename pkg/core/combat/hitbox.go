@@ -1,7 +1,9 @@
 package combat
 
 type AttackPattern struct {
-	Shape Shape
+	Shape       Shape
+	Targets     [TargettableTypeCount]bool
+	IgnoredKeys []TargetKey
 }
 
 func NewDefSingleTarget(ind TargetKey) AttackPattern {
@@ -12,20 +14,24 @@ func NewDefSingleTarget(ind TargetKey) AttackPattern {
 
 func NewCircleHit(trg Positional, r float64) AttackPattern {
 	x, y := trg.Pos()
-	return AttackPattern{
+	a := AttackPattern{
 		Shape: &Circle{
 			x: x,
 			y: y,
 			r: r,
 		},
 	}
+	a.Targets[TargettablePlayer] = true
+	return a
 }
 
 func NewDefBoxHit(w, h float64) AttackPattern {
-	return AttackPattern{
+	a := AttackPattern{
 		Shape: &Rectangle{
 			w: w,
 			h: h,
 		},
 	}
+	a.Targets[TargettablePlayer] = true
+	return a
 }

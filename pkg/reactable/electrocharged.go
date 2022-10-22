@@ -60,7 +60,6 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	//TODO: need to check if refresh ec triggers new tick immediately or not
 	if r.ecTickSrc == -1 {
 		r.ecTickSrc = r.core.F
-
 		r.core.QueueAttack(
 			r.ecSnapshot,
 			combat.NewDefSingleTarget(r.self.Key()),

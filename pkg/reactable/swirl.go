@@ -47,11 +47,12 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	}
 	ai.Durability = dur
 	ai.Abil = string(rt) + " (aoe)"
-	ai.NoSelfHarm = true
+	ap := combat.NewCircleHit(r.self, 5)
+	ap.IgnoredKeys = []combat.TargetKey{r.self.Key()}
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(r.self, 5),
+		ap,
 		1,
 	)
 }

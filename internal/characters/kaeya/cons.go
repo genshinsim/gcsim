@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -75,7 +76,11 @@ func (c *char) c2() {
 // This shield absorbs Cryo DMG with 250% efficiency.
 // Can only occur once every 60s.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerDamage, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if di.Amount <= 0 {
+			return false
+		}
 		if c.Core.F < c.c4icd && c.c4icd != 0 {
 			return false
 		}

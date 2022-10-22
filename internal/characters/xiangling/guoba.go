@@ -78,6 +78,11 @@ func (p *panda) breath() {
 
 func (p *panda) Type() combat.TargettableType { return combat.TargettableGadget }
 
+func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
+	p.Attack(atk, nil)
+	return 0
+}
+
 func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E
 	if p.Core.Player.Chars()[atk.Info.ActorIndex].Base.Key != keys.Sucrose {

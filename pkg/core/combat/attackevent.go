@@ -8,7 +8,6 @@ type AttackEvent struct {
 	Info    AttackInfo
 	Pattern AttackPattern
 	// Timing        AttackTiming
-	Cancelled   bool //provide a way to cancel an attack event
 	Snapshot    Snapshot
 	SourceFrame int            //source frame
 	Callbacks   []AttackCBFunc `json:"-"`
@@ -58,10 +57,6 @@ type AttackInfo struct {
 	CanBeDefenseHalted   bool    //for whacking ruin gaurds
 	IsDeployable         bool    //if this is true, then hitlag does not affect owner
 	HitlagOnHeadshotOnly bool    //if this is true, will only apply if HitWeakpoint is also true
-	//swirl stuff: the aoe attack shouldn't hit the damagesrc
-	NoSelfHarm bool
-	//bloom stuff: the self damage should only hit the player
-	PlayerHarm bool //this is to handle bloom self damage and potentially self aura reactions in the future
 }
 
 type StrikeType int

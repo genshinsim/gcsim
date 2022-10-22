@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -99,7 +100,19 @@ type testTarget struct {
 }
 
 func (t *testTarget) Type() combat.TargettableType { return t.typ }
-func (t *testTarget) AttackWillLand(a combat.AttackPattern, noSelfHarm bool, src combat.TargetKey) (bool, string) {
+
+func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
+	t.Attack(atk, nil)
+	//delay damage event to end of the frame
+	t.Core.Combat.Tasks.Add(func() {
+		//apply the damage
+		t.ApplyDamage(atk, 1)
+		t.Core.Combat.Events.Emit(event.OnDamage, t, atk, 1.0, false)
+	}, 0)
+	return 1
+}
+
+func (t *testTarget) AttackWillLand(a combat.AttackPattern) (bool, string) {
 	return true, ""
 }
 
