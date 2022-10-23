@@ -9,17 +9,33 @@ export type RootState = ReturnType<typeof store.getState>;
 
 const userDataKey = "redux-user-data-v0.0.1";
 const userLocalSettings = "redux-user-local-settings";
+const userAppDataKey = "redux-app-data";
 
-let persistedState = {};
+let persistedState = JSON.parse(
+  JSON.stringify({
+    [userDataSlice.name]: userDataSlice.getInitialState(),
+    [userSlice.name]: userSlice.getInitialState(),
+    [viewerSlice.name]: viewerSlice.getInitialState(),
+    [appSlice.name]: appSlice.getInitialState(),
+  })
+);
 
 if (localStorage.getItem(userDataKey)) {
   const s = JSON.parse(localStorage.getItem(userDataKey)!);
-  persistedState = Object.assign(persistedState, { user_data: s });
+  persistedState.user_data = Object.assign(persistedState.user_data, s);
+}
+
+if (localStorage.getItem(userAppDataKey)) {
+  const s = JSON.parse(localStorage.getItem(userAppDataKey)!);
+  persistedState.app = Object.assign(persistedState.app, {
+    cfg: s.cfg,
+    workers: s.workers,
+  });
 }
 
 if (localStorage.getItem(userLocalSettings)) {
   const s = JSON.parse(localStorage.getItem(userLocalSettings)!);
-  persistedState = Object.assign(persistedState, { user: { settings: s } });
+  persistedState.user = Object.assign(persistedState.user, { settings: s });
 }
 
 export const store = configureStore({
@@ -29,6 +45,7 @@ export const store = configureStore({
     [viewerSlice.name]: viewerSlice.reducer,
     [appSlice.name]: appSlice.reducer,
   },
+  preloadedState: persistedState,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
@@ -37,6 +54,7 @@ export const store = configureStore({
 
 store.subscribe(() => {
   localStorage.setItem(userDataKey, JSON.stringify(store.getState().user_data));
+  localStorage.setItem(userAppDataKey, JSON.stringify(store.getState().app));
   if (store.getState().user.settings) {
     localStorage.setItem(
       userLocalSettings,

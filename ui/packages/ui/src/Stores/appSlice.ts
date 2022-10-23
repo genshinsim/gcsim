@@ -3,6 +3,7 @@ import { AppThunk } from "./store";
 import { charToCfg } from "../Pages/Simulator/helper";
 import { Executor } from "@gcsim/executors";
 import { Character } from "@gcsim/types";
+import { pool } from "../App";
 
 export interface AppState {
   ready: number;
@@ -20,10 +21,13 @@ export const initialState: AppState = {
   team: [],
 };
 
-export const defaultStats = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+export const defaultStats = [
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
 export const maxStatLength = defaultStats.length;
 
-export const charLinesRegEx = /^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
+export const charLinesRegEx =
+  /^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
 
 export function cfgFromTeam(team: Character[], cfg: string): string {
   let next = "";
@@ -41,9 +45,9 @@ export function cfgFromTeam(team: Character[], cfg: string): string {
   return cfg;
 }
 
-export function updateCfg(cfg: string, keepTeam?: boolean, pool?: Executor): AppThunk {
+export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
   return function (dispatch, getState) {
-    console.log(cfg);
+    // console.log(cfg);
     if (keepTeam) {
       // purge char stat from incoming
       let next = cfg;
@@ -70,7 +74,7 @@ export function updateCfg(cfg: string, keepTeam?: boolean, pool?: Executor): App
       cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
     }
     dispatch(appActions.setCfg(cfg));
-    pool?.validate(cfg).then(
+    pool.validate(cfg).then(
       (res) => {
         console.log("all is good");
         dispatch(appActions.setCfgErr(""));
@@ -100,6 +104,7 @@ export function updateCfg(cfg: string, keepTeam?: boolean, pool?: Executor): App
           });
           dispatch(appActions.setCfgErr(msg));
         }
+        dispatch(appActions.setTeam(team));
       },
       (err) => {
         //set error state
@@ -153,7 +158,10 @@ export const appSlice = createSlice({
       return state;
     },
     deleteCharacter: (state, action: PayloadAction<{ index: number }>) => {
-      if (action.payload.index < 0 || action.payload.index >= state.team.length) {
+      if (
+        action.payload.index < 0 ||
+        action.payload.index >= state.team.length
+      ) {
         return state;
       }
       state.team.splice(action.payload.index, 1);
@@ -161,8 +169,14 @@ export const appSlice = createSlice({
       state.cfg = cfg;
       return state;
     },
-    editCharacter: (state, action: PayloadAction<{ char: Character; index: number }>) => {
-      if (action.payload.index < 0 || action.payload.index >= state.team.length) {
+    editCharacter: (
+      state,
+      action: PayloadAction<{ char: Character; index: number }>
+    ) => {
+      if (
+        action.payload.index < 0 ||
+        action.payload.index >= state.team.length
+      ) {
         return state;
       }
       state.team[action.payload.index] = action.payload.char;

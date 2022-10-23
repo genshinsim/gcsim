@@ -31,7 +31,7 @@ function RedirectDB() {
   );
 }
 
-let pool: Executor;
+export let pool: Executor;
 
 export function SetExecutor(executor: Executor) {
   pool = executor;

@@ -73,7 +73,7 @@ div.sticky-header {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("/images/overlay.jpg");
+  background: url("./Components/Images/overlay.jpg");
   background-size: cover;
   mix-blend-mode: luminosity;
   background-position: center;

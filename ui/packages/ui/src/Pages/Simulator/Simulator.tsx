@@ -31,6 +31,14 @@ export function Simulator({ pool }: { pool: Executor }) {
   useEffect(() => {
     dispatch(setTotalWorkers(pool, workers));
   }, []);
+  useEffect(() => {
+    //TODO: for whatever reason this is being called every single time a worker gets loaded
+    //when it should only happen once?
+    if (ready) {
+      console.log("rerunning config on ready!");
+      dispatch(updateCfg(cfg));
+    }
+  }, [ready]);
 
   // check worker ready state every 250ms so run button becomes available when workers do
   const [isReady, setReady] = React.useState<boolean>(false);
@@ -73,7 +81,7 @@ export function Simulator({ pool }: { pool: Executor }) {
 
           <ActionList
             cfg={cfg}
-            onChange={(v) => dispatch(updateCfg(v, false, pool))}
+            onChange={(v) => dispatch(updateCfg(v, false))}
           />
 
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
@@ -84,20 +92,6 @@ export function Simulator({ pool }: { pool: Executor }) {
                 </Callout>
               </div>
             ) : null}
-            <div className="pl-2 pr-2 pt-2 mt-1">
-              <Callout intent="warning" title="Breaking changes">
-                Please be aware that there have been syntax changes with the
-                core rewrite. Your existing configs may not work. Please check
-                out the{" "}
-                <a
-                  href="https://docs.gcsim.app/migration"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  migration guide
-                </a>
-              </Callout>
-            </div>
             <Toolbox pool={pool} cfg={cfg} canRun={cfgErr === "" && isReady} />
           </div>
         </div>
