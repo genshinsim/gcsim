@@ -31,17 +31,17 @@ export function CharacterEditDetails({ char, onChange }: Props) {
         return;
       }
     }
-    char.name = w.key;
-    char.element = CharMap[char.name].element;
-    onChange(char);
+    let next = JSON.parse(JSON.stringify(char));
+    next.name = w.key;
+    next.element = CharMap[next.name].element;
+    onChange(next);
   };
 
   const handleChangeTalent = (key: "attack" | "skill" | "burst") => {
     return (val: number) => {
-      const next = { ...char.talents };
-      next[key] = val;
-      char.talents = next;
-      onChange(char);
+      let next = JSON.parse(JSON.stringify(char));
+      next.talents[key] = val;
+      onChange(next);
     };
   };
 
@@ -57,25 +57,28 @@ export function CharacterEditDetails({ char, onChange }: Props) {
     } else if (l < ascLvlMin(asc)) {
       l = ascLvlMin(asc);
     }
-    char.max_level = m;
-    char.level = l;
-    onChange(char);
+    let next = JSON.parse(JSON.stringify(char));
+    next.max_level = m;
+    next.level = l;
+    onChange(next);
   };
 
   const handleChangeLvl = (val: number) => {
     if (val <= 0 || val > 90) {
       return;
     }
-    char.level = val;
-    onChange(char);
+    let next = JSON.parse(JSON.stringify(char));
+    next.level = val;
+    onChange(next);
   };
 
   const handleChangeCons = (val: number) => {
     if (val < 0 || val > 6) {
       return;
     }
-    char.cons = val;
-    onChange(char);
+    let next = JSON.parse(JSON.stringify(char));
+    next.cons = val;
+    onChange(next);
   };
 
   const asc = maxLvlToAsc(char.max_level);

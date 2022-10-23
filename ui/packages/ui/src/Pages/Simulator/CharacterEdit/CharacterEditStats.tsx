@@ -166,14 +166,16 @@ function StatRows(props: StatRowsProp) {
       sub.val = props.stats[StatToIndexMap[sub.stat]];
     }
     if (sub.stat_) {
-      sub.val_ = Math.round(props.stats[StatToIndexMap[sub.stat_]] * 10000) / 100;
+      sub.val_ =
+        Math.round(props.stats[StatToIndexMap[sub.stat_]] * 10000) / 100;
     }
     return <StatRow key={index} sub={sub} onChange={props.onChange} />;
   });
 
   const eleRows = eleSubs.map((sub, index) => {
     if (sub.stat_) {
-      sub.val_ = Math.round(props.stats[StatToIndexMap[sub.stat_]] * 10000) / 100;
+      sub.val_ =
+        Math.round(props.stats[StatToIndexMap[sub.stat_]] * 10000) / 100;
     }
     return <StatRow key={index} sub={sub} onChange={props.onChange} />;
   });
@@ -196,8 +198,9 @@ export function CharacterEditStats({ char, onChange }: Props) {
     if (index < 0 || index > maxStatLength) {
       return;
     }
-    char.stats[index] = value;
-    onChange(char);
+    let next = JSON.parse(JSON.stringify(char));
+    next.stats[index] = value;
+    onChange(next);
   };
 
   return (

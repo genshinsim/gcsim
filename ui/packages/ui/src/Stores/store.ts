@@ -1,6 +1,6 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { appSlice } from "./appSlice";
+import { appSlice, listenerMiddleware } from "./appSlice";
 import { userDataSlice } from "./userDataSlice";
 import { userSlice } from "./userSlice";
 import { viewerSlice } from "./viewerSlice";
@@ -47,9 +47,7 @@ export const store = configureStore({
   },
   preloadedState: persistedState,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+    getDefaultMiddleware().prepend(listenerMiddleware.middleware),
 });
 
 store.subscribe(() => {

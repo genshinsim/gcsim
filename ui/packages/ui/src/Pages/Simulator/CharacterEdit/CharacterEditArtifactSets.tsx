@@ -21,40 +21,43 @@ export function CharacterEditArtifactSets({ char, onChange }: Props) {
     if (set in char.sets) {
       return;
     }
-    char.sets[set] = 0;
-    onChange(char);
+    let next = JSON.parse(JSON.stringify(char));
+    next.sets[set] = 0;
+    onChange(next);
   };
 
   const handleDeleteSetBonus = (set: string) => {
     return () => {
-      delete char.sets[set];
-      onChange(char);
+      let next = JSON.parse(JSON.stringify(char));
+      delete next.sets[set];
+      onChange(next);
     };
   };
 
   const handleChangeSetBonus = (set: string, bonus: 2 | 4) => {
     return () => {
-      const current = char.sets[set];
+      let next = JSON.parse(JSON.stringify(char));
+      const current = next.sets[set];
       switch (bonus) {
         case 2:
           //if i click on 2 and current >=2 then set it to 0
           if (current >= 2) {
-            char.sets[set] = 0;
+            next.sets[set] = 0;
           } else {
             //otherwise set to 2
-            char.sets[set] = 2;
+            next.sets[set] = 2;
           }
-          onChange(char);
+          onChange(next);
           break;
         case 4:
           //if current is already 4 then set to 2
           if (current >= 4) {
-            char.sets[set] = 2;
+            next.sets[set] = 2;
           } else {
-            char.sets[set] = 4;
+            next.sets[set] = 4;
             //otherwise set to 4
           }
-          onChange(char);
+          onChange(next);
           break;
       }
     };
@@ -130,13 +133,19 @@ export function CharacterEditArtifactSets({ char, onChange }: Props) {
 
   return (
     <div className="bg-gray-600 rounded-md basis-full flex-grow p-2 hd:basis-0 flex flex-col place-items-center">
-      <div className="flex flex-row flex-wrap gap-2 justify-center w-full">{arts}</div>
+      <div className="flex flex-row flex-wrap gap-2 justify-center w-full">
+        {arts}
+      </div>
       <div className="mt-2 w-full xs:w-[25rem]">
         <Button icon="add" fill intent="success" onClick={() => setOpen(true)}>
           <Trans>characteredit.add_set_bonus</Trans>
         </Button>
       </div>
-      <ArtifactSelect isOpen={open} onClose={() => setOpen(false)} onSelect={handleAddSet} />
+      <ArtifactSelect
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onSelect={handleAddSet}
+      />
     </div>
   );
 }
