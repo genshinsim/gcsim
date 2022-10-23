@@ -1,0 +1,12 @@
+{
+  "name": "@gcsim/executors",
+  "main": "src/index.ts",
+  "packageManager": "yarn@3.2.4",
+  "private": true,
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4"
+  }
+}
