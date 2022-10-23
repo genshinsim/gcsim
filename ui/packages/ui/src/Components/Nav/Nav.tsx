@@ -12,9 +12,9 @@ import {
 import { Link, useLocation } from "wouter";
 import { Trans, useTranslation } from "react-i18next";
 import { RootState, useAppSelector } from "../../Stores/store";
-import logoUrl from "./logo.png";
+import logoUrl from "../Images/logo.png";
 
-export default function Nav() {
+export function Nav() {
   const { t, i18n } = useTranslation();
   const language = i18n.language;
 
@@ -24,11 +24,14 @@ export default function Nav() {
     };
   });
 
-  const [location,] = useLocation();
+  const [location] = useLocation();
   return (
     <Navbar className="overflow-x-clip">
       <NavbarGroup align={Alignment.LEFT} className="w-full">
-        <img src={logoUrl} className=" object-contain max-h-[75%] mt-auto mb-auto mr-1" />
+        <img
+          src={logoUrl}
+          className=" object-contain max-h-[75%] mt-auto mb-auto mr-1"
+        />
         <Link href="/">
           <NavbarHeading>
             <a>gcsim (beta)</a>

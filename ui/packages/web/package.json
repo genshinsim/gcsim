@@ -6,14 +6,8 @@
     "dev": "vite --host"
   },
   "dependencies": {
-    "@blueprintjs/core": "^4.11.4",
-    "@blueprintjs/icons": "^4.8.0",
     "@gcsim/executors": "workspace:^",
-    "@gcsim/ui": "workspace:^",
-    "@reduxjs/toolkit": "^1.8.6",
-    "react-i18next": "^12.0.0",
-    "react-redux": "^8.0.4",
-    "wouter": "^2.8.0-alpha.2"
+    "@gcsim/ui": "workspace:^"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^2.1.0",

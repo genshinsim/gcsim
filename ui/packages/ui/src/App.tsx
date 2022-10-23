@@ -1,30 +1,51 @@
-import { Executor, WasmExecutor } from '@gcsim/executors';
-import { Dash, DiscordCallback, Footer, Nav, PageUserAccount, Simulator, ViewerLoader, ViewTypes } from '@gcsim/ui';
-import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Redirect, Route, Switch, useLocation } from 'wouter';
-import './Translation/i18n';
+import { Executor } from "@gcsim/executors";
+import { useEffect, useRef } from "react";
+import { Redirect, Route, Switch, useLocation } from "wouter";
+import { HotkeysProvider } from "@blueprintjs/core";
+import { Provider } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { store } from "./Stores/store";
+import { Footer, Nav } from "./Components";
+import {
+  Dash,
+  Simulator,
+  ViewerLoader,
+  ViewTypes,
+  PageUserAccount,
+  DiscordCallback,
+} from "./Pages";
+import "./Translation/i18n";
+
+// all the css styling we need (except tailwind)
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import "./index.css";
 
 function RedirectDB() {
   window.location.replace("https://db.gcsim.app");
   return (
     <div>
-      Please visit the new db at <a href="https://db.gcsim.app">https://db.gcsim.app</a>
+      Please visit the new db at{" "}
+      <a href="https://db.gcsim.app">https://db.gcsim.app</a>
     </div>
   );
 }
 
-const pool: Executor = new WasmExecutor();
+let pool: Executor;
 
-export default function App() {
+export function SetExecutor(executor: Executor) {
+  pool = executor;
+}
+
+function UI() {
   const { t } = useTranslation();
   const content = useRef<HTMLDivElement>(null);
-  const [location,] = useLocation();
+  const [location] = useLocation();
 
   useEffect(() => {
     let loc = window.location.href;
-    if (loc.includes('www.gcsim.app')) {
-      loc = loc.replace('www.gcsim.app', 'gcsim.app');
+    if (loc.includes("www.gcsim.app")) {
+      loc = loc.replace("www.gcsim.app", "gcsim.app");
       window.location.href = loc;
     }
   }, []);
@@ -39,7 +60,10 @@ export default function App() {
   return (
     <div className="bp4-dark h-screen flex flex-col">
       <Nav />
-      <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
+      <div
+        ref={content}
+        className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip"
+      >
         <Switch>
           <Route path="/" component={Dash} />
           <Route path="/simple">
@@ -66,7 +90,9 @@ export default function App() {
             <ViewerLoader pool={pool} type={ViewTypes.Local} />
           </Route>
           <Route path="/viewer/share/:id">
-            {(params) => <ViewerLoader pool={pool} type={ViewTypes.Share} id={params.id} />}
+            {(params) => (
+              <ViewerLoader pool={pool} type={ViewTypes.Share} id={params.id} />
+            )}
           </Route>
 
           {/* reroute v3 -> new viewer */}
@@ -94,5 +120,15 @@ export default function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <Provider store={store}>
+      <HotkeysProvider>
+        <UI />
+      </HotkeysProvider>
+    </Provider>
   );
 }

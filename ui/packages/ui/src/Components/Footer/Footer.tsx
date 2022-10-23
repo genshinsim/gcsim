@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 //@ts-ignore
 import DiscordLogo from "./discord-icon.svg";
 //@ts-ignore
 import GithubLogo from "./github-icon.svg";
 //@ts-ignore
 import KofiLogo from "./ko-fi-icon.svg";
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from "react-i18next";
 
-export default function Footer() {
+export function Footer() {
   useTranslation();
 
   return (
@@ -23,7 +23,11 @@ export default function Footer() {
           </a>
         </div>
         <div className=" hover:bg-gray-600 p-2 rounded-md h-12">
-          <a href="https://github.com/genshinsim/gsim" target="_blank" rel="noreferrer">
+          <a
+            href="https://github.com/genshinsim/gsim"
+            target="_blank"
+            rel="noreferrer"
+          >
             <img
               src={GithubLogo}
               alt="Github Logo"
@@ -32,7 +36,11 @@ export default function Footer() {
           </a>
         </div>
         <div className=" hover:bg-gray-600 p-2 rounded-md h-12 ">
-          <a href="https://discord.gg/m7jvjdxx7q" target="_blank" rel="noreferrer">
+          <a
+            href="https://discord.gg/m7jvjdxx7q"
+            target="_blank"
+            rel="noreferrer"
+          >
             <img
               src={DiscordLogo}
               alt="Discord Logo"

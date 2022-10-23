@@ -29,14 +29,20 @@ export const store = configureStore({
     [viewerSlice.name]: viewerSlice.reducer,
     [appSlice.name]: appSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: false,
-  }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 store.subscribe(() => {
   localStorage.setItem(userDataKey, JSON.stringify(store.getState().user_data));
-  localStorage.setItem(userLocalSettings, JSON.stringify(store.getState().user.settings));
+  if (store.getState().user.settings) {
+    localStorage.setItem(
+      userLocalSettings,
+      JSON.stringify(store.getState().user.settings)
+    );
+  }
 });
 
 export type AppDispatch = typeof store.dispatch;
