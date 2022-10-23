@@ -22,9 +22,9 @@ import {
 } from './EnkaTypes';
 
 export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
-  let characters: GOODCharacter[] = [];
-  let artifacts: GOODArtifact[] = [];
-  let weapons: GOODWeapon[] = [];
+  const characters: GOODCharacter[] = [];
+  const artifacts: GOODArtifact[] = [];
+  const weapons: GOODWeapon[] = [];
 
   enkaData.avatarInfoList.forEach(
     ({ avatarId, propMap, talentIdList, skillLevelMap, equipList }) => {
@@ -209,8 +209,8 @@ function getGOODSubstatsFromReliquarySubstats(
   if (reliquarySubstats.length == 0 || reliquarySubstats.length > 4) {
     return [];
   }
-  let GOODSubstats: ISubstat[] = [];
-  for (let reliquarySubstat of reliquarySubstats) {
+  const GOODSubstats: ISubstat[] = [];
+  for (const reliquarySubstat of reliquarySubstats) {
     GOODSubstats.push({
       key: fightPropToGOODKey(reliquarySubstat.appendPropId),
       value: reliquarySubstat.statValue,

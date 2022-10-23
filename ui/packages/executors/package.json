@@ -3,10 +3,16 @@
   "main": "src/index.ts",
   "packageManager": "yarn@3.2.4",
   "private": true,
+  "scripts": {
+    "watch:pkg": "nodemon --watch ../../../pkg \"npm run build:wasm\"",
+    "watch:wasm": "nodemon --watch ../../../pkg --watch ../../../internal --watch "
+  },
   "dependencies": {
+    "@gcsim/types": "workspace:^",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4"
+    "@types/lodash": "^4",
+    "nodemon": "^2.0.20"
   }
 }

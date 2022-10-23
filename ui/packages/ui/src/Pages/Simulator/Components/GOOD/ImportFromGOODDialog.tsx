@@ -27,7 +27,7 @@ const lsKey = "GOOD-import";
 export function ImportFromGOODDialog(props: Props) {
   const [data, setData] = React.useState<IGOODImport>();
   const dispatch = useAppDispatch();
-  let { t } = useTranslation();
+  const { t } = useTranslation();
 
   const handleLoad = () => {
     if (data !== undefined) {
@@ -58,7 +58,7 @@ export function ImportFromGOODDialog(props: Props) {
         <p>
           Paste import data in GOOD format in the textbox below. (If you are coming from Genshin
           Optimizer, you can export your database in GOOD format{" "}
-          <a href="https://frzyc.github.io/genshin-optimizer/#/database" target="_blank">
+          <a href="https://frzyc.github.io/genshin-optimizer/#/database" target="_blank" rel="noreferrer">
             here
           </a>
         </p>
@@ -74,7 +74,7 @@ export function ImportFromGOODDialog(props: Props) {
         />
         <p className="font-bold">
           Once your character data has been imported, you can add your imported character via Add
-          Character button and search for the character's name.
+          Character button and search for the character&apos;s name.
         </p>
         {data ? (
           data.err === "" ? (

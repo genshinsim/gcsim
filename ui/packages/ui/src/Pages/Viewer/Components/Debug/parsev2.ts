@@ -30,9 +30,9 @@ export function parseLogV2(
   let activeIndex = team.findIndex((e) => e === active);
   activeIndex++; // +1 since we set the first field to be sim slot
 
-  let result: DebugRow[] = [];
+  const result: DebugRow[] = [];
   let slots: DebugItem[][] = [[], [], [], [], []];
-  let ended: endedStatus = {};
+  const ended: endedStatus = {};
   let lastFrame = -1;
   let finalFrame = -1;
 
@@ -75,7 +75,7 @@ export function parseLogV2(
         const slots: DebugItem[][] = [];
         // TODO: fix this??
         // @ts-ignore
-        for (var i = 0; i <= team.length; i++) {
+        for (let i = 0; i <= team.length; i++) {
           slots.push([]);
         }
         ended[line.ended] = slots;
@@ -85,7 +85,7 @@ export function parseLogV2(
         return;
       }
       const index = line.char_index + 1;
-      let e: DebugItem = {
+      const e: DebugItem = {
         frame: line.frame,
         msg: key + " expired" + strFrameWithSec(line.frame),
         raw: JSON.stringify(line, null, 2),
@@ -124,14 +124,14 @@ export function parseLogV2(
       slots = [];
       // TODO: fix this??
       // @ts-ignore
-      for (var i = 0; i <= team.length; i++) {
+      for (let i = 0; i <= team.length; i++) {
         slots.push([]);
       }
     }
 
     //make a copy of line and sort by ordering if ordering exist (then purge ordering)
 
-    let logLines: { key: string; val: any }[] = [];
+    const logLines: { key: string; val: any }[] = [];
     //convert logs into array
     for (const key in line.logs) {
       logLines.push({ key: key, val: line.logs[key] });
@@ -139,8 +139,8 @@ export function parseLogV2(
     //sort
     if (line.ordering) {
       logLines.sort((a, b) => {
-        let ao = line.ordering![a.key] || 0;
-        let bo = line.ordering![b.key] || 0;
+        const ao = line.ordering![a.key] || 0;
+        const bo = line.ordering![b.key] || 0;
         return ao - bo;
       });
     }
@@ -150,7 +150,7 @@ export function parseLogV2(
       line.logs[e.key] = e.val;
     });
 
-    let e: DebugItem = {
+    const e: DebugItem = {
       frame: line.frame,
       msg: line.msg,
       raw: JSON.stringify(line, replacer, 2),
@@ -258,7 +258,7 @@ export function parseLogV2(
             e.msg = d.applied_ele + " applied";
             if (d.existing) {
               e.msg += " to [";
-              let before = d.existing.map((x: string) => x.replace(/: (.+)/, " ($1)"));
+              const before = d.existing.map((x: string) => x.replace(/: (.+)/, " ($1)"));
               if (before.length > 0) {
                 e.msg += before.join(" ");
               }
@@ -268,7 +268,7 @@ export function parseLogV2(
             }
             if (d.after) {
               e.msg += " ➜ [";
-              let after = d.after.map((x: string) => x.replace(/: (.+)/, " ($1)"));
+              const after = d.after.map((x: string) => x.replace(/: (.+)/, " ($1)"));
               if (after.length > 0) {
                 e.msg += after.join(" ");
               }
@@ -358,7 +358,7 @@ export function parseLogV2(
 
         // this hacky but i don't care
         if (e.ended === e.frame && line.msg.includes("refreshed")) {
-          let idx = lines.findIndex((a) => {
+          const idx = lines.findIndex((a) => {
             return (
               a.event === "status" &&
               line.char_index === a.char_index &&
@@ -402,7 +402,7 @@ export function parseLogV2(
         continue;
       }
 
-      let idx = result.findIndex((e) => e.f === f);
+      const idx = result.findIndex((e) => e.f === f);
       if (idx !== -1) {
         for (let j = 0; j < result[idx].slots.length; j++) {
           result[idx].slots[j].push(...ended[f][j]);
@@ -412,7 +412,7 @@ export function parseLogV2(
 
       // TODO: set active correctly instead of using last one. only matters if action log is disabled
       let active = 0;
-      let insertAt = result.findIndex((r, i) => {
+      const insertAt = result.findIndex((r, i) => {
         active = result[i].active;
         return r.f > f;
       });

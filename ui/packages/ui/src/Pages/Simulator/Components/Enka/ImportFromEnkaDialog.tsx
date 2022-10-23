@@ -63,7 +63,7 @@ export function ImportFromEnkaDialog(props: Props) {
       <div className={Classes.DIALOG_BODY}>
         <p>
           {`Ensure your UID has no problems on `}
-          <a href="https://enka.shinshin.moe/" target="_blank">
+          <a href="https://enka.shinshin.moe/" target="_blank" rel="noreferrer">
             Enka
           </a>
         </p>
@@ -96,7 +96,7 @@ export function ImportFromEnkaDialog(props: Props) {
 
         <p className="font-bold pt-2">
           Once your character data has been imported, you can add your imported character via Add
-          Character button and search for the character's name.
+          Character button and search for the character&apos;s name.
         </p>
       </div>
       <div className={Classes.DIALOG_FOOTER}>

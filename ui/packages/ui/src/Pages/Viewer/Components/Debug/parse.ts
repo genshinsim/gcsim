@@ -25,7 +25,7 @@ export function parseLog(active: string, team: string[], log: string, selected: 
   let activeIndex = team.findIndex((e) => e === active);
   activeIndex++;
 
-  let result: DebugRow[] = [];
+  const result: DebugRow[] = [];
   let slots: DebugItem[][] = [[], [], [], [], []];
 
   let lastFrame = -1;
@@ -85,13 +85,13 @@ export function parseLog(active: string, team: string[], log: string, selected: 
       //reset
       lastFrame = d.frame;
       slots = [];
-      for (var i = 0; i <= team.length; i++) {
+      for (let i = 0; i <= team.length; i++) {
         slots.push([]);
       }
     }
 
     //parse the data
-    let e: DebugItem = {
+    const e: DebugItem = {
       frame: d.frame,
       msg: d.M,
       raw: JSON.stringify(JSON.parse(line), null, 2),
@@ -178,7 +178,7 @@ export function parseLog(active: string, team: string[], log: string, selected: 
             e.msg = d.applied_ele + " applied";
             if (d.existing) {
               e.msg += " to [";
-              let before = d.existing.map((x: string) => x.replace(/: (.+)/, " ($1)"));
+              const before = d.existing.map((x: string) => x.replace(/: (.+)/, " ($1)"));
               if (before.length > 0) {
                 e.msg += before.join(" ");
               } else {
@@ -188,7 +188,7 @@ export function parseLog(active: string, team: string[], log: string, selected: 
             }
             if (d.after) {
               e.msg += " ➜ [";
-              let after = d.after.map((x: string) => x.replace(/: (.+)/, " ($1)"));
+              const after = d.after.map((x: string) => x.replace(/: (.+)/, " ($1)"));
               if (after.length > 0) {
                 e.msg += after.join(" ");
               } else {
@@ -288,7 +288,7 @@ export function strFrameWithSec(frame: number): string {
   if (frame == -1) {
     return " [-1]";
   }
-  let result = " [" + frame.toString() + " | " + (frame / 60).toFixed(2).toString() + "s]";
+  const result = " [" + frame.toString() + " | " + (frame / 60).toFixed(2).toString() + "s]";
   return result;
 }
 

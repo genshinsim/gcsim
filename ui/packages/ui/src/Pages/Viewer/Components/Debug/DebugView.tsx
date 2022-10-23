@@ -65,7 +65,7 @@ const Row = ({
   );
 };
 
-let lastSearchIndex: number = 0;
+let lastSearchIndex = 0;
 
 export function Debugger({
   data,
@@ -86,7 +86,7 @@ export function Debugger({
 
   const handleShowBuffDuration = (e: DebugItem) => {
     // const show = hl.show;
-    let next = {
+    const next = {
       show: true,
       start: e.added,
       end: e.ended,
@@ -117,9 +117,9 @@ export function Debugger({
   });
 
   const searchAndScroll = (val: string) => {
-    let total = Object.keys(searchable).length;
-    for (var index = lastSearchIndex; index < total; index++) {
-      for (let msg of searchable[index]) {
+    const total = Object.keys(searchable).length;
+    for (let index = lastSearchIndex; index < total; index++) {
+      for (const msg of searchable[index]) {
         if (msg.indexOf(val) > -1) {
           console.log(index, lastSearchIndex);
           lastSearchIndex = index + 1;
