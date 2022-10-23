@@ -10,6 +10,16 @@ export default defineConfig({
       "/api": {
         target: "https://gcsim.app",
         changeOrigin: true
+      },
+      "/hastebin/post": {
+        target: "https://hastebin.com/documents",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hastebin\/post/, '')
+      },
+      "/hastebin/get": {
+        target: "https://hastebin.com/raw/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hastebin\/get/, '')
       }
     }
   }
