@@ -21,14 +21,14 @@ export function CharacterEditArtifactSets({ char, onChange }: Props) {
     if (set in char.sets) {
       return;
     }
-    let next = JSON.parse(JSON.stringify(char));
+    const next = JSON.parse(JSON.stringify(char));
     next.sets[set] = 0;
     onChange(next);
   };
 
   const handleDeleteSetBonus = (set: string) => {
     return () => {
-      let next = JSON.parse(JSON.stringify(char));
+      const next = JSON.parse(JSON.stringify(char));
       delete next.sets[set];
       onChange(next);
     };
@@ -36,7 +36,7 @@ export function CharacterEditArtifactSets({ char, onChange }: Props) {
 
   const handleChangeSetBonus = (set: string, bonus: 2 | 4) => {
     return () => {
-      let next = JSON.parse(JSON.stringify(char));
+      const next = JSON.parse(JSON.stringify(char));
       const current = next.sets[set];
       switch (bonus) {
         case 2:

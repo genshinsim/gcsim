@@ -215,6 +215,7 @@ appStartListening({
     const cfg = listenerApi.getState().app.cfg;
     console.log("middleware triggered on: ", action.type);
     console.log("cfg updated: ", cfg);
-    listenerApi.dispatch(updateCfg(cfg));
+    // TODO: fix
+    // listenerApi.dispatch(updateCfg(cfg));
   },
 });

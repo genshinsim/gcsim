@@ -198,7 +198,7 @@ export function CharacterEditStats({ char, onChange }: Props) {
     if (index < 0 || index > maxStatLength) {
       return;
     }
-    let next = JSON.parse(JSON.stringify(char));
+    const next = JSON.parse(JSON.stringify(char));
     next.stats[index] = value;
     onChange(next);
   };

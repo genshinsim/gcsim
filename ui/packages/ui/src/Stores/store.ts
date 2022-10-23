@@ -11,7 +11,7 @@ const userDataKey = "redux-user-data-v0.0.1";
 const userLocalSettings = "redux-user-local-settings";
 const userAppDataKey = "redux-app-data";
 
-let persistedState = JSON.parse(
+const persistedState = JSON.parse(
   JSON.stringify({
     [userDataSlice.name]: userDataSlice.getInitialState(),
     [userSlice.name]: userSlice.getInitialState(),

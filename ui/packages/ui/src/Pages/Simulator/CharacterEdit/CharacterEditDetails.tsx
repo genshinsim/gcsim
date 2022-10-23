@@ -31,7 +31,7 @@ export function CharacterEditDetails({ char, onChange }: Props) {
         return;
       }
     }
-    let next = JSON.parse(JSON.stringify(char));
+    const next = JSON.parse(JSON.stringify(char));
     next.name = w.key;
     next.element = CharMap[next.name].element;
     onChange(next);
@@ -39,7 +39,7 @@ export function CharacterEditDetails({ char, onChange }: Props) {
 
   const handleChangeTalent = (key: "attack" | "skill" | "burst") => {
     return (val: number) => {
-      let next = JSON.parse(JSON.stringify(char));
+      const next = JSON.parse(JSON.stringify(char));
       next.talents[key] = val;
       onChange(next);
     };
@@ -57,7 +57,7 @@ export function CharacterEditDetails({ char, onChange }: Props) {
     } else if (l < ascLvlMin(asc)) {
       l = ascLvlMin(asc);
     }
-    let next = JSON.parse(JSON.stringify(char));
+    const next = JSON.parse(JSON.stringify(char));
     next.max_level = m;
     next.level = l;
     onChange(next);
@@ -67,7 +67,7 @@ export function CharacterEditDetails({ char, onChange }: Props) {
     if (val <= 0 || val > 90) {
       return;
     }
-    let next = JSON.parse(JSON.stringify(char));
+    const next = JSON.parse(JSON.stringify(char));
     next.level = val;
     onChange(next);
   };
@@ -76,7 +76,7 @@ export function CharacterEditDetails({ char, onChange }: Props) {
     if (val < 0 || val > 6) {
       return;
     }
-    let next = JSON.parse(JSON.stringify(char));
+    const next = JSON.parse(JSON.stringify(char));
     next.cons = val;
     onChange(next);
   };
