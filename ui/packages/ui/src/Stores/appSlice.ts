@@ -3,6 +3,7 @@ import { AppThunk } from "./store";
 import { Character } from "../Types";
 import { charToCfg } from "../Pages/Simulator/helper";
 import { Executor } from "@gcsim/executors";
+import { pool } from "../App";
 
 export interface AppState {
   ready: number;
@@ -44,13 +45,9 @@ export function cfgFromTeam(team: Character[], cfg: string): string {
   return cfg;
 }
 
-export function updateCfg(
-  cfg: string,
-  keepTeam?: boolean,
-  pool?: Executor
-): AppThunk {
+export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
   return function (dispatch, getState) {
-    console.log(cfg);
+    // console.log(cfg);
     if (keepTeam) {
       // purge char stat from incoming
       let next = cfg;
@@ -77,7 +74,7 @@ export function updateCfg(
       cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
     }
     dispatch(appActions.setCfg(cfg));
-    pool?.validate(cfg).then(
+    pool.validate(cfg).then(
       (res) => {
         console.log("all is good");
         dispatch(appActions.setCfgErr(""));
