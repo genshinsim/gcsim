@@ -1,5 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "./store";
+import {
+  createSlice,
+  PayloadAction,
+  createListenerMiddleware,
+  isAnyOf,
+  TypedStartListening,
+} from "@reduxjs/toolkit";
+import { AppThunk, RootState } from "./store";
 import { Character } from "../Types";
 import { charToCfg } from "../Pages/Simulator/helper";
 import { Executor } from "@gcsim/executors";
@@ -180,6 +186,8 @@ export const appSlice = createSlice({
         return state;
       }
       state.team[action.payload.index] = action.payload.char;
+      const cfg = cfgFromTeam(state.team, state.cfg);
+      state.cfg = cfg;
       return state;
     },
     setTeam: (state, action: PayloadAction<Character[]>) => {
@@ -194,3 +202,20 @@ export const appActions = appSlice.actions;
 export type ViewerSlice = {
   [appSlice.name]: ReturnType<typeof appSlice["reducer"]>;
 };
+
+export const listenerMiddleware = createListenerMiddleware();
+const appStartListening =
+  listenerMiddleware.startListening as TypedStartListening<RootState>;
+appStartListening({
+  matcher: isAnyOf(
+    appSlice.actions.addCharacter,
+    appSlice.actions.deleteCharacter,
+    appSlice.actions.editCharacter
+  ),
+  effect: async (action, listenerApi) => {
+    const cfg = listenerApi.getState().app.cfg;
+    console.log("middleware triggered on: ", action.type);
+    console.log("cfg updated: ", cfg);
+    listenerApi.dispatch(updateCfg(cfg));
+  },
+});

@@ -16,54 +16,39 @@ export function CharacterEditWeaponAndArtifacts({ char, onChange }: Props) {
 
   const [open, setOpen] = React.useState<boolean>(false);
 
+  const weapLvlCheck = (level: number, max_level: number): number => {
+    let asc = maxLvlToAsc(max_level);
+    if (level > max_level) {
+      return max_level;
+    } else if (level < ascLvlMin(asc)) {
+      return ascLvlMin(asc);
+    }
+    return 1;
+  };
+
   const handleChangeWeapon = (weapon: IWeapon) => {
     setOpen(false);
-    let w = { ...char.weapon };
-    w.name = weapon;
+    let next = JSON.parse(JSON.stringify(char));
+    next.weapon.name = weapon;
 
-    let asc = maxLvlToAsc(w.max_level);
-    if (w.level > w.max_level) {
-      w.level = w.max_level;
-    } else if (w.level < ascLvlMin(asc)) {
-      w.level = ascLvlMin(asc);
-    }
-    char.weapon = w;
-    onChange(char);
+    next.level = weapLvlCheck(next.level, next.max_level);
+    onChange(next);
   };
 
   const handleChangeWeaponAttr = (key: "refine" | "max_level" | "level") => {
     return (val: number) => {
-      let w = { ...char.weapon };
-      w[key] = val;
-
-      let asc = maxLvlToAsc(w.max_level);
-      if (w.level > w.max_level) {
-        w.level = w.max_level;
-      } else if (w.level < ascLvlMin(asc)) {
-        w.level = ascLvlMin(asc);
-      }
-
-      char.weapon = w;
-      onChange(char);
+      let next = JSON.parse(JSON.stringify(char));
+      next.weapon[key] = val;
+      next.level = weapLvlCheck(next.level, next.max_level);
+      onChange(next);
     };
   };
 
   const handleChangeAsc = (val: number) => {
-    let w = { ...char.weapon };
-    w.max_level = ascToMaxLvl(val);
-    if (w.level > w.max_level) {
-      w.level = w.max_level;
-    }
-
-    let asc = maxLvlToAsc(w.max_level);
-    if (w.level > w.max_level) {
-      w.level = w.max_level;
-    } else if (w.level < ascLvlMin(asc)) {
-      w.level = ascLvlMin(asc);
-    }
-
-    char.weapon = w;
-    onChange(char);
+    let next = JSON.parse(JSON.stringify(char));
+    next.weapon.max_level = ascToMaxLvl(val);
+    next.level = weapLvlCheck(next.level, next.max_level);
+    onChange(next);
   };
 
   const asc = maxLvlToAsc(char.weapon.max_level);
@@ -113,7 +98,11 @@ export function CharacterEditWeaponAndArtifacts({ char, onChange }: Props) {
         />
       </div>
       <CharacterEditArtifactSets onChange={onChange} char={char} />
-      <WeaponSelect isOpen={open} onClose={() => setOpen(false)} onSelect={handleChangeWeapon} />
+      <WeaponSelect
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onSelect={handleChangeWeapon}
+      />
     </div>
   );
 }
