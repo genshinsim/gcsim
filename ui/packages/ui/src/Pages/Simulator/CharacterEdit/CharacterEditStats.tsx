@@ -1,4 +1,4 @@
-import { StatRow } from "./CharacterEditStatRow";
+import { StatRow, subDisplayLine } from "./CharacterEditStatRow";
 
 import {
   IconAnemo,
@@ -21,15 +21,6 @@ import { StatToIndexMap } from "../../../Util";
 import { useTranslation } from "react-i18next";
 import { maxStatLength } from "../../../Stores/appSlice";
 import { Character } from "@gcsim/types";
-
-export type subDisplayLine = {
-  stat?: string;
-  stat_?: string;
-  label: string;
-  val: number;
-  val_: number;
-  icon: React.ReactElement;
-};
 
 type StatRowsProp = {
   stats: number[];

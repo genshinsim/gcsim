@@ -1,36 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { throttle } from "lodash";
-import { AppThunk } from "./store";
-import { VIEWER_THROTTLE } from "../Pages/Viewer";
-import { Executor } from "@gcsim/executors";
 import { SimResults } from "@gcsim/types";
 
 export interface Viewer {
   data: SimResults | null;
   error: string | null;
-}
-
-export function runSim(pool: Executor, cfg: string): AppThunk {
-  return function (dispatch) {
-    console.log("starting run");
-    dispatch(viewerActions.start());
-
-    const updateResult = throttle(
-      (res: SimResults) => {
-        dispatch(viewerActions.setResult({ data: res }));
-      },
-      VIEWER_THROTTLE,
-      { leading: true, trailing: true }
-    );
-
-    pool
-      .run(cfg, (result) => {
-        updateResult(result);
-      })
-      .catch((err) => {
-        dispatch(viewerActions.setError({ error: err }));
-      });
-  };
 }
 
 export const viewerInitialState: Viewer = {

@@ -2,7 +2,10 @@ import { Button } from "@blueprintjs/core";
 import { Viewport } from "../../Components";
 //@ts-ignore
 import DiscordLogo from "../../Components/Icons/discord-icon.svg";
-import { authProvider } from "../../Stores/userSlice";
+import { AuthProvider, MockProvider } from "../../Data/Provider";
+
+// export const authProvider: AuthProvider = new DiscordProvider();
+export const authProvider: AuthProvider = new MockProvider();
 
 export function Login() {
   return (

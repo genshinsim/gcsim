@@ -3,18 +3,42 @@ import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
-import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
+import { AppThunk, RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
 import { ImportFromGOODDialog, ImportFromEnkaDialog } from "./Components";
-import { runSim } from "../../Stores/viewerSlice";
-import { ExecutorSupplier } from "@gcsim/executors";
+import { viewerActions } from "../../Stores/viewerSlice";
+import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import ExecutorSettingsButton from "../../Components/ExecutorSettingsButton";
+import { throttle } from "lodash";
+import { SimResults } from "@gcsim/types";
+import { VIEWER_THROTTLE } from "../Viewer";
 
 type Props = {
   exec: ExecutorSupplier;
   cfg: string;
   canRun?: boolean;
 };
+
+function runSim(pool: Executor, cfg: string): AppThunk {
+  return function (dispatch) {
+    console.log("starting run");
+    dispatch(viewerActions.start());
+
+    const updateResult = throttle(
+      (res: SimResults) => {
+        dispatch(viewerActions.setResult({ data: res }));
+      },
+      VIEWER_THROTTLE,
+      { leading: true, trailing: true }
+    );
+
+    pool.run(cfg, (result) => {
+      updateResult(result);
+    }).catch((err) => {
+      dispatch(viewerActions.setError({ error: err }));
+    });
+  };
+}
 
 export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
   const { t } = useTranslation();

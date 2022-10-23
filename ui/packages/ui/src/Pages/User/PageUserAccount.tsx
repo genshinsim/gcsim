@@ -3,9 +3,23 @@ import { StatusType } from "@gcsim/types";
 import axios from "axios";
 import React from "react";
 import { Viewport } from "../../Components";
-import { useAppDispatch, useAppSelector } from "../../Stores/store";
-import { logout } from "../../Stores/userSlice";
-import { Login } from "./Login";
+import { AppThunk, useAppDispatch, useAppSelector } from "../../Stores/store";
+import { initialState, userActions } from "../../Stores/userSlice";
+import { authProvider, Login } from "./Login";
+
+//thunks
+function logout(): AppThunk {
+  return function (dispatch) {
+    authProvider
+      .logout()
+      .then(() => dispatch(userActions.setUser(initialState)))
+      .catch((err) => {
+        //log out the user
+        console.warn("Error occured logging out: ", err);
+        dispatch(userActions.setUser(initialState));
+      });
+  };
+}
 
 export function PageUserAccount() {
   const [status, setStatus] = React.useState<StatusType>("idle");

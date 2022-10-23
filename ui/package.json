@@ -8,6 +8,8 @@
   "scripts": {
     "clean": "yarn cache clean && rimraf node_modules",
     "lint": "eslint --max-warnings 0 .",
+    "circular": "yarn madge --circular --extensions ts ./",
+    "orphans": "yarn madge --orphans --extensions ts ./",
     "list-deps": "syncpack list",
     "list-mismatches": "syncpack list-mismatches",
     "fix-mismatches": "syncpack fix-mismatches",
@@ -27,6 +29,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-workspaces": "^0.7.0",
     "lerna": "^6.0.1",
+    "madge": "^5.0.1",
     "postcss": "^8.4.18",
     "rimraf": "^3.0.2",
     "syncpack": "^8.2.4",

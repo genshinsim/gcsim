@@ -1,12 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "./store";
-import { AuthProvider, DiscordProvider, MockProvider } from "../Data/Provider";
 import { UserInfo, UserSettings } from "@gcsim/types";
 
-// export const authProvider: AuthProvider = new DiscordProvider();
-export const authProvider: AuthProvider = new MockProvider();
-
-const initialState: UserInfo = {
+export const initialState: UserInfo = {
   user_id: 0,
   user_name: "Guest",
   token: "",
@@ -26,20 +21,6 @@ export const userSlice = createSlice({
     },
   },
 });
-
-//thunks
-export function logout(): AppThunk {
-  return function (dispatch) {
-    authProvider
-      .logout()
-      .then(() => dispatch(userActions.setUser(initialState)))
-      .catch((err) => {
-        //log out the user
-        console.warn("Error occured logging out: ", err);
-        dispatch(userActions.setUser(initialState));
-      });
-  };
-}
 
 export const userActions = userSlice.actions;
 

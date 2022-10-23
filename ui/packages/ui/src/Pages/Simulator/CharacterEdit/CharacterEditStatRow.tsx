@@ -1,8 +1,16 @@
 import { IconPercent } from "../../../Components/Icons";
 import { StatToIndexMap } from "../../../Util";
-import { subDisplayLine } from "./CharacterEditStats";
 
 const regDec = new RegExp(/^(\d+)?(\.)?\d+$/);
+
+export type subDisplayLine = {
+  stat?: string;
+  stat_?: string;
+  label: string;
+  val: number;
+  val_: number;
+  icon: React.ReactElement;
+};
 
 export function StatRow({
   sub,

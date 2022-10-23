@@ -1,7 +1,8 @@
 import React from "react";
 import { useLocation } from "wouter";
 import { useAppDispatch } from "../../Stores/store";
-import { authProvider, userActions } from "../../Stores/userSlice";
+import { userActions } from "../../Stores/userSlice";
+import { authProvider } from "./Login";
 
 export function DiscordCallback() {
   const params = new URLSearchParams(window.location.search);
