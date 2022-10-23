@@ -5,9 +5,10 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
-import { SimWorkerOptions, ImportFromGOODDialog, ImportFromEnkaDialog } from "./Components";
+import { ImportFromGOODDialog, ImportFromEnkaDialog } from "./Components";
 import { runSim } from "../../Stores/viewerSlice";
 import { ExecutorSupplier } from "@gcsim/executors";
+import ExecutorSettingsButton from "../../Components/ExecutorSettingsButton";
 
 type Props = {
   exec: ExecutorSupplier;
@@ -21,11 +22,8 @@ export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
 
   const [openImport, setOpenGOODImport] = React.useState<boolean>(false);
   const [openImportFromEnka, setOpenImportFromEnka] = React.useState<boolean>(false);
-  const [openWorkers, setOpenWorkers] = React.useState<boolean>(false);
-  const { ready, workers, settings } = useAppSelector((state: RootState) => {
+  const { settings } = useAppSelector((state: RootState) => {
     return {
-      ready: state.app.ready,
-      workers: state.app.workers,
       settings: state.user.settings ?? { showTips: false, showBuilder: false },
     };
   });
@@ -34,7 +32,7 @@ export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
   const toggleTips = () => {
     dispatch(
       userActions.setUserSettings({
-        showTips: !settings.showTips,
+        showTips: settings.showTips,
         showBuilder: settings.showBuilder,
       })
     );
@@ -77,8 +75,7 @@ export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
   return (
     <div className="p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
       <div className="basis-full wide:basis-0 flex-grow p-1 flex flex-row items-center">
-        <div className="pr-2">{`${t("simple.workers_available")}${ready}`}</div>
-        <Button icon="edit" minimal onClick={() => setOpenWorkers(true)} />
+        <ExecutorSettingsButton />
       </div>
       <div className="basis-full wide:basis-2/3 p-1 flex flex-row flex-wrap">
         <Popover2
@@ -93,14 +90,12 @@ export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
         </Popover2>
         <div className="basis-full md:basis-1/2">
           <Button
-            icon="play"
-            fill
-            intent="primary"
-            onClick={run}
-            disabled={ready < workers || !canRun}
-          >
-            {ready < workers ? t<string>("simple.loading_workers") : t<string>("simple.run")}
-          </Button>
+              icon="play"
+              fill
+              intent="primary"
+              onClick={run}
+              loading={!canRun}
+              text={t<string>("simple.run")} />
         </div>
       </div>
       <ImportFromGOODDialog isOpen={openImport} onClose={() => setOpenGOODImport(false)} />
@@ -108,7 +103,6 @@ export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
         isOpen={openImportFromEnka}
         onClose={() => setOpenImportFromEnka(false)}
       />
-      <SimWorkerOptions exec={exec} isOpen={openWorkers} onClose={() => setOpenWorkers(false)} />
     </div>
   );
 };

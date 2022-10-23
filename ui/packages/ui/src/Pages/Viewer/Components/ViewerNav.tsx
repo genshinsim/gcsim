@@ -23,8 +23,8 @@ import { useLocation } from "wouter";
 import { LogDetails } from "./Debug";
 import { useAppDispatch } from "../../../Stores/store";
 import { bytesToBase64 } from "../../../Util/base64";
-import { updateCfg } from "../../../Stores/appSlice";
 import { SimResults } from "@gcsim/types";
+import { appActions } from "../../../Stores/appSlice";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
@@ -109,8 +109,7 @@ const SendToSim = ({ config }: { config?: string }) => {
     if (config == null) {
       return;
     }
-    // TODO: add back once updateCfg does not take in executor
-    // dispatch(updateCfg(exec, config, keepTeam));
+    dispatch(appActions.setCfg({ cfg: config, keepTeam: keepTeam }));
     setLocation("/simulator");
   };
 

@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import { Action, configureStore, createListenerMiddleware, ThunkAction, TypedStartListening, TypedStopListening } from '@reduxjs/toolkit';
 import { defaultRunStat, simSlice } from '/src/Pages/Sim/simSlice';
 import { viewerSlice } from './Pages/Viewer/viewerSlice';
 import { viewerSlice as legacyViewerSlice } from './Pages/ViewerDashboard/viewerSlice';
@@ -9,13 +9,19 @@ import { dbSlice } from './PageDatabase/dbSlice';
 
 export type RootState = ReturnType<typeof store.getState>;
 
+const listenerMiddleware = createListenerMiddleware();
+export const appStartListening =
+    listenerMiddleware.startListening as TypedStartListening<RootState>;
+export const appStopListening =
+    listenerMiddleware.stopListening as TypedStopListening<RootState>;
+
 const simStateKey = 'redux-sim-v0.0.2';
 const userDataKey = 'redux-user-data-v0.0.1';
 
 let persistedState = {};
 
 if (localStorage.getItem(simStateKey)) {
-  let s = JSON.parse(localStorage.getItem(simStateKey)!);
+  const s = JSON.parse(localStorage.getItem(simStateKey)!);
   //reset some defaults
   s.edit_index = -1;
   s.ready = 0;

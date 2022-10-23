@@ -3,19 +3,13 @@ import {
   Callout,
   Classes,
   Dialog,
-  FormGroup,
   Intent,
-  NumericInput,
 } from "@blueprintjs/core";
 import { ExecutorSupplier } from "@gcsim/executors";
 import { SimResults, Version } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { setTotalWorkers } from "../../Stores/appSlice";
-import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
-
-const minWorkers = 1;
-const maxWorkers = 30;
+import ExecutorSettingsButton from "../../Components/ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
 const MAJOR = 4; // Make sure the gcsim binary has also been updated
@@ -50,6 +44,7 @@ export default ({ exec, data, redirect, setResult, setError, id }: Props) => {
       isOpen={isOpen}
       title="Results Outdated"
       icon="outdated"
+      usePortal={false}
       canEscapeKeyClose={false}
       canOutsideClickClose={false}
       isCloseButtonShown={mismatch == MismatchType.MinorVersionMismatch}
@@ -64,7 +59,7 @@ export default ({ exec, data, redirect, setResult, setError, id }: Props) => {
       </div>
       <div className="flex justify-between items-end gap-16 mx-4">
         <div className="max-w-[196px] min-w-[120px] flex-auto">
-          <WorkerSettings exec={exec} />
+          <ExecutorSettingsButton />
         </div>
         <div className="flex justify-end gap-[10px]">
           <UpgradeButton
@@ -138,37 +133,6 @@ const DialogBody = ({
       </div>
       <VersionInfo />
     </Callout>
-  );
-};
-
-// TODO: Create a shared settings dialog to be used between the upgrader and simulator
-const WorkerSettings = ({ exec }: { exec: ExecutorSupplier }) => {
-  const dispatch = useAppDispatch();
-  const { w } = useAppSelector((state: RootState) => {
-    return {
-      w: state.app.workers,
-    };
-  });
-
-  const [workers, setWorkers] = useState<number>(w);
-  const updateWorkers = (num: number) => {
-    setWorkers(Math.min(Math.max(num, minWorkers), maxWorkers));
-  };
-
-  useEffect(() => {
-    dispatch(setTotalWorkers(exec, workers));
-  }, [dispatch, workers, exec]);
-
-  return (
-    <FormGroup className="!m-0" inline={true} label="Workers">
-      <NumericInput
-        value={workers}
-        onValueChange={(v) => updateWorkers(v)}
-        min={minWorkers}
-        max={maxWorkers}
-        fill={true}
-      />
-    </FormGroup>
   );
 };
 

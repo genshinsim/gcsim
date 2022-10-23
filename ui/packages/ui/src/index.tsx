@@ -1,10 +1,10 @@
 import { ExecutorSupplier } from "@gcsim/executors";
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { Redirect, Route, Switch, useLocation } from "wouter";
-import { HotkeysProvider } from "@blueprintjs/core";
+import { Classes, Dialog, HotkeysProvider } from "@blueprintjs/core";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { store } from "./Stores/store";
+import { RootState, store, useAppDispatch, useAppSelector } from "./Stores/store";
 import { Footer, Nav } from "./Components";
 import {
   Dash,
@@ -21,11 +21,14 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "./index.css";
+import { appActions } from "./Stores/appSlice";
 
+// helper functions
+export { useLocalStorage } from "./Util";
 
 // Two things must always be supplied to the UI for it to work
 //  1. ExecutorSupplier (Should rarely/never change. Must be react safe)
-//  2. ExecutorSettings (all the options and state management for configuring it owned by app)
+//  2. ExecutorSettings (passed as children, options and executor state management owned by app)
 //
 // We use a supplier to give the owning app the opporunity to add their own logic every time we
 // try to access the executor. This means they can defer creation to only when it is used
@@ -37,13 +40,14 @@ import "./index.css";
 // construct and configure the executors (and which executors are available to use).
 type UIProps = {
   exec: ExecutorSupplier;
+  children: ReactNode;
 };
 
-export const UI = ({ exec }: UIProps) => {
+export const UI = (props: UIProps) => {
   return (
     <Provider store={store}>
       <HotkeysProvider>
-        <Main exec={exec} />
+        <Main {...props} />
       </HotkeysProvider>
     </Provider>
   );
@@ -59,7 +63,28 @@ function RedirectDB() {
   );
 }
 
-const Main = ({ exec }: UIProps) => {
+const ExecutorSettings = ({ children }: { children: ReactNode }) => {
+  const dispatch = useAppDispatch();
+  const { isOpen } = useAppSelector((state: RootState) => {
+    return {
+      isOpen: state.app.isSettingsOpen,
+    };
+  });
+
+  const close = () => dispatch(appActions.setSettingsOpen(false));
+
+  return (
+    <Dialog
+        isOpen={isOpen}
+        onClose={close}
+        title="Executor Settings"
+        icon="settings">
+      <div className={Classes.DIALOG_BODY}>{children}</div>
+    </Dialog>
+  );
+};
+
+const Main = ({ exec, children }: UIProps) => {
   const { t } = useTranslation();
   const content = useRef<HTMLDivElement>(null);
   const [location] = useLocation();
@@ -150,6 +175,9 @@ const Main = ({ exec }: UIProps) => {
         <div className="w-full pt-4 pb-4 md:pl-4">
           <Footer />
         </div>
+        <ExecutorSettings>
+          {children}
+        </ExecutorSettings>
       </div>
     </div>
   );

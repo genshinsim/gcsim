@@ -1,11 +1,11 @@
-import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { Action, configureStore, createListenerMiddleware, ThunkAction, TypedStartListening, TypedStopListening } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { appSlice, listenerMiddleware } from "./appSlice";
+import { appSlice } from "./appSlice";
 import { userDataSlice } from "./userDataSlice";
 import { userSlice } from "./userSlice";
 import { viewerSlice } from "./viewerSlice";
 
-export type RootState = ReturnType<typeof store.getState>;
+const listenerMiddleware = createListenerMiddleware();
 
 const userDataKey = "redux-user-data-v0.0.1";
 const userLocalSettings = "redux-user-local-settings";
@@ -46,8 +46,9 @@ export const store = configureStore({
     [appSlice.name]: appSlice.reducer,
   },
   preloadedState: persistedState,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().prepend(listenerMiddleware.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  }).prepend(listenerMiddleware.middleware),
 });
 
 store.subscribe(() => {
@@ -62,6 +63,7 @@ store.subscribe(() => {
 });
 
 export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
 
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -73,3 +75,8 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+export const appStartListening =
+    listenerMiddleware.startListening as TypedStartListening<RootState>;
+export const appStopListening =
+    listenerMiddleware.stopListening as TypedStopListening<RootState>;

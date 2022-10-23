@@ -513,6 +513,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gcsim/web@workspace:packages/web"
   dependencies:
+    "@blueprintjs/core": ^4.11.4
     "@gcsim/executors": "workspace:^"
     "@gcsim/ui": "workspace:^"
     "@vitejs/plugin-react": ^2.1.0

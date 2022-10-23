@@ -1,26 +1,24 @@
-import { Callout, Spinner } from "@blueprintjs/core";
-import React, { useEffect } from "react";
+import { Callout } from "@blueprintjs/core";
+import React, { useEffect, useState } from "react";
 import { Viewport, SectionDivider } from "../../Components";
 import { ActionList } from "./Components";
 import { Team } from "./Team";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import { Toolbox } from "./Toolbox";
 import { ActionListTooltip, TeamBuilderTooltip } from "./Tooltips";
-import { setTotalWorkers, updateCfg } from "../../Stores/appSlice";
 import { useAppSelector, RootState, useAppDispatch } from "../../Stores/store";
 import { ExecutorSupplier } from "@gcsim/executors";
+import { appActions, defaultStats } from "../../Stores/appSlice";
+import { Character } from "@gcsim/types";
 
 export function Simulator({ exec }: { exec: ExecutorSupplier }) {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { settings, ready, workers, cfg, cfgErr } = useAppSelector(
+  const { settings, cfg, cfgErr } = useAppSelector(
     (state: RootState) => {
       return {
         cfg: state.app.cfg,
         cfgErr: state.app.cfg_err,
-        ready: state.app.ready,
-        workers: state.app.workers,
         settings: state.user.settings ?? {
           showTips: false,
           showBuilder: false,
@@ -29,22 +27,8 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
     }
   );
 
-  // TODO: how workers and config gets updated needs to be rewritten. updateCfg should never take in
-  // the executor
-  useEffect(() => {
-    dispatch(setTotalWorkers(exec, workers));
-  }, []);
-  useEffect(() => {
-    //TODO: for whatever reason this is being called every single time a worker gets loaded
-    //when it should only happen once?
-    if (ready) {
-      console.log("rerunning config on ready!");
-      dispatch(updateCfg(exec, cfg));
-    }
-  }, [ready]);
-
   // check worker ready state every 250ms so run button becomes available when workers do
-  const [isReady, setReady] = React.useState<boolean>(false);
+  const [isReady, setReady] = React.useState<boolean | null>(null);
   useEffect(() => {
     const interval = setInterval(() => {
       setReady(exec().ready());
@@ -52,15 +36,9 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
     return () => clearInterval(interval);
   }, [exec]);
 
-  if (ready === 0) {
-    return (
-      <Viewport>
-        <Callout intent="primary" title={t("sim.loading_simulator_please")}>
-          <Spinner />
-        </Callout>
-      </Viewport>
-    );
-  }
+  // will detect changes in the redux config and validate with the executor
+  // validated == true means we had a successful validation check run, not that it is valid
+  const validated = useConfigValidateListener(exec, cfg, isReady);
 
   return (
     <Viewport className="flex flex-col gap-2">
@@ -84,7 +62,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
 
           <ActionList
             cfg={cfg}
-            onChange={(v) => dispatch(updateCfg(exec, v, false))}
+            onChange={(newCfg) => dispatch(appActions.setCfg({ cfg: newCfg, keepTeam: false }))}
           />
 
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
@@ -95,10 +73,67 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
                 </Callout>
               </div>
             ) : null}
-            <Toolbox exec={exec} cfg={cfg} canRun={cfgErr === "" && isReady} />
+            <Toolbox
+                exec={exec}
+                cfg={cfg}
+                canRun={cfgErr === "" && isReady === true && validated} />
           </div>
         </div>
       </div>
     </Viewport>
   );
+}
+
+export function useConfigValidateListener(
+    exec: ExecutorSupplier, cfg: string, isReady: boolean | null): boolean {
+  const dispatch = useAppDispatch();
+  const [validated, setValidated] = useState(false);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
+    exec().validate(cfg).then(
+      (res) => {
+        console.log("all is good");
+        dispatch(appActions.setCfgErr(""));
+        //if successful then we're going to update the team based on the parsed results
+        let team: Character[] = [];
+        if (res.characters) {
+          team = res.characters.map((c) => {
+            return {
+              name: c.base.key,
+              level: c.base.level,
+              element: c.base.element,
+              max_level: c.base.max_level,
+              cons: c.base.cons,
+              weapon: c.weapon,
+              talents: c.talents,
+              stats: c.stats,
+              snapshot: defaultStats,
+              sets: c.sets,
+            };
+          });
+        }
+        //check if there are any warning msgs
+        if (res.errors) {
+          let msg = "";
+          res.errors.forEach((err) => {
+            msg += err + "\n";
+          });
+          dispatch(appActions.setCfgErr(msg));
+        }
+        dispatch(appActions.setTeam(team));
+        setValidated(true);
+      },
+      (err) => {
+        //set error state
+        dispatch(appActions.setCfgErr(err));
+        setValidated(false);
+      }
+    );
+  }, [exec, cfg, dispatch, isReady]);
+
+  return validated;
 }

@@ -148,6 +148,7 @@ const FromUrl = ({ exec, url, redirect, id }: {
 //    * start running sim stored in local store, alert if not valid (proposed)
 //  - This would also consolidate run logic into one place (here)
 const FromState = ({ exec, redirect }: { exec: ExecutorSupplier, redirect: string }) => {
+  // TODO: conditionally create this via upgrade?
   const running = useRunningState(exec);
   const dispatch = useAppDispatch();
   const { data, error } = useAppSelector((state: RootState) => {

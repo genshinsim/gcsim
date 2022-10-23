@@ -1,26 +1,19 @@
 import {
   createSlice,
   PayloadAction,
-  createListenerMiddleware,
-  isAnyOf,
-  TypedStartListening,
 } from "@reduxjs/toolkit";
-import { AppThunk, RootState } from "./store";
 import { charToCfg } from "../Pages/Simulator/helper";
-import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { Character } from "@gcsim/types";
 
 export interface AppState {
-  ready: number;
-  workers: number;
+  isSettingsOpen: boolean;
   cfg: string;
   cfg_err: string;
   team: Character[];
 }
 
 export const initialState: AppState = {
-  ready: 0,
-  workers: 3,
+  isSettingsOpen: false,
   cfg: "",
   cfg_err: "",
   team: [],
@@ -34,7 +27,7 @@ export const maxStatLength = defaultStats.length;
 export const charLinesRegEx =
   /^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
 
-export function cfgFromTeam(team: Character[], cfg: string): string {
+function cfgFromTeam(team: Character[], cfg: string): string {
   let next = "";
   //generate new
   team.forEach((c) => {
@@ -50,19 +43,26 @@ export function cfgFromTeam(team: Character[], cfg: string): string {
   return cfg;
 }
 
-export function updateCfg(exec: ExecutorSupplier, cfg: string, keepTeam?: boolean): AppThunk {
-  return function (dispatch, getState) {
-    // console.log(cfg);
-    if (keepTeam) {
-      // purge char stat from incoming
-      let next = cfg;
+export const appSlice = createSlice({
+  name: "app",
+  initialState: initialState,
+  reducers: {
+    setSettingsOpen: (state, action: PayloadAction<boolean>) => {
+      state.isSettingsOpen = action.payload;
+      return state;
+    },
+    setCfg: (state, action: PayloadAction<{ cfg: string, keepTeam: boolean}>) => {
+      if (!action.payload.keepTeam) {
+        state.cfg = action.payload.cfg;
+        return state;
+      }
+
       //purge existing characters:
-      next = next.replace(charLinesRegEx, "");
-      //pull out existing
+      let next = action.payload.cfg.replace(charLinesRegEx, "");
 
       let old = "";
       let lastChar = "";
-      const matches = getState().app.cfg.matchAll(charLinesRegEx);
+      const matches = state.cfg.matchAll(charLinesRegEx);
       for (const match of matches) {
         const line = match[0];
         if (match[1] !== lastChar) {
@@ -72,82 +72,10 @@ export function updateCfg(exec: ExecutorSupplier, cfg: string, keepTeam?: boolea
         console.log(match);
         old += line;
       }
-
       next = old + "\n" + next;
 
       //strip extra new lines
-      cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
-    }
-    dispatch(appActions.setCfg(cfg));
-    exec().validate(cfg).then(
-      (res) => {
-        console.log("all is good");
-        dispatch(appActions.setCfgErr(""));
-        //if successful then we're going to update the team based on the parsed results
-        let team: Character[] = [];
-        if (res.characters) {
-          team = res.characters.map((c) => {
-            return {
-              name: c.base.key,
-              level: c.base.level,
-              element: c.base.element,
-              max_level: c.base.max_level,
-              cons: c.base.cons,
-              weapon: c.weapon,
-              talents: c.talents,
-              stats: c.stats,
-              snapshot: defaultStats,
-              sets: c.sets,
-            };
-          });
-        }
-        //check if there are any warning msgs
-        if (res.errors) {
-          let msg = "";
-          res.errors.forEach((err) => {
-            msg += err + "\n";
-          });
-          dispatch(appActions.setCfgErr(msg));
-        }
-        dispatch(appActions.setTeam(team));
-      },
-      (err) => {
-        //set error state
-        dispatch(appActions.setCfgErr(err));
-      }
-    );
-  };
-}
-
-export function setTotalWorkers(exec: ExecutorSupplier, count: number): AppThunk {
-  return function (dispatch, getState) {
-    //do nothing if ready
-    exec().setWorkerCount(count, (x: number) => {
-      //call back for ready
-      dispatch(appActions.setWorkerReady(x));
-    });
-    dispatch(appActions.setWorkers(count));
-  };
-}
-
-export function ready(pool: Executor): boolean {
-  return pool.ready();
-}
-
-export const appSlice = createSlice({
-  name: "app",
-  initialState: initialState,
-  reducers: {
-    setWorkers: (state, action: PayloadAction<number>) => {
-      state.workers = action.payload;
-      return state;
-    },
-    setWorkerReady: (state, action: PayloadAction<number>) => {
-      state.ready = action.payload;
-      return state;
-    },
-    setCfg: (state, action: PayloadAction<string>) => {
-      state.cfg = action.payload;
+      state.cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
       return state;
     },
     setCfgErr: (state, action: PayloadAction<string>) => {
@@ -195,27 +123,4 @@ export const appSlice = createSlice({
     },
   },
 });
-
 export const appActions = appSlice.actions;
-
-export type ViewerSlice = {
-  [appSlice.name]: ReturnType<typeof appSlice["reducer"]>;
-};
-
-export const listenerMiddleware = createListenerMiddleware();
-const appStartListening =
-  listenerMiddleware.startListening as TypedStartListening<RootState>;
-appStartListening({
-  matcher: isAnyOf(
-    appSlice.actions.addCharacter,
-    appSlice.actions.deleteCharacter,
-    appSlice.actions.editCharacter
-  ),
-  effect: async (action, listenerApi) => {
-    const cfg = listenerApi.getState().app.cfg;
-    console.log("middleware triggered on: ", action.type);
-    console.log("cfg updated: ", cfg);
-    // TODO: fix
-    // listenerApi.dispatch(updateCfg(cfg));
-  },
-});
