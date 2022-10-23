@@ -57,6 +57,14 @@ function UI() {
     content.current?.scrollTo(0, 0);
   }, [location]);
 
+  // every time the location changes from /viewer/web to something else, call cancel on the pool
+  // to stop any running sims
+  useEffect(() => {
+    if (location !== "viewer/web") {
+      pool.cancel();
+    }
+  });
+
   return (
     <div className="bp4-dark h-screen flex flex-col">
       <Nav />

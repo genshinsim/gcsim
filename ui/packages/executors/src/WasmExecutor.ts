@@ -256,6 +256,10 @@ export class WasmExecutor implements Executor {
   }
 
   cancel(): void {
+    //no op if not running
+    if (this && !this.isRunning) {
+      return;
+    }
     throw new Error("Method not implemented.");
   }
   buildInfo(): { hash: string; date: string } {
