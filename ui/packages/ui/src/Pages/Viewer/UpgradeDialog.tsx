@@ -27,11 +27,10 @@ type Props = {
   redirect: string;
   setResult: (result: SimResults | null) => void;
   setError: (err: string | null) => void;
-  id?: string;
 };
 
 // TODO: translations
-export default ({ exec, data, redirect, setResult, setError, id }: Props) => {
+export default ({ exec, data, redirect, setResult, setError }: Props) => {
   const mismatch = useMismatch(data?.schema_version);
   const [isOpen, setOpen] = useState(true);
 
@@ -65,12 +64,9 @@ export default ({ exec, data, redirect, setResult, setError, id }: Props) => {
           <UpgradeButton
               exec={exec} cfg={data.config_file} setResult={setResult} setError={setError} />
           <CancelButton
-            mismatch={mismatch}
-            setOpen={setOpen}
-            major={data.schema_version?.major}
-            redirect={redirect}
-            id={id}
-          />
+              mismatch={mismatch}
+              setOpen={setOpen}
+              redirect={redirect} />
         </div>
       </div>
     </Dialog>
@@ -172,30 +168,15 @@ const UpgradeButton = ({
   return <Button text="Upgrade" intent={Intent.SUCCESS} loading={!isReady} onClick={run} />;
 };
 
-const CancelButton = ({
-      mismatch,
-      setOpen,
-      major,
-      redirect,
-      id,
-    }: {
+const CancelButton = ({ mismatch, setOpen, redirect }: {
       mismatch: MismatchType | null;
       setOpen: (open: boolean) => void;
-      major?: number;
       redirect: string;
-      id?: string;
     }) => {
   const [, setLocation] = useLocation();
 
   if (mismatch == MismatchType.MinorVersionMismatch) {
     return <Button text="Dismiss" onClick={() => setOpen(false)} />;
-  }
-
-  // Special case where can maybe load this successfully in the legacy viewer
-  if (major == null && id != null) {
-    return (
-      <Button text="Legacy Viewer" onClick={() => setLocation("/legacy/viewer/share/" + id)} />
-    );
   }
   return <Button text="Cancel" intent={Intent.DANGER} onClick={() => setLocation(redirect)} />;
 };

@@ -46,7 +46,7 @@ export const ViewerLoader = ({ exec, type, id }: LoaderProps) => {
       return <FromUrl exec={exec} url="http://127.0.0.1:8381/data" redirect="/viewer" />;
     case ViewTypes.Share:
       // TODO: process url function + more request props for supporting more endpoints (hastebin)
-      return <FromUrl exec={exec} url={processUrl(id)} redirect="/viewer" id={id} />;
+      return <FromUrl exec={exec} url={processUrl(id)} redirect="/viewer" />;
   }
 };
 
@@ -84,8 +84,8 @@ function useRunningState(exec: ExecutorSupplier): boolean {
   return isRunning;
 }
 
-const FromUrl = ({ exec, url, redirect, id }: {
-    exec: ExecutorSupplier, url: string; redirect: string; id?: string }) => {
+const FromUrl = ({ exec, url, redirect }: {
+    exec: ExecutorSupplier, url: string, redirect: string }) => {
   const [data, setData] = useState<SimResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
@@ -136,8 +136,7 @@ const FromUrl = ({ exec, url, redirect, id }: {
           data={data}
           redirect={redirect}
           setResult={updateResult.current}
-          setError={setError}
-          id={id} />
+          setError={setError} />
     </>
   );
 };
