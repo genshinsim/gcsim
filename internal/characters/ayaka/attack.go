@@ -9,11 +9,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
-var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.03}, {0}}
-var attackHitlagFactor = [][]float64{{0.01}, {0.01}, {0.01}, {0, 0, 0.05}, {0.01}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false, true}, {false}}
+var (
+	attackFrames   [][]int
+	attackHitmarks = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
+	attackRadius   = []float64{1.6, 1.2, 2.8, 1.4, 1.6} // N5 is a bullet, radius unknown
+
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.03}, {0}}
+	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01}, {0, 0, 0.05}, {0.01}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false, true}, {false}}
+)
 
 const normalHitNum = 5
 
@@ -58,7 +62,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), attackRadius[c.NormalCounter], false, combat.TargettableEnemy),
 				0,
 				0,
 				c.c1,
