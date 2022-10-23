@@ -7,8 +7,8 @@ import { useLocation } from "wouter";
 import { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
 import Debug, { useDebug } from "./Tabs/Debug";
-import { SimResults } from "../../Types";
 import { LogDetails } from "./Components/Debug";
+import { SimResults } from "@gcsim/types";
 
 type ViewerProps = {
   running: boolean;

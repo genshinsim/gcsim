@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { throttle } from "lodash";
 import { AppThunk } from "./store";
 import { VIEWER_THROTTLE } from "../Pages/Viewer";
-import { SimResults } from "../Types";
 import { Executor } from "@gcsim/executors";
+import { SimResults } from "@gcsim/types";
 
 export interface Viewer {
   data: SimResults | null;

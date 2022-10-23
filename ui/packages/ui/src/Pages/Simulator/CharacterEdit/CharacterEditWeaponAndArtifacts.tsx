@@ -5,7 +5,7 @@ import { CharacterEditArtifactSets } from "./CharacterEditArtifactSets";
 import React from "react";
 import { WeaponSelect } from "../../../Components/Select";
 import { Trans, useTranslation } from "react-i18next";
-import { Character, IWeapon } from "../../../Types";
+import { Character, IWeapon } from "@gcsim/types";
 
 type Props = {
   char: Character;
@@ -18,10 +18,10 @@ export function CharacterEditWeaponAndArtifacts({ char, onChange }: Props) {
 
   const handleChangeWeapon = (weapon: IWeapon) => {
     setOpen(false);
-    let w = { ...char.weapon };
+    const w = { ...char.weapon };
     w.name = weapon;
 
-    let asc = maxLvlToAsc(w.max_level);
+    const asc = maxLvlToAsc(w.max_level);
     if (w.level > w.max_level) {
       w.level = w.max_level;
     } else if (w.level < ascLvlMin(asc)) {
@@ -33,10 +33,10 @@ export function CharacterEditWeaponAndArtifacts({ char, onChange }: Props) {
 
   const handleChangeWeaponAttr = (key: "refine" | "max_level" | "level") => {
     return (val: number) => {
-      let w = { ...char.weapon };
+      const w = { ...char.weapon };
       w[key] = val;
 
-      let asc = maxLvlToAsc(w.max_level);
+      const asc = maxLvlToAsc(w.max_level);
       if (w.level > w.max_level) {
         w.level = w.max_level;
       } else if (w.level < ascLvlMin(asc)) {
@@ -49,13 +49,13 @@ export function CharacterEditWeaponAndArtifacts({ char, onChange }: Props) {
   };
 
   const handleChangeAsc = (val: number) => {
-    let w = { ...char.weapon };
+    const w = { ...char.weapon };
     w.max_level = ascToMaxLvl(val);
     if (w.level > w.max_level) {
       w.level = w.max_level;
     }
 
-    let asc = maxLvlToAsc(w.max_level);
+    const asc = maxLvlToAsc(w.max_level);
     if (w.level > w.max_level) {
       w.level = w.max_level;
     } else if (w.level < ascLvlMin(asc)) {

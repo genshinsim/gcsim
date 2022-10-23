@@ -5,8 +5,6 @@ export namespace Aggregator {
     Initialize = "initialize",
     Add = "add",
     Flush = "flush",
-    Validate = "validate",
-    BuildInfo = "build_info",
   }
 
   export enum Response {
@@ -15,8 +13,6 @@ export namespace Aggregator {
     Initialized = "initialized",
     Done = "done",
     Result = "result",
-    Validate = "validated",
-    BuildInfo = "build_info",
   }
 
   export interface FailedResponse {

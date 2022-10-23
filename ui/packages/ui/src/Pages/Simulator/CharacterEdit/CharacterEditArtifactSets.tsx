@@ -1,8 +1,8 @@
 import { Button, Checkbox } from "@blueprintjs/core";
 import React from "react";
-import { Character, IArtifact } from "../../../Types";
 import { ArtifactSelect } from "../../../Components/Select";
 import { Trans, useTranslation } from "react-i18next";
+import { Character, IArtifact } from "@gcsim/types";
 
 type Props = {
   char: Character;

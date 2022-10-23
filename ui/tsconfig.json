@@ -16,7 +16,6 @@
     ],
 
     "resolveJsonModule": true,
-    // "allowJs": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noImplicitAny": false,
@@ -26,10 +25,5 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
-  },
-  "references": [
-    { "path": "packages/executors" },
-    { "path": "packages/ui" },
-    { "path": "packages/web" }
-  ]
+  }
 }

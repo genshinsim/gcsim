@@ -1,5 +1,5 @@
+import { SimResults } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
-import { SimResults } from "../../../../../Types";
 import SummaryCard from "../SummaryCard";
 
 export default ({ data, color }: { data: SimResults | null; color: string }) => {

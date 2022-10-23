@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// @ts-ignore
 self.importScripts("wasm_exec.js");
 
 if (!WebAssembly.instantiateStreaming) {

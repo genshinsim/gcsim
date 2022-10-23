@@ -4,9 +4,9 @@ import { NumberInput } from "../../../Components/NumberInput";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { GenerateDefaultCharacters, Item, OmniSelect } from "../../../Components/Select";
-import { Character } from "../../../Types";
 import { RootState, useAppDispatch, useAppSelector } from "../../../Stores/store";
 import { CharMap } from "../../../Data";
+import { Character } from "@gcsim/types";
 
 type Props = {
   char: Character;
@@ -21,7 +21,6 @@ export function CharacterEditDetails({ char, onChange }: Props) {
       team: state.app.team,
     };
   });
-  const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState<boolean>(false);
 
   const handleChangeCharacter = (w: Item) => {
@@ -52,7 +51,7 @@ export function CharacterEditDetails({ char, onChange }: Props) {
     }
     const m = ascToMaxLvl(val);
     let l = char.level;
-    let asc = maxLvlToAsc(m);
+    const asc = maxLvlToAsc(m);
     if (l > m) {
       l = m;
     } else if (l < ascLvlMin(asc)) {

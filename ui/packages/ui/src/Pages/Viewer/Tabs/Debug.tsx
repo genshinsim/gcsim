@@ -8,9 +8,9 @@ import {
   Spinner,
   SpinnerSize,
 } from "@blueprintjs/core";
+import { SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { SimResults } from "../../../Types";
 import {
   AdvancedPreset,
   AllDebugOptions,

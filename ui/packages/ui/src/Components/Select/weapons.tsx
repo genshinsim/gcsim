@@ -1,7 +1,7 @@
 import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import { IWeapon } from "@gcsim/types";
 import i18n from "i18next";
-import { IWeapon } from "../../Types";
 
 export const weapons: IWeapon[] = [
   "akuoumaru",

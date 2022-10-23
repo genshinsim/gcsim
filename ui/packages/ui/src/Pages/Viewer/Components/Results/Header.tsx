@@ -1,4 +1,4 @@
-import { SimResults } from "../../../../Types";
+import { SimResults } from "@gcsim/types";
 import DPSCard from "./Overview/DPSCard";
 import EPSCard from "./Overview/EPSCard";
 import HPSCard from "./Overview/HPSCard";

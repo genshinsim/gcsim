@@ -9,7 +9,7 @@ import {
 } from "./GOODTypes";
 import { CharMap, ArtifactMainStatsData } from "../../../../Data";
 import { ascLvlMax, StatToIndexMap } from "../../../../Util/util";
-import { Character, Weapon } from "../../../../Types";
+import { Character, Weapon } from "@gcsim/types";
 
 type rarityValue = "1" | "2" | "3" | "4" | "5";
 const convertRarity: rarityValue[] = ["1", "2", "3", "4", "5"];
@@ -149,7 +149,7 @@ export function GOODChartoSrlChar(
   goodChar: GOODCharacter,
   weapon: Weapon | undefined
 ): Character | undefined {
-  let today = new Date();
+  const today = new Date();
   const name = GOODKeytoGCSIMKey(goodChar.key);
 
   if (!(name in CharMap)) {

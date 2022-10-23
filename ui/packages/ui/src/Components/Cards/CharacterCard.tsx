@@ -21,8 +21,8 @@ import {
 import { WeaponCard } from "./WeaponCard";
 import { CharStatBlock } from "../../Util";
 import { Trans, useTranslation } from "react-i18next";
-import { Character } from "../../Types";
 import { TransformTravelerKeyToName } from "../../Data";
+import { Character } from "@gcsim/types";
 
 type Props = {
   char: Character;
@@ -125,10 +125,10 @@ export function CharacterCard({
   }
 
   let count = 0;
-  let rows: JSX.Element[] = [];
+  const rows: JSX.Element[] = [];
 
   stats.forEach((s, i) => {
-    let val: JSX.Element[] = [];
+    const val: JSX.Element[] = [];
     if (s.flat === 0 && s.percent === 0) {
       return;
     }

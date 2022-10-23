@@ -1,5 +1,5 @@
+import { Character } from '@gcsim/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Character } from '../Types/sim';
 
 export interface UserData {
   GOODImport: { [key: string]: Character };

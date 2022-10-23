@@ -1,4 +1,4 @@
-import { Character } from "../../Types";
+import { Character } from "@gcsim/types";
 
 const statKeys = [
   "n/a",

@@ -1,9 +1,9 @@
+import { Weapon } from "@gcsim/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Weapon } from "../../Types";
 
 export function WeaponCard({ weapon }: { weapon: Weapon }) {
-  let { t } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="weapon-parent ml-2 mr-2 p-2 bg-gray-800 rounded-md">

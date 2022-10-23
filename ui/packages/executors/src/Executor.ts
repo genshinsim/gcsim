@@ -1,4 +1,4 @@
-import { LogDetails, ParsedResult, SimResults } from "./Types";
+import { LogDetails, ParsedResult, SimResults } from "@gcsim/types";
 
 export interface Executor {
   count(): number;

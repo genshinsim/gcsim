@@ -8,11 +8,11 @@ import {
   NumericInput,
 } from "@blueprintjs/core";
 import { Executor } from "@gcsim/executors";
+import { SimResults, Version } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { setTotalWorkers } from "../../Stores/appSlice";
 import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
-import { SimResults, Version } from "../../Types";
 
 const minWorkers = 1;
 const maxWorkers = 30;

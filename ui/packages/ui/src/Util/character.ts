@@ -1,5 +1,5 @@
+import { Character } from "@gcsim/types";
 import { StatToIndexMap } from "./util";
-import { Character } from "../Types";
 
 type CharViewableStats = {
   [key in string]: {
@@ -29,7 +29,7 @@ export function ConsolidateCharStats(chars: Character[]): {
   stats: { [key in string]: CharStatBlock[] };
   maxRows: number;
 } {
-  let totalStats: CharViewableStats = {
+  const totalStats: CharViewableStats = {
     hp: {
       name: "hp / hp%",
       flatIndex: StatToIndexMap["HP"],
@@ -165,7 +165,7 @@ export function ConsolidateCharStats(chars: Character[]): {
   chars.forEach((char) => {
     let rowCount = 0;
     for (const key in totalStats) {
-      let s = totalStats[key];
+      const s = totalStats[key];
       if (!(char.name in totalStats[key].val)) {
         totalStats[key].val[char.name] = { flat: 0, per: 0 };
       }
@@ -192,7 +192,7 @@ export function ConsolidateCharStats(chars: Character[]): {
     }
   });
 
-  let stats: { [key in string]: CharStatBlock[] } = {};
+  const stats: { [key in string]: CharStatBlock[] } = {};
 
   //make a block for all the chars first
   chars.forEach((c) => {

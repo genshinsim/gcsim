@@ -3,7 +3,7 @@ import { CharacterEditDetails } from "./CharacterEditDetails";
 import { CharacterEditWeaponAndArtifacts } from "./CharacterEditWeaponAndArtifacts";
 import { CharacterEditStats } from "./CharacterEditStats";
 import { Trans, useTranslation } from "react-i18next";
-import { Character } from "../../../Types";
+import { Character } from "@gcsim/types";
 
 export function CharacterEdit({
   char,

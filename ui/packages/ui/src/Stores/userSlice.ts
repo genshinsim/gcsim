@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "./store";
-import { UserInfo, UserSettings } from "../Types/user";
 import { AuthProvider, DiscordProvider, MockProvider } from "../Data/Provider";
+import { UserInfo, UserSettings } from "@gcsim/types";
 
 // export const authProvider: AuthProvider = new DiscordProvider();
 export const authProvider: AuthProvider = new MockProvider();

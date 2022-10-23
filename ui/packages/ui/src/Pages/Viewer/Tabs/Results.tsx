@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "@blueprintjs/core";
 import Header from "../Components/Results/Header";
-import { SimResults } from "../../../Types";
+import { SimResults } from "@gcsim/types";
 
 type Props = {
   data: SimResults | null;

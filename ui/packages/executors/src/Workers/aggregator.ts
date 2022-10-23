@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// @ts-ignore
 self.importScripts("wasm_exec.js");
 
 if (!WebAssembly.instantiateStreaming) {
@@ -54,14 +56,6 @@ function doFlush(req: { startTime: number }) {
   return { type: AggResponse.Result, result: resp };
 }
 
-function validate(req: { cfg: string }) {
-  const resp = JSON.parse(validateConfig(req.cfg));
-  if (resp.error) {
-    return { type: AggResponse.Failed, reason: resp.error };
-  }
-  return { type: AggResponse.Validate, cfg: resp };
-}
-
 // @ts-ignore
 function handleRequest(req: any): any {
   switch (req.type as AggRequest) {
@@ -71,11 +65,6 @@ function handleRequest(req: any): any {
       return add(req);
     case AggRequest.Flush:
       return doFlush(req);
-    case AggRequest.Validate:
-      return validate(req);
-    case AggRequest.BuildInfo:
-      // TODO:
-      return;
     default:
       console.error("aggregator - unknown request: ", req);
       throw new Error("aggregator unknown request");
@@ -92,8 +81,6 @@ enum AggRequest {
   Initialize = "initialize",
   Add = "add",
   Flush = "flush",
-  Validate = "validate",
-  BuildInfo = "build_info",
 }
 
 enum AggResponse {
@@ -102,6 +89,4 @@ enum AggResponse {
   Initialized = "initialized",
   Done = "done",
   Result = "result",
-  Validate = "validated",
-  BuildInfo = "build_info",
 }

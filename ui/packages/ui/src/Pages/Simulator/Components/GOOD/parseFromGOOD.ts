@@ -1,7 +1,7 @@
-import { Character, Weapon } from "../../../../Types";
-
+/* eslint-disable prefer-const */
 import { GOODArtifact, GOODCharacter, GOODCharacterKey, GOODWeapon, IGOOD } from "./GOODTypes";
 import { equipArtifacts, GOODChartoSrlChar, GOODWeapontoSrlWeapon } from "./GOODToSrl.functions";
+import { Character, Weapon } from "@gcsim/types";
 
 export interface IGOODImport {
   err: string;
@@ -17,7 +17,7 @@ type GOODArtifactBank = {
 };
 
 export function parseFromGOOD(val: string): IGOODImport {
-  let result: {
+  const result: {
     err: string;
     characters: Character[];
   } = {
@@ -51,7 +51,7 @@ export function parseFromGOOD(val: string): IGOODImport {
     };
   }
 
-  let weaponBank: WeaponBank = extractWeapons(data.weapons);
+  const weaponBank: WeaponBank = extractWeapons(data.weapons);
 
   let artifactBank: GOODArtifactBank = {};
   if (data.artifacts) {
@@ -77,6 +77,7 @@ const extractWeapons = (weapons: GOODWeapon[]): WeaponBank => {
 const extractArtifacts = (artifacts: GOODArtifact[]): GOODArtifactBank => {
   const result: GOODArtifactBank = {};
   artifacts.forEach((goodArtifact) => {
+    // eslint-disable-next-line prefer-const
     let GOODCharKey = goodArtifact.location;
     if (GOODCharKey === "") {
       return;

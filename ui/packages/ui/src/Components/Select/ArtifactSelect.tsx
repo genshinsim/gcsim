@@ -1,5 +1,5 @@
 import { Omnibar } from "@blueprintjs/select";
-import { IArtifact } from "../../Types";
+import { IArtifact } from "@gcsim/types";
 import { artifactSelectProps } from "./artifacts";
 
 const ArtifactOmnibar = Omnibar.ofType<IArtifact>();

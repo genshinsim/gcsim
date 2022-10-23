@@ -1,6 +1,6 @@
+import { LogDetails, ParsedResult, SimResults } from "@gcsim/types";
 import { throttle } from "lodash";
 import { Executor } from "./Executor";
-import { ParsedResult, LogDetails, SimResults } from "./Types";
 import { Aggregator, Helper, SimWorker } from "./Workers/common";
 
 const VIEWER_THROTTLE = 100;

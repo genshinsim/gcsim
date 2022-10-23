@@ -7,8 +7,8 @@ import UpgradeDialog from "./UpgradeDialog";
 import Viewer from "./Viewer";
 import { viewerActions } from "../../Stores/viewerSlice";
 import { validate as uuidValidate } from "uuid";
-import { SimResults } from "../../Types";
 import { Executor } from "@gcsim/executors";
+import { SimResults } from "@gcsim/types";
 
 // TODO: make this flush rate configurable?
 export const VIEWER_THROTTLE = 100;

@@ -4,10 +4,10 @@ import { CharacterEdit } from "./CharacterEdit";
 import { Trans, useTranslation } from "react-i18next";
 import { Builder } from "./Components/TeamBuilder/Builder";
 import { OmniSelect, Item, GenerateDefaultCharacters } from "../../Components/Select";
-import { Character } from "../../Types";
 import { CharMap } from "../../Data";
 import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
 import { appActions } from "../../Stores/appSlice";
+import { Character } from "@gcsim/types";
 
 function newCharFromKey(k: string): Character {
   return {

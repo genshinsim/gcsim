@@ -39,7 +39,7 @@ export type LogDetails = {
   ordering?: { [key: string]: number };
 };
 
-export type statusType = 'idle' | 'loading' | 'done' | 'error';
+export type StatusType = 'idle' | 'loading' | 'done' | 'error';
 
 export interface ParsedResult {
     characters: ParsedCharacterProfile[];

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "./store";
-import { Character } from "../Types";
 import { charToCfg } from "../Pages/Simulator/helper";
 import { Executor } from "@gcsim/executors";
+import { Character } from "@gcsim/types";
 
 export interface AppState {
   ready: number;

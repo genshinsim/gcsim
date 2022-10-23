@@ -1,5 +1,5 @@
 import { Omnibar } from "@blueprintjs/select";
-import { IWeapon } from "../../Types";
+import { IWeapon } from "@gcsim/types";
 import { weaponSelectProps } from "./weapons";
 
 const WeaponOmnibar = Omnibar.ofType<IWeapon>();

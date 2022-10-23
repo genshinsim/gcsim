@@ -1,5 +1,3 @@
-import { Button, FormGroup, Switch } from "@blueprintjs/core";
-import { Character } from "../../../Types";
 import { StatRow } from "./CharacterEditStatRow";
 
 import {
@@ -22,6 +20,7 @@ import {
 import { StatToIndexMap } from "../../../Util";
 import { useTranslation } from "react-i18next";
 import { maxStatLength } from "../../../Stores/appSlice";
+import { Character } from "@gcsim/types";
 
 export type subDisplayLine = {
   stat?: string;

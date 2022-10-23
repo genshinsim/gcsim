@@ -8,7 +8,7 @@ module.exports = {
   },
   content: [
     "./index.html",
-    "./src/**/*.{html,js,ts,jsx,tsx,css}",
+    "./src/**/*.{html,js,ts,jsx,tsx}",
     "../ui/src/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {

@@ -1,7 +1,7 @@
 import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import { IArtifact } from "@gcsim/types";
 import i18n from "i18next";
-import { IArtifact } from "../../Types";
 
 export const items = [
   "archaicpetra",

@@ -1,14 +1,14 @@
 import { Button } from "@blueprintjs/core";
+import { StatusType } from "@gcsim/types";
 import axios from "axios";
 import React from "react";
 import { Viewport } from "../../Components";
 import { useAppDispatch, useAppSelector } from "../../Stores/store";
-import { statusType } from "../../Types";
 import { logout } from "../../Stores/userSlice";
 import { Login } from "./Login";
 
 export function PageUserAccount() {
-  const [status, setStatus] = React.useState<statusType>("idle");
+  const [status, setStatus] = React.useState<StatusType>("idle");
   const [errMsg, setErrMsg] = React.useState<string>("");
 
   const user = useAppSelector((state) => state.user);

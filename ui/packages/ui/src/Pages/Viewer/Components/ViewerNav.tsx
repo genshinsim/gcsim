@@ -23,8 +23,8 @@ import { useLocation } from "wouter";
 import { LogDetails } from "./Debug";
 import { useAppDispatch } from "../../../Stores/store";
 import { bytesToBase64 } from "../../../Util/base64";
-import { SimResults } from "../../../Types";
 import { updateCfg } from "../../../Stores/appSlice";
+import { SimResults } from "@gcsim/types";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
