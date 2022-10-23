@@ -30,7 +30,7 @@ func (c *char) makeBunny() {
 	snap := c.Snapshot(&ai)
 	b.ae = combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3, false, combat.TargettableEnemy, combat.TargettableGadget),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	}
