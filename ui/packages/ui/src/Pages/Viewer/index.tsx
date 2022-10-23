@@ -77,7 +77,7 @@ function useRunningState(exec: ExecutorSupplier): boolean {
   useEffect(() => {
     const check = setInterval(() => {
       setRunning(exec().running());
-    }, 250);
+    }, VIEWER_THROTTLE - 50);
     return () => clearInterval(check);
   }, [exec]);
 
@@ -117,7 +117,7 @@ const FromUrl = ({ exec, url, redirect, id }: {
     )
   );
 
-  const cancel = useCallback(() => exec().cancel, [exec]);
+  const cancel = useCallback(() => exec().cancel(), [exec]);
   const debug = useCallback((cfg: string, seed: string) => exec().debug(cfg, seed), [exec]);
 
   return (
