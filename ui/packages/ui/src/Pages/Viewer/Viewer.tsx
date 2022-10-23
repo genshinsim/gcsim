@@ -66,14 +66,14 @@ export default ({ running, data, error, src, redirect, simDebugger, cancel, retr
 };
 
 const ErrorAlert = ({
-  msg,
-  redirect,
-  retry,
-}: {
-  msg: string | null;
-  redirect: string;
-  retry?: () => void;
-}) => {
+      msg,
+      redirect,
+      retry,
+    }: {
+      msg: string | null;
+      redirect: string;
+      retry?: () => void;
+    }) => {
   const [, setLocation] = useLocation();
 
   let cancelButtonText: string | undefined;

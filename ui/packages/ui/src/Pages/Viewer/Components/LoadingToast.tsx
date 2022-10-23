@@ -90,22 +90,18 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 };
 
 const ProgressToast = ({
-  cancel,
-  current,
-  total,
-  toastKey,
-  loadingToast,
-}: {
-  cancel: () => void;
-  current: number;
-  total: number;
-  toastKey: MutableRefObject<string | undefined>;
-  loadingToast: RefObject<Toaster>;
-}) => {
-  // useEffect(() => {
-  //   return () => cancel();
-  // }, []);
-
+      cancel,
+      current,
+      total,
+      toastKey,
+      loadingToast,
+    }: {
+      cancel: () => void;
+      current: number;
+      total: number;
+      toastKey: MutableRefObject<string | undefined>;
+      loadingToast: RefObject<Toaster>;
+    }) => {
   const val = current / total;
   return (
     <div className="flex flex-row items-center justify-between gap-2">

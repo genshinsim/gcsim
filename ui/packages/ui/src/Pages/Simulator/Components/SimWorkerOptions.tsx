@@ -4,10 +4,10 @@ import { NumberInput } from "../../../Components";
 import { RootState, useAppDispatch, useAppSelector } from "../../../Stores/store";
 import { Trans, useTranslation } from "react-i18next";
 import { setTotalWorkers } from "../../../Stores/appSlice";
-import { Executor } from "@gcsim/executors";
+import { ExecutorSupplier } from "@gcsim/executors";
 
 type Props = {
-  pool: Executor;
+  exec: ExecutorSupplier;
   isOpen: boolean;
   onClose: () => void;
 };
@@ -24,7 +24,7 @@ export function SimWorkerOptions(props: Props) {
   const [next, setNext] = React.useState<number>(workers);
 
   const updateWorkers = () => {
-    dispatch(setTotalWorkers(props.pool, next));
+    dispatch(setTotalWorkers(props.exec, next));
     props.onClose();
   };
 

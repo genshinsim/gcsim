@@ -1,4 +1,4 @@
-import { Classes, Button, Menu, MenuDivider, MenuItem, AnchorButton } from "@blueprintjs/core";
+import { Classes, Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -7,15 +7,15 @@ import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
 import { SimWorkerOptions, ImportFromGOODDialog, ImportFromEnkaDialog } from "./Components";
 import { runSim } from "../../Stores/viewerSlice";
-import { Executor } from "@gcsim/executors";
+import { ExecutorSupplier } from "@gcsim/executors";
 
 type Props = {
-  pool: Executor;
+  exec: ExecutorSupplier;
   cfg: string;
   canRun?: boolean;
 };
 
-export const Toolbox = ({ pool, cfg, canRun = true }: Props) => {
+export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
 
@@ -41,7 +41,7 @@ export const Toolbox = ({ pool, cfg, canRun = true }: Props) => {
   };
 
   const run = () => {
-    dispatch(runSim(pool, cfg));
+    dispatch(runSim(exec(), cfg));
     setLocation("/viewer/web");
   };
 
@@ -108,7 +108,7 @@ export const Toolbox = ({ pool, cfg, canRun = true }: Props) => {
         isOpen={openImportFromEnka}
         onClose={() => setOpenImportFromEnka(false)}
       />
-      <SimWorkerOptions pool={pool} isOpen={openWorkers} onClose={() => setOpenWorkers(false)} />
+      <SimWorkerOptions exec={exec} isOpen={openWorkers} onClose={() => setOpenWorkers(false)} />
     </div>
   );
 };

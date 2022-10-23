@@ -119,7 +119,6 @@ export class WasmExecutor implements Executor {
             reject("unknown validate response: " + ev.data);
         }
       };
-      console.log(Helper.Request);
       this.helper.postMessage(Helper.ValidateRequest(cfg));
     });
   }
@@ -255,13 +254,28 @@ export class WasmExecutor implements Executor {
     });
   }
 
-  cancel(): void {
-    //no op if not running
-    if (this && !this.isRunning) {
+  public cancel(): void {
+    if (!this.isRunning) {
       return;
     }
-    throw new Error("Method not implemented.");
+
+    this.isRunning = false;
+    console.log("execution canceled");
+    this.workers.forEach((worker) => {
+      worker.onmessage = null;
+    });
+
+    // It is possible that there are N AddRequests in the aggregator queue that we have no control
+    // over. Even if we set the onmessage here to null, the aggregator will still process through
+    // all N requests. Since there is no way to clear the worker queue, recreating the worker is the
+    // next best thing.
+    //
+    // Downside of this approach is any memory allocation/optimizations from previous runs will not
+    // carry over, making executions after a cancel "less optimal".
+    this.aggregator.terminate();
+    this.aggregator = this.createAggregator();
   }
+
   buildInfo(): { hash: string; date: string } {
     throw new Error("Method not implemented.");
   }

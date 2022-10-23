@@ -7,7 +7,7 @@ import UpgradeDialog from "./UpgradeDialog";
 import Viewer from "./Viewer";
 import { viewerActions } from "../../Stores/viewerSlice";
 import { validate as uuidValidate } from "uuid";
-import { Executor } from "@gcsim/executors";
+import { ExecutorSupplier } from "@gcsim/executors";
 import { SimResults } from "@gcsim/types";
 
 // TODO: make this flush rate configurable?
@@ -27,12 +27,12 @@ export enum ViewTypes {
 }
 
 type LoaderProps = {
-  pool: Executor;
+  exec: ExecutorSupplier;
   type: ViewTypes;
   id?: string; // only used in share
 };
 
-export const ViewerLoader = ({ pool, type, id }: LoaderProps) => {
+export const ViewerLoader = ({ exec, type, id }: LoaderProps) => {
   switch (type) {
     case ViewTypes.Landing:
       // TODO: figure out what this should be
@@ -41,12 +41,12 @@ export const ViewerLoader = ({ pool, type, id }: LoaderProps) => {
       // TODO: show upload tsx (dropzone)
       return <div></div>;
     case ViewTypes.Web:
-      return <FromState pool={pool} redirect="/simulator" />;
+      return <FromState exec={exec} redirect="/simulator" />;
     case ViewTypes.Local:
-      return <FromUrl pool={pool} url="http://127.0.0.1:8381/data" redirect="/viewer" />;
+      return <FromUrl exec={exec} url="http://127.0.0.1:8381/data" redirect="/viewer" />;
     case ViewTypes.Share:
       // TODO: process url function + more request props for supporting more endpoints (hastebin)
-      return <FromUrl pool={pool} url={processUrl(id)} redirect="/viewer" id={id} />;
+      return <FromUrl exec={exec} url={processUrl(id)} redirect="/viewer" id={id} />;
   }
 };
 
@@ -71,25 +71,25 @@ function Base64ToJson(base64: string) {
   return JSON.parse(Pako.inflate(bytes, { to: "string" }));
 }
 
-function useRunningState(pool: Executor): boolean {
+function useRunningState(exec: ExecutorSupplier): boolean {
   const [isRunning, setRunning] = useState(true);
 
   useEffect(() => {
     const check = setInterval(() => {
-      setRunning(pool.running());
+      setRunning(exec().running());
     }, 250);
     return () => clearInterval(check);
-  }, [pool]);
+  }, [exec]);
 
   return isRunning;
 }
 
-const FromUrl = ({ pool, url, redirect, id }: {
-    pool: Executor, url: string; redirect: string; id?: string }) => {
+const FromUrl = ({ exec, url, redirect, id }: {
+    exec: ExecutorSupplier, url: string; redirect: string; id?: string }) => {
   const [data, setData] = useState<SimResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
-  const isRunning = useRunningState(pool);
+  const isRunning = useRunningState(exec);
 
   const request = useCallback(() => {
     setError(null);
@@ -117,6 +117,9 @@ const FromUrl = ({ pool, url, redirect, id }: {
     )
   );
 
+  const cancel = useCallback(() => exec().cancel, [exec]);
+  const debug = useCallback((cfg: string, seed: string) => exec().debug(cfg, seed), [exec]);
+
   return (
     <>
       <Viewer
@@ -125,11 +128,11 @@ const FromUrl = ({ pool, url, redirect, id }: {
           error={error}
           src={src}
           redirect={redirect}
-          cancel={pool.cancel}
+          cancel={cancel}
           retry={request}
-          simDebugger={pool.debug} />
+          simDebugger={debug} />
       <UpgradeDialog
-          pool={pool}
+          exec={exec}
           data={data}
           redirect={redirect}
           setResult={updateResult.current}
@@ -144,8 +147,8 @@ const FromUrl = ({ pool, url, redirect, id }: {
 //    * alert saying "no sim loaded" and confirm button redirects to /simulator (current)
 //    * start running sim stored in local store, alert if not valid (proposed)
 //  - This would also consolidate run logic into one place (here)
-const FromState = ({ pool, redirect }: { pool: Executor, redirect: string }) => {
-  const running = useRunningState(pool);
+const FromState = ({ exec, redirect }: { exec: ExecutorSupplier, redirect: string }) => {
+  const running = useRunningState(exec);
   const dispatch = useAppDispatch();
   const { data, error } = useAppSelector((state: RootState) => {
     return {
@@ -171,6 +174,9 @@ const FromState = ({ pool, redirect }: { pool: Executor, redirect: string }) => 
     dispatch(viewerActions.setError({ error: error }));
   };
 
+  const cancel = useCallback(() => exec().cancel(), [exec]);
+  const debug = useCallback((cfg: string, seed: string) => exec().debug(cfg, seed), [exec]);
+
   return (
     <>
       <Viewer
@@ -179,10 +185,10 @@ const FromState = ({ pool, redirect }: { pool: Executor, redirect: string }) => 
           src={ResultSource.Generated}
           error={error}
           redirect={redirect}
-          cancel={pool.cancel}
-          simDebugger={pool.debug} />
+          cancel={cancel}
+          simDebugger={debug} />
       <UpgradeDialog
-          pool={pool}
+          exec={exec}
           data={data}
           redirect={redirect}
           setResult={updateResult.current}

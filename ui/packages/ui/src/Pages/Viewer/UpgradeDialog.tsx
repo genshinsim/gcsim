@@ -7,7 +7,7 @@ import {
   Intent,
   NumericInput,
 } from "@blueprintjs/core";
-import { Executor } from "@gcsim/executors";
+import { ExecutorSupplier } from "@gcsim/executors";
 import { SimResults, Version } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -28,7 +28,7 @@ enum MismatchType {
 }
 
 type Props = {
-  pool: Executor;
+  exec: ExecutorSupplier;
   data: SimResults | null;
   redirect: string;
   setResult: (result: SimResults | null) => void;
@@ -37,7 +37,7 @@ type Props = {
 };
 
 // TODO: translations
-export default ({ pool, data, redirect, setResult, setError, id }: Props) => {
+export default ({ exec, data, redirect, setResult, setError, id }: Props) => {
   const mismatch = useMismatch(data?.schema_version);
   const [isOpen, setOpen] = useState(true);
 
@@ -64,11 +64,11 @@ export default ({ pool, data, redirect, setResult, setError, id }: Props) => {
       </div>
       <div className="flex justify-between items-end gap-16 mx-4">
         <div className="max-w-[196px] min-w-[120px] flex-auto">
-          <WorkerSettings pool={pool} />
+          <WorkerSettings exec={exec} />
         </div>
         <div className="flex justify-end gap-[10px]">
           <UpgradeButton
-              pool={pool} cfg={data.config_file} setResult={setResult} setError={setError} />
+              exec={exec} cfg={data.config_file} setResult={setResult} setError={setError} />
           <CancelButton
             mismatch={mismatch}
             setOpen={setOpen}
@@ -142,7 +142,7 @@ const DialogBody = ({
 };
 
 // TODO: Create a shared settings dialog to be used between the upgrader and simulator
-const WorkerSettings = ({ pool }: { pool: Executor }) => {
+const WorkerSettings = ({ exec }: { exec: ExecutorSupplier }) => {
   const dispatch = useAppDispatch();
   const { w } = useAppSelector((state: RootState) => {
     return {
@@ -156,8 +156,8 @@ const WorkerSettings = ({ pool }: { pool: Executor }) => {
   };
 
   useEffect(() => {
-    dispatch(setTotalWorkers(pool, workers));
-  }, [dispatch, workers, pool]);
+    dispatch(setTotalWorkers(exec, workers));
+  }, [dispatch, workers, exec]);
 
   return (
     <FormGroup className="!m-0" inline={true} label="Workers">
@@ -173,12 +173,12 @@ const WorkerSettings = ({ pool }: { pool: Executor }) => {
 };
 
 const UpgradeButton = ({
-      pool,
+      exec,
       cfg,
       setResult,
       setError,
     }: {
-      pool: Executor,
+      exec: ExecutorSupplier,
       cfg?: string;
       setResult: (result: SimResults | null) => void;
       setError: (err: string | null) => void;
@@ -186,10 +186,10 @@ const UpgradeButton = ({
   const [isReady, setReady] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
-      setReady(pool.ready());
+      setReady(exec().ready());
     }, 250);
     return () => clearInterval(interval);
-  }, [pool]);
+  }, [exec]);
 
   const run = () => {
     if (cfg == null) {
@@ -198,13 +198,11 @@ const UpgradeButton = ({
 
     setResult(null);
     setError(null);
-    pool
-      .run(cfg, (result) => {
-        setResult(result);
-      })
-      .catch((err) => {
-        setError(err);
-      });
+    exec().run(cfg, (result) => {
+      setResult(result);
+    }).catch((err) => {
+      setError(err);
+    });
   };
 
   return <Button text="Upgrade" intent={Intent.SUCCESS} loading={!isReady} onClick={run} />;

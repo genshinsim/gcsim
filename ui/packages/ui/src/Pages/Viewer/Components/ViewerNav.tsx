@@ -109,7 +109,8 @@ const SendToSim = ({ config }: { config?: string }) => {
     if (config == null) {
       return;
     }
-    dispatch(updateCfg(config, keepTeam));
+    // TODO: add back once updateCfg does not take in executor
+    // dispatch(updateCfg(exec, config, keepTeam));
     setLocation("/simulator");
   };
 

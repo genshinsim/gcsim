@@ -8,9 +8,9 @@ import { Toolbox } from "./Toolbox";
 import { ActionListTooltip, TeamBuilderTooltip } from "./Tooltips";
 import { setTotalWorkers, updateCfg } from "../../Stores/appSlice";
 import { useAppSelector, RootState, useAppDispatch } from "../../Stores/store";
-import { Executor } from "@gcsim/executors";
+import { ExecutorSupplier } from "@gcsim/executors";
 
-export function Simulator({ pool }: { pool: Executor }) {
+export function Simulator({ exec }: { exec: ExecutorSupplier }) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -28,15 +28,18 @@ export function Simulator({ pool }: { pool: Executor }) {
       };
     }
   );
+
+  // TODO: how workers and config gets updated needs to be rewritten. updateCfg should never take in
+  // the executor
   useEffect(() => {
-    dispatch(setTotalWorkers(pool, workers));
+    dispatch(setTotalWorkers(exec, workers));
   }, []);
   useEffect(() => {
     //TODO: for whatever reason this is being called every single time a worker gets loaded
     //when it should only happen once?
     if (ready) {
       console.log("rerunning config on ready!");
-      dispatch(updateCfg(cfg));
+      dispatch(updateCfg(exec, cfg));
     }
   }, [ready]);
 
@@ -44,10 +47,10 @@ export function Simulator({ pool }: { pool: Executor }) {
   const [isReady, setReady] = React.useState<boolean>(false);
   useEffect(() => {
     const interval = setInterval(() => {
-      setReady(pool.ready());
+      setReady(exec().ready());
     }, 250);
     return () => clearInterval(interval);
-  }, [pool]);
+  }, [exec]);
 
   if (ready === 0) {
     return (
@@ -81,7 +84,7 @@ export function Simulator({ pool }: { pool: Executor }) {
 
           <ActionList
             cfg={cfg}
-            onChange={(v) => dispatch(updateCfg(v, false))}
+            onChange={(v) => dispatch(updateCfg(exec, v, false))}
           />
 
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
@@ -92,7 +95,7 @@ export function Simulator({ pool }: { pool: Executor }) {
                 </Callout>
               </div>
             ) : null}
-            <Toolbox pool={pool} cfg={cfg} canRun={cfgErr === "" && isReady} />
+            <Toolbox exec={exec} cfg={cfg} canRun={cfgErr === "" && isReady} />
           </div>
         </div>
       </div>

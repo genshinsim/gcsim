@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "./store";
 import { charToCfg } from "../Pages/Simulator/helper";
-import { Executor } from "@gcsim/executors";
+import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { Character } from "@gcsim/types";
-import { pool } from "../App";
 
 export interface AppState {
   ready: number;
@@ -45,7 +44,7 @@ export function cfgFromTeam(team: Character[], cfg: string): string {
   return cfg;
 }
 
-export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
+export function updateCfg(exec: ExecutorSupplier, cfg: string, keepTeam?: boolean): AppThunk {
   return function (dispatch, getState) {
     // console.log(cfg);
     if (keepTeam) {
@@ -74,7 +73,7 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
       cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
     }
     dispatch(appActions.setCfg(cfg));
-    pool.validate(cfg).then(
+    exec().validate(cfg).then(
       (res) => {
         console.log("all is good");
         dispatch(appActions.setCfgErr(""));
@@ -114,10 +113,10 @@ export function updateCfg(cfg: string, keepTeam?: boolean): AppThunk {
   };
 }
 
-export function setTotalWorkers(pool: Executor, count: number): AppThunk {
+export function setTotalWorkers(exec: ExecutorSupplier, count: number): AppThunk {
   return function (dispatch, getState) {
     //do nothing if ready
-    pool.setWorkerCount(count, (x: number) => {
+    exec().setWorkerCount(count, (x: number) => {
       //call back for ready
       dispatch(appActions.setWorkerReady(x));
     });

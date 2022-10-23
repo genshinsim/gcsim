@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { App, SetExecutor } from "@gcsim/ui";
+import { UI } from "@gcsim/ui";
 import { WasmExecutor } from "@gcsim/executors";
 
-SetExecutor(new WasmExecutor());
+const exec = new WasmExecutor();
+const supplier = () => exec;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <UI exec={supplier} />
   </React.StrictMode>
 );

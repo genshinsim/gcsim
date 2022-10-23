@@ -82,7 +82,6 @@ export function Nav() {
             className="ml-2"
             value={language}
             onChange={(e) => {
-              console.log(e.target.value);
               i18n.changeLanguage(e.target.value);
             }}
           >
