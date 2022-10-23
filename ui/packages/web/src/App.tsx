@@ -31,8 +31,8 @@ const App = ({}) => {
         <NumericInput
           value={workers}
           onValueChange={(v) => updateWorkers(v)}
-          min={1}
-          max={30}
+          min={minWorkers}
+          max={maxWorkers}
           fill={true}
         />
       </FormGroup>
