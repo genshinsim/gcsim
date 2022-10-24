@@ -14,7 +14,7 @@ const App = ({}) => {
   const supplier = useRef<ExecutorSupplier>(() => {
     if (exec == null) {
       exec = new WasmExecutor();
-      exec.setWorkerCount(workers, () => {});
+      exec.setWorkerCount(workers);
     }
     return exec;
   });
@@ -22,7 +22,7 @@ const App = ({}) => {
   const updateWorkers = (num: number) => {
     num = Math.min(Math.max(num, minWorkers), maxWorkers);
     setWorkers(num);
-    supplier.current().setWorkerCount(num, () => {});
+    supplier.current().setWorkerCount(num);
   };
 
   return (

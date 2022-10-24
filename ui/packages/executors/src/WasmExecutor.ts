@@ -54,21 +54,20 @@ export class WasmExecutor implements Executor {
     return this.isRunning;
   }
 
-  public setWorkerCount(count: number, readycb: (count: number) => void) {
+  public setWorkerCount(count: number) {
     console.log("loading workers", count, this);
     const diff = count - this.workers.length;
 
     if (diff < 0) {
       this.workersReady.splice(diff);
       this.workers.splice(diff).forEach((w) => w.terminate());
-      return readycb(count);
+      return;
     }
 
     console.log("loading " + diff + " workers");
     for (let i = 0; i < diff; i++) {
       this.createWorker().then((w) => {
         console.log("worker " + w + " is now ready");
-        readycb(this.count());
       });
     }
   }

@@ -2,7 +2,7 @@ import { LogDetails, ParsedResult, SimResults } from "@gcsim/types";
 
 export interface Executor {
   count(): number;
-  setWorkerCount(count: number, onReady: (count: number) => void): void;
+  setWorkerCount(count: number): void;
   ready(): boolean;
   running(): boolean;
   validate(cfg: string): Promise<ParsedResult>;
