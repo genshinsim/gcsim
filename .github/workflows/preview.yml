@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "features**"
+      - "feature**"
 
 jobs:
   build:
@@ -22,12 +22,8 @@ jobs:
           go-version: "^1.17.7" # The Go version to download (if necessary) and use.
       - name: check files
         run: ls
-      - run: |
-          # make file runnable, might not be necessary
-          chmod +x "${GITHUB_WORKSPACE}/scripts/deploy.sh"
-          # run the script
-          "${GITHUB_WORKSPACE}/scripts/deploy.sh"
-      - run: |
+      - name: Build gcsim binary
+        run: |
           # make file runnable, might not be necessary
           chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
           # run the script
@@ -39,23 +35,23 @@ jobs:
           files: |
             gcsim.exe
       - name: Set up Node.js ⚙️
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
-      - name: Install dependencies 📦
-        run: |
-          yarn install --frozen-lockfile
-          yarn build
-        working-directory: ./app
-      - name: check files again
-        run: ls
-        working-directory: ./app/build
+          node-version: "18.x"
+      - run: yarn install --immutable
+        working-directory: ./ui
+      - name: Build UI
+        run: yarn build
+        working-directory: ./ui
+      - name: List web dist
+        run: ls -lh
+        working-directory: ./ui/packages/web/dist
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@1
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           projectName: gcsim
-          directory: ./app/build
+          directory: ./ui/packages/web/dist
           branch: ${{ steps.extract_branch.outputs.branch }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

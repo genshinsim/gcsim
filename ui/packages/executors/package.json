@@ -1,0 +1,20 @@
+{
+  "name": "@gcsim/executors",
+  "main": "src/index.ts",
+  "packageManager": "yarn@3.2.4",
+  "private": true,
+  "scripts": {
+    "build:wasm:web": "cd ../../../cmd/wasm && ./build.sh -o ../../ui/packages/web/public/main.wasm && echo \"compiled wasm successfully!\"",
+    "watch:web": "watch \"yarn run build:wasm:web\" ../../../pkg ../../../internal ../../../cmd/wasm"
+  },
+  "dependencies": {
+    "@gcsim/types": "workspace:^",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4",
+    "@types/watch": "^1",
+    "concurrently": "^7.5.0",
+    "watch": "^1.0.2"
+  }
+}
