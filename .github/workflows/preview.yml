@@ -38,8 +38,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-          cache: 'yarn'
-          cache-dependency-path: ./ui/yarn.lock
       - run: yarn install --immutable --immutable-cache
         working-directory: ./ui
       - name: Build UI
