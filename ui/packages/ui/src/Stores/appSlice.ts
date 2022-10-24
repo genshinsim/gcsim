@@ -8,14 +8,12 @@ import { Character } from "@gcsim/types";
 export interface AppState {
   isSettingsOpen: boolean;
   cfg: string;
-  cfg_err: string;
   team: Character[];
 }
 
 export const initialState: AppState = {
   isSettingsOpen: false,
   cfg: "",
-  cfg_err: "",
   team: [],
 };
 
@@ -76,10 +74,6 @@ export const appSlice = createSlice({
 
       //strip extra new lines
       state.cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
-      return state;
-    },
-    setCfgErr: (state, action: PayloadAction<string>) => {
-      state.cfg_err = action.payload;
       return state;
     },
     addCharacter: (state, action: PayloadAction<{ character: Character }>) => {

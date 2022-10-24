@@ -1,5 +1,5 @@
 import { Callout } from "@blueprintjs/core";
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Viewport, SectionDivider } from "../../Components";
 import { ActionList } from "./Components";
 import { Team } from "./Team";
@@ -10,15 +10,14 @@ import { useAppSelector, RootState, useAppDispatch } from "../../Stores/store";
 import { ExecutorSupplier } from "@gcsim/executors";
 import { appActions, defaultStats } from "../../Stores/appSlice";
 import { Character } from "@gcsim/types";
+import { debounce } from "lodash";
 
 export function Simulator({ exec }: { exec: ExecutorSupplier }) {
   const dispatch = useAppDispatch();
-
-  const { settings, cfg, cfgErr } = useAppSelector(
+  const { settings, initCfg } = useAppSelector(
     (state: RootState) => {
       return {
-        cfg: state.app.cfg,
-        cfgErr: state.app.cfg_err,
+        initCfg: state.app.cfg,
         settings: state.user.settings ?? {
           showTips: false,
           showBuilder: false,
@@ -27,8 +26,19 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
     }
   );
 
+  // use a local cfg and only update redux at a much lower rate (1s after typing stops).
+  // Other stuff happens on redux cfg update which lags the editor
+  // Note: seems like the editor and/or highlighter we use is just laggy, so it doesn't help much :/
+  const [cfg, setCfg] = useState(initCfg);
+  const setReduxCfgThrottle = useRef(debounce(
+    (cfg) => dispatch(appActions.setCfg({ cfg: cfg, keepTeam: false })), 1000));
+  const onChange = (newCfg: string) => {
+    setCfg(newCfg);
+    setReduxCfgThrottle.current(newCfg);
+  };
+
   // check worker ready state every 250ms so run button becomes available when workers do
-  const [isReady, setReady] = React.useState<boolean | null>(null);
+  const [isReady, setReady] = useState<boolean | null>(null);
   useEffect(() => {
     const interval = setInterval(() => {
       setReady(exec().ready());
@@ -36,9 +46,11 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
     return () => clearInterval(interval);
   }, [exec]);
 
+  const [err, setErr] = useState("");
+
   // will detect changes in the redux config and validate with the executor
   // validated == true means we had a successful validation check run, not that it is valid
-  const validated = useConfigValidateListener(exec, cfg, isReady);
+  const validated = useConfigValidateListener(exec, cfg, isReady, setErr);
 
   return (
     <Viewport className="flex flex-col gap-2">
@@ -60,23 +72,20 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
 
           <ActionListTooltip />
 
-          <ActionList
-            cfg={cfg}
-            onChange={(newCfg) => dispatch(appActions.setCfg({ cfg: newCfg, keepTeam: false }))}
-          />
+          <ActionList cfg={cfg} onChange={onChange} />
 
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
-            {cfgErr !== "" ? (
+            {err !== "" ? (
               <div className="pl-2 pr-2 pt-2 mt-1">
                 <Callout intent="warning" title="Error parsing config">
-                  <pre className=" whitespace-pre-wrap">{cfgErr}</pre>
+                  <pre className=" whitespace-pre-wrap">{err}</pre>
                 </Callout>
               </div>
             ) : null}
             <Toolbox
                 exec={exec}
                 cfg={cfg}
-                canRun={cfgErr === "" && isReady === true && validated} />
+                canRun={err === "" && isReady === true && validated} />
           </div>
         </div>
       </div>
@@ -85,55 +94,60 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
 }
 
 export function useConfigValidateListener(
-    exec: ExecutorSupplier, cfg: string, isReady: boolean | null): boolean {
+    exec: ExecutorSupplier, cfg: string, isReady: boolean | null,
+    setErr: (str: string) => void): boolean {
   const dispatch = useAppDispatch();
   const [validated, setValidated] = useState(false);
+  const debounced = useRef(debounce((x: () => void) => x(), 200));
 
   useEffect(() => {
     if (!isReady) {
       return;
     }
 
-    exec().validate(cfg).then(
-      (res) => {
-        console.log("all is good");
-        dispatch(appActions.setCfgErr(""));
-        //if successful then we're going to update the team based on the parsed results
-        let team: Character[] = [];
-        if (res.characters) {
-          team = res.characters.map((c) => {
-            return {
-              name: c.base.key,
-              level: c.base.level,
-              element: c.base.element,
-              max_level: c.base.max_level,
-              cons: c.base.cons,
-              weapon: c.weapon,
-              talents: c.talents,
-              stats: c.stats,
-              snapshot: defaultStats,
-              sets: c.sets,
-            };
-          });
+    setValidated(false);
+    debounced.current(() => {
+      exec().validate(cfg).then(
+        (res) => {
+          console.log("all is good");
+          setErr("");
+          //if successful then we're going to update the team based on the parsed results
+          let team: Character[] = [];
+          if (res.characters) {
+            team = res.characters.map((c) => {
+              return {
+                name: c.base.key,
+                level: c.base.level,
+                element: c.base.element,
+                max_level: c.base.max_level,
+                cons: c.base.cons,
+                weapon: c.weapon,
+                talents: c.talents,
+                stats: c.stats,
+                snapshot: defaultStats,
+                sets: c.sets,
+              };
+            });
+          }
+          //check if there are any warning msgs
+          if (res.errors) {
+            let msg = "";
+            res.errors.forEach((err) => {
+              msg += err + "\n";
+            });
+            setErr(msg);
+          }
+          dispatch(appActions.setTeam(team));
+          setValidated(true);
+        },
+        (err) => {
+          //set error state
+          setErr(err);
+          setValidated(false);
         }
-        //check if there are any warning msgs
-        if (res.errors) {
-          let msg = "";
-          res.errors.forEach((err) => {
-            msg += err + "\n";
-          });
-          dispatch(appActions.setCfgErr(msg));
-        }
-        dispatch(appActions.setTeam(team));
-        setValidated(true);
-      },
-      (err) => {
-        //set error state
-        dispatch(appActions.setCfgErr(err));
-        setValidated(false);
-      }
-    );
-  }, [exec, cfg, dispatch, isReady]);
+      );
+    });
+  }, [exec, cfg, dispatch, setErr, isReady]);
 
   return validated;
 }
