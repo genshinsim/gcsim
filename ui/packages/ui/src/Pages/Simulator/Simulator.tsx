@@ -85,7 +85,8 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
             <Toolbox
                 exec={exec}
                 cfg={cfg}
-                canRun={err === "" && isReady === true && validated} />
+                isReady={isReady === true}
+                isValid={err === "" && validated} />
           </div>
         </div>
       </div>

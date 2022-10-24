@@ -16,7 +16,8 @@ import { VIEWER_THROTTLE } from "../Viewer";
 type Props = {
   exec: ExecutorSupplier;
   cfg: string;
-  canRun?: boolean;
+  isReady: boolean;
+  isValid: boolean;
 };
 
 function runSim(pool: Executor, cfg: string): AppThunk {
@@ -40,7 +41,7 @@ function runSim(pool: Executor, cfg: string): AppThunk {
   };
 }
 
-export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
+export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
 
@@ -118,7 +119,8 @@ export const Toolbox = ({ exec, cfg, canRun = true }: Props) => {
               fill
               intent="primary"
               onClick={run}
-              loading={!canRun}
+              loading={!isReady}
+              disabled={!isValid}
               text={t<string>("simple.run")} />
         </div>
       </div>
