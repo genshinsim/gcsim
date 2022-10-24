@@ -1,4 +1,4 @@
-import { Callout } from "@blueprintjs/core";
+import { Callout, Intent } from "@blueprintjs/core";
 import { useEffect, useRef, useState } from "react";
 import { Viewport, SectionDivider } from "../../Components";
 import { ActionList } from "./Components";
@@ -77,8 +77,8 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
             {err !== "" ? (
               <div className="pl-2 pr-2 pt-2 mt-1">
-                <Callout intent="warning" title="Error parsing config">
-                  <pre className=" whitespace-pre-wrap">{err}</pre>
+                <Callout intent={Intent.DANGER} title="Error: Config Invalid">
+                  <pre className="whitespace-pre-wrap pl-5">{err}</pre>
                 </Callout>
               </div>
             ) : null}
