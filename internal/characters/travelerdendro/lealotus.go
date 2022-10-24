@@ -71,7 +71,7 @@ func (c *char) newLeaLotusLamp(duration int) *LeaLotus {
 	x, y := c.Core.Combat.Player().Pos()
 	s.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 1}, combat.GadgetTypLeaLotus)
 	s.Duration = duration
-	s.ThinkInterval = 90
+	s.ThinkInterval = 37
 	s.Gadget.OnThinkInterval = s.OnThinkInterval
 
 	s.Reactable = &reactable.Reactable{}
@@ -163,6 +163,7 @@ func (s *LeaLotus) Tick() {
 }
 
 func (s *LeaLotus) OnThinkInterval() {
+	s.ThinkInterval = 90
 	s.QueueAttack(0)
 }
 
