@@ -47,11 +47,7 @@ export class WasmExecutor implements Executor {
   }
 
   public ready(): boolean {
-    return (
-      this.aggregatorReady
-      && this.count() >= this.workers.length
-      && !this.isRunning
-    );
+    return this.aggregatorReady && this.count() > 0 && !this.isRunning;
   }
 
   public running(): boolean {
