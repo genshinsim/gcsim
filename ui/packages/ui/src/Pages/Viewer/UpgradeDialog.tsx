@@ -5,7 +5,7 @@ import {
   Dialog,
   Intent,
 } from "@blueprintjs/core";
-import { ExecutorSupplier } from "@gcsim/executors";
+import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { SimResults, Version } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -22,7 +22,7 @@ enum MismatchType {
 }
 
 type Props = {
-  exec: ExecutorSupplier;
+  exec: ExecutorSupplier<Executor>;
   data: SimResults | null;
   redirect: string;
   setResult: (result: SimResults | null) => void;
@@ -138,7 +138,7 @@ const UpgradeButton = ({
       setResult,
       setError,
     }: {
-      exec: ExecutorSupplier,
+      exec: ExecutorSupplier<Executor>,
       cfg?: string;
       setResult: (result: SimResults | null) => void;
       setError: (err: string | null) => void;

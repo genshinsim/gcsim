@@ -1,4 +1,4 @@
-import { ExecutorSupplier } from "@gcsim/executors";
+import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { ReactNode, useEffect, useRef } from "react";
 import { Redirect, Route, Switch, useLocation } from "wouter";
 import { Classes, Dialog, HotkeysProvider } from "@blueprintjs/core";
@@ -40,7 +40,7 @@ export { useLocalStorage } from "./Util";
 // so that it is always loaded in. This is how the app can supply state and decide how it wants to
 // construct and configure the executors (and which executors are available to use).
 type UIProps = {
-  exec: ExecutorSupplier;
+  exec: ExecutorSupplier<Executor>;
   children: ReactNode;
 };
 

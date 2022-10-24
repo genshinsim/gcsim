@@ -7,7 +7,7 @@ import UpgradeDialog from "./UpgradeDialog";
 import Viewer from "./Viewer";
 import { viewerActions } from "../../Stores/viewerSlice";
 import { validate as uuidValidate } from "uuid";
-import { ExecutorSupplier } from "@gcsim/executors";
+import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { SimResults } from "@gcsim/types";
 
 // TODO: make this flush rate configurable?
@@ -27,7 +27,7 @@ export enum ViewTypes {
 }
 
 type LoaderProps = {
-  exec: ExecutorSupplier;
+  exec: ExecutorSupplier<Executor>;
   type: ViewTypes;
   id?: string; // only used in share
 };
@@ -71,7 +71,7 @@ function Base64ToJson(base64: string) {
   return JSON.parse(Pako.inflate(bytes, { to: "string" }));
 }
 
-function useRunningState(exec: ExecutorSupplier): boolean {
+function useRunningState(exec: ExecutorSupplier<Executor>): boolean {
   const [isRunning, setRunning] = useState(true);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ function useRunningState(exec: ExecutorSupplier): boolean {
 }
 
 const FromUrl = ({ exec, url, redirect }: {
-    exec: ExecutorSupplier, url: string, redirect: string }) => {
+    exec: ExecutorSupplier<Executor>, url: string, redirect: string }) => {
   const [data, setData] = useState<SimResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
@@ -146,7 +146,7 @@ const FromUrl = ({ exec, url, redirect }: {
 //    * alert saying "no sim loaded" and confirm button redirects to /simulator (current)
 //    * start running sim stored in local store, alert if not valid (proposed)
 //  - This would also consolidate run logic into one place (here)
-const FromState = ({ exec, redirect }: { exec: ExecutorSupplier, redirect: string }) => {
+const FromState = ({ exec, redirect }: { exec: ExecutorSupplier<Executor>, redirect: string }) => {
   // TODO: conditionally create this via upgrade?
   const running = useRunningState(exec);
   const dispatch = useAppDispatch();

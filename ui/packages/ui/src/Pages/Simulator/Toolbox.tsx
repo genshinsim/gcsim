@@ -14,7 +14,7 @@ import { SimResults } from "@gcsim/types";
 import { VIEWER_THROTTLE } from "../Viewer";
 
 type Props = {
-  exec: ExecutorSupplier;
+  exec: ExecutorSupplier<Executor>;
   cfg: string;
   isReady: boolean;
   isValid: boolean;

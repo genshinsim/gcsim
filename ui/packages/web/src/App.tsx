@@ -1,17 +1,17 @@
 import { FormGroup, NumericInput } from "@blueprintjs/core";
-import { Executor, ExecutorSupplier, WasmExecutor } from "@gcsim/executors";
+import { ExecutorSupplier, WasmExecutor } from "@gcsim/executors";
 import { UI, useLocalStorage } from "@gcsim/ui";
 import { useRef } from "react";
 
 const minWorkers = 1;
 const maxWorkers = 30;
 
-let exec: Executor | undefined;
+let exec: WasmExecutor | undefined;
 
 const App = ({}) => {
   const [workers, setWorkers] = useLocalStorage<number>("wasm-num-workers", 3);
 
-  const supplier = useRef<ExecutorSupplier>(() => {
+  const supplier = useRef<ExecutorSupplier<WasmExecutor>>(() => {
     if (exec == null) {
       exec = new WasmExecutor();
       exec.setWorkerCount(workers);

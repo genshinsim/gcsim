@@ -7,12 +7,12 @@ import { Trans } from "react-i18next";
 import { Toolbox } from "./Toolbox";
 import { ActionListTooltip, TeamBuilderTooltip } from "./Tooltips";
 import { useAppSelector, RootState, useAppDispatch } from "../../Stores/store";
-import { ExecutorSupplier } from "@gcsim/executors";
+import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { appActions, defaultStats } from "../../Stores/appSlice";
 import { Character } from "@gcsim/types";
 import { debounce } from "lodash-es";
 
-export function Simulator({ exec }: { exec: ExecutorSupplier }) {
+export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
   const dispatch = useAppDispatch();
   const { settings, initCfg } = useAppSelector(
     (state: RootState) => {
@@ -95,7 +95,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier }) {
 }
 
 export function useConfigValidateListener(
-    exec: ExecutorSupplier, cfg: string, isReady: boolean | null,
+    exec: ExecutorSupplier<Executor>, cfg: string, isReady: boolean | null,
     setErr: (str: string) => void): boolean {
   const dispatch = useAppDispatch();
   const [validated, setValidated] = useState(false);
