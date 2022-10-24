@@ -54,13 +54,15 @@ export function Nav() {
                 </span>
               </AnchorButton>
             </Link>
-            <a href="https://db.gcsim.app" target="_blank" rel="noreferrer">
-              <AnchorButton className={Classes.MINIMAL} icon="database">
-                <span className="hidden md:block">
-                  <Trans>nav.teams_db</Trans>
-                </span>
-              </AnchorButton>
-            </a>
+            <AnchorButton
+                className={Classes.MINIMAL}
+                icon="database"
+                href="https://db.gcsim.app"
+                target={"_blank"}>
+              <span className="hidden md:block">
+                <Trans>nav.teams_db</Trans>
+              </span>
+            </AnchorButton>
             <Link href="/about">
               <AnchorButton className={Classes.MINIMAL} icon="info-sign">
                 <span className="hidden md:block">
