@@ -21,19 +21,20 @@ const persistedState = JSON.parse(
 );
 
 if (localStorage.getItem(userDataKey)) {
-  const s = JSON.parse(localStorage.getItem(userDataKey)!);
+  const s = JSON.parse(localStorage.getItem(userDataKey) ?? "{}");
   persistedState.user_data = Object.assign(persistedState.user_data, s);
 }
 
 if (localStorage.getItem(userAppDataKey)) {
-  const s = JSON.parse(localStorage.getItem(userAppDataKey)!);
+  const s = JSON.parse(localStorage.getItem(userAppDataKey) ?? "{}");
   persistedState.app = Object.assign(persistedState.app, {
-    cfg: s.cfg
+    cfg: s.cfg ?? "",
+    team: s.team ?? []
   });
 }
 
 if (localStorage.getItem(userLocalSettings)) {
-  const s = JSON.parse(localStorage.getItem(userLocalSettings)!);
+  const s = JSON.parse(localStorage.getItem(userLocalSettings) ?? "{}");
   persistedState.user = Object.assign(persistedState.user, { settings: s });
 }
 
@@ -52,7 +53,10 @@ export const store = configureStore({
 
 store.subscribe(() => {
   localStorage.setItem(userDataKey, JSON.stringify(store.getState().user_data));
-  localStorage.setItem(userAppDataKey, JSON.stringify({ cfg: store.getState().app.cfg }));
+  localStorage.setItem(userAppDataKey, JSON.stringify({
+    cfg: store.getState().app.cfg,
+    team: store.getState().app.team
+  }));
   if (store.getState().user.settings) {
     localStorage.setItem(
       userLocalSettings,
