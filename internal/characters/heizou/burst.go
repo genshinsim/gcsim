@@ -51,7 +51,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       0,
 		NoImpulse:  true,
 	}
-	c.Core.QueueAttack(auraCheck, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), burstHitmark, burstHitmark, burstCB)
+	// should only hit enemies
+	ap := combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4)
+	ap.Targets[combat.TargettableGadget] = true
+	c.Core.QueueAttack(auraCheck, ap, burstHitmark, burstHitmark, burstCB)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
