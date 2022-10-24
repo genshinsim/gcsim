@@ -4,8 +4,8 @@
   "packageManager": "yarn@3.2.4",
   "private": true,
   "scripts": {
-    "watch:pkg": "nodemon --watch ../../../pkg \"npm run build:wasm\"",
-    "watch:wasm": "nodemon --watch ../../../pkg --watch ../../../internal --watch "
+    "build:wasm:web": "cd ../../../cmd/wasm && ./build.sh -o ../../ui/packages/web/public/main.wasm && echo \"compiled wasm successfully!\"",
+    "watch:web": "watch \"yarn run build:wasm:web\" ../../../pkg ../../../internal ../../../cmd/wasm"
   },
   "dependencies": {
     "@gcsim/types": "workspace:^",
@@ -13,6 +13,8 @@
   },
   "devDependencies": {
     "@types/lodash": "^4",
-    "nodemon": "^2.0.20"
+    "@types/watch": "^1",
+    "concurrently": "^7.5.0",
+    "watch": "^1.0.2"
   }
 }

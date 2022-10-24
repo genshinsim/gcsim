@@ -13,7 +13,9 @@
     "list-deps": "syncpack list",
     "list-mismatches": "syncpack list-mismatches",
     "fix-mismatches": "syncpack fix-mismatches",
-    "start:web": "yarn workspace @gcsim/web dev"
+    "start:watch-wasm": "yarn workspace @gcsim/executors watch:web",
+    "start:web": "yarn workspace @gcsim/web dev",
+    "start": "concurrently \"yarn:start:watch-wasm\" \"yarn:start:web\""
   },
   "devDependencies": {
     "@types/eslint": "^8",
@@ -23,6 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "autoprefixer": "^10.4.12",
+    "concurrently": "^7.5.0",
     "eslint": "^8.26.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.31.10",
