@@ -106,7 +106,7 @@ const CardAux = ({ aux }: { aux?: Array<AuxStat> }) => {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-x-5 pt-1 justify-start text-sm font-mono text-gray-400 min-w-fit">
+    <div className="grid grid-cols-3 gap-x-5 pt-1 justify-start text-sm font-mono min-w-fit">
       {aux.map(e => <AuxItem key={e.title} stat={e} />)}
     </div>
   );
@@ -116,14 +116,14 @@ const AuxItem = ({ stat }: { stat: AuxStat }) => {
   const { i18n } = useTranslation();
 
   const cls = classNames(
-    "font-black text-current text-sm !text-bp4-light-gray-500",
+    "font-black text-current text-sm text-bp4-light-gray-500",
     { "bp4-skeleton": stat.value == undefined }
   );
   const val = stat.value == undefined ? 123.45 : stat.value;
 
   return (
     <div className="flex flex-row items-start gap-3">
-      <div>{stat.title}</div>
+      <div className="text-gray-400">{stat.title}</div>
       <div className={cls}>
         {val.toLocaleString(i18n.language)}
       </div>
