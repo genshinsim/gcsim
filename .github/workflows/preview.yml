@@ -35,13 +35,15 @@ jobs:
           files: |
             gcsim.exe
       - name: Set up Node.js ⚙️
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "18.x"
+          cache: 'yarn'
+          cache-dependency-path: ./ui/yarn.lock
+      - run: yarn install --immutable --immutable-cache
+        working-directory: ./ui
       - name: Build UI
-        run: |
-          yarn install --frozen-lockfile
-          yarn build
+        run: yarn build
         working-directory: ./ui
       - name: List web dist
         run: ls -lh
