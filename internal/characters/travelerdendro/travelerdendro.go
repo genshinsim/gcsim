@@ -45,6 +45,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 func (c *char) Init() error {
 	c.a1Init()
 	c.c6Init()
+	c.a4()
 	c.skillC1 = false
 	c.burstAlive = false
 	return nil
