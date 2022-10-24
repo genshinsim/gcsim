@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.1 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy, combat.TargettableGadget), burstHitmark, burstHitmark)
 
 	// beidou burst is not hitlag extendable
 	c.AddStatus(burstKey, 900, false)
