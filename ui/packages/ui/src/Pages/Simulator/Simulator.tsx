@@ -10,7 +10,7 @@ import { useAppSelector, RootState, useAppDispatch } from "../../Stores/store";
 import { ExecutorSupplier } from "@gcsim/executors";
 import { appActions, defaultStats } from "../../Stores/appSlice";
 import { Character } from "@gcsim/types";
-import { debounce } from "lodash";
+import { debounce } from "lodash-es";
 
 export function Simulator({ exec }: { exec: ExecutorSupplier }) {
   const dispatch = useAppDispatch();

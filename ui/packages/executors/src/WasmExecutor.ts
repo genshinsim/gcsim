@@ -1,5 +1,5 @@
 import { LogDetails, ParsedResult, SimResults } from "@gcsim/types";
-import { throttle } from "lodash";
+import { throttle } from "lodash-es";
 import { Executor } from "./Executor";
 import { Aggregator, Helper, SimWorker } from "./Workers/common";
 

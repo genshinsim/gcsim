@@ -9,7 +9,7 @@ import { ImportFromGOODDialog, ImportFromEnkaDialog } from "./Components";
 import { viewerActions } from "../../Stores/viewerSlice";
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import ExecutorSettingsButton from "../../Components/ExecutorSettingsButton";
-import { throttle } from "lodash";
+import { throttle } from "lodash-es";
 import { SimResults } from "@gcsim/types";
 import { VIEWER_THROTTLE } from "../Viewer";
 

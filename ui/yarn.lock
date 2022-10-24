@@ -462,10 +462,10 @@ __metadata:
   resolution: "@gcsim/executors@workspace:packages/executors"
   dependencies:
     "@gcsim/types": "workspace:^"
-    "@types/lodash": ^4
+    "@types/lodash-es": ^4
     "@types/watch": ^1
     concurrently: ^7.5.0
-    lodash: ^4.17.21
+    lodash-es: ^4.17.21
     watch: ^1.0.2
   languageName: unknown
   linkType: soft
@@ -486,7 +486,7 @@ __metadata:
     "@gcsim/executors": "workspace:^"
     "@gcsim/types": "workspace:^"
     "@reduxjs/toolkit": ^1.8.6
-    "@types/lodash": ^4
+    "@types/lodash-es": ^4
     "@types/pako": ^2
     "@types/react-virtualized-auto-sizer": ^1
     "@types/uuid": ^8.3.4
@@ -494,7 +494,7 @@ __metadata:
     classnames: ^2.3.2
     i18next: ^22.0.2
     i18next-browser-languagedetector: ^6.1.8
-    lodash: ^4.17.21
+    lodash-es: ^4.17.21
     pako: ^2.0.4
     prismjs: "https://github.com/srliao/prism.git"
     react: ^18.2.0
@@ -519,6 +519,7 @@ __metadata:
     "@gcsim/executors": "workspace:^"
     "@gcsim/ui": "workspace:^"
     "@vitejs/plugin-react": ^2.1.0
+    rollup-plugin-visualizer: ^5.8.3
     vite: ^3.1.8
     vite-tsconfig-paths: ^3.5.2
   languageName: unknown
@@ -1932,7 +1933,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4":
+"@types/lodash-es@npm:^4":
+  version: 4.17.6
+  resolution: "@types/lodash-es@npm:4.17.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 9bd239dd525086e278821949ce12fbdd4f100a060fed9323fc7ad5661113e1641f28a7ebab617230ed3474680d8f4de705c1928b48252bb684be6ec9eed715db
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
   version: 4.14.186
   resolution: "@types/lodash@npm:4.14.186"
   checksum: ee0c1368a8100bb6efb88335107473a41928fc307ff1ef4ff1278868ccddba9c04c68c36d1ffe3a0392ef4a956e1955f7de3203ec09df4f1655dd1b88485c549
@@ -6271,6 +6281,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash-es@npm:^4.17.21":
+  version: 4.17.21
+  resolution: "lodash-es@npm:4.17.21"
+  checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
+  languageName: node
+  linkType: hard
+
 "lodash.ismatch@npm:^4.4.0":
   version: 4.4.0
   resolution: "lodash.ismatch@npm:4.4.0"
@@ -8543,6 +8560,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rollup-plugin-visualizer@npm:^5.8.3":
+  version: 5.8.3
+  resolution: "rollup-plugin-visualizer@npm:5.8.3"
+  dependencies:
+    open: ^8.4.0
+    source-map: ^0.7.4
+    yargs: ^17.5.1
+  peerDependencies:
+    rollup: 2.x || 3.x
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  bin:
+    rollup-plugin-visualizer: dist/bin/cli.js
+  checksum: 0ed4b4b49be8c38fa4820190286daf6f94446a05190a6f1932f2718cb8d7e2a1afacc9f94bf75934087ec856a634a5c9355c078d77482a5796465d15deb988c9
+  languageName: node
+  linkType: hard
+
 "rollup@npm:~2.78.0":
   version: 2.78.1
   resolution: "rollup@npm:2.78.1"
@@ -8834,6 +8869,13 @@ __metadata:
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: 59ce8640cf3f3124f64ac289012c2b8bd377c238e316fb323ea22fbfe83da07d81e000071d7242cad7a23cd91c7de98e4df8830ec3f133cb6133a5f6e9f67bc2
+  languageName: node
+  linkType: hard
+
+"source-map@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 
@@ -10051,7 +10093,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.3.1, yargs@npm:^17.4.0":
+"yargs@npm:^17.3.1, yargs@npm:^17.4.0, yargs@npm:^17.5.1":
   version: 17.6.0
   resolution: "yargs@npm:17.6.0"
   dependencies:

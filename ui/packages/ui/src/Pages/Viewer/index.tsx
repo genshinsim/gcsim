@@ -1,5 +1,5 @@
 import axios from "axios";
-import { throttle } from "lodash";
+import { throttle } from "lodash-es";
 import Pako from "pako";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";

@@ -14,7 +14,7 @@
     "classnames": "^2.3.2",
     "i18next": "^22.0.2",
     "i18next-browser-languagedetector": "^6.1.8",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "pako": "^2.0.4",
     "prismjs": "https://github.com/srliao/prism.git",
     "react": "^18.2.0",
@@ -29,7 +29,7 @@
     "wouter": "^2.8.0-alpha.2"
   },
   "devDependencies": {
-    "@types/lodash": "^4",
+    "@types/lodash-es": "^4",
     "@types/pako": "^2",
     "@types/react-virtualized-auto-sizer": "^1",
     "@types/uuid": "^8.3.4",
