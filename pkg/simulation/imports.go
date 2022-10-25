@@ -1,6 +1,18 @@
 package simulation
 
 import (
+	// stats collectors
+	_ "github.com/genshinsim/gcsim/pkg/stats/legacy"
+	// TODO: re-enable as part of full stats refactor
+	// _ "github.com/genshinsim/gcsim/pkg/stats/action"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/damage"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/energy"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/heal"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/reaction"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/shield"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/status"
+	// _ "github.com/genshinsim/gcsim/pkg/stats/swap"
+
 	//artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/berserker"
@@ -45,8 +57,10 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/barbara"
 	_ "github.com/genshinsim/gcsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gcsim/internal/characters/bennett"
+	_ "github.com/genshinsim/gcsim/internal/characters/candace"
 	_ "github.com/genshinsim/gcsim/internal/characters/chongyun"
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
+	_ "github.com/genshinsim/gcsim/internal/characters/cyno"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
 	_ "github.com/genshinsim/gcsim/internal/characters/dori"
@@ -66,6 +80,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/kuki"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
 	_ "github.com/genshinsim/gcsim/internal/characters/mona"
+	_ "github.com/genshinsim/gcsim/internal/characters/nilou"
 	_ "github.com/genshinsim/gcsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gcsim/internal/characters/noelle"
 	_ "github.com/genshinsim/gcsim/internal/characters/qiqi"
@@ -150,6 +165,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/solar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/thrilling"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/twin"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wanderingevenstar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/widsith"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/akuoumaru"
@@ -222,6 +238,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/harbinger"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/ironsting"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/kagotsurubeisshin"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/keyofkhajnisut"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lion"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/mistsplitter"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/primordial"
@@ -234,4 +251,5 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/summit"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofdescension"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/travelershandysword"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/xiphos"
 )

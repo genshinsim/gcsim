@@ -12,13 +12,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/result"
-	"github.com/genshinsim/gcsim/pkg/simulation"
+	"github.com/genshinsim/gcsim/pkg/stats"
 	"github.com/genshinsim/gcsim/pkg/worker"
 )
 
-//Options sets out the settings to run the sim by (such as debug mode, etc..)
+// Options sets out the settings to run the sim by (such as debug mode, etc..)
 type Options struct {
 	ResultSaveToPath string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
 	GZIPResult       bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
@@ -30,7 +31,7 @@ type Options struct {
 
 var start time.Time
 
-//Run will run the simulation given number of times
+// Run will run the simulation given number of times
 func Run(opts Options) (result.Summary, error) {
 	start = time.Now()
 
@@ -56,8 +57,18 @@ func Run(opts Options) (result.Summary, error) {
 
 // Runs the simulation with a given parsed config
 func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
+	// initialize aggregators
+	var aggregators []agg.Aggregator
+	for _, aggregator := range agg.Aggregators() {
+		a, err := aggregator(simcfg)
+		if err != nil {
+			return result.Summary{}, err
+		}
+		aggregators = append(aggregators, a)
+	}
+
 	//set up a pool
-	respCh := make(chan simulation.Result)
+	respCh := make(chan stats.Result)
 	errCh := make(chan error)
 	pool := worker.New(simcfg.Settings.NumberOfWorkers, respCh, errCh)
 	pool.StopCh = make(chan bool)
@@ -70,7 +81,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
 				Cfg:  simcfg.Copy(),
-				Seed: cryptoRandSeed(),
+				Seed: CryptoRandSeed(),
 			}
 			wip++
 		}
@@ -78,94 +89,92 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 
 	defer close(pool.StopCh)
 
-	var results []simulation.Result
-
 	//start reading respCh, queueing a new job until wip == number of iterations
-	count := simcfg.Settings.Iterations
-	for count > 0 {
+	count := 0
+	for count < simcfg.Settings.Iterations {
 		select {
-		case r := <-respCh:
-			results = append(results, r)
-			count--
+		case result := <-respCh:
+			for _, a := range aggregators {
+				a.Add(result, count)
+			}
+			count += 1
 		case err := <-errCh:
 			//error encountered
 			return result.Summary{}, err
 		}
 	}
 
-	r := aggregateResults(results, simcfg)
+	// generate final agg results
+	stats := &agg.Result{}
+	for _, a := range aggregators {
+		a.Flush(stats)
+	}
+
+	result, err := GenerateResult(cfg, simcfg, stats, opts)
+	if err != nil {
+		return result, err
+	}
+
+	//TODO: clean up this code
+	if opts.ResultSaveToPath != "" {
+		err = result.Save(opts.ResultSaveToPath, opts.GZIPResult)
+		if err != nil {
+			return result, err
+		}
+	}
+
+	return result, nil
+}
+
+func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts Options) (result.Summary, error) {
+	result := result.Summary{
+		V2:            true,
+		Version:       opts.Version,
+		BuildDate:     opts.BuildDate,
+		IsDamageMode:  simcfg.Settings.DamageMode,
+		ActiveChar:    simcfg.InitialChar.String(),
+		Iterations:    simcfg.Settings.Iterations,
+		Runtime:       float64(time.Since(start).Nanoseconds()),
+		NumTargets:    len(simcfg.Targets),
+		TargetDetails: simcfg.Targets,
+		Config:        cfg,
+	}
+	result.Map(simcfg, stats)
+	result.Text = result.PrettyPrint()
+
+	charDetails, err := GenerateCharacterDetails(simcfg)
+	if err != nil {
+		return result, err
+	}
+	result.CharDetails = charDetails
 
 	//run one debug
 	//debug call will clone before running
-	debugOut, err := GenerateDebugLog(simcfg)
+	debugOut, err := GenerateDebugLogWithSeed(simcfg, CryptoRandSeed())
 	if err != nil {
-		return r, err
+		return result, err
 	}
-	r.Debug = debugOut
+	result.Debug = debugOut
 
 	// Include debug logs for min/max-DPS runs if requested.
 	if opts.DebugMinMax {
-		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, r.MinSeed)
+		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MinSeed))
 		if err != nil {
-			return r, err
+			return result, err
 		}
-		r.DebugMinDPSRun = minDPSDebugOut
+		result.DebugMinDPSRun = minDPSDebugOut
 
-		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, r.MaxSeed)
+		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MaxSeed))
 		if err != nil {
-			return r, err
+			return result, err
 		}
-		r.DebugMaxDPSRun = maxDPSDebugOut
+		result.DebugMaxDPSRun = maxDPSDebugOut
 	}
-
-	runtime := time.Since(start)
-	r.Runtime = float64(runtime.Nanoseconds())
-	r.Config = cfg
-	r.Version = opts.Version
-	r.BuildDate = opts.BuildDate
-
-	//TODO: clean up this code
-
-	if opts.ResultSaveToPath != "" {
-		err = r.Save(opts.ResultSaveToPath, opts.GZIPResult)
-		if err != nil {
-			return r, err
-		}
-	}
-
-	//all done
-	return r, nil
+	return result, nil
 }
 
-func aggregateResults(in []simulation.Result, cfg *ast.ActionList) result.Summary {
-	//aggregate results
-	chars := make([]string, len(cfg.Characters))
-	for i, v := range cfg.Characters {
-		chars[i] = v.Base.Key.String()
-	}
-
-	r := result.CollectResult(
-		in,
-		cfg.Settings.DamageMode,
-		chars,
-		true,
-	)
-
-	r.Iterations = cfg.Settings.Iterations
-	r.ActiveChar = cfg.InitialChar.String()
-
-	r.NumTargets = len(cfg.Targets)
-	r.CharDetails = in[0].CharDetails
-	for i := range r.CharDetails {
-		r.CharDetails[i].Stats = cfg.Characters[i].Stats
-	}
-	r.TargetDetails = cfg.Targets
-
-	return r
-}
-
-//cryptoRandSeed generates a random seed using crypo rand
-func cryptoRandSeed() int64 {
+// cryptoRandSeed generates a random seed using crypo rand
+func CryptoRandSeed() int64 {
 	var b [8]byte
 	_, err := rand.Read(b[:])
 	if err != nil {
@@ -176,8 +185,8 @@ func cryptoRandSeed() int64 {
 
 var reImport = regexp.MustCompile(`(?m)^import "(.+)"$`)
 
-//readConfig will load and read the config at specified path. Will resolve any import statements
-//as well
+// readConfig will load and read the config at specified path. Will resolve any import statements
+// as well
 func ReadConfig(fpath string) (string, error) {
 
 	src, err := ioutil.ReadFile(fpath)

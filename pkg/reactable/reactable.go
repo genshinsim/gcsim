@@ -1,7 +1,10 @@
 package reactable
 
 import (
+	"encoding/json"
+	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -73,6 +76,25 @@ var elementToModifier = map[attributes.Element]ReactableModifier{
 
 func (r ReactableModifier) Element() attributes.Element { return modifierElement[r] }
 func (r ReactableModifier) String() string              { return ModifierString[r] }
+
+func (r ReactableModifier) MarshalJSON() ([]byte, error) {
+	return json.Marshal(ModifierString[r])
+}
+
+func (r *ReactableModifier) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	s = strings.ToLower(s)
+	for i, v := range ModifierString {
+		if v == s {
+			*r = ReactableModifier(i)
+			return nil
+		}
+	}
+	return errors.New("unrecognized ReactableModifier")
+}
 
 type Reactable struct {
 	Durability [EndReactableModifier]combat.Durability

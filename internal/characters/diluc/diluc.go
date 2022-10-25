@@ -22,6 +22,7 @@ type char struct {
 	c2buff   []float64
 	c2stack  int
 	c4buff   []float64
+	savedNormalCounter int
 }
 
 const eWindowKey = "diluc-e-window"
@@ -58,15 +59,15 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) bool {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
 	// check if it is possible to use next skill
 	if a == action.ActionSkill && c.StatusIsActive(eWindowKey) {
-		return true
+		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
 }
 
-//pyro infuse can't be overwritter
+// pyro infuse can't be overwritter
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 

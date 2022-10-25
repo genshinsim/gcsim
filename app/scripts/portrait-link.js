@@ -78,6 +78,9 @@ const names = [
   "collei",
   "dori",
   "tighnari",
+  "candace",
+  "cyno",
+  "nilou",
 ];
 
 const travelers = [

@@ -49,7 +49,6 @@ type profile struct {
 }
 
 func main() {
-
 	b, err := fetch("src/data/stats/characters.json")
 	if err != nil {
 		log.Fatal(err)
@@ -60,7 +59,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//fix the specialized key
+	// fix the specialized key
 	for k, v := range d {
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		v.Key = CharNameToKey[k]
@@ -249,4 +248,6 @@ var CharNameToKey = map[string]string{
 	"kukishinobu":       "Kuki",
 	"shikanoinheizou":   "Heizou",
 	"tighnari":          "Tighnari",
+	"candace":           "Candace",
+	"nilou":             "Nilou",
 }

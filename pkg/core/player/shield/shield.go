@@ -1,5 +1,5 @@
-//Package shield provide a handler to keep track of shields and
-//add shields etc...
+// Package shield provide a handler to keep track of shields and
+// add shields etc...
 package shield
 
 import "github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -20,12 +20,14 @@ const (
 	ShieldBell
 	ShieldYunjinSkill
 	ShieldThomaSkill
+	ShieldCandaceSkill
 	EndShieldType
 )
 
 type Shield interface {
 	Key() int
 	Type() ShieldType
+	ShieldStrength(ele attributes.Element, bonus float64) float64
 	OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) //return dmg taken and shield stays
 	OnExpire()
 	OnOverwrite()

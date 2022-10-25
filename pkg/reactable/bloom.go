@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-const DendroCoreDelay = 45
+const DendroCoreDelay = 20
 
 func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 	//can be hydro bloom, dendro bloom, or quicken bloom
@@ -106,7 +106,6 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
 	}
-	//TODO: should bloom do damage if it blows up due to limit reached?
 	s.Gadget.OnExpiry = explode
 	s.Gadget.OnKill = explode
 
