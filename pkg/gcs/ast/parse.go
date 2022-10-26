@@ -528,7 +528,8 @@ func (p *Parser) existVarDecl() bool {
 		return true
 	case itemIdentifier:
 		p.next()
-		b := p.peek().Typ == itemAssign
+		t := p.peek()
+		b := t.Typ == itemAssign || t.Typ == ItemPlus || t.Typ == ItemMinus
 		p.backup()
 		return b
 	}
