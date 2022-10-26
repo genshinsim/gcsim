@@ -222,10 +222,10 @@ func (p *Parser) parseStatement() (Node, error) {
 		hasSemi = false
 	case itemIdentifier:
 		p.next()
-		//check if = after
-		if x := p.peek(); x.Typ == itemAssign {
+		// check either if assign or post-inc/dec after
+		if x := p.peek(); x.Typ == itemAssign || x.Typ == ItemPlus || x.Typ == ItemMinus {
 			p.backup()
-			node, err = p.parseAssign()
+			node, err = p.parseIdentifier()
 			break
 		}
 		//it's an expr if no assign
@@ -304,6 +304,47 @@ func (p *Parser) parseAssign() (Stmt, error) {
 
 	return stmt, nil
 
+}
+
+// x++ or x--
+func (p *Parser) parseIncDec() (Stmt, error) {
+	ident, err := p.consume(itemIdentifier)
+	if err != nil {
+		//next token not and identifier
+		return nil, fmt.Errorf("ln%v: expecting identifier in assign statement, got %v", ident.line, ident.Val)
+	}
+
+	n := p.next()
+	if n.Typ != ItemPlus && n.Typ != ItemMinus {
+		return nil, fmt.Errorf("ln%v: expecting +/-, got %v", n.line, n.Val)
+	}
+
+	x := p.next()
+	if x.Typ != n.Typ {
+		return nil, fmt.Errorf("ln%v: expecting %v, got %v", n.line, n.Val, n.Val)
+	}
+
+	stmt := &IncDecStmt{
+		Pos:   ident.pos,
+		Ident: ident,
+		Val:   n,
+	}
+	return stmt, nil
+}
+
+func (p *Parser) parseIdentifier() (Stmt, error) {
+	p.next()
+
+	// check type
+	x := p.peek()
+	if x.Typ == itemAssign {
+		p.backup()
+		return p.parseAssign()
+	} else if x.Typ == ItemPlus || x.Typ == ItemMinus {
+		p.backup()
+		return p.parseIncDec()
+	}
+	return nil, fmt.Errorf("ln%v: expecting either assignment operator or postfix operator after identifier, got %v", x.line, x.Val)
 }
 
 func (p *Parser) parseIf() (Stmt, error) {
@@ -513,7 +554,7 @@ func (p *Parser) parseFor() (Stmt, error) {
 		if n := p.peek(); n.Typ == keywordLet {
 			stmt.Init, err = p.parseLet()
 		} else {
-			stmt.Init, err = p.parseAssign()
+			stmt.Init, err = p.parseIdentifier()
 		}
 		if err != nil {
 			return nil, err
@@ -535,7 +576,7 @@ func (p *Parser) parseFor() (Stmt, error) {
 	if n := p.peek(); n.Typ == itemTerminateLine {
 		p.next() //skip ;
 		if n := p.peek(); n.Typ != itemLeftBrace {
-			stmt.Post, err = p.parseAssign()
+			stmt.Post, err = p.parseIdentifier()
 			if err != nil {
 				return nil, err
 			}
