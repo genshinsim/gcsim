@@ -133,12 +133,26 @@ func main() {
 		locationMap[v.AvatarId] = v.AvatarAssocType
 	}
 	//reshape avatarPromotes and remove duplicates to map of avatarPromoteId to AddProps
-	promoMap := make(map[int]string)
+	specializedStatMap := make(map[int]string)
 	for _, v := range avatarPromotes {
-		promoMap[v.AvatarPromoteID] = v.AddProps[3].PropType
+		specializedStatMap[v.AvatarPromoteID] = v.AddProps[3].PropType
 	}
 
-	fmt.Printf("%+v\n", promoMap)
+	fmt.Printf("%+v\n", specializedStatMap)
+
+	// reshape avatarPromotes to map of avatarPromoteId to PromoData
+	promoDataMap := make(map[int]PromoData)
+	for _, v := range avatarPromotes {
+		promoDataMap[v.AvatarPromoteID] = PromoData{
+			MaxLevel: v.PromoteLevel,
+			HP:       v.AddProps[0].Value,
+			Atk:      v.AddProps[1].Value,
+			Def:      v.AddProps[2].Value,
+			Special:  v.AddProps[3].Value,
+		}
+	}
+
+	fmt.Printf("%+v\n", promoDataMap)
 
 	characterArray := make([]curves.CharBase, len(avatars))
 
