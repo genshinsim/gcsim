@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/curves"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
@@ -92,25 +92,6 @@ type FetterInfo []struct {
 	AvatarId        int    `json:"avatarId"`
 }
 
-type CharStatCurve int
-
-type CharBase struct {
-	Rarity     int                `json:"rarity"`
-	Body       profile.BodyType   `json:"-"`
-	Element    attributes.Element `json:"element"`
-	Region     profile.ZoneType   `json:"-"`
-	WeaponType weapon.WeaponClass `json:"weapon_class"`
-
-	HPCurve        CharStatCurve   `json:"-"`
-	AtkCurve       CharStatCurve   `json:"-"`
-	DefCurve       CharStatCurve   `json:"-"`
-	BaseHP         float64         `json:"-"`
-	BaseAtk        float64         `json:"-"`
-	BaseDef        float64         `json:"-"`
-	Specialized    attributes.Stat `json:"-"`
-	PromotionBonus []PromoData     `json:"-"`
-}
-
 type PromoData struct {
 	MaxLevel int
 	HP       float64
@@ -146,14 +127,26 @@ func main() {
 	if err := json.Unmarshal([]byte(fetterInfoData), &fetterInfo); err != nil {
 		log.Fatal(err)
 	}
+	// reshape fetterInfo to map of avatarId to AvatarAssocType
+	locationMap := make(map[int]string)
+	for _, v := range fetterInfo {
+		locationMap[v.AvatarId] = v.AvatarAssocType
+	}
+	//reshape avatarPromotes and remove duplicates to map of avatarPromoteId to AddProps
+	promoMap := make(map[int]string)
+	for _, v := range avatarPromotes {
+		promoMap[v.AvatarPromoteID] = v.AddProps[3].PropType
+	}
 
-	characterArray := make([]CharBase, len(avatars))
+	fmt.Printf("%+v\n", promoMap)
+
+	characterArray := make([]curves.CharBase, len(avatars))
 
 	for _, avatar := range avatars {
 		if avatar.UseType != "AVATAR_FORMAL" {
 			continue
 		}
-		char := CharBase{}
+		char := curves.CharBase{}
 
 		switch avatar.QualityType {
 		case "QUALITY_PURPLE":
@@ -194,11 +187,29 @@ func main() {
 			log.Fatal("Unknown WeaponType")
 		}
 
+		switch locationMap[avatar.ID] {
+		case "ASSOC_TYPE_INAZUMA":
+			char.Region = profile.ZoneInazuma
+
+		case "ASSOC_TYPE_LIYUE":
+			char.Region = profile.ZoneInazuma
+
+		case "ASSOC_TYPE_MONDSTADT":
+			char.Region = profile.ZoneInazuma
+		case "ASSOC_TYPE_SUMERU":
+			char.Region = profile.ZoneSumeru
+
+		default:
+			char.Region = profile.ZoneUnknown
+		}
+
+		// switch avatar.
+
 		// characterArray[index].Region = profile.ZoneType(avatar.AvatarRegion)
 		// characterArray[index].Element = attributes.Element(avatar.AvatarElementalType)
-		char.HPCurve = CharStatCurve(avatar.HpBase)
-		char.AtkCurve = CharStatCurve(avatar.AttackBase)
-		char.DefCurve = CharStatCurve(avatar.DefenseBase)
+		char.HPCurve = curves.CharStatCurve(avatar.HpBase)
+		char.AtkCurve = curves.CharStatCurve(avatar.AttackBase)
+		char.DefCurve = curves.CharStatCurve(avatar.DefenseBase)
 		char.BaseHP = avatar.HpBase
 		char.BaseAtk = avatar.AttackBase
 		char.BaseDef = avatar.DefenseBase
@@ -206,8 +217,8 @@ func main() {
 
 		characterArray = append(characterArray, char)
 		//print out the character name
-		fmt.Println(strings.Replace(avatar.IconName, "UI_AvatarIcon_", "", 1))
-		fmt.Printf("%+v\n", char)
+		// fmt.Println(strings.Replace(avatar.IconName, "UI_AvatarIcon_", "", 1))
+		// fmt.Printf("%+v\n", char)
 
 	}
 
