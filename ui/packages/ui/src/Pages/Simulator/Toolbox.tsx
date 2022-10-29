@@ -57,7 +57,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
   const toggleTips = () => {
     dispatch(
       userActions.setUserSettings({
-        showTips: settings.showTips,
+        showTips: !settings.showTips,
         showBuilder: settings.showBuilder,
       })
     );
