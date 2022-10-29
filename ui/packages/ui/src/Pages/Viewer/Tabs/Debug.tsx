@@ -83,7 +83,7 @@ const Generate = ({
       debug: UseDebugData;
       running: boolean;
     }) => {
-  let startValue = "rand";
+  let startValue = "debug";
   switch (debug.seed) {
     case null:
       startValue = "debug";
@@ -110,7 +110,7 @@ const Generate = ({
   const [value, setValue] = useState(startValue);
   const options: OptionProps[] = [
     { label: "Debug Seed", value: "debug" },
-    { label: "Random", value: "rand" },
+    // { label: "Random", value: "rand" },
     { label: "Min Seed", value: "min" },
     { label: "Max Seed", value: "max" },
     { label: "P25 Seed", value: "q1" },
