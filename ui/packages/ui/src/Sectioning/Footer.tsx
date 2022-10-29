@@ -21,17 +21,17 @@ export default ({}) => {
   const background = location.startsWith("/viewer") ? "bg-bp4-dark-gray-100" : "bg-[#293742]";
 
   const linkClass = classNames(
-      "inline-flex gap-2 items-center",
+      "flex gap-2 items-center",
       "!text-gray-400 hover:!text-[#8abbff]");
 
   return (
     <div className={classNames("w-full", divider, background)}>
       <div className="px-3 xs:px-16 py-3 flex justify-center gap-2 2xl:mx-auto 2xl:container">
-        <div className="self-center text-right text-gray-400 text-xs">
+        <div className="self-center text-right text-gray-400 text-xs grow shrink-0 w-2/3 max-w-fit">
           {t<string>("footer.gcsim_is_not")}
         </div>
         <Divider />
-        <div className="flex flex-wrap gap-x-4 gap-y-2 text-lg font-medium w-[320px]">
+        <div className="flex flex-wrap gap-x-4 gap-y-2 text-lg font-medium shrink grow-0">
           <IconContext.Provider value={{ size: "32px", color: "inherit" }}>
             <a className={linkClass} href="https://discord.gg/m7jvjdxx7q" target="_blank" rel="noreferrer">
               <FaDiscord />
