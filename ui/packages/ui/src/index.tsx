@@ -5,7 +5,9 @@ import { Classes, Dialog, HotkeysProvider } from "@blueprintjs/core";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState, store, useAppDispatch, useAppSelector } from "./Stores/store";
-import { Footer, Nav } from "./Components";
+import { Nav } from "./Components";
+import { appActions } from "./Stores/appSlice";
+import Footer from "./Sectioning/Footer";
 import {
   Dash,
   Simulator,
@@ -22,7 +24,6 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import "./index.css";
-import { appActions } from "./Stores/appSlice";
 
 // helper functions
 export { useLocalStorage } from "./Util";
@@ -108,7 +109,7 @@ const Main = ({ exec, children }: UIProps) => {
   // cancel the run every time we navigate away from the viewer page
   const prevLocation = useRef(location);
   useEffect(() => {
-    if (prevLocation.current != location && prevLocation.current.startsWith("/viewer")
+    if (prevLocation.current != location && prevLocation.current.startsWith("/viewer/")
         && exec().running()) {
       exec().cancel();
     }
@@ -118,10 +119,7 @@ const Main = ({ exec, children }: UIProps) => {
   return (
     <div className="bp4-dark h-screen flex flex-col">
       <Nav />
-      <div
-        ref={content}
-        className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip"
-      >
+      <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
         <Switch>
           <Route path="/" component={Dash} />
           <Route path="/simple">
@@ -173,9 +171,7 @@ const Main = ({ exec, children }: UIProps) => {
             </div>
           </Route>
         </Switch>
-        <div className="w-full pt-4 pb-4 md:pl-4">
-          <Footer />
-        </div>
+        <Footer />
         <ExecutorSettings>
           {children}
         </ExecutorSettings>
