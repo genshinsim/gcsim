@@ -9,7 +9,7 @@ import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { SimResults, Version } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import ExecutorSettingsButton from "../../Components/ExecutorSettingsButton";
+import ExecutorSettingsButton from "../../ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
 const MAJOR = 4; // Make sure the gcsim binary has also been updated

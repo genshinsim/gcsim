@@ -1,6 +1,6 @@
 import { Button } from "@blueprintjs/core";
-import { appActions } from "../Stores/appSlice";
-import { useAppDispatch } from "../Stores/store";
+import { appActions } from "./Stores/appSlice";
+import { useAppDispatch } from "./Stores/store";
 
 // TODO: translation
 export default ({}) => {
