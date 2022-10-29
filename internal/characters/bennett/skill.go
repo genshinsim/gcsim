@@ -134,7 +134,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ax,
-				combat.NewCircleHit(c.Core.Combat.Player(), skillHoldRadius[level-1], false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.Player(), skillHoldRadius[i], false, combat.TargettableEnemy, combat.TargettableGadget),
 				0,
 				0,
 			)
@@ -143,7 +143,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	if level == 2 {
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), skillHoldRadius[level-1], false, combat.TargettableEnemy, combat.TargettableGadget), 166, 166)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy, combat.TargettableGadget), 166, 166)
 	}
 
 	//user-specified c4 variant adds an additional attack that deals 135% of the second hit
