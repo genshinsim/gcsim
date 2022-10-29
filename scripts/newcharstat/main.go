@@ -27,6 +27,12 @@ func main() {
 		char := curves.CharBase{}
 		charName := determineCharName(avatar.IconName)
 		char.Rarity, err = determineCharRarity(avatar.QualityType)
+		char.Element = elementMap[avatar.SkillDepotID]
+		char.Region = locationMap[avatar.ID]
+		char.BaseHP = avatar.HpBase
+		char.BaseAtk = avatar.AttackBase
+		char.BaseDef = avatar.DefenseBase
+		char.PromotionBonus = promoDataMap[avatar.AvatarPromoteID]
 		if err != nil {
 			log.Fatal("Unknown rarity type for character ", charName, ": ", avatar.QualityType)
 		}
@@ -40,9 +46,6 @@ func main() {
 		if err != nil {
 			log.Fatal("Unknown weapon type for character ", charName, ": ", avatar.WeaponType)
 		}
-
-		char.Element = elementMap[avatar.SkillDepotID]
-		char.Region = locationMap[avatar.ID]
 
 		switch specializedStatMap[avatar.AvatarPromoteID] {
 		case "FIGHT_PROP_CRITICAL_HURT":
@@ -89,16 +92,11 @@ func main() {
 			char.AtkCurve = curves.GROW_CURVE_ATTACK_S4
 			char.DefCurve = curves.GROW_CURVE_HP_S4
 		}
-		char.BaseHP = avatar.HpBase
-		char.BaseAtk = avatar.AttackBase
-		char.BaseDef = avatar.DefenseBase
-		char.PromotionBonus = promoDataMap[avatar.AvatarPromoteID]
 
 		characterArray = append(characterArray, char)
 		//print out the character name
-		fmt.Println(charName)
-		fmt.Printf("%+v\n", char)
-		// fmt.Printf("%+v\n", avatar.PropGrowCurves)
+		// fmt.Println(charName)
+		// fmt.Printf("%+v\n", char)
 	}
 }
 
