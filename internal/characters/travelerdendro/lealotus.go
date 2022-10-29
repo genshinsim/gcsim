@@ -72,7 +72,7 @@ func (c *char) newLeaLotusLamp(duration int) *LeaLotus {
 	s.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 1}, combat.GadgetTypLeaLotus)
 	s.Duration = duration
 	// First hitmark is 37f after spawn, all other pre-transfig hits will be 90f between.
-	s.ThinkInterval = 37
+	s.ThinkInterval = burstHitmark - leaLotusAppear
 	s.Gadget.OnThinkInterval = s.OnThinkInterval
 
 	s.Reactable = &reactable.Reactable{}
