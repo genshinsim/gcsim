@@ -41,6 +41,7 @@ function DashCard({ children, href, target }: DashCardProps) {
 
 export function Dash() {
   useTranslation();
+  document.title = "gcsim - simulation impact";
   return (
     <main className="w-full flex flex-col items-center flex-grow pb-4">
       <span>

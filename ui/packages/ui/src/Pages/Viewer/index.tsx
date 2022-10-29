@@ -36,16 +36,19 @@ export const ViewerLoader = ({ exec, type, id }: LoaderProps) => {
   switch (type) {
     case ViewTypes.Landing:
       // TODO: figure out what this should be
+      document.title = "gcsim - viewer";
       return <div></div>;
     case ViewTypes.Upload:
       // TODO: show upload tsx (dropzone)
+      document.title = "gcsim - file upload";
       return <div></div>;
     case ViewTypes.Web:
       return <FromState exec={exec} redirect="/simulator" />;
     case ViewTypes.Local:
+      document.title = "gcsim - local";
       return <FromUrl exec={exec} url="http://127.0.0.1:8381/data" redirect="/viewer" />;
     case ViewTypes.Share:
-      // TODO: process url function + more request props for supporting more endpoints (hastebin)
+      document.title = "gcsim - " + id;
       return <FromUrl exec={exec} url={processUrl(id)} redirect="/viewer" />;
   }
 };

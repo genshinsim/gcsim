@@ -52,6 +52,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
   // validated == true means we had a successful validation check run, not that it is valid
   const validated = useConfigValidateListener(exec, cfg, isReady, setErr);
 
+  document.title = "gcsim - simulator";
   return (
     <Viewport className="flex flex-col gap-2">
       <div className="flex flex-col gap-2">
