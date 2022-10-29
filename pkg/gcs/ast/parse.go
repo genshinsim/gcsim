@@ -84,7 +84,7 @@ func (p *Parser) Parse() (*ActionList, error) {
 		}
 	}
 
-	if !initialCharFound {
+	if !initialCharFound && p.res.InitialChar != 0 {
 		p.res.Errors = append(p.res.Errors, fmt.Errorf("active char %v not found in team", p.res.InitialChar))
 	}
 
