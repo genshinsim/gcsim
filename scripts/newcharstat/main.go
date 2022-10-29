@@ -19,6 +19,7 @@ func main() {
 	avatars := getAvatarArray()
 	locationMap := getCharLocationMap()
 	specializedStatMap, promoDataMap := getCharSpecializedStatandPromoData()
+	elementMap := getAvatarElementMap()
 
 	characterArray := make([]curves.CharBase, len(avatars))
 
@@ -40,10 +41,8 @@ func main() {
 			log.Fatal("Unknown weapon type for character ", charName, ": ", avatar.WeaponType)
 		}
 
-		char.Region, err = determineCharRegion(locationMap[avatar.ID])
-		if err != nil {
-			log.Fatal("Unknown region for character ", charName, ": ", locationMap[avatar.ID])
-		}
+		char.Element = elementMap[avatar.SkillDepotID]
+		char.Region = locationMap[avatar.ID]
 
 		switch specializedStatMap[avatar.AvatarPromoteID] {
 		case "FIGHT_PROP_CRITICAL_HURT":
@@ -97,8 +96,8 @@ func main() {
 
 		characterArray = append(characterArray, char)
 		//print out the character name
-		// fmt.Println(strings.Replace(avatar.IconName, "UI_AvatarIcon_", "", 1))
-		// fmt.Printf("%+v\n", char)
+		fmt.Println(charName)
+		fmt.Printf("%+v\n", char)
 		// fmt.Printf("%+v\n", avatar.PropGrowCurves)
 	}
 }
@@ -128,27 +127,6 @@ func determineCharRarity(qualityType string) (int, error) {
 	default:
 		return 0, errors.New("unknown quality type")
 	}
-}
-
-func determineCharRegion(location string) (profile.ZoneType, error) {
-	switch location {
-	case "ASSOC_TYPE_INAZUMA":
-		return profile.ZoneInazuma, nil
-	case "ASSOC_TYPE_LIYUE":
-		return profile.ZoneInazuma, nil
-	case "ASSOC_TYPE_MONDSTADT":
-		return profile.ZoneInazuma, nil
-	case "ASSOC_TYPE_SUMERU":
-		return profile.ZoneSumeru, nil
-	case "ASSOC_TYPE_MAINACTOR", "ASSOC_TYPE_RANGER":
-		return profile.ZoneUnknown, nil
-	case "ASSOC_TYPE_FATUI":
-		return profile.ZoneSnezhnaya, nil
-
-	default:
-		return profile.ZoneUnknown, errors.New("unknown location")
-	}
-
 }
 
 func determineCharName(iconName string) string {

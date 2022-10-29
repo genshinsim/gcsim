@@ -19,7 +19,6 @@ type Avatars []struct {
 	// Cbfoekcenea                  int64         `json:"CBFOEKCENEA"`
 	// Pagadeakhac                  int           `json:"PAGADEAKHAC"`
 	// CutsceneShow                 string        `json:"cutsceneShow"`
-	// SkillDepotID                 int           `json:"skillDepotId"`
 	// StaminaRecoverSpeed          float64       `json:"staminaRecoverSpeed"`
 	// CandSkillDepotIds            []interface{} `json:"candSkillDepotIds"`
 	// ManekinJSONConfigHashSuffix  int           `json:"manekinJsonConfigHashSuffix"`
@@ -44,19 +43,20 @@ type Avatars []struct {
 	// ControllerPathRemoteHashSuffix int64  `json:"controllerPathRemoteHashSuffix"`
 	// ControllerPathRemoteHashPre    int    `json:"controllerPathRemoteHashPre"`
 	// LODPatternName                 string `json:"LODPatternName"`
+	// InitialWeapon   int     `json:"initialWeapon"`
+	// Critical        float64 `json:"critical"`
+	// CriticalHurt    float64 `json:"criticalHurt"`
+	SkillDepotID    int     `json:"skillDepotId"`
 	BodyType        string  `json:"bodyType"`
 	IconName        string  `json:"iconName"`
 	QualityType     string  `json:"qualityType"`
-	InitialWeapon   int     `json:"initialWeapon"`
 	WeaponType      string  `json:"weaponType"`
 	ImageName       string  `json:"imageName"`
 	AvatarPromoteID int     `json:"avatarPromoteId"`
 	HpBase          float64 `json:"hpBase"`
 	AttackBase      float64 `json:"attackBase"`
 	DefenseBase     float64 `json:"defenseBase"`
-	// Critical        float64 `json:"critical"`
-	// CriticalHurt    float64 `json:"criticalHurt"`
-	PropGrowCurves []struct {
+	PropGrowCurves  []struct {
 		Type      string `json:"type"`
 		GrowCurve string `json:"growCurve"`
 	} `json:"propGrowCurves"`
