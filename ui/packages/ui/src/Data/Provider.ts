@@ -1,5 +1,6 @@
 import { UserInfo } from "@gcsim/types";
 import axios from "axios";
+import { initialState } from "../Stores/userSlice";
 
 export interface AuthProvider {
   login(): void;
@@ -21,6 +22,7 @@ export class MockProvider implements AuthProvider {
       user_id: 1560962267213,
       user_name: "FakeUser#1234",
       token: "thisisafaketoken",
+      settings: initialState.settings
     };
   }
 

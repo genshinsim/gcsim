@@ -4,11 +4,9 @@ import { Trans } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
 
-const LOCALSTORAGE_KEY = "gcsim-simulator-show-tips";
-
 export const ActionListTooltip = () => {
   const settings = useAppSelector(
-    (state) => state.user.settings ?? { showTips: false, showBuilder: false }
+    (state) => state.user.settings
   );
   const dispatch = useAppDispatch();
   const toggleTips = () => {
@@ -55,7 +53,7 @@ export const TeamBuilderTooltip = () => {
   const [openAddCharHelp, setOpenAddCharHelp] = React.useState<boolean>(false);
 
   const settings = useAppSelector(
-    (state) => state.user.settings ?? { showTips: false, showBuilder: false }
+    (state) => state.user.settings
   );
   const dispatch = useAppDispatch();
   const toggleTips = () => {

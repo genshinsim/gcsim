@@ -49,7 +49,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
   const [openImportFromEnka, setOpenImportFromEnka] = React.useState<boolean>(false);
   const { settings } = useAppSelector((state: RootState) => {
     return {
-      settings: state.user.settings ?? { showTips: false, showBuilder: false },
+      settings: state.user.settings,
     };
   });
 

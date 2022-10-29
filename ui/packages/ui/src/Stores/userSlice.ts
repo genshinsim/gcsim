@@ -5,6 +5,7 @@ export const initialState: UserInfo = {
   user_id: 0,
   user_name: "Guest",
   token: "",
+  settings: { showTips: true, showBuilder: true }
 };
 
 export const userSlice = createSlice({

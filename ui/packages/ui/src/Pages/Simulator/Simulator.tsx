@@ -18,10 +18,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
     (state: RootState) => {
       return {
         initCfg: state.app.cfg,
-        settings: state.user.settings ?? {
-          showTips: false,
-          showBuilder: false,
-        },
+        settings: state.user.settings,
       };
     }
   );
