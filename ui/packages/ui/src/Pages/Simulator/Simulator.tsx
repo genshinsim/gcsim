@@ -76,7 +76,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
           <ActionList cfg={cfg} onChange={onChange} />
 
           <div className="sticky bottom-0 bg-bp-bg flex flex-col gap-y-1">
-            {err !== "" ? (
+            {err !== "" && cfg !== "" ? (
               <div className="pl-2 pr-2 pt-2 mt-1">
                 <Callout intent={Intent.DANGER} title="Error: Config Invalid">
                   <pre className="whitespace-pre-wrap pl-5">{err}</pre>
@@ -103,7 +103,7 @@ export function useConfigValidateListener(
   const debounced = useRef(debounce((x: () => void) => x(), 200));
 
   useEffect(() => {
-    if (!isReady) {
+    if (!isReady || cfg === "") {
       return;
     }
 
