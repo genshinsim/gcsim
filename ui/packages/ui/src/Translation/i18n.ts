@@ -42,10 +42,9 @@ i18n
   .init({
     resources,
     defaultNS: "translation",
-    lng: "en",
     fallbackLng: "en",
     debug: false,
     interpolation: {
       escapeValue: false,
-    },
+    }
   });

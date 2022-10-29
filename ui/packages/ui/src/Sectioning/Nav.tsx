@@ -43,7 +43,7 @@ export default ({}) => {
           </Link>
           <HTMLSelect
               className="ml-2"
-              value={i18n.language}
+              value={i18n.resolvedLanguage}
               onChange={(e) => i18n.changeLanguage(e.target.value)}>
             <option value="en">{t<string>("nav.english")}</option>
             <option value="zh">{t<string>("nav.chinese")}</option>
