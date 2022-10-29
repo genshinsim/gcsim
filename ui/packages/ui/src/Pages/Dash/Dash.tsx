@@ -42,7 +42,7 @@ function DashCard({ children, href, target }: DashCardProps) {
 export function Dash() {
   useTranslation();
   return (
-    <main className="w-full flex flex-col items-center flex-grow ">
+    <main className="w-full flex flex-col items-center flex-grow pb-4">
       <span>
         <Callout intent="success" className=" max-w-[600px] mt-4">
           Thank you for your patience. The core rewrite is now complete. Hitlag

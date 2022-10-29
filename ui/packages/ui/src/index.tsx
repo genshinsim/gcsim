@@ -5,9 +5,8 @@ import { Classes, Dialog, HotkeysProvider } from "@blueprintjs/core";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState, store, useAppDispatch, useAppSelector } from "./Stores/store";
-import { Nav } from "./Components";
 import { appActions } from "./Stores/appSlice";
-import Footer from "./Sectioning/Footer";
+import { Footer, Nav } from "./Sectioning";
 import {
   Dash,
   Simulator,

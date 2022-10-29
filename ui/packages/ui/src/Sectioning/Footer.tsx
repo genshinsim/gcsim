@@ -18,7 +18,7 @@ export default ({}) => {
       "before:from-transparent",
       "before:via-white/50");
   
-  const background = location.startsWith("/viewer") ? "bg-bp4-dark-gray-100" : "bg-[#293742]";
+  const background = location.startsWith("/viewer/") ? "bg-bp4-dark-gray-100" : "bg-[#293742]";
 
   const linkClass = classNames(
       "flex gap-2 items-center",
@@ -26,7 +26,7 @@ export default ({}) => {
 
   return (
     <div className={classNames("w-full", divider, background)}>
-      <div className="px-3 xs:px-16 py-3 flex justify-center gap-2 2xl:mx-auto 2xl:container">
+      <div className="px-5 xs:px-16 py-3 flex justify-center gap-2 2xl:mx-auto 2xl:container">
         <div className="self-center text-right text-gray-400 text-xs grow shrink-0 w-2/3 max-w-fit">
           {t<string>("footer.gcsim_is_not")}
         </div>
