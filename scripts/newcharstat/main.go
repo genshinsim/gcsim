@@ -97,8 +97,8 @@ func main() {
 
 		characterArray = append(characterArray, char)
 		//print out the character name
-		fmt.Println(strings.Replace(avatar.IconName, "UI_AvatarIcon_", "", 1))
-		fmt.Printf("%+v\n", char)
+		// fmt.Println(strings.Replace(avatar.IconName, "UI_AvatarIcon_", "", 1))
+		// fmt.Printf("%+v\n", char)
 		// fmt.Printf("%+v\n", avatar.PropGrowCurves)
 	}
 }

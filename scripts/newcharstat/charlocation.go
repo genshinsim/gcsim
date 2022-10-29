@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 )
 
@@ -26,6 +27,6 @@ func getCharLocationMap() map[int]string {
 	for _, v := range fetterInfo {
 		locationMap[v.AvatarId] = v.AvatarAssocType
 	}
-
+	fmt.Printf("%+v\n", locationMap)
 	return locationMap
 }
