@@ -13,7 +13,7 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 		// Move target logs into the "Sim" event log to avoid cluttering main display for stuff like Guoba
 		// And obvious things like "Fischl A4 is single target so it didn't hit targets 2-4"
 		// TODO: Maybe want to add a separate set of log events for this?
-		if h.Debug {
+		if h.Debug && t.Type() != TargettablePlayer {
 			h.Log.NewEventBuildMsg(glog.LogDebugEvent, a.Info.ActorIndex, "skipped ", a.Info.Abil, " ", reason).
 				Write("attack_tag", a.Info.AttackTag).
 				Write("applied_ele", a.Info.Element).
