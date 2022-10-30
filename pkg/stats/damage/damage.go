@@ -38,7 +38,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		event := stats.DamageEvent{
 			Frame:   attack.SourceFrame,
 			Source:  attack.Info.Abil,
-			Target:  target.Index(),
+			Target:  int(target.Key()),
 			Element: attack.Info.Element.String(),
 			Crit:    crit,
 			Damage:  damage,

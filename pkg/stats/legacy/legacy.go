@@ -151,7 +151,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		}
 
 		out.damageByChar[atk.Info.ActorIndex][sb.String()] += dmg
-		out.damageByCharByTargets[atk.Info.ActorIndex][strconv.Itoa(t.Index())] += dmg
+		out.damageByCharByTargets[atk.Info.ActorIndex][strconv.Itoa(int(t.Key()))] += dmg
 		if dmg > 0 {
 			out.damageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
 		}

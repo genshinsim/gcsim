@@ -116,7 +116,7 @@ func (c *char) irisDmg(t combat.Target) {
 			"No valid aura detected, omiting iris",
 			glog.LogCharacterEvent,
 			c.Index,
-		).Write("target", t.Index())
+		).Write("target", t.Key())
 	}
 
 	c.Core.QueueAttack(aiAbs, combat.NewCircleHit(t, 2.5), 0, 40) //if any of this is wrong blame Koli

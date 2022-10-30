@@ -18,7 +18,7 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 				Write("attack_tag", a.Info.AttackTag).
 				Write("applied_ele", a.Info.Element).
 				Write("dur", a.Info.Durability).
-				Write("target", t.Index()).
+				Write("target", t.Key()).
 				Write("shape", a.Pattern.Shape.String())
 		}
 		return 0, false
