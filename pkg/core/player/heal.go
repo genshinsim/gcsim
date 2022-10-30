@@ -74,5 +74,5 @@ func (h *Handler) Drain(di DrainInfo) {
 		Write("amount", di.Amount).
 		Write("current", c.HPCurrent).
 		Write("max_hp", c.MaxHP())
-	h.Events.Emit(event.OnPlayerDamage, di)
+	h.Events.Emit(event.OnPlayerHPDrain, di)
 }

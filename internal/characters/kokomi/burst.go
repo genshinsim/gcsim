@@ -109,7 +109,7 @@ func (c *char) burstDmgBonus(a combat.AttackTag) float64 {
 // Implements event handler for healing during burst
 // Also checks constellations
 func (c *char) burstActiveHook() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false

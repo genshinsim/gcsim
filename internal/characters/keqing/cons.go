@@ -13,7 +13,7 @@ import (
 const c2ICDKey = "keqing-c2-icd"
 
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		e, ok := args[0].(*enemy.Enemy)
 		if !ok {

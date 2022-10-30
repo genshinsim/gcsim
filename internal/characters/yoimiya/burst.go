@@ -88,7 +88,7 @@ func (c *char) applyAB(a combat.AttackCB) {
 func (c *char) burstHook() {
 	//check on attack landed for target 0
 	//if aurous active then trigger dmg if not on cd
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		trg, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
@@ -143,7 +143,7 @@ func (c *char) burstHook() {
 
 	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
-		c.Core.Events.Subscribe(event.OnPlayerDamage, func(_ ...interface{}) bool {
+		c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(_ ...interface{}) bool {
 			if c.HPCurrent <= 0 {
 				// remove Aurous Blaze from target
 				for _, x := range c.Core.Combat.Enemies() {

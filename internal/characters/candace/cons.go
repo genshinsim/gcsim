@@ -30,7 +30,7 @@ func (c *char) c2() {
 // AoE Hydro DMG equal to 15% of Candace's Max HP. This effect can trigger once
 // every 2.3s and is considered Elemental Burst DMG.
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false

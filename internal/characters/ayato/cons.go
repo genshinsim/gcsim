@@ -46,7 +46,7 @@ func (c *char) c2() {
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}

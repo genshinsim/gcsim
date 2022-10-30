@@ -69,7 +69,7 @@ func (c *char) c4() {
 // This type of healing can occur once every 0.1s.
 func (c *char) c6() {
 	const c6icd = "dori-c6-heal-icd"
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false

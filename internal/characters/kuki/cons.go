@@ -18,7 +18,7 @@ import (
 func (c *char) c4() {
 	//TODO: idk if the damage is instant or not
 	const c4IcdKey = "kuki-c4-icd"
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		//ignore if C4 on icd
 		if c.StatusIsActive(c4IcdKey) {
@@ -67,7 +67,7 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 150
 	const c6IcdKey = "kuki-c6-icd"
-	c.Core.Events.Subscribe(event.OnPlayerDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(player.DrainInfo)
 		if di.Amount <= 0 {
 			return false

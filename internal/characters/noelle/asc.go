@@ -11,7 +11,7 @@ import (
 const a1IcdKey = "noelle-a1-icd"
 
 func (c *char) a1() {
-	c.Core.Events.Subscribe(event.OnPlayerDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(player.DrainInfo)
 		if di.Amount <= 0 {
 			return false

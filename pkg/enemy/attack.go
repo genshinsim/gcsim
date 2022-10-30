@@ -14,7 +14,7 @@ import (
 
 func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 	//at this point attack will land
-	e.Core.Combat.Events.Emit(event.OnAttackWillLand, e, atk)
+	e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
 
 	var amp string
 	var cata string
@@ -41,13 +41,13 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 		evt.Write("pre_damage_mods", preDmgModDebug)
 	}
 
-	dmg, crit = e.Attack(atk, evt)
+	dmg, crit = e.attack(atk, evt)
 
 	//delay damage event to end of the frame
 	e.Core.Combat.Tasks.Add(func() {
 		//apply the damage
-		e.ApplyDamage(atk, dmg)
-		e.Core.Combat.Events.Emit(event.OnDamage, e, atk, dmg, crit)
+		e.applyDamage(atk, dmg)
+		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, dmg, crit)
 		//callbacks
 		cb := combat.AttackCB{
 			Target:      e,
@@ -72,7 +72,7 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 	return dmg
 }
 
-func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//if target is frozen prior to attack landing, set impulse to 0
 	//let the break freeze attack to trigger actual impulse
 	if e.Durability[reactable.ModifierFrozen] > reactable.ZeroDur {
@@ -162,7 +162,7 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	return damage, isCrit
 }
 
-func (e *Enemy) ApplyDamage(atk *combat.AttackEvent, damage float64) {
+func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
 	//record dmg
 	e.hp -= damage
 	e.damageTaken += damage //TODO: do we actually need this?

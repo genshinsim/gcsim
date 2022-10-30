@@ -36,7 +36,7 @@ func TestBeidouBounce(t *testing.T) {
 
 	//start tests
 	dmgCount := make(map[combat.TargetKey]int)
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false

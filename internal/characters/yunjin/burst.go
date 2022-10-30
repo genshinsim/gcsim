@@ -66,7 +66,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 func (c *char) burstProc() {
 	// Add Flying Cloud Flag Formation as a pre-damage hook
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 
 		if ae.Info.AttackTag != combat.AttackTagNormal {

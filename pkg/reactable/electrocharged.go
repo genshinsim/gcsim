@@ -69,7 +69,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 
 		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
 		//subscribe to wane ticks
-		r.core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			//target should be first, then snapshot
 			n := args[0].(combat.Target)
 			a := args[1].(*combat.AttackEvent)
@@ -123,7 +123,7 @@ func (r *Reactable) waneEC() {
 func (r *Reactable) checkEC() {
 	if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 		r.ecTickSrc = -1
-		r.core.Events.Unsubscribe(event.OnDamage, fmt.Sprintf("ec-%v", r.self.Key()))
+		r.core.Events.Unsubscribe(event.OnEnemyDamage, fmt.Sprintf("ec-%v", r.self.Key()))
 		r.core.Log.NewEvent("ec expired",
 			glog.LogElementEvent,
 			-1,

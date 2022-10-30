@@ -20,7 +20,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		events: make([][]stats.DamageEvent, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		target := args[0].(combat.Target)
 		attack := args[1].(*combat.AttackEvent)
 		damage := args[2].(float64)

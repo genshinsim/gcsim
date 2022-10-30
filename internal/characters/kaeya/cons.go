@@ -76,7 +76,7 @@ func (c *char) c2() {
 // This shield absorbs Cryo DMG with 250% efficiency.
 // Can only occur once every 60s.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnPlayerDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(player.DrainInfo)
 		if di.Amount <= 0 {
 			return false

@@ -15,7 +15,7 @@ import (
 // is decreased by 2s. This effect can occur once every 10s.
 func (c *char) c1() {
 	icd := -1
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		if c.Core.Status.Duration(generalGloryKey) == 0 && c.Core.Status.Duration(generalWarBannerKey) == 0 {
 			return false
 		}

@@ -107,7 +107,7 @@ func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	t.Core.Combat.Tasks.Add(func() {
 		//apply the damage
 		t.ApplyDamage(atk, 1)
-		t.Core.Combat.Events.Emit(event.OnDamage, t, atk, 1.0, false)
+		t.Core.Combat.Events.Emit(event.OnEnemyDamage, t, atk, 1.0, false)
 	}, 0)
 	return 1
 }

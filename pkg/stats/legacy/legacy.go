@@ -118,7 +118,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		return false
 	}, "legacy-on-tick")
 
-	core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
