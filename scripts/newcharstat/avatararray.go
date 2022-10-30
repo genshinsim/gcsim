@@ -68,7 +68,7 @@ type PropGrowCurves []struct {
 	GrowCurve string `json:"growCurve"`
 }
 
-func getAvatarArray() Avatars {
+func getAvatarArray() (Avatars, []int) {
 	avatarDataJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarExcelConfigData.json")
 	if err != nil {
 		log.Fatal(err)
@@ -79,11 +79,13 @@ func getAvatarArray() Avatars {
 	}
 	// remove testing/invalid chars
 	var filteredAvatars Avatars
+	var textMapIds []int
 	for _, avatar := range avatars {
 		if avatar.UseType == "AVATAR_FORMAL" {
 			filteredAvatars = append(filteredAvatars, avatar)
+			textMapIds = append(textMapIds, avatar.NameTextMapHash)
 		}
 	}
-	return filteredAvatars
+	return filteredAvatars, textMapIds
 
 }

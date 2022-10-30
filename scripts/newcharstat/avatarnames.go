@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 )
 
 type TextMap map[int]string
 
 //need avatarIds to simplify textmap
-func generateAvatarNameMap(avatarIdToTextMapId map[int]int) map[int]string {
+func generateAvatarNameMap(textMapIds []int) map[int]string {
 	enTextMapJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/TextMap/TextMapEN.json")
 	if err != nil {
 		log.Fatal(err)
@@ -19,8 +20,9 @@ func generateAvatarNameMap(avatarIdToTextMapId map[int]int) map[int]string {
 	}
 
 	avatarNameMap := make(map[int]string)
-	for avatarId, textMapId := range avatarIdToTextMapId {
-		avatarNameMap[avatarId] = enTextMap[textMapId]
+	for _, textMapId := range textMapIds {
+		avatarNameMap[textMapId] = enTextMap[textMapId]
 	}
+	fmt.Printf("avatarNameMap: %+v", avatarNameMap)
 	return avatarNameMap
 }
