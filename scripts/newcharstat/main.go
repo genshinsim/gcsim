@@ -21,10 +21,12 @@ type BaseStatCurves struct {
 
 func main() {
 	var err error
-	avatars := getAvatarArray()
+	avatars, avatarIdToTextMapId := getAvatarArray()
 	locationMap := getCharLocationMap()
 	specializedStatMap, promoDataMap := getCharSpecializedStatandPromoData()
 	elementMap := getAvatarElementMap()
+
+	_ = generateAvatarNameMap(avatarIdToTextMapId)
 
 	characterArray := make([]curves.CharBase, len(avatars))
 
@@ -72,7 +74,6 @@ func main() {
 		}
 
 		characterArray = append(characterArray, char)
-		//print out the character name
 		fmt.Println(charName)
 		fmt.Printf("%+v\n", char)
 	}
