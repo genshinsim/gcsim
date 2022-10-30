@@ -13,7 +13,7 @@ type FetterInfo []struct {
 	AvatarId        int    `json:"avatarId"`
 }
 
-func getCharLocationMap() map[int]profile.ZoneType {
+func getCharLocationMap() map[int]string {
 	fetterInfoJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/FetterInfoExcelConfigData.json")
 	if err != nil {
 		log.Fatal(err)
@@ -25,13 +25,9 @@ func getCharLocationMap() map[int]profile.ZoneType {
 	}
 
 	// reshape fetterInfo to map of avatarId to AvatarAssocType
-	locationMap := make(map[int]profile.ZoneType)
+	locationMap := make(map[int]string)
 	for _, v := range fetterInfo {
-		location, err := determineCharRegion(v.AvatarAssocType)
-		if err != nil {
-			log.Fatal("Unknown region for character ", v.AvatarId, ": ", v.AvatarAssocType)
-		}
-		locationMap[v.AvatarId] = location
+		locationMap[v.AvatarId] = v.AvatarAssocType
 	}
 	return locationMap
 }
@@ -50,7 +46,6 @@ func determineCharRegion(location string) (profile.ZoneType, error) {
 		return profile.ZoneUnknown, nil
 	case "ASSOC_TYPE_FATUI":
 		return profile.ZoneSnezhnaya, nil
-
 	default:
 		return profile.ZoneUnknown, errors.New("unknown location")
 	}

@@ -8,11 +8,16 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/curves"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
+
+type BaseStatCurves struct {
+	HpCurve  string
+	AtkCurve string
+	DefCurve string
+}
 
 func main() {
 	var err error
@@ -25,78 +30,51 @@ func main() {
 
 	for _, avatar := range avatars {
 		char := curves.CharBase{}
+		charBaseStatCurves := extractCharStatCurves(avatar.PropGrowCurves)
 		charName := determineCharName(avatar.IconName)
-		char.Rarity, err = determineCharRarity(avatar.QualityType)
-		char.Element = elementMap[avatar.SkillDepotID]
-		char.Region = locationMap[avatar.ID]
+
 		char.BaseHP = avatar.HpBase
 		char.BaseAtk = avatar.AttackBase
 		char.BaseDef = avatar.DefenseBase
 		char.PromotionBonus = promoDataMap[avatar.AvatarPromoteID]
+		char.Element = convertElement(elementMap[avatar.SkillDepotID])
+		char.Specialized, err = determineStat(specializedStatMap[avatar.AvatarPromoteID])
+		if err != nil {
+			log.Fatal("Unknown specialized stat for character ", charName, ": ", specializedStatMap[avatar.ID])
+		}
+		char.Rarity, err = determineCharRarity(avatar.QualityType)
 		if err != nil {
 			log.Fatal("Unknown rarity type for character ", charName, ": ", avatar.QualityType)
 		}
-
 		char.Body, err = determineCharBody(avatar.BodyType)
 		if err != nil {
 			log.Fatal("Unknown body type for character ", charName, ": ", avatar.BodyType)
 		}
-
 		char.WeaponType, err = determineCharWeaponType(avatar.WeaponType)
 		if err != nil {
 			log.Fatal("Unknown weapon type for character ", charName, ": ", avatar.WeaponType)
 		}
-
-		switch specializedStatMap[avatar.AvatarPromoteID] {
-		case "FIGHT_PROP_CRITICAL_HURT":
-			char.Specialized = attributes.CD
-		case "FIGHT_PROP_HEAL_ADD":
-			char.Specialized = attributes.Heal
-		case "FIGHT_PROP_ATTACK_PERCENT":
-			char.Specialized = attributes.ATKP
-		case "FIGHT_PROP_ELEMENT_MASTERY":
-			char.Specialized = attributes.EM
-		case "FIGHT_PROP_HP_PERCENT":
-			char.Specialized = attributes.HPP
-		case "FIGHT_PROP_CHARGE_EFFICIENCY":
-			char.Specialized = attributes.ER
-		case "FIGHT_PROP_CRITICAL":
-			char.Specialized = attributes.CR
-		case "FIGHT_PROP_PHYSICAL_ADD_HURT":
-			char.Specialized = attributes.PhyP
-		case "FIGHT_PROP_ELEC_ADD_HURT":
-			char.Specialized = attributes.ElectroP
-		case "FIGHT_PROP_ROCK_ADD_HURT":
-			char.Specialized = attributes.GeoP
-		case "FIGHT_PROP_FIRE_ADD_HURT":
-			char.Specialized = attributes.PyroP
-		case "FIGHT_PROP_WATER_ADD_HURT":
-			char.Specialized = attributes.HydroP
-		case "FIGHT_PROP_DEFENSE_PERCENT":
-			char.Specialized = attributes.DEFP
-		case "FIGHT_PROP_ICE_ADD_HURT":
-			char.Specialized = attributes.CryoP
-		case "FIGHT_PROP_WIND_ADD_HURT":
-			char.Specialized = attributes.AnemoP
-		case "FIGHT_PROP_GRASS_ADD_HURT":
-			char.Specialized = attributes.DendroP
-		default:
-			log.Fatal("Unknown Specialized Stat")
+		char.Region, err = determineCharRegion(locationMap[avatar.ID])
+		if err != nil {
+			log.Fatal("Unknown weapon type for character ", charName, ": ", avatar.WeaponType)
 		}
-		if strings.Contains(avatar.PropGrowCurves[0].GrowCurve, "S5") {
-			char.HPCurve = curves.GROW_CURVE_HP_S5
-			char.AtkCurve = curves.GROW_CURVE_ATTACK_S5
-			char.DefCurve = curves.GROW_CURVE_HP_S5
-		} else {
-			char.HPCurve = curves.GROW_CURVE_HP_S4
-			char.AtkCurve = curves.GROW_CURVE_ATTACK_S4
-			char.DefCurve = curves.GROW_CURVE_HP_S4
+		char.HPCurve, err = determineCharStatCurves(charBaseStatCurves.HpCurve)
+		if err != nil {
+			log.Fatal("Unknown stat curve for character ", charName, ": ", charBaseStatCurves.HpCurve)
+		}
+		char.AtkCurve, err = determineCharStatCurves(charBaseStatCurves.AtkCurve)
+		if err != nil {
+			log.Fatal("Unknown stat curve for character ", charName, ": ", charBaseStatCurves.AtkCurve)
+		}
+		char.DefCurve, err = determineCharStatCurves(charBaseStatCurves.DefCurve)
+		if err != nil {
+			log.Fatal("Unknown stat curve for character ", charName, ": ", charBaseStatCurves.DefCurve)
 		}
 
 		characterArray = append(characterArray, char)
 		//print out the character name
-		// fmt.Println(charName)
-		// fmt.Printf("%+v\n", char)
+		fmt.Println(charName)
+		fmt.Printf("%+v\n", char)
 	}
 }
 
@@ -165,46 +143,33 @@ func determineCharWeaponType(weaponType string) (weapon.WeaponClass, error) {
 	}
 }
 
-var tmpl = `package curves
+func extractCharStatCurves(propGrowCurves PropGrowCurves) BaseStatCurves {
+	//reshape avatar.PropGrowCurves to be a map of Type to GrowCurve
+	growCurveMap := make(map[string]string)
+	for _, growCurve := range propGrowCurves {
+		growCurveMap[growCurve.Type] = growCurve.GrowCurve
+	}
 
-import (
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
-)
-
-
-var CharBaseMap = map[keys.Char]CharBase{
-	{{- range $key, $value := . }}
-	{{- if $value.Key }}
-	keys.{{$value.Key}}: {
-		Rarity: {{$value.Rarity}},
-		Body: profile.Body {{- $value.Body}},
-		Element: attributes. {{- $value.Element}},
-		Region: profile.Zone {{- $value.Region}},
-		WeaponType: weapon.WeaponClass {{- $value.WeaponType}},
-		HPCurve: {{$value.Curve.HP}},
-		AtkCurve: {{$value.Curve.Atk}},
-		DefCurve: {{$value.Curve.Def}},
-		BaseHP: {{$value.Base.HP}},
-		BaseAtk: {{$value.Base.Atk}},
-		BaseDef: {{$value.Base.Def}},
-		Specialized: {{$value.Specialized}},
-		PromotionBonus: []PromoData{
-			{{- range $e := $value.PromotionData}}
-			{
-				MaxLevel: {{$e.Max}},
-				HP:       {{$e.HP}},
-				Atk:      {{$e.Atk}},
-				Def:      {{$e.Def}},
-				Special:  {{$e.Specialized}},
-			},
-			{{- end }}
-		},
-	},
-	{{- end }}
-	{{- end }}
+	return BaseStatCurves{
+		HpCurve:  growCurveMap["FIGHT_PROP_BASE_HP"],
+		AtkCurve: growCurveMap["FIGHT_PROP_BASE_ATTACK"],
+		DefCurve: growCurveMap["FIGHT_PROP_BASE_DEFENSE"],
+	}
 }
 
-`
+func determineCharStatCurves(statCurve string) (curves.CharStatCurve, error) {
+	//print statCurve
+	switch statCurve {
+	case "GROW_CURVE_ATTACK_S5":
+		return curves.GROW_CURVE_ATTACK_S5, nil
+	case "GROW_CURVE_ATTACK_S4":
+		return curves.GROW_CURVE_ATTACK_S4, nil
+	case "GROW_CURVE_HP_S5":
+		return curves.GROW_CURVE_HP_S5, nil
+	case "GROW_CURVE_HP_S4":
+		return curves.GROW_CURVE_HP_S4, nil
+
+	default:
+		return curves.GROW_CURVE_HP_S5, errors.New("unknown stat curve")
+	}
+}

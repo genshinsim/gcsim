@@ -21,13 +21,13 @@ type SkillDepot []struct {
 	// LeaderTalent           int    `json:"leaderTalent,omitempty"`
 }
 type AvatarSkillInfo []struct {
-	ID int `json:"id"`
+	ID           int    `json:"id"`
+	CostElemType string `json:"costElemType,omitempty"`
 	// NameTextMapHash    int64     `json:"nameTextMapHash"`
 	// AbilityName        string    `json:"abilityName"`
 	// DescTextMapHash    int       `json:"descTextMapHash"`
 	// SkillIcon          string    `json:"skillIcon"`
 	// CdTime             float64   `json:"cdTime,omitempty"`
-	CostElemType string `json:"costElemType,omitempty"`
 	// CostElemVal        float64   `json:"costElemVal,omitempty"`
 	// MaxChargeNum       int       `json:"maxChargeNum"`
 	// TriggerID          int       `json:"triggerID,omitempty"`
@@ -39,7 +39,7 @@ type AvatarSkillInfo []struct {
 	// CostStamina        float64   `json:"costStamina,omitempty"`
 }
 
-func getAvatarElementMap() map[int]attributes.Element {
+func getAvatarElementMap() map[int]string {
 	skillDepotJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarSkillDepotExcelConfigData.json")
 	if err != nil {
 		log.Fatal(err)
@@ -60,24 +60,21 @@ func getAvatarElementMap() map[int]attributes.Element {
 		log.Fatal(err)
 	}
 
-	// reshape avatarSkillInfo to map of ID to CostElemType
+	// reshape avatarSkillInfo to map of energyskillID to CostElemType
 	energySkillMap := make(map[int]string)
 	for _, v := range avatarSkillInfo {
 		energySkillMap[v.ID] = v.CostElemType
 	}
 
-	// reshape skillDepot and avatarSkillInfo to map of skillDepot.ID to AvatarSkillInfo.CostElemType linked via EnergySkillMap
-	elementMap := make(map[int]attributes.Element)
+	// reshape skillDepot to map of skilldepotID to CostElemType
+	elementMap := make(map[int]string)
 	for _, skill := range skillDepot {
 		if skill.EnergySkill == 0 {
 			continue
 		}
-
-		elementMap[skill.ID] = convertElement(energySkillMap[skill.EnergySkill])
-
+		elementMap[skill.ID] = energySkillMap[skill.EnergySkill]
 	}
 
-	// fmt.Printf("%+v\n", elementMap)
 	return elementMap
 
 }

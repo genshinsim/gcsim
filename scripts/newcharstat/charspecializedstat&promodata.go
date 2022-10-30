@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/curves"
 )
 
@@ -43,7 +45,6 @@ func getCharSpecializedStatandPromoData() (map[int]string, map[int][]curves.Prom
 	promoDataMap := make(map[int][]curves.PromoData)
 	for _, v := range avatarPromotes {
 		partialPromoData := addPropArraytoPromoData(v.AddProps)
-
 		partialPromoData.MaxLevel = promoteLevelToMaxLevel(v.PromoteLevel)
 		promoDataMap[v.AvatarPromoteID] = append(promoDataMap[v.AvatarPromoteID], partialPromoData)
 	}
@@ -54,7 +55,6 @@ func getCharSpecializedStatandPromoData() (map[int]string, map[int][]curves.Prom
 func addPropArraytoPromoData(addProps []AddProp) curves.PromoData {
 	var out curves.PromoData
 	for _, prop := range addProps {
-
 		switch prop.PropType {
 		case "FIGHT_PROP_BASE_HP":
 			out.HP = prop.Value
@@ -87,5 +87,47 @@ func promoteLevelToMaxLevel(level int) int {
 		return 90
 	default:
 		return 0
+	}
+}
+
+func determineStat(specializedStat string) (attributes.Stat, error) {
+	switch specializedStat {
+	case "FIGHT_PROP_CRITICAL_HURT":
+		return attributes.CD, nil
+	case "FIGHT_PROP_HEAL_ADD":
+		return attributes.Heal, nil
+	case "FIGHT_PROP_ATTACK_PERCENT":
+		return attributes.ATKP, nil
+	case "FIGHT_PROP_ELEMENT_MASTERY":
+		return attributes.EM, nil
+	case "FIGHT_PROP_HP_PERCENT":
+		return attributes.HPP, nil
+	case "FIGHT_PROP_CHARGE_EFFICIENCY":
+		return attributes.ER, nil
+	case "FIGHT_PROP_CRITICAL":
+		return attributes.CR, nil
+	case "FIGHT_PROP_PHYSICAL_ADD_HURT":
+		return attributes.PhyP, nil
+	case "FIGHT_PROP_ELEC_ADD_HURT":
+		return attributes.ElectroP, nil
+	case "FIGHT_PROP_ROCK_ADD_HURT":
+		return attributes.GeoP, nil
+	case "FIGHT_PROP_FIRE_ADD_HURT":
+		return attributes.PyroP, nil
+	case "FIGHT_PROP_WATER_ADD_HURT":
+		return attributes.HydroP, nil
+	case "FIGHT_PROP_DEFENSE_PERCENT":
+		return attributes.DEFP, nil
+	case "FIGHT_PROP_ICE_ADD_HURT":
+		return attributes.CryoP, nil
+	case "FIGHT_PROP_WIND_ADD_HURT":
+		return attributes.AnemoP, nil
+	case "FIGHT_PROP_GRASS_ADD_HURT":
+		return attributes.DendroP, nil
+	case "":
+		return attributes.EndStatType, nil
+	default:
+		return attributes.EndStatType, errors.New("unknown stat type")
+
 	}
 }

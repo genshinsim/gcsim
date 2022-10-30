@@ -46,23 +46,26 @@ type Avatars []struct {
 	// InitialWeapon   int     `json:"initialWeapon"`
 	// Critical        float64 `json:"critical"`
 	// CriticalHurt    float64 `json:"criticalHurt"`
-	SkillDepotID    int     `json:"skillDepotId"`
-	BodyType        string  `json:"bodyType"`
-	IconName        string  `json:"iconName"`
-	QualityType     string  `json:"qualityType"`
-	WeaponType      string  `json:"weaponType"`
-	ImageName       string  `json:"imageName"`
-	AvatarPromoteID int     `json:"avatarPromoteId"`
-	HpBase          float64 `json:"hpBase"`
-	AttackBase      float64 `json:"attackBase"`
-	DefenseBase     float64 `json:"defenseBase"`
-	PropGrowCurves  []struct {
-		Type      string `json:"type"`
-		GrowCurve string `json:"growCurve"`
-	} `json:"propGrowCurves"`
-	ID              int    `json:"id"`
-	NameTextMapHash int    `json:"nameTextMapHash"`
-	UseType         string `json:"useType,omitempty"`
+	SkillDepotID    int            `json:"skillDepotId"`
+	BodyType        string         `json:"bodyType"`
+	IconName        string         `json:"iconName"`
+	QualityType     string         `json:"qualityType"`
+	WeaponType      string         `json:"weaponType"`
+	ImageName       string         `json:"imageName"`
+	AvatarPromoteID int            `json:"avatarPromoteId"`
+	HpBase          float64        `json:"hpBase"`
+	AttackBase      float64        `json:"attackBase"`
+	DefenseBase     float64        `json:"defenseBase"`
+	PropGrowCurves  PropGrowCurves `json:"propGrowCurves"`
+	ID              int            `json:"id"`
+	NameTextMapHash int            `json:"nameTextMapHash"`
+	UseType         string         `json:"useType,omitempty"`
+}
+
+type PropGrowCurves []struct {
+	Type string `json:"type"`
+
+	GrowCurve string `json:"growCurve"`
 }
 
 func getAvatarArray() Avatars {
