@@ -109,18 +109,21 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 			applied := atk.Info.Durability
 			e.React(atk)
 			if e.Core.Flags.LogDebug && atk.Reacted {
-				e.Core.Log.NewEvent(
-					"application",
-					glog.LogElementEvent,
-					atk.Info.ActorIndex,
-				).
-					Write("attack_tag", atk.Info.AttackTag).
-					Write("applied_ele", atk.Info.Element.String()).
-					Write("dur", applied).
-					Write("abil", atk.Info.Abil).
-					Write("target", e.Key()).
-					Write("existing", existing).
-					Write("after", e.Reactable.ActiveAuraString())
+				// defer logging for quicken bloom
+				e.Core.Tasks.Add(func() {
+					e.Core.Log.NewEvent(
+						"application",
+						glog.LogElementEvent,
+						atk.Info.ActorIndex,
+					).
+						Write("attack_tag", atk.Info.AttackTag).
+						Write("applied_ele", atk.Info.Element.String()).
+						Write("dur", applied).
+						Write("abil", atk.Info.Abil).
+						Write("target", e.Key()).
+						Write("existing", existing).
+						Write("after", e.Reactable.ActiveAuraString())
+				}, 0)
 			}
 		}
 	}
