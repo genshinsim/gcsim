@@ -13,7 +13,7 @@ import (
 
 func (c *char) c4() {
 	const icdKey = "chongyun-c4-icd"
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		t, ok := args[0].(core.Reactable)
 		if !ok {

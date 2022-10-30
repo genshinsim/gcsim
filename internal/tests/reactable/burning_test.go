@@ -20,7 +20,7 @@ func TestBurningTicks(t *testing.T) {
 	}
 	//expecting 8 ticks: https://www.youtube.com/watch?v=PdZ6Qxo7pSY
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
 			count++
@@ -92,7 +92,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	//https://www.youtube.com/watch?v=En3Ki_vVgR0
 	count := 0
 	countByActor := []int{0, 0}
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
 			count++

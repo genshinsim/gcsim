@@ -52,7 +52,6 @@ func (h *Handler) AddGadget(t Gadget) {
 		}
 	}
 	h.gadgets = append(h.gadgets, t)
-	t.SetIndex(len(h.gadgets) - 1)
 	t.SetKey(h.nextkey())
 }
 

@@ -107,7 +107,7 @@ func (c *char) burstHook() {
 	//TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
 	//According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
 	//only 2nd ec tick should break
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		//ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

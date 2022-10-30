@@ -27,7 +27,7 @@ func (c *char) a1(stacks int) {
 // instance of AoE Pyo DMG equal to 80% of her ATK. This DMG counts as Charged
 // Attack DMG.
 func (c *char) a4() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != c.Index {

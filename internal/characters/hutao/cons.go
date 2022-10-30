@@ -17,7 +17,7 @@ func (c *char) c6() {
 	c.c6buff = make([]float64, attributes.EndStatType)
 	c.c6buff[attributes.CR] = 1
 	// check for C6 proc on hurt
-	c.Core.Events.Subscribe(event.OnPlayerDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(player.DrainInfo)
 		if di.Amount <= 0 {
 			return false
@@ -65,9 +65,9 @@ func (c *char) checkc6(check1HP bool) {
 	c.AddStatus(c6ICDKey, 3600, false)
 }
 
-//Upon defeating an enemy affected by a Blood Blossom that Hu Tao applied
-//herself, all nearby allies in the party (excluding Hu Tao herself) will have
-//their CRIT Rate increased by 12% for 15s.
+// Upon defeating an enemy affected by a Blood Blossom that Hu Tao applied
+// herself, all nearby allies in the party (excluding Hu Tao herself) will have
+// their CRIT Rate increased by 12% for 15s.
 func (c *char) c4() {
 	c.c4buff = make([]float64, attributes.EndStatType)
 	c.c4buff[attributes.CR] = 0.12

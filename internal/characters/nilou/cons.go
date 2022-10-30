@@ -31,7 +31,7 @@ func (c *char) c1() {
 // After a triggered Bloom reaction deals DMG to opponents, their Dendro RES will be decreased by 35% for 10s.
 // You need to have unlocked the “Court of Dancing Petals” Talent.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

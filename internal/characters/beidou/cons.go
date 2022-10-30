@@ -11,7 +11,7 @@ import (
 const c4key = "beidou-c4"
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnPlayerDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(player.DrainInfo)
 		if !di.External {
 			return false
@@ -28,7 +28,7 @@ func (c *char) c4() {
 		return false
 	}, "beidouc4")
 
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {

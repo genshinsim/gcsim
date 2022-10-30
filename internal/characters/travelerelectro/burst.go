@@ -89,7 +89,7 @@ func (c *char) burstProc() {
 	//  When your active character's Normal or Charged Attacks hit opponents, they will call Falling Thunder forth, dealing Electro DMG.
 	//  When Falling Thunder hits opponents, it will regenerate Energy for that character.
 	//  One instance of Falling Thunder can be generated every 0.5s.
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
 

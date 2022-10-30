@@ -28,10 +28,10 @@ const (
 	buffKey = "skyward-blade"
 )
 
-//CRIT Rate increased by 4%. Gains Skypiercing Might upon using an Elemental
-//Burst: Increases Movement SPD by 10%, increases ATK SPD by 10%, and Normal and
-//Charged hits deal additional DMG equal to 20% of ATK. Skypiercing Might lasts
-//for 12s.
+// CRIT Rate increased by 4%. Gains Skypiercing Might upon using an Elemental
+// Burst: Increases Movement SPD by 10%, increases ATK SPD by 10%, and Normal and
+// Charged hits deal additional DMG equal to 20% of ATK. Skypiercing Might lasts
+// for 12s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	//deals damage proc on normal/charged attacks. i dont know why description in game sucks
 	dmgper := .15 + .05*float64(r)
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		//check if char is correct?
 		if atk.Info.ActorIndex != char.Index {

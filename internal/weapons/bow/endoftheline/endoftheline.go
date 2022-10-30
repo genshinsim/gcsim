@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("endoftheline-effect-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		// do nothing if holder is off-field
 		if c.Player.Active() != char.Index {

@@ -3,8 +3,11 @@ package event
 type Event int
 
 const (
-	OnAttackWillLand Event = iota //target, AttackEvent
-	OnDamage                      //target, AttackEvent, amount, crit
+	OnEnemyHit     Event = iota //target, AttackEvent
+	OnPlayerHit                 //target, AttackEvent
+	OnGadgetHit                 //target, AttackEvent
+	OnEnemyDamage               //target, AttackEvent, amount, crit
+	OnGadgetDamage              //target, AttackEvent
 	//reaction related
 	// OnReactionOccured //target, AttackEvent
 	// OnTransReaction   //target, AttackEvent
@@ -44,10 +47,8 @@ const (
 	OnParticleReceived //particle
 	OnEnergyChange     //character_received_index, pre_energy, energy_change, src (post-energy available in character_received)
 	OnTargetDied       //target, AttackEvent
-	OnPlayerHit        //nil <- this is for when the character is going to get hit but might be shielded from dmg
-	OnPlayerDamage     //DrainInfo
-	OnGadgetDamage     //...
 	OnHeal             //src char, target character, amount
+	OnPlayerHPDrain    //DrainInfo
 	//ability use
 	OnActionFailed //ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   //ActiveCharIndex, action.Action, param

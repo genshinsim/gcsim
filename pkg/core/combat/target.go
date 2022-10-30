@@ -2,7 +2,6 @@ package combat
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 type TargetKey int
@@ -10,8 +9,6 @@ type TargetKey int
 const InvalidTargetKey TargetKey = -1
 
 type Target interface {
-	Index() int              //should correspond to index
-	SetIndex(index int)      //update the current index
 	Key() TargetKey          //unique key for the target
 	SetKey(k TargetKey)      //update key
 	Type() TargettableType   //type of target
@@ -21,8 +18,6 @@ type Target interface {
 	IsAlive() bool
 	HandleAttack(*AttackEvent) float64
 	AttackWillLand(a AttackPattern) (bool, string)
-	Attack(*AttackEvent, glog.Event) (float64, bool)
-	ApplyDamage(*AttackEvent, float64)
 	Tick() //called every tick
 	Kill()
 	//for collision check

@@ -19,7 +19,7 @@ func TestHyperbloom(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
@@ -87,7 +87,7 @@ func TestECHyperbloom(t *testing.T) {
 	}
 
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "hyperbloom" {

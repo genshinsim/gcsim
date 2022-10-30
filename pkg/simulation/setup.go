@@ -165,7 +165,7 @@ func SetupResonance(s *core.Core) {
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 				//shred geo res of target
-				s.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+				s.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 					t, ok := args[0].(*enemy.Enemy)
 					if !ok {
 						return false
@@ -262,7 +262,7 @@ func SetupResonance(s *core.Core) {
 }
 
 func SetupMisc(c *core.Core) {
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		//dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
