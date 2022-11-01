@@ -16,7 +16,7 @@ type AvatarPromotes []struct {
 	// PromoteAudio    string `json:"promoteAudio"`
 	// CostItems       []struct {
 	// } `json:"costItems"`
-	// UnlockMaxLevel int `json:"unlockMaxLevel"`
+	UnlockMaxLevel int `json:"unlockMaxLevel"`
 	// ScoinCost           int `json:"scoinCost,omitempty"`
 	// RequiredPlayerLevel int `json:"requiredPlayerLevel,omitempty"`
 }
@@ -45,7 +45,7 @@ func getCharSpecializedStatandPromoData() (map[int]string, map[int][]curves.Prom
 	promoDataMap := make(map[int][]curves.PromoData)
 	for _, v := range avatarPromotes {
 		partialPromoData := addPropArraytoPromoData(v.AddProps)
-		partialPromoData.MaxLevel = promoteLevelToMaxLevel(v.PromoteLevel)
+		partialPromoData.MaxLevel = v.UnlockMaxLevel
 		promoDataMap[v.AvatarPromoteID] = append(promoDataMap[v.AvatarPromoteID], partialPromoData)
 	}
 
@@ -67,27 +67,6 @@ func addPropArraytoPromoData(addProps []AddProp) curves.PromoData {
 		}
 	}
 	return out
-}
-
-func promoteLevelToMaxLevel(level int) int {
-	switch level {
-	case 0:
-		return 20
-	case 1:
-		return 40
-	case 2:
-		return 50
-	case 3:
-		return 60
-	case 4:
-		return 70
-	case 5:
-		return 80
-	case 6:
-		return 90
-	default:
-		return 0
-	}
 }
 
 func determineStat(specializedStat string) (attributes.Stat, error) {
