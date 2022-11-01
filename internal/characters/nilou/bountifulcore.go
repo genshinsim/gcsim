@@ -30,9 +30,9 @@ func newBountifulCore(c *core.Core, x float64, y float64, a *combat.AttackEvent)
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.Targets[combat.TargettablePlayer] = false
-		ap.Targets[combat.TargettableEnemy] = true
-		ap.Targets[combat.TargettableGadget] = true
+		ap.SkipTargets[combat.TargettablePlayer] = false
+		ap.SkipTargets[combat.TargettableEnemy] = true
+		ap.SkipTargets[combat.TargettableGadget] = true
 		c.QueueAttack(ai, ap, -1, 1)
 	}
 	b.Gadget.OnExpiry = explode

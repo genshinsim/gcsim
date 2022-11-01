@@ -34,12 +34,12 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 	var total float64
 	var landed bool
 	// check player
-	if !a.Pattern.Targets[TargettablePlayer] {
+	if !a.Pattern.SkipTargets[TargettablePlayer] {
 		//TODO: we don't check for landed here since attack that hit player should never generate hitlag?
 		h.attack(h.player, a)
 	}
 	// check enemies
-	if !a.Pattern.Targets[TargettableEnemy] {
+	if !a.Pattern.SkipTargets[TargettableEnemy] {
 		for _, v := range h.enemies {
 			if v == nil {
 				continue
@@ -55,7 +55,7 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 		}
 	}
 	// check gadgets
-	if !a.Pattern.Targets[TargettableGadget] {
+	if !a.Pattern.SkipTargets[TargettableGadget] {
 		for i := 0; i < len(h.gadgets); i++ {
 			//sanity check here; possible gadgets died and have not been cleaned up yet
 			if h.gadgets[i] == nil {

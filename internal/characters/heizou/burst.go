@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// should only hit enemies
 	ap := combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4)
-	ap.Targets[combat.TargettableGadget] = true
+	ap.SkipTargets[combat.TargettableGadget] = true
 	c.Core.QueueAttack(auraCheck, ap, burstHitmark, burstHitmark, burstCB)
 
 	ai := combat.AttackInfo{

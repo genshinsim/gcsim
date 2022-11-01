@@ -2,7 +2,7 @@ package combat
 
 type AttackPattern struct {
 	Shape       Shape
-	Targets     [TargettableTypeCount]bool
+	SkipTargets [TargettableTypeCount]bool
 	IgnoredKeys []TargetKey
 }
 
@@ -21,7 +21,7 @@ func NewCircleHit(trg Positional, r float64) AttackPattern {
 			r: r,
 		},
 	}
-	a.Targets[TargettablePlayer] = true
+	a.SkipTargets[TargettablePlayer] = true
 	return a
 }
 
@@ -32,6 +32,6 @@ func NewDefBoxHit(w, h float64) AttackPattern {
 			h: h,
 		},
 	}
-	a.Targets[TargettablePlayer] = true
+	a.SkipTargets[TargettablePlayer] = true
 	return a
 }
