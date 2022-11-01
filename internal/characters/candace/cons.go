@@ -61,6 +61,7 @@ func (c *char) c6() {
 			Element:    attributes.Hydro,
 			Durability: 25,
 			FlatDmg:    0.15 * c.MaxHP(),
+			CanBeDefenseHalted: true,
 		}
 		c.Core.QueueAttack(
 			ai,
