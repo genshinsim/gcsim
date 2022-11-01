@@ -122,6 +122,7 @@ func (s *DendroCore) Tick() {
 }
 
 func (s *DendroCore) HandleAttack(atk *combat.AttackEvent) float64 {
+	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
 	s.Attack(atk, nil)
 	return 0
 }

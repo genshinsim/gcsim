@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -79,6 +80,7 @@ func (p *panda) breath() {
 func (p *panda) Type() combat.TargettableType { return combat.TargettableGadget }
 
 func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
+	p.Core.Events.Emit(event.OnGadgetHit, p, atk)
 	p.Attack(atk, nil)
 	return 0
 }
