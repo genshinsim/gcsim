@@ -44,7 +44,7 @@ func (c *char) a1() {
 			return false
 		}
 
-		return reduce(args)
+		return reduce(args...)
 	}
 	c.Core.Events.Subscribe(event.OnOverload, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, "dori-a1")

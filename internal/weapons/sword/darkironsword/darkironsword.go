@@ -54,7 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if _, ok := args[0].(*gadget.Gadget); ok {
 			return false
 		}
-		return buff(args)
+		return buff(args...)
 	}
 	c.Events.Subscribe(event.OnOverload, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSuperconduct, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))

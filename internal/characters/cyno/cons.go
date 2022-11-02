@@ -108,7 +108,7 @@ func (c *char) c4() {
 		if _, ok := args[0].(*gadget.Gadget); ok {
 			return false
 		}
-		return restore(args)
+		return restore(args...)
 	}
 	c.Core.Events.Subscribe(event.OnOverload, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnElectroCharged, restoreNoGadget, "cyno-c4")
