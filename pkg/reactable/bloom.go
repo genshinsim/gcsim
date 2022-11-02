@@ -12,7 +12,7 @@ import (
 
 const DendroCoreDelay = 20
 
-func (r *Reactable) tryBloom(a *combat.AttackEvent) {
+func (r *Reactable) TryBloom(a *combat.AttackEvent) {
 	//can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < ZeroDur {
 		return

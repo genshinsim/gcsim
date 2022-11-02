@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryFreeze(a *combat.AttackEvent) {
+func (r *Reactable) TryFreeze(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}

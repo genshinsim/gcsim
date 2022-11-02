@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) trySuperconduct(a *combat.AttackEvent) {
+func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -37,7 +37,7 @@ func (r *Reactable) trySuperconduct(a *combat.AttackEvent) {
 	r.queueSuperconduct(a)
 }
 
-func (r *Reactable) tryFrozenSuperconduct(a *combat.AttackEvent) {
+func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
