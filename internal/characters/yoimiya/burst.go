@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(c.Core.Combat.Player(), 5),
 		0,
 		burstHitmark,
 		c.applyAB, // callback to apply Aurous Blaze
@@ -88,7 +88,7 @@ func (c *char) applyAB(a combat.AttackCB) {
 func (c *char) burstHook() {
 	//check on attack landed for target 0
 	//if aurous active then trigger dmg if not on cd
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		trg, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
@@ -128,7 +128,7 @@ func (c *char) burstHook() {
 			Durability: 25,
 			Mult:       burstExplode[c.TalentLvlBurst()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 0, 1)
 
 		trg.AddStatus(abIcdKey, 120, true) // trigger Aurous Blaze ICD
 
@@ -143,7 +143,7 @@ func (c *char) burstHook() {
 
 	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
-		c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
+		c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(_ ...interface{}) bool {
 			if c.HPCurrent <= 0 {
 				// remove Aurous Blaze from target
 				for _, x := range c.Core.Combat.Enemies() {

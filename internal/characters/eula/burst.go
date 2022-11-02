@@ -27,8 +27,8 @@ const (
 	burstKey = "eula-q"
 )
 
-//ult 365 to 415, 60fps = 120
-//looks like ult charges for 8 seconds
+// ult 365 to 415, 60fps = 120
+// looks like ult charges for 8 seconds
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.burstCounter = 0
@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), burstHitmark, burstHitmark)
 
 	// A4: When Glacial Illumination is cast, the CD of Icetide Vortex is reset and Eula gains 1 stack of Grimheart.
 	if c.grimheartStacks < 2 {
@@ -110,13 +110,13 @@ func (c *char) triggerBurst() {
 		Write("stacks", c.burstCounter).
 		Write("mult", ai.Mult)
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), lightfallHitmark, lightfallHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), lightfallHitmark, lightfallHitmark)
 	c.Core.Status.Delete(burstKey)
 	c.burstCounter = 0
 }
 
 func (c *char) burstStacks() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if c.Core.Status.Duration(burstKey) == 0 {
 			return false

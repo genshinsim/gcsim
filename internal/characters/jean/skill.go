@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.c1(&snap)
 	}
 
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1), hitmark)
 
 	var count float64 = 2
 	if c.Core.Rand.Float64() < 2.0/3.0 {

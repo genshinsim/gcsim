@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -69,7 +70,7 @@ func (p *panda) breath() {
 	p.Core.QueueAttackWithSnap(
 		p.ai,
 		p.snap,
-		combat.NewCircleHit(p, 0.5, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(p, 0.5),
 		10,
 		p.c.c1,
 		part,
@@ -77,6 +78,12 @@ func (p *panda) breath() {
 }
 
 func (p *panda) Type() combat.TargettableType { return combat.TargettableGadget }
+
+func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
+	p.Core.Events.Emit(event.OnGadgetHit, p, atk)
+	p.Attack(atk, nil)
+	return 0
+}
 
 func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//don't take damage, trigger swirl reaction only on sucrose E

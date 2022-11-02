@@ -36,7 +36,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		Element:    attributes.Hydro,
 		Durability: 25,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), dashHitmark+f, dashHitmark+f)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), dashHitmark+f, dashHitmark+f)
 
 	// A1
 	c.Core.Tasks.Add(c.a1(), 120)

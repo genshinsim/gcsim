@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	c.Core.Tasks.Add(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5), 0, 0)
 		// A1:
 		// set namisen stacks to max
 		c.stacks = c.stacksMax

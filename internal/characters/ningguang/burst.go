@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 0; i < jade; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 			0,
 			burstHitmarks[i]+travel,
 		)
@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				c.skillSnapshot,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				burstHitmarks[len(burstHitmarks)-1]+30+travel,
 			) // TODO: figure out jade screen hitmarks
 		}

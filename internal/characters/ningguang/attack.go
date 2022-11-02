@@ -104,7 +104,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i := 0; i < 2; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), r),
 			attackHitmarks[nextAttack],
 			attackHitmarks[nextAttack]+travel,
 			cb,

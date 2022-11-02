@@ -60,23 +60,22 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	//TODO: need to check if refresh ec triggers new tick immediately or not
 	if r.ecTickSrc == -1 {
 		r.ecTickSrc = r.core.F
-
 		r.core.QueueAttack(
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
+			combat.NewDefSingleTarget(r.self.Key()),
 			-1,
 			10,
 		)
 
 		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
 		//subscribe to wane ticks
-		r.core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			//target should be first, then snapshot
 			n := args[0].(combat.Target)
 			a := args[1].(*combat.AttackEvent)
 			dmg := args[2].(float64)
 			//TODO: there's no target index
-			if n.Index() != r.self.Index() {
+			if n.Key() != r.self.Key() {
 				return false
 			}
 			if a.Info.AttackTag != combat.AttackTagECDamage {
@@ -96,7 +95,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 				r.waneEC()
 			}, 6)
 			return false
-		}, fmt.Sprintf("ec-%v", r.self.Index()))
+		}, fmt.Sprintf("ec-%v", r.self.Key()))
 	}
 
 	//ticks are 60 frames since last tick
@@ -113,7 +112,7 @@ func (r *Reactable) waneEC() {
 		-1,
 	).
 		Write("aura", "ec").
-		Write("target", r.self.Index()).
+		Write("target", r.self.Key()).
 		Write("hydro", r.Durability[ModifierHydro]).
 		Write("electro", r.Durability[ModifierElectro])
 
@@ -124,13 +123,13 @@ func (r *Reactable) waneEC() {
 func (r *Reactable) checkEC() {
 	if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 		r.ecTickSrc = -1
-		r.core.Events.Unsubscribe(event.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))
+		r.core.Events.Unsubscribe(event.OnEnemyDamage, fmt.Sprintf("ec-%v", r.self.Key()))
 		r.core.Log.NewEvent("ec expired",
 			glog.LogElementEvent,
 			-1,
 		).
 			Write("aura", "ec").
-			Write("target", r.self.Index()).
+			Write("target", r.self.Key()).
 			Write("hydro", r.Durability[ModifierHydro]).
 			Write("electro", r.Durability[ModifierElectro])
 
@@ -152,7 +151,7 @@ func (r *Reactable) nextTick(src int) func() {
 		//so ec is active, which means both aura must still have value > 0; so we can do dmg
 		r.core.QueueAttack(
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
+			combat.NewDefSingleTarget(r.self.Key()),
 			-1,
 			0,
 		)

@@ -1,4 +1,4 @@
-package reactable_test
+﻿package reactable_test
 
 import (
 	"testing"
@@ -19,7 +19,7 @@ func TestBurgeon(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "burgeon" {
@@ -33,7 +33,7 @@ func TestBurgeon(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewDefSingleTarget(trg[0].Key()),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -42,7 +42,7 @@ func TestBurgeon(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewDefSingleTarget(trg[0].Key()),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -61,7 +61,7 @@ func TestBurgeon(t *testing.T) {
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 10, false, combat.TargettableEnemy, combat.TargettableGadget),
+		Pattern: combat.NewCircleHit(trg[0], 10),
 	}, 0)
 	advanceCoreFrame(c)
 	if count != 2 {
@@ -81,7 +81,7 @@ func TestECBurgeon(t *testing.T) {
 	}
 
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "burgeon" {
@@ -96,7 +96,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
+		Pattern: combat.NewCircleHit(trg[0], 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -104,7 +104,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
+		Pattern: combat.NewCircleHit(trg[0], 100),
 	}, 0)
 	//reduce aura a bit
 	for i := 0; i < 10; i++ {
@@ -116,7 +116,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
+		Pattern: combat.NewCircleHit(trg[0], 100),
 	}, 0)
 
 	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
@@ -132,7 +132,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100, false, combat.TargettableEnemy, combat.TargettableGadget),
+		Pattern: combat.NewCircleHit(trg[0], 100),
 	}, 0)
 
 	advanceCoreFrame(c)

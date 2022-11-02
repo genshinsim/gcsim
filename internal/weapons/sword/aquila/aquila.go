@@ -25,10 +25,10 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-//ATK is increased by 20%. Triggers on taking DMG: the soul of the Falcon of the
-//West awakens, holding the banner of resistance aloft, regenerating HP equal to
-//100% of ATK and dealing 200% of ATK as DMG to surrounding opponents. This
-//effect can only occur once every 15s.
+// ATK is increased by 20%. Triggers on taking DMG: the soul of the Falcon of the
+// West awakens, holding the banner of resistance aloft, regenerating HP equal to
+// 100% of ATK and dealing 200% of ATK as DMG to surrounding opponents. This
+// effect can only occur once every 15s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -48,7 +48,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	heal := .85 + .15*float64(r)
 	const icdKey = "aquila-icd"
 
-	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if !di.External {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
 		if c.Player.Active() != char.Index {
 			return false
 		}
@@ -67,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:       dmg,
 		}
 		snap := char.Snapshot(&ai)
-		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Combat.Player(), 2, false, combat.TargettableEnemy), 1)
+		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Combat.Player(), 2), 1)
 
 		atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
 

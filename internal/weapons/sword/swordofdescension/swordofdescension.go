@@ -22,7 +22,7 @@ func init() {
 // "PlayStation Network"
 // Hitting enemies with Normal or Charged Attacks grants a 50% chance to deal 200% ATK as DMG in a small AoE. This effect can only occur once every 10s.
 // Additionally, if the Traveler equips the Sword of Descension, their ATK is increased by 66.
-//  * Weapon refines do not affect this weapon
+//   - Weapon refines do not affect this weapon
 type Weapon struct {
 	Index int
 }
@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 	}
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -83,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:       2.00,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 2, false, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 1)
 
 		return false
 	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))

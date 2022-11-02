@@ -30,9 +30,10 @@ func (s *Set) Init() error      { return nil }
 
 // 2pc - ATK +18%.
 // 4pc - When Normal Attacks hit opponents, there is a 36% chance that it will trigger Valley Rite, which will increase Normal Attack DMG by 70% of ATK.
-//  This effect will be dispelled 0.05s after a Normal Attack deals DMG.
-//  If a Normal Attack fails to trigger Valley Rite, the odds of it triggering the next time will increase by 20%.
-//  This trigger can occur once every 0.2s.
+//
+//	This effect will be dispelled 0.05s after a Normal Attack deals DMG.
+//	If a Normal Attack fails to trigger Valley Rite, the odds of it triggering the next time will increase by 20%.
+//	This trigger can occur once every 0.2s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	procDuration := 3 // 0.05s
 
@@ -56,7 +57,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	if count >= 4 {
 		var dmgAdded float64
 
-		c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 			// if the active char is not the equipped char then ignore
 			if c.Player.Active() != char.Index {
 				return false

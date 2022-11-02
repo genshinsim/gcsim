@@ -102,7 +102,7 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 			// skip the 9th tick because hyv spaghetti
 			r.core.QueueAttack(
 				r.burningSnapshot,
-				combat.NewCircleHit(r.self, 1, true, r.self.Type()),
+				combat.NewCircleHit(r.self, 1),
 				-1,
 				0,
 			)

@@ -38,7 +38,7 @@ func (c *char) c1() {
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = 0.25
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 
