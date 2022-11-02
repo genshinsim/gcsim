@@ -144,7 +144,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
 			ap := combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1)
-			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1), -1, 5)
+			s.Core.QueueAttack(ai, ap, -1, 5)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
