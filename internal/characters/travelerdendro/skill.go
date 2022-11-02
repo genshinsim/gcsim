@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.skillC1 = true
 		skillCB = c.c1cb()
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), skillHitmark, skillHitmark, skillCB)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), skillHitmark, skillHitmark, skillCB)
 
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, skillHitmark+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 8*60, cdStart)
