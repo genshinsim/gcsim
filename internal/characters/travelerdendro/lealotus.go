@@ -24,7 +24,10 @@ type LeaLotus struct {
 
 func (s *LeaLotus) transfigInit() {
 	s.Core.Events.Subscribe(event.OnQuicken, func(args ...interface{}) bool {
-		target := args[0].(combat.Target)
+		target, ok := args[0].(combat.Target)
+		if !ok {
+			return false
+		}
 		if target == s {
 			s.transfig(attributes.Electro)
 			return true
@@ -33,7 +36,10 @@ func (s *LeaLotus) transfigInit() {
 	}, "lealotus-electro")
 
 	s.Core.Events.Subscribe(event.OnBloom, func(args ...interface{}) bool {
-		target := args[0].(combat.Target)
+		target, ok := args[0].(combat.Target)
+		if !ok {
+			return false
+		}
 		if target == s {
 			s.transfig(attributes.Hydro)
 			return true
@@ -42,7 +48,10 @@ func (s *LeaLotus) transfigInit() {
 	}, "lealotus-hydro")
 
 	s.Core.Events.Subscribe(event.OnBurning, func(args ...interface{}) bool {
-		target := args[0].(combat.Target)
+		target, ok := args[0].(combat.Target)
+		if !ok {
+			return false
+		}
 		if target == s {
 			s.transfig(attributes.Pyro)
 			return true

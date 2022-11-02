@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
 // A1:
@@ -18,6 +19,10 @@ func (c *char) a1() {
 	icd := 180 // 3s * 60
 
 	reduce := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
 		atk := args[1].(*combat.AttackEvent)
 
 		if c.Core.Player.Active() != atk.Info.ActorIndex { // only for on field character
@@ -34,12 +39,19 @@ func (c *char) a1() {
 		return false
 	}
 
-	c.Core.Events.Subscribe(event.OnOverload, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnElectroCharged, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnSuperconduct, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnQuicken, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnAggravate, reduce, "dori-a1")
+	reduceNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
+		return reduce(args)
+	}
+	c.Core.Events.Subscribe(event.OnOverload, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnQuicken, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnAggravate, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnHyperbloom, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, reduce, "dori-a1")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, reduceNoGadget, "dori-a1")
 }
