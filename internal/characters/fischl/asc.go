@@ -55,7 +55,7 @@ func (c *char) a4() {
 			return false
 		}
 
-		return a4cbNoGadget(args)
+		return a4cbNoGadget(args...)
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, a4cbNoGadget, "fischl-a4")

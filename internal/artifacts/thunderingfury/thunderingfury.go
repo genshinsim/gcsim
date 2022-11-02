@@ -93,7 +93,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if _, ok := args[0].(*gadget.Gadget); ok {
 				return false
 			}
-			return reduce(args)
+			return reduce(args...)
 		}
 
 		c.Events.Subscribe(event.OnOverload, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))

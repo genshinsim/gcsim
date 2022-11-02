@@ -66,7 +66,7 @@ func (c *char) c4() {
 		if _, ok := args[0].(*gadget.Gadget); ok {
 			return false
 		}
-		return cb(args)
+		return cb(args...)
 	}
 	c.Core.Events.Subscribe(event.OnOverload, cbNoGadget, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnElectroCharged, cbNoGadget, "keqing-c4")

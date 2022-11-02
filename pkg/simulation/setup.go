@@ -156,7 +156,7 @@ func SetupResonance(s *core.Core) {
 					if _, ok := args[0].(*gadget.Gadget); ok {
 						return false
 					}
-					return recover(args)
+					return recover(args...)
 				}
 				s.Events.Subscribe(event.OnOverload, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnSuperconduct, recoverNoGadget, "electro-res")
@@ -267,7 +267,7 @@ func SetupResonance(s *core.Core) {
 					if _, ok := args[0].(*gadget.Gadget); ok {
 						return false
 					}
-					return threeEl(args)
+					return threeEl(args...)
 				}
 				s.Events.Subscribe(event.OnAggravate, threeElNoGadget, "dendro-res")
 				s.Events.Subscribe(event.OnSpread, threeElNoGadget, "dendro-res")
