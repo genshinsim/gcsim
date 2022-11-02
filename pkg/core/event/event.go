@@ -17,27 +17,28 @@ const (
 	OnAuraDurabilityDepleted //target, ele
 	// OnReaction               //target, AttackEvent, ReactionType
 	ReactionEventStartDelim
-	OnOverload       //target, AttackEvent
-	OnSuperconduct   //target, AttackEvent
-	OnMelt           //target, AttackEvent
-	OnVaporize       //target, AttackEvent
-	OnFrozen         //target, AttackEvent
-	OnElectroCharged //target, AttackEvent
-	OnSwirlHydro
-	OnSwirlCryo
-	OnSwirlElectro
-	OnSwirlPyro
-	OnCrystallizeHydro
-	OnCrystallizeCryo
-	OnCrystallizeElectro
-	OnCrystallizePyro
-	OnAggravate //target, AttackEvent
-	OnSpread    //target, AttackEvent
-	OnQuicken
-	OnBloom //target, AttackEvent
-	OnHyperbloom
-	OnBurgeon
-	OnBurning //target, AttackEvent
+	OnOverload           //target, AttackEvent
+	OnSuperconduct       //target, AttackEvent
+	OnMelt               //target, AttackEvent
+	OnVaporize           //target, AttackEvent
+	OnFrozen             //target, AttackEvent
+	OnShatter            //target, AttackEvent
+	OnElectroCharged     //target, AttackEvent
+	OnSwirlHydro         //target, AttackEvent
+	OnSwirlCryo          //target, AttackEvent
+	OnSwirlElectro       //target, AttackEvent
+	OnSwirlPyro          //target, AttackEvent
+	OnCrystallizeHydro   //target, AttackEvent
+	OnCrystallizeCryo    //target, AttackEvent
+	OnCrystallizeElectro //target, AttackEvent
+	OnCrystallizePyro    //target, AttackEvent
+	OnAggravate          //target, AttackEvent
+	OnSpread             //target, AttackEvent
+	OnQuicken            //target, AttackEvent
+	OnBloom              //target, AttackEvent
+	OnHyperbloom         //target, AttackEvent
+	OnBurgeon            //target, AttackEvent
+	OnBurning            //target, AttackEvent
 	ReactionEventEndDelim
 	OnDendroCore //Gadget
 	//other stuff

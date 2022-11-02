@@ -62,6 +62,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 	r.Durability[ModifierFrozen] -= 200
 	r.checkFreeze()
 	//trigger shatter attack
+	r.core.Events.Emit(event.OnShatter, r.self, a)
 	ai := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),

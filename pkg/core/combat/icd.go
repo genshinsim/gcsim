@@ -74,6 +74,7 @@ const (
 	ICDTagBloomDamage
 	ICDTagBurgeonDamage
 	ICDTagHyperbloomDamage
+	ICDTagNahidaSkill
 	ICDTagLength
 )
 
@@ -98,6 +99,7 @@ const (
 	ICDGroupReactionA
 	ICDGroupReactionB
 	ICDGroupBurning
+	ICDGroupNahidaSkill
 	ICDGroupLength
 )
 
@@ -119,9 +121,10 @@ var ICDGroupResetTimer = []int{
 	30,  //reaction a
 	30,  //reaciton b
 	120, //burning
+	60,  //nahida skill
 }
 
-var ICDGroupEleApplicationSequence = [][]int{
+var ICDGroupEleApplicationSequence = [][]float64{
 	//default tag
 	{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0},
 	//amber tag
@@ -156,6 +159,9 @@ var ICDGroupEleApplicationSequence = [][]int{
 	{1, 1},
 	//burning
 	{1, 0, 0, 0, 0, 0, 0, 0},
+	//nahida skill
+	//{1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 0, 0},
+	{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -195,4 +201,6 @@ var ICDGroupDamageSequence = [][]float64{
 	//actual data: {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0}
 	//however there seems to be no limit to the amount of burning dmg a target can take
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//nahida-skill
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 }
