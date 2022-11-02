@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
+const MaxTeamSize = 4
+
 type Target struct {
 	Core            *core.Core
 	TargetIndex     int
@@ -15,6 +17,12 @@ type Target struct {
 	OnCollision     func(combat.Target)
 
 	Alive bool
+
+	//icd related
+	icdTagOnTimer       [MaxTeamSize][combat.ICDTagLength]bool
+	icdTagCounter       [MaxTeamSize][combat.ICDTagLength]int
+	icdDamageTagOnTimer [MaxTeamSize][combat.ICDTagLength]bool
+	icdDamageTagCounter [MaxTeamSize][combat.ICDTagLength]int
 }
 
 func New(core *core.Core, x, y, z float64) *Target {
