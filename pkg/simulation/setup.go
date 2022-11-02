@@ -15,6 +15,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -150,11 +151,18 @@ func SetupResonance(s *core.Core) {
 					last = s.F
 					return false
 				}
-				s.Events.Subscribe(event.OnOverload, recover, "electro-res")
-				s.Events.Subscribe(event.OnSuperconduct, recover, "electro-res")
-				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
-				s.Events.Subscribe(event.OnQuicken, recover, "electro-res")
-				s.Events.Subscribe(event.OnAggravate, recover, "electro-res")
+
+				recoverNoGadget := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
+					return recover(args)
+				}
+				s.Events.Subscribe(event.OnOverload, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnSuperconduct, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnElectroCharged, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnQuicken, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnAggravate, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnHyperbloom, recover, "electro-res")
 			case attributes.Geo:
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
@@ -223,6 +231,9 @@ func SetupResonance(s *core.Core) {
 				twoBuff := make([]float64, attributes.EndStatType)
 				twoBuff[attributes.EM] = 30
 				twoEl := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
 					for _, c := range chars {
 						c.AddStatMod(character.StatMod{
 							Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
@@ -252,8 +263,14 @@ func SetupResonance(s *core.Core) {
 					}
 					return false
 				}
-				s.Events.Subscribe(event.OnAggravate, threeEl, "dendro-res")
-				s.Events.Subscribe(event.OnSpread, threeEl, "dendro-res")
+				threeElNoGadget := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
+					return threeEl(args)
+				}
+				s.Events.Subscribe(event.OnAggravate, threeElNoGadget, "dendro-res")
+				s.Events.Subscribe(event.OnSpread, threeElNoGadget, "dendro-res")
 				s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
 				s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 			}

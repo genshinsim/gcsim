@@ -4,11 +4,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
 func (c *char) a4() {
 	last := 0
-	cb := func(args ...interface{}) bool {
+
+	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
+	a4cbNoGadget := func(args ...interface{}) bool {
+
 		ae := args[1].(*combat.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
@@ -43,15 +47,23 @@ func (c *char) a4() {
 			c.ozSnapshot.Snapshot,
 			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 			3)
-
 		return false
 	}
-	c.Core.Events.Subscribe(event.OnOverload, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnElectroCharged, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnQuicken, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnAggravate, cb, "fischl-a4")
+
+	a4cb := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
+		return a4cbNoGadget(args)
+	}
+
+	c.Core.Events.Subscribe(event.OnOverload, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnHyperbloom, a4cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnQuicken, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnAggravate, a4cbNoGadget, "fischl-a4")
 }

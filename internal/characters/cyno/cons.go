@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -82,6 +83,9 @@ func (c *char) c2() {
 // This effect can occur 5 times within one use of Sacred Rite: Wolf’s Swiftness.
 func (c *char) c4() {
 	restore := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -99,13 +103,20 @@ func (c *char) c4() {
 
 		return false
 	}
-	c.Core.Events.Subscribe(event.OnOverload, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnElectroCharged, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnSuperconduct, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnQuicken, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnAggravate, restore, "cyno-c4")
+
+	restoreNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+		return restore(args)
+	}
+	c.Core.Events.Subscribe(event.OnOverload, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnQuicken, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnAggravate, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnHyperbloom, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, restoreNoGadget, "cyno-c4")
 }
 
 // After using Sacred Rite: Wolf's Swiftness or triggering the Judication effect of the Passive Talent "Featherfall Judgment,"

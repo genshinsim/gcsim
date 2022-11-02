@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -42,6 +43,10 @@ func (c *char) c2() {
 
 func (c *char) c4() {
 	cb := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -57,13 +62,19 @@ func (c *char) c4() {
 		return false
 	}
 
-	c.Core.Events.Subscribe(event.OnOverload, cb, "keqing-c4")
-	c.Core.Events.Subscribe(event.OnElectroCharged, cb, "keqing-c4")
-	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "keqing-c4")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "keqing-c4")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "keqing-c4")
-	c.Core.Events.Subscribe(event.OnQuicken, cb, "keqing-c4")
-	c.Core.Events.Subscribe(event.OnAggravate, cb, "keqing-c4")
+	cbNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+		return cb(args)
+	}
+	c.Core.Events.Subscribe(event.OnOverload, cbNoGadget, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, cbNoGadget, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, cbNoGadget, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, cbNoGadget, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cbNoGadget, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnQuicken, cbNoGadget, "keqing-c4")
+	c.Core.Events.Subscribe(event.OnAggravate, cbNoGadget, "keqing-c4")
 	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "keqing-c4")
 }
 
