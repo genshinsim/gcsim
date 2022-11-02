@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Mult:               pyronadoInitial[i][c.TalentLvlBurst()],
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(initialHit, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+			c.Core.QueueAttack(initialHit, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, 0)
 		}, burstHitmarks[i])
 	}
 
@@ -61,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		c.Core.Status.Add("xianglingburst", max)
 		for delay := 0; delay <= max; delay += 73 { //first hit on same frame as 3rd initial hit
-			c.Core.QueueAttack(burstHit, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, delay)
+			c.Core.QueueAttack(burstHit, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 0, delay)
 		}
 		//add an effect starting at frame 55 to end of duration to increase pyro dmg by 15% if c6
 		if c.Base.Cons >= 6 {

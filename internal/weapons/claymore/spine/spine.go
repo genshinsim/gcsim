@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -81,7 +82,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	//TODO: taking 3% more damage not implemented
 	const icdKey = "spine-dmgtaken-icd"
 	icd := 60
-	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if !di.External {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
 		if c.Player.Active() != char.Index {
 			return false
 		}

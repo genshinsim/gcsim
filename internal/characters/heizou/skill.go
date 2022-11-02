@@ -80,7 +80,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			c.a4()
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), AoE, false, combat.TargettableEnemy), hitDelay, hitDelay, skillCB)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), AoE), hitDelay, hitDelay, skillCB)
 		c.SetCD(action.ActionSkill, 10*60)
 
 		count := 2.0

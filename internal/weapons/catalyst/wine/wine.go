@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, key)
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if c.Player.Active() != char.Index {
 			return false

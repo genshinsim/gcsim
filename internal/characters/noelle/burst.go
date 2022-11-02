@@ -99,7 +99,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 6.5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 6.5),
 			0,
 			0,
 			cb,
@@ -116,7 +116,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai.Mult = burstskill[c.TalentLvlBurst()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 4.5, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 4.5),
 			0,
 			0,
 			cb,

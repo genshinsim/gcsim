@@ -37,7 +37,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 5),
 		explosionHitmark,
 		explosionHitmark,
 	)
@@ -84,7 +84,7 @@ func (c *char) burstTicks(snap combat.Snapshot) {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 5),
 		0,
 	)
 	c.Core.Tasks.Add(func() {

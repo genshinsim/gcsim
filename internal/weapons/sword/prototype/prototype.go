@@ -31,8 +31,8 @@ const (
 	buffKey = "prototype-rancour"
 )
 
-//On hit, Normal or Charged Attacks increase ATK and DEF by 4% for 6s. Max 4
-//stacks. This effect can only occur once every 0.3s.
+// On hit, Normal or Charged Attacks increase ATK and DEF by 4% for 6s. Max 4
+// stacks. This effect can only occur once every 0.3s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w.buff = make([]float64, attributes.EndStatType)
 	perStack := 0.03 + 0.01*float64(r)
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -55,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatus(icdKey, 18, true)
-		if char.StatModIsActive(buffKey) {
+		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
 		if w.stacks < 4 {

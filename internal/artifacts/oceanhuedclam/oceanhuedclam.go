@@ -110,7 +110,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 					atk := combat.AttackInfo{
 						ActorIndex:       char.Index,
-						DamageSrc:        c.Combat.Player().Key(), // from player
 						Abil:             "Sea-Dyed Foam",
 						AttackTag:        combat.AttackTagNoneStat,
 						ICDTag:           combat.ICDTagNone,
@@ -120,7 +119,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						FlatDmg:          s.bubbleHealStacks * .9,
 					}
 					//snapshot -1 since we don't need stats
-					c.QueueAttack(atk, combat.NewCircleHit(c.Combat.Player(), 3, true, combat.TargettableEnemy), -1, 1)
+					c.QueueAttack(atk, combat.NewCircleHit(c.Combat.Player(), 3), -1, 1)
 
 					// Reset
 					c.Flags.Custom["OHCActiveChar"] = -1

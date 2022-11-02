@@ -31,7 +31,7 @@ const (
 	buffKey = "ironsting"
 )
 
-//Dealing Elemental DMG increases all DMG by 6% for 6s. Max 2 stacks. Can occur once every 1s.
+// Dealing Elemental DMG increases all DMG by 6% for 6s. Max 2 stacks. Can occur once every 1s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -39,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmgbuff := 0.045 + 0.015*float64(r)
 	w.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false

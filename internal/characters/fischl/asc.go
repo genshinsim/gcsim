@@ -9,7 +9,6 @@ import (
 func (c *char) a4() {
 	last := 0
 	cb := func(args ...interface{}) bool {
-		t := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
@@ -39,7 +38,11 @@ func (c *char) a4() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// A4 uses Oz Snapshot
-		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewDefSingleTarget(t.Key(), combat.TargettableEnemy), 3)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			c.ozSnapshot.Snapshot,
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+			3)
 
 		return false
 	}
@@ -48,7 +51,7 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "fischl-a4")
-	// c.Core.Events.Subscribe(event.OnHyperbloom, cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnQuicken, cb, "fischl-a4")
 	c.Core.Events.Subscribe(event.OnAggravate, cb, "fischl-a4")
 }

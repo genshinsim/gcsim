@@ -4,6 +4,11 @@
     "element": "anemo",
     "weapon_class": "sword"
   },
+  "aetherdendro": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "sword"
+  },
   "aetherelectro": {
     "rarity": 5,
     "element": "electro",
@@ -59,6 +64,11 @@
     "element": "pyro",
     "weapon_class": "sword"
   },
+  "candace": {
+    "rarity": 4,
+    "element": "hydro",
+    "weapon_class": "polearm"
+  },
   "chongyun": {
     "rarity": 4,
     "element": "cryo",
@@ -68,6 +78,11 @@
     "rarity": 4,
     "element": "dendro",
     "weapon_class": "bow"
+  },
+  "cyno": {
+    "rarity": 5,
+    "element": "electro",
+    "weapon_class": "polearm"
   },
   "diluc": {
     "rarity": 5,
@@ -164,6 +179,11 @@
     "element": "anemo",
     "weapon_class": "sword"
   },
+  "luminedendro": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "sword"
+  },
   "lumineelectro": {
     "rarity": 5,
     "element": "electro",
@@ -183,6 +203,11 @@
     "rarity": 5,
     "element": "hydro",
     "weapon_class": "catalyst"
+  },
+  "nilou": {
+    "rarity": 5,
+    "element": "hydro",
+    "weapon_class": "sword"
   },
   "ningguang": {
     "rarity": 4,
@@ -317,6 +342,11 @@
   "travelergeo": {
     "rarity": 5,
     "element": "geo",
+    "weapon_class": "sword"
+  },
+  "travelerdendro": {
+    "rarity": 5,
+    "element": "dendro",
     "weapon_class": "sword"
   }
 }

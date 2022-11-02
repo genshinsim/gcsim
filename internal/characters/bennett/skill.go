@@ -84,7 +84,7 @@ func (c *char) skillPress() action.ActionInfo {
 		Mult:               skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), skillPressHitmark, skillPressHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), skillPressHitmark, skillPressHitmark)
 
 	//25 % chance of 3 orbs
 	var count float64 = 2
@@ -131,7 +131,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ax,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				0,
 				0,
 			)
@@ -140,7 +140,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	if level == 2 {
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 166, 166)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 166, 166)
 	}
 
 	//user-specified c4 variant adds an additional attack that deals 135% of the second hit
@@ -148,7 +148,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ai.Mult = skillHold[level-1][1][c.TalentLvlSkill()] * 1.35
 		ai.Abil = "Passion Overload (C4)"
 		ai.HitlagHaltFrames = 0.12 * 60
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 94, 94)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 94, 94)
 
 	}
 
