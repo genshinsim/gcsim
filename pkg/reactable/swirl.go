@@ -57,7 +57,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	)
 }
 
-func (r *Reactable) trySwirlElectro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -82,13 +82,13 @@ func (r *Reactable) trySwirlElectro(a *combat.AttackEvent) {
 	//hydro in case of EC
 	if a.Info.Durability > ZeroDur && r.Durability[ModifierHydro] > ZeroDur {
 		//trigger swirl hydro
-		r.trySwirlHydro(a)
+		r.TySwirlHydro(a)
 		//check EC clean up
 		r.checkEC()
 	}
 }
 
-func (r *Reactable) trySwirlHydro(a *combat.AttackEvent) {
+func (r *Reactable) TySwirlHydro(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -111,7 +111,7 @@ func (r *Reactable) trySwirlHydro(a *combat.AttackEvent) {
 	)
 }
 
-func (r *Reactable) trySwirlCryo(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -134,7 +134,7 @@ func (r *Reactable) trySwirlCryo(a *combat.AttackEvent) {
 	)
 }
 
-func (r *Reactable) trySwirlPyro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -158,7 +158,7 @@ func (r *Reactable) trySwirlPyro(a *combat.AttackEvent) {
 	)
 }
 
-func (r *Reactable) trySwirlFrozen(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
