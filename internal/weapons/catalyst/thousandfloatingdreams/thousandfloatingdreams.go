@@ -20,6 +20,7 @@ type Weapon struct {
 	emBonus  float64
 	dmgBonus float64
 	buff     []float64
+	teamBuff []float64
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -35,6 +36,12 @@ func (w *Weapon) Init() error {
 		} else {
 			diffCount++
 		}
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBase("thousand-floating-dreams-party", -1),
+			Amount: func() ([]float64, bool) {
+				return w.teamBuff, true
+			},
+		})
 	}
 	w.buff[attributes.EM] = w.emBonus * float64(sameCount)
 	w.buff[attributes.EleToDmgP(w.self.Base.Element)] = w.dmgBonus * float64(diffCount)
@@ -49,10 +56,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	w.buff = make([]float64, attributes.EndStatType)
+	w.teamBuff = make([]float64, attributes.EndStatType)
 	//em 32,40,48,56,64
 	w.emBonus = 24 + float64(r)*8
 	//dmg% 10, 14, 18, 22, 26
 	w.dmgBonus = 0.06 + float64(r)*0.04
+	w.teamBuff[attributes.EM] = 38 + float64(r)*2
 
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("thousand-floating-dreams", -1),
