@@ -256,4 +256,6 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"wgs":                           keys.WolfsGravestone,
 	"xiphosmoonlight":               keys.XiphosMoonlight,
 	"xiphos":                        keys.XiphosMoonlight,
+	"thousandfloatingdreams":        keys.ThousandFloatingDreams,
+	"tfd":                           keys.ThousandFloatingDreams,
 }
