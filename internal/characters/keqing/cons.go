@@ -43,10 +43,6 @@ func (c *char) c2() {
 
 func (c *char) c4() {
 	cb := func(args ...interface{}) bool {
-		if _, ok := args[0].(*gadget.Gadget); ok {
-			return false
-		}
-
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
