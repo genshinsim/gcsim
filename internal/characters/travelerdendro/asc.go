@@ -15,7 +15,7 @@ func (c *char) a1Init() {
 		prevChar := c.Core.Player.ByIndex(prev)
 		prevChar.DeleteStatMod("dmc-a1")
 		return false
-	}, "travelerdendro-a1-remove")
+	}, "dmc-a1-remove")
 }
 
 func (c *char) a1Buff(delay int) {
@@ -46,10 +46,10 @@ func (c *char) a1Stack(delay int) {
 
 // Every point of Elemental Mastery the Traveler possesses increases the DMG dealt
 // by Razorgrass Blade by 0.15% and the DMG dealt by Surgent Manifestation by 0.1%.
-func (c *char) a4() {
+func (c *char) a4Init() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("dmc-a4", -1),
+		Base: modifier.NewBaseWithHitlag("dmc-a4", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case combat.AttackTagElementalArt:

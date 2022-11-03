@@ -34,7 +34,7 @@ func (c *char) c6Init() {
 		prevChar := c.Core.Player.ByIndex(prev)
 		prevChar.DeleteStatMod("dmc-c6")
 		return false
-	}, "travelerdendro-c6-remove")
+	}, "dmc-c6-remove")
 }
 
 func (c *char) c6Buff(delay int) {
@@ -56,7 +56,7 @@ func (c *char) c6Buff(delay int) {
 
 			}
 			active.AddStatMod(character.StatMod{
-				Base: modifier.NewBase("dmc-c6", 60),
+				Base: modifier.NewBaseWithHitlag("dmc-c6", 60),
 				Amount: func() ([]float64, bool) {
 					return m, true
 				},

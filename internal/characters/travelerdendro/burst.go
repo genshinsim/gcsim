@@ -1,12 +1,8 @@
 package travelerdendro
 
 import (
-	"fmt"
-	"strconv"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var burstFrames [][]int
@@ -32,37 +28,26 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(2)
 
 	// Duration counts from first hitmark
-	burstDur := burstHitmark - leaLotusAppear + 12*60
-	if c.Base.Cons >= 2 {
-		burstDur += 3 * 60
-	}
-
-	s := c.newLeaLotusLamp(burstDur)
 
 	c.Core.Tasks.Add(func() {
+		s := c.newLeaLotusLamp()
+		// A1 adds a stack per second
+		for delay := 0; delay <= s.Gadget.Duration; delay += 60 {
+			c.a1Stack(delay)
+		}
+
+		// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - Kolbiri
+		for delay := 0; delay <= s.Gadget.Duration; delay += 0.3 * 60 {
+			c.a1Buff(delay)
+		}
+
+		if c.Base.Cons >= 6 {
+			for delay := 0; delay <= s.Gadget.Duration; delay += 0.3 * 60 {
+				c.c6Buff(delay)
+			}
+		}
 		c.Core.Combat.AddGadget(s)
 	}, leaLotusAppear)
-
-	c.burstOverflowingLotuslight = 0
-
-	c.Core.Log.NewEvent(fmt.Sprintf("lamp appears: %s", strconv.Itoa(c.Core.F+leaLotusAppear)), glog.LogCharacterEvent, c.Index)
-	// c.Core.Log.NewEvent(fmt.Sprintf("burst expiry: %s", strconv.Itoa(s.Gadget.Duration+c.Core.F+17)), glog.LogCharacterEvent, c.Index)
-
-	// A1 adds a stack per second
-	for delay := leaLotusAppear; delay <= s.Gadget.Duration; delay += 60 {
-		c.a1Stack(delay)
-	}
-
-	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - Kolbiri
-	for delay := leaLotusAppear; delay <= s.Gadget.Duration; delay += 0.3 * 60 {
-		c.a1Buff(delay)
-	}
-
-	if c.Base.Cons >= 6 {
-		for delay := leaLotusAppear; delay <= s.Gadget.Duration; delay += 0.3 * 60 {
-			c.c6Buff(delay)
-		}
-	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),

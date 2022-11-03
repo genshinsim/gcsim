@@ -69,11 +69,16 @@ func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
 	return true
 }
 
-func (c *char) newLeaLotusLamp(duration int) *LeaLotus {
+func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	x, y := c.Core.Combat.Player().Pos()
 	s.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 1}, combat.GadgetTypLeaLotus)
-	s.Duration = duration
+
+	s.Duration = 12 * 60
+	if c.Base.Cons >= 2 {
+		s.Duration += 3 * 60
+	}
+
 	// First hitmark is 37f after spawn, all other pre-transfig hits will be 90f between.
 	s.ThinkInterval = burstHitmark - leaLotusAppear
 	s.Gadget.OnThinkInterval = s.OnThinkInterval
@@ -86,11 +91,12 @@ func (c *char) newLeaLotusLamp(duration int) *LeaLotus {
 	s.char.burstTransfig = attributes.NoElement
 
 	s.targetingRadius = 8
-	s.hitboxRadius = 3
+	s.hitboxRadius = 2
+	c.burstOverflowingLotuslight = 0
 
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Lea Lotus Lamp (Q)",
+		Abil:       "Lea Lotus Lamp",
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
@@ -109,12 +115,12 @@ func (c *char) newLeaLotusLamp(duration int) *LeaLotus {
 }
 
 func (s *LeaLotus) transfig(ele attributes.Element) {
-	s.Core.Log.NewEvent(fmt.Sprintf("DMC lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index)
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index)
 	s.char.burstTransfig = ele
 	switch ele {
 	case attributes.Hydro:
 		s.targetingRadius = 12
-		s.hitboxRadius = 5
+		s.hitboxRadius = 4
 		for t := 15; t <= s.Duration; t += 90 {
 			s.QueueAttack(t)
 		}
@@ -131,14 +137,13 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 		}, s.Gadget.Duration)
 
 	case attributes.Pyro:
-		s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion (Q)"
+		s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion"
 		s.burstAtk.Info.Durability = 50
 		s.burstAtk.Info.ICDTag = combat.ICDTagNone
 		s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]
-		s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s.Core.Combat.PrimaryTarget(), 5), 60)
 		s.Core.Tasks.Add(func() {
+			s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s, 6.5), 0)
 			s.char.burstAlive = false
-			s.Core.Status.Delete("dmc-burst") // starts on first hitmark
 		}, 60)
 	}
 	if s.char.Base.Cons >= 4 {
@@ -149,7 +154,7 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 
 func (s *LeaLotus) HandleAttack(a *combat.AttackEvent) float64 {
 
-	s.Core.Log.NewEvent(fmt.Sprintf("DMC lamp hit by %s", a.Info.Abil), glog.LogCharacterEvent, s.char.Index)
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", a.Info.Abil), glog.LogCharacterEvent, s.char.Index)
 
 	s.ShatterCheck(a)
 	//check for ICD first
@@ -175,10 +180,10 @@ func (s *LeaLotus) ApplyDamage(atk *combat.AttackEvent, damage float64) {
 	if atk.Info.Durability > 0 && !atk.OnICD && atk.Info.Element != attributes.Physical {
 		if !atk.Reacted {
 			s.AttachOrRefill(atk)
-			s.Core.Log.NewEvent(fmt.Sprintf("Aura Applied: DMC lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
+			s.Core.Log.NewEvent(fmt.Sprintf("Aura Applied: dmc lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
 		}
 
-		s.Core.Log.NewEvent(fmt.Sprintf("DMC lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
+		s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
 
 	}
 }
