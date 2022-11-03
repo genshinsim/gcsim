@@ -178,7 +178,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 	case attributes.Anemo:
 		r.TrySwirlElectro(a)
 		r.TrySwirlPyro(a)
-		r.TySwirlHydro(a)
+		r.TrySwirlHydro(a)
 		r.TrySwirlCryo(a)
 		r.TrySwirlFrozen(a)
 	case attributes.Geo:
