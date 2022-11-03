@@ -72,6 +72,7 @@ func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
 func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	x, y := c.Core.Combat.Player().Pos()
+	// TODO The gadget spawns 1 unit away from the player (in the direction the player is facing?)
 	s.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 1}, combat.GadgetTypLeaLotus)
 
 	s.Duration = 12 * 60
