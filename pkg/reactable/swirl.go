@@ -82,13 +82,13 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) {
 	//hydro in case of EC
 	if a.Info.Durability > ZeroDur && r.Durability[ModifierHydro] > ZeroDur {
 		//trigger swirl hydro
-		r.TySwirlHydro(a)
+		r.TrySwirlHydro(a)
 		//check EC clean up
 		r.checkEC()
 	}
 }
 
-func (r *Reactable) TySwirlHydro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
