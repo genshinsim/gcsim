@@ -11,7 +11,7 @@ func (c *char) a4() {
 	last := 0
 
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
-	a4cbNoGadget := func(args ...interface{}) bool {
+	a4cb := func(args ...interface{}) bool {
 
 		ae := args[1].(*combat.AttackEvent)
 
@@ -50,12 +50,12 @@ func (c *char) a4() {
 		return false
 	}
 
-	a4cb := func(args ...interface{}) bool {
+	a4cbNoGadget := func(args ...interface{}) bool {
 		if _, ok := args[0].(*gadget.Gadget); ok {
 			return false
 		}
 
-		return a4cbNoGadget(args...)
+		return a4cb(args...)
 	}
 
 	c.Core.Events.Subscribe(event.OnOverload, a4cbNoGadget, "fischl-a4")
