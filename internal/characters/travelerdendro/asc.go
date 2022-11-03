@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-// Gets removed on swap - from Kolbiri
+// Gets removed on swap - from Kolibri
 func (c *char) a1Init() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
@@ -20,7 +20,7 @@ func (c *char) a1Init() {
 
 func (c *char) a1Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
-	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolbiri
+	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolibri
 	c.Core.Tasks.Add(func() {
 		if c.burstAlive { //burst isn't expired
 			active := c.Core.Player.ActiveChar()

@@ -27,7 +27,7 @@ func (c *char) c4() {
 	c.Core.Log.NewEvent("dmc-c4-triggered", glog.LogCharacterEvent, c.Index)
 }
 
-// Gets removed on swap - from Kolbiri
+// Gets removed on swap - from Kolibri
 func (c *char) c6Init() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
@@ -39,7 +39,7 @@ func (c *char) c6Init() {
 
 func (c *char) c6Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
-	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolbiri
+	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolibri
 	c.Core.Tasks.Add(func() {
 		if c.burstAlive { //burst isn't expired
 			active := c.Core.Player.ActiveChar()
