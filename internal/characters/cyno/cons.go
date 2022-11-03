@@ -83,9 +83,6 @@ func (c *char) c2() {
 // This effect can occur 5 times within one use of Sacred Rite: Wolf’s Swiftness.
 func (c *char) c4() {
 	restore := func(args ...interface{}) bool {
-		if _, ok := args[0].(*gadget.Gadget); ok {
-			return false
-		}
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false

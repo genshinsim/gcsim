@@ -19,9 +19,6 @@ func (c *char) a1() {
 	icd := 180 // 3s * 60
 
 	reduce := func(args ...interface{}) bool {
-		if _, ok := args[0].(*gadget.Gadget); ok {
-			return false
-		}
 
 		atk := args[1].(*combat.AttackEvent)
 

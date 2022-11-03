@@ -68,9 +68,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 
 		reduce := func(args ...interface{}) bool {
-			if _, ok := args[0].(*gadget.Gadget); ok {
-				return false
-			}
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
 				return false
