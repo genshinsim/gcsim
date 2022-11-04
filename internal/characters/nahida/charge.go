@@ -37,7 +37,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// skip CA windup if we're in NA/CA animation
 	windup := 0
 	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState, action.ChargeAttackState:
+	case action.NormalAttackState:
 		windup = 10
 	}
 
@@ -46,7 +46,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
-		CanQueueAfter:   chargeHitmark - windup,
+		CanQueueAfter:   chargeFrames[action.ActionDash] - windup,
 		State:           action.ChargeAttackState,
 	}
 }

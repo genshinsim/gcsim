@@ -12,7 +12,7 @@ import (
 const normalHitNum = 4
 
 var attackFrames [][]int
-var attackHitmarks = []int{23, 15, 26, 51}
+var attackHitmarks = []int{23, 15, 26, 40}
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -23,7 +23,7 @@ func init() {
 	attackFrames[0][action.ActionSkill] = 21
 	attackFrames[0][action.ActionBurst] = 21
 	attackFrames[0][action.ActionDash] = 21
-	attackFrames[0][action.ActionJump] = 13
+	attackFrames[0][action.ActionJump] = 23
 	attackFrames[0][action.ActionSwap] = 21
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 31)
@@ -44,12 +44,12 @@ func init() {
 	attackFrames[2][action.ActionJump] = 25
 	attackFrames[2][action.ActionSwap] = 24
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[2], 71)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 71)
 	attackFrames[3][action.ActionAttack] = 71
 	attackFrames[3][action.ActionCharge] = 69
 	attackFrames[3][action.ActionSkill] = 40
 	attackFrames[3][action.ActionBurst] = 40
-	attackFrames[3][action.ActionDash] = 40
+	attackFrames[3][action.ActionDash] = 39
 	attackFrames[3][action.ActionJump] = 39
 	attackFrames[3][action.ActionWalk] = 68
 	attackFrames[3][action.ActionSwap] = 39
@@ -75,12 +75,20 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.NormalCounter],
 	)
 
+	cancel := attackHitmarks[c.NormalCounter]
+
+	for _, v := range attackFrames[c.NormalCounter] {
+		if v < cancel {
+			cancel = v
+		}
+	}
+
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		CanQueueAfter:   cancel,
 		State:           action.NormalAttackState,
 	}
 }

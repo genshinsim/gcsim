@@ -37,7 +37,6 @@ const (
 	skillPressCD        = 300
 	skillHoldCD         = 360
 	skillPressHitmark   = 13
-	skillHoldHitmark    = 33
 	skillMarkKey        = "nahida-tri-karma"
 	skillICDKey         = "nahida-tri-karma-icd"
 	triKarmaParticleICD = "nahida-tri-karma-particle-icd"
@@ -65,8 +64,6 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.generateTriKarmaSnapshot()
-
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5),
@@ -75,13 +72,12 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		c.skillMarkTargets,
 	)
 
-	//reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, skillPressCD, 11)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillPressFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -107,8 +103,6 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.generateTriKarmaSnapshot()
-
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5),
@@ -117,7 +111,6 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		c.skillMarkTargets,
 	)
 
-	//reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold)
 
 	return action.ActionInfo{
@@ -178,11 +171,6 @@ func (c *char) triKarmaInterval() int {
 
 	}
 	return int(2.5 * 60)
-}
-
-func (c *char) generateTriKarmaSnapshot() {
-	//TODO: assuming tri karma snapshot her stats??
-
 }
 
 func (c *char) triKarmaOnReaction(rx event.Event) func(args ...interface{}) bool {

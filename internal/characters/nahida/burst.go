@@ -12,10 +12,11 @@ var burstFrames []int
 
 func init() {
 	burstFrames = frames.InitAbilSlice(112)
+	burstFrames[action.ActionSwap] = 111
 }
 
 const (
-	burstKey = "nahida-illusory-heart"
+	burstKey = "nahida-q"
 )
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -32,7 +33,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}, 66)
 
 	if c.pyroCount > 0 {
-		//TODO: works off field apparently?
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(burstKey, f),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
