@@ -164,6 +164,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/sacrifical"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/skyward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/solar"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/thousandfloatingdreams"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/thrilling"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/twin"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wanderingevenstar"
