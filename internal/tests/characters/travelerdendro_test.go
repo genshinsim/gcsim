@@ -58,8 +58,8 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.ModifierDendro] != 20 {
-		t.Errorf("expecting initial 20 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
+	if gr.Durability[reactable.ModifierDendro] != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
 	}
 
 	//pattern only hit gadet
@@ -80,8 +80,8 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	if gr.Durability[reactable.ModifierCryo] != 80 {
 		t.Errorf("expecting 80 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierCryo])
 	}
-	if gr.Durability[reactable.ModifierDendro] != 20 {
-		t.Errorf("expecting 20 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
+	if gr.Durability[reactable.ModifierDendro] != 10 {
+		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
 	}
 
 }
@@ -140,8 +140,8 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.ModifierDendro] != 20 {
-		t.Errorf("expecting initial 20 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
+	if gr.Durability[reactable.ModifierDendro] != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
 	}
 
 	//pattern only hit gadet

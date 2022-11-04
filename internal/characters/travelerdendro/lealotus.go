@@ -37,7 +37,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 	s.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 1}, combat.GadgetTypLeaLotus)
 	s.Reactable = &reactable.Reactable{}
 	s.Reactable.Init(s, c.Core)
-	s.Durability[reactable.ModifierDendro] = 20
+	s.Durability[reactable.ModifierDendro] = 10
 
 	s.Duration = 12 * 60
 	if c.Base.Cons >= 2 {
