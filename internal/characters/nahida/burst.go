@@ -28,6 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//TODO: gadget shouldn't be affected by hitlag
 	//TODO: consider using an actual gadget here and use collision to detect if "in range"
+	//TODO: check should be every 0.5s, effect applied for 1s
 	c.Core.Tasks.Add(func() {
 		c.Core.Status.Add(burstKey, f)
 	}, 66)
