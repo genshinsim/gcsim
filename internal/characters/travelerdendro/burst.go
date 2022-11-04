@@ -7,8 +7,11 @@ import (
 
 var burstFrames [][]int
 
-const burstHitmark = 91
-const leaLotusAppear = 54
+const (
+	burstKey       = "travelerdendro-q"
+	burstHitmark   = 91
+	leaLotusAppear = 54
+)
 
 func init() {
 	burstFrames = make([][]int, 2)

@@ -18,7 +18,6 @@ type char struct {
 	*tmpl.Character
 	burstOverflowingLotuslight int
 	skillC1                    bool // this variable also ensures that C1 only restores energy once per cast
-	burstAlive                 bool
 	burstTransfig              attributes.Element
 	gender                     int
 }
@@ -51,6 +50,5 @@ func (c *char) Init() error {
 	}
 
 	c.skillC1 = false
-	c.burstAlive = false
 	return nil
 }

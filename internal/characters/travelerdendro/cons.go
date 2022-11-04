@@ -41,7 +41,7 @@ func (c *char) c6Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
 	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolibri
 	c.Core.Tasks.Add(func() {
-		if c.burstAlive { //burst isn't expired
+		if c.Core.Status.Duration(burstKey) > 0 { //burst isn't expired
 			active := c.Core.Player.ActiveChar()
 			m[attributes.DendroP] = 0.12
 			if c.burstTransfig != attributes.NoElement {
