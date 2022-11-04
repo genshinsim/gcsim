@@ -71,5 +71,9 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Acti
 	if a == action.ActionSkill && p["recast"] != 0 && c.ozActive {
 		return !c.StatusIsActive(skillRecastCDKey), action.SkillCD
 	}
+	// check if cast skill with oz on-field
+	if a == action.ActionSkill && c.ozActive {
+		return false, action.NoFailure
+	}
 	return c.Character.ActionReady(a, p)
 }
