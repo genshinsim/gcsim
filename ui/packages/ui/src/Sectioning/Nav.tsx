@@ -32,7 +32,7 @@ export default ({}) => {
             </Link>
           </Navbar.Heading>
         </Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT} className="hidden sm:flex">
+        <Navbar.Group align={Alignment.LEFT} className="!hidden sm:!flex">
           <Navbar.Divider />
           {PageNavs}
         </Navbar.Group>
