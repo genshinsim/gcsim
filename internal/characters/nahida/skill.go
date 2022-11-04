@@ -38,8 +38,8 @@ const (
 	skillHoldCD         = 360
 	skillPressHitmark   = 13
 	skillMarkKey        = "nahida-e"
-	skillICDKey         = "nahida-tri-karma-icd"
-	triKarmaParticleICD = "nahida-tri-karma-particle-icd"
+	skillICDKey         = "nahida-e-icd"
+	triKarmaParticleICD = "nahida-e-particle-icd"
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
