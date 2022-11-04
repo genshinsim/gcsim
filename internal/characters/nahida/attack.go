@@ -12,19 +12,47 @@ import (
 const normalHitNum = 4
 
 var attackFrames [][]int
-var attackHitmarks = []int{2 * (1091 - 1079), 2 * (1105 - 1099), 2 * (1123 - 1113), 2 * (1149 - 1128)}
+var attackHitmarks = []int{23, 15, 26, 51}
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	//TODO: update frames
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 20*2)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 35)
+	attackFrames[0][action.ActionAttack] = 30
+	attackFrames[0][action.ActionCharge] = 26
+	attackFrames[0][action.ActionSkill] = 21
+	attackFrames[0][action.ActionBurst] = 21
+	attackFrames[0][action.ActionDash] = 21
+	attackFrames[0][action.ActionJump] = 13
+	attackFrames[0][action.ActionSwap] = 21
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 14*2)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 31)
+	attackFrames[1][action.ActionAttack] = 22
+	attackFrames[1][action.ActionCharge] = 23
+	attackFrames[1][action.ActionSkill] = 13
+	attackFrames[1][action.ActionBurst] = 13
+	attackFrames[1][action.ActionDash] = 13
+	attackFrames[1][action.ActionJump] = 13
+	attackFrames[1][action.ActionSwap] = 13
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 15*2)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 45)
+	attackFrames[2][action.ActionAttack] = 38
+	attackFrames[2][action.ActionCharge] = 37
+	attackFrames[2][action.ActionSkill] = 24
+	attackFrames[2][action.ActionBurst] = 24
+	attackFrames[2][action.ActionDash] = 26
+	attackFrames[2][action.ActionJump] = 25
+	attackFrames[2][action.ActionSwap] = 24
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[2], 36*2)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[2], 71)
+	attackFrames[3][action.ActionAttack] = 71
+	attackFrames[3][action.ActionCharge] = 69
+	attackFrames[3][action.ActionSkill] = 40
+	attackFrames[3][action.ActionBurst] = 40
+	attackFrames[3][action.ActionDash] = 40
+	attackFrames[3][action.ActionJump] = 39
+	attackFrames[3][action.ActionWalk] = 68
+	attackFrames[3][action.ActionSwap] = 39
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {

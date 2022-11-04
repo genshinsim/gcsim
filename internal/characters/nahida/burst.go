@@ -11,7 +11,7 @@ import (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(64 * 2)
+	burstFrames = frames.InitAbilSlice(112)
 }
 
 const (
@@ -27,7 +27,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//TODO: gadget shouldn't be affected by hitlag
 	//TODO: consider using an actual gadget here and use collision to detect if "in range"
-	c.Core.Status.Add(burstKey, f)
+	c.Core.Tasks.Add(func() {
+		c.Core.Status.Add(burstKey, f)
+	}, 66)
 
 	if c.pyroCount > 0 {
 		//TODO: works off field apparently?
@@ -44,12 +46,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons > 5 {
 		//lasts 10s
 		//TODO: should this be delayed until animation end?
-		c.AddStatus(c6ActiveKey, 600, true)
-		c.c6count = 0
-		c.DeleteStatus(c6ICDKey) //TODO: check if this resets icd?
+		c.Core.Tasks.Add(func() {
+			c.AddStatus(c6ActiveKey, 600, true)
+			c.c6count = 0
+			c.DeleteStatus(c6ICDKey) //TODO: check if this resets icd?
+		}, 66)
 	}
 
-	c.ConsumeEnergy(3)
+	c.ConsumeEnergy(5)
 	c.SetCD(action.ActionBurst, 810)
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),

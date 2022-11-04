@@ -11,14 +11,33 @@ import (
 )
 
 var skillPressFrames []int
+var skillHoldFrames []int
 
 func init() {
-	skillPressFrames = frames.InitAbilSlice(37 * 2)
+	skillPressFrames = frames.InitAbilSlice(32)
+	skillPressFrames[action.ActionAttack] = 28
+	skillPressFrames[action.ActionCharge] = 28
+	skillPressFrames[action.ActionSkill] = 32
+	skillPressFrames[action.ActionBurst] = 32
+	skillPressFrames[action.ActionDash] = 27
+	skillPressFrames[action.ActionJump] = 26
+	skillPressFrames[action.ActionSwap] = 25
+
+	skillHoldFrames = frames.InitAbilSlice(63)
+	skillHoldFrames[action.ActionAttack] = 57
+	skillHoldFrames[action.ActionCharge] = 58
+	skillHoldFrames[action.ActionSkill] = 62
+	skillHoldFrames[action.ActionBurst] = 62
+	skillHoldFrames[action.ActionDash] = 59
+	skillHoldFrames[action.ActionJump] = 62
+	skillHoldFrames[action.ActionSwap] = 57
 }
 
 const (
 	skillPressCD        = 300
 	skillHoldCD         = 360
+	skillPressHitmark   = 13
+	skillHoldHitmark    = 33
 	skillMarkKey        = "nahida-tri-karma"
 	skillICDKey         = "nahida-tri-karma-icd"
 	triKarmaParticleICD = "nahida-tri-karma-particle-icd"
@@ -51,13 +70,13 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5),
-		0,
-		37*2, //TODO: snapshot frame and hitmark
+		0, //TODO: snapshot delay?
+		skillPressHitmark,
 		c.skillMarkTargets,
 	)
 
 	//reduce charge by 1
-	c.SetCDWithDelay(action.ActionSkill, skillPressCD, 9)
+	c.SetCDWithDelay(action.ActionSkill, skillPressCD, 11)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
@@ -69,8 +88,8 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
-	if hold > 300 {
-		hold = 300
+	if hold > 330 {
+		hold = 330
 	}
 	if hold < 30 {
 		hold = 30 //TODO: hold appears to have a min before the camera appears
@@ -94,15 +113,15 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), 5),
 		0,
-		hold, //TODO: snapshot frame and hitmark
+		hold+3, //TODO: snapshot frame and hitmark
 		c.skillMarkTargets,
 	)
 
 	//reduce charge by 1
-	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, 9)
+	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold)
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return hold }, //TODO: ??? this is prob not right
+		Frames:          func(next action.Action) int { return hold + skillHoldFrames[next] },
 		AnimationLength: hold,
 		CanQueueAfter:   hold, // earliest cancel
 		State:           action.SkillState,
@@ -114,7 +133,7 @@ func (c *char) particlesOnDmg(_ combat.AttackCB) {
 	if c.StatusIsActive(triKarmaParticleICD) {
 		return
 	}
-	c.AddStatus(triKarmaParticleICD, 7*60, false) //TODO: assumed this icd is 7 seconds for now
+	c.AddStatus(triKarmaParticleICD, 7*60, false)
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 }
 
@@ -250,7 +269,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 			c.triKarmaSnapshot.Info,
 			c.triKarmaSnapshot.Snapshot,
 			combat.NewDefSingleTarget(e.Key()),
-			1,
+			4,
 			cb,
 		)
 	}
