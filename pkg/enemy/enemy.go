@@ -11,8 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
-const MaxTeamSize = 4
-
 type EnemyProfile struct {
 	Level                 int                            `json:"level"`
 	HP                    float64                        `json:"-"`
@@ -52,12 +50,6 @@ type Enemy struct {
 	timePassed   float64
 	frozenFrames float64
 	queue        []queue.Task
-
-	//icd related
-	icdTagOnTimer       [MaxTeamSize][combat.ICDTagLength]bool
-	icdTagCounter       [MaxTeamSize][combat.ICDTagLength]int
-	icdDamageTagOnTimer [MaxTeamSize][combat.ICDTagLength]bool
-	icdDamageTagCounter [MaxTeamSize][combat.ICDTagLength]int
 }
 
 func New(core *core.Core, p EnemyProfile) *Enemy {
