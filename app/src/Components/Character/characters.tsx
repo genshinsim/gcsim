@@ -126,15 +126,10 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: 'geo',
     weapon_type: 'Sword',
   },
-  collei: {
-    key: 'collei',
+  nahida: {
+    key: 'nahida',
     element: 'dendro',
-    weapon_type: 'bow',
-  },
-  tighnari: {
-    key: 'tighnari',
-    element: 'dendro',
-    weapon_type: 'bow',
+    weapon_type: 'catalyst',
   },
 };
 

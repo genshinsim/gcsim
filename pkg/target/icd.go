@@ -5,11 +5,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) bool {
+func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) float64 {
 
 	//no icd if no tag
 	if tag == combat.ICDTagNone {
-		return true
+		return 1
 	}
 
 	//check if we need to start timer
@@ -35,7 +35,7 @@ func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) 
 		Write("val", combat.ICDGroupEleApplicationSequence[grp][val]).
 		Write("group on timer", x)
 	//true if group seq is 1
-	return combat.ICDGroupEleApplicationSequence[grp][val] == 1
+	return combat.ICDGroupEleApplicationSequence[grp][val]
 }
 
 func (t *Target) GroupTagDamageMult(tag combat.ICDTag, grp combat.ICDGroup, char int) float64 {
