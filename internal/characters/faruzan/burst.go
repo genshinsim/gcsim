@@ -3,51 +3,89 @@ package faruzan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
 
-const burstStart = 47           // lines up with cd start
-const burstInitialHitmark = 51  // Initial Hit
-const burstClusterHitmark = 100 // First Cluster Hit
+const (
+	burstBuffKey  = "faruzan-q-dmg-bonus"
+	burstShredKey = "faruzan-q-shred"
+)
 
 func init() {
-	burstFrames = frames.InitAbilSlice(80) // Q -> CA
-	burstFrames[action.ActionAttack] = 78  // Q -> N1
-	burstFrames[action.ActionSkill] = 57   // Q -> E
-	burstFrames[action.ActionDash] = 58    // Q -> D
-	burstFrames[action.ActionJump] = 58    // Q -> J
-	burstFrames[action.ActionSwap] = 56    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(55)
 }
 
-// Implements burst handling.
-// Casts down Tengu Juurai: Titanbreaker, dealing AoE Electro DMG. Afterwards, Tengu Juurai: Titanbreaker spreads out into 4 consecutive bouts of Tengu Juurai: Stormcluster, dealing AoE Electro DMG.
-// Tengu Juurai: Titanbreaker and Tengu Juurai: Stormcluster can provide the active character within their AoE with the same ATK Bonus as given by the Elemental Skill, Tengu Stormcall. The ATK Bonus provided by various kinds of Tengu Juurai will not stack, and their effects and duration will be determined by the last Tengu Juurai to take effect.
-// Has parameters: "wave_cluster_hits", which controls how many of the mini-clusters in each wave hit an opponent.
-// Also has "waveAttackProcs", used to determine which waves proc the attack buff.
-// Format for both is a digit of length 5 - rightmost value is the starting proc (titanbreaker hit), and it moves from right to left
-// For example, if you want waves 3 and 4 only to proc the attack buff, set waveAttackProcs=11000
-// For "wave_cluster_hits", use numbers in each slot to control the # of hits. So for center hit, then 3 hits from each wave, set wave_cluster_hits=33331
-// Default for both is for the main titanbreaker and 1 wave to hit and also proc the buff
-// Also implements C4
-// The number of Tengu Juurai: Stormcluster released by Subjugation: Koukou Sendou is increased to 6.
+// Faruzan deploys a Dazzling Polyhedron that deals AoE Anemo DMG and releases
+// a Whirlwind Pulse. While the Dazzling Polyhedron persists, it will
+// continuously move along a triangular path. Once it reaches each corner of
+// that triangular path, it will unleash 1 more Whirlwind Pulse.
+//
+// Whirlwind Pulse
+// - When the Whirlwind Pulse hits opponents, it will apply Perfidious Wind's
+// Ruin to them, decreasing their Anemo RES.
+// - The Whirlwind Pulse will also apply Prayerful Wind's Gift to all nearby
+// characters when it is unleashed, granting them Anemo DMG Bonus.
 func (c *char) Burst(p map[string]int) action.ActionInfo {
+	duration := 720
+	if c.Base.Cons >= 2 {
+		duration += 360
+	}
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "The Wind's Secret Ways (Q)",
+		AttackTag:  combat.AttackTagElementalBurst,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	snap := c.Snapshot(&ai)
+
+	shredCb := func(a combat.AttackCB) {
+		t, ok := a.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
+		t.AddResistMod(enemy.ResistMod{
+			Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
+			Ele:   attributes.Anemo,
+			Value: -0.4,
+		})
+	}
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.AnemoP] = burstBuff[c.TalentLvlBurst()]
+	for i := 55; i <= duration+55; i += 120 {
+		c.Core.Tasks.Add(func() {
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, shredCb)
+			for _, char := range c.Core.Player.Chars() {
+				char.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
+					AffectedStat: attributes.CR,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
+				})
+			}
+		}, i)
+	}
+
+	c.SetCDWithDelay(action.ActionBurst, 1200, 18)
+	c.ConsumeEnergy(21)
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
-}
-
-// Get integer power - required for burst
-func PowInt(n, m int) int {
-	if m == 0 {
-		return 1
-	}
-	result := n
-	for i := 2; i <= m; i++ {
-		result *= n
-	}
-	return result
 }
