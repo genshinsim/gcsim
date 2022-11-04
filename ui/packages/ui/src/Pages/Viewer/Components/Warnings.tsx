@@ -54,9 +54,9 @@ const EnergyWarning = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        At least one character frequently did not have enough energy throughout the simulation to
-        burst. This causes the simulation to wait for more energy, but will perform no actions while
-        waiting. Increase ER or update the config to reduce energy requirements.
+        An abnormal amount of iterations failed to execute a burst because the character did not
+        have enough energy. Consider updating the config to better manage energy, as no actions are
+        performed during failures.
       </p>
       <FailedActionDetails
           title="insufficient energy duration"
@@ -77,9 +77,9 @@ const SwapWarning = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        Character swaps were delayed throughout the simulation due to character swap being on
-        cooldown. This causes the simulation to wait for the cooldown to end, but will perform no
-        actions while waiting. Update the config to better account for the swap cooldown.
+        An abnormal amount of iterations failed to execute a swap because swap was on cooldown.
+        Consider updating the config to better account for swap cooldowns, as no actions are
+        performed during failures.
       </p>
       <FailedActionDetails
           title="swap cd duration"
@@ -100,9 +100,9 @@ const CooldownWarning = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        Skills were frequently attempted to be used when on cooldown. This causes the simulation
-        to wait for the cooldown to end, but will perform no actions while waiting. Update the
-        config to better account for skill cooldowns.
+        An abnormal amount of iterations failed to execute a skill because the skill was on cooldown.
+        Consider updating the config to better account for skill cooldowns, as no actions are
+        performed during failures.
       </p>
       <FailedActionDetails
           title="skill cd duration"
@@ -123,9 +123,9 @@ const StaminaWarning = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        At least one character frequently did not have enough stamina throughout the simulation.
-        This causes the simulation to wait until there is enough stamina to perform an action, but
-        will perform no other actions while waiting. Update the config to better manage stamina.
+        An abnormal amount of iterations failed to execute an action because the character did not
+        have enough stamina. Consider updating the config to better manage stamina, as no actions
+        are performed during failures.
       </p>
       <FailedActionDetails
           title="insufficient stamina duration"
