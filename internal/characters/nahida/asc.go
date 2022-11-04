@@ -9,11 +9,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const a1BuffKey = "nahida-a1"
 const a4BuffKey = "nahida-a4"
 
 // When unleashing Illusory Heart, the Shrine of Maya will gain the following effects:
-// The Elemental Mastery of the active character within the field will be increased by 20% of the Elemental Mastery of the party member with the highest Elemental Mastery.
-// You can gain a maximum of 200 Elemental Mastery in this manner.
+// The Elemental Mastery of the active character within the field will be increased by 25% of the Elemental Mastery of the party member with the highest Elemental Mastery.
+// You can gain a maximum of 250 Elemental Mastery in this manner.
 func (c *char) a1(dur int) {
 	var max float64
 	team := c.Core.Player.Chars()
@@ -34,7 +35,7 @@ func (c *char) a1(dur int) {
 	for i, char := range team {
 		idx := i
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(a4BuffKey, dur),
+			Base:         modifier.NewBase(a1BuffKey, dur),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return c.a4Buff, c.Core.Player.Active() == idx
