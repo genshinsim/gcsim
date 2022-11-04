@@ -179,7 +179,7 @@ func (s *LeaLotus) OnThinkInterval() {
 
 func (s *LeaLotus) ApplyDamage(atk *combat.AttackEvent, damage float64) {
 	if atk.Info.Durability > 0 && !atk.OnICD && atk.Info.Element != attributes.Physical {
-		if !atk.Reacted {
+		if !atk.Reacted && atk.Info.Element == attributes.Cryo {
 			s.AttachOrRefill(atk)
 			s.Core.Log.NewEvent(fmt.Sprintf("Aura Applied: dmc lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
 		}
