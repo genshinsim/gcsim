@@ -71,7 +71,10 @@ func (t *testtarg) WillCollide(s Shape) bool {
 		return false
 	}
 }
-func (t *testtarg) AttackWillLand(a AttackPattern, src TargetKey) (bool, string) {
+
+func (t *testtarg) HandleAttack(*AttackEvent) float64 { return 0 }
+
+func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 	//shape shouldn't be nil; panic here
 	if a.Shape == nil {
 		panic("unexpected nil shape")
@@ -83,9 +86,11 @@ func (t *testtarg) AttackWillLand(a AttackPattern, src TargetKey) (bool, string)
 	// if !a.Targets[t.typ] {
 	// 	return false, "wrong type"
 	// }
-	//skip if self harm is false and dmg src == i
-	if !a.SelfHarm && src == t.key {
-		return false, "no self harm"
+	// swirl aoe shouldn't hit the src of the aoe
+	for _, v := range a.IgnoredKeys {
+		if t.Key() == v {
+			return false, "no self harm"
+		}
 	}
 
 	//check if shape matches

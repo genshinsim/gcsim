@@ -18,7 +18,7 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 	if e.Core.Flags.LogDebug {
 		logs = make([]string, 0, len(e.mods))
 		evt = e.Core.Log.NewEvent("enemy hitlag - extending mods", glog.LogHitlagEvent, -1).
-			Write("target", e.Index()).
+			Write("target", e.Key()).
 			Write("duration", dur).
 			Write("factor", factor).
 			Write("frozen_frames", e.frozenFrames).
@@ -59,7 +59,7 @@ func (e *Enemy) Tick() {
 	//if any left then increase time passed
 	if left <= 0 {
 		e.Core.Log.NewEvent("enemy skipping tick", glog.LogHitlagEvent, -1).
-			Write("target", e.Index()).
+			Write("target", e.Key()).
 			Write("frozen_for", e.frozenFrames)
 		//do nothing this tick
 		return

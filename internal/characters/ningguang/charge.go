@@ -15,7 +15,7 @@ var (
 	chargeHitmarks     []int
 	chargeJadeHitmarks []int
 	chargeC6Hitmarks   []int
-	chargeOptions  = map[attackType][]attackType{
+	chargeOptions      = map[attackType][]attackType{
 		attackTypeLeft:  {attackTypeRight, attackTypeTwirl},
 		attackTypeRight: {attackTypeLeft, attackTypeTwirl},
 		attackTypeTwirl: {attackTypeLeft, attackTypeRight},
@@ -106,7 +106,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 		chargeHitmarks[chargeType]-windup,
 		chargeHitmarks[chargeType]-windup+travel,
 	)
@@ -132,7 +132,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i := 0; i < c.jadeCount; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 			jadeHitmarks[chargeType]-windup,
 			jadeHitmarks[chargeType]-windup+travel,
 		)

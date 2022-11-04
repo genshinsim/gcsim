@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -16,6 +17,10 @@ func (c *char) a1() {
 	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
+			if _, ok := args[0].(*gadget.Gadget); ok {
+				return false
+			}
+
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false

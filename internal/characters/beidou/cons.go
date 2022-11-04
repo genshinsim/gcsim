@@ -5,12 +5,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 const c4key = "beidou-c4"
 
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if !di.External {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
@@ -20,7 +28,7 @@ func (c *char) c4() {
 		return false
 	}, "beidouc4")
 
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != c.Index {
@@ -46,7 +54,7 @@ func (c *char) c4() {
 			Durability: 25,
 			Mult:       0.2,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(t.Key(), t.Type()), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(t.Key()), 0, 1)
 		return false
 	}, "beidou-c4")
 }

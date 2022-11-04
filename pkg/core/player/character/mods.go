@@ -135,6 +135,7 @@ func (e *CharWrapper) StatusIsActive(key string) bool             { return e.mod
 func (e *CharWrapper) CooldownModIsActive(key string) bool        { return e.modIsActive(key) }
 func (e *CharWrapper) DamageReductionModIsActive(key string) bool { return e.modIsActive(key) }
 func (e *CharWrapper) HealBonusModIsActive(key string) bool       { return e.modIsActive(key) }
+func (e *CharWrapper) ReactBonusModIsActive(key string) bool      { return e.modIsActive(key) }
 func (e *CharWrapper) StatModIsActive(key string) bool            { return e.modIsActive(key) }
 
 // Expiry.

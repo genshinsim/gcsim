@@ -73,7 +73,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 0.3),
 		attackHitmarks[c.gender][c.NormalCounter],
 		attackHitmarks[c.gender][c.NormalCounter],
 	)
@@ -85,7 +85,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Abil:       "Slitting Wind (A1)",
 			AttackTag:  combat.AttackTagNormal,
 			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   combat.ICDGroupPoleExtraAttack,
 			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
@@ -94,7 +94,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.3),
 				0,
 				0,
 			)

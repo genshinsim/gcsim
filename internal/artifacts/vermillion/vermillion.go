@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -86,7 +87,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		}, fmt.Sprintf("verm-4pc-%v", char.Base.Key.String()))
 
-		c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+			di := args[0].(player.DrainInfo)
+			if di.Amount <= 0 {
+				return false
+			}
 			if !char.StatModIsActive(verm4pckey) {
 				return false
 			}

@@ -29,7 +29,7 @@ func (c *char) c1(f, travel int) {
 	ai.FlatDmg = 0.3 * c.MaxHP()
 
 	// TODO: Is this snapshotted/dynamic?
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), f, f+travel)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), f, f+travel)
 }
 
 // C4 (Energy piece only) handling

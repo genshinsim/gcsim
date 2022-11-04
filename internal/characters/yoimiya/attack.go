@@ -63,7 +63,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		totalMV += mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel,
 			particleCB,
@@ -85,7 +85,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		// TODO: frames?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 			0,
 			attackHitmarks[c.NormalCounter][0]+travel+5,
 		)

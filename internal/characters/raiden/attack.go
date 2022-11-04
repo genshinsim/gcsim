@@ -58,7 +58,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
@@ -117,7 +117,7 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 			ai.IgnoreDefPercent = .6
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0, c.burstRestorefunc, c.c6)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, 0, c.burstRestorefunc, c.c6)
 		}, swordHitmarks[c.NormalCounter][i])
 	}
 

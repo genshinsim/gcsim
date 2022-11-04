@@ -23,7 +23,7 @@ const c6Key = "mona-c6"
 // - Frozen duration is extended by 15%.
 func (c *char) c1() {
 	// TODO: "Frozen duration is extended by 15%." is bugged
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		//ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
@@ -94,7 +94,7 @@ func (c *char) c2(a combat.AttackCB) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3), 0, 0)
 }
 
 // C4:
@@ -170,7 +170,7 @@ func (c *char) c6(src int) func() {
 
 func (c *char) c6CAReset() {
 	// handle C6 stack reset if CA used before c6 buff expires
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if c.Core.Player.Active() != c.Index {
 			return false

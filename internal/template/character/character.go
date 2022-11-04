@@ -91,3 +91,18 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	}
 	return s
 }
+
+func (c *Character) ResetNormalCounter() {
+	c.NormalCounter = 0
+}
+
+func (c *Character) AdvanceNormalIndex() {
+	c.NormalCounter++
+	if c.NormalCounter == c.NormalHitNum {
+		c.NormalCounter = 0
+	}
+}
+
+func (c *Character) NextNormalCounter() int {
+	return c.NormalCounter + 1
+}

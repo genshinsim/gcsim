@@ -8,12 +8,10 @@ type AttackEvent struct {
 	Info    AttackInfo
 	Pattern AttackPattern
 	// Timing        AttackTiming
-	Cancelled   bool //provide a way to cancel an attack event
 	Snapshot    Snapshot
 	SourceFrame int            //source frame
 	Callbacks   []AttackCBFunc `json:"-"`
 	Reacted     bool           // true if a reaction already took place - for purpose of attach/refill
-	OnICD       bool           // set this to true if on ICD so we don't accidentally increment counter twice; icd check only happens once
 }
 
 type AttackCB struct {
