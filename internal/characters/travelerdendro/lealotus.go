@@ -58,7 +58,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 			s.QueueAttack(0)
 		}
 		s.Gadget.ThinkInterval = 90
-	}, 37)
+	}, burstHitmark-leaLotusAppear)
 
 	c.burstTransfig = attributes.NoElement
 	s.char = c
@@ -82,7 +82,6 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 		Snapshot: c.Snapshot(&procAI),
 	}
 
-	// s.transfigInit()
 	return s
 }
 
