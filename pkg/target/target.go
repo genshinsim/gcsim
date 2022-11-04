@@ -9,7 +9,6 @@ const MaxTeamSize = 4
 
 type Target struct {
 	Core            *core.Core
-	TargetIndex     int
 	key             combat.TargetKey
 	Hitbox          combat.Circle
 	Tags            map[string]int
@@ -46,8 +45,6 @@ func (t *Target) CollidedWith(x combat.Target) {
 
 func (t *Target) Key() combat.TargetKey     { return t.key }
 func (t *Target) SetKey(x combat.TargetKey) { t.key = x }
-func (t *Target) Index() int                { return t.TargetIndex }
-func (t *Target) SetIndex(ind int)          { t.TargetIndex = ind }
 func (t *Target) Shape() combat.Shape       { return &t.Hitbox }
 func (t *Target) SetPos(x, y float64)       { t.Hitbox.SetPos(x, y) }
 func (t *Target) Pos() (float64, float64)   { return t.Hitbox.Pos() }

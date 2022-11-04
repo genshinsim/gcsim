@@ -22,7 +22,7 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 	var crit bool
 
 	evt := e.Core.Combat.Log.NewEvent(atk.Info.Abil, glog.LogDamageEvent, atk.Info.ActorIndex).
-		Write("target", e.Index()).
+		Write("target", e.Key()).
 		Write("attack-tag", atk.Info.AttackTag).
 		Write("ele", atk.Info.Element.String()).
 		Write("damage", &dmg).
@@ -110,7 +110,7 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 					Write("applied_ele", atk.Info.Element.String()).
 					Write("dur", applied).
 					Write("abil", atk.Info.Abil).
-					Write("target", e.TargetIndex).
+					Write("target", e.Key()).
 					Write("existing", existing).
 					Write("after", e.Reactable.ActiveAuraString())
 
@@ -191,7 +191,7 @@ func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
 				Write("applied_ele", atk.Info.Element.String()).
 				Write("dur", applied).
 				Write("abil", atk.Info.Abil).
-				Write("target", e.TargetIndex).
+				Write("target", e.Key()).
 				Write("existing", existing).
 				Write("after", e.Reactable.ActiveAuraString())
 

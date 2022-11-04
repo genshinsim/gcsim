@@ -54,7 +54,7 @@ func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("target", t.Index()).
+		Write("target", t.Key()).
 		Write("expiry", t.StatusExpiry(riptideKey))
 }
 
@@ -81,7 +81,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 		t.QueueEnemyTask(c.rtC4Tick(src, t), 60*3.9)
 		c.Core.Log.NewEvent("tartaglia c4 applied", glog.LogCharacterEvent, c.Index).
 			Write("src", src).
-			Write("target", t.Index())
+			Write("target", t.Key())
 	}
 }
 
@@ -132,7 +132,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		c.Index,
 	).
 		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
-		Write("target", t.Index()).
+		Write("target", t.Key()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
 
@@ -187,7 +187,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		c.Index,
 	).
 		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
-		Write("target", t.Index()).
+		Write("target", t.Key()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
 
@@ -235,7 +235,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		c.Index,
 	).
 		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
-		Write("target", t.Index()).
+		Write("target", t.Key()).
 		Write("rtExpiry", t.StatusExpiry(riptideKey))
 
 	// clear riptide status

@@ -123,7 +123,7 @@ func (c *char) onNACAHitHook() {
 					glog.LogCharacterEvent,
 					c.Index,
 				).
-					Write("target", e.Index()).
+					Write("target", e.Key()).
 					Write("talisman_expiry", e.StatusExpiry(talismanKey))
 			}
 		}
