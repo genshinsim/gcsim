@@ -91,15 +91,13 @@ function useMismatch(schema_version?: Version): MismatchType | null {
   return mismatch;
 }
 
-const DialogBody = ({
-  mismatch,
-  major,
-  minor,
-}: {
+type BodyProps = {
   mismatch: MismatchType | null;
   major?: number;
   minor?: number;
-}) => {
+};
+
+const DialogBody = ({ mismatch, major, minor }: BodyProps) => {
   const VersionInfo = ({}) => (
     <div className="flex justify-start gap-2 text-xs pt-2 font-mono text-gray-400">
       <div>version: {major == null || minor == null ? "legacy" : `${major}.${minor}`}</div>

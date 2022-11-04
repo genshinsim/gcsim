@@ -1,5 +1,4 @@
 import { Alignment, AnchorButton, Button, Classes, HTMLSelect, IconName, Navbar } from "@blueprintjs/core";
-import classNames from "classnames";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import logo from "./logo.png";
@@ -39,7 +38,7 @@ export default ({}) => {
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           <Link href="/account">
-            <Button className={classNames(Classes.MINIMAL)} icon="user" text="Guest" />
+            <Button minimal={true} icon="user" text="Guest" />
           </Link>
           <HTMLSelect
               className="ml-2"
@@ -61,7 +60,7 @@ export default ({}) => {
 const NavLink = ({ href, icon, text }: { href: string, icon: IconName , text: string }) => {
   return (
     <Link href={href}>
-      <Button className={Classes.MINIMAL} icon={icon}>
+      <Button minimal={true} icon={icon}>
         <span className="hidden md:block">{text}</span>
       </Button>
     </Link>
