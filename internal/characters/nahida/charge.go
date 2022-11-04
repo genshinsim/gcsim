@@ -33,8 +33,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	//TODO: fix this??
-	// skip CA windup if we're in NA/CA animation
 	windup := 0
 	switch c.Core.Player.CurrentState() {
 	case action.NormalAttackState:
