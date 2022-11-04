@@ -25,7 +25,7 @@ type char struct {
 	a2Buff        []float64
 	a4Buff        []float64
 	c4Buff        []float64
-	c6count       int
+	c6Count       int
 	markCount     int
 }
 

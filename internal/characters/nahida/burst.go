@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		//TODO: should this be delayed until animation end?
 		c.Core.Tasks.Add(func() {
 			c.AddStatus(c6ActiveKey, 600, true)
-			c.c6count = 0
+			c.c6Count = 0
 			c.DeleteStatus(c6ICDKey) //TODO: check if this resets icd?
 		}, 66)
 	}

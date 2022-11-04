@@ -129,7 +129,7 @@ func (c *char) c6() {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
-		if c.c6count >= 6 {
+		if c.c6Count >= 6 {
 			return false
 		}
 		if c.StatusIsActive(c6ICDKey) {
@@ -152,7 +152,7 @@ func (c *char) c6() {
 			return false
 		}
 		c.AddStatus(c6ICDKey, 12, true) //TODO: hitlag?
-		c.c6count++
+		c.c6Count++
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
