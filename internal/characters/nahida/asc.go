@@ -48,7 +48,7 @@ func (c *char) a1(dur int) {
 // A maximum of 80% Bonus DMG and 24% CRIT Rate can be granted to Tri-Karma Purification in this manner.
 func (c *char) a4() {
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("nahida-a4", -1),
+		Base: modifier.NewBase(a4BuffKey, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag != combat.AttackTagElementalArt {
 				return nil, false
