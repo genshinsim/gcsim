@@ -198,7 +198,7 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
-			log.Println("boom at: ", c.F)
+			log.Println("boom at (adjusted): ", c.F-54-1)
 		}
 		return false
 	}, "hit-check")
@@ -210,8 +210,72 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
 
 	//expecting to take a total of 54 frames to appear + 15s duration
-	totalDuration := 54 + 15*60
-	expectedCount := (totalDuration - 37) / 90
+	totalDuration := 15 * 60
+	expectedCount := 1 + (totalDuration-37)/90
+
+	//add 100 for good measures in case bugs from extra ticks
+	for i := 0; i < 54+totalDuration+100; i++ {
+		advanceCoreFrame(c)
+	}
+
+	if dmgCount != expectedCount {
+		t.Errorf("expecting %v ticks, got %v", expectedCount, dmgCount)
+	}
+
+}
+
+func TestTravelerDendroBurstElectroTicks(t *testing.T) {
+	c, trg := makeCore(1)
+	prof := defProfile(keys.AetherDendro)
+	prof.Base.Cons = 6
+	idx, err := c.AddChar(prof)
+	if err != nil {
+		t.Errorf("error adding char: %v", err)
+		t.FailNow()
+	}
+	c.Player.SetActive(idx)
+	err = c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+	c.Combat.DefaultTarget = trg[0].Key()
+	dmgCount := 0
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.Abil == "Lea Lotus Lamp" {
+			dmgCount++
+			log.Println("boom at (adjusted): ", c.F-54-1)
+		}
+		return false
+	}, "hit-check")
+	advanceCoreFrame(c)
+
+	// use burst to create a ball
+	p := make(map[string]int)
+	log.Println("casting burst: ", c.F)
+	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
+	//wait until dendro gadget is created
+	for c.Combat.GadgetCount() < 1 {
+		advanceCoreFrame(c)
+	}
+
+	//pattern only hit gadet
+	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
+	pattern.SkipTargets[combat.TargettableEnemy] = true
+
+	// check the cryo attaches
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Electro,
+			Durability: 100,
+		},
+		Pattern: pattern,
+	}, 0)
+
+	//first tick at 15, then tick every 54 after that
+	totalDuration := 15 * 60
+	expectedCount := 1 + (totalDuration-15)/54
 
 	//add 100 for good measures in case bugs from extra ticks
 	for i := 0; i < totalDuration+100; i++ {
