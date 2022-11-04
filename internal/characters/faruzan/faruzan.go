@@ -16,7 +16,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	hurricaneCount int
-	c6buff         []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -35,5 +34,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a4()
+	if c.Base.Cons >= 6 {
+		c.c6Arrows()
+	}
 	return nil
 }

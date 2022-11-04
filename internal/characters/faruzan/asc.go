@@ -21,8 +21,8 @@ func (c *char) a4() {
 
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if char.StatusIsActive(burstBuffKey) && !char.StatusIsActive(a4ICDKey) {
-			char.AddStatus(a4Key, 6, true)
-			char.AddStatus(a4ICDKey, 60, true)
+			char.AddStatus(a4Key, 6, false)
+			char.AddStatus(a4ICDKey, 60, false)
 		}
 
 		if char.StatusIsActive(a4Key) {

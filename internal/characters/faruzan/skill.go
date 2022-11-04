@@ -130,6 +130,18 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 		c.Core.QueueAttack(ai, combat.NewCircleHit(a.Target, 2), vortexHitmark, vortexHitmark, c4Cb) // TODO: hitmark and size
 		done = true
 	}
+	particleDone := false
+	particleCb := func(a combat.AttackCB) {
+		if particleDone {
+			return
+		}
+		var count float64 = 2
+		if c.Core.Rand.Float64() < .25 { // TODO: verify particle gen
+			count++
+		}
+		c.Core.QueueParticle("faruzan", count, attributes.Anemo, 0)
+		particleDone = true
+	}
 
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, travel, vortexCb)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, travel, vortexCb, particleCb)
 }
