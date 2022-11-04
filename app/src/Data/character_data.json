@@ -19,11 +19,6 @@
     "element": "geo",
     "weapon_class": "sword"
   },
-  "aetherdendro": {
-    "rarity": 5,
-    "element": "dendro",
-    "weapon_class": "sword"
-  },
   "albedo": {
     "rarity": 5,
     "element": "geo",
@@ -192,11 +187,6 @@
   "luminegeo": {
     "rarity": 5,
     "element": "geo",
-    "weapon_class": "sword"
-  },
-  "luminedendro": {
-    "rarity": 5,
-    "element": "dendro",
     "weapon_class": "sword"
   },
   "mona": {
