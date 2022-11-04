@@ -58,11 +58,11 @@ func (c *char) Init() error {
 		}
 	}
 
-	if c.Base.Cons > 0 {
+	if c.Base.Cons >= 1 {
 		c.c1()
 	}
 
-	if c.Base.Cons > 4 {
+	if c.Base.Cons >= 4 {
 		c.c4Buff = make([]float64, attributes.EndStatType)
 		c.c4()
 	}
@@ -76,11 +76,11 @@ func (c *char) Init() error {
 	c.a4()
 	c.a4tick()
 
-	if c.Base.Cons > 1 {
+	if c.Base.Cons >= 2 {
 		c.c2()
 	}
 
-	if c.Base.Cons > 5 {
+	if c.Base.Cons >= 6 {
 		c.c6()
 	}
 
