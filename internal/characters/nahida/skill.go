@@ -43,6 +43,7 @@ const (
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	c.markCount = 0
 	if p["hold"] == 0 {
 		return c.skillPress(p)
 	} else {
@@ -133,33 +134,16 @@ func (c *char) particlesOnDmg(_ combat.AttackCB) {
 }
 
 func (c *char) skillMarkTargets(a combat.AttackCB) {
-	//TODO: unsure if it's 8 target globally or 8 target per cast
-	//assuming globally for now
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	//assuming refresh if already exists; don't need to check for limits
-	//in this case assuming shouldn't have been marked in the first place if
-	//limit is exceeded
-	if t.StatusIsActive(skillMarkKey) {
+	//assuming it's mark per skill cast; in this case refresh regardless if
+	//target already marked up until 8
+	if c.markCount < 8 {
 		//TODO: assumed this mark is affected by hitlag
 		t.AddStatus(skillMarkKey, 1500, true)
-		return
-	}
-	//TODO: this code is kinda inefficient
-	count := 0
-	for _, v := range c.Core.Combat.Enemies() {
-		e, ok := v.(*enemy.Enemy)
-		if !ok {
-			continue
-		}
-		if e.StatusIsActive(skillMarkKey) {
-			count++
-		}
-	}
-	if count < 8 {
-		t.AddStatus(skillMarkKey, 1200, true)
+		c.markCount++
 	}
 }
 

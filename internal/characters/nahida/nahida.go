@@ -25,6 +25,7 @@ type char struct {
 	a4Buff        []float64
 	c4Buff        []float64
 	c6count       int
+	markCount     int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
