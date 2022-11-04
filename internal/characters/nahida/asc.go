@@ -1,8 +1,10 @@
 package nahida
 
 import (
+	"strings"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -42,26 +44,39 @@ func (c *char) a1(dur int) {
 
 }
 
-//Each point of Nahida's Elemental Mastery beyond 200 will grant 0.1% Bonus DMG and 0.03% CRIT Rate to Tri-Karma Purification from All Schemes to Know.
-//A maximum of 80% Bonus DMG and 24% CRIT Rate can be granted to Tri-Karma Purification in this manner.
+// Each point of Nahida's Elemental Mastery beyond 200 will grant 0.1% Bonus DMG and 0.03% CRIT Rate to Tri-Karma Purification from All Schemes to Know.
+// A maximum of 80% Bonus DMG and 24% CRIT Rate can be granted to Tri-Karma Purification in this manner.
+func (c *char) a4() {
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("nahida-a4", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+				return nil, false
+			}
+			if !strings.HasPrefix(atk.Info.Abil, "Tri-Karma") {
+				return nil, false
+			}
+			return c.a4Buff, true
+		},
+	})
+}
 
-func (c *char) a4(em float64) (dmgBuff, crBuff float64) {
-	//TODO: this way of buffing doesn't show up in mods; consider changing this to mods somehow??
-	em = em - 200
-	dmgBuff = em * 0.001
-	if dmgBuff > 0.8 {
-		dmgBuff = 0.8
+func (c *char) a4tick() {
+	em := c.Stat(attributes.EM)
+	var dmgBuff, crBuff float64
+	if em > 200 {
+		em = em - 200
+		dmgBuff = em * 0.001
+		if dmgBuff > 0.8 {
+			dmgBuff = 0.8
+		}
+		crBuff = em * 0.0003
+		if crBuff > .24 {
+			crBuff = .24
+		}
 	}
-	crBuff = em * 0.0003
-	if crBuff > .24 {
-		crBuff = .24
-	}
+	c.a4Buff[attributes.DmgP] = dmgBuff
+	c.a4Buff[attributes.CR] = crBuff
 
-	c.Core.Combat.Log.NewEvent("tri-karma-a4-buff", glog.LogCharacterEvent, c.Index).
-		Write("em_in_excess_of_200", em).
-		Write("cr_buff", crBuff).
-		Write("dmg_buff", dmgBuff)
-
-	return
-
+	c.Core.Tasks.Add(c.a4tick, 30)
 }

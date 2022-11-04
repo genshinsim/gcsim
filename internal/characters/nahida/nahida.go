@@ -72,6 +72,8 @@ func (c *char) Init() error {
 	}
 
 	c.a4Buff = make([]float64, attributes.EndStatType)
+	c.a4()
+	c.a4tick()
 
 	if c.Base.Cons > 1 {
 		c.c2()

@@ -75,6 +75,7 @@ const (
 	ICDTagBurgeonDamage
 	ICDTagHyperbloomDamage
 	ICDTagNahidaSkill
+	ICDTagNahidaC6
 	ICDTagLength
 )
 
@@ -160,7 +161,6 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	//burning
 	{1, 0, 0, 0, 0, 0, 0, 0},
 	//nahida skill
-	//{1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 1.5, 0, 0, 0},
 	{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 }
 

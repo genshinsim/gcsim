@@ -156,10 +156,10 @@ func (c *char) c6() {
 		c.c6count++
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Karmic Oblivion (C6)",
+			Abil:       "Tri-Karma Purification: Karmic Oblivion",
 			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNahidaSkill,
-			ICDGroup:   combat.ICDGroupNahidaSkill,
+			ICDTag:     combat.ICDTagNahidaC6,
+			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       2,

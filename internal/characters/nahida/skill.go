@@ -37,7 +37,7 @@ const (
 	skillPressCD        = 300
 	skillHoldCD         = 360
 	skillPressHitmark   = 13
-	skillMarkKey        = "nahida-tri-karma"
+	skillMarkKey        = "nahida-e"
 	skillICDKey         = "nahida-tri-karma-icd"
 	triKarmaParticleICD = "nahida-tri-karma-particle-icd"
 )
@@ -66,7 +66,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		combat.NewCircleHit(c.Core.Combat.Player(), 4.6),
 		0, //TODO: snapshot delay?
 		skillPressHitmark,
 		c.skillMarkTargets,
@@ -84,11 +84,13 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
-	if hold > 330 {
-		hold = 330
+	// earliest hold can be let go is roughly 16.5. max is set to 317 so that
+	// it aligns with max cd at 330
+	if hold > 317 {
+		hold = 317
 	}
-	if hold < 30 {
-		hold = 30 //TODO: hold appears to have a min before the camera appears
+	if hold < 17 {
+		hold = 17
 	}
 
 	ai := combat.AttackInfo{
@@ -105,18 +107,18 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5),
-		0,
-		hold+3, //TODO: snapshot frame and hitmark
+		combat.NewCircleHit(c.Core.Combat.Player(), 25),
+		0, // TODO: snapshot timing
+		hold+3,
 		c.skillMarkTargets,
 	)
 
-	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold)
+	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold-17+30)
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return hold + skillHoldFrames[next] },
-		AnimationLength: hold,
-		CanQueueAfter:   hold, // earliest cancel
+		Frames:          func(next action.Action) int { return hold - 17 + skillHoldFrames[next] },
+		AnimationLength: hold - 17 + 30 + skillHoldFrames[action.InvalidAction],
+		CanQueueAfter:   hold - 17 + 30 + skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
 
@@ -242,12 +244,6 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		snap := c.Snapshot(&ai)
 		em := snap.Stats[attributes.EM]
 		ai.FlatDmg = em * triKarmaEM[c.TalentLvlSkill()]
-
-		if em > 200 {
-			dmgBuff, crBuff := c.a4(em)
-			snap.Stats[attributes.DmgP] += dmgBuff
-			snap.Stats[attributes.CR] += crBuff
-		}
 
 		c.Core.QueueAttackWithSnap(
 			ai,

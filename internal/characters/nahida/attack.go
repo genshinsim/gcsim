@@ -70,25 +70,17 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)
-
-	cancel := attackHitmarks[c.NormalCounter]
-
-	for _, v := range attackFrames[c.NormalCounter] {
-		if v < cancel {
-			cancel = v
-		}
-	}
 
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   cancel,
+		CanQueueAfter:   attackFrames[c.NormalCounter][action.ActionSwap],
 		State:           action.NormalAttackState,
 	}
 }
