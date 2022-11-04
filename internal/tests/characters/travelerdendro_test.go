@@ -85,3 +85,53 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	}
 
 }
+
+// lotus is expected to tick at frame 37 after appearing, which is 54+37 after cast
+// and then tick every 90 frames after that for the duration
+// duration is either 12s at c0 or 15s at c2
+func TestTravelerDendroBurstTicks(t *testing.T) {
+	c, trg := makeCore(1)
+	prof := defProfile(keys.AetherDendro)
+	prof.Base.Cons = 6
+	idx, err := c.AddChar(prof)
+	if err != nil {
+		t.Errorf("error adding char: %v", err)
+		t.FailNow()
+	}
+	c.Player.SetActive(idx)
+	err = c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+	c.Combat.DefaultTarget = trg[0].Key()
+	dmgCount := 0
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.Abil == "Lea Lotus Lamp" {
+			dmgCount++
+			log.Println("boom at: ", c.F)
+		}
+		return false
+	}, "hit-check")
+	advanceCoreFrame(c)
+
+	// use burst to create a ball
+	p := make(map[string]int)
+	log.Println("casting burst: ", c.F)
+	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
+
+	//expecting to take a total of 54 frames to appear + 15s duration
+	totalDuration := 54 + 15*60
+	expectedCount := (totalDuration - 37) / 90
+
+	//add 100 for good measures in case bugs from extra ticks
+	for i := 0; i < totalDuration+100; i++ {
+		advanceCoreFrame(c)
+	}
+
+	if dmgCount != expectedCount {
+		t.Errorf("expecting %v ticks, got %v", expectedCount, dmgCount)
+	}
+
+}
