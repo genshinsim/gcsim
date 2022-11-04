@@ -183,31 +183,6 @@ func (c *char) triKarmaInterval() int {
 func (c *char) generateTriKarmaSnapshot() {
 	//TODO: assuming tri karma snapshot her stats??
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Tri-Karma Purification",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNahidaSkill,
-		ICDGroup:   combat.ICDGroupNahidaSkill,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       triKarmaAtk[c.TalentLvlSkill()],
-	}
-	snap := c.Snapshot(&ai)
-	em := snap.Stats[attributes.EM]
-	ai.FlatDmg = em * triKarmaEM[c.TalentLvlSkill()]
-
-	c.triKarmaSnapshot = combat.AttackEvent{
-		Info:        ai,
-		Snapshot:    snap,
-		SourceFrame: c.Core.F,
-	}
-
-	if em > 200 {
-		dmgBuff, crBuff := c.a4(em)
-		c.triKarmaSnapshot.Snapshot.Stats[attributes.DmgP] += dmgBuff
-		c.triKarmaSnapshot.Snapshot.Stats[attributes.CR] += crBuff
-	}
 }
 
 func (c *char) triKarmaOnReaction(rx event.Event) func(args ...interface{}) bool {
@@ -265,9 +240,30 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 			cb = c.particlesOnDmg
 			done = true
 		}
+
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Tri-Karma Purification",
+			AttackTag:  combat.AttackTagElementalArt,
+			ICDTag:     combat.ICDTagNahidaSkill,
+			ICDGroup:   combat.ICDGroupNahidaSkill,
+			Element:    attributes.Dendro,
+			Durability: 25,
+			Mult:       triKarmaAtk[c.TalentLvlSkill()],
+		}
+		snap := c.Snapshot(&ai)
+		em := snap.Stats[attributes.EM]
+		ai.FlatDmg = em * triKarmaEM[c.TalentLvlSkill()]
+
+		if em > 200 {
+			dmgBuff, crBuff := c.a4(em)
+			snap.Stats[attributes.DmgP] += dmgBuff
+			snap.Stats[attributes.CR] += crBuff
+		}
+
 		c.Core.QueueAttackWithSnap(
-			c.triKarmaSnapshot.Info,
-			c.triKarmaSnapshot.Snapshot,
+			ai,
+			snap,
 			combat.NewDefSingleTarget(e.Key()),
 			4,
 			cb,

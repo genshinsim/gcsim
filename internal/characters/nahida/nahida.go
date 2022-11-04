@@ -6,7 +6,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -19,14 +18,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	triKarmaSnapshot combat.AttackEvent
-	pyroCount        int
-	electroCount     int
-	hydroCount       int
-	pyroBurstBuff    []float64
-	a4Buff           []float64
-	c4Buff           []float64
-	c6count          int
+	pyroCount     int
+	electroCount  int
+	hydroCount    int
+	pyroBurstBuff []float64
+	a4Buff        []float64
+	c4Buff        []float64
+	c6count       int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
