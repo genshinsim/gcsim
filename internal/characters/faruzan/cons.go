@@ -27,6 +27,29 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 	})
 }
 
+// C4: The vortex created by Wind Realm of Nasamjnin will restore Energy to
+// Faruzan based on the number of opponents hit: If it hits 1 opponent, it
+// will restore 2 Energy for Faruzan. Each additional opponent hit will
+// restore 0.5 more Energy for Faruzan.
+// A maximum of 4 Energy can be restored to her per vortex.
+func (c *char) c4Callback() func(combat.AttackCB) {
+	if c.Base.Cons < 4 {
+		return func(a combat.AttackCB) {}
+	}
+	count := 0
+	return func(a combat.AttackCB) {
+		if count > 4 {
+			return
+		}
+		amt := 0.5
+		if count == 0 {
+			amt = 2
+		}
+		count++
+		c.AddEnergy("faruzan-c4", amt)
+	}
+}
+
 const c6ICDKey = "faruzan-c6-icd"
 
 func (c *char) c6Arrows() {
