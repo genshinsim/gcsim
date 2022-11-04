@@ -8,12 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const a1Key = "dmc-a1"
+
 // Gets removed on swap - from Kolibri
 func (c *char) a1Init() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
 		prev := args[0].(int)
 		prevChar := c.Core.Player.ByIndex(prev)
-		prevChar.DeleteStatMod("dmc-a1")
+		prevChar.DeleteStatMod(a1Key)
 		return false
 	}, "dmc-a1-remove")
 }
@@ -26,7 +28,7 @@ func (c *char) a1Buff(delay int) {
 			active := c.Core.Player.ActiveChar()
 			m[attributes.EM] = float64(6 * c.burstOverflowingLotuslight)
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("dmc-a1", 60),
+				Base:         modifier.NewBase(a1Key, 60),
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return m, true
