@@ -30,7 +30,7 @@ func (c *char) a1(dur int) {
 		max = 250
 	}
 
-	c.a4Buff[attributes.EM] = max
+	c.a2Buff[attributes.EM] = max
 
 	for i, char := range team {
 		idx := i
@@ -38,7 +38,7 @@ func (c *char) a1(dur int) {
 			Base:         modifier.NewBase(a1BuffKey, dur),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
-				return c.a4Buff, c.Core.Player.Active() == idx
+				return c.a2Buff, c.Core.Player.Active() == idx
 			},
 		})
 	}

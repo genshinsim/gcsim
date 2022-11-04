@@ -22,6 +22,7 @@ type char struct {
 	electroCount  int
 	hydroCount    int
 	pyroBurstBuff []float64
+	a2Buff        []float64
 	a4Buff        []float64
 	c4Buff        []float64
 	c6count       int
@@ -71,6 +72,8 @@ func (c *char) Init() error {
 	if c.pyroCount > 0 {
 		c.pyroBurstBuff[attributes.DmgP] = burstTriKarmaDmgBonus[c.pyroCount-1][c.TalentLvlBurst()]
 	}
+
+	c.a2Buff = make([]float64, attributes.EndStatType)
 
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4()
