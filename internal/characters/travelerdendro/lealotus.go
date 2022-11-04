@@ -2,7 +2,6 @@ package travelerdendro
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -20,44 +19,6 @@ type LeaLotus struct {
 	char            *char
 	targetingRadius float64
 	hitboxRadius    float64
-}
-
-func (s *LeaLotus) transfigInit() {
-	s.Core.Events.Subscribe(event.OnQuicken, func(args ...interface{}) bool {
-		target, ok := args[0].(combat.Target)
-		if !ok {
-			return false
-		}
-		if target == s {
-			s.transfig(attributes.Electro)
-			return true
-		}
-		return false
-	}, "lealotus-electro")
-
-	s.Core.Events.Subscribe(event.OnBloom, func(args ...interface{}) bool {
-		target, ok := args[0].(combat.Target)
-		if !ok {
-			return false
-		}
-		if target == s {
-			s.transfig(attributes.Hydro)
-			return true
-		}
-		return false
-	}, "lealotus-hydro")
-
-	s.Core.Events.Subscribe(event.OnBurning, func(args ...interface{}) bool {
-		target, ok := args[0].(combat.Target)
-		if !ok {
-			return false
-		}
-		if target == s {
-			s.transfig(attributes.Pyro)
-			return true
-		}
-		return false
-	}, "lealotus-pyro")
 }
 
 func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
@@ -123,39 +84,6 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 
 	// s.transfigInit()
 	return s
-}
-
-func (s *LeaLotus) transfig(ele attributes.Element) {
-	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index)
-	log.Printf("dmc lamp %s transfig triggered", ele.String())
-	s.char.burstTransfig = ele
-	switch ele {
-	case attributes.Hydro:
-		s.targetingRadius = 12
-		s.hitboxRadius = 4
-		for t := 15; t <= s.Duration; t += 90 {
-			s.QueueAttack(t)
-		}
-
-	case attributes.Electro:
-		for t := 15; t <= s.Duration; t += 54 {
-			s.QueueAttack(t)
-		}
-
-	case attributes.Pyro:
-		s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion"
-		s.burstAtk.Info.Durability = 50
-		s.burstAtk.Info.ICDTag = combat.ICDTagNone
-		s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]
-		s.Core.Tasks.Add(func() {
-			s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s, 6.5), 0)
-			s.Core.Status.Delete(burstKey)
-		}, 60)
-	}
-	if s.char.Base.Cons >= 4 {
-		s.char.c4()
-	}
-	s.Kill()
 }
 
 func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
@@ -278,20 +206,48 @@ func (r *LeaLotus) React(a *combat.AttackEvent) {
 	}
 }
 
-func (r *LeaLotus) TryQuicken(a *combat.AttackEvent) {
-	if r.Reactable.TryQuicken(a) {
-		r.transfig(attributes.Electro)
+func (s *LeaLotus) TryQuicken(a *combat.AttackEvent) {
+	if !s.Reactable.TryQuicken(a) {
+		return
 	}
+	for t := 15; t <= s.Duration; t += 54 {
+		s.QueueAttack(t)
+	}
+	s.transfig(attributes.Electro)
 }
 
-func (r *LeaLotus) TryBloom(a *combat.AttackEvent) {
-	if r.Reactable.TryBloom(a) {
-		r.transfig(attributes.Hydro)
+func (s *LeaLotus) TryBloom(a *combat.AttackEvent) {
+	if !s.Reactable.TryBloom(a) {
+		return
 	}
+	s.targetingRadius = 12
+	s.hitboxRadius = 4
+	for t := 15; t <= s.Duration; t += 90 {
+		s.QueueAttack(t)
+	}
+	s.transfig(attributes.Hydro)
 }
 
-func (r *LeaLotus) TryBurning(a *combat.AttackEvent) {
-	if r.Reactable.TryBurning(a) {
-		r.transfig(attributes.Pyro)
+func (s *LeaLotus) TryBurning(a *combat.AttackEvent) {
+	if !s.Reactable.TryBurning(a) {
+		return
 	}
+	s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion"
+	s.burstAtk.Info.Durability = 50
+	s.burstAtk.Info.ICDTag = combat.ICDTagNone
+	s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]
+	s.Core.Tasks.Add(func() {
+		s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s, 6.5), 0)
+		s.Core.Status.Delete(burstKey)
+	}, 60)
+	s.transfig(attributes.Pyro)
+}
+
+func (s *LeaLotus) transfig(ele attributes.Element) {
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index)
+	s.char.burstTransfig = ele
+	if s.char.Base.Cons >= 4 {
+		s.char.c4()
+	}
+	s.Kill()
 }
