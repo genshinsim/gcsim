@@ -57,12 +57,12 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	)
 }
 
-func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierElectro] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Electro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -86,14 +86,15 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) {
 		//check EC clean up
 		r.checkEC()
 	}
+	return true
 }
 
-func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierHydro] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Hydro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -109,14 +110,15 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) {
 		atkDur,
 		a.Info.ActorIndex,
 	)
+	return true
 }
 
-func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierCryo] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Cryo, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -132,14 +134,15 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) {
 		atkDur,
 		a.Info.ActorIndex,
 	)
+	return true
 }
 
-func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierPyro] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Pyro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -156,14 +159,15 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) {
 		atkDur,
 		a.Info.ActorIndex,
 	)
+	return true
 }
 
-func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierFrozen] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Frozen, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -180,4 +184,5 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) {
 		a.Info.ActorIndex,
 	)
 	r.checkFreeze()
+	return true
 }

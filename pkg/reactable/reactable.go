@@ -106,9 +106,8 @@ type Reactable struct {
 	ecSnapshot combat.AttackInfo //index of owner of next ec ticks
 	ecTickSrc  int
 	//burning specific
-	burningSnapshot       combat.AttackInfo
-	burningTickSrc        int
-	burningEventSubExists bool
+	burningSnapshot combat.AttackInfo
+	burningTickSrc  int
 }
 
 type Enemy interface {
@@ -182,7 +181,14 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		r.TrySwirlCryo(a)
 		r.TrySwirlFrozen(a)
 	case attributes.Geo:
-		r.TryCrystallize(a)
+		//can't double crystallize it looks like
+		//freeze can trigger hydro first
+		//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
+		r.TryCrystallizeElectro(a)
+		r.TryCrystallizeHydro(a)
+		r.TryCrystallizeCryo(a)
+		r.TryCrystallizePyro(a)
+		r.TryCrystallizeFrozen(a)
 	case attributes.Dendro:
 		r.TrySpread(a)
 		r.TryQuicken(a)

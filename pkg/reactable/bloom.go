@@ -12,10 +12,10 @@ import (
 
 const DendroCoreDelay = 20
 
-func (r *Reactable) TryBloom(a *combat.AttackEvent) {
+func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 	//can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	var consumed combat.Durability
 	switch a.Info.Element {
@@ -27,7 +27,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) {
 		case r.Durability[ModifierQuicken] > ZeroDur:
 		case r.Durability[ModifierBurningFuel] > ZeroDur:
 		default:
-			return
+			return false
 		}
 		//reduce only check for one element so have to call twice to check for quicken as well
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 0.5)
@@ -37,11 +37,11 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) {
 		}
 	case attributes.Dendro:
 		if r.Durability[ModifierHydro] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
 	default:
-		return
+		return false
 	}
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
@@ -49,6 +49,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) {
 
 	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
+	return true
 }
 
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
