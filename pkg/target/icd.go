@@ -29,7 +29,7 @@ func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) 
 
 	t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char).
 		Write("grp", grp).
-		Write("target", t.TargetIndex).
+		Write("target", t.key).
 		Write("tag", tag).
 		Write("counter", val).
 		Write("val", combat.ICDGroupEleApplicationSequence[grp][val]).
