@@ -3,21 +3,39 @@ package faruzan
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-//not strictly required but in case in future we implement player getting hit
-const a4ICDKey = "faruzan-a4-icd"
+const (
+	a4Key    = "faruzan-a4"
+	a4ICDKey = "faruzan-a4-icd"
+)
 
-// Implements A4 energy regen.
-// According to library finding, text description is inaccurate
-// it's more like for every 1% of ER, she grants 0.012 flat energy
-func (c *char) a4(a combat.AttackCB) {
-	if c.StatusIsActive(a4ICDKey) {
-		return
-	}
-	c.AddStatus(a4ICDKey, 180, true)
-	energyAddAmt := 1.2 * (1 + c.Stat(attributes.ER))
-	for _, char := range c.Core.Player.Chars() {
-		char.AddEnergy("faruzan-a4", energyAddAmt)
-	}
+func (c *char) a4() {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.Element != attributes.Anemo {
+			return false
+		}
+
+		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
+		if char.StatusIsActive(burstBuffKey) && !char.StatusIsActive(a4ICDKey) {
+			char.AddStatus(a4Key, 6, true)
+			char.AddStatus(a4ICDKey, 60, true)
+		}
+
+		if char.StatusIsActive(a4Key) {
+			stats, _ := c.Stats()
+			amt := 0.574 * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
+			if c.Core.Flags.LogDebug {
+				c.Core.Log.NewEvent("faruzan a4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
+					Write("before", atk.Info.FlatDmg).
+					Write("addition", amt)
+			}
+			atk.Info.FlatDmg += amt
+		}
+
+		return false
+	}, "faruzan-a4-hook")
 }

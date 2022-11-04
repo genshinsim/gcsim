@@ -53,8 +53,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHit(c.Core.Combat.Player(), 2),
 		skillHitmark,
 		skillHitmark,
-		c.a4,
 	) // TODO: hitmark and size
+
+	// C1: Faruzan can fire off a maximum of 2 Hurricane
+	// Arrows using fully charged Aimed Shots while under a
+	// single Wind Realm of Nasamjnin effect.
+	c.hurricaneCount = 1
+	if c.Base.Cons >= 1 {
+		c.hurricaneCount = 2
+	}
 
 	c.AddStatus(skillKey, 1080, false)
 	c.SetCDWithDelay(action.ActionSkill, 360, 7) // TODO: check cooldown delay
@@ -100,7 +107,27 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 			Durability: 25,
 			Mult:       hurricane[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(a.Target, 2), vortexHitmark, vortexHitmark) // TODO: hitmark and size
+		// C4: The vortex created by Wind Realm of Nasamjnin will restore Energy to
+		// Faruzan based on the number of opponents hit: If it hits 1 opponent, it
+		// will restore 2 Energy for Faruzan. Each additional opponent hit will
+		// restore 0.5 more Energy for Faruzan.
+		// A maximum of 4 Energy can be restored to her per vortex.
+		count := 0
+		c4Cb := func(a combat.AttackCB) {
+			if c.Base.Cons < 4 {
+				return
+			}
+			if count > 4 {
+				return
+			}
+			amt := 0.5
+			if count == 0 {
+				amt = 2
+			}
+			count++
+			c.AddEnergy("faruzan-c4", amt)
+		}
+		c.Core.QueueAttack(ai, combat.NewCircleHit(a.Target, 2), vortexHitmark, vortexHitmark, c4Cb) // TODO: hitmark and size
 		done = true
 	}
 

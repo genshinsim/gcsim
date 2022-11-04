@@ -11,8 +11,8 @@ import (
 
 const c1ICDKey = "faruzan-c1-icd"
 
-// Implements C1 CD reduction. Waits until delay (when it hits the enemy), then procs the effect
-// Triggers on her E and Q
+// Faruzan can fire off a maximum of 2 Hurricane Arrows using fully charged
+// Aimed Shots while under a single Wind Realm of Nasamjnin effect.
 func (c *char) c1() {
 	if c.StatusIsActive(c1ICDKey) {
 		return

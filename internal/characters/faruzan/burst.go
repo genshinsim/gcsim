@@ -32,11 +32,6 @@ func init() {
 // - The Whirlwind Pulse will also apply Prayerful Wind's Gift to all nearby
 // characters when it is unleashed, granting them Anemo DMG Bonus.
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	duration := 720
-	if c.Base.Cons >= 2 {
-		duration += 360
-	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "The Wind's Secret Ways (Q)",
@@ -60,6 +55,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Ele:   attributes.Anemo,
 			Value: -0.4,
 		})
+	}
+
+	// C2: The duration of the Dazzling Polyhedron created by
+	// The Wind's Secret Ways increased by 6s.
+	duration := 720
+	if c.Base.Cons >= 2 {
+		duration += 360
 	}
 
 	m := make([]float64, attributes.EndStatType)

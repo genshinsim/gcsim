@@ -39,7 +39,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	weakspot, ok := p["weakspot"]
 
 	skillActive := 0
-	if c.StatusIsActive(skillKey) {
+	if c.StatusIsActive(skillKey) && c.hurricaneCount > 0 {
 		skillActive = 1
 	}
 
@@ -69,6 +69,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(func() {
 			c.hurricaneArrow(travel, weakspot == 1)
 		}, aimedHitmarks[skillActive])
+		c.hurricaneCount--
 	}
 
 	return action.ActionInfo{

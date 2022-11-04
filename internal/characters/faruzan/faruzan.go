@@ -15,7 +15,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	c6buff []float64
+	hurricaneCount int
+	c6buff         []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -24,8 +25,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.EnergyMax = 80
 	c.NormalHitNum = normalHitNum
-	c.BurstCon = 3
-	c.SkillCon = 5
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	w.Character = &c
 
@@ -33,9 +34,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	if c.Base.Cons >= 6 {
-		c.c6buff = make([]float64, attributes.EndStatType)
-		c.c6buff[attributes.CD] = 0.6
-	}
+	c.a4()
 	return nil
 }
