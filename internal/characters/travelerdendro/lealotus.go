@@ -2,6 +2,7 @@ package travelerdendro
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -163,6 +164,9 @@ func (s *LeaLotus) HandleAttack(a *combat.AttackEvent) float64 {
 	if a.Info.Durability > 0 && !a.OnICD && a.Info.Element != attributes.Physical {
 		s.React(a)
 	}
+	s.Core.Combat.Tasks.Add(func() {
+		s.applyDamage(a, math.NaN())
+	}, 0)
 	return 0
 }
 
@@ -177,7 +181,7 @@ func (s *LeaLotus) OnThinkInterval() {
 	s.QueueAttack(0)
 }
 
-func (s *LeaLotus) ApplyDamage(atk *combat.AttackEvent, damage float64) {
+func (s *LeaLotus) applyDamage(atk *combat.AttackEvent, damage float64) {
 	if atk.Info.Durability > 0 && !atk.OnICD && atk.Info.Element != attributes.Physical {
 		if !atk.Reacted && atk.Info.Element == attributes.Cryo {
 			s.AttachOrRefill(atk)
@@ -185,7 +189,6 @@ func (s *LeaLotus) ApplyDamage(atk *combat.AttackEvent, damage float64) {
 		}
 
 		s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp auras: %s", s.ActiveAuraString()), glog.LogCharacterEvent, s.char.Index)
-
 	}
 }
 
