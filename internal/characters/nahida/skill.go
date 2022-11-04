@@ -141,7 +141,6 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 	//assuming it's mark per skill cast; in this case refresh regardless if
 	//target already marked up until 8
 	if c.markCount < 8 {
-		//TODO: assumed this mark is affected by hitlag
 		t.AddStatus(skillMarkKey, 1500, true)
 		c.markCount++
 	}
