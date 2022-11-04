@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) TryFreeze(a *combat.AttackEvent) {
+func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	//so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
@@ -18,26 +18,27 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) {
 	case attributes.Hydro:
 		//if cryo exists we'll trigger freeze regardless if frozen already coexists
 		if r.Durability[ModifierCryo] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.triggerFreeze(r.Durability[ModifierCryo], a.Info.Durability)
 		r.Durability[ModifierCryo] -= consumed
 		r.Durability[ModifierCryo] = max(r.Durability[ModifierCryo], 0)
 	case attributes.Cryo:
 		if r.Durability[ModifierHydro] < ZeroDur {
-			return
+			return false
 		}
 		consumed := r.triggerFreeze(r.Durability[ModifierHydro], a.Info.Durability)
 		r.Durability[ModifierHydro] -= consumed
 		r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
 	default:
 		//should be here
-		return
+		return false
 	}
 	a.Reacted = true
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
 	r.core.Events.Emit(event.OnFrozen, r.self, a)
+	return true
 }
 
 func max(a, b combat.Durability) combat.Durability {
@@ -54,9 +55,9 @@ func min(a, b combat.Durability) combat.Durability {
 	return a
 }
 
-func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
+func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	if a.Info.StrikeType != combat.StrikeTypeBlunt || r.Durability[ModifierFrozen] < ZeroDur {
-		return
+		return false
 	}
 	//remove 200 freeze gauge if availabe
 	r.Durability[ModifierFrozen] -= 200
@@ -83,7 +84,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) {
 		-1,
 		1,
 	)
-
+	return true
 }
 
 // add to freeze durability and return amount of durability consumed

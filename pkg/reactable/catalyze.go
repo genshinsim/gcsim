@@ -6,13 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) TryAggravate(a *combat.AttackEvent) {
+func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 
 	if r.Durability[ModifierQuicken] < ZeroDur {
-		return
+		return false
 	}
 
 	r.core.Events.Emit(event.OnAggravate, r.self, a)
@@ -22,15 +22,16 @@ func (r *Reactable) TryAggravate(a *combat.AttackEvent) {
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = combat.Aggravate
 	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
+	return true
 }
 
-func (r *Reactable) TrySpread(a *combat.AttackEvent) {
+func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 
 	if r.Durability[ModifierQuicken] < ZeroDur {
-		return
+		return false
 	}
 
 	r.core.Events.Emit(event.OnSpread, r.self, a)
@@ -40,23 +41,24 @@ func (r *Reactable) TrySpread(a *combat.AttackEvent) {
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = combat.Spread
 	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
+	return true
 }
 
-func (r *Reactable) TryQuicken(a *combat.AttackEvent) {
+func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 
 	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Dendro:
 		if r.Durability[ModifierElectro] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	case attributes.Electro:
 		if r.Durability[ModifierDendro] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 1)
 	default:
@@ -75,6 +77,8 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) {
 			r.tryQuickenBloom(a)
 		}, 0)
 	}
+
+	return true
 }
 
 func (r *Reactable) attachQuicken(dur combat.Durability) {

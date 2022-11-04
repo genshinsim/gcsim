@@ -6,44 +6,45 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) {
+func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	//this is for non frozen one
 	if r.Durability[ModifierFrozen] >= ZeroDur {
-		return
+		return false
 	}
 	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		if r.Durability[ModifierCryo] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 1)
 	case attributes.Cryo:
 		//could be ec potentially
 		if r.Durability[ModifierElectro] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	default:
-		return
+		return false
 	}
 
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true
 	r.queueSuperconduct(a)
+	return true
 }
 
-func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) {
+func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	//this is for frozen
 	if r.Durability[ModifierFrozen] < ZeroDur {
-		return
+		return false
 	}
 	switch a.Info.Element {
 	case attributes.Electro:
@@ -55,11 +56,12 @@ func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) {
 		a.Info.Durability = 0
 		a.Reacted = true
 	default:
-		return
+		return false
 	}
 
 	r.queueSuperconduct(a)
 
+	return false
 }
 
 func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {

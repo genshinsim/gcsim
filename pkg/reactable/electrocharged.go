@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (r *Reactable) TryAddEC(a *combat.AttackEvent) {
+func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 
 	//adding ec or hydro just adds to durability
@@ -19,7 +19,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) {
 	case attributes.Hydro:
 		//if there's no existing hydro or electro then do nothing
 		if r.Durability[ModifierElectro] < ZeroDur {
-			return
+			return false
 		}
 		//add to hydro durability
 		//TODO: this shouldn't happen here
@@ -27,12 +27,12 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) {
 	case attributes.Electro:
 		//if there's no existing hydro or electro then do nothing
 		if r.Durability[ModifierHydro] < ZeroDur {
-			return
+			return false
 		}
 		//add to electro durability
 		r.attachOrRefillNormalEle(ModifierElectro, a.Info.Durability)
 	default:
-		return
+		return false
 	}
 
 	a.Reacted = true
@@ -100,6 +100,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) {
 
 	//ticks are 60 frames since last tick
 	//taking tick dmg resets last tick
+	return true
 }
 
 func (r *Reactable) waneEC() {
