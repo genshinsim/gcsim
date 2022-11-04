@@ -10,9 +10,10 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark  = 20
-	skillKey      = "faruzan-e"
-	vortexHitmark = 40
+	skillHitmark   = 20
+	skillKey       = "faruzan-e"
+	particleICDKey = "faruzan-particle-icd"
+	vortexHitmark  = 40
 )
 
 func init() {
@@ -135,11 +136,15 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 		if particleDone {
 			return
 		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
 		var count float64 = 2
 		if c.Core.Rand.Float64() < .25 { // TODO: verify particle gen
 			count++
 		}
 		c.Core.QueueParticle("faruzan", count, attributes.Anemo, 0)
+		c.AddStatus(particleICDKey, 360, false)
 		particleDone = true
 	}
 
