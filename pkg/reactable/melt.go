@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryMelt(a *combat.AttackEvent) {
+func (r *Reactable) TryMelt(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}

@@ -12,7 +12,7 @@ type CrystallizeShield struct {
 	emBonus float64
 }
 
-func (r *Reactable) tryCrystallize(a *combat.AttackEvent) {
+func (r *Reactable) TryCrystallize(a *combat.AttackEvent) {
 	//can't double crystallize it looks like
 	//freeze can trigger hydro first
 	//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0

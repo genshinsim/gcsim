@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryVaporize(a *combat.AttackEvent) {
+func (r *Reactable) TryVaporize(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}

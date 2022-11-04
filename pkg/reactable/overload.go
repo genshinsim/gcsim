@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryOverload(a *combat.AttackEvent) {
+func (r *Reactable) TryOverload(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}

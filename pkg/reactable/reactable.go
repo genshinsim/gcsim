@@ -154,40 +154,40 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 	switch a.Info.Element {
 	case attributes.Electro:
 		//hyperbloom
-		r.tryAggravate(a)
-		r.tryOverload(a)
-		r.tryAddEC(a)
-		r.tryFrozenSuperconduct(a)
-		r.trySuperconduct(a)
-		r.tryQuicken(a)
+		r.TryAggravate(a)
+		r.TryOverload(a)
+		r.TryAddEC(a)
+		r.TryFrozenSuperconduct(a)
+		r.TrySuperconduct(a)
+		r.TryQuicken(a)
 	case attributes.Pyro:
 		//burgeon
-		r.tryOverload(a)
-		r.tryVaporize(a)
-		r.tryMelt(a)
-		r.tryBurning(a)
+		r.TryOverload(a)
+		r.TryVaporize(a)
+		r.TryMelt(a)
+		r.TryBurning(a)
 	case attributes.Cryo:
-		r.trySuperconduct(a)
-		r.tryMelt(a)
-		r.tryFreeze(a)
+		r.TrySuperconduct(a)
+		r.TryMelt(a)
+		r.TryFreeze(a)
 	case attributes.Hydro:
-		r.tryVaporize(a)
-		r.tryFreeze(a)
-		r.tryBloom(a)
-		r.tryAddEC(a)
+		r.TryVaporize(a)
+		r.TryFreeze(a)
+		r.TryBloom(a)
+		r.TryAddEC(a)
 	case attributes.Anemo:
-		r.trySwirlElectro(a)
-		r.trySwirlPyro(a)
-		r.trySwirlHydro(a)
-		r.trySwirlCryo(a)
-		r.trySwirlFrozen(a)
+		r.TrySwirlElectro(a)
+		r.TrySwirlPyro(a)
+		r.TrySwirlHydro(a)
+		r.TrySwirlCryo(a)
+		r.TrySwirlFrozen(a)
 	case attributes.Geo:
-		r.tryCrystallize(a)
+		r.TryCrystallize(a)
 	case attributes.Dendro:
-		r.trySpread(a)
-		r.tryQuicken(a)
-		r.tryBurning(a)
-		r.tryBloom(a)
+		r.TrySpread(a)
+		r.TryQuicken(a)
+		r.TryBurning(a)
+		r.TryBloom(a)
 	}
 }
 

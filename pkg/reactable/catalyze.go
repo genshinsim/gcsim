@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
+func (r *Reactable) TryAggravate(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -24,7 +24,7 @@ func (r *Reactable) tryAggravate(a *combat.AttackEvent) {
 	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
 }
 
-func (r *Reactable) trySpread(a *combat.AttackEvent) {
+func (r *Reactable) TrySpread(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
@@ -42,7 +42,7 @@ func (r *Reactable) trySpread(a *combat.AttackEvent) {
 	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
 }
 
-func (r *Reactable) tryQuicken(a *combat.AttackEvent) {
+func (r *Reactable) TryQuicken(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}

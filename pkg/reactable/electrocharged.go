@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
+func (r *Reactable) TryAddEC(a *combat.AttackEvent) {
 	if a.Info.Durability < ZeroDur {
 		return
 	}
