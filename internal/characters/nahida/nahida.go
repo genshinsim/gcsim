@@ -59,13 +59,15 @@ func (c *char) Init() error {
 		}
 	}
 
-	if c.Base.Cons >= 1 {
-		c.c1()
+	//sanity check
+	if c.pyroCount > 2 {
+		c.pyroCount = 2
 	}
-
-	if c.Base.Cons >= 4 {
-		c.c4Buff = make([]float64, attributes.EndStatType)
-		c.c4()
+	if c.hydroCount > 2 {
+		c.hydroCount = 2
+	}
+	if c.electroCount > 2 {
+		c.electroCount = 2
 	}
 
 	c.pyroBurstBuff = make([]float64, attributes.EndStatType)
@@ -79,23 +81,21 @@ func (c *char) Init() error {
 	c.a4()
 	c.a4tick()
 
+	if c.Base.Cons >= 1 {
+		c.c1()
+	}
+
+	if c.Base.Cons >= 4 {
+		c.c4Buff = make([]float64, attributes.EndStatType)
+		c.c4()
+	}
+
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
 
 	if c.Base.Cons >= 6 {
 		c.c6()
-	}
-
-	//sanity check
-	if c.pyroCount > 2 {
-		c.pyroCount = 2
-	}
-	if c.hydroCount > 2 {
-		c.hydroCount = 2
-	}
-	if c.electroCount > 2 {
-		c.electroCount = 2
 	}
 
 	return nil
