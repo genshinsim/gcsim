@@ -154,18 +154,19 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.Kill()
 }
 
-func (s *LeaLotus) HandleAttack(a *combat.AttackEvent) float64 {
+func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
+	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
 
-	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", a.Info.Abil), glog.LogCharacterEvent, s.char.Index)
+	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp hit by %s", atk.Info.Abil), glog.LogCharacterEvent, s.char.Index)
 
-	s.ShatterCheck(a)
+	s.ShatterCheck(atk)
 	//check for ICD first
-	a.OnICD = !s.WillApplyEle(a.Info.ICDTag, a.Info.ICDGroup, a.Info.ActorIndex)
-	if a.Info.Durability > 0 && !a.OnICD && a.Info.Element != attributes.Physical {
-		s.React(a)
+	atk.OnICD = !s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
+	if atk.Info.Durability > 0 && !atk.OnICD && atk.Info.Element != attributes.Physical {
+		s.React(atk)
 	}
 	s.Core.Combat.Tasks.Add(func() {
-		s.applyDamage(a, math.NaN())
+		s.applyDamage(atk, math.NaN())
 	}, 0)
 	return 0
 }
