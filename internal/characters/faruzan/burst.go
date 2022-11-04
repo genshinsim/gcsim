@@ -3,8 +3,6 @@ package faruzan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
 var burstFrames []int
@@ -34,76 +32,6 @@ func init() {
 // Also implements C4
 // The number of Tengu Juurai: Stormcluster released by Subjugation: Koukou Sendou is increased to 6.
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	waveClusterHits, ok := p["wave_cluster_hits"]
-	if !ok {
-		waveClusterHits = 41
-		if c.Base.Cons >= 2 {
-			waveClusterHits = 61
-		}
-	}
-	waveAttackProcs, ok := p["waveAttackProcs"]
-	if !ok {
-		waveAttackProcs = 11
-	}
-
-	// Entire burst snapshots sometime after activation but before 1st hit.
-	// For now, assume that it snapshots on cd delay
-	// Flagged as no ICD since the stormclusters do not share ICD with the main hit
-	// No ICD should not functionally matter as this only hits once
-
-	//titan breaker
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Tengu Juurai: Titanbreaker",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
-		Element:    attributes.Electro,
-		Durability: 25,
-		Mult:       burstMain[c.TalentLvlBurst()],
-	}
-	// dTitanbreaker.Targets = combat.TargetAll
-
-	// dStormcluster.Targets = combat.TargetAll
-
-	var c1cb combat.AttackCBFunc
-	if c.Base.Cons >= 1 {
-		c1cb = func(_ combat.AttackCB) { c.c1() }
-	}
-
-	if waveClusterHits%10 == 1 {
-		// Actual hit procs after the full cast duration, or 50 frames
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstStart, burstInitialHitmark, c1cb)
-	}
-	if waveAttackProcs%10 == 1 {
-		c.attackBuff(burstInitialHitmark)
-	}
-
-	//stormcluster
-	// Each cluster wave hits ~50 frames after titanbreaker and each preceding wave
-	// TODO: Replace with frame counts from KQM when those are available
-	ai.Abil = "Tengu Juurai: Stormcluster"
-	ai.ICDTag = combat.ICDTagElementalBurst
-	ai.Mult = burstCluster[c.TalentLvlBurst()]
-	for waveN := 0; waveN < 4; waveN++ {
-		// Handles the potential manual user override through the input tags
-		// For each wave, get the corresponding digit from the numeric sequence (e.g. for 4441, wave 2 = 4)
-		waveHits := int((waveClusterHits % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
-		waveAttackProc := int((waveAttackProcs % PowInt(10, waveN+2)) / PowInt(10, waveN+2-1))
-		if waveHits > 0 {
-			for j := 0; j < waveHits; j++ {
-				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstStart, burstClusterHitmark+18*waveN, c1cb)
-			}
-		}
-		if waveAttackProc == 1 {
-			c.attackBuff(burstClusterHitmark + 18*waveN)
-		}
-	}
-
-	c.SetCDWithDelay(action.ActionBurst, 20*60, burstStart)
-	c.ConsumeEnergy(50)
-
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],

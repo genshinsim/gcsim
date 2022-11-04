@@ -38,64 +38,37 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	weakspot, ok := p["weakspot"]
 
-	// A1:
-	// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
 	skillActive := 0
-	if c.Core.Status.Duration(coverKey) > 0 {
+	if c.StatusIsActive(skillKey) {
 		skillActive = 1
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
-		Abil:                 "Aim Charge Attack",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
-		Element:              attributes.Electro,
-		Durability:           25,
-		Mult:                 aimChargeFull[c.TalentLvlAttack()],
-		HitWeakPoint:         weakspot == 1,
-		HitlagHaltFrames:     .12 * 60,
-		HitlagOnHeadshotOnly: true,
-		IsDeployable:         true,
-	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
-		aimedHitmarks[skillActive],
-		aimedHitmarks[skillActive]+travel,
-	)
-
-	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
-	if c.Core.Status.Duration(coverKey) > 0 {
-		// Not sure what kind of strike type this is
+	if skillActive == 0 {
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Tengu Juurai: Ambush",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
-			Element:    attributes.Electro,
-			Durability: 25,
-			Mult:       skill[c.TalentLvlSkill()],
+			ActorIndex:           c.Index,
+			Abil:                 "Aim Charge Attack",
+			AttackTag:            combat.AttackTagExtra,
+			ICDTag:               combat.ICDTagNone,
+			ICDGroup:             combat.ICDGroupDefault,
+			StrikeType:           combat.StrikeTypePierce,
+			Element:              attributes.Anemo,
+			Durability:           25,
+			Mult:                 aimChargeFull[c.TalentLvlAttack()],
+			HitWeakPoint:         weakspot == 1,
+			HitlagHaltFrames:     .12 * 60,
+			HitlagOnHeadshotOnly: true,
+			IsDeployable:         true,
 		}
-
-		//TODO: snapshot?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2),
+			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
 			aimedHitmarks[skillActive],
-			aimedHitmarks[skillActive]+travel+90,
-			c.a4,
+			aimedHitmarks[skillActive]+travel,
 		)
-		c.attackBuff(aimedHitmarks[skillActive] + travel + 90)
-
-		// Particles are emitted after the ambush thing hits
-		c.Core.QueueParticle("faruzan", 3, attributes.Electro, aimedHitmarks[skillActive]+travel+90+c.ParticleDelay)
-
-		c.Core.Status.Delete(coverKey)
+	} else {
+		c.Core.Tasks.Add(func() {
+			c.hurricaneArrow(travel, weakspot == 1)
+		}, aimedHitmarks[skillActive])
 	}
 
 	return action.ActionInfo{

@@ -5,17 +5,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
 
-// c2 hitmark
-const c2Hitmark = 103
-
-const coverKey = "faruzan-e-cover"
+const (
+	skillHitmark  = 20
+	skillKey      = "faruzan-e"
+	vortexHitmark = 40
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52) // E -> D
@@ -26,35 +24,40 @@ func init() {
 	skillFrames[action.ActionSwap] = 50    // E -> Swap
 }
 
-// Implements skill handling. Fairly barebones since most of the actual stuff happens elsewhere
-// Gains Crowfeather Cover for 18s, and when Kujou faruzan fires a fully-charged Aimed Shot, Crowfeather Cover will be consumed, and will leave a Crowfeather at the target location.
-// Crowfeathers will trigger Tengu Juurai: Ambush after a short time, dealing Electro DMG and granting the active character within its AoE an ATK Bonus based on Kujou faruzan's Base ATK.
-// The ATK Bonuses from different Tengu Juurai will not stack, and their effects and duration will be determined by the last Tengu Juurai to take effect.
-// Also implements C2: Unleashing Tengu Stormcall will leave a Weaker Crowfeather at Kujou faruzan's original position that will deal 30% of its original DMG.
+// Faruzan deploys a polyhedron that deals AoE Anemo DMG to nearby opponents.
+// She will also enter the Manifest Gale state. While in the Manifest Gale
+// state, Faruzan's next fully charged shot will consume this state and will
+// become a Hurricane Arrow that deals Anemo DMG to opponents hit. This DMG
+// will be considered Charged Attack DMG.
+//
+// Pressurized Collapse
+// The Hurricane Arrow will create a Pressurized Collapse effect at its point
+// of impact, applying the Pressurized Collapse effect to the opponent or
+// character hit. This effect will be removed after a short delay, creating a
+// vortex that deals AoE Anemo DMG and pulls nearby objects and opponents in.
+// The vortex DMG is considered Elemental Skill DMG.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
-	// Snapshot for all of the crowfeathers are taken upon cast
-	c.Core.Status.Add(coverKey, 18*60)
-
-	// C2 handling
-	if c.Base.Cons >= 2 {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Tengu Juurai: Ambush C2",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
-			Element:    attributes.Electro,
-			Durability: 25,
-			Mult:       0.3 * skill[c.TalentLvlSkill()],
-		}
-		// TODO: not sure of snapshot? timing
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 50, c2Hitmark, c.a4)
-		c.attackBuff(c2Hitmark)
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Wind Realm of Nasamjnin (E)",
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagElementalArt,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypePierce,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
 	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		skillHitmark,
+		skillHitmark,
+		c.a4,
+	) // TODO: hitmark and size
 
-	c.SetCDWithDelay(action.ActionSkill, 600, 7)
+	c.AddStatus(skillKey, 1080, false)
+	c.SetCDWithDelay(action.ActionSkill, 360, 7) // TODO: check cooldown delay
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -64,37 +67,42 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-const attackBuffKey = "sarabuff"
+func (c *char) hurricaneArrow(travel int, weakspot bool) {
+	ai := combat.AttackInfo{
+		ActorIndex:           c.Index,
+		Abil:                 "Hurricane Arrow",
+		AttackTag:            combat.AttackTagExtra,
+		ICDTag:               combat.ICDTagNone, // TODO: check ICD
+		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
+		Element:              attributes.Anemo,
+		Durability:           25,
+		Mult:                 hurricane[c.TalentLvlAttack()],
+		HitWeakPoint:         weakspot,
+		HitlagHaltFrames:     .12 * 60, // TODO: check hitlag for special hurricane arrow
+		HitlagOnHeadshotOnly: true,
+		IsDeployable:         true,
+	}
 
-// Handles attack boost from faruzan's skills
-// Checks for the onfield character at the delay frame, then applies buff to that character
-func (c *char) attackBuff(delay int) {
-	c.Core.Tasks.Add(func() {
-		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
-
-		active := c.Core.Player.ActiveChar()
-		//TODO: i think this is only there to make conditionals work? prob not needed
-		active.AddStatus(attackBuffKey, 360, true)
-		c.Core.Log.NewEvent("faruzan attack buff applied", glog.LogCharacterEvent, c.Index).
-			Write("char", active.Index).
-			Write("buff", buff).
-			Write("expiry", c.Core.F+360)
-
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.ATK] = buff
-		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("faruzan-attack-buff", 360),
-			AffectedStat: attributes.ATK,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-
-		if c.Base.Cons >= 1 {
-			c.c1()
+	done := false
+	vortexCb := func(a combat.AttackCB) {
+		if done {
+			return
 		}
-		if c.Base.Cons >= 6 {
-			c.c6(active)
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Pressurized Collapse",
+			AttackTag:  combat.AttackTagElementalArt,
+			ICDTag:     combat.ICDTagElementalArt, // TODO: check ICD
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypePierce,
+			Element:    attributes.Anemo,
+			Durability: 25,
+			Mult:       hurricane[c.TalentLvlSkill()],
 		}
-	}, delay)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(a.Target, 2), vortexHitmark, vortexHitmark) // TODO: hitmark and size
+		done = true
+	}
+
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, travel, vortexCb)
 }

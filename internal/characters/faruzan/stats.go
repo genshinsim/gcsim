@@ -109,7 +109,7 @@ var (
 		3.348,
 		3.534,
 	}
-	skillHurricane = []float64{
+	hurricane = []float64{
 		0.9,
 		0.968,
 		1.035,
