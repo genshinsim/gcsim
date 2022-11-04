@@ -2,6 +2,7 @@ package travelerdendro
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -87,6 +88,9 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 
 	// First hitmark is 37f after spawn, all other pre-transfig hits will be 90f between.
 	c.Core.Tasks.Add(func() {
+		if !s.Alive {
+			return
+		}
 		s.QueueAttack(0)
 		//repeat attack every 90
 		s.Gadget.OnThinkInterval = func() {
@@ -117,12 +121,13 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 		Snapshot: c.Snapshot(&procAI),
 	}
 
-	s.transfigInit()
+	// s.transfigInit()
 	return s
 }
 
 func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.Core.Log.NewEvent(fmt.Sprintf("dmc lamp %s transfig triggered", ele.String()), glog.LogCharacterEvent, s.char.Index)
+	log.Printf("dmc lamp %s transfig triggered", ele.String())
 	s.char.burstTransfig = ele
 	switch ele {
 	case attributes.Hydro:
@@ -242,5 +247,51 @@ func (l *LeaLotus) QueueAttack(delay int) {
 			combat.NewCircleHit(l.Core.Combat.Enemy(enemies[idx]), l.hitboxRadius),
 			delay,
 		)
+	}
+}
+
+func (r *LeaLotus) React(a *combat.AttackEvent) {
+	//only check the ones possible
+	switch a.Info.Element {
+	case attributes.Electro:
+		r.TryAggravate(a)
+		r.TryFrozenSuperconduct(a)
+		r.TrySuperconduct(a)
+		r.TryQuicken(a)
+	case attributes.Pyro:
+		r.TryMelt(a)
+		r.TryBurning(a)
+	case attributes.Cryo:
+	case attributes.Hydro:
+		r.TryFreeze(a)
+		r.TryBloom(a)
+	case attributes.Anemo:
+		r.TrySwirlHydro(a)
+		r.TrySwirlCryo(a)
+		r.TrySwirlFrozen(a)
+	case attributes.Geo:
+		r.TryCrystallizeCryo(a)
+		r.TryCrystallizeFrozen(a)
+	case attributes.Dendro:
+		r.TrySpread(a)
+		r.TryBloom(a)
+	}
+}
+
+func (r *LeaLotus) TryQuicken(a *combat.AttackEvent) {
+	if r.Reactable.TryQuicken(a) {
+		r.transfig(attributes.Electro)
+	}
+}
+
+func (r *LeaLotus) TryBloom(a *combat.AttackEvent) {
+	if r.Reactable.TryBloom(a) {
+		r.transfig(attributes.Hydro)
+	}
+}
+
+func (r *LeaLotus) TryBurning(a *combat.AttackEvent) {
+	if r.Reactable.TryBurning(a) {
+		r.transfig(attributes.Pyro)
 	}
 }

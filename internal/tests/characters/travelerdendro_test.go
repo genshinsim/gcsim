@@ -86,6 +86,94 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 
 }
 
+func TestTravelerDendroBurstPyro(t *testing.T) {
+
+	c, trg := makeCore(1)
+	prof := defProfile(keys.AetherDendro)
+	prof.Base.Cons = 6
+	idx, err := c.AddChar(prof)
+	if err != nil {
+		t.Errorf("error adding char: %v", err)
+		t.FailNow()
+	}
+	c.Player.SetActive(idx)
+	err = c.Init()
+	if err != nil {
+		t.Errorf("error initializing core: %v", err)
+		t.FailNow()
+	}
+	c.Combat.DefaultTarget = trg[0].Key()
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		log.Printf("gadget hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
+		return false
+	}, "hit-check")
+	dmgCount := 0
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.Abil == "Lea Lotus Lamp Explosion" {
+			dmgCount++
+			log.Println("big boom at: ", c.F)
+		}
+		return false
+	}, "hit-check")
+	advanceCoreFrame(c)
+
+	// use burst to create a ball
+	p := make(map[string]int)
+	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
+	for !c.Player.CanQueueNextAction() {
+		advanceCoreFrame(c)
+	}
+	//wait until dendro gadget is created
+	for c.Combat.GadgetCount() < 1 {
+		advanceCoreFrame(c)
+	}
+	//skip an additional frame to be safe
+	advanceCoreFrame(c)
+
+	//check that gadget has dendro on it
+	g := c.Combat.Gadget(0)
+	gr, ok := g.(*travelerdendro.LeaLotus)
+	if !ok {
+		t.Errorf("expecting gadget to be lea lotus. failed")
+		t.FailNow()
+	}
+	log.Println("initial aura string: ", gr.ActiveAuraString())
+	if gr.Durability[reactable.ModifierDendro] != 20 {
+		t.Errorf("expecting initial 20 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
+	}
+
+	//pattern only hit gadet
+	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
+	pattern.SkipTargets[combat.TargettableEnemy] = true
+
+	// check the cryo attaches
+	c.QueueAttackEvent(&combat.AttackEvent{
+		Info: combat.AttackInfo{
+			Element:    attributes.Pyro,
+			Durability: 100,
+		},
+		Pattern: pattern,
+	}, 0)
+	advanceCoreFrame(c)
+
+	log.Printf("at f %v after applying 100 pyro: %v\n", c.F, gr.ActiveAuraString())
+	if gr.Durability[reactable.ModifierPyro] != 0 {
+		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierPyro])
+	}
+
+	//should get an explosion 60 frfames later
+	for i := 0; i < 100; i++ {
+		advanceCoreFrame(c)
+	}
+
+	if dmgCount != 1 {
+		t.Errorf("expected 1 dmg count, got %v", dmgCount)
+	}
+
+}
+
 // lotus is expected to tick at frame 37 after appearing, which is 54+37 after cast
 // and then tick every 90 frames after that for the duration
 // duration is either 12s at c0 or 15s at c2
