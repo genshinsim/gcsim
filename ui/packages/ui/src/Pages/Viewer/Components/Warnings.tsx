@@ -1,9 +1,8 @@
 import DismissibleCallout from "../../../Components/DismissibleCallout";
 import { Intent } from "@blueprintjs/core";
-import { SimResults } from "@gcsim/types";
+import { FailedActions, FloatStat, SimResults } from "@gcsim/types";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { i18n } from "i18next";
 
 type WarningProps = {
   data: SimResults | null;
@@ -26,10 +25,6 @@ export default (props: WarningProps) => {
   );
 };
 
-function fmt(i18n: i18n, val?: number) {
-  return val?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) + "s";
-}
-
 const PositionOverlapWarning = ({ data }: WarningProps) => {  
   const [show, setShow] = useState(true);
   const visible = show && (data?.statistics?.warnings?.target_overlap ?? false);
@@ -49,23 +44,8 @@ const PositionOverlapWarning = ({ data }: WarningProps) => {
 };
 
 const EnergyWarning = ({ data }: WarningProps) => {
-  const { i18n } = useTranslation();
-
   const [show, setShow] = useState(true);
   const visible = show && (data?.statistics?.warnings?.insufficient_energy ?? false);
-
-  const characters = data?.statistics?.failed_actions?.map((fa, i) => {
-    if (data.character_details == null) {
-      return null;
-    }
-
-    return (
-      <>
-        <div key={i} className="list-item">{data.character_details[i].name}</div>
-        <div>{fmt(i18n, fa.insufficient_energy)}</div>
-      </>
-    );
-  });
 
   return (
     <DismissibleCallout
@@ -78,34 +58,17 @@ const EnergyWarning = ({ data }: WarningProps) => {
         burst. This causes the simulation to wait for more energy, but will perform no actions while
         waiting. Increase ER or update the config to reduce energy requirements.
       </p>
-      <div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
-        <span className="font-bold">avg insufficient energy duration</span>
-        <ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-2 justify-start">
-          {characters}
-        </ul>
-      </div>
+      <FailedActionDetails
+          title="insufficient energy duration"
+          data={data}
+          stat={(fa) => fa.insufficient_energy} />
     </DismissibleCallout>
   );
 };
 
 const SwapWarning = ({ data }: WarningProps) => {
-  const { i18n } = useTranslation();
-
   const [show, setShow] = useState(true);
   const visible = show && (data?.statistics?.warnings?.swap_cd ?? false);
-
-  const characters = data?.statistics?.failed_actions?.map((fa, i) => {
-    if (data.character_details == null) {
-      return null;
-    }
-
-    return (
-      <>
-        <div key={i} className="list-item">{data.character_details[i].name}</div>
-        <div>{fmt(i18n, fa.swap_cd)}</div>
-      </>
-    );
-  });
 
   return (
     <DismissibleCallout
@@ -118,34 +81,17 @@ const SwapWarning = ({ data }: WarningProps) => {
         cooldown. This causes the simulation to wait for the cooldown to end, but will perform no
         actions while waiting. Update the config to better account for the swap cooldown.
       </p>
-      <div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
-        <span className="font-bold">avg swap cd duration</span>
-        <ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-2 justify-start">
-          {characters}
-        </ul>
-      </div>
+      <FailedActionDetails
+          title="swap cd duration"
+          data={data}
+          stat={(fa) => fa.swap_cd} />
     </DismissibleCallout>
   );
 };
 
 const CooldownWarning = ({ data }: WarningProps) => {
-  const { i18n } = useTranslation();
-
   const [show, setShow] = useState(true);
   const visible = show && (data?.statistics?.warnings?.skill_cd ?? false);
-
-  const characters = data?.statistics?.failed_actions?.map((fa, i) => {
-    if (data.character_details == null) {
-      return null;
-    }
-
-    return (
-      <>
-        <div key={i} className="list-item">{data.character_details[i].name}</div>
-        <div>{fmt(i18n, fa.skill_cd)}</div>
-      </>
-    );
-  });
 
   return (
     <DismissibleCallout
@@ -158,34 +104,17 @@ const CooldownWarning = ({ data }: WarningProps) => {
         to wait for the cooldown to end, but will perform no actions while waiting. Update the
         config to better account for skill cooldowns.
       </p>
-      <div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
-        <span className="font-bold">avg skill cd duration</span>
-        <ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-2 justify-start">
-          {characters}
-        </ul>
-      </div>
+      <FailedActionDetails
+          title="skill cd duration"
+          data={data}
+          stat={(fa) => fa.skill_cd} />
     </DismissibleCallout>
   );
 };
 
 const StaminaWarning = ({ data }: WarningProps) => {
-  const { i18n } = useTranslation();
-
   const [show, setShow] = useState(true);
-  const visible = show && (data?.statistics?.warnings?.insufficient_stamina ?? true);
-
-  const characters = data?.statistics?.failed_actions?.map((fa, i) => {
-    if (data.character_details == null) {
-      return null;
-    }
-
-    return (
-      <>
-        <div key={i} className="list-item">{data.character_details[i].name}</div>
-        <div>{fmt(i18n, fa.insufficient_stamina)}</div>
-      </>
-    );
-  });
+  const visible = show && (data?.statistics?.warnings?.insufficient_stamina ?? false);
 
   return (
     <DismissibleCallout
@@ -198,12 +127,62 @@ const StaminaWarning = ({ data }: WarningProps) => {
         This causes the simulation to wait until there is enough stamina to perform an action, but
         will perform no other actions while waiting. Update the config to better manage stamina.
       </p>
-      <div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
-        <span className="font-bold">avg insufficient stamina duration</span>
-        <ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-2 justify-start">
-          {characters}
-        </ul>
-      </div>
+      <FailedActionDetails
+          title="insufficient stamina duration"
+          data={data}
+          stat={(fa) => fa.insufficient_stamina} />
     </DismissibleCallout>
+  );
+};
+
+type DetailsProps = {
+  data: SimResults | null;
+  title: string;
+  stat: (x: FailedActions) => FloatStat | undefined;
+}
+
+const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
+  const { i18n } = useTranslation();
+
+  if (data?.character_details == null) {
+    return null;
+  }
+
+  function fmt(val?: number) {
+    return val?.toLocaleString(
+        i18n.language, { maximumFractionDigits: 2 }) + "s";
+  }
+
+  const Item = ({ f, i }: { f: FloatStat | undefined, i: number }) => {
+    if (f?.max == 0) {
+      return null;
+    }
+
+    return (
+      <>
+        <div className="list-item">{data.character_details?.[i].name}</div>
+        <div>
+          {
+            "avg: " + fmt(f?.mean)
+            + " | min: " + fmt(f?.min)
+            + " | max: " + fmt(f?.max)
+            + " | std: " + fmt(f?.sd)
+          }
+        </div>
+      </>
+    );
+  };
+
+  const details = data?.statistics?.failed_actions?.map((fa, i) => (
+    <Item key={i.toString()} f={stat(fa)} i={i} />
+  ));
+
+  return (
+    <div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
+      <span className="font-bold">{title}</span>
+      <ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-3 justify-start">
+        {details}
+      </ul>
+    </div>
   );
 };

@@ -81,7 +81,7 @@ func (b *buffer) Flush(result *agg.Result) {
 	result.HPS = convert(b.hps)
 	result.SPS = convert(b.sps)
 
-	result.TotalDamage = agg.FloatStat{
+	result.TotalDamage = agg.SummaryStat{
 		Min:  b.totalDamage.Min,
 		Max:  b.totalDamage.Max,
 		Mean: b.totalDamage.Mean(),
@@ -89,11 +89,11 @@ func (b *buffer) Flush(result *agg.Result) {
 	}
 }
 
-func convert(input calc.Sample) agg.FloatStat {
+func convert(input calc.Sample) agg.SummaryStat {
 	input.Sorted = false
 	input.Sort()
 
-	out := agg.FloatStat{
+	out := agg.SummaryStat{
 		Mean: input.Mean(),
 		SD:   input.StdDev(),
 		Q1:   input.Quantile(0.25),

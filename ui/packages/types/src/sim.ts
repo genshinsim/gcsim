@@ -32,12 +32,12 @@ export interface Statistics {
   iterations?: number
 
   // summary
-  duration?: FloatStat
-  dps?: FloatStat
-  rps?: FloatStat
-  eps?: FloatStat
-  hps?: FloatStat
-  sps?: FloatStat
+  duration?: SummaryStat
+  dps?: SummaryStat
+  rps?: SummaryStat
+  eps?: SummaryStat
+  hps?: SummaryStat
+  sps?: SummaryStat
 
   // warnings
   warnings?: Warnings
@@ -46,7 +46,7 @@ export interface Statistics {
   failed_actions?: FailedActions[]
 }
 
-export interface FloatStat {
+export interface SummaryStat {
   min?: number
   max?: number
   mean?: number
@@ -65,10 +65,17 @@ export interface Warnings {
 }
 
 export interface FailedActions {
-  insufficient_energy?: number
-  insufficient_stamina?: number
-  swap_cd?: number
-  skill_cd?: number
+  insufficient_energy?: FloatStat
+  insufficient_stamina?: FloatStat
+  swap_cd?: FloatStat
+  skill_cd?: FloatStat
+}
+
+export interface FloatStat {
+  min?: number
+  max?: number
+  mean?: number
+  sd?: number
 }
 
 export interface Character {
