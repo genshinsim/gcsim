@@ -126,7 +126,6 @@ func (c *char) c6() {
 		if !ok {
 			return false
 		}
-		//TODO: is on field check needed here?
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
