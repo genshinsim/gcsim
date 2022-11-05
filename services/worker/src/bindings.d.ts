@@ -8,4 +8,5 @@ declare global {
   const PREVIEW_ENDPOINT: string; //secret url for embed server
   const ASSETS_ENDPOINT: string; //secret url for assets server
   const USER_TOKENS: KVNamespace;
+  const GCSIM_ASSETS: R2Bucket; //bucket
 }

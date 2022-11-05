@@ -2,31 +2,24 @@ export async function handleAssets(
   request: Request,
   event: FetchEvent
 ): Promise<Response> {
-  const cacheUrl = new URL(request.url).pathname.replace("/api", "");
-  const endpoint = ASSETS_ENDPOINT + cacheUrl;
-  const cacheKey = new Request(endpoint, request);
-  console.log(`checking for cache key: ${endpoint}`);
-  const cache = caches.default;
+  ///api/assets/avatar/cyno.png
+  const key = new URL(request.url).pathname.replace('/api/assets/', '');
+  console.log(`getting ${key}`);
 
-  let response = await cache.match(cacheKey);
+  const object = await GCSIM_ASSETS.get(key);
 
-  if (!response) {
-    console.log(
-      `Response for request url: ${endpoint} not present in cache. Fetching and caching request.`
-    );
-
-    const resp = await fetch(new Request(endpoint), {
-      cf: {
-        cacheTtl: 60 * 60 * 24,
-        cacheEverything: true,
-      },
-    });
-
-    response = new Response(resp.body, resp);
-    response.headers.set('Cache-Control', 'max-age=86400');
-
-    event.waitUntil(cache.put(cacheKey, response.clone()));
+  if (object === null) {
+    console.log(`${key} not found in r2`);
+    return new Response(`Not Found`, { status: 404 });
   }
 
-  return response;
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set('etag', object.httpEtag);
+  headers.set('Cache-Control', 'max-age=5184000');
+  headers.set('X-SOURCE', 'gcsim');
+
+  return new Response(object.body, {
+    headers,
+  });
 }
