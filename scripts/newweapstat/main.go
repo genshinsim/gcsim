@@ -24,13 +24,10 @@ func main() {
 	// var weapons []curves.WeaponBase
 	weaponConfigArray := getWeapon()
 	weaponPromoDataMap := getWeaponPromoData()
-	// fmt.Printf("%+v\n", weaponPromoDataMap)
 
 	for _, weaponConfig := range weaponConfigArray {
 		var weapon curves.WeaponBase
-		// weapon. = weaponConfig.Name
 
-		// fmt.Printf("%+v\n", weaponConfig.WeaponProps)
 		weaponStats := convertWeaponPropsToWeaponStats(weaponConfig.WeaponProps)
 		weapon.AtkCurve = weaponStats.AtkCurve
 		weapon.BaseAtk = weaponStats.BaseAtk
@@ -38,8 +35,8 @@ func main() {
 		weapon.SpecializedCurve = weaponStats.SpecializedCurve
 		weapon.BaseSpecialized = weaponStats.BaseSpecialized
 		weapon.PromotionBonus = weaponPromoDataMap[weaponConfig.WeaponPromoteID]
-		fmt.Println(weaponConfig.ID)
-		fmt.Printf("%+v\n", weapon)
+		// fmt.Println(weaponConfig.ID)
+		// fmt.Printf("%+v\n", weapon)
 		// weapons = append(weapons, weapon)
 	}
 	// weapons[]
