@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -32,9 +33,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	dmg := .075 + float64(r)*.025
 
-	hrfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
+	hrfunc := func(ele attributes.Element, key string, gadgetEmit bool) func(args ...interface{}) bool {
 		icd := -1
 		return func(args ...interface{}) bool {
+			if _, ok := args[0].(*gadget.Gadget); ok != gadgetEmit {
+				return false
+			}
 			ae := args[1].(*combat.AttackEvent)
 
 			if c.Player.Active() != char.Index {
@@ -76,13 +80,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 	}
 
-	c.Events.Subscribe(event.OnCrystallizeElectro, hrfunc(attributes.Geo, "hr-crystallize"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSwirlElectro, hrfunc(attributes.Anemo, "hr-swirl"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnElectroCharged, hrfunc(attributes.Hydro, "hr-ec"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnOverload, hrfunc(attributes.Pyro, "hr-ol"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSuperconduct, hrfunc(attributes.Cryo, "hr-sc"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnQuicken, hrfunc(attributes.Dendro, "hr-quick"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnAggravate, hrfunc(attributes.Dendro, "hr-agg"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnHyperbloom, hrfunc(attributes.Dendro, "hr-hyperbloom"), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnCrystallizeElectro, hrfunc(attributes.Geo, "hr-crystallize", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlElectro, hrfunc(attributes.Anemo, "hr-swirl", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnElectroCharged, hrfunc(attributes.Hydro, "hr-ec", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnOverload, hrfunc(attributes.Pyro, "hr-ol", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSuperconduct, hrfunc(attributes.Cryo, "hr-sc", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnQuicken, hrfunc(attributes.Dendro, "hr-quick", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnAggravate, hrfunc(attributes.Dendro, "hr-agg", false), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnHyperbloom, hrfunc(attributes.Dendro, "hr-hyperbloom", true), fmt.Sprintf("hakushin-ring-%v", char.Base.Key.String()))
 	return w, nil
 }

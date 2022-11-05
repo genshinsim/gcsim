@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryBurning(a *combat.AttackEvent) {
+func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 
 	dendroDur := r.Durability[ModifierDendro]
@@ -18,20 +18,20 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 	case attributes.Pyro:
 		//if there's no existing pyro/burning or dendro/quicken then do nothing
 		if r.Durability[ModifierDendro] < ZeroDur && r.Durability[ModifierQuicken] < ZeroDur {
-			return
+			return false
 		}
 		//add to pyro durability
 		// r.attachOrRefillNormalEle(ModifierPyro, a.Info.Durability)
 	case attributes.Dendro:
 		//if there's no existing pyro/burning or dendro/quicken then do nothing
 		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
-			return
+			return false
 		}
 		dendroDur = max(dendroDur, a.Info.Durability*0.8)
 		//add to dendro durability
 		// r.attachOrRefillNormalEle(ModifierDendro, a.Info.Durability)
 	default:
-		return
+		return false
 	}
 	// a.Reacted = true
 
@@ -49,13 +49,15 @@ func (r *Reactable) tryBurning(a *combat.AttackEvent) {
 				t.QueueEnemyTask(r.nextBurningTick(r.core.F, 1, t), 15)
 			}
 		}
-	} else {
-		//overwrite burning fuel and recalc burning dmg
-		if a.Info.Element == attributes.Dendro {
-			r.attachBurningFuel(a.Info.Durability, 0.8)
-		}
-		r.calcBurningDmg(a)
+		return true
 	}
+	//overwrite burning fuel and recalc burning dmg
+	if a.Info.Element == attributes.Dendro {
+		r.attachBurningFuel(a.Info.Durability, 0.8)
+	}
+	r.calcBurningDmg(a)
+
+	return false
 }
 
 func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durability) {
@@ -102,7 +104,7 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 			// skip the 9th tick because hyv spaghetti
 			r.core.QueueAttack(
 				r.burningSnapshot,
-				combat.NewCircleHit(r.self, 1, true, r.self.Type()),
+				combat.NewCircleHit(r.self, 1),
 				-1,
 				0,
 			)

@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
 		0,
 		skillRelease+travel,
 		afterSalesCB,
@@ -109,7 +109,7 @@ func (c *char) afterSales(travel int) func() {
 		for i := 0; i < c.afterCount; i++ {
 			c.Core.QueueAttack(
 				ae,
-				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
 				0,
 				skillSalesHitmarks[i],
 			)

@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
 const a1ICDKey = "sayu-a1-icd"
@@ -17,6 +18,10 @@ const a1ICDKey = "sayu-a1-icd"
 func (c *char) a1() {
 	swirlfunc := func(ele attributes.Element) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
+			if _, ok := args[0].(*gadget.Gadget); ok {
+				return false
+			}
+
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != c.Index {
 				return false

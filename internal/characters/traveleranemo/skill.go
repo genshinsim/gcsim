@@ -58,7 +58,7 @@ func (c *char) SkillPress() action.ActionInfo {
 		Durability: 25,
 		Mult:       skillInitialStorm[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), hitmark, hitmark)
 
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
@@ -75,7 +75,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	c.eAbsorb = attributes.NoElement
 	c.eICDTag = combat.ICDTagNone
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1)
 
 	aiCut := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -103,13 +103,13 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	hitmark := firstTick
 	for i := 0; i < holdTicks; i += 1 {
 
-		c.Core.QueueAttack(aiCut, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
+		c.Core.QueueAttack(aiCut, combat.NewCircleHit(c.Core.Combat.Player(), 1), hitmark, hitmark)
 		if i > 1 {
 			c.Core.Tasks.Add(func() {
 				if c.eAbsorb != attributes.NoElement {
 					aiMaxCutAbs.Element = c.eAbsorb
 					aiMaxCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 0, 0)
 				}
 				//check if absorbed
 			}, hitmark)
@@ -118,7 +118,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				if c.eAbsorb != attributes.NoElement {
 					aiCutAbs.Element = c.eAbsorb
 					aiCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 0, 0)
 				}
 				//check if absorbed
 			}, hitmark)
@@ -173,12 +173,12 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 	}
 
-	c.Core.QueueAttack(aiStorm, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(aiStorm, combat.NewCircleHit(c.Core.Combat.Player(), 2), hitmark, hitmark)
 	c.Core.Tasks.Add(func() {
 		if c.eAbsorb != attributes.NoElement {
 			aiStormAbs.Element = c.eAbsorb
 			aiStormAbs.ICDTag = c.eICDTag
-			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 0, 0)
 		}
 		//check if absorbed
 	}, hitmark)

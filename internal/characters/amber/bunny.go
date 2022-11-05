@@ -30,7 +30,7 @@ func (c *char) makeBunny() {
 	snap := c.Snapshot(&ai)
 	b.ae = combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	}
@@ -78,7 +78,7 @@ func (c *char) manualExplode() {
 
 // explode all bunnies on overload
 func (c *char) overloadExplode() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 
 		atk := args[1].(*combat.AttackEvent)
 		if len(c.bunnies) == 0 {

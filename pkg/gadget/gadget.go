@@ -50,11 +50,10 @@ func (g *Gadget) Tick() {
 		if g.sinceLastThink < g.ThinkInterval {
 			g.sinceLastThink++
 		}
-		if g.sinceLastThink != g.ThinkInterval {
-			return
+		if g.sinceLastThink == g.ThinkInterval {
+			g.OnThinkInterval()
+			g.sinceLastThink = 0
 		}
-		g.OnThinkInterval()
-		g.sinceLastThink = 0
 	}
 	if g.Duration != -1 && g.Duration > 0 {
 		g.Duration--

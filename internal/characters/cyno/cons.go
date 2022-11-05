@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,7 +42,7 @@ func (c *char) c2() {
 	const c2Icd = "cyno-c2-icd"
 	stacks := 0
 	m := make([]float64, attributes.EndStatType)
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -99,13 +100,20 @@ func (c *char) c4() {
 
 		return false
 	}
-	c.Core.Events.Subscribe(event.OnOverload, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnElectroCharged, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnSuperconduct, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnQuicken, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnAggravate, restore, "cyno-c4")
+
+	restoreNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+		return restore(args...)
+	}
+	c.Core.Events.Subscribe(event.OnOverload, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnQuicken, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnAggravate, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnHyperbloom, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, restoreNoGadget, "cyno-c4")
 }
 
 // After using Sacred Rite: Wolf's Swiftness or triggering the Judication effect of the Passive Talent "Featherfall Judgment,"
@@ -115,7 +123,7 @@ func (c *char) c4() {
 // A maximum of 1 Duststalker Bolt can be unleashed this way every 0.4s.
 // You must first unlock the Passive Talent "Featherfall Judgment."
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -152,7 +160,7 @@ func (c *char) c6() {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+			combat.NewCircleHit(c.Core.Combat.Player(), 1),
 			0,
 			0,
 		)

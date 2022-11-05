@@ -27,7 +27,7 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.qAbsorb = attributes.NoElement
-	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5)
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -44,7 +44,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 0, burstHitmark)
 
 	//apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
@@ -73,9 +73,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.Tasks.Add(func() {
 				if c.qAbsorb != attributes.NoElement {
 					aiAbsorb.Element = c.qAbsorb
-					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0)
+					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0)
 				}
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0)
 			}, (burstFirstTick-(burstHitmark+1))+117*i)
 		}
 		// C2:

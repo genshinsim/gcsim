@@ -4,13 +4,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
 const a1IcdKey = "noelle-a1-icd"
 
 func (c *char) a1() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if di.Amount <= 0 {
+			return false
+		}
 		if c.StatusIsActive(a1IcdKey) {
 			return false
 		}

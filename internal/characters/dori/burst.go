@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -47,12 +46,18 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewDefBoxHit(1, -2, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewDefBoxHit(1, -2),
 				0,
 			) // TODO: accurate hitbox
 
 			// dori self application
-			c.Core.Events.Emit(event.OnCharacterHurt, 0)
+			// TODO: change this to a ST attack later when self reactions need to be implemented
+			c.Core.Player.Drain(player.DrainInfo{
+				ActorIndex: ai.ActorIndex,
+				Abil:       ai.Abil,
+				Amount:     0,
+				External:   true,
+			})
 			p, ok := c.Core.Combat.Player().(*avatar.Player)
 			if !ok {
 				panic("target 0 should be Player but is not!!")

@@ -52,7 +52,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), -1, burstHitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), -1, burstHitmark, cb)
 
 	//queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
 	aiBreak := combat.AttackInfo{
@@ -65,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 0,
 		Mult:       0,
 	}
-	c.Core.QueueAttack(aiBreak, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), -1, burstHitmark+480)
+	c.Core.QueueAttack(aiBreak, combat.NewCircleHit(c.Core.Combat.Player(), 4), -1, burstHitmark+480)
 
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
@@ -107,7 +107,7 @@ func (c *char) burstHook() {
 	//TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
 	//According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
 	//only 2nd ec tick should break
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		//ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
@@ -149,5 +149,5 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 		Durability: 50,
 		Mult:       explosion[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(t.Key(), t.Type()), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(t.Key()), 1, 1)
 }

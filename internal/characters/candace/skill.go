@@ -70,9 +70,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			skillRadius[chargeLevel],
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
 		),
 		hitmark,
 		hitmark,
