@@ -1,15 +1,15 @@
-package enemy
+package target
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (t *Enemy) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) bool {
+func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) float64 {
 
 	//no icd if no tag
 	if tag == combat.ICDTagNone {
-		return true
+		return 1
 	}
 
 	//check if we need to start timer
@@ -29,16 +29,16 @@ func (t *Enemy) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) b
 
 	t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char).
 		Write("grp", grp).
-		Write("target", t.TargetIndex).
+		Write("target", t.key).
 		Write("tag", tag).
 		Write("counter", val).
 		Write("val", combat.ICDGroupEleApplicationSequence[grp][val]).
 		Write("group on timer", x)
 	//true if group seq is 1
-	return combat.ICDGroupEleApplicationSequence[grp][val] == 1
+	return combat.ICDGroupEleApplicationSequence[grp][val]
 }
 
-func (t *Enemy) GroupTagDamageMult(tag combat.ICDTag, grp combat.ICDGroup, char int) float64 {
+func (t *Target) GroupTagDamageMult(tag combat.ICDTag, grp combat.ICDGroup, char int) float64 {
 
 	//check if we need to start timer
 	if !t.icdDamageTagOnTimer[char][tag] {
@@ -58,7 +58,7 @@ func (t *Enemy) GroupTagDamageMult(tag combat.ICDTag, grp combat.ICDGroup, char 
 	return combat.ICDGroupDamageSequence[grp][val]
 }
 
-func (t *Enemy) ResetDamageCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGroup, char int) {
+func (t *Target) ResetDamageCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGroup, char int) {
 	t.Core.Tasks.Add(func() {
 		//set the counter back to 0
 		t.icdDamageTagCounter[char][tag] = 0
@@ -73,7 +73,7 @@ func (t *Enemy) ResetDamageCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGr
 		Write("reset", t.Core.F+combat.ICDGroupResetTimer[grp]-1)
 }
 
-func (t *Enemy) ResetTagCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGroup, char int) {
+func (t *Target) ResetTagCounterAfterDelay(tag combat.ICDTag, grp combat.ICDGroup, char int) {
 	t.Core.Tasks.Add(func() {
 		//set the counter back to 0
 		t.icdTagCounter[char][tag] = 0

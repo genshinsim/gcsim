@@ -58,7 +58,7 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 		}
 
 		cb := w.chain(count+1, c, char)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.Enemy(next).Key(), combat.TargettableEnemy), 10, cb)
+		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.Enemy(next).Key()), 10, cb)
 	}
 }
 
@@ -81,7 +81,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Mult:       dmg,
 	}
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
@@ -96,7 +96,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		cb := w.chain(0, c, char)
 		w.snap = char.Snapshot(&w.ai)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.DefaultTarget, combat.TargettableEnemy), 10, cb)
+		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.DefaultTarget), 10, cb)
 
 		return false
 	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))

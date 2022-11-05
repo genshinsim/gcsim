@@ -38,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:               charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), chargeHitmark, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -84,7 +84,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.Player(), 5),
 				0,
 				0,
 				c.burstRestorefunc,

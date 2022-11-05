@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const icdKey = "skyward-atlas-icd"
 	icd := 1800 // 30s * 60
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		snap := char.Snapshot(&ai)
 		for i := 0; i < 6; i++ {
-			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), i*150)
+			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 0.1), i*150)
 		}
 		char.AddStatus(icdKey, icd, true)
 		return false

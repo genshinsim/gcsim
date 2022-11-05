@@ -80,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 					return nil, false
 				}
 				if atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold {
-					val[attributes.DmgP] = dmg
+					val[attributes.DmgP] = dmg * float64(stacks)
 				}
 				return val, true
 			},

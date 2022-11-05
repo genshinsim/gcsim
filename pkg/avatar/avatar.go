@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/target"
@@ -24,12 +25,12 @@ func New(core *core.Core, x, y, r float64) *Player {
 
 func (p *Player) Type() combat.TargettableType { return combat.TargettablePlayer }
 
-func (p *Player) Attack(ae *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	//TODO: consider using this to implement additional self reactions
-	return 0, false
-}
+func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
+	p.Core.Combat.Events.Emit(event.OnPlayerHit, p, atk)
 
-func (p *Player) ApplyDamage(*combat.AttackEvent, float64) {}
+	//TODO: implement player taking damage here
+	return 0
+}
 
 func (p *Player) ApplySelfInfusion(ele attributes.Element, dur combat.Durability, f int) {
 

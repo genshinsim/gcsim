@@ -194,6 +194,11 @@
     "element": "hydro",
     "weapon_class": "catalyst"
   },
+  "nahida": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "catalyst"
+  },
   "nilou": {
     "rarity": 5,
     "element": "hydro",

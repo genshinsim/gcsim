@@ -54,7 +54,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.4, false, combat.TargettableEnemy), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.4), 0)
 
 		//check for healing
 		if c.Core.Rand.Float64() < 0.5 {

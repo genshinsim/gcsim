@@ -95,7 +95,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		FlatDmg:    skill[c.TalentLvlSkill()] * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), skillHitmark, skillHitmark)
 
 	c.SetTag(skillStep, 0)
 	c.AddStatus(pirouetteStatus, 10*60, true)
@@ -183,7 +183,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), swordDanceRadius[s], false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), swordDanceRadius[s]),
 		swordDanceHitMarks[s]+travel,
 		swordDanceHitMarks[s]+travel,
 		c.c4cb(),
@@ -224,7 +224,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2.7, false, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), 2.7),
 		whirlingStepsHitMarks[s],
 		whirlingStepsHitMarks[s],
 		c.c4cb(),
@@ -263,7 +263,7 @@ func (c *char) TranquilityAura(src int) func() {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy), -1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), -1, 1)
 
 		c.QueueCharTask(c.TranquilityAura(src), 30)
 	}

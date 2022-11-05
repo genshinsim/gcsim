@@ -12,10 +12,10 @@ import (
 
 const DendroCoreDelay = 20
 
-func (r *Reactable) tryBloom(a *combat.AttackEvent) {
+func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 	//can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	var consumed combat.Durability
 	switch a.Info.Element {
@@ -27,7 +27,7 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 		case r.Durability[ModifierQuicken] > ZeroDur:
 		case r.Durability[ModifierBurningFuel] > ZeroDur:
 		default:
-			return
+			return false
 		}
 		//reduce only check for one element so have to call twice to check for quicken as well
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 0.5)
@@ -37,11 +37,11 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 		}
 	case attributes.Dendro:
 		if r.Durability[ModifierHydro] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
 	default:
-		return
+		return false
 	}
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
@@ -49,6 +49,7 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 
 	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
+	return true
 }
 
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
@@ -99,12 +100,16 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 
 	explode := func() {
 		ai := NewBloomAttack(char, s)
-		c.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
+		ap := combat.NewCircleHit(s, 5)
+		c.QueueAttack(ai, ap, -1, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		ap.SkipTargets[combat.TargettablePlayer] = false
+		ap.SkipTargets[combat.TargettableEnemy] = true
+		ap.SkipTargets[combat.TargettableGadget] = true
+		c.QueueAttack(ai, ap, -1, 1)
 	}
 	s.Gadget.OnExpiry = explode
 	s.Gadget.OnKill = explode
@@ -115,6 +120,12 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 func (s *DendroCore) Tick() {
 	//this is needed since gadget tick
 	s.Gadget.Tick()
+}
+
+func (s *DendroCore) HandleAttack(atk *combat.AttackEvent) float64 {
+	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
+	s.Attack(atk, nil)
+	return 0
 }
 
 func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
@@ -133,12 +144,16 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		x, y := s.Gadget.Pos()
 		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
-			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, false, combat.TargettableEnemy), -1, 5)
+			ap := combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1)
+			s.Core.QueueAttack(ai, ap, -1, 5)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
 			ai.FlatDmg = 0.05 * ai.FlatDmg
-			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, true, combat.TargettablePlayer), -1, 5)
+			ap.SkipTargets[combat.TargettablePlayer] = false
+			ap.SkipTargets[combat.TargettableEnemy] = true
+			ap.SkipTargets[combat.TargettableGadget] = true
+			s.Core.QueueAttack(ai, ap, -1, 5)
 		}
 
 		s.Gadget.OnKill = nil
@@ -148,13 +163,17 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// trigger burgeon, aoe dendro damage
 		// self damage
 		ai := NewBurgeonAttack(char, s)
+		ap := combat.NewCircleHit(s.Gadget, 5)
 
-		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
+		s.Core.QueueAttack(ai, ap, -1, 1)
 
 		// queue self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		ap.SkipTargets[combat.TargettablePlayer] = false
+		ap.SkipTargets[combat.TargettableEnemy] = true
+		ap.SkipTargets[combat.TargettableGadget] = true
+		s.Core.QueueAttack(ai, ap, -1, 1)
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()

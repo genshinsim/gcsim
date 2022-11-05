@@ -72,7 +72,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, skillPressHitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, skillPressHitmark, cb)
 
 	c.SetCDWithDelay(action.ActionSkill, 60, 17)
 
@@ -126,7 +126,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy, combat.TargettableGadget), 0, skillHoldHitmark, c1cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 0, skillHoldHitmark, c1cb)
 
 	// count := 4
 	// if c.Core.Rand.Float64() < 0.5 {
@@ -146,7 +146,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillHoldMult() {
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

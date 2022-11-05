@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -85,12 +86,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}
 
-		c.Events.Subscribe(event.OnOverload, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnElectroCharged, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnSuperconduct, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		reduceNoGadget := func(args ...interface{}) bool {
+			if _, ok := args[0].(*gadget.Gadget); ok {
+				return false
+			}
+			return reduce(args...)
+		}
+
+		c.Events.Subscribe(event.OnOverload, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 		c.Events.Subscribe(event.OnHyperbloom, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnQuicken, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnAggravate, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnQuicken, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnAggravate, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil

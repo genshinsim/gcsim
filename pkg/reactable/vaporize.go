@@ -6,35 +6,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryVaporize(a *combat.AttackEvent) {
+func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		//make sure there's hydro
 		if r.Durability[ModifierHydro] < ZeroDur {
-			return
+			return false
 		}
 		//if there's still frozen left don't try to vape
 		//game actively rejects vaporize reaction if frozen is present
 		if r.Durability[ModifierFrozen] > ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, .5)
 		a.Info.AmpMult = 1.5
 	case attributes.Hydro:
 		//make sure there's pyro to vape; no coexistance with pyro (yet)
 		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Pyro, a.Info.Durability, 2)
 		a.Info.AmpMult = 2
 		r.burningCheck()
 	default:
 		//should be here
-		return
+		return false
 	}
 	//there shouldn't be anything else to react with
 	a.Info.Durability -= consumed
@@ -43,4 +43,5 @@ func (r *Reactable) tryVaporize(a *combat.AttackEvent) {
 	a.Info.Amped = true
 	a.Info.AmpType = combat.Vaporize
 	r.core.Events.Emit(event.OnVaporize, r.self, a)
+	return true
 }

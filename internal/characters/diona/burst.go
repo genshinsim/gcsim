@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0, burstStart)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, burstStart)
 
 	ai.Abil = "Signature Mix (Tick)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		//ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
 		for i := 0; i < 6; i++ {
 			c.Core.Tasks.Add(func() {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0)
 				// c.Core.Log.NewEvent("diona healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
 				c.Core.Player.Heal(player.HealInfo{
 					Caller:  c.Index,

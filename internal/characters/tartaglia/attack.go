@@ -64,7 +64,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)
@@ -141,7 +141,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), .5, false, combat.TargettableEnemy),
+				combat.NewCircleHit(c.Core.Combat.Player(), .5),
 				0,
 				0,
 				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies

@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			}
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 1), 0, 0)
 		}, skillHitmarks[i])
 	}
 

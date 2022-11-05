@@ -19,7 +19,7 @@ func init() {
 
 /*
  * TODO: minimize using this as collector as much as possible (runs every frame). Stuff to maybe move
-	 * Health -> OnCharacterHurt + OnHeal (health intervals)?
+	 * Health -> OnPlayerDamage + OnHeal (health intervals)?
 	 * damage mitigation -> intervals?
 	 * energy -> OnEnergyChange (might not be worth?)
 	 * reactions -> OnAuraDurabilityAdded + OnAuraDurabilityDepleted (need to look into if this works)

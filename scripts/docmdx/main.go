@@ -18,8 +18,7 @@ func skip(key keys.Char) bool {
 	case keys.AetherAnemo: //skip aether by default
 	case keys.AetherElectro:
 	case keys.AetherGeo:
-	case keys.AetherDendro: //skip not implemented
-	case keys.LumineDendro:
+	case keys.AetherDendro:
 	case keys.AetherHydro:
 	case keys.LumineHydro:
 	case keys.AetherPyro:
