@@ -33,13 +33,15 @@ export default function ImportFromEnkaDialog(props: Props) {
   async function handleClick() {
     localStorage.setItem(lsKey, uid);
     if (uid && validateUid(uid)) {
+      let EnkaSuccess = false;
       try {
         const GOODchars = await FetchCharsFromEnka(uid);
+        console.log(GOODchars);
         const chars = parseFromGOOD(JSON.stringify(GOODchars));
         dispatch(userDataActions.loadFromGOOD({ data: chars.characters }));
         setMessage('success');
       } catch (e) {
-        setMessage('Error fetching characters');
+        setMessage(`error: ${e}`);
       }
     } else {
       setMessage('Invalid UID');
