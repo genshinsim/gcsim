@@ -104,9 +104,9 @@ func determineStat(specializedStat string) (attributes.Stat, error) {
 	case "FIGHT_PROP_GRASS_ADD_HURT":
 		return attributes.DendroP, nil
 	case "":
-		return attributes.EndStatType, nil
+		return attributes.NoStat, nil
 	default:
-		return attributes.EndStatType, errors.New("unknown stat type")
+		return attributes.NoStat, errors.New("unknown stat type")
 
 	}
 }
