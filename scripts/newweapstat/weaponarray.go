@@ -20,14 +20,16 @@ type WeaponConfigs []struct {
 	// Weight                     int           `json:"weight"`
 	// Rank int `json:"rank"`
 	// GadgetID                   int           `json:"gadgetId"`
-	ID         int `json:"id"`
-	WeaponProp []struct {
-		PropType  string  `json:"propType,omitempty"`
-		InitValue float64 `json:"initValue,omitempty"`
-		Type      string  `json:"type"`
-	} `json:"weaponProp"`
-	WeaponPromoteID int   `json:"weaponPromoteId"`
-	NameTextMapHash int64 `json:"nameTextMapHash"`
+	ID              int          `json:"id"`
+	WeaponProps     []WeaponProp `json:"weaponProp"`
+	WeaponPromoteID int          `json:"weaponPromoteId"`
+	NameTextMapHash int64        `json:"nameTextMapHash"`
+}
+
+type WeaponProp struct {
+	PropType  string  `json:"propType,omitempty"`
+	InitValue float64 `json:"initValue,omitempty"`
+	Type      string  `json:"type"`
 }
 
 func getWeapon() WeaponConfigs {
@@ -36,7 +38,6 @@ func getWeapon() WeaponConfigs {
 	// 	log.Fatal(err)
 	// }
 	weaponDataJson := getJsonFromFile("../ExcelBinOutput/WeaponExcelConfigData.json")
-	// fmt.Println(weaponDataJson)
 	return weaponDataJson
 }
 
