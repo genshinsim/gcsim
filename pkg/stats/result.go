@@ -29,8 +29,9 @@ type Result struct {
 	Shields          []ShieldInterval          `msg:"shields"`
 	DamageMitigation []float64                 `msg:"damage_mitigation"`
 
-	Characters []CharacterResult `msg:"characters"`
-	Enemies    []EnemyResult     `msg:"enemies"`
+	Characters    []CharacterResult `msg:"characters"`
+	Enemies       []EnemyResult     `msg:"enemies"`
+	TargetOverlap bool              `msg:"target_overlap"`
 }
 
 type CharacterResult struct {

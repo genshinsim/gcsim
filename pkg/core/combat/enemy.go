@@ -20,6 +20,7 @@ func (h *Handler) SetEnemyPos(i int, x, y float64) bool {
 		return false
 	}
 	h.enemies[i].SetPos(x, y)
+	h.Events.Emit(event.OnTargetMoved, h.enemies[i])
 	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
 		Write("index", i).
 		Write("x", x).

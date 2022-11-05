@@ -82,7 +82,7 @@ const SwapWarning = ({ data }: WarningProps) => {
         performed during failures.
       </p>
       <FailedActionDetails
-          title="swap cd duration"
+          title="swap cd failure duration"
           data={data}
           stat={(fa) => fa.swap_cd} />
     </DismissibleCallout>
@@ -105,7 +105,7 @@ const CooldownWarning = ({ data }: WarningProps) => {
         performed during failures.
       </p>
       <FailedActionDetails
-          title="skill cd duration"
+          title="skill cd failure duration"
           data={data}
           stat={(fa) => fa.skill_cd} />
     </DismissibleCallout>

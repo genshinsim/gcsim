@@ -52,11 +52,12 @@ func (b *buffer) Add(result stats.Result) {
 	b.stamina.Add(stamina)
 	b.swap.Add(swap)
 	b.skill.Add(skill)
+	b.overlap = b.overlap || result.TargetOverlap
 }
 
 func (b *buffer) Flush(result *agg.Result) {
 	result.Warnings = agg.Warnings{
-		TargetOverlap:       false, // TODO
+		TargetOverlap:       b.overlap,
 		InsufficientEnergy:  b.energy.StdDev() >= 1.0,
 		InsufficientStamina: b.stamina.Mean() >= 1.0,
 		SwapCD:              b.swap.Mean() >= 1.0,

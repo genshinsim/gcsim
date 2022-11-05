@@ -3096,6 +3096,12 @@ func (z *Result) DecodeMsg(dc *msgp.Reader) (err error) {
 					return
 				}
 			}
+		case "target_overlap":
+			z.TargetOverlap, err = dc.ReadBool()
+			if err != nil {
+				err = msgp.WrapError(err, "TargetOverlap")
+				return
+			}
 		default:
 			err = dc.Skip()
 			if err != nil {
@@ -3109,9 +3115,9 @@ func (z *Result) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *Result) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 9
+	// map header, size 10
 	// write "seed"
-	err = en.Append(0x89, 0xa4, 0x73, 0x65, 0x65, 0x64)
+	err = en.Append(0x8a, 0xa4, 0x73, 0x65, 0x65, 0x64)
 	if err != nil {
 		return
 	}
@@ -3261,15 +3267,25 @@ func (z *Result) EncodeMsg(en *msgp.Writer) (err error) {
 			return
 		}
 	}
+	// write "target_overlap"
+	err = en.Append(0xae, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x70)
+	if err != nil {
+		return
+	}
+	err = en.WriteBool(z.TargetOverlap)
+	if err != nil {
+		err = msgp.WrapError(err, "TargetOverlap")
+		return
+	}
 	return
 }
 
 // MarshalMsg implements msgp.Marshaler
 func (z *Result) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 9
+	// map header, size 10
 	// string "seed"
-	o = append(o, 0x89, 0xa4, 0x73, 0x65, 0x65, 0x64)
+	o = append(o, 0x8a, 0xa4, 0x73, 0x65, 0x65, 0x64)
 	o = msgp.AppendUint64(o, z.Seed)
 	// string "duration"
 	o = append(o, 0xa8, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e)
@@ -3331,6 +3347,9 @@ func (z *Result) MarshalMsg(b []byte) (o []byte, err error) {
 			return
 		}
 	}
+	// string "target_overlap"
+	o = append(o, 0xae, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x70)
+	o = msgp.AppendBool(o, z.TargetOverlap)
 	return
 }
 
@@ -3506,6 +3525,12 @@ func (z *Result) UnmarshalMsg(bts []byte) (o []byte, err error) {
 					return
 				}
 			}
+		case "target_overlap":
+			z.TargetOverlap, bts, err = msgp.ReadBoolBytes(bts)
+			if err != nil {
+				err = msgp.WrapError(err, "TargetOverlap")
+				return
+			}
 		default:
 			bts, err = msgp.Skip(bts)
 			if err != nil {
@@ -3532,6 +3557,7 @@ func (z *Result) Msgsize() (s int) {
 	for za0005 := range z.Enemies {
 		s += z.Enemies[za0005].Msgsize()
 	}
+	s += 15 + msgp.BoolSize
 	return
 }
 
