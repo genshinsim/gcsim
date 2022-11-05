@@ -37,7 +37,7 @@ func getWeapon() WeaponConfigs {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-	weaponDataJson := getJsonFromFile("../ExcelBinOutput/WeaponExcelConfigData.json")
+	weaponDataJson := getJsonFromFile[WeaponConfigs]("../ExcelBinOutput/WeaponExcelConfigData.json")
 	return weaponDataJson
 }
 

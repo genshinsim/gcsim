@@ -23,6 +23,8 @@ type WeaponStat struct {
 func main() {
 	// var weapons []curves.WeaponBase
 	weaponConfigArray := getWeapon()
+	weaponPromoDataMap := getWeaponPromoData()
+	// fmt.Printf("%+v\n", weaponPromoDataMap)
 
 	for _, weaponConfig := range weaponConfigArray {
 		var weapon curves.WeaponBase
@@ -35,6 +37,7 @@ func main() {
 		weapon.Specialized = weaponStats.SpecializedStat
 		weapon.SpecializedCurve = weaponStats.SpecializedCurve
 		weapon.BaseSpecialized = weaponStats.BaseSpecialized
+		weapon.PromotionBonus = weaponPromoDataMap[weaponConfig.WeaponPromoteID]
 		fmt.Println(weaponConfig.ID)
 		fmt.Printf("%+v\n", weapon)
 		// weapons = append(weapons, weapon)
@@ -42,7 +45,7 @@ func main() {
 	// weapons[]
 }
 
-func getJsonFromFile[V WeaponConfigs](path string) V {
+func getJsonFromFile[V WeaponConfigs | WeaponPromoteConfigs](path string) V {
 	jsonFile, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
