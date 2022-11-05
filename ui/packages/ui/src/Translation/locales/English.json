@@ -160,6 +160,8 @@
     "viewer": {
         "results": "Results",
         "analyze": "Analyze",
+        "sample": "Sample",
+        "sample_settings": "Sample Settings",
         
         "ability_usage_count": "Ability Usage Count (Average)",
         "api_key_supporters": "API Key (Supporters only)",

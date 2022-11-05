@@ -109,7 +109,7 @@ const Generate = ({
   }
   const [value, setValue] = useState(startValue);
   const options: OptionProps[] = [
-    { label: "Debug Seed", value: "debug" },
+    { label: "Sample Seed", value: "debug" },
     // { label: "Random", value: "rand" },
     { label: "Min Seed", value: "min" },
     { label: "Max Seed", value: "max" },
@@ -220,7 +220,7 @@ const DebugOptions = ({
           onClick={() => setOpen(true)}
           icon="cog"
           intent="primary"
-          text={t<string>("viewer.debug_settings")}
+          text={t<string>("viewer.sample_settings")}
         />
       </ButtonGroup>
       <Options

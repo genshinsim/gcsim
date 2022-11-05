@@ -39,7 +39,7 @@ export default ({ running, data, error, src, redirect, simDebugger, cancel, retr
     results: <Results data={data} />,
     config: <Config cfg={data?.config_file} />,
     analyze: <div></div>,
-    debug: <Debug simDebugger={simDebugger} data={data} debug={debug} running={running} />,
+    sample: <Debug simDebugger={simDebugger} data={data} debug={debug} running={running} />,
   };
 
   return (
