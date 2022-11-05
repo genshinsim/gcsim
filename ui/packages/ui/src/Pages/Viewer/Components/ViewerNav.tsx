@@ -44,7 +44,7 @@ export default ({ tabState, data, debug, running }: NavProps) => {
     <Tabs selectedTabId={tabId} onChange={(s) => setTabId(s as string)}>
       <Tab id="results" title={t<string>("viewer.results")} className="focus:outline-none" />
       <Tab id="config" title={t<string>("viewer.config")} className="focus:outline-none" />
-      <Tab id="analyze" title={t<string>("viewer.analyze")} className="focus:outline-none" />
+      {/* <Tab id="analyze" title={t<string>("viewer.analyze")} className="focus:outline-none" /> */}
       <Tab id="debug" title={t<string>("viewer.debug")} className="focus:outline-none" />
       <Tabs.Expander />
       <ButtonGroup>
