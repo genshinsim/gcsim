@@ -59,6 +59,10 @@ func (c *char) Init() error {
 		}
 	}
 
+	if c.Base.Cons >= 1 {
+		c.c1()
+	}
+
 	//sanity check
 	if c.pyroCount > 2 {
 		c.pyroCount = 2
@@ -80,10 +84,6 @@ func (c *char) Init() error {
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4()
 	c.a4tick()
-
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
 
 	if c.Base.Cons >= 4 {
 		c.c4Buff = make([]float64, attributes.EndStatType)
