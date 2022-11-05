@@ -27,8 +27,8 @@ func main() {
 
 	for _, weaponConfig := range weaponConfigArray {
 		var weapon curves.WeaponBase
-
 		weaponStats := convertWeaponPropsToWeaponStats(weaponConfig.WeaponProps)
+
 		weapon.AtkCurve = weaponStats.AtkCurve
 		weapon.BaseAtk = weaponStats.BaseAtk
 		weapon.Specialized = weaponStats.SpecializedStat
