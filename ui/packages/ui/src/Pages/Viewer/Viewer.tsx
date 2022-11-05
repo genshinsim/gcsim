@@ -49,7 +49,6 @@ export default ({ running, data, error, src, redirect, simDebugger, cancel, retr
         <ViewerNav
           tabState={[tabId, setTabId]}
           data={data}
-          debug={debug.logs}
           running={running}
         />
       </div>

@@ -268,18 +268,16 @@ export function useDebug(running: boolean, data: SimResults | null): UseDebugDat
       return null;
     }
 
-    const debugData = debug != null ? debug : data.debug;
-    if (debugData == null) {
+    if (debug == null) {
       return null;
     }
 
     return parseLogV2(
-      data.initial_character,
-      data?.character_details?.map((c) => c.name),
-      debugData,
-      selected
-    );
-  }, [debug, data?.debug, data?.initial_character, data?.character_details, selected]);
+        data.initial_character,
+        data?.character_details?.map((c) => c.name),
+        debug,
+        selected);
+  }, [debug, data?.initial_character, data?.character_details, selected]);
 
   return {
     logs: debug,

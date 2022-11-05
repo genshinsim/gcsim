@@ -20,7 +20,6 @@ import Pako from "pako";
 import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
-import { LogDetails } from "./Debug";
 import { useAppDispatch } from "../../../Stores/store";
 import { bytesToBase64 } from "../../../Util/base64";
 import { SimResults } from "@gcsim/types";
@@ -30,12 +29,11 @@ const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
   data: SimResults | null;
-  debug: LogDetails[] | null;
   tabState: [string, Dispatch<SetStateAction<string>>];
   running: boolean;
 };
 
-export default ({ tabState, data, debug, running }: NavProps) => {
+export default ({ tabState, data, running }: NavProps) => {
   const { t } = useTranslation();
   const [tabId, setTabId] = tabState;
   const copyToast = useRef<Toaster>(null);
@@ -50,7 +48,7 @@ export default ({ tabState, data, debug, running }: NavProps) => {
       <ButtonGroup>
         <CopyToClipboard copyToast={copyToast} config={data?.config_file} />
         <SendToSim config={data?.config_file} />
-        <Share copyToast={copyToast} data={data} debug={debug} running={running} />
+        <Share copyToast={copyToast} data={data} running={running} />
       </ButtonGroup>
       <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Tabs>
@@ -149,26 +147,19 @@ const SendToSim = ({ config }: { config?: string }) => {
   );
 };
 
-// TODO: assign/store debug in share locations that support (gcsim backend)
-const Share = ({
-  running,
-  copyToast,
-  data,
-  debug,
-}: {
+type ShareProps = {
   running: boolean;
   copyToast: RefObject<Toaster>;
   data: SimResults | null;
-  debug: LogDetails[] | null;
-}) => {
+}
+
+const Share = ({ running, copyToast, data }: ShareProps) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
 
   const convert = () => {
     const cpy = Object.assign({}, data);
-    // including debug data goes over hastebin limits
-    cpy.debug = undefined;
     return {
       data: bytesToBase64(Pako.deflate(JSON.stringify(cpy))),
       meta: {

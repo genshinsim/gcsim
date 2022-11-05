@@ -6,7 +6,6 @@ export interface SimResults {
   character_details?: CharacterDetail[]
 
   config_file?: string
-  debug?: LogDetails[]
   debug_seed?: string
 
   statistics?: Statistics
