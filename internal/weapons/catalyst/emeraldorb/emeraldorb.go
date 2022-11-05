@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -31,6 +32,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 
 	addBuff := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
 		atk := args[1].(*combat.AttackEvent)
 		// don't proc if dmg not from weapon holder
 		if atk.Info.ActorIndex != char.Index {

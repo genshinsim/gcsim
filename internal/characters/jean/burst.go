@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	// initial hit at 40f
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 40)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 40)
 
 	// field status
 	c.Core.Status.Add("jean-q", 600+burstStart)
@@ -57,11 +57,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	// first enter is at frame 55
 	for i := 0; i < enter; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 55+i*delay)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 55+i*delay)
 	}
 
 	// handle In/Out damage on field expiry
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 600+burstStart)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 600+burstStart)
 
 	//heal on cast
 	hpplus := snap.Stats[attributes.Heal]
@@ -108,7 +108,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			// self swirl
 			ae := combat.AttackEvent{
 				Info:        selfSwirl,
-				Pattern:     combat.NewDefSingleTarget(0, combat.TargettablePlayer),
+				Pattern:     combat.NewDefSingleTarget(0),
 				SourceFrame: c.Core.F,
 			}
 			c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)

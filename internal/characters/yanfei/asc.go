@@ -27,7 +27,7 @@ func (c *char) a1(stacks int) {
 // instance of AoE Pyo DMG equal to 80% of her ATK. This DMG counts as Charged
 // Attack DMG.
 func (c *char) a4() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 		if atk.Info.ActorIndex != c.Index {
@@ -55,7 +55,7 @@ func (c *char) a4() {
 			HitlagFactor:       0.05,
 			CanBeDefenseHalted: defhalt,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 10, 10)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 10, 10)
 
 		return false
 	}, "yanfei-a4")

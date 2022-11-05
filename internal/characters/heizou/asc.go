@@ -38,7 +38,7 @@ func (c *char) a1() {
 		}
 	}
 
-	c.Core.Events.Subscribe(event.OnDamage, swirlCB(), "heizou-a1")
+	c.Core.Events.Subscribe(event.OnEnemyDamage, swirlCB(), "heizou-a1")
 }
 
 func (c *char) a4() {

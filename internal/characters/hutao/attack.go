@@ -86,7 +86,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				0,
 				0,
 			)
@@ -123,7 +123,7 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				0,
 				0,
 				c.ppParticles,

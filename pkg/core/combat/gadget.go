@@ -8,6 +8,7 @@ const (
 	GadgetTypUnknown GadgetTyp = iota
 	GadgetTypDendroCore
 	GadgetTypGuoba
+	GadgetTypLeaLotus
 	GadgetTypTest
 	EndGadgetTyp
 )
@@ -18,6 +19,7 @@ func init() {
 	gadgetLimits = make([]int, EndGadgetTyp)
 	gadgetLimits[GadgetTypDendroCore] = 5
 	gadgetLimits[GadgetTypTest] = 2
+	gadgetLimits[GadgetTypLeaLotus] = 1
 }
 
 type Gadget interface {
@@ -52,7 +54,6 @@ func (h *Handler) AddGadget(t Gadget) {
 		}
 	}
 	h.gadgets = append(h.gadgets, t)
-	t.SetIndex(len(h.gadgets) - 1)
 	t.SetKey(h.nextkey())
 }
 

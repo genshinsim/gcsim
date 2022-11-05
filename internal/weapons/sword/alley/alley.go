@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -17,7 +18,7 @@ func init() {
 	core.RegisterWeaponFunc(keys.TheAlleyFlash, NewWeapon)
 }
 
-//Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
+// Upon damaging an opponent, increases CRIT Rate by 8/10/12/14/16%. Max 5 stacks. A CRIT Hit removes all stacks.
 type Weapon struct {
 	Index int
 	c     *core.Core
@@ -56,7 +57,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c.Tasks.Add(w.selfDisable(l), next)
 	}
 
-	c.Events.Subscribe(event.OnCharacterHurt, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if !di.External {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
 		w.char.AddStatus(lockoutKey, 300, true)
 		return false
 	}, fmt.Sprintf("alleyflash-%v", char.Base.Key.String()))

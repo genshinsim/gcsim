@@ -61,9 +61,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				attackRadius[c.NormalCounter],
-				false,
-				combat.TargettableEnemy,
-				combat.TargettableGadget,
 			),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],

@@ -78,7 +78,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
 		aimedHitmarks[kindling],
 		aimedHitmarks[kindling]+travel,
 	)
@@ -104,7 +104,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			// add a bit of extra delay for kindling arrows
 			c.Core.QueueAttack(
 				ai,
-				combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+				combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
 				aimedHitmarks[kindling],
 				aimedHitmarks[kindling]+kindling_travel,
 			)

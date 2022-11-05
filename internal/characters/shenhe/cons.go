@@ -39,7 +39,7 @@ func (c *char) c4() {
 			return c.c4bonus, true
 		},
 	})
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if c.Core.Player.Active() != c.Index {
 			return false

@@ -80,25 +80,19 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 func (c *char) attackPattern(attackIndex int) combat.AttackPattern {
 	switch attackIndex {
 	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.8, false, combat.TargettableEnemy, combat.TargettableGadget)
+		return combat.NewCircleHit(c.Core.Combat.Player(), 1.8)
 	case 1:
 		return combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			1.35,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
 		) // supposed to be box x=1.8,z=2.7
 	case 2:
 		return combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			1.8,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
 		) // both hits supposed to be box x=2.2,z=3.6
 	case 3:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.3, false, combat.TargettableEnemy, combat.TargettableGadget)
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2.3)
 	}
 	panic("unreachable code")
 }
@@ -182,27 +176,21 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 func (c *char) attackBPattern(attackIndex int) combat.AttackPattern {
 	switch attackIndex {
 	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget)
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2)
 	case 1:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget)
+		return combat.NewCircleHit(c.Core.Combat.Player(), 2)
 	case 2:
 		return combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			3.0,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
 		) // supposed to be box x=2.5,z=6.0
 	case 3: // both hits are 2.5m radius circles
 		return combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			2.5,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
 		)
 	case 4:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy, combat.TargettableGadget)
+		return combat.NewCircleHit(c.Core.Combat.Player(), 3.5)
 	}
 	panic("unreachable code")
 }

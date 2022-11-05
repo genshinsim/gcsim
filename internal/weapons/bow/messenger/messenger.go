@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmg := 0.75 + float64(r)*0.25
 	const icdKey = "messenger-icd"
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		trg := args[0].(combat.Target)
 		// don't proc if dmg not from weapon holder
@@ -66,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:         dmg,
 			HitWeakPoint: true, // ensure crit by marking it as hitting weakspot
 		}
-		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key(), combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 1)
 
 		return false
 	}, fmt.Sprintf("messenger-%v", char.Base.Key.String()))
