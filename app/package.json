@@ -3,6 +3,7 @@
   "source": "src/index.html",
   "scripts": {
     "start": "parcel src/index.html",
+    "enka": "node ./src/Components/Enka/GenshinData/DownloadFromEnkaScript.js",
     "build": "parcel build src/index.html --dist-dir build"
   },
   "devDependencies": {
