@@ -76,22 +76,7 @@ var skillRecastFrames []int
 const skillRecastHitmark = 27
 
 func (c *char) skillRecast(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		Abil:       "Stellar Restoration (Slashing)",
-		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Electro,
-		Durability: 50,
-		Mult:       skillPress[c.TalentLvlSkill()],
-	}
-
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillRecastHitmark, skillRecastHitmark)
-
-	//add electro infusion
-	c.a1()
-
+	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
 		//2 tick dmg at start to end
 		hits, ok := p["c1"]
@@ -113,6 +98,22 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), skillRecastHitmark, skillRecastHitmark)
 		}
 	}
+
+	ai := combat.AttackInfo{
+		Abil:       "Stellar Restoration (Slashing)",
+		ActorIndex: c.Index,
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagElementalArt,
+		ICDGroup:   combat.ICDGroupDefault,
+		Element:    attributes.Electro,
+		Durability: 50,
+		Mult:       skillPress[c.TalentLvlSkill()],
+	}
+
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillRecastHitmark, skillRecastHitmark)
+
+	//add electro infusion
+	c.a1()
 
 	// TODO: Particle timing?
 	count := 2.0
