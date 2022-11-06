@@ -70,7 +70,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   highPlungeHitmark,
+		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
 		State:           action.PlungeAttackState,
 	}
 }
@@ -115,7 +115,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeHitmark,
+		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],
 		State:           action.PlungeAttackState,
 	}
 }
