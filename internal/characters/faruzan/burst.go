@@ -58,25 +58,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		})
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.AnemoP] = burstBuff[c.TalentLvlBurst()]
-	attackFn := func() {
+	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, shredCb)
 		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
-				AffectedStat: attributes.CR,
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-			})
-			if c.Base.Cons >= 6 {
-				c.c6Buff(char)
-			}
+			c.applyBurstBuff(char)
 		}
-	}
-
-	c.Core.Tasks.Add(func() { attackFn() }, burstHitmark) // initial hit
+	}, burstHitmark) // initial hit
 
 	// C2: The duration of the Dazzling Polyhedron created by
 	// The Wind's Secret Ways increased by 6s.
@@ -85,9 +72,30 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration += 360
 	}
 
+	frequency, ok := p["frequency"]
+	if !ok {
+		frequency = 1
+	}
+	if frequency < 1 {
+		frequency = 1
+	}
+	if frequency > 3 {
+		frequency = 3
+	}
+
 	// following hits
-	for i := 0; i <= duration-71; i += 120 {
-		c.Core.Tasks.Add(func() { attackFn() }, burstHitmark+71+i)
+	hitCount := 0
+	for i := 71; i <= duration; i += 120 {
+		c.Core.Tasks.Add(func() {
+			for _, char := range c.Core.Player.Chars() {
+				c.applyBurstBuff(char)
+			}
+			hitCount++
+			if hitCount%3 >= frequency {
+				return
+			}
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, shredCb)
+		}, burstHitmark+i)
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 18)
@@ -98,5 +106,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
+	}
+}
+
+func (c *char) applyBurstBuff(char *character.CharWrapper) {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.AnemoP] = burstBuff[c.TalentLvlBurst()]
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
+		AffectedStat: attributes.CR,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
+	if c.Base.Cons >= 6 {
+		c.c6Buff(char)
 	}
 }
