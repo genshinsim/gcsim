@@ -57,13 +57,9 @@ func (c *char) a1() {
 		return false
 	}, "nilou-a1-cores")
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		t, ok := args[0].(combat.Target)
-		if !ok {
-			return false
-		}
-		if t.Type() != combat.TargettablePlayer || atk.Info.Element != attributes.Dendro {
+		if atk.Info.Element != attributes.Dendro {
 			return false
 		}
 		char := c.Core.Player.ActiveChar()
