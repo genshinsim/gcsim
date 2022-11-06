@@ -121,7 +121,7 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 		if c.StatusIsActive(particleICDKey) {
 			return
 		}
-		var count float64 = 2
+		count := 2.0
 		if c.Core.Rand.Float64() < 2.0/3.0 {
 			count++
 		}
