@@ -22,9 +22,10 @@ type char struct {
 	ozActive      bool // purely used for gscl conditional purposes
 	ozActiveUntil int  // used for oz ticks, a4, c1 and c6
 	ozTickSrc     int  // used for oz recast attacks
+	c6Travel      int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -35,6 +36,12 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.ozActive = false
 	c.ozActiveUntil = -1
 	c.ozTickSrc = -1
+
+	c.c6Travel = 10
+	travel, ok := p.Params["c6_travel"]
+	if ok {
+		c.c6Travel = travel
+	}
 
 	w.Character = &c
 
