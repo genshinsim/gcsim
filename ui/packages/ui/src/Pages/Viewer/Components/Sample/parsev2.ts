@@ -1,11 +1,11 @@
 import { LogDetails } from "@gcsim/types";
-import { DebugRow, DebugItem, eventColor, strFrameWithSec } from "./parse";
+import { SampleRow, SampleItem, eventColor, strFrameWithSec } from "./parse";
 
 type endedStatus = {
-  [key: number]: DebugItem[][];
+  [key: number]: SampleItem[][];
 };
 
-const replacer = (k: string, v: any) => {
+const replacer = (k: string, v: unknown) => {
   if (k == "ordering") return undefined;
   return v;
 };
@@ -13,7 +13,7 @@ const replacer = (k: string, v: any) => {
 export function parseLogV2(
   active?: string,
   team?: string[],
-  log?: string | LogDetails[] | any[],
+  log?: string | LogDetails[],
   selected?: string[]
 ) {
   // TODO: fix this??
@@ -21,8 +21,8 @@ export function parseLogV2(
   let activeIndex = team.findIndex((e) => e === active);
   activeIndex++; // +1 since we set the first field to be sim slot
 
-  const result: DebugRow[] = [];
-  let slots: DebugItem[][] = [[], [], [], [], []];
+  const result: SampleRow[] = [];
+  let slots: SampleItem[][] = [[], [], [], [], []];
   const ended: endedStatus = {};
   let lastFrame = -1;
   let finalFrame = -1;
@@ -44,7 +44,7 @@ export function parseLogV2(
   try {
     lines = JSON.parse(log as string);
   } catch (e) {
-    console.warn("error parsing debug log (v2)");
+    console.warn("error parsing sample log (v2)");
     console.warn(e);
     return [];
   }
@@ -63,7 +63,7 @@ export function parseLogV2(
         return;
       }
       if (!(line.ended in ended)) {
-        const slots: DebugItem[][] = [];
+        const slots: SampleItem[][] = [];
         // TODO: fix this??
         // @ts-ignore
         for (let i = 0; i <= team.length; i++) {
@@ -76,7 +76,7 @@ export function parseLogV2(
         return;
       }
       const index = line.char_index + 1;
-      const e: DebugItem = {
+      const e: SampleItem = {
         frame: line.frame,
         msg: key + " expired" + strFrameWithSec(line.frame),
         raw: JSON.stringify(line, null, 2),
@@ -122,7 +122,7 @@ export function parseLogV2(
 
     //make a copy of line and sort by ordering if ordering exist (then purge ordering)
 
-    const logLines: { key: string; val: any }[] = [];
+    const logLines: { key: string; val: unknown }[] = [];
     //convert logs into array
     for (const key in line.logs) {
       logLines.push({ key: key, val: line.logs[key] });
@@ -130,8 +130,8 @@ export function parseLogV2(
     //sort
     if (line.ordering) {
       logLines.sort((a, b) => {
-        const ao = line.ordering![a.key] || 0;
-        const bo = line.ordering![b.key] || 0;
+        const ao = line.ordering?.[a.key] || 0;
+        const bo = line.ordering?.[b.key] || 0;
         return ao - bo;
       });
     }
@@ -141,7 +141,7 @@ export function parseLogV2(
       line.logs[e.key] = e.val;
     });
 
-    const e: DebugItem = {
+    const e: SampleItem = {
       frame: line.frame,
       msg: line.msg,
       raw: JSON.stringify(line, replacer, 2),

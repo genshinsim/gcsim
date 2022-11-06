@@ -1,5 +1,4 @@
-import React from "react";
-import { Button, ButtonGroup, Classes, Dialog } from "@blueprintjs/core";
+import { Button, Classes, Dialog } from "@blueprintjs/core";
 import { eventColor } from "./parse";
 import { Trans, useTranslation } from "react-i18next";
 

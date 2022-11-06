@@ -1,5 +1,5 @@
-import { DebugItemView } from "./DebugItemView";
-import { DebugItem, DebugRow } from "./parse";
+import { SampleItemView } from "./SampleItemView";
+import { SampleItem, SampleRow } from "./parse";
 import { useVirtual } from "react-virtual";
 import AutoSizer from "react-virtualized-auto-sizer";
 import React from "react";
@@ -16,14 +16,14 @@ const Row = ({
   highlight,
   showBuffDuration,
 }: {
-  row: DebugRow;
+  row: SampleRow;
   highlight: buffSetting;
-  showBuffDuration: (e: DebugItem) => void;
+  showBuffDuration: (e: SampleItem) => void;
 }) => {
   const cols = row.slots.map((slot, ci) => {
     const events = slot.map((e, ei) => {
       return (
-        <DebugItemView item={e} key={ei} showBuffDuration={showBuffDuration} />
+        <SampleItemView item={e} key={ei} showBuffDuration={showBuffDuration} />
       );
     });
 
@@ -67,24 +67,24 @@ const Row = ({
 
 let lastSearchIndex = 0;
 
-export function Debugger({
+export function Sampler({
   data,
   team,
   searchable,
 }: {
-  data: DebugRow[];
+  data: SampleRow[];
   team: string[];
-  searchable: { [key: number]: any };
+  searchable: { [key: number]: string[] };
 }) {
-  const parentRef = React.useRef<HTMLDivElement>(null!);
-  const searchRef = React.useRef<HTMLInputElement>(null!);
+  const parentRef = React.useRef<HTMLDivElement>(null);
+  const searchRef = React.useRef<HTMLInputElement>(null);
   const [hl, sethl] = React.useState<buffSetting>({
     start: 0,
     end: 0,
     show: false,
   });
 
-  const handleShowBuffDuration = (e: DebugItem) => {
+  const handleShowBuffDuration = (e: SampleItem) => {
     // const show = hl.show;
     const next = {
       show: true,
@@ -142,14 +142,18 @@ export function Debugger({
                 icon="arrow-down"
                 intent="warning"
                 onClick={() => {
-                  searchAndScroll(searchRef.current.value);
+                  if (searchRef.current != null) {
+                    searchAndScroll(searchRef.current.value);
+                  }
                 }}
               />
               <Button
                 icon="reset"
                 intent="warning"
                 onClick={() => {
-                  searchRef.current.value = "";
+                  if (searchRef.current != null) {
+                    searchRef.current.value = "";
+                  }
                   lastSearchIndex = 0;
                   rowVirtualizer.scrollToIndex(0);
                 }}
@@ -172,7 +176,7 @@ export function Debugger({
               }}
               id="resize-inner"
             >
-              <div className="flex flex-row debug-header">
+              <div className="flex flex-row sample-header">
                 <div
                   className={
                     "font-medium text-lg text-gray-100 border-b-2 border-gray-500 text-right "

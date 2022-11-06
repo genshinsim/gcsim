@@ -1,4 +1,4 @@
-export const DefaultDebugOptions = [
+export const DefaultSampleOptions = [
   "damage",
   "element",
   "action",
@@ -7,7 +7,7 @@ export const DefaultDebugOptions = [
   "status",
 ];
 
-export const AllDebugOptions = [
+export const AllSampleOptions = [
   //basic stuff
   "action", //character actions
   "damage", //character damage

@@ -13,77 +13,95 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AdvancedPreset,
-  AllDebugOptions,
+  AllSampleOptions,
   DebugPreset,
-  DefaultDebugOptions,
+  DefaultSampleOptions,
   SimplePreset,
   VerbosePreset,
-  Debugger,
+  Sampler,
   Options,
-  DebugRow,
+  SampleRow,
   parseLogV2,
-} from "../Components/Debug";
+} from "../Components/Sample";
 
-const SAVED_DEBUG_KEY = "gcsim-debug-settings";
+const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
-type UseDebugData = {
+type UseSampleData = {
   logs?: LogDetails[];
-  parsed: DebugRow[] | null;
+  parsed: SampleRow[] | null;
   seed: string | null;
   settings: string[];
   generating: boolean;
   setGenerating: (val: boolean) => void;
-  setLogs: (debug?: LogDetails[]) => void;
+  setLogs: (sample?: LogDetails[]) => void;
   setSettings: (val: string[]) => void;
   setSeed: (val: string | null) => void;
 };
 
 type Props = {
-  simDebugger: (cfg: string, seed: string) => Promise<Sample>
+  sampler: (cfg: string, seed: string) => Promise<Sample>
   data: SimResults | null;
-  debug: UseDebugData;
+  sample: UseSampleData;
   running: boolean;
 };
 
 // TODO: translation
-// TODO: The debugger should be refactored. This is a mess of passing around info
-export default ({ simDebugger, data, debug, running }: Props) => {
-  if (data?.character_details == null || data?.config_file == null || debug.generating) {
+// TODO: The sampler should be refactored. This is a mess of passing around info
+export default ({ sampler, data, sample, running }: Props) => {
+  if (data?.character_details == null || data?.config_file == null || sample.generating) {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
   }
 
-  if (debug.parsed == null) {
+  if (sample.parsed == null) {
     return (
       <NonIdealState
         icon="helper-management"
-        action={<Generate simDebugger={simDebugger} data={data} debug={debug} running={running} />}
+        action={<Generate sampler={sampler} data={data} sample={sample} running={running} />}
       />
     );
   }
 
+  const msgs = useMemo(() => {
+    const out: { [key: number]: string[] } = {};
+    if (sample.parsed == null) {
+      return out;
+    }
+
+    sample.parsed.map((row, i) => {
+      const results: string[] = [];
+
+      row.slots.map((slot) => {
+        slot.map((e) => {
+          results.push(e.msg);
+        });
+      });
+
+      out[i] = results;
+    });
+
+    return out;
+  }, [sample.parsed]);
+
   const names = data.character_details.map((c) => c.name);
   return (
     <div className="flex flex-grow flex-col h-full gap-2 px-4">
-      <Generate simDebugger={simDebugger} data={data} debug={debug} running={running} />
-      <Debugger data={debug.parsed} team={names} searchable={{}} />
-      <DebugOptions settings={debug.settings} setSettings={debug.setSettings} />
+      <Generate sampler={sampler} data={data} sample={sample} running={running} />
+      <Sampler data={sample.parsed} team={names} searchable={msgs} />
+      <SampleOptions settings={sample.settings} setSettings={sample.setSettings} />
     </div>
   );
 };
 
-const Generate = ({
-      simDebugger,
-      data,
-      debug,
-      running,
-    }: {
-      simDebugger: (cfg: string, seed: string) => Promise<Sample>,
-      data: SimResults;
-      debug: UseDebugData;
-      running: boolean;
-    }) => {
+type GenerateProps = {
+  sampler: (cfg: string, seed: string) => Promise<Sample>;
+  data: SimResults;
+  sample: UseSampleData;
+  running: boolean;
+}
+
+const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
   let startValue = "sample";
-  switch (debug.seed) {
+  switch (sample.seed) {
     case null:
       startValue = "sample";
       break;
@@ -147,12 +165,12 @@ const Generate = ({
         break;
     }
 
-    debug.setGenerating(true);
-    debug.setSeed(seed);
-    simDebugger(data.config_file ?? "", seed).then((out) => {
+    sample.setGenerating(true);
+    sample.setSeed(seed);
+    sampler(data.config_file ?? "", seed).then((out) => {
       console.log(out);
-      debug.setLogs(out.logs);
-      debug.setGenerating(false);
+      sample.setLogs(out.logs);
+      sample.setGenerating(false);
     });
   };
 
@@ -175,7 +193,7 @@ const Generate = ({
   );
 };
 
-const DebugOptions = ({
+const SampleOptions = ({
   settings,
   setSettings,
 }: {
@@ -227,39 +245,39 @@ const DebugOptions = ({
         isOpen={isOpen}
         handleClose={() => setOpen(false)}
         handleClear={() => setSettings([])}
-        handleResetDefault={() => setSettings(DefaultDebugOptions)}
+        handleResetDefault={() => setSettings(DefaultSampleOptions)}
         handleToggle={toggle}
         handleSetPresets={presets}
         selected={settings}
-        options={AllDebugOptions}
+        options={AllSampleOptions}
       />
     </div>
   );
 };
 
-export function useDebug(running: boolean, data: SimResults | null): UseDebugData {
+export function useSample(running: boolean, data: SimResults | null): UseSampleData {
   const [selected, setSelected] = useState<string[]>(() => {
-    const saved = localStorage.getItem(SAVED_DEBUG_KEY);
+    const saved = localStorage.getItem(SAVED_SAMPLE_KEY);
     if (saved) {
       const initialValue = JSON.parse(saved);
-      return initialValue || DefaultDebugOptions;
+      return initialValue || DefaultSampleOptions;
     }
-    return DefaultDebugOptions;
+    return DefaultSampleOptions;
   });
 
   const setAndStore = (val: string[]) => {
     setSelected(val);
-    localStorage.setItem(SAVED_DEBUG_KEY, JSON.stringify(val));
+    localStorage.setItem(SAVED_SAMPLE_KEY, JSON.stringify(val));
   };
 
-  const [debug, setDebug] = useState<LogDetails[] | undefined>(undefined);
+  const [sample, SetSample] = useState<LogDetails[] | undefined>(undefined);
   const [generating, setGenerating] = useState(false);
   const [seed, setSeed] = useState<string | null>(null);
 
-  // Special case where sim is rerunning. Want to reset any generated debug state
+  // Special case where sim is rerunning. Want to reset any generated sample state
   useEffect(() => {
     if (running) {
-      setDebug(undefined);
+      SetSample(undefined);
     }
   }, [running]);
 
@@ -268,25 +286,25 @@ export function useDebug(running: boolean, data: SimResults | null): UseDebugDat
       return null;
     }
 
-    if (debug == null) {
+    if (sample == null) {
       return null;
     }
 
     return parseLogV2(
         data.initial_character,
         data?.character_details?.map((c) => c.name),
-        debug,
+        sample,
         selected);
-  }, [debug, data?.initial_character, data?.character_details, selected]);
+  }, [sample, data?.initial_character, data?.character_details, selected]);
 
   return {
-    logs: debug,
+    logs: sample,
     parsed: parsed,
     seed: seed,
     settings: selected,
     generating: generating,
     setGenerating: setGenerating,
-    setLogs: setDebug,
+    setLogs: SetSample,
     setSettings: setAndStore,
     setSeed: setSeed,
   };

@@ -1,13 +1,13 @@
-import { Button, Dialog, Icon } from "@blueprintjs/core";
+import { Dialog } from "@blueprintjs/core";
 import React from "react";
-import { DebugItem } from "./parse";
+import { SampleItem } from "./parse";
 
-export function DebugItemView({
+export function SampleItemView({
   item,
   showBuffDuration,
 }: {
-  item: DebugItem;
-  showBuffDuration: (e: DebugItem) => void;
+  item: SampleItem;
+  showBuffDuration: (e: SampleItem) => void;
 }) {
   const [open, setOpen] = React.useState<boolean>(false);
   const handleClick = () => {

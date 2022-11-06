@@ -34,7 +34,7 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-div.debug-header {
+div.sample-header {
   position: sticky;
   top: 0; /* Don't forget this, required for the stickiness */
   background-color: rgb(75 85 99);
