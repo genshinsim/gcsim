@@ -76,12 +76,13 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	ai.FlatDmg = 1.5 * calcReactionDmg(char, ai, em)
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = 1.5 * flatdmg
 	//shatter is a self attack
-	r.core.QueueAttack(
+	r.core.QueueAttackWithSnap(
 		ai,
+		snap,
 		combat.NewDefSingleTarget(r.self.Key()),
-		-1,
 		1,
 	)
 	return true

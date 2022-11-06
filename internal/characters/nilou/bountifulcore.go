@@ -24,9 +24,9 @@ func newBountifulCore(c *core.Core, x float64, y float64, a *combat.AttackEvent)
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
-		ai := reactable.NewBloomAttack(char, b)
+		ai, snap := reactable.NewBloomAttack(char, b)
 		ap := combat.NewCircleHit(b.Gadget, 6.5)
-		c.QueueAttack(ai, ap, -1, 1)
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
@@ -34,7 +34,7 @@ func newBountifulCore(c *core.Core, x float64, y float64, a *combat.AttackEvent)
 		ap.SkipTargets[combat.TargettablePlayer] = false
 		ap.SkipTargets[combat.TargettableEnemy] = true
 		ap.SkipTargets[combat.TargettableGadget] = true
-		c.QueueAttack(ai, ap, -1, 1)
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 	}
 	b.Gadget.OnExpiry = explode
 	b.Gadget.OnKill = explode
