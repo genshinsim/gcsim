@@ -46,7 +46,7 @@ func (c *char) c2() {
 // C4:
 // Within the Field created by Dandelion Breeze, all opponents have their Anemo RES decreased by 40%.
 func (c *char) c4() {
-	// gets called at the same time as heal ticks (every 1s)
+	// gets called once right before burst start and then at the same time as heal ticks (every 1s)
 	// add debuff to all targets for 1.2 s
 	for _, t := range c.Core.Combat.Enemies() {
 		e, ok := t.(*enemy.Enemy)
