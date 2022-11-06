@@ -13,12 +13,13 @@ import (
 var burstFrames []int
 
 const (
+	burstHitmark  = 90
 	burstBuffKey  = "faruzan-q-dmg-bonus"
 	burstShredKey = "faruzan-q-shred"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(55)
+	burstFrames = frames.InitAbilSlice(101)
 }
 
 // Faruzan deploys a Dazzling Polyhedron that deals AoE Anemo DMG and releases
@@ -57,6 +58,26 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		})
 	}
 
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.AnemoP] = burstBuff[c.TalentLvlBurst()]
+	attackFn := func() {
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, shredCb)
+		for _, char := range c.Core.Player.Chars() {
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
+				AffectedStat: attributes.CR,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
+			if c.Base.Cons >= 6 {
+				c.c6Buff(char)
+			}
+		}
+	}
+
+	c.Core.Tasks.Add(func() { attackFn() }, burstHitmark) // initial hit
+
 	// C2: The duration of the Dazzling Polyhedron created by
 	// The Wind's Secret Ways increased by 6s.
 	duration := 720
@@ -64,24 +85,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration += 360
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.AnemoP] = burstBuff[c.TalentLvlBurst()]
-	for i := 55; i <= duration+55; i += 120 {
-		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, shredCb)
-			for _, char := range c.Core.Player.Chars() {
-				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
-					AffectedStat: attributes.CR,
-					Amount: func() ([]float64, bool) {
-						return m, true
-					},
-				})
-				if c.Base.Cons >= 6 {
-					c.c6Buff(char)
-				}
-			}
-		}, i)
+	// following hits
+	for i := 0; i <= duration-71; i += 120 {
+		c.Core.Tasks.Add(func() { attackFn() }, burstHitmark+71+i)
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 18)

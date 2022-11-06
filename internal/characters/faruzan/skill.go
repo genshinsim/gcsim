@@ -17,12 +17,7 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(52) // E -> D
-	skillFrames[action.ActionAttack] = 29  // E -> N1
-	skillFrames[action.ActionAim] = 30     // E -> CA
-	skillFrames[action.ActionBurst] = 32   // E -> Q
-	skillFrames[action.ActionJump] = 51    // E -> J
-	skillFrames[action.ActionSwap] = 50    // E -> Swap
+	skillFrames = frames.InitAbilSlice(36)
 }
 
 // Faruzan deploys a polyhedron that deals AoE Anemo DMG to nearby opponents.
@@ -108,7 +103,13 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 			Durability: 25,
 			Mult:       hurricane[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(a.Target, 2), vortexHitmark, vortexHitmark, c.c4Callback()) // TODO: hitmark and size
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(a.Target, 2),
+			vortexHitmark,
+			vortexHitmark,
+			c.c4Callback(),
+		) // TODO: hitmark and size
 		done = true
 	}
 	particleDone := false
