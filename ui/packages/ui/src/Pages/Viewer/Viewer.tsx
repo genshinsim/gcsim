@@ -7,8 +7,7 @@ import { useLocation } from "wouter";
 import { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
 import Debug, { useDebug } from "./Tabs/Debug";
-import { LogDetails } from "./Components/Debug";
-import { SimResults } from "@gcsim/types";
+import { Sample, SimResults } from "@gcsim/types";
 import Warnings from "./Components/Warnings";
 
 type ViewerProps = {
@@ -17,7 +16,7 @@ type ViewerProps = {
   error: string | null;
   src: ResultSource;
   redirect: string;
-  simDebugger: (cfg: string, seed: string) => Promise<LogDetails[]>;
+  simDebugger: (cfg: string, seed: string) => Promise<Sample>;
   cancel: () => void;
   retry?: () => void;
 };
@@ -26,11 +25,6 @@ type ViewerProps = {
 // above viewer in the hierarchy tree. The viewer can perform whatever additional calculations it
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
-//
-// The debug view is a partial "exception" to this rule. User can regenerate debug view on UI.
-// This does not mutate the original data, but is stored as a new debug variable. The generated
-// debug is only merged into the data when generating a share link (share link will have either
-// no debug data or debug data from last generation).
 export default ({ running, data, error, src, redirect, simDebugger, cancel, retry }: ViewerProps) => {
   const debug = useDebug(running, data);
 

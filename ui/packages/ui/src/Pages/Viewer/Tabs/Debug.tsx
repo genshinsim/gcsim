@@ -8,7 +8,7 @@ import {
   Spinner,
   SpinnerSize,
 } from "@blueprintjs/core";
-import { SimResults } from "@gcsim/types";
+import { LogDetails, Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -21,26 +21,25 @@ import {
   Debugger,
   Options,
   DebugRow,
-  LogDetails,
   parseLogV2,
 } from "../Components/Debug";
 
 const SAVED_DEBUG_KEY = "gcsim-debug-settings";
 
 type UseDebugData = {
-  logs: LogDetails[] | null;
+  logs?: LogDetails[];
   parsed: DebugRow[] | null;
   seed: string | null;
   settings: string[];
   generating: boolean;
   setGenerating: (val: boolean) => void;
-  setLogs: (debug: LogDetails[]) => void;
+  setLogs: (debug?: LogDetails[]) => void;
   setSettings: (val: string[]) => void;
   setSeed: (val: string | null) => void;
 };
 
 type Props = {
-  simDebugger: (cfg: string, seed: string) => Promise<LogDetails[]>
+  simDebugger: (cfg: string, seed: string) => Promise<Sample>
   data: SimResults | null;
   debug: UseDebugData;
   running: boolean;
@@ -78,18 +77,18 @@ const Generate = ({
       debug,
       running,
     }: {
-      simDebugger: (cfg: string, seed: string) => Promise<LogDetails[]>,
+      simDebugger: (cfg: string, seed: string) => Promise<Sample>,
       data: SimResults;
       debug: UseDebugData;
       running: boolean;
     }) => {
-  let startValue = "debug";
+  let startValue = "sample";
   switch (debug.seed) {
     case null:
-      startValue = "debug";
+      startValue = "sample";
       break;
-    case data.debug_seed:
-      startValue = "debug";
+    case data.sample_seed:
+      startValue = "sample";
       break;
     case data.statistics?.min_seed:
       startValue = "min";
@@ -109,7 +108,7 @@ const Generate = ({
   }
   const [value, setValue] = useState(startValue);
   const options: OptionProps[] = [
-    { label: "Sample Seed", value: "debug" },
+    { label: "Sample Seed", value: "sample" },
     // { label: "Random", value: "rand" },
     { label: "Min Seed", value: "min" },
     { label: "Max Seed", value: "max" },
@@ -125,8 +124,8 @@ const Generate = ({
   const click = () => {
     let seed = "0";
     switch (value) {
-      case "debug":
-        seed = data.debug_seed ?? seed;
+      case "sample":
+        seed = data.sample_seed ?? seed;
         break;
       case "rand":
         seed = "" + Math.floor(Number.MAX_SAFE_INTEGER * Math.random());
@@ -151,7 +150,8 @@ const Generate = ({
     debug.setGenerating(true);
     debug.setSeed(seed);
     simDebugger(data.config_file ?? "", seed).then((out) => {
-      debug.setLogs(out);
+      console.log(out);
+      debug.setLogs(out.logs);
       debug.setGenerating(false);
     });
   };
@@ -252,14 +252,14 @@ export function useDebug(running: boolean, data: SimResults | null): UseDebugDat
     localStorage.setItem(SAVED_DEBUG_KEY, JSON.stringify(val));
   };
 
-  const [debug, setDebug] = useState<LogDetails[] | null>(null);
+  const [debug, setDebug] = useState<LogDetails[] | undefined>(undefined);
   const [generating, setGenerating] = useState(false);
   const [seed, setSeed] = useState<string | null>(null);
 
   // Special case where sim is rerunning. Want to reset any generated debug state
   useEffect(() => {
     if (running) {
-      setDebug(null);
+      setDebug(undefined);
     }
   }, [running]);
 

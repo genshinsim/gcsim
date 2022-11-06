@@ -21,9 +21,8 @@ type Summary struct {
 	CharacterDetails []simulation.CharacterDetail `json:"character_details"`
 	TargetDetails    []enemy.EnemyProfile         `json:"target_details"`
 
-	Config    string                   `json:"config_file"`
-	DebugSeed string                   `json:"debug_seed"`
-	Debug     []map[string]interface{} `json:"debug"`
+	Config     string `json:"config_file"`
+	SampleSeed string `json:"sample_seed"`
 
 	// calculations/simulation data
 	Statistics agg.Result `json:"statistics"`

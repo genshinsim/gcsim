@@ -89,13 +89,13 @@ export namespace Aggregator {
 export namespace Helper {
   export enum Request {
     Validate = "validate",
-    GenerateDebug = "gen_debug",
+    Sample = "sample",
   }
 
   export enum Response {
     Failed = "failed",
     Validate = "validated",
-    GenerateDebug = "gen_debug",
+    Sample = "sample",
   }
 
   export interface FailedResponse {
@@ -125,19 +125,19 @@ export namespace Helper {
     return { type: Response.Validate, cfg: cfg };
   }
 
-  export interface GenerateDebugRequest {
-    type: Request.GenerateDebug;
+  export interface SampleRequest {
+    type: Request.Sample;
     cfg: string;
     seed: string;
   }
 
-  export function GenerateDebugRequest(cfg: string, seed: string): GenerateDebugRequest {
-    return { type: Helper.Request.GenerateDebug, cfg: cfg, seed: seed };
+  export function SampleRequest(cfg: string, seed: string): SampleRequest {
+    return { type: Helper.Request.Sample, cfg: cfg, seed: seed };
   }
 
-  export interface GenerateDebugResponse {
-    type: Response.GenerateDebug;
-    debug: any[];
+  export interface SampleResponse {
+    type: Response.Sample;
+    sample: any;
   }
 }
 

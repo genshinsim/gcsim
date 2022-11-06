@@ -6,9 +6,17 @@ export interface SimResults {
   character_details?: CharacterDetail[]
 
   config_file?: string
-  debug_seed?: string
+  sample_seed?: string
 
   statistics?: Statistics
+}
+
+export interface Sample {
+  config?: string
+  character_details?: CharacterDetail[]
+  // TODO: target_details?: 
+  seed?: string
+  logs?: LogDetails[]
 }
 
 export interface Version {
@@ -114,7 +122,8 @@ export type LogDetails = {
   event: string;
   frame: number;
   msg: string;
-  logs: { [key in string]: unknown };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  logs: { [key in string]: any };
   ordering?: { [key: string]: number };
 };
 

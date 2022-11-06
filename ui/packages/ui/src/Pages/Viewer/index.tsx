@@ -121,7 +121,7 @@ const FromUrl = ({ exec, url, redirect }: {
   );
 
   const cancel = useCallback(() => exec().cancel(), [exec]);
-  const debug = useCallback((cfg: string, seed: string) => exec().debug(cfg, seed), [exec]);
+  const debug = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
 
   return (
     <>
@@ -178,7 +178,7 @@ const FromState = ({ exec, redirect }: { exec: ExecutorSupplier<Executor>, redir
   };
 
   const cancel = useCallback(() => exec().cancel(), [exec]);
-  const debug = useCallback((cfg: string, seed: string) => exec().debug(cfg, seed), [exec]);
+  const debug = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
 
   return (
     <>

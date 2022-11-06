@@ -27,10 +27,28 @@ type Options struct {
 	ConfigPath       string // path to the config file to read
 	Version          string
 	BuildDate        string
-	Debug            bool // whether to include debug logs
 }
 
 var start time.Time
+
+func Parse(cfg string) (*ast.ActionList, error) {
+	parser := ast.New(cfg)
+	simcfg, err := parser.Parse()
+	if err != nil {
+		return &ast.ActionList{}, err
+	}
+
+	//check other errors as well
+	if len(simcfg.Errors) != 0 {
+		fmt.Println("The config has the following errors: ")
+		for _, v := range simcfg.Errors {
+			fmt.Printf("\t%v\n", v)
+		}
+		return &ast.ActionList{}, errors.New("sim has errors")
+	}
+
+	return simcfg, nil
+}
 
 // Run will run the simulation given number of times
 func Run(opts Options) (result.Summary, error) {
@@ -40,19 +58,12 @@ func Run(opts Options) (result.Summary, error) {
 	if err != nil {
 		return result.Summary{}, err
 	}
-	parser := ast.New(cfg)
-	simcfg, err := parser.Parse()
+
+	simcfg, err := Parse(cfg)
 	if err != nil {
 		return result.Summary{}, err
 	}
-	//check other errors as well
-	if len(simcfg.Errors) != 0 {
-		fmt.Println("The config has the following errors: ")
-		for _, v := range simcfg.Errors {
-			fmt.Printf("\t%v\n", v)
-		}
-		return result.Summary{}, errors.New("sim has errors")
-	}
+
 	return RunWithConfig(cfg, simcfg, opts)
 }
 
@@ -131,7 +142,6 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 
 // Note: this generation should be iteration independent (iterations do not change output)
 func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
-	debugSeed := CryptoRandSeed()
 	result := result.Summary{
 		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
 		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES
@@ -146,7 +156,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		BuildDate:        opts.BuildDate,
 		MaxIterations:    simcfg.Settings.Iterations,
 		Config:           cfg,
-		DebugSeed:        strconv.FormatUint(uint64(debugSeed), 10),
+		SampleSeed:       strconv.FormatUint(uint64(CryptoRandSeed()), 10),
 		TargetDetails:    simcfg.Targets,
 		InitialCharacter: simcfg.InitialChar.String(),
 	}
@@ -156,16 +166,6 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		return result, err
 	}
 	result.CharacterDetails = charDetails
-
-	//run one debug
-	//debug call will clone before running
-	if opts.Debug {
-		debugOut, err := GenerateDebugLogWithSeed(simcfg, debugSeed)
-		if err != nil {
-			return result, err
-		}
-		result.Debug = debugOut
-	}
 	return result, nil
 }
 

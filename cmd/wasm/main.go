@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"strconv"
 	"syscall/js"
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/sample"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -35,7 +35,7 @@ func main() {
 	ch := make(chan struct{}, 0)
 
 	// Helper Functions (stateless, no init call needed)
-	js.Global().Set("debug", js.FuncOf(debug))
+	js.Global().Set("sample", js.FuncOf(doSample))
 	js.Global().Set("validateConfig", js.FuncOf(validateConfig))
 
 	// Worker Functions
@@ -52,18 +52,12 @@ func main() {
 
 // static helper functions (stateless)
 
-// debug(cfg: string, seed: string) -> string
-func debug(this js.Value, args []js.Value) interface{} {
+// sample(cfg: string, seed: string) -> string
+func doSample(this js.Value, args []js.Value) interface{} {
 	cfg := args[0].String()
 	seed, _ := strconv.ParseUint(args[1].String(), 10, 64)
 
-	parser := ast.New(cfg)
-	simcfg, err := parser.Parse()
-	if err != nil {
-		return marshal(err)
-	}
-
-	data, err := simulator.GenerateDebugLogWithSeed(simcfg, int64(seed))
+	data, err := sample.GenerateSampleWithSeed(cfg, seed)
 	if err != nil {
 		return marshal(err)
 	}
@@ -80,14 +74,9 @@ func debug(this js.Value, args []js.Value) interface{} {
 func validateConfig(this js.Value, args []js.Value) interface{} {
 	in := args[0].String()
 
-	parser := ast.New(in)
-	cfg, err := parser.Parse()
+	cfg, err := simulator.Parse(in)
 	if err != nil {
 		return marshal(err)
-	}
-
-	for i, v := range cfg.Characters {
-		log.Printf("%v: %v\n", i, v.Base.Key.String())
 	}
 
 	data, err := json.Marshal(cfg)
@@ -160,7 +149,6 @@ func initializeAggregator(this js.Value, args []js.Value) interface{} {
 	opts := simulator.Options{
 		Version:          sha1ver,
 		BuildDate:        buildTime,
-		Debug:            false,
 		GZIPResult:       false,
 		ResultSaveToPath: "",
 		ConfigPath:       "",

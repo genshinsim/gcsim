@@ -31,12 +31,12 @@ function validate(req: { cfg: string }) {
   return { type: HelpResponse.Validate, cfg: resp };
 }
 
-function generateDebug(req: { cfg: string, seed: string }) {
-  const resp = JSON.parse(debug(req.cfg, req.seed));
+function doSample(req: { cfg: string, seed: string }) {
+  const resp = JSON.parse(sample(req.cfg, req.seed));
   if (resp.error) {
     return { type: HelpResponse.Failed, reason: resp.error };
   }
-  return { type: HelpResponse.GenerateDebug, debug: resp };
+  return { type: HelpResponse.Sample, sample: resp };
 }
 
 // @ts-ignore
@@ -44,8 +44,8 @@ function handleRequest(req: any): any {
   switch (req.type as HelpRequest) {
     case HelpRequest.Validate:
       return validate(req);
-    case HelpRequest.GenerateDebug:
-      return generateDebug(req);
+    case HelpRequest.Sample:
+      return doSample(req);
     default:
       console.error("helper - unknown request: ", req);
       throw new Error("helper unknown request");
@@ -60,11 +60,11 @@ onmessage = (ev) => postMessage(handleRequest(ev.data));
 
 enum HelpRequest {
   Validate = "validate",
-  GenerateDebug = "gen_debug",
+  Sample = "sample",
 }
 
 enum HelpResponse {
   Failed = "failed",
   Validate = "validated",
-  GenerateDebug = "gen_debug",
+  Sample = "sample",
 }

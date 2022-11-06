@@ -1,14 +1,5 @@
+import { LogDetails } from "@gcsim/types";
 import { DebugRow, DebugItem, eventColor, strFrameWithSec } from "./parse";
-
-export type LogDetails = {
-  char_index: number;
-  ended: number;
-  event: string;
-  frame: number;
-  msg: string;
-  logs: { [key in string]: any };
-  ordering?: { [key: string]: number };
-};
 
 type endedStatus = {
   [key: number]: DebugItem[][];

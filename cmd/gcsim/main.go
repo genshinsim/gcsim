@@ -11,10 +11,13 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/optimization"
+	"github.com/genshinsim/gcsim/pkg/result"
+	"github.com/genshinsim/gcsim/pkg/sample"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
@@ -26,15 +29,15 @@ var (
 type opts struct {
 	config       string
 	out          string //file result name
+	sample       string //file sample name
 	gz           bool
-	prof         bool
 	serve        bool
 	nobrowser    bool
+	norun        bool
 	keepserving  bool
 	substatOptim bool
 	verbose      bool
 	options      string
-	debugMinMax  bool
 }
 
 // command line tool; following options are available:
@@ -45,12 +48,12 @@ func main() {
 	flag.BoolVar(&version, "version", false, "check gcsim version (git hash)")
 	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use; default config.txt")
 	flag.StringVar(&opt.out, "out", "", "output result to file? supply file path (otherwise empty string for disabled). default disabled")
+	flag.StringVar(&opt.sample, "sample", "", "create sample result. supply file path (otherwise empty string for disabled). default disabled")
 	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require out flag")
-	flag.BoolVar(&opt.prof, "p", false, "run cpu profile; default false")
-	flag.BoolVar(&opt.serve, "s", false, "serve file to viewer (local). default false")
+	flag.BoolVar(&opt.serve, "s", false, "serve results to viewer (local). default false")
+	flag.BoolVar(&opt.norun, "nr", false, "disable running the simulation (useful if you only want to generate a sample")
 	flag.BoolVar(&opt.nobrowser, "nb", false, "disable opening default browser")
-	flag.BoolVar(&opt.keepserving, "ks", false, "keep serving same file without terminating web server")
-	flag.BoolVar(&opt.debugMinMax, "debugMinMax", false, "Output debug log for the min-DPS and max-DPS runs in addition to a random run.")
+	flag.BoolVar(&opt.keepserving, "ks", false, "keep serving same results without terminating web server")
 	flag.BoolVar(&opt.substatOptim, "substatOptim", false, "optimize substats according to KQM standards. Set the out flag to output config with optimal substats inserted to a given file path")
 	flag.BoolVar(&opt.verbose, "v", false, "Verbose output log (currently only for substat optimization)")
 	flag.StringVar(&opt.options, "options", "", `Additional options for substat optimization mode. Currently supports the following flags, set in a semi-colon delimited list (e.g. -options="total_liquid_substats=15;indiv_liquid_cap=8"):
@@ -68,10 +71,6 @@ func main() {
 		return
 	}
 
-	if opt.prof {
-		// defer profile.Start(profile.ProfilePath("./"), profile.CPUProfile).Stop()
-	}
-
 	if opt.serve {
 		os.Remove("serve_data.json.gz") //not really needed since we truncate anyways
 		opt.out = "serve_data.json"
@@ -84,7 +83,6 @@ func main() {
 		GZIPResult:       opt.gz,
 		Version:          sha1ver,
 		BuildDate:        buildTime,
-		Debug:            true,
 	}
 
 	if opt.substatOptim {
@@ -94,14 +92,42 @@ func main() {
 		return
 	}
 
-	res, err := simulator.Run(simopt)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	fmt.Println(res.PrettyPrint())
+	// TODO: should perform the config parsing here and then share the parsed results between run & sample
 
-	if opt.serve {
+	var res result.Summary
+	if !opt.norun {
+		res, err := simulator.Run(simopt)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		fmt.Println(res.PrettyPrint())
+	}
+
+	if opt.sample != "" {
+		var seed uint64
+		if opt.norun {
+			seed = uint64(simulator.CryptoRandSeed())
+		} else {
+			seed, _ = strconv.ParseUint(res.SampleSeed, 10, 64)
+		}
+
+		cfg, err := simulator.ReadConfig(opt.config)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		sample, err := sample.GenerateSampleWithSeed(cfg, seed)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		sample.Save(opt.sample, opt.gz)
+		fmt.Printf("Generated sample with seed: %v\n", seed)
+	}
+
+	if opt.serve && !opt.norun {
 		fmt.Println("Serving result to HTTP...")
 		//start server to listen for token
 		serverDone := &sync.WaitGroup{}
@@ -109,7 +135,7 @@ func main() {
 		serveLocal(serverDone, "./serve_data.json.gz", opt.keepserving)
 		url := "https://gcsim.app/viewer/local"
 		if !opt.nobrowser {
-			err = open(url)
+			err := open(url)
 			if err != nil {
 				//try "xdg-open-wsl"
 				err = openWSL(url)

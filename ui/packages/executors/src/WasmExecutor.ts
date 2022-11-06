@@ -1,4 +1,4 @@
-import { LogDetails, ParsedResult, SimResults } from "@gcsim/types";
+import { ParsedResult, Sample, SimResults } from "@gcsim/types";
 import { throttle } from "lodash-es";
 import { Executor } from "./Executor";
 import { Aggregator, Helper, SimWorker } from "./Workers/common";
@@ -118,21 +118,21 @@ export class WasmExecutor implements Executor {
     });
   }
 
-  public debug(cfg: string, seed: string): Promise<LogDetails[]> {
+  public sample(cfg: string, seed: string): Promise<Sample> {
     return new Promise((resolve, reject) => {
       this.helper.onmessage = (ev) => {
         switch (ev.data.type as Helper.Response) {
-          case Helper.Response.GenerateDebug:
-            resolve((ev.data as Helper.GenerateDebugResponse).debug);
+          case Helper.Response.Sample:
+            resolve((ev.data as Helper.SampleResponse).sample);
             return;
           case Helper.Response.Failed:
             reject((ev.data as Helper.FailedResponse).reason);
             return;
           default:
-            reject("unknown generate debug response: " + ev.data);
+            reject("unknown sample response: " + ev.data);
         }
       };
-      this.helper.postMessage(Helper.GenerateDebugRequest(cfg, seed));
+      this.helper.postMessage(Helper.SampleRequest(cfg, seed));
     });
   }
 
