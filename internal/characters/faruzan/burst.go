@@ -46,20 +46,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	shredCb := func(a combat.AttackCB) {
-		t, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		t.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
-			Ele:   attributes.Anemo,
-			Value: -0.4,
-		})
-	}
-
 	c.Core.Tasks.Add(func() {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, shredCb)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, applyBurstShred)
 		for _, char := range c.Core.Player.Chars() {
 			c.applyBurstBuff(char)
 		}
@@ -94,7 +82,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if hitCount%3 >= frequency {
 				return
 			}
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, shredCb)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, applyBurstShred)
 		}, burstHitmark+i)
 	}
 
@@ -122,4 +110,16 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 	if c.Base.Cons >= 6 {
 		c.c6Buff(char)
 	}
+}
+
+func applyBurstShred(a combat.AttackCB) {
+	t, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
+	t.AddResistMod(enemy.ResistMod{
+		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
+		Ele:   attributes.Anemo,
+		Value: -0.4,
+	})
 }

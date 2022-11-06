@@ -109,6 +109,7 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 			vortexHitmark,
 			vortexHitmark,
 			c.c4Callback(),
+			applyBurstShred,
 		) // TODO: hitmark and size
 		done = true
 	}
