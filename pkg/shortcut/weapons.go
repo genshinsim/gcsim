@@ -76,6 +76,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"freedom":                       keys.FreedomSworn,
 	"frostbearer":                   keys.Frostbearer,
 	"fruitoffulfillment":            keys.FruitOfFulfillment,
+	"fruit":                         keys.FruitOfFulfillment,
 	"fof":                           keys.FruitOfFulfillment,
 	"hakushinring":                  keys.HakushinRing,
 	"hakushin":                      keys.HakushinRing,
