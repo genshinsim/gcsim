@@ -152,7 +152,7 @@ func (c *char) ozTick(src int) func() {
 			Write("src", src)
 		// trigger damage
 		ae := c.ozSnapshot
-		c.Core.QueueAttackEvent(&ae, 0)
+		c.Core.QueueAttackEvent(&ae, c.ozTravel)
 		// check for orb
 		// Particle check is 67% for particle, from datamine
 		// TODO: this delay used to be 120
