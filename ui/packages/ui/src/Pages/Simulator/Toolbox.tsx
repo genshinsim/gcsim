@@ -20,7 +20,7 @@ type Props = {
   isValid: boolean;
 };
 
-function runSim(pool: Executor, cfg: string): AppThunk {
+export function runSim(pool: Executor, cfg: string): AppThunk {
   return function (dispatch) {
     console.log("starting run");
     dispatch(viewerActions.start());

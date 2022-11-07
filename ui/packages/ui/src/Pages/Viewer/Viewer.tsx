@@ -1,14 +1,15 @@
 import { Alert, Intent } from "@blueprintjs/core";
-import { useState } from "react";
-import Config from "./Tabs/Config";
+import { useCallback, useState } from "react";
+import ConfigUI, { useConfig } from "./Tabs/Config";
+import SampleUI, { useSample } from "./Tabs/Sample";
 import Results from "./Tabs/Results";
 import ViewerNav from "./Components/ViewerNav";
 import { useLocation } from "wouter";
 import { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
-import SampleUI, { useSample } from "./Tabs/Sample";
-import { Sample, SimResults } from "@gcsim/types";
+import { SimResults } from "@gcsim/types";
 import Warnings from "./Components/Warnings";
+import { Executor, ExecutorSupplier } from "@gcsim/executors";
 
 type ViewerProps = {
   running: boolean;
@@ -16,8 +17,7 @@ type ViewerProps = {
   error: string | null;
   src: ResultSource;
   redirect: string;
-  sampler: (cfg: string, seed: string) => Promise<Sample>;
-  cancel: () => void;
+  exec: ExecutorSupplier<Executor>;
   retry?: () => void;
 };
 
@@ -25,13 +25,17 @@ type ViewerProps = {
 // above viewer in the hierarchy tree. The viewer can perform whatever additional calculations it
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
-export default ({ running, data, error, src, redirect, sampler, cancel, retry }: ViewerProps) => {
+export default ({ running, data, error, src, redirect, exec, retry }: ViewerProps) => {
   const sample = useSample(running, data);
+  const config = useConfig(data, exec);
+
+  const cancel = useCallback(() => exec().cancel(), [exec]);
+  const sampler = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
 
   const [tabId, setTabId] = useState("results");
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} />,
-    config: <Config cfg={data?.config_file} />,
+    config: <ConfigUI config={config} running={running} />,
     analyze: <div></div>,
     sample: <SampleUI sampler={sampler} data={data} sample={sample} running={running} />,
   };

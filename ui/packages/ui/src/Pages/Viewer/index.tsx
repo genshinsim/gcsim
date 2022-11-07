@@ -120,9 +120,6 @@ const FromUrl = ({ exec, url, redirect }: {
     )
   );
 
-  const cancel = useCallback(() => exec().cancel(), [exec]);
-  const sample = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
-
   return (
     <>
       <Viewer
@@ -131,9 +128,8 @@ const FromUrl = ({ exec, url, redirect }: {
           error={error}
           src={src}
           redirect={redirect}
-          cancel={cancel}
-          retry={request}
-          sampler={sample} />
+          exec={exec}
+          retry={request} />
       <UpgradeDialog
           exec={exec}
           data={data}
@@ -177,9 +173,6 @@ const FromState = ({ exec, redirect }: { exec: ExecutorSupplier<Executor>, redir
     dispatch(viewerActions.setError({ error: error }));
   };
 
-  const cancel = useCallback(() => exec().cancel(), [exec]);
-  const sample = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
-
   return (
     <>
       <Viewer
@@ -188,8 +181,7 @@ const FromState = ({ exec, redirect }: { exec: ExecutorSupplier<Executor>, redir
           src={ResultSource.Generated}
           error={error}
           redirect={redirect}
-          cancel={cancel}
-          sampler={sample} />
+          exec={exec} />
       <UpgradeDialog
           exec={exec}
           data={data}

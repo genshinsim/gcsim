@@ -1,4 +1,3 @@
-import { TextArea } from "@blueprintjs/core";
 import Editor from "react-simple-code-editor";
 
 //@ts-ignore
