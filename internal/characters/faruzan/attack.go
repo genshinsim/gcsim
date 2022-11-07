@@ -14,7 +14,7 @@ var (
 	attackHitmarks = []int{17, 11, 23, 29}
 )
 
-const normalHitNum = 5
+const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
