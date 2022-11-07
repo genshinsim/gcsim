@@ -47,6 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	c.Core.Tasks.Add(func() {
+		snap = c.Snapshot(&ai)
 		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, applyBurstShred)
 		for _, char := range c.Core.Player.Chars() {
 			c.applyBurstBuff(char)

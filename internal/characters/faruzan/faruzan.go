@@ -38,3 +38,15 @@ func (c *char) Init() error {
 	}
 	return nil
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "hurricane-count":
+		if !c.StatusIsActive(skillKey) {
+			return 0, nil
+		}
+		return c.hurricaneCount, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
