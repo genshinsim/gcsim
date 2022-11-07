@@ -80,7 +80,7 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 		StrikeType:           combat.StrikeTypePierce,
 		Element:              attributes.Anemo,
 		Durability:           25,
-		Mult:                 hurricane[c.TalentLvlAttack()],
+		Mult:                 aimChargeFull[c.TalentLvlAttack()],
 		HitWeakPoint:         weakspot,
 		HitlagHaltFrames:     .12 * 60, // TODO: check hitlag for special hurricane arrow
 		HitlagOnHeadshotOnly: true,
@@ -101,7 +101,7 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 			StrikeType: combat.StrikeTypePierce,
 			Element:    attributes.Anemo,
 			Durability: 25,
-			Mult:       hurricane[c.TalentLvlSkill()],
+			Mult:       vortexDmg[c.TalentLvlSkill()],
 		}
 		c.Core.QueueAttack(
 			ai,

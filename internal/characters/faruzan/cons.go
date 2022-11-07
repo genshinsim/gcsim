@@ -65,7 +65,7 @@ func (c *char) c6Arrows() {
 		if c.StatusIsActive(c6ICDKey) {
 			return false
 		}
-		c.AddStatus(c6ICDKey, 150, false)
+		c.AddStatus(c6ICDKey, 180, false)
 		c.hurricaneArrow(10, false)
 		return false
 	}, "faruzan-c6-hook")
