@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Editor from "react-simple-code-editor";
 import { Button, Callout, Intent, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
-
-//@ts-ignore
-import { highlight, languages } from "prismjs/components/prism-core";
-import "prismjs/components/prism-gcsim";
-import "prismjs/themes/prism-tomorrow.css";
 import { SimResults } from '@gcsim/types';
 import ExecutorSettingsButton from '../../../ExecutorSettingsButton';
 import { Executor, ExecutorSupplier } from '@gcsim/executors';
@@ -13,6 +8,11 @@ import { runSim } from '../../Simulator/Toolbox';
 import { useAppDispatch } from '../../../Stores/store';
 import { useLocation } from 'wouter';
 import { useConfigValidateListener } from '../../Simulator';
+
+//@ts-ignore
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-gcsim";
+import "prismjs/themes/prism-tomorrow.css";
 
 type UseConfigData = {
   cfg?: string;
@@ -26,9 +26,10 @@ type UseConfigData = {
 type ConfigProps = {
   config: UseConfigData;
   running: boolean;
+  resetTab: () => void;
 };
 
-export default ({ config, running }: ConfigProps) => {
+export default ({ config, running, resetTab }: ConfigProps) => {
   const dispatch = useAppDispatch();
   const [, setLocation] = useLocation();
 
@@ -49,13 +50,13 @@ export default ({ config, running }: ConfigProps) => {
             className="basis-1/2"
             onClick={() => {
               dispatch(runSim(config.exec(), config.cfg ?? ""));
+              resetTab();
               setLocation("/viewer/web");
             }} />
       </div>
       <Error error={config.error} cfg={config.cfg} />
       <Editor
           value={config.cfg}
-          disabled={running}
           onValueChange={(c) => config.setCfg(c)}
           textareaId="codeArea"
           className="editor"
@@ -112,7 +113,7 @@ export function useConfig(data: SimResults | null, exec: ExecutorSupplier<Execut
 
   // will detect changes in the redux config and validate with the executor
   // validated == true means we had a successful validation check run, not that it is valid
-  const validated = useConfigValidateListener(exec, cfg ?? "", isReady, setErr);
+  const validated = useConfigValidateListener(exec, cfg ?? "", true, setErr);
 
   return {
     cfg: cfg,

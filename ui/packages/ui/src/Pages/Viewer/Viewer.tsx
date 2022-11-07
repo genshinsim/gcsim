@@ -35,7 +35,7 @@ export default ({ running, data, error, src, redirect, exec, retry }: ViewerProp
   const [tabId, setTabId] = useState("results");
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} />,
-    config: <ConfigUI config={config} running={running} />,
+    config: <ConfigUI config={config} running={running} resetTab={() => setTabId("results")} />,
     analyze: <div></div>,
     sample: <SampleUI sampler={sampler} data={data} sample={sample} running={running} />,
   };
