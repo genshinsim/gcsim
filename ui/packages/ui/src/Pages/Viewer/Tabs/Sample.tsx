@@ -8,7 +8,7 @@ import {
   Spinner,
   SpinnerSize,
 } from "@blueprintjs/core";
-import { LogDetails, Sample, SimResults } from "@gcsim/types";
+import { Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -27,13 +27,13 @@ import {
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
 type UseSampleData = {
-  logs?: LogDetails[];
+  sample?: Sample;
   parsed: SampleRow[] | null;
   seed: string | null;
   settings: string[];
   generating: boolean;
   setGenerating: (val: boolean) => void;
-  setLogs: (sample?: LogDetails[]) => void;
+  setSample: (sample?: Sample) => void;
   setSettings: (val: string[]) => void;
   setSeed: (val: string | null) => void;
 };
@@ -52,7 +52,7 @@ export default ({ sampler, data, sample, running }: Props) => {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
   }
 
-  if (sample.parsed == null) {
+  if (sample.sample == null || sample.parsed == null) {
     return (
       <NonIdealState
         icon="helper-management"
@@ -86,7 +86,7 @@ export default ({ sampler, data, sample, running }: Props) => {
   return (
     <div className="flex flex-grow flex-col h-full gap-2 px-4">
       <Generate sampler={sampler} data={data} sample={sample} running={running} />
-      <Sampler data={sample.parsed} team={names} searchable={msgs} />
+      <Sampler sample={sample.sample} data={sample.parsed} team={names} searchable={msgs} />
       <SampleOptions settings={sample.settings} setSettings={sample.setSettings} />
     </div>
   );
@@ -169,7 +169,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
     sample.setSeed(seed);
     sampler(data.config_file ?? "", seed).then((out) => {
       console.log(out);
-      sample.setLogs(out.logs);
+      sample.setSample(out);
       sample.setGenerating(false);
     });
   };
@@ -270,7 +270,7 @@ export function useSample(running: boolean, data: SimResults | null): UseSampleD
     localStorage.setItem(SAVED_SAMPLE_KEY, JSON.stringify(val));
   };
 
-  const [sample, SetSample] = useState<LogDetails[] | undefined>(undefined);
+  const [sample, SetSample] = useState<Sample | undefined>(undefined);
   const [generating, setGenerating] = useState(false);
   const [seed, setSeed] = useState<string | null>(null);
 
@@ -293,18 +293,18 @@ export function useSample(running: boolean, data: SimResults | null): UseSampleD
     return parseLogV2(
         data.initial_character,
         data?.character_details?.map((c) => c.name),
-        sample,
+        sample.logs,
         selected);
   }, [sample, data?.initial_character, data?.character_details, selected]);
 
   return {
-    logs: sample,
+    sample: sample,
     parsed: parsed,
     seed: seed,
     settings: selected,
     generating: generating,
     setGenerating: setGenerating,
-    setLogs: SetSample,
+    setSample: SetSample,
     setSettings: setAndStore,
     setSeed: setSeed,
   };

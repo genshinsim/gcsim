@@ -3,7 +3,9 @@ import { SampleItem, SampleRow } from "./parse";
 import { useVirtual } from "react-virtual";
 import AutoSizer from "react-virtualized-auto-sizer";
 import React from "react";
-import { Button, FormGroup, InputGroup } from "@blueprintjs/core";
+import { Button, FormGroup, InputGroup, Intent } from "@blueprintjs/core";
+import { Sample } from "@gcsim/types";
+import { saveAs } from "file-saver";
 
 type buffSetting = {
   start: number;
@@ -67,15 +69,14 @@ const Row = ({
 
 let lastSearchIndex = 0;
 
-export function Sampler({
-  data,
-  team,
-  searchable,
-}: {
+type SamplerProps = {
+  sample: Sample;
   data: SampleRow[];
   team: string[];
   searchable: { [key: number]: string[] };
-}) {
+}
+
+export function Sampler({ sample, data, team, searchable }: SamplerProps) {
   const parentRef = React.useRef<HTMLDivElement>(null);
   const searchRef = React.useRef<HTMLInputElement>(null);
   const [hl, sethl] = React.useState<buffSetting>({
@@ -132,36 +133,48 @@ export function Sampler({
 
   return (
     <div className="flex flex-col h-full overflow-x-auto">
-      <FormGroup label="Search" inline>
-        <InputGroup
-          type="text"
-          inputRef={searchRef}
-          rightElement={
-            <FormGroup>
-              <Button
-                icon="arrow-down"
-                intent="warning"
-                onClick={() => {
-                  if (searchRef.current != null) {
-                    searchAndScroll(searchRef.current.value);
-                  }
-                }}
-              />
-              <Button
-                icon="reset"
-                intent="warning"
-                onClick={() => {
-                  if (searchRef.current != null) {
-                    searchRef.current.value = "";
-                  }
-                  lastSearchIndex = 0;
-                  rowVirtualizer.scrollToIndex(0);
-                }}
-              />
-            </FormGroup>
-          }
-        />
-      </FormGroup>
+      <div className="flex justify-between">
+        <FormGroup label="Search" inline>
+          <InputGroup
+            type="text"
+            inputRef={searchRef}
+            rightElement={
+              <FormGroup>
+                <Button
+                  icon="arrow-down"
+                  intent="warning"
+                  onClick={() => {
+                    if (searchRef.current != null) {
+                      searchAndScroll(searchRef.current.value);
+                    }
+                  }}
+                />
+                <Button
+                  icon="reset"
+                  intent="warning"
+                  onClick={() => {
+                    if (searchRef.current != null) {
+                      searchRef.current.value = "";
+                    }
+                    lastSearchIndex = 0;
+                    rowVirtualizer.scrollToIndex(0);
+                  }}
+                />
+              </FormGroup>
+            }
+          />
+        </FormGroup>
+        <Button
+            className="mb-[15px]"
+            icon="bring-data"
+            text="Download"
+            intent={Intent.SUCCESS}
+            onClick={() => {
+              const out = JSON.stringify(sample);
+              const blob = new Blob([out], { type: "application/json" });
+              saveAs(blob, "sample");
+            }} />
+      </div>
       <div className="h-full ml-2 mr-2 p-2 rounded-md bg-gray-600 text-xs grow flex flex-col min-w-[60rem] min-h-[20rem]">
         <AutoSizer defaultHeight={100}>
           {({ height, width }) => (
