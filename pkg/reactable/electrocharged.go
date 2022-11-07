@@ -13,6 +13,11 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
+	//if there's still frozen left don't try to ec
+	//game actively rejects ec reaction if frozen is present
+	if r.Durability[ModifierFrozen] > ZeroDur {
+		return false
+	}
 
 	//adding ec or hydro just adds to durability
 	switch a.Info.Element {
