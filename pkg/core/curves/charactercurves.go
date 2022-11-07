@@ -1050,9 +1050,9 @@ var CharBaseMap = map[keys.Char]CharBase{
 	},
 	keys.Faruzan: {
 		Rarity:      4,
-		Body:        profile.BodyLady,
-		Element:     attributes.Electro,
-		Region:      profile.ZoneInazuma,
+		Body:        profile.BodyGirl,
+		Element:     attributes.Anemo,
+		Region:      profile.ZoneSumeru,
 		WeaponType:  weapon.WeaponClassBow,
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
