@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Wind Realm of Nasamjnin (E)",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Anemo,
@@ -96,7 +96,7 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 			ActorIndex: c.Index,
 			Abil:       "Pressurized Collapse",
 			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt, // TODO: check ICD
+			ICDTag:     combat.ICDTagNone, // TODO: check ICD
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypePierce,
 			Element:    attributes.Anemo,

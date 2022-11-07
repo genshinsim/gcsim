@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Anemo,
-		Durability: 25,
+		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
