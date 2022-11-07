@@ -175,11 +175,12 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2 w-full mx-auto">
       <HTMLSelect
         options={options}
         value={value}
         onChange={(e) => setValue(e.currentTarget.value)}
+        fill={true}
       />
       <Button
         large={true}
@@ -188,8 +189,9 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
         intent={Intent.PRIMARY}
         disabled={disabled()}
         onClick={click}
+        fill={true}
       />
-    </>
+    </div>
   );
 };
 
