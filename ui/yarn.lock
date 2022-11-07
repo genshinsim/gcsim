@@ -501,6 +501,7 @@ __metadata:
     "@blueprintjs/select": ^4.8.4
     "@gcsim/executors": "workspace:^"
     "@gcsim/types": "workspace:^"
+    "@gcsim/utils": "workspace:^"
     "@reduxjs/toolkit": ^1.8.6
     "@types/file-saver": ^2
     "@types/lodash-es": ^4
@@ -531,6 +532,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gcsim/utils@workspace:^, @gcsim/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@gcsim/utils@workspace:packages/utils"
+  languageName: unknown
+  linkType: soft
+
 "@gcsim/web@workspace:packages/web":
   version: 0.0.0-use.local
   resolution: "@gcsim/web@workspace:packages/web"
@@ -538,6 +545,7 @@ __metadata:
     "@blueprintjs/core": ^4.11.4
     "@gcsim/executors": "workspace:^"
     "@gcsim/ui": "workspace:^"
+    "@gcsim/utils": "workspace:^"
     "@vitejs/plugin-react": ^2.1.0
     rollup-plugin-visualizer: ^5.8.3
     vite: ^3.1.8

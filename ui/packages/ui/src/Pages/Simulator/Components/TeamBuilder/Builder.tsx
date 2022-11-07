@@ -1,7 +1,7 @@
 import { Icon } from "@blueprintjs/core";
 import { Character } from "@gcsim/types";
 import { CharacterCard } from "../../../../Components/Cards";
-import { ConsolidateCharStats } from "../../../../Util";
+import { ConsolidateCharStats } from "../character";
 
 type Props = {
   team: Character[];

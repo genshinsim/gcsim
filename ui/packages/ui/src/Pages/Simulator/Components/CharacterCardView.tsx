@@ -1,7 +1,7 @@
 import { Character } from "@gcsim/types";
 import { Trans, useTranslation } from "react-i18next";
 import { CharacterCard } from "../../../Components/Cards";
-import { ConsolidateCharStats } from "../../../Util";
+import { ConsolidateCharStats } from "./character";
 
 type Props = {
   chars: Character[];

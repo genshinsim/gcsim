@@ -21,9 +21,9 @@ import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { useAppDispatch } from "../../../Stores/store";
-import { bytesToBase64 } from "../../../Util/base64";
-import { SimResults } from "@gcsim/types";
 import { appActions } from "../../../Stores/appSlice";
+import { bytesToBase64 } from "@gcsim/utils";
+import { SimResults } from "@gcsim/types";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 

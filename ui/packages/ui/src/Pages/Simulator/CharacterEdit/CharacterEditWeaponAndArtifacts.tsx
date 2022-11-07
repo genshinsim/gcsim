@@ -1,5 +1,5 @@
 import { Button } from "@blueprintjs/core";
-import { ascLvlMax, ascLvlMin, ascToMaxLvl, maxLvlToAsc } from "../../../Util";
+import { ascLvlMax, ascLvlMin, ascToMaxLvl, maxLvlToAsc } from "../Components/util";
 import { NumberInput } from "../../../Components/NumberInput";
 import { CharacterEditArtifactSets } from "./CharacterEditArtifactSets";
 import React from "react";

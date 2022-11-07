@@ -8,7 +8,7 @@ import {
   GOODWeaponKey,
 } from "./GOODTypes";
 import { CharMap, ArtifactMainStatsData } from "../../../../Data";
-import { ascLvlMax, StatToIndexMap } from "../../../../Util/util";
+import { ascLvlMax, StatToIndexMap } from "../util";
 import { Character, Weapon } from "@gcsim/types";
 
 type rarityValue = "1" | "2" | "3" | "4" | "5";

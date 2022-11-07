@@ -24,9 +24,6 @@ import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import "./index.css";
 
-// helper functions
-export { useLocalStorage } from "./Util";
-
 // Two things must always be supplied to the UI for it to work
 //  1. ExecutorSupplier (Should rarely/never change. Must be react safe)
 //  2. ExecutorSettings (passed as children, options and executor state management owned by app)

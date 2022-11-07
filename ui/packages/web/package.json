@@ -10,7 +10,8 @@
   "dependencies": {
     "@blueprintjs/core": "^4.11.4",
     "@gcsim/executors": "workspace:^",
-    "@gcsim/ui": "workspace:^"
+    "@gcsim/ui": "workspace:^",
+    "@gcsim/utils": "workspace:^"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^2.1.0",

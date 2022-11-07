@@ -19,10 +19,10 @@ import {
   IconPyro,
 } from "../Icons";
 import { WeaponCard } from "./WeaponCard";
-import { CharStatBlock } from "../../Util";
 import { Trans, useTranslation } from "react-i18next";
 import { TransformTravelerKeyToName } from "../../Data";
 import { Character } from "@gcsim/types";
+import { CharStatBlock } from "../../Pages/Simulator/Components/character";
 
 type Props = {
   char: Character;

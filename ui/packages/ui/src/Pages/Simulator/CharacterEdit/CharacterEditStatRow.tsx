@@ -1,5 +1,5 @@
 import { IconPercent } from "../../../Components/Icons";
-import { StatToIndexMap } from "../../../Util";
+import { StatToIndexMap } from "../Components/util";
 
 const regDec = new RegExp(/^(\d+)?(\.)?\d+$/);
 

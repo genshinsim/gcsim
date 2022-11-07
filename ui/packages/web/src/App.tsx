@@ -1,6 +1,7 @@
 import { FormGroup, NumericInput } from "@blueprintjs/core";
 import { ExecutorSupplier, WasmExecutor } from "@gcsim/executors";
-import { UI, useLocalStorage } from "@gcsim/ui";
+import { UI } from "@gcsim/ui";
+import { useLocalStorage } from "@gcsim/utils";
 import { useRef } from "react";
 
 const minWorkers = 1;

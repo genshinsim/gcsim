@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /*
 MIT License
 Copyright (c) 2020 Egor Nepomnyaschih
@@ -135,7 +136,7 @@ function getBase64Code(charCode) {
   return code;
 }
 
-export function bytesToBase64(bytes) {
+export function bytesToBase64(bytes: Uint8Array): string {
   let result = "",
     i,
     l = bytes.length;

@@ -17,7 +17,7 @@ import {
   IconPhysical,
   IconPyro,
 } from "../../../Components/Icons";
-import { StatToIndexMap } from "../../../Util";
+import { StatToIndexMap } from "../Components/util";
 import { useTranslation } from "react-i18next";
 import { maxStatLength } from "../../../Stores/appSlice";
 import { Character } from "@gcsim/types";
