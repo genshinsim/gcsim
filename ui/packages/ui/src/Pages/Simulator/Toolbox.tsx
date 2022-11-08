@@ -1,4 +1,4 @@
-import { Classes, Button, Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
+import { Classes, Button, Menu, MenuDivider, MenuItem, ButtonGroup } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -102,28 +102,23 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
       <div className="basis-full wide:basis-0 flex-grow p-1 flex flex-row items-center">
         <ExecutorSettingsButton />
       </div>
-      <div className="basis-full wide:basis-2/3 p-1 flex flex-row flex-wrap">
+      <ButtonGroup className="basis-full wide:basis-2/3 p-1 flex flex-row flex-wrap">
         <Popover2
-          content={ToolMenu}
-          placement="top"
-          className="basis-full md:basis-1/2"
-          popoverClassName={Classes.POPOVER_DISMISS}
-        >
-          <Button icon="wrench" fill>
-            Tools
-          </Button>
+            content={ToolMenu}
+            placement="top"
+            className="basis-full md:basis-1/2"
+            popoverClassName={Classes.POPOVER_DISMISS}>
+          <Button icon="wrench" fill text="Tools" />
         </Popover2>
-        <div className="basis-full md:basis-1/2">
-          <Button
-              icon="play"
-              fill
-              intent="primary"
-              onClick={run}
-              loading={!isReady}
-              disabled={!isValid}
-              text={t<string>("simple.run")} />
-        </div>
-      </div>
+        <Button
+            icon="play"
+            intent="primary"
+            className="!basis-full md:!basis-1/2"
+            onClick={run}
+            loading={!isReady}
+            disabled={!isValid}
+            text={t<string>("simple.run")} />
+      </ButtonGroup>
       <ImportFromGOODDialog isOpen={openImport} onClose={() => setOpenGOODImport(false)} />
       <ImportFromEnkaDialog
         isOpen={openImportFromEnka}
