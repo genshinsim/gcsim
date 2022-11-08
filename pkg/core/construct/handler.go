@@ -36,9 +36,11 @@ func (h *Handler) New(c Construct, refresh bool) {
 			Write("key", h.constructs[ind].Key()).
 			Write("prev type", h.constructs[ind].Type()).
 			Write("next type", c.Type())
+		//remove construct from list, reset order by removing nils and add construct to end
 		h.constructs[ind].OnDestruct()
-		h.constructs[ind] = c
-
+		h.constructs[ind] = nil
+		h.cleanOutNils()
+		h.constructs = append(h.constructs, c)
 	} else {
 		//add this one to the end
 		h.constructs = append(h.constructs, c)
@@ -56,6 +58,10 @@ func (h *Handler) New(c Construct, refresh bool) {
 		h.constructs[i] = nil
 	}
 
+	h.cleanOutNils()
+}
+
+func (h *Handler) cleanOutNils() {
 	//clean out any nils
 	n := 0
 	for _, x := range h.constructs {
