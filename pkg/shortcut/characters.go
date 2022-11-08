@@ -123,6 +123,7 @@ var CharNameToKey = map[string]keys.Char{
 	"tighnari":           keys.Tighnari,
 	"collei":             keys.Collei,
 	"dori":               keys.Dori,
+	"candace":            keys.Candace,
 	"nilou":              keys.Nilou,
 	"kusanali":           keys.Nahida,
 	"lesserlordkusanali": keys.Nahida,
