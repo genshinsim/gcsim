@@ -142,8 +142,7 @@ func TestBasicToken(t *testing.T) {
 		{Typ: itemNumber, Val: "5"},
 		{Typ: itemTerminateLine, Val: ";"},
 		{Typ: itemIdentifier, Val: "x"},
-		{Typ: ItemMinus, Val: "-"},
-		{Typ: ItemMinus, Val: "-"},
+		{Typ: ItemDec, Val: "--"},
 		{Typ: itemLeftBrace, Val: "{"},
 		//body
 		{Typ: keywordLet, Val: "let"},
@@ -158,8 +157,7 @@ func TestBasicToken(t *testing.T) {
 		{Typ: itemRightBrace, Val: "}"},
 		//misc tests
 		{Typ: itemIdentifier, Val: "x"},
-		{Typ: ItemPlus, Val: "+"},
-		{Typ: ItemPlus, Val: "+"},
+		{Typ: ItemInc, Val: "++"},
 		{Typ: itemNumber, Val: "-1"},
 		{Typ: itemNumber, Val: "1"},
 		{Typ: ItemMinus, Val: "-"},

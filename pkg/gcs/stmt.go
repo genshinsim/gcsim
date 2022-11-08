@@ -72,9 +72,9 @@ func (e *Eval) evalIncDec(i *ast.IncDecStmt, env *Env) (Obj, error) {
 		fval: 1,
 	}
 	switch i.Val.Typ {
-	case ast.ItemPlus:
+	case ast.ItemInc:
 		num = add(val, num)
-	case ast.ItemMinus:
+	case ast.ItemDec:
 		num = sub(val, num)
 	}
 	val.fval = num.fval

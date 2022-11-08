@@ -222,13 +222,13 @@ func (p *Parser) parseStatement() (Node, error) {
 		hasSemi = false
 	case itemIdentifier:
 		p.next()
-		// check either if assign or post-inc/dec after
-		if x := p.peek(); x.Typ == itemAssign || x.Typ == ItemPlus || x.Typ == ItemMinus {
+		// check either if assign or postfix operator after
+		if x := p.peek(); x.Typ == itemAssign || x.Typ == ItemInc || x.Typ == ItemDec {
 			p.backup()
 			node, err = p.parseIdentifier()
 			break
 		}
-		//it's an expr if no assign
+		// other wise it's an expr
 		p.backup()
 		fallthrough
 	default:
@@ -315,15 +315,6 @@ func (p *Parser) parseIncDec() (Stmt, error) {
 	}
 
 	n := p.next()
-	if n.Typ != ItemPlus && n.Typ != ItemMinus {
-		return nil, fmt.Errorf("ln%v: expecting +/-, got %v", n.line, n.Val)
-	}
-
-	x := p.next()
-	if x.Typ != n.Typ {
-		return nil, fmt.Errorf("ln%v: expecting %v, got %v", n.line, n.Val, n.Val)
-	}
-
 	stmt := &IncDecStmt{
 		Pos:   ident.pos,
 		Ident: ident,
@@ -337,14 +328,15 @@ func (p *Parser) parseIdentifier() (Stmt, error) {
 
 	// check type
 	x := p.peek()
-	if x.Typ == itemAssign {
+	switch x.Typ {
+	case itemAssign:
 		p.backup()
 		return p.parseAssign()
-	} else if x.Typ == ItemPlus || x.Typ == ItemMinus {
+	case ItemInc, ItemDec:
 		p.backup()
 		return p.parseIncDec()
 	}
-	return nil, fmt.Errorf("ln%v: expecting either assignment operator or postfix operator after identifier, got %v", x.line, x.Val)
+	return nil, fmt.Errorf("ln%v: expecting operator on identifier, got %v", x.line, x.Val)
 }
 
 func (p *Parser) parseIf() (Stmt, error) {
@@ -529,7 +521,7 @@ func (p *Parser) existVarDecl() bool {
 	case itemIdentifier:
 		p.next()
 		t := p.peek()
-		b := t.Typ == itemAssign || t.Typ == ItemPlus || t.Typ == ItemMinus
+		b := t.Typ == itemAssign || t.Typ == ItemInc || t.Typ == ItemDec
 		p.backup()
 		return b
 	}
@@ -747,7 +739,7 @@ func (p *Parser) parseCallArgs() ([]Expr, error) {
 
 	if n := p.next(); n.Typ != itemRightParen {
 		p.backup()
-		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.line, n.pos)
+		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.line, n.Val)
 	}
 
 	return args, nil

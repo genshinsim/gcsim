@@ -286,7 +286,6 @@ func (i *IncDecStmt) String() string {
 func (i *IncDecStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString(i.Ident.String())
 	sb.WriteString(i.Val.String())
-	sb.WriteString(i.Val.String())
 }
 
 func (i *IncDecStmt) CopyIncDec() *IncDecStmt {
