@@ -86,7 +86,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
     );
   }, [current, total, src, error, running, cancel]);
 
-  return <Toaster ref={loadingToast} position={Position.TOP} />;
+  return <Toaster ref={loadingToast} position={Position.TOP} className="z-50" />;
 };
 
 const ProgressToast = ({

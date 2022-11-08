@@ -39,7 +39,7 @@ export default ({ config, running, resetTab }: ConfigProps) => {
 
   return (
     <div className="w-full 2xl:mx-auto 2xl:container -mt-4">
-      <div className="sticky top-0 bg-bp4-dark-gray-100 py-4 z-50">
+      <div className="sticky top-0 bg-bp4-dark-gray-100 py-4 z-10">
         <div className="flex gap-2 justify-center">
           <ExecutorSettingsButton />
           <Button
