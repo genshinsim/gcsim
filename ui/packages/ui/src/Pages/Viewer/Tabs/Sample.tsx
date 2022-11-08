@@ -71,7 +71,7 @@ export default ({ sampler, data, sample, running }: Props) => {
 
   const names = data.character_details.map((c) => c.name);
   return (
-    <div className="flex flex-grow flex-col h-full gap-2 px-4">
+    <div className="flex flex-grow flex-col gap-[15px] px-4">
       <Generate sampler={sampler} data={data} sample={sample} running={running} />
       <Sampler
           sample={sample.sample}

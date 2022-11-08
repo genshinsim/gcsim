@@ -3,7 +3,7 @@ import { SampleItem, SampleRow } from "./parse";
 import { useVirtual } from "react-virtual";
 import AutoSizer from "react-virtualized-auto-sizer";
 import React, { useState } from "react";
-import { Button, ButtonGroup, FormGroup, InputGroup, Intent } from "@blueprintjs/core";
+import { Button, ButtonGroup, Card, FormGroup, InputGroup, Intent } from "@blueprintjs/core";
 import { Sample } from "@gcsim/types";
 import { saveAs } from "file-saver";
 import { useTranslation } from "react-i18next";
@@ -193,7 +193,7 @@ export function Sampler({ sample, data, team, searchable, settings, setSettings 
   };
 
   return (
-    <div className="flex flex-col h-full overflow-x-auto">
+    <div className="flex flex-col h-[80vh]">
       <div className="flex justify-between">
         <FormGroup label="Search" inline>
           <InputGroup
@@ -237,10 +237,9 @@ export function Sampler({ sample, data, team, searchable, settings, setSettings 
                 saveAs(blob, "sample");
               }} />
         </ButtonGroup>
-
       </div>
-      <div className="h-full ml-2 mr-2 p-2 rounded-md bg-gray-600 text-xs grow flex flex-col min-w-[60rem] min-h-[20rem]">
-        <AutoSizer defaultHeight={100}>
+      <Card className="flex-auto !bg-gray-600 !text-xs">
+        <AutoSizer disableWidth={true} >
           {({ height, width }) => (
             <div
               ref={parentRef}
@@ -311,7 +310,7 @@ export function Sampler({ sample, data, team, searchable, settings, setSettings 
             </div>
           )}
         </AutoSizer>
-      </div>
+      </Card>
     </div>
   );
 }
