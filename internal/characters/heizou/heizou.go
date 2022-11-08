@@ -70,3 +70,12 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	}
 	return c.Character.ActionStam(a, p)
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "declension":
+		return c.decStack, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
