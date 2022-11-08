@@ -121,11 +121,7 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 		if c.StatusIsActive(particleICDKey) {
 			return
 		}
-		count := 2.0
-		if c.Core.Rand.Float64() < 2.0/3.0 {
-			count++
-		}
-		c.Core.QueueParticle("faruzan", count, attributes.Anemo, c.ParticleDelay)
+		c.Core.QueueParticle("faruzan", 2.0, attributes.Anemo, c.ParticleDelay)
 		c.AddStatus(particleICDKey, 360, false)
 		particleDone = true
 	}
