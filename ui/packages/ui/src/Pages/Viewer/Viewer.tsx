@@ -41,7 +41,7 @@ export default ({ running, data, error, src, redirect, exec, retry }: ViewerProp
   };
 
   return (
-    <div className="flex flex-col flex-grow w-full bg-bp4-dark-gray-100 pb-6">
+    <div className="flex flex-col flex-grow w-full pb-6">
       <Warnings data={data} />
       <div className="px-6 py-4 w-full 2xl:mx-auto 2xl:container">
         <ViewerNav

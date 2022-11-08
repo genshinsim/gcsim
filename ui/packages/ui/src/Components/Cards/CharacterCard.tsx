@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import {
@@ -23,6 +22,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { TransformTravelerKeyToName } from "../../Data";
 import { Character } from "@gcsim/types";
 import { CharStatBlock } from "../../Pages/Simulator/Components/character";
+import classNames from "classnames";
+import placeholder from "../Images/default.png";
 
 type Props = {
   char: Character;
@@ -32,6 +33,7 @@ type Props = {
   showDetails?: boolean;
   showDelete?: boolean;
   showEdit?: boolean;
+  isSkeleton?: boolean;
   handleDelete?: () => void;
   toggleEdit?: () => void;
 };
@@ -102,6 +104,7 @@ export function CharacterCard({
   showDelete = false,
   showDetails = true,
   showEdit = false,
+  isSkeleton,
   toggleEdit,
   handleDelete,
   className = "",
@@ -118,6 +121,7 @@ export function CharacterCard({
             key="key"
             src={`https://gcsim.app/api/assets/artifacts/${key}_flower.png`}
             className="w-full h-8"
+            onError={(e) => (e.target as HTMLImageElement).src = placeholder}
           />
         </Tooltip2>
 
@@ -190,6 +194,8 @@ export function CharacterCard({
     );
   }
 
+  const skeleton = classNames({ ["bp4-skeleton"]: isSkeleton });
+
   return (
     <div className={className}>
       <div className="min-h-24 bg-bp4-dark-gray-400 shadow text-sm flex flex-col justify-center gap-2 border border-gray-600">
@@ -203,7 +209,7 @@ export function CharacterCard({
             <Button icon="cross" intent="danger" small onClick={handleDelete} />
           </div>
           <div className="character-header"></div>
-          <div className="character-name font-medium m-4 capitalize">
+          <div className={"character-name font-medium m-4 capitalize " + skeleton}>
             <>
               <Trans>character.c_pre</Trans>
               {char.cons}
@@ -214,7 +220,7 @@ export function CharacterCard({
             </>
           </div>
           <div className="w-1/2 text-sm">
-            <div className=" pl-1 pr-1 mt-6">
+            <div className={"pl-1 pr-1 mt-6 " + skeleton}>
               <div>
                 <Trans>character.lvl</Trans> {char.level}/{char.max_level}
               </div>
@@ -225,20 +231,21 @@ export function CharacterCard({
               <div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
             </div>
           </div>
-          <div className="w-1/2">
-            <img
+          <div className="w-1/2 h-32">
+            {isSkeleton ? null : <img
               src={
                 "https://gcsim.app/api/assets/avatar/" +
                 TransformTravelerKeyToName(char.name) +
                 ".png"
               }
               alt={TransformTravelerKeyToName(char.name)}
-              className="ml-auto h-32 "
-            />
+              className="ml-auto h-32"
+              onError={(e) => (e.target as HTMLImageElement).src = placeholder}
+            />}
           </div>
         </div>
 
-        <WeaponCard weapon={char.weapon} />
+        <WeaponCard weapon={char.weapon} isSkeleton={isSkeleton} />
 
         {showDetails ? (
           <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
