@@ -29,6 +29,7 @@ type Props = {
   stats: CharStatBlock[];
   statsRows: number;
   className?: string;
+  showDetails?: boolean;
   showDelete?: boolean;
   showEdit?: boolean;
   handleDelete?: () => void;
@@ -85,9 +86,9 @@ function charBG(element: string) {
     case "electro":
       return "bg-gradient-to-r from-gray-700 to-purple-300";
     case "anemo":
-      return "bg-gradient-to-r from-gray-700 to-green-300";
+      return "bg-gradient-to-r from-gray-700 to-teal-500";
     case "dendro":
-      return "bg-gradient-to-r from-gray-700 to-lime-300";
+      return "bg-gradient-to-r from-gray-700 to-lime-700";
     case "geo":
       return "bg-gradient-to-r from-gray-700 to-yellow-400";
   }
@@ -99,6 +100,7 @@ export function CharacterCard({
   stats,
   statsRows,
   showDelete = false,
+  showDetails = true,
   showEdit = false,
   toggleEdit,
   handleDelete,
@@ -168,7 +170,8 @@ export function CharacterCard({
     rows.push(
       <tr key={count}>
         <td className="flex flex-row place-items-center">
-          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div> {s.name}
+          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>{" "}
+          {s.name}
         </td>
         {val}
       </tr>
@@ -189,31 +192,35 @@ export function CharacterCard({
 
   return (
     <div className={className}>
-      <div className="min-h-24 bg-gray-600 shadow rounded-md text-sm flex flex-col justify-center gap-2">
+      <div className="min-h-24 bg-[#383E47] shadow text-sm flex flex-col justify-center gap-2 border border-gray-600">
         <div
           className={
-            "character-parent flex flex-row pt-4 pl-4 pr-2 -mt-2 rounded-t-md " +
+            "character-parent flex flex-row pt-4 pl-4 pr-2 " +
             charBG(char.element)
           }
         >
           <div className={showDelete ? "absolute top-1 right-1" : "hidden"}>
             <Button icon="cross" intent="danger" small onClick={handleDelete} />
           </div>
-          <div className="character-header rounded-t-md"></div>
+          <div className="character-header"></div>
           <div className="character-name font-medium m-4 capitalize">
-            <>{t(`game:character_names.${TransformTravelerKeyToName(char.name)}`)}{" "}</>
-            <Trans>character.c_pre</Trans>
-            {char.cons}
-            <Trans>character.c_post</Trans>
+            <>
+              <Trans>character.c_pre</Trans>
+              {char.cons}
+              <Trans>character.c_post</Trans>{" "}
+              {t(
+                `game:character_names.${TransformTravelerKeyToName(char.name)}`
+              )}{" "}
+            </>
           </div>
           <div className="w-1/2 text-sm">
-            <div className="rounded-md pl-1 pr-1 mt-6">
+            <div className=" pl-1 pr-1 mt-6">
               <div>
                 <Trans>character.lvl</Trans> {char.level}/{char.max_level}
               </div>
               <div>
-                <Trans>character.talents</Trans> {char.talents.attack}/{char.talents.skill}/
-                {char.talents.burst}
+                <Trans>character.talents</Trans> {char.talents.attack}/
+                {char.talents.skill}/{char.talents.burst}
               </div>
               <div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
             </div>
@@ -226,28 +233,34 @@ export function CharacterCard({
                 ".png"
               }
               alt={TransformTravelerKeyToName(char.name)}
-              className="ml-auto h-32 wide:h-auto "
+              className="ml-auto h-32 "
             />
           </div>
         </div>
 
         <WeaponCard weapon={char.weapon} />
 
-        <div className="ml-2 mr-2 p-2 bg-gray-800 rounded-md">
-          <span className="font-bold">
-            <Trans>character.artifact_stats</Trans>
-          </span>
-          <div className="px-2">
-            <table className="w-full">
-              <tbody>{rows}</tbody>
-            </table>
+        {showDetails ? (
+          <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
+            <span className="font-bold">
+              <Trans>character.artifact_stats</Trans>
+            </span>
+            <div className="px-2">
+              <table className="w-full">
+                <tbody>{rows}</tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        ) : null}
 
-        <div className={showEdit ? "ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4" : "hidden"}>
+        <div
+          className={
+            showEdit ? "ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4" : "hidden"
+          }
+        >
           <Button icon="edit" onClick={toggleEdit} />
         </div>
-        <div className="mb-2" />
+        <div className="" />
       </div>
     </div>
   );

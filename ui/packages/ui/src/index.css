@@ -19,7 +19,8 @@
 }
 
 body {
-  background-color: #293742;
+  /* background-color: #293742; */
+  background-color: #1C2127;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -77,7 +78,7 @@ div.sticky-header {
   background-size: cover;
   mix-blend-mode: luminosity;
   background-position: center;
-  opacity: 0.5;
+  opacity: 0.75;
   z-index: -1;
 }
 .svg-inline--fa.fa-w-13 {
