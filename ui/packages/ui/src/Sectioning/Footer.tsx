@@ -5,11 +5,9 @@ import { IconContext } from "react-icons";
 import { FaDiscord } from "react-icons/fa";
 import { AiFillGithub } from "react-icons/ai";
 import { SiKofi } from "react-icons/si";
-import { useLocation } from "wouter";
 
 export default ({}) => {
   const { t } = useTranslation();
-  const [location] = useLocation();
 
   const divider = classNames(
     "before:block",
@@ -19,17 +17,13 @@ export default ({}) => {
     "before:via-white/50"
   );
 
-  const background = location.startsWith("/viewer/")
-    ? "bg-bp4-dark-gray-100"
-    : "bg-[#293742]";
-
   const linkClass = classNames(
     "flex gap-2 items-center",
     "!text-gray-400 hover:!text-[#8abbff]"
   );
 
   return (
-    <div className={classNames("w-full", divider, background)}>
+    <div className={classNames("w-full", divider)}>
       <div className="px-5 xs:px-16 py-3 flex justify-center gap-2 2xl:mx-auto 2xl:container">
         <div className="self-center text-right text-gray-400 text-xs grow shrink-0 w-2/3 max-w-fit">
           {t<string>("footer.gcsim_is_not")}
