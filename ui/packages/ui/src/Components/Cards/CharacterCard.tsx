@@ -192,7 +192,7 @@ export function CharacterCard({
 
   return (
     <div className={className}>
-      <div className="min-h-24 bg-[#383E47] shadow text-sm flex flex-col justify-center gap-2 border border-gray-600">
+      <div className="min-h-24 bg-bp4-dark-gray-400 shadow text-sm flex flex-col justify-center gap-2 border border-gray-600">
         <div
           className={
             "character-parent flex flex-row pt-4 pl-4 pr-2 " +
