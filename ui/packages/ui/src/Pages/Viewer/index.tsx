@@ -43,6 +43,7 @@ export const ViewerLoader = ({ exec, type, id }: LoaderProps) => {
       document.title = "gcsim - file upload";
       return <div></div>;
     case ViewTypes.Web:
+      document.title = "gcsim - web viewer";
       return <FromState exec={exec} redirect="/simulator" />;
     case ViewTypes.Local:
       document.title = "gcsim - local";
