@@ -38,44 +38,48 @@ export default ({ config, running, resetTab }: ConfigProps) => {
   }
 
   return (
-    <div className="w-full 2xl:mx-auto 2xl:container">
-      <div className="flex gap-2 justify-center pb-4">
-        <ExecutorSettingsButton />
-        <Button
-            icon="refresh"
-            text="Rerun"
-            intent={Intent.SUCCESS}
-            disabled={config.error !== "" || !config.validated}
-            loading={!config.isReady || running}
-            className="basis-1/2"
-            onClick={() => {
-              dispatch(runSim(config.exec(), config.cfg ?? ""));
-              resetTab();
-              setLocation("/viewer/web");
+    <div className="w-full 2xl:mx-auto 2xl:container -mt-4">
+      <div className="sticky top-0 bg-bp4-dark-gray-100 py-4 z-50">
+        <div className="flex gap-2 justify-center">
+          <ExecutorSettingsButton />
+          <Button
+              icon="refresh"
+              text="Rerun"
+              intent={Intent.SUCCESS}
+              disabled={config.error !== "" || !config.validated}
+              loading={!config.isReady || running}
+              className="basis-1/2"
+              onClick={() => {
+                dispatch(runSim(config.exec(), config.cfg ?? ""));
+                resetTab();
+                setLocation("/viewer/web");
+              }} />
+        </div>
+        <Error error={config.error} cfg={config.cfg} />
+      </div>
+      <div>
+        <Editor
+            value={config.cfg}
+            onValueChange={(c) => config.setCfg(c)}
+            textareaId="codeArea"
+            className="editor"
+            highlight={(code) =>
+              highlight(code, languages.gcsim)
+                .split("\n")
+                .map(
+                  (line: string, i: number) =>
+                    `<span class='editorLineNumber'>${i + 1}</span>${line}`
+                )
+                .join("\n")
+            }
+            insertSpaces
+            padding={10}
+            style={{
+              fontFamily: '"Fira code", "Fira Mono", monospace',
+              fontSize: 14,
+              backgroundColor: "rgb(45 45 45)",
             }} />
       </div>
-      <Error error={config.error} cfg={config.cfg} />
-      <Editor
-          value={config.cfg}
-          onValueChange={(c) => config.setCfg(c)}
-          textareaId="codeArea"
-          className="editor"
-          highlight={(code) =>
-            highlight(code, languages.gcsim)
-              .split("\n")
-              .map(
-                (line: string, i: number) =>
-                  `<span class='editorLineNumber'>${i + 1}</span>${line}`
-              )
-              .join("\n")
-          }
-          insertSpaces
-          padding={10}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 14,
-            backgroundColor: "rgb(45 45 45)",
-          }} />
     </div>
   );
 };
@@ -85,7 +89,7 @@ const Error = ({ error, cfg }: { error: string, cfg: string}) => {
     return null;
   }
   return (
-    <div className="pb-4 px-6">
+    <div className="px-6 pt-4">
       <Callout intent={Intent.DANGER} title="Error: Config Invalid">
         <pre className="whitespace-pre-wrap pl-5">{error}</pre>
       </Callout>
