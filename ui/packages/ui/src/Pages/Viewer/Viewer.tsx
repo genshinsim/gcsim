@@ -10,6 +10,7 @@ import LoadingToast from "./Components/LoadingToast";
 import { SimResults } from "@gcsim/types";
 import Warnings from "./Components/Warnings";
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
+import queryString from "query-string";
 
 type ViewerProps = {
   running: boolean;
@@ -26,13 +27,15 @@ type ViewerProps = {
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
 export default ({ running, data, error, src, redirect, exec, retry }: ViewerProps) => {
+  const parsed = queryString.parse(location.hash);
+  const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
+
   const sample = useSample(running, data);
   const config = useConfig(data, exec);
 
   const cancel = useCallback(() => exec().cancel(), [exec]);
   const sampler = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
 
-  const [tabId, setTabId] = useState("results");
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} />,
     config: <ConfigUI config={config} running={running} resetTab={() => setTabId("results")} />,

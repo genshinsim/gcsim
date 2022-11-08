@@ -8,7 +8,7 @@ export interface Viewer {
 
 export const viewerInitialState: Viewer = {
   data: null,
-  error: "Nothing is loaded!",
+  error: null,
 };
 
 export const viewerSlice = createSlice({

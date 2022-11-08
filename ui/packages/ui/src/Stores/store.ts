@@ -10,6 +10,7 @@ const listenerMiddleware = createListenerMiddleware();
 const userDataKey = "redux-user-data-v0.0.1";
 const userLocalSettings = "redux-user-local-settings";
 const userAppDataKey = "redux-app-data";
+const userLocalResults = "redux-local-results";
 
 const persistedState = JSON.parse(
   JSON.stringify({
@@ -38,6 +39,11 @@ if (localStorage.getItem(userLocalSettings)) {
   persistedState.user = Object.assign(persistedState.user, { settings: s });
 }
 
+const item = localStorage.getItem(userLocalResults);
+if (item) {
+  persistedState.viewer.data = JSON.parse(item);
+}
+
 export const store = configureStore({
   reducer: {
     [userDataSlice.name]: userDataSlice.reducer,
@@ -57,11 +63,16 @@ store.subscribe(() => {
     cfg: store.getState().app.cfg,
     team: store.getState().app.team
   }));
+
   if (store.getState().user.settings) {
     localStorage.setItem(
       userLocalSettings,
       JSON.stringify(store.getState().user.settings)
     );
+  }
+
+  if (store.getState().viewer.data) {
+    localStorage.setItem(userLocalResults, JSON.stringify(store.getState().viewer.data));
   }
 });
 

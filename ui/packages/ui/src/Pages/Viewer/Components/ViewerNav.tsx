@@ -17,7 +17,7 @@ import {
 import axios from "axios";
 import classNames from "classnames";
 import Pako from "pako";
-import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
+import { MouseEvent, RefObject, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { useAppDispatch } from "../../../Stores/store";
@@ -29,7 +29,7 @@ const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
   data: SimResults | null;
-  tabState: [string, Dispatch<SetStateAction<string>>];
+  tabState: [string, (tab: string) => void];
   running: boolean;
 };
 
@@ -40,10 +40,15 @@ export default ({ tabState, data, running }: NavProps) => {
 
   return (
     <Tabs selectedTabId={tabId} onChange={(s) => setTabId(s as string)}>
-      <Tab id="results" title={t<string>("viewer.results")} className="focus:outline-none" />
-      <Tab id="config" title={t<string>("viewer.config")} className="focus:outline-none" />
-      {/* <Tab id="analyze" title={t<string>("viewer.analyze")} className="focus:outline-none" /> */}
-      <Tab id="sample" title={t<string>("viewer.sample")} className="focus:outline-none" />
+      <Tab id="results" className="focus:outline-none">
+        <a href="#" onClick={ignoreCtrlClick}>{t<string>("viewer.results")}</a>
+      </Tab>
+      <Tab id="config" className="focus:outline-none">
+        <a href="#tab=config" onClick={ignoreCtrlClick}>{t<string>("viewer.config")}</a>
+      </Tab>
+      <Tab id="sample" className="focus:outline-none">
+        <a href="#tab=sample" onClick={ignoreCtrlClick}>{t<string>("viewer.sample")}</a>
+      </Tab>
       <Tabs.Expander />
       <ButtonGroup>
         <CopyToClipboard copyToast={copyToast} config={data?.config_file} />
@@ -54,6 +59,12 @@ export default ({ tabState, data, running }: NavProps) => {
     </Tabs>
   );
 };
+
+function ignoreCtrlClick(e: MouseEvent) {
+  if (e.ctrlKey) {
+    e.stopPropagation();
+  }
+}
 
 const CopyToClipboard = ({
   copyToast,
