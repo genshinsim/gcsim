@@ -1,6 +1,5 @@
 import {
   Button,
-  ButtonGroup,
   HTMLSelect,
   Intent,
   NonIdealState,
@@ -10,19 +9,7 @@ import {
 } from "@blueprintjs/core";
 import { Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import {
-  AdvancedPreset,
-  AllSampleOptions,
-  DebugPreset,
-  DefaultSampleOptions,
-  SimplePreset,
-  VerbosePreset,
-  Sampler,
-  Options,
-  SampleRow,
-  parseLogV2,
-} from "../Components/Sample";
+import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../Components/Sample";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
@@ -86,8 +73,13 @@ export default ({ sampler, data, sample, running }: Props) => {
   return (
     <div className="flex flex-grow flex-col h-full gap-2 px-4">
       <Generate sampler={sampler} data={data} sample={sample} running={running} />
-      <Sampler sample={sample.sample} data={sample.parsed} team={names} searchable={msgs} />
-      <SampleOptions settings={sample.settings} setSettings={sample.setSettings} />
+      <Sampler
+          sample={sample.sample}
+          data={sample.parsed}
+          team={names}
+          searchable={msgs}
+          settings={sample.settings}
+          setSettings={sample.setSettings} />
     </div>
   );
 };
@@ -190,68 +182,6 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
         disabled={disabled()}
         onClick={click}
         fill={true}
-      />
-    </div>
-  );
-};
-
-const SampleOptions = ({
-  settings,
-  setSettings,
-}: {
-  settings: string[];
-  setSettings: (val: string[]) => void;
-}) => {
-  const { t } = useTranslation();
-  const [isOpen, setOpen] = useState(false);
-
-  const toggle = (t: string) => {
-    const i = settings.indexOf(t);
-    const next = [...settings];
-    if (i === -1) {
-      next.push(t);
-    } else {
-      next.splice(i, 1);
-    }
-    setSettings(next);
-  };
-
-  const presets = (opt: "simple" | "advanced" | "verbose" | "debug") => {
-    switch (opt) {
-      case "simple":
-        setSettings(SimplePreset);
-        return;
-      case "advanced":
-        setSettings(AdvancedPreset);
-        return;
-      case "verbose":
-        setSettings(VerbosePreset);
-        return;
-      case "debug":
-        setSettings(DebugPreset);
-        return;
-    }
-  };
-
-  return (
-    <div className="w-full p-2 pb-0">
-      <ButtonGroup fill>
-        <Button
-          onClick={() => setOpen(true)}
-          icon="cog"
-          intent="primary"
-          text={t<string>("viewer.sample_settings")}
-        />
-      </ButtonGroup>
-      <Options
-        isOpen={isOpen}
-        handleClose={() => setOpen(false)}
-        handleClear={() => setSettings([])}
-        handleResetDefault={() => setSettings(DefaultSampleOptions)}
-        handleToggle={toggle}
-        handleSetPresets={presets}
-        selected={settings}
-        options={AllSampleOptions}
       />
     </div>
   );

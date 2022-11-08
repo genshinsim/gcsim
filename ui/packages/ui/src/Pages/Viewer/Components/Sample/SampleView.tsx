@@ -2,10 +2,13 @@ import { SampleItemView } from "./SampleItemView";
 import { SampleItem, SampleRow } from "./parse";
 import { useVirtual } from "react-virtual";
 import AutoSizer from "react-virtualized-auto-sizer";
-import React from "react";
-import { Button, FormGroup, InputGroup, Intent } from "@blueprintjs/core";
+import React, { useState } from "react";
+import { Button, ButtonGroup, FormGroup, InputGroup, Intent } from "@blueprintjs/core";
 import { Sample } from "@gcsim/types";
 import { saveAs } from "file-saver";
+import { useTranslation } from "react-i18next";
+import { AdvancedPreset, AllSampleOptions, DebugPreset, DefaultSampleOptions, SimplePreset, VerbosePreset } from "./SampleOptions";
+import { Options } from "./Options";
 
 type buffSetting = {
   start: number;
@@ -67,6 +70,62 @@ const Row = ({
   );
 };
 
+type SampleOptionsProps = {
+  settings: string[];
+  setSettings: (val: string[]) => void;
+}
+
+const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
+  const { t } = useTranslation();
+  const [isOpen, setOpen] = useState(false);
+
+  const toggle = (t: string) => {
+    const i = settings.indexOf(t);
+    const next = [...settings];
+    if (i === -1) {
+      next.push(t);
+    } else {
+      next.splice(i, 1);
+    }
+    setSettings(next);
+  };
+
+  const presets = (opt: "simple" | "advanced" | "verbose" | "debug") => {
+    switch (opt) {
+      case "simple":
+        setSettings(SimplePreset);
+        return;
+      case "advanced":
+        setSettings(AdvancedPreset);
+        return;
+      case "verbose":
+        setSettings(VerbosePreset);
+        return;
+      case "debug":
+        setSettings(DebugPreset);
+        return;
+    }
+  };
+
+  return (
+    <>
+      <Button
+          onClick={() => setOpen(true)}
+          icon="cog"
+          text={t<string>("viewer.sample_settings")} />
+      <Options
+          isOpen={isOpen}
+          handleClose={() => setOpen(false)}
+          handleClear={() => setSettings([])}
+          handleResetDefault={() => setSettings(DefaultSampleOptions)}
+          handleToggle={toggle}
+          handleSetPresets={presets}
+          selected={settings}
+          options={AllSampleOptions} />
+    </>
+  );
+};
+
 let lastSearchIndex = 0;
 
 type SamplerProps = {
@@ -74,9 +133,11 @@ type SamplerProps = {
   data: SampleRow[];
   team: string[];
   searchable: { [key: number]: string[] };
+  settings: string[];
+  setSettings: (val: string[]) => void;
 }
 
-export function Sampler({ sample, data, team, searchable }: SamplerProps) {
+export function Sampler({ sample, data, team, searchable, settings, setSettings }: SamplerProps) {
   const parentRef = React.useRef<HTMLDivElement>(null);
   const searchRef = React.useRef<HTMLInputElement>(null);
   const [hl, sethl] = React.useState<buffSetting>({
@@ -164,16 +225,19 @@ export function Sampler({ sample, data, team, searchable }: SamplerProps) {
             }
           />
         </FormGroup>
-        <Button
-            className="mb-[15px]"
-            icon="bring-data"
-            text="Download"
-            intent={Intent.SUCCESS}
-            onClick={() => {
-              const out = JSON.stringify(sample);
-              const blob = new Blob([out], { type: "application/json" });
-              saveAs(blob, "sample");
-            }} />
+        <ButtonGroup className="mb-[15px]">
+          <SampleOptions settings={settings} setSettings={setSettings} />
+          <Button
+              icon="bring-data"
+              text="Download"
+              intent={Intent.SUCCESS}
+              onClick={() => {
+                const out = JSON.stringify(sample);
+                const blob = new Blob([out], { type: "application/json" });
+                saveAs(blob, "sample");
+              }} />
+        </ButtonGroup>
+
       </div>
       <div className="h-full ml-2 mr-2 p-2 rounded-md bg-gray-600 text-xs grow flex flex-col min-w-[60rem] min-h-[20rem]">
         <AutoSizer defaultHeight={100}>
