@@ -14,21 +14,20 @@ export default ({ data }: Props) => {
     return null;
   }
 
-  const cards: JSX.Element[] = data.character_details.map((c, index) => {
+  const cards = data.character_details.map((c) => {
     return (
       <CharacterCard
-        key={c.name}
-        char={c}
-        showDetails={false}
-        stats={[]}
-        statsRows={0}
-        className="basis-full sm:basis-1/2 hd:basis-1/4 pt-2 pr-2 pb-2"
-      />
+          key={c.name}
+          char={c}
+          showDetails={false}
+          stats={[]}
+          statsRows={0}
+          className="basis-0 flex-auto min-w-[250px]" />
     );
   });
 
   return (
-    <div className="m-w-full flex flex-row flex-wrap -mr-2 justify-center">
+    <div className="col-span-full flex flex-row gap-2 justify-center flex-wrap">
       {cards}
     </div>
   );

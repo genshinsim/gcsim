@@ -11,8 +11,8 @@ type Props = {
 export default ({ data }: Props) => {
   return (
     <div className="w-full 2xl:mx-auto 2xl:container">
-      <TeamHeader data={data} />
       <div className="grid overflow-hidden grid-cols-2 md:grid-cols-5 auto-rows-auto gap-2">
+        <TeamHeader data={data} />
         <Header data={data} />
         <div className="m-w-full min-h-full col-span-2 md:col-span-3 h-96 bg-bp4-black p-5">
           characters
