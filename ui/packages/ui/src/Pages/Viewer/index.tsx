@@ -98,7 +98,7 @@ const FromUrl = ({ exec, url, redirect }: {
   const request = useCallback(() => {
     setError(null);
     axios
-      .get(url, { timeout: 5000 })
+      .get(url, { timeout: 30000 })
       .then((resp) => {
         const out = Base64ToJson(resp.data.data);
         setData(out);
