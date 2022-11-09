@@ -14,24 +14,17 @@ import { debounce } from "lodash-es";
 
 export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
   const dispatch = useAppDispatch();
-  const { settings, initCfg } = useAppSelector(
+  const { settings, cfg } = useAppSelector(
     (state: RootState) => {
       return {
-        initCfg: state.app.cfg,
+        cfg: state.app.cfg,
         settings: state.user.settings,
       };
     }
   );
 
-  // use a local cfg and only update redux at a much lower rate (1s after typing stops).
-  // Other stuff happens on redux cfg update which lags the editor
-  // Note: seems like the editor and/or highlighter we use is just laggy, so it doesn't help much :/
-  const [cfg, setCfg] = useState(initCfg);
-  const setReduxCfgThrottle = useRef(debounce(
-    (cfg) => dispatch(appActions.setCfg({ cfg: cfg, keepTeam: false })), 1000));
   const onChange = (newCfg: string) => {
-    setCfg(newCfg);
-    setReduxCfgThrottle.current(newCfg);
+    dispatch(appActions.setCfg({ cfg: newCfg, keepTeam: false }));
   };
 
   // check worker ready state every 250ms so run button becomes available when workers do
