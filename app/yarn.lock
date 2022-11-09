@@ -118,25 +118,25 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@blueprintjs/colors@^4.0.2", "@blueprintjs/colors@^4.1.8":
-  version "4.1.8"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.1.8.tgz#ebab4e6fe9d4e2a3bb958ae0e2385b0675a0754a"
-  integrity sha512-J3N3PIBlmZS7+br+8KkR0yilGp74Fwp8SXfs0Bf4OGgLcqrBixqCqAs+YnpS2iOV0m2D22cZc8YsnPVdx0kH7w==
+"@blueprintjs/colors@^4.0.2", "@blueprintjs/colors@^4.1.9":
+  version "4.1.9"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.1.9.tgz#cabba3ba18d58070168df40234a78ce34c7fa2cc"
+  integrity sha512-AxBKGwHS9Ojs7YPRMiwDlUEnSG36P/Hi0C3i4/smPmzUzqFGp1ZDqTmBBM15XoUKIuYfmpNATqIdKgNx2OzOkg==
 
 "@blueprintjs/core@^4.0.4":
-  version "4.11.6"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-4.11.6.tgz#d39aea28014350f98fb2081cc13cba59197178b4"
-  integrity sha512-elgJ3BIT1007O5A+5KRM8+tIw6sy64h02tv4bQ1azjB+8DknZoSPakYlGKHLNezsh+h3u5EHPDVcskJQ+zxn7A==
+  version "4.12.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-4.12.0.tgz#02685666454ab9240b31c2a28073478266337875"
+  integrity sha512-obbtEMzKOTwB56vlw4A8+9lvYwtB1mK4S8/b5Dy7WqdJ66L1WfcbIWcGxc2jWsGxanvMIzi6Pd+0XXuRRNkmhQ==
   dependencies:
-    "@blueprintjs/colors" "^4.1.8"
-    "@blueprintjs/icons" "^4.10.0"
+    "@blueprintjs/colors" "^4.1.9"
+    "@blueprintjs/icons" "^4.10.1"
     "@juggle/resize-observer" "^3.4.0"
     "@types/dom4" "^2.0.2"
     classnames "^2.3.1"
     dom4 "^2.1.5"
     normalize.css "^8.0.1"
     popper.js "^1.16.1"
-    react-popper "^1.3.7"
+    react-popper "^1.3.11"
     react-transition-group "^4.4.5"
     tslib "~2.3.1"
 
@@ -157,10 +157,10 @@
     react-transition-group "^4.4.1"
     tslib "~2.3.1"
 
-"@blueprintjs/icons@^4.10.0", "@blueprintjs/icons@^4.2.0":
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-4.10.0.tgz#ec0a417c586ee0630b719be4ed1d191c9140adf2"
-  integrity sha512-YMj+Cfd23zJK3aAFWtlIno2ysZi6Zl8HIbXmeouX7TwriB5H48JThWTCYS5trWZ9v57kzOJ/FALONFeZltgPxw==
+"@blueprintjs/icons@^4.10.1", "@blueprintjs/icons@^4.2.0":
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-4.10.1.tgz#55e7d497da83b2cd56b18472325c41aa9ce6e9af"
+  integrity sha512-VkEa+tzi2wZF51D2PmuKVl3krEuAudvpR8ziDQiXBbq9DPlN3Y+HrCJQzZ8LX7HtSbDp7v8k6f5/1T1ubH96SQ==
   dependencies:
     change-case "^4.1.2"
     classnames "^2.3.1"
@@ -3797,7 +3797,7 @@ react-player@^2.9.0:
     prop-types "^15.7.2"
     react-fast-compare "^3.0.1"
 
-react-popper@^1.3.7:
+react-popper@^1.3.11, react-popper@^1.3.7:
   version "1.3.11"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-1.3.11.tgz#a2cc3f0a67b75b66cfa62d2c409f9dd1fcc71ffd"
   integrity sha512-VSA/bS+pSndSF2fiasHK/PTEEAyOpX60+H5EPAjoArr8JGm+oihu4UbrqcEBpQibJxBVCpYyjAX7abJ+7DoYVg==
