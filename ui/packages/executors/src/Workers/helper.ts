@@ -10,33 +10,36 @@ if (!WebAssembly.instantiateStreaming) {
   };
 }
 
+let ready = false;
+
 // @ts-ignore
 const go = new Go();
 WebAssembly.instantiateStreaming(fetch('/main.wasm'), go.importObject)
   .then((result) => {
     go.run(result.instance);
     console.log("helper loaded okay");
+    ready = true;
   }).catch((e) => {
     console.error(e);
     postMessage({
-      type: HelpResponse.Failed,
-      reason: e instanceof Error ? e.message : "Unknown Error" });
-  });
+        type: HelpResponse.Failed,
+        reason: e instanceof Error ? e.message : "Unknown Error" });
+});
 
-function validate(req: { cfg: string }) {
+function validate(req: { id: number, cfg: string }) {
   const resp = JSON.parse(validateConfig(req.cfg));
   if (resp.error) {
-    return { type: HelpResponse.Failed, reason: resp.error };
+    return { type: HelpResponse.Failed, reason: resp.error, id: req.id };
   }
-  return { type: HelpResponse.Validate, cfg: resp };
+  return { type: HelpResponse.Validate, cfg: resp, id: req.id };
 }
 
-function doSample(req: { cfg: string, seed: string }) {
+function doSample(req: { id: number, cfg: string, seed: string }) {
   const resp = JSON.parse(sample(req.cfg, req.seed));
   if (resp.error) {
-    return { type: HelpResponse.Failed, reason: resp.error };
+    return { type: HelpResponse.Failed, reason: resp.error, id: req.id };
   }
-  return { type: HelpResponse.Sample, sample: resp };
+  return { type: HelpResponse.Sample, sample: resp, id: req.id };
 }
 
 // @ts-ignore
@@ -51,7 +54,24 @@ function handleRequest(req: any): any {
       throw new Error("helper unknown request");
   }
 }
-onmessage = (ev) => postMessage(handleRequest(ev.data));
+
+const queue: MessageEvent<any>[] = [];
+onmessage = (ev) => {
+  queue.push(ev);
+  tryProcess();
+};
+
+function tryProcess() {
+  if (!ready) {
+    setTimeout(tryProcess, 100);
+    return;
+  }
+
+  const event = queue.shift();
+  if (event) {
+    postMessage(handleRequest(event.data));
+  }
+}
 
 // TODO: I hate this
 // Web Workers do not currently support modules (in all browsers), so instead all the relevant code in common

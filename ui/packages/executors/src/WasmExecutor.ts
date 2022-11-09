@@ -6,48 +6,23 @@ import { Aggregator, Helper, SimWorker } from "./Workers/common";
 const VIEWER_THROTTLE = 100;
 
 export class WasmExecutor implements Executor {
-  private aggregator: Worker;
-  private aggregatorReady: boolean;
+  private helper: HelperExecutor;
+  private aggregator: Worker | null;
   private workers: Worker[];
-  private workersReady: boolean[];
+  private workerCount: number;
   private isRunning: boolean;
 
-  private helper: Worker;
-
   constructor() {
-    this.aggregatorReady = false;
-    this.aggregator = this.createAggregator();
+    this.helper = new HelperExecutor();
+
+    this.aggregator = null;
     this.workers = [];
-    this.workersReady = [];
+    this.workerCount = 3;
     this.isRunning = false;
-
-    // TODO: make a new helper worker script with only stateless functions
-    this.helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
-  }
-
-  private createAggregator(): Worker {
-    this.aggregatorReady = false;
-    const out = new Worker(new URL("./Workers/aggregator.ts", import.meta.url));
-    out.onmessage = (ev) => {
-      switch (ev.data.type as Aggregator.Response) {
-        case Aggregator.Response.Ready:
-          this.aggregatorReady = true;
-          break;
-      }
-    };
-    return out;
-  }
-
-  private loaded(): Worker[] {
-    return this.workers.filter((_, i) => this.workersReady[i]);
-  }
-
-  public count(): number {
-    return this.loaded().length;
   }
 
   public ready(): boolean {
-    return this.aggregatorReady && this.count() > 0 && !this.isRunning;
+    return !this.isRunning;
   }
 
   public running(): boolean {
@@ -55,103 +30,81 @@ export class WasmExecutor implements Executor {
   }
 
   public setWorkerCount(count: number) {
-    console.log("loading workers", count, this);
-    const diff = count - this.workers.length;
+    this.workerCount = count;
+  }
+
+  private createAggregator(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      if (this.aggregator) {
+        resolve(true);
+        return;
+      }
+
+      this.aggregator = new Worker(new URL("./Workers/aggregator.ts", import.meta.url));
+      this.aggregator.onmessage = (ev) => {
+        switch (ev.data.type as Aggregator.Response) {
+          case Aggregator.Response.Ready:
+            resolve(true);
+            return;
+          case Aggregator.Response.Failed:
+            reject((ev.data as Aggregator.FailedResponse).reason);
+            return;
+        }
+      };
+    });
+  }
+
+  private createWorkers(): Promise<boolean> {
+    console.log("loading workers", this.workerCount, this);
+    const diff = this.workerCount - this.workers.length;
 
     if (diff < 0) {
-      this.workersReady.splice(diff);
       this.workers.splice(diff).forEach((w) => w.terminate());
-      return;
+      return Promise.resolve(true);
     }
 
     console.log("loading " + diff + " workers");
+    const promises: Promise<boolean>[] = [];
     for (let i = 0; i < diff; i++) {
-      this.createWorker().then((w) => {
-        console.log("worker " + w + " is now ready");
-      });
+      promises.push(new Promise<boolean>((resolve, reject) => {
+        const worker = new Worker(new URL("./Workers/worker.ts", import.meta.url));
+        const idx = this.workers.push(worker) - 1;
+        worker.onmessage = (ev) => {
+          switch (ev.data.type as SimWorker.Response) {
+            case SimWorker.Response.Ready:
+              resolve(true);
+              return;
+            case SimWorker.Response.Failed:
+              reject("Worker " + idx + " " + (ev.data as SimWorker.FailedResponse).reason);
+              return;
+          }
+        };
+      }));
     }
+    return Promise.all(promises).then(() => true);
   }
 
-  private createWorker(): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const worker = new Worker(
-        new URL("./Workers/worker.ts", import.meta.url)
-      );
-      const idx = this.workers.push(worker) - 1;
-      this.workersReady.push(false);
-      worker.onmessage = (ev) => {
-        switch (ev.data.type as SimWorker.Response) {
-          case SimWorker.Response.Ready:
-            this.workersReady[idx] = true;
-            resolve(idx);
-            return;
-          case SimWorker.Response.Failed:
-            reject(
-              "Worker " +
-                idx +
-                " " +
-                (ev.data as SimWorker.FailedResponse).reason
-            );
-            return;
-          default:
-            reject("Worker " + idx + " - unknown response: " + ev.data);
-        }
-      };
-    });
-  }
+  public run(cfg: string, updateResult: (result: SimResults) => void): Promise<boolean | void> {
+    this.isRunning = true;
 
-  public validate(cfg: string): Promise<ParsedResult> {
-    return new Promise((resolve, reject) => {
-      this.helper.onmessage = (ev) => {
-        switch (ev.data.type as Helper.Response) {
-          case Helper.Response.Validate:
-            resolve((ev.data as Helper.ValidateResponse).cfg);
-            return;
-          case Helper.Response.Failed:
-            reject((ev.data as Helper.FailedResponse).reason);
-            return;
-          default:
-            reject("unknown validate response: " + ev.data);
-        }
-      };
-      this.helper.postMessage(Helper.ValidateRequest(cfg));
-    });
-  }
-
-  public sample(cfg: string, seed: string): Promise<Sample> {
-    return new Promise((resolve, reject) => {
-      this.helper.onmessage = (ev) => {
-        switch (ev.data.type as Helper.Response) {
-          case Helper.Response.Sample:
-            resolve((ev.data as Helper.SampleResponse).sample);
-            return;
-          case Helper.Response.Failed:
-            reject((ev.data as Helper.FailedResponse).reason);
-            return;
-          default:
-            reject("unknown sample response: " + ev.data);
-        }
-      };
-      this.helper.postMessage(Helper.SampleRequest(cfg, seed));
-    });
-  }
-
-  public run(
-    cfg: string,
-    setResult: (result: SimResults) => void
-  ): Promise<boolean | void> {
-    if (!this.ready()) {
-      return Promise.reject("aggregators and/or workers are not ready!");
-    }
+    // 1. Create Aggregator & Workers
+    const created = Promise.all([this.createAggregator(), this.createWorkers()]);
 
     const startTime = Date.now() * 1_000_000;
     let result: SimResults | null = null;
     let maxIterations = 0;
 
-    const initPromises: Promise<boolean>[] = [];
-    // 1. initialize aggregator
-    initPromises.push(
-      new Promise<boolean>((resolve, reject) => {
+    // 2. Initialize Aggregator & Workers
+    const initialized = created.then(() => {
+      const promises: Promise<boolean>[] = [];
+
+      // initialize aggregator
+      promises.push(new Promise<boolean>((resolve, reject) => {
+        if (this.aggregator == null) {
+          reject("Aggregator is null!");
+          return;
+        }
+  
         this.aggregator.onmessage = (ev) => {
           switch (ev.data.type as Aggregator.Response) {
             case Aggregator.Response.Initialized:
@@ -165,49 +118,48 @@ export class WasmExecutor implements Executor {
           }
         };
         this.aggregator.postMessage(Aggregator.InitializeRequest(cfg));
-      })
-    );
+      }));
 
-    // 2. initialize all workers
-    this.loaded().forEach((worker) => {
-      initPromises.push(
-        new Promise<boolean>((resolve, reject) => {
+      // initialize workers
+      this.workers.forEach((worker) => {
+        promises.push(new Promise<boolean>((resolve, reject) => {
           worker.onmessage = (ev) => {
             switch (ev.data.type as SimWorker.Response) {
               case SimWorker.Response.Initialized:
                 resolve(true);
                 return;
               case SimWorker.Response.Failed:
-                reject((ev.data as Aggregator.FailedResponse).reason);
+                reject((ev.data as SimWorker.FailedResponse).reason);
                 return;
             }
           };
           worker.postMessage(SimWorker.InitializeRequest(cfg));
-        })
-      );
+        }));
+      });
+
+      return Promise.all(promises);
     });
 
-    // 3. after all initializes complete, start execution
-    return Promise.all(initPromises).then(() => {
-      const throttledFlush = throttle(
-        () => {
-          if (this.isRunning) {
-            this.aggregator.postMessage(Aggregator.FlushRequest(startTime));
-          }
-        },
-        VIEWER_THROTTLE,
-        { leading: true, trailing: true }
-      );
+    const throttledFlush = throttle(() => {
+      if (this.isRunning) {
+        this.aggregator?.postMessage(Aggregator.FlushRequest(startTime));
+      }
+    }, VIEWER_THROTTLE, { leading: true, trailing: true });
+
+    // 3. start execution
+    return initialized.then(() => {
+      if (this.aggregator == null) {
+        Promise.reject("Aggregator is null!");
+        return;
+      }
 
       let completed = 0;
-      let requested = 0;
-      this.isRunning = true;
       this.aggregator.onmessage = (ev) => {
         switch (ev.data.type as Aggregator.Response) {
           case Aggregator.Response.Result:
             const out = Object.assign({}, result);
             out.statistics = (ev.data as Aggregator.ResultResponse).result;
-            setResult(out);
+            updateResult(out);
             if (completed >= maxIterations) {
               this.isRunning = false;
               Promise.resolve(true);
@@ -227,12 +179,13 @@ export class WasmExecutor implements Executor {
         }
       };
 
-      this.loaded().forEach((worker) => {
+      let requested = 0;
+      this.workers.forEach((worker) => {
         worker.onmessage = (ev) => {
           switch (ev.data.type as SimWorker.Response) {
             case SimWorker.Response.Done:
               const resp: SimWorker.RunResponse = ev.data;
-              this.aggregator.postMessage(Aggregator.AddRequest(resp.result));
+              this.aggregator?.postMessage(Aggregator.AddRequest(resp.result));
               if (requested < maxIterations) {
                 worker.postMessage(SimWorker.RunRequest(requested++));
               }
@@ -250,7 +203,7 @@ export class WasmExecutor implements Executor {
   }
 
   public cancel(): void {
-    if (!this.isRunning) {
+    if (!this.isRunning || this.aggregator == null) {
       return;
     }
 
@@ -268,10 +221,98 @@ export class WasmExecutor implements Executor {
     // Downside of this approach is any memory allocation/optimizations from previous runs will not
     // carry over, making executions after a cancel "less optimal".
     this.aggregator.terminate();
-    this.aggregator = this.createAggregator();
+    this.aggregator = null;
   }
 
-  buildInfo(): { hash: string; date: string } {
+  public validate(cfg: string): Promise<ParsedResult> {
+    return this.helper.validate(cfg);
+  }
+
+  public sample(cfg: string, seed: string): Promise<Sample> {
+    return this.helper.sample(cfg, seed);
+  }
+
+  public buildInfo(): { hash: string; date: string; } {
+    return this.helper.buildInfo();
+  }
+}
+
+class HelperExecutor {
+  private helper: Worker | undefined;
+  private responses = new Map<number, MessageEvent>;
+  private id = 0;
+
+  private initialize() {
+    if (this.helper != null) {
+      return;
+    }
+
+    this.helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
+    this.helper.onmessage = (ev) => {
+      this.responses.set(ev.data.id, ev);
+    };
+  }
+
+  private requestId() {
+    return this.id++;
+  }
+
+  private waitForResponse(id: number, cb: (event: MessageEvent) => void) {
+    const event = this.responses.get(id);
+    if (event != null) {
+      cb(event);
+      this.responses.delete(id);
+      return;
+    }
+    setTimeout(() => this.waitForResponse(id, cb), 100);
+  }
+
+  public validate(cfg: string): Promise<ParsedResult> {
+    this.initialize();
+
+    const id = this.requestId();
+    return new Promise((resolve, reject) => {
+      function handleResponse(event: MessageEvent) {
+        switch (event.data.type as Helper.Response) {
+          case Helper.Response.Validate:
+            resolve((event.data as Helper.ValidateResponse).cfg);
+            return;
+          case Helper.Response.Failed:
+            reject((event.data as Helper.FailedResponse).reason);
+            return;
+          default:
+            reject("unknown validate response: " + event.data.type);
+        }
+      }
+      this.waitForResponse(id, handleResponse);
+      this.helper?.postMessage(Helper.ValidateRequest(id, cfg));
+    });
+  }
+
+  public sample(cfg: string, seed: string): Promise<Sample> {
+    this.initialize();
+    const id = this.requestId();
+
+    return new Promise((resolve, reject) => {
+      function handleResponse(event: MessageEvent) {
+        switch (event.data.type as Helper.Response) {
+          case Helper.Response.Sample:
+            resolve((event.data as Helper.SampleResponse).sample);
+            return;
+          case Helper.Response.Failed:
+            reject((event.data as Helper.FailedResponse).reason);
+            return;
+          default:
+            console.log(event.data);
+            reject("unknown sample response: " + event.data.type);
+        }
+      }
+      this.waitForResponse(id, handleResponse);
+      this.helper?.postMessage(Helper.SampleRequest(id, cfg, seed));
+    });
+  }
+
+  public buildInfo(): { hash: string; date: string; } {
     throw new Error("Method not implemented.");
   }
 }

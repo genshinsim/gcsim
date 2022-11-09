@@ -99,43 +99,48 @@ export namespace Helper {
   }
 
   export interface FailedResponse {
+    id: number;
     type: Response.Failed;
     reason: string;
   }
 
-  export function FailedResponse(reason: string): FailedResponse {
-    return { type: Response.Failed, reason: reason };
+  export function FailedResponse(id: number, reason: string): FailedResponse {
+    return { id: id, type: Response.Failed, reason: reason };
   }
 
   export interface ValidateRequest {
+    id: number;
     type: Request.Validate;
     cfg: string;
   }
 
-  export function ValidateRequest(cfg: string): ValidateRequest {
-    return { type: Helper.Request.Validate, cfg: cfg };
+  export function ValidateRequest(id: number, cfg: string): ValidateRequest {
+    return { id: id, type: Helper.Request.Validate, cfg: cfg };
   }
 
   export interface ValidateResponse {
+    id: number;
     type: Response.Validate;
     cfg: any;
   }
 
-  export function ValidateResponse(cfg: any): ValidateResponse {
-    return { type: Response.Validate, cfg: cfg };
+  export function ValidateResponse(id: number, cfg: any): ValidateResponse {
+    return { id: id, type: Response.Validate, cfg: cfg };
   }
 
   export interface SampleRequest {
+    id: number;
     type: Request.Sample;
     cfg: string;
     seed: string;
   }
 
-  export function SampleRequest(cfg: string, seed: string): SampleRequest {
-    return { type: Helper.Request.Sample, cfg: cfg, seed: seed };
+  export function SampleRequest(id: number, cfg: string, seed: string): SampleRequest {
+    return { id: id, type: Helper.Request.Sample, cfg: cfg, seed: seed };
   }
 
   export interface SampleResponse {
+    id: number;
     type: Response.Sample;
     sample: any;
   }
