@@ -106,7 +106,7 @@ const Main = ({ exec, children }: UIProps) => {
   const prevLocation = useRef(location);
   useEffect(() => {
     if (prevLocation.current != location && prevLocation.current.startsWith("/viewer/")
-        && exec().running()) {
+        && !location.startsWith("/viewer/") && exec().running()) {
       exec().cancel();
     }
     prevLocation.current = location;
