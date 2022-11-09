@@ -1,6 +1,8 @@
 package overview
 
 import (
+	"math"
+
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -87,6 +89,9 @@ func (b *buffer) Flush(result *agg.Result) {
 		Mean: b.totalDamage.Mean(),
 		SD:   b.totalDamage.StdDev(),
 	}
+	if math.IsNaN(result.TotalDamage.SD) {
+		result.TotalDamage.SD = 0
+	}
 }
 
 func convert(input calc.Sample) agg.SummaryStat {
@@ -101,6 +106,9 @@ func convert(input calc.Sample) agg.SummaryStat {
 		Q3:   input.Quantile(0.75),
 	}
 	out.Min, out.Max = input.Bounds()
+	if math.IsNaN(out.SD) {
+		out.SD = 0
+	}
 
 	return out
 }

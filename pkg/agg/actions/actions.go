@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"math"
+
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -77,10 +79,14 @@ func (b *buffer) Flush(result *agg.Result) {
 }
 
 func toFloatStat(input calc.StreamStats) agg.FloatStat {
-	return agg.FloatStat{
+	out := agg.FloatStat{
 		Min:  input.Min,
 		Max:  input.Max,
 		Mean: input.Mean(),
 		SD:   input.StdDev(),
 	}
+	if math.IsNaN(out.SD) {
+		out.SD = 0
+	}
+	return out
 }
