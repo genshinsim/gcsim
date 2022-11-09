@@ -8,8 +8,9 @@ import {
   SpinnerSize,
 } from "@blueprintjs/core";
 import { Sample, SimResults } from "@gcsim/types";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../Components/Sample";
+import queryString from "query-string";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
@@ -19,6 +20,7 @@ type UseSampleData = {
   seed: string | null;
   settings: string[];
   generating: boolean;
+  linkSeed?: string;
   setGenerating: (val: boolean) => void;
   setSample: (sample?: Sample) => void;
   setSettings: (val: string[]) => void;
@@ -35,6 +37,9 @@ type Props = {
 // TODO: translation
 // TODO: The sampler should be refactored. This is a mess of passing around info
 export default ({ sampler, data, sample, running }: Props) => {
+  useOnLinkLoad(sampler, sample, data?.config_file);
+  const msgs = useSearchable(sample.parsed);
+
   if (data?.character_details == null || data?.config_file == null || sample.generating) {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
   }
@@ -47,27 +52,6 @@ export default ({ sampler, data, sample, running }: Props) => {
       />
     );
   }
-
-  const msgs = useMemo(() => {
-    const out: { [key: number]: string[] } = {};
-    if (sample.parsed == null) {
-      return out;
-    }
-
-    sample.parsed.map((row, i) => {
-      const results: string[] = [];
-
-      row.slots.map((slot) => {
-        slot.map((e) => {
-          results.push(e.msg);
-        });
-      });
-
-      out[i] = results;
-    });
-
-    return out;
-  }, [sample.parsed]);
 
   const names = data.character_details.map((c) => c.name);
   return (
@@ -83,6 +67,44 @@ export default ({ sampler, data, sample, running }: Props) => {
     </div>
   );
 };
+
+// if #sample=<seed>&tab=sample in url on page load, generate sample
+function useOnLinkLoad(
+      sampler: (cfg: string, seed: string) => Promise<Sample>, sample: UseSampleData, cfg?: string) {
+  useEffect(() => {
+    if (sample.linkSeed && sample.sample == null && !sample.generating && cfg != null) {
+      sample.setGenerating(true);
+      sample.setSeed(sample.linkSeed);
+      sampler(cfg ?? "", sample.linkSeed).then((out) => {
+        sample.setSample(out);
+        sample.setGenerating(false);
+      });
+    }
+  }, [cfg, sample, sampler]);
+}
+
+function useSearchable(parsed: SampleRow[] | null) {
+  return useMemo(() => {
+    const out: { [key: number]: string[] } = {};
+    if (parsed == null) {
+      return out;
+    }
+
+    parsed.map((row, i) => {
+      const results: string[] = [];
+
+      row.slots.map((slot) => {
+        slot.map((e) => {
+          results.push(e.msg);
+        });
+      });
+
+      out[i] = results;
+    });
+
+    return out;
+  }, [parsed]);
+}
 
 type GenerateProps = {
   sampler: (cfg: string, seed: string) => Promise<Sample>;
@@ -157,10 +179,13 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
         break;
     }
 
+    const parsed = queryString.parse(location.hash);
+    parsed.sample = seed;
+    location.hash = queryString.stringify(parsed);
+
     sample.setGenerating(true);
     sample.setSeed(seed);
     sampler(data.config_file ?? "", seed).then((out) => {
-      console.log(out);
       sample.setSample(out);
       sample.setGenerating(false);
     });
@@ -205,6 +230,7 @@ export function useSample(running: boolean, data: SimResults | null): UseSampleD
   const [sample, SetSample] = useState<Sample | undefined>(undefined);
   const [generating, setGenerating] = useState(false);
   const [seed, setSeed] = useState<string | null>(null);
+  const initQuery = useRef(queryString.parse(location.hash));
 
   // Special case where sim is rerunning. Want to reset any generated sample state
   useEffect(() => {
@@ -235,6 +261,7 @@ export function useSample(running: boolean, data: SimResults | null): UseSampleD
     seed: seed,
     settings: selected,
     generating: generating,
+    linkSeed: (initQuery.current.sample as string),
     setGenerating: setGenerating,
     setSample: SetSample,
     setSettings: setAndStore,
