@@ -42,16 +42,18 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		windup = 15
 	}
 
+	var c4cb combat.AttackCBFunc
+	if c.Base.Cons >= 4 {
+		c4cb = c.makeC4Callback()
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.2}, 3.2, 7.5),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
+		c4cb,
 	)
-
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
