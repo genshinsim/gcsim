@@ -50,6 +50,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
+	pickupDelay := p.Params["pickup_delay"]
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.EM] = float64(45 + r*15)
+
 	handleProc := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -58,23 +63,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		char.AddStatus(icdKey, 1200, false) // TODO: is this hitlag extendable?
-		c.Log.NewEvent("sapwood blade proc'd", glog.LogWeaponEvent, char.Index).
-			Write("seed expiry", c.F+600)
-		c.Log.NewEvent("seed picked up", glog.LogWeaponEvent, char.Index)
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.EM] = float64(45 + r*15)
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(buffKey, 720),
-			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
+		char.AddStatus(icdKey, 1200, true)
+		c.Log.NewEvent("sapwood proc'd", glog.LogWeaponEvent, char.Index)
+		if pickupDelay <= 0 {
+			c.Log.NewEvent("sapwood seed ignored", glog.LogWeaponEvent, char.Index)
+			return false
+		}
+		c.Tasks.Add(func() {
+			active := c.Player.ActiveChar()
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag(buffKey, 720),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
+			c.Log.NewEvent(
+				fmt.Sprintf("sapwood seed picked up by %v", active.Base.Key.String()),
+				glog.LogWeaponEvent,
+				char.Index,
+			)
+		}, pickupDelay)
 		return false
 	}
 	for _, e := range procEvents {
-		c.Events.Subscribe(e, handleProc, fmt.Sprintf("sapwoodblade-proc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(e, handleProc, fmt.Sprintf("sapwoodblade-proc-%v-%v", char.Base.Key.String(), e))
 	}
 	return w, nil
 }
