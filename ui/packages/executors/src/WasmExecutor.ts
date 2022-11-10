@@ -149,8 +149,7 @@ export class WasmExecutor implements Executor {
     // 3. start execution
     return initialized.then(() => {
       if (this.aggregator == null) {
-        Promise.reject("Aggregator is null!");
-        return;
+        return Promise.reject("Aggregator is null!");
       }
 
       let completed = 0;
@@ -162,7 +161,7 @@ export class WasmExecutor implements Executor {
             updateResult(out);
             if (completed >= maxIterations) {
               this.isRunning = false;
-              Promise.resolve(true);
+              return Promise.resolve(true);
             }
             return;
           case Aggregator.Response.Done:
@@ -174,7 +173,7 @@ export class WasmExecutor implements Executor {
             //    When this happens, the existing aggregator has no data and fails to flush.
             //    this doesnt cause any problems (yet) and just produces an error in console.
             if (this.isRunning) {
-              throw (ev.data as Aggregator.FailedResponse).reason;
+              return Promise.reject((ev.data as Aggregator.FailedResponse).reason);
             }
         }
       };
@@ -191,7 +190,7 @@ export class WasmExecutor implements Executor {
               }
               return;
             case SimWorker.Response.Failed:
-              throw (ev.data as Aggregator.FailedResponse).reason;
+              return Promise.reject((ev.data as Aggregator.FailedResponse).reason);
           }
         };
 

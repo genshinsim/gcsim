@@ -19,6 +19,7 @@ type UseConfigData = {
   error: string;
   isReady: boolean | null;
   validated: boolean;
+  modified: boolean;
   exec: ExecutorSupplier<Executor>;
   setCfg: (cfg: string) => void;
 }
@@ -46,7 +47,7 @@ export default ({ config, running, resetTab }: ConfigProps) => {
               icon="refresh"
               text="Rerun"
               intent={Intent.SUCCESS}
-              disabled={config.error !== "" || !config.validated}
+              disabled={config.error !== "" || (!config.validated && config.modified)}
               loading={!config.isReady || running}
               className="basis-1/2"
               onClick={() => {
@@ -101,6 +102,12 @@ export function useConfig(data: SimResults | null, exec: ExecutorSupplier<Execut
   const [cfg, setCfg] = useState(data?.config_file);
   const [isReady, setReady] = useState<boolean | null>(null);
   const [err, setErr] = useState("");
+  const [modified, setModified] = useState<boolean>(false);
+
+  const updateCfg = (newCfg: string) => {
+    setCfg(newCfg);
+    setModified(true);
+  };
 
   // reset config file every time it changes from results
   useEffect(() => {
@@ -117,14 +124,15 @@ export function useConfig(data: SimResults | null, exec: ExecutorSupplier<Execut
 
   // will detect changes in the redux config and validate with the executor
   // validated == true means we had a successful validation check run, not that it is valid
-  const validated = useConfigValidateListener(exec, cfg ?? "", true, setErr);
+  const validated = useConfigValidateListener(exec, cfg ?? "", modified, setErr);
 
   return {
     cfg: cfg,
     error: err,
     isReady: isReady,
     validated: validated,
+    modified: modified,
     exec: exec,
-    setCfg: setCfg,
+    setCfg: updateCfg,
   };
 }
