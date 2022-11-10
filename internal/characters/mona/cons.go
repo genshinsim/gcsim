@@ -76,6 +76,9 @@ func (c *char) c2(a combat.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.Core.Rand.Float64() > .2 {
 		return
 	}
