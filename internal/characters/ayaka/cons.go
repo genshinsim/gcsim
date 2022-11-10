@@ -23,6 +23,9 @@ func (c *char) c1(a combat.AttackCB) {
 	if a.AttackEvent.Info.Element != attributes.Cryo {
 		return
 	}
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(c1ICDKey) {
 		return
 	}
@@ -56,6 +59,9 @@ func (c *char) c4(a combat.AttackCB) {
 // Callback for Ayaka C6 that is attached to CA hits
 func (c *char) c6(a combat.AttackCB) {
 	if c.Base.Cons < 6 {
+		return
+	}
+	if a.Target.Type() != combat.TargettableEnemy {
 		return
 	}
 
