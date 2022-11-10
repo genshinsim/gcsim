@@ -30,11 +30,11 @@ export default ({ running, data, error, src, redirect, exec, retry }: ViewerProp
   const parsed = queryString.parse(location.hash);
   const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
 
-  const sample = useSample(running, data);
-  const config = useConfig(data, exec);
-
   const cancel = useCallback(() => exec().cancel(), [exec]);
   const sampler = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
+
+  const sample = useSample(running, data, sampler);
+  const config = useConfig(data, exec);
 
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} />,

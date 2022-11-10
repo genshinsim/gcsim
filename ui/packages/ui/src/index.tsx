@@ -1,7 +1,7 @@
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { ReactNode, useEffect, useRef } from "react";
 import { Redirect, Route, Switch, useLocation } from "wouter";
-import { Classes, Dialog, HotkeysProvider } from "@blueprintjs/core";
+import { Classes, Dialog, HotkeysProvider, Switch as SwitchInput } from "@blueprintjs/core";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { RootState, store, useAppDispatch, useAppSelector } from "./Stores/store";
@@ -61,23 +61,34 @@ function RedirectDB() {
   );
 }
 
+// TODO: Move to its own file?
+// TODO: Add tabs for better settings management + extensibility?
 const ExecutorSettings = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
-  const { isOpen } = useAppSelector((state: RootState) => {
+  const { isOpen, sampleOnLoad } = useAppSelector((state: RootState) => {
     return {
       isOpen: state.app.isSettingsOpen,
+      sampleOnLoad: state.app.sampleOnLoad
     };
   });
-
-  const close = () => dispatch(appActions.setSettingsOpen(false));
 
   return (
     <Dialog
         isOpen={isOpen}
-        onClose={close}
-        title="Executor Settings"
-        icon="settings">
-      <div className={Classes.DIALOG_BODY}>{children}</div>
+        onClose={() => dispatch(appActions.setSettingsOpen(false))}
+        title="Settings"
+        icon="settings"
+        className="!pb-0">
+      <div className={Classes.DIALOG_BODY}>
+        <>
+          {children}
+          <SwitchInput
+              checked={sampleOnLoad}
+              onChange={() => dispatch(appActions.setSampleOnLoad(!sampleOnLoad))}
+              className="pt-5"
+              labelElement={"Generate sample on page load"} />
+        </>
+      </div>
     </Dialog>
   );
 };

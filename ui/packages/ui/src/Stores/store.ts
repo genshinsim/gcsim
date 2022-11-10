@@ -29,6 +29,7 @@ if (localStorage.getItem(userDataKey)) {
 if (localStorage.getItem(userAppDataKey)) {
   const s = JSON.parse(localStorage.getItem(userAppDataKey) ?? "{}");
   persistedState.app = Object.assign(persistedState.app, {
+    sampleOnLoad: s.sampleOnLoad ?? false,
     cfg: s.cfg ?? "",
     team: s.team ?? []
   });
@@ -60,6 +61,7 @@ export const store = configureStore({
 store.subscribe(() => {
   localStorage.setItem(userDataKey, JSON.stringify(store.getState().user_data));
   localStorage.setItem(userAppDataKey, JSON.stringify({
+    sampleOnLoad: store.getState().app.sampleOnLoad,
     cfg: store.getState().app.cfg,
     team: store.getState().app.team
   }));

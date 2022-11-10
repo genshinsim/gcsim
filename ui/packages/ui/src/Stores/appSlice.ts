@@ -7,12 +7,15 @@ import { Character } from "@gcsim/types";
 
 export interface AppState {
   isSettingsOpen: boolean;
+  sampleOnLoad: boolean;
+
   cfg: string;
   team: Character[];
 }
 
 export const initialState: AppState = {
   isSettingsOpen: false,
+  sampleOnLoad: false,
   cfg: "",
   team: [],
 };
@@ -47,6 +50,10 @@ export const appSlice = createSlice({
   reducers: {
     setSettingsOpen: (state, action: PayloadAction<boolean>) => {
       state.isSettingsOpen = action.payload;
+      return state;
+    },
+    setSampleOnLoad: (state, action: PayloadAction<boolean>) => {
+      state.sampleOnLoad = action.payload;
       return state;
     },
     setCfg: (state, action: PayloadAction<{ cfg: string, keepTeam: boolean}>) => {

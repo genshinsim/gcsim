@@ -11,6 +11,7 @@ import { Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../Components/Sample";
 import queryString from "query-string";
+import { RootState, useAppSelector } from "../../../Stores/store";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
@@ -18,9 +19,9 @@ type UseSampleData = {
   sample?: Sample;
   parsed: SampleRow[] | null;
   seed: string | null;
+  searchable: { [key: number]: string[] };
   settings: string[];
   generating: boolean;
-  linkSeed?: string;
   setGenerating: (val: boolean) => void;
   setSample: (sample?: Sample) => void;
   setSettings: (val: string[]) => void;
@@ -28,7 +29,7 @@ type UseSampleData = {
 };
 
 type Props = {
-  sampler: (cfg: string, seed: string) => Promise<Sample>
+  sampler: (cfg: string, seed: string) => Promise<Sample>;
   data: SimResults | null;
   sample: UseSampleData;
   running: boolean;
@@ -37,9 +38,6 @@ type Props = {
 // TODO: translation
 // TODO: The sampler should be refactored. This is a mess of passing around info
 export default ({ sampler, data, sample, running }: Props) => {
-  useOnLinkLoad(sampler, sample, data?.config_file);
-  const msgs = useSearchable(sample.parsed);
-
   if (data?.character_details == null || data?.config_file == null || sample.generating) {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
   }
@@ -61,50 +59,12 @@ export default ({ sampler, data, sample, running }: Props) => {
           sample={sample.sample}
           data={sample.parsed}
           team={names}
-          searchable={msgs}
+          searchable={sample.searchable}
           settings={sample.settings}
           setSettings={sample.setSettings} />
     </div>
   );
 };
-
-// if #sample=<seed>&tab=sample in url on page load, generate sample
-function useOnLinkLoad(
-      sampler: (cfg: string, seed: string) => Promise<Sample>, sample: UseSampleData, cfg?: string) {
-  useEffect(() => {
-    if (sample.linkSeed && sample.sample == null && !sample.generating && cfg != null) {
-      sample.setGenerating(true);
-      sample.setSeed(sample.linkSeed);
-      sampler(cfg ?? "", sample.linkSeed).then((out) => {
-        sample.setSample(out);
-        sample.setGenerating(false);
-      });
-    }
-  }, [cfg, sample, sampler]);
-}
-
-function useSearchable(parsed: SampleRow[] | null) {
-  return useMemo(() => {
-    const out: { [key: number]: string[] } = {};
-    if (parsed == null) {
-      return out;
-    }
-
-    parsed.map((row, i) => {
-      const results: string[] = [];
-
-      row.slots.map((slot) => {
-        slot.map((e) => {
-          results.push(e.msg);
-        });
-      });
-
-      out[i] = results;
-    });
-
-    return out;
-  }, [parsed]);
-}
 
 type GenerateProps = {
   sampler: (cfg: string, seed: string) => Promise<Sample>;
@@ -212,7 +172,9 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
   );
 };
 
-export function useSample(running: boolean, data: SimResults | null): UseSampleData {
+export function useSample(
+    running: boolean, data: SimResults | null,
+    sampler: (cfg: string, seed: string) => Promise<Sample>): UseSampleData {
   const [selected, setSelected] = useState<string[]>(() => {
     const saved = localStorage.getItem(SAVED_SAMPLE_KEY);
     if (saved) {
@@ -230,14 +192,35 @@ export function useSample(running: boolean, data: SimResults | null): UseSampleD
   const [sample, SetSample] = useState<Sample | undefined>(undefined);
   const [generating, setGenerating] = useState(false);
   const [seed, setSeed] = useState<string | null>(null);
-  const initQuery = useRef(queryString.parse(location.hash));
-
+  
   // Special case where sim is rerunning. Want to reset any generated sample state
   useEffect(() => {
     if (running) {
       SetSample(undefined);
     }
   }, [running]);
+  
+  const initQuery = useRef(queryString.parse(location.hash));
+  const { sampleOnLoad } = useAppSelector((state: RootState) => {
+    return {
+      sampleOnLoad: state.app.sampleOnLoad
+    };
+  });
+  
+  // if seed in url or sampleOnLoad is checked, load sample on viewer load
+  useEffect(() => {
+    const linkSeed = initQuery.current.sample as string;
+    if ((sampleOnLoad || linkSeed) && sample == null && !generating && data?.config_file != null) {
+      const seed = linkSeed ?? data.sample_seed;
+      
+      setGenerating(true);
+      setSeed(seed);
+      sampler(data.config_file ?? "", seed).then((out) => {
+        SetSample(out);
+        setGenerating(false);
+      });
+    }
+  }, [data?.config_file, data?.sample_seed, generating, sample, sampleOnLoad, sampler]);
 
   const parsed = useMemo(() => {
     if (data?.initial_character == null || data.character_details == null) {
@@ -255,13 +238,31 @@ export function useSample(running: boolean, data: SimResults | null): UseSampleD
         selected);
   }, [sample, data?.initial_character, data?.character_details, selected]);
 
+  const searchable = useMemo(() => {
+    const out: { [key: number]: string[] } = {};
+    if (parsed == null) {
+      return out;
+    }
+
+    parsed.map((row, i) => {
+      const results: string[] = [];
+      row.slots.map((slot) => {
+        slot.map((e) => {
+          results.push(e.msg);
+        });
+      });
+      out[i] = results;
+    });
+    return out;
+  }, [parsed]);
+
   return {
     sample: sample,
     parsed: parsed,
     seed: seed,
+    searchable: searchable,
     settings: selected,
     generating: generating,
-    linkSeed: (initQuery.current.sample as string),
     setGenerating: setGenerating,
     setSample: SetSample,
     setSettings: setAndStore,
