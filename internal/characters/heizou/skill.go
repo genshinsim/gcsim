@@ -83,6 +83,9 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 
 		skillCB := func(a combat.AttackCB) {
 			c.decStack = 0
+			if a.Target.Type() != combat.TargettableEnemy {
+				return
+			}
 			c.a4()
 		}
 
