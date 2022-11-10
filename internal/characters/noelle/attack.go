@@ -51,9 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai.HitlagHaltFrames = 0.1 * 60
 		}
 	}
-	// TODO: don't forget this when implementing her CA
-	done := false
-	cb := c.skillHealCB(done)
+	// TODO: don't forget the callbacks when implementing her CA
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
 		combat.Point{Y: attackOffsets[c.NormalCounter]},
@@ -69,18 +67,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	// need char queue because of potential hitlag from C4
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, ap, 0, 0, cb)
+		c.Core.QueueAttack(ai, ap, 0, 0, c.skillHealCB(), c.a4())
 	}, attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()
-
-	c.a4Counter++
-	if c.a4Counter == 4 {
-		c.a4Counter = 0
-		if c.Cooldown(action.ActionSkill) > 0 {
-			c.ReduceActionCooldown(action.ActionSkill, 60)
-		}
-	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),

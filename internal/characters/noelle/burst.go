@@ -77,10 +77,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Write("atk added", c.burstBuff[attributes.ATK]).
 		Write("mult", mult)
 
-	// every Q hit can proc her heal
-	done := false
-	cb := c.skillHealCB(done)
-
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sweeping Time (Burst)",
@@ -95,6 +91,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.15 * 60,
 		CanBeDefenseHalted: true,
 	}
+
 	// Burst part
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
@@ -102,15 +99,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5),
 			0,
 			0,
-			cb,
+			c.skillHealCB(),
 		)
-		// reset done so the Skill part can proc her heal
-		done = false
-		cb = c.skillHealCB(done)
 	}, 24)
 
 	// Skill part
-	// Burst and Skill part of Q have the same hitlag values
+	// Burst and Skill part of Q have the same hitlag values and both can heal
 	c.QueueCharTask(func() {
 		ai.Abil = "Sweeping Time (Skill)"
 		ai.Mult = burstskill[c.TalentLvlBurst()]
@@ -119,7 +113,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4),
 			0,
 			0,
-			cb,
+			c.skillHealCB(),
 		)
 	}, 65)
 
