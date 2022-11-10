@@ -22,7 +22,6 @@ type char struct {
 	qStarted int
 	a4stacks int
 	a4buff   []float64
-	c6Src    int
 	c6Count  int
 }
 
@@ -57,9 +56,6 @@ func (c *char) Init() error {
 	}
 	if c.Base.Cons >= 4 {
 		c.c4()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 	return nil
 }
