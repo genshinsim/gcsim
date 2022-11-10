@@ -64,7 +64,7 @@ func (s *Simulation) Run() (stats.Result, error) {
 		}
 	}
 
-	duration := s.C.F + 1
+	duration := s.C.F
 	result := stats.Result{
 		Seed:        uint64(s.C.Seed),
 		Duration:    duration,
