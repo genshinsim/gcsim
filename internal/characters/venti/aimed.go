@@ -40,7 +40,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
 	if c.Base.Cons >= 1 {
 		c.c1(ai, travel)
 	}

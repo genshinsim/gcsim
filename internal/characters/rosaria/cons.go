@@ -18,7 +18,7 @@ func (c *char) c1() {
 	c.c1bonus[attributes.DmgP] = 0.1
 	// Add hook that monitors for crit hits. Mirrors existing favonius code
 	// No log value saved as stat mod already shows up in debug view
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
 		if !crit {

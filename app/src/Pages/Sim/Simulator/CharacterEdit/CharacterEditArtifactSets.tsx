@@ -1,10 +1,10 @@
-import { Button, Checkbox } from "@blueprintjs/core";
-import React from "react";
-import { Character } from "~/src/types";
-import { ArtifactSelect, IArtifact } from "~src/Components/Artifacts";
-import { RootState, useAppDispatch, useAppSelector } from "~src/store";
-import { simActions } from "../..";
-import { Trans, useTranslation } from "react-i18next";
+import { Button, Checkbox } from '@blueprintjs/core';
+import React from 'react';
+import { Character } from '~/src/types';
+import { ArtifactSelect, IArtifact } from '~src/Components/Artifacts';
+import { RootState, useAppDispatch, useAppSelector } from '~src/store';
+import { simActions } from '../..';
+import { Trans, useTranslation } from 'react-i18next';
 
 type Props = {
   char: Character;
@@ -73,15 +73,15 @@ export function CharacterEditArtifactSets() {
 
   const checkDisabled = (key: string, bonus: 2 | 4): boolean => {
     console.log(
-      "set: " +
+      'set: ' +
         key +
-        "bonus for " +
+        'bonus for ' +
         bonus +
-        " total ticked: " +
+        ' total ticked: ' +
         total +
-        " in set: " +
+        ' in set: ' +
         char.sets[key] +
-        " check: " +
+        ' check: ' +
         (total + bonus - char.sets[key])
     );
     return total + bonus - char.sets[key] > 4 && char.sets[key] < bonus;
@@ -97,7 +97,7 @@ export function CharacterEditArtifactSets() {
       >
         <img
           key="key"
-          src={`/images/artifacts/${key}_flower.png`}
+          src={`https://gcsim.app/api/assets/artifacts/${key}_flower.png`}
           className="w-12"
         />
         <span className="font-bold">

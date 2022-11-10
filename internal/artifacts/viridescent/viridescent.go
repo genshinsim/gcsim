@@ -82,7 +82,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					Ele:   ele,
 					Value: -0.4,
 				})
-				c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Index())
+				c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
 
 				return false
 			}
@@ -95,7 +95,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// Additional event for on damage proc on secondary targets
 		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
 		// Possibly closure related? Not sure
-		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
@@ -126,7 +126,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Ele:   ele,
 				Value: -0.4,
 			})
-			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Index())
+			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
 
 			return false
 		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))

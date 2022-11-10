@@ -56,7 +56,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
 		aimedHitmark,
 		aimedHitmark+travel,
 		// TODO: what's the ordering on these 2 callbacks?

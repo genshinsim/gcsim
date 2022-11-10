@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 		FlatDmg:    0.33 * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark, burstHitmark)
 
 	if c.Base.Cons >= 2 {
 		c.addJadeShield()

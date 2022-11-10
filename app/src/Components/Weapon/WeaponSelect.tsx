@@ -1,5 +1,5 @@
-import { Omnibar } from "@blueprintjs/select";
-import { IWeapon, weaponSelectProps } from "./weapons";
+import { Omnibar } from '@blueprintjs/select';
+import { IWeapon, weaponSelectProps } from './weapons';
 
 const WeaponOmnibar = Omnibar.ofType<IWeapon>();
 
@@ -17,6 +17,7 @@ export function WeaponSelect(props: Props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onItemSelect={props.onSelect}
+      overlayProps={{ usePortal: false }}
     />
   );
 }

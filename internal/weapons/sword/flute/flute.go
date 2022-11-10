@@ -16,9 +16,9 @@ func init() {
 	core.RegisterWeaponFunc(keys.TheFlute, NewWeapon)
 }
 
-//Normal or Charged Attacks grant a Harmonic on hits. Gaining 5 Harmonics triggers the
-//power of music and deals 100% ATK DMG to surrounding opponents. Harmonics last up to 30s,
-//and a maximum of 1 can be gained every 0.5s.
+// Normal or Charged Attacks grant a Harmonic on hits. Gaining 5 Harmonics triggers the
+// power of music and deals 100% ATK DMG to surrounding opponents. Harmonics last up to 30s,
+// and a maximum of 1 can be gained every 0.5s.
 type Weapon struct {
 	Index int
 }
@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	stacks := 0
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -75,7 +75,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Mult:       0.75 + 0.25*float64(r),
 			}
 			trg := args[0].(combat.Target)
-			c.QueueAttack(ai, combat.NewCircleHit(trg, 2, false, combat.TargettableEnemy), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 1)
 
 		}
 		return false

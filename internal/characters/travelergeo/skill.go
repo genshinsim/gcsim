@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 	// TODO: check snapshot timing
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 24, skillHitmark[short_hold])
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 24, skillHitmark[short_hold])
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < 0.33 {
@@ -131,7 +131,7 @@ func (s *stone) OnDestruct() {
 			CanBeDefenseHalted: true,
 			IsDeployable:       true,
 		}
-		s.char.Core.QueueAttack(ai, combat.NewCircleHit(s.char.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
+		s.char.Core.QueueAttack(ai, combat.NewCircleHit(s.char.Core.Combat.Player(), 2), 0, 0)
 	}
 }
 

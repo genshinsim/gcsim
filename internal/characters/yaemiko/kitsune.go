@@ -142,7 +142,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, c.ParticleDelay)
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.RandomEnemyTarget(), combat.TargettableEnemy), 1, 1, cb)
+		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget()).Key()), 1, 1, cb)
 		// tick per ~2.9s seconds
 		c.Core.Tasks.Add(c.kitsuneTick(totem), 176)
 	}

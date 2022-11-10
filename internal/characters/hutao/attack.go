@@ -47,7 +47,7 @@ func init() {
 	ppAttackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 20)
 	ppAttackFrames[0][action.ActionAttack] = 14
 
-	ppAttackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 17)
+	ppAttackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 16)
 	ppAttackFrames[1][action.ActionAttack] = 12
 
 	ppAttackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 26)
@@ -86,7 +86,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				0,
 				0,
 			)
@@ -123,7 +123,7 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget),
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
 				0,
 				0,
 				c.ppParticles,

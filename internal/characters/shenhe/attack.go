@@ -53,7 +53,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

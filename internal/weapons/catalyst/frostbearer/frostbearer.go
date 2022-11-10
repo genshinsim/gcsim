@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const icdKey = "frostbearer-icd"
 	icd := 600
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
@@ -71,7 +71,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				ai.Mult = atkc
 			}
 
-			c.QueueAttack(ai, combat.NewCircleHit(t, 3, false, combat.TargettableEnemy), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHit(t, 3), 0, 1)
 
 		}
 		return false

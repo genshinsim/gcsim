@@ -10,12 +10,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-const DendroCoreDelay = 45
+const DendroCoreDelay = 20
 
-func (r *Reactable) tryBloom(a *combat.AttackEvent) {
+func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 	//can be hydro bloom, dendro bloom, or quicken bloom
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	var consumed combat.Durability
 	switch a.Info.Element {
@@ -27,7 +27,7 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 		case r.Durability[ModifierQuicken] > ZeroDur:
 		case r.Durability[ModifierBurningFuel] > ZeroDur:
 		default:
-			return
+			return false
 		}
 		//reduce only check for one element so have to call twice to check for quicken as well
 		consumed = r.reduce(attributes.Dendro, a.Info.Durability, 0.5)
@@ -37,11 +37,11 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 		}
 	case attributes.Dendro:
 		if r.Durability[ModifierHydro] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, 2)
 	default:
-		return
+		return false
 	}
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
@@ -49,6 +49,7 @@ func (r *Reactable) tryBloom(a *combat.AttackEvent) {
 
 	r.addBloomGadget(a)
 	r.core.Events.Emit(event.OnBloom, r.self, a)
+	return true
 }
 
 // this function should only be called after a catalyze reaction (queued to the end of current frame)
@@ -72,37 +73,46 @@ func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
 
 type DendroCore struct {
 	*gadget.Gadget
+	srcFrame int
 }
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
-		var t combat.Target = NewDendroCore(r.core, r.self, a)
+		var t combat.Gadget = NewDendroCore(r.core, r.self, a)
 		r.core.Combat.AddGadget(t)
-		r.core.Events.Emit(event.OnDendroCore, t)
+		r.core.Events.Emit(event.OnDendroCore, t, a)
 	}, DendroCoreDelay)
 }
 
 func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *DendroCore {
-	s := &DendroCore{}
+	s := &DendroCore{
+		srcFrame: c.F,
+	}
 
 	x, y := pos.Pos()
 	// for simplicity, seeds spawn randomly within 1 radius of target
 	x = x + 2*c.Rand.Float64() - 1
 	y = y + 2*c.Rand.Float64() - 1
-	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2})
+	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
-	s.Gadget.OnRemoved = func() {
-		ai := NewBloomAttack(char, s)
-		c.QueueAttack(ai, combat.NewCircleHit(s, 5, false, combat.TargettableEnemy), -1, 1)
+	explode := func() {
+		ai, snap := NewBloomAttack(char, s)
+		ap := combat.NewCircleHit(s, 5)
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		c.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		ap.SkipTargets[combat.TargettablePlayer] = false
+		ap.SkipTargets[combat.TargettableEnemy] = true
+		ap.SkipTargets[combat.TargettableGadget] = true
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 	}
+	s.Gadget.OnExpiry = explode
+	s.Gadget.OnKill = explode
 
 	return s
 }
@@ -110,6 +120,12 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 func (s *DendroCore) Tick() {
 	//this is needed since gadget tick
 	s.Gadget.Tick()
+}
+
+func (s *DendroCore) HandleAttack(atk *combat.AttackEvent) float64 {
+	s.Core.Events.Emit(event.OnGadgetHit, s, atk)
+	s.Attack(atk, nil)
+	return 0
 }
 
 func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
@@ -123,35 +139,45 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	case attributes.Electro:
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
-		ai := NewHyperbloomAttack(char, s)
+		ai, snap := NewHyperbloomAttack(char, s)
 		// queue dmg nearest enemy
 		x, y := s.Gadget.Pos()
-		enemies := s.Core.Combat.EnemyByDistance(x, y, s.Gadget.Key())
+		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
-			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, false, combat.TargettableEnemy), -1, 5)
+			ap := combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
 			ai.FlatDmg = 0.05 * ai.FlatDmg
-			s.Core.QueueAttack(ai, combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1, true, combat.TargettablePlayer), -1, 5)
+			ap.SkipTargets[combat.TargettablePlayer] = false
+			ap.SkipTargets[combat.TargettableEnemy] = true
+			ap.SkipTargets[combat.TargettableGadget] = true
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
 		}
 
-		s.Core.Combat.RemoveGadget(s.Gadget.Index())
-		s.Core.Events.Emit(event.OnHyperbloom, s.Gadget, atk)
+		s.Gadget.OnKill = nil
+		s.Gadget.Kill()
+		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
-		ai := NewBurgeonAttack(char, s)
+		ai, snap := NewBurgeonAttack(char, s)
+		ap := combat.NewCircleHit(s.Gadget, 5)
 
-		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, false, combat.TargettableEnemy), -1, 1)
+		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		// queue self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		s.Core.QueueAttack(ai, combat.NewCircleHit(s.Gadget, 5, true, combat.TargettablePlayer), -1, 1)
+		ap.SkipTargets[combat.TargettablePlayer] = false
+		ap.SkipTargets[combat.TargettableEnemy] = true
+		ap.SkipTargets[combat.TargettableGadget] = true
+		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
-		s.Core.Combat.RemoveGadget(s.Gadget.Index())
-		s.Core.Events.Emit(event.OnBurgeon, s.Gadget, atk)
+		s.Gadget.OnKill = nil
+		s.Gadget.Kill()
+		s.Core.Events.Emit(event.OnBurgeon, s, atk)
 	default:
 		return 0, false
 	}
@@ -167,7 +193,7 @@ const (
 	HyperbloomMultiplier = 3
 )
 
-func NewBloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
@@ -180,11 +206,12 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) combat.Attac
 		Abil:             string(combat.Bloom),
 		IgnoreDefPercent: 1,
 	}
-	ai.FlatDmg = BloomMultiplier * calcReactionDmg(char, ai, em)
-	return ai
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = BloomMultiplier * flatdmg
+	return ai, snap
 }
 
-func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
@@ -197,11 +224,12 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) combat.Att
 		Abil:             string(combat.Burgeon),
 		IgnoreDefPercent: 1,
 	}
-	ai.FlatDmg = BurgeonMultiplier * calcReactionDmg(char, ai, em)
-	return ai
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = BurgeonMultiplier * flatdmg
+	return ai, snap
 }
 
-func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
@@ -214,6 +242,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) combat.
 		Abil:             string(combat.Hyperbloom),
 		IgnoreDefPercent: 1,
 	}
-	ai.FlatDmg = HyperbloomMultiplier * calcReactionDmg(char, ai, em)
-	return ai
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = HyperbloomMultiplier * flatdmg
+	return ai, snap
 }

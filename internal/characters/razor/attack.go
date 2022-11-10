@@ -33,6 +33,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagNormal,
 		ICDTag:             combat.ICDTagNormalAttack,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
 		Element:            attributes.Physical,
 		Durability:         25,
 		HitlagFactor:       attackHitlagFactor[c.NormalCounter],
@@ -42,7 +43,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)

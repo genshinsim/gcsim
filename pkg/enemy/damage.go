@@ -134,6 +134,7 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("ele", st).
 			Write("ele_per", elePer).
 			Write("bonus_dmg", dmgBonus).
+			Write("ignore_def", atk.Info.IgnoreDefPercent).
 			Write("def_adj", defadj).
 			Write("target_lvl", t.Level).
 			Write("char_lvl", atk.Snapshot.CharLvl).
@@ -157,7 +158,7 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("pre_crit_dmg_react", precritdmg*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
-			Write("target", t.TargetIndex)
+			Write("target", t.Key())
 
 	}
 

@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -17,7 +18,7 @@ import (
 func (c *char) c4() {
 	//TODO: idk if the damage is instant or not
 	const c4IcdKey = "kuki-c4-icd"
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		//ignore if C4 on icd
 		if c.StatusIsActive(c4IcdKey) {
@@ -50,7 +51,7 @@ func (c *char) c4() {
 		}
 
 		//Particle check is 45% for particle
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 5, 5)
 		if c.Core.Rand.Float64() < .45 {
 			c.Core.QueueParticle("kuki", 1, attributes.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
 		}
@@ -66,7 +67,11 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 150
 	const c6IcdKey = "kuki-c6-icd"
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if di.Amount <= 0 {
+			return false
+		}
 		if c.StatusIsActive(c6IcdKey) {
 			return false
 		}

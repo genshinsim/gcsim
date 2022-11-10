@@ -18,12 +18,14 @@ func init() {
 type char struct {
 	*tmpl.Character
 	eCounter int
-	eWindow  int
 	a4buff   []float64
 	c2buff   []float64
 	c2stack  int
 	c4buff   []float64
+	savedNormalCounter int
 }
+
+const eWindowKey = "diluc-e-window"
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
@@ -33,7 +35,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 
 	c.eCounter = 0
-	c.eWindow = -1
 
 	w.Character = &c
 
@@ -58,15 +59,15 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) bool {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
 	// check if it is possible to use next skill
-	if a == action.ActionSkill && c.Core.F < c.eWindow {
-		return true
+	if a == action.ActionSkill && c.StatusIsActive(eWindowKey) {
+		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
 }
 
-//pyro infuse can't be overwritter
+// pyro infuse can't be overwritter
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 

@@ -53,13 +53,14 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 		Write("current", c.HPCurrent).
 		Write("max_hp", c.MaxHP())
 
-	h.Events.Emit(event.OnHeal, info.Caller, index, heal)
+	h.Events.Emit(event.OnHeal, info, index, heal)
 }
 
 type DrainInfo struct {
 	ActorIndex int
 	Abil       string
 	Amount     float64
+	External   bool
 }
 
 func (h *Handler) Drain(di DrainInfo) {
@@ -73,6 +74,5 @@ func (h *Handler) Drain(di DrainInfo) {
 		Write("amount", di.Amount).
 		Write("current", c.HPCurrent).
 		Write("max_hp", c.MaxHP())
-
-	h.Events.Emit(event.OnCharacterHurt, di.Amount)
+	h.Events.Emit(event.OnPlayerHPDrain, di)
 }

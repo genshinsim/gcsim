@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -65,10 +66,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		// On Heal subscription to start accumulating the healing
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-			src := args[0].(int)
+			src := args[0].(*player.HealInfo)
 			healAmt := args[2].(float64)
 
-			if src != char.Index {
+			if src.Caller != char.Index {
 				return false
 			}
 
@@ -109,8 +110,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 					atk := combat.AttackInfo{
 						ActorIndex:       char.Index,
-						DamageSrc:        c.Combat.Player().Key(), // from player
-						Abil:             "OHC Damage",
+						Abil:             "Sea-Dyed Foam",
 						AttackTag:        combat.AttackTagNoneStat,
 						ICDTag:           combat.ICDTagNone,
 						ICDGroup:         combat.ICDGroupDefault,
@@ -119,7 +119,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						FlatDmg:          s.bubbleHealStacks * .9,
 					}
 					//snapshot -1 since we don't need stats
-					c.QueueAttack(atk, combat.NewCircleHit(c.Combat.Player(), 3, true, combat.TargettableEnemy), -1, 1)
+					c.QueueAttack(atk, combat.NewCircleHit(c.Combat.Player(), 3), -1, 1)
 
 					// Reset
 					c.Flags.Custom["OHCActiveChar"] = -1

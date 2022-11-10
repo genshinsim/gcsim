@@ -46,7 +46,7 @@ func (c *char) c2() {
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
@@ -71,8 +71,8 @@ func (c *char) c6() {
 			CanBeDefenseHalted: false,
 			IsDeployable:       true,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 20, 20)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 22, 22)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 20, 20)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 22, 22)
 
 		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
 		c.c6ready = false

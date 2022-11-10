@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -46,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	ai.FlatDmg = burstDmg[c.TalentLvlBurst()] * c.MaxHP()
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark, burstHitmark)
 
 	c.Core.Status.Add("kokomiburst", 10*60)
 
@@ -108,7 +109,7 @@ func (c *char) burstDmgBonus(a combat.AttackTag) float64 {
 // Implements event handler for healing during burst
 // Also checks constellations
 func (c *char) burstActiveHook() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -124,17 +125,28 @@ func (c *char) burstActiveHook() {
 			return false
 		}
 
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  -1,
-			Message: "Ceremonial Garment",
-			Src:     burstHealPct[c.TalentLvlBurst()]*c.MaxHP() + burstHealFlat[c.TalentLvlBurst()],
-			Bonus:   c.Stat(attributes.Heal),
-		})
+		heal := burstHealPct[c.TalentLvlBurst()]*c.MaxHP() + burstHealFlat[c.TalentLvlBurst()]
+		for _, char := range c.Core.Player.Chars() {
+			src := heal
 
-		if c.Base.Cons >= 2 {
-			c.c2()
+			// C2 handling
+			// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
+			// Nereid's Ascension Normal and Charged Attacks: 0.6% of Kokomi's Max HP.
+			if c.Base.Cons >= 2 && char.HPCurrent/char.MaxHP() <= .5 {
+				bonus := 0.006 * c.MaxHP()
+				src += bonus
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, char.Index).
+					Write("bonus", bonus)
+			}
+			c.Core.Player.Heal(player.HealInfo{
+				Caller:  c.Index,
+				Target:  char.Index,
+				Message: "Ceremonial Garment",
+				Src:     src,
+				Bonus:   c.Stat(attributes.Heal),
+			})
 		}
+
 		if c.Base.Cons >= 4 {
 			c.c4()
 		}

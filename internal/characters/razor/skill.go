@@ -76,6 +76,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               skillPress[c.TalentLvlSkill()],
@@ -91,7 +92,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(c.Core.Combat.Player(), 2),
 		skillPressHitmarks[burstActive],
 		skillPressHitmarks[burstActive],
 		c4cb,
@@ -122,13 +123,14 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArtHold,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(c.Core.Combat.Player(), 5),
 		skillHoldHitmarks[burstActive],
 		skillHoldHitmarks[burstActive],
 	)

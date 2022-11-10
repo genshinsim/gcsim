@@ -62,7 +62,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			StrikeType:         combat.StrikeTypeDefault,
 			Element:            attributes.Anemo,
 			Durability:         50,
-			Mult:               skill[c.TalentLvlAttack()] + float64(c.decStack)*decBonus[c.TalentLvlAttack()],
+			Mult:               skill[c.TalentLvlSkill()] + float64(c.decStack)*decBonus[c.TalentLvlSkill()],
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   skillHitlagHaltFrame * 60,
 			CanBeDefenseHalted: false,
@@ -70,7 +70,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 		AoE := 0.3
 		if c.decStack == 4 {
 			ai.Abil = "Heartstopper Strike (Max Stacks)"
-			ai.Mult += convicBonus[c.TalentLvlAttack()]
+			ai.Mult += convicBonus[c.TalentLvlSkill()]
 			ai.HitlagHaltFrames = skillHitlagMaxStackHaltFrame * 60
 			AoE = 1
 		}
@@ -80,7 +80,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			c.a4()
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), AoE, false, combat.TargettableEnemy), hitDelay, hitDelay, skillCB)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), AoE), hitDelay, hitDelay, skillCB)
 		c.SetCD(action.ActionSkill, 10*60)
 
 		count := 2.0

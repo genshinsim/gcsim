@@ -52,7 +52,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillHitmark, skillHitmark)
 
 	if c.Base.Cons >= 6 {
 		c.c6("skill")
@@ -76,22 +76,7 @@ var skillRecastFrames []int
 const skillRecastHitmark = 27
 
 func (c *char) skillRecast(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		Abil:       "Stellar Restoration (Slashing)",
-		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		Element:    attributes.Electro,
-		Durability: 50,
-		Mult:       skillPress[c.TalentLvlSkill()],
-	}
-
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), skillRecastHitmark, skillRecastHitmark)
-
-	//add electro infusion
-	c.a1()
-
+	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
 		//2 tick dmg at start to end
 		hits, ok := p["c1"]
@@ -110,9 +95,25 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		}
 		// TODO: this should be 1st hit on cast and 2nd at end
 		for i := 0; i < hits; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), skillRecastHitmark, skillRecastHitmark)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), skillRecastHitmark, skillRecastHitmark)
 		}
 	}
+
+	ai := combat.AttackInfo{
+		Abil:       "Stellar Restoration (Slashing)",
+		ActorIndex: c.Index,
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagElementalArt,
+		ICDGroup:   combat.ICDGroupDefault,
+		Element:    attributes.Electro,
+		Durability: 50,
+		Mult:       skillPress[c.TalentLvlSkill()],
+	}
+
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillRecastHitmark, skillRecastHitmark)
+
+	//add electro infusion
+	c.a1()
 
 	// TODO: Particle timing?
 	count := 2.0

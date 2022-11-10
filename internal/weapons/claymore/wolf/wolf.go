@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	bonus[attributes.ATKP] = 0.3 + 0.1*float64(r)
 	const icdKey = "wolf-gravestone-icd"
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		if !c.Flags.DamageMode {
 			return false
 		}

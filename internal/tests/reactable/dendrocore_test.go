@@ -1,4 +1,4 @@
-package reactable_test
+﻿package reactable_test
 
 import (
 	"log"
@@ -22,7 +22,7 @@ func TestModifyDendroCore(t *testing.T) {
 		t.FailNow()
 	}
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "bloom" {
@@ -34,10 +34,11 @@ func TestModifyDendroCore(t *testing.T) {
 		if g, ok := args[0].(*reactable.DendroCore); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
-				Gadget: gadget.New(c, core.Coord{X: 0, Y: 0, R: 0.2}),
+				Gadget: gadget.New(c, core.Coord{X: 0, Y: 0, R: 0.2}, combat.GadgetTypDendroCore),
 			})
 			//prevent blowing up
-			g.OnRemoved = nil
+			g.OnKill = nil
+			g.OnExpiry = nil
 			g.OnCollision = nil
 		}
 		return false
@@ -48,7 +49,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -57,7 +58,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -89,5 +90,6 @@ type fakeCore struct {
 }
 
 func (f *fakeCore) Tick()                                                  {}
+func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { return 0 }
 func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (f *fakeCore) ApplyDamage(*combat.AttackEvent, float64)               {}

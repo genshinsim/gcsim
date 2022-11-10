@@ -6,28 +6,29 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
-func (r *Reactable) tryOverload(a *combat.AttackEvent) {
+func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		//must have pyro; pyro cant coexist (for now) so ok to ignore count?
 		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
-			return
+			return false
 		}
 		//reduce; either gone or left; don't care how much actually reacted
 		consumed = r.reduce(attributes.Pyro, a.Info.Durability, 1)
+		r.burningCheck()
 	case attributes.Pyro:
 		//must have electro; gotta be careful with ec?
 		if r.Durability[ModifierElectro] < ZeroDur {
-			return
+			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)
 	default:
 		//should be here
-		return
+		return false
 	}
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
@@ -50,6 +51,9 @@ func (r *Reactable) tryOverload(a *combat.AttackEvent) {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	atk.FlatDmg = 2 * calcReactionDmg(char, atk, em)
-	r.core.QueueAttack(atk, combat.NewCircleHit(r.self, 3, true, combat.TargettableEnemy), -1, 1)
+	flatdmg, snap := calcReactionDmg(char, atk, em)
+	atk.FlatDmg = 2 * flatdmg
+	r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHit(r.self, 3), 1)
+
+	return true
 }

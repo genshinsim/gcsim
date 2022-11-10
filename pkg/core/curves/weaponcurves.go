@@ -1536,6 +1536,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.ForestRegalia: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.06666699796915054,
+		Specialized:      attributes.ER,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.FreedomSworn: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
@@ -1579,6 +1616,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          42.4010009765625,
 		BaseSpecialized:  0.09000000357627869,
 		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.FruitOfFulfillment: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.10000000149011612,
+		Specialized:      attributes.ER,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -1964,43 +2038,6 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-	keys.SapwoodBlade: {
-		AtkCurve:         GROW_CURVE_ATTACK_201,
-		SpecializedCurve: GROW_CURVE_CRITICAL_201,
-		BaseAtk:          43.734901428222656,
-		BaseSpecialized:  0.06666699796915054,
-		Specialized:      attributes.ER,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      25.899999618530273,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      51.900001525878906,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      77.80000305175781,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      103.69999694824219,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      129.6999969482422,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      155.60000610351562,
-			},
-		},
-	},
 	keys.KagurasVerity: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
@@ -2044,6 +2081,80 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          42.4010009765625,
 		BaseSpecialized:  0.10000000149011612,
 		Specialized:      attributes.ER,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.KeyOfKhajNisut: {
+		AtkCurve:         GROW_CURVE_ATTACK_304,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          44.33580017089844,
+		BaseSpecialized:  0.14399999380111694,
+		Specialized:      attributes.HPP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.KingsSquire: {
+		AtkCurve:         GROW_CURVE_ATTACK_204,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          41.067100524902344,
+		BaseSpecialized:  0.11999999731779099,
+		Specialized:      attributes.ATKP,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -2334,6 +2445,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.MakhairaAquamarine: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  36,
+		Specialized:      attributes.EM,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.MappaMare: {
 		AtkCurve:         GROW_CURVE_ATTACK_202,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
@@ -2445,6 +2593,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.MissiveWindspear: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.09000000357627869,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.MistsplitterReforged: {
 		AtkCurve:         GROW_CURVE_ATTACK_302,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
@@ -2488,6 +2673,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          42.4010009765625,
 		BaseSpecialized:  0.11259999871253967,
 		Specialized:      attributes.PhyP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.Moonpiercer: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  24,
+		Specialized:      attributes.EM,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -3539,6 +3761,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.SapwoodBlade: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.06666699796915054,
+		Specialized:      attributes.ER,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.SeasonedHuntersBow: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -4084,6 +4343,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          45.9364013671875,
 		BaseSpecialized:  0.14399999380111694,
 		Specialized:      attributes.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.StaffOfTheScarletSands: {
+		AtkCurve:         GROW_CURVE_ATTACK_304,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          44.33580017089844,
+		BaseSpecialized:  0.09600000083446503,
+		Specialized:      attributes.CR,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -4707,6 +5003,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.WanderingEvenstar: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  36,
+		Specialized:      attributes.EM,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.WasterGreatsword: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -4964,6 +5297,80 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          45.9364013671875,
 		BaseSpecialized:  0.1080000028014183,
 		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.XiphosMoonlight: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  36,
+		Specialized:      attributes.EM,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.ThousandFloatingDreams: {
+		AtkCurve:         GROW_CURVE_ATTACK_304,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          44.3358,
+		BaseSpecialized:  57.6,
+		Specialized:      attributes.EM,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,

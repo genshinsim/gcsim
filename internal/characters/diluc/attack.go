@@ -9,9 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{24, 39, 26, 49}
-var attackHitlagHaltFrame = []float64{.1, .09, .09, .12}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = []int{24, 39, 26, 49}
+	attackHitlagHaltFrame = []float64{.1, .09, .09, .12}
+)
 
 const normalHitNum = 4
 
@@ -25,6 +27,11 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
+	// C6: Additionally, Searing Onslaught will not interrupt the Normal Attack combo.
+	if c.Base.Cons >= 6 && c.Core.Player.CurrentState() == action.SkillState {
+		c.NormalCounter = c.savedNormalCounter
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -42,12 +49,15 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+		combat.NewCircleHit(c.Core.Combat.Player(), 1),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)
 
-	defer c.AdvanceNormalIndex()
+	defer func() {
+		c.AdvanceNormalIndex()
+		c.savedNormalCounter = c.NormalCounter
+	}()
 
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),

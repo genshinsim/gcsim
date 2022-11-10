@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		},
 	})
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4, false, combat.TargettableEnemy), 0, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 0, skillHitmark)
 
 	// 4 or 5, 1:1 ratio
 	var count float64 = 4

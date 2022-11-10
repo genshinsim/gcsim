@@ -22,7 +22,7 @@ func init() {
 // "PlayStation Network"
 // Hitting enemies with Normal or Charged Attacks grants a 50% chance to deal 200% ATK as DMG in a small AoE. This effect can only occur once every 10s.
 // Additionally, if the Traveler equips the Sword of Descension, their ATK is increased by 66.
-//  * Weapon refines do not affect this weapon
+//   - Weapon refines do not affect this weapon
 type Weapon struct {
 	Index int
 }
@@ -38,54 +38,62 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	m := make([]float64, attributes.EndStatType)
 
-	if char.Base.Key < keys.TravelerDelim {
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("swordofdescension", -1),
-			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				m[attributes.ATK] = 66
-				return m, true
-			},
-		})
+	passive, ok := p.Params["passive"]
+	if !ok {
+		passive = 1
 	}
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	if passive == 1 {
+		if char.Base.Key < keys.TravelerDelim {
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBase("swordofdescension", -1),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					m[attributes.ATK] = 66
+					return m, true
+				},
+			})
 		}
-		// ignore if character not on field
-		if c.Player.Active() != char.Index {
-			return false
-		}
-		// Ignore if neither a charged nor normal attack
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
-			return false
-		}
-		// Ignore if icd is still up
-		if char.StatusIsActive(icdKey) {
-			return false
-		}
-		// Ignore 50% of the time, 1:1 ratio
-		if c.Rand.Float64() < 0.5 {
-			return false
-		}
-		char.AddStatus(icdKey, 600, true)
 
-		ai := combat.AttackInfo{
-			ActorIndex: char.Index,
-			Abil:       "Sword of Descension Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			Element:    attributes.Physical,
-			Durability: 100,
-			Mult:       2.00,
-		}
-		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 2, false, combat.TargettableEnemy), 0, 1)
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+			atk := args[1].(*combat.AttackEvent)
+			if atk.Info.ActorIndex != char.Index {
+				return false
+			}
+			// ignore if character not on field
+			if c.Player.Active() != char.Index {
+				return false
+			}
+			// Ignore if neither a charged nor normal attack
+			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+				return false
+			}
+			// Ignore if icd is still up
+			if char.StatusIsActive(icdKey) {
+				return false
+			}
+			// Ignore 50% of the time, 1:1 ratio
+			if c.Rand.Float64() < 0.5 {
+				return false
+			}
+			char.AddStatus(icdKey, 600, true)
 
-		return false
-	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
+			ai := combat.AttackInfo{
+				ActorIndex: char.Index,
+				Abil:       "Sword of Descension Proc",
+				AttackTag:  combat.AttackTagWeaponSkill,
+				ICDTag:     combat.ICDTagNone,
+				ICDGroup:   combat.ICDGroupDefault,
+				Element:    attributes.Physical,
+				Durability: 100,
+				Mult:       2.00,
+			}
+			trg := args[0].(combat.Target)
+			c.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 1)
+
+			return false
+		}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
+	}
+
 	return w, nil
 }

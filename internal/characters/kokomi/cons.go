@@ -3,7 +3,6 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -30,25 +29,7 @@ func (c *char) c1(f, travel int) {
 	ai.FlatDmg = 0.3 * c.MaxHP()
 
 	// TODO: Is this snapshotted/dynamic?
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), f, f+travel)
-}
-
-// C2 handling
-// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
-// Nereid's Ascension Normal and Charged Attacks: 0.6% of Kokomi's Max HP.
-func (c *char) c2() {
-	for _, char := range c.Core.Player.Chars() {
-		if char.HPCurrent/char.MaxHP() > .5 {
-			continue
-		}
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  char.Index,
-			Message: "The Clouds Like Waves Rippling",
-			Src:     0.006 * c.MaxHP(),
-			Bonus:   c.Stat(attributes.Heal),
-		})
-	}
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), f, f+travel)
 }
 
 // C4 (Energy piece only) handling

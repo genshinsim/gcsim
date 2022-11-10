@@ -15,6 +15,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -38,6 +39,10 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 		core.Combat.AddEnemy(e)
 		//s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 	}
+
+	//default target is closest to player?
+	trgs := core.Combat.EnemyByDistance(p.X, p.Y, combat.InvalidTargetKey)
+	core.Combat.DefaultTarget = core.Combat.Enemy(trgs[0]).Key()
 
 	return nil
 }
@@ -146,11 +151,18 @@ func SetupResonance(s *core.Core) {
 					last = s.F
 					return false
 				}
-				s.Events.Subscribe(event.OnOverload, recover, "electro-res")
-				s.Events.Subscribe(event.OnSuperconduct, recover, "electro-res")
-				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
-				s.Events.Subscribe(event.OnQuicken, recover, "electro-res")
-				s.Events.Subscribe(event.OnAggravate, recover, "electro-res")
+
+				recoverNoGadget := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
+					return recover(args...)
+				}
+				s.Events.Subscribe(event.OnOverload, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnSuperconduct, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnElectroCharged, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnQuicken, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnAggravate, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnHyperbloom, recover, "electro-res")
 			case attributes.Geo:
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
@@ -161,7 +173,7 @@ func SetupResonance(s *core.Core) {
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 				//shred geo res of target
-				s.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+				s.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 					t, ok := args[0].(*enemy.Enemy)
 					if !ok {
 						return false
@@ -219,6 +231,9 @@ func SetupResonance(s *core.Core) {
 				twoBuff := make([]float64, attributes.EndStatType)
 				twoBuff[attributes.EM] = 30
 				twoEl := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
 					for _, c := range chars {
 						c.AddStatMod(character.StatMod{
 							Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
@@ -230,8 +245,8 @@ func SetupResonance(s *core.Core) {
 					}
 					return false
 				}
-				// s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
-				// s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnBurning, twoEl, "dendro-res")
+				s.Events.Subscribe(event.OnBloom, twoEl, "dendro-res")
 				s.Events.Subscribe(event.OnQuicken, twoEl, "dendro-res")
 
 				threeBuff := make([]float64, attributes.EndStatType)
@@ -248,17 +263,23 @@ func SetupResonance(s *core.Core) {
 					}
 					return false
 				}
-				s.Events.Subscribe(event.OnAggravate, threeEl, "dendro-res")
-				s.Events.Subscribe(event.OnSpread, threeEl, "dendro-res")
-				// s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
-				// s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
+				threeElNoGadget := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
+					return threeEl(args...)
+				}
+				s.Events.Subscribe(event.OnAggravate, threeElNoGadget, "dendro-res")
+				s.Events.Subscribe(event.OnSpread, threeElNoGadget, "dendro-res")
+				s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
+				s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 			}
 		}
 	}
 }
 
 func SetupMisc(c *core.Core) {
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		//dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {

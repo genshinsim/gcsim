@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const icdKey = "dragonspine-spear-icd"
 	icd := 600 // 10s *60
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			if t.AuraContains(attributes.Cryo, attributes.Frozen) {
 				ai.Mult = atkc
 			}
-			c.QueueAttack(ai, combat.NewCircleHit(t, 2, false, combat.TargettableEnemy), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHit(t, 2), 0, 1)
 		}
 		return false
 	}, fmt.Sprintf("dragonspine-%v", char.Base.Key.String()))

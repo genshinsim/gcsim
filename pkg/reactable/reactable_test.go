@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -75,17 +76,17 @@ func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.Attack
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur combat.Durability, trg int) *combat.AttackEvent {
+func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.TargetKey) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewDefSingleTarget(trg, combat.TargettableEnemy),
+		Pattern: combat.NewDefSingleTarget(trg),
 	}
 
 }
@@ -98,8 +99,22 @@ type testTarget struct {
 	last combat.AttackEvent
 }
 
-func (t *testTarget) Type() combat.TargettableType                                  { return t.typ }
-func (t *testTarget) AttackWillLand(a combat.AttackPattern, src int) (bool, string) { return true, "" }
+func (t *testTarget) Type() combat.TargettableType { return t.typ }
+
+func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
+	t.Attack(atk, nil)
+	//delay damage event to end of the frame
+	t.Core.Combat.Tasks.Add(func() {
+		//apply the damage
+		t.ApplyDamage(atk, 1)
+		t.Core.Combat.Events.Emit(event.OnEnemyDamage, t, atk, 1.0, false)
+	}, 0)
+	return 1
+}
+
+func (t *testTarget) AttackWillLand(a combat.AttackPattern) (bool, string) {
+	return true, ""
+}
 
 func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	t.last = *atk
@@ -123,7 +138,6 @@ func addTargetToCore(c *core.Core) *testTarget {
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
 	c.Combat.AddEnemy(trg)
-	trg.SetIndex(c.Combat.EnemyCount() - 1)
 	return trg
 }
 

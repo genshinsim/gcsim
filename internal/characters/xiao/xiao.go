@@ -72,28 +72,13 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(a)
 
 	if c.StatusIsActive("xiaoburst") {
-		// Calculate and add A1 damage bonus - applies to all damage
-		// Fraction dropped in int conversion in go - acts like floor
-		stacks := 1 + int((c.Core.F-c.qStarted)/180)
-		if stacks > 5 {
-			stacks = 5
-		}
-		//While under the effects of Bane of All Evil, all DMG dealt by Xiao
-		//increases by 5%. DMG increases by a further 5% for every 3s the
-		//ability persists. The maximum DMG Bonus is 25%.
-		ds.Stats[attributes.DmgP] += float64(stacks) * 0.05
-		c.Core.Log.NewEvent("a1 adding dmg %", glog.LogCharacterEvent, c.Index).
-			Write("stacks", stacks).
-			Write("final", ds.Stats[attributes.DmgP]).
-			Write("time since burst start", c.Core.F-c.qStarted)
-
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
 		// Also handle burst CA ICD change to share with Normal
 		switch a.AttackTag {
 		case combat.AttackTagNormal:
 			// QN1-1 has different hitlag from N1-1
 			if a.Abil == "Normal 0" {
-				//this also overwrites N1-2 HitlagHaltFrames but they have the same value so it's fine
+				// this also overwrites N1-2 HitlagHaltFrames but they have the same value so it's fine
 				a.HitlagHaltFrames = 0.01 * 60
 			}
 		case combat.AttackTagExtra:

@@ -47,6 +47,11 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
   },
   diluc: { key: 'diluc', element: 'pyro', weapon_type: 'claymore' },
   diona: { key: 'diona', element: 'cryo', weapon_type: 'bow' },
+  dori: {
+    key: 'dori',
+    element: 'electro',
+    weapon_type: 'claymore',
+  },
   eula: { key: 'eula', element: 'cryo', weapon_type: 'claymore' },
   fischl: { key: 'fischl', element: 'electro', weapon_type: 'bow' },
   ganyu: { key: 'ganyu', element: 'cryo', weapon_type: 'bow' },
@@ -121,15 +126,25 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: 'geo',
     weapon_type: 'Sword',
   },
-  collei: {
-    key: 'collei',
+  travelerdendro: {
+    key: 'travelerdendro',
     element: 'dendro',
-    weapon_type: 'bow',
+    weapon_type: 'Sword',
   },
-  tighnari: {
-    key: 'tighnari',
+  nahida: {
+    key: 'nahida',
     element: 'dendro',
-    weapon_type: 'bow',
+    weapon_type: 'catalyst',
+  },
+  cyno: {
+    key: 'cyno',
+    element: 'electro',
+    weapon_type: 'polearm',
+  },
+  nilou: {
+    key: 'nilou',
+    element: 'hydro',
+    weapon_type: 'sword',
   },
 };
 
