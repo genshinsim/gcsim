@@ -90,6 +90,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) burstRestorefunc(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.Core.F > c.restoreICD && c.restoreCount < 5 {
 		c.restoreCount++
 		c.restoreICD = c.Core.F + 60 // once every 1 second
