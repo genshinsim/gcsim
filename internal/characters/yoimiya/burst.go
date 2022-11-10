@@ -71,13 +71,13 @@ func (c *char) applyAB(a combat.AttackCB) {
 	if c.abApplied {
 		return
 	}
-	c.abApplied = true
 
 	trg, ok := a.Target.(*enemy.Enemy)
 	// do nothing if not an enemy
 	if !ok {
 		return
 	}
+	c.abApplied = true
 
 	duration := 600
 	if c.Base.Cons >= 1 {
