@@ -37,8 +37,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: false,
 	}
+
 	// We always assume that A1 procs on hit 1 to simplify
-	//TODO: does this need to change if we add player position?
 	var a1cb combat.AttackCBFunc
 	if p["nobehind"] != 1 {
 		a1cb = c.a1()

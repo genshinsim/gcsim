@@ -9,6 +9,7 @@ import (
 )
 
 // When Rosaria strikes an opponent from behind using Ravaging Confession, Rosaria's CRIT Rate increases by 12% for 5s.
+// TODO: does this need to change if we add player position?
 func (c *char) a1() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
