@@ -106,9 +106,8 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		skillPressHitmarks[burstActive],
 		skillPressHitmarks[burstActive],
 		c4cb,
+		c.addSigil(false),
 	)
-
-	c.Core.Tasks.Add(c.addSigil, skillPressHitmarks[burstActive])
 
 	cd := 6 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
 	c.SetCDWithDelay(action.ActionSkill, int(cd), skillPressCDStarts[burstActive])
@@ -163,15 +162,24 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 	}
 }
 
-func (c *char) addSigil() {
-	if !c.StatusIsActive(skillSigilDurationKey) {
-		c.sigils = 0
-	}
+func (c *char) addSigil(done bool) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		if !c.StatusIsActive(skillSigilDurationKey) {
+			c.sigils = 0
+		}
 
-	if c.sigils < 3 {
-		c.sigils++
+		if c.sigils < 3 {
+			c.sigils++
+		}
+		c.AddStatus(skillSigilDurationKey, 1080, true) //18 seconds
 	}
-	c.AddStatus(skillSigilDurationKey, 1080, true) //18 seconds
 }
 
 func (c *char) clearSigil() {

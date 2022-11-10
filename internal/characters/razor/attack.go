@@ -62,7 +62,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatusIsActive(burstBuffKey) {
 		cb = c.wolfBurst(c.NormalCounter)
 	}
-	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], cb)
+	var c6cb func(a combat.AttackCB)
+	if c.Base.Cons >= 6 {
+		c6cb = c.c6cb
+	}
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], cb, c6cb)
 
 	defer c.AdvanceNormalIndex()
 
