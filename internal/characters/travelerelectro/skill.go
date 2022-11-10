@@ -84,9 +84,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) //this way we're future proof if for whatever reason this misses
 	}
 
-	amuletCB := func(_ combat.AttackCB) {
+	amuletCB := func(a combat.AttackCB) {
 		// generate amulet if generated amulets < limit
 		if c.abundanceAmulets >= maxAmulets {
+			return
+		}
+		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
 
