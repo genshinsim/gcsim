@@ -1,19 +1,12 @@
 package main
 
 import (
-	"context"
-	"encoding/base64"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
-	"sync"
-	"time"
 
 	"github.com/genshinsim/gcsim/pkg/optimization"
 	"github.com/genshinsim/gcsim/pkg/result"
@@ -39,6 +32,10 @@ type opts struct {
 	verbose      bool
 	options      string
 }
+
+const resultServeFile = "serve_data.json"
+const sampleServeFile = "serve_sample.json"
+const address = ":8381"
 
 // command line tool; following options are available:
 func main() {
@@ -72,8 +69,8 @@ func main() {
 	}
 
 	if opt.serve {
-		os.Remove("serve_data.json.gz") //not really needed since we truncate anyways
-		opt.out = "serve_data.json"
+		opt.out = resultServeFile
+		opt.sample = sampleServeFile
 		opt.gz = true
 	}
 
@@ -93,10 +90,11 @@ func main() {
 	}
 
 	// TODO: should perform the config parsing here and then share the parsed results between run & sample
-
 	var res result.Summary
+	var err error
+
 	if !opt.norun {
-		res, err := simulator.Run(simopt)
+		res, err = simulator.Run(simopt)
 		if err != nil {
 			log.Println(err)
 			return
@@ -128,11 +126,10 @@ func main() {
 	}
 
 	if opt.serve && !opt.norun {
-		fmt.Println("Serving result to HTTP...")
-		//start server to listen for token
-		serverDone := &sync.WaitGroup{}
-		serverDone.Add(1)
-		serveLocal(serverDone, "./serve_data.json.gz", opt.keepserving)
+		fmt.Println("Serving results & sample to HTTP...")
+		idleConnectionsClosed := make(chan struct{})
+		serve(idleConnectionsClosed, resultServeFile+".gz", sampleServeFile+".gz", opt.keepserving)
+
 		url := "https://gcsim.app/viewer/local"
 		if !opt.nobrowser {
 			err := open(url)
@@ -144,7 +141,8 @@ func main() {
 				}
 			}
 		}
-		serverDone.Wait()
+
+		<-idleConnectionsClosed
 	}
 }
 
@@ -170,103 +168,4 @@ func openWSL(url string) error {
 	cmd := "powershell.exe"
 	args := []string{"/c", "start", url}
 	return exec.Command(cmd, args...).Start()
-}
-
-var ctxShutdown, cancel = context.WithCancel(context.Background())
-
-var quit = make(chan bool, 1)
-
-type viewerData struct {
-	Data        string `json:"data"`
-	Author      string `json:"author"`
-	Description string `json:"description"`
-}
-
-func serveLocal(wg *sync.WaitGroup, path string, keepserving bool) {
-	srv := &http.Server{Addr: "127.0.0.1:8381"}
-	http.HandleFunc("/data", func(w http.ResponseWriter, r *http.Request) {
-		select {
-		case <-ctxShutdown.Done():
-			fmt.Println("HTTP server shuting down ...")
-			return
-		default:
-		}
-		//check CORS
-		switch r.Method {
-		case "OPTIONS":
-			w.Header().Set("Access-Control-Allow-Origin", "*")
-			w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
-			w.Header().Set("Access-Control-Allow-Headers", "Accept, Access-Control-Allow-Origin, Content-Type, Content-Length, Accept-Encoding, Authorization")
-			w.WriteHeader(http.StatusNoContent)
-			fmt.Println("OPTIONS request received, responding")
-			return
-		case "GET":
-		default:
-			fmt.Printf("Invalid request method: %v\n", r.Method)
-			w.WriteHeader(http.StatusForbidden)
-			return
-		}
-
-		//read the gz file
-		gzData, err := os.ReadFile(path)
-		if err != nil {
-			fmt.Printf("error reading gz data: %v\n", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		b64string := base64.StdEncoding.EncodeToString(gzData)
-
-		x := viewerData{
-			Data:        b64string,
-			Author:      "none",
-			Description: "none",
-		}
-
-		jsonData, err := json.Marshal(x)
-		if err != nil {
-			fmt.Printf("error marshal json: %v\n", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.WriteHeader(http.StatusOK)
-		w.Write(jsonData)
-
-		if f, ok := w.(http.Flusher); ok {
-			f.Flush()
-		}
-
-		if !keepserving {
-			// // Shut down server here
-			cancel() // to say sorry, above.
-
-			close(quit)
-		}
-
-	})
-
-	go gracefullShutdown(srv)
-
-	go func() {
-		defer wg.Done()
-		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-			log.Fatalf("ListenAndServe(): %v", err)
-		}
-		fmt.Println("HTTP server closed.")
-	}()
-}
-
-func gracefullShutdown(server *http.Server) {
-	<-quit
-	fmt.Println("Server is shutting down...")
-
-	ctx, c := context.WithTimeout(context.Background(), 30*time.Second)
-	defer c()
-
-	server.SetKeepAlivesEnabled(false)
-	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Could not gracefully shutdown the server: %v\n", err)
-	}
 }
