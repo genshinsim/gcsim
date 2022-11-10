@@ -41,11 +41,11 @@ var procEvents = []event.Event{
 }
 
 // After triggering Burning, Quicken, Aggravate, Spread, Bloom, Hyperbloom, or
-// Burgeon, a Leaf of Consciousness will be created around the character for a
-// maximum of 10s. When picked up, the Leaf will grant the character 60
-// Elemental Mastery for 12s. Only 1 Leaf can be generated this way every 20s.
-// This effect can still be triggered if the character is not on the field. The
-// Leaf of Consciousness' effect cannot stack.
+// Burgeon, a Leaf of Revival will be created around the character for a
+// maximum of 10s. When picked up, the Leaf will grant the character
+// 16/20/24/28/32% ATK for 12s. Only 1 Leaf can be generated this way every
+// 20s. This effect can still be triggered if the character is not on the
+// field.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
