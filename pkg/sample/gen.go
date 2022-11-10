@@ -50,6 +50,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64) (Sample, error) {
 
 	sample := Sample{
 		Config:           cfg,
+		InitialCharacter: simcfg.InitialChar.String(),
 		CharacterDetails: chars,
 		TargetDetails:    simcfg.Targets,
 		Seed:             strconv.FormatUint(seed, 10),

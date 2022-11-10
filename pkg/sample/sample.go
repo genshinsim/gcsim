@@ -11,6 +11,7 @@ import (
 
 type Sample struct {
 	Config           string                       `json:"config"`
+	InitialCharacter string                       `json:"initial_character"`
 	CharacterDetails []simulation.CharacterDetail `json:"character_details"`
 	TargetDetails    []enemy.EnemyProfile         `json:"target_details"`
 	Seed             string                       `json:"seed"`
