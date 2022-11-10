@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -42,11 +43,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		bomblets = 2
 	}
 
-	bombletCoilStacks, ok := p["bomblet_coil_stacks"]
-	if !ok {
-		bombletCoilStacks = 2
-	}
-
 	delay, ok := p["bomb_delay"]
 	if !ok {
 		delay = 0
@@ -64,7 +60,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       skillMain[c.TalentLvlSkill()],
 		}
-		c.coilStacks()
 		// TODO: accurate snapshot timing, assumes snapshot on release and not on hit/bomb creation
 		c.Core.QueueAttack(
 			ai,
@@ -91,16 +86,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		// TODO: proper bomblet positioning
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2), 0,
-			skillHitmark+travel+delay+((i+1)*6))
-	}
-
-	// Queue up bomblet coil stacks
-	for i := 0; i < bombletCoilStacks; i++ {
-		c.Core.Tasks.Add(func() {
-			c.coilStacks()
-		}, skillHitmark+travel+delay+((i+1)*6))
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2), 0, skillHitmark+travel+delay+((i+1)*6), c.coilStacks)
 	}
 
 	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+travel+c.ParticleDelay)
@@ -115,7 +101,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 // Handles coil stacking and associated effects, including triggering rushing ice
-func (c *char) coilStacks() {
+func (c *char) coilStacks(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.coilICDExpiry > c.Core.F {
 		return
 	}
@@ -126,6 +115,9 @@ func (c *char) coilStacks() {
 	c.coils++
 	c.coilICDExpiry = c.Core.F + 6
 
+	c.Core.Log.NewEvent("coil stack gained", glog.LogCharacterEvent, c.Index).
+		Write("stacks", c.coils)
+
 	// A1
 	// When Aloy receives the Coil effect from Frozen Wilds, her ATK is increased by 16%, while nearby party members' ATK is increased by 8%. This effect lasts 10s.
 	for _, char := range c.Core.Player.Chars() {
@@ -135,7 +127,7 @@ func (c *char) coilStacks() {
 			valA1[attributes.ATKP] = .16
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("aloy-a1", 600),
+			Base:         modifier.NewBaseWithHitlag("aloy-a1", 600),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return valA1, true
