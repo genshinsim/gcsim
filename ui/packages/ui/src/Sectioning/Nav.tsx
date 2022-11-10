@@ -38,9 +38,9 @@ export default ({}) => {
           {PageNavs}
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
-          <Link href="/account">
+          {/* <Link href="/account">
             <Button minimal={true} icon="user" text="Guest" />
-          </Link>
+          </Link> */}
           <HTMLSelect
               className="ml-2"
               value={i18n.resolvedLanguage}
