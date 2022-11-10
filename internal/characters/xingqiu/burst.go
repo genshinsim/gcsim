@@ -95,7 +95,10 @@ func (c *char) summonSwordWave() {
 	var c2cb, c6cb func(a combat.AttackCB)
 	if c.nextRegen {
 		done := false
-		c6cb = func(_ combat.AttackCB) {
+		c6cb = func(a combat.AttackCB) {
+			if a.Target.Type() != combat.TargettableEnemy {
+				return
+			}
 			if done {
 				return
 			}
