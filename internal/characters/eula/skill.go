@@ -94,7 +94,10 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	}
 	c.particleDone = false
 	//add 1 to grim heart if not capped by icd
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if c.StatusIsActive(grimheartICD) {
 			return
 		}
