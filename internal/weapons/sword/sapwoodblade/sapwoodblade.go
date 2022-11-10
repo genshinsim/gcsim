@@ -66,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatus(icdKey, 1200, true)
 		c.Log.NewEvent("sapwood proc'd", glog.LogWeaponEvent, char.Index)
 		if pickupDelay <= 0 {
-			c.Log.NewEvent("sapwood seed ignored", glog.LogWeaponEvent, char.Index)
+			c.Log.NewEvent("sapwood leaf ignored", glog.LogWeaponEvent, char.Index)
 			return false
 		}
 		c.Tasks.Add(func() {
@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				},
 			})
 			c.Log.NewEvent(
-				fmt.Sprintf("sapwood seed picked up by %v", active.Base.Key.String()),
+				fmt.Sprintf("sapwood leaf picked up by %v", active.Base.Key.String()),
 				glog.LogWeaponEvent,
 				char.Index,
 			)

@@ -1,4 +1,4 @@
-package forestregalia
+package moonpiercer
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.ForestRegalia, NewWeapon)
+	core.RegisterWeaponFunc(keys.Moonpiercer, NewWeapon)
 }
 
 type Weapon struct {
@@ -26,8 +26,8 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 const (
-	icdKey  = "forestregalia-icd"
-	buffKey = "forest-sanctuary"
+	icdKey  = "moonpiercer-icd"
+	buffKey = "stillwood-moonshadow"
 )
 
 var procEvents = []event.Event{
@@ -53,7 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	pickupDelay := p.Params["pickup_delay"]
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.EM] = float64(45 + r*15)
+	m[attributes.ATKP] = 0.12 + float64(r)*0.04
 
 	handleProc := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -64,9 +64,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatus(icdKey, 1200, true)
-		c.Log.NewEvent("forestregalia proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("moonpiercer proc'd", glog.LogWeaponEvent, char.Index)
 		if pickupDelay <= 0 {
-			c.Log.NewEvent("forestregalia leaf ignored", glog.LogWeaponEvent, char.Index)
+			c.Log.NewEvent("moonpiercer leaf ignored", glog.LogWeaponEvent, char.Index)
 			return false
 		}
 		c.Tasks.Add(func() {
@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				},
 			})
 			c.Log.NewEvent(
-				fmt.Sprintf("forestregalia leaf picked up by %v", active.Base.Key.String()),
+				fmt.Sprintf("moonpiercer leaf picked up by %v", active.Base.Key.String()),
 				glog.LogWeaponEvent,
 				char.Index,
 			)
@@ -87,7 +87,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}
 	for _, e := range procEvents {
-		c.Events.Subscribe(e, handleProc, fmt.Sprintf("forestregalia-proc-%v-%v", char.Base.Key.String(), e))
+		c.Events.Subscribe(e, handleProc, fmt.Sprintf("moonpiercer-proc-%v-%v", char.Base.Key.String(), e))
 	}
 	return w, nil
 }
