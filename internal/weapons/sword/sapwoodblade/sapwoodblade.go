@@ -87,7 +87,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}
 	for _, e := range procEvents {
-		c.Events.Subscribe(e, handleProc, fmt.Sprintf("sapwoodblade-proc-%v-%v", char.Base.Key.String(), e))
+		c.Events.Subscribe(e, handleProc, fmt.Sprintf("sapwoodblade-%v", char.Base.Key.String()))
 	}
 	return w, nil
 }
