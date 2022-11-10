@@ -12,6 +12,9 @@ const a4ICDKey = "sara-a4-icd"
 // According to library finding, text description is inaccurate
 // it's more like for every 1% of ER, she grants 0.012 flat energy
 func (c *char) a4(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(a4ICDKey) {
 		return
 	}

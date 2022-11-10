@@ -69,7 +69,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	var c1cb combat.AttackCBFunc
 	if c.Base.Cons >= 1 {
-		c1cb = func(_ combat.AttackCB) { c.c1() }
+		c1cb = func(a combat.AttackCB) {
+			if a.Target.Type() != combat.TargettableEnemy {
+				return
+			}
+			c.c1()
+		}
 	}
 
 	if waveClusterHits%10 == 1 {
