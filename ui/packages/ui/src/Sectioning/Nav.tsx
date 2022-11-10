@@ -10,13 +10,14 @@ export default ({}) => {
   const PageNavs = [
     <NavLink key="sim" href="/simulator" icon="calculator" text={t("nav.simulator")} />,
     <NavLink key="view" href="/viewer" icon="chart" text={t("nav.viewer")} />,
+    <NavLink key="sample" href="/sample" icon="helper-management" text={"Sample"} />,
     <AnchorButton
         key="db"
         className={Classes.MINIMAL}
         icon="database"
         href="https://db.gcsim.app"
         target="_blank">
-      <span className="hidden md:block">{t<string>("nav.teams_db")}</span>
+      <span className="hidden min-[798px]:block">{t<string>("nav.teams_db")}</span>
     </AnchorButton>,
     <NavLink key="about" href="/about" icon="info-sign" text={t("nav.about")} />,
   ];
@@ -32,7 +33,7 @@ export default ({}) => {
             </Link>
           </Navbar.Heading>
         </Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT} className="!hidden sm:!flex">
+        <Navbar.Group align={Alignment.LEFT} className="!hidden min-[550px]:!flex">
           <Navbar.Divider />
           {PageNavs}
         </Navbar.Group>
@@ -61,7 +62,7 @@ const NavLink = ({ href, icon, text }: { href: string, icon: IconName , text: st
   return (
     <Link href={href}>
       <Button minimal={true} icon={icon}>
-        <span className="hidden md:block">{text}</span>
+        <span className="hidden min-[798px]:block">{text}</span>
       </Button>
     </Link>
   );

@@ -14,6 +14,8 @@ import {
   ViewTypes,
   PageUserAccount,
   DiscordCallback,
+  SampleLoader,
+  SampleTypes,
 } from "./Pages";
 import "./Translation/i18n";
 
@@ -137,6 +139,17 @@ const Main = ({ exec, children }: UIProps) => {
           </Route>
           <Route path="/simulator">
             <Simulator exec={exec} />
+          </Route>
+
+          {/* Sample Routes */}
+          <Route path="/sample">
+            <SampleLoader type={SampleTypes.Landing} />
+          </Route>
+          <Route path="/sample/upload">
+            <SampleLoader type={SampleTypes.Upload} />
+          </Route>
+          <Route path="/sample/local">
+            <SampleLoader type={SampleTypes.Local} />
           </Route>
 
           {/* Viewer Routes */}

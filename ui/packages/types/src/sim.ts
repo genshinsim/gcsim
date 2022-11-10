@@ -13,6 +13,7 @@ export interface SimResults {
 
 export interface Sample {
   config?: string;
+  initial_character?: string;
   character_details?: Character[];
   // TODO: target_details?:
   seed?: string;

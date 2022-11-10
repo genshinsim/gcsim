@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import { Button, ButtonGroup, Card, FormGroup, InputGroup, Intent } from "@blueprintjs/core";
 import { Sample } from "@gcsim/types";
 import { saveAs } from "file-saver";
-import { useTranslation } from "react-i18next";
 import { AdvancedPreset, AllSampleOptions, DebugPreset, DefaultSampleOptions, SimplePreset, VerbosePreset } from "./SampleOptions";
 import { Options } from "./Options";
 
@@ -76,7 +75,6 @@ type SampleOptionsProps = {
 }
 
 const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
-  const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
 
   const toggle = (t: string) => {
@@ -112,7 +110,7 @@ const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
       <Button
           onClick={() => setOpen(true)}
           icon="cog"
-          text={t<string>("viewer.sample_settings")} />
+          text={"Settings"} />
       <Options
           isOpen={isOpen}
           handleClose={() => setOpen(false)}
@@ -193,7 +191,7 @@ export function Sampler({ sample, data, team, searchable, settings, setSettings 
   };
 
   return (
-    <div className="flex flex-col h-[80vh]">
+    <div className="flex flex-col overflow-x-auto h-[80vh]">
       <div className="flex justify-between">
         <FormGroup label="Search" inline>
           <InputGroup
@@ -238,8 +236,8 @@ export function Sampler({ sample, data, team, searchable, settings, setSettings 
               }} />
         </ButtonGroup>
       </div>
-      <Card className="flex-auto !bg-gray-600 !text-xs">
-        <AutoSizer disableWidth={true} >
+      <Card className="flex-auto !bg-gray-600 !text-xs min-w-[60rem] ">
+        <AutoSizer disableWidth={true}>
           {({ height, width }) => (
             <div
               ref={parentRef}
