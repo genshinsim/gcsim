@@ -1,4 +1,4 @@
-package sapwoodblade
+package forestregalia
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.SapwoodBlade, NewWeapon)
+	core.RegisterWeaponFunc(keys.ForestRegalia, NewWeapon)
 }
 
 type Weapon struct {
@@ -26,7 +26,7 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 const (
-	icdKey  = "sapwoodblade-icd"
+	icdKey  = "forestregalia-icd"
 	buffKey = "forest-sanctuary"
 )
 
@@ -64,9 +64,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatus(icdKey, 1200, true)
-		c.Log.NewEvent("sapwood proc'd", glog.LogWeaponEvent, char.Index)
+		c.Log.NewEvent("forestregalia proc'd", glog.LogWeaponEvent, char.Index)
 		if pickupDelay <= 0 {
-			c.Log.NewEvent("sapwood seed ignored", glog.LogWeaponEvent, char.Index)
+			c.Log.NewEvent("forestregalia seed ignored", glog.LogWeaponEvent, char.Index)
 			return false
 		}
 		c.Tasks.Add(func() {
@@ -79,7 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				},
 			})
 			c.Log.NewEvent(
-				fmt.Sprintf("sapwood seed picked up by %v", active.Base.Key.String()),
+				fmt.Sprintf("forestregalia seed picked up by %v", active.Base.Key.String()),
 				glog.LogWeaponEvent,
 				char.Index,
 			)
@@ -87,7 +87,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}
 	for _, e := range procEvents {
-		c.Events.Subscribe(e, handleProc, fmt.Sprintf("sapwoodblade-proc-%v-%v", char.Base.Key.String(), e))
+		c.Events.Subscribe(e, handleProc, fmt.Sprintf("forestregalia-proc-%v-%v", char.Base.Key.String(), e))
 	}
 	return w, nil
 }
