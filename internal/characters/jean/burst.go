@@ -128,10 +128,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 38)
-	// handle energy delay and a4
+	// A4
 	c.Core.Tasks.Add(func() {
-		c.Energy = 16 //jean a4
-	}, 41)
+		c.a4()
+	}, burstStart+1)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
