@@ -1,7 +1,7 @@
-import { shareData, validator } from "./validation";
+import { validator } from "./validation";
 
 export async function handleShare(request: Request): Promise<Response> {
-  let content: shareData;
+  let content: any;
   console.log("share request received! processing data");
   try {
     content = await request.json();

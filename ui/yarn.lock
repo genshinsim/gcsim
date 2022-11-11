@@ -604,7 +604,9 @@ __metadata:
   dependencies:
     "@cfworker/json-schema": ^1.12.5
     "@cloudflare/workers-types": ^3.18.0
+    "@types/pako": ^2.0.0
     itty-router: ^2.6.6
+    pako: ^2.1.0
     typescript: ^4.8.4
     wrangler: 2.0.22
   languageName: unknown
@@ -2358,7 +2360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pako@npm:^2":
+"@types/pako@npm:^2, @types/pako@npm:^2.0.0":
   version: 2.0.0
   resolution: "@types/pako@npm:2.0.0"
   checksum: 50240a036b5e6acabbf36ac4dca93ec9e619241f0404da8d401cdb427bec3029833324b8a04c4b1ae2ecbc33422fdec31dbf9f43653d9d07cafb82ace78dfccd
@@ -8333,6 +8335,13 @@ __metadata:
   version: 2.0.4
   resolution: "pako@npm:2.0.4"
   checksum: 82b9b0b99dd830c9103856a6dbd10f0cb2c8c32b9768184727ea381a99666de9a47a069d2e6efe6acf09336f363956b50835c196ef9311b34b7274d420eb0d88
+  languageName: node
+  linkType: hard
+
+"pako@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "pako@npm:2.1.0"
+  checksum: 71666548644c9a4d056bcaba849ca6fd7242c6cf1af0646d3346f3079a1c7f4a66ffec6f7369ee0dc88f61926c10d6ab05da3e1fca44b83551839e89edd75a3e
   languageName: node
   linkType: hard
 

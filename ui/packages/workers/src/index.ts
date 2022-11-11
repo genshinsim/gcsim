@@ -1,12 +1,13 @@
 import { Router } from "itty-router";
 import { handleAssets } from "./assets";
-import { handleShare, handleView } from "./share";
+import { handleLegacy, handleShare, handleView } from "./share";
 
 const router = Router();
 
 // viewer files
 router.post("/api/share", handleShare);
 router.get("/api/share/:key", handleView);
+router.get("/api/legacy-share/:key", handleLegacy); //TODO: this endpoint should be deleted once we convert over to new
 
 router.get("/api/assets/*", handleAssets);
 
