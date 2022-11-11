@@ -1,7 +1,9 @@
 package enemy
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
@@ -213,99 +215,143 @@ var levelMultiplier = [][]float64{
 	},
 }
 
-var monsterInfos = map[string]MonsterInfo{
-	"hilichurl": {
-		baseHP: 13.584, levelType: 1, particleDropCount: 1, particleThresholdCount: 2,
-	},
-	"mitachurl": {
-		baseHP: 40.752, levelType: 1, particleDropCount: 1, resist: map[attributes.Element]float64{
-			attributes.Physical: 0.3,
-		},
-	},
-	"ruinguard": {
-		baseHP:            95.088,
-		levelType:         1,
-		particleDropCount: 4,
-		resist:            map[attributes.Element]float64{attributes.Physical: 0.7},
-	},
-	"ruingrader": {
-		baseHP:            122.256,
-		levelType:         1,
-		particleDropCount: 4,
-		resist:            map[attributes.Element]float64{attributes.Physical: 0.7},
-	},
-	"ruindrakeearthguard": {
-		baseHP:                 95.088,
-		levelType:              2,
-		particleThresholdCount: 3,
-		resist:                 map[attributes.Element]float64{attributes.Physical: 0.5},
-	},
-	"primogeovishap": {
-		baseHP:                 407.52,
-		levelType:              1,
-		particleThresholdCount: 3,
-		particleDropCount:      1, // BUGGED: primo geovishap drops geo particles
-		resist:                 map[attributes.Element]float64{attributes.Physical: 0.3, attributes.Geo: 0.5},
-	},
-	"maguukenki": {baseHP: 271.68, levelType: 1},
-	"ruinserpent": {
-		baseHP:                 217.344,
-		levelType:              2,
-		hpMultiplier:           2,
-		particleThresholdCount: 3,
-		resist:                 map[attributes.Element]float64{attributes.Physical: 0.7},
-	},
-	"aeonblightdrake": {
-		baseHP:                 230.928,
-		levelType:              2,
-		particleThresholdCount: 3,
-		resist:                 map[attributes.Element]float64{attributes.Physical: 0.7},
-	},
-	"asimon": {baseHP: 217.344, levelType: 2, particleThresholdCount: 3},
+var shortcuts = map[string]string{
+	"aeonblightdrake": "Gargoyle_Fafnir_01",
+	"asimon":          "Monolith_Starchild",
+	"earthguard":      "Gargoyle_Ground_01",
+	"hilichurl":       "Hili_None_01",
+	"mitachurl":       "Brute_None_Axe",
+	"maguukenki":      "Samurai_Ningyo_01",
+	"primogeovishap":  "Drake_Primo_Rock_01_Water",
+	"ruingrader":      "Konungmathr_None",
+	"ruinguard":       "Defender_None_01",
+	"ruinserpent":     "Nithhoggr_None",
 }
 
-type MonsterInfo struct {
-	baseHP                 float64
-	hpMultiplier           float64
-	levelType              int
-	particleDropCount      int
-	particleThresholdCount int
-	resist                 map[attributes.Element]float64
+var abyssHpMultipliers = map[string]float64{
+	"Nithhoggr_None": 2.0,
+}
+
+type hpDrop struct {
+	DropId    int     `json:"dropId"`
+	HpPercent float64 `json:"hpPercent"`
+}
+
+type propGrowCurve struct {
+	Typ       string `json:"Type"`
+	GrowCurve string `json:"GrowCurve"`
+}
+
+type monsterExcelConfig struct {
+	MonsterName     string          `json:"monsterName"`
+	HpDrops         []hpDrop        `json:"hpDrops"`
+	HpBase          float64         `json:"hpBase"`
+	PropGrowCurves  []propGrowCurve `json:"propGrowCurves"`
+	FireSubHurt     float64         `json:"fireSubHurt"`
+	GrassSubHurt    float64         `json:"grassSubHurt"`
+	WaterSubHurt    float64         `json:"waterSubHurt"`
+	ElecSubHurt     float64         `json:"elecSubHurt"`
+	WindSubHurt     float64         `json:"windSubHurt"`
+	IceSubHurt      float64         `json:"iceSubHurt"`
+	RockSubHurt     float64         `json:"rockSubHurt"`
+	PhysicalSubHurt float64         `json:"physicalSubHurt"`
+}
+
+func parseMonster(data []byte) (monsterExcelConfig, error) {
+	var result monsterExcelConfig
+	err := json.Unmarshal(data, &result)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }
 
 func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) error {
-	info, ok := monsterInfos[name]
-	if !ok {
-		return fmt.Errorf("invalid target name `%v`", name)
-	}
 	if !(1 <= profile.Level && profile.Level <= 100) {
 		return fmt.Errorf("invalid target level: must be between 1 and 100")
 	}
-	profile.HP = info.baseHP * levelMultiplier[info.levelType-1][profile.Level-1]
+	info, err := getMonsterInfo(name)
+	if err != nil {
+		return err
+	}
+	hpGrowCurve := 1
+	if info.PropGrowCurves[0].GrowCurve == "GROW_CURVE_HP_2" {
+		hpGrowCurve = 2
+	}
+	profile.HP = info.HpBase * levelMultiplier[hpGrowCurve-1][profile.Level-1]
 	if mult, ok := params["mult"]; ok {
 		profile.HP *= float64(mult)
 	} else {
-		mult := 2.5
-		if info.hpMultiplier > 0 {
-			mult = info.hpMultiplier
+		mult, ok := abyssHpMultipliers[info.MonsterName]
+		if !ok {
+			mult = 2.5
 		}
 		profile.HP *= mult
 	}
-	if info.resist != nil {
-		for k, v := range info.resist {
-			profile.Resist[k] = v
-		}
-	}
+	profile.Resist[attributes.Pyro] = info.FireSubHurt
+	profile.Resist[attributes.Dendro] = info.GrassSubHurt
+	profile.Resist[attributes.Hydro] = info.WaterSubHurt
+	profile.Resist[attributes.Electro] = info.ElecSubHurt
+	profile.Resist[attributes.Anemo] = info.WindSubHurt
+	profile.Resist[attributes.Cryo] = info.IceSubHurt
+	profile.Resist[attributes.Geo] = info.RockSubHurt
+	profile.Resist[attributes.Physical] = info.PhysicalSubHurt
 	if part, ok := params["particles"]; !ok || part != 0 {
-		thresholdCount := 4
-		if info.particleThresholdCount > 0 {
-			thresholdCount = info.particleThresholdCount
+		for _, drops := range info.HpDrops {
+			if drops.HpPercent == 66.0 {
+				profile.ParticleDropThreshold = profile.HP / 3
+				break
+			} else if drops.HpPercent == 75.0 {
+				profile.ParticleDropThreshold = profile.HP / 4
+				break
+			} else if drops.HpPercent == 60.0 {
+				profile.ParticleDropThreshold = profile.HP * 0.4
+			}
 		}
-		profile.ParticleDropThreshold = profile.HP / float64(thresholdCount)
-		profile.ParticleDropCount = 3
-		if info.particleDropCount > 0 {
-			profile.ParticleDropCount = float64(info.particleDropCount)
+		// default for elemental particles. Fix this if we ever add elemental particles
+		profile.ParticleDropCount = 0.33
+		for _, drops := range info.HpDrops {
+			switch drops.DropId {
+			case 22010010:
+				profile.ParticleDropCount = 1
+				break
+			case 22010030:
+				profile.ParticleDropCount = 3
+				break
+			case 22010040:
+				profile.ParticleDropCount = 4
+			}
 		}
 	}
 	return nil
+}
+
+var monsterInfos map[string]monsterExcelConfig
+
+func getMonsterInfo(name string) (monsterExcelConfig, error) {
+	result := monsterExcelConfig{}
+	if monsterInfos == nil {
+		var parsed []monsterExcelConfig
+		dat, err := os.ReadFile(os.Getenv("GCSIM_MOB_DATA"))
+		if err != nil {
+			return result, err
+		}
+		err = json.Unmarshal(dat, &parsed)
+		if err != nil {
+			return result, err
+		}
+		monsterInfos = make(map[string]monsterExcelConfig)
+		for _, config := range parsed {
+			monsterInfos[config.MonsterName] = config
+		}
+	}
+	id, ok := shortcuts[name]
+	if !ok {
+		id = name
+	}
+	result, ok = monsterInfos[id]
+	if !ok {
+		return result, fmt.Errorf("invalid target name `%v`", name)
+	}
+	return result, nil
 }
