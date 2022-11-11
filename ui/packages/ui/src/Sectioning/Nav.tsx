@@ -42,7 +42,7 @@ export default ({}) => {
             </Link>
           </Navbar.Heading>
         </Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT} className="!hidden min-[550px]:!flex items-stretch">
+        <Navbar.Group align={Alignment.LEFT} className="!hidden min-[550px]:!flex !items-stretch">
           <Navbar.Divider className="self-center" />
           {PageNavs}
         </Navbar.Group>
