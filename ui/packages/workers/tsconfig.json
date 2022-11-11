@@ -7,8 +7,8 @@
     "allowJs": true,
     "checkJs": false,
     "isolatedModules": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["@cloudflare/workers-types"],
   },
-  "types": ["@cloudflare/workers-types"],
   "include": ["src"]
 }
