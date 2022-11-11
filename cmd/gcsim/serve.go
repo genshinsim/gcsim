@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -91,13 +89,13 @@ func handleSample(resp http.ResponseWriter, req *http.Request, path string) bool
 		resp.WriteHeader(http.StatusInternalServerError)
 		return false
 	}
-	encoded := base64.StdEncoding.EncodeToString(compressed)
 
 	log.Println("Received sample request, sending response...")
 	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Encoding", "deflate")
 	resp.Header().Set("Access-Control-Allow-Origin", "*")
 	resp.WriteHeader(http.StatusOK)
-	io.WriteString(resp, encoded)
+	resp.Write(compressed)
 
 	if f, ok := resp.(http.Flusher); ok {
 		f.Flush()
