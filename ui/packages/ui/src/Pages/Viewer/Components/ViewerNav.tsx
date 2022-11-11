@@ -188,18 +188,20 @@ const Share = ({ running, copyToast, data }: ShareProps) => {
   };
 
   const handleShare = () => {
-    const out = convert();
-    console.log(JSON.stringify(out));
+    if (data === null) {
+      console.log("nothing to share");
+      return;
+    }
+    console.log(JSON.stringify(data));
     axios
-      .post("/hastebin/post", out)
+      .post("/api/share", data)
       .then((resp) => {
         setShareLink(
           window.location.protocol +
             "//" +
             window.location.host +
             "/viewer/share/" +
-            "hb-" +
-            resp.data.key
+            resp.data
         );
       })
       .catch((err) => {

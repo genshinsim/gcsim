@@ -60,7 +60,7 @@ function processUrl(id?: string): string {
   }
 
   if (uuidValidate(id)) {
-    return "/api/view/" + id;
+    return "/api/share/" + id;
   }
   const type = id.substring(0, id.indexOf("-"));
   id = id.substring(id.indexOf("-") + 1);
@@ -100,9 +100,7 @@ const FromUrl = ({ exec, url, redirect }: {
     axios
       .get(url, { timeout: 30000 })
       .then((resp) => {
-        const out = Base64ToJson(resp.data.data);
-        setData(out);
-        console.log(out);
+        setData(resp.data);
       })
       .catch((e) => {
         setError(e.message);
@@ -124,18 +122,18 @@ const FromUrl = ({ exec, url, redirect }: {
   return (
     <>
       <Viewer
-          running={isRunning}
-          data={data}
-          error={error}
-          src={src}
-          redirect={redirect}
-          exec={exec}
+        running={isRunning}
+        data={data}
+        error={error}
+        src={src}
+        redirect={redirect}
+        exec={exec}
           retry={request} />
       <UpgradeDialog
-          exec={exec}
-          data={data}
-          redirect={redirect}
-          setResult={updateResult.current}
+        exec={exec}
+        data={data}
+        redirect={redirect}
+        setResult={updateResult.current}
           setError={setError} />
     </>
   );
@@ -177,17 +175,17 @@ const FromState = ({ exec, redirect }: { exec: ExecutorSupplier<Executor>, redir
   return (
     <>
       <Viewer
-          running={running}
-          data={data}
-          src={ResultSource.Generated}
-          error={error}
-          redirect={redirect}
+        running={running}
+        data={data}
+        src={ResultSource.Generated}
+        error={error}
+        redirect={redirect}
           exec={exec} />
       <UpgradeDialog
-          exec={exec}
-          data={data}
-          redirect={redirect}
-          setResult={updateResult.current}
+        exec={exec}
+        data={data}
+        redirect={redirect}
+        setResult={updateResult.current}
           setError={setError} />
     </>
   );

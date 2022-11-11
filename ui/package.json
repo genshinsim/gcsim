@@ -20,7 +20,9 @@
     "preview:web": "yarn workspace @gcsim/web preview",
     "build": "yarn run build:wasm && yarn run build:web",
     "build:wasm": "yarn workspace @gcsim/executors build:wasm:web",
-    "build:web": "yarn workspace @gcsim/web build"
+    "build:web": "yarn workspace @gcsim/web build",
+    "deploy:workers": "yarn workspace @gcsim/workers deploy",
+    "start:workers": "yarn workspace @gcsim/workers start"
   },
   "devDependencies": {
     "@types/eslint": "^8",
