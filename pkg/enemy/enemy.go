@@ -15,10 +15,10 @@ type EnemyProfile struct {
 	Level                 int                            `json:"level"`
 	HP                    float64                        `json:"hp"`
 	Resist                map[attributes.Element]float64 `json:"resist"`
-	Pos                   core.Coord                     `json:"pos"`
-	ParticleDropThreshold float64                        `json:"particleDropThreshold"` // drop particle every x dmg dealt
-	ParticleDropCount     float64                        `json:"particleDropCount"`
-	ParticleElement       attributes.Element             `json:"particleElement"`
+	Pos                   core.Coord                     `json:"-"`
+	ParticleDropThreshold float64                        `json:"particle_drop_threshold"` // drop particle every x dmg dealt
+	ParticleDropCount     float64                        `json:"particle_drop_count"`
+	ParticleElement       attributes.Element             `json:"particle_element"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {
