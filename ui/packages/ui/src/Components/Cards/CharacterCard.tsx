@@ -119,7 +119,7 @@ export function CharacterCard({
         <Tooltip2 content={key}>
           <img
             key="key"
-            src={`https://gcsim.app/api/assets/artifacts/${key}_flower.png`}
+            src={`/api/assets/artifacts/${key}_flower.png`}
             className="w-full h-8"
             onError={(e) => (e.target as HTMLImageElement).src = placeholder}
           />

@@ -95,7 +95,7 @@ export function CharacterEditArtifactSets({ char, onChange }: Props) {
       >
         <img
           key="key"
-          src={`https://gcsim.app/api/assets/artifacts/${key}_flower.png`}
+          src={`/api/assets/artifacts/${key}_flower.png`}
           className="w-12"
         />
         <span className="font-bold">

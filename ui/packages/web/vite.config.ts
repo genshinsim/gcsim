@@ -30,7 +30,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://gcsim.app",
+        target: "https://simimpact.app",
         changeOrigin: true
       },
       "/hastebin/post": {

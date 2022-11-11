@@ -20,7 +20,7 @@ export function CharacterCard({
   return (
     <div className={cls} onClick={onClick ? onClick : () => {}}>
       <img
-        src={"https://gcsim.app/api/assets/avatar/" + char + ".png"}
+        src={"/api/assets/avatar/" + char + ".png"}
         alt={char}
         className="margin-auto"
       />

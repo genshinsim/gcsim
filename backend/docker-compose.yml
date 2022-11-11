@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
+    volumes:
+      - ../cloudflared:/etc/cloudflared
+    environment:
+      - CF_TUNNEL_TOKEN
+    depends_on:
+      - jadechamber
+  jadechamber:
+    container_name: jadechamber
+    build:
+      context: .
+      dockerfile: ./cmd/jadechamber/Dockerfile
+    volumes:
+      - .:/app
+      - ./data:/data
+    environment:
+      - DATA_PATH=/data
+    restart: unless-stopped
