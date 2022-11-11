@@ -19,7 +19,7 @@ func evalTarget(c *core.Core, trg *enemy.Enemy, fields []string) (any, error) {
 		if err := fieldsCheck(fields, 3, "target "+typ); err != nil {
 			return 0, err
 		}
-		return trg.StatusIsActive(fields[2]), nil
+		return trg.StatusDuration(fields[2]), nil
 	}
 	return nil, fmt.Errorf("bad target condition: invalid type %v", typ)
 }
