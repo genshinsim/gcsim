@@ -1,6 +1,7 @@
-import { Alignment, AnchorButton, Button, Classes, HTMLSelect, IconName, Navbar } from "@blueprintjs/core";
+import { Alignment, AnchorButton, Button, Classes, HTMLSelect, IconName, MaybeElement, Navbar } from "@blueprintjs/core";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
+import { FaDiscord } from "react-icons/fa";
 import logo from "./logo.png";
 
 
@@ -19,7 +20,15 @@ export default ({}) => {
         target="_blank">
       <span className="hidden min-[798px]:block">{t<string>("nav.teams_db")}</span>
     </AnchorButton>,
-    <NavLink key="about" href="/about" icon="info-sign" text={t("nav.about")} />,
+    <AnchorButton
+        key="discord"
+        className={Classes.MINIMAL}
+        href="https://discord.gg/m7jvjdxx7q"
+        target="_blank"
+        rel="noreferrer"
+        icon={<FaDiscord size="24px" color="#abb3bf" />}>
+      <span className="hidden min-[798px]:block">{"Discord"}</span>
+    </AnchorButton>,
   ];
 
   return (
@@ -33,8 +42,8 @@ export default ({}) => {
             </Link>
           </Navbar.Heading>
         </Navbar.Group>
-        <Navbar.Group align={Alignment.LEFT} className="!hidden min-[550px]:!flex">
-          <Navbar.Divider />
+        <Navbar.Group align={Alignment.LEFT} className="!hidden min-[550px]:!flex items-stretch">
+          <Navbar.Divider className="self-center" />
           {PageNavs}
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
@@ -58,7 +67,13 @@ export default ({}) => {
   );
 };
 
-const NavLink = ({ href, icon, text }: { href: string, icon: IconName , text: string }) => {
+type NavLinkProps = {
+  href: string;
+  icon: IconName | MaybeElement;
+  text: string;
+}
+
+const NavLink = ({ href, icon, text }: NavLinkProps) => {
   return (
     <Link href={href}>
       <Button minimal={true} icon={icon}>
