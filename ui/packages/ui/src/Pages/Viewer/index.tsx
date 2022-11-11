@@ -1,6 +1,5 @@
 import axios from "axios";
 import { throttle } from "lodash-es";
-import Pako from "pako";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
 import UpgradeDialog from "./UpgradeDialog";
@@ -60,19 +59,9 @@ function processUrl(id?: string): string {
   }
 
   if (uuidValidate(id)) {
-    return "/api/share/" + id;
+    return "/api/legacy-share/" + id;
   }
-  const type = id.substring(0, id.indexOf("-"));
-  id = id.substring(id.indexOf("-") + 1);
-  if (type == "hb") {
-    return "/hastebin/get/" + id;
-  }
-  return "";
-}
-
-function Base64ToJson(base64: string) {
-  const bytes = Uint8Array.from(window.atob(base64), (v) => v.charCodeAt(0));
-  return JSON.parse(Pako.inflate(bytes, { to: "string" }));
+  return "/api/share/" + id;
 }
 
 function useRunningState(exec: ExecutorSupplier<Executor>): boolean {

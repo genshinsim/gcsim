@@ -16,13 +16,11 @@ import {
 } from "@blueprintjs/core";
 import axios from "axios";
 import classNames from "classnames";
-import Pako from "pako";
 import { MouseEvent, RefObject, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { useAppDispatch } from "../../../Stores/store";
 import { appActions } from "../../../Stores/appSlice";
-import { bytesToBase64 } from "@gcsim/utils";
 import { SimResults } from "@gcsim/types";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
@@ -169,30 +167,11 @@ const Share = ({ running, copyToast, data }: ShareProps) => {
   const [isOpen, setOpen] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
 
-  const convert = () => {
-    const cpy = Object.assign({}, data);
-    return {
-      data: bytesToBase64(Pako.deflate(JSON.stringify(cpy))),
-      meta: {
-        char_names: data?.character_details?.map((c) => c.name),
-        dps: data?.statistics?.dps,
-        sim_duration: data?.statistics?.duration,
-        itr: data?.statistics?.iterations,
-        char_details: data?.character_details,
-        // TODO:
-        // - dps_by_target
-        // - runtime
-        // - num_targets
-      },
-    };
-  };
-
   const handleShare = () => {
     if (data === null) {
-      console.log("nothing to share");
       return;
     }
-    console.log(JSON.stringify(data));
+
     axios
       .post("/api/share", data)
       .then((resp) => {
@@ -241,7 +220,7 @@ const Share = ({ running, copyToast, data }: ShareProps) => {
       >
         <div className={classNames(Classes.DIALOG_BODY, "flex flex-col justify-center gap-2")}>
           <Label>
-            Hastebin (7 day retention)
+            Share Link
             <InputGroup
               readOnly={true}
               fill={true}

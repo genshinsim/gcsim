@@ -7,9 +7,20 @@ import (
 
 	badger "github.com/dgraph-io/badger/v3"
 	"github.com/genshinsim/gcsim/backend/pkg/api"
-	"github.com/gofrs/uuid"
+	"github.com/jaevor/go-nanoid"
 	"go.uber.org/zap"
 )
+
+var generateID func() string
+
+func init() {
+	var err error
+	// dictionary from https://github.com/CyberAP/nanoid-dictionary#nolookalikessafe
+	generateID, err = nanoid.CustomASCII("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz", 12)
+	if err != nil {
+		panic(err)
+	}
+}
 
 type Config struct {
 	DBPath string
@@ -54,21 +65,20 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 }
 
 func (s *Store) Create(data []byte, ctx context.Context) (string, error) {
-	u2, err := uuid.NewV4()
-	if err != nil {
-		s.Log.Errorw("failed to generate UUID", "err", err)
-		return "", err
-	}
+	id := generateID()
 	ttl := extractTTL(ctx)
-	s.Log.Infow("received create request", "uuid", u2.String(), "ttl", ttl)
-	err = s.db.Update(func(txn *badger.Txn) error {
-		key := []byte(u2.String())
+	s.Log.Infow("received create request", "id", id, "ttl", ttl)
+
+	err := s.db.Update(func(txn *badger.Txn) error {
+		key := []byte(id)
+
 		//sanity check that uuid is not already used...
 		_, err := txn.Get(key)
 		if err != badger.ErrKeyNotFound {
-			s.Log.Warnw("unexpected uuid collision", "uuid", u2.String())
-			return fmt.Errorf("unexpected key already exists: %v", u2.String())
+			s.Log.Warnw("unexpected id collision", "id", id)
+			return fmt.Errorf("unexpected key already exists: %v", id)
 		}
+
 		if ttl > 0 {
 			e := badger.NewEntry(key, data).WithTTL(time.Hour * time.Duration(ttl))
 			return txn.SetEntry(e)
@@ -76,7 +86,7 @@ func (s *Store) Create(data []byte, ctx context.Context) (string, error) {
 		return txn.Set(key, data)
 	})
 
-	return u2.String(), err
+	return id, err
 }
 
 func (s *Store) Read(key string, ctx context.Context) ([]byte, error) {

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"io"
 	"log"
 	"net/http"
@@ -60,19 +59,12 @@ func handleResults(resp http.ResponseWriter, req *http.Request, path string) boo
 		return false
 	}
 
-	encoded := base64.StdEncoding.EncodeToString(compressed)
-	results, err := json.Marshal(viewerResults{Data: encoded})
-	if err != nil {
-		log.Printf("error marshal json: %v\n", err)
-		resp.WriteHeader(http.StatusInternalServerError)
-		return false
-	}
-
 	log.Println("Received results request, sending response...")
 	resp.Header().Set("Content-Type", "application/json")
+	resp.Header().Set("Content-Encoding", "deflate")
 	resp.Header().Set("Access-Control-Allow-Origin", "*")
 	resp.WriteHeader(http.StatusOK)
-	resp.Write(results)
+	resp.Write(compressed)
 
 	if f, ok := resp.(http.Flusher); ok {
 		f.Flush()
