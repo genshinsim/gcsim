@@ -215,37 +215,62 @@ var levelMultiplier = [][]float64{
 
 var monsterInfos = map[string]MonsterInfo{
 	"hilichurl": {
-		baseHP: 13.584, levelType: 1,
+		baseHP: 13.584, levelType: 1, particleDropCount: 1, particleThresholdCount: 2,
 	},
 	"mitachurl": {
-		baseHP: 40.752, levelType: 1, resist: map[attributes.Element]float64{
+		baseHP: 40.752, levelType: 1, particleDropCount: 1, resist: map[attributes.Element]float64{
 			attributes.Physical: 0.3,
 		},
 	},
-	"ruinguard":           {baseHP: 95.088, levelType: 1, resist: map[attributes.Element]float64{attributes.Physical: 0.7}},
-	"ruingrader":          {baseHP: 122.256, levelType: 1, resist: map[attributes.Element]float64{attributes.Physical: 0.7}},
-	"ruindrakeearthguard": {baseHP: 95.088, levelType: 2, resist: map[attributes.Element]float64{attributes.Physical: 0.5}},
+	"ruinguard": {
+		baseHP:            95.088,
+		levelType:         1,
+		particleDropCount: 4,
+		resist:            map[attributes.Element]float64{attributes.Physical: 0.7},
+	},
+	"ruingrader": {
+		baseHP:            122.256,
+		levelType:         1,
+		particleDropCount: 4,
+		resist:            map[attributes.Element]float64{attributes.Physical: 0.7},
+	},
+	"ruindrakeearthguard": {
+		baseHP:                 95.088,
+		levelType:              2,
+		particleThresholdCount: 3,
+		resist:                 map[attributes.Element]float64{attributes.Physical: 0.5},
+	},
 	"primogeovishap": {
-		baseHP:    407.52,
-		levelType: 1,
-		resist:    map[attributes.Element]float64{attributes.Physical: 0.3, attributes.Geo: 0.5},
+		baseHP:                 407.52,
+		levelType:              1,
+		particleThresholdCount: 3,
+		particleDropCount:      1, // BUGGED: primo geovishap drops geo particles
+		resist:                 map[attributes.Element]float64{attributes.Physical: 0.3, attributes.Geo: 0.5},
 	},
 	"maguukenki": {baseHP: 271.68, levelType: 1},
 	"ruinserpent": {
-		baseHP:       217.344,
-		levelType:    2,
-		hpMultiplier: 2,
-		resist:       map[attributes.Element]float64{attributes.Physical: 0.7},
+		baseHP:                 217.344,
+		levelType:              2,
+		hpMultiplier:           2,
+		particleThresholdCount: 3,
+		resist:                 map[attributes.Element]float64{attributes.Physical: 0.7},
 	},
-	"aeonblightdrake": {baseHP: 230.928, levelType: 2, resist: map[attributes.Element]float64{attributes.Physical: 0.7}},
-	"asimon":          {baseHP: 217.344, levelType: 2},
+	"aeonblightdrake": {
+		baseHP:                 230.928,
+		levelType:              2,
+		particleThresholdCount: 3,
+		resist:                 map[attributes.Element]float64{attributes.Physical: 0.7},
+	},
+	"asimon": {baseHP: 217.344, levelType: 2, particleThresholdCount: 3},
 }
 
 type MonsterInfo struct {
-	baseHP       float64
-	levelType    int
-	hpMultiplier float64
-	resist       map[attributes.Element]float64
+	baseHP                 float64
+	hpMultiplier           float64
+	levelType              int
+	particleDropCount      int
+	particleThresholdCount int
+	resist                 map[attributes.Element]float64
 }
 
 func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) error {
@@ -269,6 +294,17 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 	if info.resist != nil {
 		for k, v := range info.resist {
 			profile.Resist[k] = v
+		}
+	}
+	if part, ok := params["particles"]; !ok || part != 0 {
+		thresholdCount := 4
+		if info.particleThresholdCount > 0 {
+			thresholdCount = info.particleThresholdCount
+		}
+		profile.ParticleDropThreshold = profile.HP / float64(thresholdCount)
+		profile.ParticleDropCount = 3
+		if info.particleDropCount > 0 {
+			profile.ParticleDropCount = float64(info.particleDropCount)
 		}
 	}
 	return nil
