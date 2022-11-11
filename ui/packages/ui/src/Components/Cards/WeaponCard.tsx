@@ -9,7 +9,7 @@ export function WeaponCard({ weapon, isSkeleton }: { weapon: Weapon, isSkeleton?
     <div className="flex flex-row">
       <div className="w-12 h-12">
         <img
-            src={`https://gcsim.app/api/assets/weapons/${weapon.name}.png`}
+          src={`/api/assets/weapons/${weapon.name}.png`}
             alt={weapon.name}
             className="object-contain w-full"
             onError={(e) => (e.target as HTMLImageElement).src = placeholder} />
