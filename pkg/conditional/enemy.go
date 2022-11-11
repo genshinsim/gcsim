@@ -2,8 +2,8 @@ package conditional
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -11,6 +11,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
+
+func evalTarget(c *core.Core, trg *enemy.Enemy, fields []string) (any, error) {
+	typ := fields[1]
+	switch typ {
+	case "mods", "status":
+		if err := fieldsCheck(fields, 3, "target "+typ); err != nil {
+			return 0, err
+		}
+		return trg.StatusIsActive(fields[2]), nil
+	}
+	return nil, fmt.Errorf("bad target condition: invalid type %v", typ)
+}
 
 func evalDebuff(c *core.Core, fields []string) (bool, error) {
 	//.debuff.res.t1.name
@@ -63,8 +75,12 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 }
 
 func parseTarget(c *core.Core, trg string) (*enemy.Enemy, error) {
-	trg = strings.TrimPrefix(trg, "t")
-	tid, err := strconv.ParseInt(trg, 10, 64)
+	pat := regexp.MustCompile(`t(?:arget)?(\d+)`)
+	matches := pat.FindStringSubmatch(trg)
+	if len(matches) < 2 {
+		return nil, fmt.Errorf("invalid target %v", trg)
+	}
+	tid, err := strconv.ParseInt(matches[1], 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid target %v", trg)
 	}

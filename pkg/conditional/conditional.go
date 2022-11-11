@@ -46,6 +46,11 @@ func Eval(c *core.Core, fields []string) (any, error) {
 		if key, ok := shortcut.CharNameToKey[name]; ok {
 			return evalCharacter(c, key, fields)
 		}
-		return 0, fmt.Errorf("invalid character %v in character condition", name)
+
+		if trg, err := parseTarget(c, name); err == nil {
+			return evalTarget(c, trg, fields)
+		}
+
+		return 0, fmt.Errorf("invalid token %v in condition", name)
 	}
 }
