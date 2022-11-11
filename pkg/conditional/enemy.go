@@ -20,6 +20,22 @@ func evalTarget(c *core.Core, trg *enemy.Enemy, fields []string) (any, error) {
 			return 0, err
 		}
 		return trg.StatusDuration(fields[2]), nil
+	case "element":
+		if err := fieldsCheck(fields, 3, "target "+typ); err != nil {
+			return 0, err
+		}
+		ele := fields[2]
+		elekey := attributes.StringToEle(ele)
+		if elekey == attributes.UnknownElement {
+			return 0, fmt.Errorf("bad element condition: invalid element %v", ele)
+		}
+		result := combat.Durability(0)
+		for i := reactable.ModifierInvalid; i < reactable.EndReactableModifier; i++ {
+			if i.Element() == elekey && trg.Durability[i] > reactable.ZeroDur && trg.Durability[i] > result {
+				result = trg.Durability[i]
+			}
+		}
+		return float64(result), nil
 	}
 	return nil, fmt.Errorf("bad target condition: invalid type %v", typ)
 }
