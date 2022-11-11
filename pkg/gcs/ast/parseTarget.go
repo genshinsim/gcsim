@@ -16,8 +16,8 @@ func parseTarget(p *Parser) (parseFn, error) {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "pos": //pos will end up defaulting to 0,0 if not set
-				//pos=1.00,2,00
+			case "pos": // pos will end up defaulting to 0,0 if not set
+				// pos=1.00,2,00
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
@@ -46,6 +46,15 @@ func parseTarget(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 				r.Pos.R = amt
+			case "type":
+				item, err := p.acceptSeqReturnLast(itemAssign, itemIdentifier)
+				if err != nil {
+					return nil, err
+				}
+				if item.Val == "ruinguard" {
+					r.HP = 500000
+					p.res.Settings.DamageMode = true
+				}
 			default:
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}
@@ -55,7 +64,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 				r.Level, err = itemNumberToInt(n)
 			}
 		case itemStatKey:
-			//should be hp
+			// should be hp
 			if statKeys[n.Val] != attributes.HP {
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}
@@ -68,7 +77,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 				p.res.Settings.DamageMode = true
 			}
 		case keywordResist:
-			//this sets all resistance
+			// this sets all resistance
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err != nil {
 				return nil, err
@@ -78,7 +87,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 
-			//TODO: make this more elegant...
+			// TODO: make this more elegant...
 			r.Resist[attributes.Electro] += amt
 			r.Resist[attributes.Cryo] += amt
 			r.Resist[attributes.Hydro] += amt
