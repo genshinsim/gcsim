@@ -1,4 +1,4 @@
-import { Alignment, AnchorButton, Button, Classes, HTMLSelect, IconName, MaybeElement, Navbar } from "@blueprintjs/core";
+import { Alignment, AnchorButton, Classes, HTMLSelect, IconName, MaybeElement, Navbar } from "@blueprintjs/core";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import { FaDiscord } from "react-icons/fa";
@@ -76,9 +76,9 @@ type NavLinkProps = {
 const NavLink = ({ href, icon, text }: NavLinkProps) => {
   return (
     <Link href={href}>
-      <Button minimal={true} icon={icon}>
+      <AnchorButton minimal={true} icon={icon}>
         <span className="hidden min-[798px]:block">{text}</span>
-      </Button>
+      </AnchorButton>
     </Link>
   );
 };
