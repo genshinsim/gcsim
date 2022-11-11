@@ -9,7 +9,7 @@ import {
 } from "@blueprintjs/core";
 import { Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../Components/Sample";
+import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../../Sample/Components";
 import queryString from "query-string";
 import { RootState, useAppSelector } from "../../../Stores/store";
 
