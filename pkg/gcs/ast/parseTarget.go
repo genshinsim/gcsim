@@ -51,8 +51,15 @@ func parseTarget(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
+				params, err := p.acceptOptionalParamReturnMap()
+				if err != nil {
+					return nil, err
+				}
 				if item.Val == "ruinguard" {
 					r.HP = 500000
+					if m, ok := params["mult"]; ok {
+						r.HP *= float64(m)
+					}
 					p.res.Settings.DamageMode = true
 				}
 			default:
