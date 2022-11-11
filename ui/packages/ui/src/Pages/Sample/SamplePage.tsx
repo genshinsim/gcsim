@@ -1,7 +1,8 @@
-import { Alert, Intent, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
+import { Alert, ButtonGroup, Intent, NonIdealState, Position, Spinner, SpinnerSize, Toaster } from "@blueprintjs/core";
 import { Sample } from "@gcsim/types";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
+import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { CharacterCard } from "../../Components/Cards";
 import { characterCardsClassNames } from "../Viewer/Components/Results/TeamHeader";
 import { DefaultSampleOptions, parseLogV2, Sampler, SampleRow } from "../Viewer/Components/Sample";
@@ -24,6 +25,7 @@ type Props = {
 
 export default ({ sample, error, retry }: Props) => {
   const data = useSample(sample);
+  const copyToast = useRef<Toaster>(null);
 
   if (sample == null || data.team == null || data.parsed == null) {
     return (
@@ -37,6 +39,18 @@ export default ({ sample, error, retry }: Props) => {
   const cardClass = characterCardsClassNames(sample.character_details?.length ?? 4);
   return (
     <div className="flex flex-col gap-2 w-full 2xl:mx-auto 2xl:container py-6">
+      <div className="flex flex-row justify-between px-6 pb-2">
+        <span className="text-lg font-bold font-mono">
+          {"Targets: " + JSON.stringify(sample.target_details)}
+        </span>
+        <ButtonGroup>
+          <CopyToClipboard
+              copyToast={copyToast}
+              config={sample.config}
+              className="hidden ml-[7px] sm:flex" />
+          <SendToSimulator config={sample.config} />
+        </ButtonGroup>
+      </div>
       <div className="flex flex-row gap-2 justify-center flex-wrap">
         {sample.character_details?.map((c) => (
           <CharacterCard
@@ -58,6 +72,7 @@ export default ({ sample, error, retry }: Props) => {
             setSettings={data.setSettings} />
         <ErrorAlert msg={error} retry={retry} />
       </div>
+      <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </div>
   );
 };

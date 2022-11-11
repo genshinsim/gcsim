@@ -1,27 +1,9 @@
-import {
-  Button,
-  ButtonGroup,
-  Intent,
-  Tab,
-  Tabs,
-  Toaster,
-  Icon,
-  Dialog,
-  Classes,
-  Position,
-  Callout,
-  Checkbox,
-  InputGroup,
-  Label,
-} from "@blueprintjs/core";
-import axios from "axios";
+import { ButtonGroup, Tab, Tabs, Toaster, Position } from "@blueprintjs/core";
 import classNames from "classnames";
-import { MouseEvent, RefObject, useRef, useState } from "react";
+import { MouseEvent, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
-import { useAppDispatch } from "../../../Stores/store";
-import { appActions } from "../../../Stores/appSlice";
 import { SimResults } from "@gcsim/types";
+import { CopyToClipboard, SendToSimulator, Share } from "../../../Components/Buttons";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
@@ -49,9 +31,9 @@ export default ({ tabState, data, running }: NavProps) => {
       </Tab>
       <Tabs.Expander />
       <ButtonGroup>
-        <CopyToClipboard copyToast={copyToast} config={data?.config_file} />
-        <SendToSim config={data?.config_file} />
-        <Share copyToast={copyToast} data={data} running={running} />
+        <CopyToClipboard copyToast={copyToast} config={data?.config_file} className={btnClass} />
+        <SendToSimulator config={data?.config_file} />
+        <Share copyToast={copyToast} data={data} running={running} className={btnClass} />
       </ButtonGroup>
       <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Tabs>
@@ -63,179 +45,3 @@ function ignoreCtrlClick(e: MouseEvent) {
     e.stopPropagation();
   }
 }
-
-const CopyToClipboard = ({
-  copyToast,
-  config,
-}: {
-  copyToast: RefObject<Toaster>;
-  config?: string;
-}) => {
-  const { t } = useTranslation();
-
-  const action = () => {
-    navigator.clipboard.writeText(config ?? "").then(() => {
-      copyToast.current?.show({
-        message: t<string>("viewer.copied_to_clipboard"),
-        intent: Intent.SUCCESS,
-        timeout: 2000,
-      });
-    });
-  };
-
-  return (
-    <>
-      <Button
-        icon={<Icon icon="clipboard" className="!mr-0" />}
-        onClick={action}
-        disabled={config == null}
-      >
-        <div className={btnClass}>{t<string>("viewer.copy")}</div>
-      </Button>
-    </>
-  );
-};
-
-const SendToSim = ({ config }: { config?: string }) => {
-  const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
-  const { t } = useTranslation();
-  const [, setLocation] = useLocation();
-  const dispatch = useAppDispatch();
-
-  const [isOpen, setOpen] = useState(false);
-  const [keepTeam, setKeep] = useState<boolean>(() => {
-    return localStorage.getItem(LOCALSTORAGE_KEY) === "true";
-  });
-
-  const toggleKeepTeam = () => {
-    localStorage.setItem(LOCALSTORAGE_KEY, String(!keepTeam));
-    setKeep(!keepTeam);
-  };
-
-  const toSimulator = () => {
-    if (config == null) {
-      return;
-    }
-    dispatch(appActions.setCfg({ cfg: config, keepTeam: keepTeam }));
-    setLocation("/simulator");
-  };
-
-  return (
-    <>
-      <Button
-        className="!hidden sm:!flex"
-        icon={<Icon icon="send-to" className="!mr-0" />}
-        onClick={() => setOpen(true)}
-        disabled={config == null}
-      >
-        <div className="hidden ml-[7px] sm:flex">{t<string>("viewer.send_to_simulator")}</div>
-      </Button>
-      <Dialog
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        title={t<string>("viewer.load_this_configuration")}
-        icon="bring-data"
-      >
-        <div className={Classes.DIALOG_BODY}>
-          <Callout intent="warning" className="">
-            {t<string>("viewer.this_will_overwrite")}
-          </Callout>
-          <Checkbox
-            label="Copy action list only (ignore character stats)"
-            className="my-3 mx-1"
-            checked={keepTeam}
-            onClick={toggleKeepTeam}
-          />
-        </div>
-        <div className={classNames(Classes.DIALOG_FOOTER, Classes.DIALOG_FOOTER_ACTIONS)}>
-          <Button onClick={toSimulator} intent={Intent.PRIMARY} text={t<string>("viewer.continue")} />
-          <Button onClick={() => setOpen(false)} text={t<string>("viewer.cancel")} />
-        </div>
-      </Dialog>
-    </>
-  );
-};
-
-type ShareProps = {
-  running: boolean;
-  copyToast: RefObject<Toaster>;
-  data: SimResults | null;
-}
-
-const Share = ({ running, copyToast, data }: ShareProps) => {
-  const { t } = useTranslation();
-  const [isOpen, setOpen] = useState(false);
-  const [shareLink, setShareLink] = useState<string | null>(null);
-
-  const handleShare = () => {
-    if (data === null) {
-      return;
-    }
-
-    axios
-      .post("/api/share", data)
-      .then((resp) => {
-        setShareLink(
-          window.location.protocol +
-            "//" +
-            window.location.host +
-            "/viewer/share/" +
-            resp.data
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const copy = () => {
-    navigator.clipboard.writeText(shareLink ?? "").then(() => {
-      copyToast.current?.show({
-        message: "Link copied to clipboard!",
-        intent: Intent.SUCCESS,
-        timeout: 2000,
-      });
-    });
-  };
-
-  return (
-    <>
-      <Button
-        icon={<Icon icon="link" className="!mr-0" />}
-        intent={Intent.PRIMARY}
-        disabled={running || data == null}
-        onClick={() => {
-          handleShare();
-          setOpen(true);
-        }}
-      >
-        <div className={btnClass}>{t<string>("viewer.share")}</div>
-      </Button>
-      <Dialog
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        title={t<string>("viewer.create_a_shareable")}
-        icon="link"
-        className="!pb-0"
-      >
-        <div className={classNames(Classes.DIALOG_BODY, "flex flex-col justify-center gap-2")}>
-          <Label>
-            Share Link
-            <InputGroup
-              readOnly={true}
-              fill={true}
-              onFocus={(e) => {
-                e.target.select();
-                copy();
-              }}
-              value={shareLink ?? ""}
-              className={classNames({ "bp4-skeleton": shareLink == null })}
-              large={true}
-              rightElement={<Button icon="duplicate" onClick={() => copy()} />}
-            />
-          </Label>
-        </div>
-      </Dialog>
-    </>
-  );
-};

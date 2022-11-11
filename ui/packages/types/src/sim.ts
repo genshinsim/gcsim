@@ -15,7 +15,7 @@ export interface Sample {
   config?: string;
   initial_character?: string;
   character_details?: Character[];
-  // TODO: target_details?:
+  target_details?: unknown[];
   seed?: string;
   logs?: LogDetails[];
 }
