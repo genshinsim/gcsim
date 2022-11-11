@@ -55,13 +55,11 @@ func parseTarget(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-				if item.Val == "ruinguard" {
-					r.HP = 500000
-					if m, ok := params["mult"]; ok {
-						r.HP *= float64(m)
-					}
-					p.res.Settings.DamageMode = true
+				err = enemy.ConfigureTarget(&r, item.Val, params)
+				if err != nil {
+					return nil, err
 				}
+				p.res.Settings.DamageMode = true
 			default:
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}
