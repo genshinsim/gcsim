@@ -101,10 +101,6 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 		damage = damage * x
 	}
 
-	if damage == 0 {
-		isCrit = false
-	}
-
 	if t.Core.Flags.LogDebug {
 		t.Core.Log.NewEvent(
 			atk.Info.Abil,
