@@ -55,16 +55,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
-
+			dmg := args[2].(float64)
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
-
 			if c.Player.Active() != char.Index {
 				return false
 			}
-
 			if atk.Info.Element != attributes.Cryo {
+				return false
+			}
+			if dmg == 0 {
 				return false
 			}
 
