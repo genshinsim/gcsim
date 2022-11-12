@@ -33,6 +33,7 @@ func (c *char) a1() func() {
 				AttackTag:  combat.AttackTagElementalArt,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypeDefault,
 				Element:    attributes.Hydro,
 				Durability: 25,
 				Mult:       0.5 * skill[c.TalentLvlSkill()],
