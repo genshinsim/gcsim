@@ -71,6 +71,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 		AttackTag:        combat.AttackTagShatter,
 		ICDTag:           combat.ICDTagShatter,
 		ICDGroup:         combat.ICDGroupReactionA,
+		StrikeType:       combat.StrikeTypeDefault,
 		Element:          attributes.Physical,
 		IgnoreDefPercent: 1,
 	}
