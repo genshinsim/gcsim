@@ -78,8 +78,9 @@ func (s *Server) routes() {
 	r.Route("/api", func(r chi.Router) {
 
 		r.Route("/share", func(r chi.Router) {
-			r.Post("/", s.CreateShare())                      // share a sim
-			r.Get("/{share-key}", s.GetShare())               // get a shared sim
+			r.Post("/", s.CreateShare())        // share a sim
+			r.Get("/{share-key}", s.GetShare()) // get a shared sim
+			r.Get("/random", s.GetRandomShare())
 			r.Get("/preview/{share-key}", s.notImplemented()) // preview (embed) for a shared sim
 		})
 

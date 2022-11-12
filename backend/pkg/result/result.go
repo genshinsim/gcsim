@@ -3,9 +3,12 @@ package result
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"time"
 
 	badger "github.com/dgraph-io/badger/v3"
+	"github.com/dgraph-io/badger/v3/pb"
+	"github.com/dgraph-io/ristretto/z"
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/jaevor/go-nanoid"
 	"go.uber.org/zap"
@@ -87,6 +90,60 @@ func (s *Store) Create(data []byte, ctx context.Context) (string, error) {
 	})
 
 	return id, err
+}
+
+func (s *Store) Random(ctx context.Context) ([]byte, error) {
+	var keys [][]byte
+	count := 0
+	stream := s.db.NewStream()
+	stream.NumGo = 16
+
+	// overide stream.KeyToList as we only want keys. Also
+	// we can take only first version for the key.
+	stream.KeyToList = func(key []byte, itr *badger.Iterator) (*pb.KVList, error) {
+		l := &pb.KVList{}
+		// Since stream framework copies the item's key while calling
+		// KeyToList, we can directly append key to list.
+		l.Kv = append(l.Kv, &pb.KV{Key: key})
+		return l, nil
+	}
+
+	// The bigger the sample size, the more randomness in the outcome.
+	sampleSize := 1000
+	c, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	stream.Send = func(buf *z.Buffer) error {
+		l, err := badger.BufferToKVList(buf)
+		if err != nil {
+			s.Log.Infow("error converting buffer to list", "err", err)
+			return nil
+		}
+		if count >= sampleSize {
+			return nil
+		}
+		// Collect "keys" equal to sample size
+		for _, kv := range l.Kv {
+			keys = append(keys, kv.Key)
+			count++
+			if count >= sampleSize {
+				cancel()
+				return nil
+			}
+		}
+		return nil
+	}
+
+	if err := stream.Orchestrate(c); err != nil && err != context.Canceled {
+		panic(err)
+	}
+	s.Log.Infow("random key selection done", "len", len(keys))
+	if len(keys) == 0 {
+		return nil, api.ErrKeyNotFound
+	}
+	// Pick a random key from the list of keys
+	n := keys[rand.Intn(len(keys))]
+
+	return s.Read(string(n), ctx)
 }
 
 func (s *Store) Read(key string, ctx context.Context) ([]byte, error) {

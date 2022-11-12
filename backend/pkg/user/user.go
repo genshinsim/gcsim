@@ -25,8 +25,8 @@ type User struct {
 	ID         string         `json:"uid"`
 	Name       string         `json:"name"`
 	Role       int            `json:"role"`
-	Permalinks []string       `json:"permalinks"`
-	Data       map[string]any `json:"data"`
+	Permalinks []string       `json:"permalinks,omitempty"`
+	Data       map[string]any `json:"data,omitempty"`
 }
 
 const (
