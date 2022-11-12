@@ -1,6 +1,6 @@
 import { ButtonGroup, Tab, Tabs, Toaster, Position } from "@blueprintjs/core";
 import classNames from "classnames";
-import { MouseEvent, useRef } from "react";
+import { MouseEvent, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SimResults } from "@gcsim/types";
 import { CopyToClipboard, SendToSimulator, Share } from "../../../Components/Buttons";
@@ -17,6 +17,7 @@ export default ({ tabState, data, running }: NavProps) => {
   const { t } = useTranslation();
   const [tabId, setTabId] = tabState;
   const copyToast = useRef<Toaster>(null);
+  const shareState = useState<string | null>(null);
 
   return (
     <Tabs selectedTabId={tabId} onChange={(s) => setTabId(s as string)}>
@@ -33,7 +34,12 @@ export default ({ tabState, data, running }: NavProps) => {
       <ButtonGroup>
         <CopyToClipboard copyToast={copyToast} config={data?.config_file} className={btnClass} />
         <SendToSimulator config={data?.config_file} />
-        <Share copyToast={copyToast} data={data} running={running} className={btnClass} />
+        <Share
+            copyToast={copyToast}
+            shareState={shareState}
+            data={data}
+            running={running}
+            className={btnClass} />
       </ButtonGroup>
       <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Tabs>

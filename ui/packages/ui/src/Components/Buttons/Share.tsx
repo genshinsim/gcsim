@@ -1,40 +1,42 @@
-import { Button, Classes, Dialog, Icon, InputGroup, Intent, Label, Toaster } from "@blueprintjs/core";
+import { Button, Classes, Dialog, Icon, InputGroup, Intent, Label, NonIdealState, Spinner, SpinnerSize, Toaster } from "@blueprintjs/core";
 import { SimResults } from "@gcsim/types";
 import axios from "axios";
 import classNames from "classnames";
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
 
 type ShareProps = {
   running: boolean;
   copyToast: RefObject<Toaster>;
   data: SimResults | null;
+  shareState: [string | null, (link: string | null) => void]
   className?: string;
 }
 
 // TODO: separate share handling away from the button for caching across pages
-export default ({ running, copyToast, data, className }: ShareProps) => {
+export default ({ running, copyToast, data, className, shareState }: ShareProps) => {
   const { t } = useTranslation();
+  const [location,] = useLocation();
+
   const [isOpen, setOpen] = useState(false);
-  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [shareLink, setShareLink] = shareState;
+
+  // change the set link if url changes or rerun
+  useEffect(() => {
+    setShareLink(extractFromLocation(location));
+  }, [location, setShareLink, data?.config_file]);
 
   const handleShare = () => {
-    if (data === null) {
+    if (data === null || shareLink != null) {
       return;
     }
 
     axios
       .post("/api/share", data)
       .then((resp) => {
-        setShareLink(
-          window.location.protocol +
-            "//" +
-            window.location.host +
-            "/viewer/share/" +
-            resp.data
-        );
-      })
-      .catch((err) => {
+        setShareLink(link(resp.data));
+      }).catch((err) => {
         console.log(err);
       });
   };
@@ -52,41 +54,65 @@ export default ({ running, copyToast, data, className }: ShareProps) => {
   return (
     <>
       <Button
-        icon={<Icon icon="link" className="!mr-0" />}
-        intent={Intent.PRIMARY}
-        disabled={running || data == null}
-        onClick={() => {
-          handleShare();
-          setOpen(true);
-        }}
-      >
+          icon={<Icon icon="link" className="!mr-0" />}
+          intent={Intent.PRIMARY}
+          disabled={running || data == null}
+          onClick={() => {
+            handleShare();
+            setOpen(true);
+          }}>
         <div className={className}>{t<string>("viewer.share")}</div>
       </Button>
       <Dialog
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        title={t<string>("viewer.create_a_shareable")}
-        icon="link"
-        className="!pb-0"
-      >
+          isOpen={isOpen}
+          onClose={() => setOpen(false)}
+          title={t<string>("viewer.create_a_shareable")}
+          icon="link"
+          className="!pb-0">
         <div className={classNames(Classes.DIALOG_BODY, "flex flex-col justify-center gap-2")}>
-          <Label>
-            Share Link
-            <InputGroup
-              readOnly={true}
-              fill={true}
-              onFocus={(e) => {
-                e.target.select();
-                copy();
-              }}
-              value={shareLink ?? ""}
-              className={classNames({ "bp4-skeleton": shareLink == null })}
-              large={true}
-              rightElement={<Button icon="duplicate" onClick={() => copy()} />}
-            />
-          </Label>
+          <DialogBody shareLink={shareLink} copy={copy} />
         </div>
       </Dialog>
     </>
   );
 };
+
+type DialogProps = {
+  shareLink: string | null;
+  copy: () => void;
+}
+
+const DialogBody = ({shareLink, copy}: DialogProps) => {
+  if (shareLink == null) {
+    return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
+  }
+
+  return (
+    <Label>
+      Share Link
+      <InputGroup
+        readOnly={true}
+        fill={true}
+        onFocus={(e) => {
+          e.target.select();
+          copy();
+        }}
+        value={shareLink ?? ""}
+        className={classNames({ "bp4-skeleton": shareLink == null })}
+        large={true}
+        rightElement={<Button icon="duplicate" onClick={() => copy()} />}
+      />
+    </Label>
+  );
+};
+
+function link(id: string): string {
+  return window.location.protocol + "//" + window.location.host + "/viewer/share/" + id;
+}
+
+function extractFromLocation(location: string) {
+  if (!location.startsWith("/viewer/share/")) {
+    return null;
+  }
+  return link(location.substring(location.lastIndexOf("/") + 1));
+}
