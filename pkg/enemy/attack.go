@@ -12,8 +12,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
+var particleIdToElement = []attributes.Element{
+	attributes.NoElement,
+	attributes.Pyro,
+	attributes.Dendro,
+	attributes.Hydro,
+	attributes.Electro,
+	attributes.Anemo,
+	attributes.Cryo,
+	attributes.Geo,
+}
+
 func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
-	//at this point attack will land
+	// at this point attack will land
 	e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
 
 	var amp string
@@ -43,12 +54,12 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 
 	dmg, crit = e.attack(atk, evt)
 
-	//delay damage event to end of the frame
+	// delay damage event to end of the frame
 	e.Core.Combat.Tasks.Add(func() {
-		//apply the damage
+		// apply the damage
 		e.applyDamage(atk, dmg)
 		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, dmg, crit)
-		//callbacks
+		// callbacks
 		cb := combat.AttackCB{
 			Target:      e,
 			AttackEvent: atk,
@@ -73,25 +84,25 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 }
 
 func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	//if target is frozen prior to attack landing, set impulse to 0
-	//let the break freeze attack to trigger actual impulse
+	// if target is frozen prior to attack landing, set impulse to 0
+	// let the break freeze attack to trigger actual impulse
 	if e.Durability[reactable.ModifierFrozen] > reactable.ZeroDur {
 		atk.Info.NoImpulse = true
 	}
 
-	//check shatter first
+	// check shatter first
 	e.ShatterCheck(atk)
 
-	//check tags
+	// check tags
 	if atk.Info.Durability > 0 {
-		//check for ICD first
+		// check for ICD first
 		atk.Info.Durability *= combat.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
-		//special global ICD for Burning DMG
+		// special global ICD for Burning DMG
 		if atk.Info.ICDTag == combat.ICDTagBurningDamage {
-			//checks for ICD on all the other characters as well
+			// checks for ICD on all the other characters as well
 			for i := 0; i < len(e.Core.Player.Chars()); i++ {
 				if i != atk.Info.ActorIndex {
-					//burning durability wiped out to 0 if any of the other char still on icd re burning dmg
+					// burning durability wiped out to 0 if any of the other char still on icd re burning dmg
 					atk.Info.Durability *= combat.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
 				}
 			}
@@ -113,14 +124,13 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 					Write("target", e.Key()).
 					Write("existing", existing).
 					Write("after", e.Reactable.ActiveAuraString())
-
 			}
 		}
 	}
 
 	damage, isCrit := e.calc(atk, evt)
 
-	//check for hitlag
+	// check for hitlag
 	if e.Core.Combat.EnableHitlag {
 		willapply := true
 		if atk.Info.HitlagOnHeadshotOnly {
@@ -132,18 +142,18 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		}
 		dur = math.Ceil(dur)
 		if willapply && dur > 0 {
-			//apply hit lag to enemy
+			// apply hit lag to enemy
 			e.ApplyHitlag(atk.Info.HitlagFactor, dur)
-			//also apply hitlag to reactable
+			// also apply hitlag to reactable
 			// e.Reactable.ApplyHitlag(atk.Info.HitlagFactor, dur)
 		}
 	}
 
-	//check for particle drops
+	// check for particle drops
 	if e.prof.ParticleDropThreshold > 0 {
 		next := int(e.damageTaken / e.prof.ParticleDropThreshold)
 		if next > e.lastParticleDrop {
-			//check the count too
+			// check the count too
 			count := next - e.lastParticleDrop
 			e.lastParticleDrop = next
 			e.Core.Log.NewEvent("particle hp threshold triggered", glog.LogEnemyEvent, atk.Info.ActorIndex)
@@ -155,29 +165,65 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 						Ele:    e.prof.ParticleElement,
 					})
 				},
-				100, //TODO: should be subject to global delay maybe??
+				100, // TODO: should be subject to global delay maybe??
 			)
 		}
+	}
+
+	if e.prof.ParticleDrops != nil {
+		e.tryHPDropParticle()
 	}
 
 	return damage, isCrit
 }
 
-func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
-	//record dmg
-	e.hp -= damage
-	e.damageTaken += damage //TODO: do we actually need this?
+func (e *Enemy) tryHPDropParticle() {
+	if e.particleDropIndex >= len(e.prof.ParticleDrops) {
+		return
+	}
+	info := e.prof.ParticleDrops[e.particleDropIndex]
+	if (e.HP() / e.MaxHP()) > info.HpPercent {
+		return
+	}
+	e.particleDropIndex++
+	// 22010017: 1 particle geo
+	diff := info.DropId - 22010000
+	if diff < 0 || diff >= 100 {
+		log.Printf("WARN: invalid particle DropId `%v` found, ignoring", info.DropId)
+		return
+	}
+	count := (info.DropId / 10) % 10 // 2nd digit is particle count
+	if count <= 0 {
+		return
+	}
+	element := particleIdToElement[info.DropId%10] // 1st digit is particle type
+	e.Core.Tasks.Add(
+		func() {
+			e.Core.Player.DistributeParticle(character.Particle{
+				Source: "hp_drop",
+				Num:    float64(count),
+				Ele:    element,
+			})
+		},
+		100, // TODO: should be subject to global delay maybe??
+	)
+}
 
-	//check if target is dead
+func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
+	// record dmg
+	e.hp -= damage
+	e.damageTaken += damage // TODO: do we actually need this?
+
+	// check if target is dead
 	if e.Core.Flags.DamageMode && e.hp <= 0 {
 		e.Kill()
 		e.Core.Events.Emit(event.OnTargetDied, e, atk)
 		return
 	}
 
-	//apply auras
+	// apply auras
 	if atk.Info.Durability > 0 && !atk.Reacted && atk.Info.Element != attributes.Physical {
-		//check for ICD first
+		// check for ICD first
 		existing := e.Reactable.ActiveAuraString()
 		applied := atk.Info.Durability
 		e.AttachOrRefill(atk)
@@ -194,7 +240,6 @@ func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
 				Write("target", e.Key()).
 				Write("existing", existing).
 				Write("after", e.Reactable.ActiveAuraString())
-
 		}
 	}
 }

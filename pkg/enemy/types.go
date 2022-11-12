@@ -232,7 +232,7 @@ var abyssHpMultipliers = map[string]float64{
 	"Nithhoggr_None": 2.0,
 }
 
-type hpDrop struct {
+type HpDrop struct {
 	DropId    int     `json:"dropId"`
 	HpPercent float64 `json:"hpPercent"`
 }
@@ -244,7 +244,8 @@ type propGrowCurve struct {
 
 type monsterExcelConfig struct {
 	MonsterName     string          `json:"monsterName"`
-	HpDrops         []hpDrop        `json:"hpDrops"`
+	HpDrops         []HpDrop        `json:"hpDrops"`
+	KillDropId      int             `json:"killDropId"`
 	HpBase          float64         `json:"hpBase"`
 	PropGrowCurves  []propGrowCurve `json:"propGrowCurves"`
 	FireSubHurt     float64         `json:"fireSubHurt"`
@@ -297,31 +298,23 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 	profile.Resist[attributes.Geo] = info.RockSubHurt
 	profile.Resist[attributes.Physical] = info.PhysicalSubHurt
 	if part, ok := params["particles"]; !ok || part != 0 {
-		for _, drops := range info.HpDrops {
-			if drops.HpPercent == 66.0 {
-				profile.ParticleDropThreshold = profile.HP / 3
-				break
-			} else if drops.HpPercent == 75.0 {
-				profile.ParticleDropThreshold = profile.HP / 4
-				break
-			} else if drops.HpPercent == 60.0 {
-				profile.ParticleDropThreshold = profile.HP * 0.4
+		profile.ParticleDropThreshold = 0
+		profile.ParticleDropCount = 0
+		profile.ParticleElement = 0
+		profile.ParticleDrops = []HpDrop{}
+		for _, v := range info.HpDrops {
+			if v.DropId == 0 || v.HpPercent == 0 {
+				continue
 			}
+			profile.ParticleDrops = append(profile.ParticleDrops, v)
 		}
-		// default for elemental particles. Fix this if we ever add elemental particles
-		profile.ParticleDropCount = 0.33
-		for _, drops := range info.HpDrops {
-			switch drops.DropId {
-			case 22010010:
-				profile.ParticleDropCount = 1
-				break
-			case 22010030:
-				profile.ParticleDropCount = 3
-				break
-			case 22010040:
-				profile.ParticleDropCount = 4
-			}
-		}
+	}
+	// add killDropId as particle drop
+	if info.KillDropId != 0 {
+		profile.ParticleDrops = append(profile.ParticleDrops, HpDrop{
+			DropId:    info.KillDropId,
+			HpPercent: 0,
+		})
 	}
 	return nil
 }

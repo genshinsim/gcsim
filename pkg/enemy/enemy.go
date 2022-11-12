@@ -19,6 +19,7 @@ type EnemyProfile struct {
 	ParticleDropThreshold float64                        `json:"-"` // drop particle every x dmg dealt
 	ParticleDropCount     float64                        `json:"-"`
 	ParticleElement       attributes.Element             `json:"-"`
+	ParticleDrops         []HpDrop                       `json:"-"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {
@@ -40,13 +41,14 @@ type Enemy struct {
 	hp     float64
 	maxhp  float64
 
-	damageTaken      float64
-	lastParticleDrop int
+	damageTaken       float64
+	lastParticleDrop  int
+	particleDropIndex int // for custom HP drops
 
-	//mods
+	// mods
 	mods []modifier.Mod
 
-	//hitlag stuff
+	// hitlag stuff
 	timePassed   float64
 	frozenFrames float64
 	queue        []queue.Task
@@ -55,9 +57,9 @@ type Enemy struct {
 func New(core *core.Core, p EnemyProfile) *Enemy {
 	e := &Enemy{}
 	e.Level = p.Level
-	//TODO: do we need to clone this map isntead?
+	// TODO: do we need to clone this map isntead?
 	e.resist = p.Resist
-	//TODO: this is kinda redundant to keep both profile and lvl/resist
+	// TODO: this is kinda redundant to keep both profile and lvl/resist
 	e.prof = p
 	e.Target = target.New(core, p.Pos.X, p.Pos.Y, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
