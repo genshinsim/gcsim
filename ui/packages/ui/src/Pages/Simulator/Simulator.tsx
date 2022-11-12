@@ -94,6 +94,9 @@ export function useConfigValidateListener(
 
   useEffect(() => {
     if (!isReady || cfg === "") {
+      if (cfg === "") {
+        dispatch(appActions.setTeam([]));
+      }
       return;
     }
 
