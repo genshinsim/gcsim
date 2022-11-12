@@ -15,6 +15,7 @@ type ResultStore interface {
 	Read(id string, ctx context.Context) ([]byte, error)
 	Update(id string, data []byte, ctx context.Context) error
 	Delete(id string, ctx context.Context) error
+	Random(ctx context.Context) ([]byte, error)
 }
 
 var ErrKeyNotFound = errors.New("key does not exist")
@@ -54,6 +55,25 @@ func (s *Server) GetShare() http.HandlerFunc {
 		key := chi.URLParam(r, "share-key")
 
 		share, err := s.cfg.ResultStore.Read(key, r.Context())
+		switch err {
+		case nil:
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(share)
+		case ErrKeyNotFound:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			s.Log.Errorw("unexpected error getting share", "err", err)
+		}
+
+	}
+}
+
+func (s *Server) GetRandomShare() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		share, err := s.cfg.ResultStore.Random(r.Context())
 		switch err {
 		case nil:
 			w.Header().Set("Content-Type", "application/json")
