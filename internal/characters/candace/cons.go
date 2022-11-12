@@ -32,6 +32,7 @@ func (c *char) c2() {
 func (c *char) c6() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
 		}
@@ -50,17 +51,20 @@ func (c *char) c6() {
 		if c.StatusIsActive(c6ICDKey) {
 			return false
 		}
+		if dmg == 0 {
+			return false
+		}
 		c.AddStatus(c6ICDKey, 138, true)
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "The Overflow (C6)",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			FlatDmg:    0.15 * c.MaxHP(),
+			ActorIndex:         c.Index,
+			Abil:               "The Overflow (C6)",
+			AttackTag:          combat.AttackTagElementalBurst,
+			ICDTag:             combat.ICDTagNone,
+			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeDefault,
+			Element:            attributes.Hydro,
+			Durability:         25,
+			FlatDmg:            0.15 * c.MaxHP(),
 			CanBeDefenseHalted: true,
 		}
 		c.Core.QueueAttack(
