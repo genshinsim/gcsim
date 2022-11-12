@@ -5,9 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
 
 export const ActionListTooltip = () => {
-  const settings = useAppSelector(
-    (state) => state.user.settings
-  );
+  const settings = useAppSelector((state) => state.user.data.settings);
   const dispatch = useAppDispatch();
   const toggleTips = () => {
     dispatch(
@@ -52,9 +50,7 @@ export const ActionListTooltip = () => {
 export const TeamBuilderTooltip = () => {
   const [openAddCharHelp, setOpenAddCharHelp] = React.useState<boolean>(false);
 
-  const settings = useAppSelector(
-    (state) => state.user.settings
-  );
+  const settings = useAppSelector((state) => state.user.data.settings);
   const dispatch = useAppDispatch();
   const toggleTips = () => {
     dispatch(

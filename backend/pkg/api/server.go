@@ -16,8 +16,17 @@ type Server struct {
 	cfg    Config
 }
 
+type DiscordConfig struct {
+	RedirectURL  string
+	ClientID     string
+	ClientSecret string
+	JWTKey       string
+}
+
 type Config struct {
 	ResultStore ResultStore
+	UserStore   UserStore
+	Discord     DiscordConfig
 }
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
@@ -64,7 +73,7 @@ func (s *Server) routes() {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(tokenCheck)
+	r.Use(s.tokenCheck)
 
 	r.Route("/api", func(r chi.Router) {
 
@@ -74,16 +83,15 @@ func (s *Server) routes() {
 			r.Get("/preview/{share-key}", s.notImplemented()) // preview (embed) for a shared sim
 		})
 
+		r.Get("/login", s.Login())
+
+		r.Route("/user", func(r chi.Router) {
+			r.Post("/save", s.UserSave())
+		})
 	})
 
 }
 
-func tokenCheck(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//do stuff here
-		next.ServeHTTP(w, r)
-	})
-}
 func (s *Server) notImplemented() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotImplemented)

@@ -1,10 +1,11 @@
-import { Button } from "@blueprintjs/core";
-import { StatusType } from "@gcsim/types";
-import axios from "axios";
-import React from "react";
+import { Button, ButtonGroup, Checkbox } from "@blueprintjs/core";
 import { Viewport } from "../../Components";
 import { AppThunk, useAppDispatch, useAppSelector } from "../../Stores/store";
-import { initialState, userActions } from "../../Stores/userSlice";
+import {
+  initialState,
+  saveUserSettings,
+  userActions,
+} from "../../Stores/userSlice";
 import { authProvider, Login } from "./Login";
 
 //thunks
@@ -22,37 +23,63 @@ function logout(): AppThunk {
 }
 
 export function PageUserAccount() {
-  const [status, setStatus] = React.useState<StatusType>("idle");
-  const [errMsg, setErrMsg] = React.useState<string>("");
-
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
-  React.useEffect(() => {
-    if (status === "idle" && user.token && user.token !== "") {
-      axios
-        .get(`/api/${user.user_id}/sims`)
-        .then((resp) => {
-          console.log(resp.data);
-          setStatus("done");
-        })
-        .catch((err) => {
-          setStatus("error");
-          setErrMsg(`Error encountered loading sims for user: ${err}`);
-        });
-    }
-  }, [status, dispatch, user.token]);
-
-  if (user.token === "" || user.token === undefined) {
+  if (user.uid === "") {
     return <Login />;
   }
 
   return (
     <Viewport>
-      <div className="flex flex-row place-content-center mt-2">
-        <Button icon="log-out" large onClick={() => dispatch(logout())}>
-          Logout
-        </Button>
+      <div className="flex flex-col ">
+        <div>
+          <Checkbox
+            checked={user.data.settings.showTips}
+            onChange={() => {
+              dispatch(
+                userActions.setUserSettings({
+                  showTips: !user.data.settings.showTips,
+                  showBuilder: user.data.settings.showBuilder,
+                })
+              );
+            }}
+          >
+            Show tips
+          </Checkbox>
+          <Checkbox
+            checked={user.data.settings.showBuilder}
+            onChange={() => {
+              dispatch(
+                userActions.setUserSettings({
+                  showTips: user.data.settings.showTips,
+                  showBuilder: !user.data.settings.showBuilder,
+                })
+              );
+            }}
+          >
+            Show builder
+          </Checkbox>
+        </div>
+        <div className="flex flex-row place-content-center mt-2">
+          <ButtonGroup>
+            <Button
+              icon="saved"
+              large
+              onClick={() => dispatch(saveUserSettings())}
+            >
+              Save Settings
+            </Button>
+            <Button
+              icon="log-out"
+              intent="danger"
+              large
+              onClick={() => dispatch(logout())}
+            >
+              Logout
+            </Button>
+          </ButtonGroup>
+        </div>
       </div>
     </Viewport>
   );
