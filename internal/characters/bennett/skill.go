@@ -76,6 +76,7 @@ func (c *char) skillPress() action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		Durability:         50,
 		HitlagHaltFrames:   0.09 * 60,
@@ -118,6 +119,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
@@ -138,6 +140,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
+		ai.StrikeType = combat.StrikeTypeDefault
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 166, 166)
