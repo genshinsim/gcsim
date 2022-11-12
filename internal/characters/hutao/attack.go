@@ -83,6 +83,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
+		if c.NormalCounter == 1 {
+			ai.StrikeType = combat.StrikeTypeSpear
+		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
@@ -119,6 +122,9 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   ppAttackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: ppAttackDefHalt[c.NormalCounter][i],
+		}
+		if c.NormalCounter == 1 {
+			ai.StrikeType = combat.StrikeTypeSpear
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(

@@ -62,6 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagNone,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Physical,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillStart, skillStart)
