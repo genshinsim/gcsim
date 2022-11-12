@@ -57,6 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
+			dmg := args[2].(float64)
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
@@ -74,6 +75,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}
 			// Ignore 50% of the time, 1:1 ratio
 			if c.Rand.Float64() < 0.5 {
+				return false
+			}
+			if dmg == 0 {
 				return false
 			}
 			char.AddStatus(icdKey, 600, true)
