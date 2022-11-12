@@ -63,6 +63,7 @@ func (c *char) c6() {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			Mult:               4.5,
