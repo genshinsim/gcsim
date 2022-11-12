@@ -30,7 +30,11 @@ func NewRoyal(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile)
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		crit := args[3].(bool)
+		if dmg == 0 {
+			return false
+		}
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
