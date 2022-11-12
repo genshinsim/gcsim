@@ -43,6 +43,7 @@ export function OmniSelect(props: Props) {
   };
   return (
     <CharacterOmnibar
+      overlayProps={{ usePortal: false }}
       resetOnSelect
       items={props.items}
       itemRenderer={OmniSelectRenderer}

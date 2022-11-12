@@ -76,6 +76,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"freedom":                       keys.FreedomSworn,
 	"frostbearer":                   keys.Frostbearer,
 	"fruitoffulfillment":            keys.FruitOfFulfillment,
+	"fruit":                         keys.FruitOfFulfillment,
 	"fof":                           keys.FruitOfFulfillment,
 	"hakushinring":                  keys.HakushinRing,
 	"hakushin":                      keys.HakushinRing,
@@ -256,6 +257,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"wgs":                           keys.WolfsGravestone,
 	"xiphosmoonlight":               keys.XiphosMoonlight,
 	"xiphos":                        keys.XiphosMoonlight,
+	"athousandfloatingdreams":       keys.ThousandFloatingDreams,
 	"thousandfloatingdreams":        keys.ThousandFloatingDreams,
 	"tfd":                           keys.ThousandFloatingDreams,
 }

@@ -180,7 +180,7 @@ var weaponNames = []string{
 	"wineandsong",
 	"wolfsgravestone",
 	"xiphosmoonlight",
-	"thousandfloatingdreams",
+	"athousandfloatingdreams",
 }
 
 const (

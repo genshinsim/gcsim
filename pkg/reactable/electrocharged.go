@@ -13,6 +13,11 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
+	//if there's still frozen left don't try to ec
+	//game actively rejects ec reaction if frozen is present
+	if r.Durability[ModifierFrozen] > ZeroDur {
+		return false
+	}
 
 	//adding ec or hydro just adds to durability
 	switch a.Info.Element {
@@ -52,18 +57,20 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	atk.FlatDmg = 1.2 * calcReactionDmg(char, atk, em)
-	r.ecSnapshot = atk
+	flatdmg, snap := calcReactionDmg(char, atk, em)
+	atk.FlatDmg = 1.2 * flatdmg
+	r.ecAtk = atk
+	r.ecSnapshot = snap
 
 	//if this is a new ec then trigger tick immediately and queue up ticks
 	//otherwise do nothing
 	//TODO: need to check if refresh ec triggers new tick immediately or not
 	if r.ecTickSrc == -1 {
 		r.ecTickSrc = r.core.F
-		r.core.QueueAttack(
+		r.core.QueueAttackWithSnap(
+			r.ecAtk,
 			r.ecSnapshot,
 			combat.NewDefSingleTarget(r.self.Key()),
-			-1,
 			10,
 		)
 
@@ -150,10 +157,10 @@ func (r *Reactable) nextTick(src int) func() {
 		}
 
 		//so ec is active, which means both aura must still have value > 0; so we can do dmg
-		r.core.QueueAttack(
+		r.core.QueueAttackWithSnap(
+			r.ecAtk,
 			r.ecSnapshot,
 			combat.NewDefSingleTarget(r.self.Key()),
-			-1,
 			0,
 		)
 

@@ -18,6 +18,7 @@ export function ArtifactSelect(props: Props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onItemSelect={props.onSelect}
+      overlayProps={{ usePortal: false }}
     />
   );
 }

@@ -99,9 +99,9 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
 	explode := func() {
-		ai := NewBloomAttack(char, s)
+		ai, snap := NewBloomAttack(char, s)
 		ap := combat.NewCircleHit(s, 5)
-		c.QueueAttack(ai, ap, -1, 1)
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
@@ -109,7 +109,7 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 		ap.SkipTargets[combat.TargettablePlayer] = false
 		ap.SkipTargets[combat.TargettableEnemy] = true
 		ap.SkipTargets[combat.TargettableGadget] = true
-		c.QueueAttack(ai, ap, -1, 1)
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 	}
 	s.Gadget.OnExpiry = explode
 	s.Gadget.OnKill = explode
@@ -139,13 +139,13 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	case attributes.Electro:
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
-		ai := NewHyperbloomAttack(char, s)
+		ai, snap := NewHyperbloomAttack(char, s)
 		// queue dmg nearest enemy
 		x, y := s.Gadget.Pos()
 		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
 			ap := combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1)
-			s.Core.QueueAttack(ai, ap, -1, 5)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
@@ -153,7 +153,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			ap.SkipTargets[combat.TargettablePlayer] = false
 			ap.SkipTargets[combat.TargettableEnemy] = true
 			ap.SkipTargets[combat.TargettableGadget] = true
-			s.Core.QueueAttack(ai, ap, -1, 5)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
 		}
 
 		s.Gadget.OnKill = nil
@@ -162,10 +162,10 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
-		ai := NewBurgeonAttack(char, s)
+		ai, snap := NewBurgeonAttack(char, s)
 		ap := combat.NewCircleHit(s.Gadget, 5)
 
-		s.Core.QueueAttack(ai, ap, -1, 1)
+		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		// queue self damage
 		ai.Abil += " (self damage)"
@@ -173,7 +173,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		ap.SkipTargets[combat.TargettablePlayer] = false
 		ap.SkipTargets[combat.TargettableEnemy] = true
 		ap.SkipTargets[combat.TargettableGadget] = true
-		s.Core.QueueAttack(ai, ap, -1, 1)
+		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
@@ -193,7 +193,7 @@ const (
 	HyperbloomMultiplier = 3
 )
 
-func NewBloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
@@ -206,11 +206,12 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) combat.Attac
 		Abil:             string(combat.Bloom),
 		IgnoreDefPercent: 1,
 	}
-	ai.FlatDmg = BloomMultiplier * calcReactionDmg(char, ai, em)
-	return ai
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = BloomMultiplier * flatdmg
+	return ai, snap
 }
 
-func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
@@ -223,11 +224,12 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) combat.Att
 		Abil:             string(combat.Burgeon),
 		IgnoreDefPercent: 1,
 	}
-	ai.FlatDmg = BurgeonMultiplier * calcReactionDmg(char, ai, em)
-	return ai
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = BurgeonMultiplier * flatdmg
+	return ai, snap
 }
 
-func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) combat.AttackInfo {
+func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat.AttackInfo, combat.Snapshot) {
 	em := char.Stat(attributes.EM)
 	ai := combat.AttackInfo{
 		ActorIndex:       char.Index,
@@ -240,6 +242,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) combat.
 		Abil:             string(combat.Hyperbloom),
 		IgnoreDefPercent: 1,
 	}
-	ai.FlatDmg = HyperbloomMultiplier * calcReactionDmg(char, ai, em)
-	return ai
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = HyperbloomMultiplier * flatdmg
+	return ai, snap
 }

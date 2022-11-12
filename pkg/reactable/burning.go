@@ -84,8 +84,10 @@ func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	atk.FlatDmg = 0.25 * calcReactionDmg(char, atk, em)
-	r.burningSnapshot = atk
+	flatdmg, snap := calcReactionDmg(char, atk, em)
+	atk.FlatDmg = 0.25 * flatdmg
+	r.burningAtk = atk
+	r.burningSnapshot = snap
 }
 
 func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
@@ -102,10 +104,10 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 		//so burning is active, which means both auras must still have value > 0, so we can do dmg
 		if counter != 9 {
 			// skip the 9th tick because hyv spaghetti
-			r.core.QueueAttack(
+			r.core.QueueAttackWithSnap(
+				r.burningAtk,
 				r.burningSnapshot,
 				combat.NewCircleHit(r.self, 1),
-				-1,
 				0,
 			)
 		}

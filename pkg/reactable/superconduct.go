@@ -80,6 +80,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	atk.FlatDmg = 0.5 * calcReactionDmg(char, atk, em)
-	r.core.QueueAttack(atk, combat.NewCircleHit(r.self, 3), -1, 1)
+	flatdmg, snap := calcReactionDmg(char, atk, em)
+	atk.FlatDmg = 0.5 * flatdmg
+	r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHit(r.self, 3), 1)
 }

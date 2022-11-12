@@ -103,10 +103,12 @@ type Reactable struct {
 	self combat.Target
 	core *core.Core
 	//ec specific
-	ecSnapshot combat.AttackInfo //index of owner of next ec ticks
+	ecAtk      combat.AttackInfo //index of owner of next ec ticks
+	ecSnapshot combat.Snapshot
 	ecTickSrc  int
 	//burning specific
-	burningSnapshot combat.AttackInfo
+	burningAtk      combat.AttackInfo
+	burningSnapshot combat.Snapshot
 	burningTickSrc  int
 }
 
@@ -394,7 +396,7 @@ func (r *Reactable) Tick() {
 	}
 }
 
-func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em float64) float64 {
+func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em float64) (float64, combat.Snapshot) {
 	lvl := char.Base.Level - 1
 	if lvl > 89 {
 		lvl = 89
@@ -402,7 +404,12 @@ func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em floa
 	if lvl < 0 {
 		lvl = 0
 	}
-	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl]
+	snap := combat.Snapshot{
+		CharLvl:  char.Base.Level,
+		ActorEle: char.Base.Element,
+	}
+	snap.Stats[attributes.EM] = em
+	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl], snap
 }
 
 func (r *Reactable) calcCatalyzeDmg(atk combat.AttackInfo, em float64) float64 {
