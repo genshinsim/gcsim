@@ -25,6 +25,7 @@ func (c *char) c1(delay int) {
 		AttackTag:          combat.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagElementalBurst,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               1.2 * burst[c.TalentLvlBurst()],
