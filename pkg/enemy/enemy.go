@@ -20,6 +20,7 @@ type EnemyProfile struct {
 	ParticleDropCount     float64                        `json:"-"`
 	ParticleElement       attributes.Element             `json:"-"`
 	ParticleDrops         []HpDrop                       `json:"-"`
+	ResistFrozen          bool                           `json:"-"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {
@@ -64,6 +65,7 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.Target = target.New(core, p.Pos.X, p.Pos.Y, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
+	e.Reactable.ResistFrozen = e.prof.ResistFrozen
 	e.mods = make([]modifier.Mod, 0, 10)
 	if core.Combat.DamageMode {
 		e.hp = p.HP

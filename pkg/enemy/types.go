@@ -238,12 +238,12 @@ type HpDrop struct {
 }
 
 type propGrowCurve struct {
-	Typ       string `json:"Type"`
-	GrowCurve string `json:"GrowCurve"`
+	GrowCurve string `json:"growCurve"`
 }
 
 type monsterExcelConfig struct {
 	MonsterName     string          `json:"monsterName"`
+	Typ             string          `json:"type"`
 	HpDrops         []HpDrop        `json:"hpDrops"`
 	KillDropId      int             `json:"killDropId"`
 	HpBase          float64         `json:"hpBase"`
@@ -300,6 +300,7 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 		}
 		profile.HP *= mult
 	}
+	profile.ResistFrozen = info.Typ == "MONSTER_BOSS"
 	profile.Resist[attributes.Pyro] = info.FireSubHurt
 	profile.Resist[attributes.Dendro] = info.GrassSubHurt
 	profile.Resist[attributes.Hydro] = info.WaterSubHurt

@@ -60,6 +60,16 @@ func parseTarget(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 				p.res.Settings.DamageMode = true
+			case "resist_frozen":
+				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+				if err != nil {
+					return nil, err
+				}
+				v, err := itemNumberToInt(item)
+				if err != nil {
+					return nil, err
+				}
+				r.ResistFrozen = v != 0
 			default:
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}

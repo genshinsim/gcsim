@@ -10,13 +10,13 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	//so if already frozen there are 2 cases:
+	// so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
 	var consumed combat.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
-		//if cryo exists we'll trigger freeze regardless if frozen already coexists
+		// if cryo exists we'll trigger freeze regardless if frozen already coexists
 		if r.Durability[ModifierCryo] < ZeroDur {
 			return false
 		}
@@ -31,7 +31,7 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 		r.Durability[ModifierHydro] -= consumed
 		r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
 	default:
-		//should be here
+		// should be here
 		return false
 	}
 	a.Reacted = true
@@ -59,10 +59,10 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	if a.Info.StrikeType != combat.StrikeTypeBlunt || r.Durability[ModifierFrozen] < ZeroDur {
 		return false
 	}
-	//remove 200 freeze gauge if availabe
+	// remove 200 freeze gauge if availabe
 	r.Durability[ModifierFrozen] -= 200
 	r.checkFreeze()
-	//trigger shatter attack
+	// trigger shatter attack
 	r.core.Events.Emit(event.OnShatter, r.self, a)
 	ai := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
@@ -78,7 +78,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	em := char.Stat(attributes.EM)
 	flatdmg, snap := calcReactionDmg(char, ai, em)
 	ai.FlatDmg = 1.5 * flatdmg
-	//shatter is a self attack
+	// shatter is a self attack
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
@@ -91,7 +91,10 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 // add to freeze durability and return amount of durability consumed
 func (r *Reactable) triggerFreeze(a, b combat.Durability) combat.Durability {
 	d := min(a, b)
-	//trigger freeze should only addDurability and should not touch decay rate
+	if r.ResistFrozen {
+		return d
+	}
+	// trigger freeze should only addDurability and should not touch decay rate
 	r.addDurability(ModifierFrozen, 2*d)
 	return d
 }
@@ -100,7 +103,7 @@ func (r *Reactable) checkFreeze() {
 	if r.Durability[ModifierFrozen] <= ZeroDur {
 		r.Durability[ModifierFrozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
-		//trigger another attack here, purely for the purpose of breaking bubbles >.>
+		// trigger another attack here, purely for the purpose of breaking bubbles >.>
 		ai := combat.AttackInfo{
 			ActorIndex:  0,
 			DamageSrc:   r.self.Key(),
@@ -112,7 +115,7 @@ func (r *Reactable) checkFreeze() {
 			SourceIsSim: true,
 			DoNotLog:    true,
 		}
-		//TODO: delay attack by 1 frame ok?
+		// TODO: delay attack by 1 frame ok?
 		r.core.QueueAttack(ai, combat.NewDefSingleTarget(r.self.Key()), -1, 1)
 	}
 }
