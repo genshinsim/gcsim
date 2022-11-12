@@ -18,7 +18,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
     (state: RootState) => {
       return {
         cfg: state.app.cfg,
-        settings: state.user.settings,
+      settings: state.user.data.settings,
       };
     }
   );

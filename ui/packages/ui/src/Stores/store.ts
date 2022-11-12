@@ -37,7 +37,9 @@ if (localStorage.getItem(userAppDataKey)) {
 
 if (localStorage.getItem(userLocalSettings)) {
   const s = JSON.parse(localStorage.getItem(userLocalSettings) ?? "{}");
-  persistedState.user = Object.assign(persistedState.user, { settings: s });
+  persistedState.user.data = Object.assign(persistedState.user.data, {
+    settings: s,
+  });
 }
 
 const item = localStorage.getItem(userLocalResults);
@@ -66,10 +68,10 @@ store.subscribe(() => {
     team: store.getState().app.team
   }));
 
-  if (store.getState().user.settings) {
+  if (store.getState().user.data.settings) {
     localStorage.setItem(
       userLocalSettings,
-      JSON.stringify(store.getState().user.settings)
+      JSON.stringify(store.getState().user.data.settings)
     );
   }
 

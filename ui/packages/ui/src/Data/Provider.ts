@@ -19,10 +19,13 @@ export class MockProvider implements AuthProvider {
   async auth(_: string): Promise<UserInfo> {
     console.log("hello im logging in");
     return {
-      user_id: 1560962267213,
-      user_name: "FakeUser#1234",
-      token: "thisisafaketoken",
-      settings: initialState.settings
+      uid: "1560962267213",
+      name: "FakeUser#1234",
+      role: 0,
+      permalinks: [],
+      data: {
+        settings: initialState.data.settings,
+      },
     };
   }
 
@@ -33,29 +36,40 @@ export class MockProvider implements AuthProvider {
   setAccountData(): void {}
 }
 
+const callbackURL =
+  window.location.protocol + "//" + window.location.host + "/auth/discord";
 const discordURL =
-  "https://discord.com/api/oauth2/authorize?client_id=999720972875739226&redirect_uri=https%3A%2F%2Fgcsim.app%2Fauth%2Fdiscord&response_type=code&scope=identify&prompt=none";
+  "https://discord.com/api/oauth2/authorize?client_id=1040701711783829566&redirect_uri=" +
+  encodeURIComponent(callbackURL) +
+  "&response_type=code&scope=identify&prompt=none";
 
 export class DiscordProvider implements AuthProvider {
-  constructor() {}
+  private started: boolean;
+  constructor() {
+    this.started = false;
+  }
 
   login(): void {
     window.location.href = discordURL;
   }
 
   async auth(code: string): Promise<UserInfo> {
+    if (this.started) {
+      throw "Auth already started";
+    }
+    this.started = true;
     const response = await axios({
       method: "get",
-      url: "/api/auth",
-      headers: { "X-DISCORD-CODE": code },
+      url: "/api/login",
+      headers: {
+        "X-DISCORD-CODE": code,
+        "x-discord-redirect": callbackURL, //TODO: check prod vs dev
+      },
     });
+    this.started = false;
     console.log(response);
-    if (response.data.token && response.data.user) {
-      //extract user info from token
-      return {
-        ...response.data.user,
-        token: response.data.token,
-      };
+    if (response.data) {
+      return response.data;
     }
     throw "Unexpected error";
   }

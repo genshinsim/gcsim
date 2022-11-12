@@ -19,12 +19,12 @@ export function DiscordCallback() {
     authProvider
       .auth(code)
       .then((user) => {
-        dispatch(userActions.setUser(user));
+        dispatch(userActions.mergeUser(user));
         setLocation("/account");
       })
       .catch((error) => {
         setError(JSON.stringify(error));
-        setLocation("/auth/discord");
+        setLocation("/account");
       });
   }, [params]);
 

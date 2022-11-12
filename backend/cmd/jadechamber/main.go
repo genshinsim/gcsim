@@ -7,6 +7,7 @@ import (
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/result"
+	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -22,8 +23,19 @@ func main() {
 	sugar.Debugw("logger initiated")
 
 	resultStore, err := result.New(result.Config{
-		DBPath: os.Getenv("DATA_PATH"),
+		DBPath: os.Getenv("RESULT_DATA_PATH"),
 	}, func(s *result.Store) error {
+		s.Log = sugar
+		return nil
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	userStore, err := user.New(user.Config{
+		DBPath: os.Getenv("USER_DATA_PATH"),
+	}, func(s *user.Store) error {
 		s.Log = sugar
 		return nil
 	})
@@ -34,6 +46,13 @@ func main() {
 
 	s, err := api.New(api.Config{
 		ResultStore: resultStore,
+		UserStore:   userStore,
+		Discord: api.DiscordConfig{
+			RedirectURL:  os.Getenv("REDIRECT_URL"),
+			ClientID:     os.Getenv("DISCORD_ID"),
+			ClientSecret: os.Getenv("DISCORD_SECRET"),
+			JWTKey:       os.Getenv("JWT_KEY"),
+		},
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil

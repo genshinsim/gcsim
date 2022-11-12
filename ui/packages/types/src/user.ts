@@ -1,7 +1,12 @@
 export interface UserInfo {
-  user_id: number; //discord id
-  user_name: string; //discord tag
-  token?: string; //jwt token
+  uid: string; //discord id
+  name: string; //discord tag
+  role: number; // role number
+  permalinks: string[]; // list of permas
+  data: UserData;
+}
+
+export interface UserData {
   settings: UserSettings;
 }
 

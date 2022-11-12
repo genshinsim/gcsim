@@ -5,7 +5,7 @@ services:
     image: cloudflare/cloudflared:latest
     command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
     volumes:
-      - ../cloudflared:/etc/cloudflared
+      - ./cloudflared:/etc/cloudflared
     environment:
       - CF_TUNNEL_TOKEN
     depends_on:
@@ -19,5 +19,9 @@ services:
       - .:/app
       - ./data:/data
     environment:
-      - DATA_PATH=/data
+      - RESULT_DATA_PATH=/data/result
+      - USER_DATA_PATH=/data/user
+      - DISCORD_ID
+      - DISCORD_SECRET
+      - REDIRECT_URL
     restart: unless-stopped
