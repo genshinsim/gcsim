@@ -45,34 +45,34 @@ type ActionList struct {
 }
 
 type EnergySettings struct {
-	Active         bool
-	Once           bool //how often
-	Start          int
-	End            int
-	Amount         int
-	LastEnergyDrop int
+	Active         bool `json:"active"`
+	Once           bool `json:"once"` //how often
+	Start          int  `json:"start"`
+	End            int  `json:"end"`
+	Amount         int  `json:"amount"`
+	LastEnergyDrop int  `json:"last_energy_drop"`
 }
 
 type SimulatorSettings struct {
-	Duration     float64
-	DamageMode   bool
-	EnableHitlag bool
-	DefHalt      bool // for hitlag
+	Duration     float64 `json:"-"`
+	DamageMode   bool    `json:"damage_mode"`
+	EnableHitlag bool    `json:"enable_hitlag"`
+	DefHalt      bool    `json:"def_halt"` // for hitlag
 	//other stuff
-	NumberOfWorkers int // how many workers to run the simulation
-	Iterations      int // how many iterations to run
-	Delays          player.Delays
+	NumberOfWorkers int           `json:"-"`          // how many workers to run the simulation
+	Iterations      int           `json:"iterations"` // how many iterations to run
+	Delays          player.Delays `json:"delays"`
 }
 
 type Delays struct {
-	Skill  int
-	Burst  int
-	Attack int
-	Charge int
-	Aim    int
-	Dash   int
-	Jump   int
-	Swap   int
+	Skill  int `json:"skill"`
+	Burst  int `json:"burst"`
+	Attack int `json:"attack"`
+	Charge int `json:"charge"`
+	Aim    int `json:"aim"`
+	Dash   int `json:"dash"`
+	Jump   int `json:"jump"`
+	Swap   int `json:"swap"`
 }
 
 func (c *ActionList) Copy() *ActionList {

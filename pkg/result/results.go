@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
 
@@ -14,12 +15,13 @@ type Summary struct {
 	SchemaVersion Version `json:"schema_version"`
 	SimVersion    string  `json:"sim_version"`
 	BuildDate     string  `json:"build_date"`
-	MaxIterations int     `json:"max_iterations"`
 
 	// character & enemy metadata
-	InitialCharacter string                       `json:"initial_character"`
-	CharacterDetails []simulation.CharacterDetail `json:"character_details"`
-	TargetDetails    []enemy.EnemyProfile         `json:"target_details"`
+	InitialCharacter  string                       `json:"initial_character"`
+	CharacterDetails  []simulation.CharacterDetail `json:"character_details"`
+	TargetDetails     []enemy.EnemyProfile         `json:"target_details"`
+	SimulatorSettings ast.SimulatorSettings        `json:"simulator_settings"`
+	EnergySettings    ast.EnergySettings           `json:"energy_settings"`
 
 	Config     string `json:"config_file"`
 	SampleSeed string `json:"sample_seed"`

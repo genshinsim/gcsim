@@ -60,7 +60,7 @@ export default ({ running, data, error, src, redirect, exec, retry }: ViewerProp
         src={src}
         error={error}
         current={data?.statistics?.iterations}
-        total={data?.max_iterations}
+        total={data?.settings?.iterations}
       />
       <ErrorAlert msg={error} redirect={redirect} retry={retry} />
     </div>

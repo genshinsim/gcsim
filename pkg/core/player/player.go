@@ -1,4 +1,4 @@
-//Package player contains player related tracking and functionalities:
+// Package player contains player related tracking and functionalities:
 // - tracking characters on the team
 // - handling animations state
 // - handling normal attack state
@@ -55,14 +55,14 @@ type Handler struct {
 }
 
 type Delays struct {
-	Skill  int
-	Burst  int
-	Attack int
-	Charge int
-	Aim    int
-	Dash   int
-	Jump   int
-	Swap   int
+	Skill  int `json:"skill"`
+	Burst  int `json:"burst"`
+	Attack int `json:"attack"`
+	Charge int `json:"charge"`
+	Aim    int `json:"aim"`
+	Dash   int `json:"dash"`
+	Jump   int `json:"jump"`
+	Swap   int `json:"swap"`
 }
 
 type Opt struct {
@@ -191,8 +191,8 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	h.ExtendInfusion(char, factor, dur)
 }
 
-//InitializeTeam will set up resonance event hooks and calculate
-//all character base stats
+// InitializeTeam will set up resonance event hooks and calculate
+// all character base stats
 func (h *Handler) InitializeTeam() error {
 	var err error
 	for _, c := range h.chars {

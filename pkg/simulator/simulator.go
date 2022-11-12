@@ -151,14 +151,15 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		//    Minor: increase if new schema is backwards compatible with previous
 		//        Ex - added new data for new graph on UI. UI still functional if this data is missing
 		// Increasing the version will result in the UI flagging all old sims as outdated
-		SchemaVersion:    result.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
-		SimVersion:       opts.Version,
-		BuildDate:        opts.BuildDate,
-		MaxIterations:    simcfg.Settings.Iterations,
-		Config:           cfg,
-		SampleSeed:       strconv.FormatUint(uint64(CryptoRandSeed()), 10),
-		TargetDetails:    simcfg.Targets,
-		InitialCharacter: simcfg.InitialChar.String(),
+		SchemaVersion:     result.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
+		SimVersion:        opts.Version,
+		BuildDate:         opts.BuildDate,
+		SimulatorSettings: simcfg.Settings,
+		EnergySettings:    simcfg.Energy,
+		Config:            cfg,
+		SampleSeed:        strconv.FormatUint(uint64(CryptoRandSeed()), 10),
+		TargetDetails:     simcfg.Targets,
+		InitialCharacter:  simcfg.InitialChar.String(),
 	}
 
 	charDetails, err := GenerateCharacterDetails(simcfg)
