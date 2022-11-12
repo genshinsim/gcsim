@@ -138,6 +138,9 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			Mult:               mult[c.TalentLvlSkill()],
 			HitlagHaltFrames:   meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
 		}
+		if c.NormalCounter == 5 && i == 0 {
+			ai.StrikeType = combat.StrikeTypeSpear
+		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
