@@ -14,12 +14,6 @@ var (
 	attackHitmarks        = [][]int{{14}, {17}, {13, 22}, {27}}
 	attackHitlagHaltFrame = [][]float64{{0.01}, {0.06}, {0, 0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{false}, {true}, {false, true}, {true}}
-	attackStrikeType      = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSpear, combat.StrikeTypeSpear},
-		{combat.StrikeTypeSlash},
-	}
 )
 
 const normalHitNum = 4
@@ -51,14 +45,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         attackStrikeType[c.NormalCounter][i],
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i],
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-
+		if c.NormalCounter == 2 {
+			ai.StrikeType = combat.StrikeTypeSpear
+		}
 		c.Core.QueueAttack(
 			ai,
 			c.attackPattern(c.NormalCounter),
@@ -104,13 +100,6 @@ var (
 	attackBHitmarks        = [][]int{{12}, {14}, {18}, {5, 14}, {40}}
 	attackBHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.03}, {0.01, 0.03}, {0.05}}
 	attackBDefHalt         = [][]bool{{false}, {false}, {false}, {false, false}, {true}}
-	attackBStrikeType      = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeBlunt},
-		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
-		{combat.StrikeTypeBlunt},
-	}
 )
 
 func init() {
@@ -142,7 +131,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         attackBStrikeType[c.normalBCounter][i],
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
 			HitlagFactor:       0.01,
@@ -151,6 +140,9 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			Mult:               mult[c.TalentLvlBurst()],
 			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
 			IgnoreInfusion:     true,
+		}
+		if c.NormalCounter == 2 || c.NormalCounter == 4 {
+			ai.StrikeType = combat.StrikeTypeBlunt
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, c.attackBPattern(c.normalBCounter), 0, 0)
