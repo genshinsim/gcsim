@@ -271,6 +271,17 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 	if !(1 <= profile.Level && profile.Level <= 100) {
 		return fmt.Errorf("invalid target level: must be between 1 and 100")
 	}
+	if name == "dummy" {
+		profile.ParticleDropThreshold = 0
+		profile.ParticleDropCount = 0
+		profile.ParticleElement = 0
+		profile.ParticleDrops = nil
+		profile.HP = 562949953421311
+		for elem := attributes.Electro; elem <= attributes.Physical; elem++ {
+			profile.Resist[elem] = 0.1
+		}
+		return nil
+	}
 	info, err := getMonsterInfo(name)
 	if err != nil {
 		return err
