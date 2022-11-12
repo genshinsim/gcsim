@@ -67,6 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmgper := .15 + .05*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		//check if char is correct?
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -76,6 +77,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		//check if buff up
 		if !char.StatModIsActive(buffKey) {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 		//add a new action that deals % dmg immediately
