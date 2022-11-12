@@ -33,8 +33,12 @@ func (c *char) c1() {
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 
