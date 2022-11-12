@@ -79,6 +79,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if !c.skillActive {
 			return false
 		}
@@ -87,6 +88,9 @@ func (c *char) skillHook() {
 		}
 		// Can't be triggered by itself when refreshing
 		if atk.Info.Abil == "Abiogenesis: Solar Isotoma" {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 
