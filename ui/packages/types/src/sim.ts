@@ -1,6 +1,6 @@
 export interface SimResults {
   schema_version?: Version;
-  max_iterations?: number;
+  settings?: Settings;
 
   initial_character?: string;
   character_details?: Character[];
@@ -80,6 +80,10 @@ export interface FloatStat {
   max?: number;
   mean?: number;
   sd?: number;
+}
+
+export interface Settings {
+  iterations?: number;
 }
 
 export interface Character {

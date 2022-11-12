@@ -59,8 +59,8 @@ type SimulatorSettings struct {
 	EnableHitlag bool    `json:"enable_hitlag"`
 	DefHalt      bool    `json:"def_halt"` // for hitlag
 	//other stuff
-	NumberOfWorkers int           `json:"-"` // how many workers to run the simulation
-	Iterations      int           `json:"-"` // how many iterations to run
+	NumberOfWorkers int           `json:"-"`          // how many workers to run the simulation
+	Iterations      int           `json:"iterations"` // how many iterations to run
 	Delays          player.Delays `json:"delays"`
 }
 
