@@ -24,6 +24,7 @@ func (c *char) c6() {
 				AttackTag:  combat.AttackTagNone,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypeDefault,
 				Element:    attributes.NoElement,
 				DoNotLog:   true,
 			}
