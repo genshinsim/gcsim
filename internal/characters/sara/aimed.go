@@ -69,7 +69,6 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
 	if c.Core.Status.Duration(coverKey) > 0 {
-		// Not sure what kind of strike type this is
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush",
