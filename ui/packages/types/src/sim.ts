@@ -1,6 +1,6 @@
 export interface SimResults {
   schema_version?: Version;
-  settings?: Settings;
+  simulator_settings?: Settings;
 
   initial_character?: string;
   character_details?: Character[];

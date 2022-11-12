@@ -109,7 +109,7 @@ export class WasmExecutor implements Executor {
           switch (ev.data.type as Aggregator.Response) {
             case Aggregator.Response.Initialized:
               result = (ev.data as Aggregator.InitializeResponse).result;
-              maxIterations = result?.settings?.iterations ?? 1000;
+              maxIterations = result?.simulator_settings?.iterations ?? 1000;
               resolve(true);
               return;
             case Aggregator.Response.Failed:
