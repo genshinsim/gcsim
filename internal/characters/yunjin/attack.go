@@ -45,6 +45,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
