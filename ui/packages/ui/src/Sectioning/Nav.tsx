@@ -1,7 +1,6 @@
 import {
   Alignment,
   AnchorButton,
-  Button,
   Classes,
   HTMLSelect,
   IconName,
@@ -19,38 +18,24 @@ export default ({}) => {
   const user = useAppSelector((state) => state.user);
 
   const PageNavs = [
-    <NavLink
-      key="sim"
-      href="/simulator"
-      icon="calculator"
-      text={t("nav.simulator")}
-    />,
-    <NavLink key="view" href="/viewer" icon="chart" text={t("nav.viewer")} />,
-    <NavLink
-      key="sample"
-      href="/sample"
-      icon="helper-management"
-      text={"Sample"}
-    />,
+    <NavLink key="sim" href="/simulator" icon="calculator" text={t("nav.simulator")} />,
     <AnchorButton
-      key="db"
-      className={Classes.MINIMAL}
-      icon="database"
-      href="https://db.gcsim.app"
-      target="_blank"
-    >
+        key="db"
+        className={Classes.MINIMAL}
+        icon="database"
+        href="https://db.gcsim.app"
+        target="_blank">
       <span className="hidden min-[798px]:block">
         {t<string>("nav.teams_db")}
       </span>
     </AnchorButton>,
     <AnchorButton
-      key="discord"
-      className={Classes.MINIMAL}
-      href="https://discord.gg/m7jvjdxx7q"
-      target="_blank"
-      rel="noreferrer"
-      icon={<FaDiscord size="24px" color="#abb3bf" />}
-    >
+        key="discord"
+        className={Classes.MINIMAL}
+        href="https://discord.gg/m7jvjdxx7q"
+        target="_blank"
+        rel="noreferrer"
+        icon={<FaDiscord size="24px" color="#abb3bf" />}>
       <span className="hidden min-[798px]:block">{"Discord"}</span>
     </AnchorButton>,
   ];
@@ -70,25 +55,17 @@ export default ({}) => {
           </Navbar.Heading>
         </Navbar.Group>
         <Navbar.Group
-          align={Alignment.LEFT}
-          className="!hidden min-[550px]:!flex !items-stretch"
-        >
+            align={Alignment.LEFT}
+            className="!hidden min-[550px]:!flex !items-stretch">
           <Navbar.Divider className="self-center" />
           {PageNavs}
         </Navbar.Group>
-        <Navbar.Group align={Alignment.RIGHT}>
-          <Link href="/account">
-            <Button
-              minimal={true}
-              icon="user"
-              text={user.uid === "" ? "Guest" : user.name}
-            />
-          </Link>
+        <Navbar.Group align={Alignment.RIGHT} className="!flex !items-stretch">
+          <NavLink href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} />
           <HTMLSelect
-            className="ml-2"
-            value={i18n.resolvedLanguage}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-          >
+              className="ml-2 self-center"
+              value={i18n.resolvedLanguage}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}>
             <option value="en">{t<string>("nav.english")}</option>
             <option value="zh">{t<string>("nav.chinese")}</option>
             <option value="de">{t<string>("nav.german")}</option>

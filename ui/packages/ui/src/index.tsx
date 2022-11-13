@@ -7,15 +7,17 @@ import { useTranslation } from "react-i18next";
 import { RootState, store, useAppDispatch, useAppSelector } from "./Stores/store";
 import { appActions } from "./Stores/appSlice";
 import { Footer, Nav } from "./Sectioning";
+import { Helmet } from "react-helmet";
 import {
   Dash,
   Simulator,
-  ViewerLoader,
-  ViewTypes,
   PageUserAccount,
   DiscordCallback,
   SampleLoader,
   SampleTypes,
+  WebViewer,
+  LocalViewer,
+  ShareViewer,
 } from "./Pages";
 import "./Translation/i18n";
 
@@ -118,8 +120,10 @@ const Main = ({ exec, children }: UIProps) => {
   // cancel the run every time we navigate away from the viewer page
   const prevLocation = useRef(location);
   useEffect(() => {
-    if (prevLocation.current != location && prevLocation.current.startsWith("/viewer/")
-        && !location.startsWith("/viewer/") && exec().running()) {
+    if (prevLocation.current != location
+        && prevLocation.current.startsWith("/viewer/")
+        && !location.startsWith("/viewer/")
+        && exec().running()) {
       exec().cancel();
     }
     prevLocation.current = location;
@@ -130,7 +134,12 @@ const Main = ({ exec, children }: UIProps) => {
       <Nav />
       <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
         <Switch>
-          <Route path="/" component={Dash} />
+          <Route path="/">
+            <Helmet>
+              <title>gcsim - simulation impact</title>
+            </Helmet>
+            <Dash />
+          </Route>
           <Route path="/simple">
             <Redirect to="/simulator" />
           </Route>
@@ -138,6 +147,9 @@ const Main = ({ exec, children }: UIProps) => {
             <Redirect to="/simulator" />
           </Route>
           <Route path="/simulator">
+            <Helmet>
+              <title>gcsim - simulator</title>
+            </Helmet>
             <Simulator exec={exec} />
           </Route>
 
@@ -154,21 +166,25 @@ const Main = ({ exec, children }: UIProps) => {
 
           {/* Viewer Routes */}
           <Route path="/viewer">
-            <ViewerLoader exec={exec} type={ViewTypes.Landing} />
-          </Route>
-          <Route path="/viewer/upload">
-            <ViewerLoader exec={exec} type={ViewTypes.Upload} />
+            <Redirect to="/simulator" />
           </Route>
           <Route path="/viewer/web">
-            <ViewerLoader exec={exec} type={ViewTypes.Web} />
+            <Helmet>
+              <title>gcsim - viewer</title>
+            </Helmet>
+            <WebViewer exec={exec} />
           </Route>
           <Route path="/viewer/local">
-            <ViewerLoader exec={exec} type={ViewTypes.Local} />
+            <Helmet>
+              <title>gcsim - local viewer</title>
+            </Helmet>
+            <LocalViewer exec={exec} />
           </Route>
           <Route path="/viewer/share/:id">
-            {(params) => (
-              <ViewerLoader exec={exec} type={ViewTypes.Share} id={params.id} />
-            )}
+            {(params) => {
+              document.title = "gcsim - " + params.id;
+              return <ShareViewer exec={exec} id = {params.id} />;
+            }}
           </Route>
 
           {/* reroute v3 -> new viewer */}
@@ -180,12 +196,18 @@ const Main = ({ exec, children }: UIProps) => {
             <RedirectDB />
           </Route>
           <Route path="/account">
+            <Helmet>
+              <title>gcsim - account</title>
+            </Helmet>
             <PageUserAccount />
           </Route>
           <Route path="/auth/discord">
             <DiscordCallback />
           </Route>
           <Route>
+            <Helmet>
+              <title>gcsim - simulation impact</title>
+            </Helmet>
             <div className="m-2 text-center">
               {t<string>("src.this_page_is")}
             </div>

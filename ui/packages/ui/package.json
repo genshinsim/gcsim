@@ -24,6 +24,7 @@
     "query-string": "^7.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-i18next": "^12.0.0",
     "react-icons": "^4.6.0",
     "react-player": "^2.11.0",
@@ -38,6 +39,7 @@
     "@types/file-saver": "^2",
     "@types/lodash-es": "^4",
     "@types/pako": "^2",
+    "@types/react-helmet": "^6",
     "@types/react-virtualized-auto-sizer": "^1",
     "@types/uuid": "^8.3.4",
     "typescript": "^4.8.4"

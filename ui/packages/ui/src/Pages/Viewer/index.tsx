@@ -17,41 +17,22 @@ export enum ResultSource {
   Generated,
 }
 
-export enum ViewTypes {
-  Landing,
-  Upload,
-  Web,
-  Local,
-  Share,
-}
-
-type LoaderProps = {
+type ViewerProps = {
   exec: ExecutorSupplier<Executor>;
-  type: ViewTypes;
   id?: string; // only used in share
 };
 
-export const ViewerLoader = ({ exec, type, id }: LoaderProps) => {
-  switch (type) {
-    case ViewTypes.Landing:
-      // TODO: figure out what this should be
-      document.title = "gcsim - viewer";
-      return <div></div>;
-    case ViewTypes.Upload:
-      // TODO: show upload tsx (dropzone)
-      document.title = "gcsim - file upload";
-      return <div></div>;
-    case ViewTypes.Web:
-      document.title = "gcsim - web viewer";
-      return <FromState exec={exec} redirect="/simulator" />;
-    case ViewTypes.Local:
-      document.title = "gcsim - local";
-      return <FromUrl exec={exec} url="http://127.0.0.1:8381/data" redirect="/viewer" />;
-    case ViewTypes.Share:
-      document.title = "gcsim - " + id;
-      return <FromUrl exec={exec} url={processUrl(id)} redirect="/viewer" />;
-  }
-};
+export const ShareViewer = ({ exec, id }: ViewerProps) => (
+  <FromUrl exec={exec} url={processUrl(id)} redirect="/" />
+);
+
+export const LocalViewer = ({ exec }: ViewerProps) => (
+  <FromUrl exec={exec} url="http://127.0.0.1:8381/data" redirect="/" />
+);
+
+export const WebViewer = ({ exec }: ViewerProps) => (
+  <FromState exec={exec} redirect="/simulator" />
+);
 
 function processUrl(id?: string): string {
   if (id == null) {
@@ -77,8 +58,13 @@ function useRunningState(exec: ExecutorSupplier<Executor>): boolean {
   return isRunning;
 }
 
-const FromUrl = ({ exec, url, redirect }: {
-    exec: ExecutorSupplier<Executor>, url: string, redirect: string }) => {
+type FromUrlProps = {
+  exec: ExecutorSupplier<Executor>;
+  redirect: string;
+  url: string;
+};
+
+const FromUrl = ({ exec, url, redirect }: FromUrlProps) => {
   const [data, setData] = useState<SimResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
@@ -109,49 +95,41 @@ const FromUrl = ({ exec, url, redirect }: {
   );
 
   return (
-    <>
-      <Viewer
-        running={isRunning}
+    <UpgradableViewer
         data={data}
         error={error}
         src={src}
-        redirect={redirect}
         exec={exec}
-          retry={request} />
-      <UpgradeDialog
-        exec={exec}
-        data={data}
+        retry={request}
+        running={isRunning}
         redirect={redirect}
         setResult={updateResult.current}
-          setError={setError} />
-    </>
+        setError={setError} />
   );
 };
 
-// TODO: rather than using viewer state, have FromState call RunSim using sim state?
-//  - determine if this is the right behavior we want. If I load the /viewer/web, should it:
-//    * alert saying "no sim loaded" and confirm button redirects to /simulator (current)
-//    * start running sim stored in local store, alert if not valid (proposed)
-//  - This would also consolidate run logic into one place (here)
-const FromState = ({ exec, redirect }: { exec: ExecutorSupplier<Executor>, redirect: string }) => {
-  // TODO: conditionally create this via upgrade?
-  const running = useRunningState(exec);
-  const dispatch = useAppDispatch();
+type FromStateProps = {
+  exec: ExecutorSupplier<Executor>;
+  redirect: string;
+}
+
+const FromState = ({ exec, redirect }: FromStateProps) => {
+  const isRunning = useRunningState(exec);
   const { data, error } = useAppSelector((state: RootState) => {
     return {
       data: state.viewer.data,
       error: state.viewer.error,
     };
   });
+  const dispatch = useAppDispatch();
 
-  const setResult = (result: SimResults | null) => {
-    if (result == null) {
-      return;
-    }
-    dispatch(viewerActions.setResult({ data: result }));
-  };
-  const updateResult = useRef(
-    throttle(setResult, VIEWER_THROTTLE, { leading: true, trailing: true })
+  const setResult = useRef(
+    throttle((result: SimResults | null) => {
+      if (result == null) {
+        return;
+      }
+      dispatch(viewerActions.setResult({ data: result }));
+    }, VIEWER_THROTTLE, { leading: true, trailing: true })
   );
 
   const setError = (error: string | null) => {
@@ -162,20 +140,47 @@ const FromState = ({ exec, redirect }: { exec: ExecutorSupplier<Executor>, redir
   };
 
   return (
+    <UpgradableViewer
+        data={data}
+        error={error}
+        src={ResultSource.Generated}
+        exec={exec}
+        running={isRunning}
+        redirect={redirect}
+        setResult={setResult.current}
+        setError={setError} />
+  );
+};
+
+type UpgradableViewerProps = {
+  data: SimResults | null;
+  error: string | null;
+  src: ResultSource;
+  running: boolean;
+  redirect: string;
+  exec: ExecutorSupplier<Executor>;
+  retry?: () => void;
+  setResult: (r: SimResults | null) => void;
+  setError: (err: string | null) => void;
+}
+
+const UpgradableViewer = (props: UpgradableViewerProps) => {
+  return (
     <>
       <Viewer
-        running={running}
-        data={data}
-        src={ResultSource.Generated}
-        error={error}
-        redirect={redirect}
-          exec={exec} />
+          running={props.running}
+          data={props.data}
+          src={props.src}
+          error={props.error}
+          redirect={props.redirect}
+          exec={props.exec}
+          retry={props.retry} />
       <UpgradeDialog
-        exec={exec}
-        data={data}
-        redirect={redirect}
-        setResult={updateResult.current}
-          setError={setError} />
+          exec={props.exec}
+          data={props.data}
+          redirect={props.redirect}
+          setResult={props.setResult}
+          setError={props.setError} />
     </>
   );
 };
