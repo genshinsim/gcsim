@@ -86,6 +86,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, 1)
 
+		ai.StrikeType = combat.StrikeTypeDefault
 		// both initial hit, DoT and explosion all have 50 durability
 		ai.Abil = "Dawn (Tick)"
 		ai.Mult = burstDOT[c.TalentLvlBurst()]

@@ -23,6 +23,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 		AttackTag:        tag,
 		ICDTag:           icd,
 		ICDGroup:         combat.ICDGroupReactionA,
+		StrikeType:       combat.StrikeTypeDefault,
 		Element:          ele,
 		IgnoreDefPercent: 1,
 	}

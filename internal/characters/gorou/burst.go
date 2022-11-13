@@ -32,8 +32,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
-			Element:    attributes.Geo,
 			StrikeType: combat.StrikeTypeBlunt,
+			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       burst[c.TalentLvlBurst()],
 		}
@@ -129,8 +129,8 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			AttackTag:  combat.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Geo,
-			StrikeType: combat.StrikeTypeBlunt,
 			Durability: 25,
 			Mult:       burstTick[c.TalentLvlBurst()],
 		}

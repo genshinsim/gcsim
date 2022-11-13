@@ -52,6 +52,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSpear,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -59,6 +60,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+		}
+		if c.NormalCounter == 1 || c.NormalCounter == 4 {
+			ai.StrikeType = combat.StrikeTypeSlash
 		}
 		//the multihit part generates no hitlag so this is fine
 		c.Core.QueueAttack(

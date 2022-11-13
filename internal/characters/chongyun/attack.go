@@ -53,6 +53,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagNone,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       .5,

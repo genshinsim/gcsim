@@ -49,6 +49,7 @@ func (c *char) a4() {
 			AttackTag:          combat.AttackTagExtra,
 			ICDTag:             combat.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
 			Mult:               0.8,

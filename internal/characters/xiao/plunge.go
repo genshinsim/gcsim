@@ -129,6 +129,7 @@ func (c *char) plungeCollision(delay int) {
 		AttackTag:  combat.AttackTagPlunge,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 0,
 		Mult:       plunge[c.TalentLvlAttack()],

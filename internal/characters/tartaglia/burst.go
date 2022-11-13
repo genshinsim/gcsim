@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -55,6 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	if c.StatusIsActive(meleeKey) {
 		ai.Abil = "Melee Stance: Light of Obliteration"
+		ai.StrikeType = combat.StrikeTypeSlash
 		ai.Mult = meleeBurst[c.TalentLvlBurst()]
 		cancels = burstMeleeFrames
 		hitmark = burstMeleeHitmark

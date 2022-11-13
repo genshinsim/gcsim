@@ -31,7 +31,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		AttackTag:            combat.AttackTagExtra,
 		ICDTag:               combat.ICDTagNone,
 		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypeBlunt,
+		StrikeType:           combat.StrikeTypePierce,
 		Element:              attributes.Geo,
 		Durability:           25,
 		Mult:                 aimed[c.TalentLvlAttack()],

@@ -116,6 +116,7 @@ func (c *char) queueOz(src string, ozSpawn int) {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupFischl,
+			StrikeType: combat.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       birdAtk[c.TalentLvlSkill()],
