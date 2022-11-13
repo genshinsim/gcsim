@@ -243,7 +243,7 @@ var shortcuts = map[string]string{
 }
 
 var abyssHpMultipliers = map[string]float64{
-	"Nithhoggr_None": 2.0,
+	"Nithhoggr_None":               2.0,
 	"Monster_Hound_Planelurker_01": 2.0,
 }
 
@@ -252,7 +252,12 @@ type HpDrop struct {
 	HpPercent float64 `json:"hpPercent"`
 }
 
-func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) error {
+type TargetParams struct {
+	HpMultiplier float64
+	Particles    bool
+}
+
+func ConfigureTarget(profile *EnemyProfile, name string, params TargetParams) error {
 	if !(1 <= profile.Level && profile.Level <= 100) {
 		return fmt.Errorf("invalid target level: must be between 1 and 100")
 	}
@@ -274,8 +279,8 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 	info.Level = profile.Level
 	info.Pos = profile.Pos
 	info.HP = info.HpBase * levelMultiplier[info.HpGrowCurve-1][info.Level-1]
-	if mult, ok := params["mult"]; ok {
-		info.HP *= float64(mult)
+	if params.HpMultiplier != 0 {
+		info.HP *= float64(params.HpMultiplier)
 	} else {
 		mult, ok := abyssHpMultipliers[info.MonsterName]
 		if !ok {
@@ -283,7 +288,7 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 		}
 		info.HP *= mult
 	}
-	if part, ok := params["particles"]; ok && part == 0 {
+	if !params.Particles {
 		info.ParticleDropThreshold = profile.ParticleDropThreshold
 		info.ParticleDropCount = profile.ParticleDropCount
 		info.ParticleElement = profile.ParticleElement

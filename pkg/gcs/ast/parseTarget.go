@@ -51,7 +51,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-				params, err := p.acceptOptionalParamReturnMap()
+				params, err := p.acceptOptionalTargetParams()
 				if err != nil {
 					return nil, err
 				}
@@ -156,4 +156,57 @@ func parseTarget(p *Parser) (parseFn, error) {
 		}
 	}
 	return nil, errors.New("unexpected end of line while parsing target")
+}
+
+func (p *Parser) acceptOptionalTargetParams() (enemy.TargetParams, error) {
+	result := enemy.TargetParams{
+		HpMultiplier: 0.0,
+		Particles:    true,
+	}
+
+	// check for params
+	n := p.next()
+	if n.Typ != itemLeftSquareParen {
+		p.backup()
+		return result, nil
+	}
+
+	// loop until we hit square paren
+	for {
+		// we're expecting ident = int
+		i, err := p.consume(itemIdentifier)
+		if err != nil {
+			return result, err
+		}
+
+		item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+		if err != nil {
+			return result, err
+		}
+
+		switch i.Val {
+		case "mult", "hp_multiplier":
+			result.HpMultiplier, err = itemNumberToFloat64(item)
+			if err != nil {
+				return result, err
+			}
+		case "particles":
+			val, err := itemNumberToInt(item)
+			if err != nil {
+				return result, err
+			}
+			result.Particles = val != 0
+		}
+
+		// if we hit ], return; if we hit , keep going, other wise error
+		n := p.next()
+		switch n.Typ {
+		case itemRightSquareParen:
+			return result, nil
+		case itemComma:
+			// do nothing, keep going
+		default:
+			return result, fmt.Errorf("ln%v: <action param> bad token %v", n.line, n)
+		}
+	}
 }
