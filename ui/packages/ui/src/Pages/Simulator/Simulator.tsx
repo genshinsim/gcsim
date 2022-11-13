@@ -92,10 +92,12 @@ export function useConfigValidateListener(
   const debounced = useRef(debounce((x: () => void) => x(), 200));
 
   useEffect(() => {
-    if (!isReady || cfg === "") {
-      if (cfg === "") {
-        dispatch(appActions.setTeam([]));
-      }
+    if (!isReady) {
+      return;
+    }
+
+    if (cfg === "") {
+      dispatch(appActions.setTeam([]));
       return;
     }
 
