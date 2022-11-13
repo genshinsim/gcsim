@@ -41,7 +41,7 @@ export default ({ sample, error, retry }: Props) => {
     <div className="flex flex-col gap-2 w-full 2xl:mx-auto 2xl:container py-6">
       <div className="flex flex-row justify-between px-6 pb-2">
         <span className="text-lg font-bold font-mono">
-          {"Targets: " + JSON.stringify(sample.target_details)}
+          {"Targets: " + sample.target_details?.length}
         </span>
         <ButtonGroup>
           <CopyToClipboard

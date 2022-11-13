@@ -13,11 +13,11 @@ import {
   Simulator,
   PageUserAccount,
   DiscordCallback,
-  SampleLoader,
-  SampleTypes,
   WebViewer,
   LocalViewer,
   ShareViewer,
+  LocalSample,
+  UploadSample,
 } from "./Pages";
 import "./Translation/i18n";
 
@@ -154,14 +154,17 @@ const Main = ({ exec, children }: UIProps) => {
           </Route>
 
           {/* Sample Routes */}
-          <Route path="/sample">
-            <SampleLoader type={SampleTypes.Landing} />
-          </Route>
           <Route path="/sample/upload">
-            <SampleLoader type={SampleTypes.Upload} />
+            <Helmet>
+              <title>gcsim - sample</title>
+            </Helmet>
+            <UploadSample />
           </Route>
           <Route path="/sample/local">
-            <SampleLoader type={SampleTypes.Local} />
+            <Helmet>
+              <title>gcsim - local sample</title>
+            </Helmet>
+            <LocalSample />
           </Route>
 
           {/* Viewer Routes */}

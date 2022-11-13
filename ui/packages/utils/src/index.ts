@@ -1,2 +1,2 @@
 export { useLocalStorage } from "./hooks";
-export { bytesToBase64 } from './base64';
+export { bytesToBase64, base64ToBytes } from './base64';

@@ -90,7 +90,9 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
         onClick={toggleBuilder}
       />
       <MenuDivider />
+      <MenuItem text="Sample Upload" icon="helper-management" onClick={() => setLocation("/sample/upload")}/>
       <MenuItem icon="cut" text="Substat Snippets" disabled />
+      <MenuDivider />
 
       <MenuItem text="Import from GO" icon="import" onClick={() => setOpenGOODImport(true)} />
       <MenuItem text="Import from Enka" icon="import" onClick={() => setOpenImportFromEnka(true)} />

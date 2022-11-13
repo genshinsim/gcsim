@@ -162,7 +162,7 @@ export function bytesToBase64(bytes: Uint8Array): string {
   return result;
 }
 
-export function base64ToBytes(str) {
+export function base64ToBytes(str: string): Uint8Array {
   if (str.length % 4 !== 0) {
     throw new Error("Unable to parse base64 string.");
   }
