@@ -29,6 +29,10 @@ func (c *char) c1() {
 		if atk.Info.Element != attributes.Geo {
 			return false
 		}
+		dmg := args[2].(float64)
+		if dmg == 0 {
+			return false
+		}
 		icd = c.Core.F + 600
 		c.ReduceActionCooldown(action.ActionSkill, 120)
 		return false

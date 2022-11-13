@@ -45,10 +45,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
 		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 		if char.StatusIsActive(buffKey) {

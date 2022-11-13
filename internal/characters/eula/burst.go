@@ -118,6 +118,7 @@ func (c *char) triggerBurst() {
 func (c *char) burstStacks() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if c.Core.Status.Duration(burstKey) == 0 {
 			return false
 		}
@@ -133,6 +134,9 @@ func (c *char) burstStacks() {
 		case combat.AttackTagElementalBurst:
 		case combat.AttackTagNormal:
 		default:
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 

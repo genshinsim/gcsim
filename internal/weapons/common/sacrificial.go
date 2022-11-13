@@ -39,6 +39,7 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -52,6 +53,9 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 			return false
 		}
 		if char.Cooldown(action.ActionSkill) == 0 {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 		if c.Rand.Float64() < prob {
