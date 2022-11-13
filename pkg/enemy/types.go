@@ -3,7 +3,6 @@ package enemy
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
@@ -252,17 +251,18 @@ type HpDrop struct {
 	HpPercent float64 `json:"hpPercent"`
 }
 
-type propGrowCurve struct {
+type PropGrowCurve struct {
 	GrowCurve string `json:"growCurve"`
 }
 
-type monsterExcelConfig struct {
+//go:generate go run github.com/genshinsim/gcsim/scripts/enemystat
+type MonsterExcelConfig struct {
 	MonsterName     string          `json:"monsterName"`
 	Typ             string          `json:"type"`
 	HpDrops         []HpDrop        `json:"hpDrops"`
 	KillDropId      int             `json:"killDropId"`
 	HpBase          float64         `json:"hpBase"`
-	PropGrowCurves  []propGrowCurve `json:"propGrowCurves"`
+	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
 	FireSubHurt     float64         `json:"fireSubHurt"`
 	GrassSubHurt    float64         `json:"grassSubHurt"`
 	WaterSubHurt    float64         `json:"waterSubHurt"`
@@ -271,10 +271,11 @@ type monsterExcelConfig struct {
 	IceSubHurt      float64         `json:"iceSubHurt"`
 	RockSubHurt     float64         `json:"rockSubHurt"`
 	PhysicalSubHurt float64         `json:"physicalSubHurt"`
+	Id              int             `json:"id"`
 }
 
-func parseMonster(data []byte) (monsterExcelConfig, error) {
-	var result monsterExcelConfig
+func parseMonster(data []byte) (MonsterExcelConfig, error) {
+	var result MonsterExcelConfig
 	err := json.Unmarshal(data, &result)
 	if err != nil {
 		return result, err
@@ -346,29 +347,13 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 	return nil
 }
 
-var monsterInfos map[string]monsterExcelConfig
-
-func getMonsterInfo(name string) (monsterExcelConfig, error) {
-	result := monsterExcelConfig{}
-	if monsterInfos == nil {
-		var parsed []monsterExcelConfig
-		dat, err := os.ReadFile(os.Getenv("GCSIM_MOB_DATA"))
-		if err != nil {
-			return result, err
-		}
-		err = json.Unmarshal(dat, &parsed)
-		if err != nil {
-			return result, err
-		}
-		monsterInfos = make(map[string]monsterExcelConfig)
-		for _, config := range parsed {
-			monsterInfos[config.MonsterName] = config
-		}
-	}
-	id, ok := shortcuts[name]
+func getMonsterInfo(name string) (MonsterExcelConfig, error) {
+	result := MonsterExcelConfig{}
+	codeName, ok := shortcuts[name]
 	if !ok {
-		id = name
+		codeName = name
 	}
+	id, ok := monsterNameIds[codeName]
 	result, ok = monsterInfos[id]
 	if !ok {
 		return result, fmt.Errorf("invalid target name `%v`", name)
