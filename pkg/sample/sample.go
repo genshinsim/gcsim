@@ -10,6 +10,11 @@ import (
 )
 
 type Sample struct {
+	// build metadata
+	SimVersion string `json:"sim_version"`
+	BuildDate  string `json:"build_date"`
+	Modified   bool   `json:"modified"`
+
 	Config           string                       `json:"config"`
 	InitialCharacter string                       `json:"initial_character"`
 	CharacterDetails []simulation.CharacterDetail `json:"character_details"`

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os/exec"
 	"runtime"
+	"runtime/debug"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/optimization"
@@ -15,8 +16,9 @@ import (
 )
 
 var (
-	sha1ver   string // sha1 revision used to build the program
-	buildTime string // when the executable was built
+	sha1ver   string
+	buildTime string
+	modified  bool
 )
 
 type opts struct {
@@ -62,6 +64,20 @@ func main() {
 - tol_sd (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization`)
 
 	flag.Parse()
+	info, _ := debug.ReadBuildInfo()
+
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			sha1ver = bs.Value
+		}
+		if bs.Key == "vcs.time" {
+			buildTime = bs.Value
+		}
+		if bs.Key == "vcs.modified" {
+			bv, _ := strconv.ParseBool(bs.Value)
+			modified = bv
+		}
+	}
 
 	if version {
 		fmt.Println(sha1ver)
@@ -80,6 +96,7 @@ func main() {
 		GZIPResult:       opt.gz,
 		Version:          sha1ver,
 		BuildDate:        buildTime,
+		Modified:         modified,
 	}
 
 	if opt.substatOptim {
@@ -116,7 +133,7 @@ func main() {
 			return
 		}
 
-		sample, err := sample.GenerateSampleWithSeed(cfg, seed)
+		sample, err := sample.GenerateSampleWithSeed(cfg, seed, simopt)
 		if err != nil {
 			log.Println(err)
 			return

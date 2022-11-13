@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"runtime/debug"
 	"strconv"
 	"syscall/js"
 	"time"
@@ -18,8 +19,9 @@ import (
 const DefaultBufferLength = 1024 * 10
 
 var (
-	sha1ver   string // sha1 revision used to build the program
-	buildTime string // when the executable was built
+	sha1ver   string
+	buildTime string
+	modified  bool
 )
 
 // shared variables
@@ -33,6 +35,20 @@ var aggregators []agg.Aggregator
 func main() {
 	//GOOS=js GOARCH=wasm go build -o main.wasm
 	ch := make(chan struct{}, 0)
+
+	info, _ := debug.ReadBuildInfo()
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			sha1ver = bs.Value
+		}
+		if bs.Key == "vcs.time" {
+			buildTime = bs.Value
+		}
+		if bs.Key == "vcs.modified" {
+			bv, _ := strconv.ParseBool(bs.Value)
+			modified = bv
+		}
+	}
 
 	// Helper Functions (stateless, no init call needed)
 	js.Global().Set("sample", js.FuncOf(doSample))
@@ -60,10 +76,19 @@ func doSample(this js.Value, args []js.Value) (out interface{}) {
 		}
 	}()
 
+	opts := simulator.Options{
+		Version:          sha1ver,
+		BuildDate:        buildTime,
+		Modified:         modified,
+		GZIPResult:       false,
+		ResultSaveToPath: "",
+		ConfigPath:       "",
+	}
+
 	cfg := args[0].String()
 	seed, _ := strconv.ParseUint(args[1].String(), 10, 64)
 
-	data, err := sample.GenerateSampleWithSeed(cfg, seed)
+	data, err := sample.GenerateSampleWithSeed(cfg, seed, opts)
 	if err != nil {
 		return marshal(err)
 	}
@@ -173,6 +198,7 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 	opts := simulator.Options{
 		Version:          sha1ver,
 		BuildDate:        buildTime,
+		Modified:         modified,
 		GZIPResult:       false,
 		ResultSaveToPath: "",
 		ConfigPath:       "",

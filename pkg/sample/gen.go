@@ -10,7 +10,7 @@ import (
 
 // GenerateSampleWithSeed will run one simulation with debug enabled using the given seed and output
 // the debug log. Used for generating debug for min/max runs
-func GenerateSampleWithSeed(cfg string, seed uint64) (Sample, error) {
+func GenerateSampleWithSeed(cfg string, seed uint64, opts simulator.Options) (Sample, error) {
 	simcfg, err := simulator.Parse(cfg)
 	if err != nil {
 		return Sample{}, err
@@ -49,6 +49,9 @@ func GenerateSampleWithSeed(cfg string, seed uint64) (Sample, error) {
 	}
 
 	sample := Sample{
+		SimVersion:       opts.Version,
+		BuildDate:        opts.BuildDate,
+		Modified:         opts.Modified,
 		Config:           cfg,
 		InitialCharacter: simcfg.InitialChar.String(),
 		CharacterDetails: chars,

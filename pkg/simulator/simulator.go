@@ -27,6 +27,7 @@ type Options struct {
 	ConfigPath       string // path to the config file to read
 	Version          string
 	BuildDate        string
+	Modified         bool
 }
 
 var start time.Time
@@ -154,6 +155,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		SchemaVersion:     result.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
 		SimVersion:        opts.Version,
 		BuildDate:         opts.BuildDate,
+		Modified:          opts.Modified,
 		SimulatorSettings: simcfg.Settings,
 		EnergySettings:    simcfg.Energy,
 		Config:            cfg,

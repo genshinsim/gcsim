@@ -15,6 +15,7 @@ type Summary struct {
 	SchemaVersion Version `json:"schema_version"`
 	SimVersion    string  `json:"sim_version"`
 	BuildDate     string  `json:"build_date"`
+	Modified      bool    `json:"modified"`
 
 	// character & enemy metadata
 	InitialCharacter  string                       `json:"initial_character"`

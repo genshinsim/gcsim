@@ -1,9 +1,12 @@
 export interface SimResults {
   schema_version?: Version;
-  simulator_settings?: Settings;
-
+  sim_version?: string;
+  build_date?: string;
+  modified?: boolean;
+  
   initial_character?: string;
   character_details?: Character[];
+  simulator_settings?: Settings;
 
   config_file?: string;
   sample_seed?: string;
