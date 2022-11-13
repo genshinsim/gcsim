@@ -48,59 +48,7 @@ var elementMap = template.FuncMap{
 }
 
 func main() {
-	dir := os.Getenv("EXCEL_BIN_OUTPUT")
-	if len(dir) == 0 {
-		dir = "./GenshinData/ExcelBinOutput"
-	}
-	dat, err := os.ReadFile(filepath.Join(dir, "MonsterExcelConfigData.json"))
-	if err != nil {
-		log.Fatalf("err: %v\n", err)
-	}
-	parsed := []monsterExcelConfig{}
-	err = json.Unmarshal(dat, &parsed)
-	if err != nil {
-		log.Fatalf("err: %v\n", err)
-	}
-	profiles := make([]enemy.EnemyProfile, len(parsed))
-	for i, v := range parsed {
-		profiles[i] = toEnemyProfile(v)
-	}
-	t, err := template.New("enemystat").Funcs(elementMap).Parse(tmplEnemyStats)
-	if err != nil {
-		log.Fatalf("err: %v\n", err)
-	}
-	buf := new(bytes.Buffer)
-	writer := bufio.NewWriter(buf)
-	err = t.Execute(writer, profiles)
-	if err != nil {
-		log.Fatalf("err: %v\n", err)
-	}
-	writer.Flush()
-	visited := map[string]bool{}
-	k := 0
-	for _, v := range parsed {
-		if _, ok := visited[v.MonsterName]; !ok {
-			visited[v.MonsterName] = true
-			parsed[k] = v
-			k++
-		}
-	}
-	parsed = parsed[:k]
-	t, err = template.New("enemyname").Parse(tmplNames)
-	if err != nil {
-		log.Fatalf("err: %v\n", err)
-	}
-	err = t.Execute(writer, parsed)
-	if err != nil {
-		log.Fatalf("err: %v\n", err)
-	}
-	writer.Flush()
-	content, err := format.Source(buf.Bytes())
-	if err != nil {
-		log.Fatalf("err: %v\n", err)
-	}
-	err = os.WriteFile("enemystat.go", content, 0644)
-	if err != nil {
+	if err := runCodeGen(); err != nil {
 		log.Fatalf("err: %v\n", err)
 	}
 }
@@ -144,6 +92,86 @@ func toEnemyProfile(info monsterExcelConfig) enemy.EnemyProfile {
 		Id:            info.Id,
 		MonsterName:   info.MonsterName,
 	}
+}
+
+func runCodeGen() error {
+	configs, err := readMonsterConfigs()
+	if err != nil {
+		return err
+	}
+	buf := new(bytes.Buffer)
+	writer := bufio.NewWriter(buf)
+	err = writeMonsterInfo(configs, writer)
+	if err != nil {
+		return err
+	}
+	err = writeNameIds(configs, writer)
+	if err != nil {
+		return err
+	}
+	writer.Flush()
+	content, err := format.Source(buf.Bytes())
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile("enemystat.go", content, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func writeMonsterInfo(configs []monsterExcelConfig, out *bufio.Writer) error {
+	profiles := make([]enemy.EnemyProfile, len(configs))
+	for i, v := range configs {
+		profiles[i] = toEnemyProfile(v)
+	}
+	t, err := template.New("enemystat").Funcs(elementMap).Parse(tmplEnemyStats)
+	if err != nil {
+		return err
+	}
+	err = t.Execute(out, profiles)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func writeNameIds(configs []monsterExcelConfig, out *bufio.Writer) error {
+	used := []monsterExcelConfig{}
+	visited := map[string]bool{}
+	for _, v := range configs {
+		if _, ok := visited[v.MonsterName]; !ok {
+			visited[v.MonsterName] = true
+			used = append(used, v)
+		}
+	}
+	t, err := template.New("enemyname").Parse(tmplNames)
+	if err != nil {
+		return err
+	}
+	err = t.Execute(out, used)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func readMonsterConfigs() ([]monsterExcelConfig, error) {
+	dir := os.Getenv("EXCEL_BIN_OUTPUT")
+	if len(dir) == 0 {
+		dir = "./GenshinData/ExcelBinOutput"
+	}
+	dat, err := os.ReadFile(filepath.Join(dir, "MonsterExcelConfigData.json"))
+	if err != nil {
+		return nil, err
+	}
+	parsed := []monsterExcelConfig{}
+	err = json.Unmarshal(dat, &parsed)
+	if err != nil {
+		return nil, err
+	}
+	return parsed, nil
 }
 
 var tmplEnemyStats = `// Code generated DO NOT EDIT.
