@@ -19,19 +19,35 @@ export enum ResultSource {
 
 type ViewerProps = {
   exec: ExecutorSupplier<Executor>;
+  gitCommit: string;
+  mode: string;
   id?: string; // only used in share
 };
 
-export const ShareViewer = ({ exec, id }: ViewerProps) => (
-  <FromUrl exec={exec} url={processUrl(id)} redirect="/" />
+export const ShareViewer = (props: ViewerProps) => (
+  <FromUrl
+      exec={props.exec}
+      url={processUrl(props.id)}
+      redirect="/"
+      mode={props.mode}
+      gitCommit={props.gitCommit} />
 );
 
-export const LocalViewer = ({ exec }: ViewerProps) => (
-  <FromUrl exec={exec} url="http://127.0.0.1:8381/data" redirect="/" />
+export const LocalViewer = (props: ViewerProps) => (
+  <FromUrl
+      exec={props.exec}
+      url="http://127.0.0.1:8381/data"
+      redirect="/"
+      mode={props.mode}
+      gitCommit={props.gitCommit} />
 );
 
-export const WebViewer = ({ exec }: ViewerProps) => (
-  <FromState exec={exec} redirect="/simulator" />
+export const WebViewer = (props: ViewerProps) => (
+  <FromState
+      exec={props.exec}
+      redirect="/simulator"
+      mode={props.mode}
+      gitCommit={props.gitCommit} />
 );
 
 function processUrl(id?: string): string {
@@ -62,9 +78,11 @@ type FromUrlProps = {
   exec: ExecutorSupplier<Executor>;
   redirect: string;
   url: string;
+  mode: string;
+  gitCommit: string;
 };
 
-const FromUrl = ({ exec, url, redirect }: FromUrlProps) => {
+const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
   const [data, setData] = useState<SimResults | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
@@ -103,6 +121,8 @@ const FromUrl = ({ exec, url, redirect }: FromUrlProps) => {
         retry={request}
         running={isRunning}
         redirect={redirect}
+        mode={mode}
+        gitCommit={gitCommit}
         setResult={updateResult.current}
         setError={setError} />
   );
@@ -111,9 +131,11 @@ const FromUrl = ({ exec, url, redirect }: FromUrlProps) => {
 type FromStateProps = {
   exec: ExecutorSupplier<Executor>;
   redirect: string;
+  mode: string;
+  gitCommit: string;
 }
 
-const FromState = ({ exec, redirect }: FromStateProps) => {
+const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
   const isRunning = useRunningState(exec);
   const { data, error } = useAppSelector((state: RootState) => {
     return {
@@ -147,6 +169,8 @@ const FromState = ({ exec, redirect }: FromStateProps) => {
         exec={exec}
         running={isRunning}
         redirect={redirect}
+        mode={mode}
+        gitCommit={gitCommit}
         setResult={setResult.current}
         setError={setError} />
   );
@@ -158,6 +182,8 @@ type UpgradableViewerProps = {
   src: ResultSource;
   running: boolean;
   redirect: string;
+  mode: string;
+  gitCommit: string;
   exec: ExecutorSupplier<Executor>;
   retry?: () => void;
   setResult: (r: SimResults | null) => void;
@@ -179,6 +205,8 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
           exec={props.exec}
           data={props.data}
           redirect={props.redirect}
+          mode={props.mode}
+          commit={props.gitCommit}
           setResult={props.setResult}
           setError={props.setError} />
     </>

@@ -43,6 +43,8 @@ import "./index.css";
 type UIProps = {
   exec: ExecutorSupplier<Executor>;
   children: ReactNode;
+  mode: string;
+  gitCommit: string;
 };
 
 export const UI = (props: UIProps) => {
@@ -97,7 +99,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const Main = ({ exec, children }: UIProps) => {
+const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
   const { t } = useTranslation();
   const content = useRef<HTMLDivElement>(null);
   const [location] = useLocation();
@@ -175,18 +177,24 @@ const Main = ({ exec, children }: UIProps) => {
             <Helmet>
               <title>gcsim - viewer</title>
             </Helmet>
-            <WebViewer exec={exec} />
+            <WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
           <Route path="/viewer/local">
             <Helmet>
               <title>gcsim - local viewer</title>
             </Helmet>
-            <LocalViewer exec={exec} />
+            <LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
           <Route path="/viewer/share/:id">
             {(params) => {
               document.title = "gcsim - " + params.id;
-              return <ShareViewer exec={exec} id = {params.id} />;
+              return (
+                <ShareViewer
+                    exec={exec}
+                    id={params.id}
+                    gitCommit={gitCommit}
+                    mode={mode} />
+              );
             }}
           </Route>
 

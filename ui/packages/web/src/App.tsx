@@ -27,7 +27,10 @@ const App = ({}) => {
   };
 
   return (
-    <UI exec={supplier.current}>
+    <UI
+        exec={supplier.current}
+        gitCommit={import.meta.env.VITE_GIT_COMMIT_HASH}
+        mode={import.meta.env.MODE}>
       <FormGroup className="!m-0" label="Workers">
         <NumericInput
           value={workers}

@@ -1,48 +1,54 @@
-import { defineConfig } from 'vite';
+import { ConfigEnv, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { visualizer } from "rollup-plugin-visualizer";
+import git from "git-rev-sync";
 
-export default defineConfig({
-  plugins: [
-    react(),
-    tsconfigPaths(),
-    visualizer()
-  ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            if (id.includes("@blueprintjs") && id.includes("icons")) {
-              return "blueprint-icons";
+export default ({ }: ConfigEnv) => {
+  const commitHash = git.long();
+  process.env.VITE_GIT_COMMIT_HASH = commitHash;
+
+  return defineConfig({
+    plugins: [
+      react(),
+      tsconfigPaths(),
+      visualizer(),
+    ],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            if (id.includes("node_modules")) {
+              if (id.includes("@blueprintjs") && id.includes("icons")) {
+                return "blueprint-icons";
+              }
+              if (id.includes("prismjs") || id.includes("pako")) {
+                return "core";
+              }
+              return "vendor";
             }
-            if (id.includes("prismjs") || id.includes("pako")) {
-              return "core";
-            }
-            return "vendor";
+            return "core";
           }
-          return "core";
+        }
+      }
+    },
+    server: {
+      proxy: {
+        "/api": {
+          target: "https://simimpact.app",
+          changeOrigin: true
+        },
+        "/hastebin/post": {
+          target: "https://hastebin.com/documents",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/hastebin\/post/, '')
+        },
+        "/hastebin/get": {
+          target: "https://hastebin.com/raw/",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/hastebin\/get/, '')
         }
       }
     }
-  },
-  server: {
-    proxy: {
-      "/api": {
-        target: "https://simimpact.app",
-        changeOrigin: true
-      },
-      "/hastebin/post": {
-        target: "https://hastebin.com/documents",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/hastebin\/post/, '')
-      },
-      "/hastebin/get": {
-        target: "https://hastebin.com/raw/",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/hastebin\/get/, '')
-      }
-    }
-  }
-});
+  });
+};
