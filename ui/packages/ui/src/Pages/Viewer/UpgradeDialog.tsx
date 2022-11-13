@@ -11,7 +11,7 @@ import { SimResults, Version } from "@gcsim/types";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import ExecutorSettingsButton from "../../ExecutorSettingsButton";
+import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
 const MAJOR = 4; // Make sure the gcsim binary has also been updated

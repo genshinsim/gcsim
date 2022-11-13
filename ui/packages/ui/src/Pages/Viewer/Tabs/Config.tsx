@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Editor from "react-simple-code-editor";
 import { Button, Callout, Intent, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
 import { SimResults } from '@gcsim/types';
-import ExecutorSettingsButton from '../../../ExecutorSettingsButton';
+import ExecutorSettingsButton from '../../../Components/Buttons/ExecutorSettingsButton';
 import { Executor, ExecutorSupplier } from '@gcsim/executors';
 import { runSim } from '../../Simulator/Toolbox';
 import { useAppDispatch } from '../../../Stores/store';
