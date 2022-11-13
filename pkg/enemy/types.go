@@ -1,7 +1,6 @@
 package enemy
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -251,38 +250,6 @@ type HpDrop struct {
 	HpPercent float64 `json:"hpPercent"`
 }
 
-type PropGrowCurve struct {
-	GrowCurve string `json:"growCurve"`
-}
-
-//go:generate go run github.com/genshinsim/gcsim/scripts/enemystat
-type MonsterExcelConfig struct {
-	MonsterName     string          `json:"monsterName"`
-	Typ             string          `json:"type"`
-	HpDrops         []HpDrop        `json:"hpDrops"`
-	KillDropId      int             `json:"killDropId"`
-	HpBase          float64         `json:"hpBase"`
-	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
-	FireSubHurt     float64         `json:"fireSubHurt"`
-	GrassSubHurt    float64         `json:"grassSubHurt"`
-	WaterSubHurt    float64         `json:"waterSubHurt"`
-	ElecSubHurt     float64         `json:"elecSubHurt"`
-	WindSubHurt     float64         `json:"windSubHurt"`
-	IceSubHurt      float64         `json:"iceSubHurt"`
-	RockSubHurt     float64         `json:"rockSubHurt"`
-	PhysicalSubHurt float64         `json:"physicalSubHurt"`
-	Id              int             `json:"id"`
-}
-
-func parseMonster(data []byte) (MonsterExcelConfig, error) {
-	var result MonsterExcelConfig
-	err := json.Unmarshal(data, &result)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
-}
-
 func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) error {
 	if !(1 <= profile.Level && profile.Level <= 100) {
 		return fmt.Errorf("invalid target level: must be between 1 and 100")
@@ -302,61 +269,38 @@ func ConfigureTarget(profile *EnemyProfile, name string, params map[string]int) 
 	if err != nil {
 		return err
 	}
-	hpGrowCurve := 1
-	if info.PropGrowCurves[0].GrowCurve == "GROW_CURVE_HP_2" {
-		hpGrowCurve = 2
-	}
-	profile.HP = info.HpBase * levelMultiplier[hpGrowCurve-1][profile.Level-1]
+	info.Level = profile.Level
+	info.Pos = profile.Pos
+	info.HP = info.HpBase * levelMultiplier[info.HpGrowCurve-1][info.Level-1]
 	if mult, ok := params["mult"]; ok {
-		profile.HP *= float64(mult)
+		info.HP *= float64(mult)
 	} else {
 		mult, ok := abyssHpMultipliers[info.MonsterName]
 		if !ok {
 			mult = 2.5
 		}
-		profile.HP *= mult
+		info.HP *= mult
 	}
-	profile.ResistFrozen = info.Typ == "MONSTER_BOSS"
-	profile.Resist[attributes.Pyro] = info.FireSubHurt
-	profile.Resist[attributes.Dendro] = info.GrassSubHurt
-	profile.Resist[attributes.Hydro] = info.WaterSubHurt
-	profile.Resist[attributes.Electro] = info.ElecSubHurt
-	profile.Resist[attributes.Anemo] = info.WindSubHurt
-	profile.Resist[attributes.Cryo] = info.IceSubHurt
-	profile.Resist[attributes.Geo] = info.RockSubHurt
-	profile.Resist[attributes.Physical] = info.PhysicalSubHurt
-	if part, ok := params["particles"]; !ok || part != 0 {
-		profile.ParticleDropThreshold = 0
-		profile.ParticleDropCount = 0
-		profile.ParticleElement = 0
-		profile.ParticleDrops = []HpDrop{}
-		for _, v := range info.HpDrops {
-			if v.DropId == 0 || v.HpPercent == 0 {
-				continue
-			}
-			profile.ParticleDrops = append(profile.ParticleDrops, v)
-		}
+	if part, ok := params["particles"]; ok && part == 0 {
+		info.ParticleDropThreshold = profile.ParticleDropThreshold
+		info.ParticleDropCount = profile.ParticleDropCount
+		info.ParticleElement = profile.ParticleElement
+		info.ParticleDrops = []HpDrop{}
 	}
-	// add killDropId as particle drop
-	if info.KillDropId != 0 {
-		profile.ParticleDrops = append(profile.ParticleDrops, HpDrop{
-			DropId:    info.KillDropId,
-			HpPercent: 0,
-		})
-	}
+	*profile = info
 	return nil
 }
 
-func getMonsterInfo(name string) (MonsterExcelConfig, error) {
-	result := MonsterExcelConfig{}
+//go:generate go run github.com/genshinsim/gcsim/scripts/enemystat
+func getMonsterInfo(name string) (EnemyProfile, error) {
 	codeName, ok := shortcuts[name]
 	if !ok {
 		codeName = name
 	}
 	id, ok := monsterNameIds[codeName]
-	result, ok = monsterInfos[id]
+	result, ok := monsterInfos[id]
 	if !ok {
 		return result, fmt.Errorf("invalid target name `%v`", name)
 	}
-	return result, nil
+	return result.Clone(), nil
 }

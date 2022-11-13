@@ -21,6 +21,10 @@ type EnemyProfile struct {
 	ParticleElement       attributes.Element             `json:"-"`
 	ParticleDrops         []HpDrop                       `json:"-"`
 	ResistFrozen          bool                           `json:"-"`
+	HpBase                float64                        `json:"-"`
+	HpGrowCurve           int                            `json:"-"`
+	Id                    int                            `json:"-"`
+	MonsterName           string                         `json:"-"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {
