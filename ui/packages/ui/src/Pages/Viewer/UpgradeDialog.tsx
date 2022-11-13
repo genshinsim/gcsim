@@ -111,7 +111,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
   const resultCommitUrl = "https://github.com/genshinsim/gcsim/commits/" + data?.sim_version;
   const latestCommitUrl = "https://github.com/genshinsim/gcsim/commits/" + latestCommit;
   const diffUrl = (
-    "https://github.com/genshinsim/gcsim/compare/" + data?.sim_version+ ".." + latestCommit
+    "https://github.com/genshinsim/gcsim/compare/" + data?.sim_version+ "..." + latestCommit
   );
 
   const major = data?.schema_version?.major;
