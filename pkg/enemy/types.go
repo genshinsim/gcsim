@@ -220,6 +220,7 @@ var shortcuts = map[string]string{
 	"bolteater":         "Drake_Deepsea_Electric_01",
 	"earthguard":        "Gargoyle_Ground_01",
 	"geovishap":         "Drake_Rock_01_Water",
+	"goldenwolflord":    "Monster_Hound_Planelurker_01",
 	"hilichurl":         "Hili_None_01",
 	"kairagi_electro":   "Samurai_Kairagi_01",
 	"kairagi_pyro":      "Samurai_Kairagi_02",
@@ -243,6 +244,7 @@ var shortcuts = map[string]string{
 
 var abyssHpMultipliers = map[string]float64{
 	"Nithhoggr_None": 2.0,
+	"Monster_Hound_Planelurker_01": 2.0,
 }
 
 type HpDrop struct {
