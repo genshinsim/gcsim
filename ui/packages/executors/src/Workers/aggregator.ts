@@ -26,17 +26,11 @@ WebAssembly.instantiateStreaming(fetch('/main.wasm'), go.importObject)
 
 // @ts-ignore
 function initialize(req: { cfg: string }) {
-  try {
-    const resp = JSON.parse(initializeAggregator(req.cfg));
-    if (resp.error) {
-      return { type: AggResponse.Failed, reason: resp.error };
-    }
-    return { type: AggResponse.Initialized, result: resp };
-  } catch (error) {
-    let message = "Unkown failure when calling initialize";
-    if (error instanceof Error) message = error.message;
-    return { type: AggResponse.Failed, reason: message };
+  const resp = JSON.parse(initializeAggregator(req.cfg));
+  if (resp.error) {
+    return { type: AggResponse.Failed, reason: resp.error };
   }
+  return { type: AggResponse.Initialized, result: resp };
 }
 
 function add(req: { result: Uint8Array }) {

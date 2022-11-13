@@ -53,7 +53,13 @@ func main() {
 // static helper functions (stateless)
 
 // sample(cfg: string, seed: string) -> string
-func doSample(this js.Value, args []js.Value) interface{} {
+func doSample(this js.Value, args []js.Value) (out interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			out = errorRecover(r)
+		}
+	}()
+
 	cfg := args[0].String()
 	seed, _ := strconv.ParseUint(args[1].String(), 10, 64)
 
@@ -62,16 +68,22 @@ func doSample(this js.Value, args []js.Value) interface{} {
 		return marshal(err)
 	}
 
-	out, err := json.Marshal(data)
+	marshalled, err := json.Marshal(data)
 	if err != nil {
 		return marshal(err)
 	}
 
-	return string(out)
+	return string(marshalled)
 }
 
 // validateConfig(cfg: string) -> string
-func validateConfig(this js.Value, args []js.Value) interface{} {
+func validateConfig(this js.Value, args []js.Value) (out interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			out = errorRecover(r)
+		}
+	}()
+
 	in := args[0].String()
 
 	cfg, err := simulator.Parse(in)
@@ -98,7 +110,13 @@ func initializeWorker(this js.Value, args []js.Value) interface{} {
 }
 
 // simulate() -> js Uint8Array
-func simulate(this js.Value, args []js.Value) interface{} {
+func simulate(this js.Value, args []js.Value) (out interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			out = errorRecover(r)
+		}
+	}()
+
 	cpycfg := simcfg.Copy()
 	core, err := simulation.NewCore(simulator.CryptoRandSeed(), false, cpycfg)
 	if err != nil {
@@ -131,7 +149,13 @@ func simulate(this js.Value, args []js.Value) interface{} {
 // aggregator functions
 
 // initializeAggregator(cfg: string) -> string
-func initializeAggregator(this js.Value, args []js.Value) interface{} {
+func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			out = errorRecover(r)
+		}
+	}()
+
 	in := args[0].String()
 	if err := initialize(in); err != nil {
 		return marshal(err)
@@ -158,15 +182,21 @@ func initializeAggregator(this js.Value, args []js.Value) interface{} {
 		return marshal(err)
 	}
 
-	out, err := json.Marshal(result)
+	marshalled, err := json.Marshal(result)
 	if err != nil {
 		return marshal(err)
 	}
-	return string(out)
+	return string(marshalled)
 }
 
 // aggregate(src: Uint8Array)
-func aggregate(this js.Value, args []js.Value) interface{} {
+func aggregate(this js.Value, args []js.Value) (out interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			out = errorRecover(r)
+		}
+	}()
+
 	src := args[0]
 	var err error
 
@@ -198,7 +228,13 @@ func aggregate(this js.Value, args []js.Value) interface{} {
 }
 
 // flush(startTime: int) -> string
-func flush(this js.Value, args []js.Value) interface{} {
+func flush(this js.Value, args []js.Value) (out interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			out = errorRecover(r)
+		}
+	}()
+
 	startTime := args[0].Int()
 
 	stats := agg.Result{}
@@ -207,11 +243,11 @@ func flush(this js.Value, args []js.Value) interface{} {
 	}
 	stats.Runtime = float64(time.Now().Nanosecond() - startTime)
 
-	out, err := json.Marshal(stats)
+	marshalled, err := json.Marshal(stats)
 	if err != nil {
 		return marshal(err)
 	}
-	return string(out)
+	return string(marshalled)
 }
 
 // internal helper functions
@@ -240,4 +276,17 @@ func marshal(err error) string {
 	}
 	b, _ := json.Marshal(d)
 	return string(b)
+}
+
+func errorRecover(r interface{}) string {
+	var err error
+	switch x := r.(type) {
+	case string:
+		err = errors.New(x)
+	case error:
+		err = x
+	default:
+		err = errors.New("unknown error")
+	}
+	return marshal(err)
 }
