@@ -114,6 +114,8 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
     "https://github.com/genshinsim/gcsim/compare/" + data?.sim_version+ "..." + latestCommit
   );
 
+  const dirty = data?.modified || data?.sim_version === "";
+
   const major = data?.schema_version?.major;
   const minor = data?.schema_version?.minor;
 
@@ -137,7 +139,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
       <a href={resultCommitUrl} target="_blank" rel="noreferrer">
         {shortResultCommit}
       </a>
-      <Divider className="h-full" />
+      <Divider className={classNames({ ["h-full"]: dirty })} />
       <div>latest</div>
       <a href={latestCommitUrl} target="_blank" rel="noreferrer">
         {shortLatestCommit}
@@ -147,7 +149,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
       </a>
 
       {/* dirty line */}
-      {(data?.modified || data?.sim_version === "") && (
+      {dirty && (
         <>
           <div className="justify-self-end">dirty?</div>
           <div className="text-red-500">true</div>
