@@ -38,8 +38,14 @@ type Props = {
 export default ({ exec, data, redirect, mode, commit, setResult, setError }: Props) => {
   const mismatch = useMismatch(data?.sim_version, commit, data?.schema_version);
   const [isOpen, setOpen] = useState(true);
+  const [location, ] = useLocation();
 
   if (data == null || mismatch == MismatchType.NoMismatch) {
+    return null;
+  }
+
+  // only show hash mismatch on share links to reduce noise (for now)
+  if (mismatch == MismatchType.CommitMismatch && !location.startsWith("/viewer/share")) {
     return null;
   }
 
