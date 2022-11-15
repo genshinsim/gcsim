@@ -14,7 +14,7 @@ const normalHitNum = 3
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{12, 9, 17}
-	attackRadius   = []float64{1.1, 1.5, 2.1}
+	attackRadius   = []float64{1.33, 1.5, 2.1}
 
 	attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06}
 	attackDefHalt         = []bool{true, true, true}
@@ -55,10 +55,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: attackDefHalt[c.NormalCounter],
 	}
+	radius := attackRadius[c.NormalCounter]
 	// no multihits so no need for char queue here
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), attackRadius[c.NormalCounter]),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)

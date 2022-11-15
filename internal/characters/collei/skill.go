@@ -48,12 +48,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	var c6Cb func(a combat.AttackCB)
 	if c.Base.Cons >= 6 {
 		c6Triggered := false
-		c6Cb = func(_ combat.AttackCB) {
+		c6Cb = func(a combat.AttackCB) {
 			if c6Triggered {
 				return
 			}
 			c6Triggered = true
-			c.c6()
+			c.c6(a.Target)
 		}
 	}
 	for _, hitmark := range skillHitmarks {

@@ -9,10 +9,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{25, 16, 13, 38}
-var attackHitlagHaltFrame = []float64{0.1, 0.1, 0.1, 0.15}
-var attackHitlagFactor = []float64{0.01, 0.01, 0.05, 0.01}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = []int{25, 16, 13, 38}
+	attackHitlagHaltFrame = []float64{0.1, 0.1, 0.1, 0.15}
+	attackHitlagFactor    = []float64{0.01, 0.01, 0.05, 0.01}
+	attackRadius          = []float64{2, 2.19, 2, 2}
+)
 
 const normalHitNum = 4
 
@@ -40,10 +43,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter],
 		CanBeDefenseHalted: true,
 	}
-
+	radius := attackRadius[c.NormalCounter]
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)

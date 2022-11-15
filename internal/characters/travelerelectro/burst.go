@@ -115,8 +115,11 @@ func (c *char) burstProc() {
 		// Use burst snapshot, update target & source frame
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
-		//attack is 2 (or 2.5 for enhanced) aoe centered on target
-		atk.Pattern = combat.NewCircleHit(t, 2)
+		radius := 2.0
+		if c.Base.Cons >= 6 && c.burstC6WillGiveEnergy {
+			radius = 2.5
+		}
+		atk.Pattern = combat.NewCircleHit(t, radius)
 
 		// C2 - Violet Vehemence
 		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.

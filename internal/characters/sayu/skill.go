@@ -76,7 +76,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), skillPressDoTHitmark)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillPressDoTHitmark)
 
 	// Fuufuu Whirlwind Kick Press DMG
 	ai = combat.AttackInfo{
@@ -93,7 +93,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	snap = c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), skillPressKickHitmark)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), skillPressKickHitmark)
 
 	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressKickHitmark+c.ParticleDelay)
 
@@ -113,7 +113,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 
 	c.eAbsorb = attributes.NoElement
 	c.eAbsorbTag = combat.ICDTagNone
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1)
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.2)
 
 	// 1 DoT Tick
 	d := c.createSkillHoldSnapshot()
@@ -145,7 +145,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), skillShortHoldKickHitmark)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillShortHoldKickHitmark)
 
 	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillShortHoldKickHitmark+c.ParticleDelay)
 
@@ -166,7 +166,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 
 	c.eAbsorb = attributes.NoElement
 	c.eAbsorbTag = combat.ICDTagNone
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1)
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.2)
 
 	// ticks
 	d := c.createSkillHoldSnapshot()
@@ -203,7 +203,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), (skillHoldKickHitmark-600)+duration)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), (skillHoldKickHitmark-600)+duration)
 
 	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, (skillHoldKickHitmark-600)+duration+c.ParticleDelay)
 
@@ -238,7 +238,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 3),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})
@@ -301,7 +301,7 @@ func (c *char) rollAbsorb() {
 				Durability: 25,
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 1, 1)
 		case combat.AttackTagElementalArtHold:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
@@ -315,7 +315,7 @@ func (c *char) rollAbsorb() {
 				Durability: 25,
 				Mult:       skillAbsorbEnd[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 1, 1)
 		}
 
 		return false

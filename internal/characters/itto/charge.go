@@ -9,8 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var chargeFrames [][]int
-var chargeHitmarks = []int{89, 51, 24, 71}
+var (
+	chargeFrames   [][]int
+	chargeHitmarks = []int{89, 51, 24, 71}
+	chargeRadius   = [][]float64{{3, 3.34, 3.34, 3.5}, {4, 4.3, 4.3, 4.3}}
+)
 
 func init() {
 	chargeFrames = make([][]int, EndSlashType)
@@ -180,6 +183,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// figure out how many frames we need to skip
 	windup := c.windupFrames(prevSlash, c.slashState)
 
+	// to index radius
+	burstIndex := 0
+	if c.StatusIsActive(burstBuffKey) {
+		burstIndex = 1
+	}
+
 	// handle hitlag and talent%
 	ai.Abil = fmt.Sprintf("%v (Stacks %v)", c.slashState, stacks)
 	switch c.slashState {
@@ -198,22 +207,17 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	case FinalSlash:
 		ai.Mult = akFinal[c.TalentLvlAttack()]
 	}
+
 	// apply a4
 	if c.slashState != SaichiSlash {
 		c.a4(&ai)
 	}
-
-	// check burst status for radius
-	// TODO: proper hitbox
-	r := 1.0
-	if c.StatModIsActive(burstBuffKey) {
-		r = 3
-	}
+	radius := chargeRadius[burstIndex][c.slashState]
 	// TODO: hitmark is not getting adjusted for atk speed
 	// TODO: Does Itto CA snapshot at the start of CA? (rn assuming he does)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), r),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		0,
 		chargeHitmarks[c.slashState]-windup,
 	)

@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackHitmarks = [][]int{{11, 24}, {16}, {23}, {30}}
-var attackFrames [][]int
+var (
+	attackFrames   [][]int
+	attackHitmarks = [][]int{{11, 24}, {16}, {23}, {30}}
+)
 
 const normalHitNum = 4
 
@@ -50,7 +52,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel)
 	}

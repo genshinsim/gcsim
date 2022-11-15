@@ -37,7 +37,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 4.5), burstHitmark)
 
 	// heal
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
@@ -121,7 +121,7 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 5), // including A4
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 3.5), // including A4
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})

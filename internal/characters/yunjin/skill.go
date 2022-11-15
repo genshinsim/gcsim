@@ -69,6 +69,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Particle should spawn after hit
 	hitDelay := skillHitmarks[animIdx]
+	radius := 4.0
 	switch chargeLevel {
 	case 0:
 		ai.HitlagHaltFrames = 0.06 * 60
@@ -82,14 +83,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		ai.Abil = "Opening Flourish Level 1 (E)"
 		ai.HitlagHaltFrames = 0.09 * 60
+		radius = 6
 	case 2:
 		c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.ParticleDelay+hitDelay)
 		ai.Durability = 100
 		ai.Abil = "Opening Flourish Level 2 (E)"
 		ai.HitlagHaltFrames = 0.12 * 60
+		radius = 8
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), hitDelay, hitDelay)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), hitDelay, hitDelay)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{

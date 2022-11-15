@@ -60,7 +60,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3),
 		chargeHitmark-windup+travel,
 	)
 

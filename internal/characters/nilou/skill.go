@@ -15,10 +15,11 @@ var (
 
 	swordDanceFrames   [][]int
 	swordDanceHitMarks = []int{14, 12, 35}
-	swordDanceRadius   = []float64{1.1, 1.8, 2}
+	swordDanceRadius   = []float64{1.41, 1.8, 2}
 
 	whirlingStepsFrames   [][]int
 	whirlingStepsHitMarks = []int{21, 29, 43}
+	whirlingStepsRadius   = []float64{2.7, 2.7, 2.93}
 )
 
 type NilouSkillType int
@@ -181,9 +182,10 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 			travel = t
 		}
 	}
+	radius := swordDanceRadius[s]
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), swordDanceRadius[s]),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		swordDanceHitMarks[s]+travel,
 		swordDanceHitMarks[s]+travel,
 		c.c4cb(),
@@ -222,9 +224,10 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	if s == 2 {
 		ai.Abil = "Water Wheel"
 	}
+	radius := whirlingStepsRadius[s]
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2.7),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		whirlingStepsHitMarks[s],
 		whirlingStepsHitMarks[s],
 		c.c4cb(),

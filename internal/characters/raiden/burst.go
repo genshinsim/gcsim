@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 2 {
 		ai.IgnoreDefPercent = 0.6
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 7.63), burstHitmark, burstHitmark)
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(8)

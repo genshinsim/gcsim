@@ -42,7 +42,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.8),
 		0,
 		chargeHitmark,
 	)
@@ -90,7 +90,7 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.8),
 		0,
 		chargeBHitmark,
 	)

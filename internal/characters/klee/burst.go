@@ -56,16 +56,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return
 			}
 			//wave 1 = 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 0)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), 0)
 			//wave 2 = 1 + 30% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 12)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), 12)
 			if c.Core.Rand.Float64() < 0.3 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 12)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), 12)
 			}
 			//wave 3 = 1 + 50% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 24)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), 24)
 			if c.Core.Rand.Float64() < 0.5 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), 24)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), 24)
 			}
 		}, start)
 	}

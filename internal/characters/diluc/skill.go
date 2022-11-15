@@ -15,6 +15,7 @@ var (
 	skillFrames       [][]int
 	skillHitmarks     = []int{24, 28, 46}
 	skillHitlagStages = []float64{.12, .12, .16}
+	skillRadius       = []float64{2.3, 2.2, 2.65}
 )
 
 func init() {
@@ -93,10 +94,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   skillHitlagStages[c.eCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-
+	radius := skillRadius[c.eCounter]
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		hitmark,
 		hitmark,
 	)

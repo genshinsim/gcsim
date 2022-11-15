@@ -90,9 +90,14 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		c4cb = c.c4cb
 	}
 
+	radius := 2.4
+	if c.StatusIsActive(burstBuffKey) {
+		radius = 3
+	}
+
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		skillPressHitmarks[burstActive],
 		skillPressHitmarks[burstActive],
 		c4cb,

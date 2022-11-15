@@ -9,8 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{15, 29}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{15, 29}
+	chargeRadius   = []float64{2, 2.8}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(76) // CA -> N1
@@ -36,7 +39,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3), chargeHitmarks[i], chargeHitmarks[i])
+		radius := chargeRadius[i]
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	return action.ActionInfo{

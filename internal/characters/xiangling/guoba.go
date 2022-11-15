@@ -67,10 +67,12 @@ func (p *panda) breath() {
 		done = true
 		p.Core.QueueParticle("xiangling", 1, attributes.Pyro, p.c.ParticleDelay)
 	}
+	// assume A1
+	radius := 6.0
 	p.Core.QueueAttackWithSnap(
 		p.ai,
 		p.snap,
-		combat.NewCircleHit(p, 0.5),
+		combat.NewCircleHit(p, radius),
 		10,
 		p.c.c1,
 		part,

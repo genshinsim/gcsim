@@ -9,11 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
-var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0}, {0.08}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
-var shunsuikenFrames []int
+var (
+	shunsuikenFrames      []int
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0}, {0.08}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
+	attackRadius          = []float64{1.7, 1.7, 1.61, 1.64, 3.16}
+)
 
 const normalHitNum = 5
 const shunsuikenHitmark = 5
@@ -61,10 +64,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
+		radius := attackRadius[c.NormalCounter]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 			)
@@ -98,7 +102,7 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.03 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5.32), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
 
 	defer c.AdvanceNormalIndex()
 

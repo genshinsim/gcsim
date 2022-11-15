@@ -73,7 +73,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, skillPressHitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1), 0, skillPressHitmark, cb)
 
 	c.SetCDWithDelay(action.ActionSkill, 60, 17)
 

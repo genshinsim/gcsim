@@ -41,7 +41,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), aimedHitmark, aimedHitmark+travel)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedFrames),

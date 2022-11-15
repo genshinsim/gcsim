@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.qAbsorb = attributes.NoElement
 	c.qICDTag = combat.ICDTagNone
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1)
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.77)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < 9; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 94+30*i, cb)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2.12), 94+30*i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qAbsorb != attributes.NoElement {
@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				if c.Base.Cons >= 6 {
 					cbAbs = c6cb(c.qAbsorb)
 				}
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, cbAbs)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.77), 0, cbAbs)
 			}
 			//check if infused
 		}, 94+30*i)

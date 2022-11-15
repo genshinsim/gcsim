@@ -20,8 +20,7 @@ var (
 		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
 		{combat.StrikeTypeSpear},
 	}
-	// {{radius 2.5 circle}, {x=2.2 z=3.0 box}, {radius 2.5 fanAngle 270 circle, radius 2.5 fanAngle 270 circle}, {x=2.2 z=7.0 box}}
-	attackRadius = []float64{2.5, 1.5, 2.5, 3.5}
+	attackRadius = []float64{2.5, 1.86, 2.5, 3.67}
 )
 
 const normalHitNum = 4
@@ -56,11 +55,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackHitlagDefHalt[c.NormalCounter][i],
 		}
+		radius := attackRadius[c.NormalCounter]
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
-				attackRadius[c.NormalCounter],
+				radius,
 			),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],

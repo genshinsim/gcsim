@@ -13,7 +13,7 @@ var (
 	skillHitmarks = []int{16, 91}
 	skillCDStarts = []int{14, 89}
 	skillCD       = []int{360, 540}
-	skillRadius   = []float64{4, 2.25}
+	skillRadius   = []float64{2.7, 4}
 )
 
 func init() {
@@ -64,12 +64,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitmark)
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 	}
-
+	radius := skillRadius[chargeLevel]
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
-			skillRadius[chargeLevel],
+			radius,
 		),
 		hitmark,
 		hitmark,

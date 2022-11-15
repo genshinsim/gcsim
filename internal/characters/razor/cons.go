@@ -73,6 +73,7 @@ func (c *char) c6() {
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
+		trg := args[0].(combat.Target)
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.AttackTag != combat.AttackTagNormal {
 			return false
@@ -97,7 +98,7 @@ func (c *char) c6() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
+			combat.NewCircleHit(trg, 1.5),
 			1,
 			1,
 		)

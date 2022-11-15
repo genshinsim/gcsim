@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), -1, burstHitmark, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 10), -1, burstHitmark, cb)
 
 	//queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
 	aiBreak := combat.AttackInfo{
@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 0,
 		Mult:       0,
 	}
-	c.Core.QueueAttack(aiBreak, combat.NewCircleHit(c.Core.Combat.Player(), 4), -1, burstHitmark+480)
+	c.Core.QueueAttack(aiBreak, combat.NewCircleHit(c.Core.Combat.Player(), 10), -1, burstHitmark+480)
 
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
