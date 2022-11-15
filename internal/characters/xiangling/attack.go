@@ -16,7 +16,10 @@ var (
 	attackRadius          = [][]float64{{1.61}, {1.83}, {1.83, 1.76}, {1.76, 1.76, 1.76, 1.76}, {1.83}}
 )
 
-const normalHitNum = 5
+const (
+	normalHitNum = 5
+	c2Debuff     = "xiangling-c2"
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -36,7 +39,11 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
+	done := false
+	var c2CB func(a combat.AttackCB)
+	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
+		c2CB = c.c2(done)
+	}
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -59,26 +66,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
+				c2CB,
 			)
 		}, attackHitmarks[c.NormalCounter][i])
-	}
-
-	//if n = 5, add explosion for c2
-	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
-		//No icd, no attack tag, 25 durability
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Oil Meets Fire (C2)",
-			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Pyro,
-			Durability: 25,
-			Mult:       .75,
-		}
-		//TODO: explosion frames
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 120, 120)
 	}
 
 	defer c.AdvanceNormalIndex()
