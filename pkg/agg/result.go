@@ -37,6 +37,10 @@ type SummaryStat struct {
 	Q1 float64 `json:"q1"`
 	Q2 float64 `json:"q2"`
 	Q3 float64 `json:"q3"`
+
+	// requires storing all iteration values in buffer to properly compute
+	// lower bound inclusive, upper exclusive (except on last bin)
+	Hist []uint `json:"histogram,omitempty"`
 }
 
 type FloatStat struct {

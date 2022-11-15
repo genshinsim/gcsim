@@ -110,5 +110,23 @@ func convert(input calc.Sample) agg.SummaryStat {
 		out.SD = 0
 	}
 
+	// Scott's normal reference rule
+	h := (3.49 * out.SD) / (math.Pow(float64(len(input.Xs)), 1.0/3.0))
+	if h == 0.0 || out.Max == out.Min {
+		hist := make([]uint, 1)
+		hist[0] = uint(len(input.Xs))
+		out.Hist = hist
+	} else {
+		nbins := int(math.Ceil((out.Max - out.Min) / h))
+		hist := calc.NewLinearHist(out.Min, out.Max, nbins)
+		for _, x := range input.Xs {
+			hist.Add(x)
+		}
+		low, bins, high := hist.Counts()
+		bins[0] += low
+		bins[len(bins)-1] += high
+		out.Hist = bins
+	}
+
 	return out
 }
