@@ -106,12 +106,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			// log.Println(target)
 			//[1:14 PM] Aluminum | Harbinger of Jank: assuming uniform distribution and enemy at center:
 			//(radius_icicle + radius_enemy)^2 / radius_burst^2
-			if target == -1 && c.Core.Rand.Float64() > prob {
-				//no one getting hit
-				return
+			trg := c.Core.Combat.Enemy(target)
+			if target == -1 {
+				if c.Core.Rand.Float64() > prob {
+					// no one getting hit
+					return
+				} else {
+					// icicle is not targeted but randomly clips enemy
+					// TODO: enemies with radius?
+					trg = c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget())
+				}
 			}
 			//deal dmg
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 9), 0)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 2.5), 0)
 		}, delay)
 
 	}
