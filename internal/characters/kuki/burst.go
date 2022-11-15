@@ -40,9 +40,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	interval := 2 * 60 / 7
 
 	// C1: Gyoei Narukami Kariyama Rite's AoE is increased by 50%.
-	var r float64 = 2
+	var r float64 = 4
 	if c.Base.Cons >= 1 {
-		r = 3.5
+		r = 6
 	}
 
 	for i := burstStart; i < count*interval+burstStart; i += interval {

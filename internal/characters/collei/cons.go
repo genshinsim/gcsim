@@ -60,7 +60,7 @@ func (c *char) c4() {
 	}
 }
 
-func (c *char) c6() {
+func (c *char) c6(t combat.Target) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Forest of Falling Arrows (C6)",
@@ -74,7 +74,7 @@ func (c *char) c6() {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHit(t, 4),
 		0,
 		22,
 	)

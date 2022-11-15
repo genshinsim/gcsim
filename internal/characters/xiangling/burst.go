@@ -9,8 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var burstFrames []int
-var burstHitmarks = []int{18, 33, 56} // initial 3 hits
+var (
+	burstFrames   []int
+	burstHitmarks = []int{18, 33, 56} // initial 3 hits
+	burstRadius   = []float64{2.5, 2.5, 3}
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(80)
@@ -33,8 +36,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: true,
 			Mult:               pyronadoInitial[i][c.TalentLvlBurst()],
 		}
+		radius := burstRadius[i]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(initialHit, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, 0)
+			c.Core.QueueAttack(initialHit, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
 		}, burstHitmarks[i])
 	}
 

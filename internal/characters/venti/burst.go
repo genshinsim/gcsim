@@ -20,7 +20,7 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// reset location
 	c.qAbsorb = attributes.NoElement
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1)
+	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.77)
 
 	//8 second duration, tick every .4 second
 	ai := combat.AttackInfo{
@@ -54,7 +54,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// starts at 106 with 24f interval between ticks. 20 total
 	for i := 0; i < 20; i++ {
 		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), 0, cb)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 4), 0, cb)
 		}, 106+24*i)
 	}
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
@@ -84,7 +84,7 @@ func (c *char) burstAbsorbedTicks() {
 
 	// ticks at 24f. 15 total
 	for i := 0; i < 15; i++ {
-		c.Core.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), i*24, cb)
+		c.Core.QueueAttackWithSnap(c.aiAbsorb, c.snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 6), i*24, cb)
 	}
 }
 

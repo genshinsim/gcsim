@@ -8,8 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
-var skillFrames []int
-var skillHitlagStages = []float64{.09, .09, .15}
+var (
+	skillFrames       []int
+	skillHitlagStages = []float64{.09, .09, .15}
+	skillRadius       = []float64{6, 7, 8}
+)
 
 const skillHitmark = 23
 
@@ -42,7 +45,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   skillHitlagStages[counter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillHitmark, skillHitmark)
+	radius := skillRadius[counter]
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), skillHitmark, skillHitmark)
 
 	//2 if no hit, 3 if 1 hit, 4 if perfect
 	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, skillHitmark+c.ParticleDelay)

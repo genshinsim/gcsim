@@ -14,7 +14,10 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 49
+const (
+	burstHitmark = 49
+	burstKey     = "kokomiburst"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(78) // Q -> D/J
@@ -50,7 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark, burstHitmark)
 
-	c.Core.Status.Add("kokomiburst", 10*60)
+	c.Core.Status.Add(burstKey, 10*60)
 
 	// update jellyfish flat damage
 	c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)

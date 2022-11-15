@@ -10,9 +10,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{13, 6, 17, 37, 25}
-var attackHitlagHaltFrame = []float64{.03, .03, .06, .06, .1}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = []int{13, 6, 17, 37, 25}
+	attackHitlagHaltFrame = []float64{.03, .03, .06, .06, .1}
+	attackRadius          = []float64{1.5, 2.2, 2.8, 1.6, 1.6}
+)
 
 const normalHitNum = 5
 
@@ -51,10 +54,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-
+	radius := attackRadius[c.NormalCounter]
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.4), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0)
 
 		//check for healing
 		if c.Core.Rand.Float64() < 0.5 {

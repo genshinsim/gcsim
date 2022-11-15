@@ -85,7 +85,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		tickAE := &combat.AttackEvent{
 			Info:        aiTick,
 			Snapshot:    snapTick,
-			Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2),
+			Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2.5),
 			SourceFrame: c.Core.F,
 		}
 
@@ -94,7 +94,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(c.skillDmgTickTask(src, tickAE, 60), 57+7)
 
 		// Apply damage needs to take place after above takes place to ensure stats are handled correctly
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 0)
 	}, skillHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 1800, 3) // 30s * 60

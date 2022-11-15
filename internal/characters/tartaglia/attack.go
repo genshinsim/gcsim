@@ -64,7 +64,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)
@@ -83,6 +83,7 @@ var (
 	meleeFrames           [][]int
 	meleeHitmarks         = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 20}}
 	meleeHitlagHaltFrames = [][]float64{{0.03}, {0.03}, {0.06}, {0.06}, {0.06}, {0.03, 0.12}}
+	meleeRadius           = [][]float64{{1.8}, {1.8}, {2.0}, {2.0}, {2.2}, {1.89, 2.2}}
 )
 
 func init() {
@@ -141,10 +142,11 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 		if c.NormalCounter == 5 && i == 0 {
 			ai.StrikeType = combat.StrikeTypeSpear
 		}
+		radius := meleeRadius[c.NormalCounter][i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), .5),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies

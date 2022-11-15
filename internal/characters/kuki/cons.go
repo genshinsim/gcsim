@@ -20,6 +20,7 @@ func (c *char) c4() {
 	const c4IcdKey = "kuki-c4-icd"
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
+		trg := args[0].(combat.Target)
 		//ignore if C4 on icd
 		if c.StatusIsActive(c4IcdKey) {
 			return false
@@ -52,7 +53,7 @@ func (c *char) c4() {
 		}
 
 		//Particle check is 45% for particle
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(trg, 2), 5, 5)
 		if c.Core.Rand.Float64() < .45 {
 			c.Core.QueueParticle("kuki", 1, attributes.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
 		}

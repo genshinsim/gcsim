@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// damage component not final
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHit(c.Core.Combat.Player(), 4),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -153,6 +153,6 @@ func (c *char) summonFieryCollapse() {
 		c.genShield("Thoma Burst", shieldamt, true)
 		done = true
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), 0, 11, shieldCb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4.59), 0, 11, shieldCb)
 	c.AddStatus(burstICDKey, 60, true)
 }

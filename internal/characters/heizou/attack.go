@@ -9,10 +9,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{12}, {13}, {21}, {13, 19, 27}, {31}}
-var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.09}, {0.12}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false, true}, {true}}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{12}, {13}, {21}, {13, 19, 27}, {31}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.09}, {0.12}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false, true}, {true}}
+	attackRadius          = []float64{1.8, 1.8, 2.2, 1.8, 2.4}
+)
 
 const normalHitNum = 5
 
@@ -56,10 +59,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
+		radius := attackRadius[c.NormalCounter]
 		// multihit on N4 only has hitlag on last hit so no need for char queue here
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],
 		)

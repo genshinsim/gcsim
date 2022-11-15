@@ -9,15 +9,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{12}, {9}, {17}, {22}, {16, 26}, {23}}
-var attackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{12}, {9}, {17}, {22}, {16, 26}, {23}}
+	attackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
+	attackRadius          = [][]float64{{1.8}, {1.68}, {2}, {1.8}, {1.8, 1.8}, {2.3}}
 
-var ppAttackFrames [][]int
-var ppAttackHitmarks = [][]int{{12}, {9}, {17}, {22}, {15, 26}, {27}}
-var ppAttackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
-var ppAttackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
+	ppAttackFrames          [][]int
+	ppAttackHitmarks        = [][]int{{12}, {9}, {17}, {22}, {15, 26}, {27}}
+	ppAttackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
+	ppAttackDefHalt         = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
+	ppAttackRadius          = [][]float64{{2.3}, {1.78}, {2.6}, {2.2}, {2.3, 1.94}, {2.8}}
+)
 
 const normalHitNum = 6
 
@@ -86,10 +90,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.NormalCounter == 1 {
 			ai.StrikeType = combat.StrikeTypeSpear
 		}
+		radius := attackRadius[c.NormalCounter][i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 			)
@@ -126,10 +131,11 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 		if c.NormalCounter == 1 {
 			ai.StrikeType = combat.StrikeTypeSpear
 		}
+		radius := ppAttackRadius[c.NormalCounter][i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 				c.ppParticles,

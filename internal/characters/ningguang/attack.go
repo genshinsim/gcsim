@@ -79,9 +79,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		done = true
 	}
 
-	r := 0.1
+	r := 0.5
 	if c.Base.Cons >= 1 {
-		r = 2
+		r = 3.5
 	}
 
 	nextAttack := attackOptions[c.prevAttack][c.Core.Rand.Intn(2)]
@@ -104,7 +104,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i := 0; i < 2; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), r),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), r),
 			attackHitmarks[nextAttack],
 			attackHitmarks[nextAttack]+travel,
 			cb,

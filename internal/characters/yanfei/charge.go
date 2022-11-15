@@ -8,7 +8,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var chargeFrames []int
+var (
+	chargeFrames []int
+	chargeRadius = []float64{2.5, 3, 3.5, 4, 4}
+)
 
 const chargeHitmark = 63
 
@@ -50,9 +53,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	if c.Core.Player.CurrentState() == action.Idle || c.Core.Player.CurrentState() == action.SwapState {
 		windup = 0
 	}
-
+	radius := chargeRadius[c.sealCount]
 	// TODO: Not sure of snapshot timing
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), chargeHitmark-windup, chargeHitmark-windup)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius), chargeHitmark-windup, chargeHitmark-windup)
 
 	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index).
 		Write("current_seals", c.sealCount)

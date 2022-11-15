@@ -9,11 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackEarliestCancel = []int{11, 9, 8, 16, 4, 29}
-var attackHitmarks = [][]int{{11}, {9}, {8}, {16}, {11, 18, 23, 29}, {29}}
-var attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0.02}, {0, 0, 0, 0}, {0.02}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, false, false, false}, {true}}
+var (
+	attackFrames          [][]int
+	attackEarliestCancel  = []int{11, 9, 8, 16, 4, 29}
+	attackHitmarks        = [][]int{{11}, {9}, {8}, {16}, {11, 18, 23, 29}, {29}}
+	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0.02}, {0, 0, 0, 0}, {0.02}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {true}, {false, false, false, false}, {true}}
+	attackRadius          = []float64{2.04, 2, 0.9, 1.7, 2.06, 2.06}
+)
 
 const normalHitNum = 6
 
@@ -64,10 +67,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.NormalCounter == 1 || c.NormalCounter == 4 {
 			ai.StrikeType = combat.StrikeTypeSlash
 		}
+		radius := attackRadius[c.NormalCounter]
 		//the multihit part generates no hitlag so this is fine
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],
 		)

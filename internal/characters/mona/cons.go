@@ -72,6 +72,7 @@ func (c *char) c1() {
 // When a Normal Attack hits, there is a 20% chance that it will be automatically followed by a Charged Attack.
 // This effect can only occur once every 5s.
 func (c *char) c2(a combat.AttackCB) {
+	trg := a.Target
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -94,7 +95,7 @@ func (c *char) c2(a combat.AttackCB) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(trg, 3), 0, 0)
 }
 
 // C4:

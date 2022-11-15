@@ -80,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatus(icdKey, cd, true)
 
 		return false
-	}, fmt.Sprintf("veridescent-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("viridescent-%v", char.Base.Key.String()))
 
 	return w, nil
 }

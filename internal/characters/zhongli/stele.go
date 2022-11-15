@@ -63,7 +63,7 @@ func (c *char) newStele(dur int, max int) {
 	c.steleSnapshot = combat.AttackEvent{
 		Info:        aiSnap,
 		Snapshot:    snap,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 1),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 5.66),
 		SourceFrame: c.Core.F,
 	}
 
