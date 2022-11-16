@@ -12,8 +12,8 @@ import { AxisLeft, TickRendererProps } from "@visx/axis";
 import { Text } from "@visx/text";
 import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import { useTranslation } from "react-i18next";
-import { Card, Colors, HTMLSelect, Icon, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
-
+import { Card, Colors, HTMLSelect, Icon, NonIdealState } from "@blueprintjs/core";
+import { BoxPlot } from "@visx/stats";
 
 export default ({ data }: { data: SimResults | null}) => {
   const [graph, setGraph] = useState(0);
@@ -163,71 +163,63 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
     hideTooltip,
     showTooltip,
   }: HistogramProps & WithTooltipProvidedProps<TooltipData>) => {
-    const { i18n } = useTranslation();
-
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;
     const numTicks = 7;
+    
+    const { xScale, yScale, xLin, delta } = useScales(data, xMax, yMax);
+    
+    let tooltipTimeout: number;
+    const mouseLeaveHandle = () => {
+      tooltipTimeout = window.setTimeout(() => {
+        hideTooltip();
+      }, 750);
+    };
 
-    const xScale = useMemo(() => scaleBand<number>({
-      range: [0, xMax],
-      domain: range(data?.histogram?.length ?? 1),
-      paddingInner: 0.05
-    }), [data?.histogram?.length, xMax]);
-
-    const yScale = useMemo(() => {
-      const max = Math.max(...(data?.histogram ?? [1]));
-      return scaleLinear<number>({
-        range: [yMax, 0],
-        domain: [-3, max + .1 * max],
-        // nice: true,
-        clamp: true
-      });
-    }, [data?.histogram, yMax]);
-
-    const meanLine = useMemo(() => {
-      if (data?.max == null || data?.min == null || data?.mean == null) {
+    const mouseHoverHandle = (e: React.MouseEvent) => {
+      if (delta == null || data?.min == null || data?.max == null || data.histogram?.length == null) {
         return null;
       }
 
-      const xLin = scaleLinear<number>({
-        range: [0, xMax],
-        domain: [data.min, data.max],
-      });
-      const x = xLin(data.mean);
-      return (
-        <g>
-          <Line
-              from={{ x: x, y: yMax }}
-              to={{ x: x, y: 0 }}
-              stroke={accentColor}
-              strokeWidth={2}
-              strokeDasharray="5,2"
-              className="opacity-75" />
-          <Text x={x} y={yMax} dy="1em" className="fill-gray-400 font-mono" textAnchor="middle">
-            {"mean=" + data?.mean?.toLocaleString(i18n.language, { maximumFractionDigits: 2 })}
-          </Text>
-        </g>
-      );
-    }, [accentColor, data?.max, data?.mean, data?.min, i18n.language, xMax, yMax]);
-
-    const meanBin = useMemo(() => {
-      if (data?.histogram?.length == null || data?.max == null || data?.min == null
-          || data?.mean == null) {
+      if (e.nativeEvent.offsetX <= margin.left) {
         return null;
       }
-      const delta = data.histogram.length / (data.max - data.min);
-      return Math.floor(delta * (data.mean - data.min));
-    }, [data?.histogram?.length, data?.max, data?.mean, data?.min]);
 
-    if (data?.histogram == null) {
-      return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
+      const temp = xLin.invert(e.nativeEvent.offsetX - margin.left);
+      const idx = Math.max(Math.floor(delta * (temp - data.min)), 0);
+      const count = data.histogram[idx];
+      const lower = delta == 0 ? data.min : data.min + idx/delta;
+      const upper = delta == 0 ? data.max : data.min + (idx+1)/delta;
+
+      if (count <= 0) {
+        return null;
+      }
+
+      if (tooltipTimeout) {
+        window.clearTimeout(tooltipTimeout);
+      }
+
+      return showTooltip({
+        tooltipData: { index: idx, count: count, lower: lower, upper: upper },
+        tooltipLeft: (xScale(idx) ?? 0) + margin.left + (xScale.bandwidth()/2),
+        tooltipTop: yScale(count) - 10
+      });
+    };
+
+    if (data?.histogram == null || delta == null) {
+      return <NonIdealState icon="pulse" title="Data not found" />;
     }
 
     return (
       <>
-        <svg width={width} height={height}>
-          <Group left={margin.left} top={margin.top}>
+        <svg
+            width={width}
+            height={height}
+            onMouseMove={mouseHoverHandle}
+            onMouseLeave={mouseLeaveHandle}>
+          <Group
+              left={margin.left}
+              top={margin.top}>
             <GridRows
                 scale={yScale}
                 numTicks={numTicks}
@@ -245,24 +237,46 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
                 tickClassName="fill-gray-400 font-mono"
                 tickComponent={(props) => <TickLabel {...props} />}
                 label="# iterations" />
-            {meanLine}
+            <VerticalLine
+                x={data?.mean}
+                xScale={xLin}
+                yMax={yMax}
+                color={accentColor}
+                className="opacity-75 fill-gray-400 font-mono" />
+            <BoxPlot
+                valueScale={xLin}
+                min={data.min}
+                max={data.max}
+                firstQuartile={data.q1}
+                median={data.q2}
+                thirdQuartile={data.q3}
+                horizontal={true}
+                boxWidth={10}
+                top={yMax + 5}
+                fill={hoverColor}
+                fillOpacity={0.1}
+                stroke={hoverColor}
+                strokeWidth={1}
+                medianProps={{ style: { stroke: hoverColor } }}
+            />
             {data?.histogram?.map((c, i) => {
               const barWidth = xScale.bandwidth();
               const barHeight = yMax - yScale(c);
-
-              if (c <= 0 || barHeight < 0) {
-                return null;
-              }
-
               const barX = xScale(i) ?? 0;
               const barY = yMax - barHeight;
+
+              if (c <= 0 || barHeight < 0 || data.mean == null || data.min == null) {
+                return null;
+              }
+              
               let fill = color;
-              if (i === meanBin) {
+              if (i === Math.floor(delta * (data.mean - data.min))) {
                 fill = accentColor;
               }
               if (i === tooltipData?.index) {
                 fill = hoverColor;
               }
+
               return (
                 <rect
                     key={"bin-" + i}
@@ -270,22 +284,7 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
                     x={barX}
                     y={barY}
                     width={barWidth}
-                    height={barHeight}
-                    onMouseLeave={() => hideTooltip()}
-                    onMouseMove={() => {
-                      if (data?.histogram?.length == null || data?.max == null || data?.min == null) {
-                        return null;
-                      }
-
-                      const width = (data.max - data.min) / data.histogram.length;
-                      const lower = data.min + i * width;
-                      const upper = data.min + (i+1) * width;
-                      return showTooltip({
-                          tooltipData: { index: i, count: c, lower: lower, upper: upper },
-                          tooltipLeft: barX + margin.left + (barWidth/2),
-                          tooltipTop: barY - 10
-                      });
-                    }} />
+                    height={barHeight} />
               );
             })}
           </Group>
@@ -299,7 +298,22 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
                 usePortal={false}
                 placement="top"
                 popoverClassName="w-36"
-                content={<TooltipContent {...tooltipData} />}>
+                content={
+                  <TooltipContent
+                      data={tooltipData}
+                      stat={data}
+                      showTooltip={() => {
+                        if (tooltipTimeout) {
+                          clearTimeout(tooltipTimeout);
+                        }
+                        
+                        showTooltip({
+                          tooltipData: tooltipData,
+                          tooltipLeft: tooltipLeft,
+                          tooltipTop: tooltipTop
+                        });
+                      }} />
+                }>
               <div></div>
             </Popover2>
           </div>
@@ -311,22 +325,134 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
 
 const TickLabel = (props: TickRendererProps) => {
   return (
-    <Text x={props.x} y={props.y} dy="0.25em" textAnchor="end">
+    <Text x={props.x} y={props.y} dy="0.25em" textAnchor="end" className="cursor-default">
       {props.formattedValue}
     </Text>
   );
 };
 
-const TooltipContent = (props: TooltipData) => {
+type TooltipContentProps = {
+  data: TooltipData;
+  stat?: SummaryStat;
+  showTooltip: () => void;
+}
+
+const TooltipContent = ({ data, stat, showTooltip}: TooltipContentProps) => {
   const { i18n } = useTranslation();
-  const lower = props.lower?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
-  const upper = props.upper?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+  const lower = data.lower?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+  const upper = data.upper?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+  const mean = stat?.mean?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+  const p25 = stat?.q1?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+  const p50 = stat?.q2?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+  const p75 = stat?.q3?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+
+  const mouseHoverHandle = () => {
+    showTooltip();
+  };
+
+  if (stat?.histogram?.length == null || stat?.max == null || stat?.min == null) {
+    return null;
+  }
+
+  const delta = stat.histogram.length <= 1 ? 0 : stat.histogram.length / (stat.max - stat.min);
+  const muIndex = stat.mean == null ? null : Math.floor(delta * (stat.mean - stat.min));
+  const p25Index = stat.q1 == null ? null : Math.floor(delta * (stat.q1 - stat.min));
+  const p50Index = stat.q2 == null ? null : Math.floor(delta * (stat.q2 - stat.min));
+  const p75Index = stat.q3 == null ? null : Math.floor(delta * (stat.q3 - stat.min));
 
   return (
-    <div className="p-2 font-mono text-xs grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-center">
+    <div
+        className="p-2 font-mono text-xs grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-center"
+        onMouseMove={() => mouseHoverHandle()}>
+      {muIndex && muIndex == data.index && (
+        <><span className="justify-self-end text-gray-400">mean</span><span>{mean}</span></>
+      ) || null}
+      {p25Index && p25Index == data.index && (
+        <><span className="justify-self-end text-gray-400">p25</span><span>{p25}</span></>
+      ) || null}
+      {p50Index && p50Index == data.index && (
+        <><span className="justify-self-end text-gray-400">p50</span><span>{p50}</span></>
+      ) || null}
+      {p75Index && p75Index == data.index && (
+        <><span className="justify-self-end text-gray-400">p75</span><span>{p75}</span></>
+      ) || null}
       <span className="justify-self-end text-gray-400">lower</span><span>{lower}</span>
       <span className="justify-self-end text-gray-400">upper</span><span>{upper}</span>
-      <span className="justify-self-end text-gray-400">itrs</span><span>{props.count}</span>
+      <span className="justify-self-end text-gray-400">itrs</span><span>{data.count}</span>
     </div>
+  );
+};
+
+function useScales(data: SummaryStat | undefined, xMax: number, yMax: number) {
+  const xScale = useMemo(() => scaleBand<number>({
+    range: [0, xMax],
+    domain: range(data?.histogram?.length ?? 1),
+    paddingInner: 0.05,
+  }), [data?.histogram?.length, xMax]);
+
+  const xLin = useMemo(() => scaleLinear<number>({
+    range: [0, xMax],
+    domain: [data?.min ?? 0, data?.max ?? 1],
+  }), [data?.max, data?.min, xMax]);
+
+  const yScale = useMemo(() => {
+    const max = Math.max(...(data?.histogram ?? [1000]));
+    return scaleLinear<number>({
+      range: [yMax, 0],
+      domain: [-3, max + .1 * max],
+      clamp: true
+    });
+  }, [data?.histogram, yMax]);
+
+  const delta = useMemo(() => {
+    if (data?.histogram?.length == null || data?.max == null || data?.min == null) {
+      return null;
+    }
+
+    if (data.histogram.length <= 1) {
+      return 0;
+    }
+
+    return data.histogram.length / (data.max - data.min);
+  }, [data?.histogram?.length, data?.max, data?.min]);
+
+  return { xScale: xScale, yScale: yScale, xLin: xLin, delta: delta };
+}
+
+type VerticalLineProps = {
+  x?: number;
+  xScale: (x: number) => number;
+  yMax: number;
+  color: string;
+  label?: string;
+  className?: string;
+}
+
+const VerticalLine = ({ x, xScale, yMax, color, label, className }: VerticalLineProps) => {
+  if (x == null) {
+    return null;
+  }
+  
+  const localX = xScale(x);
+  const Label = ({}) => {
+    if (label == null) return null;
+    return (
+      <Text x={xScale(localX)} y={yMax} dy="1em" className={className} textAnchor="middle">
+        {label}
+      </Text>
+    );
+  };
+  
+  return (
+    <g>
+      <Line
+          from={{ x: localX, y: yMax }}
+          to={{ x: localX, y: 0 }}
+          stroke={color}
+          strokeWidth={2}
+          strokeDasharray="5,2"
+          className={className} />
+      <Label />
+    </g>
   );
 };
