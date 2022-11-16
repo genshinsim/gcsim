@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
-	"github.com/genshinsim/gcsim/backend/pkg/result"
+	"github.com/genshinsim/gcsim/backend/pkg/services/result"
 	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -22,11 +22,8 @@ func main() {
 	sugar := logger.Sugar()
 	sugar.Debugw("logger initiated")
 
-	resultStore, err := result.New(result.Config{
-		DBPath: os.Getenv("RESULT_DATA_PATH"),
-	}, func(s *result.Store) error {
-		s.Log = sugar
-		return nil
+	resultStore, err := result.NewClient(result.ClientCfg{
+		Addr: os.Getenv("RESULT_STORE_URL"),
 	})
 
 	if err != nil {

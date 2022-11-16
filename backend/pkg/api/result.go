@@ -15,7 +15,7 @@ type ResultStore interface {
 	Read(id string, ctx context.Context) ([]byte, error)
 	Update(id string, data []byte, ctx context.Context) error
 	Delete(id string, ctx context.Context) error
-	Random(ctx context.Context) ([]byte, error)
+	Random(ctx context.Context) (string, error)
 }
 
 var ErrKeyNotFound = errors.New("key does not exist")
@@ -78,7 +78,7 @@ func (s *Server) GetRandomShare() http.HandlerFunc {
 		case nil:
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			w.Write(share)
+			w.Write([]byte(share))
 		case ErrKeyNotFound:
 			w.WriteHeader(http.StatusNotFound)
 		default:

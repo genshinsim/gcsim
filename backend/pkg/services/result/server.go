@@ -12,6 +12,8 @@ import (
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/jaevor/go-nanoid"
 	"go.uber.org/zap"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var generateID func() string
@@ -33,6 +35,7 @@ type Store struct {
 	cfg Config
 	db  *badger.DB
 	Log *zap.SugaredLogger
+	UnimplementedResultStoreServer
 }
 
 func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
@@ -67,9 +70,9 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	return s, nil
 }
 
-func (s *Store) Create(data []byte, ctx context.Context) (string, error) {
+func (s *Store) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
 	id := generateID()
-	ttl := extractTTL(ctx)
+	ttl := checkTTL(req.Ttl)
 	s.Log.Infow("received create request", "id", id, "ttl", ttl)
 
 	err := s.db.Update(func(txn *badger.Txn) error {
@@ -77,22 +80,32 @@ func (s *Store) Create(data []byte, ctx context.Context) (string, error) {
 
 		//sanity check that uuid is not already used...
 		_, err := txn.Get(key)
-		if err != badger.ErrKeyNotFound {
+		switch err {
+		case badger.ErrKeyNotFound:
+		case nil:
 			s.Log.Warnw("unexpected id collision", "id", id)
 			return fmt.Errorf("unexpected key already exists: %v", id)
+		default:
+			return err
 		}
 
 		if ttl > 0 {
-			e := badger.NewEntry(key, data).WithTTL(time.Hour * time.Duration(ttl))
+			e := badger.NewEntry(key, req.Result).WithTTL(time.Hour * time.Duration(ttl))
 			return txn.SetEntry(e)
 		}
-		return txn.Set(key, data)
+		return txn.Set(key, req.Result)
 	})
 
-	return id, err
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &CreateResponse{
+		Key: id,
+	}, nil
 }
 
-func (s *Store) Random(ctx context.Context) ([]byte, error) {
+func (s *Store) Random(ctx context.Context, req *RandomRequest) (*RandomResponse, error) {
 	var keys [][]byte
 	count := 0
 	stream := s.db.NewStream()
@@ -134,35 +147,33 @@ func (s *Store) Random(ctx context.Context) ([]byte, error) {
 	}
 
 	if err := stream.Orchestrate(c); err != nil && err != context.Canceled {
-		panic(err)
+		//unexpected error trying to grab key
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 	s.Log.Infow("random key selection done", "len", len(keys))
 	if len(keys) == 0 {
-		return nil, api.ErrKeyNotFound
+		return nil, status.Error(codes.NotFound, "no key found - collection size is 0")
 	}
 	// Pick a random key from the list of keys
 	n := keys[rand.Intn(len(keys))]
 
-	return s.Read(string(n), ctx)
+	return &RandomResponse{
+		Key: string(n),
+	}, nil
 }
 
-func (s *Store) Read(key string, ctx context.Context) ([]byte, error) {
+func (s *Store) Read(ctx context.Context, req *ReadRequest) (*ReadResponse, error) {
 	var res []byte
-	s.Log.Infow("received request to view result", "key", key)
+	s.Log.Infow("received request to view result", "key", req.Key)
 	err := s.db.Update(func(txn *badger.Txn) error {
-		k := []byte(key)
+		k := []byte(req.Key)
 		//sanity check that uuid is not already used...
 		item, err := txn.Get(k)
 		if err != nil {
-			if err == badger.ErrKeyNotFound {
-				s.Log.Infow("requested key does not exist", "key", key)
-				return api.ErrKeyNotFound
-			}
 			return err
 		}
 		if item.IsDeletedOrExpired() {
-			s.Log.Infow("requested key has expired", "key", key)
-			return api.ErrKeyNotFound
+			return badger.ErrKeyNotFound
 		}
 		item.Value(func(val []byte) error {
 			res = append([]byte{}, val...)
@@ -171,66 +182,85 @@ func (s *Store) Read(key string, ctx context.Context) ([]byte, error) {
 		diff := item.ExpiresAt() - uint64(time.Now().Unix())
 		if diff < uint64(60*60*24) {
 			//if expiring in less than 24 hours, reset ttl for another 14 days
-			s.Log.Infow("requested key will expire in less than 24 hours; resetting TTL", "key", key, "expiry", item.ExpiresAt(), "expires_in_s", diff)
+			s.Log.Infow("requested key will expire in less than 24 hours; resetting TTL", "key", req.Key, "expiry", item.ExpiresAt(), "expires_in_s", diff)
 			e := badger.NewEntry(k, res).WithTTL(time.Hour * time.Duration(api.DefaultTLL))
 			err := txn.SetEntry(e)
 			//Read shouldn't error here
 			if err != nil {
-				s.Log.Warnw("error updating TTL for requested temp key", "key", key, "err", err)
+				s.Log.Errorw("error updating TTL for requested temp key", "key", req.Key, "err", err)
 			}
 		}
 
 		return nil
 	})
 
-	return res, err
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.Log.Infow("requested key does not exist", "key", req.Key)
+			return nil, status.Error(codes.NotFound, "key not found")
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	return &ReadResponse{
+		Key:    req.Key,
+		Result: res,
+	}, nil
 }
 
-func (s *Store) Update(key string, data []byte, ctx context.Context) error {
-	ttl := extractTTL(ctx)
-	s.Log.Infow("received update request", "key", key, "ttl", ttl)
-	return s.db.Update(func(txn *badger.Txn) error {
-		k := []byte(key)
+func (s *Store) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse, error) {
+	ttl := checkTTL(req.Ttl)
+	s.Log.Infow("received update request", "key", req.Key, "ttl", ttl)
+	err := s.db.Update(func(txn *badger.Txn) error {
+		k := []byte(req.Key)
 		//sanity check that uuid is not already used...
 		_, err := txn.Get(k)
 		if err != nil {
-			if err == badger.ErrKeyNotFound {
-				return api.ErrKeyNotFound
-			}
 			return err
 		}
 		if ttl > 0 {
-			e := badger.NewEntry(k, data).WithTTL(time.Hour * time.Duration(ttl))
+			e := badger.NewEntry(k, req.Result).WithTTL(time.Hour * time.Duration(ttl))
 			return txn.SetEntry(e)
 		}
-		return txn.Set(k, data)
+		return txn.Set(k, req.Result)
 	})
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.Log.Infow("requested key does not exist", "key", req.Key)
+			return nil, status.Error(codes.NotFound, "key not found")
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	return &UpdateResponse{Key: req.Key}, nil
 }
 
-func (s *Store) Delete(key string, ctx context.Context) error {
-	s.Log.Infow("received delete request", "key", key)
-	return s.db.Update(func(txn *badger.Txn) error {
-		err := txn.Delete([]byte(key))
+func (s *Store) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse, error) {
+	s.Log.Infow("received delete request", "key", req.Key)
+	err := s.db.Update(func(txn *badger.Txn) error {
+		err := txn.Delete([]byte(req.Key))
 		if err != nil {
 			if err == badger.ErrKeyNotFound {
-				s.Log.Debugw("deleting a key that does not exist", "key", key)
+				s.Log.Debugw("deleting a key that does not exist", "key", req.Key)
 				return nil
 			}
 			return err
 		}
 		return nil
 	})
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.Log.Infow("requested key does not exist", "key", req.Key)
+			return nil, status.Error(codes.NotFound, "key not found")
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	return &DeleteResponse{Key: req.Key}, nil
 }
 
-func extractTTL(ctx context.Context) int {
-	x := ctx.Value("ttl")
+func checkTTL(x uint64) int {
 	//expecting ttl to be an integer value >= 0; if not int then default to
 	//14 days; if ttl = 0 then assume to be permanent
-	ttl := api.DefaultTLL
-	if val, ok := x.(int); ok {
-		if val >= 0 {
-			ttl = val
-		}
+	if x < 0 {
+		return api.DefaultTLL
 	}
-	return ttl
+	return int(x)
 }

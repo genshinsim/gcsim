@@ -1,14 +1,22 @@
-FROM golang:latest
+FROM golang:1.19.3-alpine3.16 AS build
 # RUN mkdir /usr/src/app
 WORKDIR /app
 
-COPY go.mod go.sum ./
-RUN ls
-RUN go mod download
+COPY go.mod ./
+COPY go.sum ./
 COPY pkg pkg
-COPY cmd/jadechamber cmd/jadechamber
+COPY cmd cmd
+RUN go mod tidy
+RUN cat go.mod
+RUN go mod download
 
 WORKDIR /app/cmd/jadechamber
 RUN go build -o /jadechamber
+
+FROM alpine:3.16.3
+
+WORKDIR /
+
+COPY --from=build /jadechamber /jadechamber
 
 ENTRYPOINT ["/jadechamber"]

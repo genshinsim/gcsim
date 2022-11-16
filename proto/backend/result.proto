@@ -1,0 +1,56 @@
+syntax = "proto3";
+package result;
+option go_package="backend/pkg/services/result";
+
+service ResultStore {
+    rpc Create (CreateRequest) returns (CreateResponse) {}
+    rpc Read (ReadRequest) returns (ReadResponse) {}
+    rpc Update (UpdateRequest) returns (UpdateResponse) {}
+    rpc Delete (DeleteRequest) returns (DeleteResponse) {}
+    rpc Random (RandomRequest) returns (RandomResponse) {}
+}
+
+message CreateRequest {
+    bytes result = 1;
+    uint64 ttl = 2;
+}
+
+message CreateResponse {
+    string key = 1;
+}
+
+message ReadRequest {
+    string key = 1;
+}
+
+message ReadResponse {
+    string key = 1;
+    bytes result = 2;
+    //TODO: should eventually reply with TTL on result
+}
+
+message UpdateRequest {
+    string key = 1;
+    bytes result = 2;
+    uint64 ttl = 3;
+}
+
+message UpdateResponse {
+    string key = 1;
+}
+
+
+message DeleteRequest {
+    string key = 1;
+}
+
+message DeleteResponse {
+    string key = 1;
+    //TODO: add deleted data to response in future
+}
+
+message RandomRequest {}
+
+message RandomResponse {
+    string key = 1;
+}
