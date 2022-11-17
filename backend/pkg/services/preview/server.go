@@ -19,12 +19,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type resultReadOnly interface {
-	Read(id string, ctx context.Context) ([]byte, error)
-}
-
 type Config struct {
-	ResultStore  resultReadOnly
+	ResultStore  api.ResultReader
 	Files        embed.FS
 	AssetsFolder string
 	URL          string
@@ -125,7 +121,7 @@ func (s *Store) handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//pull data from result store, insert into template, and then server
 		key := chi.URLParam(r, "key")
-		data, err := s.cfg.ResultStore.Read(key, r.Context())
+		data, _, err := s.cfg.ResultStore.Read(key, r.Context())
 		var out struct {
 			Data string
 		}

@@ -61,7 +61,7 @@ func TestResultStore(t *testing.T) {
 		t.FailNow()
 	}
 
-	data, err := client.Read(uuid, context.TODO())
+	data, _, err := client.Read(uuid, context.TODO())
 
 	if err != nil {
 		t.Error(err)
@@ -78,7 +78,7 @@ func TestResultStore(t *testing.T) {
 		t.FailNow()
 	}
 
-	data, err = client.Read(uuid, context.TODO())
+	data, _, err = client.Read(uuid, context.TODO())
 
 	if err != nil {
 		t.Error(err)
@@ -95,7 +95,7 @@ func TestResultStore(t *testing.T) {
 		t.FailNow()
 	}
 
-	_, err = client.Read(uuid, context.TODO())
+	_, _, err = client.Read(uuid, context.TODO())
 
 	if err != api.ErrKeyNotFound {
 		t.Errorf("expecting key to be gone, but got err %v", err)
