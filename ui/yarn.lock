@@ -517,6 +517,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gcsim/embed@workspace:packages/embed":
+  version: 0.0.0-use.local
+  resolution: "@gcsim/embed@workspace:packages/embed"
+  dependencies:
+    "@blueprintjs/core": ^4.11.4
+    "@gcsim/types": "workspace:^"
+    "@vitejs/plugin-react": ^2.1.0
+    axios: ^1.1.3
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    rollup-plugin-visualizer: ^5.8.3
+    vite: ^3.1.8
+    vite-tsconfig-paths: ^3.5.2
+  languageName: unknown
+  linkType: soft
+
 "@gcsim/executors@workspace:^, @gcsim/executors@workspace:packages/executors":
   version: 0.0.0-use.local
   resolution: "@gcsim/executors@workspace:packages/executors"
