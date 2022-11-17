@@ -72,8 +72,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 
 func (s *Store) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
 	id := generateID()
-	ttl := checkTTL(req.Ttl)
-	s.Log.Infow("received create request", "id", id, "ttl", ttl)
+	s.Log.Infow("received create request", "id", id, "ttl", req.Ttl)
 
 	err := s.db.Update(func(txn *badger.Txn) error {
 		key := []byte(id)
@@ -89,8 +88,8 @@ func (s *Store) Create(ctx context.Context, req *CreateRequest) (*CreateResponse
 			return err
 		}
 
-		if ttl > 0 {
-			e := badger.NewEntry(key, req.Result).WithTTL(time.Hour * time.Duration(ttl))
+		if req.Ttl > 0 {
+			e := badger.NewEntry(key, req.Result).WithTTL(time.Hour * time.Duration(req.Ttl))
 			return txn.SetEntry(e)
 		}
 		return txn.Set(key, req.Result)
@@ -212,8 +211,7 @@ func (s *Store) Read(ctx context.Context, req *ReadRequest) (*ReadResponse, erro
 }
 
 func (s *Store) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse, error) {
-	ttl := checkTTL(req.Ttl)
-	s.Log.Infow("received update request", "key", req.Key, "ttl", ttl)
+	s.Log.Infow("received update request", "key", req.Key, "ttl", req.Ttl)
 	err := s.db.Update(func(txn *badger.Txn) error {
 		k := []byte(req.Key)
 		//sanity check that uuid is not already used...
@@ -221,8 +219,8 @@ func (s *Store) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse
 		if err != nil {
 			return err
 		}
-		if ttl > 0 {
-			e := badger.NewEntry(k, req.Result).WithTTL(time.Hour * time.Duration(ttl))
+		if req.Ttl > 0 {
+			e := badger.NewEntry(k, req.Result).WithTTL(time.Hour * time.Duration(req.Ttl))
 			return txn.SetEntry(e)
 		}
 		return txn.Set(k, req.Result)
@@ -238,8 +236,7 @@ func (s *Store) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse
 }
 
 func (s *Store) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLResponse, error) {
-	ttl := checkTTL(req.Ttl)
-	s.Log.Infow("received request to set ttl", "key", req.Key, "ttl", ttl)
+	s.Log.Infow("received request to set ttl", "key", req.Key, "ttl", req.Ttl)
 	err := s.db.Update(func(txn *badger.Txn) error {
 		k := []byte(req.Key)
 		var data []byte
@@ -251,8 +248,8 @@ func (s *Store) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLResponse
 			data = append([]byte{}, val...)
 			return nil
 		})
-		if ttl > 0 {
-			e := badger.NewEntry(k, data).WithTTL(time.Hour * time.Duration(ttl))
+		if req.Ttl > 0 {
+			e := badger.NewEntry(k, data).WithTTL(time.Hour * time.Duration(req.Ttl))
 			return txn.SetEntry(e)
 		}
 		return txn.Set(k, data)
@@ -288,13 +285,4 @@ func (s *Store) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	return &DeleteResponse{Key: req.Key}, nil
-}
-
-func checkTTL(x uint64) int {
-	//expecting ttl to be an integer value >= 0; if not int then default to
-	//14 days; if ttl = 0 then assume to be permanent
-	if x < 0 {
-		return api.DefaultTLL
-	}
-	return int(x)
 }

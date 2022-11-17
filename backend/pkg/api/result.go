@@ -43,7 +43,7 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			return
 		}
 
-		uuid, err := s.cfg.ResultStore.Create(data, r.Context())
+		uuid, err := s.cfg.ResultStore.Create(data, context.WithValue(r.Context(), TTLContextKey, DefaultTLL))
 
 		if err != nil {
 			s.Log.Errorw("unexpected error saving result", "err", err)

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 )
 
@@ -22,7 +23,7 @@ type ClientCfg struct {
 func NewClient(cfg ClientCfg, cust ...func(*Client) error) (*Client, error) {
 	c := &Client{cfg: cfg}
 
-	conn, err := grpc.Dial(cfg.Addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(cfg.Addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}

@@ -24,6 +24,8 @@ services:
       - DISCORD_SECRET
       - REDIRECT_URL
       - RESULT_STORE_URL=result:3000
+    depends_on:
+      - result
     restart: unless-stopped
   preview:
     container_name: preview

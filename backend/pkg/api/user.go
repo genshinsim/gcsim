@@ -65,7 +65,7 @@ func (s *Server) tokenCheck(next http.Handler) http.Handler {
 			return
 		}
 		if token.Valid {
-			r = r.WithContext(context.WithValue(r.Context(), "user", cl.User))
+			r = r.WithContext(context.WithValue(r.Context(), UserContextKey, cl.User))
 			s.Log.Infow("token ok, user context set", "user", cl.User)
 		}
 		//do stuff here
@@ -156,7 +156,7 @@ func (s *Server) Login() http.HandlerFunc {
 			}
 		}
 
-		u, err := s.cfg.UserStore.Read(du.ID, context.WithValue(r.Context(), "user", du.ID))
+		u, err := s.cfg.UserStore.Read(du.ID, context.WithValue(r.Context(), UserContextKey, du.ID))
 		if err != nil {
 			s.Log.Errorw("unexpected error encountered reading user", "err", err, "user", du)
 			w.WriteHeader(http.StatusInternalServerError)
