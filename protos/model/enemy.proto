@@ -1,0 +1,10 @@
+syntax = "proto3";
+package model;
+option go_package="pkg/model";
+
+
+message Enemy {
+    int32 level = 1;
+    double hp = 2;
+    // TODO: missing rest of the definition
+}

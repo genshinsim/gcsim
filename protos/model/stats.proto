@@ -1,0 +1,16 @@
+syntax = "proto3";
+package model;
+option go_package="pkg/model";
+
+message SummaryStat {
+    double min = 1;
+    double max = 2;
+    double mean = 3;
+    double sd = 4;
+
+    double q1 = 5;
+    double q2 = 6;
+    double q3 = 7;
+
+    repeated uint64 hist = 8 [json_name="histogram"];
+}

@@ -1,0 +1,10 @@
+syntax = "proto3";
+package model;
+option go_package="pkg/model";
+
+message Weapon {
+    string name = 1;
+    int32 refine = 2;
+    int32 level = 3;
+    int32 max_level = 4 [json_name="max_level"];
+}
