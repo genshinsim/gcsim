@@ -59,15 +59,15 @@ func (c *Client) Create(data []byte, ctx context.Context) (string, error) {
 	return resp.GetKey(), nil
 }
 
-func (c *Client) Read(id string, ctx context.Context) ([]byte, error) {
+func (c *Client) Read(id string, ctx context.Context) ([]byte, uint64, error) {
 	req := &ReadRequest{
 		Key: id,
 	}
 	resp, err := c.srvClient.Read(ctx, req)
 	if err != nil {
-		return nil, parseError(err)
+		return nil, 0, parseError(err)
 	}
-	return resp.Result, nil
+	return resp.GetResult(), resp.GetTtl(), nil
 }
 
 func (c *Client) Update(id string, data []byte, ctx context.Context) error {
@@ -77,6 +77,18 @@ func (c *Client) Update(id string, data []byte, ctx context.Context) error {
 		Ttl:    extractTTL(ctx),
 	}
 	_, err := c.srvClient.Update(ctx, req)
+	if err != nil {
+		return parseError(err)
+	}
+	return nil
+}
+
+func (c *Client) SetTTL(id string, ctx context.Context) error {
+	req := &SetTTLRequest{
+		Key: id,
+		Ttl: extractTTL(ctx),
+	}
+	_, err := c.srvClient.SetTTL(ctx, req)
 	if err != nil {
 		return parseError(err)
 	}

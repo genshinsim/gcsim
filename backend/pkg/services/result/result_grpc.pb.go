@@ -25,6 +25,7 @@ type ResultStoreClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+	SetTTL(ctx context.Context, in *SetTTLRequest, opts ...grpc.CallOption) (*SetTTLResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 	Random(ctx context.Context, in *RandomRequest, opts ...grpc.CallOption) (*RandomResponse, error)
 }
@@ -64,6 +65,15 @@ func (c *resultStoreClient) Update(ctx context.Context, in *UpdateRequest, opts 
 	return out, nil
 }
 
+func (c *resultStoreClient) SetTTL(ctx context.Context, in *SetTTLRequest, opts ...grpc.CallOption) (*SetTTLResponse, error) {
+	out := new(SetTTLResponse)
+	err := c.cc.Invoke(ctx, "/result.ResultStore/SetTTL", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *resultStoreClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
 	out := new(DeleteResponse)
 	err := c.cc.Invoke(ctx, "/result.ResultStore/Delete", in, out, opts...)
@@ -89,6 +99,7 @@ type ResultStoreServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Read(context.Context, *ReadRequest) (*ReadResponse, error)
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
+	SetTTL(context.Context, *SetTTLRequest) (*SetTTLResponse, error)
 	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
 	Random(context.Context, *RandomRequest) (*RandomResponse, error)
 	mustEmbedUnimplementedResultStoreServer()
@@ -106,6 +117,9 @@ func (UnimplementedResultStoreServer) Read(context.Context, *ReadRequest) (*Read
 }
 func (UnimplementedResultStoreServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedResultStoreServer) SetTTL(context.Context, *SetTTLRequest) (*SetTTLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetTTL not implemented")
 }
 func (UnimplementedResultStoreServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
@@ -180,6 +194,24 @@ func _ResultStore_Update_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResultStore_SetTTL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetTTLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResultStoreServer).SetTTL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/result.ResultStore/SetTTL",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResultStoreServer).SetTTL(ctx, req.(*SetTTLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ResultStore_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteRequest)
 	if err := dec(in); err != nil {
@@ -234,6 +266,10 @@ var ResultStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Update",
 			Handler:    _ResultStore_Update_Handler,
+		},
+		{
+			MethodName: "SetTTL",
+			Handler:    _ResultStore_SetTTL_Handler,
 		},
 		{
 			MethodName: "Delete",

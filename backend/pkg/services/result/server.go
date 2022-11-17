@@ -164,6 +164,7 @@ func (s *Store) Random(ctx context.Context, req *RandomRequest) (*RandomResponse
 
 func (s *Store) Read(ctx context.Context, req *ReadRequest) (*ReadResponse, error) {
 	var res []byte
+	var expiry uint64
 	s.Log.Infow("received request to view result", "key", req.Key)
 	err := s.db.Update(func(txn *badger.Txn) error {
 		k := []byte(req.Key)
@@ -179,7 +180,9 @@ func (s *Store) Read(ctx context.Context, req *ReadRequest) (*ReadResponse, erro
 			res = append([]byte{}, val...)
 			return nil
 		})
-		diff := item.ExpiresAt() - uint64(time.Now().Unix())
+		expiry = item.ExpiresAt()
+		diff := expiry - uint64(time.Now().Unix())
+		s.Log.Infow("result retrieved ok", "key", req.Key, "expiry", expiry, "left", diff)
 		if diff < uint64(60*60*24) {
 			//if expiring in less than 24 hours, reset ttl for another 14 days
 			s.Log.Infow("requested key will expire in less than 24 hours; resetting TTL", "key", req.Key, "expiry", item.ExpiresAt(), "expires_in_s", diff)
@@ -204,6 +207,7 @@ func (s *Store) Read(ctx context.Context, req *ReadRequest) (*ReadResponse, erro
 	return &ReadResponse{
 		Key:    req.Key,
 		Result: res,
+		Ttl:    expiry,
 	}, nil
 }
 
@@ -231,6 +235,36 @@ func (s *Store) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	return &UpdateResponse{Key: req.Key}, nil
+}
+
+func (s *Store) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLResponse, error) {
+	ttl := checkTTL(req.Ttl)
+	s.Log.Infow("received request to set ttl", "key", req.Key, "ttl", ttl)
+	err := s.db.Update(func(txn *badger.Txn) error {
+		k := []byte(req.Key)
+		var data []byte
+		item, err := txn.Get(k)
+		if err != nil {
+			return err
+		}
+		item.Value(func(val []byte) error {
+			data = append([]byte{}, val...)
+			return nil
+		})
+		if ttl > 0 {
+			e := badger.NewEntry(k, data).WithTTL(time.Hour * time.Duration(ttl))
+			return txn.SetEntry(e)
+		}
+		return txn.Set(k, data)
+	})
+	if err != nil {
+		if err == badger.ErrKeyNotFound {
+			s.Log.Infow("requested key does not exist", "key", req.Key)
+			return nil, status.Error(codes.NotFound, "key not found")
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	return &SetTTLResponse{Key: req.Key}, nil
 }
 
 func (s *Store) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse, error) {
