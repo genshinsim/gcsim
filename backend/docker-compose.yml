@@ -25,6 +25,17 @@ services:
       - REDIRECT_URL
       - RESULT_STORE_URL=result:3000
     restart: unless-stopped
+  preview:
+    container_name: preview
+    build:
+      context: .
+      dockerfile: ./cmd/preview/Dockerfile
+    volumes:
+      - ~/assets/assets:/assets
+    environment:
+      - ASSETS_DATA_PATH=/assets
+      - RESULT_STORE_URL=result:3000
+    restart: unless-stopped
   result:
     container_name: result
     build:

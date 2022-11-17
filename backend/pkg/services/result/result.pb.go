@@ -175,7 +175,7 @@ type ReadResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	Key    string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Result []byte `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
+	Result []byte `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"` //TODO: should eventually reply with TTL on result
 }
 
 func (x *ReadResponse) Reset() {
@@ -386,7 +386,7 @@ type DeleteResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"` //TODO: add deleted data to response in future
 }
 
 func (x *DeleteResponse) Reset() {
