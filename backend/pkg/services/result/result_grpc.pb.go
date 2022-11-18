@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.9
-// source: proto/backend/result.proto
+// source: protos/backend/result.proto
 
 package result
 
@@ -281,5 +281,5 @@ var ResultStore_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/backend/result.proto",
+	Metadata: "protos/backend/result.proto",
 }
