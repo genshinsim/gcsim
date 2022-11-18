@@ -449,9 +449,11 @@ func (s *SwitchStmt) CopySwitch() *SwitchStmt {
 	}
 	n := &SwitchStmt{
 		Pos:       s.Pos,
-		Condition: s.Condition.CopyExpr(),
 		Cases:     make([]*CaseStmt, 0, len(s.Cases)),
 		Default:   s.Default.CopyBlock(),
+	}
+	if s.Condition != nil {
+		n.Condition = s.Condition.CopyExpr()
 	}
 	for i := range s.Cases {
 		n.Cases = append(n.Cases, s.Cases[i].CopyCase())
