@@ -67,17 +67,17 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 		return nil, err
 	}
 	//res should be a number
-	v, ok := res.(*number)
-	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
-	if !ok {
-		return nil, fmt.Errorf("let expression for %v does evaluate to a number, got %v", l.Ident, res.Inspect())
-	}
+	// v, ok := res.(*number)
+	e.Log.Printf("let expr: %v, type: %T\n", res, res)
+	// if !ok {
+	// 	return nil, fmt.Errorf("let expression for %v does evaluate to a number, got %v", l.Ident, res.Inspect())
+	// }
 	_, exist := env.varMap[l.Ident.Val]
 	if exist {
 		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
-	num := *v //value copying
-	env.varMap[l.Ident.Val] = &num
+	// num := *v //value copying
+	env.varMap[l.Ident.Val] = &res
 	return &null{}, nil
 }
 
@@ -95,20 +95,21 @@ func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	v, ok := res.(*number)
-	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
-	if !ok {
-		return nil, fmt.Errorf("value assigned to variable %v does evaluate to a number, got %v", a.Ident, res.Inspect())
-	}
+	// v, ok := res.(*number)
+	e.Log.Printf("let expr: %v, type: %T\n", res, res)
+	// if !ok {
+	// 	return nil, fmt.Errorf("value assigned to variable %v does evaluate to a number, got %v", a.Ident, res.Inspect())
+	// }
 	n, err := env.v(a.Ident.Val)
 	if err != nil {
 		return nil, err
 	}
-	n.fval = v.fval
-	n.ival = v.ival
-	n.isFloat = v.isFloat
+	*n = res
+	// n.fval = v.fval
+	// n.ival = v.ival
+	// n.isFloat = v.isFloat
 
-	return n, nil
+	return *n, nil
 }
 
 func (e *Eval) execSwap(char keys.Char) (Obj, error) {

@@ -46,7 +46,11 @@ func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
 
 func (e *Eval) evalIdent(n *ast.Ident, env *Env) (Obj, error) {
 	//TODO: this should be a variable
-	return env.v(n.Value)
+	res, err := env.v(n.Value)
+	if err != nil {
+		return nil, err
+	}
+	return *res, nil
 }
 
 func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -71,6 +75,8 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	case "wait":
 		//execute wait command
 		return e.wait(c, env)
+	case "type":
+		return e.typeval(c, env)
 	case "set_target_pos":
 		return e.setTargetPos(c, env)
 	case "set_player_pos":
@@ -98,11 +104,11 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 			if err != nil {
 				return nil, err
 			}
-			n, ok := param.(*number)
-			if !ok {
-				return nil, fmt.Errorf("fn %v param %v does not evaluate to a number, got %v", s, v.Value, param.Inspect())
-			}
-			local.varMap[v.Value] = n
+			// n, ok := param.(*number)
+			// if !ok {
+			// 	return nil, fmt.Errorf("fn %v param %v does not evaluate to a number, got %v", s, v.Value, param.Inspect())
+			// }
+			local.varMap[v.Value] = &param
 		}
 		res, err := e.evalNode(fn.Body, local)
 		if err != nil {

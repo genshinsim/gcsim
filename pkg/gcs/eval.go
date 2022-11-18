@@ -23,14 +23,14 @@ type Eval struct {
 type Env struct {
 	parent *Env
 	fnMap  map[string]*ast.FnStmt
-	varMap map[string]*number
+	varMap map[string]*Obj
 }
 
 func NewEnv(parent *Env) *Env {
 	return &Env{
 		parent: parent,
 		fnMap:  make(map[string]*ast.FnStmt),
-		varMap: make(map[string]*number),
+		varMap: make(map[string]*Obj),
 	}
 }
 
@@ -45,7 +45,7 @@ func (e *Env) fn(s string) (*ast.FnStmt, error) {
 	return nil, fmt.Errorf("fn %v does not exist", s)
 }
 
-func (e *Env) v(s string) (*number, error) {
+func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {
 		return v, nil

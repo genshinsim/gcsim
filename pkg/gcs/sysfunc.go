@@ -91,6 +91,30 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{}, nil
 }
 
+func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
+	//type(var)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for type, expected 1 got %v", len(c.Args))
+	}
+
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	str := "unknown"
+	switch t.Typ() {
+	case typNull:
+		str = "null"
+	case typNum:
+		str = "number"
+	case typStr:
+		str = "string"
+	}
+
+	return &strval{str}, nil
+}
+
 func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	//set_player_pos(x, y)
 	if len(c.Args) != 2 {
