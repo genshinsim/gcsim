@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -66,7 +67,8 @@ func (c *char) c6Arrows() {
 			return false
 		}
 		c.AddStatus(c6ICDKey, 180, false)
-		c.hurricaneArrow(10, false)
+		enemy := args[0].(*enemy.Enemy)
+		c.pressurizedCollapse(enemy)
 		return false
 	}, "faruzan-c6-hook")
 }

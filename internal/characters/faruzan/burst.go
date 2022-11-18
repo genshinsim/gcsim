@@ -73,6 +73,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	// following hits
+	whirl_ai := ai
+	whirl_ai.Abil = "Whirlwind Pulse (Q)"
+	whirl_ai.Mult = 0 // is this a 0 damage hit?
 	hitCount := 0
 	for i := 71; i <= duration; i += 120 {
 		c.Core.Tasks.Add(func() {
@@ -83,7 +86,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if hitCount%3 >= frequency {
 				return
 			}
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, applyBurstShred)
+			c.Core.QueueAttackWithSnap(whirl_ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, applyBurstShred)
 		}, burstHitmark+i)
 	}
 
@@ -121,6 +124,6 @@ func applyBurstShred(a combat.AttackCB) {
 	t.AddResistMod(enemy.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
 		Ele:   attributes.Anemo,
-		Value: -0.4,
+		Value: -0.3,
 	})
 }

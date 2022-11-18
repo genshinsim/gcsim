@@ -92,39 +92,42 @@ func (c *char) hurricaneArrow(travel int, weakspot bool) {
 		if done {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Pressurized Collapse",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone, // TODO: check ICD
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       vortexDmg[c.TalentLvlSkill()],
-		}
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(a.Target, 2),
-			vortexHitmark,
-			vortexHitmark,
-			c.c4Callback(),
-			applyBurstShred,
-		) // TODO: hitmark and size
-		done = true
+		c.pressurizedCollapse(a.Target)
 	}
-	particleDone := false
+	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, travel, vortexCb)
+}
+
+func (c *char) pressurizedCollapse(pos combat.Positional) {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Pressurized Collapse",
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagNone, // TODO: check ICD
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypePierce,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       vortexDmg[c.TalentLvlSkill()],
+	}
+	done := false
 	particleCb := func(a combat.AttackCB) {
-		if particleDone {
-			return
-		}
-		if c.StatusIsActive(particleICDKey) {
+		if done {
 			return
 		}
 		c.Core.QueueParticle("faruzan", 2.0, attributes.Anemo, c.ParticleDelay)
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
 		c.AddStatus(particleICDKey, 360, false)
-		particleDone = true
+		done = true
 	}
-
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, travel, vortexCb, particleCb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(pos, 2),
+		vortexHitmark,
+		vortexHitmark,
+		c.c4Callback(),
+		applyBurstShred,
+		particleCb,
+	) // TODO: hitmark and size
 }
