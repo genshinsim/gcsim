@@ -54,10 +54,14 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 const c6ICDKey = "faruzan-c6-icd"
 
 func (c *char) c6Arrows() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		char := c.Core.Player.ActiveChar()
 		if char.Index != atk.Info.ActorIndex {
+			return false
+		}
+		dmg := args[2].(float64) // proc only on damage?
+		if dmg == 0 {
 			return false
 		}
 		if !char.StatusIsActive(burstBuffKey) {
