@@ -280,9 +280,11 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 			e.Log.Printf("res from case block: %v typ %T\n", res, res)
 			switch t := res.(type) {
 			case *ctrl:
-				// check if fallthrough
-				if t.typ == ast.CtrlFallthrough {
-					ft = true
+				switch t.typ {
+					case ast.CtrlFallthrough:
+						ft = true
+					case ast.CtrlBreak:
+						return &null{}, nil
 				}
 			default:
 				// switch is done
