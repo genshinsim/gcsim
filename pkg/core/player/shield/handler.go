@@ -78,13 +78,8 @@ func (s *Handler) Add(shd Shield) {
 	s.events.Emit(event.OnShielded, shd)
 }
 
-func (s *Handler) ShieldStrength(ele attributes.Element) float64 {
-	bonus := s.ShieldBonus()
-	var out float64 = 0
-	for _, v := range s.shields {
-		out += v.ShieldStrength(ele, bonus)
-	}
-	return out
+func (s *Handler) List() []Shield {
+	return s.shields
 }
 
 func (s *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float64 {

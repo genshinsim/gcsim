@@ -26,8 +26,8 @@ type Result struct {
 	DPS         float64 `msg:"dps" json:"dps"`
 
 	ActiveCharacters []ActiveCharacterInterval `msg:"active_characters" json:"active_characters"`
-	Shields          []ShieldInterval          `msg:"shields" json:"shields"`
 	DamageMitigation []float64                 `msg:"damage_mitigation" json:"damage_mitigation"`
+	ShieldResults    ShieldResult              `msg:"shield_results" json:"shield_results"`
 
 	Characters    []CharacterResult `msg:"characters" json:"characters"`
 	Enemies       []EnemyResult     `msg:"enemies" json:"enemies"`
@@ -57,6 +57,11 @@ type CharacterResult struct {
 type EnemyResult struct {
 	ReactionStatus []ReactionStatusInterval `msg:"reaction_status" json:"reaction_status"`
 	ReactionUptime map[string]int           `msg:"reaction_uptime" json:"reaction_uptime"` // can calculate from intervals?
+}
+
+type ShieldResult struct {
+	Shields         []ShieldStats                     `msg:"shields" json:"shields"`
+	EffectiveShield map[string][]ShieldSingleInterval `msg:"effective_shield" json:"effective_shield"`
 }
 
 type DamageEvent struct {
@@ -120,9 +125,19 @@ type ActiveCharacterInterval struct {
 	Character int `msg:"character" json:"character"`
 }
 
+type ShieldStats struct {
+	Name      string           `msg:"name" json:"name"`
+	Intervals []ShieldInterval `msg:"intervals" json:"intervals"`
+}
+
 type ShieldInterval struct {
-	Start      int     `msg:"start" json:"start"`
-	End        int     `msg:"end" json:"end"`
-	Name       string  `msg:"name" json:"name"`
-	Absorption float64 `msg:"absoption" json:"absoption"`
+	Start int                `msg:"start" json:"start"`
+	End   int                `msg:"end" json:"end"`
+	HP    map[string]float64 `msg:"hp" json:"hp"`
+}
+
+type ShieldSingleInterval struct {
+	Start int     `msg:"start" json:"start"`
+	End   int     `msg:"end" json:"end"`
+	HP    float64 `msg:"hp" json:"hp"`
 }

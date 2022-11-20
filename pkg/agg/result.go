@@ -16,11 +16,14 @@ type Result struct {
 	RPS         SummaryStat `json:"rps"`
 	EPS         SummaryStat `json:"eps"`
 	HPS         SummaryStat `json:"hps"`
-	SPS         SummaryStat `json:"sps"`
+	SHP         SummaryStat `json:"shp"`
 	TotalDamage SummaryStat `json:"total_damage"`
 
 	Warnings      Warnings        `json:"warnings"`
 	FailedActions []FailedActions `json:"failed_actions"`
+
+	// shield
+	Shields map[string]ShieldInfo `json:"shields"`
 }
 
 // TODO: OverviewResult w/ Histogram data for distribution graphs?
@@ -64,4 +67,9 @@ type FailedActions struct {
 	InsufficientStamina FloatStat `json:"insufficient_stamina"`
 	SwapCD              FloatStat `json:"swap_cd"`
 	SkillCD             FloatStat `json:"skill_cd"`
+}
+
+type ShieldInfo struct {
+	HP     map[string]FloatStat `json:"hp"`
+	Uptime FloatStat            `json:"uptime"`
 }

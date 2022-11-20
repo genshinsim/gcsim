@@ -19,7 +19,7 @@ type buffer struct {
 	rps         calc.Sample
 	eps         calc.Sample
 	hps         calc.Sample
-	sps         calc.Sample
+	shp         calc.Sample
 	totalDamage calc.StreamStats
 }
 
@@ -37,7 +37,7 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 		rps:         newSample(cfg.Settings.Iterations),
 		hps:         newSample(cfg.Settings.Iterations),
 		eps:         newSample(cfg.Settings.Iterations),
-		sps:         newSample(cfg.Settings.Iterations),
+		shp:         newSample(cfg.Settings.Iterations),
 		totalDamage: calc.StreamStats{},
 	}
 	return &out, nil
@@ -52,12 +52,17 @@ func (b *buffer) Add(result stats.Result) {
 	b.rps.Xs = append(b.rps.Xs, 0)
 	b.hps.Xs = append(b.hps.Xs, 0)
 	b.eps.Xs = append(b.eps.Xs, 0)
-	b.sps.Xs = append(b.sps.Xs, 0)
-	i := len(b.sps.Xs) - 1
+	b.shp.Xs = append(b.shp.Xs, 0)
+	i := len(b.shp.Xs) - 1
 
-	for _, s := range result.Shields {
-		b.sps.Xs[i] += s.Absorption * float64(s.End-s.Start) / 60
+	for _, interval := range result.ShieldResults.EffectiveShield["normalized"] {
+		end := interval.End
+		if end > result.Duration {
+			end = result.Duration
+		}
+		b.shp.Xs[i] += interval.HP * float64(end-interval.Start)
 	}
+	b.shp.Xs[i] /= float64(result.Duration)
 
 	for _, c := range result.Characters {
 		b.rps.Xs[i] += float64(len(c.ReactionEvents))
@@ -72,7 +77,6 @@ func (b *buffer) Add(result stats.Result) {
 	b.rps.Xs[i] /= b.duration.Xs[i]
 	b.hps.Xs[i] /= b.duration.Xs[i]
 	b.eps.Xs[i] /= b.duration.Xs[i]
-	b.sps.Xs[i] /= b.duration.Xs[i]
 }
 
 func (b *buffer) Flush(result *agg.Result) {
@@ -81,7 +85,7 @@ func (b *buffer) Flush(result *agg.Result) {
 	result.RPS = convert(b.rps)
 	result.EPS = convert(b.eps)
 	result.HPS = convert(b.hps)
-	result.SPS = convert(b.sps)
+	result.SHP = convert(b.shp)
 
 	result.TotalDamage = agg.SummaryStat{
 		Min:  b.totalDamage.Min,

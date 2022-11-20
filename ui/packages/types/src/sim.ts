@@ -44,7 +44,7 @@ export interface Statistics {
   rps?: SummaryStat;
   eps?: SummaryStat;
   hps?: SummaryStat;
-  sps?: SummaryStat;
+  shp?: SummaryStat;
 
   // warnings
   warnings?: Warnings;

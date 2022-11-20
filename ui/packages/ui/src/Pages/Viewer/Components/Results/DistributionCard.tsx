@@ -12,7 +12,7 @@ import { AxisLeft, TickRendererProps } from "@visx/axis";
 import { Text } from "@visx/text";
 import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import { useTranslation } from "react-i18next";
-import { Card, Colors, HTMLSelect, Icon, NonIdealState } from "@blueprintjs/core";
+import { Card, Colors, HTMLSelect, Icon, NonIdealState, Tab, Tabs } from "@blueprintjs/core";
 import { BoxPlot } from "@visx/stats";
 
 export default ({ data }: { data: SimResults | null}) => {
@@ -23,7 +23,7 @@ export default ({ data }: { data: SimResults | null}) => {
     <GraphTitle key="rps" title="RPS Distribution" tooltip="test" />,
     <GraphTitle key="eps" title="EPS Distribution" tooltip="test" />,
     <GraphTitle key="hps" title="HPS Distribution" tooltip="test" />,
-    <GraphTitle key="sps" title="SPS Distribution" tooltip="test" />,
+    <GraphTitle key="shp" title="SHP Distribution" tooltip="test" />,
     <GraphTitle key="dur" title="Duration Distribution" tooltip="test" />,
   ];
 
@@ -53,8 +53,8 @@ export default ({ data }: { data: SimResults | null}) => {
         accentColor="#1D7324"
         hoverColor="#62D96B" />,
     <GraphContent
-        key="sps"
-        data={data?.statistics?.sps}
+        key="shp"
+        data={data?.statistics?.shp}
         color="#D1980B"
         accentColor="#5C4405"
         hoverColor="#FBD065" />,
@@ -68,13 +68,17 @@ export default ({ data }: { data: SimResults | null}) => {
 
   return (
     <Card className="col-span-2 min-h-full h-72 flex flex-col justify-start gap-2">
+      <Tabs selectedTabId={"data"} className="-mt-3" >
+        <Tab id="data" className="focus:outline-none" title="Distributions" />
+        <Tab id="meta" className="focus:outline-none" title="Metadata" />
+      </Tabs>
       <div className="flex flex-row justify-start">
         <HTMLSelect value={graph} onChange={(e) => setGraph(Number(e.target.value))}>
           <option value={0}>DPS</option>
           <option value={2}>EPS</option>
           <option value={1}>RPS</option>
           <option value={3}>HPS</option>
-          <option value={4}>SPS</option>
+          <option value={4}>SHP</option>
           <option value={5}>Dur</option>
         </HTMLSelect>
         <div className="flex flex-grow justify-center items-end">
