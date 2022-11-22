@@ -1,6 +1,6 @@
 import { SimResults } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
-import SummaryCard from "../SummaryCard";
+import OverviewCard from "../OverviewCard";
 
 export default ({ data, color }: { data: SimResults | null; color: string }) => {
   const { i18n } = useTranslation();
@@ -8,7 +8,7 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
   const rps = data?.statistics?.rps;
 
   return (
-    <SummaryCard
+    <OverviewCard
       key="rps"
       color={color}
       title="Reactions Per Second (RPS)"
@@ -25,6 +25,6 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
       drawerTitle="Reaction Statistics"
     >
       <div></div>
-    </SummaryCard>
+    </OverviewCard>
   );
 };

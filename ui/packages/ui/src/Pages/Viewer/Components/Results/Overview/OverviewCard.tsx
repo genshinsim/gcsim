@@ -1,7 +1,7 @@
 import { Card, Colors, Dialog, Icon, Classes } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import classNames from "classnames";
-import React from "react";
+import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 type AuxStat = {
@@ -47,7 +47,7 @@ export default ({
 };
 
 const CardTitle = ({ title, tooltip }: { title: string, tooltip?: string | JSX.Element }) => {
-  const helpIcon = tooltip == undefined ? null : <Icon icon="help" color={Colors.GRAY1} />;
+  const helpIcon = tooltip == null ? null : <Icon icon="help" color={Colors.GRAY1} />;
   const out = (
     <div className="flex flex-row text-lg text-gray-400 items-center gap-3 outline-0">
       {title}
@@ -55,7 +55,7 @@ const CardTitle = ({ title, tooltip }: { title: string, tooltip?: string | JSX.E
     </div>
   );
 
-  if (tooltip != undefined) {
+  if (tooltip != null) {
     return (
       <div onClick={(e) => e.stopPropagation()}>
         <Tooltip2 content={tooltip}>{out}</Tooltip2>
@@ -68,14 +68,14 @@ const CardTitle = ({ title, tooltip }: { title: string, tooltip?: string | JSX.E
 const CardValue = ({ value, label }: { value?: number | string | null, label?: string }) => {
   const { i18n } = useTranslation();
 
-  const out = value == undefined ? 1234 : value;
+  const out = value == null ? 1234 : value;
   const valueClass = classNames(
     "text-5xl font-bold tabular-nums",
-    { "bp4-skeleton": value == undefined }
+    { "bp4-skeleton": value == null }
   );
 
-  let lbl;
-  if (label != undefined) {
+  let lbl: ReactNode;
+  if (label != null) {
     lbl = <div className="flex items-start text-base text-gray-400">{label}</div>;
   }
 
@@ -101,7 +101,7 @@ const CardChevron = ({ interactable }: { interactable: boolean }) => {
 };
 
 const CardAux = ({ aux }: { aux?: Array<AuxStat> }) => {
-  if (aux === undefined) {
+  if (aux == null) {
     return null;
   }
 
@@ -117,9 +117,9 @@ const AuxItem = ({ stat }: { stat: AuxStat }) => {
 
   const cls = classNames(
     "font-black text-current text-sm text-bp4-light-gray-500",
-    { "bp4-skeleton": stat.value == undefined }
+    { "bp4-skeleton": stat.value == null }
   );
-  const val = stat.value == undefined ? 123.45 : stat.value;
+  const val = stat.value == null ? 123.45 : stat.value;
 
   return (
     <div className="flex flex-row items-start gap-3">
@@ -138,7 +138,7 @@ const CardDrawer = ({ title, children, openState }: {
     }) => {
   const [isOpen, setOpen] = openState;
 
-  if (children === undefined) {
+  if (children == null) {
     return null;
   }
 

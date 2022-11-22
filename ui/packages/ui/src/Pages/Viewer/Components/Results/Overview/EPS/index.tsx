@@ -1,6 +1,6 @@
 import { SimResults } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
-import SummaryCard from "../SummaryCard";
+import OverviewCard from "../OverviewCard";
 
 export default ({ data, color }: { data: SimResults | null; color: string }) => {
   const { i18n } = useTranslation();
@@ -8,7 +8,7 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
   const eps = data?.statistics?.eps;
 
   return (
-    <SummaryCard
+    <OverviewCard
       key="eps"
       color={color}
       title="Energy Per Second (EPS)"
@@ -25,6 +25,6 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
       drawerTitle="Energy Statistics"
     >
       <div></div>
-    </SummaryCard>
+    </OverviewCard>
   );
 };

@@ -20,8 +20,8 @@ export default ({ data }: { data: SimResults | null}) => {
 
   const titles = [
     <GraphTitle key="dps" title="DPS Distribution" tooltip="test" />,
-    <GraphTitle key="rps" title="RPS Distribution" tooltip="test" />,
     <GraphTitle key="eps" title="EPS Distribution" tooltip="test" />,
+    <GraphTitle key="rps" title="RPS Distribution" tooltip="test" />,
     <GraphTitle key="hps" title="HPS Distribution" tooltip="test" />,
     <GraphTitle key="shp" title="SHP Distribution" tooltip="test" />,
     <GraphTitle key="dur" title="Duration Distribution" tooltip="test" />,
@@ -35,14 +35,14 @@ export default ({ data }: { data: SimResults | null}) => {
         accentColor="#96290D"
         hoverColor="#FF9980" />,
     <GraphContent
-        key="rps"
-        data={data?.statistics?.rps}
+        key="eps"
+        data={data?.statistics?.eps}
         color="#147EB3"
         accentColor="#0C5174"
         hoverColor="#68C1EE" />,
     <GraphContent
-        key="eps"
-        data={data?.statistics?.eps}
+        key="rps"
+        data={data?.statistics?.rps}
         color="#9D3F9D"
         accentColor="#5C255C"
         hoverColor="#D69FD6" />,
@@ -75,8 +75,8 @@ export default ({ data }: { data: SimResults | null}) => {
       <div className="flex flex-row justify-start">
         <HTMLSelect value={graph} onChange={(e) => setGraph(Number(e.target.value))}>
           <option value={0}>DPS</option>
-          <option value={2}>EPS</option>
-          <option value={1}>RPS</option>
+          <option value={1}>EPS</option>
+          <option value={2}>RPS</option>
           <option value={3}>HPS</option>
           <option value={4}>SHP</option>
           <option value={5}>Dur</option>

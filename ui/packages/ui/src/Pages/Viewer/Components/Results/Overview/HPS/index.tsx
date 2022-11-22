@@ -1,6 +1,6 @@
 import { SimResults } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
-import SummaryCard from "../SummaryCard";
+import OverviewCard from "../OverviewCard";
 
 export default ({ data, color }: { data: SimResults | null; color: string }) => {
   const { i18n } = useTranslation();
@@ -8,7 +8,7 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
   const hps = data?.statistics?.hps;
 
   return (
-    <SummaryCard
+    <OverviewCard
       key="hps"
       color={color}
       title="Healing Per Second (HPS)"
@@ -28,6 +28,6 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
         sdasda sadasd asd waeawsdas dasd as dqaweasdasd awsedwqd asdas dawsd qwedsad ase wqdasd wa
         easdawe wadsawea sdsad wad sadawe awewasdsawe{" "}
       </div>
-    </SummaryCard>
+    </OverviewCard>
   );
 };

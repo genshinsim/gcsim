@@ -1,10 +1,10 @@
 import { SimResults } from "@gcsim/types";
-import DPSCard from "./Overview/DPSCard";
-import EPSCard from "./Overview/EPSCard";
-import HPSCard from "./Overview/HPSCard";
-import RPSCard from "./Overview/RPSCard";
-import SimDurCard from "./Overview/SimDurCard";
-import SPSCard from "./Overview/SPSCard";
+import DPS from "./DPS";
+import EPS from "./EPS";
+import HPS from "./HPS";
+import RPS from "./RPS";
+import SHP from "./SHP";
+import SimDur from "./SimDur";
 
 // Qualitative colors from https://blueprintjs.com/docs/#core/colors
 const colors = [
@@ -25,7 +25,7 @@ type Props = {
 };
 
 export default ({ data }: Props) => {
-  const cards = [DPSCard, RPSCard, EPSCard, HPSCard, SPSCard, SimDurCard];
+  const cards = [DPS, EPS, RPS, HPS, SHP, SimDur];
 
   return (
     <div className="col-span-full flex flex-row flex-wrap gap-2 justify-center">
