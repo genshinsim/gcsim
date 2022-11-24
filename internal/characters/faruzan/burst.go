@@ -76,6 +76,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	whirl_ai := ai
 	whirl_ai.Abil = "Whirlwind Pulse (Q)"
 	whirl_ai.Mult = 0 // is this a 0 damage hit?
+	whirl_ai.Element = attributes.NoElement
 	hitCount := 0
 	for i := 71; i <= duration; i += 120 {
 		c.Core.Tasks.Add(func() {

@@ -118,7 +118,7 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		if c.StatusIsActive(particleICDKey) {
 			return
 		}
-		c.AddStatus(particleICDKey, 360, false)
+		c.AddStatus(particleICDKey, 330, false)
 		done = true
 	}
 	c.Core.QueueAttack(
