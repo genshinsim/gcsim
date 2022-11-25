@@ -9,6 +9,7 @@ import (
 	"log"
 	"path"
 	"regexp"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -25,9 +26,32 @@ type Options struct {
 	ResultSaveToPath string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
 	GZIPResult       bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
 	ConfigPath       string // path to the config file to read
-	Version          string
-	BuildDate        string
-	Modified         bool
+}
+
+var (
+	sha1ver   string
+	buildTime string
+	modified  bool
+)
+
+func init() {
+	info, _ := debug.ReadBuildInfo()
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			sha1ver = bs.Value
+		}
+		if bs.Key == "vcs.time" {
+			buildTime = bs.Value
+		}
+		if bs.Key == "vcs.modified" {
+			bv, _ := strconv.ParseBool(bs.Value)
+			modified = bv
+		}
+	}
+}
+
+func Version() string {
+	return sha1ver
 }
 
 var start time.Time
@@ -153,9 +177,9 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		//        Ex - added new data for new graph on UI. UI still functional if this data is missing
 		// Increasing the version will result in the UI flagging all old sims as outdated
 		SchemaVersion:     result.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
-		SimVersion:        opts.Version,
-		BuildDate:         opts.BuildDate,
-		Modified:          opts.Modified,
+		SimVersion:        sha1ver,
+		BuildDate:         buildTime,
+		Modified:          modified,
 		SimulatorSettings: simcfg.Settings,
 		EnergySettings:    simcfg.Energy,
 		Config:            cfg,

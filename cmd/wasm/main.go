@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"runtime/debug"
 	"strconv"
 	"syscall/js"
 	"time"
@@ -18,12 +17,6 @@ import (
 
 const DefaultBufferLength = 1024 * 10
 
-var (
-	sha1ver   string
-	buildTime string
-	modified  bool
-)
-
 // shared variables
 var cfg string
 var simcfg *ast.ActionList
@@ -35,20 +28,6 @@ var aggregators []agg.Aggregator
 func main() {
 	//GOOS=js GOARCH=wasm go build -o main.wasm
 	ch := make(chan struct{}, 0)
-
-	info, _ := debug.ReadBuildInfo()
-	for _, bs := range info.Settings {
-		if bs.Key == "vcs.revision" {
-			sha1ver = bs.Value
-		}
-		if bs.Key == "vcs.time" {
-			buildTime = bs.Value
-		}
-		if bs.Key == "vcs.modified" {
-			bv, _ := strconv.ParseBool(bs.Value)
-			modified = bv
-		}
-	}
 
 	// Helper Functions (stateless, no init call needed)
 	js.Global().Set("sample", js.FuncOf(doSample))
@@ -77,9 +56,6 @@ func doSample(this js.Value, args []js.Value) (out interface{}) {
 	}()
 
 	opts := simulator.Options{
-		Version:          sha1ver,
-		BuildDate:        buildTime,
-		Modified:         modified,
 		GZIPResult:       false,
 		ResultSaveToPath: "",
 		ConfigPath:       "",
@@ -196,9 +172,6 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 	}
 
 	opts := simulator.Options{
-		Version:          sha1ver,
-		BuildDate:        buildTime,
-		Modified:         modified,
 		GZIPResult:       false,
 		ResultSaveToPath: "",
 		ConfigPath:       "",
