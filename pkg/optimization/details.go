@@ -6,6 +6,7 @@ import (
 	"math"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -50,7 +51,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	stats.simcfg.Characters = stats.charProfilesCopy
 
 	// Get initial DPS value
-	initialResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, context.TODO())
+	initialResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, time.Now(), context.TODO())
 	initialMean := initialResult.Statistics.DPS.Mean
 
 	opDebug = append(opDebug, "Calculating optimal substat distribution...")
@@ -271,7 +272,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		stats.charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 
 		stats.simcfg.Characters = stats.charProfilesCopy
-		substatEvalResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, context.TODO())
+		substatEvalResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, time.Now(), context.TODO())
 		// opDebug = append(opDebug, fmt.Sprintf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD))
 
 		substatGradients[idxSubstat] = substatEvalResult.Statistics.DPS.Mean - initialMean
@@ -363,7 +364,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 
-		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, context.TODO())
+		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, time.Now(), context.TODO())
 
 		if erStack == 0 {
 			initialMean = result.Statistics.DPS.Mean

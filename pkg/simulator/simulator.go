@@ -55,8 +55,6 @@ func Version() string {
 	return sha1ver
 }
 
-var start time.Time
-
 func Parse(cfg string) (*ast.ActionList, error) {
 	parser := ast.New(cfg)
 	simcfg, err := parser.Parse()
@@ -78,7 +76,7 @@ func Parse(cfg string) (*ast.ActionList, error) {
 
 // Run will run the simulation given number of times
 func Run(opts Options, ctx context.Context) (result.Summary, error) {
-	start = time.Now()
+	start := time.Now()
 
 	cfg, err := ReadConfig(opts.ConfigPath)
 	if err != nil {
@@ -90,13 +88,13 @@ func Run(opts Options, ctx context.Context) (result.Summary, error) {
 		return result.Summary{}, err
 	}
 
-	return RunWithConfig(cfg, simcfg, opts, ctx)
+	return RunWithConfig(cfg, simcfg, opts, start, ctx)
 }
 
 // Runs the simulation with a given parsed config
 // TODO: cfg string should be in the action list instead
 // TODO: need to add a context here to avoid infinite looping
-func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, ctx context.Context) (result.Summary, error) {
+func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.Time, ctx context.Context) (result.Summary, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
