@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -87,7 +88,7 @@ func main() {
 	var err error
 
 	if !opt.norun {
-		res, err = simulator.Run(simopt)
+		res, err = simulator.Run(simopt, context.Background())
 		if err != nil {
 			log.Println(err)
 			return

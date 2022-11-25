@@ -1,6 +1,7 @@
 package simulator
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/binary"
 	"errors"
@@ -76,7 +77,7 @@ func Parse(cfg string) (*ast.ActionList, error) {
 }
 
 // Run will run the simulation given number of times
-func Run(opts Options) (result.Summary, error) {
+func Run(opts Options, ctx context.Context) (result.Summary, error) {
 	start = time.Now()
 
 	cfg, err := ReadConfig(opts.ConfigPath)
@@ -89,11 +90,13 @@ func Run(opts Options) (result.Summary, error) {
 		return result.Summary{}, err
 	}
 
-	return RunWithConfig(cfg, simcfg, opts)
+	return RunWithConfig(cfg, simcfg, opts, ctx)
 }
 
 // Runs the simulation with a given parsed config
-func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
+// TODO: cfg string should be in the action list instead
+// TODO: need to add a context here to avoid infinite looping
+func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, ctx context.Context) (result.Summary, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
@@ -138,6 +141,8 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		case err := <-errCh:
 			//error encountered
 			return result.Summary{}, err
+		case <-ctx.Done():
+			return result.Summary{}, ctx.Err()
 		}
 	}
 
