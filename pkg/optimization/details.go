@@ -522,6 +522,7 @@ func NewSubstatOptimizerDetails(
 		keys.Yelan:   {attributes.HPP},
 		keys.Candace: {attributes.HPP},
 		keys.Nilou:   {attributes.HPP},
+		keys.Layla:   {attributes.HPP},
 	}
 
 	// Final output array that holds [character][substat_count]
