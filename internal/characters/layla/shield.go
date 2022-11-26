@@ -155,7 +155,6 @@ func (c *char) ShootStars(src int, last int) func() {
 			}
 		}
 
-		// TODO: snapshot?
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 0.5), 0, starsTravel[len(starsTravel)-stars], cb)
 
 		stars--

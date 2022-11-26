@@ -12,7 +12,12 @@ import (
 
 var burstFrames []int
 
-const burstStart = 36
+const (
+	burstStart = 36
+
+	tickRelease = 56
+	tickTravel  = 22
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(79) // Q -> W
@@ -26,7 +31,7 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 22
+		travel = tickTravel
 	}
 
 	ai := combat.AttackInfo{
@@ -40,8 +45,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		FlatDmg:    burst[c.TalentLvlBurst()] * c.MaxHP(),
 	}
-	// TODO: snapshot?
-	snap := c.Snapshot(&ai)
 
 	c.Core.Status.Add("laylaburst", 12*60+burstStart)
 
@@ -68,8 +71,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				}
 			}
 
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 1.5), 0, cb)
-		}, delay+travel)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 1.5), tickRelease, tickRelease+travel, cb)
+		}, delay)
 	}
 
 	c.SetCD(action.ActionBurst, 12*60)
