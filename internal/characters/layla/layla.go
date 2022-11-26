@@ -14,8 +14,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	starTravel int
-	a1Stack    int
+	a1Stack      int
+	starTickSrc  int
+	shootStarSrc int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -34,6 +35,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a1Stack = 0
+	c.starTickSrc = -1
+	c.shootStarSrc = -1
 	c.StarsSkill()
 
 	c.a1()

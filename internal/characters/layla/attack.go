@@ -11,24 +11,26 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = []int{14, 9, 14}
+	attackHitmarks        = []int{13, 12, 31}
 	attackHitlagHaltFrame = []float64{.03, .03, .06}
-	attackRadius          = []float64{1.7, 1.5, 1.39}
+	attackRadius          = []float64{1.5, 1.95, 2.7}
 )
 
 const normalHitNum = 3
 
-// TODO: FRAMES
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 30)
-	attackFrames[0][action.ActionAttack] = 21
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> W
+	attackFrames[0][action.ActionAttack] = 19
+	attackFrames[0][action.ActionCharge] = 31
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 25)
-	attackFrames[1][action.ActionAttack] = 21
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 50) // N2 -> W
+	attackFrames[1][action.ActionAttack] = 35
+	attackFrames[1][action.ActionCharge] = 37
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 47)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 73) // N3 -> W
+	attackFrames[2][action.ActionAttack] = 65
 	attackFrames[2][action.ActionCharge] = 500 // N3 -> CA, TODO: this action is illegal; need better way to handle it
 }
 

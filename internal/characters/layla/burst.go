@@ -1,6 +1,8 @@
 package layla
 
 import (
+	"sort"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -10,51 +12,68 @@ import (
 
 var burstFrames []int
 
-const burstStart = 130
+const burstStart = 36
 
 func init() {
-	burstFrames = frames.InitAbilSlice(78) // Q -> E
-	burstFrames[action.ActionAttack] = 77  // Q -> N1
-	burstFrames[action.ActionDash] = 62    // Q -> D
-	burstFrames[action.ActionJump] = 61    // Q -> J
-	burstFrames[action.ActionSwap] = 77    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(79) // Q -> W
+	burstFrames[action.ActionAttack] = 66  // Q -> N1
+	burstFrames[action.ActionSkill] = 66   // Q -> E
+	burstFrames[action.ActionDash] = 66    // Q -> D
+	burstFrames[action.ActionJump] = 65    // Q -> J
+	burstFrames[action.ActionSwap] = 64    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 26
+		travel = 22
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Starlight Slug",
 		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		FlatDmg:    burst[c.TalentLvlBurst()] * c.MaxHP(),
 	}
+	// TODO: snapshot?
 	snap := c.Snapshot(&ai)
 
 	c.Core.Status.Add("laylaburst", 12*60+burstStart)
 
+	x, y := c.Core.Combat.Player().Pos() // burst pos
 	for delay := burstStart; delay < 12*60+burstStart; delay += 90 {
 		c.Core.Tasks.Add(func() {
-			// TODO: "When a Starlight Slug hits"
-			exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
-			if exist != nil && !c.StatusIsActive(starBurstIcd) && !c.StatusIsActive(shootingStars) {
-				c.AddNightStars(1, false)
-				c.AddStatus(starBurstIcd, 0.5*60, true)
+			nearTarget := -1
+			trgs := c.Core.Combat.EnemiesWithinRadius(x, y, 12)
+			if len(trgs) > 0 {
+				sort.Slice(trgs, func(i, j int) bool { return i < j })
+				nearTarget = trgs[0]
 			}
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2.5), 0)
+
+			done := false
+			cb := func(_ combat.AttackCB) {
+				if done {
+					return
+				}
+				done = true
+
+				exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
+				if exist != nil {
+					c.AddNightStars(1, ICDNightStarBurst)
+				}
+			}
+
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 1.5), 0, cb)
 		}, delay+travel)
 	}
 
 	c.SetCD(action.ActionBurst, 12*60)
-	c.ConsumeEnergy(3)
+	c.ConsumeEnergy(6)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
