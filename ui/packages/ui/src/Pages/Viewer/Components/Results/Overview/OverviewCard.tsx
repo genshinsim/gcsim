@@ -1,8 +1,8 @@
 import { Card, Colors, Dialog, Icon, Classes } from "@blueprintjs/core";
-import { Tooltip2 } from "@blueprintjs/popover2";
 import classNames from "classnames";
 import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import CardTitle from "../../CardTitle";
 
 type AuxStat = {
   title: string;
@@ -24,14 +24,15 @@ type CardProps = {
 export default ({
     title, color, value, label, auxStats, tooltip, children, drawerTitle }: CardProps) => {
   const [isOpen, setOpen] = React.useState(false);
-  const interactable = children != undefined;
+  // const interactable = children != undefined;
+  const interactable = false;
 
   return (
     <div className="flex basis-1/4 flex-auto pl-1 min-w-fit" style={{ background: color }}>
       <Card
           className="flex flex-auto flex-row items-stretch justify-between"
           interactive={interactable}
-          onClick={() => value != undefined && setOpen(true)}>
+          onClick={() => interactable && value != undefined && setOpen(true)}>
         <div className="flex flex-col justify-start">
           <CardTitle title={title} tooltip={tooltip} />
           <CardValue value={value} label={label} />
@@ -44,25 +45,6 @@ export default ({
       </CardDrawer>
     </div>
   );
-};
-
-const CardTitle = ({ title, tooltip }: { title: string, tooltip?: string | JSX.Element }) => {
-  const helpIcon = tooltip == null ? null : <Icon icon="help" color={Colors.GRAY1} />;
-  const out = (
-    <div className="flex flex-row text-lg text-gray-400 items-center gap-3 outline-0">
-      {title}
-      {helpIcon}
-    </div>
-  );
-
-  if (tooltip != null) {
-    return (
-      <div onClick={(e) => e.stopPropagation()}>
-        <Tooltip2 content={tooltip}>{out}</Tooltip2>
-      </div>
-    );
-  }
-  return out;
 };
 
 const CardValue = ({ value, label }: { value?: number | string | null, label?: string }) => {

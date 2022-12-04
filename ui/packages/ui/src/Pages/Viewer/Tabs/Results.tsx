@@ -5,6 +5,9 @@ import DistributionCard from "../Components/Results/DistributionCard";
 import { Card } from "@blueprintjs/core";
 import { ReactNode } from "react";
 import classNames from "classnames";
+import CharacterDPSCard from "../Components/Damage/CharacterDPSCard";
+import ElementDPSCard from "../Components/Damage/ElementDPSCard";
+import TargetDPSCard from "../Components/Damage/TargetDPSCard";
 
 type Props = {
   data: SimResults | null;
@@ -29,20 +32,14 @@ export default ({ data }: Props) => {
         <Card className="col-span-full h-64">
           Damage Timeline (dps/time + cumu %)
         </Card>
-        <Card className="flex col-span-2 h-64 min-h-full">
-          DPS per character (pie?)
-        </Card>
-        <Card className="flex col-span-2 h-64 min-h-full">
-          DPS per target (pie?)
-        </Card>
-        <Card className="flex col-span-2 h-64 min-h-full">
-          DPS per element (pie?)
+        <CharacterDPSCard data={data} />
+        <ElementDPSCard data={data} />
+        <TargetDPSCard data={data} />
+        <Card className="flex col-span-full h-64 min-h-full">
+          DPS per character w/ (element breakdown & target breakdown)
         </Card>
         <Card className="flex col-span-full h-64 min-h-full">
-          DPS per character w/ element breakdown
-        </Card>
-        <Card className="flex col-span-full h-64 min-h-full">
-          Damage breakdown table
+          Damage breakdown table(s)
         </Card>
       </Group>
 
@@ -132,7 +129,7 @@ export default ({ data }: Props) => {
 };
 
 const Heading = ({ text }: { text: string }) => (
-  <h2 className="group flex whitespace-pre-wrap col-span-full text-xl font-semibold mt-4">
+  <h2 className="group flex whitespace-pre-wrap col-span-full text-xl font-semibold mt-8 mb-2">
     {text}
     {/* currently does not work (wouter doesn't support hash links) */}
     {/* <a

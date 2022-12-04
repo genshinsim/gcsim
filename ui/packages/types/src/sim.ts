@@ -51,6 +51,12 @@ export interface Statistics {
 
   // character stats
   failed_actions?: FailedActions[];
+
+  character_dps?: FloatStat[];
+  target_dps?: FloatStat[];
+  element_dps?: ElementDPS;
+
+  shields?: Shields;
 }
 
 export interface SummaryStat {
@@ -77,6 +83,19 @@ export interface FailedActions {
   insufficient_stamina?: FloatStat;
   swap_cd?: FloatStat;
   skill_cd?: FloatStat;
+}
+
+export interface Shields {
+  [key: string]: ShieldInfo;
+}
+
+export interface ShieldInfo {
+  hp?: Map<string, FloatStat>;
+  uptime?: FloatStat;
+}
+
+export interface ElementDPS {
+  [key: string]: FloatStat;
 }
 
 export interface FloatStat {

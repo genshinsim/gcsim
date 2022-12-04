@@ -22,6 +22,13 @@ type Result struct {
 	Warnings      Warnings        `json:"warnings"`
 	FailedActions []FailedActions `json:"failed_actions"`
 
+	// damage
+	ElementDPS            map[string]FloatStat   `json:"element_dps"`
+	TargetDPS             []FloatStat            `json:"target_dps"`
+	CharacterDPS          []FloatStat            `json:"character_dps"`
+	BreakdownByElementDPS []map[string]FloatStat `json:"dps_by_element"`
+	BreakdownByTargetDPS  [][]FloatStat          `json:"dps_by_target"`
+
 	// shield
 	Shields map[string]ShieldInfo `json:"shields"`
 }

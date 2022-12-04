@@ -35,7 +35,7 @@ export default <Datum,>(
       labelValue,
       pieValue,
       tooltipContent,
-      pieRadius = 0.6,
+      pieRadius = 0.65,
       labelRadius = 0.8,
       outline = "#FFF",
       tail = 15

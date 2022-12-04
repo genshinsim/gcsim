@@ -10,21 +10,22 @@ import { useMemo, useState } from "react";
 import { GridRows } from "@visx/grid";
 import { AxisLeft, TickRendererProps } from "@visx/axis";
 import { Text } from "@visx/text";
-import { Popover2, Tooltip2 } from "@blueprintjs/popover2";
+import { Popover2 } from "@blueprintjs/popover2";
 import { useTranslation } from "react-i18next";
-import { Card, Colors, HTMLSelect, Icon, NonIdealState, Tab, Tabs } from "@blueprintjs/core";
+import { Card, HTMLSelect, NonIdealState } from "@blueprintjs/core";
 import { BoxPlot } from "@visx/stats";
+import CardTitle from "../CardTitle";
 
 export default ({ data }: { data: SimResults | null}) => {
   const [graph, setGraph] = useState(0);
 
   const titles = [
-    <GraphTitle key="dps" title="DPS Distribution" tooltip="test" />,
-    <GraphTitle key="eps" title="EPS Distribution" tooltip="test" />,
-    <GraphTitle key="rps" title="RPS Distribution" tooltip="test" />,
-    <GraphTitle key="hps" title="HPS Distribution" tooltip="test" />,
-    <GraphTitle key="shp" title="SHP Distribution" tooltip="test" />,
-    <GraphTitle key="dur" title="Duration Distribution" tooltip="test" />,
+    <CardTitle key="dps" title="DPS Distribution" tooltip="test" />,
+    <CardTitle key="eps" title="EPS Distribution" tooltip="test" />,
+    <CardTitle key="rps" title="RPS Distribution" tooltip="test" />,
+    <CardTitle key="hps" title="HPS Distribution" tooltip="test" />,
+    <CardTitle key="shp" title="SHP Distribution" tooltip="test" />,
+    <CardTitle key="dur" title="Duration Distribution" tooltip="test" />,
   ];
 
   const graphs = [
@@ -67,11 +68,7 @@ export default ({ data }: { data: SimResults | null}) => {
   ];
 
   return (
-    <Card className="col-span-2 min-h-full h-72 flex flex-col justify-start gap-2">
-      <Tabs selectedTabId={"data"} className="-mt-3" >
-        <Tab id="data" className="focus:outline-none" title="Distributions" />
-        <Tab id="meta" className="focus:outline-none" title="Metadata" />
-      </Tabs>
+    <Card className="col-span-3 min-h-full h-72 min-w-[280px] flex flex-col justify-start gap-2">
       <div className="flex flex-row justify-start">
         <HTMLSelect value={graph} onChange={(e) => setGraph(Number(e.target.value))}>
           <option value={0}>DPS</option>
@@ -111,25 +108,6 @@ const GraphContent = (props: GraphContentProps) => {
       )}
     </ParentSize>
   );
-};
-
-const GraphTitle = ({ title, tooltip }: { title: string, tooltip?: string | JSX.Element }) => {
-  const helpIcon = tooltip == undefined ? null : <Icon icon="help" color={Colors.GRAY1} />;
-  const out = (
-    <div className="flex flex-row text-lg text-gray-400 items-center gap-2 outline-0">
-      {title}
-      {helpIcon}
-    </div>
-  );
-
-  if (tooltip != null) {
-    return (
-      <div onClick={(e) => e.stopPropagation()} className="cursor-pointer">
-        <Tooltip2 content={tooltip}>{out}</Tooltip2>
-      </div>
-    );
-  }
-  return out;
 };
 
 type HistogramProps = {
@@ -238,7 +216,7 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
                 numTicks={numTicks}
                 labelOffset={30}
                 labelClassName="fill-gray-400 text-lg"
-                tickClassName="fill-gray-400 font-mono"
+                tickClassName="fill-gray-400 font-mono text-xs"
                 tickComponent={(props) => <TickLabel {...props} />}
                 label="# iterations" />
             <VerticalLine
