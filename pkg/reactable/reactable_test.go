@@ -106,14 +106,10 @@ func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	//delay damage event to end of the frame
 	t.Core.Combat.Tasks.Add(func() {
 		//apply the damage
-		t.ApplyDamage(atk, 1)
+		t.applyDamage(atk, 1)
 		t.Core.Combat.Events.Emit(event.OnEnemyDamage, t, atk, 1.0, false)
 	}, 0)
 	return 1
-}
-
-func (t *testTarget) AttackWillLand(a combat.AttackPattern) (bool, string) {
-	return true, ""
 }
 
 func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
@@ -126,7 +122,7 @@ func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	return 0, false
 }
 
-func (t *testTarget) ApplyDamage(atk *combat.AttackEvent, amt float64) {
+func (t *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
 	if !atk.Reacted {
 		t.Reactable.AttachOrRefill(atk)
 	}

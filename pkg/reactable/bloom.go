@@ -185,8 +185,6 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	return 0, false
 }
 
-func (s *DendroCore) ApplyDamage(*combat.AttackEvent, float64) {}
-
 const (
 	BloomMultiplier      = 2
 	BurgeonMultiplier    = 3

@@ -52,7 +52,6 @@ func (b *BountifulCore) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 func (b *BountifulCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (b *BountifulCore) ApplyDamage(*combat.AttackEvent, float64)               {}
 func (b *BountifulCore) SetDirection(trgX, trgY float64)                        {}
 func (b *BountifulCore) SetDirectionToClosestEnemy()                            {}
 func (b *BountifulCore) CalcTempDirection(trgX, trgY float64) float64           { return 0 }

@@ -48,7 +48,6 @@ func (t *testtarg) Pos() (float64, float64)                         { return t.s
 func (t *testtarg) SetPos(x, y float64)                             {} //??
 func (t *testtarg) IsAlive() bool                                   { return t.alive }
 func (t *testtarg) Attack(*AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (t *testtarg) ApplyDamage(*AttackEvent, float64)               {}
 func (t *testtarg) Tick()                                           {}
 func (t *testtarg) Kill()                                           { t.hdlr.RemoveGadget(t.Key()) }
 func (t *testtarg) CollidableWith(x TargettableType) bool           { return t.collideWith[x] }

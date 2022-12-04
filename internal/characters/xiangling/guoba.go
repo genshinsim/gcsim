@@ -119,5 +119,3 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 
 	return 0, false
 }
-
-func (p *panda) ApplyDamage(*combat.AttackEvent, float64) {}
