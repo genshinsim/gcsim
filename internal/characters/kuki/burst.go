@@ -46,7 +46,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := burstStart; i < count*interval+burstStart; i += interval {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), r), i)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, r),
+			i,
+		)
 	}
 
 	c.ConsumeEnergy(4)
