@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, burstHitmark)
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 35)
 	c.ConsumeEnergy(37)
@@ -119,7 +119,7 @@ func (c *char) burstProc() {
 		if c.Base.Cons >= 6 && c.burstC6WillGiveEnergy {
 			radius = 2.5
 		}
-		atk.Pattern = combat.NewCircleHit(t, radius)
+		atk.Pattern = combat.NewCircleHitOnTarget(t, nil, radius)
 
 		// C2 - Violet Vehemence
 		// When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
