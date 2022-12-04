@@ -104,7 +104,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			0,
 			cb,
 		)
-		// reset healDone so the Skill part can proc her heal
+		// reset done so the Skill part can proc her heal
 		done = false
 		cb = c.skillHealCB(done)
 	}, 24)
