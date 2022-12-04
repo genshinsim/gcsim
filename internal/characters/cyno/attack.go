@@ -124,7 +124,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
 			IgnoreInfusion:     true,
 		}
-		if c.NormalCounter == 2 || c.NormalCounter == 4 {
+		if c.normalBCounter == 2 || c.normalBCounter == 4 {
 			ai.StrikeType = combat.StrikeTypeBlunt
 		}
 		radius := attackBRadius[c.normalBCounter]
