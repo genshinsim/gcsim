@@ -42,7 +42,11 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 
 	//default target is closest to player?
 	trgs := core.Combat.EnemyByDistance(p.X, p.Y, combat.InvalidTargetKey)
-	core.Combat.DefaultTarget = core.Combat.Enemy(trgs[0]).Key()
+	defaultEnemy := core.Combat.Enemy(trgs[0])
+	core.Combat.DefaultTarget = defaultEnemy.Key()
+
+	// initialize player direction
+	core.Combat.Player().SetDirection(defaultEnemy.Pos())
 
 	return nil
 }

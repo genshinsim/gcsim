@@ -126,6 +126,7 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Combat.SetPlayerPos(x, y)
+	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return bton(true), nil
 }
@@ -201,6 +202,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Combat.DefaultTarget = e.Core.Combat.Enemy(idx - 1).Key()
+	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return &number{}, nil
 
@@ -261,6 +263,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Combat.SetEnemyPos(idx-1, x, y)
+	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return &number{}, nil
 }
