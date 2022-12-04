@@ -73,7 +73,13 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1), 0, skillPressHitmark, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
+		0,
+		skillPressHitmark,
+		cb,
+	)
 
 	c.SetCDWithDelay(action.ActionSkill, 60, 17)
 
@@ -130,7 +136,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
 	x, y := c.Core.Combat.Player().Pos()
 	for _, v := range c.Core.Combat.EnemiesWithinRadius(x, y, 10) {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(v), 0.2), 0, skillHoldHitmark, c1cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Enemy(v), nil, 0.2), 0, skillHoldHitmark, c1cb)
 	}
 
 	// count := 4

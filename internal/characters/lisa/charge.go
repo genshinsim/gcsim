@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var chargeFramesNoWindup []int
 var chargeFrames []int
 
 const (
@@ -61,7 +60,18 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			t.SetTag(conductiveTag, count+1)
 		}
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 10), chargeHitmark-windup, chargeHitmark-windup, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{Y: 1},
+			10,
+			40,
+		),
+		chargeHitmark-windup,
+		chargeHitmark-windup,
+		cb,
+	)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

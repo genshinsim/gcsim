@@ -37,7 +37,7 @@ func (c *char) c6() {
 			}
 			// TODO: No idea what the exact radius of this is
 			//per Nosi's notes: Furthermore, the Radius of Lisa's C6 is 5m, both when in combat or not.
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), -1, 0, cb)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), -1, 0, cb)
 
 			c.c6icd = c.Core.F + 300
 		}
