@@ -119,7 +119,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			marked--
 			//queueing attack one frame later
 			//TODO: does hold have different attack size? don't think so?
-			c.Core.QueueAttack(ai, combat.NewDefSingleTarget(e.Key()), 1, 1, cb)
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, cb)
 		}
 
 		//activate c4 if relevant
