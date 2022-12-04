@@ -169,7 +169,7 @@ func SetupResonance(s *core.Core) {
 				//following special characteristics:
 
 				//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
-				f := func() (float64, bool) { return 0.15, true }
+				f := func() (float64, bool) { return 0.15, false }
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 				//shred geo res of target

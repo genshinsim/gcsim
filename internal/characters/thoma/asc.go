@@ -12,7 +12,7 @@ func (c *char) a1() {
 		if !c.StatusIsActive("thoma-a1") {
 			return 0, false
 		}
-		return float64(c.a1Stack) * 0.05, true
+		return float64(c.a1Stack) * 0.05, false
 	})
 
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
