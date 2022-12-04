@@ -35,7 +35,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i := 0; i < 3; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				1,
+			),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 			c.c1,

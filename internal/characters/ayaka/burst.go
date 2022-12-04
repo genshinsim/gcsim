@@ -34,7 +34,18 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai.Mult = burstBloom[c.TalentLvlBurst()]
 	ai.StrikeType = combat.StrikeTypeDefault
 	ai.Abil = "Soumetsu (Bloom)"
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), burstHitmark, burstHitmark+300, c.c4)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			5,
+		),
+		burstHitmark,
+		burstHitmark+300,
+		c.c4,
+	)
 
 	// C2 mini-frostflake bloom
 	var aiC2 combat.AttackInfo
@@ -43,15 +54,38 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		aiC2.Mult = burstBloom[c.TalentLvlBurst()] * .2
 		aiC2.Abil = "C2 Mini-Frostflake Seki no To (Bloom)"
 		// TODO: Not sure about the positioning/size...
-		c.Core.QueueAttack(aiC2, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3), burstHitmark, burstHitmark+300, c.c4)
-		c.Core.QueueAttack(aiC2, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3), burstHitmark, burstHitmark+300, c.c4)
+		for i := 0; i < 2; i++ {
+			c.Core.QueueAttack(
+				aiC2,
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					3,
+				),
+				burstHitmark,
+				burstHitmark+300,
+				c.c4,
+			)
+		}
 	}
 
 	for i := 0; i < 19; i++ {
 		ai.Mult = burstCut[c.TalentLvlBurst()]
 		ai.StrikeType = combat.StrikeTypeSlash
 		ai.Abil = "Soumetsu (Cutting)"
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3), burstHitmark, burstHitmark+i*15, c.c4)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				combat.Point{Y: 0.3},
+				3,
+			),
+			burstHitmark,
+			burstHitmark+i*15,
+			c.c4,
+		)
 
 		// C2 mini-frostflake cutting
 		if c.Base.Cons >= 2 {
@@ -59,8 +93,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			aiC2.StrikeType = combat.StrikeTypeSlash
 			aiC2.Abil = "C2 Mini-Frostflake Seki no To (Cutting)"
 			// TODO: Not sure about the positioning/size...
-			c.Core.QueueAttack(aiC2, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), burstHitmark, burstHitmark+i*15, c.c4)
-			c.Core.QueueAttack(aiC2, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), burstHitmark, burstHitmark+i*15, c.c4)
+			for j := 0; j < 2; j++ {
+				c.Core.QueueAttack(
+					aiC2,
+					combat.NewCircleHit(
+						c.Core.Combat.Player(),
+						c.Core.Combat.PrimaryTarget(),
+						combat.Point{Y: 0.3},
+						1.5,
+					),
+					burstHitmark,
+					burstHitmark+i*15,
+					c.c4,
+				)
+			}
 		}
 	}
 
