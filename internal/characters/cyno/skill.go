@@ -49,7 +49,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			1,
+		),
 		skillHitmark,
 		skillHitmark,
 	)
@@ -81,13 +86,13 @@ func (c *char) skillB() action.ActionInfo {
 		HitlagHaltFrames: 0.03 * 60,
 	}
 
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		combat.Point{Y: 1.5},
+		6,
+	)
 	if !c.StatusIsActive(a1Key) { // check for endseer buff
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 6),
-			skillBHitmark,
-			skillBHitmark,
-		)
+		c.Core.QueueAttack(ai, ap, skillBHitmark, skillBHitmark)
 	} else {
 		// apply the extra damage on skill
 		c.a1Buff()
@@ -102,12 +107,7 @@ func (c *char) skillB() action.ActionInfo {
 			}
 		}
 
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 6),
-			skillBHitmark,
-			skillBHitmark,
-		)
+		c.Core.QueueAttack(ai, ap, skillBHitmark, skillBHitmark)
 		// Apply the extra hit
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
@@ -122,7 +122,12 @@ func (c *char) skillB() action.ActionInfo {
 		for i := 0; i < 3; i++ {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.3),
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					0.3,
+				),
 				skillBHitmark,
 				skillBHitmark,
 			)
