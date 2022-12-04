@@ -71,7 +71,7 @@ func (c *char) skillHold(max int, createStele bool) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 10), 0, skillHoldHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), 0, skillHoldHitmark)
 
 	//create a stele if less than zhongli's max stele count and desired by player
 	if (c.steleCount < c.maxStele) && createStele {

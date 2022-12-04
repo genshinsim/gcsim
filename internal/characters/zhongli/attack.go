@@ -15,7 +15,9 @@ var (
 	attackHitmarks        = [][]int{{11}, {9}, {8}, {16}, {11, 18, 23, 29}, {29}}
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0.02}, {0, 0, 0, 0}, {0.02}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {true}, {false, false, false, false}, {true}}
-	attackRadius          = []float64{2.04, 2, 0.9, 1.7, 2.06, 2.06}
+	attackHitboxes        = [][]float64{{1.5, 3.8}, {2}, {1, 1.5}, {1.7}, {1, 4}, {1, 4}}
+	attackOffsets         = []float64{0, 0.8, 0.5, 1.8, -1, 0.2}
+	attackFanAngles       = []float64{360, 180, 360, 360, 360, 360}
 )
 
 const normalHitNum = 6
@@ -67,14 +69,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.NormalCounter == 1 || c.NormalCounter == 4 {
 			ai.StrikeType = combat.StrikeTypeSlash
 		}
-		radius := attackRadius[c.NormalCounter]
-		//the multihit part generates no hitlag so this is fine
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), radius),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackFanAngles[c.NormalCounter],
 		)
+		if c.NormalCounter == 0 || c.NormalCounter == 2 || c.NormalCounter == 4 || c.NormalCounter == 5 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
+			)
+		}
+		//the multihit part generates no hitlag so this is fine
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
