@@ -58,7 +58,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2),
 			0,
 			0,
 			cb,
@@ -135,5 +135,5 @@ func (c *char) explodeShield() {
 	}
 
 	//center on player
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 0, 0)
 }
