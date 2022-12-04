@@ -43,12 +43,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// 32 damage ticks
 	for i := 0; i < 32; i++ {
 		c.Core.Tasks.Add(func() {
+			// TODO: more accurate hitbox
+			// - should be a box between player and gadget position
+			// - box height should be determined via distance between player and gadget
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewDefBoxHit(1, -2),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 1, 2),
 				0,
-			) // TODO: accurate hitbox
+			)
 
 			// dori self application
 			// TODO: change this to a ST attack later when self reactions need to be implemented
