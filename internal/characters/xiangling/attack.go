@@ -13,7 +13,13 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{12}, {8}, {11, 18}, {5, 15, 24, 29}, {21}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0}, {0, 0, 0, 0.03}, {0.09}}
-	attackRadius          = [][]float64{{1.61}, {1.83}, {1.83, 1.76}, {1.76, 1.76, 1.76, 1.76}, {1.83}}
+	attackHitboxes        = [][][]float64{
+		{{1.2, 3}},
+		{{1.6, 3.3}},
+		{{1.6, 3.3}, {1.2, 3.3}},
+		{{1.2, 3.3}, {1.2, 3.3}, {1.2, 3.3}, {1.2, 3.3}},
+		{{1.6, 3.3}},
+	}
 )
 
 const (
@@ -59,15 +65,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: true,
 		}
-		radius := attackRadius[c.NormalCounter][i]
+		ap := combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			nil,
+			attackHitboxes[c.NormalCounter][i][0],
+			attackHitboxes[c.NormalCounter][i][1],
+		)
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), radius),
-				0,
-				0,
-				c2CB,
-			)
+			c.Core.QueueAttack(ai, ap, 0, 0, c2CB)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
