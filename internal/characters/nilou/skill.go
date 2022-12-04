@@ -15,11 +15,13 @@ var (
 
 	swordDanceFrames   [][]int
 	swordDanceHitMarks = []int{14, 12, 35}
-	swordDanceRadius   = []float64{1.41, 1.8, 2}
+	swordDanceHitboxes = [][]float64{{1.75, 2.2}, {1.8}, {2}}
+	swordDanceOffsets  = []float64{0, 0.5, 0}
 
 	whirlingStepsFrames   [][]int
 	whirlingStepsHitMarks = []int{21, 29, 43}
-	whirlingStepsRadius   = []float64{2.7, 2.7, 2.93}
+	whirlingStepsHitboxes = [][]float64{{2.7}, {2.7}, {2.7, 5.2}}
+	whirlingStepsOffsets  = [][]float64{{0, 0.3}, {0, 0.6}, {0.2, -2}}
 )
 
 type NilouSkillType int
@@ -96,7 +98,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		FlatDmg:    skill[c.TalentLvlSkill()] * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			nil,
+			2.5,
+		),
+		skillHitmark,
+		skillHitmark,
+	)
 
 	c.SetTag(skillStep, 0)
 	c.AddStatus(pirouetteStatus, 10*60, true)
@@ -174,22 +185,32 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		FlatDmg:    swordDance[s][c.TalentLvlSkill()] * c.MaxHP(),
 	}
+	centerTarget := c.Core.Combat.Player()
 	if s == 2 {
 		ai.Abil = "Luminous Illusion"
 		ai.StrikeType = combat.StrikeTypePierce
+		centerTarget = c.Core.Combat.PrimaryTarget()
 
 		if t, ok := p["travel"]; ok {
 			travel = t
 		}
 	}
-	radius := swordDanceRadius[s]
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		swordDanceHitMarks[s]+travel,
-		swordDanceHitMarks[s]+travel,
-		c.c4cb(),
+	ap := combat.NewCircleHit(
+		c.Core.Combat.Player(),
+		centerTarget,
+		combat.Point{Y: swordDanceOffsets[s]},
+		swordDanceHitboxes[s][0],
 	)
+	if s == 0 {
+		ap = combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			centerTarget,
+			combat.Point{Y: swordDanceOffsets[s]},
+			swordDanceHitboxes[s][0],
+			swordDanceHitboxes[s][1],
+		)
+	}
+	c.Core.QueueAttack(ai, ap, swordDanceHitMarks[s]+travel, swordDanceHitMarks[s]+travel, c.c4cb())
 
 	if c.StatusIsActive(pirouetteStatus) {
 		c.Core.QueueParticle("nilou", 1, attributes.Hydro, swordDanceHitMarks[s]+travel+c.ParticleDelay)
@@ -221,17 +242,21 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		FlatDmg:    whirlingSteps[s][c.TalentLvlSkill()] * c.MaxHP(),
 	}
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		combat.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+		whirlingStepsHitboxes[s][0],
+	)
 	if s == 2 {
 		ai.Abil = "Water Wheel"
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+			whirlingStepsHitboxes[s][0],
+			whirlingStepsHitboxes[s][1],
+		)
 	}
-	radius := whirlingStepsRadius[s]
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		whirlingStepsHitMarks[s],
-		whirlingStepsHitMarks[s],
-		c.c4cb(),
-	)
+	c.Core.QueueAttack(ai, ap, whirlingStepsHitMarks[s], whirlingStepsHitMarks[s], c.c4cb())
 
 	if c.StatusIsActive(pirouetteStatus) {
 		c.Core.QueueParticle("nilou", 1, attributes.Hydro, whirlingStepsHitMarks[s]+c.ParticleDelay)
@@ -266,7 +291,7 @@ func (c *char) TranquilityAura(src int) func() {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), -1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5), -1, 1)
 
 		c.QueueCharTask(c.TranquilityAura(src), 30)
 	}
