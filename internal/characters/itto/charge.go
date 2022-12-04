@@ -12,7 +12,8 @@ import (
 var (
 	chargeFrames   [][]int
 	chargeHitmarks = []int{89, 51, 24, 71}
-	chargeRadius   = [][]float64{{3, 3.34, 3.34, 3.5}, {4, 4.3, 4.3, 4.3}}
+	chargeHitboxes = [][][]float64{{{3}, {3.8, 5.5}, {3.8, 5.5}, {3.5}}, {{4}, {5, 7}, {5, 7}, {4.3}}}
+	chargeOffsets  = [][]float64{{0, -2, -2, 0.6}, {0, -2.5, -2.5, 0.8}}
 )
 
 func init() {
@@ -183,12 +184,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// figure out how many frames we need to skip
 	windup := c.windupFrames(prevSlash, c.slashState)
 
-	// to index radius
-	burstIndex := 0
-	if c.StatusIsActive(burstBuffKey) {
-		burstIndex = 1
-	}
-
 	// handle hitlag and talent%
 	ai.Abil = fmt.Sprintf("%v (Stacks %v)", c.slashState, stacks)
 	switch c.slashState {
@@ -212,15 +207,28 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	if c.slashState != SaichiSlash {
 		c.a4(&ai)
 	}
-	radius := chargeRadius[burstIndex][c.slashState]
+
+	// to index hitbox
+	burstIndex := 0
+	if c.StatusIsActive(burstBuffKey) {
+		burstIndex = 1
+	}
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		combat.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+		chargeHitboxes[burstIndex][c.slashState][0],
+	)
+	if c.slashState == LeftSlash || c.slashState == RightSlash {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+			chargeHitboxes[burstIndex][c.slashState][0],
+			chargeHitboxes[burstIndex][c.slashState][1],
+		)
+	}
 	// TODO: hitmark is not getting adjusted for atk speed
 	// TODO: Does Itto CA snapshot at the start of CA? (rn assuming he does)
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		0,
-		chargeHitmarks[c.slashState]-windup,
-	)
+	c.Core.QueueAttack(ai, ap, 0, chargeHitmarks[c.slashState]-windup)
 
 	// C6: has a 50% chance to not consume stacks of Superlative Superstrength.
 	if !c.c6Proc {
