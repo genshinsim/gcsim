@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		radius = 9
 	}
 
-	c.a1AbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), radius)
+	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius)
 
 	// why is the same code written twice..
 	if hold == 0 {
@@ -64,7 +64,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, skillPressHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, skillPressHitmark)
 
 	c.Core.QueueParticle("kazuha", 3, attributes.Anemo, skillPressHitmark+c.ParticleDelay)
 
@@ -105,7 +105,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 9), 0, skillHoldHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 9), 0, skillHoldHitmark)
 
 	c.Core.QueueParticle("kazuha", 4, attributes.Anemo, skillHoldHitmark+c.ParticleDelay)
 
