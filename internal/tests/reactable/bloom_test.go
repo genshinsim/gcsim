@@ -22,7 +22,7 @@ func TestHydroBloom(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -31,7 +31,7 @@ func TestHydroBloom(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -59,7 +59,7 @@ func TestDendroBloom(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -68,7 +68,7 @@ func TestDendroBloom(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -97,7 +97,7 @@ func TestECBloom(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -105,7 +105,7 @@ func TestECBloom(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -114,7 +114,7 @@ func TestECBloom(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
 	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
@@ -141,7 +141,7 @@ func TestBloomSeedLimit(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -149,7 +149,7 @@ func TestBloomSeedLimit(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -177,7 +177,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 				Element:    attributes.Hydro,
 				Durability: 25,
 			},
-			Pattern: combat.NewCircleHit(trg[0], 100),
+			Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 		}, 0)
 		advanceCoreFrame(c)
 		c.QueueAttackEvent(&combat.AttackEvent{
@@ -185,7 +185,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 				Element:    attributes.Dendro,
 				Durability: 25,
 			},
-			Pattern: combat.NewCircleHit(trg[0], 100),
+			Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 		}, 0)
 		advanceCoreFrame(c)
 	}

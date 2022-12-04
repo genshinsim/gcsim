@@ -1,4 +1,4 @@
-package reactable_test
+﻿package reactable_test
 
 import (
 	"log"
@@ -49,7 +49,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -58,7 +58,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s

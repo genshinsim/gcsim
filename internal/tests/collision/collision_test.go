@@ -105,7 +105,7 @@ func TestSingleTarget(t *testing.T) {
 		count = 0
 
 		c.QueueAttackEvent(&combat.AttackEvent{
-			Pattern: combat.NewDefSingleTarget(trgs[i].Key()),
+			Pattern: combat.NewSingleTargetHit(trgs[i].Key()),
 		}, 0)
 		advanceCoreFrame(c)
 
@@ -139,7 +139,7 @@ func TestMultipleEnemies(t *testing.T) {
 		count = 0
 
 		c.QueueAttackEvent(&combat.AttackEvent{
-			Pattern: combat.NewCircleHit(trgs[i], 0.5),
+			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}, 0)
 		advanceCoreFrame(c)
 
@@ -185,7 +185,7 @@ func TestDefaultHitGadget(t *testing.T) {
 		count = 0
 
 		c.QueueAttackEvent(&combat.AttackEvent{
-			Pattern: combat.NewCircleHit(trgs[i], 0.5),
+			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}, 0)
 		advanceCoreFrame(c)
 
@@ -221,7 +221,7 @@ func TestSkipTargets(t *testing.T) {
 	for i := 0; i < len(trgs); i++ {
 		count = 0
 		ae := &combat.AttackEvent{
-			Pattern: combat.NewCircleHit(trgs[i], 0.5),
+			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
 		ae.Pattern.SkipTargets[combat.TargettableEnemy] = true
 
@@ -236,7 +236,7 @@ func TestSkipTargets(t *testing.T) {
 	for i := 0; i < len(trgs); i++ {
 		count = 0
 		ae := &combat.AttackEvent{
-			Pattern: combat.NewCircleHit(trgs[i], 0.5),
+			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
 		ae.Pattern.SkipTargets[combat.TargettablePlayer] = false
 		ae.Pattern.SkipTargets[combat.TargettableEnemy] = true
