@@ -123,7 +123,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 
 	// proc 3 hits
 	for i := 1; i <= 3; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(t, 3), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
 	}
 
 	c.Core.Log.NewEvent(
@@ -179,7 +179,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 3), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
 
 	c.Core.Log.NewEvent(
 		"riptide slash ticked",
@@ -227,7 +227,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		Mult:       rtBlast[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 5), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 5), 1, 1)
 
 	c.Core.Log.NewEvent(
 		"riptide blast triggered",
@@ -268,7 +268,7 @@ func (c *char) onDefeatTargets() {
 				Durability: 50,
 				Mult:       rtBurst[c.TalentLvlAttack()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(t, 5), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 5), 0, 0)
 		}, 5)
 		// TODO: re-index riptide expiry frame array if needed
 		if c.Base.Cons >= 2 {

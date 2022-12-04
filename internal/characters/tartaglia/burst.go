@@ -71,7 +71,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, 4)
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), hitmark, hitmark, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius),
+		hitmark,
+		hitmark,
+		cb,
+	)
 
 	if c.StatusIsActive(meleeKey) {
 		c.ConsumeEnergy(71)
