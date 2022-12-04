@@ -28,7 +28,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		bloom = 24
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
@@ -69,12 +69,28 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				Write("expiry", c.a1Expiry)
 		}
 
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), travel)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				combat.Point{Y: -0.5},
+				0.1,
+				1,
+			),
+			travel,
+		)
 
 		ai.Abil = "Frost Flake Bloom"
 		ai.Mult = ffb[c.TalentLvlAttack()]
 		ai.HitWeakPoint = false
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), travel+bloom)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
+			travel+bloom,
+		)
 
 		// first shot/bloom do not benefit from a1
 		c.a1Expiry = c.Core.F + 60*5

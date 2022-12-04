@@ -118,7 +118,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				}
 			}
 			//deal dmg
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 2.5), 0)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(trg, nil, 2.5), 0)
 		}, delay)
 
 	}
