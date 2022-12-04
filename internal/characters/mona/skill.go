@@ -54,7 +54,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// tick every 1s
 	for i := skillHitmarks[hold]; i < 300; i += 60 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), i)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
+			i,
+		)
 	}
 
 	// Explosion
@@ -70,7 +75,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, skillHitmarks[hold]+313)
+	// TODO: this should have its own position
+	c.Core.QueueAttack(
+		aiExplode,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
+		0,
+		skillHitmarks[hold]+313,
+	)
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < .33 {
