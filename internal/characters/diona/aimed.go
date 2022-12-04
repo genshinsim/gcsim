@@ -28,7 +28,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		travel = 10
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
@@ -67,8 +67,15 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	}
 
-	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		a.CanQueueAfter,
 		a.CanQueueAfter+travel,
 	)
