@@ -54,7 +54,7 @@ func (c *char) c4() {
 			Durability: 25,
 			Mult:       0.2,
 		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(t.Key()), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Key()), 0, 1)
 		return false
 	}, "beidou-c4")
 }
