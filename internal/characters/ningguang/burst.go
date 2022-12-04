@@ -8,11 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var burstFrames []int
-
 var (
-	burstHitmarks       = []int{62, 97, 106, 110, 116, 124}
-	burstScreenHitmarks []int
+	burstFrames   []int
+	burstHitmarks = []int{62, 97, 106, 110, 116, 124}
 )
 
 func init() {
@@ -51,7 +49,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 0; i < jade; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.5,
+			),
 			0,
 			burstHitmarks[i]+travel,
 		)
@@ -67,7 +70,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				c.skillSnapshot,
-				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					0.5,
+				),
 				burstHitmarks[len(burstHitmarks)-1]+30+travel,
 			) // TODO: figure out jade screen hitmarks
 		}
