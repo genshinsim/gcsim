@@ -48,7 +48,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 8), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	// A4: When Glacial Illumination is cast, the CD of Icetide Vortex is reset and Eula gains 1 stack of Grimheart.
 	if c.grimheartStacks < 2 {
@@ -110,7 +115,12 @@ func (c *char) triggerBurst() {
 		Write("stacks", c.burstCounter).
 		Write("mult", ai.Mult)
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6.5), lightfallHitmark, lightfallHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5),
+		lightfallHitmark,
+		lightfallHitmark,
+	)
 	c.Core.Status.Delete(burstKey)
 	c.burstCounter = 0
 }
