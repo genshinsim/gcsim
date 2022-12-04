@@ -14,7 +14,8 @@ var (
 	attackHitmarks        = [][]int{{11}, {11}, {15}, {12, 22}, {26}}
 	attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {.06}, {0, .03}, {0}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, true}, {false}}
-	attackRadius          = []float64{1.33, 1.5, 1.8, 1.5, 0.8}
+	attackHitboxes        = [][]float64{{1.5, 2.2}, {1.5}, {1.8}, {1.5}, {0.8}}
+	attackOffsets         = []float64{0, 0.5, 1, 0.6, 0}
 )
 
 const normalHitNum = 5
@@ -59,14 +60,23 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		radius := attackRadius[c.NormalCounter]
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(centerTarget, radius),
-				0,
-				0,
+		ap := combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			centerTarget,
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+		)
+		if c.NormalCounter == 0 {
+			ap = combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				centerTarget,
+				combat.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
 			)
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

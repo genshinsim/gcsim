@@ -13,6 +13,7 @@ var (
 	chargeFrames   []int
 	chargeHitmarks = []int{22, 24}
 	chargeRadius   = []float64{2.2, 2.3}
+	chargeOffsets  = []float64{1.5, 1.8}
 )
 
 func init() {
@@ -37,8 +38,16 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		radius := chargeRadius[i]
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: chargeOffsets[i]},
+				chargeRadius[i],
+			),
+			chargeHitmarks[i],
+			chargeHitmarks[i],
+		)
 	}
 
 	if c.Core.Status.Duration(stilettoKey) > 0 {
@@ -58,7 +67,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Mult:       skillCA[c.TalentLvlSkill()],
 		}
 		for i := 0; i < 2; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), chargeHitmarks[i], chargeHitmarks[i])
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
+				chargeHitmarks[i],
+				chargeHitmarks[i],
+			)
 		}
 
 		// TODO: Particle timing?
