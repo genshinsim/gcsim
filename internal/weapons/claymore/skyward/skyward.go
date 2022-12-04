@@ -83,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:       dmg,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.07), 0, 1)
+		c.QueueAttack(ai, combat.NewBoxHitOnTarget(trg, nil, 0.1, 0.1), 0, 1)
 		return false
 	}, fmt.Sprintf("skyward-pride-%v", char.Base.Key.String()))
 	return w, nil

@@ -65,7 +65,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:       2.0 + 0.4*float64(r),
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 1)
+		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 
 		// trigger cd
 		char.AddStatus(icdKey, cd, true)

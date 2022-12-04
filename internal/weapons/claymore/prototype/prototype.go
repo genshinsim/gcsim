@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Mult:       atk,
 			}
 			trg := args[0].(combat.Target)
-			c.QueueAttack(ai, combat.NewCircleHit(trg, 3), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 		}
 		return false
 	}, fmt.Sprintf("forstbearer-%v", char.Base.Key.String()))
