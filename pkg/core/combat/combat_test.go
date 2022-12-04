@@ -24,6 +24,7 @@ type (
 		alive       bool
 		collideWith [TargettableTypeCount]bool
 		onCollision func(Target)
+		direction   float64
 	}
 )
 
@@ -106,6 +107,19 @@ func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 		return false, "unknown shape"
 	}
 }
+
+func (t *testtarg) Direction() float64 { return t.direction }
+func (t *testtarg) SetDirection(trgX, trgY float64) {
+	srcX, srcY := t.Pos()
+	// setting direction to self resets direction
+	if srcX == trgX && srcY == trgY {
+		t.direction = 0
+		return
+	}
+	t.direction = CalcDirection(srcX, srcY, trgX, trgY)
+}
+func (t *testtarg) SetDirectionToClosestEnemy()                  {} // ???
+func (t *testtarg) CalcTempDirection(trgX, trgY float64) float64 { return 0 }
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())

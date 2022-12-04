@@ -246,3 +246,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 	ai.FlatDmg = HyperbloomMultiplier * flatdmg
 	return ai, snap
 }
+
+func (s *DendroCore) SetDirection(trgX, trgY float64)              {}
+func (s *DendroCore) SetDirectionToClosestEnemy()                  {}
+func (s *DendroCore) CalcTempDirection(trgX, trgY float64) float64 { return 0 }

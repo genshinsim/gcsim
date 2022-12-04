@@ -3,6 +3,7 @@ package target
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 const MaxTeamSize = 4
@@ -22,13 +23,15 @@ type Target struct {
 	icdTagCounter       [MaxTeamSize][combat.ICDTagLength]int
 	icdDamageTagOnTimer [MaxTeamSize][combat.ICDTagLength]bool
 	icdDamageTagCounter [MaxTeamSize][combat.ICDTagLength]int
+
+	direction float64
 }
 
-func New(core *core.Core, x, y, z float64) *Target {
+func New(core *core.Core, x, y, r float64) *Target {
 	t := &Target{
 		Core: core,
 	}
-	t.Hitbox = *combat.NewCircle(x, y, z)
+	t.Hitbox = *combat.NewSimpleCircle(x, y, r)
 	t.Tags = make(map[string]int)
 	t.Alive = true
 
@@ -107,4 +110,50 @@ func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
 	default:
 		return false, "unknown shape"
 	}
+}
+
+func (t *Target) Direction() float64 { return t.direction }
+func (t *Target) SetDirection(trgX, trgY float64) {
+	srcX, srcY := t.Pos()
+	// setting direction to self resets direction
+	if srcX == trgX && srcY == trgY {
+		t.Core.Combat.Log.NewEvent("reset target direction to 0", glog.LogDebugEvent, -1)
+		t.direction = 0
+		return
+	}
+	t.direction = combat.CalcDirection(srcX, srcY, trgX, trgY)
+	t.Core.Combat.Log.NewEvent("set target direction", glog.LogDebugEvent, -1).
+		Write("src target key", t.key).
+		Write("srcX", srcX).
+		Write("srcY", srcY).
+		Write("trgX", trgX).
+		Write("trgY", trgY).
+		Write("direction (in degrees)", combat.DirectionToDegrees(t.direction))
+}
+func (t *Target) SetDirectionToClosestEnemy() {
+	srcX, srcY := t.Pos()
+	// calculate direction towards closest enemy
+	enemyIndex := t.Core.Combat.EnemyByDistance(srcX, srcY, combat.InvalidTargetKey)[0]
+	enemy := t.Core.Combat.Enemy(enemyIndex)
+	if enemy == nil {
+		panic("there should be an enemy to calculate direction")
+	}
+	t.SetDirection(enemy.Pos())
+	t.Core.Combat.Log.NewEvent("set target direction to closest enemy", glog.LogDebugEvent, -1).
+		Write("enemy index", enemyIndex).
+		Write("enemy key", enemy.Key()).
+		Write("direction (in degrees)", combat.DirectionToDegrees(t.direction))
+}
+func (t *Target) CalcTempDirection(trgX, trgY float64) float64 {
+	srcX, srcY := t.Pos()
+	direction := combat.CalcDirection(srcX, srcY, trgX, trgY)
+	t.Core.Combat.Log.NewEvent("using temporary target direction", glog.LogDebugEvent, -1).
+		Write("src target key", t.key).
+		Write("srcX", srcX).
+		Write("srcY", srcY).
+		Write("trgX", trgX).
+		Write("trgY", trgY).
+		Write("existing direction (in degrees)", combat.DirectionToDegrees(t.direction)).
+		Write("temporary direction (in degrees)", combat.DirectionToDegrees(direction))
+	return direction
 }

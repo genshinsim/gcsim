@@ -251,3 +251,7 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	}
 	s.Kill()
 }
+
+func (s *LeaLotus) SetDirection(trgX, trgY float64)              {}
+func (s *LeaLotus) SetDirectionToClosestEnemy()                  {}
+func (s *LeaLotus) CalcTempDirection(trgX, trgY float64) float64 { return 0 }

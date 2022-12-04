@@ -1,4 +1,4 @@
-﻿package reactable_test
+package reactable_test
 
 import (
 	"log"
@@ -93,3 +93,6 @@ func (f *fakeCore) Tick()                                                  {}
 func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { return 0 }
 func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (f *fakeCore) ApplyDamage(*combat.AttackEvent, float64)               {}
+func (f *fakeCore) SetDirection(trgX, trgY float64)                        {}
+func (f *fakeCore) SetDirectionToClosestEnemy()                            {}
+func (f *fakeCore) CalcTempDirection(trgX, trgY float64) float64           { return 0 }

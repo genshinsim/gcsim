@@ -72,5 +72,9 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 
 func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
 
-func (t *Enemy) MaxHP() float64 { return t.maxhp }
-func (t *Enemy) HP() float64    { return t.hp }
+func (e *Enemy) MaxHP() float64 { return e.maxhp }
+func (e *Enemy) HP() float64    { return e.hp }
+
+func (e *Enemy) SetDirection(trgX, trgY float64)              {}
+func (e *Enemy) SetDirectionToClosestEnemy()                  {}
+func (e *Enemy) CalcTempDirection(trgX, trgY float64) float64 { return 0 }
