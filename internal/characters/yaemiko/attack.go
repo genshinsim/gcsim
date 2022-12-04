@@ -9,8 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{14, 22, 33}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{14, 22, 33}
+)
 
 const normalHitNum = 3
 
@@ -46,7 +48,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: does it snapshot?
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4.12), 0, attackHitmarks[c.NormalCounter]+travel)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4, 8),
+		0,
+		attackHitmarks[c.NormalCounter]+travel,
+	)
 
 	defer c.AdvanceNormalIndex()
 
