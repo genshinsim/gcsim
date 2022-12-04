@@ -70,7 +70,13 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       highplunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), highPlungeRadius), highPlungeHitmark, highPlungeHitmark, c.c6cb())
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		highPlungeHitmark,
+		highPlungeHitmark,
+		c.c6cb(),
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
@@ -120,7 +126,13 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       lowplunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), lowPlungeRadius), lowPlungeHitmark, lowPlungeHitmark, c.c6cb())
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
+		lowPlungeHitmark,
+		lowPlungeHitmark,
+		c.c6cb(),
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
@@ -144,5 +156,5 @@ func (c *char) plungeCollision(delay int) {
 		Durability: 0,
 		Mult:       plunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
 }
