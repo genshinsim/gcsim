@@ -117,7 +117,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		}
 
 		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
-			Write("sakura level", lvl)
+			Write("sakura level", lvl+1)
 
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
