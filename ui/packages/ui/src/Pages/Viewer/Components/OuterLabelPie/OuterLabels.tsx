@@ -16,6 +16,9 @@ type Props<Datum> = {
   xPadding?: number;
   yPadding?: number;
   tail?: number;
+
+  mouseLeave: () => void;
+  mouseHover: (e: React.MouseEvent, index: number, data: Datum) => void;
 }
 
 type Point = {
@@ -39,6 +42,10 @@ export const OuterLabels = <Datum,>(
       labelColor,
       labelText,
       labelValue,
+
+      mouseHover,
+      mouseLeave,
+
       xPadding = 8,
       yPadding = 18,
       tail = 15,
@@ -53,12 +60,13 @@ export const OuterLabels = <Datum,>(
         <Group
             key={"label-" + index}
             left={labelPositions.get(index)?.x}
-            top={labelPositions.get(index)?.y}>
+            top={labelPositions.get(index)?.y}
+            onMouseMove={(e) => mouseHover(e, index, arc.data)}
+            onMouseLeave={() => mouseLeave()}>
           <text
               dx={left ? "-.5em" : ".5em"}
               textAnchor={left ? "end" : "start"}
-              className="text-xs font-mono font-thin fill-gray-400"
-              pointerEvents="none">
+              className="text-xs font-mono font-thin fill-gray-400 cursor-default">
             <tspan fill={labelColor(arc.data)}>{labelText(arc.data) + ": "}</tspan>
             <tspan>{labelValue(arc.data)}</tspan>
           </text>
