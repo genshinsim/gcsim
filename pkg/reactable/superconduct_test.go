@@ -15,9 +15,9 @@ func TestSuperconduct(t *testing.T) {
 		t.FailNow()
 	}
 
-	c.QueueAttackEvent(makeAOEAttack(attributes.Cryo, 25), 0)
+	c.QueueAttackEvent(makeAOEAttack(c, attributes.Cryo, 25), 0)
 	c.Tick()
-	c.QueueAttackEvent(makeAOEAttack(attributes.Electro, 25), 0)
+	c.QueueAttackEvent(makeAOEAttack(c, attributes.Electro, 25), 0)
 	advanceCoreFrame(c)
 	if trg[0].last.Info.Abil != "superconduct" {
 		t.Errorf("expecting superconduct, got %v", trg[0].last.Info.Abil)
@@ -34,11 +34,11 @@ func TestFrozenSuperconduct(t *testing.T) {
 	}
 
 	//trigger a freeze
-	c.QueueAttackEvent(makeAOEAttack(attributes.Cryo, 25), 0)
+	c.QueueAttackEvent(makeAOEAttack(c, attributes.Cryo, 25), 0)
 	c.Tick()
-	c.QueueAttackEvent(makeAOEAttack(attributes.Hydro, 25), 0)
+	c.QueueAttackEvent(makeAOEAttack(c, attributes.Hydro, 25), 0)
 	c.Tick()
-	c.QueueAttackEvent(makeAOEAttack(attributes.Electro, 25), 0)
+	c.QueueAttackEvent(makeAOEAttack(c, attributes.Electro, 25), 0)
 	advanceCoreFrame(c)
 	if trg[0].last.Info.Abil != "superconduct" {
 		t.Errorf("expecting superconduct, got %v", trg[0].last.Info.Abil)

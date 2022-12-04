@@ -31,6 +31,7 @@ func testCore() *core.Core {
 	trg := &testTarget{}
 	trg.Target = target.New(c, 0, 0, 1)
 	trg.Reactable = &Reactable{}
+	trg.typ = combat.TargettablePlayer
 	trg.Reactable.Init(trg, c)
 	c.Combat.SetPlayer(trg)
 
@@ -70,13 +71,13 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 	return c, r
 }
 
-func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
+func makeAOEAttack(c *core.Core, ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}
 }
 
@@ -86,7 +87,7 @@ func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.Targ
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewDefSingleTarget(trg),
+		Pattern: combat.NewSingleTargetHit(trg),
 	}
 
 }
