@@ -43,7 +43,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 0; i < 6; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				1,
+			),
 			burstRelease,
 			burstHitmarks[i]+travel,
 		)
@@ -54,7 +59,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 0; i < 6; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				1,
+			),
 			burstHitmarks[i]+travel,
 			burstSecondHitmarks[i]+travel,
 		)
