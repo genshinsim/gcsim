@@ -120,14 +120,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		for i, data := range bounceAttacks {
 			c.Core.QueueAttackWithSnap(data.ai, data.snap,
-				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4),
+				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4),
 				bounceHitmarks[i]-cooldownDelay,
 				c.a1,
 			)
 		}
 		for _, data := range mineAttacks {
 			c.Core.QueueAttackWithSnap(data.ai, data.snap,
-				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2),
+				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2),
 				mineHitmark-cooldownDelay,
 				c.c2,
 			)
