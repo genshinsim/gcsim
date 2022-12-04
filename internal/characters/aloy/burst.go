@@ -36,7 +36,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 6.5), burstHitmark)
+	c.Core.QueueAttackWithSnap(
+		ai,
+		snap,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 6.5}, 6.5),
+		burstHitmark,
+	)
 
 	c.SetCD(action.ActionBurst, 12*60)
 	c.ConsumeEnergy(2)

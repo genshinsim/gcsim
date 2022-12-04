@@ -66,7 +66,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		c.coilStacks()
 		// TODO: accurate snapshot timing, assumes snapshot on release and not on hit/bomb creation
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), 0, travel)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4),
+			0,
+			travel,
+		)
 	}, skillHitmark)
 
 	// Bomblets snapshot on cast
@@ -86,7 +91,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2), 0,
+		// TODO: proper bomblet positioning
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2), 0,
 			skillHitmark+travel+delay+((i+1)*6))
 	}
 
