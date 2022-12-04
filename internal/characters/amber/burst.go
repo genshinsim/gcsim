@@ -35,19 +35,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	//2sec duration, tick every .4 sec in zone 1
-	//2sec duration, tick every .6 sec in zone 2
-	//2sec duration, tick every .2 sec in zone 3
+	//2sec duration, tick every .4 sec at exactly 2.6m from burst center
+	//2sec duration, tick every .6 sec at exactly 2.6m from burst center
+	//2sec duration, tick every .2 sec between 0.1m and 2.6m from burst center
 
-	//TODO: properly implement random hits and hit box range. right now everything is just radius 3
+	//TODO: properly implement random hits and hitbox positioning. right now everything centers on player
 	for i := 24; i < 120; i += 24 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.6), burstStart+i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6), burstStart+i)
 	}
 	for i := 36; i < 120; i += 36 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.6), burstStart+i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6), burstStart+i)
 	}
 	for i := 12; i < 120; i += 12 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.6), burstStart+i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6), burstStart+i)
 	}
 
 	if c.Base.Cons >= 6 {
