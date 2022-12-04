@@ -39,7 +39,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	// TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), skillHitmark)
+	c.Core.QueueAttackWithSnap(
+		ai,
+		c.bloomSnapshot,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
+		skillHitmark,
+	)
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -100,7 +105,7 @@ func (c *char) skillHook() {
 		c.Core.QueueAttackWithSnap(
 			c.skillAttackInfo,
 			c.skillSnapshot,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3.4),
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.4),
 			1,
 		)
 
