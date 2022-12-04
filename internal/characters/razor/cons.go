@@ -98,7 +98,7 @@ func (c *char) c6() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(trg, 1.5),
+			combat.NewCircleHit(c.Core.Combat.Player(), trg, combat.Point{Y: 0.7}, 1.5),
 			1,
 			1,
 		)
