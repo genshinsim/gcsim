@@ -13,6 +13,7 @@ var (
 	chargeFrames   []int
 	chargeHitmarks = []int{15, 29}
 	chargeRadius   = []float64{2, 2.8}
+	chargeOffsets  = []float64{0.5, 1}
 )
 
 func init() {
@@ -39,8 +40,16 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		radius := chargeRadius[i]
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: chargeOffsets[i]},
+				chargeRadius[i],
+			),
+			chargeHitmarks[i],
+			chargeHitmarks[i],
+		)
 	}
 
 	return action.ActionInfo{
