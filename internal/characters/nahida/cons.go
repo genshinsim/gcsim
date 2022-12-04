@@ -126,9 +126,6 @@ func (c *char) c6() {
 		if !ok {
 			return false
 		}
-		if c.Core.Player.Active() != c.Index {
-			return false
-		}
 		if c.c6Count >= 6 {
 			return false
 		}
