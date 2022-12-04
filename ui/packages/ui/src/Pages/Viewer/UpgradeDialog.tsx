@@ -112,15 +112,17 @@ type BodyProps = {
 };
 
 const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
-  const shortResultCommit = data?.sim_version?.substring(0, 7);
+  const simCommit = data?.sim_version ?? data?.version;
+
+  const shortResultCommit = simCommit?.substring(0, 7);
   const shortLatestCommit = latestCommit?.substring(0, 7);
-  const resultCommitUrl = "https://github.com/genshinsim/gcsim/commits/" + data?.sim_version;
+  const resultCommitUrl = "https://github.com/genshinsim/gcsim/commits/" + simCommit;
   const latestCommitUrl = "https://github.com/genshinsim/gcsim/commits/" + latestCommit;
   const diffUrl = (
-    "https://github.com/genshinsim/gcsim/compare/" + data?.sim_version+ "..." + latestCommit
+    "https://github.com/genshinsim/gcsim/compare/" + simCommit + "..." + latestCommit
   );
 
-  const dirty = data?.modified || data?.sim_version === "";
+  const dirty = data?.modified || simCommit === "";
 
   const major = data?.schema_version?.major;
   const minor = data?.schema_version?.minor;

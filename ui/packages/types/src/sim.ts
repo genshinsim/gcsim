@@ -1,6 +1,7 @@
 export interface SimResults {
   schema_version?: Version;
   sim_version?: string;
+  version?: string; // legacy only
   build_date?: string;
   modified?: boolean;
   
