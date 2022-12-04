@@ -100,7 +100,7 @@ func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *
 
 	explode := func() {
 		ai, snap := NewBloomAttack(char, s)
-		ap := combat.NewCircleHit(s, 5)
+		ap := combat.NewCircleHitOnTarget(s, nil, 5)
 		c.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		//self damage
@@ -144,7 +144,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		x, y := s.Gadget.Pos()
 		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
 		if len(enemies) > 0 {
-			ap := combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1)
+			ap := combat.NewCircleHitOnTarget(s.Core.Combat.Enemy(enemies[0]), nil, 1)
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
 
 			// also queue self damage
@@ -163,7 +163,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// trigger burgeon, aoe dendro damage
 		// self damage
 		ai, snap := NewBurgeonAttack(char, s)
-		ap := combat.NewCircleHit(s.Gadget, 5)
+		ap := combat.NewCircleHitOnTarget(s, nil, 5)
 
 		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
