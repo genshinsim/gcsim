@@ -174,7 +174,7 @@ func (c *char) c6() {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewDefSingleTarget(e.Key()),
+				combat.NewSingleTargetHit(e.Key()),
 				1,
 			)
 		}
