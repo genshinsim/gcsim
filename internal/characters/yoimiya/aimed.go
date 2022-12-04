@@ -79,7 +79,13 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		aimedHitmarks[kindling],
 		aimedHitmarks[kindling]+travel,
 	)
@@ -105,7 +111,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			// add a bit of extra delay for kindling arrows
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.6),
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					0.6,
+				),
 				aimedHitmarks[kindling],
 				aimedHitmarks[kindling]+kindling_travel,
 			)
