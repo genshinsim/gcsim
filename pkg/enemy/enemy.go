@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/queue"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -74,6 +75,28 @@ func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
 
 func (e *Enemy) MaxHP() float64 { return e.maxhp }
 func (e *Enemy) HP() float64    { return e.hp }
+func (e *Enemy) Kill() {
+	e.Alive = false
+	//try setting default target to closest enemy to player if target died
+	if e.Key() == e.Core.Combat.DefaultTarget {
+		player := e.Core.Combat.Player()
+		deadEnemyKey := e.Key()
+		x, y := player.Pos()
+		enemies := e.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
+		for _, v := range enemies {
+			potentialEnemy := e.Core.Combat.Enemy(v)
+			if deadEnemyKey == potentialEnemy.Key() {
+				continue
+			}
+			if potentialEnemy.IsAlive() {
+				e.Core.Combat.DefaultTarget = potentialEnemy.Key()
+				e.Core.Combat.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
+				player.SetDirection(potentialEnemy.Pos())
+				break
+			}
+		}
+	}
+}
 
 func (e *Enemy) SetDirection(trgX, trgY float64)              {}
 func (e *Enemy) SetDirectionToClosestEnemy()                  {}
