@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Physical,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillStart, skillStart)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), skillStart, skillStart)
 
 	c.SetCDWithDelay(action.ActionSkill, 960, 14)
 
@@ -135,7 +135,7 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 		if c.Base.Cons >= 2 {
 			ai.FlatDmg += c.MaxHP() * 0.1
 		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 0)
 
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
