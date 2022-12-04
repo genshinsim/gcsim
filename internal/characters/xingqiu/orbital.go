@@ -74,6 +74,6 @@ func (c *char) orbitalTickTask(src int) func() {
 		//queue up next instance
 		c.QueueCharTask(c.orbitalTickTask(src), 135)
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.2), -1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2), -1, 1)
 	}
 }

@@ -10,7 +10,8 @@ import (
 var (
 	skillFrames   []int
 	skillHitmarks = []int{12, 31}
-	skillRadius   = []float64{3, 2.85}
+	skillHitboxes = [][]float64{{3}, {3.5, 4.5}}
+	skillOffsets  = []float64{0.8, -1.5}
 )
 
 func init() {
@@ -48,9 +49,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				ax.Mult = ax.Mult * 1.5
 			}
 		}
-		radius := skillRadius[i]
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: skillOffsets[i]},
+			skillHitboxes[i][0],
+		)
+		if i == 1 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: skillOffsets[i]},
+				skillHitboxes[i][0],
+				skillHitboxes[i][1],
+			)
+		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
+			c.Core.QueueAttack(ax, ap, 0, 0)
 		}, skillHitmarks[i])
 	}
 
