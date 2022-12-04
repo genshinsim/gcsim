@@ -28,7 +28,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// reset location
 	c.qAbsorb = attributes.NoElement
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.77)
+	qPos := c.Core.Combat.Player()
+	c.absorbCheckLocation = combat.NewBoxHitOnTarget(qPos, combat.Point{Y: -1}, 2.5, 2.5)
 
 	c.Core.Status.Add("sucroseburst", duration)
 	ai := combat.AttackInfo{
@@ -69,12 +70,23 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 137; i <= duration+5; i += 113 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 8), i, cb)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(qPos, nil, 8),
+			i,
+			cb,
+		)
 
 		c.Core.Tasks.Add(func() {
 			if c.qAbsorb != attributes.NoElement {
 				aiAbs.Element = c.qAbsorb
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 8), 0)
+				c.Core.QueueAttackWithSnap(
+					aiAbs,
+					snapAbs,
+					combat.NewCircleHitOnTarget(qPos, nil, 8),
+					0,
+				)
 			}
 			//check if absorbed
 		}, i)
