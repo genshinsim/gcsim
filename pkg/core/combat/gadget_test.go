@@ -12,7 +12,7 @@ func TestGadgetCollision(t *testing.T) {
 	//1 player
 	player := &testtarg{
 		typ:   TargettablePlayer,
-		shp:   &Circle{0, 0, 0.2},
+		shp:   NewSimpleCircle(0, 0, 0.2),
 		alive: true,
 		onCollision: func(Target) {
 			log.Printf("collision shouldn't happen with player!!")
@@ -24,7 +24,7 @@ func TestGadgetCollision(t *testing.T) {
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   TargettableEnemy,
-			shp:   &Circle{float64(i) * 0.5, 0, 0.2},
+			shp:   NewSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 			onCollision: func(Target) {
 				log.Printf("collision shouldn't happen with enemy!!")
@@ -43,7 +43,7 @@ func TestGadgetCollision(t *testing.T) {
 		v := &testtarg{
 			hdlr:        c,
 			typ:         TargettableGadget,
-			shp:         &Circle{0, 0, 0.1},
+			shp:         NewSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
 			onCollision: func(t Target) {
@@ -70,7 +70,7 @@ func TestGadgetLimits(t *testing.T) {
 	//1 player
 	player := &testtarg{
 		typ:   TargettablePlayer,
-		shp:   &Circle{0, 0, 0.2},
+		shp:   NewSimpleCircle(0, 0, 0.2),
 		alive: true,
 		onCollision: func(Target) {
 			log.Printf("collision shouldn't happen with player!!")
@@ -82,7 +82,7 @@ func TestGadgetLimits(t *testing.T) {
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   TargettableEnemy,
-			shp:   &Circle{float64(i) * 0.5, 0, 0.2},
+			shp:   NewSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 			onCollision: func(Target) {
 				log.Printf("collision shouldn't happen with enemy!!")
@@ -102,7 +102,7 @@ func TestGadgetLimits(t *testing.T) {
 			hdlr:        c,
 			typ:         TargettableGadget,
 			gadgetTyp:   GadgetTypTest,
-			shp:         &Circle{0, 0, 0.1},
+			shp:         NewSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
 		}
@@ -132,7 +132,7 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	//1 player
 	player := &testtarg{
 		typ:   TargettablePlayer,
-		shp:   &Circle{0, 0, 0.2},
+		shp:   NewSimpleCircle(0, 0, 0.2),
 		alive: true,
 	}
 	c.SetPlayer(player)
@@ -140,7 +140,7 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   TargettableEnemy,
-			shp:   &Circle{float64(i) * 0.5, 0, 0.2},
+			shp:   NewSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 		}
 		c.AddEnemy(v)
@@ -153,7 +153,7 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			typ:         TargettableGadget,
-			shp:         &Circle{0, 0, 0.1},
+			shp:         NewSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
 			onCollision: func(t Target) {
@@ -177,7 +177,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	//1 player
 	player := &testtarg{
 		typ:   TargettablePlayer,
-		shp:   &Circle{0, 0, 0.2},
+		shp:   NewSimpleCircle(0, 0, 0.2),
 		alive: true,
 		onCollision: func(Target) {
 			log.Printf("collision shouldn't happen with player!!")
@@ -189,7 +189,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   TargettableEnemy,
-			shp:   &Circle{float64(i) * 0.5, 0, 0.2},
+			shp:   NewSimpleCircle(float64(i)*0.5, 0, 0.2),
 			alive: true,
 			onCollision: func(Target) {
 				log.Printf("collision shouldn't happen with enemy!!")
@@ -207,7 +207,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			typ:         TargettableGadget,
-			shp:         &Circle{0, 0, 0.1},
+			shp:         NewSimpleCircle(0, 0, 0.1),
 			alive:       true,
 			collideWith: cw,
 		}
