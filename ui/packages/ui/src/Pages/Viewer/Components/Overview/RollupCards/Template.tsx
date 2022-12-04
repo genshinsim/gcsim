@@ -1,8 +1,8 @@
 import { Card, Colors, Dialog, Icon, Classes } from "@blueprintjs/core";
 import classNames from "classnames";
-import React, { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
-import CardTitle from "../../CardTitle";
+import { CardTitle } from "../../Util";
 
 type AuxStat = {
   title: string;
@@ -20,12 +20,11 @@ type CardProps = {
   drawerTitle?: string;
 };
 
-// TODO: theme and size the overlay
-export default ({
+// TODO: hash link
+export const RollupCard = ({
     title, color, value, label, auxStats, tooltip, children, drawerTitle }: CardProps) => {
-  const [isOpen, setOpen] = React.useState(false);
-  // const interactable = children != undefined;
-  const interactable = false;
+  const [isOpen, setOpen] = useState(false);
+  const interactable = children != undefined;
 
   return (
     <div className="flex basis-1/4 flex-auto pl-1 min-w-fit" style={{ background: color }}>

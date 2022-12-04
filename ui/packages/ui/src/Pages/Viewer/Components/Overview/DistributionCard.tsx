@@ -12,9 +12,9 @@ import { AxisLeft, TickRendererProps } from "@visx/axis";
 import { Text } from "@visx/text";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useTranslation } from "react-i18next";
-import { Card, HTMLSelect, NonIdealState } from "@blueprintjs/core";
+import { Card, HTMLSelect } from "@blueprintjs/core";
 import { BoxPlot } from "@visx/stats";
-import CardTitle from "../CardTitle";
+import { CardTitle, NoData } from "../Util";
 
 export default ({ data }: { data: SimResults | null}) => {
   const [graph, setGraph] = useState(0);
@@ -189,7 +189,7 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
     };
 
     if (data?.histogram == null || delta == null) {
-      return <NonIdealState icon="pulse" title="Data not found" />;
+      return <NoData />;
     }
 
     return (

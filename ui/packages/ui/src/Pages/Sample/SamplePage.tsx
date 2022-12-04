@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { CharacterCard } from "../../Components/Cards";
-import { characterCardsClassNames } from "../Viewer/Components/Results/TeamHeader";
+import { characterCardsClassNames } from "../Viewer/Components/Overview/TeamHeader";
 import { DefaultSampleOptions, parseLogV2, Sampler, SampleRow } from "./Components";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";

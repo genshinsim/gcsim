@@ -56,7 +56,7 @@ export const OuterLabels = <Datum,>(
   return <>{arcs.map((arc, index) => {
     const left = midAngle(arc) > Math.PI;
     return (
-      <>
+      <Group key={"g-" + index}>
         <Group
             key={"label-" + index}
             left={labelPositions.get(index)?.x}
@@ -78,7 +78,7 @@ export const OuterLabels = <Datum,>(
             stroke={labelColor(arc.data)}
             x={p => p.x}
             y={p => p.y} />
-      </>
+      </Group>
     );
   })}</>;
 };

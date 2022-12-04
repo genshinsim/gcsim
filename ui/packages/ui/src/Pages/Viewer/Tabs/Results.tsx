@@ -1,13 +1,9 @@
-import Overview from "../Components/Results/Overview";
 import { SimResults } from "@gcsim/types";
-import TeamHeader from "../Components/Results/TeamHeader";
-import DistributionCard from "../Components/Results/DistributionCard";
 import { Card } from "@blueprintjs/core";
 import { ReactNode } from "react";
 import classNames from "classnames";
-import CharacterDPSCard from "../Components/Damage/CharacterDPSCard";
-import ElementDPSCard from "../Components/Damage/ElementDPSCard";
-import TargetDPSCard from "../Components/Damage/TargetDPSCard";
+import { DistributionCard, RollupCards, TeamHeader } from "../Components/Overview";
+import { CharacterDPSCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
 
 type Props = {
   data: SimResults | null;
@@ -19,7 +15,7 @@ export default ({ data }: Props) => {
       {/* Overview */}
       <Group>
         <TeamHeader data={data} />
-        <Overview data={data} />
+        <RollupCards data={data} />
         <Card className="flex col-span-3 h-24 min-h-full">
           Target info + sim metadata (num iterations)
         </Card>
