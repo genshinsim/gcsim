@@ -15,7 +15,9 @@ var (
 	skillFrames       [][]int
 	skillHitmarks     = []int{24, 28, 46}
 	skillHitlagStages = []float64{.12, .12, .16}
-	skillRadius       = []float64{2.3, 2.2, 2.65}
+	skillHitboxes     = [][]float64{{3, 3.5}, {2.2}, {3.5, 4}}
+	skillOffsets      = []float64{0, 1.2, -0.3}
+	skillFanAngles    = []float64{360, 300, 360}
 )
 
 func init() {
@@ -94,13 +96,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   skillHitlagStages[c.eCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	radius := skillRadius[c.eCounter]
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		hitmark,
-		hitmark,
+	ap := combat.NewCircleHitOnTargetFanAngle(
+		c.Core.Combat.Player(),
+		combat.Point{Y: skillOffsets[c.eCounter]},
+		skillHitboxes[c.eCounter][0],
+		skillFanAngles[c.eCounter],
 	)
+	if c.eCounter == 0 || c.eCounter == 2 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: skillOffsets[c.eCounter]},
+			skillHitboxes[c.eCounter][0],
+			skillHitboxes[c.eCounter][1],
+		)
+	}
+	c.Core.QueueAttack(ai, ap, hitmark, hitmark)
 
 	var orb float64 = 1
 	if c.Core.Rand.Float64() < 0.33 {

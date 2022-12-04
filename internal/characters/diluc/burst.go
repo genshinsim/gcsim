@@ -29,13 +29,23 @@ func (c *char) phoenixDMG(ai combat.AttackInfo, dot int, explode int) func() {
 		// DoT does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
 		// DoT
 		for i := 0; i < dot; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 8.94), 0, i*12)
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -5}, 16, 8),
+				0,
+				i*12,
+			)
 		}
 		// Explosion
 		if explode > 0 {
 			ai.Abil = "Dawn (Explode)"
 			ai.Mult = burstExplode[c.TalentLvlBurst()]
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 9.43), 0, 98)
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -6}, 16, 10),
+				0,
+				98,
+			)
 		}
 	}
 }
@@ -84,7 +94,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 8.54), 0, 1)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 16, 6),
+			0,
+			1,
+		)
 
 		ai.StrikeType = combat.StrikeTypeDefault
 		// both initial hit, DoT and explosion all have 50 durability
