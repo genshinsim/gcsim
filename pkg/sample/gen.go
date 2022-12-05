@@ -49,9 +49,6 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts simulator.Options) (Sa
 	}
 
 	sample := Sample{
-		SimVersion:       opts.Version,
-		BuildDate:        opts.BuildDate,
-		Modified:         opts.Modified,
 		Config:           cfg,
 		InitialCharacter: simcfg.InitialChar.String(),
 		CharacterDetails: chars,

@@ -1,24 +1,18 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"os/exec"
 	"runtime"
-	"runtime/debug"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/optimization"
 	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/sample"
 	"github.com/genshinsim/gcsim/pkg/simulator"
-)
-
-var (
-	sha1ver   string
-	buildTime string
-	modified  bool
 )
 
 type opts struct {
@@ -64,23 +58,9 @@ func main() {
 - tol_sd (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization`)
 
 	flag.Parse()
-	info, _ := debug.ReadBuildInfo()
-
-	for _, bs := range info.Settings {
-		if bs.Key == "vcs.revision" {
-			sha1ver = bs.Value
-		}
-		if bs.Key == "vcs.time" {
-			buildTime = bs.Value
-		}
-		if bs.Key == "vcs.modified" {
-			bv, _ := strconv.ParseBool(bs.Value)
-			modified = bv
-		}
-	}
 
 	if version {
-		fmt.Println(sha1ver)
+		fmt.Println(simulator.Version())
 		return
 	}
 
@@ -94,9 +74,6 @@ func main() {
 		ConfigPath:       opt.config,
 		ResultSaveToPath: opt.out,
 		GZIPResult:       opt.gz,
-		Version:          sha1ver,
-		BuildDate:        buildTime,
-		Modified:         modified,
 	}
 
 	if opt.substatOptim {
@@ -111,7 +88,7 @@ func main() {
 	var err error
 
 	if !opt.norun {
-		res, err = simulator.Run(simopt)
+		res, err = simulator.Run(simopt, context.Background())
 		if err != nil {
 			log.Println(err)
 			return

@@ -1,6 +1,7 @@
 package simulator
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/binary"
 	"errors"
@@ -9,6 +10,7 @@ import (
 	"log"
 	"path"
 	"regexp"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -25,12 +27,33 @@ type Options struct {
 	ResultSaveToPath string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
 	GZIPResult       bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
 	ConfigPath       string // path to the config file to read
-	Version          string
-	BuildDate        string
-	Modified         bool
 }
 
-var start time.Time
+var (
+	sha1ver   string
+	buildTime string
+	modified  bool
+)
+
+func init() {
+	info, _ := debug.ReadBuildInfo()
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			sha1ver = bs.Value
+		}
+		if bs.Key == "vcs.time" {
+			buildTime = bs.Value
+		}
+		if bs.Key == "vcs.modified" {
+			bv, _ := strconv.ParseBool(bs.Value)
+			modified = bv
+		}
+	}
+}
+
+func Version() string {
+	return sha1ver
+}
 
 func Parse(cfg string) (*ast.ActionList, error) {
 	parser := ast.New(cfg)
@@ -52,8 +75,8 @@ func Parse(cfg string) (*ast.ActionList, error) {
 }
 
 // Run will run the simulation given number of times
-func Run(opts Options) (result.Summary, error) {
-	start = time.Now()
+func Run(opts Options, ctx context.Context) (result.Summary, error) {
+	start := time.Now()
 
 	cfg, err := ReadConfig(opts.ConfigPath)
 	if err != nil {
@@ -65,11 +88,13 @@ func Run(opts Options) (result.Summary, error) {
 		return result.Summary{}, err
 	}
 
-	return RunWithConfig(cfg, simcfg, opts)
+	return RunWithConfig(cfg, simcfg, opts, start, ctx)
 }
 
 // Runs the simulation with a given parsed config
-func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
+// TODO: cfg string should be in the action list instead
+// TODO: need to add a context here to avoid infinite looping
+func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.Time, ctx context.Context) (result.Summary, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
@@ -114,6 +139,8 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		case err := <-errCh:
 			//error encountered
 			return result.Summary{}, err
+		case <-ctx.Done():
+			return result.Summary{}, ctx.Err()
 		}
 	}
 
@@ -153,9 +180,9 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		//        Ex - added new data for new graph on UI. UI still functional if this data is missing
 		// Increasing the version will result in the UI flagging all old sims as outdated
 		SchemaVersion:     result.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
-		SimVersion:        opts.Version,
-		BuildDate:         opts.BuildDate,
-		Modified:          opts.Modified,
+		SimVersion:        sha1ver,
+		BuildDate:         buildTime,
+		Modified:          modified,
 		SimulatorSettings: simcfg.Settings,
 		EnergySettings:    simcfg.Energy,
 		Config:            cfg,

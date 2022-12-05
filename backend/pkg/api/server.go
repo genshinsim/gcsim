@@ -29,6 +29,13 @@ type Config struct {
 	Discord     DiscordConfig
 }
 
+type APIContextKey string
+
+const (
+	TTLContextKey  APIContextKey = "ttl"
+	UserContextKey APIContextKey = "user"
+)
+
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 	s := &Server{
@@ -67,10 +74,10 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 }
 
 func (s *Server) routes() {
-	s.Log.Debugw("setting ups erver routes")
+	s.Log.Debugw("setting up server routes")
 	r := s.Router
 
-	r.Use(middleware.RequestID)
+	// r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(s.tokenCheck)

@@ -1,0 +1,34 @@
+syntax = "proto3";
+package db;
+option go_package="backend/pkg/services/db";
+
+import "protos/model/character.proto";
+import "protos/model/stats.proto";
+
+service DBStore {
+}
+
+message DBEntry {
+    //basic info
+    string key = 1;
+    string create_date = 2 ;
+    string run_date = 3 ;
+    model.SummaryStat sim_duration = 4 ;
+    int64 iter = 5;
+    string config = 6;
+    string hash = 7;
+
+    //indexing data
+    repeated string char_names = 8 ;
+    int32 target_count = 9 ;
+    double mean_dps_per_target = 10 ;
+
+    //detailed results
+    repeated model.Character team = 11;
+    TargetDPS dps_by_target = 12;
+}
+
+message TargetDPS {
+    model.SummaryStat dps = 1;
+}
+

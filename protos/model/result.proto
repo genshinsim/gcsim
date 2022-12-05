@@ -1,0 +1,26 @@
+syntax = "proto3";
+package model;
+option go_package="pkg/model";
+
+import "protos/model/character.proto";
+import "protos/model/enemy.proto";
+
+message Version {
+    int32 major = 1;
+    int32 minor = 2;
+}
+
+message Summary {
+
+    //metadata
+    Version schema_version = 1 [json_name="schema_version"];
+    string sim_version = 2 [json_name="sim_version"];
+    string build_date = 3 [json_name="build_date"];
+    bool modified = 4;
+
+    //charater and enemey data
+    string initial_character = 5 [json_name="initial_character"];
+    repeated Character character_details = 6 [json_name="character_details"];
+    repeated Enemy target_details = 7 [json_name="target_details"];
+    
+}
