@@ -41,17 +41,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
 	// 2 Droplets
-	// TODO: review barbara AOE size?
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1),
+			combat.NewCircleHit(c.Core.Combat.Player(), 3),
 			5,
 			hitmark,
 		) // need to confirm snapshot timing

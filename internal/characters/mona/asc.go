@@ -33,11 +33,12 @@ func (c *char) a1() func() {
 				AttackTag:  combat.AttackTagElementalArt,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypeDefault,
 				Element:    attributes.Hydro,
 				Durability: 25,
 				Mult:       0.5 * skill[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, 0)
+			c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, 0)
 		}, 120)
 		// queue up next A1 check because Mona's still dashing
 		// different Phantoms coexist and don't overwrite each other

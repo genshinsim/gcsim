@@ -54,6 +54,11 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		c.plungeCollision(collisionHitmark)
 	}
 
+	highPlungeRadius := 5.0
+	if c.StatusIsActive(burstBuffKey) {
+		highPlungeRadius = 6
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
@@ -65,7 +70,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       highplunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), highPlungeHitmark, highPlungeHitmark, c.c6cb())
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), highPlungeRadius), highPlungeHitmark, highPlungeHitmark, c.c6cb())
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
@@ -99,6 +104,11 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		c.plungeCollision(collisionHitmark)
 	}
 
+	lowPlungeRadius := 3.0
+	if c.StatusIsActive(burstBuffKey) {
+		lowPlungeRadius = 4
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
@@ -110,7 +120,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       lowplunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), lowPlungeHitmark, lowPlungeHitmark, c.c6cb())
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), lowPlungeRadius), lowPlungeHitmark, lowPlungeHitmark, c.c6cb())
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
@@ -129,9 +139,10 @@ func (c *char) plungeCollision(delay int) {
 		AttackTag:  combat.AttackTagPlunge,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 0,
 		Mult:       plunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), delay, delay)
 }

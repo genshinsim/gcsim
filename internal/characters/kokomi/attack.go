@@ -43,16 +43,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagNormal,
 		ICDTag:     combat.ICDTagNormalAttack,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
 
+	radius := 0.7
+	if c.Core.Status.Duration(burstKey) > 0 {
+		radius = 1.2
+	}
+
 	// TODO: Assume that this is not dynamic (snapshot on projectile release)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)

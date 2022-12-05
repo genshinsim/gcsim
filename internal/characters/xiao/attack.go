@@ -9,10 +9,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{4, 17}, {15}, {15}, {14, 31}, {16}, {39}}
-var attackHitlagHaltFrame = [][]float64{{0, 0.01}, {0.01}, {0.01}, {0.02, 0.02}, {0.02}, {0.04}}
-var attackDefHalt = [][]bool{{false, true}, {true}, {true}, {false, true}, {true}, {true}}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{4, 17}, {15}, {15}, {14, 31}, {16}, {39}}
+	attackHitlagHaltFrame = [][]float64{{0, 0.01}, {0.01}, {0.01}, {0.02, 0.02}, {0.02}, {0.04}}
+	attackDefHalt         = [][]bool{{false, true}, {true}, {true}, {false, true}, {true}, {true}}
+	attackRadius          = [][][]float64{{{1.8, 1.52}, {1.6}, {1.6}, {1.6, 1.8}, {1.68}, {2}}, {{2, 1.7}, {1.8}, {1.8}, {1.8, 2}, {1.81}, {2.4}}}
+	attackStrikeTypes     = [][]combat.StrikeType{
+		{combat.StrikeTypeSlash, combat.StrikeTypeSpear},
+		{combat.StrikeTypeSlash},
+		{combat.StrikeTypeSlash},
+		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
+		{combat.StrikeTypeSpear},
+		{combat.StrikeTypeSlash},
+	}
+)
 
 const normalHitNum = 6
 
@@ -48,6 +59,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         attackStrikeTypes[c.NormalCounter][i],
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -55,10 +67,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
+
+		burstIndex := 0
+		if c.StatusIsActive(burstBuffKey) {
+			burstIndex = 1
+		}
+		radius := attackRadius[burstIndex][c.NormalCounter][i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 			)

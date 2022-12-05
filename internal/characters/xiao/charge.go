@@ -31,6 +31,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagExtra,
 		ICDTag:             combat.ICDTagExtraAttack,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
@@ -39,7 +40,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), chargeHitmark, chargeHitmark)
+	radius := 3.0
+	if c.StatusIsActive(burstBuffKey) {
+		radius = 3.2
+	}
+
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), chargeHitmark, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

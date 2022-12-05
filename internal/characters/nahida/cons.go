@@ -126,9 +126,6 @@ func (c *char) c6() {
 		if !ok {
 			return false
 		}
-		if c.Core.Player.Active() != c.Index {
-			return false
-		}
 		if c.c6Count >= 6 {
 			return false
 		}
@@ -159,6 +156,7 @@ func (c *char) c6() {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNahidaC6,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       2,

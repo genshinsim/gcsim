@@ -42,7 +42,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		windup = 15
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3), chargeHitmark-windup, chargeHitmark-windup)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4.08), chargeHitmark-windup, chargeHitmark-windup)
 
 	if c.Base.Cons >= 4 {
 		c.c4()

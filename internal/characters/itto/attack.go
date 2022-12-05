@@ -9,10 +9,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackHitmarks = []int{23, 25, 16, 48}
-var attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
-
-var attackFrames [][][]int
+var (
+	attackFrames          [][][]int
+	attackHitmarks        = []int{23, 25, 16, 48}
+	attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
+	attackRadius          = [][]float64{{2.5, 2.5, 2.5, 3.4}, {3.5, 3.5, 3.5, 4.43}}
+)
 
 const normalHitNum = 4
 
@@ -90,11 +92,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	// check burst status for radius
 	// TODO: proper hitbox
-	radius := 1.0
+	attackIndex := 0
 	if c.StatModIsActive(burstBuffKey) {
-		radius = 2
+		attackIndex = 1
 	}
-
+	radius := attackRadius[attackIndex][c.NormalCounter]
 	// TODO: hitmark is not getting adjusted for atk speed
 	c.Core.QueueAttack(
 		ai,

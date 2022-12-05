@@ -30,6 +30,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagExtra,
 		ICDTag:             combat.ICDTagExtraAttack,
 		ICDGroup:           combat.ICDGroupPoleExtraAttack,
+		StrikeType:         combat.StrikeTypeSpear,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charged[c.TalentLvlAttack()],
@@ -38,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.8), chargeHitmark, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

@@ -59,13 +59,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       skillMain[c.TalentLvlSkill()],
 		}
 		c.coilStacks()
 		// TODO: accurate snapshot timing, assumes snapshot on release and not on hit/bomb creation
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 0, travel)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), 0, travel)
 	}, skillHitmark)
 
 	// Bomblets snapshot on cast
@@ -75,6 +76,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagElementalArt,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skillBomblets[c.TalentLvlSkill()],
@@ -84,7 +86,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 0,
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2), 0,
 			skillHitmark+travel+delay+((i+1)*6))
 	}
 

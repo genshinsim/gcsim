@@ -30,6 +30,7 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
+		trg := args[0].(combat.Target)
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
@@ -49,13 +50,14 @@ func (c *char) a4() {
 			AttackTag:          combat.AttackTagExtra,
 			ICDTag:             combat.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
 			Mult:               0.8,
 			HitlagFactor:       0.05,
 			CanBeDefenseHalted: defhalt,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 10, 10)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(trg, 3.5), 10, 10)
 
 		return false
 	}, "yanfei-a4")

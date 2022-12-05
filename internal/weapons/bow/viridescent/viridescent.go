@@ -67,6 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			AttackTag:  combat.AttackTagWeaponSkill,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       mult,
@@ -79,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatus(icdKey, cd, true)
 
 		return false
-	}, fmt.Sprintf("veridescent-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("viridescent-%v", char.Base.Key.String()))
 
 	return w, nil
 }

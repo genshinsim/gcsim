@@ -85,6 +85,7 @@ func (c *char) summonSwordWave() {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -127,7 +128,7 @@ func (c *char) summonSwordWave() {
 
 	for i := 0; i < c.numSwords; i++ {
 		//TODO: this snapshot timing is off? perhaps should be 0?
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 20, 20, c2cb, c6cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), 20, 20, c2cb, c6cb)
 		c6cb = nil
 		c.burstCounter++
 	}

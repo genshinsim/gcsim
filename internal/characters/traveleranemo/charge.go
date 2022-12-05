@@ -37,6 +37,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagExtra,
 		ICDTag:     combat.ICDTagNormalAttack,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -46,7 +47,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2),
+			combat.NewCircleHit(c.Core.Combat.Player(), 2.2),
 			chargeHitmarks[c.gender][i],
 			chargeHitmarks[c.gender][i],
 		)

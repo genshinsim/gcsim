@@ -73,12 +73,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			AttackTag:  combat.AttackTagWeaponSkill,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       atk,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.1), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.07), 0, 1)
 
 		//trigger cd
 		char.AddStatus(icdKey, 120, true)

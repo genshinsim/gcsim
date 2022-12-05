@@ -119,7 +119,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       paw[c.TalentLvlSkill()],
@@ -128,6 +128,6 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	for i := 0; i < pawCount; i++ {
 		done := false
 		cb := pawCB(done)
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, travel+f-5+i, cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), 0, travel+f-5+i, cb)
 	}
 }

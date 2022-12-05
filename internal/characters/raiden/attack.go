@@ -11,12 +11,14 @@ import (
 
 const normalHitNum = 5
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{14}, {9}, {14}, {14, 27}, {34}}
-
-// same between polearm and burst attacks so just use these arrays for both
-var attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.02}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
+var (
+	attackFrames   [][]int
+	attackHitmarks = [][]int{{14}, {9}, {14}, {14, 27}, {34}}
+	// same between polearm and burst attacks so just use these arrays for both
+	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.02}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
+	attackRadius          = []float64{1.66, 2.5, 2.19, 2.8, 3}
+)
 
 func init() {
 	// NA cancels (polearm)
@@ -50,6 +52,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
@@ -57,8 +60,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		ai.Mult = mult[c.TalentLvlAttack()]
+		radius := attackRadius[c.NormalCounter]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
@@ -73,8 +77,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-var swordFrames [][]int
-var swordHitmarks = [][]int{{12}, {13}, {11}, {22, 33}, {33}}
+var (
+	swordFrames   [][]int
+	swordHitmarks = [][]int{{12}, {13}, {11}, {22, 33}, {33}}
+	swordRadius   = [][]float64{{3.06}, {5.39}, {2.68}, {6.41, 4.8}, {6.15}}
+)
 
 func init() {
 	// NA cancels (burst)
@@ -104,11 +111,15 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagElementalBurst,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
+		}
+		if c.NormalCounter == 2 {
+			ai.StrikeType = combat.StrikeTypeSpear
 		}
 		// Sword hits are dynamic - group snapshots with damage proc
 		ai.Mult = mult[c.TalentLvlBurst()]
@@ -116,8 +127,9 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
+		radius := swordRadius[c.NormalCounter][i]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, 0, c.burstRestorefunc, c.c6)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0, c.burstRestorefunc, c.c6)
 		}, swordHitmarks[c.NormalCounter][i])
 	}
 

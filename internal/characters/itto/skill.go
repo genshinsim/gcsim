@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() { c.addStrStack("ushi-hit", 1) }, skillRelease+travel)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3.5),
 		skillRelease,
 		skillRelease+travel,
 		cb,

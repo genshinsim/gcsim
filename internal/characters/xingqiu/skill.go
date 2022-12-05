@@ -7,8 +7,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillFrames []int
-var skillHitmarks = []int{12, 31}
+var (
+	skillFrames   []int
+	skillHitmarks = []int{12, 31}
+	skillRadius   = []float64{3, 2.85}
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(67)
@@ -28,6 +31,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
 		Element:            attributes.Hydro,
 		Durability:         25,
 		HitlagHaltFrames:   0.02 * 60,
@@ -44,8 +48,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				ax.Mult = ax.Mult * 1.5
 			}
 		}
+		radius := skillRadius[i]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), 1), 0, 0)
+			c.Core.QueueAttack(ax, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
 		}, skillHitmarks[i])
 	}
 

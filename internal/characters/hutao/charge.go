@@ -45,7 +45,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagExtra,
 		ICDTag:             combat.ICDTagExtraAttack,
 		ICDGroup:           combat.ICDGroupPoleExtraAttack,
-		StrikeType:         combat.StrikeTypeSlash,
+		StrikeType:         combat.StrikeTypeSpear,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, chargeHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.8), 0, chargeHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -80,7 +80,7 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, ppChargeHitmark, c.ppParticles, c.applyBB)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.8), 0, ppChargeHitmark, c.ppParticles, c.applyBB)
 
 	//frames changes if previous action is normal
 	prevState := -1

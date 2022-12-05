@@ -115,7 +115,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		AttackTag:  combat.AttackTagNormal,
 		ICDTag:     combat.ICDTagTartagliaRiptideFlash,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       rtFlash[c.TalentLvlAttack()],
@@ -123,7 +123,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 
 	// proc 3 hits
 	for i := 1; i <= 3; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(t, 0.5), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(t, 3), 1, 1)
 	}
 
 	c.Core.Log.NewEvent(
@@ -173,13 +173,13 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 2), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 3), 1, 1)
 
 	c.Core.Log.NewEvent(
 		"riptide slash ticked",
@@ -227,7 +227,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		Mult:       rtBlast[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 5), 1, 1)
 
 	c.Core.Log.NewEvent(
 		"riptide blast triggered",
@@ -263,12 +263,12 @@ func (c *char) onDefeatTargets() {
 				AttackTag:  combat.AttackTagNormal,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
-				StrikeType: combat.StrikeTypeDefault,
+				StrikeType: combat.StrikeTypeSlash,
 				Element:    attributes.Hydro,
 				Durability: 50,
 				Mult:       rtBurst[c.TalentLvlAttack()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(t, 5), 0, 0)
 		}, 5)
 		// TODO: re-index riptide expiry frame array if needed
 		if c.Base.Cons >= 2 {

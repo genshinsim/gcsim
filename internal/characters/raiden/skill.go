@@ -36,11 +36,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), skillHitmark, skillHitmark)
 
 	// Add pre-damage mod
 	mult := skillBurstBonus[c.TalentLvlSkill()]
@@ -115,6 +116,7 @@ func (c *char) eyeOnDamage() {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       skillTick[c.TalentLvlSkill()],
@@ -122,7 +124,7 @@ func (c *char) eyeOnDamage() {
 		if c.Base.Cons >= 2 && c.StatusIsActive(burstKey) {
 			ai.IgnoreDefPercent = 0.6
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), 5, 5)
 
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd
 		return false

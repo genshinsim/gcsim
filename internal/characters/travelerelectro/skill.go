@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -99,7 +99,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 0.3), skillHitmark, particlesCB, amuletCB)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.3), skillHitmark, particlesCB, amuletCB)
 	}
 
 	// try to pick up amulets

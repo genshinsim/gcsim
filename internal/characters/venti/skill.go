@@ -32,6 +32,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:    combat.AttackTagElementalArt,
 		ICDTag:       combat.ICDTagNone,
 		ICDGroup:     combat.ICDGroupDefault,
+		StrikeType:   combat.StrikeTypePierce,
 		Element:      attributes.Anemo,
 		Durability:   50,
 		Mult:         skillPress[c.TalentLvlSkill()],
@@ -48,11 +49,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	cd := 360
 	cdstart := 21
 	hitmark := 51
+	radius := 3.0
 	var count float64 = 3
 	if p["hold"] != 0 {
 		cd = 900
 		cdstart = 34
 		hitmark = 74
+		radius = 6
 		count = 4
 		ai.Mult = skillHold[c.TalentLvlSkill()]
 
@@ -64,7 +67,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 0, hitmark, c.c2)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, hitmark, c.c2)
 	c.Core.QueueParticle("venti", count, attributes.Anemo, hitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, cd, cdstart)

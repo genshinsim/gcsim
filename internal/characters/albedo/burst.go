@@ -47,14 +47,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	//TODO: damage frame
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstHitmark)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 8), burstHitmark)
 
 	// Blossoms are generated on a slight delay from initial hit
 	// TODO: no precise frame data for time between Blossoms
 	ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
 	ai.Mult = burstPerBloom[c.TalentLvlBurst()]
+	x, y := c.Core.Combat.Player().Pos()
+	enemies := c.Core.Combat.EnemiesWithinRadius(x, y, 10)
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 3), fatalBlossomHitmark+i*5)
+		ind := c.Core.Rand.Intn(len(enemies))
+		c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Enemy(enemies[ind]), 3), fatalBlossomHitmark+i*5)
 	}
 
 	//Party wide EM buff

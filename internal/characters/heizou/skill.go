@@ -67,12 +67,12 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			HitlagHaltFrames:   skillHitlagHaltFrame * 60,
 			CanBeDefenseHalted: false,
 		}
-		AoE := 0.3
+		radius := 2.92
 		if c.decStack == 4 {
 			ai.Abil = "Heartstopper Strike (Max Stacks)"
 			ai.Mult += convicBonus[c.TalentLvlSkill()]
 			ai.HitlagHaltFrames = skillHitlagMaxStackHaltFrame * 60
-			AoE = 1
+			radius = 3.61
 		}
 
 		skillCB := func(a combat.AttackCB) {
@@ -80,7 +80,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			c.a4()
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), AoE), hitDelay, hitDelay, skillCB)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), hitDelay, hitDelay, skillCB)
 		c.SetCD(action.ActionSkill, 10*60)
 
 		count := 2.0

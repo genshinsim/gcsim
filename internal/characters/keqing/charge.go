@@ -9,8 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{22, 24}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{22, 24}
+	chargeRadius   = []float64{2.2, 2.3}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(36)
@@ -27,14 +30,15 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagExtra,
 		ICDTag:     combat.ICDTagNormalAttack,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
-
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), chargeHitmarks[i], chargeHitmarks[i])
+		radius := chargeRadius[i]
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	if c.Core.Status.Duration(stilettoKey) > 0 {
@@ -48,12 +52,13 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 50,
 			Mult:       skillCA[c.TalentLvlSkill()],
 		}
 		for i := 0; i < 2; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), chargeHitmarks[i], chargeHitmarks[i])
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), chargeHitmarks[i], chargeHitmarks[i])
 		}
 
 		// TODO: Particle timing?

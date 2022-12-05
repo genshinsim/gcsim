@@ -9,10 +9,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][][]int
-var attackHitmarks = [][]int{{13, 13, 16, 30, 25}, {16, 10, 19, 23, 14}}
-var attackHitlagHaltFrame = [][]float64{{0.03, 0.03, 0.06, 0.09, 0.12}, {0.03, 0.03, 0.06, 0.06, 0.10}}
-var a1Hitmark = []int{19, 21}
+var (
+	attackFrames          [][][]int
+	attackHitmarks        = [][]int{{13, 13, 16, 30, 25}, {16, 10, 19, 23, 14}}
+	attackHitlagHaltFrame = [][]float64{{0.03, 0.03, 0.06, 0.09, 0.12}, {0.03, 0.03, 0.06, 0.06, 0.10}}
+	a1Hitmark             = []int{19, 21}
+	attackRadius          = [][]float64{{1.3, 1.7, 1.33, 1.7, 1.75}, {1.6, 1.3, 1.5, 1.5, 1.6}}
+)
 
 const normalHitNum = 5
 
@@ -71,9 +74,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.gender][c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
+	radius := attackRadius[c.gender][c.NormalCounter]
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.3),
+		combat.NewCircleHit(c.Core.Combat.Player(), radius),
 		attackHitmarks[c.gender][c.NormalCounter],
 		attackHitmarks[c.gender][c.NormalCounter],
 	)
@@ -86,7 +90,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagNormal,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupPoleExtraAttack,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: combat.StrikeTypeSlash,
 			Element:    attributes.Anemo,
 			Durability: 25,
 			Mult:       0.6,
@@ -94,7 +98,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.3),
+				combat.NewCircleHit(c.Core.Combat.Player(), 1),
 				0,
 				0,
 			)

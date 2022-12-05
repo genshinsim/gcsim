@@ -38,6 +38,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagNormal,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -63,7 +64,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		totalMV += mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel,
 			particleCB,
@@ -78,6 +79,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagNormal,
 			ICDTag:     combat.ICDTagNormalAttack,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypePierce,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       totalMV * 0.6,
@@ -85,7 +87,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		// TODO: frames?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.6),
 			0,
 			attackHitmarks[c.NormalCounter][0]+travel+5,
 		)

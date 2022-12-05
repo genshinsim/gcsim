@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .15 + .05*float64(r)
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("acquila favonia", -1),
+		Base:         modifier.NewBase("aquila favonia", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -69,12 +69,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			AttackTag:  combat.AttackTagWeaponSkill,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       dmg,
 		}
 		snap := char.Snapshot(&ai)
-		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Combat.Player(), 2), 1)
+		c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Combat.Player(), 6), 1)
 
 		atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
 

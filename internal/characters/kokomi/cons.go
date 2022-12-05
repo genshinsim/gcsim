@@ -22,6 +22,7 @@ func (c *char) c1(f, travel int) {
 		AttackTag:  combat.AttackTagNone,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,
@@ -29,7 +30,7 @@ func (c *char) c1(f, travel int) {
 	ai.FlatDmg = 0.3 * c.MaxHP()
 
 	// TODO: Is this snapshotted/dynamic?
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), f, f+travel)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.2), f, f+travel)
 }
 
 // C4 (Energy piece only) handling

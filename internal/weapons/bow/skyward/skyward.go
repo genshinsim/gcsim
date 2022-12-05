@@ -48,19 +48,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		trg := args[0].(combat.Target)
-
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if c.Player.Active() != char.Index {
 			return false
 		}
-
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if c.Rand.Float64() > prob {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 
@@ -70,11 +72,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			AttackTag:  combat.AttackTagWeaponSkill,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypePierce,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       1.25,
 		}
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHit(trg, 3), 0, 1)
 
 		char.AddStatus(icdKey, cd, true)
 

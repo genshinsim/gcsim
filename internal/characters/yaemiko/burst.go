@@ -33,11 +33,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 7), burstHitmark, burstHitmark)
 
 	ai.Abil = "Tenko Thunderbolt"
 	ai.Mult = burst[1][c.TalentLvlBurst()]
-	c.kitsuneBurst(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5))
+	c.kitsuneBurst(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 7))
 
 	c.ConsumeEnergy(2)
 	c.SetCD(action.ActionBurst, 22*60)

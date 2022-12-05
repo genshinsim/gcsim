@@ -25,13 +25,14 @@ func (c *char) c1(delay int) {
 		AttackTag:          combat.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagElementalBurst,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               1.2 * burst[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), 0, delay)
 }
 
 func (c *char) c2(a combat.AttackCB) {

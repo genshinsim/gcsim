@@ -14,6 +14,7 @@ var (
 	attackHitmarks        = [][]int{{13}, {18}, {10, 23}, {20}}
 	attackHitlagHaltFrame = [][]float64{{0.06}, {0.09}, {0, 0}, {0}}
 	attackDefHalt         = [][]bool{{true}, {true}, {false, false}, {false}}
+	attackRadius          = []float64{2, 2, 2.18, 3.43}
 )
 
 const normalHitNum = 4
@@ -47,6 +48,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -54,10 +56,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
+		if c.NormalCounter == 3 {
+			ai.StrikeType = combat.StrikeTypeSpear
+		}
+		radius := attackRadius[c.NormalCounter]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 			)

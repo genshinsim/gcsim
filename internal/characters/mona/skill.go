@@ -45,6 +45,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skillDot[c.TalentLvlSkill()],
@@ -53,7 +54,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// tick every 1s
 	for i := skillHitmarks[hold]; i < 300; i += 60 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2), i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), i)
 	}
 
 	// Explosion
@@ -63,12 +64,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, skillHitmarks[hold]+313)
+	c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, skillHitmarks[hold]+313)
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < .33 {

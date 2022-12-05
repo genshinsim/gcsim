@@ -62,14 +62,13 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 		aimedHitmarks[skillActive],
 		aimedHitmarks[skillActive]+travel,
 	)
 
 	// Cover state handling - drops crowfeather, which explodes after 1.5 seconds
 	if c.Core.Status.Duration(coverKey) > 0 {
-		// Not sure what kind of strike type this is
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush",
@@ -85,7 +84,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		//TODO: snapshot?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 6),
 			aimedHitmarks[skillActive],
 			aimedHitmarks[skillActive]+travel+90,
 			c.a4,

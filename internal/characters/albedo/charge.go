@@ -27,6 +27,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagNormal,
 		ICDTag:     combat.ICDTagNormalAttack,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -34,7 +35,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.2), chargeHitmarks[i], chargeHitmarks[i])
 	}
 
 	return action.ActionInfo{

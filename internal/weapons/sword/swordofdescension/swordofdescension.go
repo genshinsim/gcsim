@@ -57,6 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
+			dmg := args[2].(float64)
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
@@ -76,6 +77,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			if c.Rand.Float64() < 0.5 {
 				return false
 			}
+			if dmg == 0 {
+				return false
+			}
 			char.AddStatus(icdKey, 600, true)
 
 			ai := combat.AttackInfo{
@@ -84,12 +88,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				AttackTag:  combat.AttackTagWeaponSkill,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypeDefault,
 				Element:    attributes.Physical,
 				Durability: 100,
 				Mult:       2.00,
 			}
 			trg := args[0].(combat.Target)
-			c.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHit(trg, 1.5), 0, 1)
 
 			return false
 		}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))

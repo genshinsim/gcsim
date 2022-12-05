@@ -77,7 +77,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagKleeFireDamage,
 		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               mine[c.TalentLvlSkill()],
@@ -120,14 +120,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		for i, data := range bounceAttacks {
 			c.Core.QueueAttackWithSnap(data.ai, data.snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 2),
+				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4),
 				bounceHitmarks[i]-cooldownDelay,
 				c.a1,
 			)
 		}
 		for _, data := range mineAttacks {
 			c.Core.QueueAttackWithSnap(data.ai, data.snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 1),
+				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2),
 				mineHitmark-cooldownDelay,
 				c.c2,
 			)

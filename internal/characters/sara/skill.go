@@ -44,13 +44,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
 		// TODO: not sure of snapshot? timing
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 50, c2Hitmark, c.a4)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6), 50, c2Hitmark, c.a4)
 		c.attackBuff(c2Hitmark)
 	}
 

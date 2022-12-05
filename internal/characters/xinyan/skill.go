@@ -29,6 +29,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeBlunt,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -59,7 +60,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.updateShield(1, defFactor)
 		}, skillShieldStart)
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), skillHitmark, skillHitmark, cb, c.c4)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillHitmark, skillHitmark, cb, c.c4)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 13)
 	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+c.ParticleDelay)
@@ -90,11 +91,12 @@ func (c *char) shieldDot(src int) func() {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 1, 1)
 
 		c.Core.Tasks.Add(c.shieldDot(src), 2*60)
 	}

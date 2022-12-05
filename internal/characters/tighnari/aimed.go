@@ -48,6 +48,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		AttackTag:            combat.AttackTagExtra,
 		ICDTag:               combat.ICDTagNone,
 		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
 		Element:              attributes.Dendro,
 		Durability:           25,
 		Mult:                 fullaim[c.TalentLvlAttack()],
@@ -58,7 +59,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), aimedHitmark, aimedHitmark+travel)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedFrames),
@@ -102,6 +103,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		AttackTag:            combat.AttackTagExtra,
 		ICDTag:               combat.ICDTagNone,
 		ICDGroup:             combat.ICDGroupDefault,
+		StrikeType:           combat.StrikeTypePierce,
 		Element:              attributes.Dendro,
 		Durability:           25,
 		Mult:                 wreath[c.TalentLvlAttack()],
@@ -111,7 +113,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedWreathHitmark-skip, aimedWreathHitmark+travel-skip)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), aimedWreathHitmark-skip, aimedWreathHitmark+travel-skip)
 	c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
 
 	ai = combat.AttackInfo{
@@ -120,6 +122,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		AttackTag:    combat.AttackTagExtra,
 		ICDTag:       combat.ICDTagExtraAttack,
 		ICDGroup:     combat.ICDGroupTighnari,
+		StrikeType:   combat.StrikeTypePierce,
 		Element:      attributes.Dendro,
 		Durability:   25,
 		Mult:         clusterbloom[c.TalentLvlAttack()],
@@ -131,7 +134,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
 				wreathTravel,
 			)
 		}
@@ -143,6 +146,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 				AttackTag:  combat.AttackTagExtra,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypePierce,
 				Element:    attributes.Dendro,
 				Durability: 25,
 				Mult:       1.5,
@@ -150,7 +154,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
 				wreathTravel,
 			)
 		}

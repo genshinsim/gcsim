@@ -34,6 +34,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagExtra,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -60,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			t.SetTag(conductiveTag, count+1)
 		}
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), chargeHitmark-windup, chargeHitmark-windup, cb)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 10), chargeHitmark-windup, chargeHitmark-windup, cb)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

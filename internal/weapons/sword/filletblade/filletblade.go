@@ -35,7 +35,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-
+		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -48,6 +48,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Rand.Float64() > 0.5 {
 			return false
 		}
+		if dmg == 0 {
+			return false
+		}
 		// add a new action that deals % dmg immediately
 		// superconduct attack
 		ai := combat.AttackInfo{
@@ -56,12 +59,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			AttackTag:  combat.AttackTagWeaponSkill,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       2.0 + 0.4*float64(r),
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.1), 0, 1)
+		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 1)
 
 		// trigger cd
 		char.AddStatus(icdKey, cd, true)

@@ -34,23 +34,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 8), burstHitmark, burstHitmark)
 
 	//8 hits
 	ai.Abil = "Starward Sword (Consecutive Slash)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	for i := 82; i < 162; i += 11 {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), i, i)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 8), i, i)
 	}
 
 	//final
 	ai.Abil = "Starward Sword (Last Attack)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), 197, 197)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 8), 197, 197)
 
 	if c.Base.Cons >= 6 {
 		c.c6("burst")

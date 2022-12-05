@@ -29,6 +29,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagExtra,
 		ICDTag:     combat.ICDTagExtraAttack,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -74,7 +75,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: Not sure of snapshot timing
 	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
 		cb,

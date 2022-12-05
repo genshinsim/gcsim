@@ -41,12 +41,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupXiaoDash,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2), skillHitmark)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.8), skillHitmark)
 
 	// apply A4 0.25s after cast
 	c.Core.Tasks.Add(func() {

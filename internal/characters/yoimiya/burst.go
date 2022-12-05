@@ -31,6 +31,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -40,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		combat.NewCircleHit(c.Core.Combat.Player(), 6),
 		0,
 		burstHitmark,
 		c.applyAB, // callback to apply Aurous Blaze
@@ -124,11 +125,12 @@ func (c *char) burstHook() {
 			AttackTag:  combat.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeBlunt,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       burstExplode[c.TalentLvlBurst()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(trg, 3), 0, 1)
 
 		trg.AddStatus(abIcdKey, 120, true) // trigger Aurous Blaze ICD
 

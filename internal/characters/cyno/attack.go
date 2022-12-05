@@ -14,12 +14,7 @@ var (
 	attackHitmarks        = [][]int{{14}, {17}, {13, 22}, {27}}
 	attackHitlagHaltFrame = [][]float64{{0.01}, {0.06}, {0, 0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{false}, {true}, {false, true}, {true}}
-	attackStrikeType      = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSpear, combat.StrikeTypeSpear},
-		{combat.StrikeTypeSlash},
-	}
+	attackRadius          = []float64{1.8, 1.62, 2.11, 2.3}
 )
 
 const normalHitNum = 4
@@ -51,17 +46,20 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         attackStrikeType[c.NormalCounter][i],
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i],
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-
+		if c.NormalCounter == 2 {
+			ai.StrikeType = combat.StrikeTypeSpear
+		}
+		radius := attackRadius[c.NormalCounter]
 		c.Core.QueueAttack(
 			ai,
-			c.attackPattern(c.NormalCounter),
+			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],
 		)
@@ -77,26 +75,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) attackPattern(attackIndex int) combat.AttackPattern {
-	switch attackIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.8)
-	case 1:
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			1.35,
-		) // supposed to be box x=1.8,z=2.7
-	case 2:
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			1.8,
-		) // both hits supposed to be box x=2.2,z=3.6
-	case 3:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.3)
-	}
-	panic("unreachable code")
-}
-
 const burstHitNum = 5
 
 var (
@@ -104,13 +82,7 @@ var (
 	attackBHitmarks        = [][]int{{12}, {14}, {18}, {5, 14}, {40}}
 	attackBHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.03}, {0.01, 0.03}, {0.05}}
 	attackBDefHalt         = [][]bool{{false}, {false}, {false}, {false, false}, {true}}
-	attackBStrikeType      = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeBlunt},
-		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
-		{combat.StrikeTypeBlunt},
-	}
+	attackBRadius          = []float64{2, 2, 3.25, 2.5, 3.5}
 )
 
 func init() {
@@ -142,7 +114,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         attackBStrikeType[c.normalBCounter][i],
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
 			HitlagFactor:       0.01,
@@ -152,8 +124,12 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
 			IgnoreInfusion:     true,
 		}
+		if c.NormalCounter == 2 || c.NormalCounter == 4 {
+			ai.StrikeType = combat.StrikeTypeBlunt
+		}
+		radius := attackBRadius[c.normalBCounter]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, c.attackBPattern(c.normalBCounter), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
 		}, attackBHitmarks[c.normalBCounter][i])
 	}
 
@@ -171,26 +147,4 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1],
 		State:           action.NormalAttackState,
 	}
-}
-
-func (c *char) attackBPattern(attackIndex int) combat.AttackPattern {
-	switch attackIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2)
-	case 1:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2)
-	case 2:
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			3.0,
-		) // supposed to be box x=2.5,z=6.0
-	case 3: // both hits are 2.5m radius circles
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			2.5,
-		)
-	case 4:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 3.5)
-	}
-	panic("unreachable code")
 }

@@ -61,6 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				AttackTag:  combat.AttackTagWeaponSkill,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypeDefault,
 				Element:    attributes.Physical,
 				Durability: 100,
 				Mult:       atk,
@@ -68,7 +69,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			if t.AuraContains(attributes.Cryo, attributes.Frozen) {
 				ai.Mult = atkc
 			}
-			c.QueueAttack(ai, combat.NewCircleHit(t, 2), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHit(t, 3), 0, 1)
 		}
 		return false
 	}, fmt.Sprintf("dragonspine-%v", char.Base.Key.String()))

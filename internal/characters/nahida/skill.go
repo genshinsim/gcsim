@@ -220,6 +220,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNahidaSkill,
 			ICDGroup:   combat.ICDGroupNahidaSkill,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       triKarmaAtk[c.TalentLvlSkill()],

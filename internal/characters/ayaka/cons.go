@@ -39,6 +39,9 @@ func (c *char) c4(a combat.AttackCB) {
 	if c.Base.Cons < 4 {
 		return
 	}
+	if a.Damage == 0 {
+		return
+	}
 
 	e, ok := a.Target.(*enemy.Enemy)
 	if !ok {

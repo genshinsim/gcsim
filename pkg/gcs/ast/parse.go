@@ -371,10 +371,7 @@ func (p *Parser) parseSwitch() (Stmt, error) {
 			return nil, err
 		}
 	} else {
-		stmt.Condition = &NumberLit{
-			Pos:    n.pos,
-			IntVal: 1,
-		}
+		stmt.Condition = nil
 	}
 
 	if n := p.next(); n.Typ != itemLeftBrace {

@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	// TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillHitmark)
+	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), skillHitmark)
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -79,6 +79,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if !c.skillActive {
 			return false
 		}
@@ -89,6 +90,9 @@ func (c *char) skillHook() {
 		if atk.Info.Abil == "Abiogenesis: Solar Isotoma" {
 			return false
 		}
+		if dmg == 0 {
+			return false
+		}
 
 		// this ICD is most likely tied to the construct, so it's not hitlag extendable
 		c.AddStatus(skillICDKey, 120, false) // proc every 2s
@@ -96,7 +100,7 @@ func (c *char) skillHook() {
 		c.Core.QueueAttackWithSnap(
 			c.skillAttackInfo,
 			c.skillSnapshot,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3.4),
 			1,
 		)
 

@@ -15,6 +15,7 @@ var (
 	attackFramesWithLag   [][]int
 	attackHitmarks        = []int{16, 23, 37}
 	attackHitmarksWithLag []int
+	attackRadius          = []float64{1, 1, 1.5}
 )
 
 const normalHitNum = 3
@@ -98,9 +99,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
+		radius := attackRadius[c.NormalCounter]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1),
+			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
 			0,
 			travel,
 			c.a1,

@@ -57,6 +57,7 @@ func (c *char) orbitalTickTask(src int) func() {
 			AttackTag:  combat.AttackTagNone,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}
@@ -73,6 +74,6 @@ func (c *char) orbitalTickTask(src int) func() {
 		//queue up next instance
 		c.QueueCharTask(c.orbitalTickTask(src), 135)
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), -1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.2), -1, 1)
 	}
 }

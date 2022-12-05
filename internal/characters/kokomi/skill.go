@@ -55,6 +55,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skillDmg[c.TalentLvlSkill()],
@@ -63,7 +64,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 6),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})

@@ -44,6 +44,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -52,7 +53,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.6), skillHitmark, skillHitmark)
 
 	if c.Base.Cons >= 6 {
 		c.c6("skill")
@@ -78,10 +79,13 @@ const skillRecastHitmark = 27
 func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
-		//2 tick dmg at start to end
+		// 2 tick dmg at start to end
 		hits, ok := p["c1"]
 		if !ok {
-			hits = 1 //default 1 hit
+			hits = 1 // default 1 hit
+		}
+		if hits > 2 {
+			hits = 2
 		}
 		ai := combat.AttackInfo{
 			Abil:       "Stellar Restoration (C1)",
@@ -89,12 +93,17 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 			AttackTag:  combat.AttackTagElementalArtHold,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       .5,
 		}
 		// TODO: this should be 1st hit on cast and 2nd at end
-		for i := 0; i < hits; i++ {
+		// First hit centers on primary target
+		if hits >= 1 {
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2), skillRecastHitmark, skillRecastHitmark)
+		}
+		if hits == 2 {
 			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), skillRecastHitmark, skillRecastHitmark)
 		}
 	}
@@ -105,12 +114,13 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 50,
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillRecastHitmark, skillRecastHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillRecastHitmark, skillRecastHitmark)
 
 	//add electro infusion
 	c.a1()

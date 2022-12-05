@@ -36,13 +36,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagNormal,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupAmber,
+		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)

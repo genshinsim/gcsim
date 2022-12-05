@@ -13,6 +13,7 @@ import (
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{6, 11, 12, 32}
+	attackRadius   = []float64{1, 1, 1, 2}
 )
 
 const normalHitNum = 4
@@ -49,6 +50,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagNormal,
 		ICDTag:     combat.ICDTagNormalAttack,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -70,9 +72,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			done = true
 		}
 	}
-
+	radius := attackRadius[c.NormalCounter]
 	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 		cb,

@@ -9,8 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillFrames [][]int
-var skillHoldHitmarks = [][]int{{45, 57}, {112, 121}}
+var (
+	skillFrames       [][]int
+	skillHoldHitmarks = [][]int{{45, 57}, {112, 121}}
+	skillHoldRadius   = []float64{2.5, 2.12}
+)
 
 const skillPressHitmark = 16
 
@@ -76,6 +79,7 @@ func (c *char) skillPress() action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		Durability:         50,
 		HitlagHaltFrames:   0.09 * 60,
@@ -84,7 +88,7 @@ func (c *char) skillPress() action.ActionInfo {
 		Mult:               skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), skillPressHitmark, skillPressHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), skillPressHitmark, skillPressHitmark)
 
 	//25 % chance of 3 orbs
 	var count float64 = 2
@@ -118,6 +122,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
@@ -128,19 +133,21 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		ax.HitlagHaltFrames = 0.09 * 60
+		radius := skillHoldRadius[i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ax,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 			)
 		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
+		ai.StrikeType = combat.StrikeTypeDefault
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 166, 166)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5), 166, 166)
 	}
 
 	//user-specified c4 variant adds an additional attack that deals 135% of the second hit
@@ -148,7 +155,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ai.Mult = skillHold[level-1][1][c.TalentLvlSkill()] * 1.35
 		ai.Abil = "Passion Overload (C4)"
 		ai.HitlagHaltFrames = 0.12 * 60
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 94, 94)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 94, 94)
 
 	}
 

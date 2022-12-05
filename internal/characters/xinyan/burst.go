@@ -26,6 +26,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Physical,
 		Durability:         100,
 		Mult:               burstDmg[c.TalentLvlBurst()],
@@ -40,6 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagElementalBurstPyro,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               burstDot[c.TalentLvlBurst()],
@@ -47,12 +49,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// 1st DoT
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 0, 0)
 		ai.CanBeDefenseHalted = false // only the first DoT has hitlag
 		// 2nd DoT onwards
 		c.QueueCharTask(func() {
 			for i := 0; i < 6; i++ {
-				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), i*17, i*17)
+				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), i*17, i*17)
 			}
 		}, 17)
 	}, burstDoT1Hitmark)

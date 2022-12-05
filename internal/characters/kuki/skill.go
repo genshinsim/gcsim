@@ -45,13 +45,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 		FlatDmg:    c.Stat(attributes.EM) * 0.25,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), skillHitmark, skillHitmark)
 
 	// C2: Grass Ring of Sanctification's duration is increased by 3s.
 	skilldur := 720
@@ -91,13 +91,13 @@ func (c *char) bellTick() func() {
 			AttackTag:  combat.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       skilldot[c.TalentLvlSkill()],
 			FlatDmg:    c.Stat(attributes.EM) * 0.25,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), 2, 2)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 2, 2)
 
 		//A4 is considered here
 		c.Core.Player.Heal(player.HealInfo{

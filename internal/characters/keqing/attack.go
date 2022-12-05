@@ -9,10 +9,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{11}, {11}, {15}, {12, 22}, {26}}
-var attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {.06}, {0, .03}, {0}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, true}, {false}}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{11}, {11}, {15}, {12, 22}, {26}}
+	attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {.06}, {0, .03}, {0}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, true}, {false}}
+	attackRadius          = []float64{1.33, 1.5, 1.8, 1.5, 0.8}
+)
 
 const normalHitNum = 5
 
@@ -37,7 +40,10 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
+	centerTarget := c.Core.Combat.Player()
+	if c.NormalCounter == 4 {
+		centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
+	}
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -45,6 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -52,10 +59,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
+		radius := attackRadius[c.NormalCounter]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(centerTarget, radius),
 				0,
 				0,
 			)

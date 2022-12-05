@@ -117,7 +117,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		}
 
 		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
-			Write("sakura level", lvl)
+			Write("sakura level", lvl+1)
 
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
@@ -142,7 +142,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, c.ParticleDelay)
 		}
 
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget()).Key()), 1, 1, cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget()), 0.5), 1, 1, cb)
 		// tick per ~2.9s seconds
 		c.Core.Tasks.Add(c.kitsuneTick(totem), 176)
 	}

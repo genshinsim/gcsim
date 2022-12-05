@@ -54,9 +54,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Halberd Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
+			AttackTag:  combat.AttackTagNone,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       dmg,

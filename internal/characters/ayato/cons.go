@@ -63,6 +63,7 @@ func (c *char) c6() {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         combat.StrikeTypeSlash,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			Mult:               4.5,
@@ -71,8 +72,8 @@ func (c *char) c6() {
 			CanBeDefenseHalted: false,
 			IsDeployable:       true,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 20, 20)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 22, 22)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5.32), 20, 20)
+		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5.32), 22, 22)
 
 		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
 		c.c6ready = false

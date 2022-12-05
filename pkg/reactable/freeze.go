@@ -56,7 +56,10 @@ func min(a, b combat.Durability) combat.Durability {
 }
 
 func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
-	if a.Info.StrikeType != combat.StrikeTypeBlunt || r.Durability[ModifierFrozen] < ZeroDur {
+	if r.Durability[ModifierFrozen] < ZeroDur {
+		return false
+	}
+	if a.Info.StrikeType != combat.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
 		return false
 	}
 	//remove 200 freeze gauge if availabe
@@ -71,6 +74,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 		AttackTag:        combat.AttackTagShatter,
 		ICDTag:           combat.ICDTagShatter,
 		ICDGroup:         combat.ICDGroupReactionA,
+		StrikeType:       combat.StrikeTypeDefault,
 		Element:          attributes.Physical,
 		IgnoreDefPercent: 1,
 	}
@@ -108,6 +112,7 @@ func (r *Reactable) checkFreeze() {
 			AttackTag:   combat.AttackTagNone,
 			ICDTag:      combat.ICDTagNone,
 			ICDGroup:    combat.ICDGroupDefault,
+			StrikeType:  combat.StrikeTypeDefault,
 			Element:     attributes.NoElement,
 			SourceIsSim: true,
 			DoNotLog:    true,

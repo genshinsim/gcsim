@@ -73,6 +73,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],

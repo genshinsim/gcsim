@@ -34,9 +34,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
-	c.a1AbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5)
-	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5)
-
 	w.Character = &c
 
 	return nil

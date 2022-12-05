@@ -28,6 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupAmber,
+		StrikeType: combat.StrikeTypePierce,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],
@@ -40,13 +41,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//TODO: properly implement random hits and hit box range. right now everything is just radius 3
 	for i := 24; i < 120; i += 24 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstStart+i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.6), burstStart+i)
 	}
 	for i := 36; i < 120; i += 36 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstStart+i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.6), burstStart+i)
 	}
 	for i := 12; i < 120; i += 12 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstStart+i)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2.6), burstStart+i)
 	}
 
 	if c.Base.Cons >= 6 {

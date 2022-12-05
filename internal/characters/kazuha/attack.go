@@ -9,11 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{13}, {11}, {16, 25}, {15}, {15, 19, 27}}
-var attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {.01, .05}, {.06}, {0, 0, 0}}
-var attackHitlagFactor = [][]float64{{.01}, {.01}, {.01, .01}, {.01}, {.05, .05, .05}}
-var attackDefHalt = [][]bool{{true}, {true}, {false, true}, {true}, {true, false, true}}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{13}, {11}, {16, 25}, {15}, {15, 19, 27}}
+	attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {.01, .05}, {.06}, {0, 0, 0}}
+	attackHitlagFactor    = [][]float64{{.01}, {.01}, {.01, .01}, {.01}, {.05, .05, .05}}
+	attackDefHalt         = [][]bool{{true}, {true}, {false, true}, {true}, {true, false, true}}
+	attackRadius          = []float64{1.5, 1.5, 1.5, 1.5, 2.2}
+)
 
 const normalHitNum = 5
 
@@ -52,10 +55,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
+		radius := attackRadius[c.NormalCounter]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.3),
+				combat.NewCircleHit(c.Core.Combat.Player(), radius),
 				0,
 				0,
 			)

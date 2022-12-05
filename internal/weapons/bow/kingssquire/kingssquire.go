@@ -47,6 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				AttackTag:  combat.AttackTagWeaponSkill,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypeDefault,
 				Element:    attributes.Physical,
 				Mult:       0.8 + float64(r)*0.2,
 			}

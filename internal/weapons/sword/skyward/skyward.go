@@ -67,6 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	dmgper := .15 + .05*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		//check if char is correct?
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -78,6 +79,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if !char.StatModIsActive(buffKey) {
 			return false
 		}
+		if dmg == 0 {
+			return false
+		}
 		//add a new action that deals % dmg immediately
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
@@ -85,12 +89,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			AttackTag:  combat.AttackTagWeaponSkill,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       dmgper,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.1), 0, 1)
+		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 1)
 		return false
 
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))

@@ -31,6 +31,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		AttackTag:            combat.AttackTagExtra,
 		ICDTag:               combat.ICDTagExtraAttack,
 		ICDGroup:             combat.ICDGroupVenti,
+		StrikeType:           combat.StrikeTypePierce,
 		Element:              attributes.Anemo,
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
@@ -40,7 +41,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), aimedHitmark, aimedHitmark+travel)
 	if c.Base.Cons >= 1 {
 		c.c1(ai, travel)
 	}

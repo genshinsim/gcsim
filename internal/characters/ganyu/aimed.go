@@ -69,12 +69,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				Write("expiry", c.a1Expiry)
 		}
 
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), travel)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), travel)
 
 		ai.Abil = "Frost Flake Bloom"
 		ai.Mult = ffb[c.TalentLvlAttack()]
 		ai.HitWeakPoint = false
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2), travel+bloom)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), travel+bloom)
 
 		// first shot/bloom do not benefit from a1
 		c.a1Expiry = c.Core.F + 60*5
