@@ -52,6 +52,10 @@ export const OuterLabels = <Datum,>(
     }: Props<Datum>) => {
   const labelPositions = useLabelPositions(arcs, labelRadius, xPadding, yPadding);
   const linePoints = useLinePoints(labelPositions, pieRadius, tail);
+
+  if (labelRadius == 0) {
+    return null;
+  }
   
   return <>{arcs.map((arc, index) => {
     const left = midAngle(arc) > Math.PI;

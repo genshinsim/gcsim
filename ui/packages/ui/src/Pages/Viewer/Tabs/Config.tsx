@@ -6,13 +6,13 @@ import ExecutorSettingsButton from '../../../Components/Buttons/ExecutorSettings
 import { Executor, ExecutorSupplier } from '@gcsim/executors';
 import { runSim } from '../../Simulator/Toolbox';
 import { useAppDispatch } from '../../../Stores/store';
-import { useLocation } from 'wouter';
 import { useConfigValidateListener } from '../../Simulator';
 
 //@ts-ignore
 import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-gcsim";
 import "prismjs/themes/prism-tomorrow.css";
+import { useHistory } from 'react-router';
 
 type UseConfigData = {
   cfg?: string;
@@ -32,7 +32,7 @@ type ConfigProps = {
 
 export default ({ config, running, resetTab }: ConfigProps) => {
   const dispatch = useAppDispatch();
-  const [, setLocation] = useLocation();
+  const history = useHistory();
 
   if (config.cfg == null) {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
@@ -53,7 +53,7 @@ export default ({ config, running, resetTab }: ConfigProps) => {
               onClick={() => {
                 dispatch(runSim(config.exec(), config.cfg ?? ""));
                 resetTab();
-                setLocation("/viewer/web");
+                history.push("/viewer/web");
               }} />
         </div>
         <Error error={config.error} cfg={config.cfg} />

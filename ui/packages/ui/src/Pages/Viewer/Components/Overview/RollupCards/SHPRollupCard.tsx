@@ -22,6 +22,6 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
           { title: "p75", value: fmt(shp?.q3) },
         ]}
         tooltip="help"
-        drawerTitle="Shield Statistics" />
+        hashLink="shields" />
   );
 };

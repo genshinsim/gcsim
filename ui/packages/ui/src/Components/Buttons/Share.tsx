@@ -4,7 +4,7 @@ import axios from "axios";
 import classNames from "classnames";
 import { RefObject, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
+import { useLocation } from "react-router";
 
 type ShareProps = {
   running: boolean;
@@ -17,14 +17,14 @@ type ShareProps = {
 // TODO: separate share handling away from the button for caching across pages
 export default ({ running, copyToast, data, className, shareState }: ShareProps) => {
   const { t } = useTranslation();
-  const [location,] = useLocation();
+  const location = useLocation();
 
   const [isOpen, setOpen] = useState(false);
   const [shareLink, setShareLink] = shareState;
 
   // change the set link if url changes or rerun
   useEffect(() => {
-    setShareLink(extractFromLocation(location));
+    setShareLink(extractFromLocation(location.pathname));
   }, [location, setShareLink, data?.config_file]);
 
   const handleShare = () => {

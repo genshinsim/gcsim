@@ -4,13 +4,13 @@ import ConfigUI, { useConfig } from "./Tabs/Config";
 import SampleUI, { useSample } from "./Tabs/Sample";
 import Results from "./Tabs/Results";
 import ViewerNav from "./Components/ViewerNav";
-import { useLocation } from "wouter";
 import { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
 import { SimResults } from "@gcsim/types";
 import Warnings from "./Components/Warnings";
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import queryString from "query-string";
+import { useHistory } from "react-router";
 
 type ViewerProps = {
   running: boolean;
@@ -76,7 +76,7 @@ const ErrorAlert = ({
       redirect: string;
       retry?: () => void;
     }) => {
-  const [, setLocation] = useLocation();
+  const history = useHistory();
 
   let cancelButtonText: string | undefined;
   let onCancel: (() => void) | undefined;
@@ -88,7 +88,7 @@ const ErrorAlert = ({
   return (
     <Alert
       isOpen={msg != null}
-      onConfirm={() => setLocation(redirect)}
+      onConfirm={() => history.push(redirect)}
       onCancel={onCancel}
       canEscapeKeyCancel={false}
       canOutsideClickCancel={false}

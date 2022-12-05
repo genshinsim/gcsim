@@ -1,7 +1,7 @@
 import React from 'react';
 import { Callout, Card, Elevation, Icon } from '@blueprintjs/core';
-import { Link } from 'wouter';
 import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 interface DashCardProps {
   children: React.ReactNode;
@@ -23,7 +23,7 @@ function DashCard({ children, href, target }: DashCardProps) {
           </Card>
         </a>
       ) : (
-        <Link href={href}>
+        <Link to={href}>
           <a>
             <Card
               interactive

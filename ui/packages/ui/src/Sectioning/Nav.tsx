@@ -3,22 +3,22 @@ import {
   AnchorButton,
   Classes,
   HTMLSelect,
+  Icon,
   IconName,
-  MaybeElement,
   Navbar,
 } from "@blueprintjs/core";
 import { useTranslation } from "react-i18next";
-import { Link } from "wouter";
 import { FaDiscord } from "react-icons/fa";
 import logo from "./logo.png";
 import { useAppSelector } from "../Stores/store";
+import { Link } from "react-router-dom";
 
 export default ({}) => {
   const { t, i18n } = useTranslation();
   const user = useAppSelector((state) => state.user);
 
   const PageNavs = [
-    <NavLink key="sim" href="/simulator" icon="calculator" text={t("nav.simulator")} />,
+    <NavButton key="sim" href="/simulator" icon="calculator" text={t("nav.simulator")} />,
     <AnchorButton
         key="db"
         className={Classes.MINIMAL}
@@ -45,7 +45,7 @@ export default ({}) => {
       <div className="w-full 2xl:mx-auto 2xl:container">
         <Navbar.Group align={Alignment.LEFT}>
           <Navbar.Heading className="!mr-[10px]">
-            <Link href="/" className="flex h-[50px] items-center">
+            <Link to="/" className="flex h-[50px] items-center">
               <img
                 src={logo}
                 className="object-scale-down max-h-[75%] m-auto mr-2"
@@ -61,7 +61,7 @@ export default ({}) => {
           {PageNavs}
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT} className="!flex !items-stretch">
-          <NavLink href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} />
+          <NavButton href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} />
           <HTMLSelect
               className="ml-2 self-center"
               value={i18n.resolvedLanguage}
@@ -79,18 +79,17 @@ export default ({}) => {
   );
 };
 
-type NavLinkProps = {
+type NavButtonProps = {
   href: string;
-  icon: IconName | MaybeElement;
+  icon: IconName;
   text: string;
 };
 
-const NavLink = ({ href, icon, text }: NavLinkProps) => {
+const NavButton = ({ href, icon, text }: NavButtonProps) => {
   return (
-    <Link href={href}>
-      <AnchorButton minimal={true} icon={icon}>
-        <span className="hidden min-[798px]:block">{text}</span>
-      </AnchorButton>
+    <Link to={href} role="button" className="bp4-button bp4-minimal" tabIndex={0}>
+      <Icon icon={icon} />
+      <span className="hidden min-[798px]:block bp4-button-text">{text}</span>
     </Link>
   );
 };

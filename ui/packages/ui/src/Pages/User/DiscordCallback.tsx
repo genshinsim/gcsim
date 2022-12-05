@@ -1,16 +1,16 @@
 import React from "react";
-import { useLocation } from "wouter";
+import { useHistory } from "react-router";
 import { useAppDispatch } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
 import { authProvider } from "./Login";
 
 export function DiscordCallback() {
-  const params = new URLSearchParams(window.location.search);
   const [error, setError] = React.useState("");
   const dispatch = useAppDispatch();
-  const [_, setLocation] = useLocation();
-
+  const history = useHistory();
+  
   React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     if (code === null) {
       setError("Invalid Discord auth code. Login failed.");
@@ -20,13 +20,13 @@ export function DiscordCallback() {
       .auth(code)
       .then((user) => {
         dispatch(userActions.mergeUser(user));
-        setLocation("/account");
+        history.push("/account");
       })
       .catch((error) => {
         setError(JSON.stringify(error));
-        setLocation("/account");
+        history.push("/account");
       });
-  }, [params]);
+  }, [dispatch, history]);
 
   if (error === "") {
     return <div className="flex flex-row place-content-center">Logging in... please wait.</div>;

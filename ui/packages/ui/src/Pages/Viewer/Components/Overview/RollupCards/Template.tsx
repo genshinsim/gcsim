@@ -1,7 +1,8 @@
-import { Card, Colors, Dialog, Icon, Classes } from "@blueprintjs/core";
+import { Card, Colors, Icon } from "@blueprintjs/core";
 import classNames from "classnames";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router";
 import { CardTitle } from "../../Util";
 
 type AuxStat = {
@@ -16,22 +17,24 @@ type CardProps = {
   label?: string;
   auxStats?: Array<AuxStat>;
   tooltip?: string | JSX.Element;
-  children?: React.ReactNode;
-  drawerTitle?: string;
+  hashLink?: string;
 };
 
 // TODO: hash link
 export const RollupCard = ({
-    title, color, value, label, auxStats, tooltip, children, drawerTitle }: CardProps) => {
-  const [isOpen, setOpen] = useState(false);
-  const interactable = children != undefined;
+    title, color, value, label, auxStats, tooltip, hashLink }: CardProps) => {
+  const history = useHistory();
+  const interactable = hashLink != null;
+  const click = () => {
+    history.replace({ hash: hashLink });
+  };
 
   return (
     <div className="flex basis-1/4 flex-auto pl-1 min-w-fit" style={{ background: color }}>
       <Card
           className="flex flex-auto flex-row items-stretch justify-between"
           interactive={interactable}
-          onClick={() => interactable && value != undefined && setOpen(true)}>
+          onClick={() => interactable && value != undefined && click()}>
         <div className="flex flex-col justify-start">
           <CardTitle title={title} tooltip={tooltip} />
           <CardValue value={value} label={label} />
@@ -39,9 +42,6 @@ export const RollupCard = ({
         </div>
         <CardChevron interactable={interactable} />
       </Card>
-      <CardDrawer title={drawerTitle} openState={[isOpen, setOpen]}>
-        {children}
-      </CardDrawer>
     </div>
   );
 };
@@ -109,36 +109,5 @@ const AuxItem = ({ stat }: { stat: AuxStat }) => {
         {val.toLocaleString(i18n.language)}
       </div>
     </div>
-  );
-};
-
-const CardDrawer = ({ title, children, openState }: {
-      title?: string,
-      children?: React.ReactNode,
-      openState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-    }) => {
-  const [isOpen, setOpen] = openState;
-
-  if (children == null) {
-    return null;
-  }
-
-  return (
-    <Dialog
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        title={title}
-        icon="list-detail-view"
-        autoFocus={true}
-        canEscapeKeyClose={true}
-        canOutsideClickClose={true}
-        enforceFocus={true}
-        hasBackdrop={true}
-        usePortal={true}
-        style={{ width: "720px" }}>
-      <div className={Classes.DIALOG_BODY}>
-        {children}
-      </div>
-    </Dialog>
   );
 };

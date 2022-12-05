@@ -23,6 +23,6 @@ export default ({ data, color }: { data: SimResults | null; color: string }) => 
           { title: "p75", value: fmt(duration?.q3) },
         ]}
         tooltip="help"
-        drawerTitle="Sim Duration Statistics" />
+        hashLink="sim" />
   );
 };

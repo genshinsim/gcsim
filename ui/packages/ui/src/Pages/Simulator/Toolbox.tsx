@@ -2,7 +2,6 @@ import { Classes, Button, Menu, MenuDivider, MenuItem, ButtonGroup } from "@blue
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
 import { AppThunk, RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
 import { ImportFromGOODDialog, ImportFromEnkaDialog } from "./Components";
@@ -12,6 +11,7 @@ import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsBut
 import { throttle } from "lodash-es";
 import { SimResults } from "@gcsim/types";
 import { VIEWER_THROTTLE } from "../Viewer";
+import { useHistory } from "react-router";
 
 type Props = {
   exec: ExecutorSupplier<Executor>;
@@ -43,7 +43,7 @@ export function runSim(pool: Executor, cfg: string): AppThunk {
 
 export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
   const { t } = useTranslation();
-  const [, setLocation] = useLocation();
+  const history = useHistory();
 
   const [openImport, setOpenGOODImport] = React.useState<boolean>(false);
   const [openImportFromEnka, setOpenImportFromEnka] = React.useState<boolean>(false);
@@ -65,7 +65,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 
   const run = () => {
     dispatch(runSim(exec(), cfg));
-    setLocation("/viewer/web");
+    history.push("/viewer/web");
   };
 
   const toggleBuilder = () => {
@@ -90,7 +90,10 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
         onClick={toggleBuilder}
       />
       <MenuDivider />
-      <MenuItem text="Sample Upload" icon="helper-management" onClick={() => setLocation("/sample/upload")}/>
+      <MenuItem
+          text="Sample Upload"
+          icon="helper-management"
+          onClick={() => history.push("/sample/upload")}/>
       <MenuItem icon="cut" text="Substat Snippets" disabled />
       <MenuDivider />
 

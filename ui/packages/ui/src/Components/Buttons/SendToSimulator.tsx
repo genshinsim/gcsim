@@ -2,15 +2,15 @@ import { Button, Callout, Checkbox, Classes, Dialog, Icon, Intent } from "@bluep
 import classNames from "classnames";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "wouter";
+import { useHistory } from "react-router";
 import { appActions } from "../../Stores/appSlice";
 import { useAppDispatch } from "../../Stores/store";
 
 export default ({ config }: { config?: string }) => {
   const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
   const { t } = useTranslation();
-  const [, setLocation] = useLocation();
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
   const [isOpen, setOpen] = useState(false);
   const [keepTeam, setKeep] = useState<boolean>(() => {
@@ -27,7 +27,7 @@ export default ({ config }: { config?: string }) => {
       return;
     }
     dispatch(appActions.setCfg({ cfg: config, keepTeam: keepTeam }));
-    setLocation("/simulator");
+    history.push("/simulator");
   };
 
   return (

@@ -1,6 +1,6 @@
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { ReactNode, useEffect, useRef } from "react";
-import { Redirect, Route, Switch, useLocation } from "wouter";
+import { BrowserRouter, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Classes, Dialog, HotkeysProvider, Switch as SwitchInput } from "@blueprintjs/core";
 import { Provider } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -49,11 +49,13 @@ type UIProps = {
 
 export const UI = (props: UIProps) => {
   return (
-    <Provider store={store}>
-      <HotkeysProvider>
-        <Main {...props} />
-      </HotkeysProvider>
-    </Provider>
+    <BrowserRouter>
+      <Provider store={store}>
+        <HotkeysProvider>
+          <Main {...props} />
+        </HotkeysProvider>
+      </Provider>
+    </BrowserRouter>
   );
 };
 
@@ -102,29 +104,25 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
   const { t } = useTranslation();
   const content = useRef<HTMLDivElement>(null);
-  const [location] = useLocation();
-
-  useEffect(() => {
-    let loc = window.location.href;
-    if (loc.includes("www.gcsim.app")) {
-      loc = loc.replace("www.gcsim.app", "gcsim.app");
-      window.location.href = loc;
-    }
-  }, []);
+  const location = useLocation();
+  const history = useHistory();
 
   // every time you change location, scroll to top of page. This is necessary since the outer
   // content div will never rerender through the entire lifespan of the app and will always retain
   // its scroll position.
   useEffect(() => {
-    content.current?.scrollTo(0, 0);
-  }, [location]);
+    const unlisten = history.listen(() => {
+      content.current?.scrollTo(0, 0);
+    });
+    return () => unlisten();
+  }, [history]);
 
   // cancel the run every time we navigate away from the viewer page
   const prevLocation = useRef(location);
   useEffect(() => {
     if (prevLocation.current != location
-        && prevLocation.current.startsWith("/viewer/")
-        && !location.startsWith("/viewer/")
+        && prevLocation.current.pathname.startsWith("/viewer/")
+        && !location.pathname.startsWith("/viewer/")
         && exec().running()) {
       exec().cancel();
     }
@@ -136,89 +134,74 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
       <Nav />
       <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
         <Switch>
-          <Route path="/">
-            <Helmet>
-              <title>gcsim - simulation impact</title>
-            </Helmet>
+          {/* Landing Page */}
+          <Route exact path="/">
+            <Helmet><title>gcsim - simulation impact</title></Helmet>
             <Dash />
           </Route>
-          <Route path="/simple">
-            <Redirect to="/simulator" />
-          </Route>
-          <Route path="/advanced">
-            <Redirect to="/simulator" />
-          </Route>
+
+          {/* Simulator */}
           <Route path="/simulator">
-            <Helmet>
-              <title>gcsim - simulator</title>
-            </Helmet>
+            <Helmet><title>gcsim - simulator</title></Helmet>
             <Simulator exec={exec} />
           </Route>
 
-          {/* Sample Routes */}
-          <Route path="/sample/upload">
-            <Helmet>
-              <title>gcsim - sample</title>
-            </Helmet>
-            <UploadSample />
-          </Route>
-          <Route path="/sample/local">
-            <Helmet>
-              <title>gcsim - local sample</title>
-            </Helmet>
-            <LocalSample />
-          </Route>
-
+          
           {/* Viewer Routes */}
-          <Route path="/viewer">
-            <Redirect to="/simulator" />
-          </Route>
           <Route path="/viewer/web">
-            <Helmet>
-              <title>gcsim - viewer</title>
-            </Helmet>
+            <Helmet><title>gcsim - viewer</title></Helmet>
             <WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
           <Route path="/viewer/local">
-            <Helmet>
-              <title>gcsim - local viewer</title>
-            </Helmet>
+            <Helmet><title>gcsim - local viewer</title></Helmet>
             <LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
           <Route path="/viewer/share/:id">
-            {(params) => {
-              document.title = "gcsim - " + params.id;
+            {({ match }) => {
+              document.title = "gcsim - " + match?.params.id;
               return (
                 <ShareViewer
                     exec={exec}
-                    id={params.id}
+                    id={match?.params.id}
                     gitCommit={gitCommit}
                     mode={mode} />
               );
             }}
           </Route>
 
-          {/* reroute v3 -> new viewer */}
-          <Route path="/v3/viewer/share/:id">
-            {(params) => <Redirect to={"/viewer/share/" + params.id} />}
+          {/* Sample Routes */}
+          <Route path="/sample/upload">
+            <Helmet><title>gcsim - sample</title></Helmet>
+            <UploadSample />
+          </Route>
+          <Route path="/sample/local">
+            <Helmet><title>gcsim - local sample</title></Helmet>
+            <LocalSample />
           </Route>
 
+          {/* Redirects */}
+          <Route path={["/simple", "/advanced", "/viewer"]}>
+            <Redirect to="/simulator" />
+          </Route>
+          <Route path="/v3/viewer/share/:id">
+            {({ match }) => <Redirect to={"/viewer/share/" + match?.params.id} />}
+          </Route>
+
+          {/* DB & Account */}
           <Route path="/db">
             <RedirectDB />
           </Route>
           <Route path="/account">
-            <Helmet>
-              <title>gcsim - account</title>
-            </Helmet>
+            <Helmet><title>gcsim - account</title></Helmet>
             <PageUserAccount />
           </Route>
           <Route path="/auth/discord">
             <DiscordCallback />
           </Route>
+
+          {/* Default (404 case) */}
           <Route>
-            <Helmet>
-              <title>gcsim - simulation impact</title>
-            </Helmet>
+            <Helmet><title>gcsim - simulation impact</title></Helmet>
             <div className="m-2 text-center">
               {t<string>("src.this_page_is")}
             </div>

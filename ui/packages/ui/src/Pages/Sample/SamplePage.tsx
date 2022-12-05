@@ -1,7 +1,7 @@
 import { Alert, ButtonGroup, Intent, NonIdealState, Position, Spinner, SpinnerSize, Toaster } from "@blueprintjs/core";
 import { Sample } from "@gcsim/types";
 import { useMemo, useRef, useState } from "react";
-import { useLocation } from "wouter";
+import { useHistory } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { CharacterCard } from "../../Components/Cards";
 import { characterCardsClassNames } from "../Viewer/Components/Overview/TeamHeader";
@@ -83,7 +83,7 @@ type ErrorProps = {
 }
 
 const ErrorAlert = ({ msg, retry }: ErrorProps) => {
-  const [, setLocation] = useLocation();
+  const history = useHistory();
 
   let cancelButtonText: string | undefined;
   let onCancel: (() => void) | undefined;
@@ -95,7 +95,7 @@ const ErrorAlert = ({ msg, retry }: ErrorProps) => {
   return (
     <Alert
         isOpen={msg != null}
-        onConfirm={() => setLocation("/")}
+        onConfirm={() => history.push("/")}
         onCancel={onCancel}
         canEscapeKeyCancel={false}
         canOutsideClickCancel={false}

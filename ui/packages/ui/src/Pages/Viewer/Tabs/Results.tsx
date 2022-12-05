@@ -1,140 +1,175 @@
 import { SimResults } from "@gcsim/types";
-import { Card } from "@blueprintjs/core";
-import { ReactNode } from "react";
+import { Card, Colors } from "@blueprintjs/core";
+import { ReactNode, useEffect, useRef } from "react";
 import classNames from "classnames";
 import { DistributionCard, RollupCards, TeamHeader } from "../Components/Overview";
 import { CharacterDPSCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
+import { useLocation } from "react-router";
+import { FiLink2 } from "react-icons/fi";
 
 type Props = {
   data: SimResults | null;
 };
 
-export default ({ data }: Props) => {
+export default (props: Props) => {
+  useScrollToLocation();
+
   return (
     <div className="w-full 2xl:mx-auto 2xl:container px-2">
-      {/* Overview */}
-      <Group>
-        <TeamHeader data={data} />
-        <RollupCards data={data} />
-        <Card className="flex col-span-3 h-24 min-h-full">
-          Target info + sim metadata (num iterations)
-        </Card>
-        <DistributionCard data={data} />
-      </Group>
-
-      {/* Damage */}
-      <Group>
-        <Heading text="Damage" />
-        <Card className="col-span-full h-64">
-          Damage Timeline (dps/time + cumu %)
-        </Card>
-        <CharacterDPSCard data={data} />
-        <ElementDPSCard data={data} />
-        <TargetDPSCard data={data} />
-        <Card className="flex col-span-full h-64 min-h-full">
-          DPS per character w/ (element breakdown & target breakdown)
-        </Card>
-        <Card className="flex col-span-full h-64 min-h-full">
-          Damage breakdown table(s)
-        </Card>
-      </Group>
-
-      {/* Energy */}
-      <Group>
-        <Heading text="Energy" />
-        <Card className="flex col-span-full h-64 min-h-full">
-          Energy over time + cumu gained + cumu wasted
-        </Card>
-        <Card className="flex col-span-full h-64 min-h-full">
-          Energy produced by source
-        </Card>
-        <Card className="flex col-span-full h-64 min-h-full">
-          Incoming energy per character breakdown
-        </Card>
-      </Group>
-
-      {/* Reactions & Auras */}
-      <Group>
-        <Heading text="Reactions & Auras" />
-        <Card className="flex col-span-4 h-64 min-h-full">
-          Aura uptime timeline (worst, best, heatmap)
-        </Card>
-        <Card className="flex col-span-2 h-64 min-h-full">
-          Aura uptime (pie? vs bar?)
-        </Card>
-        <Card className="flex col-span-3 h-64 min-h-full">
-          Reactions triggered bar chart
-        </Card>
-        <Card className="flex col-span-3 h-64 min-h-full">
-          Reactions by source?
-        </Card>
-      </Group>
-
-      {/* Healing */}
-      {/* TODO: make optional? */}
-      <Group>
-        <Heading text="Healing" />
-        <Card className="flex col-span-full h-64 min-h-full">
-          Effective Healing Timeline (+ HP per char?)
-        </Card>
-        <Card className="flex col-span-3 h-64 min-h-full">
-          Healing by Src
-        </Card>
-        <Card className="flex col-span-3 h-64 min-h-full">
-          Healing by target
-        </Card>
-      </Group>
-
-      {/* Shields */}
-      {/* TODO: make optional? */}
-      <Group>
-        <Heading text="Shields" />
-        <Card className="flex col-span-full h-64 min-h-full">
-          Shield timeline (worst, best, heatmap)
-        </Card>
-        <Card className="flex col-span-3 h-[512px] min-h-full">
-          Shield uptime bar chart + pie
-        </Card>
-        <Card className="flex col-span-3 h-[512px] min-h-full">
-          Shield hp bar chart
-        </Card>
-        <Card className="flex col-span-full h-64 min-h-full">
-          Shield table
-        </Card>
-      </Group>
-
-      {/* Sim Metadata? */}
-      <Group>
-        <Heading text="Simulation Details" />
-        <Card className="flex col-span-2 h-64 min-h-full">
-          Character uptime (pie?)
-        </Card>
-        <Card className="flex col-span-4 h-64 min-h-full">
-          Character Uptime timeline (worst, best, heatmap)
-        </Card>
-        <Card className="flex col-span-4 h-64 min-h-full">
-          Failed actions bar graph
-        </Card>
-        <Card className="flex col-span-2 h-64 min-h-full">
-          Faied actions timeline (worst, best, heatmap)
-        </Card>
-        {/* tables? */}
-      </Group>
+      <Overview {...props} />
+      <Damage {...props} />
+      <Energy {...props} />
+      <Reactions {...props} />
+      <Healing {...props} />
+      <Shields {...props} />
+      <SimDetails {...props} />
     </div>
   );
 };
 
-const Heading = ({ text }: { text: string }) => (
-  <h2 className="group flex whitespace-pre-wrap col-span-full text-xl font-semibold mt-8 mb-2">
-    {text}
-    {/* currently does not work (wouter doesn't support hash links) */}
-    {/* <a
-        href={target}
-        className="ml-2 text-blue-500 opacity-0 transition-opacity group-hover:opacity-100">
-      #
-    </a> */}
-  </h2>
+const Overview = ({ data }: Props) => (
+  <Group>
+    <TeamHeader data={data} />
+
+    <RollupCards data={data} />
+
+    <Card className="flex col-span-3 h-24 min-h-full">
+      Target info + sim metadata (num iterations)
+    </Card>
+    <DistributionCard data={data} />
+  </Group>
 );
+
+const Damage = ({ data }: Props) => (
+  <Group>
+    <Heading text="Damage" target="damage" color={Colors.VERMILION5} />
+
+    <Card className="col-span-full h-64">
+      Damage Timeline (dps/time + cumu %)
+    </Card>
+
+    <CharacterDPSCard data={data} />
+    <ElementDPSCard data={data} />
+    <TargetDPSCard data={data} />
+
+    <Card className="flex col-span-full h-64 min-h-full">
+      DPS per character w/ (element breakdown & target breakdown)
+    </Card>
+
+    <Card className="flex col-span-full h-64 min-h-full">
+      Damage breakdown table(s)
+    </Card>
+  </Group>
+);
+
+const Energy = ({ }: Props) => (
+  <Group>
+    <Heading text="Energy" target="energy" color={Colors.CERULEAN5} />
+    <Card className="flex col-span-full h-64 min-h-full">
+      Energy over time + cumu gained + cumu wasted
+    </Card>
+    <Card className="flex col-span-full h-64 min-h-full">
+      Energy produced by source
+    </Card>
+    <Card className="flex col-span-full h-64 min-h-full">
+      Incoming energy per character breakdown
+    </Card>
+  </Group>
+);
+
+const Reactions = ({ }: Props) => (
+  <Group>
+    <Heading text="Reactions & Auras" target="reactions" color={Colors.VIOLET5} />
+    <Card className="flex col-span-4 h-64 min-h-full">
+      Aura uptime timeline (worst, best, heatmap)
+    </Card>
+    <Card className="flex col-span-2 h-64 min-h-full">
+      Aura uptime (pie? vs bar?)
+    </Card>
+    <Card className="flex col-span-3 h-64 min-h-full">
+      Reactions triggered bar chart
+    </Card>
+    <Card className="flex col-span-3 h-64 min-h-full">
+      Reactions by source?
+    </Card>
+  </Group>
+);
+
+const Healing = ({ }: Props) => (
+  <Group>
+    <Heading text="Healing" target="healing" color={Colors.FOREST5} />
+    <Card className="flex col-span-full h-64 min-h-full">
+      Effective Healing Timeline (+ HP per char?)
+    </Card>
+    <Card className="flex col-span-3 h-64 min-h-full">
+      Healing by Src
+    </Card>
+    <Card className="flex col-span-3 h-64 min-h-full">
+      Healing by target
+    </Card>
+  </Group>
+);
+
+const Shields = ({ }: Props) => (
+  <Group>
+    <Heading text="Shields" target="shields" color={Colors.GOLD5} />
+    <Card className="flex col-span-full h-64 min-h-full">
+      Shield timeline (worst, best, heatmap)
+    </Card>
+    <Card className="flex col-span-3 h-[512px] min-h-full">
+      Shield uptime bar chart + pie
+    </Card>
+    <Card className="flex col-span-3 h-[512px] min-h-full">
+      Shield hp bar chart
+    </Card>
+    <Card className="flex col-span-full h-64 min-h-full">
+      Shield table
+    </Card>
+  </Group>
+);
+
+const SimDetails = ({ }: Props) => (
+  <Group>
+    <Heading text="Simulation Details" target="sim" color={Colors.TURQUOISE5} />
+    <Card className="flex col-span-2 h-64 min-h-full">
+      Character uptime (pie?)
+    </Card>
+    <Card className="flex col-span-4 h-64 min-h-full">
+      Character Uptime timeline (worst, best, heatmap)
+    </Card>
+    <Card className="flex col-span-4 h-64 min-h-full">
+      Failed actions bar graph
+    </Card>
+    <Card className="flex col-span-2 h-64 min-h-full">
+      Faied actions timeline (worst, best, heatmap)
+    </Card>
+    {/* tables? */}
+  </Group>
+);
+
+type HeadingProps = {
+  text: string;
+  target: string;
+  color?: string;
+}
+
+const Heading = ({ text, target, color }: HeadingProps) => {
+  const linkClass = classNames(
+    "ml-3 mt-1",
+    "text-blue-500",
+    "opacity-0 group-hover:opacity-100 transition-opacity",
+    "flex justify-center items-center"
+  );
+
+  return (
+    <h2 className="group flex whitespace-pre-wrap col-span-full text-xl font-semibold mt-12 mb-1">
+      <span style={{ color: color }} >{text}</span>
+      <a href={"#" + target} id={target} className={linkClass}>
+        <FiLink2 />
+      </a>
+    </h2>
+  );
+};
 
 type GroupProps = {
   children: ReactNode;
@@ -154,3 +189,29 @@ const Group = ({ children, className }: GroupProps) => {
     </div>
   );
 };
+
+function useScrollToLocation() {
+  const scrolled = useRef(false);
+  const { key, hash } = useLocation();
+  const prevKey = useRef(key);
+
+  useEffect(() => {
+    if (hash == null) {
+      return;
+    }
+
+    if (prevKey.current !== key) {
+      prevKey.current = key;
+      scrolled.current = false;
+    }
+
+    if (!scrolled.current) {
+      const id = hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        scrolled.current = true;
+      }
+    }
+  });
+}
