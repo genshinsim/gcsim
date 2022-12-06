@@ -42,7 +42,16 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			ai.CanBeDefenseHalted = true
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.8), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: 0.3},
+				2.8,
+			),
+			chargeHitmarks[i],
+			chargeHitmarks[i],
+		)
 	}
 
 	return action.ActionInfo{

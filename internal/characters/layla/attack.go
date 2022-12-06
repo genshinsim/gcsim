@@ -13,7 +13,8 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{13, 12, 31}
 	attackHitlagHaltFrame = []float64{.03, .03, .06}
-	attackRadius          = []float64{1.5, 1.95, 2.7}
+	attackHitboxes        = [][]float64{{1.5}, {2.2, 3}, {3, 4.5}}
+	attackOffsets         = []float64{0.5, -0.6, 0}
 )
 
 const normalHitNum = 3
@@ -49,13 +50,20 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	radius := attackRadius[c.NormalCounter]
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		combat.Point{Y: attackOffsets[c.NormalCounter]},
+		attackHitboxes[c.NormalCounter][0],
 	)
+	if c.NormalCounter == 1 || c.NormalCounter == 2 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackHitboxes[c.NormalCounter][1],
+		)
+	}
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()
 

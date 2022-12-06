@@ -154,7 +154,18 @@ func (c *char) shootStars(src int, last int) func() {
 			}
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 0.5), 0, starsTravel[len(starsTravel)-stars], cb)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.Enemy(nearTarget),
+				nil,
+				0.8,
+			),
+			0,
+			starsTravel[len(starsTravel)-stars],
+			cb,
+		)
 
 		stars--
 		c.SetTag(nightStars, stars)

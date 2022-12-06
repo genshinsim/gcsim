@@ -71,7 +71,18 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				}
 			}
 
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 1.5), tickRelease, tickRelease+travel, cb)
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.Enemy(nearTarget),
+					nil,
+					1.5,
+				),
+				tickRelease,
+				tickRelease+travel,
+				cb,
+			)
 		}, delay)
 	}
 
