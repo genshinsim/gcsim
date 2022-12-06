@@ -34,16 +34,12 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.a1Stack = 0
 	c.starTickSrc = -1
 	c.shootStarSrc = -1
-	c.StarsSkill()
+	c.starsSkill()
 
 	c.a1()
 
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}

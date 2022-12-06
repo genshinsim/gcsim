@@ -19,10 +19,9 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(43) // E -> Q/J
+	skillFrames = frames.InitAbilSlice(43) // E -> Q/D/J
 	skillFrames[action.ActionAttack] = 41  // E -> N1
 	skillFrames[action.ActionSkill] = 42   // E -> E
-	skillFrames[action.ActionDash] = 43    // E -> D
 	skillFrames[action.ActionWalk] = 42    // E -> W
 	skillFrames[action.ActionSwap] = 41    // E -> Swap
 }
@@ -41,20 +40,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 0, skillHitmark)
 
-	// add shield
 	c.QueueCharTask(func() {
+		// add shield
 		exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
 		if exist == nil {
 			shield := shieldBase[c.TalentLvlSkill()] + shieldPer[c.TalentLvlSkill()]*c.MaxHP()
+			if c.Base.Cons >= 1 {
+				shield *= 1.2
+			}
 			c.Core.Player.Shields.Add(c.newShield(shield, 12*60))
 		} else {
 			shd, _ := exist.(*shield.Tmpl)
 			shd.Expires = c.Core.F + 12*60
 		}
-	}, 6)
 
-	// apply cryo & run a task
-	c.QueueCharTask(func() {
+		// apply cryo & run a task
 		player, ok := c.Core.Combat.Player().(*avatar.Player)
 		if !ok {
 			panic("target 0 should be Player but is not!!")
@@ -62,24 +62,24 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		player.ApplySelfInfusion(attributes.Cryo, 25, 0.1*60)
 
 		c.starTickSrc = c.Core.F
-		c.TickNightStar(c.starTickSrc, false)
-	}, 32)
+		c.tickNightStar(c.starTickSrc, false)
+	}, 6)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 19)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
+		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
 	}
 }
 
-func (c *char) StarsSkill() {
+func (c *char) starsSkill() {
 	c.Core.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
 		if exist != nil {
-			c.AddNightStars(2, ICDNightStarSkill)
+			c.addNightStars(2, ICDNightStarSkill)
 		}
 		return false
 	}, "stars-skill")

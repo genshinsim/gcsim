@@ -46,7 +46,7 @@ func (c *char) newShield(base float64, dur int) *shd {
 	return n
 }
 
-func (c *char) AddNightStars(count int, icd ICDNightStar) {
+func (c *char) addNightStars(count int, icd ICDNightStar) {
 	if c.Tag(shootingStars) > 0 {
 		return
 	}
@@ -79,11 +79,11 @@ func (c *char) AddNightStars(count int, icd ICDNightStar) {
 	if stars == 4 && c.Tag(shootingStars) == 0 {
 		c.SetTag(shootingStars, 1)
 		c.shootStarSrc = c.Core.F
-		c.Core.Tasks.Add(c.ShootStars(c.shootStarSrc, -1), 0.5*60)
+		c.Core.Tasks.Add(c.shootStars(c.shootStarSrc, -1), 0.1*60)
 	}
 }
 
-func (c *char) ShootStars(src int, last int) func() {
+func (c *char) shootStars(src int, last int) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return
@@ -104,12 +104,11 @@ func (c *char) ShootStars(src int, last int) func() {
 		if last == -1 {
 			// if not found
 			if nearTarget == -1 {
-				c.Core.Tasks.Add(c.ShootStars(src, -1), 0.1*60)
-				return
-			} else {
-				c.Core.Tasks.Add(c.ShootStars(src, nearTarget), 0.5*60)
+				c.Core.Tasks.Add(c.shootStars(src, -1), 0.1*60)
 				return
 			}
+			c.Core.Tasks.Add(c.shootStars(src, nearTarget), 0.5*60)
+			return
 		}
 		if nearTarget == -1 {
 			nearTarget = last
@@ -159,17 +158,18 @@ func (c *char) ShootStars(src int, last int) func() {
 
 		stars--
 		c.SetTag(nightStars, stars)
-		if stars == 0 {
-			c.RemoveTag(shootingStars)
-			c.starTickSrc = c.Core.F
-			c.TickNightStar(c.starTickSrc, false)
-		} else {
-			c.Core.Tasks.Add(c.ShootStars(src, nearTarget), 0.45*60)
+		if stars != 0 {
+			c.Core.Tasks.Add(c.shootStars(src, nearTarget), 0.45*60)
+			return
 		}
+
+		c.RemoveTag(shootingStars)
+		c.starTickSrc = c.Core.F
+		c.tickNightStar(c.starTickSrc, false)
 	}
 }
 
-func (c *char) TickNightStar(src int, star bool) func() {
+func (c *char) tickNightStar(src int, star bool) func() {
 	return func() {
 		if c.starTickSrc != src {
 			return
@@ -180,14 +180,14 @@ func (c *char) TickNightStar(src int, star bool) func() {
 		}
 
 		if star {
-			c.AddNightStars(1, ICDNightStarSkill)
+			c.addNightStars(1, ICDNightStarSkill)
 		}
 
 		interval := 1.5 * 60
 		if c.Base.Cons >= 6 {
 			interval = 1.5 * 0.8 * 60
 		}
-		c.QueueCharTask(c.TickNightStar(src, true), int(interval))
+		c.QueueCharTask(c.tickNightStar(src, true), int(interval))
 	}
 }
 

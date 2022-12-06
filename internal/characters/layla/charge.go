@@ -10,7 +10,7 @@ import (
 )
 
 var chargeFrames []int
-var chargeHitmarks = []int{16, 16 + 11} // CA-1 and CA-2 hit at the same time
+var chargeHitmarks = []int{16, 16 + 11}
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(49) // CA -> N1/W

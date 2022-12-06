@@ -21,11 +21,11 @@ const (
 
 func init() {
 	burstFrames = frames.InitAbilSlice(79) // Q -> W
-	burstFrames[action.ActionAttack] = 66  // Q -> N1
+	burstFrames[action.ActionAttack] = 65  // Q -> N1
 	burstFrames[action.ActionSkill] = 66   // Q -> E
-	burstFrames[action.ActionDash] = 66    // Q -> D
-	burstFrames[action.ActionJump] = 65    // Q -> J
-	burstFrames[action.ActionSwap] = 64    // Q -> Swap
+	burstFrames[action.ActionDash] = 67    // Q -> D
+	burstFrames[action.ActionJump] = 66    // Q -> J
+	burstFrames[action.ActionSwap] = 65    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -51,12 +51,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	x, y := c.Core.Combat.Player().Pos() // burst pos
 	for delay := burstStart; delay < 12*60+burstStart; delay += 90 {
 		c.Core.Tasks.Add(func() {
-			nearTarget := -1
 			trgs := c.Core.Combat.EnemiesWithinRadius(x, y, 12)
-			if len(trgs) > 0 {
-				sort.Slice(trgs, func(i, j int) bool { return i < j })
-				nearTarget = trgs[0]
+			if len(trgs) == 0 {
+				return
 			}
+			sort.Slice(trgs, func(i, j int) bool { return i < j })
+			nearTarget := trgs[0]
 
 			done := false
 			cb := func(_ combat.AttackCB) {
@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 				exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
 				if exist != nil {
-					c.AddNightStars(1, ICDNightStarBurst)
+					c.addNightStars(1, ICDNightStarBurst)
 				}
 			}
 

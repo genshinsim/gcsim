@@ -12,6 +12,6 @@ func (c *char) a1() {
 		if exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill); exist == nil {
 			return 0, false
 		}
-		return float64(c.a1Stack) * 0.06, true
+		return float64(c.a1Stack) * 0.06, false
 	})
 }
