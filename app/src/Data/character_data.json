@@ -164,6 +164,11 @@
     "element": "electro",
     "weapon_class": "sword"
   },
+  "layla": {
+    "rarity": 4,
+    "element": "cryo",
+    "weapon_class": "sword"
+  },
   "lisa": {
     "rarity": 4,
     "element": "electro",
