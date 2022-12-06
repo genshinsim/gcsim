@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 		c.starTickSrc = c.Core.F
 		c.tickNightStar(c.starTickSrc, false)
-	}, 6)
+	}, 19)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 19)
 
