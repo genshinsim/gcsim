@@ -88,21 +88,25 @@ func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
 }
 
 func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	//don't take damage, trigger swirl reaction only on sucrose E
-	if p.Core.Player.Chars()[atk.Info.ActorIndex].Base.Key != keys.Sucrose {
-		return 0, false
-	}
 	if atk.Info.AttackTag != combat.AttackTagElementalArt {
 		return 0, false
 	}
 	//check pyro window
-	if p.Durability[reactable.ModifierPyro] < reactable.ZeroDur {
+	if p.Durability[reactable.ModifierPyro] <= reactable.ZeroDur {
 		return 0, false
 	}
 
-	p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
+	//don't take damage, trigger swirl reaction only on sucrose E or faruzan E
+	switch p.Core.Player.Chars()[atk.Info.ActorIndex].Base.Key {
+	case keys.Sucrose:
+		p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
+	case keys.Faruzan:
+		p.Core.Log.NewEvent("guoba hit by faruzan E", glog.LogCharacterEvent, p.c.Index)
+	default:
+		return 0, false
+	}
 
-	//cheat a bit, set the durability just enough to match incoming sucrose E gauge
+	//cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
 	oldDur := p.Durability[reactable.ModifierPyro]
 	p.Durability[reactable.ModifierPyro] = infuseDurability
 	p.React(atk)
