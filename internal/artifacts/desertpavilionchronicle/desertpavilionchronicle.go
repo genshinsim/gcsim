@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -58,6 +59,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Base:         modifier.NewBaseWithHitlag("desert-4pc-spd", 15*60),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
+					if c.Player.CurrentState() != action.NormalAttackState {
+						return nil, false
+					}
 					return mSpd, true
 				},
 			})
