@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -17,7 +18,7 @@ const (
 	icdKey = "flower-4pc-icd"
 	icd    = 60 // 1s
 
-	stackKey = "flower-4pc-stack-%v"
+	buffKey = "flower-4pc-buff"
 )
 
 func init() {
@@ -25,7 +26,8 @@ func init() {
 }
 
 type Set struct {
-	Index int
+	stacks int
+	Index  int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
@@ -63,14 +65,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return 0, false
 				}
 
-				stacks := 0
-				for i := 0; i < 4; i++ {
-					key := fmt.Sprintf(stackKey, i+1)
-					if char.StatusIsActive(key) {
-						stacks++
-					}
+				if !char.StatusIsActive(buffKey) {
+					s.stacks = 0
 				}
-				return 0.4 * (1 + float64(stacks)*0.25), false
+				return 0.4 * (1 + float64(s.stacks)*0.25), false
 			},
 		})
 
@@ -84,14 +82,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			char.AddStatus(icdKey, icd, true)
 
-			// TODO: refresh stack?
-			for i := 0; i < 4; i++ {
-				key := fmt.Sprintf(stackKey, i+1)
-				if !char.StatusIsActive(key) {
-					char.AddStatus(key, 10*60, true)
-					break
-				}
+			if !char.StatusIsActive(buffKey) {
+				s.stacks = 0
 			}
+			s.stacks++
+			if s.stacks > 4 {
+				s.stacks = 4
+			}
+
+			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index).
+				Write("stacks", s.stacks)
+			char.AddStatus(buffKey, 10*60, true)
 			return false
 		}
 

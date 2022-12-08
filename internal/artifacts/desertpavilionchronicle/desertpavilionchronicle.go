@@ -1,6 +1,8 @@
 package desertpavilionchronicle
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -77,7 +79,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			})
 
 			return false
-		}, "desert-4pc")
+		}, fmt.Sprintf("desert-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil
