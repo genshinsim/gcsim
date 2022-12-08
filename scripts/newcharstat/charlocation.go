@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
@@ -14,15 +12,8 @@ type FetterInfo []struct {
 }
 
 func getCharLocationMap() map[int]string {
-	fetterInfoJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/FetterInfoExcelConfigData.json")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	var fetterInfo FetterInfo
-	if err := json.Unmarshal([]byte(fetterInfoJson), &fetterInfo); err != nil {
-		log.Fatal(err)
-	}
+	fetterInfo := getJsonFromFile[FetterInfo]("../ExcelBinOutput/FetterInfoExcelConfigData.json")
 
 	// reshape fetterInfo to map of avatarId to AvatarAssocType
 	locationMap := make(map[int]string)
@@ -49,5 +40,4 @@ func determineCharRegion(location string) (profile.ZoneType, error) {
 	default:
 		return profile.ZoneUnknown, errors.New("unknown location")
 	}
-
 }

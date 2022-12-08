@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
-	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/curves"
@@ -26,16 +24,8 @@ type AddProp struct {
 }
 
 func getCharSpecializedStatandPromoData() (map[int]string, map[int][]curves.PromoData) {
+	avatarPromotes := getJsonFromFile[AvatarPromotes]("../ExcelBinOutput/AvatarPromoteExcelConfigData.json")
 
-	avatarPromoteJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarPromoteExcelConfigData.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var avatarPromotes AvatarPromotes
-	if err := json.Unmarshal([]byte(avatarPromoteJson), &avatarPromotes); err != nil {
-		log.Fatal(err)
-	}
 	//reshape avatarPromotes and remove duplicates to map of avatarPromoteId to AddProps
 	specializedStatMap := make(map[int]string)
 	for _, v := range avatarPromotes {

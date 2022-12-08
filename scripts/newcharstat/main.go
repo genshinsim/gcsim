@@ -1,11 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"log"
-	"net/http"
+	"os"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/curves"
@@ -21,15 +22,19 @@ type BaseStatCurves struct {
 
 func main() {
 	var err error
-	avatars, textMapId := getAvatarArray()
+	avatars, _ := getAvatarArray()
+	//log avatars
+	for _, avatar := range avatars {
+		fmt.Printf("%+v\n", avatar)
+	}
 	locationMap := getCharLocationMap()
 	specializedStatMap, promoDataMap := getCharSpecializedStatandPromoData()
 	elementMap := getAvatarElementMap()
 
 	//currently only gets english
-	_ = generateAvatarNameMap(textMapId)
+	// _ = generateAvatarNameMap(textMapId)
 
-	characterArray := make([]curves.CharBase, len(avatars))
+	// characterArray := make([]curves.CharBase, len(avatars))
 
 	for _, avatar := range avatars {
 		char := curves.CharBase{}
@@ -74,26 +79,42 @@ func main() {
 			log.Fatal("Unknown stat curve for character ", charName, ": ", charBaseStatCurves.DefCurve)
 		}
 
-		characterArray = append(characterArray, char)
-		// fmt.Println(charName)
-		// fmt.Printf("%+v\n", char)
+		// characterArray = append(characterArray, char)
+		fmt.Println(charName)
+		fmt.Printf("%+v\n", char)
 	}
 }
 
-func fetchJsonFromUrl(path string) (string, error) {
+// func fetchJsonFromUrl(path string) (string, error) {
 
-	resp, err := http.Get(path)
+// 	resp, err := http.Get(path)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	defer resp.Body.Close()
+
+// 	if resp.StatusCode != 200 {
+// 		return "", fmt.Errorf("%v: %v", resp.Status, path)
+// 	}
+
+// 	out, err := io.ReadAll(resp.Body)
+// 	return string(out), err
+// }
+
+func getJsonFromFile[V Avatars | AvatarPromotes | SkillDepot | AvatarSkillInfo | FetterInfo](path string) V {
+	jsonFile, err := os.Open(path)
 	if err != nil {
-		return "", err
+		fmt.Println(err)
 	}
-	defer resp.Body.Close()
+	defer jsonFile.Close()
 
-	if resp.StatusCode != 200 {
-		return "", fmt.Errorf("%v: %v", resp.Status, path)
-	}
+	// read our opened xmlFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	out, err := io.ReadAll(resp.Body)
-	return string(out), err
+	var configData V
+	json.Unmarshal(byteValue, &configData)
+
+	return configData
 }
 
 func determineCharRarity(qualityType string) (int, error) {

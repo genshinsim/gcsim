@@ -1,10 +1,5 @@
 package main
 
-import (
-	"encoding/json"
-	"log"
-)
-
 type Avatars []struct {
 	// ScriptDataPathHashSuffix     int           `json:"scriptDataPathHashSuffix"`
 	// ScriptDataPathHashPre        int           `json:"scriptDataPathHashPre"`
@@ -69,18 +64,19 @@ type PropGrowCurves []struct {
 }
 
 func getAvatarArray() (Avatars, []int) {
-	avatarDataJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarExcelConfigData.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	var avatars Avatars
-	if err := json.Unmarshal([]byte(avatarDataJson), &avatars); err != nil {
-		log.Fatal(err)
-	}
+	// avatarDataJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarExcelConfigData.json")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// var avatars Avatars
+	// if err := json.Unmarshal([]byte(avatarDataJson), &avatars); err != nil {
+	// 	log.Fatal(err)
+	// }
+	avatarDataJson := getJsonFromFile[Avatars]("../ExcelBinOutput/WeaponExcelConfigData.json")
 	// remove testing/invalid chars
 	var filteredAvatars Avatars
 	var textMapIds []int
-	for _, avatar := range avatars {
+	for _, avatar := range avatarDataJson {
 		if avatar.UseType == "AVATAR_FORMAL" {
 			filteredAvatars = append(filteredAvatars, avatar)
 			textMapIds = append(textMapIds, avatar.NameTextMapHash)

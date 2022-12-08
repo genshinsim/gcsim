@@ -1,9 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
 
@@ -40,25 +37,9 @@ type AvatarSkillInfo []struct {
 }
 
 func getAvatarElementMap() map[int]string {
-	skillDepotJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarSkillDepotExcelConfigData.json")
-	if err != nil {
-		log.Fatal(err)
-	}
+	skillDepot := getJsonFromFile[SkillDepot]("../ExcelBinOutput/AvatarSkillDepotExcelConfigData.json")
 
-	avatarSkillInfoJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarSkillExcelConfigData.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var skillDepot SkillDepot
-	if err := json.Unmarshal([]byte(skillDepotJson), &skillDepot); err != nil {
-		log.Fatal(err)
-	}
-
-	var avatarSkillInfo AvatarSkillInfo
-	if err := json.Unmarshal([]byte(avatarSkillInfoJson), &avatarSkillInfo); err != nil {
-		log.Fatal(err)
-	}
+	avatarSkillInfo := getJsonFromFile[AvatarSkillInfo]("../ExcelBinOutput/AvatarSkillExcelConfigData.json")
 
 	// reshape avatarSkillInfo to map of energyskillID to CostElemType
 	energySkillMap := make(map[int]string)
@@ -76,7 +57,6 @@ func getAvatarElementMap() map[int]string {
 	}
 
 	return elementMap
-
 }
 
 func convertElement(element string) attributes.Element {
