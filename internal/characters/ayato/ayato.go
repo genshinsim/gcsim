@@ -93,7 +93,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		}
 		ai.Element = attributes.Hydro
 		//add namisen stack
-		flatdmg := (c.Base.HP*(1+ds.Stats[attributes.HPP]) + ds.Stats[attributes.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
+		flatdmg := c.MaxHP() * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
 		ai.FlatDmg += flatdmg
 		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).
 			Write("damage_added", flatdmg).
