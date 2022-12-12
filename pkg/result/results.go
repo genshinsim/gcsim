@@ -18,6 +18,7 @@ type Summary struct {
 	Modified      bool    `json:"modified"`
 
 	// character & enemy metadata
+	// TODO: TargetDetails as map. Need changes to how target keys work
 	InitialCharacter  string                       `json:"initial_character"`
 	CharacterDetails  []simulation.CharacterDetail `json:"character_details"`
 	TargetDetails     []enemy.EnemyProfile         `json:"target_details"`

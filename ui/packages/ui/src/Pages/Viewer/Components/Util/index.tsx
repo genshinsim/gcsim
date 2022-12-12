@@ -3,3 +3,4 @@ export { default as OuterLabelPie } from "./OuterLabelPie";
 export { default as FloatStatTooltipContent } from "./FloatStatTooltipContent";
 export { default as NoData } from "./NoData";
 export { DataColors } from "./DataColors";
+export { default as HorizontalBarStack } from "./HorizontalBarStack";

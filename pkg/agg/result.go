@@ -24,10 +24,10 @@ type Result struct {
 
 	// damage
 	ElementDPS            map[string]FloatStat   `json:"element_dps"`
-	TargetDPS             []FloatStat            `json:"target_dps"`
+	TargetDPS             map[int]FloatStat      `json:"target_dps"`
 	CharacterDPS          []FloatStat            `json:"character_dps"`
 	BreakdownByElementDPS []map[string]FloatStat `json:"dps_by_element"`
-	BreakdownByTargetDPS  [][]FloatStat          `json:"dps_by_target"`
+	BreakdownByTargetDPS  []map[int]FloatStat    `json:"dps_by_target"`
 
 	// shield
 	Shields map[string]ShieldInfo `json:"shields"`

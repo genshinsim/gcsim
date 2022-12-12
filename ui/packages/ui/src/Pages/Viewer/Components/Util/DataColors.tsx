@@ -7,22 +7,55 @@ function safeGet(colors: string[], i: number) {
 
 type ElementColor = {
   label: string;
+  highlight: string;
   value: string;
 }
 
 const elements: Map<string, ElementColor> = new Map([
-  ["electro", { label: Colors.VIOLET4, value: Colors.VIOLET3 }],
-  ["pyro", { label: Colors.VERMILION4, value: Colors.VERMILION3 }],
-  ["cryo", { label: "#95CACB", value: "#4B8DAA" }],
-  ["hydro", { label: Colors.CERULEAN4, value: Colors.CERULEAN3 }],
-  ["dendro",{ label: Colors.FOREST4, value: Colors.FOREST3 }],
-  ["anemo",{ label: Colors.TURQUOISE4, value: Colors.TURQUOISE3 }],
-  ["geo", { label: Colors.GOLD4, value: Colors.GOLD3 }],
-  ["physical",{ label: Colors.SEPIA4, value: Colors.SEPIA3 }],
+  ["electro", {
+    highlight: Colors.VIOLET5,
+    label: Colors.VIOLET4, 
+    value: Colors.VIOLET3
+  }],
+  ["pyro", {
+    highlight: Colors.VERMILION5,
+    label: Colors.VERMILION4,
+    value: Colors.VERMILION3
+  }],
+  ["cryo", {
+    highlight: "#FFF",
+    label: "#95CACB",
+    value: "#4B8DAA"
+  }],
+  ["hydro", {
+    highlight: Colors.CERULEAN5,
+    label: Colors.CERULEAN4,
+    value: Colors.CERULEAN3
+  }],
+  ["dendro", {
+    highlight: Colors.FOREST5,
+    label: Colors.FOREST4,
+    value: Colors.FOREST3
+  }],
+  ["anemo", {
+    highlight: Colors.TURQUOISE5,
+    label: Colors.TURQUOISE4,
+    value: Colors.TURQUOISE3
+  }],
+  ["geo", {
+    highlight: Colors.GOLD5,
+    label: Colors.GOLD4,
+    value: Colors.GOLD3
+  }],
+  ["physical", {
+    highlight: Colors.SEPIA5,
+    label: Colors.SEPIA4,
+    value: Colors.SEPIA3
+  }],
 
   // not possible, but defined in attributes/element.go so here just in case
-  ["frozen", { label: "#000", value: "#000" }],
-  ["quicken", { label: "#FFF", value: "#FFF" }],
+  ["frozen", { highlight: "#000", label: "#000", value: "#000" }],
+  ["quicken", { highlight: "#FFF", label: "#FFF", value: "#FFF" }],
 ]);
 
 const elementColor = scaleOrdinal<string, string>({
@@ -33,6 +66,11 @@ const elementColor = scaleOrdinal<string, string>({
 const elementLabelColor = scaleOrdinal<string, string>({
   domain: Array.from(elements.keys()),
   range: Array.from(elements.values()).map(e => e.label),
+});
+
+const elementHighlightColor = scaleOrdinal<string, string>({
+  domain: Array.from(elements.keys()),
+  range: Array.from(elements.values()).map(e => e.highlight),
 });
 
 
@@ -103,12 +141,18 @@ const qualitative5 = [
 ];
 
 export const DataColors = {
+  gray: "#9ca3af", // same as tailwind gray-400
+
   element: elementColor,
   elementLabel: elementLabelColor,
+  elementHighlight: elementHighlightColor,
   
   // TODO: better colors for characters?
   character: (i: number) => qualitative3[i],
   characterLabel: (i: number) => qualitative4[i],
+
+  target: (k: string) => qualitative3[Number(k)-1],
+  targetLabel: (k: string) => qualitative4[Number(k)-1],
 
   qualitative1: (i: number) => safeGet(qualitative1, i),
   qualitative2: (i: number) => safeGet(qualitative2, i),

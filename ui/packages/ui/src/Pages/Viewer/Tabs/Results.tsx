@@ -3,7 +3,7 @@ import { Card, Colors } from "@blueprintjs/core";
 import { ReactNode, useEffect, useRef } from "react";
 import classNames from "classnames";
 import { DistributionCard, RollupCards, TeamHeader } from "../Components/Overview";
-import { CharacterDPSCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
+import { CharacterDPSBarChart, CharacterDPSCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
 import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
 
@@ -44,7 +44,7 @@ const Damage = ({ data }: Props) => (
   <Group>
     <Heading text="Damage" target="damage" color={Colors.VERMILION5} />
 
-    <Card className="col-span-full h-64">
+    <Card className="col-span-full h-96">
       Damage Timeline (dps/time + cumu %)
     </Card>
 
@@ -52,9 +52,7 @@ const Damage = ({ data }: Props) => (
     <ElementDPSCard data={data} />
     <TargetDPSCard data={data} />
 
-    <Card className="flex col-span-full h-64 min-h-full">
-      DPS per character w/ (element breakdown & target breakdown)
-    </Card>
+    <CharacterDPSBarChart data={data} />
 
     <Card className="flex col-span-full h-64 min-h-full">
       Damage breakdown table(s)

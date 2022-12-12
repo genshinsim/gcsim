@@ -54,8 +54,10 @@ export interface Statistics {
   failed_actions?: FailedActions[];
 
   character_dps?: FloatStat[];
-  target_dps?: FloatStat[];
+  target_dps?: TargetDPS;
   element_dps?: ElementDPS;
+  dps_by_element?: ElementDPS[];
+  dps_by_target?: TargetDPS[];
 
   shields?: Shields;
 }
@@ -96,6 +98,10 @@ export interface ShieldInfo {
 }
 
 export interface ElementDPS {
+  [key: string]: FloatStat;
+}
+
+export interface TargetDPS {
   [key: string]: FloatStat;
 }
 

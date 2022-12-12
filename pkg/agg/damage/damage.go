@@ -12,35 +12,32 @@ func init() {
 	agg.Register(NewAgg)
 }
 
+// TODO: We need to populate targetDPS with 0s if damage wasn't done that iteration
+// for an accurate measure. The problem is that we need target keys to be decided at the cfg level
+// not the core level.
+// We also have no guarantee that targets will have the same key across iterations. This will solve
+// the problem.
 type buffer struct {
 	elementDPS   map[string]*calc.StreamStats
+	targetDPS    map[int]*calc.StreamStats
 	characterDPS []*calc.StreamStats // i = char
-	targetDPS    []*calc.StreamStats // i = target
 	dpsByElement []map[string]*calc.StreamStats
-	dpsByTarget  [][]*calc.StreamStats // i = char, j = target
+	dpsByTarget  []map[int]*calc.StreamStats
 }
 
 func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		elementDPS:   make(map[string]*calc.StreamStats),
+		targetDPS:    make(map[int]*calc.StreamStats),
 		characterDPS: make([]*calc.StreamStats, len(cfg.Characters)),
-		targetDPS:    make([]*calc.StreamStats, len(cfg.Targets)),
 		dpsByElement: make([]map[string]*calc.StreamStats, len(cfg.Characters)),
-		dpsByTarget:  make([][]*calc.StreamStats, len(cfg.Characters)),
+		dpsByTarget:  make([]map[int]*calc.StreamStats, len(cfg.Characters)),
 	}
 
 	for i := 0; i < len(cfg.Characters); i++ {
 		out.characterDPS[i] = &calc.StreamStats{}
 		out.dpsByElement[i] = make(map[string]*calc.StreamStats)
-
-		out.dpsByTarget[i] = make([]*calc.StreamStats, len(cfg.Targets))
-		for j := 0; j < len(cfg.Targets); j++ {
-			out.dpsByTarget[i][j] = &calc.StreamStats{}
-		}
-	}
-
-	for i := 0; i < len(cfg.Targets); i++ {
-		out.targetDPS[i] = &calc.StreamStats{}
+		out.dpsByTarget[i] = make(map[int]*calc.StreamStats)
 	}
 
 	return &out, nil
@@ -48,17 +45,20 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 
 func (b *buffer) Add(result stats.Result) {
 	time := 60 / float64(result.Duration)
-	targetDPS := make([]float64, len(b.targetDPS))
+	targetDPS := make(map[int]float64)
 	elementDPS := makeElementMap()
 
 	for i, char := range result.Characters {
 		var charDPS float64
 		charElementDPS := makeElementMap()
-		charTargetDPS := make([]float64, len(b.targetDPS))
+		charTargetDPS := make(map[int]float64)
 
 		for _, ev := range char.DamageEvents {
+			if _, ok := charTargetDPS[ev.Target]; !ok {
+				charTargetDPS[ev.Target] = 0
+			}
+			charTargetDPS[ev.Target] += ev.Damage
 			charElementDPS[ev.Element] += ev.Damage
-			charTargetDPS[ev.Target-1] += ev.Damage
 			charDPS += ev.Damage
 		}
 
@@ -71,14 +71,24 @@ func (b *buffer) Add(result stats.Result) {
 			elementDPS[k] += v
 		}
 
-		for j, v := range charTargetDPS {
-			b.dpsByTarget[i][j].Add(v * time)
-			targetDPS[j] += v
+		for k, v := range charTargetDPS {
+			if _, ok := targetDPS[k]; !ok {
+				targetDPS[k] = 0
+			}
+			targetDPS[k] += v
+
+			if _, ok := b.dpsByTarget[i][k]; !ok {
+				b.dpsByTarget[i][k] = &calc.StreamStats{}
+			}
+			b.dpsByTarget[i][k].Add(v * time)
 		}
 	}
 
-	for i, v := range targetDPS {
-		b.targetDPS[i].Add(v * time)
+	for k, v := range targetDPS {
+		if _, ok := b.targetDPS[k]; !ok {
+			b.targetDPS[k] = &calc.StreamStats{}
+		}
+		b.targetDPS[k].Add(v * time)
 	}
 
 	for k, v := range elementDPS {
@@ -97,9 +107,9 @@ func (b *buffer) Flush(result *agg.Result) {
 		}
 	}
 
-	result.TargetDPS = make([]agg.FloatStat, len(b.targetDPS))
-	for i, v := range b.targetDPS {
-		result.TargetDPS[i] = agg.ConvertToFloatStat(v)
+	result.TargetDPS = make(map[int]agg.FloatStat)
+	for k, v := range b.targetDPS {
+		result.TargetDPS[k] = agg.ConvertToFloatStat(v)
 	}
 
 	result.CharacterDPS = make([]agg.FloatStat, len(b.characterDPS))
@@ -117,11 +127,11 @@ func (b *buffer) Flush(result *agg.Result) {
 		}
 	}
 
-	result.BreakdownByTargetDPS = make([][]agg.FloatStat, len(b.dpsByTarget))
+	result.BreakdownByTargetDPS = make([]map[int]agg.FloatStat, len(b.dpsByTarget))
 	for i, t := range b.dpsByTarget {
-		result.BreakdownByTargetDPS[i] = make([]agg.FloatStat, len(t))
-		for j, v := range t {
-			result.BreakdownByTargetDPS[i][j] = agg.ConvertToFloatStat(v)
+		result.BreakdownByTargetDPS[i] = make(map[int]agg.FloatStat)
+		for k, v := range t {
+			result.BreakdownByTargetDPS[i][k] = agg.ConvertToFloatStat(v)
 		}
 	}
 }
