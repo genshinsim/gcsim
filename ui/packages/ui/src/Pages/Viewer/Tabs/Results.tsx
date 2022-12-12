@@ -30,9 +30,7 @@ export default (props: Props) => {
 const Overview = ({ data }: Props) => (
   <Group>
     <TeamHeader data={data} />
-
     <RollupCards data={data} />
-
     <Card className="flex col-span-3 h-24 min-h-full">
       Target info + sim metadata (num iterations)
     </Card>
@@ -43,7 +41,6 @@ const Overview = ({ data }: Props) => (
 const Damage = ({ data }: Props) => (
   <Group>
     <Heading text="Damage" target="damage" color={Colors.VERMILION5} />
-
     <Card className="col-span-full h-96">
       Damage Timeline (dps/time + cumu %)
     </Card>
