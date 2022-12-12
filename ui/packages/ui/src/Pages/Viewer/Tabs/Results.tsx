@@ -2,7 +2,7 @@ import { SimResults } from "@gcsim/types";
 import { Card, Colors } from "@blueprintjs/core";
 import { ReactNode, useEffect, useRef } from "react";
 import classNames from "classnames";
-import { DistributionCard, RollupCards, TeamHeader } from "../Components/Overview";
+import { DistributionCard, RollupCards, TargetInfo, TeamHeader } from "../Components/Overview";
 import { CharacterDPSBarChart, CharacterDPSCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
 import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
@@ -31,9 +31,7 @@ const Overview = ({ data }: Props) => (
   <Group>
     <TeamHeader data={data} />
     <RollupCards data={data} />
-    <Card className="flex col-span-3 h-24 min-h-full">
-      Target info + sim metadata (num iterations)
-    </Card>
+    <TargetInfo data={data} />
     <DistributionCard data={data} />
   </Group>
 );
