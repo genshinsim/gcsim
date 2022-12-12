@@ -88,8 +88,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		count += 1
 	}
 
+	// In-game refreshes 0.1s. We give buff every 69f to reduce spam.
 	field := combat.NewCircleHit(c.Core.Combat.Player(), 40)
-	for i := 0; i <= duration; i += 6 {
+	for i := 0; i <= duration; i += 69 {
 		c.Core.Tasks.Add(func() {
 			if c.burstSrc != currSrc {
 				return
@@ -102,6 +103,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 		}, 43+i)
 	}
+
+	// Last refresh to account for 0.1s tick period
+	c.Core.Tasks.Add(func() {
+		if c.burstSrc != currSrc {
+			return
+		}
+		if !combat.WillCollide(field, c.Core.Combat.Player(), 0) {
+			return
+		}
+		for _, char := range c.Core.Player.Chars() {
+			c.applyBurstBuff(char)
+		}
+	}, 43+int(duration/6.0)*6)
 
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(3)
