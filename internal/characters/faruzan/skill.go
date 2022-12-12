@@ -70,33 +70,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) hurricaneArrow(travel int, weakspot bool) {
-	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
-		Abil:                 "Hurricane Arrow",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone, // TODO: check ICD
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
-		Element:              attributes.Anemo,
-		Durability:           25,
-		Mult:                 aimChargeFull[c.TalentLvlAttack()],
-		HitWeakPoint:         weakspot,
-		HitlagHaltFrames:     .12 * 60, // TODO: check hitlag for special hurricane arrow
-		HitlagOnHeadshotOnly: true,
-		IsDeployable:         true,
-	}
-
-	done := false
-	vortexCb := func(a combat.AttackCB) {
-		if done {
-			return
-		}
-		c.pressurizedCollapse(a.Target)
-	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), 0, travel, vortexCb)
-}
-
 func (c *char) pressurizedCollapse(pos combat.Positional) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

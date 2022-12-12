@@ -11,17 +11,17 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = []int{17, 11, 23, 29}
+	attackHitmarks = []int{14, 10, 24, 29}
 )
 
 const normalHitNum = 4
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 30) // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 23) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 38) // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 64) // N4 -> N1
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 26) // N1 -> N2
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 21) // N2 -> N3
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 39) // N3 -> N4
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 86) // N4 -> N1
 }
 
 // Normal attack damage queue generator
@@ -47,7 +47,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)
