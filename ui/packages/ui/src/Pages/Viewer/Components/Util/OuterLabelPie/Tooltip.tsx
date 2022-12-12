@@ -1,14 +1,13 @@
 import { Popover2 } from "@blueprintjs/popover2";
 import React from "react";
 
-export interface TooltipData<Datum> {
+export interface TooltipData {
   index: number;
-  data: Datum;
 }
 
-type TooltipHandles<Datum> = {
+type TooltipHandles = {
   mouseLeave: () => void;
-  mouseHover: (e: React.MouseEvent, index: number, data: Datum) => void;
+  mouseHover: (e: React.MouseEvent, index: number) => void;
   clearTimeout: () => void;
 }
 
@@ -18,14 +17,14 @@ type ShowTooltipArgs<Datum> = {
   tooltipTop?: number;
 }
 
-export function useTooltipHandles<Datum>(
-    showTooltip: (args: ShowTooltipArgs<TooltipData<Datum>>) => void,
-    hideTooltip: () => void): TooltipHandles<Datum> {
+export function useTooltipHandles(
+    showTooltip: (args: ShowTooltipArgs<TooltipData>) => void,
+    hideTooltip: () => void): TooltipHandles {
   let tooltipTimeout: number;
   const mouseLeave = () => {
     tooltipTimeout = window.setTimeout(() => {
       hideTooltip();
-    }, 750);
+    }, 250);
   };
 
   const clearTimeout = () => {
@@ -34,12 +33,12 @@ export function useTooltipHandles<Datum>(
     }
   };
 
-  const mouseHover = (e: React.MouseEvent, index: number, data: Datum) => {
+  const mouseHover = (e: React.MouseEvent, index: number) => {
     clearTimeout();
     showTooltip({
-      tooltipData: { index: index, data: data },
-      tooltipLeft: e.clientX,
-      tooltipTop: e.clientY - 35,
+      tooltipData: { index: index },
+      tooltipLeft: e.nativeEvent.offsetX,
+      tooltipTop: e.nativeEvent.offsetY - 35,
     });
   };
 
@@ -51,13 +50,14 @@ export function useTooltipHandles<Datum>(
 }
 
 type Props<Datum> = {
+  data: Datum[];
   content?: (d: Datum) => string | JSX.Element;
   tooltipOpen: boolean;
-  tooltipData?: TooltipData<Datum>;
+  tooltipData?: TooltipData;
   tooltipTop?: number;
   tooltipLeft?: number;
-  handles: TooltipHandles<Datum>;
-  showTooltip: (args: ShowTooltipArgs<TooltipData<Datum>>) => void;
+  handles: TooltipHandles;
+  showTooltip: (args: ShowTooltipArgs<TooltipData>) => void;
 }
 
 export const RenderTooltip = <Datum,>(props: Props<Datum>) => {
@@ -76,7 +76,7 @@ export const RenderTooltip = <Datum,>(props: Props<Datum>) => {
           });
         }}
         onMouseLeave={() => props.handles.mouseLeave()}>
-      {props.content(props.tooltipData.data)}
+      {props.content(props.data[props.tooltipData.index])}
     </div>
   );
 

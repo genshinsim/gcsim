@@ -13,7 +13,7 @@ export default ({ data }: Props) => {
   const names = data?.character_details?.map(c => c.name);
   return (
     <Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
-      <CardTitle title="Character Damage Breakdown (DPS)" tooltip="x" />
+      <CardTitle title="Character Damage Distribution (DPS)" tooltip="x" />
       <ParentSize>
         {({ width, height }) => (
           <DPSPie

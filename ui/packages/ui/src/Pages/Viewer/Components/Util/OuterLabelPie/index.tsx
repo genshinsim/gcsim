@@ -40,19 +40,12 @@ export default <Datum,>(
       outline = "#FFF",
       tail = 15
     }: Props<Datum>) => {
-  const {
-    tooltipData,
-    tooltipLeft,
-    tooltipTop,
-    tooltipOpen,
-    showTooltip,
-    hideTooltip
-  } = useTooltip<TooltipData<Datum>>();
-  const tooltipHandles = useTooltipHandles(showTooltip, hideTooltip);
+  const tooltip = useTooltip<TooltipData>();
+  const tooltipHandles = useTooltipHandles(tooltip.showTooltip, tooltip.hideTooltip);
 
   const radius = Math.min(width, height) / 2;
   return (
-    <>
+    <div className="relative">
       <svg width={width} height={height}>
         <Group left={width / 2} top={height / 2}>
           {/* label arcs */}
@@ -82,7 +75,7 @@ export default <Datum,>(
               outerRadius={radius * pieRadius + (tail * 2 / 3)}>
             {(pie) => {
               return pie.arcs.map((arc, index) => {
-                if (tooltipData?.index != index) {
+                if (tooltip.tooltipData?.index != index) {
                   return null;
                 }
 
@@ -112,7 +105,7 @@ export default <Datum,>(
                       fill={color(arc.data)}
                       stroke={outline}
                       strokeWidth={1}
-                      onMouseMove={(e) => tooltipHandles.mouseHover(e, index, arc.data)}
+                      onMouseMove={(e) => tooltipHandles.mouseHover(e, index)}
                       onMouseLeave={() => tooltipHandles.mouseLeave()}
                   />
                 );
@@ -122,14 +115,15 @@ export default <Datum,>(
         </Group>
       </svg>
       <RenderTooltip
-          tooltipOpen={tooltipOpen}
-          tooltipData={tooltipData}
-          tooltipLeft={tooltipLeft}
-          tooltipTop={tooltipTop}
+          data={data}
+          tooltipOpen={tooltip.tooltipOpen}
+          tooltipData={tooltip.tooltipData}
+          tooltipLeft={tooltip.tooltipLeft}
+          tooltipTop={tooltip.tooltipTop}
           content={tooltipContent}
           handles={tooltipHandles}
-          showTooltip={showTooltip}
+          showTooltip={tooltip.showTooltip}
       />
-    </>
+    </div>
   );
 };

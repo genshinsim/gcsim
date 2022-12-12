@@ -127,8 +127,10 @@ type TooltipData = {
   upper: number;
 }
 
-const defaultMargin = { left: 52, right: 1, top: 5, bottom: 16 };
+const defaultMargin = { left: 76, right: 1, top: 5, bottom: 16 };
 
+
+// TODO: Axis: use compact notation with maximumSignificantDigits
 const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
   ({
     width,
@@ -145,6 +147,8 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
     hideTooltip,
     showTooltip,
   }: HistogramProps & WithTooltipProvidedProps<TooltipData>) => {
+    const { i18n } = useTranslation();
+
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;
     const numTicks = 7;
@@ -207,17 +211,21 @@ const HistogramGraph = withTooltip<HistogramProps, TooltipData>(
                 numTicks={numTicks}
                 lineStyle={{ opacity: 0.5 }}
                 width={xMax}
-                stroke="#e0e0e0"
+                stroke="#9ca3af"
                 height={height} />
             <AxisLeft
                 hideAxisLine
                 hideTicks
                 scale={yScale}
                 numTicks={numTicks}
-                labelOffset={30}
+                labelOffset={55}
                 labelClassName="fill-gray-400 text-lg"
                 tickClassName="fill-gray-400 font-mono text-xs"
                 tickComponent={(props) => <TickLabel {...props} />}
+                tickFormat={s => 
+                  s.toLocaleString(i18n.language,
+                      { notation: 'compact', maximumSignificantDigits: 3 })
+                }
                 label="# iterations" />
             <VerticalLine
                 x={data?.mean}
