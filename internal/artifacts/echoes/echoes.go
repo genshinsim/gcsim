@@ -74,7 +74,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			// if buff is already active then buff attack
-			snATK := atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[attributes.ATKP]) + atk.Snapshot.Stats[attributes.ATK]
+			snATK := char.Base.Atk*(1+char.Stat(attributes.ATKP)) + char.Stat(attributes.ATK)
 			if c.F < s.procExpireF {
 				dmgAdded = snATK * 0.7
 				atk.Info.FlatDmg += dmgAdded
