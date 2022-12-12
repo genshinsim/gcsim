@@ -15,6 +15,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	hurricaneCount int
+	burstSrc int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

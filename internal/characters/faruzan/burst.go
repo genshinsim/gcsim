@@ -66,11 +66,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration += 360
 	}
 
+	c.burstSrc = c.Core.F
+	currSrc := c.burstSrc
+
 	x, y := c.Core.Combat.Player().Pos()
 	count := 0
 	for i := 137; i <= duration; i += 120 {
 		ox, oy := calcGadgetOffsets(count)
 		c.Core.Tasks.Add(func() {
+			if c.burstSrc != currSrc {
+				return
+			}
 			for id := range c.Core.Combat.EnemiesWithinRadius(x+ox, y+oy, 6) {
 				trg, ok := c.Core.Combat.Enemy(id).(*enemy.Enemy)
 				if !ok {
@@ -85,6 +91,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	field := combat.NewCircleHit(c.Core.Combat.Player(), 40)
 	for i := 0; i <= duration; i += 6 {
 		c.Core.Tasks.Add(func() {
+			if c.burstSrc != currSrc {
+				return
+			}
 			if !combat.WillCollide(field, c.Core.Combat.Player(), 0) {
 				return
 			}

@@ -93,10 +93,10 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		if done {
 			return
 		}
-		c.Core.QueueParticle("faruzan", 2.0, attributes.Anemo, c.ParticleDelay)
 		if c.StatusIsActive(particleICDKey) {
 			return
 		}
+		c.Core.QueueParticle("faruzan", 2.0, attributes.Anemo, c.ParticleDelay)
 		c.AddStatus(particleICDKey, 330, true)
 		done = true
 	}
