@@ -16,7 +16,17 @@ func (c *char) a4() {
 	count := 0
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.Element != attributes.Anemo || atk.Info.Mult == 0 { // 0 dmg hits?
+		if atk.Info.Element != attributes.Anemo {
+			return false
+		}
+
+		switch atk.Info.AttackTag {
+		case combat.AttackTagNormal,
+			combat.AttackTagExtra,
+			combat.AttackTagPlunge,
+			combat.AttackTagElementalArt,
+			combat.AttackTagElementalBurst:
+		default:
 			return false
 		}
 
