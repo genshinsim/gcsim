@@ -14,7 +14,7 @@ import (
 // will restore 2 Energy for Faruzan. Each additional opponent hit will
 // restore 0.5 more Energy for Faruzan.
 // A maximum of 4 Energy can be restored to her per vortex.
-func (c *char) c4Callback() func(combat.AttackCB) {
+func (c *char) makeC4Callback() func(combat.AttackCB) {
 	if c.Base.Cons < 4 {
 		return func(a combat.AttackCB) {}
 	}

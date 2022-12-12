@@ -10,14 +10,20 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark   = 20
+	skillHitmark   = 14
 	skillKey       = "faruzan-e"
 	particleICDKey = "faruzan-particle-icd"
-	vortexHitmark  = 40
+	vortexHitmark  = 33
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(36)
+	skillFrames = frames.InitAbilSlice(35)
+	skillFrames[action.ActionSkill] = 34 // E -> E
+	skillFrames[action.ActionBurst] = 34 // E -> Q
+	skillFrames[action.ActionDash] = 28  // E -> N1
+	skillFrames[action.ActionJump] = 27  // E -> J
+	skillFrames[action.ActionWalk] = 34  // E -> J
+	skillFrames[action.ActionSwap] = 33  // E -> Swap
 }
 
 // Faruzan deploys a polyhedron that deals AoE Anemo DMG to nearby opponents.
@@ -39,17 +45,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHit(c.Core.Combat.Player(), 3),
 		skillHitmark,
 		skillHitmark,
-	) // TODO: hitmark and size
+	)
 
 	// C1: Faruzan can fire off a maximum of 2 Hurricane
 	// Arrows using fully charged Aimed Shots while under a
@@ -60,12 +66,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	c.AddStatus(skillKey, 1080, false)
-	c.SetCDWithDelay(action.ActionSkill, 360, 7) // TODO: check cooldown delay
+	c.SetCDWithDelay(action.ActionSkill, 360, 12)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -77,7 +83,7 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone, // TODO: check ICD
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       vortexDmg[c.TalentLvlSkill()],
@@ -96,10 +102,10 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(pos, 2),
+		combat.NewCircleHit(pos, 6),
 		vortexHitmark,
 		vortexHitmark,
-		c.c4Callback(),
+		c.makeC4Callback(),
 		applyBurstShred,
 		particleCb,
 	) // TODO: hitmark and size
