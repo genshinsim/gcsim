@@ -13,13 +13,19 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark  = 90
+	burstHitmark  = 54
 	burstBuffKey  = "faruzan-q-dmg-bonus"
 	burstShredKey = "faruzan-q-shred"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(101)
+	burstFrames = frames.InitAbilSlice(71)
+	burstFrames[action.ActionAttack] = 61 // Q -> N1
+	burstFrames[action.ActionAim] = 61    // Q -> Aim
+	burstFrames[action.ActionSkill] = 61  // Q -> E
+	burstFrames[action.ActionDash] = 61   // Q -> D
+	burstFrames[action.ActionJump] = 63   // Q -> J
+	burstFrames[action.ActionSwap] = 60   // Q -> Swap
 }
 
 // Faruzan deploys a Dazzling Polyhedron that deals AoE Anemo DMG and releases
@@ -41,14 +47,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Anemo,
-		Durability: 50,
+		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
 
 	c.Core.Tasks.Add(func() {
 		snap = c.Snapshot(&ai)
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, applyBurstShred)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 6.3), 0, applyBurstShred)
 		for _, char := range c.Core.Player.Chars() {
 			c.applyBurstBuff(char)
 		}
@@ -56,7 +62,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// C2: The duration of the Dazzling Polyhedron created by
 	// The Wind's Secret Ways increased by 6s.
-	duration := 720
+	duration := 745
 	if c.Base.Cons >= 2 {
 		duration += 360
 	}
@@ -92,7 +98,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	c.SetCD(action.ActionBurst, 1200)
-	c.ConsumeEnergy(21)
+	c.ConsumeEnergy(3)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
