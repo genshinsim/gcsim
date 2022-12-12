@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.hurricaneCount = 2
 	}
 
-	c.AddStatus(skillKey, 1080, false)
+	c.AddStatus(skillKey, 1080, true)
 	c.SetCDWithDelay(action.ActionSkill, 360, 12)
 
 	return action.ActionInfo{
@@ -97,7 +97,7 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		if c.StatusIsActive(particleICDKey) {
 			return
 		}
-		c.AddStatus(particleICDKey, 330, false)
+		c.AddStatus(particleICDKey, 330, true)
 		done = true
 	}
 	c.Core.QueueAttack(
