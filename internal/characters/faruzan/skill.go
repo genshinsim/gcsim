@@ -106,7 +106,7 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		vortexHitmark,
 		vortexHitmark,
 		c.makeC4Callback(),
-		applyBurstShred,
+		applyBurstShredCb,
 		particleCb,
 	) // TODO: hitmark and size
 }

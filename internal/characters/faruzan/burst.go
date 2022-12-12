@@ -50,15 +50,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	snap := c.Snapshot(&ai)
 
-	c.Core.Tasks.Add(func() {
-		snap = c.Snapshot(&ai)
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 6.3), 0, applyBurstShred)
-		for _, char := range c.Core.Player.Chars() {
-			c.applyBurstBuff(char)
-		}
-	}, burstHitmark) // initial hit
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), 6.3),
+		burstHitmark,
+		burstHitmark,
+		applyBurstShredCb,
+	)
 
 	// C2: The duration of the Dazzling Polyhedron created by
 	// The Wind's Secret Ways increased by 6s.
@@ -67,34 +66,32 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		duration += 360
 	}
 
-	frequency, ok := p["frequency"]
-	if !ok {
-		frequency = 1
-	}
-	if frequency < 1 {
-		frequency = 1
-	}
-	if frequency > 3 {
-		frequency = 3
+	x, y := c.Core.Combat.Player().Pos()
+	count := 0
+	for i := 137; i <= duration; i += 120 {
+		ox, oy := calcGadgetOffsets(count)
+		c.Core.Tasks.Add(func() {
+			for id := range c.Core.Combat.EnemiesWithinRadius(x+ox, y+oy, 6) {
+				trg, ok := c.Core.Combat.Enemy(id).(*enemy.Enemy)
+				if !ok {
+					continue
+				}
+				applyBurstShred(trg)
+			}
+		}, 43+i)
+		count += 1
 	}
 
-	// following hits
-	whirl_ai := ai
-	whirl_ai.Abil = "Whirlwind Pulse (Q)"
-	whirl_ai.Mult = 0 // is this a 0 damage hit?
-	whirl_ai.Element = attributes.NoElement
-	hitCount := 0
-	for i := 71; i <= duration; i += 120 {
+	field := combat.NewCircleHit(c.Core.Combat.Player(), 40)
+	for i := 0; i <= duration; i += 6 {
 		c.Core.Tasks.Add(func() {
+			if !combat.WillCollide(field, c.Core.Combat.Player(), 0) {
+				return
+			}
 			for _, char := range c.Core.Player.Chars() {
 				c.applyBurstBuff(char)
 			}
-			hitCount++
-			if hitCount%3 >= frequency {
-				return
-			}
-			c.Core.QueueAttackWithSnap(whirl_ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, applyBurstShred)
-		}, burstHitmark+i)
+		}, 43+i)
 	}
 
 	c.SetCD(action.ActionBurst, 1200)
@@ -123,14 +120,34 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 	}
 }
 
-func applyBurstShred(a combat.AttackCB) {
+func applyBurstShredCb(a combat.AttackCB) {
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	t.AddResistMod(enemy.ResistMod{
+	applyBurstShred(t)
+}
+
+func applyBurstShred(trg *enemy.Enemy) {
+	trg.AddResistMod(enemy.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
 		Ele:   attributes.Anemo,
 		Value: -0.3,
 	})
+}
+
+func calcGadgetOffsets(iter int) (float64, float64) {
+	x := 0.0
+	switch iter % 3 {
+	case 1:
+		x = 5.19
+	case 2:
+		x = -5.19
+	}
+	y := 1.5
+	switch iter % 3 {
+	case 1, 2:
+		y = 10.5
+	}
+	return x, y
 }
