@@ -17,13 +17,13 @@ export default ({ data }: Props) => {
 
   return (
     <Card className="flex flex-col col-span-full h-96">
-      <div className="flex gap-2 flex-col">
-        <CardTitle title="Character DPS" tooltip="x" />
-        <div className="flex flex-row justify-start gap-2">
+      <div className="flex flex-row justify-start gap-5">
+        <div className="flex flex-col gap-2">
+          <CardTitle title="Character DPS" tooltip="x" />
           <Options graph={graph} setGraph={setGraph} />
-          <div className="flex flex-grow justify-center items-center">
-            <Legend data={data} names={names} graph={graph} />
-          </div>
+        </div>
+        <div className="flex flex-grow justify-center items-center">
+          <Legend data={data} names={names} graph={graph} />
         </div>
       </div>
       <ParentSize>
@@ -43,7 +43,7 @@ const Options = ({ graph, setGraph }: { graph: string, setGraph: (v: string) => 
   );
 
   return (
-    <FormGroup label={label} inline={true}>
+    <FormGroup label={label} inline={true} className="!mb-2">
       <HTMLSelect value={graph} onChange={(e) => setGraph(e.target.value)}>
         <option value={"character"}>Character</option>
         <option value={"element"}>Element</option>

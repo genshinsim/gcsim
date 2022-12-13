@@ -12,7 +12,7 @@ type Props = {
 export default ({ data }: Props) => {
   return (
     <Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
-      <CardTitle title="Target Damage Distribution (DPS)" tooltip="x" />
+      <CardTitle title="Target DPS Distribution" tooltip="x" />
       <ParentSize>
         {({ width, height }) => (
           <DPSPie width={width} height={height} dps={data?.statistics?.target_dps} />
