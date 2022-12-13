@@ -114,7 +114,6 @@ export const RenderTooltip = (props: Props) => {
           autoFocus={false}
           usePortal={false}
           placement="top"
-          popoverClassName="w-36"
           content={content}>
         <div></div>
       </Popover2>
@@ -153,7 +152,7 @@ const TooltipContent = ({ idx, lower, upper, count, stat }: TooltipContentProps)
 
   return (
     <div
-        className="p-2 font-mono text-xs grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-center">
+        className="px-5 py-2 font-mono text-xs grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-center">
       {muIndex && muIndex == idx && (
         <><span className="justify-self-end text-gray-400">mean</span><span>{mean}</span></>
       ) || null}

@@ -94,7 +94,6 @@ export const RenderTooltip = <Datum,Key>(props: Props<Datum,Key>) => {
           usePortal={false}
           minimal={true}
           placement="top"
-          popoverClassName="w-36"
           content={content}>
         <div></div>
       </Popover2>

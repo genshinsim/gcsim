@@ -39,8 +39,8 @@ const TooltipTitle = ({ title, color, percent }: TitleProps) => {
     }
 
     return (
-      <div className="flex flex-row justify-start text-gray-400 gap-1">
-        <span style={{ color: color }}>
+      <div className="flex flex-row flex-nowrap justify-start text-gray-400 gap-2">
+        <span className="whitespace-nowrap" style={{ color: color }}>
           {title}
         </span>
         <span>{"(" + value + ")"}</span>
