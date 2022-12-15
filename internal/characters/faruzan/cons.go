@@ -55,6 +55,9 @@ const c6ICDKey = "faruzan-c6-icd"
 
 func (c *char) c6Collapse() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		if dmg := args[2].(float64); dmg == 0 {
+			return false
+		}
 		atk := args[1].(*combat.AttackEvent)
 		char := c.Core.Player.ActiveChar()
 		if char.Index != atk.Info.ActorIndex {
