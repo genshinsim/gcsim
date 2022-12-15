@@ -36,6 +36,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	skillActive := 0
 	if c.StatusIsActive(skillKey) && c.hurricaneCount > 0 {
 		skillActive = 1
+		c.hurricaneCount -= 1
+		if c.hurricaneCount <= 0 {
+			c.DeleteStatus(skillKey)
+		}
 	}
 
 	ai := combat.AttackInfo{
