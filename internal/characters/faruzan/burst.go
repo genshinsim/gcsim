@@ -88,7 +88,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		count += 1
 	}
 
-	// In-game refreshes 0.1s. We give buff every 69f to reduce spam.
 	field := combat.NewCircleHit(c.Core.Combat.Player(), 40)
 	buffFunc := func() {
 		if c.burstSrc != currSrc {
@@ -102,6 +101,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}
 
+	// In-game refreshes 0.1s. We give buff every 239f to reduce spam.
 	for i := 0; i <= duration; i += 239 {
 		c.Core.Tasks.Add(buffFunc, 43+i)
 	}
