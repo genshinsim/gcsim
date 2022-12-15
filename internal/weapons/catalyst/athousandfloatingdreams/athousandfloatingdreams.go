@@ -1,4 +1,4 @@
-package thousandfloatingdreams
+package athousandfloatingdreams
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.ThousandFloatingDreams, NewWeapon)
+	core.RegisterWeaponFunc(keys.AThousandFloatingDreams, NewWeapon)
 }
 
 type Weapon struct {
@@ -37,7 +37,7 @@ func (w *Weapon) Init() error {
 			diffCount++
 		}
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBase("thousand-floating-dreams-party", -1),
+			Base: modifier.NewBase("a-thousand-floating-dreams-party", -1),
 			Amount: func() ([]float64, bool) {
 				return w.teamBuff, true
 			},
@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w.teamBuff[attributes.EM] = 38 + float64(r)*2
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("thousand-floating-dreams", -1),
+		Base: modifier.NewBase("a-thousand-floating-dreams", -1),
 		Amount: func() ([]float64, bool) {
 			return w.buff, true
 		},

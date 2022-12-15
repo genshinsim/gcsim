@@ -40,6 +40,7 @@ var weaponNames = []string{
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
+	"athousandfloatingdreams",
 	"beginnersprotector",
 	"blackcliffagate",
 	"blackclifflongsword",
@@ -167,7 +168,9 @@ var weaponNames = []string{
 	"thewidsith",
 	"thrillingtalesofdragonslayers",
 	"thunderingpulse",
+	"toukaboushigure",
 	"travelershandysword",
+	"tulaytullahsremembrance",
 	"twinnephrite",
 	"vortexvanquisher",
 	"wanderingevenstar",
@@ -180,7 +183,6 @@ var weaponNames = []string{
 	"wineandsong",
 	"wolfsgravestone",
 	"xiphosmoonlight",
-	"athousandfloatingdreams",
 }
 
 const (
@@ -192,6 +194,7 @@ const (
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
+	AThousandFloatingDreams
 	BeginnersProtector
 	BlackcliffAgate
 	BlackcliffLongsword
@@ -319,7 +322,9 @@ const (
 	TheWidsith
 	ThrillingTalesOfDragonSlayers
 	ThunderingPulse
+	ToukabouShigure
 	TravelersHandySword
+	TulaytullahsRemembrance
 	TwinNephrite
 	VortexVanquisher
 	WanderingEvenstar
@@ -332,5 +337,4 @@ const (
 	WineAndSong
 	WolfsGravestone
 	XiphosMoonlight
-	ThousandFloatingDreams
 )
