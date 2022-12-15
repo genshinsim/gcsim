@@ -66,8 +66,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.hurricaneCount = 2
 	}
 
-	c.AddStatus(skillKey, 1080, true)
-	c.SetCDWithDelay(action.ActionSkill, 360, 12)
+	c.Core.Tasks.Add(func() {
+		c.AddStatus(skillKey, 1080, true)
+		c.SetCD(action.ActionSkill, 360)
+	}, 12)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -82,7 +84,7 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		ActorIndex: c.Index,
 		Abil:       SkillName,
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone, // TODO: check ICD
+		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Anemo,
@@ -109,5 +111,5 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		c.makeC4Callback(),
 		applyBurstShredCb,
 		particleCb,
-	) // TODO: hitmark and size
+	)
 }
