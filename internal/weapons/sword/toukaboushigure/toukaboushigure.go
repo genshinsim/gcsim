@@ -53,7 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*combat.AttackEvent)
 		if !ok {
