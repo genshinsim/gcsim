@@ -104,7 +104,7 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(pos, 6),
-		vortexHitmark,
+		0,
 		vortexHitmark,
 		c.makeC4Callback(),
 		applyBurstShredCb,
