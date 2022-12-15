@@ -31,7 +31,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		travel = 10
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	skillActive := 0
 	if c.StatusIsActive(skillKey) && c.hurricaneCount > 0 {
@@ -53,7 +53,8 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-	skillCb := func(a combat.AttackCB) {}
+
+	var skillCb func(a combat.AttackCB)
 
 	if skillActive == 1 {
 		ai.Abil = "Hurricane Arrow"
