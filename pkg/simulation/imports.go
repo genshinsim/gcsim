@@ -67,6 +67,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
 	_ "github.com/genshinsim/gcsim/internal/characters/dori"
 	_ "github.com/genshinsim/gcsim/internal/characters/eula"
+	_ "github.com/genshinsim/gcsim/internal/characters/faruzan"
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gcsim/internal/characters/ganyu"
 	_ "github.com/genshinsim/gcsim/internal/characters/gorou"
