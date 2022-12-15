@@ -102,12 +102,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	for i := 0; i <= duration; i += 69 {
+	for i := 0; i <= duration; i += 239 {
 		c.Core.Tasks.Add(buffFunc, 43+i)
 	}
 
 	// Last refresh to account for 0.1s tick period
-	c.Core.Tasks.Add(buffFunc, 43+int(duration/6.0)*6)
+	c.Core.Tasks.Add(buffFunc, 43+duration)
 
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(3)
