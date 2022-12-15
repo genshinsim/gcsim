@@ -10,7 +10,7 @@ import (
 var skillFrames []int
 
 const (
-	SkillName      = "Pressurized Collapse"
+	VortexAbilName = "Pressurized Collapse"
 	skillHitmark   = 14
 	skillKey       = "faruzan-e"
 	particleICDKey = "faruzan-particle-icd"
@@ -82,7 +82,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) pressurizedCollapse(pos combat.Positional) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       SkillName,
+		Abil:       VortexAbilName,
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,

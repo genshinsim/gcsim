@@ -102,10 +102,10 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	case keys.Sucrose:
 		p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
 	case keys.Faruzan:
-		if atk.Info.Abil != faruzan.SkillName {
+		if atk.Info.Abil != faruzan.VortexAbilName {
 			return 0, false
 		}
-		p.Core.Log.NewEvent("guoba hit by faruzan E", glog.LogCharacterEvent, p.c.Index)
+		p.Core.Log.NewEvent("guoba hit by faruzan pressurized collapse", glog.LogCharacterEvent, p.c.Index)
 	default:
 		return 0, false
 	}
