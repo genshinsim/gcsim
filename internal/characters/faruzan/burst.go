@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 6.3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 6.3),
 		burstHitmark,
 		burstHitmark,
 		applyBurstShredCb,
@@ -69,10 +69,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstSrc = c.Core.F
 	currSrc := c.burstSrc
 
-	x, y := c.Core.Combat.Player().Pos()
+	player := c.Core.Combat.Player()
+	direction := player.Direction()
+	x, y := player.Pos()
+	gadgetPositions := []combat.Point{
+		combat.CalcOffsetPoint(player, combat.Point{X: 5.9, Y: 10.5}, direction),
+		combat.CalcOffsetPoint(player, combat.Point{X: -5.9, Y: 10.5}, direction),
+		combat.CalcOffsetPoint(player, combat.Point{Y: 1.5}, direction),
+	}
 	count := 0
 	for i := 137; i <= duration; i += 120 {
-		ox, oy := calcGadgetOffsets(count)
+		ox, oy := gadgetPositions[count%3].Pos()
 		c.Core.Tasks.Add(func() {
 			if c.burstSrc != currSrc {
 				return
@@ -88,7 +95,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		count += 1
 	}
 
-	field := combat.NewCircleHit(c.Core.Combat.Player(), 40)
+	field := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 40)
 	buffFunc := func() {
 		if c.burstSrc != currSrc {
 			return
@@ -149,20 +156,4 @@ func applyBurstShred(trg *enemy.Enemy) {
 		Ele:   attributes.Anemo,
 		Value: -0.3,
 	})
-}
-
-func calcGadgetOffsets(iter int) (float64, float64) {
-	x := 0.0
-	switch iter % 3 {
-	case 1:
-		x = 5.19
-	case 2:
-		x = -5.19
-	}
-	y := 1.5
-	switch iter % 3 {
-	case 1, 2:
-		y = 10.5
-	}
-	return x, y
 }
