@@ -1,6 +1,7 @@
 package xiangling
 
 import (
+	"github.com/genshinsim/gcsim/internal/characters/faruzan"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -27,7 +28,7 @@ func (c *char) newGuoba(ai combat.AttackInfo) *panda {
 		c:    c,
 	}
 	x, y := c.Core.Combat.Player().Pos()
-	//TODO: guoba placement??
+	// TODO: guoba placement??
 	p.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypGuoba)
 	p.Gadget.Duration = 438
 	p.Reactable = &reactable.Reactable{}
@@ -37,23 +38,23 @@ func (c *char) newGuoba(ai combat.AttackInfo) *panda {
 }
 
 func (p *panda) Tick() {
-	//this is needed since both reactable and gadget tick
+	// this is needed since both reactable and gadget tick
 	p.Reactable.Tick()
 	p.Gadget.Tick()
 	p.timer++
-	//guoba pew pew every 100 frames
-	//first pew pew is at 126, but guoba spawns 13 in; so it's really 113
-	//then every 100 after that
-	//TODO: kids.. don't do this
+	// guoba pew pew every 100 frames
+	// first pew pew is at 126, but guoba spawns 13 in; so it's really 113
+	// then every 100 after that
+	// TODO: kids.. don't do this
 	switch p.timer {
-	case 103, 203, 303, 403: //swirl window
+	case 103, 203, 303, 403: // swirl window
 		p.Core.Log.NewEvent("guoba self infusion applied", glog.LogElementEvent, p.c.Index).
 			SetEnded(p.c.Core.F + infuseWindow + 1)
 		p.Durability[reactable.ModifierPyro] = infuseDurability
 		p.Core.Tasks.Add(func() {
 			p.Durability[reactable.ModifierPyro] = 0
 		}, infuseWindow+1) // +1 since infuse window is inclusive
-		//queue this in advance because that's how it is on live
+		// queue this in advance because that's how it is on live
 		p.breath()
 	}
 }
@@ -91,22 +92,25 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	if atk.Info.AttackTag != combat.AttackTagElementalArt {
 		return 0, false
 	}
-	//check pyro window
+	// check pyro window
 	if p.Durability[reactable.ModifierPyro] <= reactable.ZeroDur {
 		return 0, false
 	}
 
-	//don't take damage, trigger swirl reaction only on sucrose E or faruzan E
+	// don't take damage, trigger swirl reaction only on sucrose E or faruzan E
 	switch p.Core.Player.Chars()[atk.Info.ActorIndex].Base.Key {
 	case keys.Sucrose:
 		p.Core.Log.NewEvent("guoba hit by sucrose E", glog.LogCharacterEvent, p.c.Index)
 	case keys.Faruzan:
+		if atk.Info.Abil != faruzan.SkillName {
+			return 0, false
+		}
 		p.Core.Log.NewEvent("guoba hit by faruzan E", glog.LogCharacterEvent, p.c.Index)
 	default:
 		return 0, false
 	}
 
-	//cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
+	// cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
 	oldDur := p.Durability[reactable.ModifierPyro]
 	p.Durability[reactable.ModifierPyro] = infuseDurability
 	p.React(atk)
