@@ -34,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base:         modifier.NewBase("deathmatch", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
-			if len(c.Combat.Enemies()) > 2 {
+			if len(c.Combat.Enemies()) >= 2 {
 				return multiple, true
 			}
 			return single, true

@@ -25,7 +25,7 @@ func (c *char) c1() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if atk.Info.Abil != "Frost Flake Arrow" {
+		if !(atk.Info.Abil == "Frost Flake Arrow" || atk.Info.Abil == "Frost Flake Bloom") {
 			return false
 		}
 

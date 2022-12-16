@@ -14,7 +14,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	bellActiveUntil int
+	ringSrc int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

@@ -38,9 +38,9 @@ func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) (Obj, error) {
-	//blocks are effectively a list of statements, so we just need to loop through
-	//and evalNode
-	//blocks should create a new environment
+	// blocks are effectively a list of statements, so we just need to loop through
+	// and evalNode
+	// blocks should create a new environment
 	scope := NewEnv(env)
 	for _, n := range b.List {
 		v, err := e.evalNode(n, scope)
@@ -61,7 +61,7 @@ func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
-	//variable assignment, expr should evaluate to a number
+	// variable assignment, expr should evaluate to a number
 	res, err := e.evalExpr(l.Val, env)
 	if err != nil {
 		return nil, err
@@ -119,14 +119,14 @@ func (e *Eval) execSwap(char keys.Char) (Obj, error) {
 	}
 	_, ok := <-e.Next
 	if !ok {
-		return nil, ErrTerminated //no more work, shutting down
+		return nil, ErrTerminated // no more work, shutting down
 	}
 
 	return &null{}, nil
 }
 
 func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) (Obj, error) {
-	//check if character is active, if not then issue a swap action first
+	// check if character is active, if not then issue a swap action first
 	if !e.Core.Player.CharIsActive(a.Char) {
 		res, err := e.execSwap(a.Char)
 		if err != nil {
@@ -137,12 +137,12 @@ func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) (Obj, error) {
 		}
 	}
 
-	//TODO: should we make a copy of action here??
+	// TODO: should we make a copy of action here??
 	e.Work <- a
-	//block until sim is done with the action; unless we're done
+	// block until sim is done with the action; unless we're done
 	_, ok := <-e.Next
 	if !ok {
-		return nil, ErrTerminated //no more work, shutting down
+		return nil, ErrTerminated // no more work, shutting down
 	}
 	return &null{}, nil
 }
@@ -153,7 +153,7 @@ func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {
 		return nil, err
 	}
 	// e.Log.Printf("return res: %v, type: %T\n", res, res)
-	//res should be a number
+	// res should be a number
 	if _, ok := res.(*number); !ok {
 		return nil, fmt.Errorf("return expression does not evaluate to a number, got %v", res.Inspect())
 	}
@@ -175,7 +175,6 @@ func (e *Eval) evalIfStmt(i *ast.IfStmt, env *Env) (Obj, error) {
 	}
 	if otob(cond) {
 		return e.evalBlock(i.IfBlock, env)
-
 	} else if i.ElseBlock != nil {
 		return e.evalStmt(i.ElseBlock, env)
 	}
@@ -184,7 +183,7 @@ func (e *Eval) evalIfStmt(i *ast.IfStmt, env *Env) (Obj, error) {
 
 func (e *Eval) evalWhileStmt(w *ast.WhileStmt, env *Env) (Obj, error) {
 	for {
-		//if condition is false, break
+		// if condition is false, break
 		cond, err := e.evalExpr(w.Condition, env)
 		if err != nil {
 			return nil, err
@@ -193,13 +192,13 @@ func (e *Eval) evalWhileStmt(w *ast.WhileStmt, env *Env) (Obj, error) {
 			break
 		}
 
-		//execute block
+		// execute block
 		res, err := e.evalBlock(w.WhileBlock, env)
 		if err != nil {
 			return nil, err
 		}
 
-		//if result is a break stmt, stop loo
+		// if result is a break stmt, stop loo
 		if t, ok := res.(*ctrl); ok && t.typ == ast.CtrlBreak {
 			break
 		}
@@ -215,7 +214,7 @@ func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
 
 	for {
 		if f.Cond != nil {
-			//if condition is false, break
+			// if condition is false, break
 			cond, err := e.evalExpr(f.Cond, scope)
 			if err != nil {
 				return nil, err
@@ -225,13 +224,13 @@ func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
 			}
 		}
 
-		//execute block
+		// execute block
 		res, err := e.evalBlock(f.Body, scope)
 		if err != nil {
 			return nil, err
 		}
 
-		//if result is a break stmt, stop loo
+		// if result is a break stmt, stop loo
 		if t, ok := res.(*ctrl); ok && t.typ == ast.CtrlBreak {
 			break
 		}
@@ -249,18 +248,22 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 		return nil, err
 	}
 
-	//condition should be a number
-	//res should be a number
-	v, ok := cond.(*number)
-	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
-	if !ok {
-		return nil, fmt.Errorf("switch condition does not evaluate to a number, got %v", cond.Inspect())
+	// condition should be a number
+	// res should be a number
+	var v *number = nil
+	if _, ok := cond.(*null); !ok {
+		val, ok := cond.(*number)
+		// e.Log.Printf("let expr: %v, type: %T\n", res, res)
+		if !ok {
+			return nil, fmt.Errorf("switch condition does not evaluate to a number, got %v", cond.Inspect())
+		}
+		v = val
 	}
 	ft := false
 	found := false
-	//loop through the cases, executing first one that evals true
+	// loop through the cases, executing first one that evals true
 	for i := range swt.Cases {
-		//each case expr needs to evaluate to a number
+		// each case expr needs to evaluate to a number
 		cc, err := e.evalExpr(swt.Cases[i].Condition, env)
 		if err != nil {
 			return nil, err
@@ -269,7 +272,7 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 		if !ok {
 			return nil, fmt.Errorf("switch case condition does not evaluate to a number, got %v", cc.Inspect())
 		}
-		if ntob(eq(c, v)) || ft {
+		if (v == nil && ntob(c)) || (v != nil && ntob(eq(c, v))) || ft {
 			found = true
 			res, err := e.evalBlock(swt.Cases[i].Body, env)
 			if err != nil {
@@ -278,12 +281,14 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 			e.Log.Printf("res from case block: %v typ %T\n", res, res)
 			switch t := res.(type) {
 			case *ctrl:
-				// check if fallthrough
-				if t.typ == ast.CtrlFallthrough {
+				switch t.typ {
+				case ast.CtrlFallthrough:
 					ft = true
+				case ast.CtrlBreak:
+					return &null{}, nil
 				}
 			default:
-				//switch is done
+				// switch is done
 				return res, nil
 			}
 		}
