@@ -33,7 +33,7 @@ func (c *char) c4() {
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
-		if c.Core.Status.Duration("kuki-e") == 0 {
+		if c.Core.Status.Duration(ringKey) == 0 {
 			return false
 		}
 		c.AddStatus(c4IcdKey, 300, true) // 5s * 60

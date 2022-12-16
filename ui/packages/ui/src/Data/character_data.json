@@ -99,6 +99,11 @@
     "element": "cryo",
     "weapon_class": "claymore"
   },
+  "faruzan": {
+    "rarity": 4,
+    "element": "anemo",
+    "weapon_class": "bow"
+  },
   "fischl": {
     "rarity": 4,
     "element": "electro",
@@ -162,6 +167,11 @@
   "kuki": {
     "rarity": 4,
     "element": "electro",
+    "weapon_class": "sword"
+  },
+  "layla": {
+    "rarity": 4,
+    "element": "cryo",
     "weapon_class": "sword"
   },
   "lisa": {

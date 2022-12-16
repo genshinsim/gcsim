@@ -101,6 +101,7 @@ const (
 	ICDGroupReactionB
 	ICDGroupBurning
 	ICDGroupNahidaSkill
+	ICDGroupLayla
 	ICDGroupLength
 )
 
@@ -123,6 +124,7 @@ var ICDGroupResetTimer = []int{
 	30,  //reaciton b
 	120, //burning
 	60,  //nahida skill
+	180, //layla
 }
 
 var ICDGroupEleApplicationSequence = [][]float64{
@@ -162,6 +164,8 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	{1, 0, 0, 0, 0, 0, 0, 0},
 	//nahida skill
 	{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//layla
+	{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -203,4 +207,6 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//nahida-skill
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//layla
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 }
