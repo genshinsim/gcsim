@@ -1,0 +1,17 @@
+syntax = "proto3";
+package result;
+option go_package="backend/pkg/services/compute";
+
+service Compute {
+    rpc Run (RunRequest) returns (RunResponse) {}
+}
+
+message RunRequest {
+    string key = 1;
+    string config = 2;
+    string api_key = 3;
+    string callback_url = 4;
+}
+
+message RunResponse {
+}

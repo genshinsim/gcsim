@@ -5,8 +5,10 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
 
@@ -53,4 +55,87 @@ func (r *Summary) PrettyPrint() string {
 		"Simulation completed %v iterations in %.3f seconds\n", r.Statistics.Iterations, r.Statistics.Runtime/1000000000))
 
 	return sb.String()
+}
+
+// TODO: this function is incomplete. not all data copied
+func (s *Summary) ToPBModel() *model.SimulationResult {
+	r := &model.SimulationResult{
+		SchemaVersion: &model.Version{
+			Major: int64(s.SchemaVersion.Major),
+			Minor: int64(s.SchemaVersion.Minor),
+		},
+		SimVersion:       s.SimVersion,
+		BuildDate:        s.BuildDate,
+		Modified:         s.Modified,
+		InitialCharacter: s.InitialCharacter,
+		Config:           s.Config,
+		SampleSeed:       s.SampleSeed,
+	}
+	for _, v := range s.CharacterDetails {
+		next := &model.Character{
+			Key:      v.Name, //TODO: to be updated when we rekey characters
+			Name:     v.Name,
+			Element:  v.Element,
+			Level:    int64(v.Level),
+			MaxLevel: int64(v.MaxLevel),
+			Cons:     int64(v.Cons),
+			Weapon: &model.Weapon{
+				Name:     v.Weapon.Name,
+				Refine:   int64(v.Weapon.Refine),
+				Level:    int64(v.Weapon.Level),
+				MaxLevel: int64(v.MaxLevel),
+			},
+			Talents: &model.CharacterTalents{
+				Attack: int64(v.Talents.Attack),
+				Skill:  int64(v.Talents.Skill),
+				Burst:  int64(v.Talents.Burst),
+			},
+		}
+		next.Sets = make(map[string]int64)
+		for k, x := range v.Sets {
+			next.Sets[k] = int64(x)
+		}
+		next.Stats = make(map[string]float64)
+		for i, x := range v.Stats {
+			next.Stats[attributes.StatTypeString[i]] = x
+		}
+		next.Snapshot = make(map[string]float64)
+		for i, x := range v.SnapshotStats {
+			next.Snapshot[attributes.StatTypeString[i]] = x
+		}
+		r.CharacterDetails = append(r.CharacterDetails, next)
+	}
+	for _, v := range s.TargetDetails {
+		next := &model.Enemy{
+			Level: int64(v.Level),
+			HP:    v.HP,
+			Pos: &model.Coord{
+				X: v.Pos.X,
+				Y: v.Pos.Y,
+				R: v.Pos.R,
+			},
+			ParticleDropThreshold: v.ParticleDropThreshold,
+			ParticleDropCount:     v.ParticleDropCount,
+			ParticleElement:       v.ParticleElement.String(),
+		}
+		next.Resist = make(map[string]float64)
+		for k, x := range v.Resist {
+			next.Resist[k.String()] = x
+		}
+		r.TargetDetails = append(r.TargetDetails, next)
+	}
+
+	r.Statistics = &model.SimulationStatistics{
+		MinSeed: s.Statistics.MinSeed,
+		MaxSeed: s.Statistics.MaxSeed,
+		Duration: &model.OverviewStats{
+			Min:  s.Statistics.Duration.Min,
+			Max:  s.Statistics.Duration.Max,
+			Mean: s.Statistics.Duration.Mean,
+		},
+		Runtime:    s.Statistics.Runtime,
+		Iterations: int64(s.Statistics.Iterations),
+	}
+
+	return r
 }

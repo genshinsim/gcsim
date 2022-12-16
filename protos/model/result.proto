@@ -2,25 +2,88 @@ syntax = "proto3";
 package model;
 option go_package="pkg/model";
 
-import "protos/model/character.proto";
-import "protos/model/enemy.proto";
+import "protos/model/sim.proto";
 
 message Version {
-    int32 major = 1;
-    int32 minor = 2;
+    int64 major = 1;
+    int64 minor = 2;
 }
 
-message Summary {
+message SimulationResult {
 
     //metadata
-    Version schema_version = 1 [json_name="schema_version"];
-    string sim_version = 2 [json_name="sim_version"];
-    string build_date = 3 [json_name="build_date"];
+    Version schema_version = 1;
+    string sim_version = 2;
+    string build_date = 3;
     bool modified = 4;
 
     //charater and enemey data
-    string initial_character = 5 [json_name="initial_character"];
-    repeated Character character_details = 6 [json_name="character_details"];
-    repeated Enemy target_details = 7 [json_name="target_details"];
-    
+    string initial_character = 5;
+    repeated Character character_details = 6;
+    repeated Enemy target_details = 7;
+    SimulatorSettings simulator_settings = 8;
+    EnergySettings energy_settings = 9;
+
+    string config = 10;
+    string sample_seed = 11;
+
+    SimulationStatistics statistics = 12;
+}
+
+message SimulationStatistics {
+    //metadata
+    string min_seed = 1;
+    string max_seed = 2;
+    string p25_seed = 3;
+    string p50_seed = 4;
+    string p75_seed = 5;
+    double runtime = 6;
+    int64 iterations = 7;
+
+    // global overview (global/no group by)
+    OverviewStats duration = 8;
+    OverviewStats DPS = 9 [json_name="dps"];
+    OverviewStats RPS = 10 [json_name="rps"];
+    OverviewStats EPS = 11 [json_name="eps"];
+    OverviewStats HPS = 12 [json_name="hps"];
+    OverviewStats SPS = 13 [json_name="sps"];
+    OverviewStats total_damage = 14;
+
+    Warnings warnings = 15;
+    repeated FailedActions failed_actions = 16;
+}
+
+message OverviewStats {
+    double min = 1;
+    double max = 2;
+    double mean = 3;
+    double SD = 4 [json_name="sd"];
+
+    double q1 = 5;
+    double q2 = 6;
+    double q3 = 7;
+
+    repeated uint64 hist = 8 [json_name="histogram"];
+}
+
+message DescriptiveStats {
+    double min = 1;
+    double max = 2;
+    double mean = 3;
+    double SD = 4 [json_name="sd"];
+}
+
+message Warnings {
+    bool target_overlap = 1;
+    bool insufficient_energy = 2;
+    bool insufficient_stamina = 3;
+    bool swap_cd = 4;
+    bool skill_cd = 5;
+}
+
+message FailedActions {
+	DescriptiveStats insufficient_energy = 1;
+	DescriptiveStats insufficient_stamina = 2;
+	DescriptiveStats swap_cd = 3;
+	DescriptiveStats skill_cd = 4;
 }

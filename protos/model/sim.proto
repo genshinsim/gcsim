@@ -1,0 +1,72 @@
+syntax = "proto3";
+package model;
+option go_package="pkg/model";
+
+
+message Character {
+    string key = 1;
+    string name = 2;
+    string element = 3;
+    int64 level = 4;
+    int64 max_level = 5;
+    int64 cons = 6;
+    Weapon weapon = 7;
+    CharacterTalents talents = 8;
+    map<string, int64> sets = 9;
+    map<string, double> stats = 10;
+    map<string, double> snapshot = 11;
+}
+
+message CharacterTalents {
+    int64 attack = 1;
+    int64 skill = 2;
+    int64 burst = 3;
+}
+
+message Weapon {
+    string name = 1;
+    int64 refine = 2;
+    int64 level = 3;
+    int64 max_level = 4;
+}
+
+message Enemy {
+    int64 level = 1;
+    double HP = 2 [json_name="hp"];
+    map<string, double> resist = 3;
+    Coord pos = 4;
+    double particle_drop_threshold = 5;
+    double particle_drop_count = 6;
+    string particle_element = 7;
+}
+
+message Coord {
+    double x = 1;
+    double y = 2;
+    double r = 3;
+}
+
+message SimulatorSettings {
+    double duration = 1;
+    bool damage_mode = 2;
+    bool enable_hitlag = 3;
+    bool def_halt = 4;
+    int64 number_of_workers = 5;
+    int64 number_of_iterations = 6;
+    Delays delays = 7;
+
+}
+
+message Delays {
+    int64 swap = 1;
+}
+
+
+message EnergySettings {
+    bool active = 1;
+    bool once = 2;
+    int64 start = 3;
+    int64 end = 4;
+    int64 amount = 5;
+    int64 last_energy_drop = 6;
+}

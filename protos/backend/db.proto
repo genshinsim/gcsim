@@ -2,33 +2,64 @@ syntax = "proto3";
 package db;
 option go_package="backend/pkg/services/db";
 
-import "protos/model/character.proto";
-import "protos/model/stats.proto";
+import "protos/model/result.proto";
+import "protos/model/sim.proto";
 
 service DBStore {
+    rpc SubmitEntry (SubmitRequest) returns (SubmitResponse) {}
+    rpc ApproveSubmission (ApproveRequest) returns (ApproveResponse) {}
+    rpc RejectSubmission (RejectRequest) returns (RejectReponse) {}
+    rpc ListSubmission (ListSubmissionRequest) returns (ListSubmissionResponse) {}
 }
 
-message DBEntry {
+message Entry {
     //basic info
     string key = 1;
-    string create_date = 2 ;
-    string run_date = 3 ;
-    model.SummaryStat sim_duration = 4 ;
-    int64 iter = 5;
-    string config = 6;
-    string hash = 7;
+    uint64 create_date = 2;
+    uint64 run_date = 3;
+    model.DescriptiveStats sim_duration = 4;
+    string config = 5;
+    string hash = 6;
 
     //indexing data
-    repeated string char_names = 8 ;
-    int32 target_count = 9 ;
-    double mean_dps_per_target = 10 ;
+    repeated string char_names = 7;
+    int32 target_count = 8;
+    double mean_dps_per_target = 11;
 
     //detailed results
-    repeated model.Character team = 11;
-    TargetDPS dps_by_target = 12;
+    repeated model.Character team = 12;
+    repeated model.DescriptiveStats dps_by_target = 13;
 }
 
-message TargetDPS {
-    model.SummaryStat dps = 1;
+message Submission {
+    string key = 1; // viewer key
+    string config = 2;
+    string submitter = 3; //submitter discord id 
+    string description = 4;
 }
+
+message SubmitRequest {
+    Submission data = 1;
+}
+
+message SubmitResponse {}
+
+message ApproveRequest {
+    string key = 1;
+}
+
+message ApproveResponse {}
+
+message RejectRequest {
+    string key = 1;
+}
+
+message RejectReponse {}
+
+message ListSubmissionRequest {}
+
+message ListSubmissionResponse {
+    repeated Submission data = 1;
+}
+
 
