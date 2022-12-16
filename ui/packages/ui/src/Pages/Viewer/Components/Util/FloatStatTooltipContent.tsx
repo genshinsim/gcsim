@@ -6,16 +6,17 @@ type Props = {
   data: FloatStat;
   color?: string;
   percent?: number;
+  format?: (n?: number) => string | undefined;
 }
 
-export default ({ title, data, color, percent }: Props) => (
+export default ({ title, data, color, percent, format }: Props) => (
   <div className="flex flex-col px-2 py-1 font-mono text-xs">
     <TooltipTitle title={title} color={color} percent={percent} />
     <ul className="list-disc pl-4 grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-start">
-      <Item color={color} name="mean" value={data.mean} />
-      <Item color={color} name="min" value={data.min} />
-      <Item color={color} name="max" value={data.max} />
-      <Item color={color} name="std" value={data.sd} />
+      <Item format={format} color={color} name="mean" value={data.mean} />
+      <Item format={format} color={color} name="min" value={data.min} />
+      <Item format={format} color={color} name="max" value={data.max} />
+      <Item format={format} color={color} name="std" value={data.sd} />
     </ul>
   </div>
 );
@@ -34,7 +35,7 @@ const TooltipTitle = ({ title, color, percent }: TitleProps) => {
   if (typeof title === 'string' || title instanceof String) {
     if (value == null) {
       return (
-        <span className="text-gray-400" style={{ color: color }}>{title}</span>
+        <span className="text-gray-400 whitespace-nowrap" style={{ color: color }}>{title}</span>
       );
     }
 
@@ -55,11 +56,18 @@ type ItemProps = {
   name: string;
   value?: number;
   color?: string;
+  format?: (n?: number) => string | undefined;
 }
 
-const Item = ({ name, value, color }: ItemProps) => {
+const Item = ({ name, value, color, format }: ItemProps) => {
   const { i18n } = useTranslation();
-  const num = value?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
+  let num: string | undefined;
+  if (format == null) {
+    num = value?.toLocaleString(
+        i18n.language, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  } else {
+    num = format(value);
+  }
 
   return (
     <>

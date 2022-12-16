@@ -1,5 +1,6 @@
 import { NonIdealState } from "@blueprintjs/core";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+
 import qiqi from "./images/qiqi.png";
 import kuki from "./images/kuki.png";
 import ayaka from "./images/ayaka.png";
@@ -39,19 +40,15 @@ export default ({}) => {
 let availableImages = [...images];
 
 const Icon = ({}) => {
-  const img = useRef<string | undefined>(undefined);
-
-  useEffect(() => {
-    if (img.current != null) {
-      return;
-    }
-
-    const options = availableImages.length > 0 ? availableImages : [...images];
-    img.current = options.splice(Math.floor(Math.random() * options.length), 1)[0];
-    availableImages = options;
-  }, []);
-
+  const img = useRef<string | undefined>(image());
   return (
     <img src={img.current} className="h-24" />
   );
 };
+
+function image(): string {
+  const options = availableImages.length > 0 ? availableImages : [...images];
+  const img = options.splice(Math.floor(Math.random() * options.length), 1)[0];
+  availableImages = options;
+  return img;
+}

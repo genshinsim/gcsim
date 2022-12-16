@@ -8,6 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
+// 30 = .5s
+const BUCKET_SIZE int = 30
+
 func init() {
 	agg.Register(NewAgg)
 }
@@ -23,21 +26,31 @@ type buffer struct {
 	characterDPS []*calc.StreamStats // i = char
 	dpsByElement []map[string]*calc.StreamStats
 	dpsByTarget  []map[int]*calc.StreamStats
+
+	damageBuckets     []*calc.StreamStats
+	cumulativeContrib [][]*calc.StreamStats
 }
 
 func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 	out := buffer{
-		elementDPS:   make(map[string]*calc.StreamStats),
-		targetDPS:    make(map[int]*calc.StreamStats),
-		characterDPS: make([]*calc.StreamStats, len(cfg.Characters)),
-		dpsByElement: make([]map[string]*calc.StreamStats, len(cfg.Characters)),
-		dpsByTarget:  make([]map[int]*calc.StreamStats, len(cfg.Characters)),
+		elementDPS:        make(map[string]*calc.StreamStats),
+		targetDPS:         make(map[int]*calc.StreamStats),
+		characterDPS:      make([]*calc.StreamStats, len(cfg.Characters)),
+		dpsByElement:      make([]map[string]*calc.StreamStats, len(cfg.Characters)),
+		dpsByTarget:       make([]map[int]*calc.StreamStats, len(cfg.Characters)),
+		cumulativeContrib: make([][]*calc.StreamStats, len(cfg.Characters)),
+		damageBuckets:     make([]*calc.StreamStats, 0),
 	}
+
+	// start with single entry
+	out.damageBuckets = append(out.damageBuckets, &calc.StreamStats{})
 
 	for i := 0; i < len(cfg.Characters); i++ {
 		out.characterDPS[i] = &calc.StreamStats{}
 		out.dpsByElement[i] = make(map[string]*calc.StreamStats)
 		out.dpsByTarget[i] = make(map[int]*calc.StreamStats)
+		out.cumulativeContrib[i] = make([]*calc.StreamStats, 0)
+		out.cumulativeContrib[i] = append(out.cumulativeContrib[i], &calc.StreamStats{})
 	}
 
 	return &out, nil
@@ -48,10 +61,37 @@ func (b *buffer) Add(result stats.Result) {
 	targetDPS := make(map[int]float64)
 	elementDPS := makeElementMap()
 
+	b.damageBuckets = expandBuckets(
+		b.damageBuckets, max(len(b.damageBuckets), len(result.DamageBuckets)))
+	for i, stat := range b.damageBuckets {
+		var val float64
+		if i < len(result.DamageBuckets) {
+			val = result.DamageBuckets[i]
+		} else {
+			val = 0
+		}
+		stat.Add(val)
+	}
+
 	for i, char := range result.Characters {
 		var charDPS float64
 		charElementDPS := makeElementMap()
 		charTargetDPS := make(map[int]float64)
+
+		b.cumulativeContrib[i] = expandCumu(
+			b.cumulativeContrib[i],
+			max(len(b.cumulativeContrib[i]), len(result.Characters[i].DamageCumulativeContrib)))
+		var prev float64
+		for j, stat := range b.cumulativeContrib[i] {
+			var val float64
+			if j < len(result.Characters[i].DamageCumulativeContrib) {
+				val = result.Characters[i].DamageCumulativeContrib[j]
+			} else {
+				val = prev
+			}
+			prev = val
+			stat.Add(val)
+		}
 
 		for _, ev := range char.DamageEvents {
 			if _, ok := charTargetDPS[ev.Target]; !ok {
@@ -134,6 +174,20 @@ func (b *buffer) Flush(result *agg.Result) {
 			result.BreakdownByTargetDPS[i][k] = agg.ConvertToFloatStat(v)
 		}
 	}
+
+	result.DamageBuckets = make([]agg.FloatStat, len(b.damageBuckets))
+	for i, v := range b.damageBuckets {
+		result.DamageBuckets[i] = agg.ConvertToFloatStat(v)
+	}
+
+	result.CumulativeDamageContribution = make([][]agg.FloatStat, len(b.cumulativeContrib))
+	for i, c := range b.cumulativeContrib {
+		result.CumulativeDamageContribution[i] = make([]agg.FloatStat, len(c))
+		for j, v := range c {
+			result.CumulativeDamageContribution[i][j] = agg.ConvertToFloatStat(v)
+		}
+	}
+	result.DamageBucketSize = BUCKET_SIZE
 }
 
 func makeElementMap() map[string]float64 {
@@ -142,4 +196,32 @@ func makeElementMap() map[string]float64 {
 		out[ele] = 0
 	}
 	return out
+}
+
+func expandCumu(arr []*calc.StreamStats, size int) []*calc.StreamStats {
+	last := arr[len(arr)-1]
+	for size > len(arr) {
+		cpy := *last
+		arr = append(arr, &cpy)
+	}
+	return arr
+}
+
+func expandBuckets(arr []*calc.StreamStats, size int) []*calc.StreamStats {
+	last := arr[len(arr)-1]
+	for size > len(arr) {
+		newStat := &calc.StreamStats{}
+		for i := 0; i < int(last.Count); i++ {
+			newStat.Add(0)
+		}
+		arr = append(arr, newStat)
+	}
+	return arr
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
 }

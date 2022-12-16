@@ -3,7 +3,7 @@ import { Card, Colors } from "@blueprintjs/core";
 import { ReactNode, useEffect, useRef } from "react";
 import classNames from "classnames";
 import { DistributionCard, RollupCards, TargetInfo, TeamHeader } from "../Components/Overview";
-import { CharacterDPSBarChart, CharacterDPSCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
+import { CharacterDPSBarChart, CharacterDPSCard, DamageTimelineCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
 import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
 
@@ -39,9 +39,7 @@ const Overview = ({ data }: Props) => (
 const Damage = ({ data }: Props) => (
   <Group>
     <Heading text="Damage" target="damage" color={Colors.VERMILION5} />
-    <Card className="col-span-full h-96">
-      Damage Timeline (dps/time + cumu %)
-    </Card>
+    <DamageTimelineCard data={data} />
 
     <CharacterDPSCard data={data} />
     <ElementDPSCard data={data} />

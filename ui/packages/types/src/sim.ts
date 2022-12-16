@@ -59,6 +59,9 @@ export interface Statistics {
   dps_by_element?: ElementDPS[];
   dps_by_target?: TargetDPS[];
 
+  damage_bucket_size?: number;
+  cumu_damage_contrib?: FloatStat[][];
+
   shields?: Shields;
 }
 

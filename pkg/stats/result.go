@@ -20,10 +20,11 @@ const (
 )
 
 type Result struct {
-	Seed        uint64  `msg:"seed" json:"seed"`
-	Duration    int     `msg:"duration" json:"sim_duration"`
-	TotalDamage float64 `msg:"total_damage" json:"total_damage"`
-	DPS         float64 `msg:"dps" json:"dps"`
+	Seed          uint64    `msg:"seed" json:"seed"`
+	Duration      int       `msg:"duration" json:"sim_duration"`
+	TotalDamage   float64   `msg:"total_damage" json:"total_damage"`
+	DPS           float64   `msg:"dps" json:"dps"`
+	DamageBuckets []float64 `msg:"damage_buckets" json:"damage_buckets"`
 
 	ActiveCharacters []ActiveCharacterInterval `msg:"active_characters" json:"active_characters"`
 	DamageMitigation []float64                 `msg:"damage_mitigation" json:"damage_mitigation"`
@@ -49,6 +50,8 @@ type CharacterResult struct {
 
 	EnergyStatus []float64 `msg:"energy" json:"energy"` // can be completely replaced by EnergyEvents?
 	HealthStatus []float64 `msg:"health" json:"health"`
+
+	DamageCumulativeContrib []float64 `msg:"damage_cumu_contrib" json:"damage_cumu_contrib"`
 
 	ActiveTime  int     `msg:"active_time" json:"active_time"`
 	EnergySpent float64 `msg:"energy_spent" json:"energy_spent"`
