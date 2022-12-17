@@ -2,7 +2,6 @@ const fs = require('fs');
 const https = require('https');
 let url = 'https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/characters.json';
 https.get(url,(res) => {
-  // Image will be stored at this path
   const path = `./src/Components/Enka/GenshinData/EnkaCharacterMap.json`; 
   const filePath = fs.createWriteStream(path);
   res.pipe(filePath);
@@ -14,8 +13,6 @@ https.get(url,(res) => {
 
 url = 'https://raw.githubusercontent.com/EnkaNetwork/API-docs/master/store/loc.json'
 https.get(url,(res) => {
-  // Image will be stored at this path
-  const path = `./src/Components/Enka/GenshinData/EnkaTextMapEN.json`; 
   // use key "en" to extract english json
   var str = ''
   res.on('data', (data) => {
