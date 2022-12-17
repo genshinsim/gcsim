@@ -82,11 +82,15 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
-	_, exist := env.fnMap[l.FunVal.Val]
+	_, exist := env.varMap[l.FunVal.Val]
 	if exist {
-		return nil, fmt.Errorf("function %v already exists; cannot redeclare", l.FunVal.Val)
+		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.FunVal.Val)
 	}
-	env.fnMap[l.FunVal.Val] = l
+	var res Obj = &funcval{
+		Args: l.Args,
+		Body: l.Body,
+	}
+	env.varMap[l.FunVal.Val] = &res
 	return &null{}, nil
 }
 
@@ -154,9 +158,9 @@ func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {
 	}
 	// e.Log.Printf("return res: %v, type: %T\n", res, res)
 	// res should be a number
-	if _, ok := res.(*number); !ok {
-		return nil, fmt.Errorf("return expression does not evaluate to a number, got %v", res.Inspect())
-	}
+	// if _, ok := res.(*number); !ok {
+	// 	return nil, fmt.Errorf("return expression does not evaluate to a number, got %v", res.Inspect())
+	// }
 	return &retval{
 		res: res,
 	}, nil

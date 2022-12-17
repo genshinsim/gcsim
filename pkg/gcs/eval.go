@@ -22,27 +22,14 @@ type Eval struct {
 
 type Env struct {
 	parent *Env
-	fnMap  map[string]*ast.FnStmt
 	varMap map[string]*Obj
 }
 
 func NewEnv(parent *Env) *Env {
 	return &Env{
 		parent: parent,
-		fnMap:  make(map[string]*ast.FnStmt),
 		varMap: make(map[string]*Obj),
 	}
-}
-
-func (e *Env) fn(s string) (*ast.FnStmt, error) {
-	f, ok := e.fnMap[s]
-	if ok {
-		return f, nil
-	}
-	if e.parent != nil {
-		return e.parent.fn(s)
-	}
-	return nil, fmt.Errorf("fn %v does not exist", s)
 }
 
 func (e *Env) v(s string) (*Obj, error) {
@@ -54,6 +41,19 @@ func (e *Env) v(s string) (*Obj, error) {
 		return e.parent.v(s)
 	}
 	return nil, fmt.Errorf("variable %v does not exist", s)
+}
+
+func (e *Env) fn(s string) (*funcval, error) {
+	v, err := e.v(s)
+	if err != nil {
+		return nil, err
+	}
+
+	val := *v
+	if val.Typ() != typFun {
+		return nil, fmt.Errorf("variable %v is not a function", s)
+	}
+	return val.(*funcval), nil
 }
 
 //Run will execute the provided AST. Any genshin specific actions will be passed
@@ -96,6 +96,7 @@ const (
 	typNull ObjTyp = iota
 	typNum
 	typStr
+	typFun
 	typRet
 	typCtr
 	// typTerminate
@@ -112,6 +113,11 @@ type (
 
 	strval struct {
 		str string
+	}
+
+	funcval struct {
+		Args []*ast.Ident
+		Body *ast.BlockStmt
 	}
 
 	retval struct {
@@ -141,9 +147,13 @@ func (n *number) Inspect() string {
 }
 func (n *number) Typ() ObjTyp { return typNum }
 
-// null.
+// strval.
 func (s *strval) Inspect() string { return s.str }
 func (n *strval) Typ() ObjTyp     { return typStr }
+
+// funcval.
+func (s *funcval) Inspect() string { return "func" }
+func (n *funcval) Typ() ObjTyp     { return typFun }
 
 // retval.
 func (r *retval) Inspect() string {

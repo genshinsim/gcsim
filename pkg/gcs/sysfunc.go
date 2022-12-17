@@ -110,6 +110,8 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 		str = "number"
 	case typStr:
 		str = "string"
+	case typFun:
+		str = "function"
 	}
 
 	return &strval{str}, nil

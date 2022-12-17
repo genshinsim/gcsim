@@ -14,6 +14,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 		return e.evalNumberLit(v, env), nil
 	case *ast.StringLit:
 		return e.evalStringLit(v, env), nil
+	case *ast.FuncLit:
+		return e.evalFuncLit(v, env), nil
 	case *ast.Ident:
 		return e.evalIdent(v, env)
 	case *ast.UnaryExpr:
@@ -41,6 +43,13 @@ func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
 	//strip the ""
 	return &strval{
 		str: strings.Trim(n.Value, "\""),
+	}
+}
+
+func (e *Eval) evalFuncLit(n *ast.FuncLit, env *Env) Obj {
+	return &funcval{
+		Args: n.Args,
+		Body: n.Body,
 	}
 }
 

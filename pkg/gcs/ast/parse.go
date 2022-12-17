@@ -209,7 +209,7 @@ func (p *Parser) parseStatement() (Node, error) {
 		node, err = p.parseSwitch()
 		hasSemi = false
 	case keywordFn:
-		node, err = p.parseFn()
+		node, err = p.parseFn(true)
 		hasSemi = false
 	case keywordWhile:
 		node, err = p.parseWhile()
@@ -549,7 +549,7 @@ func (p *Parser) parseFor() (Stmt, error) {
 	return stmt, err
 }
 
-func (p *Parser) parseFn() (Stmt, error) {
+func (p *Parser) parseFn(indent bool) (Stmt, error) {
 	//fn ident(...ident){ block }
 	//consume fn
 	n := p.next()
@@ -557,15 +557,18 @@ func (p *Parser) parseFn() (Stmt, error) {
 		Pos: n.pos,
 	}
 
-	//ident next
-	n, err := p.consume(itemIdentifier)
-	if err != nil {
-		return nil, fmt.Errorf("ln%v: expecting identifier after fn, got %v", n.line, n.Val)
+	var err error
+	if indent {
+		//ident next
+		n, err := p.consume(itemIdentifier)
+		if err != nil {
+			return nil, fmt.Errorf("ln%v: expecting identifier after fn, got %v", n.line, n.Val)
+		}
+		stmt.FunVal = n
 	}
-	stmt.FunVal = n
 
 	if l := p.peek(); l.Typ != itemLeftParen {
-		return nil, fmt.Errorf("ln%v: expecting { after identifier, got %v", l.line, l.Val)
+		return nil, fmt.Errorf("ln%v: expecting ( after identifier, got %v", l.line, l.Val)
 	}
 
 	stmt.Args, err = p.parseFnArgs()
@@ -804,6 +807,21 @@ func (p *Parser) parseField() (Expr, error) {
 func (p *Parser) parseString() (Expr, error) {
 	n := p.next()
 	return &StringLit{Pos: n.pos, Value: n.Val}, nil
+}
+
+func (p *Parser) parseFnLit() (Expr, error) {
+	n := p.peek()
+	stmt, err := p.parseFn(false)
+	if err != nil {
+		return nil, err
+	}
+
+	f := stmt.(*FnStmt)
+	return &FuncLit{
+		Pos:  n.pos,
+		Args: f.Args,
+		Body: f.Body,
+	}, nil
 }
 
 func (p *Parser) parseNumber() (Expr, error) {

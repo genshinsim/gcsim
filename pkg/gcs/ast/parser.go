@@ -132,6 +132,7 @@ func New(input string) *Parser {
 	p.prefixParseFns[itemField] = p.parseField
 	p.prefixParseFns[itemNumber] = p.parseNumber
 	p.prefixParseFns[itemString] = p.parseString
+	p.prefixParseFns[keywordFn] = p.parseFnLit
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
 	p.prefixParseFns[ItemMinus] = p.parseUnaryExpr
 	p.prefixParseFns[itemLeftParen] = p.parseParen

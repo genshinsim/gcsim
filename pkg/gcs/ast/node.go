@@ -98,13 +98,14 @@ type (
 		Body      *BlockStmt
 	}
 
-	// A FnStmt node represents a function. Should always return a number
+	// A FnStmt node represents a function. Should always return a number?
 	FnStmt struct {
 		Pos
 		FunVal Token
 		Args   []*Ident
 		Body   *BlockStmt
 	}
+
 	// WhileStmt represents a while block
 	WhileStmt struct {
 		Pos
@@ -448,9 +449,9 @@ func (s *SwitchStmt) CopySwitch() *SwitchStmt {
 		return nil
 	}
 	n := &SwitchStmt{
-		Pos:       s.Pos,
-		Cases:     make([]*CaseStmt, 0, len(s.Cases)),
-		Default:   s.Default.CopyBlock(),
+		Pos:     s.Pos,
+		Cases:   make([]*CaseStmt, 0, len(s.Cases)),
+		Default: s.Default.CopyBlock(),
 	}
 	if s.Condition != nil {
 		n.Condition = s.Condition.CopyExpr()
@@ -504,7 +505,7 @@ func (c *CaseStmt) Copy() Node {
 	return c.CopyCase()
 }
 
-// FnExpr.
+// FnStmt.
 
 func (f *FnStmt) CopyFn() Stmt {
 	if f == nil {
@@ -661,6 +662,14 @@ type (
 		Pos
 		Value string
 	}
+
+	// A FuncLit node represents a function literal.
+	FuncLit struct {
+		Pos
+		Args []*Ident
+		Body *BlockStmt
+	}
+
 	BoolLit struct {
 		Pos
 		Value float64
@@ -702,6 +711,7 @@ type (
 //exprNode()
 func (*NumberLit) exprNode()  {}
 func (*StringLit) exprNode()  {}
+func (*FuncLit) exprNode()    {}
 func (*Ident) exprNode()      {}
 func (*Field) exprNode()      {}
 func (*CallExpr) exprNode()   {}
@@ -762,6 +772,46 @@ func (n *StringLit) String() string {
 
 func (n *StringLit) writeTo(sb *strings.Builder) {
 	sb.WriteString(n.Value)
+}
+
+// FuncLit.
+
+func (f *FuncLit) CopyExpr() Expr {
+	if f == nil {
+		return nil
+	}
+	n := &FuncLit{
+		Pos:  f.Pos,
+		Args: make([]*Ident, 0, len(f.Args)),
+		Body: f.Body.CopyBlock(),
+	}
+	for i := range f.Args {
+		n.Args = append(n.Args, f.Args[i].CopyIdent())
+	}
+	return n
+}
+
+func (f *FuncLit) Copy() Node {
+	return f.CopyExpr()
+}
+
+func (f *FuncLit) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FuncLit) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn(")
+	for i, v := range f.Args {
+		if i > 0 {
+			sb.WriteString(", ")
+		}
+		v.writeTo(sb)
+	}
+	sb.WriteString(") {\n")
+	f.Body.writeTo(sb)
+	sb.WriteString("}")
 }
 
 // Ident.
