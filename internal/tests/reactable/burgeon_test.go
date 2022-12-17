@@ -11,8 +11,8 @@ import (
 
 func TestBurgeon(t *testing.T) {
 	c, trg := makeCore(2)
-	trg[0].SetPos(1, 0)
-	trg[1].SetPos(3, 0)
+	trg[0].SetPos(combat.Point{X: 1, Y: 0})
+	trg[1].SetPos(combat.Point{X: 3, Y: 0})
 	err := c.Init()
 	if err != nil {
 		t.Errorf("error initializing core: %v", err)

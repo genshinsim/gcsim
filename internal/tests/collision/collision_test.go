@@ -28,7 +28,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})
-	a := avatar.New(c, 0, 0, 1)
+	a := avatar.New(c, combat.Point{X: 0, Y: 0}, 1)
 	c.Combat.SetPlayer(a)
 	var trgs []*enemy.Enemy
 
@@ -133,7 +133,7 @@ func TestMultipleEnemies(t *testing.T) {
 	}, "dmg-count")
 
 	//last one should be moved aside
-	trgs[len(trgs)-1].SetPos(2, 0)
+	trgs[len(trgs)-1].SetPos(combat.Point{X: 2, Y: 0})
 
 	for i := 0; i < len(trgs)-1; i++ {
 		count = 0
@@ -176,7 +176,7 @@ func TestDefaultHitGadget(t *testing.T) {
 	}, "dmg-count")
 
 	g := &testGadget{
-		Gadget: gadget.New(c, core.Coord{X: 0, Y: 0}, combat.GadgetTypTest),
+		Gadget: gadget.New(c, combat.Point{X: 0, Y: 0}, 0, combat.GadgetTypTest),
 	}
 
 	c.Combat.AddGadget(g)
@@ -213,7 +213,7 @@ func TestSkipTargets(t *testing.T) {
 	}, "dmg-count")
 
 	g := &testGadget{
-		Gadget: gadget.New(c, core.Coord{X: 0, Y: 0}, combat.GadgetTypTest),
+		Gadget: gadget.New(c, combat.Point{X: 0, Y: 0}, 0, combat.GadgetTypTest),
 	}
 
 	c.Combat.AddGadget(g)
@@ -258,7 +258,7 @@ func TestSkipTargets(t *testing.T) {
 func TestCircleAttackCollision(t *testing.T) {
 	tests := map[string]struct {
 		attackRadius float64
-		attackOffset combat.Positional
+		attackOffset combat.Point
 		fanAngle     float64
 		want         int
 	}{
@@ -291,7 +291,7 @@ func TestCircleAttackCollision(t *testing.T) {
 	}
 }
 
-func circleAttackCollision(attackRadius float64, attackOffset combat.Positional, fanAngle float64) int {
+func circleAttackCollision(attackRadius float64, attackOffset combat.Point, fanAngle float64) int {
 	c, trgs := makeCore(2)
 	player := c.Combat.Player()
 	count := 0
@@ -300,9 +300,9 @@ func circleAttackCollision(attackRadius float64, attackOffset combat.Positional,
 		count++
 		return false
 	}, "dmg-count")
-	trgs[0].SetPos(2, 2)
-	trgs[1].SetPos(7, 4)
-	player.SetDirection(7, 4)
+	trgs[0].SetPos(combat.Point{X: 2, Y: 2})
+	trgs[1].SetPos(combat.Point{X: 7, Y: 4})
+	player.SetDirection(trgs[1].Pos())
 
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Pattern: combat.NewCircleHitOnTargetFanAngle(player, attackOffset, attackRadius, fanAngle),
@@ -320,7 +320,7 @@ func TestRectangleAttackCollision(t *testing.T) {
 	tests := map[string]struct {
 		attackWidth  float64
 		attackHeight float64
-		attackOffset combat.Positional
+		attackOffset combat.Point
 		want         int
 	}{
 		// no offset
@@ -343,7 +343,7 @@ func TestRectangleAttackCollision(t *testing.T) {
 	}
 }
 
-func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset combat.Positional) int {
+func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset combat.Point) int {
 	c, trgs := makeCore(2)
 	player := c.Combat.Player()
 	count := 0
@@ -352,9 +352,9 @@ func rectangleAttackCollision(attackWidth, attackHeight float64, attackOffset co
 		count++
 		return false
 	}, "dmg-count")
-	trgs[0].SetPos(2, 2)
-	trgs[1].SetPos(7, 4)
-	player.SetDirection(7, 4)
+	trgs[0].SetPos(combat.Point{X: 2, Y: 2})
+	trgs[1].SetPos(combat.Point{X: 7, Y: 4})
+	player.SetDirection(trgs[1].Pos())
 
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Pattern: combat.NewBoxHitOnTarget(player, attackOffset, attackWidth, attackHeight),
