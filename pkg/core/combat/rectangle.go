@@ -38,10 +38,10 @@ func (r *Rectangle) String() string {
 }
 
 func calcCorners(center Point, w, h, dir float64) []Point {
-	topLeft := Point{X: w / 2, Y: h / 2}
+	topLeft := Point{X: -w / 2, Y: h / 2}
 	topRight := Point{X: w / 2, Y: h / 2}
-	bottomRight := Point{X: w / 2, Y: h / 2}
-	bottomLeft := Point{X: w / 2, Y: h / 2}
+	bottomRight := Point{X: w / 2, Y: -h / 2}
+	bottomLeft := Point{X: -w / 2, Y: -h / 2}
 	corners := []Point{topLeft, topRight, bottomRight, bottomLeft}
 	// add rotation
 	for i := 0; i < len(corners); i++ {
