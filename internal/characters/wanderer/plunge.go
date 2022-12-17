@@ -57,7 +57,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.28),
-		delay+chargeHitmark, delay+chargeHitmark)
+		delay+lowPlungeHitmark, delay+lowPlungeHitmark)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return delay + lowPlungeFrames[next] },

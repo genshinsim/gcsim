@@ -19,10 +19,10 @@ const a4Hitmark = 30
 func init() {
 	dashFramesNormal = frames.InitAbilSlice(21)
 
-	dashFramesE = frames.InitAbilSlice(5)
+	dashFramesE = frames.InitAbilSlice(24)
 	dashFramesE[action.ActionAttack] = 21
 	dashFramesE[action.ActionCharge] = 21
-	dashFramesE[action.ActionBurst] = 24
+	dashFramesE[action.ActionSkill] = 5
 	dashFramesE[action.ActionDash] = 22
 	dashFramesE[action.ActionJump] = 22
 	dashFramesE[action.ActionWalk] = 22

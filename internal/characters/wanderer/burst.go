@@ -11,20 +11,22 @@ var burstFramesNormal []int
 var burstFramesE []int
 
 func init() {
-	burstFramesNormal = frames.InitAbilSlice(94)
+	burstFramesNormal = frames.InitAbilSlice(101)
+	burstFramesNormal[action.ActionAttack] = 94
 	burstFramesNormal[action.ActionCharge] = 96
 	burstFramesNormal[action.ActionSkill] = 95
 	burstFramesNormal[action.ActionDash] = 97
 	burstFramesNormal[action.ActionJump] = 96
-	burstFramesNormal[action.ActionWalk] = 101
 	burstFramesNormal[action.ActionSwap] = 94
 
-	burstFramesE = frames.InitAbilSlice(117)
+	// Includes Falling down for swap
+	burstFramesE = frames.InitAbilSlice(145)
+	burstFramesE[action.ActionAttack] = 117
 	burstFramesE[action.ActionCharge] = 119
 	burstFramesE[action.ActionDash] = 119
 	burstFramesE[action.ActionJump] = 119
-	// Includes Falling down
-	burstFramesE[action.ActionSwap] = 145
+	burstFramesE[action.ActionWalk] = 116
+
 }
 
 // First Hitmark
