@@ -39,8 +39,7 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 			return
 		}
 		t.SetTag(bounceKey, c.F+36)
-		x, y := a.Target.Shape().Pos()
-		trgs := c.Combat.EnemyByDistance(x, y, a.Target.Key())
+		trgs := c.Combat.EnemyByDistance(a.Target.Shape().Pos(), a.Target.Key())
 		next := -1
 		for _, v := range trgs {
 			trg, ok := c.Combat.Enemy(v).(*enemy.Enemy)
