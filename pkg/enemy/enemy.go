@@ -60,7 +60,7 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.resist = p.Resist
 	//TODO: this is kinda redundant to keep both profile and lvl/resist
 	e.prof = p
-	e.Target = target.New(core, p.Pos.X, p.Pos.Y, p.Pos.R)
+	e.Target = target.New(core, combat.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
 	e.mods = make([]modifier.Mod, 0, 10)
@@ -81,8 +81,7 @@ func (e *Enemy) Kill() {
 	if e.Key() == e.Core.Combat.DefaultTarget {
 		player := e.Core.Combat.Player()
 		deadEnemyKey := e.Key()
-		x, y := player.Pos()
-		enemies := e.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
+		enemies := e.Core.Combat.EnemyByDistance(player.Pos(), combat.InvalidTargetKey)
 		for _, v := range enemies {
 			potentialEnemy := e.Core.Combat.Enemy(v)
 			if deadEnemyKey == potentialEnemy.Key() {
@@ -98,6 +97,6 @@ func (e *Enemy) Kill() {
 	}
 }
 
-func (e *Enemy) SetDirection(trgX, trgY float64)              {}
-func (e *Enemy) SetDirectionToClosestEnemy()                  {}
-func (e *Enemy) CalcTempDirection(trgX, trgY float64) float64 { return 0 }
+func (e *Enemy) SetDirection(trg combat.Point)              {}
+func (e *Enemy) SetDirectionToClosestEnemy()                {}
+func (e *Enemy) CalcTempDirection(trg combat.Point) float64 { return 0 }

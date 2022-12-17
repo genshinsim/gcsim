@@ -15,15 +15,15 @@ func (h *Handler) Enemy(i int) Target {
 	return h.enemies[i]
 }
 
-func (h *Handler) SetEnemyPos(i int, x, y float64) bool {
+func (h *Handler) SetEnemyPos(i int, p Point) bool {
 	if i < 0 || i > len(h.enemies)-1 {
 		return false
 	}
-	h.enemies[i].SetPos(x, y)
+	h.enemies[i].SetPos(p)
 	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
 		Write("index", i).
-		Write("x", x).
-		Write("y", y)
+		Write("x", p.X).
+		Write("y", p.Y)
 	return true
 }
 
@@ -59,7 +59,7 @@ func (h *Handler) PrimaryTarget() Target {
 }
 
 // EnemyByDistance returns an array of indices of the enemies sorted by distance
-func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
+func (c *Handler) EnemyByDistance(p Point, excl TargetKey) []int {
 	//we dont actually need to know the exact distance. just find the lowest
 	//of x^2 + y^2 to avoid sqrt
 
@@ -72,8 +72,8 @@ func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
 		if v.Key() == excl {
 			continue
 		}
-		vx, vy := v.Shape().Pos()
-		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
+		vPos := v.Shape().Pos()
+		dist := math.Pow(p.X-vPos.X, 2) + math.Pow(p.Y-vPos.Y, 2)
 		tuples = append(tuples, struct {
 			ind  int
 			dist float64
@@ -94,11 +94,11 @@ func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
 }
 
 // EnemiesWithinRadius returns an array of indices of the enemies within radius r
-func (c *Handler) EnemiesWithinRadius(x, y, r float64) []int {
+func (c *Handler) EnemiesWithinRadius(p Point, r float64) []int {
 	result := make([]int, 0, len(c.enemies))
 	for i, v := range c.enemies {
-		vx, vy := v.Shape().Pos()
-		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
+		vPos := v.Shape().Pos()
+		dist := math.Pow(p.X-vPos.X, 2) + math.Pow(p.Y-vPos.Y, 2)
 		if dist > r {
 			continue
 		}

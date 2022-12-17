@@ -13,42 +13,26 @@ type Circle struct {
 	segments []Point
 }
 
-func NewSimpleCircle(x, y, r float64) *Circle {
-	return &Circle{
-		center: Point{
-			X: x,
-			Y: y,
-		},
-		r:        r,
-		fanAngle: 360,
+func NewCircle(center Point, r, dir, fanAngle float64) *Circle {
+	var segments []Point
+	if fanAngle > 0 && fanAngle < 360 {
+		segments = calcSegments(center, r, dir, fanAngle)
 	}
-}
-
-func NewCircle(x, y, r, dir, fanAngle float64) *Circle {
-	c := &Circle{
-		center: Point{
-			X: x,
-			Y: y,
-		},
+	return &Circle{
+		center:   center,
 		r:        r,
 		dir:      dir,
 		fanAngle: fanAngle,
+		segments: segments,
 	}
-	if fanAngle > 0 && fanAngle < 360 {
-		c.segments = calcSegments(x, y, r, dir, fanAngle)
-	}
-	return c
 }
 
-func (c *Circle) Pos() (float64, float64) {
-	return c.center.X, c.center.Y
+func (c *Circle) Pos() Point {
+	return c.center
 }
 
-func (c *Circle) SetPos(x, y float64) {
-	c.center = Point{
-		X: x,
-		Y: y,
-	}
+func (c *Circle) SetPos(p Point) {
+	c.center = p
 }
 
 func (c *Circle) String() string {
@@ -58,20 +42,15 @@ func (c *Circle) String() string {
 	)
 }
 
-func calcSegments(x, y, r, dir, fanAngle float64) []Point {
+func calcSegments(p Point, r, dir, fanAngle float64) []Point {
 	fanAngleRadian := fanAngle * math.Pi / 180
 	// assume circle center is origin at first to do the rotation stuff
-	segmentStart := rotatePoint(Point{X: 0, Y: r}, dir)
-	segmentLeft := rotatePoint(segmentStart, -fanAngleRadian/2)
-	segmentRight := rotatePoint(segmentStart, fanAngleRadian/2)
-	// move segment to where the actual circle center is
-	segmentLeft.X += x
-	segmentLeft.Y += y
-	segmentRight.X += x
-	segmentRight.Y += y
+	segmentStart := Point{X: 0, Y: r}.Rotate(dir)
+	segmentLeft := segmentStart.Rotate(-fanAngleRadian / 2)
+	segmentRight := segmentStart.Rotate(fanAngleRadian / 2)
 	// save segment points (the circle center and segment point make up a line segment)
-	segments := make([]Point, 0, 2)
-	segments = append(segments, segmentLeft, segmentRight)
+	// need to move segment to where the actual circle center is
+	segments := []Point{segmentLeft.Add(p), segmentRight.Add(p)}
 	return segments
 }
 
@@ -99,19 +78,19 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 		p := c2.center
 		q := segment
 
-		op := o.directional(p)
-		qp := q.directional(p)
-		oq := o.directional(q)
-		pq := p.directional(q)
+		op := p.Sub(o)
+		qp := p.Sub(q)
+		oq := q.Sub(o)
+		pq := q.Sub(p)
 
-		opDist := distance(o, p)
-		oqDist := distance(o, q)
-		pqDist := distance(p, q)
+		opDist := o.Distance(p)
+		oqDist := o.Distance(q)
+		pqDist := p.Distance(q)
 
 		minDist := math.Min(opDist, oqDist)
 		maxDist := math.Max(opDist, oqDist)
-		if dot(op, qp) > 0 && dot(oq, pq) > 0 {
-			minDist = math.Abs(cross(op, oq)) / pqDist
+		if op.Dot(qp) > 0 && oq.Dot(pq) > 0 {
+			minDist = math.Abs(op.Cross(oq)) / pqDist
 		}
 		if minDist <= c1.r && maxDist >= c1.r {
 			return true
@@ -119,7 +98,7 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 	}
 
 	// C: check if the angle between the vector pointing from c2 to c1 and the y axis lies within the fanAngle of c2
-	return fanAngleAreaCheck(c2.dir, c2.center.X, c2.center.Y, c1.center.X, c1.center.Y, c2.fanAngle)
+	return fanAngleAreaCheck(c2.center, c1.center, c2.dir, c2.fanAngle)
 }
 
 func (c *Circle) IntersectRectangle(r Rectangle) bool {

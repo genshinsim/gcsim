@@ -44,8 +44,8 @@ func (t *testtarg) Key() TargetKey                                  { return t.k
 func (t *testtarg) SetKey(i TargetKey)                              { t.key = i }
 func (t *testtarg) Type() TargettableType                           { return t.typ }
 func (t *testtarg) Shape() Shape                                    { return t.shp }
-func (t *testtarg) Pos() (float64, float64)                         { return t.shp.Pos() }
-func (t *testtarg) SetPos(x, y float64)                             {} //??
+func (t *testtarg) Pos() Point                                      { return t.shp.Pos() }
+func (t *testtarg) SetPos(p Point)                                  {} //??
 func (t *testtarg) IsAlive() bool                                   { return t.alive }
 func (t *testtarg) Attack(*AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (t *testtarg) Tick()                                           {}
@@ -108,17 +108,17 @@ func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 }
 
 func (t *testtarg) Direction() float64 { return t.direction }
-func (t *testtarg) SetDirection(trgX, trgY float64) {
-	srcX, srcY := t.Pos()
+func (t *testtarg) SetDirection(trg Point) {
+	src := t.Pos()
 	// setting direction to self resets direction
-	if srcX == trgX && srcY == trgY {
+	if src.X == trg.X && src.Y == trg.Y {
 		t.direction = 0
 		return
 	}
-	t.direction = CalcDirection(srcX, srcY, trgX, trgY)
+	t.direction = CalcDirection(src, trg)
 }
-func (t *testtarg) SetDirectionToClosestEnemy()                  {} // ???
-func (t *testtarg) CalcTempDirection(trgX, trgY float64) float64 { return 0 }
+func (t *testtarg) SetDirectionToClosestEnemy()         {} // ???
+func (t *testtarg) CalcTempDirection(trg Point) float64 { return 0 }
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())

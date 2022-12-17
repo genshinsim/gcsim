@@ -29,7 +29,7 @@ func testCore() *core.Core {
 	})
 	//add player (first target)
 	trg := &testTarget{}
-	trg.Target = target.New(c, 0, 0, 1)
+	trg.Target = target.New(c, combat.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.typ = combat.TargettablePlayer
 	trg.Reactable.Init(trg, c)
@@ -131,7 +131,7 @@ func (t *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
 
 func addTargetToCore(c *core.Core) *testTarget {
 	trg := &testTarget{}
-	trg.Target = target.New(c, 0, 0, 1)
+	trg.Target = target.New(c, combat.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
 	c.Combat.AddEnemy(trg)

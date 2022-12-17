@@ -27,11 +27,11 @@ type Target struct {
 	direction float64
 }
 
-func New(core *core.Core, x, y, r float64) *Target {
+func New(core *core.Core, p combat.Point, r float64) *Target {
 	t := &Target{
 		Core: core,
 	}
-	t.Hitbox = *combat.NewSimpleCircle(x, y, r)
+	t.Hitbox = *combat.NewCircle(p, r, 0, 360)
 	t.Tags = make(map[string]int)
 	t.Alive = true
 
@@ -49,8 +49,8 @@ func (t *Target) CollidedWith(x combat.Target) {
 func (t *Target) Key() combat.TargetKey     { return t.key }
 func (t *Target) SetKey(x combat.TargetKey) { t.key = x }
 func (t *Target) Shape() combat.Shape       { return &t.Hitbox }
-func (t *Target) SetPos(x, y float64)       { t.Hitbox.SetPos(x, y) }
-func (t *Target) Pos() (float64, float64)   { return t.Hitbox.Pos() }
+func (t *Target) SetPos(p combat.Point)     { t.Hitbox.SetPos(p) }
+func (t *Target) Pos() combat.Point         { return t.Hitbox.Pos() }
 func (t *Target) Kill()                     { t.Alive = false }
 func (t *Target) IsAlive() bool             { return t.Alive }
 func (t *Target) SetTag(key string, val int) {
@@ -113,27 +113,27 @@ func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
 }
 
 func (t *Target) Direction() float64 { return t.direction }
-func (t *Target) SetDirection(trgX, trgY float64) {
-	srcX, srcY := t.Pos()
+func (t *Target) SetDirection(trg combat.Point) {
+	src := t.Pos()
 	// setting direction to self resets direction
-	if srcX == trgX && srcY == trgY {
+	if src.X == trg.X && src.Y == trg.Y {
 		t.Core.Combat.Log.NewEvent("reset target direction to 0", glog.LogDebugEvent, -1)
 		t.direction = 0
 		return
 	}
-	t.direction = combat.CalcDirection(srcX, srcY, trgX, trgY)
+	t.direction = combat.CalcDirection(src, trg)
 	t.Core.Combat.Log.NewEvent("set target direction", glog.LogDebugEvent, -1).
 		Write("src target key", t.key).
-		Write("srcX", srcX).
-		Write("srcY", srcY).
-		Write("trgX", trgX).
-		Write("trgY", trgY).
+		Write("srcX", src.X).
+		Write("srcY", src.Y).
+		Write("trgX", trg.X).
+		Write("trgY", trg.Y).
 		Write("direction (in degrees)", combat.DirectionToDegrees(t.direction))
 }
 func (t *Target) SetDirectionToClosestEnemy() {
-	srcX, srcY := t.Pos()
+	src := t.Pos()
 	// calculate direction towards closest enemy
-	enemyIndex := t.Core.Combat.EnemyByDistance(srcX, srcY, combat.InvalidTargetKey)[0]
+	enemyIndex := t.Core.Combat.EnemyByDistance(src, combat.InvalidTargetKey)[0]
 	enemy := t.Core.Combat.Enemy(enemyIndex)
 	if enemy == nil {
 		panic("there should be an enemy to calculate direction")
@@ -144,15 +144,15 @@ func (t *Target) SetDirectionToClosestEnemy() {
 		Write("enemy key", enemy.Key()).
 		Write("direction (in degrees)", combat.DirectionToDegrees(t.direction))
 }
-func (t *Target) CalcTempDirection(trgX, trgY float64) float64 {
-	srcX, srcY := t.Pos()
-	direction := combat.CalcDirection(srcX, srcY, trgX, trgY)
+func (t *Target) CalcTempDirection(trg combat.Point) float64 {
+	src := t.Pos()
+	direction := combat.CalcDirection(src, trg)
 	t.Core.Combat.Log.NewEvent("using temporary target direction", glog.LogDebugEvent, -1).
 		Write("src target key", t.key).
-		Write("srcX", srcX).
-		Write("srcY", srcY).
-		Write("trgX", trgX).
-		Write("trgY", trgY).
+		Write("srcX", src.X).
+		Write("srcY", src.Y).
+		Write("trgX", trg.X).
+		Write("trgY", trg.Y).
 		Write("existing direction (in degrees)", combat.DirectionToDegrees(t.direction)).
 		Write("temporary direction (in degrees)", combat.DirectionToDegrees(direction))
 	return direction

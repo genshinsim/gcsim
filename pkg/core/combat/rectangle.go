@@ -12,64 +12,41 @@ type Rectangle struct {
 	dir     float64
 }
 
-func NewRectangle(x, y, w, h, dir float64) *Rectangle {
+func NewRectangle(center Point, w, h, dir float64) *Rectangle {
 	return &Rectangle{
-		center: Point{
-			X: x,
-			Y: y,
-		},
+		center:  center,
 		w:       w,
 		h:       h,
-		corners: calcCorners(x, y, w, h, dir),
+		corners: calcCorners(center, w, h, dir),
 		dir:     dir,
 	}
 }
 
-func (r *Rectangle) Pos() (float64, float64) {
-	return r.center.X, r.center.Y
+func (r *Rectangle) Pos() Point {
+	return r.center
 }
 
-func (r *Rectangle) SetPos(x, y float64) {
+func (r *Rectangle) SetPos(p Point) {
 	for i := 0; i < len(r.corners); i++ {
-		r.corners[i].X += x - r.center.X
-		r.corners[i].Y += y - r.center.Y
+		r.corners[i] = r.corners[i].Add(p.Sub(r.center))
 	}
-	r.center = Point{
-		X: x,
-		Y: y,
-	}
+	r.center = p
 }
 
 func (r *Rectangle) String() string {
 	return fmt.Sprintf("w: %v h: %v center: %v topLeft: %v topRight: %v bottomRight: %v bottomLeft: %v dir: %v", r.w, r.h, r.center, r.corners[0], r.corners[1], r.corners[2], r.corners[3], r.dir)
 }
 
-func calcCorners(x, y, w, h, dir float64) []Point {
-	corners := make([]Point, 0, 4)
-	topLeft := Point{
-		X: x - w/2,
-		Y: y + h/2,
-	}
-	topRight := Point{
-		X: x + w/2,
-		Y: y + h/2,
-	}
-	bottomRight := Point{
-		X: x + w/2,
-		Y: y - h/2,
-	}
-	bottomLeft := Point{
-		X: x - w/2,
-		Y: y - h/2,
-	}
-	corners = append(corners, topLeft, topRight, bottomRight, bottomLeft)
+func calcCorners(center Point, w, h, dir float64) []Point {
+	topLeft := Point{X: w / 2, Y: h / 2}
+	topRight := Point{X: w / 2, Y: h / 2}
+	bottomRight := Point{X: w / 2, Y: h / 2}
+	bottomLeft := Point{X: w / 2, Y: h / 2}
+	corners := []Point{topLeft, topRight, bottomRight, bottomLeft}
 	// add rotation
 	for i := 0; i < len(corners); i++ {
-		corners[i].X -= x
-		corners[i].Y -= y
-		rotatedCorner := rotatePoint(corners[i], dir)
-		corners[i].X = rotatedCorner.X + x
-		corners[i].Y = rotatedCorner.Y + y
+		rotatedCorner := corners[i].Rotate(dir)
+		corners[i] = rotatedCorner.Add(center)
 	}
 	return corners
 }
@@ -86,7 +63,7 @@ func (r *Rectangle) IntersectCircle(c Circle) bool {
 func (r1 *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 	// bounding circle test
 	// https://stackoverflow.com/a/64162017
-	rectangleCenterDistance := distance(r1.center, r2.center)
+	rectangleCenterDistance := r1.center.Distance(r2.center)
 	boundingCircleRadius1 := math.Sqrt(math.Pow(r1.w, 2)+math.Pow(r1.h, 2)) / 2
 	boundingCircleRadius2 := math.Sqrt(math.Pow(r2.w, 2)+math.Pow(r2.h, 2)) / 2
 	if rectangleCenterDistance > boundingCircleRadius1+boundingCircleRadius2 {
@@ -119,14 +96,9 @@ func (r *Rectangle) getAxes() []Point {
 	axes := make([]Point, 4)
 	for i := 0; i < len(r.corners); i++ {
 		curCorner := r.corners[i]
-		var nextCorner Point
-		if i+1 == len(r.corners) {
-			nextCorner = r.corners[0]
-		} else {
-			nextCorner = r.corners[i+1]
-		}
-		edge := curCorner.directional(nextCorner)
-		axes[i] = edge.normal()
+		nextCorner := r.corners[(i+1)%len(r.corners)]
+		edge := nextCorner.Sub(curCorner)
+		axes[i] = edge.Perp()
 	}
 	return axes
 }
@@ -141,10 +113,10 @@ func (p1 *Projection) overlap(p2 Projection) bool {
 }
 
 func getProjection(corners []Point, axis Point) Projection {
-	min := dot(axis, corners[0])
+	min := axis.Dot(corners[0])
 	max := min
-	for i := 0; i < len(corners); i++ {
-		p := dot(axis, corners[i])
+	for i := 1; i < len(corners); i++ {
+		p := axis.Dot(corners[i])
 		if p < min {
 			min = p
 		} else if p > max {

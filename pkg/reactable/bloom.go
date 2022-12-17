@@ -78,22 +78,21 @@ type DendroCore struct {
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
-		var t combat.Gadget = NewDendroCore(r.core, r.self, a)
+		var t combat.Gadget = NewDendroCore(r.core, r.self.Pos(), a)
 		r.core.Combat.AddGadget(t)
 		r.core.Events.Emit(event.OnDendroCore, t, a)
 	}, DendroCoreDelay)
 }
 
-func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, pos combat.Point, a *combat.AttackEvent) *DendroCore {
 	s := &DendroCore{
 		srcFrame: c.F,
 	}
 
-	x, y := pos.Pos()
 	// for simplicity, seeds spawn randomly within 1 radius of target
-	x = x + 2*c.Rand.Float64() - 1
-	y = y + 2*c.Rand.Float64() - 1
-	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
+	x := pos.X + 2*c.Rand.Float64() - 1
+	y := pos.Y + 2*c.Rand.Float64() - 1
+	s.Gadget = gadget.New(c, combat.Point{X: x, Y: y}, 0.2, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
@@ -141,8 +140,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// it can also do damage to player in small aoe
 		ai, snap := NewHyperbloomAttack(char, s)
 		// queue dmg nearest enemy
-		x, y := s.Gadget.Pos()
-		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
+		enemies := s.Core.Combat.EnemyByDistance(s.Gadget.Pos(), combat.InvalidTargetKey)
 		if len(enemies) > 0 {
 			ap := combat.NewCircleHitOnTarget(s.Core.Combat.Enemy(enemies[0]), nil, 1)
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
@@ -245,6 +243,6 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 	return ai, snap
 }
 
-func (s *DendroCore) SetDirection(trgX, trgY float64)              {}
-func (s *DendroCore) SetDirectionToClosestEnemy()                  {}
-func (s *DendroCore) CalcTempDirection(trgX, trgY float64) float64 { return 0 }
+func (s *DendroCore) SetDirection(trg combat.Point)              {}
+func (s *DendroCore) SetDirectionToClosestEnemy()                {}
+func (s *DendroCore) CalcTempDirection(trg combat.Point) float64 { return 0 }
