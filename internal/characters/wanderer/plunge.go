@@ -9,13 +9,16 @@ import (
 
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 36
+const lowPlungeHitmark = 41
+const lowPlungeCollisionHitmark = 36
 
 func init() {
-	lowPlungeFrames = frames.InitAbilSlice(55)
-	lowPlungeFrames[action.ActionDash] = 43
-	lowPlungeFrames[action.ActionJump] = 50
-	lowPlungeFrames[action.ActionSwap] = 50
+	lowPlungeFrames = frames.InitAbilSlice(41)
+	lowPlungeFrames[action.ActionAttack] = 65
+	lowPlungeFrames[action.ActionCharge] = 64
+	lowPlungeFrames[action.ActionBurst] = 65
+	lowPlungeFrames[action.ActionWalk] = 72
+	lowPlungeFrames[action.ActionSwap] = 57
 
 }
 
@@ -26,6 +29,18 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	if delay == 0 || !(c.Core.Player.LastAction.Char == c.Index &&
 		c.Core.Player.LastAction.Type == action.ActionSkill && !c.StatusIsActive(skillKey)) {
 		// Nothing so far?
+	}
+
+	// Decreasing delay due to casting midair
+	delay = 7
+
+	collision, ok := p["collision"]
+	if !ok {
+		collision = 0 // Whether or not Wanderer does a collision hit
+	}
+
+	if collision > 0 {
+		c.plungeCollision(lowPlungeCollisionHitmark + delay)
 	}
 
 	ai := combat.AttackInfo{
@@ -50,4 +65,20 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   delay + lowPlungeHitmark,
 		State:           action.PlungeAttackState,
 	}
+}
+
+
+func (c *char) plungeCollision(fullDelay int) {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Plunge Collision",
+		AttackTag:  combat.AttackTagPlunge,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeSlash,
+		Element:    attributes.Anemo,
+		Durability: 0,
+		Mult:       plunge[c.TalentLvlAttack()],
+	}
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), fullDelay, fullDelay)
 }

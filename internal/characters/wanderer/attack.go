@@ -10,31 +10,63 @@ import (
 )
 
 var (
-	attackFrames   [][]int
-	attackHitmarks = [][]int{{12}, {13}, {21, 22}}
+	attackFramesNormal   [][]int
+	attackFramesE   [][]int
+	attackHitmarksNormal = [][]int{{11}, {6}, {32, 41}}
+	attackHitmarksE = [][]int{{15}, {3}, {32, 40}}
 	attackRadius   = []float64{1.8, 1.8, 2.2}
 )
 
 const normalHitNum = 3
 
 func init() {
-	attackFrames = make([][]int, normalHitNum)
+	//TODO: Release = Hitmark? (No Travel Time)
+	attackFramesNormal = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 21)
-	attackFrames[0][action.ActionAttack] = 20
-	attackFrames[0][action.ActionCharge] = 21
+	attackFramesNormal[0] = frames.InitNormalCancelSlice(attackHitmarksNormal[0][0], 12)
+	attackFramesNormal[0][action.ActionAttack] = 25
+	attackFramesNormal[0][action.ActionCharge] = 25
+	attackFramesNormal[0][action.ActionWalk] = 35
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 21)
-	attackFrames[1][action.ActionAttack] = 17
-	attackFrames[1][action.ActionCharge] = 21
+	attackFramesNormal[1] = frames.InitNormalCancelSlice(attackHitmarksNormal[1][0], 5)
+	attackFramesNormal[1][action.ActionAttack] = 18
+	attackFramesNormal[1][action.ActionCharge] = 27
+	attackFramesNormal[1][action.ActionWalk] = 39
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 46)
-	attackFrames[2][action.ActionAttack] = 45
-	attackFrames[2][action.ActionCharge] = 46
+	attackFramesNormal[2] = frames.InitNormalCancelSlice(attackHitmarksNormal[2][0], 33)
+	attackFramesNormal[2][action.ActionAttack] = 64
+	attackFramesNormal[2][action.ActionCharge] = 50
+	attackFramesNormal[2][action.ActionWalk] = 39
+
+
+	attackFramesE = make([][]int, normalHitNum)
+
+	attackFramesE[0] = frames.InitNormalCancelSlice(attackHitmarksE[0][0], 15)
+	attackFramesE[0][action.ActionAttack] = 30
+	attackFramesE[0][action.ActionCharge] = 31
+	attackFramesE[0][action.ActionWalk] = 43
+
+	attackFramesE[1] = frames.InitNormalCancelSlice(attackHitmarksE[1][0], 5)
+	attackFramesE[1][action.ActionAttack] = 17
+	attackFramesE[1][action.ActionCharge] = 23
+	attackFramesE[1][action.ActionWalk] = 34
+
+	attackFramesE[2] = frames.InitNormalCancelSlice(attackHitmarksE[2][0], 32)
+	attackFramesE[2][action.ActionAttack] = 54
+	attackFramesE[2][action.ActionCharge] = 53
+	attackFramesE[2][action.ActionWalk] = 34
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
+
+	relevantHitmarks := attackHitmarksNormal
+	relevantFrames := attackFramesNormal
+
+	if c.StatusIsActive(skillKey) {
+		relevantHitmarks = attackHitmarksE
+		relevantFrames = attackFramesE
+	}
 
 	for i := 0; i < hits[c.NormalCounter]; i++ {
 		ai := combat.AttackInfo{
@@ -54,16 +86,17 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			delay,
-			delay+attackHitmarks[c.NormalCounter][i],
+			delay+relevantHitmarks[c.NormalCounter][i],
 		)
 	}
 
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return delay + frames.NewAttackFunc(c.Character, attackFrames)(next) },
-		AnimationLength: delay + attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   delay + attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		Frames:          func(next action.Action) int { return delay +
+			frames.AtkSpdAdjust(relevantFrames[c.NormalCounter][next], c.Stat(attributes.AtkSpd)) },
+		AnimationLength: delay + relevantFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   delay + relevantHitmarks[c.NormalCounter][len(relevantHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 

@@ -13,13 +13,14 @@ const (
 	skillKey = "windfavored-state"
 )
 
-var skillEndFrames []int
+var skillFramesNormal []int
 
 func init() {
-	skillEndFrames = frames.InitAbilSlice(30)
+	skillFramesNormal = frames.InitAbilSlice(28)
+
 }
 
-const skillHitmark = 10
+const skillHitmark = 2
 
 func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	// TODO: Hitlag?
@@ -62,9 +63,9 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 
 	// Return ActionInfo
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillEndFrames),
-		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillFramesNormal),
+		AnimationLength: skillFramesNormal[action.InvalidAction],
+		CanQueueAfter:   skillFramesNormal[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -112,11 +113,10 @@ func (c *char) skillEndRoutine() int {
 	}
 
 	// Delay due to falling
-
 	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index)
 
-	// TODO: Insert correct frames (especially for different circumstances)
-	return 14
+	// Shorter delay for plunging is hard coded in the plunge action
+	return 26
 }
 
 func (c *char) depleteSkydwellerPoints() func() {

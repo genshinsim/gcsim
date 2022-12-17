@@ -1,23 +1,45 @@
 package wanderer
 
 import (
+	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
+var (
+	a4Release = []int{16, 18, 21, 25}
+	dashFramesNormal []int
+	dashFramesE []int
+)
+
 const a4Hitmark = 30
+
+func init() {
+	dashFramesNormal = frames.InitAbilSlice(21)
+
+	dashFramesE = frames.InitAbilSlice(5)
+	dashFramesE[action.ActionAttack] = 21
+	dashFramesE[action.ActionCharge] = 21
+	dashFramesE[action.ActionBurst] = 24
+	dashFramesE[action.ActionDash] = 22
+	dashFramesE[action.ActionJump] = 22
+	dashFramesE[action.ActionWalk] = 22
+}
 
 func (c *char) Dash(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
-	f := 21
+	relevantFrames := dashFramesNormal
+	if c.StatusIsActive(skillKey) {
+		relevantFrames = dashFramesE
+	}
 
 	ai := action.ActionInfo{
-		Frames:          func(action.Action) int { return delay + f },
-		AnimationLength: delay + f,
-		CanQueueAfter:   delay + f,
+		Frames:          func(next action.Action) int { return delay + relevantFrames[next] },
+		AnimationLength: delay + relevantFrames[action.InvalidAction],
+		CanQueueAfter:   delay + relevantFrames[action.ActionSkill],
 		State:           action.DashState,
 	}
 
@@ -31,7 +53,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 			}
 			c.Core.Player.LastStamUse = delay + c.Core.F
 			c.Core.Events.Emit(event.OnStamUse, action.DashState)
-		}, delay+f-1)
+		}, delay+dashFramesNormal[action.ActionAttack]-1)
 
 		return ai
 	}
@@ -60,11 +82,11 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 
 		for i := 0; i < 4; i++ {
 			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
-				delay+a4Hitmark, delay+a4Hitmark)
+				delay+a4Release[i], delay+a4Hitmark)
 		}
 	} else {
 		// TODO: Check Point consumption
-		c.skydwellerPoints -= 20
+		c.skydwellerPoints -= 15
 	}
 
 	return ai
