@@ -75,7 +75,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}, 89)
 
 	relevantFrames := burstFramesNormal
-	if delay == 0 {
+	if c.StatusIsActive(skillKey) {
 		relevantFrames = burstFramesE
 	}
 

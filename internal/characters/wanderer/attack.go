@@ -111,11 +111,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		)
 	}
 
+	currentNormalCounter := c.NormalCounter
+
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return delay +
-			frames.AtkSpdAdjust(relevantFrames[c.NormalCounter][next], c.Stat(attributes.AtkSpd)) },
+			frames.AtkSpdAdjust(relevantFrames[currentNormalCounter][next], c.Stat(attributes.AtkSpd)) },
 		AnimationLength: delay + relevantFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   delay + relevantHitmarks[c.NormalCounter][len(relevantHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
