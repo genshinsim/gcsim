@@ -84,9 +84,8 @@ func (c *char) c4() {
 		Base:         modifier.NewBase("nahida-c4", -1),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
-			x, y := c.Core.Combat.Player().Pos()
 			count := 0
-			for _, v := range c.Core.Combat.EnemiesWithinRadius(x, y, 30) {
+			for _, v := range c.Core.Combat.EnemiesWithinRadius(c.Core.Combat.Player().Pos(), 30) {
 				enemy, ok := c.Core.Combat.Enemy(v).(*enemy.Enemy)
 				if !ok {
 					continue

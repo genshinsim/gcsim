@@ -76,7 +76,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				active := c.Core.Player.ActiveChar()
 				//this is going to be a bit slow..
 				//TODO: should check in radius 10 around gadget position
-				enemies := c.Core.Combat.EnemyByDistance(0, 0, combat.InvalidTargetKey)
+				enemies := c.Core.Combat.EnemyByDistance(combat.Point{X: 0, Y: 0}, combat.InvalidTargetKey)
 				needHeal := len(enemies) == 0 || active.HPCurrent/active.MaxHP() <= .7
 				needAttack := !needHeal
 				if c.Base.Cons >= 1 {

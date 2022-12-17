@@ -55,11 +55,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		snap = c.Snapshot(&ai)
 	}, burstHitmark-1)
 
-	for i := 119; i <= 119+900; i += 30 { //first tick at 119
+	burstPos := c.Core.Combat.Player().Pos() //burst pos
+	for i := 119; i <= 119+900; i += 30 {    //first tick at 119
 		//picks up to 3 random targets
 		c.Core.Tasks.Add(func() {
 			//grab enemies
-			enemies := c.Core.Combat.EnemiesWithinRadius(0, 0, 7)
+			enemies := c.Core.Combat.EnemiesWithinRadius(burstPos, 7)
 
 			count := 1
 			if c.Base.Cons >= 4 {

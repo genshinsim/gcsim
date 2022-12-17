@@ -138,8 +138,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		snap := c.Snapshot(&ai)
 		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 0.156
 
-		x, y := c.Core.Combat.Player().Pos()
-		enemies := c.Core.Combat.EnemiesWithinRadius(x, y, 8)
+		enemies := c.Core.Combat.EnemiesWithinRadius(c.Core.Combat.Player().Pos(), 8)
 		if len(enemies) > 0 {
 			c.Core.QueueAttackWithSnap(
 				ai,

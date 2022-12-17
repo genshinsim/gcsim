@@ -16,7 +16,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	qPos                combat.Positional
+	qPos                combat.Point
 	qAbsorb             attributes.Element
 	absorbCheckLocation combat.AttackPattern
 	aiAbsorb            combat.AttackInfo

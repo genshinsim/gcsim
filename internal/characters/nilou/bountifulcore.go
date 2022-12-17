@@ -14,12 +14,12 @@ type BountifulCore struct {
 	*gadget.Gadget
 }
 
-func newBountifulCore(c *core.Core, x float64, y float64, a *combat.AttackEvent) *BountifulCore {
+func newBountifulCore(c *core.Core, p combat.Point, a *combat.AttackEvent) *BountifulCore {
 	b := &BountifulCore{
 		srcFrame: c.F,
 	}
 
-	b.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
+	b.Gadget = gadget.New(c, p, 0.2, combat.GadgetTypDendroCore)
 	b.Gadget.Duration = 0.4 * 60
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
@@ -52,6 +52,6 @@ func (b *BountifulCore) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 func (b *BountifulCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (b *BountifulCore) SetDirection(trgX, trgY float64)                        {}
+func (b *BountifulCore) SetDirection(trg combat.Point)                          {}
 func (b *BountifulCore) SetDirectionToClosestEnemy()                            {}
-func (b *BountifulCore) CalcTempDirection(trgX, trgY float64) float64           { return 0 }
+func (b *BountifulCore) CalcTempDirection(trg combat.Point) float64             { return 0 }

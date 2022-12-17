@@ -48,10 +48,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Status.Add("laylaburst", 12*60+burstStart)
 
-	x, y := c.Core.Combat.Player().Pos() // burst pos
+	burstPos := c.Core.Combat.Player().Pos() // burst pos
 	for delay := burstStart; delay < 12*60+burstStart; delay += 90 {
 		c.Core.Tasks.Add(func() {
-			trgs := c.Core.Combat.EnemiesWithinRadius(x, y, 12)
+			trgs := c.Core.Combat.EnemiesWithinRadius(burstPos, 12)
 			if len(trgs) == 0 {
 				return
 			}

@@ -18,7 +18,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstPos           combat.Positional
+	burstPos           combat.Point
 	burstExtendCount   int
 	sproutShouldExtend bool
 	sproutShouldProc   bool

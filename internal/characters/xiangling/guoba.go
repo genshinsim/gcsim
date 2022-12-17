@@ -2,7 +2,6 @@ package xiangling
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/faruzan"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -29,11 +28,11 @@ func (c *char) newGuoba(ai combat.AttackInfo) *panda {
 	}
 	player := c.Core.Combat.Player()
 	pos := combat.CalcOffsetPoint(
-		player,
+		player.Pos(),
 		combat.Point{Y: 1.3},
 		player.Direction(),
 	)
-	p.Gadget = gadget.New(c.Core, core.Coord{X: pos.X, Y: pos.Y, R: 0.2}, combat.GadgetTypGuoba)
+	p.Gadget = gadget.New(c.Core, pos, 0.2, combat.GadgetTypGuoba)
 	p.Gadget.Duration = 438
 	p.Reactable = &reactable.Reactable{}
 	p.Reactable.Init(p, c.Core)

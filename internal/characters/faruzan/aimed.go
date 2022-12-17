@@ -67,7 +67,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			if done {
 				return
 			}
-			c.pressurizedCollapse(a.Target)
+			c.pressurizedCollapse(a.Target.Pos())
 		}
 	}
 

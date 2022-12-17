@@ -3,7 +3,6 @@ package travelerdendro
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -34,11 +33,11 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
 	pos := combat.CalcOffsetPoint(
-		player,
+		player.Pos(),
 		combat.Point{Y: 1},
 		player.Direction(),
 	)
-	s.Gadget = gadget.New(c.Core, core.Coord{X: pos.X, Y: pos.Y, R: 1}, combat.GadgetTypLeaLotus)
+	s.Gadget = gadget.New(c.Core, pos, 1, combat.GadgetTypLeaLotus)
 	s.Reactable = &reactable.Reactable{}
 	s.Reactable.Init(s, c.Core)
 	s.Durability[reactable.ModifierDendro] = 10
@@ -168,8 +167,7 @@ func (s *LeaLotus) Tick() {
 }
 
 func (l *LeaLotus) QueueAttack(delay int) {
-	x, y := l.Gadget.Pos()
-	enemies := l.Core.Combat.EnemiesWithinRadius(x, y, l.targetingRadius)
+	enemies := l.Core.Combat.EnemiesWithinRadius(l.Gadget.Pos(), l.targetingRadius)
 	if len(enemies) > 0 {
 		idx := l.Core.Rand.Intn(len(enemies))
 
@@ -261,6 +259,6 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.Kill()
 }
 
-func (s *LeaLotus) SetDirection(trgX, trgY float64)              {}
-func (s *LeaLotus) SetDirectionToClosestEnemy()                  {}
-func (s *LeaLotus) CalcTempDirection(trgX, trgY float64) float64 { return 0 }
+func (s *LeaLotus) SetDirection(trg combat.Point)              {}
+func (s *LeaLotus) SetDirectionToClosestEnemy()                {}
+func (s *LeaLotus) CalcTempDirection(trg combat.Point) float64 { return 0 }

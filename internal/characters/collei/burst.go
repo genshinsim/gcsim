@@ -35,7 +35,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstExplosion[c.TalentLvlBurst()],
 	}
-	c.burstPos = c.Core.Combat.Player()
+	c.burstPos = c.Core.Combat.Player().Pos()
 	//TODO: this should have its own position
 	c.Core.QueueAttack(
 		ai,

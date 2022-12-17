@@ -87,7 +87,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark[short_hold]+c.ParticleDelay)
 
-	stonePos := c.Core.Combat.PrimaryTarget()
+	stonePos := c.Core.Combat.PrimaryTarget().Pos()
 	c.Core.Tasks.Add(func() {
 		dur := 30 * 60
 		if c.Base.Cons >= 6 {
@@ -110,10 +110,10 @@ type stone struct {
 	src    int
 	expiry int
 	char   *char
-	pos    combat.Positional
+	pos    combat.Point
 }
 
-func (c *char) newStone(dur int, pos combat.Positional) *stone {
+func (c *char) newStone(dur int, pos combat.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,

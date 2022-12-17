@@ -21,7 +21,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// reset location
 	c.qAbsorb = attributes.NoElement
 	player := c.Core.Combat.Player()
-	c.qPos = combat.CalcOffsetPoint(player, combat.Point{Y: 5}, player.Direction())
+	c.qPos = combat.CalcOffsetPoint(player.Pos(), combat.Point{Y: 5}, player.Direction())
 	c.absorbCheckLocation = combat.NewBoxHitOnTarget(c.qPos, combat.Point{Y: -1}, 2.5, 2.5)
 
 	//8 second duration, tick every .4 second

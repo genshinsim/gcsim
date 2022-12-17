@@ -58,8 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// TODO: no precise frame data for time between Blossoms
 	ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
 	ai.Mult = burstPerBloom[c.TalentLvlBurst()]
-	x, y := c.Core.Combat.Player().Pos()
-	enemies := c.Core.Combat.EnemiesWithinRadius(x, y, 10)
+	enemies := c.Core.Combat.EnemiesWithinRadius(c.Core.Combat.Player().Pos(), 10)
 	for i := 0; i < hits; i++ {
 		ind := c.Core.Rand.Intn(len(enemies))
 		c.Core.QueueAttackWithSnap(

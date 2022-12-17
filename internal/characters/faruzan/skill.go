@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) pressurizedCollapse(pos combat.Positional) {
+func (c *char) pressurizedCollapse(pos combat.Point) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       VortexAbilName,

@@ -70,21 +70,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	currSrc := c.burstSrc
 
 	player := c.Core.Combat.Player()
+	playerPos := player.Pos()
 	direction := player.Direction()
-	x, y := player.Pos()
 	gadgetPositions := []combat.Point{
-		combat.CalcOffsetPoint(player, combat.Point{X: 5.9, Y: 10.5}, direction),
-		combat.CalcOffsetPoint(player, combat.Point{X: -5.9, Y: 10.5}, direction),
-		combat.CalcOffsetPoint(player, combat.Point{Y: 1.5}, direction),
+		combat.CalcOffsetPoint(playerPos, combat.Point{X: 5.9, Y: 10.5}, direction),
+		combat.CalcOffsetPoint(playerPos, combat.Point{X: -5.9, Y: 10.5}, direction),
+		combat.CalcOffsetPoint(playerPos, combat.Point{Y: 1.5}, direction),
 	}
 	count := 0
 	for i := 137; i <= duration; i += 120 {
-		ox, oy := gadgetPositions[count%3].Pos()
+		gadgetPos := gadgetPositions[count%3].Pos()
 		c.Core.Tasks.Add(func() {
 			if c.burstSrc != currSrc {
 				return
 			}
-			for id := range c.Core.Combat.EnemiesWithinRadius(x+ox, y+oy, 6) {
+			for id := range c.Core.Combat.EnemiesWithinRadius(gadgetPos, 6) {
 				trg, ok := c.Core.Combat.Enemy(id).(*enemy.Enemy)
 				if !ok {
 					continue

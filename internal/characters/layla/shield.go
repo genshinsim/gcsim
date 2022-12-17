@@ -94,8 +94,7 @@ func (c *char) shootStars(src int, last int) func() {
 
 		// find near target
 		nearTarget := -1
-		x, y := c.Core.Combat.Player().Pos()
-		trgs := c.Core.Combat.EnemiesWithinRadius(x, y, 10)
+		trgs := c.Core.Combat.EnemiesWithinRadius(c.Core.Combat.Player().Pos(), 10)
 		if len(trgs) > 0 {
 			sort.Slice(trgs, func(i, j int) bool { return i < j })
 			nearTarget = trgs[0]
