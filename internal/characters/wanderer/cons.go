@@ -20,12 +20,9 @@ func (c *char) c1() {
 	if c.Base.Cons >= 1 && c.StatusIsActive(skillKey) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.1
-		c.AddAttackMod(character.AttackMod{
+		c.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("wanderer-c1-atkspd", 1200),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if !(atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra) {
-					return nil, false
-				}
+			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 		})
