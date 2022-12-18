@@ -59,9 +59,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(c.c2, delay)
 
 	for i := 0; i < 5; i++ {
+		progress := i
 		c.Core.Tasks.Add(func() {
 			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6),
-				burstSnapshotDelay, burstHitmark+i*burstHitmarkDelay)
+				burstSnapshotDelay, burstHitmark+progress*burstHitmarkDelay)
 		}, delay)
 	}
 

@@ -91,6 +91,11 @@ func (c *char) checkForSkillEnd() int {
 
 func (c *char) skillEndRoutine() int {
 	c.DeleteStatus(skillKey)
+
+	if c.StatusIsActive(a4Key) {
+		c.DeleteStatus(a4Key)
+	}
+
 	c.skydwellerPoints = 0
 	c.a4Prob = 0.16
 	c.SetCD(action.ActionSkill, 360)

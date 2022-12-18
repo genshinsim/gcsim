@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	a4Release = []int{16, 18, 21, 25}
+	a4Release        = []int{16, 18, 21, 25}
 	dashFramesNormal []int
-	dashFramesE []int
+	dashFramesE      []int
 )
 
 const a4Hitmark = 30
@@ -58,8 +58,8 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		return ai
 	}
 
-	if c.a4Active {
-		c.a4Active = false
+	if c.StatusIsActive(a4Key) {
+		c.DeleteStatus(a4Key)
 
 		a4Mult := 0.35
 

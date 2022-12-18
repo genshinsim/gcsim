@@ -10,10 +10,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	a4Key = "wanderer-a4"
+)
+
 func (c *char) a4Init() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		// if e is not active or a4 already active
-		if !c.StatusIsActive(skillKey) || c.a4Active {
+		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) {
 			return false
 		}
 
@@ -36,7 +40,7 @@ func (c *char) a4Init() {
 			return false
 		}
 
-		c.a4Active = true
+		c.AddStatus(a4Key, -1, true)
 
 		c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index).
 			Write("probability", c.a4Prob)

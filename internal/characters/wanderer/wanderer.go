@@ -22,7 +22,6 @@ type char struct {
 	maxSkydwellerPoints   int
 	a1Buffs               []attributes.Element
 	a1AbsorbCheckLocation combat.AttackPattern
-	a4Active              bool
 	a4Prob                float64
 }
 
@@ -44,7 +43,6 @@ func (c *char) Init() error {
 
 	c.skydwellerPoints = 0
 	c.maxSkydwellerPoints = 100
-	c.a4Active = false
 	c.a4Prob = 0.16
 
 	c.a4Init()
