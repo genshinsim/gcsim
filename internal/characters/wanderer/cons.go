@@ -35,12 +35,9 @@ func (c *char) c2() {
 	if c.Base.Cons >= 2 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = math.Min((float64)(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
-		c.AddAttackMod(character.AttackMod{
+		c.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if !(atk.Info.AttackTag == combat.AttackTagElementalBurst) {
-					return nil, false
-				}
+			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 		})
