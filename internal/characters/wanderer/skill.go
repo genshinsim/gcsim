@@ -52,12 +52,12 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 
 		// TODO: Check snapshot moment
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
-		c.SetCD(action.ActionSkill, 10*60)
 
 	}, skillHitmark)
 
 	// Initial A1 Absorption test
-	c.absorbCheckA1(c.Core.F)
+	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
+	c.absorbCheckA1(c.Core.F)()
 
 	c.c1()
 
@@ -90,6 +90,7 @@ func (c *char) checkForSkillEnd() int {
 }
 
 func (c *char) skillEndRoutine() int {
+	//print("Starting skill end routine")
 	c.DeleteStatus(skillKey)
 
 	if c.StatusIsActive(a4Key) {
@@ -101,16 +102,9 @@ func (c *char) skillEndRoutine() int {
 	c.SetCD(action.ActionSkill, 360)
 
 	// Delete Ascension Buffs
-	for _, e := range c.a1Buffs {
-		switch e {
-		case attributes.Pyro:
-			c.DeleteStatMod("wanderer-a1-pyro")
-		case attributes.Cryo:
-			c.DeleteStatMod("wanderer-a1-cryo")
-		case attributes.Electro:
-			c.Core.Events.Unsubscribe(event.OnEnemyHit, "wanderer-a1-electro")
-		}
-	}
+	c.DeleteStatMod("wanderer-a1-pyro")
+	c.DeleteStatMod("wanderer-a1-cryo")
+	c.Core.Events.Unsubscribe(event.OnEnemyHit, "wanderer-a1-electro")
 
 	// Delete c1 buff if active
 	if c.StatusIsActive("wanderer-c1-atkspd") {

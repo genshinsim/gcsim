@@ -11,10 +11,10 @@ import (
 
 var (
 	attackFramesNormal   [][]int
-	attackFramesE   [][]int
+	attackFramesE        [][]int
 	attackHitmarksNormal = [][]int{{11}, {6}, {32, 41}}
-	attackHitmarksE = [][]int{{15}, {3}, {32, 40}}
-	attackRadius   = []float64{1.8, 1.8, 2.2}
+	attackHitmarksE      = [][]int{{15}, {3}, {32, 40}}
+	attackRadius         = []float64{1.8, 1.8, 2.2}
 )
 
 const normalHitNum = 3
@@ -50,7 +50,6 @@ func init() {
 	attackFramesNormal[2][action.ActionJump] = 34
 	attackFramesNormal[2][action.ActionSwap] = 33
 
-
 	attackFramesE = make([][]int, normalHitNum)
 
 	attackFramesE[0] = frames.InitNormalCancelSlice(attackHitmarksE[0][0], 43)
@@ -80,13 +79,40 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
+	frameChange := 0
+
+	currentNormalCounter := c.NormalCounter
 
 	relevantHitmarks := attackHitmarksNormal
 	relevantFrames := attackFramesNormal
 
+	if c.Core.Player.LastAction.Char == c.Index &&
+		c.Core.Player.LastAction.Type == action.ActionAttack &&
+		currentNormalCounter == 0 {
+		frameChange = 3
+	}
+
+	if c.Core.Player.LastAction.Char == c.Index &&
+		(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionBurst) &&
+		currentNormalCounter == 0 {
+		frameChange = -2
+	}
+
 	if c.StatusIsActive(skillKey) {
 		relevantHitmarks = attackHitmarksE
 		relevantFrames = attackFramesE
+
+		if c.Core.Player.LastAction.Char == c.Index &&
+			c.Core.Player.LastAction.Type == action.ActionDash &&
+			currentNormalCounter == 0 {
+			frameChange = -3
+		}
+
+		if c.Core.Player.LastAction.Char == c.Index &&
+			(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionJump) &&
+			currentNormalCounter == 0 {
+			frameChange = -2
+		}
 	}
 
 	for i := 0; i < hits[c.NormalCounter]; i++ {
@@ -107,19 +133,19 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			delay,
-			delay+relevantHitmarks[c.NormalCounter][i],
+			delay+frameChange+relevantHitmarks[c.NormalCounter][i],
 		)
 	}
-
-	currentNormalCounter := c.NormalCounter
 
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return delay +
-			frames.AtkSpdAdjust(relevantFrames[currentNormalCounter][next], c.Stat(attributes.AtkSpd)) },
-		AnimationLength: delay + relevantFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   delay + relevantHitmarks[c.NormalCounter][len(relevantHitmarks[c.NormalCounter])-1],
+		Frames: func(next action.Action) int {
+			return delay + frameChange +
+				frames.AtkSpdAdjust(relevantFrames[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
+		},
+		AnimationLength: delay + frameChange + relevantFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   delay + frameChange + relevantHitmarks[c.NormalCounter][len(relevantHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 

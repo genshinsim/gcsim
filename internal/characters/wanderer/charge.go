@@ -34,13 +34,44 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
+	frameChange := 0
 
 	relevantHitmark := chargeHitmarkNormal
 	relevantFrames := chargeFramesNormal
 
+	if c.Core.Player.LastAction.Char == c.Index &&
+		c.Core.Player.LastAction.Type == action.ActionAttack {
+		frameChange = -2
+	}
+
+	if c.Core.Player.LastAction.Char == c.Index &&
+		c.Core.Player.LastAction.Type == action.ActionLowPlunge {
+		frameChange = -4
+	}
+
 	if c.StatusIsActive(skillKey) {
 		relevantHitmark = chargeHitmarkE
 		relevantFrames = chargeFramesE
+
+		if c.Core.Player.LastAction.Char == c.Index &&
+			c.Core.Player.LastAction.Type == action.ActionAttack {
+			frameChange = -4
+		}
+
+		if c.Core.Player.LastAction.Char == c.Index &&
+			(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionJump) {
+			frameChange = -7
+		}
+
+		if c.Core.Player.LastAction.Char == c.Index &&
+			c.Core.Player.LastAction.Type == action.ActionBurst {
+			frameChange = -2
+		}
+
+		if c.Core.Player.LastAction.Char == c.Index &&
+			c.Core.Player.LastAction.Type == action.ActionDash {
+			frameChange = -9
+		}
 	}
 
 	ai := combat.AttackInfo{
@@ -57,12 +88,14 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.28),
-		delay+relevantHitmark, delay+relevantHitmark)
+		delay+frameChange+relevantHitmark, delay+frameChange+relevantHitmark)
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return delay +
-			frames.AtkSpdAdjust(relevantFrames[next], c.Stat(attributes.AtkSpd)) },
-		AnimationLength: delay + relevantFrames[action.InvalidAction],
-		CanQueueAfter:   delay + relevantHitmark,
+		Frames: func(next action.Action) int {
+			return delay + frameChange +
+				frames.AtkSpdAdjust(relevantFrames[next], c.Stat(attributes.AtkSpd))
+		},
+		AnimationLength: delay + frameChange + relevantFrames[action.InvalidAction],
+		CanQueueAfter:   delay + frameChange + relevantHitmark,
 		State:           action.ChargeAttackState,
 	}
 }

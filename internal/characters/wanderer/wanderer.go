@@ -20,7 +20,7 @@ type char struct {
 	*tmpl.Character
 	skydwellerPoints      int
 	maxSkydwellerPoints   int
-	a1Buffs               []attributes.Element
+	a1ValidBuffs          []attributes.Element
 	a1AbsorbCheckLocation combat.AttackPattern
 	a4Prob                float64
 }
@@ -44,6 +44,8 @@ func (c *char) Init() error {
 	c.skydwellerPoints = 0
 	c.maxSkydwellerPoints = 100
 	c.a4Prob = 0.16
+	c.a1AbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 5)
+	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
 
 	c.a4Init()
 

@@ -51,20 +51,17 @@ func (c *char) a4Init() {
 	}, fmt.Sprintf("wanderer-a4"))
 }
 
-func (c *char) a4Activation() {
-	// TODO
-}
-
 func (c *char) absorbCheckA1(src int) func() {
 	return func() {
 
-		absorbCheck := c.Core.Combat.AbsorbCheck(c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		absorbCheck := c.Core.Combat.AbsorbCheck(c.a1AbsorbCheckLocation, c.a1ValidBuffs...)
 
-		if absorbCheck != attributes.NoElement && c.checkIfA1BuffExists(absorbCheck) {
+		if absorbCheck != attributes.NoElement {
+
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
 				"wanderer a1 absorbed ", absorbCheck.String(),
 			)
-			c.a1Buffs = append(c.a1Buffs, absorbCheck)
+			c.deleteFromValidBuffs(absorbCheck)
 
 			c.addA1Buff(absorbCheck)
 
@@ -73,22 +70,15 @@ func (c *char) absorbCheckA1(src int) func() {
 			if c.Base.Cons >= 4 {
 				maxAbsorb = 3
 
-				if len(c.a1Buffs) < maxAbsorb {
-					validElements := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
-					var possibleElements []attributes.Element
-					for _, e := range validElements {
-						if c.checkIfA1BuffExists(e) {
-							possibleElements = append(possibleElements, e)
-						}
-					}
-					chosenElement := possibleElements[c.Core.Rand.Intn(len(possibleElements))]
+				if 4-len(c.a1ValidBuffs) < maxAbsorb {
+					chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
 					c.addA1Buff(chosenElement)
 					c.Core.Log.NewEvent("wanderer c4 applied", glog.LogCharacterEvent, c.Index)
 				}
 
 			}
 
-			if len(c.a1Buffs) >= maxAbsorb {
+			if 4-len(c.a1ValidBuffs) >= maxAbsorb {
 				return
 			}
 		}
@@ -154,11 +144,12 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 	}
 }
 
-func (c *char) checkIfA1BuffExists(ele attributes.Element) bool {
-	for _, e := range c.a1Buffs {
-		if e == ele {
-			return true
+func (c *char) deleteFromValidBuffs(ele attributes.Element) {
+	var results []attributes.Element
+	for _, e := range c.a1ValidBuffs {
+		if e != ele {
+			results = append(results, e)
 		}
 	}
-	return false
+	c.a1ValidBuffs = results
 }
