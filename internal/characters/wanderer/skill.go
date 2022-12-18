@@ -62,6 +62,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	c.absorbCheckA1(c.Core.F)()
 
 	c.c1()
+	c.c6()
 
 	// Return ActionInfo
 	return action.ActionInfo{
@@ -113,6 +114,9 @@ func (c *char) skillEndRoutine() int {
 	if c.StatusIsActive("wanderer-c1-atkspd") {
 		c.DeleteStatus("wanderer-c1-atkspd")
 	}
+
+	// Delete c6 buff if active
+	c.Core.Events.Unsubscribe(event.OnEnemyHit, "wanderer-c6")
 
 	// Delay due to falling
 	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index)

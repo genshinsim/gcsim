@@ -46,10 +46,9 @@ func (c *char) c2() {
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != c.Index {
+		if ae.Info.ActorIndex != c.Index || ae.Info.Abil == "Shugen: The Curtains’ Melancholic Sway" {
 			return false
 		}
 
