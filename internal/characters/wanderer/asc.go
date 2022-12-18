@@ -73,7 +73,10 @@ func (c *char) absorbCheckA1(src int) func() {
 				if 4-len(c.a1ValidBuffs) < maxAbsorb {
 					chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
 					c.addA1Buff(chosenElement)
-					c.Core.Log.NewEvent("wanderer c4 applied", glog.LogCharacterEvent, c.Index)
+					c.deleteFromValidBuffs(chosenElement)
+					c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+						"wanderer c4 applied a1 ", chosenElement.String(),
+					)
 				}
 
 			}
