@@ -89,7 +89,7 @@ func IntersectRectangle(r Rectangle, c Circle) bool {
 
 	// circle center isn't too far away from the edges, but it's out of bounds:
 	// - check whether the topRight corner of the rectangle is within the circle radius
-	if math.Pow(local.X-topRight.X, 2)+math.Pow(local.Y-topRight.Y, 2) > math.Pow(c.r, 2) {
+	if local.Sub(topRight).MagnitudeSquared() > c.r*c.r {
 		return false
 	}
 

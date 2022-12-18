@@ -22,8 +22,16 @@ func (p1 *Point) Perp() Point {
 	return Point{X: -p1.Y, Y: p1.X}
 }
 
+func (p Point) MagnitudeSquared() float64 {
+	return p.X*p.X + p.Y*p.Y
+}
+
+func (p Point) Magnitude() float64 {
+	return math.Sqrt(p.MagnitudeSquared())
+}
+
 func (p1 Point) Distance(p2 Point) float64 {
-	return math.Sqrt(math.Pow(p1.X-p2.X, 2) + math.Pow(p1.Y-p2.Y, 2))
+	return p1.Sub(p2).Magnitude()
 }
 
 func (p1 Point) Dot(p2 Point) float64 {

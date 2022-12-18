@@ -1,7 +1,6 @@
 package combat
 
 import (
-	"math"
 	"sort"
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -73,7 +72,7 @@ func (c *Handler) EnemyByDistance(p Point, excl TargetKey) []int {
 			continue
 		}
 		vPos := v.Shape().Pos()
-		dist := math.Pow(p.X-vPos.X, 2) + math.Pow(p.Y-vPos.Y, 2)
+		dist := p.Sub(vPos).MagnitudeSquared()
 		tuples = append(tuples, struct {
 			ind  int
 			dist float64
@@ -98,8 +97,8 @@ func (c *Handler) EnemiesWithinRadius(p Point, r float64) []int {
 	result := make([]int, 0, len(c.enemies))
 	for i, v := range c.enemies {
 		vPos := v.Shape().Pos()
-		dist := math.Pow(p.X-vPos.X, 2) + math.Pow(p.Y-vPos.Y, 2)
-		if dist > r {
+		dist := p.Sub(vPos).MagnitudeSquared()
+		if dist > r*r {
 			continue
 		}
 		result = append(result, i)

@@ -64,8 +64,8 @@ func (r1 *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 	// bounding circle test
 	// https://stackoverflow.com/a/64162017
 	rectangleCenterDistance := r1.center.Distance(r2.center)
-	boundingCircleRadius1 := math.Sqrt(math.Pow(r1.w, 2)+math.Pow(r1.h, 2)) / 2
-	boundingCircleRadius2 := math.Sqrt(math.Pow(r2.w, 2)+math.Pow(r2.h, 2)) / 2
+	boundingCircleRadius1 := Point{X: r1.w, Y: r1.h}.Magnitude() / 2
+	boundingCircleRadius2 := Point{X: r2.w, Y: r2.h}.Magnitude() / 2
 	if rectangleCenterDistance > boundingCircleRadius1+boundingCircleRadius2 {
 		return false
 	}
