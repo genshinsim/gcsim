@@ -25,6 +25,7 @@ const skillHitmark = 2
 func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	// TODO: Hitlag?
 	c.AddStatus(skillKey, -1, true)
+	c.Core.Player.SwapCD = 60 * 14
 
 	// Add 10 seconds worth of skydwellerPoints (1 point = 6 frames)
 	c.skydwellerPoints = 100
@@ -92,6 +93,7 @@ func (c *char) checkForSkillEnd() int {
 func (c *char) skillEndRoutine() int {
 	//print("Starting skill end routine")
 	c.DeleteStatus(skillKey)
+	c.Core.Player.SwapCD = 26
 
 	if c.StatusIsActive(a4Key) {
 		c.DeleteStatus(a4Key)
