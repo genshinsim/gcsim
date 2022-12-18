@@ -25,7 +25,7 @@ func getCenterAndDirection(src, center, offset positional) (Point, float64) {
 		// - if the provided center is just a position (useful for bow CA targeting)
 		// - if provided targets have different keys
 		if !centerIsATarget || srcTrg.Key() != centerTrg.Key() {
-			dir = srcTrg.CalcTempDirection(center.Pos())
+			dir = srcTrg.CalcTempDirection(c)
 		}
 	}
 

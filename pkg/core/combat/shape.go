@@ -43,7 +43,7 @@ func fanAngleAreaCheck(attackCenter, trg Point, facingDirection, fanAngle float6
 	// facingDirection and directionOfTarget can be different in multi-target situations
 	facingAngle := DirectionToDegrees(facingDirection)
 	// need to translate back to origin for correct direction calc
-	angleOfTarget := DirectionToDegrees(CalcDirection(Point{X: 0, Y: 0}, trg.Sub(attackCenter)))
+	angleOfTarget := DirectionToDegrees(CalcDirection(attackCenter, trg))
 	angledDiff := math.Mod(facingAngle-angleOfTarget+180+360, 360) - 180
 	if angledDiff >= -fanAngle/2 && angledDiff <= fanAngle/2 {
 		return true
