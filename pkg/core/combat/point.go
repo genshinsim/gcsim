@@ -18,7 +18,7 @@ func (p1 Point) Sub(p2 Point) Point {
 	return Point{X: p1.X - p2.X, Y: p1.Y - p2.Y}
 }
 
-func (p1 *Point) Perp() Point {
+func (p1 Point) Perp() Point {
 	return Point{X: -p1.Y, Y: p1.X}
 }
 
