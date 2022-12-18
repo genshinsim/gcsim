@@ -133,7 +133,7 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 				return false
 			}
 			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != c.Index {
+			if atk.Info.ActorIndex != c.Index || atk.Info.AttackTag != combat.AttackTagNormal {
 				return false
 			}
 			if c.Core.Player.Active() != c.Index {
