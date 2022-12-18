@@ -65,7 +65,7 @@ func (c *char) c6() {
 			return false
 		}
 
-		if !c.StatusIsActive(c6ICDKey) && c.skydwellerPoints < 40 {
+		if c.c6Count < 5 && !c.StatusIsActive(c6ICDKey) && c.skydwellerPoints < 40 {
 			c.AddStatus(c6ICDKey, 12, true)
 			c.c6Count++
 			c.skydwellerPoints += 4
