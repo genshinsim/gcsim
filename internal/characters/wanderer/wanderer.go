@@ -23,6 +23,7 @@ type char struct {
 	a1ValidBuffs          []attributes.Element
 	a1AbsorbCheckLocation combat.AttackPattern
 	a4Prob                float64
+	c6Count               int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -46,6 +47,7 @@ func (c *char) Init() error {
 	c.a4Prob = 0.16
 	c.a1AbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 5)
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
+	c.c6Count = 0
 
 	c.a4Init()
 

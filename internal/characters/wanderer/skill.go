@@ -30,6 +30,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	// Add 10 seconds worth of skydwellerPoints (1 point = 6 frames)
 	c.skydwellerPoints = 100
 	c.maxSkydwellerPoints = 100
+	c.c6Count = 0
 
 	c.Core.Tasks.Add(c.depleteSkydwellerPoints(), 6)
 
