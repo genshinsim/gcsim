@@ -40,7 +40,7 @@ func (c *char) a4Init() {
 			return false
 		}
 
-		c.AddStatus(a4Key, -1, true)
+		c.AddStatus(a4Key, 20*60, true)
 
 		c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index).
 			Write("probability", c.a4Prob)
