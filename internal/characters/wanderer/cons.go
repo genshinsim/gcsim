@@ -46,46 +46,48 @@ func (c *char) c2() {
 }
 
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != c.Index || ae.Info.Abil == "Shugen: The Curtains’ Melancholic Sway" {
-			return false
-		}
+	if c.Base.Cons >= 6 {
+		c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+			ae := args[1].(*combat.AttackEvent)
+			if ae.Info.ActorIndex != c.Index || ae.Info.Abil == "Shugen: The Curtains’ Melancholic Sway" {
+				return false
+			}
 
-		switch ae.Info.AttackTag {
-		case combat.AttackTagNormal:
-		default:
-			return false
-		}
+			switch ae.Info.AttackTag {
+			case combat.AttackTagNormal:
+			default:
+				return false
+			}
 
-		if c.c6Count < 5 && !c.StatusIsActive(c6ICDKey) && c.skydwellerPoints < 40 {
-			c.AddStatus(c6ICDKey, 12, true)
-			c.c6Count++
-			c.skydwellerPoints += 4
+			if c.c6Count < 5 && !c.StatusIsActive(c6ICDKey) && c.skydwellerPoints < 40 {
+				c.AddStatus(c6ICDKey, 12, true)
+				c.c6Count++
+				c.skydwellerPoints += 4
 
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-				"wanderer c6 added 4 skydweller points ",
+				c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+					"wanderer c6 added 4 skydweller points ",
+				)
+			}
+
+			// TODO: ICD info taken from KQM, seems to just count as a normal attack
+			ai := combat.AttackInfo{
+				ActorIndex: c.Index,
+				Abil:       "Shugen: The Curtains’ Melancholic Sway",
+				AttackTag:  combat.AttackTagNormal,
+				ICDTag:     combat.ICDTagNormalAttack,
+				ICDGroup:   combat.ICDGroupDefault,
+				StrikeType: combat.StrikeTypeDefault,
+				Element:    attributes.Anemo,
+				Durability: 25,
+				Mult:       ae.Info.Mult * 0.4,
+			}
+
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, 0,
 			)
-		}
 
-		// TODO: ICD info taken from KQM, seems to just count as a normal attack
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Shugen: The Curtains’ Melancholic Sway",
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       ae.Info.Mult * 0.4,
-		}
-
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, 0,
-		)
-
-		return false
-	}, "wanderer-c6")
+			return false
+		}, "wanderer-c6")
+	}
 }
