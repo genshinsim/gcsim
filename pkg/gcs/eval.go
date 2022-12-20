@@ -43,17 +43,17 @@ func (e *Env) v(s string) (*Obj, error) {
 	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
-func (e *Env) fn(s string) (*funcval, error) {
+func (e *Env) fn(s string) (Obj, error) {
 	v, err := e.v(s)
 	if err != nil {
 		return nil, err
 	}
 
 	val := *v
-	if val.Typ() != typFun {
+	if val.Typ() != typFun && val.Typ() != typBif {
 		return nil, fmt.Errorf("variable %v is not a function", s)
 	}
-	return val.(*funcval), nil
+	return val, nil
 }
 
 //Run will execute the provided AST. Any genshin specific actions will be passed
@@ -66,6 +66,7 @@ func (e *Eval) Run() Obj {
 	//it will then pass the action on a resp channel
 	//it will then wait for Next before running again
 	global := NewEnv(nil)
+	e.initSysFuncs(global)
 
 	//start running once we get signal to go
 	<-e.Next
@@ -97,6 +98,7 @@ const (
 	typNum
 	typStr
 	typFun
+	typBif // built-in function
 	typRet
 	typCtr
 	// typTerminate
@@ -118,6 +120,10 @@ type (
 	funcval struct {
 		Args []*ast.Ident
 		Body *ast.BlockStmt
+	}
+
+	bfuncval struct {
+		Body func(c *ast.CallExpr, env *Env) (Obj, error)
 	}
 
 	retval struct {
@@ -152,8 +158,12 @@ func (s *strval) Inspect() string { return s.str }
 func (n *strval) Typ() ObjTyp     { return typStr }
 
 // funcval.
-func (s *funcval) Inspect() string { return "func" }
+func (s *funcval) Inspect() string { return "function" }
 func (n *funcval) Typ() ObjTyp     { return typFun }
+
+// bfuncval.
+func (s *bfuncval) Inspect() string { return "built-in function" }
+func (n *bfuncval) Typ() ObjTyp     { return typBif }
 
 // retval.
 func (r *retval) Inspect() string {

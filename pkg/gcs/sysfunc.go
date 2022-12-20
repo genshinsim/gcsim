@@ -11,6 +11,25 @@ import (
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
+func (e *Eval) initSysFuncs(env *Env) {
+	e.addSysFunc("f", e.f, env)
+	e.addSysFunc("rand", e.rand, env)
+	e.addSysFunc("randnorm", e.randnorm, env)
+	e.addSysFunc("print", e.print, env)
+	e.addSysFunc("wait", e.wait, env)
+	e.addSysFunc("type", e.typeval, env)
+	e.addSysFunc("set_target_pos", e.setTargetPos, env)
+	e.addSysFunc("set_player_pos", e.setPlayerPos, env)
+	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
+	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
+	e.addSysFunc("kill_target", e.killTarget, env)
+}
+
+func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
+	var obj Obj = &bfuncval{Body: f}
+	env.varMap[name] = &obj
+}
+
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 	//concat all args
 	var sb strings.Builder
@@ -26,16 +45,16 @@ func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {
 	} else {
 		fmt.Println(sb.String())
 	}
-	return &number{}, nil
+	return &null{}, nil
 }
 
-func (e *Eval) f() (*number, error) {
+func (e *Eval) f(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{
 		ival: int64(e.Core.F),
 	}, nil
 }
 
-func (e *Eval) rand() (*number, error) {
+func (e *Eval) rand(c *ast.CallExpr, env *Env) (Obj, error) {
 	x := e.Core.Rand.Float64()
 	return &number{
 		fval:    x,
@@ -43,7 +62,7 @@ func (e *Eval) rand() (*number, error) {
 	}, nil
 }
 
-func (e *Eval) randnorm() (*number, error) {
+func (e *Eval) randnorm(c *ast.CallExpr, env *Env) (Obj, error) {
 	x := e.Core.Rand.NormFloat64()
 	return &number{
 		fval:    x,
@@ -111,7 +130,9 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 	case typStr:
 		str = "string"
 	case typFun:
-		str = "function"
+		fallthrough
+	case typBif:
+		str = t.Inspect()
 	}
 
 	return &strval{str}, nil
@@ -228,7 +249,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	e.Core.Combat.DefaultTarget = e.Core.Combat.Enemy(idx - 1).Key()
 
-	return &number{}, nil
+	return &null{}, nil
 
 }
 
@@ -288,7 +309,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	e.Core.Combat.SetEnemyPos(idx-1, x, y)
 
-	return &number{}, nil
+	return &null{}, nil
 }
 
 func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -322,5 +343,5 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	e.Core.Combat.KillEnemy(idx - 1)
 
-	return &number{}, nil
+	return &null{}, nil
 }

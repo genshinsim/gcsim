@@ -69,68 +69,46 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("invalid function call %v", c.Fun.String())
 	}
 
-	//check if it's a system function
-	//otherwise check the function map
-	switch s := ident.Value; s {
-	case "f":
-		return e.f()
-	case "rand":
-		return e.rand()
-	case "randnorm":
-		return e.randnorm()
-	case "print":
-		//print outputs
-		return e.print(c, env)
-	case "wait":
-		//execute wait command
-		return e.wait(c, env)
-	case "type":
-		return e.typeval(c, env)
-	case "set_target_pos":
-		return e.setTargetPos(c, env)
-	case "set_player_pos":
-		return e.setPlayerPos(c, env)
-	case "set_default_target":
-		return e.setDefaultTarget(c, env)
-	case "set_particle_delay":
-		return e.setParticleDelay(c, env)
-	case "kill_target":
-		return e.killTarget(c, env)
+	//grab the function first
+	v, err := env.fn(ident.Value)
+	if err != nil {
+		return nil, err
+	}
+	if bfn, ok := v.(*bfuncval); ok { // is built-in
+		return bfn.Body(c, env)
+	}
+
+	fn := v.(*funcval)
+	//check number of param matches
+	if len(c.Args) != len(fn.Args) {
+		return nil, fmt.Errorf("unmatched number of params for fn %v", ident.Value)
+	}
+	//params are just variables assigned to a local env
+	local := NewEnv(env)
+	for i, v := range fn.Args {
+		param, err := e.evalExpr(c.Args[i], env)
+		if err != nil {
+			return nil, err
+		}
+		// n, ok := param.(*number)
+		// if !ok {
+		// 	return nil, fmt.Errorf("fn %v param %v does not evaluate to a number, got %v", s, v.Value, param.Inspect())
+		// }
+		local.varMap[v.Value] = &param
+	}
+	res, err := e.evalNode(fn.Body, local)
+	if err != nil {
+		return nil, err
+	}
+	switch v := res.(type) {
+	case *retval:
+		return v.res, nil
 	default:
-		//grab the function first
-		fn, err := env.fn(s)
-		if err != nil {
-			return nil, err
-		}
-		//check number of param matches
-		if len(c.Args) != len(fn.Args) {
-			return nil, fmt.Errorf("unmatched number of params for fn %v", s)
-		}
-		//params are just variables assigned to a local env
-		local := NewEnv(env)
-		for i, v := range fn.Args {
-			param, err := e.evalExpr(c.Args[i], env)
-			if err != nil {
-				return nil, err
-			}
-			// n, ok := param.(*number)
-			// if !ok {
-			// 	return nil, fmt.Errorf("fn %v param %v does not evaluate to a number, got %v", s, v.Value, param.Inspect())
-			// }
-			local.varMap[v.Value] = &param
-		}
-		res, err := e.evalNode(fn.Body, local)
-		if err != nil {
-			return nil, err
-		}
-		switch v := res.(type) {
-		case *retval:
-			return v.res, nil
-		case *null:
-			return &number{}, nil
-		default:
-			return nil, fmt.Errorf("fn %v returned an invalid type; expecting a number got %v", s, res.Inspect())
-		}
+		return &null{}, nil
+		// case *null:
+		// 	return &null{}, nil
+		// default:
+		// 	return nil, fmt.Errorf("fn %v returned an invalid type; expecting a number got %v", s, res.Inspect())
 	}
 }
 
