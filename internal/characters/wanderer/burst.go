@@ -67,6 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	//TODO: Check CD with or without delay, check energy consume frame
+
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 
@@ -87,7 +88,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		State:           action.BurstState,
 		OnRemoved: func(next action.AnimationState) {
 			if next == action.SwapState {
-				c.skillEndRoutine()
+				c.checkForSkillEnd()
 			}
 		},
 	}
