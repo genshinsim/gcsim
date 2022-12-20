@@ -106,3 +106,15 @@ func (c *char) Jump(p map[string]int) action.ActionInfo {
 
 	return ai
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "skydweller-points":
+		if c.skydwellerPoints <= 0 {
+			return 0, nil
+		}
+		return c.skydwellerPoints, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
