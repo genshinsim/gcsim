@@ -1,6 +1,6 @@
 import { Colors } from "@blueprintjs/core";
 import { SummaryStat } from "@gcsim/types";
-import { AxisLeft, TickRendererProps } from "@visx/axis";
+import { AxisBottom, AxisLeft, TickRendererProps } from "@visx/axis";
 import { GridRows } from "@visx/grid";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
@@ -26,6 +26,7 @@ type Props = {
 }
 
 const defaultMargin = { left: 76, right: 1, top: 5, bottom: 16 };
+const boxPlotHeight = 30
 
 export const HistogramGraph = ({
       width,
@@ -37,8 +38,9 @@ export const HistogramGraph = ({
       accentColor = Colors.SEPIA1,
     }: Props) => {
   const xMax = width - margin.left - margin.right;
-  const yMax = height - margin.top - margin.bottom;
+  const yMax = height - margin.top - margin.bottom - boxPlotHeight;
   const numTicks = 7;
+  const numHorizontalTicks = Math.min(width / 80, 12);
   
   const { i18n } = useTranslation();
   const { xScale, yScale, xLin, delta } = useScales(data, xMax, yMax);
@@ -89,17 +91,36 @@ export const HistogramGraph = ({
               valueScale={xLin}
               min={data.min}
               max={data.max}
+              top={yMax+boxPlotHeight}
               firstQuartile={data.q1}
               median={data.q2}
               thirdQuartile={data.q3}
               horizontal={true}
               boxWidth={10}
-              top={yMax + 5}
               fill={hoverColor}
               fillOpacity={0.1}
               stroke={hoverColor}
               strokeWidth={1}
               medianProps={{ style: { stroke: hoverColor } }} />
+          <AxisBottom
+              hideAxisLine
+              top={yMax}
+              scale={xScale}
+              numTicks={numHorizontalTicks}
+              labelClassName="fill-gray-400 text-lg"
+              tickClassName="fill-gray-400 font-mono text-xs"
+              tickStroke={DataColors.gray}
+              tickComponent={(props) => <TickLabelHorizontal {...props} />}
+                tickFormat={s => {
+                  const histogramLength = data.histogram?.length ?? 1
+                  const min = data?.min ?? 0
+                  const max = data?.max ?? 0
+                  const value = s / histogramLength * (max - min) + min
+                  return value.toLocaleString(i18n.language,
+                    { notation: 'compact', maximumSignificantDigits: 3 })
+                  }
+                }
+                 />
           {data.histogram.map((c, i) => {
             const barWidth = xScale.bandwidth();
             const barHeight = yMax - yScale(c);
@@ -169,7 +190,7 @@ function useScales(data: SummaryStat | undefined, xMax: number, yMax: number) {
     const max = Math.max(...(data?.histogram ?? [1000]));
     return scaleLinear<number>({
       range: [yMax, 0],
-      domain: [-3, max + .1 * max],
+      domain: [0, max],
       clamp: true
     });
   }, [data?.histogram, yMax]);
@@ -192,6 +213,14 @@ function useScales(data: SummaryStat | undefined, xMax: number, yMax: number) {
 const TickLabel = (props: TickRendererProps) => {
   return (
     <Text x={props.x} y={props.y} dy="0.25em" textAnchor="end" className="cursor-default">
+      {props.formattedValue}
+    </Text>
+  );
+};
+
+const TickLabelHorizontal = (props: TickRendererProps) => {
+  return (
+    <Text x={props.x} y={props.y} dy="0.25em" textAnchor="middle" className="cursor-default">
       {props.formattedValue}
     </Text>
   );
