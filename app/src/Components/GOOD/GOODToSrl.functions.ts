@@ -208,6 +208,8 @@ export function GOODKeytoGCSIMKey(
       return 'itto';
     case 'ShikanoinHeizou':
       return 'heizou';
+    case 'KukiShinobu':
+      return 'kuki';
   }
 
   const result = goodKey
