@@ -115,7 +115,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	for i := 0; i < hits[c.NormalCounter]; i++ {
+	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -125,7 +125,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
-			Mult:       attack[c.NormalCounter][i][c.TalentLvlAttack()],
+			Mult:       mult[c.TalentLvlAttack()],
 		}
 		radius := attackRadius[c.NormalCounter]
 

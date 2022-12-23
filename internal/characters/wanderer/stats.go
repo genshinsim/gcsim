@@ -1,7 +1,6 @@
 package wanderer
 
 var (
-	hits   = []int{1, 1, 2}
 	attack = [][][]float64{
 		//1
 		{
