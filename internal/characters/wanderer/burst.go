@@ -44,16 +44,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Kyougen: Five Ceremonial Plays",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
-		Element:            attributes.Anemo,
-		Durability:         25,
-		Mult:               burst[c.TalentLvlBurst()],
-		CanBeDefenseHalted: false,
+		ActorIndex: c.Index,
+		Abil:       "Kyougen: Five Ceremonial Plays",
+		AttackTag:  combat.AttackTagElementalBurst,
+		ICDTag:     combat.ICDTagElementalBurst,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
 	}
 
 	c.Core.Tasks.Add(c.c2, delay)
