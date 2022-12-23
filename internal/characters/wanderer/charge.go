@@ -33,18 +33,13 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	delay := c.checkForSkillEnd()
-	windup := c.chargeWindupNormal()
-
-	relevantHitmark := chargeHitmarkNormal
-	relevantFrames := chargeFramesNormal
 
 	if c.StatusIsActive(skillKey) {
-		relevantHitmark = chargeHitmarkE
-		relevantFrames = chargeFramesE
-
-		windup = c.chargeWindupE()
+		return c.WindfavoredChargeAttack(p)
 	}
+
+	delay := c.checkForSkillEnd()
+	windup := c.chargeWindupNormal()
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -60,14 +55,44 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.28),
-		delay+windup+relevantHitmark, delay+windup+relevantHitmark)
+		delay+windup+chargeHitmarkNormal, delay+windup+chargeHitmarkNormal)
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			return delay + windup +
-				frames.AtkSpdAdjust(relevantFrames[next], c.Stat(attributes.AtkSpd))
+				frames.AtkSpdAdjust(chargeFramesNormal[next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + windup + relevantFrames[action.InvalidAction],
-		CanQueueAfter:   delay + windup + relevantHitmark,
+		AnimationLength: delay + windup + chargeFramesNormal[action.InvalidAction],
+		CanQueueAfter:   delay + windup + chargeHitmarkNormal,
+		State:           action.ChargeAttackState,
+	}
+}
+
+func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
+	delay := c.checkForSkillEnd()
+	windup := c.chargeWindupE()
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Charge Attack (Windfavored)",
+		AttackTag:  combat.AttackTagExtra,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
+	}
+
+	// TODO: check snapshot delay
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.28),
+		delay+windup+chargeHitmarkE, delay+windup+chargeHitmarkE)
+	return action.ActionInfo{
+		Frames: func(next action.Action) int {
+			return delay + windup +
+				frames.AtkSpdAdjust(chargeFramesE[next], c.Stat(attributes.AtkSpd))
+		},
+		AnimationLength: delay + windup + chargeFramesE[action.InvalidAction],
+		CanQueueAfter:   delay + windup + chargeHitmarkE,
 		State:           action.ChargeAttackState,
 	}
 }
