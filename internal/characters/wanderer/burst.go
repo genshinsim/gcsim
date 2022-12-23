@@ -139,7 +139,7 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return burstFramesE[next] },
 		AnimationLength: burstFramesE[action.InvalidAction],
-		CanQueueAfter:   burstFramesE[action.ActionAttack],
+		CanQueueAfter:   burstFramesE[action.ActionWalk],
 		State:           action.BurstState,
 		OnRemoved: func(next action.AnimationState) {
 			c.skydwellerPoints = 0
