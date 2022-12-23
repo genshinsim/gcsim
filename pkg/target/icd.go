@@ -21,10 +21,8 @@ func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) 
 
 	val := t.icdTagCounter[char][tag]
 	//increment the counter
-	//if counter > length, then reset back to 0
-	t.icdTagCounter[char][tag]++
-	if t.icdTagCounter[char][tag] == len(combat.ICDGroupEleApplicationSequence[grp]) {
-		t.icdTagCounter[char][tag] = 0
+	if t.icdTagCounter[char][tag] < len(combat.ICDGroupEleApplicationSequence[grp]) - 1 {
+		t.icdTagCounter[char][tag]++
 	}
 
 	t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char).
@@ -48,9 +46,8 @@ func (t *Target) GroupTagDamageMult(tag combat.ICDTag, grp combat.ICDGroup, char
 
 	val := t.icdDamageTagCounter[char][tag]
 	//increment the counter
-	//if counter > length, then reset back to 0
-	t.icdDamageTagCounter[char][tag]++
-	if t.icdDamageTagCounter[char][tag] == len(combat.ICDGroupDamageSequence[grp]) {
+	if t.icdDamageTagCounter[char][tag] < len(combat.ICDGroupDamageSequence[grp]) - 1 {
+		t.icdDamageTagCounter[char][tag]++
 		t.icdDamageTagCounter[char][tag] = 0
 	}
 
