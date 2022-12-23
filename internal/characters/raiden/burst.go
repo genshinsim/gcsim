@@ -48,10 +48,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, 420+burstHitmark)
 	}
 
-	if c.Base.Cons == 6 {
-		c.c6Count = 0
-	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Musou Shinsetsu",
