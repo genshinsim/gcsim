@@ -60,7 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 0; i < 5; i++ {
 		progress := i
 		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6),
+			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5),
 				burstSnapshotDelay, burstHitmark+progress*burstHitmarkDelay)
 		}, delay)
 	}
@@ -74,7 +74,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// TODO: Probably redundant via ActionInfo.OnRemoved
 	c.Core.Tasks.Add(func() {
 		c.skydwellerPoints = 0
-	}, 89)
+	}, 90)
 
 	relevantFrames := burstFramesNormal
 	if c.StatusIsActive(skillKey) {
