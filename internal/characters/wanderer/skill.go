@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"math"
 )
 
 const (
@@ -25,7 +26,7 @@ const skillHitmark = 2
 func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	// TODO: Hitlag?
 	c.AddStatus(skillKey, 20*60, true)
-	c.Core.Player.SwapCD = 60 * 14
+	c.Core.Player.SwapCD = math.MaxInt16
 
 	// Add 10 seconds worth of skydwellerPoints (1 point = 6 frames)
 	c.skydwellerPoints = 100
