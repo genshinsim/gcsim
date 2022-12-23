@@ -5,20 +5,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
 var (
-	a4Release        = []int{16, 18, 21, 25}
-	dashFramesNormal []int
-	dashFramesE      []int
+	a4Release   = []int{16, 18, 21, 25}
+	dashFramesE []int
 )
 
 const a4Hitmark = 30
 
 func init() {
-	dashFramesNormal = frames.InitAbilSlice(21)
-
 	dashFramesE = frames.InitAbilSlice(24)
 	dashFramesE[action.ActionAttack] = 21
 	dashFramesE[action.ActionCharge] = 21
@@ -31,31 +27,24 @@ func init() {
 func (c *char) Dash(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
-	relevantFrames := dashFramesNormal
 	if c.StatusIsActive(skillKey) {
-		relevantFrames = dashFramesE
+		return c.WindfavoredDash(p)
 	}
 
+	ai := c.Character.Dash(p)
+	ai.Frames = func(action action.Action) int { return delay + ai.Frames(action) }
+	ai.AnimationLength = delay + ai.AnimationLength
+	ai.CanQueueAfter = delay + ai.CanQueueAfter
+
+	return ai
+}
+
+func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {
 	ai := action.ActionInfo{
-		Frames:          func(next action.Action) int { return delay + relevantFrames[next] },
-		AnimationLength: delay + relevantFrames[action.InvalidAction],
-		CanQueueAfter:   delay + relevantFrames[action.ActionSkill],
+		Frames:          func(next action.Action) int { return dashFramesE[next] },
+		AnimationLength: dashFramesE[action.InvalidAction],
+		CanQueueAfter:   dashFramesE[action.ActionSkill],
 		State:           action.DashState,
-	}
-
-	if !c.StatusIsActive(skillKey) {
-		c.Core.Tasks.Add(func() {
-			req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
-			c.Core.Player.Stam -= req
-			//this really shouldn't happen??
-			if c.Core.Player.Stam < 0 {
-				c.Core.Player.Stam = 0
-			}
-			c.Core.Player.LastStamUse = delay + c.Core.F
-			c.Core.Events.Emit(event.OnStamUse, action.DashState)
-		}, delay+dashFramesNormal[action.ActionAttack]-1)
-
-		return ai
 	}
 
 	if c.StatusIsActive(a4Key) {
@@ -82,7 +71,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 
 		for i := 0; i < 4; i++ {
 			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
-				delay+a4Release[i], delay+a4Release[i]+a4Hitmark)
+				a4Release[i], a4Release[i]+a4Hitmark)
 		}
 	} else {
 		// TODO: Check Point consumption
