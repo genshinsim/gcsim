@@ -33,12 +33,13 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(skillKey) {
+		// Can only occur if delay == 0, so it can be disregarded
 		return c.WindfavoredChargeAttack(p)
 	}
 
-	delay := c.checkForSkillEnd()
 	windup := c.chargeWindupNormal()
 
 	ai := combat.AttackInfo{
@@ -68,7 +69,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
-	delay := c.checkForSkillEnd()
 	windup := c.chargeWindupE()
 
 	ai := combat.AttackInfo{
@@ -85,14 +85,14 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.28),
-		delay+windup+chargeHitmarkE, delay+windup+chargeHitmarkE)
+		windup+chargeHitmarkE, windup+chargeHitmarkE)
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return delay + windup +
+			return windup +
 				frames.AtkSpdAdjust(chargeFramesE[next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + windup + chargeFramesE[action.InvalidAction],
-		CanQueueAfter:   delay + windup + chargeHitmarkE,
+		AnimationLength: windup + chargeFramesE[action.InvalidAction],
+		CanQueueAfter:   windup + chargeHitmarkE,
 		State:           action.ChargeAttackState,
 	}
 }

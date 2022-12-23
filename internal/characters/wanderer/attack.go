@@ -72,11 +72,13 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
+	delay := c.checkForSkillEnd()
+
 	if c.StatusIsActive(skillKey) {
+		// Can only occur if delay == 0, so it can be disregarded
 		return c.WindfavoredAttack(p)
 	}
 
-	delay := c.checkForSkillEnd()
 	windup := c.attackWindupNormal()
 
 	currentNormalCounter := c.NormalCounter
@@ -118,7 +120,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
-	delay := c.checkForSkillEnd()
 	windup := c.attackWindupE()
 
 	currentNormalCounter := c.NormalCounter
@@ -140,8 +141,8 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), radius),
-			delay,
-			delay+windup+attackHitmarksE[c.NormalCounter][i],
+			0,
+			windup+attackHitmarksE[c.NormalCounter][i],
 		)
 	}
 
@@ -149,11 +150,11 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return delay + windup +
+			return windup +
 				frames.AtkSpdAdjust(attackFramesE[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + windup + attackFramesE[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   delay + windup + attackHitmarksE[c.NormalCounter][len(attackHitmarksE[c.NormalCounter])-1],
+		AnimationLength: windup + attackFramesE[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   windup + attackHitmarksE[c.NormalCounter][len(attackHitmarksE[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 }
