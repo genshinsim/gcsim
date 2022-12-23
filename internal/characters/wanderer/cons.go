@@ -69,13 +69,12 @@ func (c *char) c6() {
 				)
 			}
 
-			// TODO: ICD info taken from KQM, seems to just count as a normal attack
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Shugen: The Curtains’ Melancholic Sway",
 				AttackTag:  combat.AttackTagNormal,
-				ICDTag:     combat.ICDTagNormalAttack,
-				ICDGroup:   combat.ICDGroupDefault,
+				ICDTag:     combat.ICDTagWandererC6,
+				ICDGroup:   combat.ICDGroupWandererC6,
 				StrikeType: combat.StrikeTypeDefault,
 				Element:    attributes.Anemo,
 				Durability: 25,
