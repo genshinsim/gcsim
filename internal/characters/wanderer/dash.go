@@ -81,8 +81,8 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		}
 
 		for i := 0; i < 4; i++ {
-			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
-				delay+a4Release[i], delay+a4Hitmark)
+			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+				delay+a4Release[i], delay+a4Release[i]+a4Hitmark)
 		}
 	} else {
 		// TODO: Check Point consumption
