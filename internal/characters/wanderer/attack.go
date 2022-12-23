@@ -176,10 +176,7 @@ func (c *char) attackWindupNormal() int {
 func (c *char) attackWindupE() int {
 	switch c.Core.Player.LastAction.Type {
 	case action.ActionDash:
-		if c.NormalCounter == 0 {
-			return -3
-		}
-		return 0
+		return -3
 	case action.ActionCharge,
 		action.ActionJump:
 		return -2
