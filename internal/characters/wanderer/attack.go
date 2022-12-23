@@ -14,7 +14,8 @@ var (
 	attackFramesE        [][]int
 	attackHitmarksNormal = [][]int{{11}, {6}, {32, 41}}
 	attackHitmarksE      = [][]int{{15}, {3}, {32, 40}}
-	attackRadius         = []float64{1.8, 1.8, 2.2}
+	attackRadiusNormal   = []float64{1, 1, 1}
+	attackRadiusE        = []float64{2.5, 2.5, 3}
 )
 
 const normalHitNum = 3
@@ -85,6 +86,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	relevantHitmarks := attackHitmarksNormal
 	relevantFrames := attackFramesNormal
+	relevantRadius := attackRadiusNormal
 
 	if c.Core.Player.LastAction.Char == c.Index &&
 		c.Core.Player.LastAction.Type == action.ActionAttack &&
@@ -101,6 +103,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatusIsActive(skillKey) {
 		relevantHitmarks = attackHitmarksE
 		relevantFrames = attackFramesE
+		relevantRadius = attackRadiusE
 
 		if c.Core.Player.LastAction.Char == c.Index &&
 			c.Core.Player.LastAction.Type == action.ActionDash &&
@@ -127,7 +130,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
 		}
-		radius := attackRadius[c.NormalCounter]
+		radius := relevantRadius[c.NormalCounter]
 
 		c.Core.QueueAttack(
 			ai,
