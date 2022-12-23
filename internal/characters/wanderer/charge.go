@@ -63,7 +63,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 				frames.AtkSpdAdjust(chargeFramesNormal[next], c.Stat(attributes.AtkSpd))
 		},
 		AnimationLength: delay + windup + chargeFramesNormal[action.InvalidAction],
-		CanQueueAfter:   delay + windup + chargeHitmarkNormal,
+		CanQueueAfter:   delay + windup + chargeFramesNormal[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}
 }
@@ -92,7 +92,7 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
 				frames.AtkSpdAdjust(chargeFramesE[next], c.Stat(attributes.AtkSpd))
 		},
 		AnimationLength: windup + chargeFramesE[action.InvalidAction],
-		CanQueueAfter:   windup + chargeHitmarkE,
+		CanQueueAfter:   windup + chargeFramesE[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}
 }
