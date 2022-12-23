@@ -77,21 +77,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	delay := c.checkForSkillEnd()
-	frameChange := 0
+	windup := c.attackWindupNormal()
 
 	currentNormalCounter := c.NormalCounter
-
-	if c.Core.Player.LastAction.Char == c.Index &&
-		c.Core.Player.LastAction.Type == action.ActionAttack &&
-		currentNormalCounter == 0 {
-		frameChange = 3
-	}
-
-	if c.Core.Player.LastAction.Char == c.Index &&
-		(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionBurst) &&
-		currentNormalCounter == 0 {
-		frameChange = -2
-	}
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
@@ -111,7 +99,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			delay,
-			delay+frameChange+attackHitmarksNormal[c.NormalCounter][i],
+			delay+windup+attackHitmarksNormal[c.NormalCounter][i],
 		)
 	}
 
@@ -119,11 +107,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return delay + frameChange +
+			return delay + windup +
 				frames.AtkSpdAdjust(attackFramesNormal[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + frameChange + attackFramesNormal[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   delay + frameChange + attackHitmarksNormal[c.NormalCounter][len(attackHitmarksNormal[c.NormalCounter])-1],
+		AnimationLength: delay + windup + attackFramesNormal[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   delay + windup + attackHitmarksNormal[c.NormalCounter][len(attackHitmarksNormal[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 
@@ -131,21 +119,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
-	frameChange := 0
+	windup := c.attackWindupE()
 
 	currentNormalCounter := c.NormalCounter
-
-	if c.Core.Player.LastAction.Char == c.Index &&
-		c.Core.Player.LastAction.Type == action.ActionDash &&
-		currentNormalCounter == 0 {
-		frameChange = -3
-	}
-
-	if c.Core.Player.LastAction.Char == c.Index &&
-		(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionJump) &&
-		currentNormalCounter == 0 {
-		frameChange = -2
-	}
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
@@ -165,7 +141,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			delay,
-			delay+frameChange+attackHitmarksE[c.NormalCounter][i],
+			delay+windup+attackHitmarksE[c.NormalCounter][i],
 		)
 	}
 
@@ -173,11 +149,41 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return delay + frameChange +
+			return delay + windup +
 				frames.AtkSpdAdjust(attackFramesE[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + frameChange + attackFramesE[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   delay + frameChange + attackHitmarksE[c.NormalCounter][len(attackHitmarksE[c.NormalCounter])-1],
+		AnimationLength: delay + windup + attackFramesE[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   delay + windup + attackHitmarksE[c.NormalCounter][len(attackHitmarksE[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
+	}
+}
+
+func (c *char) attackWindupNormal() int {
+	switch c.Core.Player.LastAction.Type {
+	case action.ActionAttack:
+		if c.NormalCounter == 0 {
+			return 3
+		}
+		return 0
+	case action.ActionCharge,
+		action.ActionBurst:
+		return -2
+	default:
+		return 0
+	}
+}
+
+func (c *char) attackWindupE() int {
+	switch c.Core.Player.LastAction.Type {
+	case action.ActionDash:
+		if c.NormalCounter == 0 {
+			return -3
+		}
+		return 0
+	case action.ActionCharge,
+		action.ActionJump:
+		return -2
+	default:
+		return 0
 	}
 }
