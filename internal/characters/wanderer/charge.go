@@ -34,44 +34,16 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
-	frameChange := 0
+	windup := c.chargeWindupNormal()
 
 	relevantHitmark := chargeHitmarkNormal
 	relevantFrames := chargeFramesNormal
-
-	if c.Core.Player.LastAction.Char == c.Index &&
-		c.Core.Player.LastAction.Type == action.ActionAttack {
-		frameChange = -2
-	}
-
-	if c.Core.Player.LastAction.Char == c.Index &&
-		c.Core.Player.LastAction.Type == action.ActionLowPlunge {
-		frameChange = -4
-	}
 
 	if c.StatusIsActive(skillKey) {
 		relevantHitmark = chargeHitmarkE
 		relevantFrames = chargeFramesE
 
-		if c.Core.Player.LastAction.Char == c.Index &&
-			c.Core.Player.LastAction.Type == action.ActionAttack {
-			frameChange = -4
-		}
-
-		if c.Core.Player.LastAction.Char == c.Index &&
-			(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionJump) {
-			frameChange = -7
-		}
-
-		if c.Core.Player.LastAction.Char == c.Index &&
-			c.Core.Player.LastAction.Type == action.ActionBurst {
-			frameChange = -2
-		}
-
-		if c.Core.Player.LastAction.Char == c.Index &&
-			c.Core.Player.LastAction.Type == action.ActionDash {
-			frameChange = -9
-		}
+		windup = c.chargeWindupE()
 	}
 
 	ai := combat.AttackInfo{
@@ -88,14 +60,40 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.28),
-		delay+frameChange+relevantHitmark, delay+frameChange+relevantHitmark)
+		delay+windup+relevantHitmark, delay+windup+relevantHitmark)
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return delay + frameChange +
+			return delay + windup +
 				frames.AtkSpdAdjust(relevantFrames[next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + frameChange + relevantFrames[action.InvalidAction],
-		CanQueueAfter:   delay + frameChange + relevantHitmark,
+		AnimationLength: delay + windup + relevantFrames[action.InvalidAction],
+		CanQueueAfter:   delay + windup + relevantHitmark,
 		State:           action.ChargeAttackState,
+	}
+}
+
+func (c *char) chargeWindupNormal() int {
+	switch c.Core.Player.LastAction.Type {
+	case action.ActionAttack:
+		return -2
+	case action.ActionLowPlunge:
+		return -4
+	default:
+		return 0
+	}
+}
+
+func (c *char) chargeWindupE() int {
+	switch c.Core.Player.LastAction.Type {
+	case action.ActionAttack:
+		return -4
+	case action.ActionCharge, action.ActionJump:
+		return -7
+	case action.ActionBurst:
+		return -2
+	case action.ActionDash:
+		return -9
+	default:
+		return 0
 	}
 }
