@@ -72,14 +72,14 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
+	if c.StatusIsActive(skillKey) {
+		return c.WindfavoredAttack(p)
+	}
+
 	delay := c.checkForSkillEnd()
 	frameChange := 0
 
 	currentNormalCounter := c.NormalCounter
-
-	relevantHitmarks := attackHitmarksNormal
-	relevantFrames := attackFramesNormal
-	relevantRadius := attackRadiusNormal
 
 	if c.Core.Player.LastAction.Char == c.Index &&
 		c.Core.Player.LastAction.Type == action.ActionAttack &&
@@ -91,24 +91,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionBurst) &&
 		currentNormalCounter == 0 {
 		frameChange = -2
-	}
-
-	if c.StatusIsActive(skillKey) {
-		relevantHitmarks = attackHitmarksE
-		relevantFrames = attackFramesE
-		relevantRadius = attackRadiusE
-
-		if c.Core.Player.LastAction.Char == c.Index &&
-			c.Core.Player.LastAction.Type == action.ActionDash &&
-			currentNormalCounter == 0 {
-			frameChange = -3
-		}
-
-		if c.Core.Player.LastAction.Char == c.Index &&
-			(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionJump) &&
-			currentNormalCounter == 0 {
-			frameChange = -2
-		}
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -123,13 +105,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
 		}
-		radius := relevantRadius[c.NormalCounter]
+		radius := attackRadiusNormal[c.NormalCounter]
 
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(c.Core.Combat.Player(), radius),
 			delay,
-			delay+frameChange+relevantHitmarks[c.NormalCounter][i],
+			delay+frameChange+attackHitmarksNormal[c.NormalCounter][i],
 		)
 	}
 
@@ -138,11 +120,64 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			return delay + frameChange +
-				frames.AtkSpdAdjust(relevantFrames[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
+				frames.AtkSpdAdjust(attackFramesNormal[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + frameChange + relevantFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   delay + frameChange + relevantHitmarks[c.NormalCounter][len(relevantHitmarks[c.NormalCounter])-1],
+		AnimationLength: delay + frameChange + attackFramesNormal[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   delay + frameChange + attackHitmarksNormal[c.NormalCounter][len(attackHitmarksNormal[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 
+}
+
+func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
+	delay := c.checkForSkillEnd()
+	frameChange := 0
+
+	currentNormalCounter := c.NormalCounter
+
+	if c.Core.Player.LastAction.Char == c.Index &&
+		c.Core.Player.LastAction.Type == action.ActionDash &&
+		currentNormalCounter == 0 {
+		frameChange = -3
+	}
+
+	if c.Core.Player.LastAction.Char == c.Index &&
+		(c.Core.Player.LastAction.Type == action.ActionCharge || c.Core.Player.LastAction.Type == action.ActionJump) &&
+		currentNormalCounter == 0 {
+		frameChange = -2
+	}
+
+	for i, mult := range attack[c.NormalCounter] {
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       fmt.Sprintf("Normal %v (Windfavored)", c.NormalCounter),
+			AttackTag:  combat.AttackTagNormal,
+			ICDTag:     combat.ICDTagNormalAttack,
+			ICDGroup:   combat.ICDGroupDefault,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Anemo,
+			Durability: 25,
+			Mult:       mult[c.TalentLvlAttack()],
+		}
+		radius := attackRadiusE[c.NormalCounter]
+
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), radius),
+			delay,
+			delay+frameChange+attackHitmarksE[c.NormalCounter][i],
+		)
+	}
+
+	defer c.AdvanceNormalIndex()
+
+	return action.ActionInfo{
+		Frames: func(next action.Action) int {
+			return delay + frameChange +
+				frames.AtkSpdAdjust(attackFramesE[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
+		},
+		AnimationLength: delay + frameChange + attackFramesE[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   delay + frameChange + attackHitmarksE[c.NormalCounter][len(attackHitmarksE[c.NormalCounter])-1],
+		State:           action.NormalAttackState,
+	}
 }
