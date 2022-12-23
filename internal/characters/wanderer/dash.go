@@ -52,7 +52,6 @@ func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {
 
 		a4Mult := 0.35
 
-		// TODO: Write as attack mod?
 		if c.StatusIsActive("wanderer-c1-atkspd") {
 			a4Mult = 0.6
 		}
@@ -74,7 +73,6 @@ func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {
 				a4Release[i], a4Release[i]+a4Hitmark)
 		}
 	} else {
-		// TODO: Check Point consumption
 		c.skydwellerPoints -= 15
 	}
 

@@ -122,8 +122,6 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 		}, 0)
 	}
 
-	//TODO: Check CD with or without delay, check energy consume frame
-
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 
