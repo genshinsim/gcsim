@@ -20,9 +20,11 @@ import (
 )
 
 const (
-	MaxStam      = 240
-	StamCDFrames = 90
-	SwapCDFrames = 60
+	MaxStam           = 240
+	StamCDFrames      = 90
+	SwapCDFrames      = 60
+	DashFirstICDKey   = "dash-first-icd"
+	DashLockoutICDKey = "dash-lockout-icd"
 )
 
 type Handler struct {
@@ -218,6 +220,17 @@ func (h *Handler) InitializeTeam() error {
 		h.Log.NewEvent("starting hp set", glog.LogCharacterEvent, i).
 			Write("hp", h.chars[i].HPCurrent)
 	}
+	// Initialize special dash status extension. Dash CDs do not "tick" when the
+	// character is off-field.
+	h.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+		for _, c := range h.chars {
+			if h.Active() != c.Index {
+				c.ExtendStatus(DashFirstICDKey, 1)
+				c.ExtendStatus(DashLockoutICDKey, 1)
+			}
+		}
+		return false
+	}, "dash-notick")
 	return nil
 }
 

@@ -79,6 +79,10 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
+		if char.StatusIsActive(DashLockoutICDKey) {
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.DashCD)
+			return ErrActionNotReady
+		}
 		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		p.useAbility(t, param, char.Jump)

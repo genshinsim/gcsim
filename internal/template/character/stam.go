@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
@@ -42,18 +43,28 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 func (c *Character) Dash(p map[string]int) action.ActionInfo {
-	var f int = 20
-	switch c.CharBody {
-	case profile.BodyBoy, profile.BodyLoli:
-		f = 21
-	case profile.BodyGirl:
-		f = 20
-	case profile.BodyMale:
-		f = 19
-	case profile.BodyLady:
-		f = 22
+	var f int = dashLength(c.CharBody)
+
+	if !c.StatusIsActive(player.DashFirstICDKey) {
+		c.AddStatus(player.DashFirstICDKey, 48, true)
+	} else {
+		c.DeleteStatus(player.DashFirstICDKey)
+		c.AddStatus(player.DashLockoutICDKey, 90, true)
 	}
 
+	//consume stam at the end
+	c.QueueDashStaminaConsumption(p)
+
+	return action.ActionInfo{
+		Frames:          func(action.Action) int { return f },
+		AnimationLength: f,
+		CanQueueAfter:   f,
+		State:           action.DashState,
+	}
+}
+
+func (c *Character) QueueDashStaminaConsumption(p map[string]int) {
+	f := dashLength(c.CharBody)
 	//consume stam at the end
 	c.Core.Tasks.Add(func() {
 		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
@@ -65,13 +76,6 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 		c.Core.Player.LastStamUse = c.Core.F
 		c.Core.Events.Emit(event.OnStamUse, action.DashState)
 	}, f-1)
-
-	return action.ActionInfo{
-		Frames:          func(action.Action) int { return f },
-		AnimationLength: f,
-		CanQueueAfter:   f,
-		State:           action.DashState,
-	}
 }
 
 func (c *Character) Jump(p map[string]int) action.ActionInfo {
@@ -105,4 +109,19 @@ func (c *Character) Walk(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   f,
 		State:           action.WalkState,
 	}
+}
+
+func dashLength(body profile.BodyType) int {
+	var f int = 20
+	switch body {
+	case profile.BodyBoy, profile.BodyLoli:
+		f = 21
+	case profile.BodyGirl:
+		f = 20
+	case profile.BodyMale:
+		f = 19
+	case profile.BodyLady:
+		f = 22
+	}
+	return f
 }
