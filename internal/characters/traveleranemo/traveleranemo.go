@@ -46,6 +46,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 }
 
 func (c *char) Init() error {
+	c.a4()
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
