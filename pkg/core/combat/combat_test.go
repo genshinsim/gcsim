@@ -110,11 +110,6 @@ func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 func (t *testtarg) Direction() Point { return t.direction }
 func (t *testtarg) SetDirection(trg Point) {
 	src := t.Pos()
-	// setting direction to self resets direction
-	if src.X == trg.X && src.Y == trg.Y {
-		t.direction = DefaultDirection()
-		return
-	}
 	t.direction = CalcDirection(src, trg)
 }
 func (t *testtarg) SetDirectionToClosestEnemy()       {} // ???

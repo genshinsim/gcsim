@@ -30,6 +30,10 @@ func CalcOffsetPoint(pos, offset, dir Point) Point {
 
 // https://wumbo.net/formulas/angle-between-two-vectors-2d/
 func CalcDirection(src, trg Point) Point {
+	// avoid division by 0 in Normalize()
+	if trg == src {
+		return DefaultDirection()
+	}
 	return trg.Sub(src).Normalize()
 }
 

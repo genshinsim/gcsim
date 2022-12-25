@@ -116,12 +116,6 @@ func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
 func (t *Target) Direction() combat.Point { return t.direction }
 func (t *Target) SetDirection(trg combat.Point) {
 	src := t.Pos()
-	// setting direction to self resets direction
-	if src.X == trg.X && src.Y == trg.Y {
-		t.Core.Combat.Log.NewEvent("reset target direction to 0", glog.LogDebugEvent, -1)
-		t.direction = combat.DefaultDirection()
-		return
-	}
 	t.direction = combat.CalcDirection(src, trg)
 	t.Core.Combat.Log.NewEvent("set target direction", glog.LogDebugEvent, -1).
 		Write("src target key", t.key).
