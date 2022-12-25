@@ -1,4 +1,4 @@
-﻿package combat
+package combat
 
 import (
 	"fmt"
@@ -8,12 +8,12 @@ import (
 type Circle struct {
 	center   Point
 	r        float64
-	dir      float64
+	dir      Point
 	fanAngle float64
 	segments []Point
 }
 
-func NewCircle(center Point, r, dir, fanAngle float64) *Circle {
+func NewCircle(center Point, r float64, dir Point, fanAngle float64) *Circle {
 	var segments []Point
 	if fanAngle > 0 && fanAngle < 360 {
 		segments = calcSegments(center, r, dir, fanAngle)
@@ -32,6 +32,12 @@ func (c *Circle) Pos() Point {
 }
 
 func (c *Circle) SetPos(p Point) {
+	if c.center == p {
+		return
+	}
+	for i := 0; i < len(c.segments); i++ {
+		c.segments[i] = c.segments[i].Add(p.Sub(c.center))
+	}
 	c.center = p
 }
 
@@ -42,16 +48,15 @@ func (c *Circle) String() string {
 	)
 }
 
-func calcSegments(p Point, r, dir, fanAngle float64) []Point {
+func calcSegments(center Point, r float64, dir Point, fanAngle float64) []Point {
 	fanAngleRadian := fanAngle * math.Pi / 180
 	// assume circle center is origin at first to do the rotation stuff
 	segmentStart := Point{X: 0, Y: r}.Rotate(dir)
-	segmentLeft := segmentStart.Rotate(-fanAngleRadian / 2)
-	segmentRight := segmentStart.Rotate(fanAngleRadian / 2)
+	segmentLeft := segmentStart.Rotate(Point{X: math.Sin(-fanAngleRadian / 2), Y: math.Cos(-fanAngleRadian / 2)})
+	segmentRight := segmentStart.Rotate(Point{X: math.Sin(fanAngleRadian / 2), Y: math.Cos(fanAngleRadian / 2)})
 	// save segment points (the circle center and segment point make up a line segment)
 	// need to move segment to where the actual circle center is
-	segments := []Point{segmentLeft.Add(p), segmentRight.Add(p)}
-	return segments
+	return []Point{segmentLeft.Add(center), segmentRight.Add(center)}
 }
 
 // TODO: this ignores the possibility of c1 also having a fanAngle (target with a partial circle hitbox...)

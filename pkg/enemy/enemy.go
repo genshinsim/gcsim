@@ -97,6 +97,6 @@ func (e *Enemy) Kill() {
 	}
 }
 
-func (e *Enemy) SetDirection(trg combat.Point)              {}
-func (e *Enemy) SetDirectionToClosestEnemy()                {}
-func (e *Enemy) CalcTempDirection(trg combat.Point) float64 { return 0 }
+func (e *Enemy) SetDirection(trg combat.Point)                   {}
+func (e *Enemy) SetDirectionToClosestEnemy()                     {}
+func (e *Enemy) CalcTempDirection(trg combat.Point) combat.Point { return combat.DefaultDirection() }

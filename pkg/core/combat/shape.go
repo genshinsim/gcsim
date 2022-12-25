@@ -15,37 +15,38 @@ type positional interface {
 	Pos() Point
 }
 
+func DefaultDirection() Point {
+	return Point{X: 0, Y: 1}
+}
+
+// dir needs to be magnitude of 1 if passing custom dir;
 // returns a new Point which is pos + rotated offset
-func CalcOffsetPoint(pos, offset Point, dir float64) Point {
-	if dir == 0 {
+func CalcOffsetPoint(pos, offset, dir Point) Point {
+	if dir == DefaultDirection() {
 		return pos.Add(offset)
 	}
 	return pos.Add(offset.Rotate(dir))
 }
 
 // https://wumbo.net/formulas/angle-between-two-vectors-2d/
-// describes by how many radians you have to turn a vector which points from (srcX, srcY) to (trgX, trgY)
-// to get the y axis when turning counterclockwise
-func CalcDirection(src, trg Point) float64 {
-	direction := math.Atan2(trg.X-src.X, trg.Y-src.Y)
-	if direction < 0 {
-		direction += 2 * math.Pi
-	}
-	return direction
-}
-
-func DirectionToDegrees(direction float64) float64 {
-	return direction * 180 / math.Pi
+func CalcDirection(src, trg Point) Point {
+	return trg.Sub(src).Normalize()
 }
 
 // https://stackoverflow.com/questions/12234574/calculating-if-an-angle-is-between-two-angles
-func fanAngleAreaCheck(attackCenter, trg Point, facingDirection, fanAngle float64) bool {
-	// facingDirection and directionOfTarget can be different in multi-target situations
-	facingAngle := DirectionToDegrees(facingDirection)
-	// need to translate back to origin for correct direction calc
-	angleOfTarget := DirectionToDegrees(CalcDirection(attackCenter, trg))
-	angledDiff := math.Mod(facingAngle-angleOfTarget+180+360, 360) - 180
-	if angledDiff >= -fanAngle/2 && angledDiff <= fanAngle/2 {
+func fanAngleAreaCheck(attackCenter, trg, facingDirection Point, fanAngle float64) bool {
+	// facingDirection and targetDirection can be different in multi-target situations
+	targetDirection := CalcDirection(attackCenter, trg)
+	dot := facingDirection.Dot(targetDirection)
+	// need to clamp the dot product to [-1, 1] because of floating point arithmetic
+	if dot > 1 {
+		dot = 1
+	}
+	if dot < -1 {
+		dot = -1
+	}
+	angleBetweenFacingAndTarget := math.Acos(dot) * 180 / math.Pi
+	if angleBetweenFacingAndTarget >= -fanAngle/2 && angleBetweenFacingAndTarget <= fanAngle/2 {
 		return true
 	}
 	return false
@@ -59,7 +60,7 @@ func IntersectRectangle(r Rectangle, c Circle) bool {
 	relative := c.center.Sub(r.center)
 
 	// take direction from rectangle and rotate circle center in the opposite direction to remove rectangle rotation
-	dir := -(r.dir)
+	dir := r.dir.Mul(Point{X: -1, Y: 1})
 	local := relative.Rotate(dir)
 
 	// constrain circle center to one quadrant

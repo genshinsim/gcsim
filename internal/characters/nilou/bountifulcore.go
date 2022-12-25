@@ -54,4 +54,6 @@ func (b *BountifulCore) HandleAttack(atk *combat.AttackEvent) float64 {
 func (b *BountifulCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (b *BountifulCore) SetDirection(trg combat.Point)                          {}
 func (b *BountifulCore) SetDirectionToClosestEnemy()                            {}
-func (b *BountifulCore) CalcTempDirection(trg combat.Point) float64             { return 0 }
+func (b *BountifulCore) CalcTempDirection(trg combat.Point) combat.Point {
+	return combat.DefaultDirection()
+}

@@ -24,14 +24,15 @@ type Target struct {
 	icdDamageTagOnTimer [MaxTeamSize][combat.ICDTagLength]bool
 	icdDamageTagCounter [MaxTeamSize][combat.ICDTagLength]int
 
-	direction float64
+	direction combat.Point
 }
 
 func New(core *core.Core, p combat.Point, r float64) *Target {
 	t := &Target{
 		Core: core,
 	}
-	t.Hitbox = *combat.NewCircle(p, r, 0, 360)
+	t.Hitbox = *combat.NewCircle(p, r, combat.DefaultDirection(), 360)
+	t.direction = combat.DefaultDirection()
 	t.Tags = make(map[string]int)
 	t.Alive = true
 
@@ -112,13 +113,13 @@ func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
 	}
 }
 
-func (t *Target) Direction() float64 { return t.direction }
+func (t *Target) Direction() combat.Point { return t.direction }
 func (t *Target) SetDirection(trg combat.Point) {
 	src := t.Pos()
 	// setting direction to self resets direction
 	if src.X == trg.X && src.Y == trg.Y {
 		t.Core.Combat.Log.NewEvent("reset target direction to 0", glog.LogDebugEvent, -1)
-		t.direction = 0
+		t.direction = combat.DefaultDirection()
 		return
 	}
 	t.direction = combat.CalcDirection(src, trg)
@@ -128,7 +129,7 @@ func (t *Target) SetDirection(trg combat.Point) {
 		Write("srcY", src.Y).
 		Write("trgX", trg.X).
 		Write("trgY", trg.Y).
-		Write("direction (in degrees)", combat.DirectionToDegrees(t.direction))
+		Write("direction", t.direction)
 }
 func (t *Target) SetDirectionToClosestEnemy() {
 	src := t.Pos()
@@ -142,9 +143,9 @@ func (t *Target) SetDirectionToClosestEnemy() {
 	t.Core.Combat.Log.NewEvent("set target direction to closest enemy", glog.LogDebugEvent, -1).
 		Write("enemy index", enemyIndex).
 		Write("enemy key", enemy.Key()).
-		Write("direction (in degrees)", combat.DirectionToDegrees(t.direction))
+		Write("direction", t.direction)
 }
-func (t *Target) CalcTempDirection(trg combat.Point) float64 {
+func (t *Target) CalcTempDirection(trg combat.Point) combat.Point {
 	src := t.Pos()
 	direction := combat.CalcDirection(src, trg)
 	t.Core.Combat.Log.NewEvent("using temporary target direction", glog.LogDebugEvent, -1).
@@ -153,7 +154,7 @@ func (t *Target) CalcTempDirection(trg combat.Point) float64 {
 		Write("srcY", src.Y).
 		Write("trgX", trg.X).
 		Write("trgY", trg.Y).
-		Write("existing direction (in degrees)", combat.DirectionToDegrees(t.direction)).
-		Write("temporary direction (in degrees)", combat.DirectionToDegrees(direction))
+		Write("direction", t.direction).
+		Write("temporary direction", direction)
 	return direction
 }

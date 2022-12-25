@@ -12,9 +12,9 @@ func NewSingleTargetHit(ind TargetKey) AttackPattern {
 	}
 }
 
-func getCenterAndDirection(src, center, offset positional) (Point, float64) {
+func getCenterAndDirection(src, center, offset positional) (Point, Point) {
 	c := center.Pos()
-	var dir float64
+	dir := DefaultDirection()
 	srcTrg, srcIsATarget := src.(Target)
 	centerTrg, centerIsATarget := center.(Target)
 

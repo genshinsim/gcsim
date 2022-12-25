@@ -243,6 +243,8 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 	return ai, snap
 }
 
-func (s *DendroCore) SetDirection(trg combat.Point)              {}
-func (s *DendroCore) SetDirectionToClosestEnemy()                {}
-func (s *DendroCore) CalcTempDirection(trg combat.Point) float64 { return 0 }
+func (s *DendroCore) SetDirection(trg combat.Point) {}
+func (s *DendroCore) SetDirectionToClosestEnemy()   {}
+func (s *DendroCore) CalcTempDirection(trg combat.Point) combat.Point {
+	return combat.DefaultDirection()
+}

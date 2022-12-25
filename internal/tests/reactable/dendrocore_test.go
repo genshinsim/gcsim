@@ -93,4 +93,4 @@ func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { ret
 func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (f *fakeCore) SetDirection(trg combat.Point)                          {}
 func (f *fakeCore) SetDirectionToClosestEnemy()                            {}
-func (f *fakeCore) CalcTempDirection(trg combat.Point) float64             { return 0 }
+func (f *fakeCore) CalcTempDirection(trg combat.Point) combat.Point        { return combat.DefaultDirection() }

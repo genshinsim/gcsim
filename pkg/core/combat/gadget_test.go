@@ -6,7 +6,7 @@ import (
 )
 
 func newSimpleCircle(x, y, r float64) *Circle {
-	return NewCircle(Point{X: x, Y: y}, r, 0, 360)
+	return NewCircle(Point{X: x, Y: y}, r, DefaultDirection(), 360)
 }
 
 func TestGadgetCollision(t *testing.T) {

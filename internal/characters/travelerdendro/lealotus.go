@@ -259,6 +259,6 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.Kill()
 }
 
-func (s *LeaLotus) SetDirection(trg combat.Point)              {}
-func (s *LeaLotus) SetDirectionToClosestEnemy()                {}
-func (s *LeaLotus) CalcTempDirection(trg combat.Point) float64 { return 0 }
+func (s *LeaLotus) SetDirection(trg combat.Point)                   {}
+func (s *LeaLotus) SetDirectionToClosestEnemy()                     {}
+func (s *LeaLotus) CalcTempDirection(trg combat.Point) combat.Point { return combat.DefaultDirection() }

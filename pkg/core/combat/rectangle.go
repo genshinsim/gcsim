@@ -1,4 +1,4 @@
-﻿package combat
+package combat
 
 import (
 	"fmt"
@@ -8,36 +8,21 @@ import (
 type Rectangle struct {
 	center  Point
 	w, h    float64
+	dir     Point
 	corners []Point
-	dir     float64
 }
 
-func NewRectangle(center Point, w, h, dir float64) *Rectangle {
+func NewRectangle(center Point, w, h float64, dir Point) *Rectangle {
 	return &Rectangle{
 		center:  center,
 		w:       w,
 		h:       h,
-		corners: calcCorners(center, w, h, dir),
 		dir:     dir,
+		corners: calcCorners(center, w, h, dir),
 	}
 }
 
-func (r *Rectangle) Pos() Point {
-	return r.center
-}
-
-func (r *Rectangle) SetPos(p Point) {
-	for i := 0; i < len(r.corners); i++ {
-		r.corners[i] = r.corners[i].Add(p.Sub(r.center))
-	}
-	r.center = p
-}
-
-func (r *Rectangle) String() string {
-	return fmt.Sprintf("w: %v h: %v center: %v topLeft: %v topRight: %v bottomRight: %v bottomLeft: %v dir: %v", r.w, r.h, r.center, r.corners[0], r.corners[1], r.corners[2], r.corners[3], r.dir)
-}
-
-func calcCorners(center Point, w, h, dir float64) []Point {
+func calcCorners(center Point, w, h float64, dir Point) []Point {
 	topLeft := Point{X: -w / 2, Y: h / 2}
 	topRight := Point{X: w / 2, Y: h / 2}
 	bottomRight := Point{X: w / 2, Y: -h / 2}
@@ -49,6 +34,24 @@ func calcCorners(center Point, w, h, dir float64) []Point {
 		corners[i] = rotatedCorner.Add(center)
 	}
 	return corners
+}
+
+func (r *Rectangle) Pos() Point {
+	return r.center
+}
+
+func (r *Rectangle) SetPos(p Point) {
+	if r.center == p {
+		return
+	}
+	for i := 0; i < len(r.corners); i++ {
+		r.corners[i] = r.corners[i].Add(p.Sub(r.center))
+	}
+	r.center = p
+}
+
+func (r *Rectangle) String() string {
+	return fmt.Sprintf("w: %v h: %v center: %v topLeft: %v topRight: %v bottomRight: %v bottomLeft: %v dir: %v", r.w, r.h, r.center, r.corners[0], r.corners[1], r.corners[2], r.corners[3], r.dir)
 }
 
 func (r *Rectangle) IntersectCircle(c Circle) bool {

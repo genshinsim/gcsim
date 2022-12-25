@@ -23,10 +23,10 @@ type Target interface {
 	CollidedWith(t Target)
 	WillCollide(Shape) bool
 	// direction related
-	Direction() float64                  // returns viewing direction in radians
-	SetDirection(trg Point)              // calculates viewing direction relative to y axis
-	SetDirectionToClosestEnemy()         // looks for closest enemy
-	CalcTempDirection(trg Point) float64 // used for stuff like Bow CA
+	Direction() Point                  // returns viewing direction in radians
+	SetDirection(trg Point)            // calculates viewing direction relative to y axis
+	SetDirectionToClosestEnemy()       // looks for closest enemy
+	CalcTempDirection(trg Point) Point // used for stuff like Bow CA
 }
 
 type TargetWithAura interface {
