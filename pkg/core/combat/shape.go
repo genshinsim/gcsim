@@ -33,6 +33,14 @@ func CalcDirection(src, trg Point) Point {
 	return trg.Sub(src).Normalize()
 }
 
+func AABBTest(a, b []Point) bool {
+	aMin := a[0]
+	aMax := a[1]
+	bMin := b[0]
+	bMax := b[1]
+	return aMin.X <= bMax.X && aMax.X >= bMin.X && aMin.Y <= bMax.Y && aMax.Y >= bMin.Y
+}
+
 // https://stackoverflow.com/questions/12234574/calculating-if-an-angle-is-between-two-angles
 func fanAngleAreaCheck(attackCenter, trg, facingDirection Point, fanAngle float64) bool {
 	// facingDirection and targetDirection can be different in multi-target situations
@@ -56,6 +64,16 @@ func fanAngleAreaCheck(attackCenter, trg, facingDirection Point, fanAngle float6
 // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
 // https://yal.cc/rot-rect-vs-circle-intersection/
 func IntersectRectangle(r Rectangle, c Circle) bool {
+	// TODO: rectangle-circle with fanAngle hurtbox/hitbox collision
+	if c.segments != nil {
+		panic("fanAngle hitbox and hurtbox aren't supported in rectangle-circle collision")
+	}
+
+	// AABB test
+	if !AABBTest(r.aabb, c.aabb) {
+		return false
+	}
+
 	// set origin to rectangle center by shifting circle center position
 	relative := c.center.Sub(r.center)
 
@@ -73,37 +91,23 @@ func IntersectRectangle(r Rectangle, c Circle) bool {
 	}
 
 	// eliminate cases in which the circle center is too far away from rectangle edges
-	if local.X > c.r+topRight.X {
-		return false
-	}
-	if local.Y > c.r+topRight.Y {
+	if local.X > c.r+topRight.X || local.Y > c.r+topRight.Y {
 		return false
 	}
 
-	// accept if circle center is within bounds of rectangle
-	if local.X <= topRight.X {
-		return true
-	}
-	if local.Y <= topRight.Y {
+	// circle center has to be close enough to the rectangle edges at this point
+	// -> accept if circle center is within the coordinate area 0 <= x <= r.w/2 || 0 <= y <= r.h/2
+	// -> if it's in that area, then it definitely intersects with one edge
+	if local.X <= topRight.X || local.Y <= topRight.Y {
 		return true
 	}
 
-	// circle center isn't too far away from the edges, but it's out of bounds:
-	// - check whether the topRight corner of the rectangle is within the circle radius
+	// circle center is in the area r.w/2 < x <= r.w/2+radius && r.h/2 < y <= r.h/2+radius
+	// -> it can only intersect if it's close enough to the topRight corner
 	if local.Sub(topRight).MagnitudeSquared() > c.r*c.r {
 		return false
 	}
 
-	// no fanAngle -> intersection guaranteed
-	if c.segments == nil {
-		return true
-	}
-
-	// the sim won't get to this point unless we add targets with rectangular hitboxes
-
-	// fanAngle -> intersection not guaranteed
-	// - check whether the topRight corner lies within the fanAngle of the circle
-	// - no need to check for segments because the topRight corner is a point which is guaranteed to be within the circle at this point
-	// - since the circle was rotated by -r.dir the direction has to be adjusted as well (???)
-	return fanAngleAreaCheck(local, topRight, c.dir+dir, c.fanAngle)
+	// intersection is guaranteed at this point
+	return true
 }

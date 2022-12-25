@@ -1,4 +1,4 @@
-package combat
+﻿package combat
 
 import (
 	"fmt"
@@ -10,15 +10,18 @@ type Rectangle struct {
 	w, h    float64
 	dir     Point
 	corners []Point
+	aabb    []Point
 }
 
 func NewRectangle(center Point, w, h float64, dir Point) *Rectangle {
+	corners := calcCorners(center, w, h, dir)
 	return &Rectangle{
 		center:  center,
 		w:       w,
 		h:       h,
 		dir:     dir,
-		corners: calcCorners(center, w, h, dir),
+		corners: corners,
+		aabb:    calcRectangleAABB(corners),
 	}
 }
 
@@ -34,6 +37,30 @@ func calcCorners(center Point, w, h float64, dir Point) []Point {
 		corners[i] = rotatedCorner.Add(center)
 	}
 	return corners
+}
+
+func calcRectangleAABB(corners []Point) []Point {
+	bottomLeft := corners[3]
+	minX := bottomLeft.X
+	minY := bottomLeft.Y
+	topRight := corners[1]
+	maxX := topRight.X
+	maxY := topRight.Y
+	for _, corner := range corners {
+		if minX > corner.X {
+			minX = corner.X
+		}
+		if minY > corner.Y {
+			minY = corner.Y
+		}
+		if maxX < corner.X {
+			maxX = corner.X
+		}
+		if maxY < corner.Y {
+			maxY = corner.Y
+		}
+	}
+	return []Point{{X: minX, Y: minY}, {X: maxX, Y: maxY}}
 }
 
 func (r *Rectangle) Pos() Point {
@@ -64,15 +91,19 @@ func (r *Rectangle) IntersectCircle(c Circle) bool {
 // https://gist.github.com/shamansir/3007244
 // https://stackoverflow.com/a/6016515
 func (r1 *Rectangle) IntersectRectangle(r2 Rectangle) bool {
-	// bounding circle test
-	// https://stackoverflow.com/a/64162017
-	rectangleCenterDistance := r1.center.Distance(r2.center)
-	boundingCircleRadius1 := Point{X: r1.w, Y: r1.h}.Magnitude() / 2
-	boundingCircleRadius2 := Point{X: r2.w, Y: r2.h}.Magnitude() / 2
-	if rectangleCenterDistance > boundingCircleRadius1+boundingCircleRadius2 {
+	// AABB test
+	if !AABBTest(r1.aabb, r2.aabb) {
 		return false
 	}
-	// separating axis test
+
+	// can skip SAT if both rectangles aren't rotated
+	mirroredDefaultDirection := Point{X: 0, Y: -1}
+	if (r1.dir == DefaultDirection() || r1.dir == mirroredDefaultDirection) &&
+		(r2.dir == DefaultDirection() || r2.dir == mirroredDefaultDirection) {
+		return true
+	}
+
+	// SAT test
 	// https://dyn4j.org/2010/01/sat/
 	r1Axes := r1.getAxes()
 	r2Axes := r2.getAxes()

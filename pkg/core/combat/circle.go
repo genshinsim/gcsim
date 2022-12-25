@@ -1,4 +1,4 @@
-package combat
+﻿package combat
 
 import (
 	"fmt"
@@ -11,6 +11,7 @@ type Circle struct {
 	dir      Point
 	fanAngle float64
 	segments []Point
+	aabb     []Point
 }
 
 func NewCircle(center Point, r float64, dir Point, fanAngle float64) *Circle {
@@ -24,6 +25,7 @@ func NewCircle(center Point, r float64, dir Point, fanAngle float64) *Circle {
 		dir:      dir,
 		fanAngle: fanAngle,
 		segments: segments,
+		aabb:     calcCircleAABB(center, r),
 	}
 }
 
@@ -37,6 +39,9 @@ func (c *Circle) SetPos(p Point) {
 	}
 	for i := 0; i < len(c.segments); i++ {
 		c.segments[i] = c.segments[i].Add(p.Sub(c.center))
+	}
+	for i := 0; i < len(c.aabb); i++ {
+		c.aabb[i] = c.aabb[i].Add(p.Sub(c.center))
 	}
 	c.center = p
 }
@@ -59,8 +64,16 @@ func calcSegments(center Point, r float64, dir Point, fanAngle float64) []Point 
 	return []Point{segmentLeft.Add(center), segmentRight.Add(center)}
 }
 
-// TODO: this ignores the possibility of c1 also having a fanAngle (target with a partial circle hitbox...)
+// AABB is always for full circle
+func calcCircleAABB(center Point, r float64) []Point {
+	return []Point{{X: center.X - r, Y: center.Y - r}, {X: center.X + r, Y: center.Y + r}}
+}
+
 func (c1 *Circle) IntersectCircle(c2 Circle) bool {
+	// TODO: circle with fanAngle hurtbox-circle collision
+	if c1.segments != nil {
+		panic("target with fanAngle hurtbox isn't supported in circle-circle collision")
+	}
 	// https://stackoverflow.com/a/4226473
 	// A: full circles have to be intersecting
 	// (R0 - R1)^2 <= (x0 - x1)^2 + (y0 - y1)^2 <= (R0 + R1)^2
@@ -79,24 +92,24 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 	// B: check if c1 intersects any of c2's segments, if yes we can exit early
 	// (it's necessary to check for this because c1 can collide with c2's fanAngle area
 	// even if c1's circle center isn't in c2's fanAngle range)
+	o := c1.center
+	p := c2.center
+
+	op := p.Sub(o)
+	opDist := o.Distance(p)
 	for _, segment := range c2.segments {
-		o := c1.center
-		p := c2.center
 		q := segment
 
-		op := p.Sub(o)
 		qp := p.Sub(q)
-		oq := q.Sub(o)
 		pq := q.Sub(p)
 
-		opDist := o.Distance(p)
+		oq := q.Sub(o)
 		oqDist := o.Distance(q)
-		pqDist := p.Distance(q)
 
 		minDist := math.Min(opDist, oqDist)
 		maxDist := math.Max(opDist, oqDist)
 		if op.Dot(qp) > 0 && oq.Dot(pq) > 0 {
-			minDist = math.Abs(op.Cross(oq)) / pqDist
+			minDist = math.Abs(op.Cross(oq)) / c2.r
 		}
 		if minDist <= c1.r && maxDist >= c1.r {
 			return true
