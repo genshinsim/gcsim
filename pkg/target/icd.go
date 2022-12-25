@@ -23,7 +23,7 @@ func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) 
 
 	// if counter > length, then use 0 for group seq
 	groupSeq := 0.0
-	if val < len(combat.ICDGroupEleApplicationSequence) {
+	if val < len(combat.ICDGroupEleApplicationSequence[grp]) {
 		groupSeq = combat.ICDGroupEleApplicationSequence[grp][val]
 	}
 
