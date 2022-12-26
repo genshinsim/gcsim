@@ -71,6 +71,9 @@ func (c *Handler) EnemyByDistance(p Point, excl TargetKey) []int {
 		if v.Key() == excl {
 			continue
 		}
+		if !v.IsAlive() {
+			continue
+		}
 		vPos := v.Shape().Pos()
 		dist := p.Sub(vPos).MagnitudeSquared()
 		tuples = append(tuples, struct {
@@ -101,6 +104,9 @@ func (c *Handler) EnemiesWithinRadius(p Point, r float64) []int {
 		if dist > r*r {
 			continue
 		}
+		if !v.IsAlive() {
+			continue
+		}
 		result = append(result, i)
 	}
 
@@ -113,6 +119,9 @@ func (c *Handler) EnemyExcl(self TargetKey) []int {
 
 	for i, e := range c.enemies {
 		if e.Key() == self {
+			continue
+		}
+		if !e.IsAlive() {
 			continue
 		}
 		result = append(result, i)
