@@ -158,12 +158,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ax,
-				ap,
-				0,
-				0,
-			)
+			c.Core.QueueAttack(ax, ap, 0, 0)
 		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
