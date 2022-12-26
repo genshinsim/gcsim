@@ -63,17 +63,17 @@ func (e *Eval) evalIdent(n *ast.Ident, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
-	//c.Fun should be an Ident; otherwise panic here
-	ident, ok := c.Fun.(*ast.Ident)
-	if !ok {
-		return nil, fmt.Errorf("invalid function call %v", c.Fun.String())
-	}
-
-	//grab the function first
-	v, err := env.fn(ident.Value)
+	v, err := e.evalExpr(c.Fun, env)
 	if err != nil {
 		return nil, err
 	}
+	switch v.(type) {
+	case *funcval:
+	case *bfuncval:
+	default:
+		return nil, fmt.Errorf("invalid function call %v", c.Fun.String())
+	}
+
 	if bfn, ok := v.(*bfuncval); ok { // is built-in
 		return bfn.Body(c, env)
 	}
@@ -81,7 +81,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	fn := v.(*funcval)
 	//check number of param matches
 	if len(c.Args) != len(fn.Args) {
-		return nil, fmt.Errorf("unmatched number of params for fn %v", ident.Value)
+		return nil, fmt.Errorf("unmatched number of params for fn %v", c.Fun.String())
 	}
 	//params are just variables assigned to a local env
 	local := NewEnv(env)

@@ -648,21 +648,6 @@ func (p *Parser) parseCtrl() (Stmt, error) {
 }
 
 func (p *Parser) parseCall(fun Expr) (Expr, error) {
-	// ident has aready been consumed
-	// switch fun.(type) {
-	// case *Ident:
-	// case *FnExpr:
-	// default:
-	// 	panic("invalid fun expression to function call")
-	// }
-
-	//for our purpose, we do not allow closure or functions returning
-	//anything other than a number; therefore call must start with
-	//a ident
-	if _, ok := fun.(*Ident); !ok {
-		return nil, fmt.Errorf("expecting function calls to start with ident, got %v", fun.String())
-	}
-
 	//expecting (params)
 	n, err := p.consume(itemLeftParen)
 	if err != nil {
