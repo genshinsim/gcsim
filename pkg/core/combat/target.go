@@ -23,8 +23,8 @@ type Target interface {
 	CollidedWith(t Target)
 	WillCollide(Shape) bool
 	// direction related
-	Direction() Point                  // returns viewing direction in radians
-	SetDirection(trg Point)            // calculates viewing direction relative to y axis
+	Direction() Point                  // returns viewing direction as a Point
+	SetDirection(trg Point)            // calculates viewing direction relative to default direction (0, 1)
 	SetDirectionToClosestEnemy()       // looks for closest enemy
 	CalcTempDirection(trg Point) Point // used for stuff like Bow CA
 }
