@@ -139,3 +139,61 @@ func (s *Summary) ToPBModel() *model.SimulationResult {
 
 	return r
 }
+
+func (s *Summary) ToPBDBEntry() *model.DBEntry {
+	r := &model.DBEntry{
+		SimDuration: &model.DescriptiveStats{
+			Min:  s.Statistics.Duration.Min,
+			Max:  s.Statistics.Duration.Max,
+			Mean: s.Statistics.Duration.Mean,
+			SD:   s.Statistics.Duration.SD,
+		},
+		TotalDamage: &model.DescriptiveStats{
+			Min:  s.Statistics.TotalDamage.Min,
+			Max:  s.Statistics.TotalDamage.Max,
+			Mean: s.Statistics.TotalDamage.Mean,
+			SD:   s.Statistics.TotalDamage.SD,
+		},
+		TargetCount:      int32(len(s.TargetDetails)),
+		Hash:             s.SimVersion,
+		Config:           s.Config,
+		MeanDpsPerTarget: s.Statistics.TotalDamage.Mean / (float64(len(s.TargetDetails)) * s.Statistics.Duration.Mean),
+	}
+	for _, v := range s.CharacterDetails {
+		next := &model.Character{
+			Key:      v.Name, //TODO: to be updated when we rekey characters
+			Name:     v.Name,
+			Element:  v.Element,
+			Level:    int64(v.Level),
+			MaxLevel: int64(v.MaxLevel),
+			Cons:     int64(v.Cons),
+			Weapon: &model.Weapon{
+				Name:     v.Weapon.Name,
+				Refine:   int64(v.Weapon.Refine),
+				Level:    int64(v.Weapon.Level),
+				MaxLevel: int64(v.MaxLevel),
+			},
+			Talents: &model.CharacterTalents{
+				Attack: int64(v.Talents.Attack),
+				Skill:  int64(v.Talents.Skill),
+				Burst:  int64(v.Talents.Burst),
+			},
+		}
+		next.Sets = make(map[string]int64)
+		for k, x := range v.Sets {
+			next.Sets[k] = int64(x)
+		}
+		next.Stats = make(map[string]float64)
+		for i, x := range v.Stats {
+			next.Stats[attributes.StatTypeString[i]] = x
+		}
+		next.Snapshot = make(map[string]float64)
+		for i, x := range v.SnapshotStats {
+			next.Snapshot[attributes.StatTypeString[i]] = x
+		}
+		r.Team = append(r.Team, next)
+		r.CharNames = append(r.CharNames, v.Name)
+	}
+
+	return r
+}

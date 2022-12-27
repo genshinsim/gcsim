@@ -1,0 +1,91 @@
+version: "3.8"
+
+services:
+  # tunnel for the backend service
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
+    volumes:
+      - ./backend/cloudflared:/etc/cloudflared
+    environment:
+      - CF_TUNNEL_TOKEN
+    depends_on:
+      - jadechamber
+    restart: unless-stopped
+  # generating embed for discord etc
+  preview:
+    container_name: preview
+    build:
+      context: .
+      dockerfile: ./backend/cmd/preview/Dockerfile
+    volumes:
+      - ~/assets/assets:/assets
+    environment:
+      - ASSETS_DATA_PATH=/assets
+      - RESULT_STORE_URL=result:3000
+    restart: unless-stopped
+  jadechamber:
+    container_name: jadechamber
+    build:
+      context: .
+      dockerfile: ./backend/cmd/jadechamber/Dockerfile
+    volumes:
+      - ~/data:/data
+    environment:
+      - USER_DATA_PATH=/data/user
+      - DISCORD_ID
+      - DISCORD_SECRET
+      - REDIRECT_URL
+      - RESULT_STORE_URL=result:3000
+    restart: unless-stopped
+  result:
+    container_name: result
+    build:
+      context: .
+      dockerfile: ./backend/cmd/result/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ~/data/result:/data
+    environment:
+      - RESULT_DATA_PATH=/data
+  db:
+    container_name: db
+    build:
+      context: .
+      dockerfile: ./backend/cmd/db/Dockerfile
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017
+      - MONGODB_DATABASE=gcsim-database
+      - MONGODB_COLLECTION=data
+      - MONGODB_USERNAME=root
+      - MONOGDB_PASSWORD=root-password
+    # ports are exposed in order to access the grpc directly via localhost during dev
+    ports:
+      - 8082:3000
+    restart: unless-stopped
+    depends_on:
+      - mongo
+  # mongo server for db
+  mongo:
+    image: mongo
+    restart: always
+    # ports:
+    #   - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root-password
+    volumes:
+      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ~/data/mongo:/data/db:rw
+  # dev stuff
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    links:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root-password
+      ME_CONFIG_MONGODB_URL: mongodb://root:root-password@mongo:27017/

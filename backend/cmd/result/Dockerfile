@@ -1,16 +1,15 @@
-FROM golang:1.19.3-alpine3.15
-# RUN mkdir /usr/src/app
-WORKDIR /app
+FROM golang:1.19.3-alpine3.16 AS build 
+ADD . /gcsim
+WORKDIR /gcsim
 
-COPY go.mod ./
-COPY go.sum ./
-COPY pkg pkg
-COPY cmd cmd
-RUN go mod tidy
-RUN cat go.mod
 RUN go mod download
 
-WORKDIR /app/cmd/result
+WORKDIR /gcsim/backend/cmd/result
 RUN go build -o /result
 
+# the rest
+FROM alpine:3.16.3 as backend
+WORKDIR /
+COPY --from=build /result /result
+RUN ls
 ENTRYPOINT ["/result"]

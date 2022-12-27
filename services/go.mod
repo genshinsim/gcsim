@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/bwmarrin/discordgo v0.25.0
 	github.com/dgraph-io/badger/v3 v3.2103.2
-	github.com/genshinsim/gcsim v1.0.3
 	github.com/go-chi/chi v1.5.4
 	go.uber.org/zap v1.22.0
 )
@@ -22,9 +21,7 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v2.0.6+incompatible // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
-	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	go.opencensus.io v0.23.0 // indirect

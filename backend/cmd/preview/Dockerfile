@@ -1,24 +1,14 @@
 from golang:1.19.3-bullseye as build
+ADD . /gcsim
 
-WORKDIR /app
+WORKDIR /gcsim
 
-COPY go.mod ./
-COPY go.sum ./
-COPY pkg pkg
-COPY cmd cmd
-RUN go mod tidy
-RUN cat go.mod
 RUN go mod download
 
-WORKDIR /app/cmd/preview
+WORKDIR /gcsim/backend/cmd/preview
 RUN go build -o /preview
 
-
-from chromedp/headless-shell:latest
-
+FROM chromedp/headless-shell:latest 
 WORKDIR /
 COPY --from=build /preview /preview
-
-RUN ls
-
-ENTRYPOINT ["/preview"]
+ENTRYPOINT ["/preview"] 
