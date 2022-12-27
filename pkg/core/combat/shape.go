@@ -58,10 +58,7 @@ func fanAngleAreaCheck(attackCenter, trg, facingDirection Point, fanAngle float6
 		dot = -1
 	}
 	angleBetweenFacingAndTarget := math.Acos(dot) * 180 / math.Pi
-	if angleBetweenFacingAndTarget >= -fanAngle/2 && angleBetweenFacingAndTarget <= fanAngle/2 {
-		return true
-	}
-	return false
+	return angleBetweenFacingAndTarget >= -fanAngle/2 && angleBetweenFacingAndTarget <= fanAngle/2
 }
 
 // shared between Circle and Rectangle
@@ -108,10 +105,5 @@ func IntersectRectangle(r Rectangle, c Circle) bool {
 
 	// circle center is in the area r.w/2 < x <= r.w/2+radius && r.h/2 < y <= r.h/2+radius
 	// -> it can only intersect if it's close enough to the topRight corner
-	if local.Sub(topRight).MagnitudeSquared() > c.r*c.r {
-		return false
-	}
-
-	// intersection is guaranteed at this point
-	return true
+	return local.Sub(topRight).MagnitudeSquared() <= c.r*c.r
 }
