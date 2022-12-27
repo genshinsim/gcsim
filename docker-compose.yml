@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+  # tunnel for the backend service
   cloudflared:
     image: cloudflare/cloudflared:latest
     command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
@@ -11,17 +12,7 @@ services:
     depends_on:
       - jadechamber
     restart: unless-stopped
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root-password
-    volumes:
-      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./backend/data/mongo:/data/db:rw
+  # generating embed for discord etc
   preview:
     container_name: preview
     build:
@@ -39,7 +30,7 @@ services:
       context: .
       dockerfile: ./backend/cmd/jadechamber/Dockerfile
     volumes:
-      - ./backend/data:/data
+      - ~/data:/data
     environment:
       - USER_DATA_PATH=/data/user
       - DISCORD_ID
@@ -54,7 +45,7 @@ services:
       dockerfile: ./backend/cmd/result/Dockerfile
     restart: unless-stopped
     volumes:
-      - ./backend/data/result:/data
+      - ~/data/result:/data
     environment:
       - RESULT_DATA_PATH=/data
   db:
@@ -68,9 +59,25 @@ services:
       - MONGODB_COLLECTION=data
       - MONGODB_USERNAME=root
       - MONOGDB_PASSWORD=root-password
+    # ports are exposed in order to access the grpc directly via localhost during dev
+    ports:
+      - 8082:3000
     restart: unless-stopped
     depends_on:
       - mongo
+  # mongo server for db
+  mongo:
+    image: mongo
+    restart: always
+    # ports:
+    #   - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root-password
+    volumes:
+      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ~/data/mongo:/data/db:rw
+  # dev stuff
   mongo-express:
     image: mongo-express
     restart: always
