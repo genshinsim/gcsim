@@ -1,4 +1,4 @@
-﻿package combat
+package combat
 
 import (
 	"fmt"
@@ -73,6 +73,9 @@ func (r *Rectangle) SetPos(p Point) {
 	}
 	for i := 0; i < len(r.corners); i++ {
 		r.corners[i] = r.corners[i].Add(p.Sub(r.center))
+	}
+	for i := 0; i < len(r.aabb); i++ {
+		r.aabb[i] = r.aabb[i].Add(p.Sub(r.center))
 	}
 	r.center = p
 }
