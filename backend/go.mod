@@ -3,6 +3,7 @@ module github.com/genshinsim/gcsim/backend
 go 1.19
 
 replace github.com/genshinsim/gcsim/pkg/model => ../
+replace github.com/genshinsim/gcsim/pkg/simulator => ../
 
 require (
 	github.com/aidarkhanov/nanoid/v2 v2.0.5

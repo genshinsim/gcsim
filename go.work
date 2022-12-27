@@ -5,5 +5,4 @@ use (
 	./db
 	./services
 	./backend
-	./pipeline
 )
