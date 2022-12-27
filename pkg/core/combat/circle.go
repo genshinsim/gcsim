@@ -78,7 +78,7 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 	// A: full circles have to be intersecting
 	// (R0 - R1)^2 <= (x0 - x1)^2 + (y0 - y1)^2 <= (R0 + R1)^2
 	radiusSum := c1.r + c2.r
-	if c1.center.Sub(c2.center).MagnitudeSquared() >= radiusSum*radiusSum {
+	if c1.center.Sub(c2.center).MagnitudeSquared() > radiusSum*radiusSum {
 		return false
 	}
 

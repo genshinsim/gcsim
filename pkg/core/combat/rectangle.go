@@ -1,4 +1,4 @@
-package combat
+﻿package combat
 
 import (
 	"fmt"
@@ -144,7 +144,7 @@ type Projection struct {
 
 // https://stackoverflow.com/questions/64745139/check-if-two-integer-ranges-overlap
 func (p1 *Projection) overlap(p2 Projection) bool {
-	return math.Max(p1.min, p2.min) < math.Min(p1.max, p2.max)
+	return math.Max(p1.min, p2.min) <= math.Min(p1.max, p2.max)
 }
 
 func getProjection(corners []Point, axis Point) Projection {
