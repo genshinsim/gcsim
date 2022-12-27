@@ -99,10 +99,8 @@ func (r1 *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 		return false
 	}
 
-	// can skip SAT if both rectangles aren't rotated
-	mirroredDefaultDirection := Point{X: 0, Y: -1}
-	if (r1.dir == DefaultDirection() || r1.dir == mirroredDefaultDirection) &&
-		(r2.dir == DefaultDirection() || r2.dir == mirroredDefaultDirection) {
+	// can skip SAT if both rectangles are axis aligned
+	if (r1.dir.X == 0 || r1.dir.Y == 0) && (r2.dir.X == 0 || r2.dir.Y == 0) {
 		return true
 	}
 
