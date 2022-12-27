@@ -157,7 +157,7 @@ func (s *Summary) ToPBDBEntry() *model.DBEntry {
 		TargetCount:      int32(len(s.TargetDetails)),
 		Hash:             s.SimVersion,
 		Config:           s.Config,
-		MeanDpsPerTarget: s.Statistics.TotalDamage.Mean / float64(len(s.TargetDetails)),
+		MeanDpsPerTarget: s.Statistics.TotalDamage.Mean / (float64(len(s.TargetDetails)) * s.Statistics.Duration.Mean),
 	}
 	for _, v := range s.CharacterDetails {
 		next := &model.Character{
