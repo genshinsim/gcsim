@@ -21,21 +21,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root-password
     volumes:
       - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-  backend_image:
-    command: ['echo', 'build completed']  # any linux command which directly terminates.
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: backend
-  preview_image:
-    command: ['echo', 'build completed']  # any linux command which directly terminates.
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: preview
+      - ./backend/data/mongo:/data/db:rw
   preview:
     container_name: preview
-    image: gcsim-preview_image
+    build:
+      context: .
+      dockerfile: ./backend/cmd/preview/Dockerfile
     volumes:
       - ~/assets/assets:/assets
     environment:
@@ -44,9 +35,10 @@ services:
     restart: unless-stopped
   jadechamber:
     container_name: jadechamber
-    image: gcsim-backend_image
+    build:
+      context: .
+      dockerfile: ./backend/cmd/jadechamber/Dockerfile
     volumes:
-      # - ./backend:/app
       - ./backend/data:/data
     environment:
       - USER_DATA_PATH=/data/user
@@ -54,12 +46,12 @@ services:
       - DISCORD_SECRET
       - REDIRECT_URL
       - RESULT_STORE_URL=result:3000
-    command: ./jadechamber 
     restart: unless-stopped
   result:
     container_name: result
-    image: gcsim-backend_image
-    command: ./result 
+    build:
+      context: .
+      dockerfile: ./backend/cmd/result/Dockerfile
     restart: unless-stopped
     volumes:
       - ./backend/data/result:/data
@@ -67,14 +59,15 @@ services:
       - RESULT_DATA_PATH=/data
   db:
     container_name: db
-    image: gcsim-backend_image
-    command: ./db
+    build:
+      context: .
+      dockerfile: ./backend/cmd/db/Dockerfile
     environment:
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DATABASE=gcsim-database
       - MONGODB_COLLECTION=data
-      - MONGODB_USERNAME=gcsim
-      - MONOGDB_PASSWORD=gcsim-password
+      - MONGODB_USERNAME=root
+      - MONOGDB_PASSWORD=root-password
     restart: unless-stopped
     depends_on:
       - mongo
