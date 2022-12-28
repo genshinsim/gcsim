@@ -526,6 +526,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gcsim/db@workspace:packages/db":
+  version: 0.0.0-use.local
+  resolution: "@gcsim/db@workspace:packages/db"
+  dependencies:
+    "@blueprintjs/core": ^4.11.4
+    "@gcsim/executors": "workspace:^"
+    "@gcsim/ui": "workspace:^"
+    "@gcsim/utils": "workspace:^"
+    "@vitejs/plugin-react": ^2.1.0
+    react-i18next: ^12.0.0
+    rollup-plugin-visualizer: ^5.8.3
+    tailwindcss: ^3.2.1
+    vite: ^3.1.8
+    vite-tsconfig-paths: ^3.5.2
+    wouter: ^2.9.0
+  languageName: unknown
+  linkType: soft
+
 "@gcsim/embed@workspace:packages/embed":
   version: 0.0.0-use.local
   resolution: "@gcsim/embed@workspace:packages/embed"
@@ -11673,6 +11691,15 @@ __metadata:
   version: 1.0.0
   resolution: "wordwrap@npm:1.0.0"
   checksum: 2a44b2788165d0a3de71fd517d4880a8e20ea3a82c080ce46e294f0b68b69a2e49cff5f99c600e275c698a90d12c5ea32aff06c311f0db2eb3f1201f3e7b2a04
+  languageName: node
+  linkType: hard
+
+"wouter@npm:^2.9.0":
+  version: 2.9.0
+  resolution: "wouter@npm:2.9.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 3f437930bae99178ab185268514b85dead693eceb860c62e7b6e0c3bb62d23c060afbbe5b5f26380c59be64d40cae5d5493b08c45e5593bdc3b259e6aa07174a
   languageName: node
   linkType: hard
 
