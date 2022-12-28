@@ -24,3 +24,7 @@ message DBEntry {
     repeated model.Character team = 11;
     map<string, model.DescriptiveStats> dps_by_target = 12;
 }
+
+message DBEntries {
+    repeated DBEntry data = 1;
+}

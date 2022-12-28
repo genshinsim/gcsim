@@ -25,8 +25,8 @@ type Version struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Major int64 `protobuf:"varint,1,opt,name=major,proto3" json:"major,omitempty"`
-	Minor int64 `protobuf:"varint,2,opt,name=minor,proto3" json:"minor,omitempty"`
+	Major int64 `protobuf:"varint,1,opt,name=major,proto3" json:"major,omitempty" bson:"major,omitempty"`
+	Minor int64 `protobuf:"varint,2,opt,name=minor,proto3" json:"minor,omitempty" bson:"minor,omitempty"`
 }
 
 func (x *Version) Reset() {
@@ -80,20 +80,20 @@ type SimulationResult struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	//metadata
-	SchemaVersion *Version `protobuf:"bytes,1,opt,name=schema_version,json=schemaVersion,proto3" json:"schema_version,omitempty"`
-	SimVersion    string   `protobuf:"bytes,2,opt,name=sim_version,json=simVersion,proto3" json:"sim_version,omitempty"`
-	BuildDate     string   `protobuf:"bytes,3,opt,name=build_date,json=buildDate,proto3" json:"build_date,omitempty"`
-	Modified      bool     `protobuf:"varint,4,opt,name=modified,proto3" json:"modified,omitempty"`
-	//charater and enemey data
-	InitialCharacter  string                `protobuf:"bytes,5,opt,name=initial_character,json=initialCharacter,proto3" json:"initial_character,omitempty"`
-	CharacterDetails  []*Character          `protobuf:"bytes,6,rep,name=character_details,json=characterDetails,proto3" json:"character_details,omitempty"`
-	TargetDetails     []*Enemy              `protobuf:"bytes,7,rep,name=target_details,json=targetDetails,proto3" json:"target_details,omitempty"`
-	SimulatorSettings *SimulatorSettings    `protobuf:"bytes,8,opt,name=simulator_settings,json=simulatorSettings,proto3" json:"simulator_settings,omitempty"`
-	EnergySettings    *EnergySettings       `protobuf:"bytes,9,opt,name=energy_settings,json=energySettings,proto3" json:"energy_settings,omitempty"`
-	Config            string                `protobuf:"bytes,10,opt,name=config,proto3" json:"config,omitempty"`
-	SampleSeed        string                `protobuf:"bytes,11,opt,name=sample_seed,json=sampleSeed,proto3" json:"sample_seed,omitempty"`
-	Statistics        *SimulationStatistics `protobuf:"bytes,12,opt,name=statistics,proto3" json:"statistics,omitempty"`
+	// metadata
+	SchemaVersion *Version `protobuf:"bytes,1,opt,name=schema_version,json=schemaVersion,proto3" json:"schema_version,omitempty" bson:"schemaVersion,omitempty"`
+	SimVersion    string   `protobuf:"bytes,2,opt,name=sim_version,json=simVersion,proto3" json:"sim_version,omitempty" bson:"simVersion,omitempty"`
+	BuildDate     string   `protobuf:"bytes,3,opt,name=build_date,json=buildDate,proto3" json:"build_date,omitempty" bson:"buildDate,omitempty"`
+	Modified      bool     `protobuf:"varint,4,opt,name=modified,proto3" json:"modified,omitempty" bson:"modified,omitempty"`
+	// charater and enemey data
+	InitialCharacter  string                `protobuf:"bytes,5,opt,name=initial_character,json=initialCharacter,proto3" json:"initial_character,omitempty" bson:"initialCharacter,omitempty"`
+	CharacterDetails  []*Character          `protobuf:"bytes,6,rep,name=character_details,json=characterDetails,proto3" json:"character_details,omitempty" bson:"characterDetails,omitempty"`
+	TargetDetails     []*Enemy              `protobuf:"bytes,7,rep,name=target_details,json=targetDetails,proto3" json:"target_details,omitempty" bson:"targetDetails,omitempty"`
+	SimulatorSettings *SimulatorSettings    `protobuf:"bytes,8,opt,name=simulator_settings,json=simulatorSettings,proto3" json:"simulator_settings,omitempty" bson:"simulatorSettings,omitempty"`
+	EnergySettings    *EnergySettings       `protobuf:"bytes,9,opt,name=energy_settings,json=energySettings,proto3" json:"energy_settings,omitempty" bson:"energySettings,omitempty"`
+	Config            string                `protobuf:"bytes,10,opt,name=config,proto3" json:"config,omitempty" bson:"config,omitempty"`
+	SampleSeed        string                `protobuf:"bytes,11,opt,name=sample_seed,json=sampleSeed,proto3" json:"sample_seed,omitempty" bson:"sampleSeed,omitempty"`
+	Statistics        *SimulationStatistics `protobuf:"bytes,12,opt,name=statistics,proto3" json:"statistics,omitempty" bson:"statistics,omitempty"`
 }
 
 func (x *SimulationResult) Reset() {
@@ -217,24 +217,24 @@ type SimulationStatistics struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	//metadata
-	MinSeed    string  `protobuf:"bytes,1,opt,name=min_seed,json=minSeed,proto3" json:"min_seed,omitempty"`
-	MaxSeed    string  `protobuf:"bytes,2,opt,name=max_seed,json=maxSeed,proto3" json:"max_seed,omitempty"`
-	P25Seed    string  `protobuf:"bytes,3,opt,name=p25_seed,json=p25Seed,proto3" json:"p25_seed,omitempty"`
-	P50Seed    string  `protobuf:"bytes,4,opt,name=p50_seed,json=p50Seed,proto3" json:"p50_seed,omitempty"`
-	P75Seed    string  `protobuf:"bytes,5,opt,name=p75_seed,json=p75Seed,proto3" json:"p75_seed,omitempty"`
-	Runtime    float64 `protobuf:"fixed64,6,opt,name=runtime,proto3" json:"runtime,omitempty"`
-	Iterations int64   `protobuf:"varint,7,opt,name=iterations,proto3" json:"iterations,omitempty"`
+	// metadata
+	MinSeed    string  `protobuf:"bytes,1,opt,name=min_seed,json=minSeed,proto3" json:"min_seed,omitempty" bson:"minSeed,omitempty"`
+	MaxSeed    string  `protobuf:"bytes,2,opt,name=max_seed,json=maxSeed,proto3" json:"max_seed,omitempty" bson:"maxSeed,omitempty"`
+	P25Seed    string  `protobuf:"bytes,3,opt,name=p25_seed,json=p25Seed,proto3" json:"p25_seed,omitempty" bson:"p25Seed,omitempty"`
+	P50Seed    string  `protobuf:"bytes,4,opt,name=p50_seed,json=p50Seed,proto3" json:"p50_seed,omitempty" bson:"p50Seed,omitempty"`
+	P75Seed    string  `protobuf:"bytes,5,opt,name=p75_seed,json=p75Seed,proto3" json:"p75_seed,omitempty" bson:"p75Seed,omitempty"`
+	Runtime    float64 `protobuf:"fixed64,6,opt,name=runtime,proto3" json:"runtime,omitempty" bson:"runtime,omitempty"`
+	Iterations int64   `protobuf:"varint,7,opt,name=iterations,proto3" json:"iterations,omitempty" bson:"iterations,omitempty"`
 	// global overview (global/no group by)
-	Duration      *OverviewStats   `protobuf:"bytes,8,opt,name=duration,proto3" json:"duration,omitempty"`
-	DPS           *OverviewStats   `protobuf:"bytes,9,opt,name=DPS,json=dps,proto3" json:"DPS,omitempty"`
-	RPS           *OverviewStats   `protobuf:"bytes,10,opt,name=RPS,json=rps,proto3" json:"RPS,omitempty"`
-	EPS           *OverviewStats   `protobuf:"bytes,11,opt,name=EPS,json=eps,proto3" json:"EPS,omitempty"`
-	HPS           *OverviewStats   `protobuf:"bytes,12,opt,name=HPS,json=hps,proto3" json:"HPS,omitempty"`
-	SPS           *OverviewStats   `protobuf:"bytes,13,opt,name=SPS,json=sps,proto3" json:"SPS,omitempty"`
-	TotalDamage   *OverviewStats   `protobuf:"bytes,14,opt,name=total_damage,json=totalDamage,proto3" json:"total_damage,omitempty"`
-	Warnings      *Warnings        `protobuf:"bytes,15,opt,name=warnings,proto3" json:"warnings,omitempty"`
-	FailedActions []*FailedActions `protobuf:"bytes,16,rep,name=failed_actions,json=failedActions,proto3" json:"failed_actions,omitempty"`
+	Duration      *OverviewStats   `protobuf:"bytes,8,opt,name=duration,proto3" json:"duration,omitempty" bson:"duration,omitempty"`
+	DPS           *OverviewStats   `protobuf:"bytes,9,opt,name=DPS,json=dps,proto3" json:"DPS,omitempty" bson:"dps,omitempty"`
+	RPS           *OverviewStats   `protobuf:"bytes,10,opt,name=RPS,json=rps,proto3" json:"RPS,omitempty" bson:"rps,omitempty"`
+	EPS           *OverviewStats   `protobuf:"bytes,11,opt,name=EPS,json=eps,proto3" json:"EPS,omitempty" bson:"eps,omitempty"`
+	HPS           *OverviewStats   `protobuf:"bytes,12,opt,name=HPS,json=hps,proto3" json:"HPS,omitempty" bson:"hps,omitempty"`
+	SPS           *OverviewStats   `protobuf:"bytes,13,opt,name=SPS,json=sps,proto3" json:"SPS,omitempty" bson:"sps,omitempty"`
+	TotalDamage   *OverviewStats   `protobuf:"bytes,14,opt,name=total_damage,json=totalDamage,proto3" json:"total_damage,omitempty" bson:"totalDamage,omitempty"`
+	Warnings      *Warnings        `protobuf:"bytes,15,opt,name=warnings,proto3" json:"warnings,omitempty" bson:"warnings,omitempty"`
+	FailedActions []*FailedActions `protobuf:"bytes,16,rep,name=failed_actions,json=failedActions,proto3" json:"failed_actions,omitempty" bson:"failedActions,omitempty"`
 }
 
 func (x *SimulationStatistics) Reset() {
@@ -386,14 +386,14 @@ type OverviewStats struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Min  float64  `protobuf:"fixed64,1,opt,name=min,proto3" json:"min,omitempty"`
-	Max  float64  `protobuf:"fixed64,2,opt,name=max,proto3" json:"max,omitempty"`
-	Mean float64  `protobuf:"fixed64,3,opt,name=mean,proto3" json:"mean,omitempty"`
-	SD   float64  `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3" json:"SD,omitempty"`
-	Q1   float64  `protobuf:"fixed64,5,opt,name=q1,proto3" json:"q1,omitempty"`
-	Q2   float64  `protobuf:"fixed64,6,opt,name=q2,proto3" json:"q2,omitempty"`
-	Q3   float64  `protobuf:"fixed64,7,opt,name=q3,proto3" json:"q3,omitempty"`
-	Hist []uint64 `protobuf:"varint,8,rep,packed,name=hist,json=histogram,proto3" json:"hist,omitempty"`
+	Min  float64  `protobuf:"fixed64,1,opt,name=min,proto3" json:"min,omitempty" bson:"min,omitempty"`
+	Max  float64  `protobuf:"fixed64,2,opt,name=max,proto3" json:"max,omitempty" bson:"max,omitempty"`
+	Mean float64  `protobuf:"fixed64,3,opt,name=mean,proto3" json:"mean,omitempty" bson:"mean,omitempty"`
+	SD   float64  `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3" json:"SD,omitempty" bson:"sd,omitempty"`
+	Q1   float64  `protobuf:"fixed64,5,opt,name=q1,proto3" json:"q1,omitempty" bson:"q1,omitempty"`
+	Q2   float64  `protobuf:"fixed64,6,opt,name=q2,proto3" json:"q2,omitempty" bson:"q2,omitempty"`
+	Q3   float64  `protobuf:"fixed64,7,opt,name=q3,proto3" json:"q3,omitempty" bson:"q3,omitempty"`
+	Hist []uint64 `protobuf:"varint,8,rep,packed,name=hist,json=histogram,proto3" json:"hist,omitempty" bson:"histogram,omitempty"`
 }
 
 func (x *OverviewStats) Reset() {
@@ -489,10 +489,10 @@ type DescriptiveStats struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Min  float64 `protobuf:"fixed64,1,opt,name=min,proto3" json:"min,omitempty"`
-	Max  float64 `protobuf:"fixed64,2,opt,name=max,proto3" json:"max,omitempty"`
-	Mean float64 `protobuf:"fixed64,3,opt,name=mean,proto3" json:"mean,omitempty"`
-	SD   float64 `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3" json:"SD,omitempty"`
+	Min  float64 `protobuf:"fixed64,1,opt,name=min,proto3" json:"min,omitempty" bson:"min,omitempty"`
+	Max  float64 `protobuf:"fixed64,2,opt,name=max,proto3" json:"max,omitempty" bson:"max,omitempty"`
+	Mean float64 `protobuf:"fixed64,3,opt,name=mean,proto3" json:"mean,omitempty" bson:"mean,omitempty"`
+	SD   float64 `protobuf:"fixed64,4,opt,name=SD,json=sd,proto3" json:"SD,omitempty" bson:"sd,omitempty"`
 }
 
 func (x *DescriptiveStats) Reset() {
@@ -560,11 +560,11 @@ type Warnings struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TargetOverlap       bool `protobuf:"varint,1,opt,name=target_overlap,json=targetOverlap,proto3" json:"target_overlap,omitempty"`
-	InsufficientEnergy  bool `protobuf:"varint,2,opt,name=insufficient_energy,json=insufficientEnergy,proto3" json:"insufficient_energy,omitempty"`
-	InsufficientStamina bool `protobuf:"varint,3,opt,name=insufficient_stamina,json=insufficientStamina,proto3" json:"insufficient_stamina,omitempty"`
-	SwapCd              bool `protobuf:"varint,4,opt,name=swap_cd,json=swapCd,proto3" json:"swap_cd,omitempty"`
-	SkillCd             bool `protobuf:"varint,5,opt,name=skill_cd,json=skillCd,proto3" json:"skill_cd,omitempty"`
+	TargetOverlap       bool `protobuf:"varint,1,opt,name=target_overlap,json=targetOverlap,proto3" json:"target_overlap,omitempty" bson:"targetOverlap,omitempty"`
+	InsufficientEnergy  bool `protobuf:"varint,2,opt,name=insufficient_energy,json=insufficientEnergy,proto3" json:"insufficient_energy,omitempty" bson:"insufficientEnergy,omitempty"`
+	InsufficientStamina bool `protobuf:"varint,3,opt,name=insufficient_stamina,json=insufficientStamina,proto3" json:"insufficient_stamina,omitempty" bson:"insufficientStamina,omitempty"`
+	SwapCd              bool `protobuf:"varint,4,opt,name=swap_cd,json=swapCd,proto3" json:"swap_cd,omitempty" bson:"swapCd,omitempty"`
+	SkillCd             bool `protobuf:"varint,5,opt,name=skill_cd,json=skillCd,proto3" json:"skill_cd,omitempty" bson:"skillCd,omitempty"`
 }
 
 func (x *Warnings) Reset() {
@@ -639,10 +639,10 @@ type FailedActions struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	InsufficientEnergy  *DescriptiveStats `protobuf:"bytes,1,opt,name=insufficient_energy,json=insufficientEnergy,proto3" json:"insufficient_energy,omitempty"`
-	InsufficientStamina *DescriptiveStats `protobuf:"bytes,2,opt,name=insufficient_stamina,json=insufficientStamina,proto3" json:"insufficient_stamina,omitempty"`
-	SwapCd              *DescriptiveStats `protobuf:"bytes,3,opt,name=swap_cd,json=swapCd,proto3" json:"swap_cd,omitempty"`
-	SkillCd             *DescriptiveStats `protobuf:"bytes,4,opt,name=skill_cd,json=skillCd,proto3" json:"skill_cd,omitempty"`
+	InsufficientEnergy  *DescriptiveStats `protobuf:"bytes,1,opt,name=insufficient_energy,json=insufficientEnergy,proto3" json:"insufficient_energy,omitempty" bson:"insufficientEnergy,omitempty"`
+	InsufficientStamina *DescriptiveStats `protobuf:"bytes,2,opt,name=insufficient_stamina,json=insufficientStamina,proto3" json:"insufficient_stamina,omitempty" bson:"insufficientStamina,omitempty"`
+	SwapCd              *DescriptiveStats `protobuf:"bytes,3,opt,name=swap_cd,json=swapCd,proto3" json:"swap_cd,omitempty" bson:"swapCd,omitempty"`
+	SkillCd             *DescriptiveStats `protobuf:"bytes,4,opt,name=skill_cd,json=skillCd,proto3" json:"skill_cd,omitempty" bson:"skillCd,omitempty"`
 }
 
 func (x *FailedActions) Reset() {

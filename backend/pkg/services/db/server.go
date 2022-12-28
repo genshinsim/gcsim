@@ -87,6 +87,8 @@ func (s *Server) Get(ctx context.Context, req *GetRequest) (*GetResponse, error)
 	}
 
 	return &GetResponse{
-		Data: res,
+		Data: &model.DBEntries{
+			Data: res,
+		},
 	}, nil
 }

@@ -41,7 +41,7 @@ func (c *Client) Create(ctx context.Context, e *model.DBEntry) (string, error) {
 
 const limit = 30
 
-func (c *Client) Get(ctx context.Context, query *structpb.Struct, page int64) ([]*model.DBEntry, error) {
+func (c *Client) Get(ctx context.Context, query *structpb.Struct, page int64) (*model.DBEntries, error) {
 	req := &GetRequest{
 		Query: query,
 		Limit: limit,

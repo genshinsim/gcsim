@@ -25,7 +25,7 @@ message GetRequest {
 }
 
 message GetResponse {
-    repeated model.DBEntry data = 1;
+    model.DBEntries data = 1;
 }
 
 

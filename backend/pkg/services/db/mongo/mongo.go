@@ -134,7 +134,8 @@ func (s *Server) Get(ctx context.Context, query *structpb.Struct, limit, page in
 	}
 
 	if len(res) == 0 {
-		return nil, status.Error(codes.NotFound, "no result")
+		s.Log.Infow("mongodb: get request done; no results")
+		return nil, nil
 	}
 
 	var result []*model.DBEntry
