@@ -8,23 +8,23 @@ import "protos/model/sim.proto";
 message DBEntry {
     //basic info
     string key = 1 [json_name="key"];
-    uint64 create_date = 2;
-    uint64 run_date = 3;
-    model.DescriptiveStats sim_duration = 4;
-    string config = 5;
-    string hash = 6;
+    uint64 create_date = 2 [json_name="create_date"];
+    uint64 run_date = 3 [json_name="run_date"];
+    model.DescriptiveStats sim_duration = 4 [json_name="sim_duration"];
+    string config = 5 [json_name="config"];
+    string hash = 6 [json_name="hash"];
 
     //indexing data
-    model.DescriptiveStats total_damage = 7;
-    repeated string char_names = 8;
-    int32 target_count = 9;
-    double mean_dps_per_target = 10;
+    model.DescriptiveStats total_damage = 7 [json_name="total_damage"];
+    repeated string char_names = 8 [json_name="char_names"];
+    int32 target_count = 9 [json_name="target_count"];
+    double mean_dps_per_target = 10 [json_name="mean_dps_per_target"];
 
     //detailed results
-    repeated model.Character team = 11;
-    map<string, model.DescriptiveStats> dps_by_target = 12;
+    repeated model.Character team = 11 [json_name="team"];
+    map<string, model.DescriptiveStats> dps_by_target = 12 [json_name="dps_by_target"];
 }
 
 message DBEntries {
-    repeated DBEntry data = 1;
+    repeated DBEntry data = 1 [json_name="data"];
 }

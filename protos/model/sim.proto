@@ -4,100 +4,100 @@ option go_package="pkg/model";
 
 
 message Character {
-    string key = 1;
-    string name = 2;
-    string element = 3;
-    int64 level = 4;
-    int64 max_level = 5;
-    int64 cons = 6;
-    Weapon weapon = 7;
-    CharacterTalents talents = 8;
-    map<string, int64> sets = 9;
-    map<string, double> stats = 10;
-    map<string, double> snapshot = 11;
+    string key = 1 [json_name="key"];
+    string name = 2 [json_name="name"];
+    string element = 3 [json_name="element"];
+    int64 level = 4 [json_name="level"];
+    int64 max_level = 5 [json_name="max_level"];
+    int64 cons = 6 [json_name="cons"];
+    Weapon weapon = 7 [json_name="weapon"];
+    CharacterTalents talents = 8 [json_name="talents"];
+    map<string, int64> sets = 9 [json_name="sets"];
+    map<string, double> stats = 10 [json_name="stats"];
+    map<string, double> snapshot = 11 [json_name="snapshot"];
 }
 
 message CharacterTalents {
-    int64 attack = 1;
-    int64 skill = 2;
-    int64 burst = 3;
+    int64 attack = 1 [json_name="attack"];
+    int64 skill = 2 [json_name="skill"];
+    int64 burst = 3 [json_name="burst"];
 }
 
 message Weapon {
-    string name = 1;
-    int64 refine = 2;
-    int64 level = 3;
-    int64 max_level = 4;
+    string name = 1 [json_name="name"];
+    int64 refine = 2 [json_name="refine"];
+    int64 level = 3 [json_name="level"];
+    int64 max_level = 4 [json_name="max_level"];
 }
 
 message Enemy {
-    int64 level = 1;
+    int64 level = 1 [json_name="level"];
     double HP = 2 [json_name="hp"];
-    map<string, double> resist = 3;
-    Coord pos = 4;
-    double particle_drop_threshold = 5;
-    double particle_drop_count = 6;
-    string particle_element = 7;
+    map<string, double> resist = 3 [json_name="resist"];
+    Coord pos = 4 [json_name="pos"];
+    double particle_drop_threshold = 5 [json_name="particle_drop_threshold"];
+    double particle_drop_count = 6 [json_name="particle_drop_count"];
+    string particle_element = 7 [json_name="particle_element"];
 }
 
 message Coord {
-    double x = 1;
-    double y = 2;
-    double r = 3;
+    double x = 1 [json_name="x"];
+    double y = 2 [json_name="y"];
+    double r = 3 [json_name="r"];
 }
 
 message SimulatorSettings {
-    double duration = 1;
-    bool damage_mode = 2;
-    bool enable_hitlag = 3;
-    bool def_halt = 4;
-    int64 number_of_workers = 5;
-    int64 number_of_iterations = 6;
-    Delays delays = 7;
+    double duration = 1 [json_name="duration"];
+    bool damage_mode = 2 [json_name="damage_mode"];
+    bool enable_hitlag = 3 [json_name="enable_hitlag"];
+    bool def_halt = 4 [json_name="def_halt"];
+    int64 number_of_workers = 5 [json_name="number_of_workers"];
+    int64 number_of_iterations = 6 [json_name="number_of_iterations"];
+    Delays delays = 7 [json_name="delays"];
 
 }
 
 message Delays {
-    int64 swap = 1;
+    int64 swap = 1 [json_name="swap"];
 }
 
 
 message EnergySettings {
-    bool active = 1;
-    bool once = 2;
-    int64 start = 3;
-    int64 end = 4;
-    int64 amount = 5;
-    int64 last_energy_drop = 6;
+    bool active = 1 [json_name="active"];
+    bool once = 2 [json_name="once"];
+    int64 start = 3 [json_name="start"];
+    int64 end = 4 [json_name="end"];
+    int64 amount = 5 [json_name="amount"];
+    int64 last_energy_drop = 6 [json_name="last_energy_drop"];
 }
 
 message AvatarData {
-    int64 rarity = 1;
-    BodyType body = 2;
-    ZoneType region = 3;
-    Element element = 4;
-    WeaponClass weapon_class = 5;
-    string image_name = 6;
-    AvatarStatsData base_stats = 7;
+    int64 rarity = 1 [json_name="rarity"];
+    BodyType body = 2 [json_name="body"];
+    ZoneType region = 3 [json_name="region"];
+    Element element = 4 [json_name="element"];
+    WeaponClass weapon_class = 5 [json_name="weapon_class"];
+    string image_name = 6 [json_name="image_name"];
+    AvatarStatsData base_stats = 7 [json_name="base_stats"];
 }
 
 message AvatarStatsData {
-    double base_hp = 1;
-    double base_atk = 2;
-    double base_def = 3;
-    AvatarCurveType hp_curve = 4;
-    AvatarCurveType atk_curve = 5;
-    AvatarCurveType def_cruve = 6;
-    StatType specialized = 7;
-    repeated PromotionData promo_data = 8;
+    double base_hp = 1 [json_name="base_hp"];
+    double base_atk = 2 [json_name="base_atk"];
+    double base_def = 3 [json_name="base_def"];
+    AvatarCurveType hp_curve = 4 [json_name="hp_curve"];
+    AvatarCurveType atk_curve = 5 [json_name="atk_curve"];
+    AvatarCurveType def_cruve = 6 [json_name="def_cruve"];
+    StatType specialized = 7 [json_name="specialized"];
+    repeated PromotionData promo_data = 8 [json_name="promo_data"];
 }
 
 message PromotionData {
-    int64 max_level = 1;
-    double hp = 2;
-    double atk = 3;
-    double def = 4;
-    double special = 5;
+    int64 max_level = 1 [json_name="max_level"];
+    double hp = 2 [json_name="hp"];
+    double atk = 3 [json_name="atk"];
+    double def = 4 [json_name="def"];
+    double special = 5 [json_name="special"];
 }
 
 enum AvatarCurveType {
