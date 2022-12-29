@@ -1,12 +1,19 @@
+import React from "react";
+
 export function Database() {
-  const data = await fetch("https://simimpact.app/api/db");
-  //   data
-  //     .then((res) => {
-  //       idk = res.body;
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
+  React.useEffect(() => {
+    const url = `/api/db?q=${encodeURIComponent(
+      JSON.stringify({ char_names: "ayaka" })
+    )}`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   return (
     <>
@@ -25,11 +32,6 @@ export function Database() {
       </div>
     </>
   );
-}
-
-async function fetchDatabase() {
-  const data = await fetch("https://simimpact.app/api/db");
-  return data;
 }
 
 // export interface sim {

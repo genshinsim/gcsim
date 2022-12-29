@@ -27,6 +27,8 @@ type entry struct {
 const iters = 100
 const workers = 30
 
+var client *db.Client
+
 func main() {
 
 	var data []entry
@@ -38,8 +40,8 @@ func main() {
 
 	// log.Println(data)
 
-	client, err := db.NewClient(db.ClientCfg{
-		Addr: "localhost:3000",
+	client, err = db.NewClient(db.ClientCfg{
+		Addr: "192.168.100.47:8082",
 	})
 	if err != nil {
 		panic(err)
@@ -50,25 +52,37 @@ func main() {
 		log.Println("no data; exiting")
 	}
 
-	for _, v := range data[:10] {
-		start := time.Now()
-		log.Printf("Recomputing %v\n", v.Key)
-		e, err := parseAndComputeEntry(v)
+	for _, v := range data {
+		err := handleEntry(v)
 		if err != nil {
 			log.Printf("Skipping db entry: %v; error encountered: %v\n", v.Key, err)
-			continue
 		}
-		key, err := client.Create(context.TODO(), e)
-
-		if err != nil {
-			log.Println("insert into db failed! panicking")
-			panic(err)
-		}
-
-		elapsed := time.Since(start)
-		log.Printf("%v completed in %s; new entry with key %v", v.Key, elapsed, key)
 	}
 
+}
+
+func handleEntry(v entry) error {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("panic occurred:", err)
+		}
+	}()
+	start := time.Now()
+	log.Printf("Recomputing %v\n", v.Key)
+	e, err := parseAndComputeEntry(v)
+	if err != nil {
+		return err
+	}
+	key, err := client.Create(context.TODO(), e)
+
+	if err != nil {
+		return err
+	}
+
+	elapsed := time.Since(start)
+	log.Printf("%v completed in %s; new entry with key %v", v.Key, elapsed, key)
+
+	return nil
 }
 
 var myClient = &http.Client{Timeout: 120 * time.Second}
