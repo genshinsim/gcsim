@@ -1,35 +1,21 @@
 import React from "react";
+import { Filter } from "./Filter";
+import { ListView } from "./ListView";
 
 export function Database() {
-  React.useEffect(() => {
-    const url = `/api/db?q=${encodeURIComponent(
-      JSON.stringify({ char_names: "ayaka" })
-    )}`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
+  const urlParams = window.location.search;
+
+  React.useEffect(() => {}, [urlParams]);
 
   return (
     <>
-      <div className="flex justify-center my-40">
-        <div className="">
-          {/* {dbData.map((sim) => {
-            return (
-              <div key={sim.hash}>
-                <div className="flex flex-row">
-                  <div className="flex flex-col"></div>
-                </div>
-              </div>
-            );
-          })} */}
-        </div>
-      </div>
+      <Filter />
+      <ListView
+        query={{ char_names: "ayaka" }}
+        sort="??"
+        skip="??"
+        limit="??"
+      />
     </>
   );
 }
