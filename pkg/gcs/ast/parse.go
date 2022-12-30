@@ -196,6 +196,9 @@ func (p *Parser) parseStatement() (Node, error) {
 	case keywordLet:
 		stmtType = "let"
 		node, err = p.parseLet()
+	case itemCharacterKey:
+		stmtType = "char action"
+		node, err = p.parseAction()
 	case keywordReturn:
 		stmtType = "return"
 		node, err = p.parseReturn()
