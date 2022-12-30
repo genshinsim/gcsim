@@ -835,6 +835,23 @@ func (p *Parser) parseNumber() (Expr, error) {
 	return num, nil
 }
 
+func (p *Parser) paserBool() (Expr, error) {
+	// bool is a number (true = 1, false = 0)
+	n := p.next()
+	num := &NumberLit{Pos: n.pos}
+	switch n.Val {
+	case "true":
+		num.IntVal = 1
+		num.FloatVal = 1
+	case "false":
+		num.IntVal = 0
+		num.FloatVal = 0
+	default:
+		return nil, fmt.Errorf("ln%v: expecting boolean, got %v", n.line, n.Val)
+	}
+	return num, nil
+}
+
 func (p *Parser) parseUnaryExpr() (Expr, error) {
 	n := p.next()
 	switch n.Typ {
