@@ -23,6 +23,12 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
 	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
+
+	// add chars variable
+	for _, ch := range e.Core.Player.Chars() {
+		var obj Obj = &char{key: ch.Base.Key}
+		env.varMap[ch.Base.Key.String()] = &obj
+	}
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
@@ -129,6 +135,8 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 		str = "number"
 	case typStr:
 		str = "string"
+	case typChr:
+		str = "character"
 	case typFun:
 		fallthrough
 	case typBif:

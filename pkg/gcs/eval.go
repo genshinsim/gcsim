@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -99,6 +100,7 @@ const (
 	typStr
 	typFun
 	typBif // built-in function
+	typChr
 	typRet
 	typCtr
 	// typTerminate
@@ -124,6 +126,10 @@ type (
 
 	bfuncval struct {
 		Body func(c *ast.CallExpr, env *Env) (Obj, error)
+	}
+
+	char struct {
+		key keys.Char
 	}
 
 	retval struct {
@@ -155,15 +161,19 @@ func (n *number) Typ() ObjTyp { return typNum }
 
 // strval.
 func (s *strval) Inspect() string { return s.str }
-func (n *strval) Typ() ObjTyp     { return typStr }
+func (s *strval) Typ() ObjTyp     { return typStr }
 
 // funcval.
-func (s *funcval) Inspect() string { return "function" }
-func (n *funcval) Typ() ObjTyp     { return typFun }
+func (f *funcval) Inspect() string { return "function" }
+func (f *funcval) Typ() ObjTyp     { return typFun }
 
 // bfuncval.
-func (s *bfuncval) Inspect() string { return "built-in function" }
-func (n *bfuncval) Typ() ObjTyp     { return typBif }
+func (b *bfuncval) Inspect() string { return "built-in function" }
+func (b *bfuncval) Typ() ObjTyp     { return typBif }
+
+// char.
+func (c *char) Inspect() string { return c.key.String() }
+func (c *char) Typ() ObjTyp     { return typChr }
 
 // retval.
 func (r *retval) Inspect() string {

@@ -45,6 +45,7 @@ type (
 	ActionStmt struct {
 		Pos
 		Char   keys.Char
+		Ident  Token
 		Action action.Action
 		Param  map[string]int
 	}
@@ -195,7 +196,7 @@ func (a *ActionStmt) String() string {
 }
 
 func (a *ActionStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString(a.Char.String())
+	sb.WriteString(a.Ident.String())
 	sb.WriteString(" ")
 	sb.WriteString(a.Action.String())
 	if a.Param != nil && len(a.Param) > 0 {
@@ -215,7 +216,7 @@ func (a *ActionStmt) CopyActionStmt() *ActionStmt {
 	}
 	n := &ActionStmt{
 		Pos:    a.Pos,
-		Char:   a.Char,
+		Ident:  a.Ident,
 		Action: a.Action,
 	}
 	if a.Param != nil {

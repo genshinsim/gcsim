@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
@@ -130,6 +131,18 @@ func (e *Eval) execSwap(char keys.Char) (Obj, error) {
 }
 
 func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) (Obj, error) {
+	// update Ident
+	v, err := env.v(a.Ident.Val)
+	if err != nil {
+		return nil, err
+	}
+
+	val := *v
+	if val.Typ() != typChr {
+		return nil, fmt.Errorf("variable %v is not a char", a.Ident.Val)
+	}
+	a.Char = shortcut.CharNameToKey[val.Inspect()]
+
 	// check if character is active, if not then issue a swap action first
 	if !e.Core.Player.CharIsActive(a.Char) {
 		res, err := e.execSwap(a.Char)

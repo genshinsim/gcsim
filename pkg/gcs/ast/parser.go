@@ -129,6 +129,7 @@ func New(input string) *Parser {
 	}
 	//expr functions
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
+	p.prefixParseFns[itemCharacterKey] = p.parseIdent
 	p.prefixParseFns[itemField] = p.parseField
 	p.prefixParseFns[itemNumber] = p.parseNumber
 	p.prefixParseFns[itemString] = p.parseString

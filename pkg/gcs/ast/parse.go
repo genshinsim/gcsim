@@ -196,9 +196,6 @@ func (p *Parser) parseStatement() (Node, error) {
 	case keywordLet:
 		stmtType = "let"
 		node, err = p.parseLet()
-	case itemCharacterKey:
-		stmtType = "char action"
-		node, err = p.parseAction()
 	case keywordReturn:
 		stmtType = "return"
 		node, err = p.parseReturn()
@@ -223,9 +220,15 @@ func (p *Parser) parseStatement() (Node, error) {
 	case itemIdentifier:
 		p.next()
 		//check if = after
-		if x := p.peek(); x.Typ == itemAssign {
+		x := p.peek()
+		if x.Typ == itemAssign {
 			p.backup()
 			node, err = p.parseAssign()
+			break
+		} else if x.Typ == itemActionKey {
+			p.backup()
+			stmtType = "char action"
+			node, err = p.parseAction()
 			break
 		}
 		//it's an expr if no assign
@@ -599,7 +602,7 @@ func (p *Parser) parseFnArgs() ([]*Ident, error) {
 	for n := p.next(); n.Typ != itemRightParen; n = p.next() {
 		a := &Ident{}
 		//expecting ident, comma
-		if n.Typ != itemIdentifier {
+		if n.Typ != itemIdentifier && n.Typ != itemCharacterKey {
 			return nil, fmt.Errorf("ln%v: expecting identifier in param list, got %v", n.line, n.Val)
 		}
 		a.Pos = n.pos
