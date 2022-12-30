@@ -26,3 +26,4 @@ cmd/gcsim/gcsim
 \.vscode/
 **/node_modules
 .env
+**/protos_gen
