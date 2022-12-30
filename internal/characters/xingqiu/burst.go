@@ -7,11 +7,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
+var XQ_N0_delays = make([]int, keys.EndCharKeys)
+var XQ_N0_delays_alt_forms = make([]int, keys.EndCharKeys)
+var alt_form_status_keys = make([]string, keys.EndCharKeys)
 
 const (
 	burstHitmark = 18
@@ -25,6 +29,30 @@ func init() {
 	burstFrames[action.ActionSkill] = 33
 	burstFrames[action.ActionDash] = 33
 	burstFrames[action.ActionJump] = 33
+
+	for i := range XQ_N0_delays_alt_forms {
+		XQ_N0_delays_alt_forms[i] = -1
+	}
+
+	XQ_N0_delays[keys.Nahida] = 9
+	XQ_N0_delays[keys.Xingqiu] = 7
+	XQ_N0_delays[keys.Yelan] = 9
+
+	XQ_N0_delays[keys.Raiden] = 13
+	XQ_N0_delays_alt_forms[keys.Raiden] = 13
+	alt_form_status_keys[keys.Raiden] = "raidenburst"
+
+	XQ_N0_delays[keys.Bennett] = 7
+	XQ_N0_delays[keys.Diluc] = 15
+	XQ_N0_delays[keys.Kazuha] = 10
+	XQ_N0_delays[keys.Keqing] = 8
+	XQ_N0_delays[keys.Xiangling] = 7
+
+	// jumping/dashing during the NA windup for some catalysts modifies their frames - said by koli
+	// thus the current method of NA -> jump to test for N0 timing won't work on them
+	XQ_N0_delays[keys.Kokomi] = 0
+	XQ_N0_delays[keys.Sucrose] = 0
+
 }
 
 /**
@@ -154,6 +182,40 @@ func (c *char) summonSwordWave() {
 	c.AddStatus(burstICDKey, 60, true)
 }
 
+func (c *char) getN0Delay() int {
+	active := c.Core.Player.ActiveChar()
+	activeCharKey := active.Base.Key
+	// The character doesn't have an alt form
+	if XQ_N0_delays_alt_forms[activeCharKey] == -1 {
+		return XQ_N0_delays[activeCharKey]
+	}
+
+	if active.StatusIsActive(alt_form_status_keys[activeCharKey]) {
+		return XQ_N0_delays_alt_forms[activeCharKey]
+	} else {
+		return XQ_N0_delays[activeCharKey]
+	}
+}
+
+func (c *char) burstStateDelayFunc() {
+	//ignore if on ICD
+	if c.StatusIsActive(burstICDKey) {
+		return
+	}
+
+	state := c.Core.Player.CurrentState()
+	//this should start a new ticker if not on ICD and state is correct
+	if state == action.NormalAttackState {
+		c.summonSwordWave()
+		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index).
+			Write("state", action.NormalAttackState).
+			Write("icd", c.StatusExpiry(burstICDKey))
+		c.burstTickSrc = c.Core.F
+		//use the hitlag affected queue for this
+		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
+	}
+}
+
 func (c *char) burstStateHook() {
 	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
 		//check if buff is up
@@ -165,18 +227,12 @@ func (c *char) burstStateHook() {
 		if next != action.NormalAttackState {
 			return false
 		}
-		//ignore if on ICD
-		if c.StatusIsActive(burstICDKey) {
-			return false
-		}
-		//this should start a new ticker if not on ICD and state is correct
-		c.summonSwordWave()
-		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index).
-			Write("state", next).
-			Write("icd", c.StatusExpiry(burstICDKey))
-		c.burstTickSrc = c.Core.F
-		//use the hitlag affected queue for this
-		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
+		delay := c.getN0Delay()
+		c.Core.Log.NewEvent("xq burst delay on state change", glog.LogCharacterEvent, c.Index).
+			Write("active", c.Core.Player.ActiveChar().Base.Key.String()).
+			Write("delay", delay)
+		// This accounts for the delay in n0 timing needed for XQ to trigger rainswords
+		c.Core.Tasks.Add(c.burstStateDelayFunc, delay)
 
 		return false
 	}, "xq-burst-animation-check")
@@ -196,12 +252,22 @@ func (c *char) burstTickerFunc(src int) func() {
 		}
 		//stop if we are no longer in normal animation state
 		state := c.Core.Player.CurrentState()
+
 		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("xq burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("xq burst tick check stopped, not in normal state", glog.LogCharacterEvent, c.Index).
 				Write("src", src).
 				Write("state", state)
 			return
 		}
+		state_start := c.Core.Player.CurrentStateStart()
+		norm_counter := c.Core.Player.ActiveChar().NormalCounter
+		if (norm_counter == 1) && c.Core.F-state_start < c.getN0Delay() {
+			c.Core.Log.NewEvent("xq burst tick check stopped, not enough time since normal state start", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("state_start", state_start)
+			return
+		}
+
 		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index).
 			Write("src", src).
 			Write("state", state).
