@@ -102,6 +102,7 @@ const (
 	ICDGroupBurning
 	ICDGroupNahidaSkill
 	ICDGroupLayla
+	ICDGroupYaoyaoRadish
 	ICDGroupLength
 )
 
@@ -125,6 +126,7 @@ var ICDGroupResetTimer = []int{
 	120, //burning
 	60,  //nahida skill
 	180, //layla
+	150, //yaoyao radish
 }
 
 var ICDGroupEleApplicationSequence = [][]float64{
@@ -166,6 +168,8 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//layla
 	{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+	//yaoyao radish
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -209,4 +213,6 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//layla
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//yaoyao radish
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 }
