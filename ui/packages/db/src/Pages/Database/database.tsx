@@ -1,15 +1,65 @@
-import React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Filter } from "./Filter";
 import { ListView } from "./ListView";
+import { model } from "../../../protos_gen/protos";
+import axios from "axios";
+import { fetchDataFromDB } from "../../api/FetchDataFromDB";
+import DBEntryView from "./Components/DBEntryView";
 
 export function Database() {
   const urlParams = window.location.search;
+  const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
-  React.useEffect(() => {}, [urlParams]);
+  useEffect(() => {
+    fetchDataFromDB(urlParams, setData);
+  }, [urlParams]);
+
+  //mock data
+  setData([
+    {
+      team: [
+        {
+          name: "Nahida",
+          cons: 0,
+          element: "dendro",
+          level: 90,
+          weapon: {
+            level: 90,
+            name: "favoniusgreatsword",
+            maxLevel: 90,
+            refine: 5,
+          },
+        },
+        {
+          id: "1000069",
+          name: "Dehya",
+        },
+      ],
+      dps_by_target: {
+        dps: {},
+      },
+      iter: 1000,
+      sim_duration: {},
+      config: "config",
+      hash: "hash",
+      //indexing fields
+      char_names: ["Dehya, Nahida"],
+      target_count: 1,
+      mean_dps_per_target: 100,
+      create_date: "2021-01-01",
+      run_date: "2021-01-01",
+    },
+  ]);
+
+  if (!data) {
+    //TODO: add loading spinner or emoji
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <Filter />
+      {data[0] && <DBEntryView dbEntry={data[0]} />}
       <ListView
         query={{ char_names: "ayaka" }}
         sort="??"
