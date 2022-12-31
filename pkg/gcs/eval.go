@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -100,7 +99,6 @@ const (
 	typStr
 	typFun
 	typBif // built-in function
-	typChr
 	typRet
 	typCtr
 	// typTerminate
@@ -126,10 +124,6 @@ type (
 
 	bfuncval struct {
 		Body func(c *ast.CallExpr, env *Env) (Obj, error)
-	}
-
-	char struct {
-		key keys.Char
 	}
 
 	retval struct {
@@ -170,10 +164,6 @@ func (f *funcval) Typ() ObjTyp     { return typFun }
 // bfuncval.
 func (b *bfuncval) Inspect() string { return "built-in function" }
 func (b *bfuncval) Typ() ObjTyp     { return typBif }
-
-// char.
-func (c *char) Inspect() string { return c.key.String() }
-func (c *char) Typ() ObjTyp     { return typChr }
 
 // retval.
 func (r *retval) Inspect() string {

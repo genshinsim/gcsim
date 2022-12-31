@@ -2,6 +2,8 @@ package ast
 
 import (
 	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 type actionItem struct {
@@ -33,17 +35,17 @@ func (p *Parser) parseAction() (Stmt, error) {
 	//	+limit
 	//	+timeout
 	//	+try
-	var err error
-	char := p.next()
-	if char.Typ != itemCharacterKey && char.Typ != itemIdentifier {
+	char, err := p.consume(itemCharacterKey)
+	if err != nil {
 		//this really shouldn't happen since we already checked
-		return nil, fmt.Errorf("ln%v: expecting character key or identifier, got %v", char.line, char.Val)
+		return nil, fmt.Errorf("ln%v: expecting character key, got %v", char.line, char.Val)
 	}
+	charKey := shortcut.CharNameToKey[char.Val]
 
 	//should be multiple action keys next
 	var actions []*ActionStmt
 	if n := p.peek(); n.Typ != itemActionKey {
-		return nil, fmt.Errorf("ln%v: expecting actions for %v, got %v", n.line, char.Val, n.Val)
+		return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
 	}
 
 	//all actions needs to come before any + flags
@@ -56,7 +58,7 @@ Loop:
 		case itemActionKey:
 			a := &ActionStmt{
 				Pos:    char.pos,
-				Ident:  char,
+				Char:   charKey,
 				Action: actionKeys[n.Val],
 			}
 			//check for param -> then repeat
