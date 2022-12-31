@@ -33,6 +33,10 @@ func (c *Circle) Pos() Point {
 	return c.center
 }
 
+func (c *Circle) Radius() float64 {
+	return c.r
+}
+
 func (c *Circle) SetPos(p Point) {
 	if c.center == p {
 		return
