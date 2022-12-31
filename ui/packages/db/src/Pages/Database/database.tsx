@@ -6,50 +6,88 @@ import axios from "axios";
 import { fetchDataFromDB } from "../../api/FetchDataFromDB";
 import DBEntryView from "./Components/DBEntryView";
 
+const mockData: model.IDBEntries["data"] = [
+  {
+    team: [
+      {
+        name: "nahida",
+        cons: 0,
+        element: "dendro",
+        level: 90,
+        weapon: {
+          level: 90,
+          name: "favoniusgreatsword",
+          maxLevel: 90,
+          refine: 5,
+        },
+        sets: {
+          gladiatorsfinale: 2,
+          noblesseoblige: 2,
+        },
+        talents: {
+          attack: 9,
+          burst: 9,
+          skill: 9,
+        },
+        maxLevel: 90,
+      },
+      {
+        name: "dehya",
+        cons: 0,
+        element: "pyro",
+        level: 90,
+        weapon: {
+          level: 90,
+          name: "favoniuscodex",
+          maxLevel: 90,
+          refine: 5,
+        },
+        sets: {
+          wandererstroupe: 2,
+          gildeddreams: 2,
+        },
+        talents: {
+          attack: 9,
+          burst: 9,
+          skill: 9,
+        },
+        maxLevel: 90,
+      },
+    ],
+    dpsByTarget: {
+      target1: {
+        max: 100,
+        mean: 100,
+        min: 100,
+        SD: 100,
+      },
+    },
+    simDuration: {
+      mean: 100,
+      min: 100,
+      max: 100,
+      SD: 100,
+    },
+    config: "config",
+    hash: "hash",
+    //indexing fields
+    charNames: ["dehya, nahida"],
+    targetCount: 1,
+    meanDpsPerTarget: 100,
+    createDate: 20210101,
+    runDate: 20210101,
+  },
+];
+
 export function Database() {
   const urlParams = window.location.search;
   const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
   useEffect(() => {
     fetchDataFromDB(urlParams, setData);
+    //mock data
+    setData(mockData);
   }, [urlParams]);
-
-  //mock data
-  setData([
-    {
-      team: [
-        {
-          name: "Nahida",
-          cons: 0,
-          element: "dendro",
-          level: 90,
-          weapon: {
-            level: 90,
-            name: "favoniusgreatsword",
-            maxLevel: 90,
-            refine: 5,
-          },
-        },
-        {
-          id: "1000069",
-          name: "Dehya",
-        },
-      ],
-      dps_by_target: {
-        dps: {},
-      },
-      iter: 1000,
-      sim_duration: {},
-      config: "config",
-      hash: "hash",
-      //indexing fields
-      char_names: ["Dehya, Nahida"],
-      target_count: 1,
-      mean_dps_per_target: 100,
-      create_date: "2021-01-01",
-      run_date: "2021-01-01",
-    },
-  ]);
 
   if (!data) {
     //TODO: add loading spinner or emoji
