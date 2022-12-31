@@ -99,19 +99,12 @@ func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	// v, ok := res.(*number)
-	e.Log.Printf("let expr: %v, type: %T\n", res, res)
-	// if !ok {
-	// 	return nil, fmt.Errorf("value assigned to variable %v does evaluate to a number, got %v", a.Ident, res.Inspect())
-	// }
+	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	n, err := env.v(a.Ident.Val)
 	if err != nil {
 		return nil, err
 	}
 	*n = res
-	// n.fval = v.fval
-	// n.ival = v.ival
-	// n.isFloat = v.isFloat
 
 	return *n, nil
 }
@@ -157,10 +150,6 @@ func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {
 		return nil, err
 	}
 	// e.Log.Printf("return res: %v, type: %T\n", res, res)
-	// res should be a number
-	// if _, ok := res.(*number); !ok {
-	// 	return nil, fmt.Errorf("return expression does not evaluate to a number, got %v", res.Inspect())
-	// }
 	return &retval{
 		res: res,
 	}, nil

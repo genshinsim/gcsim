@@ -98,7 +98,7 @@ type (
 		Body      *BlockStmt
 	}
 
-	// A FnStmt node represents a function. Should always return a number?
+	// A FnStmt node represents a function.
 	FnStmt struct {
 		Pos
 		FunVal Token

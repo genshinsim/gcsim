@@ -43,19 +43,6 @@ func (e *Env) v(s string) (*Obj, error) {
 	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
-func (e *Env) fn(s string) (Obj, error) {
-	v, err := e.v(s)
-	if err != nil {
-		return nil, err
-	}
-
-	val := *v
-	if val.Typ() != typFun && val.Typ() != typBif {
-		return nil, fmt.Errorf("variable %v is not a function", s)
-	}
-	return val, nil
-}
-
 //Run will execute the provided AST. Any genshin specific actions will be passed
 //back to the
 func (e *Eval) Run() Obj {
@@ -171,9 +158,19 @@ func (r *retval) Inspect() string {
 }
 func (n *retval) Typ() ObjTyp { return typRet }
 
-// breakVal.
-func (b *ctrl) Inspect() string { return "break" }
-func (n *ctrl) Typ() ObjTyp     { return typCtr }
+// ctrl.
+func (c *ctrl) Inspect() string {
+	switch c.typ {
+	case ast.CtrlContinue:
+		return "continue"
+	case ast.CtrlBreak:
+		return "break"
+	case ast.CtrlFallthrough:
+		return "fallthrough"
+	}
+	return "invalid"
+}
+func (c *ctrl) Typ() ObjTyp { return typCtr }
 
 func (e *Eval) evalNode(n ast.Node, env *Env) (Obj, error) {
 	switch v := n.(type) {

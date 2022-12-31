@@ -90,10 +90,6 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		if err != nil {
 			return nil, err
 		}
-		// n, ok := param.(*number)
-		// if !ok {
-		// 	return nil, fmt.Errorf("fn %v param %v does not evaluate to a number, got %v", s, v.Value, param.Inspect())
-		// }
 		local.varMap[v.Value] = &param
 	}
 	res, err := e.evalNode(fn.Body, local)
@@ -103,12 +99,10 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	switch v := res.(type) {
 	case *retval:
 		return v.res, nil
-	default:
+	case *null:
 		return &null{}, nil
-		// case *null:
-		// 	return &null{}, nil
-		// default:
-		// 	return nil, fmt.Errorf("fn %v returned an invalid type; expecting a number got %v", s, res.Inspect())
+	default:
+		return nil, fmt.Errorf("fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
 	}
 }
 
