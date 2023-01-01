@@ -67,6 +67,10 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			HitlagHaltFrames:   skillHitlagHaltFrame * 60,
 			CanBeDefenseHalted: false,
 		}
+		offset := -0.3
+		if c.decStack == 0 {
+			offset = -0.4
+		}
 		width := 3.0
 		height := 5.0
 		if c.decStack == 4 {
@@ -84,7 +88,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.3}, width, height),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: offset}, width, height),
 			hitDelay,
 			hitDelay,
 			skillCB,
