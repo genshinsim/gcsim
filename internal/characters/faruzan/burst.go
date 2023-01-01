@@ -73,8 +73,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	playerPos := player.Pos()
 	direction := player.Direction()
 	gadgetPositions := []combat.Point{
-		combat.CalcOffsetPoint(playerPos, combat.Point{X: 5.9, Y: 10.5}, direction),
-		combat.CalcOffsetPoint(playerPos, combat.Point{X: -5.9, Y: 10.5}, direction),
+		combat.CalcOffsetPoint(playerPos, combat.Point{X: 5.19, Y: 10.5}, direction),
+		combat.CalcOffsetPoint(playerPos, combat.Point{X: -5.19, Y: 10.5}, direction),
 		combat.CalcOffsetPoint(playerPos, combat.Point{Y: 1.5}, direction),
 	}
 	count := 0
