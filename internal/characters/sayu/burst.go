@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 4.5),
 		burstHitmark,
 	)
 
@@ -111,7 +111,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-//TODO: is this helper function needed?
+// TODO: is this helper function needed?
 func (c *char) createBurstSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
