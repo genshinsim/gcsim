@@ -43,6 +43,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
+	ap := combat.NewCircleHitOnTarget(qPos, nil, 8)
+
 	//TODO: does sucrose burst snapshot?
 	snap := c.Snapshot(&ai)
 	//TODO: does burst absorb snapshot
@@ -70,23 +72,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 137; i <= duration+5; i += 113 {
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHitOnTarget(qPos, nil, 8),
-			i,
-			cb,
-		)
+		c.Core.QueueAttackWithSnap(ai, snap, ap, i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qAbsorb != attributes.NoElement {
 				aiAbs.Element = c.qAbsorb
-				c.Core.QueueAttackWithSnap(
-					aiAbs,
-					snapAbs,
-					combat.NewCircleHitOnTarget(qPos, nil, 8),
-					0,
-				)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, ap, 0)
 			}
 			//check if absorbed
 		}, i)
