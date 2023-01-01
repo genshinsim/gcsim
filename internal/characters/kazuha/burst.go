@@ -69,6 +69,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
 
+	ap := combat.NewCircleHitOnTarget(qPos, nil, 9)
 	// make sure that this task gets executed:
 	// - inside Q hitlag
 	// - before kazuha can get affected by any more hitlag
@@ -80,19 +81,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.Tasks.Add(func() {
 				if c.qAbsorb != attributes.NoElement {
 					aiAbsorb.Element = c.qAbsorb
-					c.Core.QueueAttackWithSnap(
-						aiAbsorb,
-						snapAbsorb,
-						combat.NewCircleHitOnTarget(qPos, nil, 9),
-						0,
-					)
+					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, ap, 0)
 				}
-				c.Core.QueueAttackWithSnap(
-					ai,
-					snap,
-					combat.NewCircleHitOnTarget(qPos, nil, 9),
-					0,
-				)
+				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 			}, (burstFirstTick-(burstHitmark+1))+117*i)
 		}
 		// C2:
