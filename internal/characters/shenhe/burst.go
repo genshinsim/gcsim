@@ -68,18 +68,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstdot[c.TalentLvlBurst()],
 	}
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 7)
+
 	// DoT snapshot before A1
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
 		for i := 0; i < count; i++ {
 			hitmark := 82 + i*117
 			for j := 0; j < 2; j++ {
-				c.Core.QueueAttackWithSnap(
-					ai,
-					snap,
-					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7),
-					hitmark+j*(30+burstTickOffset[i]),
-				)
+				c.Core.QueueAttackWithSnap(ai, snap, ap, hitmark+j*(30+burstTickOffset[i]))
 			}
 		}
 	}, burstStart)
