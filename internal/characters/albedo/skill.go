@@ -39,10 +39,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	// TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
+	// assuming tap e for hitbox offset
 	c.Core.QueueAttackWithSnap(
 		ai,
 		c.bloomSnapshot,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 5),
 		skillHitmark,
 	)
 
