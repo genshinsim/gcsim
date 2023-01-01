@@ -96,7 +96,7 @@ func (c *char) burstTickerFunc(ai combat.AttackInfo, snap combat.Snapshot, src i
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4),
 			0,
 		)
 		// queue up icicle tick
