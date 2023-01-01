@@ -13,7 +13,7 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{12, 11, 17, 17, 27}
 	attackHitlagHaltFrame = []float64{0.03, 0.03, 0.06, 0.09, 0.12}
-	attackHitboxes        = [][]float64{{1.6}, {2}, {3, 1.5}, {1.5, 3.7}, {2}}
+	attackHitboxes        = [][]float64{{1.6}, {2}, {3, 2.6}, {1.5, 3.7}, {2}}
 	attackOffsets         = []float64{0.8, 0.1, -0.2, 0.1, 0.8}
 	attackFanAngles       = []float64{360, 180, 360, 360, 360}
 )
