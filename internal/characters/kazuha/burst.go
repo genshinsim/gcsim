@@ -25,10 +25,9 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
+	player := c.Core.Combat.Player()
 	c.qAbsorb = attributes.NoElement
-	qPos := c.Core.Combat.Player()
-	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(qPos, nil, 8)
+	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, combat.Point{Y: 1}, 8)
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -44,13 +43,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.05,
 		CanBeDefenseHalted: false,
 	}
+	ap := combat.NewCircleHitOnTarget(player, combat.Point{Y: 1}, 9)
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(qPos, combat.Point{Y: 1}, 9),
-		0,
-		burstHitmark,
-	)
+	c.Core.QueueAttack(ai, ap, 0, burstHitmark)
 
 	//apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
@@ -69,7 +64,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
 
-	ap := combat.NewCircleHitOnTarget(qPos, nil, 9)
 	// make sure that this task gets executed:
 	// - inside Q hitlag
 	// - before kazuha can get affected by any more hitlag
