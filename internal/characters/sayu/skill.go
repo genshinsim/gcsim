@@ -130,6 +130,8 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, 1), 18)
 
 	c.Core.Tasks.Add(func() {
+		// pattern shouldn't snapshot on attack event creation because the skill follows the player
+		d.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3)
 		c.Core.QueueAttackEvent(d, 0)
 
 		if c.Base.Cons >= 2 && c.c2Bonus < 0.66 {
@@ -261,7 +263,6 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})
