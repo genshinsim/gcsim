@@ -32,9 +32,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 		FlatDmg:    0.33 * c.MaxHP(),
 	}
+	r := 7.5
+	if c.Base.Cons >= 4 {
+		r = 9
+	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 5}, 7.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 5}, r),
 		burstHitmark,
 		burstHitmark,
 	)
