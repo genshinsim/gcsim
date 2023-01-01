@@ -70,7 +70,7 @@ const mockData: model.IDBEntries["data"] = [
     config: "config",
     hash: "hash",
     //indexing fields
-    charNames: ["dehya, nahida"],
+    charNames: ["dehya", "nahida"],
     targetCount: 1,
     meanDpsPerTarget: 100,
     createDate: 20210101,

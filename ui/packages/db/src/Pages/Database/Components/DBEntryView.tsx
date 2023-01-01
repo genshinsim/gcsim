@@ -1,16 +1,15 @@
 import SimDurRollupCard from "@gcsim/ui/src/Pages/Viewer/Components/Overview/RollupCards/SimDurRollupCard";
 import { model } from "../../../../protos_gen/protos";
+import { Team } from "@gcsim/ui/src/Pages/Simulator/Team";
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
   return (
-    <div className="flex flex-row bg-slate-800 max-w-fit p-4 gap-2">
+    <div className="flex flex-row bg-slate-800 max-w-fit p-4 gap-4">
       <div className="flex gap-2">
-        {dbEntry.team &&
-          dbEntry.team.map((character, index) => {
-            return (
-              <DBEntryCharacterPortrait character={character} key={index} />
-            );
+        {dbEntry.charNames &&
+          dbEntry.charNames.map((charName, index) => {
+            return <DBEntryCharacterPortrait charName={charName} key={index} />;
           })}
       </div>
 
@@ -24,14 +23,16 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
   );
 }
 
-function DBEntryCharacterPortrait({
-  character,
-}: {
-  character: model.ICharacter;
-}) {
+function DBEntryCharacterPortrait({ charName }: { charName: string }) {
   return (
     <div>
-      {character.name && <img src={character.name} alt={character.name} />}
+      {
+        <img
+          src={"https://gcsim.app/api/assets/avatar/" + charName + ".png"}
+          alt={charName}
+          className="ml-auto h-32"
+        />
+      }
     </div>
   );
 }
@@ -42,7 +43,7 @@ function DBEntryDetails({
   runDate,
 }: model.IDBEntry) {
   return (
-    <div>
+    <div className="flex flex-col justify-center">
       {targetCount && <div>Target Count: {targetCount}</div>}
       {meanDpsPerTarget && <div>Mean DPS Per Target: {meanDpsPerTarget}</div>}
       {runDate && <div>Run Date: {JSON.stringify(runDate)}</div>}
@@ -53,7 +54,7 @@ function DBEntryDetails({
 function DBEntryActions() {
   const simulation_key = "test"; // TODO: get simulation key from dbEntry
   return (
-    <div>
+    <div className="flex flex-col justify-center">
       <a
         href={`https://gcsim.app/v3/viewer/share/${simulation_key}`}
         target="_blank"
