@@ -26,10 +26,11 @@ func NewRectangle(center Point, w, h float64, dir Point) *Rectangle {
 }
 
 func calcCorners(center Point, w, h float64, dir Point) []Point {
-	topLeft := Point{X: -w / 2, Y: h / 2}
-	topRight := Point{X: w / 2, Y: h / 2}
-	bottomRight := Point{X: w / 2, Y: -h / 2}
-	bottomLeft := Point{X: -w / 2, Y: -h / 2}
+	// center is on the bottomLeft - bottomRight edge and not the middle point of the rectangle
+	topLeft := Point{X: -w / 2, Y: h}
+	topRight := Point{X: w / 2, Y: h}
+	bottomRight := Point{X: w / 2, Y: 0}
+	bottomLeft := Point{X: -w / 2, Y: 0}
 	corners := []Point{topLeft, topRight, bottomRight, bottomLeft}
 	// add rotation
 	for i := 0; i < len(corners); i++ {

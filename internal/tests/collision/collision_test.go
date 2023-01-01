@@ -331,7 +331,7 @@ func TestRectangleAttackCollision(t *testing.T) {
 		"offset, hit nothing": {attackWidth: 2.5, attackHeight: 1, attackOffset: combat.Point{X: -3, Y: 2}, want: 0},
 		"offset, hit t0":      {attackWidth: 2.6, attackHeight: 1, attackOffset: combat.Point{X: -3, Y: 2}, want: 1},
 		"offset, hit t1":      {attackWidth: 1, attackHeight: 1, attackOffset: combat.Point{Y: 9}, want: 1},
-		"offset, hit t0 & t1": {attackWidth: 0.1, attackHeight: 15, attackOffset: combat.Point{Y: 9}, want: 2},
+		"offset, hit t0 & t1": {attackWidth: 0.1, attackHeight: 15, attackOffset: combat.Point{Y: 2}, want: 2},
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
