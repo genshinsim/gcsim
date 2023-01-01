@@ -40,6 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 0.5)
 
 	// fires 6 normally
 	jade, ok := p["jade"]
@@ -47,17 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		jade = 6
 	}
 	for i := 0; i < jade; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				nil,
-				0.5,
-			),
-			0,
-			burstHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, 0, burstHitmarks[i]+travel)
 	}
 	// if jade screen is active add 6 jades
 	if c.Core.Constructs.Destroy(c.lastScreen) {
@@ -67,17 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		ai.Abil = "Starshatter (Jade Screen Gems)"
 		for i := 0; i < screen; i++ {
-			c.Core.QueueAttackWithSnap(
-				ai,
-				c.skillSnapshot,
-				combat.NewCircleHit(
-					c.Core.Combat.Player(),
-					c.Core.Combat.PrimaryTarget(),
-					nil,
-					0.5,
-				),
-				burstHitmarks[len(burstHitmarks)-1]+30+travel,
-			) // TODO: figure out jade screen hitmarks
+			c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, ap, burstHitmarks[len(burstHitmarks)-1]+30+travel) // TODO: figure out jade screen hitmarks
 		}
 	}
 
