@@ -72,7 +72,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 1),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1),
 			hitmark,
 			hitmark,
 		)
