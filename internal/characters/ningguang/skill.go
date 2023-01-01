@@ -41,7 +41,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			c.skillSnapshot,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 5),
 			0,
 		)
 	}, skillHitmark)
