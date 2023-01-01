@@ -21,7 +21,7 @@ func (c *char) newStele(dur int, max int) {
 		Mult:       skill[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 2), 0, 0)
 
 	//create a construct
 	con := &stoneStele{
@@ -60,10 +60,11 @@ func (c *char) newStele(dur int, max int) {
 		FlatDmg:    0.019 * c.MaxHP(),
 	}
 	snap := c.Snapshot(&aiSnap)
+	// stele spawns with an offset of Y: 3 but the box has a Y: -4 offset, so it's Y: -1 relative to player as a result
 	c.steleSnapshot = combat.AttackEvent{
 		Info:        aiSnap,
 		Snapshot:    snap,
-		Pattern:     combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -4}, 8, 8),
+		Pattern:     combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 8, 8),
 		SourceFrame: c.Core.F,
 	}
 
