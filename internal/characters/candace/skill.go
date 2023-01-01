@@ -57,12 +57,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		combat.Point{Y: skillOffsets[chargeLevel]},
-		skillHitboxes[chargeLevel][0],
-	)
-
+	var ap combat.AttackPattern
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
 	case 0:
@@ -76,6 +71,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	case 1:
 		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitmark)
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: skillOffsets[chargeLevel]},
+			skillHitboxes[chargeLevel][0],
+		)
 	}
 
 	c.Core.QueueAttack(
