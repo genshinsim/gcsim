@@ -40,34 +40,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1)
+
 	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				nil,
-				1,
-			),
-			burstRelease,
-			burstHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, burstRelease, burstHitmarks[i]+travel)
 	}
 
 	ai.Abil = "Secondary Tanglevine Shaft"
 	ai.Mult = burstSecond[c.TalentLvlBurst()]
 	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				nil,
-				1,
-			),
-			burstHitmarks[i]+travel,
-			burstSecondHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, burstHitmarks[i]+travel, burstSecondHitmarks[i]+travel)
 	}
 
 	c.ConsumeEnergy(7)
