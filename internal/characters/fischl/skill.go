@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// hitmark is 5 frames after oz spawns
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, radius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1.5}, radius),
 		skillOzSpawn,
 		skillOzSpawn+5,
 	)
