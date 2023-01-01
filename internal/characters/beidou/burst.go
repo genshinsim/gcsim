@@ -45,7 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4),
 		burstHitmark,
 		burstHitmark,
 	)
