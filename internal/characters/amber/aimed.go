@@ -56,11 +56,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(
+		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
 			combat.Point{Y: -0.5},
-			0.5,
+			0.1,
+			1,
 		),
 		aimedHitmark,
 		aimedHitmark+travel,
