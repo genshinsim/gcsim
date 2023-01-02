@@ -84,6 +84,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		trg := args[0].(combat.Target)
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.skillActive {
@@ -106,7 +107,7 @@ func (c *char) skillHook() {
 		c.Core.QueueAttackWithSnap(
 			c.skillAttackInfo,
 			c.skillSnapshot,
-			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.4),
+			combat.NewCircleHitOnTarget(trg, nil, 3.4),
 			1,
 		)
 
