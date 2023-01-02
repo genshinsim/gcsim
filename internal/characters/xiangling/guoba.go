@@ -2,7 +2,6 @@ package xiangling
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/faruzan"
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -27,9 +26,13 @@ func (c *char) newGuoba(ai combat.AttackInfo) *panda {
 		snap: c.Snapshot(&ai),
 		c:    c,
 	}
-	x, y := c.Core.Combat.Player().Pos()
-	// TODO: guoba placement??
-	p.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypGuoba)
+	player := c.Core.Combat.Player()
+	pos := combat.CalcOffsetPoint(
+		player.Pos(),
+		combat.Point{Y: 1.3},
+		player.Direction(),
+	)
+	p.Gadget = gadget.New(c.Core, pos, 0.2, combat.GadgetTypGuoba)
 	p.Gadget.Duration = 438
 	p.Reactable = &reactable.Reactable{}
 	p.Reactable.Init(p, c.Core)
@@ -54,6 +57,7 @@ func (p *panda) Tick() {
 		p.Core.Tasks.Add(func() {
 			p.Durability[reactable.ModifierPyro] = 0
 		}, infuseWindow+1) // +1 since infuse window is inclusive
+		p.SetDirectionToClosestEnemy()
 		// queue this in advance because that's how it is on live
 		p.breath()
 	}
@@ -69,11 +73,10 @@ func (p *panda) breath() {
 		p.Core.QueueParticle("xiangling", 1, attributes.Pyro, p.c.ParticleDelay)
 	}
 	// assume A1
-	radius := 6.0
 	p.Core.QueueAttackWithSnap(
 		p.ai,
 		p.snap,
-		combat.NewCircleHit(p, radius),
+		combat.NewCircleHitOnTargetFanAngle(p, nil, 6, 60),
 		10,
 		p.c.c1,
 		part,
@@ -119,5 +122,3 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 
 	return 0, false
 }
-
-func (p *panda) ApplyDamage(*combat.AttackEvent, float64) {}

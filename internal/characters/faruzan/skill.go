@@ -53,7 +53,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 3),
 		skillHitmark,
 		skillHitmark,
 	)
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) pressurizedCollapse(pos combat.Positional) {
+func (c *char) pressurizedCollapse(pos combat.Point) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       VortexAbilName,
@@ -103,13 +103,15 @@ func (c *char) pressurizedCollapse(pos combat.Positional) {
 		c.AddStatus(particleICDKey, 330, true)
 		done = true
 	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(pos, 6),
-		0,
-		vortexHitmark,
-		c.makeC4Callback(),
-		applyBurstShredCb,
-		particleCb,
-	)
+	snap := c.Snapshot(&ai)
+	c.Core.Tasks.Add(func() {
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(pos, nil, 6),
+			0,
+			c.makeC4Callback(),
+			applyBurstShredCb,
+			particleCb)
+	}, vortexHitmark)
 }

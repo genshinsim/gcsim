@@ -24,6 +24,7 @@ type (
 		alive       bool
 		collideWith [TargettableTypeCount]bool
 		onCollision func(Target)
+		direction   Point
 	}
 )
 
@@ -43,11 +44,10 @@ func (t *testtarg) Key() TargetKey                                  { return t.k
 func (t *testtarg) SetKey(i TargetKey)                              { t.key = i }
 func (t *testtarg) Type() TargettableType                           { return t.typ }
 func (t *testtarg) Shape() Shape                                    { return t.shp }
-func (t *testtarg) Pos() (float64, float64)                         { return t.shp.Pos() }
-func (t *testtarg) SetPos(x, y float64)                             {} //??
+func (t *testtarg) Pos() Point                                      { return t.shp.Pos() }
+func (t *testtarg) SetPos(p Point)                                  {} //??
 func (t *testtarg) IsAlive() bool                                   { return t.alive }
 func (t *testtarg) Attack(*AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (t *testtarg) ApplyDamage(*AttackEvent, float64)               {}
 func (t *testtarg) Tick()                                           {}
 func (t *testtarg) Kill()                                           { t.hdlr.RemoveGadget(t.Key()) }
 func (t *testtarg) CollidableWith(x TargettableType) bool           { return t.collideWith[x] }
@@ -106,6 +106,14 @@ func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 		return false, "unknown shape"
 	}
 }
+
+func (t *testtarg) Direction() Point { return t.direction }
+func (t *testtarg) SetDirection(trg Point) {
+	src := t.Pos()
+	t.direction = CalcDirection(src, trg)
+}
+func (t *testtarg) SetDirectionToClosestEnemy()       {} // ???
+func (t *testtarg) CalcTempDirection(trg Point) Point { return DefaultDirection() }
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())

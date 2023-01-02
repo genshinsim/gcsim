@@ -99,12 +99,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 6.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5),
 			0,
 			0,
 			cb,
 		)
-		// reset healDone so the Skill part can proc her heal
+		// reset done so the Skill part can proc her heal
 		done = false
 		cb = c.skillHealCB(done)
 	}, 24)
@@ -116,7 +116,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai.Mult = burstskill[c.TalentLvlBurst()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 4),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4),
 			0,
 			0,
 			cb,

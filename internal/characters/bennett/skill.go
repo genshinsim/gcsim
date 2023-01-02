@@ -12,7 +12,8 @@ import (
 var (
 	skillFrames       [][]int
 	skillHoldHitmarks = [][]int{{45, 57}, {112, 121}}
-	skillHoldRadius   = []float64{2.5, 2.12}
+	skillHoldHitboxes = [][]float64{{2.5}, {3, 3}}
+	skillHoldOffsets  = []float64{0.5, 0}
 )
 
 const skillPressHitmark = 16
@@ -88,7 +89,17 @@ func (c *char) skillPress() action.ActionInfo {
 		Mult:               skill[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), skillPressHitmark, skillPressHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{Y: 0.8},
+			2.5,
+			270,
+		),
+		skillPressHitmark,
+		skillPressHitmark,
+	)
 
 	//25 % chance of 3 orbs
 	var count float64 = 2
@@ -133,21 +144,33 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		ax.HitlagHaltFrames = 0.09 * 60
-		radius := skillHoldRadius[i]
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ax,
-				combat.NewCircleHit(c.Core.Combat.Player(), radius),
-				0,
-				0,
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: skillHoldOffsets[i]},
+			skillHoldHitboxes[i][0],
+		)
+		if i == 1 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: skillHoldOffsets[i]},
+				skillHoldHitboxes[i][0],
+				skillHoldHitboxes[i][1],
 			)
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(ax, ap, 0, 0)
 		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
 		ai.StrikeType = combat.StrikeTypeDefault
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5), 166, 166)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3.5),
+			166,
+			166,
+		)
 	}
 
 	//user-specified c4 variant adds an additional attack that deals 135% of the second hit
@@ -155,8 +178,12 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ai.Mult = skillHold[level-1][1][c.TalentLvlSkill()] * 1.35
 		ai.Abil = "Passion Overload (C4)"
 		ai.HitlagHaltFrames = 0.12 * 60
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 94, 94)
-
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 3, 4),
+			94,
+			94,
+		)
 	}
 
 	// TODO: particle timing??

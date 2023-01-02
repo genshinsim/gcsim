@@ -3,6 +3,7 @@ package target
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 const MaxTeamSize = 4
@@ -22,13 +23,16 @@ type Target struct {
 	icdTagCounter       [MaxTeamSize][combat.ICDTagLength]int
 	icdDamageTagOnTimer [MaxTeamSize][combat.ICDTagLength]bool
 	icdDamageTagCounter [MaxTeamSize][combat.ICDTagLength]int
+
+	direction combat.Point
 }
 
-func New(core *core.Core, x, y, z float64) *Target {
+func New(core *core.Core, p combat.Point, r float64) *Target {
 	t := &Target{
 		Core: core,
 	}
-	t.Hitbox = *combat.NewCircle(x, y, z)
+	t.Hitbox = *combat.NewCircle(p, r, combat.DefaultDirection(), 360)
+	t.direction = combat.DefaultDirection()
 	t.Tags = make(map[string]int)
 	t.Alive = true
 
@@ -46,8 +50,8 @@ func (t *Target) CollidedWith(x combat.Target) {
 func (t *Target) Key() combat.TargetKey     { return t.key }
 func (t *Target) SetKey(x combat.TargetKey) { t.key = x }
 func (t *Target) Shape() combat.Shape       { return &t.Hitbox }
-func (t *Target) SetPos(x, y float64)       { t.Hitbox.SetPos(x, y) }
-func (t *Target) Pos() (float64, float64)   { return t.Hitbox.Pos() }
+func (t *Target) SetPos(p combat.Point)     { t.Hitbox.SetPos(p) }
+func (t *Target) Pos() combat.Point         { return t.Hitbox.Pos() }
 func (t *Target) Kill()                     { t.Alive = false }
 func (t *Target) IsAlive() bool             { return t.Alive }
 func (t *Target) SetTag(key string, val int) {
@@ -107,4 +111,44 @@ func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
 	default:
 		return false, "unknown shape"
 	}
+}
+
+func (t *Target) Direction() combat.Point { return t.direction }
+func (t *Target) SetDirection(trg combat.Point) {
+	src := t.Pos()
+	t.direction = combat.CalcDirection(src, trg)
+	t.Core.Combat.Log.NewEvent("set target direction", glog.LogDebugEvent, -1).
+		Write("src target key", t.key).
+		Write("srcX", src.X).
+		Write("srcY", src.Y).
+		Write("trgX", trg.X).
+		Write("trgY", trg.Y).
+		Write("direction", t.direction)
+}
+func (t *Target) SetDirectionToClosestEnemy() {
+	src := t.Pos()
+	// calculate direction towards closest enemy
+	enemyIndex := t.Core.Combat.EnemyByDistance(src, combat.InvalidTargetKey)[0]
+	enemy := t.Core.Combat.Enemy(enemyIndex)
+	if enemy == nil {
+		panic("there should be an enemy to calculate direction")
+	}
+	t.SetDirection(enemy.Pos())
+	t.Core.Combat.Log.NewEvent("set target direction to closest enemy", glog.LogDebugEvent, -1).
+		Write("enemy index", enemyIndex).
+		Write("enemy key", enemy.Key()).
+		Write("direction", t.direction)
+}
+func (t *Target) CalcTempDirection(trg combat.Point) combat.Point {
+	src := t.Pos()
+	direction := combat.CalcDirection(src, trg)
+	t.Core.Combat.Log.NewEvent("using temporary target direction", glog.LogDebugEvent, -1).
+		Write("src target key", t.key).
+		Write("srcX", src.X).
+		Write("srcY", src.Y).
+		Write("trgX", trg.X).
+		Write("trgY", trg.Y).
+		Write("direction", t.direction).
+		Write("temporary direction", direction)
+	return direction
 }

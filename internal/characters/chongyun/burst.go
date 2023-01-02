@@ -36,12 +36,22 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// Spirit Blade 1-3
 	for _, hitmark := range burstHitmarks {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3.5), hitmark, hitmark)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
+			hitmark,
+			hitmark,
+		)
 	}
 
 	// extra Spirit Blade at C6
 	if c.Base.Cons >= 6 {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3.5), burstHitmarkC6, burstHitmarkC6)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
+			burstHitmarkC6,
+			burstHitmarkC6,
+		)
 	}
 
 	c.SetCD(action.ActionBurst, 720)

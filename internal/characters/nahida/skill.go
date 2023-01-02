@@ -67,7 +67,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 4.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.2}, 4.6),
 		0, //TODO: snapshot delay?
 		skillPressHitmark,
 		c.skillMarkTargets,
@@ -108,7 +108,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 25),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
 		0, // TODO: snapshot timing
 		hold+3,
 		c.skillMarkTargets,
@@ -232,7 +232,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefSingleTarget(e.Key()),
+			combat.NewSingleTargetHit(e.Key()),
 			4,
 			cb,
 		)

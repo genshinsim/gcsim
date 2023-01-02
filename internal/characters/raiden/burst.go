@@ -70,7 +70,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
 		c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index).
 			Write("stacks", c.stacksConsumed)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 7.63), 0, 0)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 13, 8),
+			0,
+			0,
+		)
 	}, burstHitmark)
 
 	c.SetCD(action.ActionBurst, 18*60)

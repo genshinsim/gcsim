@@ -14,8 +14,20 @@ import (
 func (c *char) c1(ai combat.AttackInfo, travel int) {
 	ai.Abil = "Aim (Charged) C1"
 	ai.Mult = ai.Mult / 3.0
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
+	for i := 0; i < 2; i++ {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				combat.Point{Y: -0.5},
+				0.1,
+				1,
+			),
+			aimedHitmark,
+			aimedHitmark+travel,
+		)
+	}
 }
 
 // C2:

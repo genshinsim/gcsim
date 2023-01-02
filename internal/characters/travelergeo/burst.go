@@ -83,7 +83,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//1.1 sec duration, tick every .25
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 6), burstHitmark+(i+1)*15, c4cb)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6),
+			burstHitmark+(i+1)*15,
+			c4cb,
+		)
 	}
 
 	c.Core.Tasks.Add(func() {

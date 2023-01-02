@@ -10,7 +10,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
+var (
+	burstFrames         []int
+	burstAttackHitboxes = [][]float64{{2.4}, {3.4, 3.4}, {2.4}, {2.4}}
+	burstAttackOffsets  = []float64{1, 0.5, 1, 1.8}
+)
 
 const (
 	burstHitmark = 32
@@ -45,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -103,12 +107,20 @@ func (c *char) wolfBurst() {
 			Mult:       wolfDmg[c.TalentLvlBurst()] * atk.Info.Mult,
 		}
 
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2.4),
-			1,
-			1,
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: burstAttackOffsets[c.NormalCounter]},
+			burstAttackHitboxes[c.NormalCounter][0],
 		)
+		if c.NormalCounter == 1 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: burstAttackOffsets[c.NormalCounter]},
+				burstAttackHitboxes[c.NormalCounter][0],
+				burstAttackHitboxes[c.NormalCounter][1],
+			)
+		}
+		c.Core.QueueAttack(ai, ap, 1, 1)
 
 		return false
 	}, "razor-wolf-burst")

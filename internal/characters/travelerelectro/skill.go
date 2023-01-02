@@ -99,7 +99,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.3), skillHitmark, particlesCB, amuletCB)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.1,
+				0.6,
+			),
+			skillHitmark,
+			particlesCB,
+			amuletCB,
+		)
 	}
 
 	// try to pick up amulets

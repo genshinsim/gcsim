@@ -13,7 +13,8 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{28, 25, 20, 42}
 	attackHitlagHaltFrame = []float64{0.10, 0.10, 0.09, 0.15}
-	attackRadius          = [][]float64{{2, 2, 2, 1.8}, {5.2, 5.2, 5.2, 3.51}}
+	attackHitboxes        = [][][]float64{{{2}, {2}, {2}, {2, 3}}, {{5.2}, {5.2}, {5.2}, {3.3, 6.2}}}
+	attackOffsets         = []float64{1, 1, 1, -1}
 )
 
 const normalHitNum = 4
@@ -53,16 +54,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// TODO: don't forget this when implementing her CA
 	done := false
 	cb := c.skillHealCB(done)
-	radius := attackRadius[burstIndex][c.NormalCounter]
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		combat.Point{Y: attackOffsets[c.NormalCounter]},
+		attackHitboxes[burstIndex][c.NormalCounter][0],
+	)
+	if c.NormalCounter == 3 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[burstIndex][c.NormalCounter][0],
+			attackHitboxes[burstIndex][c.NormalCounter][1],
+		)
+	}
 	// need char queue because of potential hitlag from C4
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), radius),
-			0,
-			0,
-			cb,
-		)
+		c.Core.QueueAttack(ai, ap, 0, 0, cb)
 	}, attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()
