@@ -2,6 +2,7 @@ package combat
 
 import (
 	"math"
+	"math/rand"
 )
 
 type Shape interface {
@@ -35,6 +36,32 @@ func CalcDirection(src, trg Point) Point {
 		return DefaultDirection()
 	}
 	return trg.Sub(src).Normalize()
+}
+
+// generates a random point that is between minRadius and maxRadius distance away from the provided center
+func CalcRandomPointFromCenter(center Point, minRadius float64, maxRadius float64, rand *rand.Rand) Point {
+	// generate random point inside unit circle using rejection sampling
+	var result Point
+	for {
+		p := Point{
+			X: -1 + rand.Float64()*2,
+			Y: -1 + rand.Float64()*2,
+		}
+		if p.MagnitudeSquared() <= 1 {
+			minRadiusSquared := minRadius * minRadius
+			maxRadiusSquared := maxRadius * maxRadius
+			// get random radius in the specified range
+			r := math.Sqrt(minRadiusSquared + rand.Float64()*(maxRadiusSquared-minRadiusSquared))
+			// scale generated point to be exactly on the random radius and shift it
+			if p.X == 0 && p.Y == 0 {
+				p = Point{X: 0, Y: 1}
+			}
+			factor := r / p.Magnitude()
+			result = p.Mul(Point{X: factor, Y: factor}).Add(center)
+			break
+		}
+	}
+	return result
 }
 
 func AABBTest(a, b []Point) bool {

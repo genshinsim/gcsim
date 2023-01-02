@@ -1,8 +1,6 @@
 package reactable
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -97,14 +95,8 @@ func NewDendroCore(c *core.Core, shp combat.Shape, a *combat.AttackEvent) *Dendr
 	}
 
 	// for simplicity, seeds spawn randomly at radius + 0.5
-	// https://stackoverflow.com/questions/9879258/how-can-i-generate-random-points-on-a-circles-circumference-in-javascript
-	angle := c.Rand.Float64() * 2 * math.Pi
-	r := circ.Radius()
-	pos := combat.Point{
-		X: math.Cos(angle) * (r + 0.5),
-		Y: math.Sin(angle) * (r + 0.5),
-	}
-	s.Gadget = gadget.New(c, pos, 0.2, combat.GadgetTypDendroCore)
+	r := circ.Radius() + 0.5
+	s.Gadget = gadget.New(c, combat.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 0.2, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
