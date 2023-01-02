@@ -147,7 +147,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		enemies := s.Core.Combat.EnemyByDistance(s.Gadget.Pos(), combat.InvalidTargetKey)
 		if len(enemies) > 0 {
 			ap := combat.NewCircleHitOnTarget(s.Core.Combat.Enemy(enemies[0]), nil, 1)
-			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
@@ -155,7 +155,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			ap.SkipTargets[combat.TargettablePlayer] = false
 			ap.SkipTargets[combat.TargettableEnemy] = true
 			ap.SkipTargets[combat.TargettableGadget] = true
-			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 		}
 
 		s.Gadget.OnKill = nil

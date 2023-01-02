@@ -64,7 +64,7 @@ func TestHyperbloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 10),
 	}, 0)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 70; i++ {
 		advanceCoreFrame(c)
 	}
 
@@ -141,7 +141,7 @@ func TestECHyperbloom(t *testing.T) {
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 70; i++ {
 		advanceCoreFrame(c)
 	}
 
