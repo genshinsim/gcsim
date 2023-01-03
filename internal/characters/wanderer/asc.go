@@ -1,7 +1,7 @@
 package wanderer
 
 import (
-	"fmt"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -14,41 +14,58 @@ const (
 	a4Key = "wanderer-a4"
 )
 
-func (c *char) a4Init() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		// if e is not active or a4 already active
+func (c *char) makeA4Callback() func(cb combat.AttackCB) {
+	return func(a combat.AttackCB) {
 		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) {
-			return false
-		}
-
-		atk := args[1].(*combat.AttackEvent)
-
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if c.Core.Player.Active() != c.Index {
-			return false
-		}
-
-		// If this is not a normal or charged attack then ignore
-		if !(atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra) {
-			return false
+			return
 		}
 
 		if c.Core.Rand.Float64() > c.a4Prob {
 			c.a4Prob += 0.12
-			return false
+			return
 		}
-
-		c.AddStatus(a4Key, 20*60, true)
 
 		c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index).
 			Write("probability", c.a4Prob)
 
 		c.a4Prob = 0.16
 
-		return false
-	}, fmt.Sprintf("wanderer-a4"))
+		if c.Core.Player.CurrentState() == action.DashState {
+			c.a4()
+			return
+		}
+
+		c.AddStatus(a4Key, 20*60, true)
+	}
+}
+
+func (c *char) a4() {
+	if c.StatusIsActive(a4Key) {
+		c.DeleteStatus(a4Key)
+
+		a4Mult := 0.35
+
+		if c.StatusIsActive("wanderer-c1-atkspd") {
+			a4Mult = 0.6
+		}
+
+		a4Info := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Gales of Reverie",
+			AttackTag:  combat.AttackTagNone,
+			ICDTag:     combat.ICDTagWandererA4,
+			ICDGroup:   combat.ICDGroupWandererA4,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Anemo,
+			Durability: 25,
+			Mult:       a4Mult,
+		}
+
+		for i := 0; i < 4; i++ {
+			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+				a4Release[i], a4Release[i]+a4Hitmark)
+		}
+	}
 }
 
 func (c *char) absorbCheckA1(src int) func() {

@@ -3,8 +3,6 @@ package wanderer
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
 var (
@@ -48,30 +46,7 @@ func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {
 	}
 
 	if c.StatusIsActive(a4Key) {
-		c.DeleteStatus(a4Key)
-
-		a4Mult := 0.35
-
-		if c.StatusIsActive("wanderer-c1-atkspd") {
-			a4Mult = 0.6
-		}
-
-		a4Info := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Gales of Reverie",
-			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagWandererA4,
-			ICDGroup:   combat.ICDGroupWandererA4,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       a4Mult,
-		}
-
-		for i := 0; i < 4; i++ {
-			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
-				a4Release[i], a4Release[i]+a4Hitmark)
-		}
+		c.a4()
 	} else {
 		c.skydwellerPoints -= 15
 	}

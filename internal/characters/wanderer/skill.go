@@ -115,9 +115,6 @@ func (c *char) skillEndRoutine() int {
 		c.DeleteStatus("wanderer-c1-atkspd")
 	}
 
-	// Delete c6 buff if active
-	c.Core.Events.Unsubscribe(event.OnEnemyHit, "wanderer-c6")
-
 	// Delay due to falling
 	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index)
 

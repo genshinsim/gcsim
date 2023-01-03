@@ -45,8 +45,6 @@ func (c *char) Init() error {
 	c.a4Prob = 0.16
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
 
-	c.a4Init()
-
 	return nil
 }
 
