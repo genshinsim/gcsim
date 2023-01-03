@@ -35,27 +35,22 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(c.depleteSkydwellerPoints(), 6)
 
 	// Initial Skill Damage
-	// TODO: Does that even need to be a task?
-	c.Core.Tasks.Add(func() {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Hanega: Song of the Wind",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       skill[c.TalentLvlSkill()],
-		}
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Hanega: Song of the Wind",
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
+	}
 
-		// TODO: check radius
-		radius := 2.92
+	// TODO: check radius
+	radius := 2.92
 
-		// TODO: Check snapshot moment
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
-
-	}, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), skillHitmark, skillHitmark)
 
 	// Initial A1 Absorption test
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
