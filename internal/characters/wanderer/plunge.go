@@ -63,7 +63,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: check snapshot delay
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.28),
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3),
 		delay+lowPlungeHitmark, delay+lowPlungeHitmark)
 
 	return action.ActionInfo{
@@ -86,5 +86,5 @@ func (c *char) plungeCollision(fullDelay int) {
 		Durability: 0,
 		Mult:       plunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), fullDelay, fullDelay)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), fullDelay, fullDelay)
 }
