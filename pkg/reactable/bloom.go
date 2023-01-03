@@ -96,7 +96,7 @@ func NewDendroCore(c *core.Core, shp combat.Shape, a *combat.AttackEvent) *Dendr
 
 	// for simplicity, seeds spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
-	s.Gadget = gadget.New(c, combat.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 0.2, combat.GadgetTypDendroCore)
+	s.Gadget = gadget.New(c, combat.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
