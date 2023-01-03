@@ -65,7 +65,7 @@ func (c *char) c6() {
 				c.skydwellerPoints += 4
 
 				c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-					"wanderer c6 added 4 skydweller points ",
+					"wanderer c6 added 4 skydweller points",
 				)
 			}
 
