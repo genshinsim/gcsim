@@ -54,7 +54,9 @@ func (c *char) a4Init() {
 func (c *char) absorbCheckA1(src int) func() {
 	return func() {
 
-		absorbCheck := c.Core.Combat.AbsorbCheck(c.a1AbsorbCheckLocation, c.a1ValidBuffs...)
+		a1AbsorbCheckLocation := combat.NewCircleHit(c.Core.Combat.Player(), 5)
+
+		absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
 
 		if absorbCheck != attributes.NoElement {
 
