@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"math"
 )
@@ -106,9 +105,9 @@ func (c *char) skillEndRoutine() int {
 	c.SetCD(action.ActionSkill, 360)
 
 	// Delete Ascension Buffs
-	c.DeleteStatMod("wanderer-a1-pyro")
-	c.DeleteStatMod("wanderer-a1-cryo")
-	c.Core.Events.Unsubscribe(event.OnEnemyHit, "wanderer-a1-electro")
+	c.DeleteStatMod(a1PyroKey)
+	c.DeleteStatMod(a1CryoKey)
+	c.DeleteStatus(a1ElectroKey)
 
 	// Delete c1 buff if active
 	if c.StatusIsActive("wanderer-c1-atkspd") {

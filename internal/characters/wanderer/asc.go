@@ -4,14 +4,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"math"
 )
 
 const (
-	a4Key = "wanderer-a4"
+	a4Key           = "wanderer-a4"
+	a1ElectroKey    = "wanderer-a1-electro"
+	a1ElectroIcdKey = "wanderer-a1-electro-icd"
+	a1PyroKey       = "wanderer-a1-pyro"
+	a1CryoKey       = "wanderer-a1-cryo"
 )
 
 func (c *char) makeA4Callback() func(cb combat.AttackCB) {
@@ -128,7 +132,7 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.3
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("wanderer-a1-pyro", 1200),
+			Base:         modifier.NewBaseWithHitlag(a1PyroKey, 1200),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -139,7 +143,7 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.CR] = 0.2
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("wanderer-a1-cryo", 1200),
+			Base:         modifier.NewBaseWithHitlag(a1CryoKey, 1200),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -147,22 +151,20 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		})
 
 	case attributes.Electro:
-		c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-			if c.StatusIsActive("wanderer-a1-electro-icd") {
-				return false
-			}
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != c.Index || atk.Info.AttackTag != combat.AttackTagNormal {
-				return false
-			}
-			if c.Core.Player.Active() != c.Index {
-				return false
-			}
+		c.AddStatus(a1ElectroKey, math.MaxInt16, true)
+	}
+}
 
-			c.AddStatus("wanderer-a1-electro-icd", 12, true)
-			c.AddEnergy("wanderer-a1-electro-energy", 0.8)
-			return false
-		}, "wanderer-a1-electro")
+func (c *char) makeA1ElectroCallback() func(cb combat.AttackCB) {
+	return func(a combat.AttackCB) {
+		if !c.StatusIsActive(a1ElectroKey) {
+			return
+		}
+		if c.StatusIsActive(a1ElectroIcdKey) {
+			return
+		}
+		c.AddStatus(a1ElectroIcdKey, 12, true)
+		c.AddEnergy("wanderer-a1-electro-energy", 0.8)
 	}
 }
 
