@@ -21,6 +21,7 @@ type char struct {
 	skydwellerPoints    int
 	maxSkydwellerPoints int
 	a1ValidBuffs        []attributes.Element
+	a1MaxAbsorb         int
 	a4Prob              float64
 	c6Count             int
 }
@@ -44,6 +45,11 @@ func (c *char) Init() error {
 	c.maxSkydwellerPoints = 100
 	c.a4Prob = 0.16
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
+
+	c.a1MaxAbsorb = 2
+	if c.Base.Cons >= 4 {
+		c.a1MaxAbsorb = 3
+	}
 
 	return nil
 }

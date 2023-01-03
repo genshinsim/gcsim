@@ -71,6 +71,10 @@ func (c *char) a4() {
 func (c *char) absorbCheckA1(src int) func() {
 	return func() {
 
+		if len(c.a1ValidBuffs) <= c.a1MaxAbsorb {
+			return
+		}
+
 		a1AbsorbCheckLocation := combat.NewCircleHit(c.Core.Combat.Player(), 5)
 
 		absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
@@ -84,23 +88,18 @@ func (c *char) absorbCheckA1(src int) func() {
 
 			c.addA1Buff(absorbCheck)
 
-			maxAbsorb := 2
+			if c.Base.Cons >= 4 && len(c.a1ValidBuffs) == 3 {
 
-			if c.Base.Cons >= 4 {
-				maxAbsorb = 3
-
-				if 4-len(c.a1ValidBuffs) < maxAbsorb {
-					chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
-					c.addA1Buff(chosenElement)
-					c.deleteFromValidBuffs(chosenElement)
-					c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-						"wanderer c4 applied a1 ", chosenElement.String(),
-					)
-				}
+				chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
+				c.addA1Buff(chosenElement)
+				c.deleteFromValidBuffs(chosenElement)
+				c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+					"wanderer c4 applied a1 ", chosenElement.String(),
+				)
 
 			}
 
-			if 4-len(c.a1ValidBuffs) >= maxAbsorb {
+			if 4-len(c.a1ValidBuffs) >= c.a1MaxAbsorb {
 				return
 			}
 		}
