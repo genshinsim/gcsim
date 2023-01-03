@@ -191,6 +191,10 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		InitialCharacter:  simcfg.InitialChar.String(),
 	}
 
+	if simcfg.Settings.DamageMode {
+		result.Mode = 1
+	}
+
 	charDetails, err := GenerateCharacterDetails(simcfg)
 	if err != nil {
 		return result, err
