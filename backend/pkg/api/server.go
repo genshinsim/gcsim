@@ -27,6 +27,7 @@ type Config struct {
 	ResultStore ResultStore
 	UserStore   UserStore
 	Discord     DiscordConfig
+	DBStore     DBStore
 }
 
 type APIContextKey string
@@ -69,6 +70,9 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	if s.cfg.ResultStore == nil {
 		return nil, fmt.Errorf("no result store provided")
 	}
+	if s.cfg.DBStore == nil {
+		return nil, fmt.Errorf("no db store provided")
+	}
 
 	return s, nil
 }
@@ -95,6 +99,10 @@ func (s *Server) routes() {
 
 		r.Route("/user", func(r chi.Router) {
 			r.Post("/save", s.UserSave())
+		})
+
+		r.Route("/db", func(r chi.Router) {
+			r.Get("/", s.getDB())
 		})
 	})
 

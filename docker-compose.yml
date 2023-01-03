@@ -37,6 +37,7 @@ services:
       - DISCORD_SECRET
       - REDIRECT_URL
       - RESULT_STORE_URL=result:3000
+      - DB_STORE_URL=db:3000
     restart: unless-stopped
   result:
     container_name: result

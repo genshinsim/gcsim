@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/backend/pkg/services/result"
 	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
@@ -41,9 +42,17 @@ func main() {
 		panic(err)
 	}
 
+	dbStore, err := db.NewClient(db.ClientCfg{
+		Addr: os.Getenv("DB_STORE_URL"),
+	})
+	if err != nil {
+		panic(err)
+	}
+
 	s, err := api.New(api.Config{
 		ResultStore: resultStore,
 		UserStore:   userStore,
+		DBStore:     dbStore,
 		Discord: api.DiscordConfig{
 			RedirectURL:  os.Getenv("REDIRECT_URL"),
 			ClientID:     os.Getenv("DISCORD_ID"),
