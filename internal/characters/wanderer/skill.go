@@ -57,7 +57,6 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	c.absorbCheckA1(c.Core.F)()
 
 	c.c1()
-	c.c6()
 
 	// Return ActionInfo
 	return action.ActionInfo{

@@ -102,6 +102,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
 			delay,
 			delay+windup+attackHitmarksNormal[c.NormalCounter][i],
+			c.makeC6Callback(),
 		)
 	}
 
@@ -143,6 +144,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
 			0,
 			windup+attackHitmarksE[c.NormalCounter][i],
+			c.makeC6Callback(),
 		)
 	}
 

@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -45,48 +44,49 @@ func (c *char) c2() {
 	}
 }
 
-func (c *char) c6() {
-	if c.Base.Cons >= 6 {
-		c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-			ae := args[1].(*combat.AttackEvent)
-			if ae.Info.ActorIndex != c.Index || ae.Info.Abil == "Shugen: The Curtains’ Melancholic Sway" {
-				return false
-			}
-
-			switch ae.Info.AttackTag {
-			case combat.AttackTagNormal:
-			default:
-				return false
-			}
-
-			if c.c6Count < 5 && !c.StatusIsActive(c6ICDKey) && c.skydwellerPoints < 40 {
-				c.AddStatus(c6ICDKey, 12, true)
-				c.c6Count++
-				c.skydwellerPoints += 4
-
-				c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-					"wanderer c6 added 4 skydweller points",
-				)
-			}
-
-			ai := combat.AttackInfo{
-				ActorIndex: c.Index,
-				Abil:       "Shugen: The Curtains’ Melancholic Sway",
-				AttackTag:  combat.AttackTagNormal,
-				ICDTag:     combat.ICDTagWandererC6,
-				ICDGroup:   combat.ICDGroupWandererC6,
-				StrikeType: combat.StrikeTypeDefault,
-				Element:    attributes.Anemo,
-				Durability: 25,
-				Mult:       ae.Info.Mult * 0.4,
-			}
-
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, 0,
-			)
-
-			return false
-		}, "wanderer-c6")
+func (c *char) makeC6Callback() func(cb combat.AttackCB) {
+	if c.Base.Cons < 6 {
+		return nil
 	}
+
+	done := false
+
+	return func(a combat.AttackCB) {
+		if done || !c.StatusIsActive(skillKey) {
+			return
+		}
+
+		done = true
+
+		if c.c6Count < 5 && !c.StatusIsActive(c6ICDKey) && c.skydwellerPoints < 40 {
+			c.AddStatus(c6ICDKey, 12, true)
+			c.c6Count++
+			c.skydwellerPoints += 4
+
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+				"wanderer c6 added 4 skydweller points",
+			)
+		}
+
+		// a gets passed into the callback as param by core
+		trg := a.Target
+
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Shugen: The Curtains’ Melancholic Sway",
+			AttackTag:  combat.AttackTagNormal,
+			ICDTag:     combat.ICDTagWandererC6,
+			ICDGroup:   combat.ICDGroupWandererC6,
+			StrikeType: combat.StrikeTypeDefault,
+			Element:    attributes.Anemo,
+			Durability: 25,
+			Mult:       a.AttackEvent.Info.Mult * 0.4,
+		}
+
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(trg, 2), 0, 0,
+		)
+	}
+
 }
