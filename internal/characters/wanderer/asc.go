@@ -125,23 +125,23 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		c.skydwellerPoints += 20
 
 	case attributes.Pyro:
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ATKP] = 0.3
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("wanderer-a1-pyro", 1200),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
-				m := make([]float64, attributes.EndStatType)
-				m[attributes.ATKP] = 0.3
 				return m, true
 			},
 		})
 
 	case attributes.Cryo:
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.CR] = 0.2
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("wanderer-a1-cryo", 1200),
 			AffectedStat: attributes.CR,
 			Amount: func() ([]float64, bool) {
-				m := make([]float64, attributes.EndStatType)
-				m[attributes.CR] = 0.2
 				return m, true
 			},
 		})
