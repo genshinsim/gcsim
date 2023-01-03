@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var lowPlungeFrames []int
@@ -28,7 +29,14 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	// Not in falling state
 	if delay == 0 || !(c.Core.Player.LastAction.Char == c.Index &&
 		c.Core.Player.LastAction.Type == action.ActionSkill && !c.StatusIsActive(skillKey)) {
-		// Nothing so far?
+		c.Core.Log.NewEvent("only plunge after skill ends", glog.LogActionEvent, c.Index).
+			Write("action", action.ActionHighPlunge)
+		return action.ActionInfo{
+			Frames:          func(action.Action) int { return 1200 },
+			AnimationLength: 1200,
+			CanQueueAfter:   1200,
+			State:           action.Idle,
+		}
 	}
 
 	// Decreasing delay due to casting midair
