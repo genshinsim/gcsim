@@ -26,10 +26,8 @@
     "build:embed": "yarn workspace @gcsim/embed build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
-    "gen": "mkdir -p ./protos_gen && yarn pbjs -t static-module -w commonjs -o ./protos_gen/protos.js ../protos/model/db.proto ../protos/model/result.proto ../protos/model/sim.proto  ../protos/backend/db.proto ../protos/backend/submission.proto  ../protos/backend/compute.proto   && yarn pbts -o ./protos_gen/protos.d.ts ./protos_gen/protos.js --watch",
-    "gen:copy:db": "yarn run gen && cp -R -v ./protos_gen ./packages/db",
-    "gen:watch": "watch \"yarn run gen:copy:db\" ../protos/model ../protos/backend",
-    "gen:all": "mkdir -p ./protos_gen && yarn pbjs -t static-module -w commonjs -o ./protos_gen/protos.js  ../protos/model/* ../protos/backend/* && yarn pbts -o ./protos_gen/protos.d.ts ./protos_gen/protos.js --watch"
+    "gen": " yarn pbjs -t static-module -w commonjs -o ./packages/types/src/protos.js ../protos/model/db.proto ../protos/model/result.proto ../protos/model/sim.proto  ../protos/backend/db.proto ../protos/backend/submission.proto  ../protos/backend/compute.proto   && yarn pbts -o ./packages/types/src/protos.d.ts ./packages/types/src/protos.js && rm ./packages/types/src/protos.js ",
+    "gen:watch": "watch \"yarn run gen:copy:db\" ../protos/model ../protos/backend"
   },
   "devDependencies": {
     "@types/eslint": "^8",
