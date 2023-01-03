@@ -57,6 +57,7 @@ function DBEntryActions() {
         href={`https://gcsim.app/v3/viewer/share/${simulation_key}`}
         target="_blank"
         className="text-white bg-slate-600 rounded-md p-2"
+        rel="noreferrer"
       >
         Open in Viewer
       </a>
