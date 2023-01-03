@@ -22,7 +22,7 @@ func (t *Target) WillApplyEle(tag combat.ICDTag, grp combat.ICDGroup, char int) 
 	t.icdTagCounter[char][tag]++
 
 	// if counter > length, then use 0 for group seq
-	groupSeq := 0.0
+	groupSeq := combat.ICDGroupEleApplicationSequence[grp][len(combat.ICDGroupEleApplicationSequence[grp])-1]
 	if val < len(combat.ICDGroupEleApplicationSequence[grp]) {
 		groupSeq = combat.ICDGroupEleApplicationSequence[grp][val]
 	}
@@ -49,7 +49,7 @@ func (t *Target) GroupTagDamageMult(tag combat.ICDTag, grp combat.ICDGroup, char
 	t.icdDamageTagCounter[char][tag]++
 
 	// if counter > length, then use 0 for group seq
-	groupSeq := 0.0
+	groupSeq := combat.ICDGroupDamageSequence[grp][len(combat.ICDGroupDamageSequence[grp])-1]
 	if val < len(combat.ICDGroupDamageSequence[grp]) {
 		groupSeq = combat.ICDGroupDamageSequence[grp][val]
 	}
