@@ -68,7 +68,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return lowPlungeFrames[next] },
-		AnimationLength: lowPlungeFrames[action.InvalidAction],
+		AnimationLength: lowPlungeFrames[action.ActionDash],
 		CanQueueAfter:   lowPlungeHitmark,
 		State:           action.PlungeAttackState,
 	}
