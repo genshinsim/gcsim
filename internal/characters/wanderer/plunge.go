@@ -40,7 +40,6 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// Decreasing delay due to casting midair
-	delay = 7
 
 	collision, ok := p["collision"]
 	if !ok {
@@ -68,9 +67,9 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		delay+lowPlungeHitmark, delay+lowPlungeHitmark)
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return delay + lowPlungeFrames[next] },
-		AnimationLength: delay + lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   delay + lowPlungeHitmark,
+		Frames:          func(next action.Action) int { return lowPlungeFrames[next] },
+		AnimationLength: lowPlungeFrames[action.InvalidAction],
+		CanQueueAfter:   lowPlungeHitmark,
 		State:           action.PlungeAttackState,
 	}
 }

@@ -78,9 +78,15 @@ func (c *char) skillDeactivate(p map[string]int) action.ActionInfo {
 	delay := c.skillEndRoutine()
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return delay },
+		Frames: func(next action.Action) int {
+			if next == action.ActionLowPlunge {
+				return 7
+			} else {
+				return delay
+			}
+		},
 		AnimationLength: delay,
-		CanQueueAfter:   delay,
+		CanQueueAfter:   7,
 		State:           action.Idle,
 	}
 }
