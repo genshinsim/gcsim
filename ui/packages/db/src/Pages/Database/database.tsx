@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { model } from "@gcsim/types";
+
 import { Filter } from "./Filter";
 import { ListView } from "./ListView";
-import { model } from "../../../protos_gen/protos";
 import { fetchDataFromDB } from "../../api/FetchDataFromDB";
 import DBEntryView from "./Components/DBEntryView";
 

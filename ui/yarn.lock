@@ -541,6 +541,7 @@ __metadata:
   dependencies:
     "@blueprintjs/core": ^4.11.4
     "@gcsim/executors": "workspace:^"
+    "@gcsim/types": "workspace:^"
     "@gcsim/ui": "workspace:^"
     "@gcsim/utils": "workspace:^"
     "@types/react": ^18
