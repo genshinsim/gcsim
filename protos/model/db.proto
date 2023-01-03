@@ -14,23 +14,30 @@ message DBEntry {
     model.DescriptiveStats sim_duration = 5 [json_name="sim_duration"];
     string config = 6 [json_name="config"];
     string hash = 7 [json_name="hash"];
+    SimMode mode = 8 [json_name="mode"];
+    
 
     //indexing data
-    model.DescriptiveStats total_damage = 8 [json_name="total_damage"];
-    repeated string char_names = 9 [json_name="char_names"];
-    int32 target_count = 10 [json_name="target_count"];
-    double mean_dps_per_target = 11 [json_name="mean_dps_per_target"];
+    model.DescriptiveStats total_damage = 9 [json_name="total_damage"];
+    repeated string char_names = 10 [json_name="char_names"];
+    int32 target_count = 11 [json_name="target_count"];
+    double mean_dps_per_target = 12 [json_name="mean_dps_per_target"];
 
     //detailed results
-    repeated model.Character team = 12 [json_name="team"];
-    map<string, model.DescriptiveStats> dps_by_target = 13 [json_name="dps_by_target"];
+    repeated model.Character team = 13 [json_name="team"];
+    map<string, model.DescriptiveStats> dps_by_target = 14 [json_name="dps_by_target"];
 
 
     //other stuff
-    string description = 14 [json_name="description"];
-    repeated string tags = 15 [json_name="tags"];
+    string description = 15 [json_name="description"];
+    repeated string tags = 16 [json_name="tags"];
 }
 
 message DBEntries {
     repeated DBEntry data = 1 [json_name="data"];
+}
+
+enum SimMode {
+    DURATION_MODE = 0;
+    TTK_MODE = 1;
 }

@@ -18,6 +18,7 @@ type Summary struct {
 	SimVersion    string  `json:"sim_version"`
 	BuildDate     string  `json:"build_date"`
 	Modified      bool    `json:"modified"`
+	Mode          int     `json:"mode"`
 
 	// character & enemy metadata
 	// TODO: TargetDetails as map. Need changes to how target keys work
@@ -158,6 +159,9 @@ func (s *Summary) ToPBDBEntry() *model.DBEntry {
 		Hash:             s.SimVersion,
 		Config:           s.Config,
 		MeanDpsPerTarget: s.Statistics.TotalDamage.Mean / (float64(len(s.TargetDetails)) * s.Statistics.Duration.Mean),
+	}
+	if s.Mode == 1 {
+		r.Mode = model.SimMode_TTK_MODE
 	}
 	for _, v := range s.CharacterDetails {
 		next := &model.Character{
