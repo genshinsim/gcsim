@@ -30,12 +30,13 @@ func (c *char) makeA4Callback() func(cb combat.AttackCB) {
 
 		c.a4Prob = 0.16
 
+		c.AddStatus(a4Key, 20*60, true)
+
 		if c.Core.Player.CurrentState() == action.DashState {
 			c.a4()
 			return
 		}
 
-		c.AddStatus(a4Key, 20*60, true)
 	}
 }
 
