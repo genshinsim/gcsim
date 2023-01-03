@@ -1,6 +1,4 @@
-import SimDurRollupCard from "@gcsim/ui/src/Pages/Viewer/Components/Overview/RollupCards/SimDurRollupCard";
-import { model } from "../../../../protos_gen/protos";
-import { Team } from "@gcsim/ui/src/Pages/Simulator/Team";
+import { model } from "@gcsim/types";
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
