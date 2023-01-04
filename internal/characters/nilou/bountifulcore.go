@@ -19,7 +19,7 @@ func newBountifulCore(c *core.Core, p combat.Point, a *combat.AttackEvent) *Boun
 		srcFrame: c.F,
 	}
 
-	b.Gadget = gadget.New(c, p, 0.2, combat.GadgetTypDendroCore)
+	b.Gadget = gadget.New(c, p, 2, combat.GadgetTypDendroCore)
 	b.Gadget.Duration = 0.4 * 60
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
