@@ -1,13 +1,12 @@
 import { FloatStat } from "@gcsim/types";
-import { AxisBottom, AxisLeft } from "@visx/axis";
-import { GridColumns } from "@visx/grid";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarStackHorizontal } from "@visx/shape";
 import { StackKey } from "@visx/shape/lib/types";
 import { useTooltip } from "@visx/tooltip";
 import { useTranslation } from "react-i18next";
-import { DataColors } from "../DataColors";
+import { GraphAxisBottom, GraphAxisLeft } from "../Axes";
+import { GraphGridColumns } from "../Grids";
 import { HoverBoxPlot } from "./HoverBoxPlot";
 import { RenderTooltip, TooltipData, useTooltipHandles } from "./Tooltip";
 
@@ -74,39 +73,17 @@ export default <Datum,Key extends StackKey>(
     <div className="relative">
       <svg width={width} height={height}>
         <Group left={margin.left} top={margin.top}>
-          <AxisLeft
-              hideAxisLine
-              hideTicks
-              scale={yScale}
-              tickClassName="fill-gray-400 font-mono text-xs"
-              tickLabelProps={() => ({
-                fill: DataColors.gray,
-                textAnchor: "end"
-              })} />
-          <AxisBottom
+          <GraphAxisLeft hideAxisLine hideTicks scale={yScale} />
+          <GraphAxisBottom
               hideTicks
               hideAxisLine
               top={yMax}
               scale={xScale}
-              stroke={DataColors.gray}
-              tickStroke={DataColors.gray}
               label={bottomLabel}
-              labelClassName="fill-gray-400 font-mono text-lg"
-              tickClassName="font-mono text-xs"
-              tickFormat={s =>
-                s.toLocaleString(i18n.language,
-                    { notation: 'compact', maximumSignificantDigits: 3 })
-              }
-              tickLabelProps={() => ({
-                fill: DataColors.gray,
-                textAnchor: "middle"
-              })} />
-          <GridColumns
-              scale={xScale}
-              width={width}
-              stroke={DataColors.gray}
-              lineStyle={{ opacity: 0.5 }}
-              height={yMax} />
+              tickFormat={s => s.toLocaleString(
+                  i18n.language, { notation: 'compact', maximumSignificantDigits: 3 })
+              } />
+          <GraphGridColumns scale={xScale} width={width} height={yMax} />
           <BarStackHorizontal<Datum, Key>
               data={data}
               keys={keys}
