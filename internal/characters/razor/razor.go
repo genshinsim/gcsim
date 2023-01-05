@@ -44,7 +44,6 @@ func (c *char) Init() error {
 
 	// burst
 	c.speedBurst()
-	c.wolfBurst()
 	c.onSwapClearBurst()
 
 	c.a4()
