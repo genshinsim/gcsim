@@ -28,11 +28,6 @@ type PieProps = {
   dps?: ElementDPS;
 }
 
-// type ElementData = {
-//   label: string;
-//   value: FloatStat;
-// }
-
 const DPSPie = ({ width, height, dps }: PieProps) => {
   const { i18n } = useTranslation();
   const { data } = useData(dps);

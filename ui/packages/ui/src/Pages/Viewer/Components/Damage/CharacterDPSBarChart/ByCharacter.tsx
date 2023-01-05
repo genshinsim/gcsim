@@ -84,7 +84,8 @@ function useData(dps?: FloatStat[], names?: string[]): ChartData {
 
     let maxDPS = 0;
     const data: CharacterData[] = dps.map((v, i) => {
-      maxDPS = Math.max(maxDPS, v.max ?? 0);
+      const charMax = Math.max(v.max ?? 0, (v.mean ?? 0) + (v.sd ?? 0));
+      maxDPS = Math.max(maxDPS, charMax);
       return { name: names[i], data: v, index: i };
     });
 

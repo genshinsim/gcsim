@@ -102,8 +102,9 @@ function useData(dps?: ElementDPS[], names?: string[]): ChartData {
       let total = 0;
       for (const key in char) {
         elements.add(key);
-        maxTotal += char[key].max ?? 0;
-        total += char[key].mean ?? 0;
+        const mean = char[key].mean ?? 0;
+        maxTotal += Math.max(char[key].max ?? 0, mean + (char[key].sd ?? 0));
+        total += mean;
       }
       maxDPS = Math.max(maxDPS, maxTotal);
       data.push({ name: names[i], data: char, total: total });
