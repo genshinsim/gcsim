@@ -33,7 +33,12 @@ export default ({ running, copyToast, data, className, shareState }: ShareProps)
     }
 
     axios
-      .post("/api/share", data)
+      .post("/api/share", data, {
+        headers: {
+          "X-GCSIM-SHARE-AUTH":
+            "this-is-a-fake-dev-key-please-dont-use-this-on-live", //TODO: fix key
+        },
+      })
       .then((resp) => {
         setShareLink(link(resp.data));
       }).catch((err) => {
