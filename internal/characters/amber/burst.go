@@ -35,19 +35,40 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	//2sec duration, tick every .4 sec at exactly 2.6m from burst center
-	//2sec duration, tick every .6 sec at exactly 2.6m from burst center
-	//2sec duration, tick every .2 sec between 0.1m and 2.6m from burst center
+	burstCenter := c.Core.Combat.PrimaryTarget().Pos()
+	burstRadius := 2.6
+	if c.Base.Ascension < 4 {
+		burstRadius = 2
+	}
 
-	//TODO: properly implement random hits and hitbox positioning. right now everything centers on player
-	for i := 24; i < 120; i += 24 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6), burstStart+i)
+	// 2sec duration, spawn arrow every .4s at a random position, burstRadius from burst center
+	for i := 24; i <= 120; i += 24 {
+		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, burstRadius, burstRadius, c.Core.Rand)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(arrowPos, nil, burstRadius),
+			burstStart+i)
 	}
-	for i := 36; i < 120; i += 36 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6), burstStart+i)
+
+	// 2sec duration, spawn arrow every .6s at a random position burstRadius from burst center
+	for i := 36; i <= 120; i += 36 {
+		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, burstRadius, burstRadius, c.Core.Rand)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(arrowPos, nil, burstRadius),
+			burstStart+i)
 	}
-	for i := 12; i < 120; i += 12 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6), burstStart+i)
+
+	// 2sec duration, spawn arrow every .2s between 0.1m and burstRadius from burst center
+	for i := 12; i <= 120; i += 12 {
+		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, 0.1, burstRadius, c.Core.Rand)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(arrowPos, nil, burstRadius),
+			burstStart+i)
 	}
 
 	if c.Base.Cons >= 6 {
