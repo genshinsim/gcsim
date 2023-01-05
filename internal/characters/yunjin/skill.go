@@ -8,9 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
-var skillFrames [][]int
-var skillHitmarks = []int{13, 50, 93}
-var skillCDStarts = []int{11, 48, 90}
+var (
+	skillFrames   [][]int
+	skillHitmarks = []int{13, 50, 93}
+	skillCDStarts = []int{11, 48, 90}
+)
 
 func init() {
 	skillFrames = make([][]int, 3)
@@ -92,11 +94,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		radius = 8
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), hitDelay, hitDelay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), hitDelay, hitDelay)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
 		Src:        c.Core.F,
+		Name:       "Yun Jin Skill",
 		ShieldType: shield.ShieldYunjinSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Geo,

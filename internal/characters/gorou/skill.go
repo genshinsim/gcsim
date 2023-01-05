@@ -20,7 +20,8 @@ func init() {
 	skillFrames[action.ActionSwap] = 46    // E -> Swap
 }
 
-/**
+/*
+*
 Provides up to 3 buffs to active characters within the skill's AoE based on the number of Geo characters in
 the party at the time of casting:
 • 1 Geo character: Adds "Standing Firm" - DEF Bonus.
@@ -28,7 +29,8 @@ the party at the time of casting:
 • 3 Geo characters: Adds "Crunch" - Geo DMG Bonus.
 Gorou can deploy only 1 General's War Banner on the field at any one time. Characters can only benefit from
 1 General's War Banner at a time. When a party member leaves the field, the active buff will last for 2s.
-**/
+*
+*/
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		ai := combat.AttackInfo{
@@ -51,7 +53,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHit(c.Core.Combat.Player(), 5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 5),
 			0,
 		)
 
@@ -88,7 +90,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-//recursive function for queueing up ticks
+// recursive function for queueing up ticks
 func (c *char) gorouSkillBuffField(src int) func() {
 	return func() {
 		//do nothing if this has been overwritten

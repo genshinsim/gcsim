@@ -131,7 +131,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		hitmark = skillDashHitmark
 		cdDelay = 0
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), hitmark, hitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), hitmark, hitmark)
 
 	src := c.eCast
 	c.QueueCharTask(func() {

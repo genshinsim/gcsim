@@ -13,7 +13,8 @@ var (
 	skillHitmarks = []int{16, 91}
 	skillCDStarts = []int{14, 89}
 	skillCD       = []int{360, 540}
-	skillRadius   = []float64{2.7, 4}
+	skillHitboxes = [][]float64{{3, 4.5}, {4}}
+	skillOffsets  = []float64{-0.1, 0.3}
 )
 
 func init() {
@@ -56,21 +57,30 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
+	var ap combat.AttackPattern
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
 	case 0:
 		c.Core.QueueParticle("candace", 2, attributes.Hydro, c.ParticleDelay+hitmark)
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: skillOffsets[chargeLevel]},
+			skillHitboxes[chargeLevel][0],
+			skillHitboxes[chargeLevel][1],
+		)
 	case 1:
 		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitmark)
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: skillOffsets[chargeLevel]},
+			skillHitboxes[chargeLevel][0],
+		)
 	}
-	radius := skillRadius[chargeLevel]
+
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			radius,
-		),
+		ap,
 		hitmark,
 		hitmark,
 		func(_ combat.AttackCB) {
@@ -83,6 +93,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
 		Src:        c.Core.F,
+		Name:       "Candace Skill",
 		ShieldType: shield.ShieldCandaceSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Hydro,

@@ -108,7 +108,7 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 			r.core.QueueAttackWithSnap(
 				r.burningAtk,
 				r.burningSnapshot,
-				combat.NewCircleHit(r.self, 1),
+				combat.NewCircleHitOnTarget(r.self, nil, 1),
 				0,
 			)
 		}

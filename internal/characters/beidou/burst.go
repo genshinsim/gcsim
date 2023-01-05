@@ -43,7 +43,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.1 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	// beidou burst is not hitlag extendable
 	c.AddStatus(burstKey, 900, false)
@@ -127,7 +132,7 @@ func (c *char) burstProc() {
 		//trigger a chain of attacks starting at the first target
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
-		atk.Pattern = combat.NewDefSingleTarget(t.Key())
+		atk.Pattern = combat.NewSingleTargetHit(t.Key())
 		cb := c.chain(c.Core.F, 1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
@@ -163,7 +168,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		//queue an attack vs next target
 		atk := *c.burstAtk
 		atk.SourceFrame = src
-		atk.Pattern = combat.NewDefSingleTarget(c.Core.Combat.Enemy(trgs[next]).Key())
+		atk.Pattern = combat.NewSingleTargetHit(c.Core.Combat.Enemy(trgs[next]).Key())
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)

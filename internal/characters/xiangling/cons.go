@@ -54,7 +54,7 @@ func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 			Mult:       .75,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2), 0, 0)
 
 		c.Core.Log.NewEvent("Triggered Xiangling C2 explosion", glog.LogCharacterEvent, c.Index).
 			Write("src", src)

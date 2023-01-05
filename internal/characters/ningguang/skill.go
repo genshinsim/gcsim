@@ -38,7 +38,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(func() {
 		c.skillSnapshot = c.Snapshot(&ai)
-		c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), 0)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			c.skillSnapshot,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 5),
+			0,
+		)
 	}, skillHitmark)
 
 	//put skill on cd first then check for construct/c2

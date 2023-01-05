@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 		FlatDmg:    c.Stat(attributes.EM) * 0.25,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), skillHitmark, skillHitmark)
 
 	// C2: Grass Ring of Sanctification's duration is increased by 3s.
 	skilldur := 720
@@ -106,7 +106,7 @@ func (c *char) bellTick(src int) func() {
 		}
 		//trigger damage
 		//TODO: Check for snapshots
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 2, 2)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 2, 2)
 
 		//A4 is considered here
 		c.Core.Player.Heal(player.HealInfo{

@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.qAbsorb = attributes.NoElement
 	c.qICDTag = combat.ICDTagNone
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.77)
+	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1.5}, 2.5, 2.5)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -51,6 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
+	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: -1.5}, 3, 3)
 	snap := c.Snapshot(&ai)
 
 	aiAbs := combat.AttackInfo{
@@ -64,6 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
 	}
+	apAbs := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: -1}, 2.5, 2.5)
 
 	snapAbs := c.Snapshot(&aiAbs)
 
@@ -73,7 +75,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < 9; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2.12), 94+30*i, cb)
+		c.Core.QueueAttackWithSnap(ai, snap, ap, 94+30*i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qAbsorb != attributes.NoElement {
@@ -82,7 +84,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				if c.Base.Cons >= 6 {
 					cbAbs = c6cb(c.qAbsorb)
 				}
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.77), 0, cbAbs)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, apAbs, 0, cbAbs)
 			}
 			//check if infused
 		}, 94+30*i)
@@ -107,7 +109,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.qAbsorb {
 		case attributes.Cryo:
 			c.qICDTag = combat.ICDTagElementalBurstCryo

@@ -83,5 +83,5 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	em := char.Stat(attributes.EM)
 	flatdmg, snap := calcReactionDmg(char, atk, em)
 	atk.FlatDmg = 0.5 * flatdmg
-	r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHit(r.self, 3), 1)
+	r.core.QueueAttackWithSnap(atk, snap, combat.NewCircleHitOnTarget(r.self, nil, 3), 1)
 }

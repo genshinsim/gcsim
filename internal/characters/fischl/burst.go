@@ -32,7 +32,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0.5),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	//check for C4 damage
 	if c.Base.Cons >= 4 {
@@ -48,7 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Mult:       2.22,
 		}
 		// C4 damage always occurs before burst damage.
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), 8, 8)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 8, 8)
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.Core.Tasks.Add(func() {

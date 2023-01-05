@@ -45,7 +45,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		radius = 3.2
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, radius, 200),
+		chargeHitmark,
+		chargeHitmark,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

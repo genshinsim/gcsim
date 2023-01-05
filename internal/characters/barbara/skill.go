@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 			5,
 			hitmark,
 		) // need to confirm snapshot timing
@@ -144,7 +144,7 @@ func (c *char) barbaraMelodyTick(ai combat.AttackInfo, skillInitF int) func() {
 		c.Core.Log.NewEvent("barbara melody loop ticking", glog.LogCharacterEvent, c.Index)
 
 		// 0 DMG attack that causes hitlag on enemy only
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), -1, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), -1, 0)
 
 		// tick every 1.5s
 		c.Core.Tasks.Add(c.barbaraMelodyTick(ai, skillInitF), 1.5*60)

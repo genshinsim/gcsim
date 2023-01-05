@@ -67,13 +67,19 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			if done {
 				return
 			}
-			c.pressurizedCollapse(a.Target)
+			c.pressurizedCollapse(a.Target.Pos())
 		}
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		aimedHitmarks[skillActive],
 		aimedHitmarks[skillActive]+travel,
 		skillCb,

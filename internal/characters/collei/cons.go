@@ -74,7 +74,7 @@ func (c *char) c6(t combat.Target) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(t, 4),
+		combat.NewCircleHitOnTarget(t, nil, 4),
 		0,
 		22,
 	)

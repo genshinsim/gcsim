@@ -76,6 +76,9 @@ func (c *char) c2(a combat.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.Core.Rand.Float64() > .2 {
 		return
 	}
@@ -95,7 +98,7 @@ func (c *char) c2(a combat.AttackCB) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(trg, 3), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 0)
 }
 
 // C4:

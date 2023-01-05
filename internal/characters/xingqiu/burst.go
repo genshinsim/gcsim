@@ -95,7 +95,10 @@ func (c *char) summonSwordWave() {
 	var c2cb, c6cb func(a combat.AttackCB)
 	if c.nextRegen {
 		done := false
-		c6cb = func(_ combat.AttackCB) {
+		c6cb = func(a combat.AttackCB) {
+			if a.Target.Type() != combat.TargettableEnemy {
+				return
+			}
 			if done {
 				return
 			}
@@ -128,7 +131,19 @@ func (c *char) summonSwordWave() {
 
 	for i := 0; i < c.numSwords; i++ {
 		//TODO: this snapshot timing is off? perhaps should be 0?
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), 20, 20, c2cb, c6cb)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.5,
+			),
+			20,
+			20,
+			c2cb,
+			c6cb,
+		)
 		c6cb = nil
 		c.burstCounter++
 	}

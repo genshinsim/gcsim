@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		burstHitmark,
 		burstHitmark,
 		c.LingeringAeon,
@@ -78,7 +78,7 @@ func (c *char) LingeringAeon(a combat.AttackCB) {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefSingleTarget(t.Key()),
+			combat.NewSingleTargetHit(t.Key()),
 			0,
 			0,
 		)

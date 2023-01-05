@@ -64,7 +64,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 6),
+		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 6),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})

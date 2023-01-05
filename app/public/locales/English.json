@@ -11,7 +11,7 @@
         "workers_available": "Workers available: "
     },
     "character": {
-        "artifact_stats": "Artifact Stats",
+        "artifact_stats": "Artifact Stats (w/o Set Effects)",
         "c_post": "",
         "c_pre": "C",
         "lvl": "Lvl",

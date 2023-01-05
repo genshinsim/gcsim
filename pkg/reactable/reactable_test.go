@@ -29,8 +29,9 @@ func testCore() *core.Core {
 	})
 	//add player (first target)
 	trg := &testTarget{}
-	trg.Target = target.New(c, 0, 0, 1)
+	trg.Target = target.New(c, combat.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
+	trg.typ = combat.TargettablePlayer
 	trg.Reactable.Init(trg, c)
 	c.Combat.SetPlayer(trg)
 
@@ -70,13 +71,13 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 	return c, r
 }
 
-func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
+func makeAOEAttack(c *core.Core, ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}
 }
 
@@ -86,7 +87,7 @@ func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.Targ
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewDefSingleTarget(trg),
+		Pattern: combat.NewSingleTargetHit(trg),
 	}
 
 }
@@ -106,14 +107,10 @@ func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	//delay damage event to end of the frame
 	t.Core.Combat.Tasks.Add(func() {
 		//apply the damage
-		t.ApplyDamage(atk, 1)
+		t.applyDamage(atk, 1)
 		t.Core.Combat.Events.Emit(event.OnEnemyDamage, t, atk, 1.0, false)
 	}, 0)
 	return 1
-}
-
-func (t *testTarget) AttackWillLand(a combat.AttackPattern) (bool, string) {
-	return true, ""
 }
 
 func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
@@ -126,7 +123,7 @@ func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	return 0, false
 }
 
-func (t *testTarget) ApplyDamage(atk *combat.AttackEvent, amt float64) {
+func (t *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
 	if !atk.Reacted {
 		t.Reactable.AttachOrRefill(atk)
 	}
@@ -134,7 +131,7 @@ func (t *testTarget) ApplyDamage(atk *combat.AttackEvent, amt float64) {
 
 func addTargetToCore(c *core.Core) *testTarget {
 	trg := &testTarget{}
-	trg.Target = target.New(c, 0, 0, 1)
+	trg.Target = target.New(c, combat.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
 	c.Combat.AddEnemy(trg)

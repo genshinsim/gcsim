@@ -3,6 +3,7 @@ package collei
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -17,6 +18,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	burstPos           combat.Point
 	burstExtendCount   int
 	sproutShouldExtend bool
 	sproutShouldProc   bool
