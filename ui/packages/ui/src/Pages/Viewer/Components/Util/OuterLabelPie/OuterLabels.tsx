@@ -107,14 +107,14 @@ function useLabelPositions<Datum>(
 
     let prev: LabelPosition | null = null;
     return new Map(initial.map(pos => {
-      if (prev != null && pos.y - prev.y < yPadding && pos.angle > Math.PI == prev.angle > Math.PI) {
+      if (prev != null && Math.abs(pos.y - prev.y) < yPadding && isLeft(pos.angle) == isLeft(prev.angle)) {
         const r = labelRadius;
-        const y = prev.y + yPadding * (pos.angle > Math.PI ? 1 : -1);
+        const y = prev.y + yPadding * (isLeft(pos.angle) ? 1 : -1);
         const x = -Math.sqrt(r*r - y*y);
         pos.y = y;
         pos.x = x;
       }
-      pos.x += xPadding * (pos.angle > Math.PI ? -1 : 1);
+      pos.x += xPadding * (isLeft(pos.angle) ? -1 : 1);
       return [pos.index, prev = pos];
     }));
   }, [arcs, labelRadius, xPadding, yPadding]);
@@ -137,4 +137,8 @@ function useLinePoints(labelPositions: Map<number, LabelPosition>, pieRadius: nu
 
 function midAngle<Datum>(arc: PieArcDatum<Datum>): number {
   return arc.startAngle + (arc.endAngle - arc.startAngle) / 2;
+}
+
+function isLeft(angle: number): boolean {
+  return angle > Math.PI;
 }
