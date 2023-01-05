@@ -42,8 +42,9 @@ export default <Datum,>(
     }: Props<Datum>) => {
   const tooltip = useTooltip<TooltipData>();
   const tooltipHandles = useTooltipHandles(tooltip.showTooltip, tooltip.hideTooltip);
+  const margin = 150;
 
-  const radius = Math.min(width, height) / 2;
+  const radius = Math.min(width - margin, height) / 2;
   return (
     <div className="relative">
       <svg width={width} height={height}>
