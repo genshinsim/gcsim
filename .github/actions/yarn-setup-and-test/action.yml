@@ -1,0 +1,25 @@
+name: "Setup Yarn and Run Validation and Tests"
+description: "runs yarn setup and any desired yarn lint and test commands (no build)"
+runs:
+  using: composite
+  steps:
+  - name: Install
+    working-directory: ./ui
+    shell: bash
+    run: yarn install
+
+  # TODO: Enable the following steps for better ui code
+  # - name: Detect Dependency Version Mismatches
+  #   working-directory: ./ui
+  #   shell: bash
+  #   run: yarn list-mismatches
+
+  # - name: Detect Circular Dependencies
+  #   working-directory: ./ui
+  #   shell: bash
+  #   run: yarn circular
+
+  # - name: Lint
+  #   working-directory: ./ui
+  #   shell: bash
+  #   run: yarn lint

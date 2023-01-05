@@ -9,49 +9,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Extract branch name
+      - name: Extract Branch Name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.extract_branch.outputs.branch }}
-      - uses: actions/setup-go@v3
-        with:
-          go-version: "^1.19.3" # The Go version to download (if necessary) and use.
-      - name: check files
-        run: ls
-      - name: Build gcsim binary
-        run: |
-          # make file runnable, might not be necessary
-          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
-          # run the script
-          "${GITHUB_WORKSPACE}/scripts/build.sh"
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            gcsim.exe
-      - name: Set up Node.js ⚙️
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18.x"
-      - run: yarn install --immutable
-        working-directory: ./ui
-      - name: Build UI
-        run: yarn build
-        working-directory: ./ui
-      - name: List web dist
-        run: ls -lh
-        working-directory: ./ui/packages/web/dist
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@1
+
+      # setup + test go and yarn
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/go-setup-and-test
+      - uses: ./.github/actions/yarn-setup-and-test
+
+      # deploy
+      - uses: ./.github/actions/deploy-binary
+      - uses: ./.github/actions/deploy-ui
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          projectName: gcsim
-          directory: ./ui/packages/web/dist
-          branch: ${{ steps.extract_branch.outputs.branch }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.extract_branch.outputs.branch }}
+      # - uses: ./.github/actions/deploy-wasm
