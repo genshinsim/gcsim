@@ -50,8 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.a4Counter = 0
 
 	// initial E hit can proc her heal
-	done := false
-	cb := c.skillHealCB(done)
+	cb := c.skillHealCB()
 
 	// center on player
 	// use char queue for this just to be safe in case of C4
@@ -85,8 +84,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHealCB(done bool) combat.AttackCBFunc {
+func (c *char) skillHealCB() combat.AttackCBFunc {
+	done := false
 	return func(atk combat.AttackCB) {
+		if atk.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}

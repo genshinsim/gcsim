@@ -27,6 +27,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		mult = burstLow[c.TalentLvlBurst()]
 		regen = regenLow[c.TalentLvlBurst()]
 	}
+	c.burstHealCount = 0
 	c.burstHealAmount = player.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Index,
@@ -85,5 +86,6 @@ func (c *char) burstHealCB(atk combat.AttackCB) {
 	if c.burstHealCount == 5 {
 		return
 	}
+	c.burstHealCount++
 	c.Core.Player.Heal(c.burstHealAmount)
 }

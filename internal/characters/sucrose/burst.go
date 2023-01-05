@@ -64,13 +64,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snapAbs := c.Snapshot(&aiAbs)
 
-	lockout := 0
-	cb := func(_ combat.AttackCB) {
-		//lockout for 1 frame to prevent triggering multiple times on one attack
-		if lockout > c.Core.F {
+	done := false
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
-		lockout = c.Core.F + 1
+		if done {
+			return
+		}
+		done = true
 		c.a4()
 	}
 

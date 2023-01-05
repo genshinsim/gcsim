@@ -86,7 +86,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// hold := p["hold"]
 
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		//TODO: this used to be 82?
 		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.ParticleDelay)
 		//check for breakthrough
