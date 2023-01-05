@@ -1,7 +1,11 @@
 package api
 
 import (
+	"bytes"
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"io"
@@ -28,6 +32,34 @@ var ErrKeyNotFound = errors.New("key does not exist")
 
 const DefaultTLL = 24 * 14
 
+func (s *Server) decryptHash(ciphertext []byte) ([]byte, error) {
+	c, err := aes.NewCipher(s.cfg.AESDecryptionKey)
+	if err != nil {
+		s.Log.Warnw("decryptHash: error creating AES cipher", "err", err)
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		s.Log.Warnw("decryptHash: error creating GCM", "err", err)
+		return nil, err
+	}
+
+	nonceSize := gcm.NonceSize()
+	if len(ciphertext) < nonceSize {
+		s.Log.Warnw("decryptHash: ciphertext < nonce size", "ciphertext", ciphertext)
+		return nil, err
+	}
+
+	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		s.Log.Warnw("decryptHash: error decrypting ciphertext", "err", err)
+		return nil, err
+	}
+	return plaintext, nil
+}
+
 func (s *Server) CreateShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data, err := io.ReadAll(r.Body)
@@ -43,6 +75,35 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			return
 		}
 
+		hash := r.Header.Get("X-GCSIM-SHARE-AUTH")
+		if hash == "" {
+			s.Log.Infow("create share request failed - no hash received", "header", r.Header)
+			http.Error(w, "Forbidden", http.StatusForbidden)
+			return
+		}
+
+		s.Log.Infow("create share request received", "hash", hash)
+
+		//check if from valid source
+		if hash != s.cfg.ResultStoreDevKey {
+			h := sha256.New()
+			h.Write(data)
+			bs := h.Sum(nil)
+
+			dh, err := s.decryptHash([]byte(hash))
+			if err != nil {
+				s.Log.Infow("create share request failed; error decrypting", "err", err)
+				http.Error(w, "Bad Request", http.StatusBadRequest)
+				return
+			}
+
+			if !bytes.Equal(bs, dh) {
+				s.Log.Infow("create share request failed; hash not equal", "hash", hash, "computed", string(dh))
+				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
+		}
+
 		uuid, err := s.cfg.ResultStore.Create(data, context.WithValue(r.Context(), TTLContextKey, DefaultTLL))
 
 		if err != nil {
@@ -50,6 +111,7 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		s.Log.Infow("create share request success", "key", uuid)
 
 		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte(uuid))

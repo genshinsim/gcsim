@@ -59,6 +59,8 @@ func main() {
 			ClientSecret: os.Getenv("DISCORD_SECRET"),
 			JWTKey:       os.Getenv("JWT_KEY"),
 		},
+		ResultStoreDevKey: os.Getenv("SHARE_DEV_KEY"),
+		AESDecryptionKey:  []byte(os.Getenv("SHARE_AES_KEY")),
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil
