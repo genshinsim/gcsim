@@ -134,9 +134,9 @@ func (c *char) depleteSkydwellerPoints() func() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if !c.StatusIsActive(skillKey) {
 		return c.skillActivate(p)
-	} else {
-		return c.skillDeactivate(p)
 	}
+	return c.skillDeactivate(p)
+
 }
 
 func (c *char) makeParticleGenCallback() func(cb combat.AttackCB) {
