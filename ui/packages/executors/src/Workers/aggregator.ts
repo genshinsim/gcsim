@@ -11,18 +11,20 @@ if (!WebAssembly.instantiateStreaming) {
 }
 
 // @ts-ignore
-const go = new Go();
-WebAssembly.instantiateStreaming(fetch('/main.wasm'), go.importObject)
-  .then((result) => {
-    go.run(result.instance);
-    console.log("aggregator loaded okay");
-    postMessage({ type: AggResponse.Ready });
-  }).catch((e) => {
-    console.error(e);
-    postMessage({
-      type: AggResponse.Failed,
-      reason: e instanceof Error ? e.message : "Unknown Error" });
-  });
+function ready(req: { wasm: string }) {
+  const go = new Go();
+  WebAssembly.instantiateStreaming(fetch(req.wasm), go.importObject)
+      .then((result) => {
+        go.run(result.instance);
+        console.log("aggregator loaded okay");
+        postMessage({ type: AggResponse.Ready });
+      }).catch((e) => {
+        console.error(e);
+        postMessage({
+          type: AggResponse.Failed,
+          reason: e instanceof Error ? e.message : "Unknown Error" });
+      });
+}
 
 // @ts-ignore
 function initialize(req: { cfg: string }) {
@@ -53,18 +55,20 @@ function doFlush(req: { startTime: number }) {
 // @ts-ignore
 function handleRequest(req: any): any {
   switch (req.type as AggRequest) {
+    case AggRequest.Ready:
+      return ready(req);
     case AggRequest.Initialize:
-      return initialize(req);
+      return postMessage(initialize(req));
     case AggRequest.Add:
-      return add(req);
+      return postMessage(add(req));
     case AggRequest.Flush:
-      return doFlush(req);
+      return postMessage(doFlush(req));
     default:
       console.error("aggregator - unknown request: ", req);
       throw new Error("aggregator unknown request");
   }
 }
-onmessage = (ev) => postMessage(handleRequest(ev.data));
+onmessage = (ev) => handleRequest(ev.data);
 
 // TODO: I hate this
 // Web Workers do not currently support modules (in all browsers), so instead all the relevant code in common
@@ -72,6 +76,7 @@ onmessage = (ev) => postMessage(handleRequest(ev.data));
 // Clean up when supported: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
 enum AggRequest {
+  Ready = "ready",
   Initialize = "initialize",
   Add = "add",
   Flush = "flush",

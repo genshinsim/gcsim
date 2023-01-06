@@ -6,14 +6,16 @@ import { Aggregator, Helper, SimWorker } from "./Workers/common";
 const VIEWER_THROTTLE = 100;
 
 export class WasmExecutor implements Executor {
+  private wasmPath: string;
   private helper: HelperExecutor;
   private aggregator: Worker | null;
   private workers: Worker[];
   private workerCount: number;
   private isRunning: boolean;
 
-  constructor() {
-    this.helper = new HelperExecutor();
+  constructor(wasm: string) {
+    this.wasmPath = wasm;
+    this.helper = new HelperExecutor(wasm);
 
     this.aggregator = null;
     this.workers = [];
@@ -41,6 +43,7 @@ export class WasmExecutor implements Executor {
       }
 
       this.aggregator = new Worker(new URL("./Workers/aggregator.ts", import.meta.url));
+      this.aggregator.postMessage(Aggregator.ReadyRequest(this.wasmPath));
       this.aggregator.onmessage = (ev) => {
         switch (ev.data.type as Aggregator.Response) {
           case Aggregator.Response.Ready:
@@ -68,6 +71,8 @@ export class WasmExecutor implements Executor {
     for (let i = 0; i < diff; i++) {
       promises.push(new Promise<boolean>((resolve, reject) => {
         const worker = new Worker(new URL("./Workers/worker.ts", import.meta.url));
+        worker.postMessage(SimWorker.ReadyRequest(this.wasmPath));
+
         const idx = this.workers.push(worker) - 1;
         worker.onmessage = (ev) => {
           switch (ev.data.type as SimWorker.Response) {
@@ -237,9 +242,14 @@ export class WasmExecutor implements Executor {
 }
 
 class HelperExecutor {
+  private wasmPath: string;
   private helper: Worker | undefined;
   private responses = new Map<number, MessageEvent>;
   private id = 0;
+
+  constructor(wasm: string) {
+    this.wasmPath = wasm;
+  }
 
   private initialize() {
     if (this.helper != null) {
@@ -247,6 +257,7 @@ class HelperExecutor {
     }
 
     this.helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
+    this.helper.postMessage(Helper.ReadyRequest(this.wasmPath));
     this.helper.onmessage = (ev) => {
       this.responses.set(ev.data.id, ev);
     };

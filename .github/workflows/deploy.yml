@@ -9,6 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Extract Branch Name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
       # setup + test go and yarn
       - uses: actions/checkout@v3
       - uses: ./.github/actions/go-setup-and-test
@@ -22,4 +27,7 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: main
-      # - uses: ./.github/actions/deploy-wasm
+      - uses: ./.github/actions/deploy-wasm
+        with:
+          rcloneConfig: ${{ secrets.CF_RCLONE }}
+          branch: ${{ steps.extract_branch.outputs.branch }}

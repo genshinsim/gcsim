@@ -19,7 +19,6 @@
     "start:embed": "yarn workspace @gcsim/embed dev",
     "preview": "yarn run preview:web",
     "preview:web": "yarn workspace @gcsim/web preview",
-    "build": "yarn run build:wasm && yarn run build:web",
     "build:wasm": "yarn workspace @gcsim/executors build:wasm:web",
     "build:web": "yarn workspace @gcsim/web build",
     "build:embed": "yarn workspace @gcsim/embed build",

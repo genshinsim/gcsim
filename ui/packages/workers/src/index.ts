@@ -3,6 +3,7 @@ import { handleAssets } from "./assets";
 import { handleInjectHead, handlePreview } from "./preview";
 import { proxyRequest } from "./proxy";
 import { handleLegacy, handleShare, handleView } from "./share";
+import { handleWasm } from "./wasm";
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.get("/api/preview/:key", handlePreview);
 router.get("/viewer/share/:key", handleInjectHead);
 
 router.get("/api/assets/*", handleAssets);
+router.get("/api/wasm/*", handleWasm);
 
 addEventListener("fetch", (event) => {
   event.respondWith(router.handle(event.request, event));

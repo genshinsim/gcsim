@@ -27,4 +27,7 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.extract_branch.outputs.branch }}
-      # - uses: ./.github/actions/deploy-wasm
+      - uses: ./.github/actions/deploy-wasm
+        with:
+          rcloneConfig: ${{ secrets.CF_RCLONE }}
+          branch: ${{ steps.extract_branch.outputs.branch }}

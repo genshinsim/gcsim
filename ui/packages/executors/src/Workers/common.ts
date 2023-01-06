@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 export namespace Aggregator {
   export enum Request {
+    Ready = "ready",
     Initialize = "initialize",
     Add = "add",
     Flush = "flush",
@@ -22,6 +23,15 @@ export namespace Aggregator {
 
   export function FailedResponse(reason: string): FailedResponse {
     return { type: Response.Failed, reason: reason };
+  }
+
+  export interface ReadyRequest {
+    type: Request.Ready;
+    wasm: string;
+  }
+
+  export function ReadyRequest(wasm: string): ReadyRequest {
+    return { type: Request.Ready, wasm: wasm };
   }
   
   export interface ReadyResponse {
@@ -88,6 +98,7 @@ export namespace Aggregator {
 
 export namespace Helper {
   export enum Request {
+    Ready = "ready",
     Validate = "validate",
     Sample = "sample",
   }
@@ -106,6 +117,15 @@ export namespace Helper {
 
   export function FailedResponse(id: number, reason: string): FailedResponse {
     return { id: id, type: Response.Failed, reason: reason };
+  }
+
+  export interface ReadyRequest {
+    type: Request.Ready;
+    wasm: string;
+  }
+
+  export function ReadyRequest(wasm: string): ReadyRequest {
+    return { type: Request.Ready, wasm: wasm };
   }
 
   export interface ValidateRequest {
@@ -148,6 +168,7 @@ export namespace Helper {
 
 export namespace SimWorker {
   export enum Request {
+    Ready = "ready",
     Initialize = "initialize",
     Run = "run",
   }
@@ -166,6 +187,15 @@ export namespace SimWorker {
 
   export function FailedResponse(reason: string): FailedResponse {
     return { type: Response.Failed, reason: reason };
+  }
+
+  export interface ReadyRequest {
+    type: Request.Ready;
+    wasm: string;
+  }
+
+  export function ReadyRequest(wasm: string): ReadyRequest {
+    return { type: Request.Ready, wasm: wasm };
   }
   
   export interface ReadyResponse {

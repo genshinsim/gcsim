@@ -5,8 +5,8 @@ import { visualizer } from "rollup-plugin-visualizer";
 import git from "git-rev-sync";
 
 export default ({ }: ConfigEnv) => {
-  const commitHash = git.long();
-  process.env.VITE_GIT_COMMIT_HASH = commitHash;
+  process.env.VITE_GIT_COMMIT_HASH = git.long();
+  process.env.VITE_GIT_BRANCH = git.branch();
 
   return defineConfig({
     plugins: [
