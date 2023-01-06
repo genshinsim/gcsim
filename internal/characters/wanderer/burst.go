@@ -65,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := 0; i < 5; i++ {
 		progress := i
 		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5),
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 				burstSnapshotDelay, burstHitmark+progress*burstHitmarkDelay)
 		}, delay)
 	}
@@ -117,7 +117,7 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 	for i := 0; i < 5; i++ {
 		progress := i
 		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5),
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 				burstSnapshotDelay, burstHitmark+progress*burstHitmarkDelay)
 		}, 0)
 	}

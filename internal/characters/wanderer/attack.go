@@ -105,7 +105,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, radius),
 			release,
 			release+travel,
 			c.makeA4Callback(),
@@ -156,7 +156,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, radius),
 			release,
 			release+travel,
 			c.makeA4Callback(),

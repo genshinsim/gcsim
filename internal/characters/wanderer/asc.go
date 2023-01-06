@@ -70,7 +70,7 @@ func (c *char) a4() {
 		}
 
 		for i := 0; i < 4; i++ {
-			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
 				a4Release[i], a4Release[i]+a4Hitmark)
 		}
 	}
@@ -83,7 +83,7 @@ func (c *char) absorbCheckA1() func() {
 			return
 		}
 
-		a1AbsorbCheckLocation := combat.NewCircleHit(c.Core.Combat.Player(), 5)
+		a1AbsorbCheckLocation := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 
 		absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
 
