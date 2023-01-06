@@ -54,7 +54,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 
 	// Initial A1 Absorption test
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
-	c.absorbCheckA1(c.Core.F)()
+	c.absorbCheckA1()()
 
 	c.c1()
 
