@@ -9,11 +9,12 @@ const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
   data: SimResults | null;
+  hash: string;
   tabState: [string, (tab: string) => void];
   running: boolean;
 };
 
-export default ({ tabState, data, running }: NavProps) => {
+export default ({ tabState, data, hash = "", running }: NavProps) => {
   const { t } = useTranslation();
   const [tabId, setTabId] = tabState;
   const copyToast = useRef<Toaster>(null);
@@ -38,6 +39,7 @@ export default ({ tabState, data, running }: NavProps) => {
             copyToast={copyToast}
             shareState={shareState}
             data={data}
+            hash={hash}
             running={running}
             className={btnClass} />
       </ButtonGroup>

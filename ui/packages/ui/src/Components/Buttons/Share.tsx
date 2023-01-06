@@ -10,12 +10,13 @@ type ShareProps = {
   running: boolean;
   copyToast: RefObject<Toaster>;
   data: SimResults | null;
+  hash: string;
   shareState: [string | null, (link: string | null) => void]
   className?: string;
 }
 
 // TODO: separate share handling away from the button for caching across pages
-export default ({ running, copyToast, data, className, shareState }: ShareProps) => {
+export default ({ running, copyToast, data, hash = "", className, shareState }: ShareProps) => {
   const { t } = useTranslation();
   const location = useLocation();
 
@@ -34,10 +35,7 @@ export default ({ running, copyToast, data, className, shareState }: ShareProps)
 
     axios
       .post("/api/share", data, {
-        headers: {
-          "X-GCSIM-SHARE-AUTH":
-            "this-is-a-fake-dev-key-please-dont-use-this-on-live", //TODO: fix key
-        },
+        headers: { "X-GCSIM-SHARE-AUTH": hash },
       })
       .then((resp) => {
         setShareLink(link(resp.data));

@@ -84,6 +84,7 @@ type FromUrlProps = {
 
 const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
   const [data, setData] = useState<SimResults | null>(null);
+  const [hash, setHash] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
   const isRunning = useRunningState(exec);
@@ -94,6 +95,12 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
       .get(url, { timeout: 30000 })
       .then((resp) => {
         setData(resp.data);
+        let hash = ""
+        if (resp.headers["x-gcsim-share-auth"] !== undefined) {
+          hash = resp.headers["x-gcsim-share-auth"]
+        }
+        setHash(hash)
+        console.log(resp.headers)
         console.log(resp.data);
       })
       .catch((e) => {
@@ -116,6 +123,7 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
   return (
     <UpgradableViewer
         data={data}
+        hash={hash}
         error={error}
         src={src}
         exec={exec}
@@ -165,6 +173,7 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
   return (
     <UpgradableViewer
         data={data}
+        hash={""} //TODO: fix this!!
         error={error}
         src={ResultSource.Generated}
         exec={exec}
@@ -179,6 +188,7 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
 
 type UpgradableViewerProps = {
   data: SimResults | null;
+  hash: string;
   error: string | null;
   src: ResultSource;
   running: boolean;
@@ -197,6 +207,7 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
       <Viewer
           running={props.running}
           data={props.data}
+          hash={props.hash}
           src={props.src}
           error={props.error}
           redirect={props.redirect}
