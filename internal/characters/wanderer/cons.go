@@ -83,10 +83,10 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 			Mult:       a.AttackEvent.Info.Mult * 0.4,
 		}
 
-		// TODO: Delay
+		// TODO: Snapshot delay?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(trg, 2), 0, 0,
+			combat.NewCircleHit(trg, 2), 8, 8,
 		)
 	}
 
