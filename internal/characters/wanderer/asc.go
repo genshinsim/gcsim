@@ -76,7 +76,7 @@ func (c *char) a4() {
 	}
 }
 
-func (c *char) absorbCheckA1(src int) func() {
+func (c *char) absorbCheckA1() func() {
 	return func() {
 
 		if len(c.a1ValidBuffs) <= c.a1MaxAbsorb {
@@ -117,7 +117,7 @@ func (c *char) absorbCheckA1(src int) func() {
 		delay := 6
 
 		if c.skydwellerPoints*6 > delay {
-			c.Core.Tasks.Add(c.absorbCheckA1(src), delay)
+			c.Core.Tasks.Add(c.absorbCheckA1(), delay)
 		}
 
 	}
