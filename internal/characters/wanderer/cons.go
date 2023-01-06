@@ -16,17 +16,18 @@ const (
 
 func (c *char) c1() {
 	// C1: Needs to be manually deleted when Windfavored state ends
-	if c.Base.Cons >= 1 && c.StatusIsActive(skillKey) {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.AtkSpd] = 0.1
-		c.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("wanderer-c1-atkspd", 1200),
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-
+	if c.Base.Cons < 1 {
+		return
 	}
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.AtkSpd] = 0.1
+	c.AddStatMod(character.StatMod{
+		Base: modifier.NewBaseWithHitlag("wanderer-c1-atkspd", 1200),
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }
 
 func (c *char) c2() {
