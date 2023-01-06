@@ -47,10 +47,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	// TODO: check radius
-	radius := 2.92
-
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6), skillHitmark, skillHitmark)
 
 	// Initial A1 Absorption test
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
