@@ -22,6 +22,9 @@ func (c *char) a4(a combat.AttackCB) {
 	if !a.AttackEvent.Info.HitWeakPoint {
 		return
 	}
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.15

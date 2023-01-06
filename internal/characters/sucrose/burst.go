@@ -27,8 +27,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	// reset location
+	player := c.Core.Combat.Player()
 	c.qAbsorb = attributes.NoElement
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.77)
+	// there's no collision logic for the gadget thrown by Sucrose
+	// from tests in abyss it looks like the gadget lands around 2 abyss tiles away from Sucrose which is about 5m
+	// at that pos there's an offset of Y: -1, which is why it's Y: 4 here
+	c.absorbCheckLocation = combat.NewBoxHitOnTarget(player, combat.Point{Y: 4}, 2.5, 2.5)
 
 	c.Core.Status.Add("sucroseburst", duration)
 	ai := combat.AttackInfo{
@@ -42,6 +46,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
+	ap := combat.NewCircleHitOnTarget(player, combat.Point{Y: 5}, 8)
+
 	//TODO: does sucrose burst snapshot?
 	snap := c.Snapshot(&ai)
 	//TODO: does burst absorb snapshot
@@ -58,23 +64,25 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snapAbs := c.Snapshot(&aiAbs)
 
-	lockout := 0
-	cb := func(_ combat.AttackCB) {
-		//lockout for 1 frame to prevent triggering multiple times on one attack
-		if lockout > c.Core.F {
+	done := false
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
-		lockout = c.Core.F + 1
+		if done {
+			return
+		}
+		done = true
 		c.a4()
 	}
 
 	for i := 137; i <= duration+5; i += 113 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 8), i, cb)
+		c.Core.QueueAttackWithSnap(ai, snap, ap, i, cb)
 
 		c.Core.Tasks.Add(func() {
 			if c.qAbsorb != attributes.NoElement {
 				aiAbs.Element = c.qAbsorb
-				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 8), 0)
+				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, ap, 0)
 			}
 			//check if absorbed
 		}, i)

@@ -11,11 +11,13 @@ import (
 
 func (c *char) c1cb() func(a combat.AttackCB) {
 	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if c.skillC1 {
 			c.AddEnergy("dmc-c1", 3.5)
 			c.skillC1 = false
 		}
-
 	}
 }
 

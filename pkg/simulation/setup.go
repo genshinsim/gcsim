@@ -19,15 +19,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProfile) error {
+func SetupTargetsInCore(core *core.Core, p combat.Point, r float64, targets []enemy.EnemyProfile) error {
 
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
 
-	if p.R == 0 {
+	if r == 0 {
 		return errors.New("player cannot have 0 radius")
 	}
-	player := avatar.New(core, p.X, p.Y, p.R)
+	player := avatar.New(core, p, r)
 	core.Combat.SetPlayer(player)
 
 	// add targets
@@ -41,8 +41,12 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 	}
 
 	//default target is closest to player?
-	trgs := core.Combat.EnemyByDistance(p.X, p.Y, combat.InvalidTargetKey)
-	core.Combat.DefaultTarget = core.Combat.Enemy(trgs[0]).Key()
+	trgs := core.Combat.EnemyByDistance(player.Pos(), combat.InvalidTargetKey)
+	defaultEnemy := core.Combat.Enemy(trgs[0])
+	core.Combat.DefaultTarget = defaultEnemy.Key()
+
+	// initialize player direction
+	core.Combat.Player().SetDirection(defaultEnemy.Pos())
 
 	return nil
 }

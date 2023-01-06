@@ -70,13 +70,18 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), hitmark, hitmark)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1),
+			hitmark,
+			hitmark,
+		)
 	}
 
 	//aoe dmg
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
-		Abil:           "Plunge",
+		Abil:           "High Plunge",
 		AttackTag:      combat.AttackTagPlunge,
 		ICDTag:         combat.ICDTagNone,
 		ICDGroup:       combat.ICDGroupDefault,
@@ -87,7 +92,12 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		IgnoreInfusion: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4.5), hitmark, hitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 4.5),
+		hitmark,
+		hitmark,
+	)
 
 	// a1 if applies
 	if c.a1Absorb != attributes.NoElement {
@@ -104,7 +114,12 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 			IgnoreInfusion: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4.5), hitmark-1, hitmark-1)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 4.5),
+			hitmark-1,
+			hitmark-1,
+		)
 		c.a1Absorb = attributes.NoElement
 	}
 

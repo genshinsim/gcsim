@@ -94,8 +94,7 @@ func (c *char) shootStars(src int, last int) func() {
 
 		// find near target
 		nearTarget := -1
-		x, y := c.Core.Combat.Player().Pos()
-		trgs := c.Core.Combat.EnemiesWithinRadius(x, y, 10)
+		trgs := c.Core.Combat.EnemiesWithinRadius(c.Core.Combat.Player().Pos(), 10)
 		if len(trgs) > 0 {
 			sort.Slice(trgs, func(i, j int) bool { return i < j })
 			nearTarget = trgs[0]
@@ -154,7 +153,18 @@ func (c *char) shootStars(src int, last int) func() {
 			}
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 0.5), 0, starsTravel[len(starsTravel)-stars], cb)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.Enemy(nearTarget),
+				nil,
+				0.8,
+			),
+			0,
+			starsTravel[len(starsTravel)-stars],
+			cb,
+		)
 
 		stars--
 		c.SetTag(nightStars, stars)

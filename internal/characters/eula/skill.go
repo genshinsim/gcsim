@@ -94,7 +94,10 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	}
 	c.particleDone = false
 	//add 1 to grim heart if not capped by icd
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if c.StatusIsActive(grimheartICD) {
 			return
 		}
@@ -109,7 +112,13 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 			c.particleDone = true
 		}
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5), skillPressHitmark, skillPressHitmark, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3.5),
+		skillPressHitmark,
+		skillPressHitmark,
+		cb,
+	)
 
 	c.SetCDWithDelay(action.ActionSkill, 60*4, 16)
 
@@ -151,7 +160,13 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			c.particleDone = true
 		}
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5.5), skillHoldHitmark, skillHoldHitmark, energyCB)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 5.5),
+		skillHoldHitmark,
+		skillHoldHitmark,
+		energyCB,
+	)
 
 	v := c.currentGrimheartStacks()
 
@@ -199,7 +214,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			//per shizuka first swirl is not affected by hitlag?
 			c.Core.QueueAttack(
 				icewhirlAI,
-				combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
 				icewhirlHitmarks[i],
 				icewhirlHitmarks[i],
 				shredCB,
@@ -209,7 +224,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				//spacing it out for stacks
 				c.Core.QueueAttack(
 					icewhirlAI,
-					combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
 					0,
 					0,
 					shredCB,
@@ -234,7 +249,12 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(aiA1, combat.NewCircleHit(c.Core.Combat.Player(), 6.5), a1Hitmark-(skillHoldHitmark+1), a1Hitmark-(skillHoldHitmark+1))
+			c.Core.QueueAttack(
+				aiA1,
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 6.5),
+				a1Hitmark-(skillHoldHitmark+1),
+				a1Hitmark-(skillHoldHitmark+1),
+			)
 		}, skillHoldHitmark+1)
 	}
 

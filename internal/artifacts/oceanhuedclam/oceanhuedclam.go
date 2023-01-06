@@ -120,7 +120,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						FlatDmg:          s.bubbleHealStacks * .9,
 					}
 					//snapshot -1 since we don't need stats
-					c.QueueAttack(atk, combat.NewCircleHit(c.Combat.Player(), 3), -1, 1)
+					c.QueueAttack(atk, combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 6), -1, 1)
 
 					// Reset
 					c.Flags.Custom["OHCActiveChar"] = -1

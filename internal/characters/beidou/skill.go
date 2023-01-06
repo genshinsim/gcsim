@@ -45,8 +45,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   skillHitlagStages[counter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	radius := skillRadius[counter]
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius[counter]),
+		skillHitmark,
+		skillHitmark,
+	)
 
 	//2 if no hit, 3 if 1 hit, 4 if perfect
 	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, skillHitmark+c.ParticleDelay)

@@ -26,6 +26,7 @@ func (c *char) a1() func() {
 		c.Core.Log.NewEvent("mona-a1 phantom added", glog.LogCharacterEvent, c.Index).
 			Write("expiry:", c.Core.F+120)
 		// queue up phantom explosion
+		phantomPos := c.Core.Combat.Player()
 		c.Core.Tasks.Add(func() {
 			aiExplode := combat.AttackInfo{
 				ActorIndex: c.Index,
@@ -38,7 +39,8 @@ func (c *char) a1() func() {
 				Durability: 25,
 				Mult:       0.5 * skill[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, 0)
+			// TODO: this should have its own position
+			c.Core.QueueAttack(aiExplode, combat.NewCircleHitOnTarget(phantomPos, nil, 5), 0, 0)
 		}, 120)
 		// queue up next A1 check because Mona's still dashing
 		// different Phantoms coexist and don't overwrite each other

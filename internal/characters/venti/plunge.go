@@ -35,7 +35,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
-		Abil:           "Plunge",
+		Abil:           "High Plunge",
 		AttackTag:      combat.AttackTagPlunge,
 		ICDTag:         combat.ICDTagNone,
 		ICDGroup:       combat.ICDGroupDefault,
@@ -45,7 +45,12 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		Mult:           highPlunge[c.TalentLvlAttack()],
 		IgnoreInfusion: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5), highPlungeHitmark, highPlungeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
+		highPlungeHitmark,
+		highPlungeHitmark,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),

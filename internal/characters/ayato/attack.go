@@ -15,7 +15,8 @@ var (
 	attackHitmarks        = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0}, {0.08}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
-	attackRadius          = []float64{1.7, 1.7, 1.61, 1.64, 3.16}
+	attackHitboxes        = [][]float64{{1.7}, {1.7}, {1.6, 2.8}, {2, 2.6}, {6, 2}}
+	attackOffsets         = []float64{0.6, 0.8, 0.3, -0.2, 0.6}
 )
 
 const normalHitNum = 5
@@ -64,14 +65,21 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		radius := attackRadius[c.NormalCounter]
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), radius),
-				0,
-				0,
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+		)
+		if c.NormalCounter >= 2 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
 			)
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
@@ -102,7 +110,14 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.03 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5.32), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 8, 7),
+		0,
+		shunsuikenHitmark,
+		c.generateParticles,
+		c.skillStacks,
+	)
 
 	defer c.AdvanceNormalIndex()
 

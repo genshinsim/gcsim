@@ -51,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Element:    attributes.Physical,
 				Mult:       0.8 + float64(r)*0.2,
 			}
-			c.QueueAttack(ai, combat.NewCircleHit(c.Combat.PrimaryTarget(), 1.6), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Combat.PrimaryTarget(), nil, 1.6), 0, 1)
 		}
 	}
 

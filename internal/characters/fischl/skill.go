@@ -57,7 +57,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		radius = 3
 	}
 	// hitmark is 5 frames after oz spawns
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius), skillOzSpawn, skillOzSpawn+5)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1.5}, radius),
+		skillOzSpawn,
+		skillOzSpawn+5,
+	)
 
 	// CD Delay is 18 frames, but things break if Delay > CanQueueAfter
 	// so we add 18 to the duration instead. this probably mess up CDR stuff
@@ -123,9 +128,15 @@ func (c *char) queueOz(src string, ozSpawn int) {
 		}
 		snap := c.Snapshot(&ai)
 		c.ozSnapshot = combat.AttackEvent{
-			Info:        ai,
-			Snapshot:    snap,
-			Pattern:     combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+			Info:     ai,
+			Snapshot: snap,
+			Pattern: combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				combat.Point{Y: -0.5},
+				0.1,
+				1,
+			),
 			SourceFrame: c.Core.F,
 		}
 		c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)

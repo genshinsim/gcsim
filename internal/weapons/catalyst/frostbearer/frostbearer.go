@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				ai.Mult = atkc
 			}
 
-			c.QueueAttack(ai, combat.NewCircleHit(t, 3), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
 
 		}
 		return false

@@ -36,7 +36,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}
@@ -56,7 +59,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	var c4CB combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
-		c4CB = func(_ combat.AttackCB) {
+		c4CB = func(a combat.AttackCB) {
+			if a.Target.Type() != combat.TargettableEnemy {
+				return
+			}
 			// check for healing
 			if c.Core.Status.Duration(barbSkillKey) > 0 && energyCount < 5 {
 				// regen energy
@@ -74,12 +80,14 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: Not sure of snapshot timing
-	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3),
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 5}, 3),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
 		cb,
-		c4CB)
+		c4CB,
+	)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

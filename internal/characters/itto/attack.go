@@ -13,7 +13,8 @@ var (
 	attackFrames          [][][]int
 	attackHitmarks        = []int{23, 25, 16, 48}
 	attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
-	attackRadius          = [][]float64{{2.5, 2.5, 2.5, 3.4}, {3.5, 3.5, 3.5, 4.43}}
+	attackHitboxes        = [][][]float64{{{2.5}, {2.5}, {2.5}, {3.2, 6}}, {{3.5}, {3.5}, {3.5}, {3.8, 8}}}
+	attackOffsets         = [][]float64{{0.8, 0.8, 0.85, -1.5}, {0.8, 0.8, 0.8, -1.7}}
 )
 
 const normalHitNum = 4
@@ -90,20 +91,26 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	// check burst status for radius
-	// TODO: proper hitbox
+	// check burst status for hitbox
 	attackIndex := 0
 	if c.StatModIsActive(burstBuffKey) {
 		attackIndex = 1
 	}
-	radius := attackRadius[attackIndex][c.NormalCounter]
-	// TODO: hitmark is not getting adjusted for atk speed
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		combat.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+		attackHitboxes[attackIndex][c.NormalCounter][0],
 	)
+	if c.NormalCounter == 3 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+			attackHitboxes[attackIndex][c.NormalCounter][0],
+			attackHitboxes[attackIndex][c.NormalCounter][1],
+		)
+	}
+	// TODO: hitmark is not getting adjusted for atk speed
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 
 	// TODO: assume NAs always hit. since it is not possible to know if the next CA is CA0 or CA1/CAF when deciding what CA frames to return.
 	// Add superlative strength stacks on damage

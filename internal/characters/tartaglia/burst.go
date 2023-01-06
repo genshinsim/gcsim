@@ -52,6 +52,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	cancels := burstRangedFrames
 	hitmark := burstRangedHitmark
 	cb := c.rangedBurstApplyRiptide
+	center := c.Core.Combat.Player()
 	radius := 6.0
 
 	if c.StatusIsActive(meleeKey) {
@@ -66,12 +67,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.mlBurstUsed = true
 		}
 	} else {
+		center = c.Core.Combat.PrimaryTarget()
 		c.Core.Tasks.Add(func() {
 			c.AddEnergy("tartaglia-ranged-burst-refund", 20)
 		}, 4)
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), hitmark, hitmark, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(center, nil, radius),
+		hitmark,
+		hitmark,
+		cb,
+	)
 
 	if c.StatusIsActive(meleeKey) {
 		c.ConsumeEnergy(71)
