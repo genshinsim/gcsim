@@ -21,5 +21,4 @@ runs:
     env:
       RCLONE_CONF: ${{ inputs.rcloneConfig }}
     with:
-      args: sync ./ r2rclone:wasm/${{ inputs.branch }}/ --progress
-    working-directory: ./cmd/wasm/dist/
+      args: sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress
