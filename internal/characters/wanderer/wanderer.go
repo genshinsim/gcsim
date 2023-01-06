@@ -89,7 +89,7 @@ func (c *char) Walk(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
 	ai := c.Character.Walk(p)
-	ai.Frames = func(action action.Action) int { return delay + ai.Frames(action) }
+	ai.Frames = func(next action.Action) int { return delay + ai.Frames(action) }
 	ai.AnimationLength = delay + ai.AnimationLength
 	ai.CanQueueAfter = delay + ai.CanQueueAfter
 
@@ -100,7 +100,7 @@ func (c *char) Jump(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
 	ai := c.Character.Jump(p)
-	ai.Frames = func(action action.Action) int { return delay + ai.Frames(action) }
+	ai.Frames = func(next action.Action) int { return delay + ai.Frames(action) }
 	ai.AnimationLength = delay + ai.AnimationLength
 	ai.CanQueueAfter = delay + ai.CanQueueAfter
 
