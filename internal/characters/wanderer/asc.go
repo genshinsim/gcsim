@@ -12,6 +12,7 @@ import (
 
 const (
 	a4Key           = "wanderer-a4"
+	a4IcdKey        = "wanderer-a4-icd"
 	a1ElectroKey    = "wanderer-a1-electro"
 	a1ElectroIcdKey = "wanderer-a1-electro-icd"
 	a1PyroKey       = "wanderer-a1-pyro"
@@ -20,9 +21,11 @@ const (
 
 func (c *char) makeA4Callback() func(cb combat.AttackCB) {
 	return func(a combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) {
+		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
 			return
 		}
+
+		c.AddStatus(a4IcdKey, 6, true)
 
 		if c.Core.Rand.Float64() > c.a4Prob {
 			c.a4Prob += 0.12

@@ -35,7 +35,7 @@ func (c *char) c2() {
 	if c.Base.Cons < 2 {
 		return
 	}
-	
+
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = math.Min((float64)(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
 	c.AddStatMod(character.StatMod{
