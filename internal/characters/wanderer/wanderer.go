@@ -96,17 +96,6 @@ func (c *char) Walk(p map[string]int) action.ActionInfo {
 	return ai
 }
 
-func (c *char) Jump(p map[string]int) action.ActionInfo {
-	delay := c.checkForSkillEnd()
-
-	ai := c.Character.Jump(p)
-	ai.Frames = func(next action.Action) int { return delay + ai.Frames(next) }
-	ai.AnimationLength = delay + ai.AnimationLength
-	ai.CanQueueAfter = delay + ai.CanQueueAfter
-
-	return ai
-}
-
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "skydweller-points":
