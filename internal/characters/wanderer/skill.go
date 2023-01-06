@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	skillKey = "windfavored-state"
+	skillKey       = "windfavored-state"
+	particleIcdKey = "wanderer-particle-icd"
 )
 
 var skillFramesNormal []int
@@ -135,5 +136,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		return c.skillActivate(p)
 	} else {
 		return c.skillDeactivate(p)
+	}
+}
+
+func (c *char) makeParticleGenCallback() func(cb combat.AttackCB) {
+	return func(a combat.AttackCB) {
+		if !c.StatusIsActive(skillKey) {
+			return
+		}
+		if c.StatusIsActive(particleIcdKey) {
+			return
+		}
+		c.AddStatus(particleIcdKey, 120, true)
+		c.Core.QueueParticle("wanderer", 1, attributes.Anemo, c.ParticleDelay)
 	}
 }

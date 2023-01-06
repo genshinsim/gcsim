@@ -56,7 +56,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2.5),
-		delay+windup+chargeHitmarkNormal, delay+windup+chargeHitmarkNormal, c.makeA4Callback())
+		delay+windup+chargeHitmarkNormal, delay+windup+chargeHitmarkNormal,
+		c.makeA4Callback(),
+		c.makeParticleGenCallback())
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			return delay + windup +
@@ -85,7 +87,8 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3.5),
-		windup+chargeHitmarkE, windup+chargeHitmarkE, c.makeA4Callback())
+		windup+chargeHitmarkE, windup+chargeHitmarkE,
+		c.makeA4Callback(), c.makeParticleGenCallback())
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			return windup +

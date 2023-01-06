@@ -104,6 +104,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			delay+windup+attackHitmarksNormal[c.NormalCounter][i],
 			c.makeA4Callback(),
 			c.makeC6Callback(),
+			c.makeParticleGenCallback(),
 		)
 	}
 
@@ -147,6 +148,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 			windup+attackHitmarksE[c.NormalCounter][i],
 			c.makeA4Callback(),
 			c.makeC6Callback(),
+			c.makeParticleGenCallback(),
 		)
 	}
 
