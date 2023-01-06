@@ -28,8 +28,7 @@ type Config struct {
 	UserStore         UserStore
 	Discord           DiscordConfig
 	DBStore           DBStore
-	ResultStoreDevKey string
-	AESDecryptionKey  []byte
+	AESDecryptionKeys map[string][]byte
 }
 
 type APIContextKey string
