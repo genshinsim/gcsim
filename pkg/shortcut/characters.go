@@ -135,4 +135,10 @@ var CharNameToKey = map[string]keys.Char{
 	"faru":                    keys.Faruzan,
 	"hatsunemiku":             keys.Faruzan,
 	"wanderer":                keys.Wanderer,
+	"scaramouche":             keys.Wanderer,
+	"scara":                   keys.Wanderer,
+	"kunikuzushi":             keys.Wanderer,
+	"kuni":                    keys.Wanderer,
+	"kabukimono":              keys.Wanderer,
+	"belial":                  keys.Wanderer,
 }
