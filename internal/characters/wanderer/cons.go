@@ -32,17 +32,18 @@ func (c *char) c1() {
 
 func (c *char) c2() {
 	// C2: Buff stays active during entire burst animation
-	if c.Base.Cons >= 2 {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.DmgP] = math.Min((float64)(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
-		c.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-
+	if c.Base.Cons < 2 {
+		return
 	}
+	
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = math.Min((float64)(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
+	c.AddStatMod(character.StatMod{
+		Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }
 
 func (c *char) makeC6Callback() func(cb combat.AttackCB) {
