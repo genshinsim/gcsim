@@ -240,20 +240,18 @@ func (c *char) getN0Delay() int {
 
 	if active.StatusIsActive(alt_form_status_keys[activeCharKey]) {
 		return XQ_N0_delays_alt_forms[activeCharKey]
-	} else {
-		return XQ_N0_delays[activeCharKey]
 	}
+
+	return XQ_N0_delays[activeCharKey]
 }
 
-func (c *char) burstStateDelayFunc() {
-	//ignore if on ICD
-	if c.StatusIsActive(burstICDKey) {
-		return
-	}
-
-	state := c.Core.Player.CurrentState()
-	//this should start a new ticker if not on ICD and state is correct
-	if state == action.NormalAttackState {
+func (c *char) burstStateDelayFuncGen(src int) func() {
+	return func() {
+		//ignore if on ICD
+		if c.StatusIsActive(burstICDKey) || c.Core.Player.CurrentState() != action.NormalAttackState || c.burstTickSrc != src {
+			return
+		}
+		//this should start a new ticker if not on ICD and state is correct
 		c.summonSwordWave()
 		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index).
 			Write("state", action.NormalAttackState).
@@ -275,12 +273,13 @@ func (c *char) burstStateHook() {
 		if next != action.NormalAttackState {
 			return false
 		}
+		c.burstTickSrc = c.Core.F
 		delay := c.getN0Delay()
 		c.Core.Log.NewEvent("xq burst delay on state change", glog.LogCharacterEvent, c.Index).
 			Write("active", c.Core.Player.ActiveChar().Base.Key.String()).
 			Write("delay", delay)
 		// This accounts for the delay in n0 timing needed for XQ to trigger rainswords
-		c.Core.Tasks.Add(c.burstStateDelayFunc, delay)
+		c.Core.Tasks.Add(c.burstStateDelayFuncGen(c.Core.F), delay)
 
 		return false
 	}, "xq-burst-animation-check")
