@@ -47,11 +47,59 @@ func init() {
 	XQ_N0_delays[keys.Kazuha] = 10
 	XQ_N0_delays[keys.Keqing] = 8
 	XQ_N0_delays[keys.Xiangling] = 7
+	XQ_N0_delays[keys.Albedo] = 9
+	XQ_N0_delays[keys.Ayaka] = 7
+
+	XQ_N0_delays[keys.Tartaglia] = 9
+	XQ_N0_delays_alt_forms[keys.Tartaglia] = 12
+	alt_form_status_keys[keys.Tartaglia] = "tartagliamelee"
+
+	XQ_N0_delays[keys.Fischl] = 9
+	XQ_N0_delays[keys.Ganyu] = 10
+	XQ_N0_delays[keys.Jean] = 6
+	XQ_N0_delays[keys.Lumine] = 7
+
+	XQ_N0_delays[keys.Nilou] = 11
+	// I didn't test Nilou E stance, assuming it's the same values for now
+
+	XQ_N0_delays[keys.Venti] = 9
+	XQ_N0_delays[keys.Zhongli] = 9
+	XQ_N0_delays[keys.Amber] = 8
+	XQ_N0_delays[keys.Collei] = 11
+	XQ_N0_delays[keys.Diona] = 9
+	XQ_N0_delays[keys.Faruzan] = 9
+	XQ_N0_delays[keys.Gorou] = 11
+	XQ_N0_delays[keys.Heizou] = 10
+	XQ_N0_delays[keys.Kaeya] = 6
+	XQ_N0_delays[keys.Kuki] = 15
+	XQ_N0_delays[keys.Qiqi] = 7
+	XQ_N0_delays[keys.Rosaria] = 10
+	XQ_N0_delays[keys.Sara] = 14
+	XQ_N0_delays[keys.Thoma] = 11
+	XQ_N0_delays[keys.Yanfei] = 4
+	XQ_N0_delays[keys.Yunjin] = 12
+
+	XQ_N0_delays[keys.Beidou] = 22
+	XQ_N0_delays[keys.Chongyun] = 18
+	XQ_N0_delays[keys.Dori] = 29
+	XQ_N0_delays[keys.Itto] = 27
+	XQ_N0_delays[keys.Noelle] = 23
+	XQ_N0_delays[keys.Razor] = 18
+	XQ_N0_delays[keys.Sayu] = 24
+	XQ_N0_delays[keys.Xinyan] = 28
+
+	// Technically it's 15 for Left, 5 for Right, and 13 for Twirl
+	XQ_N0_delays[keys.Ningguang] = 13
+	XQ_N0_delays_alt_forms[keys.Ningguang] = 5
+	alt_form_status_keys[keys.Ningguang] = "Right"
 
 	// jumping/dashing during the NA windup for some catalysts modifies their frames - said by koli
 	// thus the current method of NA -> jump to test for N0 timing won't work on them
 	XQ_N0_delays[keys.Kokomi] = 0
 	XQ_N0_delays[keys.Sucrose] = 0
+	XQ_N0_delays[keys.Barbara] = 0
+	XQ_N0_delays[keys.Lisa] = 0
+	XQ_N0_delays[keys.Mona] = 0
 
 }
 
