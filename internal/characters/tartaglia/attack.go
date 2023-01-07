@@ -157,7 +157,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			ai.StrikeType = combat.StrikeTypeSpear
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: meleeOffsets[i][c.NormalCounter]},
+				combat.Point{Y: meleeOffsets[c.NormalCounter][i]},
 				meleeHitboxes[c.NormalCounter][i][0],
 				meleeHitboxes[c.NormalCounter][i][1],
 			)
