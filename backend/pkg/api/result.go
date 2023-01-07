@@ -10,6 +10,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -63,6 +64,49 @@ func (s *Server) decryptHash(ciphertext, key []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
+func (s *Server) validateShare(data []byte, str string) error {
+
+	//check if from valid source
+	//valid key is in the form of id:hash
+	id, hashStr, ok := strings.Cut(str, ":")
+	if !ok {
+		return errors.New("no id:hash separation")
+	}
+
+	//hashStr is a hexstring
+	hash, err := base64.StdEncoding.DecodeString(hashStr)
+	if err != nil {
+		return errors.New("hash not base64 string")
+	}
+
+	key, ok := s.cfg.AESDecryptionKeys[id]
+	if !ok {
+		return errors.New("id does not exist")
+	}
+
+	var res map[string]interface{}
+	json.Unmarshal(data, &res)
+	data, _ = json.Marshal(res)
+
+	h := sha256.New()
+	h.Write(data)
+	bs := h.Sum(nil)
+
+	dh, err := s.decryptHash(hash, key)
+	if err != nil {
+		return fmt.Errorf("error decrypting: %v", err)
+	}
+
+	if !bytes.Equal(bs, dh) {
+		s.Log.Infow("create share request failed; hash not equal", "computed_sha256_hex_string", hex.EncodeToString(bs), "decrypted_hex_string", hex.EncodeToString(dh))
+		return errors.New("bytes do not match")
+	}
+
+	s.Log.Infow("hash validation ok", "id_used", id)
+
+	return nil
+}
+
 func (s *Server) CreateShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data, err := io.ReadAll(r.Body)
@@ -87,44 +131,10 @@ func (s *Server) CreateShare() http.HandlerFunc {
 
 		s.Log.Infow("create share request received", "hash", str)
 
-		//check if from valid source
-		//valid key is in the form of id:hash
-		id, hashStr, ok := strings.Cut(str, ":")
-		if !ok {
-			s.Log.Infow("create share request failed - invalid hash (no id:hash separation)")
-			http.Error(w, "Forbidden", http.StatusForbidden)
-			return
-		}
-
-		//hashStr is a hexstring
-		hash, err := base64.StdEncoding.DecodeString(hashStr)
+		err = s.validateShare(data, str)
 		if err != nil {
-			s.Log.Infow("create share request failed - hash not valid hex string")
-			http.Error(w, "Forbidden", http.StatusForbidden)
-			return
-		}
-
-		key, ok := s.cfg.AESDecryptionKeys[id]
-		if !ok {
-			s.Log.Infow("create share request failed - id does not exist", "id", id)
-			http.Error(w, "Forbidden", http.StatusForbidden)
-			return
-		}
-
-		h := sha256.New()
-		h.Write(data)
-		bs := h.Sum(nil)
-
-		dh, err := s.decryptHash(hash, key)
-		if err != nil {
-			s.Log.Infow("create share request failed; error decrypting", "err", err)
+			s.Log.Infow("create share request - validation failed", "err", err)
 			http.Error(w, "Bad Request", http.StatusBadRequest)
-			return
-		}
-
-		if !bytes.Equal(bs, dh) {
-			s.Log.Infow("create share request failed; hash not equal", "computed_sha256_hex_string", hex.EncodeToString(bs), "decrypted_hex_string", hex.EncodeToString(dh))
-			http.Error(w, "Forbidden", http.StatusForbidden)
 			return
 		}
 
