@@ -27,3 +27,4 @@ cmd/gcsim/gcsim
 **/node_modules
 .env
 **/protos_gen
+keys.json

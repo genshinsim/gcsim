@@ -1,0 +1,38 @@
+name: "Deploy UI"
+description: "builds and deploys the gcsim UI to cloudflare. Assumes yarn setup has already ran"
+inputs:
+  apiToken:
+    required: true
+    description: cloudflare api token
+  accountId:
+    required: true
+    description: cloudflare account id
+  gitHubToken:
+    required: true
+    description: github token
+  branch:
+    required: true
+    description: name of the branch
+
+runs:
+  using: composite
+  steps:
+  - name: Build UI
+    working-directory: ./ui
+    shell: bash
+    run: yarn build:web
+
+  - name: List UI dist
+    working-directory: ./ui/packages/web/dist
+    shell: bash
+    run: ls -lh
+  
+  - name: Publish to Cloudflare Pages
+    uses: cloudflare/pages-action@1
+    with:
+      apiToken: ${{ inputs.apiToken }}
+      accountId: ${{ inputs.accountId }}
+      gitHubToken: ${{ inputs.gitHubToken }}
+      projectName: gcsim
+      branch: ${{ inputs.branch }}
+      directory: ./ui/packages/web/dist

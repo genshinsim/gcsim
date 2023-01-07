@@ -31,6 +31,7 @@ services:
       dockerfile: ./backend/cmd/jadechamber/Dockerfile
     volumes:
       - ~/data:/data
+      - ./keys.json:/keys.json
     environment:
       - USER_DATA_PATH=/data/user
       - DISCORD_ID
@@ -38,6 +39,7 @@ services:
       - REDIRECT_URL
       - RESULT_STORE_URL=result:3000
       - DB_STORE_URL=db:3000
+      - SHARE_KEY_FILE=/keys.json
     restart: unless-stopped
   result:
     container_name: result

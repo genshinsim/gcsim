@@ -25,5 +25,6 @@ export async function handleShare(request: Request): Promise<Response> {
   return fetch(new Request(API_ENDPOINT + "/api/share"), {
     method: "POST",
     body: JSON.stringify(content),
+    headers: request.headers,
   });
 }

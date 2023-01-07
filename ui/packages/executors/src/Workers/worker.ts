@@ -11,17 +11,19 @@ if (!WebAssembly.instantiateStreaming) {
 }
 
 // @ts-ignore
-const go = new Go();
-WebAssembly.instantiateStreaming(fetch('/main.wasm'), go.importObject)
-  .then((result) => {
-    go.run(result.instance);
-    postMessage({ type: WorkerResponse.Ready });
-  }).catch((e) => {
-    console.error(e);
-    postMessage({
-      type: WorkerResponse.Failed,
-      reason: e instanceof Error ? e.message : "Unknown Error" });
-  });
+function ready(req: { wasm: string }) {
+  const go = new Go();
+  WebAssembly.instantiateStreaming(fetch(req.wasm), go.importObject)
+      .then((result) => {
+        go.run(result.instance);
+        postMessage({ type: WorkerResponse.Ready });
+      }).catch((e) => {
+        console.error(e);
+        postMessage({
+          type: WorkerResponse.Failed,
+          reason: e instanceof Error ? e.message : "Unknown Error" });
+      });
+}
 
 // @ts-ignore
 function initialize(req: { cfg: string }) {
@@ -43,10 +45,12 @@ function run(req: { itr: number }) {
 // @ts-ignore
 function handleRequest(req: any) {
   switch (req.type as WorkerRequest) {
+    case WorkerRequest.Ready:
+      return ready(req);
     case WorkerRequest.Initialize:
-      return initialize(req);
+      return postMessage(initialize(req));
     case WorkerRequest.Run:
-      return run(req);
+      return postMessage(run(req));
     default:
       console.error("aggregator - unknown request: ", req);
       throw new Error("aggregator unknown request");
@@ -60,6 +64,7 @@ onmessage = (ev) => postMessage(handleRequest(ev.data));
 // Clean up when supported: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
 enum WorkerRequest {
+  Ready = "ready",
   Initialize = "initialize",
   Run = "run",
 }

@@ -1,0 +1,24 @@
+name: "Deploy WASM"
+description: "builds and deploys the gcsim WASM binary to cloudflare R2"
+inputs:
+  rcloneConfig:
+    required: true
+    description: rclone config for cloudflare R2
+  branch:
+    required: true
+    description: name of the branch
+
+runs:
+  using: composite
+  steps:
+  - name: Build WASM
+    working-directory: ./cmd/wasm
+    shell: bash
+    run: ./build.sh -o ./dist/$GITHUB_SHA/main.wasm
+
+  - name: Upload to R2
+    uses: wei/rclone@v1
+    env:
+      RCLONE_CONF: ${{ inputs.rcloneConfig }}
+    with:
+      args: sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress

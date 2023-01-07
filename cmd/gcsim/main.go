@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"runtime"
 	"strconv"
@@ -13,6 +14,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/sample"
 	"github.com/genshinsim/gcsim/pkg/simulator"
+)
+
+var (
+	shareKey string
 )
 
 type opts struct {
@@ -62,6 +67,10 @@ func main() {
 	if version {
 		fmt.Println(simulator.Version())
 		return
+	}
+
+	if shareKey == "" {
+		shareKey = os.Getenv("GCSIM_SHARE_KEY")
 	}
 
 	if opt.serve {

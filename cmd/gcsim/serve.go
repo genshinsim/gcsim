@@ -1,11 +1,23 @@
 package main
 
 import (
+	"bytes"
+	"compress/zlib"
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 )
 
 type viewerResults struct {
@@ -57,10 +69,19 @@ func handleResults(resp http.ResponseWriter, req *http.Request, path string) boo
 		return false
 	}
 
+	hash, err := hashFromCompressed(compressed)
+	if err != nil {
+		log.Printf("error generating secure has from gz data: %v\n", err)
+		resp.WriteHeader(http.StatusInternalServerError)
+		return false
+	}
+
 	log.Println("Received results request, sending response...")
 	resp.Header().Set("Content-Type", "application/json")
 	resp.Header().Set("Content-Encoding", "deflate")
 	resp.Header().Set("Access-Control-Allow-Origin", "*")
+	resp.Header().Set("Access-Control-Expose-Headers", "X-GCSIM-SHARE-AUTH")
+	resp.Header().Set("X-GCSIM-SHARE-AUTH", string(hash))
 	resp.WriteHeader(http.StatusOK)
 	resp.Write(compressed)
 
@@ -68,6 +89,57 @@ func handleResults(resp http.ResponseWriter, req *http.Request, path string) boo
 		f.Flush()
 	}
 	return true
+}
+
+func hashFromCompressed(data []byte) ([]byte, error) {
+	r, err := zlib.NewReader(bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	b, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	var res map[string]interface{}
+	json.Unmarshal(b, &res)
+	b, _ = json.Marshal(res)
+
+	h := sha256.New()
+	h.Write(b)
+	bs := h.Sum(nil)
+
+	//shareKey should be of the format id:key
+	id, hexkey, ok := strings.Cut(shareKey, ":")
+	if !ok {
+		return nil, fmt.Errorf("invalid share key")
+	}
+	key, err := hex.DecodeString(hexkey)
+	if err != nil {
+		return nil, fmt.Errorf("invalid share key")
+	}
+
+	c, err := aes.NewCipher(key)
+	// if there are any errors, handle them
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		return nil, err
+	}
+	nonce := make([]byte, gcm.NonceSize())
+	// populates our nonce with a cryptographically secure
+	// random sequence
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, err
+	}
+
+	hash := gcm.Seal(nonce, nonce, bs, nil)
+	hashStr := base64.StdEncoding.EncodeToString(hash)
+
+	return []byte(id + ":" + hashStr), nil
 }
 
 func handleSample(resp http.ResponseWriter, req *http.Request, path string) bool {

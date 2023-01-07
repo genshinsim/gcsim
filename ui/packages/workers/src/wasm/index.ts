@@ -1,4 +1,4 @@
-export async function handleAssets(
+export async function handleWasm(
   request: Request,
   event: FetchEvent
 ): Promise<Response> {
@@ -9,17 +9,13 @@ export async function handleAssets(
   let response = await cache.match(cacheKey);
 
   if (!response) {
-    console.log(
-      `Response for request url: ${request.url} not present in cache. Fetching and caching request.`
-    );
+    ///api/wasm/<branch>/<hash>/main.wasm
+    const key = new URL(request.url).pathname.replace("/api/wasm/", "");
+    console.log(`request key ${key}`);
 
-    ///api/assets/avatar/cyno.png
-    const key = new URL(request.url).pathname.replace("/api/assets/", "");
-    console.log(`getting ${key}`);
+    const object = await GCSIM_WASM.get(key);
 
-    const object = await GCSIM_ASSETS.get(key);
-
-    if (object === null) {
+    if (object == null) {
       console.log(`${key} not found in r2`);
       return new Response(`Not Found`, { status: 404 });
     }
@@ -28,6 +24,7 @@ export async function handleAssets(
     object.writeHttpMetadata(headers);
     headers.set("etag", object.httpEtag);
     headers.set("Cache-Control", "max-age=5184000");
+    headers.set("Content-Type", "application/wasm");
 
     response = new Response(object.body, {
       headers,
@@ -36,5 +33,5 @@ export async function handleAssets(
     event.waitUntil(cache.put(cacheKey, response.clone()));
   }
 
-  return response;
+  return response
 }

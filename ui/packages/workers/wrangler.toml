@@ -5,3 +5,7 @@ compatibility_date = "2022-11-06"
 [[r2_buckets]]
   binding = 'GCSIM_ASSETS'
   bucket_name = 'gcsim'
+
+[[r2_buckets]]
+  binding = 'GCSIM_WASM'
+  bucket_name = 'wasm'

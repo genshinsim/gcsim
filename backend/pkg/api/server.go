@@ -24,10 +24,11 @@ type DiscordConfig struct {
 }
 
 type Config struct {
-	ResultStore ResultStore
-	UserStore   UserStore
-	Discord     DiscordConfig
-	DBStore     DBStore
+	ResultStore       ResultStore
+	UserStore         UserStore
+	Discord           DiscordConfig
+	DBStore           DBStore
+	AESDecryptionKeys map[string][]byte
 }
 
 type APIContextKey string

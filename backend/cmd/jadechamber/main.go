@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/hex"
+	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -49,6 +52,34 @@ func main() {
 		panic(err)
 	}
 
+	//read from key file
+	var hexKeys map[string]string
+	f, err := os.Open(os.Getenv("SHARE_KEY_FILE"))
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	fv, err := io.ReadAll(f)
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(fv, &hexKeys)
+	if err != nil {
+		panic(err)
+	}
+
+	keys := make(map[string][]byte)
+	//convert key from hex string into []byte
+	for k, v := range hexKeys {
+		key, err := hex.DecodeString(v)
+		if err != nil {
+			panic("invalid key provided - cannot decode hex to string")
+		}
+		keys[k] = key
+	}
+
+	log.Println("keys read sucessfully: ", hexKeys)
+
 	s, err := api.New(api.Config{
 		ResultStore: resultStore,
 		UserStore:   userStore,
@@ -59,6 +90,7 @@ func main() {
 			ClientSecret: os.Getenv("DISCORD_SECRET"),
 			JWTKey:       os.Getenv("JWT_KEY"),
 		},
+		AESDecryptionKeys: keys,
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil

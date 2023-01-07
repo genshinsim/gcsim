@@ -15,6 +15,7 @@ import { useHistory } from "react-router";
 type ViewerProps = {
   running: boolean;
   data: SimResults | null;
+  hash: string;
   error: string | null;
   src: ResultSource;
   redirect: string;
@@ -26,7 +27,7 @@ type ViewerProps = {
 // above viewer in the hierarchy tree. The viewer can perform whatever additional calculations it
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
-export default ({ running, data, error, src, redirect, exec, retry }: ViewerProps) => {
+export default ({ running, data, hash = "", error, src, redirect, exec, retry }: ViewerProps) => {
   const parsed = queryString.parse(location.hash);
   const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
 
@@ -48,6 +49,7 @@ export default ({ running, data, error, src, redirect, exec, retry }: ViewerProp
       <Warnings data={data} />
       <div className="px-2 py-4 w-full 2xl:mx-auto 2xl:container">
         <ViewerNav
+          hash={hash}
           tabState={[tabId, setTabId]}
           data={data}
           running={running}
