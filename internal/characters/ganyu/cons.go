@@ -24,17 +24,6 @@ func (c *char) c1() combat.AttackCBFunc {
 		if e.Type() != combat.TargettableEnemy {
 			return
 		}
-<<<<<<< HEAD
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if !(atk.Info.Abil == "Frost Flake Arrow" || atk.Info.Abil == "Frost Flake Bloom") {
-			return false
-		}
-
-		c.AddEnergy(c1Key, 2)
-=======
->>>>>>> d0a86232 (switched ganyu C1 to a callback and fixed doubled energy gain from it)
 		e.AddResistMod(enemy.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("ganyu-c1", 300),
 			Ele:   attributes.Cryo,

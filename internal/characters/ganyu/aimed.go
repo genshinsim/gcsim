@@ -70,7 +70,6 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 		}
 
-<<<<<<< HEAD
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
@@ -82,25 +81,20 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				1,
 			),
 			travel,
+			c.c1(),
 		)
-=======
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), travel, c.c1())
->>>>>>> d0a86232 (switched ganyu C1 to a callback and fixed doubled energy gain from it)
 
 		ai.Abil = "Frost Flake Bloom"
 		ai.Mult = ffb[c.TalentLvlAttack()]
 		ai.HitWeakPoint = false
-<<<<<<< HEAD
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			travel+bloom,
+			c.c1(),
 		)
-
-=======
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), travel+bloom, c.c1())
->>>>>>> d0a86232 (switched ganyu C1 to a callback and fixed doubled energy gain from it)
+		
 		// first shot/bloom do not benefit from a1
 		c.a1Expiry = c.Core.F + 60*5
 	}, aimedHitmark-skip)
