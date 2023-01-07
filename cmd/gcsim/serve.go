@@ -10,6 +10,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -99,6 +100,11 @@ func hashFromCompressed(data []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	var res map[string]interface{}
+	json.Unmarshal(b, &res)
+	b, _ = json.Marshal(res)
+
 	h := sha256.New()
 	h.Write(b)
 	bs := h.Sum(nil)
