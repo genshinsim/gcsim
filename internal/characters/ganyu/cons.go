@@ -3,7 +3,7 @@ package ganyu
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -13,31 +13,27 @@ const (
 	c1Key = "ganyu-c1"
 	c4Key = "ganyu-c4"
 	c6Key = "ganyu-c6"
+	c1ICD = "ganyu-c1-energy-icd"
 )
 
-func (c *char) c1() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		e, ok := args[0].(*enemy.Enemy)
-		if !ok {
-			return false
+func (c *char) c1() combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		e:= a.Target.(*enemy.Enemy)
+		if e.Type() != combat.TargettableEnemy {
+			return
 		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
-		}
-		if atk.Info.Abil != "Frost Flake Arrow" {
-			return false
-		}
-
-		c.AddEnergy(c1Key, 2)
 		e.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBase(c1Key, 5*60),
+			Base:  modifier.NewBaseWithHitlag("ganyu-c1", 300),
 			Ele:   attributes.Cryo,
 			Value: -0.15,
 		})
-
-		return false
-	}, c1Key)
+		if !c.StatusIsActive(c1ICD) {
+			c.AddEnergy(c1Key, 2)
+			c.AddStatus(c1ICD, 24, false)
+		}
+		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index).
+			Write("ends_on", c.Core.F+300)
+	}
 }
 
 func (c *char) c4() {
