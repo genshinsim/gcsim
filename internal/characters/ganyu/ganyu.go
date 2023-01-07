@@ -17,7 +17,6 @@ type char struct {
 	*tmpl.Character
 	a1Expiry int
 	c4Stacks int
-	c1done bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

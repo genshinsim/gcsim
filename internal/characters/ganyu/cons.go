@@ -12,30 +12,31 @@ const (
 	c1Key = "ganyu-c1"
 	c4Key = "ganyu-c4"
 	c6Key = "ganyu-c6"
-	c1ICD = "ganyu-c1-energy-icd"
 )
 
 //Ganyu C1: Taking DMG from a Charge Level 2 Frostflake Arrow or Frostflake Arrow Bloom decreases opponents' Cryo RES by 15% for 6s.
 //A hit regenerates 2 Energy for Ganyu. This effect can only occur once per Charge Level 2 Frostflake Arrow, regardless if Frostflake Arrow itself or its Bloom hit the target.
 func (c *char) c1() combat.AttackCBFunc {
+	if c.Base.Cons < 1 {
+		return nil
+	}
+	done := false
+
 	return func(a combat.AttackCB) {
-		if c.Base.Cons < 1 {
-			return
-		}
+
 		e:= a.Target.(*enemy.Enemy)
 		if e.Type() != combat.TargettableEnemy {
 			return
 		}
-
 		e.AddResistMod(enemy.ResistMod{
 			Base:  modifier.NewBaseWithHitlag(c1Key, 300),
 			Ele:   attributes.Cryo,
 			Value: -0.15,
 		})
-		if c.c1done {
+		if done {
 			return
 		} 
-		c.c1done = true
+		done = true
 		c.AddEnergy(c1Key, 2)
 	}
 }
