@@ -17,6 +17,7 @@ func init() {
 	aimedFrames = frames.InitAbilSlice(113)
 	aimedFrames[action.ActionDash] = aimedHitmark
 	aimedFrames[action.ActionJump] = aimedHitmark
+	
 }
 
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
@@ -45,7 +46,11 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-
+	var c1cb combat.AttackCBFunc
+	if c.Base.Cons >= 1 {
+		c.c1done = false
+		c1cb = c.c1()
+	}
 	// TODO: not sure if this works as intended
 	skip := 0
 	if c.Core.Status.Duration(c6Key) > 0 {
@@ -80,7 +85,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				1,
 			),
 			travel,
-			c.c1(),
+			c1cb,
 		)
 
 		ai.Abil = "Frost Flake Bloom"
@@ -91,7 +96,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			snap,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			travel+bloom,
-			c.c1(),
+			c1cb,
 		)
 
 		// first shot/bloom do not benefit from a1

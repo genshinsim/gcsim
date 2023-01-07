@@ -3,7 +3,6 @@ package ganyu
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -20,22 +19,24 @@ const (
 //A hit regenerates 2 Energy for Ganyu. This effect can only occur once per Charge Level 2 Frostflake Arrow, regardless if Frostflake Arrow itself or its Bloom hit the target.
 func (c *char) c1() combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
+		if c.Base.Cons < 1 {
+			return
+		}
 		e:= a.Target.(*enemy.Enemy)
 		if e.Type() != combat.TargettableEnemy {
 			return
 		}
+
 		e.AddResistMod(enemy.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("ganyu-c1", 300),
+			Base:  modifier.NewBaseWithHitlag(c1Key, 300),
 			Ele:   attributes.Cryo,
 			Value: -0.15,
 		})
-		//Uses ICD to simulate per arrow. 25f has it be restored on the same frame that the bloom hits. There should be no practical way to circumvent this
-		if !c.StatusIsActive(c1ICD) {
-			c.AddEnergy(c1Key, 2)
-			c.AddStatus(c1ICD, 24, false)
-		}
-		c.Core.Log.NewEvent("Rosaria A1 activation", glog.LogCharacterEvent, c.Index).
-			Write("ends_on", c.Core.F+300)
+		if c.c1done {
+			return
+		} 
+		c.c1done = true
+		c.AddEnergy(c1Key, 2)
 	}
 }
 
