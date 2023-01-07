@@ -26,7 +26,7 @@ func init() {
 // hitWeakPoint: tartaglia can proc Prototype Cresent's Passive on Geovishap's weakspots.
 // Evidence: https://youtu.be/oOfeu5pW0oE
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if !c.StatusIsActive(meleeKey) {
+	if !c.StatusIsActive(MeleeKey) {
 		c.Core.Log.NewEvent("charge called when not in melee stance", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionCharge)
 		return action.ActionInfo{

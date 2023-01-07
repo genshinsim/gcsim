@@ -13,7 +13,7 @@ var burstFrames []int
 
 const (
 	burstHitmark = 98
-	burstKey     = "raidenburst"
+	BurstKey     = "raidenburst"
 )
 
 func init() {
@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.c6ICD = 0
 
 	// use a special modifier to track burst
-	c.AddStatus(burstKey, 420+burstHitmark, true)
+	c.AddStatus(BurstKey, 420+burstHitmark, true)
 
 	// apply when burst ends
 	if c.Base.Cons >= 4 {
@@ -103,13 +103,13 @@ func (c *char) burstRestorefunc(a combat.AttackCB) {
 
 func (c *char) onSwapClearBurst() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if !c.StatusIsActive(burstKey) {
+		if !c.StatusIsActive(BurstKey) {
 			return false
 		}
 		// i prob don't need to check for who prev is here
 		prev := args[0].(int)
 		if prev == c.Index {
-			c.DeleteStatus(burstKey)
+			c.DeleteStatus(BurstKey)
 			if c.applyC4 {
 				c.applyC4 = false
 				c.c4()

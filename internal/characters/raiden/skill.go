@@ -121,7 +121,7 @@ func (c *char) eyeOnDamage() {
 			Durability: 25,
 			Mult:       skillTick[c.TalentLvlSkill()],
 		}
-		if c.Base.Cons >= 2 && c.StatusIsActive(burstKey) {
+		if c.Base.Cons >= 2 && c.StatusIsActive(BurstKey) {
 			ai.IgnoreDefPercent = 0.6
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4), 5, 5)

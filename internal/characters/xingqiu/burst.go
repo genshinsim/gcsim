@@ -1,6 +1,8 @@
 package xingqiu
 
 import (
+	"github.com/genshinsim/gcsim/internal/characters/raiden"
+	"github.com/genshinsim/gcsim/internal/characters/tartaglia"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -40,7 +42,7 @@ func init() {
 
 	XQ_N0_delays[keys.Raiden] = 13
 	XQ_N0_delays_alt_forms[keys.Raiden] = 13
-	alt_form_status_keys[keys.Raiden] = "raidenburst"
+	alt_form_status_keys[keys.Raiden] = raiden.BurstKey
 
 	XQ_N0_delays[keys.Bennett] = 7
 	XQ_N0_delays[keys.Diluc] = 15
@@ -52,7 +54,7 @@ func init() {
 
 	XQ_N0_delays[keys.Tartaglia] = 9
 	XQ_N0_delays_alt_forms[keys.Tartaglia] = 12
-	alt_form_status_keys[keys.Tartaglia] = "tartagliamelee"
+	alt_form_status_keys[keys.Tartaglia] = tartaglia.MeleeKey
 
 	XQ_N0_delays[keys.Fischl] = 9
 	XQ_N0_delays[keys.Ganyu] = 10
@@ -89,9 +91,11 @@ func init() {
 	XQ_N0_delays[keys.Xinyan] = 28
 
 	// Technically it's 15 for Left, 5 for Right, and 13 for Twirl
-	XQ_N0_delays[keys.Ningguang] = 13
-	XQ_N0_delays_alt_forms[keys.Ningguang] = 5
-	alt_form_status_keys[keys.Ningguang] = "Right"
+	XQ_N0_delays[keys.Ningguang] = (15 + 5 + 13) / 3
+	// XQ_N0_delays_alt_forms[keys.Ningguang] = 15
+	// alt_form_status_keys[keys.Ningguang] = "Left"
+	// XQ_N0_delays_alt_forms[keys.Ningguang] = 5
+	// alt_form_status_keys[keys.Ningguang] = "Right"
 
 	// jumping/dashing during the NA windup for some catalysts modifies their frames - said by koli
 	// thus the current method of NA -> jump to test for N0 timing won't work on them
