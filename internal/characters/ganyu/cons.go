@@ -16,6 +16,8 @@ const (
 	c1ICD = "ganyu-c1-energy-icd"
 )
 
+//Ganyu C1: Taking DMG from a Charge Level 2 Frostflake Arrow or Frostflake Arrow Bloom decreases opponents' Cryo RES by 15% for 6s.
+//A hit regenerates 2 Energy for Ganyu. This effect can only occur once per Charge Level 2 Frostflake Arrow, regardless if Frostflake Arrow itself or its Bloom hit the target.
 func (c *char) c1() combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
 		e:= a.Target.(*enemy.Enemy)
@@ -27,6 +29,7 @@ func (c *char) c1() combat.AttackCBFunc {
 			Ele:   attributes.Cryo,
 			Value: -0.15,
 		})
+		//Uses ICD to simulate per arrow. 25f has it be restored on the same frame that the bloom hits. There should be no practical way to circumvent this
 		if !c.StatusIsActive(c1ICD) {
 			c.AddEnergy(c1Key, 2)
 			c.AddStatus(c1ICD, 24, false)
