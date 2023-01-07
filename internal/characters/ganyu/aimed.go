@@ -80,6 +80,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				1,
 			),
 			travel,
+			c.c1(),
 		)
 
 		ai.Abil = "Frost Flake Bloom"
@@ -90,6 +91,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			snap,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			travel+bloom,
+			c.c1(),
 		)
 
 		// first shot/bloom do not benefit from a1
