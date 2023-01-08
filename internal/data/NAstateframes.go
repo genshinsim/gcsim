@@ -2,6 +2,7 @@ package data
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/ayato"
+	"github.com/genshinsim/gcsim/internal/characters/cyno"
 	"github.com/genshinsim/gcsim/internal/characters/tartaglia"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
@@ -93,11 +94,24 @@ func init() {
 	PercentDelay5[keys.Hutao] = 10
 	PercentDelay5[keys.Yoimiya] = 17
 
+	PercentDelay5[keys.Cyno] = 10
+	PercentDelay5AltForms[keys.Cyno] = 12
+	AltFormStatusKeys[keys.Cyno] = cyno.BurstKey
+
+	PercentDelay5[keys.Layla] = 12
+	PercentDelay5[keys.Shenhe] = 12
+	PercentDelay5[keys.YaeMiko] = 7
+
+	// TODO: Uncomment when Wanderer Implementation is done
+	// PercentDelay5[keys.Wanderer] = 0
+	// PercentDelay5AltForms[keys.Wanderer] = 12
+	// AltFormStatusKeys[keys.Wanderer] = wanderer.SkillKey
+
 	// Technically it's 15 for Left, 5 for Right, and 13 for Twirl
 	PercentDelay5[keys.Ningguang] = (15 + 5 + 13) / 3
 
 	// jumping/dashing during the NA windup for some catalysts modifies their frames - said by koli
-	// thus the current method of NA -> jump to test for N0 timing won't work on them
+	// thus the current method of NA -> jump to test for N0 timing may not work on them
 	PercentDelay5[keys.Kokomi] = 0
 	PercentDelay5[keys.Sucrose] = 0
 	PercentDelay5[keys.Barbara] = 0

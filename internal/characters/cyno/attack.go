@@ -35,7 +35,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.attackB(p) // go to burst mode attacks
 	}
 	for i, mult := range attack[c.NormalCounter] {
