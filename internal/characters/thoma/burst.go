@@ -1,6 +1,7 @@
 package thoma
 
 import (
+	"github.com/genshinsim/gcsim/internal/data"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -54,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.AddStatus(burstKey, d*60, true)
 
-	c.burstProc()
+	c.burstStateHook()
 
 	// C4: restore 15 energy
 	if c.Base.Cons >= 4 {
@@ -78,56 +79,100 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) burstProc() {
-	// does not deactivate on death
+func (c *char) getN0Delay() int {
+	active := c.Core.Player.ActiveChar()
+	activeCharKey := active.Base.Key
+	// The character doesn't have an alt form
+	if data.PercentDelay5[activeCharKey] == -1 {
+		return data.PercentDelay5[activeCharKey]
+	}
+
+	if active.StatusIsActive(data.AltFormStatusKeys[activeCharKey]) {
+		return data.PercentDelay5AltForms[activeCharKey]
+	}
+
+	return data.PercentDelay5[activeCharKey]
+}
+
+func (c *char) burstStateDelayFuncGen(src int) func() {
+	return func() {
+		//ignore if on ICD
+		if c.StatusIsActive(burstICDKey) || c.Core.Player.CurrentState() != action.NormalAttackState || c.burstTickSrc != src {
+			return
+		}
+		//this should start a new ticker if not on ICD and state is correct
+		c.summonFieryCollapse()
+		c.Core.Log.NewEvent("thoma burst on state change", glog.LogCharacterEvent, c.Index).
+			Write("state", action.NormalAttackState).
+			Write("icd", c.StatusExpiry(burstICDKey))
+		c.burstTickSrc = c.Core.F
+		//use the hitlag affected queue for this
+		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
+	}
+}
+
+func (c *char) burstStateHook() {
 	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+		//check if buff is up
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
 		next := args[1].(action.AnimationState)
+		//ignore if not normal
 		if next != action.NormalAttackState {
 			return false
 		}
-		if c.StatusIsActive(burstICDKey) {
-			c.Core.Log.NewEvent("thoma Q (active) on icd", glog.LogCharacterEvent, c.Index).
-				Write("frame", c.Core.F)
-			return false
-		}
-		c.summonFieryCollapse()
-		c.Core.Log.NewEvent("thoma burst on state change", glog.LogCharacterEvent, c.Index).
-			Write("frame", c.Core.F).
-			Write("char", c.Core.Player.Active()).
-			Write("icd", c.StatusExpiry(burstICDKey))
 		c.burstTickSrc = c.Core.F
-		c.QueueCharTask(c.burstTickFunc(c.Core.F), 60)
+		delay := c.getN0Delay()
+		c.Core.Log.NewEvent("thoma burst delay on state change", glog.LogCharacterEvent, c.Index).
+			Write("active", c.Core.Player.ActiveChar().Base.Key.String()).
+			Write("delay", delay)
+		// This accounts for the delay in n0 timing needed for Thoma to trigger collapses
+		c.Core.Tasks.Add(c.burstStateDelayFuncGen(c.Core.F), delay)
+
 		return false
 	}, "thoma-burst-animation-check")
 }
 
-func (c *char) burstTickFunc(src int) func() {
+func (c *char) burstTickerFunc(src int) func() {
 	return func() {
+		//check if buff is up
 		if !c.StatusIsActive(burstKey) {
 			return
 		}
 		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("thoma burst tick stopped, src diff", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("thoma burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index).
 				Write("src", src).
 				Write("new src", c.burstTickSrc)
 			return
 		}
+		//stop if we are no longer in normal animation state
 		state := c.Core.Player.CurrentState()
+
 		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("thoma burst tick stopped, not normal state", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("thoma burst tick check stopped, not in normal state", glog.LogCharacterEvent, c.Index).
 				Write("src", src).
 				Write("state", state)
 			return
 		}
-		c.Core.Log.NewEvent("thoma burst triggered from tick", glog.LogCharacterEvent, c.Index).
+		state_start := c.Core.Player.CurrentStateStart()
+		norm_counter := c.Core.Player.ActiveChar().NormalCounter
+		if (norm_counter == 1) && c.Core.F-state_start < c.getN0Delay() {
+			c.Core.Log.NewEvent("thoma burst tick check stopped, not enough time since normal state start", glog.LogCharacterEvent, c.Index).
+				Write("src", src).
+				Write("state_start", state_start)
+			return
+		}
+
+		c.Core.Log.NewEvent("thoma burst triggered from ticker", glog.LogCharacterEvent, c.Index).
 			Write("src", src).
 			Write("state", state).
 			Write("icd", c.StatusExpiry(burstICDKey))
+		//we can trigger a collapse here b/c we're in normal state still and src is still the same
 		c.summonFieryCollapse()
-		c.QueueCharTask(c.burstTickFunc(src), 60)
+		//in theory this should not hit an icd?
+		//use the hitlag affected queue for this
+		c.QueueCharTask(c.burstTickerFunc(src), 60) //check every 1sec
 	}
 }
 
