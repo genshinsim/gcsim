@@ -24,9 +24,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
           {dbEntry?.charNames?.toString().replaceAll(",", ", ")}
         </div>
         <DBEntryTags tags={dbEntry.tags} />
-        <span className="max-h-36  overflow-hidden">
-          {dbEntry?.description}
-        </span>
+        <span className="  overflow-hidden">{dbEntry?.description}</span>
       </div>
 
       <DBEntryDetails {...dbEntry} />
@@ -115,23 +113,23 @@ function DBEntryTags({ tags }: { tags: string[] | undefined | null }) {
   return (
     <div
       className={
-        "flex flex-row h-32 flex-wrap  relative  " +
+        "flex flex-row h-full flex-wrap  relative  max-w-md " +
         (showAll ? " " : " truncate")
       }
     >
       {tags?.map((tag) => (
         <div
-          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 whitespace-nowrap "
+          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 mt-1 whitespace-nowrap "
           key={tag}
         >
           {t(tag)}
         </div>
       ))}
       <button
-        className=" absolute right-0  text-xs font-semibold   text-blue-400  bg-slate-600/30 p-1 whitespace-nowrap rounded-sm h-fit   "
+        className=" absolute right-0 top-1  text-xs font-semibold     bg-blue-400/30 p-1 mr-1   whitespace-nowrap rounded-sm h-fit   "
         onClick={() => setShowAll(!showAll)}
       >
-        {showAll ? "Hide ↑" : "Show ↓"}
+        {showAll ? "▲" : "▼"}
       </button>
     </div>
   );

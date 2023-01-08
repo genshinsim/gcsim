@@ -7,6 +7,13 @@ export const fetchDataFromDB = async (
     React.SetStateAction<model.IDBEntry[] | null | undefined>
   >
 ) => {
-  const response = await axios.get("https://simimpact.app/api/db" + urlParams);
-  setData(response.data);
+  try {
+    const response = await axios.get(
+      "https://simimpact.app/api/db" + urlParams
+    );
+
+    setData(response.data);
+  } catch (error) {
+    console.log(error);
+  }
 };
