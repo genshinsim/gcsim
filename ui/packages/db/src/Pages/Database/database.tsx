@@ -115,8 +115,20 @@ const mockData: model.IDBEntries["data"] = [
     hash: "hash",
     //indexing fields
     charNames: ["nahida", "xingqiu", "yelan", "raiden"],
+    tags: [
+      "difficult",
+      "f2p",
+      "unsheetable",
+      "hyperbloom",
+      "controversial",
+      "meta",
+      "new",
+      "time to kill",
+      "single target",
+    ],
+
     targetCount: 1,
-    meanDpsPerTarget: 100,
+    meanDpsPerTarget: 69420,
     createDate: 20210101,
     runDate: 20210101,
     description:

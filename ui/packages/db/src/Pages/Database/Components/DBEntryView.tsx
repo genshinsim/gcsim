@@ -1,8 +1,14 @@
 import { model } from "@gcsim/types";
 import { Long } from "protobufjs";
+import { useTransition } from "react";
+
+function useTranslation() {
+  return (text: string) => text;
+}
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
+  const t = useTranslation();
   return (
     <div className="flex flex-row bg-slate-800 max-w-fit p-4 gap-4 max-h-44">
       <div className="flex gap-2">
@@ -13,37 +19,32 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
             );
           })}
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col max-w-md">
         <div className="capitalize text-lg font-semibold">
           {dbEntry?.charNames?.toString().replaceAll(",", ", ")}
         </div>
-        <span className="max-h-36 max-w-md overflow-hidden">
+        <DBEntryTags tags={dbEntry.tags} />
+        <span className="max-h-36  overflow-hidden">
           {dbEntry?.description}
         </span>
       </div>
 
-      <DBEntryDetails
-        targetCount={dbEntry.targetCount}
-        meanDpsPerTarget={dbEntry.meanDpsPerTarget}
-        runDate={dbEntry.runDate}
-      />
+      <DBEntryDetails {...dbEntry} />
       <DBEntryActions />
     </div>
   );
 }
 
 function DBEntryCharacterPortrait({ name, sets, weapon }: model.ICharacter) {
-  if (!name) {
-    return <div>Name Missing</div>;
-  }
-
   return (
     <div className="bg-slate-700 p-2 flex flex-col">
-      <img
-        src={"https://gcsim.app/api/assets/avatar/" + name + ".png"}
-        alt={name}
-        className="w-24 h-24"
-      />
+      {name && (
+        <img
+          src={"https://gcsim.app/api/assets/avatar/" + name + ".png"}
+          alt={name}
+          className="w-24 h-24"
+        />
+      )}
       <div className="flex flex-row ">
         <PortraitWeaponComponent weapon={weapon} />
         <PortraitArtifactsComponent artifactSet={sets} />
@@ -51,7 +52,6 @@ function DBEntryCharacterPortrait({ name, sets, weapon }: model.ICharacter) {
     </div>
   );
 }
-
 function PortraitWeaponComponent({
   weapon,
 }: {
@@ -66,7 +66,7 @@ function PortraitWeaponComponent({
         src={"https://gcsim.app/api/assets/weapons/" + weapon.name + ".png"}
         alt={weapon.name}
       />
-      <div className=" absolute bottom-0 right-0  text-xs  ">
+      <div className=" absolute bottom-0 right-0  text-xs  font-semibold">
         R{weapon?.refine?.toString()}
       </div>
     </div>
@@ -99,12 +99,27 @@ function PortraitArtifactsComponent({
                 }
                 alt={setName}
               />
-              <div className=" absolute bottom-0 right-0  text-xs  ">
+              <div className=" absolute bottom-0 right-0  text-xs  font-semibold">
                 {setCount.toString()}
               </div>
             </div>
           )
       )}
+    </div>
+  );
+}
+
+function DBEntryTags({ tags }: { tags: string[] | undefined | null }) {
+  return (
+    <div className="flex flex-row  min-h-fit overflow-y-hidden  scrollbar-hide">
+      {tags?.map((tag) => (
+        <div
+          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2  whitespace-nowrap "
+          key={tag}
+        >
+          {tag}
+        </div>
+      ))}
     </div>
   );
 }
