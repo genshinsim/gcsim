@@ -1,23 +1,18 @@
 package xingqiu
 
 import (
-	"github.com/genshinsim/gcsim/internal/characters/raiden"
-	"github.com/genshinsim/gcsim/internal/characters/tartaglia"
+	"github.com/genshinsim/gcsim/internal/data"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
-var XQ_N0_delays = make([]int, keys.EndCharKeys)
-var XQ_N0_delays_alt_forms = make([]int, keys.EndCharKeys)
-var alt_form_status_keys = make([]string, keys.EndCharKeys)
 
 const (
 	burstHitmark = 18
@@ -31,79 +26,6 @@ func init() {
 	burstFrames[action.ActionSkill] = 33
 	burstFrames[action.ActionDash] = 33
 	burstFrames[action.ActionJump] = 33
-
-	for i := range XQ_N0_delays_alt_forms {
-		XQ_N0_delays_alt_forms[i] = -1
-	}
-
-	XQ_N0_delays[keys.Nahida] = 9
-	XQ_N0_delays[keys.Xingqiu] = 7
-	XQ_N0_delays[keys.Yelan] = 9
-
-	XQ_N0_delays[keys.Raiden] = 13
-	XQ_N0_delays_alt_forms[keys.Raiden] = 13
-	alt_form_status_keys[keys.Raiden] = raiden.BurstKey
-
-	XQ_N0_delays[keys.Bennett] = 7
-	XQ_N0_delays[keys.Diluc] = 15
-	XQ_N0_delays[keys.Kazuha] = 10
-	XQ_N0_delays[keys.Keqing] = 8
-	XQ_N0_delays[keys.Xiangling] = 7
-	XQ_N0_delays[keys.Albedo] = 9
-	XQ_N0_delays[keys.Ayaka] = 7
-
-	XQ_N0_delays[keys.Tartaglia] = 9
-	XQ_N0_delays_alt_forms[keys.Tartaglia] = 12
-	alt_form_status_keys[keys.Tartaglia] = tartaglia.MeleeKey
-
-	XQ_N0_delays[keys.Fischl] = 9
-	XQ_N0_delays[keys.Ganyu] = 10
-	XQ_N0_delays[keys.Jean] = 6
-	XQ_N0_delays[keys.Lumine] = 7
-
-	XQ_N0_delays[keys.Nilou] = 11
-	// I didn't test Nilou E stance, assuming it's the same values for now
-
-	XQ_N0_delays[keys.Venti] = 9
-	XQ_N0_delays[keys.Zhongli] = 9
-	XQ_N0_delays[keys.Amber] = 8
-	XQ_N0_delays[keys.Collei] = 11
-	XQ_N0_delays[keys.Diona] = 9
-	XQ_N0_delays[keys.Faruzan] = 9
-	XQ_N0_delays[keys.Gorou] = 11
-	XQ_N0_delays[keys.Heizou] = 10
-	XQ_N0_delays[keys.Kaeya] = 6
-	XQ_N0_delays[keys.Kuki] = 15
-	XQ_N0_delays[keys.Qiqi] = 7
-	XQ_N0_delays[keys.Rosaria] = 10
-	XQ_N0_delays[keys.Sara] = 14
-	XQ_N0_delays[keys.Thoma] = 11
-	XQ_N0_delays[keys.Yanfei] = 4
-	XQ_N0_delays[keys.Yunjin] = 12
-
-	XQ_N0_delays[keys.Beidou] = 22
-	XQ_N0_delays[keys.Chongyun] = 18
-	XQ_N0_delays[keys.Dori] = 29
-	XQ_N0_delays[keys.Itto] = 27
-	XQ_N0_delays[keys.Noelle] = 23
-	XQ_N0_delays[keys.Razor] = 18
-	XQ_N0_delays[keys.Sayu] = 24
-	XQ_N0_delays[keys.Xinyan] = 28
-
-	// Technically it's 15 for Left, 5 for Right, and 13 for Twirl
-	XQ_N0_delays[keys.Ningguang] = (15 + 5 + 13) / 3
-	// XQ_N0_delays_alt_forms[keys.Ningguang] = 15
-	// alt_form_status_keys[keys.Ningguang] = "Left"
-	// XQ_N0_delays_alt_forms[keys.Ningguang] = 5
-	// alt_form_status_keys[keys.Ningguang] = "Right"
-
-	// jumping/dashing during the NA windup for some catalysts modifies their frames - said by koli
-	// thus the current method of NA -> jump to test for N0 timing won't work on them
-	XQ_N0_delays[keys.Kokomi] = 0
-	XQ_N0_delays[keys.Sucrose] = 0
-	XQ_N0_delays[keys.Barbara] = 0
-	XQ_N0_delays[keys.Lisa] = 0
-	XQ_N0_delays[keys.Mona] = 0
 
 }
 
@@ -238,15 +160,15 @@ func (c *char) getN0Delay() int {
 	active := c.Core.Player.ActiveChar()
 	activeCharKey := active.Base.Key
 	// The character doesn't have an alt form
-	if XQ_N0_delays_alt_forms[activeCharKey] == -1 {
-		return XQ_N0_delays[activeCharKey]
+	if data.PercentDelay5[activeCharKey] == -1 {
+		return data.PercentDelay5[activeCharKey]
 	}
 
-	if active.StatusIsActive(alt_form_status_keys[activeCharKey]) {
-		return XQ_N0_delays_alt_forms[activeCharKey]
+	if active.StatusIsActive(data.AltFormStatusKeys[activeCharKey]) {
+		return data.PercentDelay5AltForms[activeCharKey]
 	}
 
-	return XQ_N0_delays[activeCharKey]
+	return data.PercentDelay5[activeCharKey]
 }
 
 func (c *char) burstStateDelayFuncGen(src int) func() {

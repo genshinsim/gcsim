@@ -45,7 +45,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 
-	if c.StatusIsActive(skillBuffKey) {
+	if c.StatusIsActive(SkillBuffKey) {
 		return c.SoukaiKanka(p)
 	}
 
