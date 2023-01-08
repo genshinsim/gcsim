@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { model } from "@gcsim/types";
 
 import { Filter } from "./Filter";
-import { ListView } from "./ListView";
 import { fetchDataFromDB } from "../../api/FetchDataFromDB";
 import DBEntryView from "./Components/DBEntryView";
 
@@ -143,6 +142,7 @@ export function Database() {
   useEffect(() => {
     fetchDataFromDB(urlParams, setData);
     //mock data
+    // setData(dbMockData.data as unknown as model.IDBEntries["data"]);
     setData(mockData);
   }, [urlParams]);
 
@@ -154,13 +154,9 @@ export function Database() {
   return (
     <>
       <Filter />
-      {data[0] && <DBEntryView dbEntry={data[0]} />}
-      <ListView
-        query={{ char_names: "ayaka" }}
-        sort="??"
-        skip="??"
-        limit="??"
-      />
+      {data.map((entry, index) => {
+        return <DBEntryView dbEntry={entry} key={index} />;
+      })}
     </>
   );
 }
