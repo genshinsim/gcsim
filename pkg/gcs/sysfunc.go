@@ -3,10 +3,12 @@ package gcs
 import (
 	"errors"
 	"fmt"
+	"math"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
@@ -24,6 +26,11 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
 	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
+	e.addSysFunc("sin", e.sin, env)
+	e.addSysFunc("cos", e.cos, env)
+	e.addSysFunc("asin", e.asin, env)
+	e.addSysFunc("acos", e.acos, env)
+	e.addSysFunc("set_on_tick", e.setOnTick, env)
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
@@ -347,5 +354,124 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	e.Core.Combat.KillEnemy(idx - 1)
 
+	return &null{}, nil
+}
+
+func (e *Eval) sin(c *ast.CallExpr, env *Env) (Obj, error) {
+	//sin(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for sin, expected 1 got %v", len(c.Args))
+	}
+
+	//should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("sin argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	v := ntof(n)
+	return &number{
+		fval:    math.Sin(v),
+		isFloat: true,
+	}, nil
+}
+
+func (e *Eval) cos(c *ast.CallExpr, env *Env) (Obj, error) {
+	//cos(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for cos, expected 1 got %v", len(c.Args))
+	}
+
+	//should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("cos argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	v := ntof(n)
+	return &number{
+		fval:    math.Cos(v),
+		isFloat: true,
+	}, nil
+}
+
+func (e *Eval) asin(c *ast.CallExpr, env *Env) (Obj, error) {
+	//asin(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for asin, expected 1 got %v", len(c.Args))
+	}
+
+	//should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("asin argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	v := ntof(n)
+	return &number{
+		fval:    math.Asin(v),
+		isFloat: true,
+	}, nil
+}
+
+func (e *Eval) acos(c *ast.CallExpr, env *Env) (Obj, error) {
+	//acos(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for acos, expected 1 got %v", len(c.Args))
+	}
+
+	//should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("acos argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	v := ntof(n)
+	return &number{
+		fval:    math.Acos(v),
+		isFloat: true,
+	}, nil
+}
+
+func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
+	//set_on_tick(func)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for set_on_tick, expected 1 got %v", len(c.Args))
+	}
+
+	//should eval to a function
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if val.Typ() != typFun {
+		return nil, fmt.Errorf("set_on_tick argument should evaluate to a function, got %v", val.Inspect())
+	}
+
+	fn := val.(*funcval)
+	e.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+		e.evalNode(fn.Body, env)
+		return false
+	}, "sysfunc-ontick")
 	return &null{}, nil
 }
