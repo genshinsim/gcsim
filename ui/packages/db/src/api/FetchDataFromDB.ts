@@ -1,5 +1,5 @@
+import { model } from "@gcsim/types";
 import axios from "axios";
-import { model } from "../../protos_gen/protos";
 
 export const fetchDataFromDB = async (
   urlParams: any,

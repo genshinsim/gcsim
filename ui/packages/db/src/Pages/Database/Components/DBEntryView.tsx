@@ -1,6 +1,6 @@
 import { model } from "@gcsim/types";
 import { Long } from "protobufjs";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 function useTranslation() {
   return (text: string) => text;
@@ -110,16 +110,29 @@ function PortraitArtifactsComponent({
 }
 
 function DBEntryTags({ tags }: { tags: string[] | undefined | null }) {
+  const t = useTranslation();
+  const [showAll, setShowAll] = useState(false);
   return (
-    <div className="flex flex-row  min-h-fit overflow-y-hidden  scrollbar-hide">
+    <div
+      className={
+        "flex flex-row h-32 flex-wrap  relative  " +
+        (showAll ? " " : " truncate")
+      }
+    >
       {tags?.map((tag) => (
         <div
-          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2  whitespace-nowrap "
+          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 whitespace-nowrap "
           key={tag}
         >
-          {tag}
+          {t(tag)}
         </div>
       ))}
+      <button
+        className=" absolute right-0  text-xs font-semibold   text-blue-400  bg-slate-600/30 p-1 whitespace-nowrap rounded-sm h-fit   "
+        onClick={() => setShowAll(!showAll)}
+      >
+        {showAll ? "Hide ↑" : "Show ↓"}
+      </button>
     </div>
   );
 }
