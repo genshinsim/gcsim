@@ -9,12 +9,12 @@ const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
   data: SimResults | null;
-  hash: string;
+  hash: string | null;
   tabState: [string, (tab: string) => void];
   running: boolean;
 };
 
-export default ({ tabState, data, hash = "", running }: NavProps) => {
+export default ({ tabState, data, hash, running }: NavProps) => {
   const { t } = useTranslation();
   const [tabId, setTabId] = tabState;
   const copyToast = useRef<Toaster>(null);

@@ -15,7 +15,7 @@ import { useHistory } from "react-router";
 type ViewerProps = {
   running: boolean;
   data: SimResults | null;
-  hash: string;
+  hash: string | null;
   error: string | null;
   src: ResultSource;
   redirect: string;

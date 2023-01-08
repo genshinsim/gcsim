@@ -30,7 +30,7 @@ type Props = {
   redirect: string;
   mode: string;
   commit: string;
-  setResult: (result: SimResults | null) => void;
+  setResult: (result: SimResults | null, hash: string | null) => void;
   setError: (err: string | null) => void;
 };
 
@@ -209,7 +209,7 @@ const UpgradeButton = ({
     }: {
       exec: ExecutorSupplier<Executor>,
       cfg?: string;
-      setResult: (result: SimResults | null) => void;
+      setResult: (result: SimResults | null, hash: string | null) => void;
       setError: (err: string | null) => void;
     }) => {
   const [isReady, setReady] = useState(false);
@@ -225,11 +225,9 @@ const UpgradeButton = ({
       return;
     }
 
-    setResult(null);
+    setResult(null, null);
     setError(null);
-    exec().run(cfg, (result) => {
-      setResult(result);
-    }).catch((err) => {
+    exec().run(cfg, setResult).catch((err) => {
       setError(err);
     });
   };

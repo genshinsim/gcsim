@@ -94,6 +94,7 @@ func main() {
 
 	// TODO: should perform the config parsing here and then share the parsed results between run & sample
 	var res result.Summary
+	var hash string
 	var err error
 
 	if !opt.norun {
@@ -102,6 +103,7 @@ func main() {
 			log.Println(err)
 			return
 		}
+		hash, _ = res.Sign(shareKey)
 		fmt.Println(res.PrettyPrint())
 	}
 
@@ -131,7 +133,7 @@ func main() {
 	if opt.serve && !opt.norun {
 		fmt.Println("Serving results & sample to HTTP...")
 		idleConnectionsClosed := make(chan struct{})
-		serve(idleConnectionsClosed, resultServeFile+".gz", sampleServeFile+".gz", opt.keepserving)
+		serve(idleConnectionsClosed, resultServeFile+".gz", hash, sampleServeFile+".gz", opt.keepserving)
 
 		url := "https://gcsim.app/viewer/local"
 		if !opt.nobrowser {

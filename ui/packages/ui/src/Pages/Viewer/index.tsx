@@ -84,7 +84,7 @@ type FromUrlProps = {
 
 const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
   const [data, setData] = useState<SimResults | null>(null);
-  const [hash, setHash] = useState<string>("");
+  const [hash, setHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
   const isRunning = useRunningState(exec);
@@ -95,13 +95,7 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
       .get(url, { timeout: 30000 })
       .then((resp) => {
         setData(resp.data);
-        let hash = ""
-        if (resp.headers["x-gcsim-share-auth"] !== undefined) {
-          hash = resp.headers["x-gcsim-share-auth"]
-        }
-        setHash(hash)
-        console.log(resp.headers)
-        console.log(resp.data);
+        setHash(resp.headers["x-gcsim-share-auth"] ?? null);
       })
       .catch((e) => {
         setError(e.message);
@@ -146,20 +140,21 @@ type FromStateProps = {
 
 const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
   const isRunning = useRunningState(exec);
-  const { data, error } = useAppSelector((state: RootState) => {
+  const { data, hash, error } = useAppSelector((state: RootState) => {
     return {
       data: state.viewer.data,
+      hash: state.viewer.hash,
       error: state.viewer.error,
     };
   });
   const dispatch = useAppDispatch();
 
   const setResult = useRef(
-    throttle((result: SimResults | null) => {
+    throttle((result: SimResults | null, hash: string | null) => {
       if (result == null) {
         return;
       }
-      dispatch(viewerActions.setResult({ data: result }));
+      dispatch(viewerActions.setResult({ data: result, hash: hash }));
     }, VIEWER_THROTTLE, { leading: true, trailing: true })
   );
 
@@ -173,7 +168,7 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
   return (
     <UpgradableViewer
         data={data}
-        hash={""} //TODO: fix this!!
+        hash={hash}
         error={error}
         src={ResultSource.Generated}
         exec={exec}
@@ -188,7 +183,7 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
 
 type UpgradableViewerProps = {
   data: SimResults | null;
-  hash: string;
+  hash: string | null;
   error: string | null;
   src: ResultSource;
   running: boolean;
@@ -197,7 +192,7 @@ type UpgradableViewerProps = {
   gitCommit: string;
   exec: ExecutorSupplier<Executor>;
   retry?: () => void;
-  setResult: (r: SimResults | null) => void;
+  setResult: (r: SimResults | null, hash: string | null) => void;
   setError: (err: string | null) => void;
 }
 
