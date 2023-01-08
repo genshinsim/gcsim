@@ -7,6 +7,9 @@ inputs:
   branch:
     required: true
     description: name of the branch
+  shareKey:
+    required: true
+    description: "key for signing share results"
 
 runs:
   using: composite
@@ -15,6 +18,8 @@ runs:
     working-directory: ./cmd/wasm
     shell: bash
     run: ./build.sh -o ./dist/$GITHUB_SHA/main.wasm
+    env:
+      GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
 
   - name: Upload to R2
     uses: wei/rclone@v1

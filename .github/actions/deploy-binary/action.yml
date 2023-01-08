@@ -1,6 +1,9 @@
 name: "Deploy gcsim Binary"
 description: "builds the gcsim binary and deploys. Assumes go has already been setup"
 inputs:
+  shareKey:
+    required: true
+    description: "key for signing share results"
   prerelease:
     required: false
     description: "Set true to deploy nightly builds"
@@ -15,6 +18,8 @@ runs:
       chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
       # run the script
       "${GITHUB_WORKSPACE}/scripts/build.sh"
+    env:
+      GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
   
   - name: Release Binary
     uses: softprops/action-gh-release@v1

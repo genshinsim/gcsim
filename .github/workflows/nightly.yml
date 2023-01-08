@@ -15,3 +15,4 @@ jobs:
       - uses: ./.github/actions/deploy-binary
         with:
           prerelease: true
+          shareKey: ${{ secrets.AES_KEY }}
