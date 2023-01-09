@@ -9,5 +9,4 @@ LDFLAGS=(
 )
 
 # reduces by ~2MB but makes really slow: -gcflags=all="-l -B -C -std"
-
 GOOS=js GOARCH=wasm go build -o main.wasm -ldflags="${LDFLAGS[*]}" $@
