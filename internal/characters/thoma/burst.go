@@ -1,7 +1,7 @@
 package thoma
 
 import (
-	"github.com/genshinsim/gcsim/internal/data"
+	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -79,21 +79,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) getN0Delay() int {
-	active := c.Core.Player.ActiveChar()
-	activeCharKey := active.Base.Key
-	// The character doesn't have an alt form
-	if data.PercentDelay5[activeCharKey] == -1 {
-		return data.PercentDelay5[activeCharKey]
-	}
-
-	if active.StatusIsActive(data.AltFormStatusKeys[activeCharKey]) {
-		return data.PercentDelay5AltForms[activeCharKey]
-	}
-
-	return data.PercentDelay5[activeCharKey]
-}
-
 func (c *char) burstStateDelayFuncGen(src int) func() {
 	return func() {
 		//ignore if on ICD
@@ -112,20 +97,14 @@ func (c *char) burstStateDelayFuncGen(src int) func() {
 }
 
 func (c *char) burstStateHook() {
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnAttack, func(args ...interface{}) bool {
 		//check if buff is up
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
-		next := args[1].(action.AnimationState)
-		//ignore if not normal
-		if next != action.NormalAttackState {
-			return false
-		}
 		c.burstTickSrc = c.Core.F
-		delay := c.getN0Delay()
+		delay := common.Get5PercentN0Delay(c.Core.Player.ActiveChar())
 		c.Core.Log.NewEvent("thoma burst delay on state change", glog.LogCharacterEvent, c.Index).
-			Write("active", c.Core.Player.ActiveChar().Base.Key.String()).
 			Write("delay", delay)
 		// This accounts for the delay in n0 timing needed for Thoma to trigger collapses
 		c.Core.Tasks.Add(c.burstStateDelayFuncGen(c.Core.F), delay)
@@ -157,7 +136,7 @@ func (c *char) burstTickerFunc(src int) func() {
 		}
 		state_start := c.Core.Player.CurrentStateStart()
 		norm_counter := c.Core.Player.ActiveChar().NormalCounter
-		if (norm_counter == 1) && c.Core.F-state_start < c.getN0Delay() {
+		if (norm_counter == 1) && c.Core.F-state_start < common.Get5PercentN0Delay(c.Core.Player.ActiveChar()) {
 			c.Core.Log.NewEvent("thoma burst tick check stopped, not enough time since normal state start", glog.LogCharacterEvent, c.Index).
 				Write("src", src).
 				Write("state_start", state_start)
