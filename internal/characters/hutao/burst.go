@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	var bbcb combat.AttackCBFunc
 
-	if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 2 {
+	if c.Base.Cons >= 2 {
 		bbcb = c.applyBB
 	}
 
