@@ -62,7 +62,7 @@ export function Filter() {
   }, [charFilter]);
 
   return (
-    <div className="w-3/12 bg-slate-800 p-4">
+    <div className="w-96 bg-slate-800 p-4">
       <div className="text-2xl pb-2 ">{t("Filter")}</div>
       <div
         className="flex flex-row  bp4-button"
