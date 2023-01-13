@@ -152,11 +152,11 @@ export function Database() {
   }
 
   return (
-    <>
+    <div className="flex flex-row gap-4">
       <Filter />
       {data.map((entry, index) => {
         return <DBEntryView dbEntry={entry} key={index} />;
       })}
-    </>
+    </div>
   );
 }
