@@ -60,21 +60,9 @@ export function Filter() {
   useEffect(() => {
     console.log(charFilter);
   }, [charFilter]);
-  const determineButtonColor = (charName: string) => {
-    const baseCss = "bp4-button ";
-    switch (charFilter[charName]) {
-      case FilterValue.none:
-        return baseCss;
-      case FilterValue.include:
-        return baseCss + "bp4-intent-success";
-      case FilterValue.exclude:
-        return baseCss + "bp4-intent-danger";
-      default:
-        return baseCss;
-    }
-  };
+
   return (
-    <div className="w-1/6 bg-slate-800 p-4">
+    <div className="w-3/12 bg-slate-800 p-4">
       <div className="text-2xl pb-2 ">{t("Filter")}</div>
       <div
         className="flex flex-row  bp4-button"
@@ -84,26 +72,72 @@ export function Filter() {
         <div>{charIsOpen ? "-" : "+"}</div>
       </div>
       <Collapse isOpen={charIsOpen}>
-        <div className="flex flex-wrap gap-4 mt-2">
+        <div className="grid grid-cols-3 gap-2 mt-2">
           {charNames.map((charName) => (
-            <button
-              className={determineButtonColor(charName)}
-              onClick={() => {
-                const newFilter = { ...charFilter };
-                newFilter[charName] =
-                  newFilter[charName] === FilterValue.none
-                    ? FilterValue.include
-                    : newFilter[charName] === FilterValue.include
-                    ? FilterValue.exclude
-                    : FilterValue.none;
-                setCharFilter(newFilter);
-              }}
-            >
-              {charName}
-            </button>
+            <CharFilterButton
+              charName={charName}
+              charFilter={charFilter}
+              setCharFilter={setCharFilter}
+            />
           ))}
         </div>
       </Collapse>
     </div>
   );
+}
+
+function TestCompnonet({ charName }: { charName: string }) {
+  return <>{charName}</>;
+}
+
+function CharFilterButton({
+  charName,
+  charFilter,
+  setCharFilter,
+}: {
+  charName: string;
+  charFilter: Record<string, FilterValue>;
+  setCharFilter: (newFilter: Record<string, FilterValue>) => void;
+}) {
+  const t = useTranslation;
+  const displayCharName = t(charName);
+
+  const handleClick = () => {
+    const newFilter = { ...charFilter };
+    newFilter[charName] =
+      newFilter[charName] === FilterValue.none
+        ? FilterValue.include
+        : newFilter[charName] === FilterValue.include
+        ? FilterValue.exclude
+        : FilterValue.none;
+    setCharFilter(newFilter);
+  };
+
+  switch (charFilter[charName]) {
+    case FilterValue.include:
+      return (
+        <button
+          className={"bp4-button bp4-intent-success"}
+          onClick={handleClick}
+        >
+          {`+ ` + displayCharName}
+        </button>
+      );
+    case FilterValue.exclude:
+      return (
+        <button
+          className={"bp4-button bp4-intent-danger"}
+          onClick={handleClick}
+        >
+          {`- ` + displayCharName}
+        </button>
+      );
+    case FilterValue.none:
+    default:
+      return (
+        <button className={"bp4-button"} onClick={handleClick}>
+          {displayCharName}
+        </button>
+      );
+  }
 }
