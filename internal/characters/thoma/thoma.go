@@ -16,6 +16,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	burstTickSrc int
+	burstHookSrc int
 	a1Stack      int
 	c6buff       []float64
 }

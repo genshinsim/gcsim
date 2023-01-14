@@ -159,7 +159,10 @@ func (c *char) summonSwordWave() {
 func (c *char) burstStateDelayFuncGen(src int) func() {
 	return func() {
 		//ignore if on ICD
-		if c.StatusIsActive(burstICDKey) || c.Core.Player.CurrentState() != action.NormalAttackState || c.burstTickSrc != src {
+		if c.StatusIsActive(burstICDKey) || c.Core.Player.CurrentState() != action.NormalAttackState || c.burstHookSrc != src {
+			c.Core.Log.NewEvent("xq burst did not trigger on state change", glog.LogCharacterEvent, c.Index).
+				Write("state", action.NormalAttackState).
+				Write("icd", c.StatusExpiry(burstICDKey))
 			return
 		}
 		//this should start a new ticker if not on ICD and state is correct
@@ -179,7 +182,7 @@ func (c *char) burstStateHook() {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
-		c.burstTickSrc = c.Core.F
+		c.burstHookSrc = c.Core.F
 		delay := common.Get5PercentN0Delay(c.Core.Player.ActiveChar())
 		c.Core.Log.NewEvent("xq burst delay on state change", glog.LogCharacterEvent, c.Index).
 			Write("delay", delay)
@@ -213,7 +216,6 @@ func (c *char) burstTickerFunc(src int) func() {
 		}
 		state_start := c.Core.Player.CurrentStateStart()
 		norm_counter := c.Core.Player.ActiveChar().NormalCounter
-		c.burstTickSrc = c.Core.F
 		if (norm_counter == 1) && c.Core.F-state_start < common.Get5PercentN0Delay(c.Core.Player.ActiveChar()) {
 			c.Core.Log.NewEvent("xq burst tick check stopped, not enough time since normal state start", glog.LogCharacterEvent, c.Index).
 				Write("src", src).
@@ -229,6 +231,7 @@ func (c *char) burstTickerFunc(src int) func() {
 		c.summonSwordWave()
 		//in theory this should not hit an icd?
 		//use the hitlag affected queue for this
-		c.QueueCharTask(c.burstTickerFunc(src), 60) //check every 1sec
+		c.burstTickSrc = c.Core.F
+		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
 	}
 }

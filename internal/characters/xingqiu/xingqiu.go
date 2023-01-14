@@ -18,6 +18,7 @@ type char struct {
 	nextRegen     bool
 	burstCounter  int
 	burstTickSrc  int
+	burstHookSrc  int
 	orbitalActive bool
 }
 

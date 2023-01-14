@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 func (c *char) burstStateDelayFuncGen(src int) func() {
 	return func() {
 		//ignore if on ICD
-		if c.StatusIsActive(burstICDKey) || c.Core.Player.CurrentState() != action.NormalAttackState || c.burstTickSrc != src {
+		if c.StatusIsActive(burstICDKey) || c.Core.Player.CurrentState() != action.NormalAttackState || c.burstHookSrc != src {
 			return
 		}
 		//this should start a new ticker if not on ICD and state is correct
@@ -102,7 +102,7 @@ func (c *char) burstStateHook() {
 		if !c.StatusIsActive(burstKey) {
 			return false
 		}
-		c.burstTickSrc = c.Core.F
+		c.burstHookSrc = c.Core.F
 		delay := common.Get5PercentN0Delay(c.Core.Player.ActiveChar())
 		c.Core.Log.NewEvent("thoma burst delay on state change", glog.LogCharacterEvent, c.Index).
 			Write("delay", delay)
