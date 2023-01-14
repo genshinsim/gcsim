@@ -58,7 +58,7 @@ export function Filter() {
   );
 
   useEffect(() => {
-    console.log(charFilter);
+    // console.log(charFilter);
   }, [charFilter]);
 
   return (
@@ -84,10 +84,6 @@ export function Filter() {
       </Collapse>
     </div>
   );
-}
-
-function TestCompnonet({ charName }: { charName: string }) {
-  return <>{charName}</>;
 }
 
 function CharFilterButton({

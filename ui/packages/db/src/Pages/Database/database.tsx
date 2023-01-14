@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { model } from "@gcsim/types";
 
 import { Filter } from "./Filter";
-import { fetchDataFromDB } from "../../api/FetchDataFromDB";
-import DBEntryView from "./Components/DBEntryView";
+import { ListView } from "./ListView";
 
 const mockData: model.IDBEntries["data"] = [
   {
@@ -137,26 +135,18 @@ const mockData: model.IDBEntries["data"] = [
 
 export function Database() {
   const urlParams = window.location.search;
-  const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
-  useEffect(() => {
-    fetchDataFromDB(urlParams, setData);
-    //mock data
-    // setData(dbMockData.data as unknown as model.IDBEntries["data"]);
-    setData(mockData);
-  }, [urlParams]);
-
-  if (!data) {
-    //TODO: add loading spinner or emoji
-    return <div>Loading...</div>;
-  }
+  //   useEffect(() => {
+  //     fetchDataFromDB(urlParams, setData);
+  //     //mock data
+  //     // setData(dbMockData.data as unknown as model.IDBEntries["data"]);
+  //     setData(mockData);
+  //   }, [urlParams]);
 
   return (
     <div className="flex flex-row gap-4">
       <Filter />
-      {data.map((entry, index) => {
-        return <DBEntryView dbEntry={entry} key={index} />;
-      })}
+      <ListView query={""} />
     </div>
   );
 }
