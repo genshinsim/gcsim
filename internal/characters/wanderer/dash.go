@@ -47,7 +47,7 @@ func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {
 
 	a4Triggered := c.a4()
 	if !a4Triggered {
-		c.skydwellerPoints -=15
+		c.skydwellerPoints -= 15
 	}
 
 	return ai

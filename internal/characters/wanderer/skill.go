@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	skillKey       = "windfavored-state"
-	particleIcdKey = "wanderer-particle-icd"
+	skillKey           = "windfavored-state"
+	particleIcdKey     = "wanderer-particle-icd"
 	plungeAvailableKey = "wanderer-plunge-available"
 )
 
@@ -139,11 +139,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) particleGenCB(cb combat.AttackCB) {
 	if !c.StatusIsActive(skillKey) {
-			return
-		}
+		return
+	}
 	if c.StatusIsActive(particleIcdKey) {
-			return
-		}
+		return
+	}
 	c.AddStatus(particleIcdKey, 120, true)
 	c.Core.QueueParticle("wanderer", 1, attributes.Anemo, c.ParticleDelay)
 }

@@ -18,7 +18,7 @@ const (
 	a1CryoKey       = "wanderer-a1-cryo"
 )
 
-func (c *char) a4CB(a combat.AttackCB){
+func (c *char) a4CB(a combat.AttackCB) {
 	if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
 		return
 	}
@@ -79,7 +79,7 @@ func (c *char) a4() bool {
 
 func (c *char) absorbCheckA1() {
 	if len(c.a1ValidBuffs) <= c.a1MaxAbsorb {
-			return
+		return
 	}
 
 	a1AbsorbCheckLocation := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
@@ -106,7 +106,6 @@ func (c *char) absorbCheckA1() {
 	if c.skydwellerPoints*6 > delay {
 		c.Core.Tasks.Add(c.absorbCheckA1, delay)
 	}
-
 
 }
 
@@ -147,11 +146,11 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 
 func (c *char) a1ElectroCB(cb combat.AttackCB) {
 	if !c.StatusIsActive(a1ElectroKey) {
-			return
-		}
+		return
+	}
 	if c.StatusIsActive(a1ElectroIcdKey) {
-			return
-		}
+		return
+	}
 	c.AddStatus(a1ElectroIcdKey, 12, true)
 	c.AddEnergy("wanderer-a1-electro-energy", 0.8)
 }
