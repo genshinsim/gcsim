@@ -46,7 +46,7 @@ func (c *char) makeA4Callback() func(cb combat.AttackCB) {
 	}
 }
 
-func (c *char) a4() {
+func (c *char) a4() bool {
 	if c.StatusIsActive(a4Key) {
 		c.DeleteStatus(a4Key)
 
@@ -72,7 +72,12 @@ func (c *char) a4() {
 			c.Core.QueueAttack(a4Info, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
 				a4Release[i], a4Release[i]+a4Hitmark)
 		}
+
+		return true
+
 	}
+
+	return false
 }
 
 func (c *char) absorbCheckA1() func() {
