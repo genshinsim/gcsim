@@ -63,11 +63,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(c.c2, delay)
 
 	for i := 0; i < 5; i++ {
-		progress := i
-		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
-				burstSnapshotDelay, burstHitmark+progress*burstHitmarkDelay)
-		}, delay)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
+			burstSnapshotDelay, burstHitmark+i*burstHitmarkDelay)
 	}
 
 	//TODO: Check CD with or without delay, check energy consume frame
@@ -100,11 +97,8 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 	c.c2()
 
 	for i := 0; i < 5; i++ {
-		progress := i
-		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
-				burstSnapshotDelay, burstHitmark+progress*burstHitmarkDelay)
-		}, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
+		burstSnapshotDelay, burstHitmark+i*burstHitmarkDelay)
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)
