@@ -1,6 +1,7 @@
 package xingqiu
 
 import (
+	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -17,9 +18,8 @@ type char struct {
 	numSwords     int
 	nextRegen     bool
 	burstCounter  int
-	burstTickSrc  int
-	burstHookSrc  int
 	orbitalActive bool
+	naHook        *common.NAHook
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -38,6 +38,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a4()
-	c.burstStateHook()
+	c.naHook = common.NewNAHook(c.CharWrapper, c.Core, "xingqiu burst", burstKey, 60, burstICDKey, common.Get5PercentN0Delay, c.summonSwordWave)
+	c.naHook.NAStateHook()
 	return nil
 }

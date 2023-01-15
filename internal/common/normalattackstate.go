@@ -1,9 +1,15 @@
 package common
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/characters/ayato"
 	"github.com/genshinsim/gcsim/internal/characters/cyno"
 	"github.com/genshinsim/gcsim/internal/characters/tartaglia"
+	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
@@ -133,4 +139,147 @@ func Get5PercentN0Delay(activeChar *character.CharWrapper) int {
 	}
 
 	return percentDelay5[activeCharKey]
+}
+
+func Get0PercentN0Delay(activeChar *character.CharWrapper) int {
+	// TODO: Collect data for this
+	return 0
+}
+
+type NAHook struct {
+	c           *character.CharWrapper
+	abilName    string
+	Core        *core.Core
+	abilKey     string
+	abilProcICD int
+	abilICDKey  string
+	abilTickSrc int
+	abilHookSrc int
+	delayFunc   func(*character.CharWrapper) int
+	summonFunc  func()
+}
+
+func NewNAHook(c *character.CharWrapper, Core *core.Core, abilName string, abilKey string, abilProcICD int, abilICDKey string, delayFunc func(*character.CharWrapper) int, summonFunc func()) *NAHook {
+	return &NAHook{
+		c:           c,
+		abilName:    abilName,
+		Core:        Core,
+		abilKey:     abilKey,
+		abilProcICD: abilProcICD,
+		abilICDKey:  abilICDKey,
+		abilTickSrc: 0,
+		abilHookSrc: 0,
+		delayFunc:   delayFunc,
+		summonFunc:  summonFunc,
+	}
+
+}
+
+func (w *NAHook) NAStateHook() {
+	w.Core.Events.Subscribe(event.OnAttack, func(args ...interface{}) bool {
+		//check if buff is up
+		if !w.c.StatusIsActive(w.abilKey) {
+			return false
+		}
+		w.abilHookSrc = w.Core.F
+		delay := w.delayFunc(w.Core.Player.ActiveChar())
+		w.Core.Log.NewEvent(fmt.Sprintf("%v delay on state change", w.abilName), glog.LogCharacterEvent, w.c.Index).
+			Write("delay", delay)
+		// This accounts for the delay in n0 timing needed to trigger
+
+		if delay > 0 {
+
+			w.Core.Tasks.Add(w.naStateDelayFuncGen(w.Core.F), delay)
+		} else {
+			// a delay of 0 will actually happen in the next frame, so a seperate conditional is used.
+
+			// Additionally, at the time that OnAttack/OnStateChange events are emitted, the state has not yet changed, so we cannot do an animation check.
+			if w.c.StatusIsActive(w.abilICDKey) {
+				w.Core.Log.NewEvent(fmt.Sprintf("%v did not trigger on state change", w.abilName), glog.LogCharacterEvent, w.c.Index).
+					Write("state", w.Core.Player.CurrentState()).
+					Write("icd", w.c.StatusExpiry(w.abilICDKey))
+			} else {
+				w.summonFunc()
+				w.c.AddStatus(w.abilICDKey, 60, true)
+				w.Core.Log.NewEvent(fmt.Sprintf("%v on state change", w.abilName), glog.LogCharacterEvent, w.c.Index).
+					Write("state", action.NormalAttackState).
+					Write("icd", w.c.StatusExpiry(w.abilICDKey))
+				w.abilTickSrc = w.Core.F
+				//use the hitlag affected queue for this
+				w.c.QueueCharTask(w.naTickerFunc(w.Core.F), w.abilProcICD) //check every `ICD`` frames
+			}
+		}
+
+		return false
+	}, fmt.Sprintf("%v animation check", w.abilName))
+}
+
+func (w *NAHook) naStateDelayFuncGen(src int) func() {
+	return func() {
+		//ignore if on ICD
+		if w.c.StatusIsActive(w.abilICDKey) || w.Core.Player.CurrentState() != action.NormalAttackState || w.abilHookSrc != src {
+			w.Core.Log.NewEvent(fmt.Sprintf("%v did not trigger on state change", w.abilName), glog.LogCharacterEvent, w.c.Index).
+				Write("state", w.Core.Player.CurrentState()).
+				Write("icd", w.c.StatusExpiry(w.abilICDKey)).
+				Write("ICD check", w.c.StatusIsActive(w.abilICDKey)).
+				Write("State check", w.Core.Player.CurrentState() != action.NormalAttackState).
+				Write("Source check", w.abilHookSrc != src)
+
+			return
+		}
+		//this should start a new ticker if not on ICD and state is correct
+		w.summonFunc()
+		w.c.AddStatus(w.abilICDKey, 60, true)
+		w.Core.Log.NewEvent(fmt.Sprintf("%v on state change", w.abilName), glog.LogCharacterEvent, w.c.Index).
+			Write("state", action.NormalAttackState).
+			Write("icd", w.c.StatusExpiry(w.abilICDKey))
+		w.abilTickSrc = w.Core.F
+		//use the hitlag affected queue for this
+		w.c.QueueCharTask(w.naTickerFunc(w.Core.F), w.abilProcICD) //check every `ICD` frames
+	}
+}
+
+func (w *NAHook) naTickerFunc(src int) func() {
+	return func() {
+		//check if buff is up
+		if !w.c.StatusIsActive(w.abilKey) {
+			return
+		}
+		if w.abilTickSrc != src {
+			w.Core.Log.NewEvent(fmt.Sprintf("%v tick check ignored, src diff", w.abilName), glog.LogCharacterEvent, w.c.Index).
+				Write("src", src).
+				Write("new src", w.abilTickSrc)
+			return
+		}
+		//stop if we are no longer in normal animation state
+		state := w.Core.Player.CurrentState()
+
+		if state != action.NormalAttackState {
+			w.Core.Log.NewEvent(fmt.Sprintf("%v tick check stopped, not in normal state", w.abilName), glog.LogCharacterEvent, w.c.Index).
+				Write("src", src).
+				Write("state", state)
+			return
+		}
+		state_start := w.Core.Player.CurrentStateStart()
+		norm_counter := w.Core.Player.ActiveChar().NormalCounter
+		if (norm_counter == 1) && w.Core.F-state_start < w.delayFunc(w.Core.Player.ActiveChar()) {
+			w.Core.Log.NewEvent(fmt.Sprintf("%v tick check stopped, not enough time since normal state start", w.abilName), glog.LogCharacterEvent, w.c.Index).
+				Write("src", src).
+				Write("state_start", state_start)
+			return
+		}
+
+		w.Core.Log.NewEvent(fmt.Sprintf("%v triggered from ticker", w.abilName), glog.LogCharacterEvent, w.c.Index).
+			Write("src", src).
+			Write("state", state).
+			Write("icd", w.c.StatusExpiry(w.abilICDKey))
+
+		//we can trigger here b/c we're in normal state still and src is still the same
+		w.summonFunc()
+		w.c.AddStatus(w.abilICDKey, 60, true)
+		//in theory this should not hit an icd?
+		//use the hitlag affected queue for this
+		w.abilTickSrc = w.Core.F
+		w.c.QueueCharTask(w.naTickerFunc(w.Core.F), w.abilProcICD) //check every 1sec
+	}
 }

@@ -1,13 +1,10 @@
 package xingqiu
 
 import (
-	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -151,87 +148,5 @@ func (c *char) summonSwordWave() {
 	case 5:
 		c.numSwords = 2
 		c.nextRegen = false
-	}
-
-	c.AddStatus(burstICDKey, 60, true)
-}
-
-func (c *char) burstStateDelayFuncGen(src int) func() {
-	return func() {
-		//ignore if on ICD
-		if c.StatusIsActive(burstICDKey) || c.Core.Player.CurrentState() != action.NormalAttackState || c.burstHookSrc != src {
-			c.Core.Log.NewEvent("xq burst did not trigger on state change", glog.LogCharacterEvent, c.Index).
-				Write("state", action.NormalAttackState).
-				Write("icd", c.StatusExpiry(burstICDKey))
-			return
-		}
-		//this should start a new ticker if not on ICD and state is correct
-		c.summonSwordWave()
-		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index).
-			Write("state", action.NormalAttackState).
-			Write("icd", c.StatusExpiry(burstICDKey))
-		c.burstTickSrc = c.Core.F
-		//use the hitlag affected queue for this
-		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
-	}
-}
-
-func (c *char) burstStateHook() {
-	c.Core.Events.Subscribe(event.OnAttack, func(args ...interface{}) bool {
-		//check if buff is up
-		if !c.StatusIsActive(burstKey) {
-			return false
-		}
-		c.burstHookSrc = c.Core.F
-		delay := common.Get5PercentN0Delay(c.Core.Player.ActiveChar())
-		c.Core.Log.NewEvent("xq burst delay on state change", glog.LogCharacterEvent, c.Index).
-			Write("delay", delay)
-		// This accounts for the delay in n0 timing needed for XQ to trigger rainswords
-		c.Core.Tasks.Add(c.burstStateDelayFuncGen(c.Core.F), delay)
-
-		return false
-	}, "xq-burst-animation-check")
-}
-
-func (c *char) burstTickerFunc(src int) func() {
-	return func() {
-		//check if buff is up
-		if !c.StatusIsActive(burstKey) {
-			return
-		}
-		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("xq burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("new src", c.burstTickSrc)
-			return
-		}
-		//stop if we are no longer in normal animation state
-		state := c.Core.Player.CurrentState()
-
-		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("xq burst tick check stopped, not in normal state", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("state", state)
-			return
-		}
-		state_start := c.Core.Player.CurrentStateStart()
-		norm_counter := c.Core.Player.ActiveChar().NormalCounter
-		if (norm_counter == 1) && c.Core.F-state_start < common.Get5PercentN0Delay(c.Core.Player.ActiveChar()) {
-			c.Core.Log.NewEvent("xq burst tick check stopped, not enough time since normal state start", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("state_start", state_start)
-			return
-		}
-
-		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index).
-			Write("src", src).
-			Write("state", state).
-			Write("icd", c.StatusExpiry(burstICDKey))
-		//we can trigger a wave here b/c we're in normal state still and src is still the same
-		c.summonSwordWave()
-		//in theory this should not hit an icd?
-		//use the hitlag affected queue for this
-		c.burstTickSrc = c.Core.F
-		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
 	}
 }
