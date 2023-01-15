@@ -81,6 +81,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	currentNormalCounter := c.NormalCounter
 
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 5
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -92,11 +97,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Element:    attributes.Anemo,
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
-		}
-
-		travel, ok := p["travel"]
-		if !ok {
-			travel = 5
 		}
 
 		release := delay + windup + attackReleaseNormal[c.NormalCounter][i]
@@ -131,6 +131,11 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 
 	currentNormalCounter := c.NormalCounter
 
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 5
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -144,11 +149,6 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 			Mult:       skillNABonus[c.TalentLvlSkill()] * mult[c.TalentLvlAttack()],
 		}
 		radius := attackRadiusE[c.NormalCounter]
-
-		travel, ok := p["travel"]
-		if !ok {
-			travel = 5
-		}
 
 		release := windup + attackReleaseE[c.NormalCounter][i]
 
