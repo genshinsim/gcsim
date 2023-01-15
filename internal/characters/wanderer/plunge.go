@@ -30,7 +30,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	if delay == 0 || !(c.Core.Player.LastAction.Char == c.Index &&
 		c.Core.Player.LastAction.Type == action.ActionSkill && !c.StatusIsActive(skillKey)) {
 		c.Core.Log.NewEvent("only plunge after skill ends", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionHighPlunge)
+			Write("action", action.ActionLowPlunge)
 		return action.ActionInfo{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
