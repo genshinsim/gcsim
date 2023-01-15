@@ -53,7 +53,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.NormalCounter == 0 || (c.NormalCounter == 2 && i == 0) || c.NormalCounter == 3 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: attackOffsets[i][c.NormalCounter]},
+				combat.Point{Y: attackOffsets[c.NormalCounter][i]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)
