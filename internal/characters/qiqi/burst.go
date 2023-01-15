@@ -36,13 +36,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
+	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7),
-		burstHitmark,
-		burstHitmark,
-	)
+	// Talisman is applied way before the damage is dealt
+	c.Core.Tasks.Add(func() {
+		for _, e := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
+			e.AddStatus(talismanKey, 15*60, true)
+		}
+	}, 40)
 
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(8)
@@ -97,13 +99,6 @@ func (c *char) onNACAHitHook() {
 		}
 		if atk.Info.ActorIndex != c.Index {
 			return false
-		}
-
-		// Talisman is applied before the damage is dealt
-		// TODO: i remember there's a reason for this but not sure why we check for string here
-		if atk.Info.Abil == "Fortune-Preserving Talisman" {
-			// c.talismanExpiry[t.Index()] = c.Core.F + 15*60
-			e.AddStatus(talismanKey, 15*60, true)
 		}
 
 		// All of the below only occur on Qiqi NA/CA hits

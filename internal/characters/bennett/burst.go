@@ -47,9 +47,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	const radius = 6.0
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, radius)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, radius),
+		combat.NewCircleHitOnTarget(burstArea.Shape.Pos(), nil, radius),
 		37,
 		37,
 	)
@@ -58,16 +59,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	stats, _ := c.Stats()
 	c.applyBennettField(stats)()
 
-	field := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, radius)
-
 	//add 12 ticks starting at t = 1 to t= 12
 	// Buff appears to start ticking right before hit
 	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
 	for i := burstStartFrame; i <= 720+burstStartFrame; i += 60 {
 		c.Core.Tasks.Add(func() {
-			if combat.WillCollide(field, c.Core.Combat.Player(), 0) {
-				c.applyBennettField(stats)()
+			if !combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
+				return
 			}
+			c.applyBennettField(stats)()
 		}, i)
 	}
 

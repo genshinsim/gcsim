@@ -146,16 +146,16 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 	}
 }
 
-// TODO: this implementation will only affect the next icd; not sure
-// if it cuts short current as well
-func (c *char) triKarmaInterval() int {
-	if c.electroCount > 0 && c.Core.Status.Duration(burstKey) > 0 {
-		cd := int((2.5 - burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()]) * 60)
+func (c *char) updateTriKarmaInterval() {
+	var cd int
+	if c.electroCount > 0 && c.Core.Status.Duration(withinBurstKey) > 0 {
+		cd = int((2.5 - burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()]) * 60)
 		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
-		return cd
-
+	} else {
+		cd = int(2.5 * 60)
 	}
-	return int(2.5 * 60)
+	c.triKarmaInterval = cd
+	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
 func (c *char) triKarmaOnReaction(rx event.Event) func(args ...interface{}) bool {
@@ -198,7 +198,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 	if !t.StatusIsActive(skillMarkKey) {
 		return
 	}
-	c.AddStatus(skillICDKey, c.triKarmaInterval(), true) //TODO: this is affected by hitlag?
+	c.AddStatus(skillICDKey, c.triKarmaInterval, true) //TODO: this is affected by hitlag?
 	done := false
 	for _, v := range c.Core.Combat.Enemies() {
 		e, ok := v.(*enemy.Enemy)

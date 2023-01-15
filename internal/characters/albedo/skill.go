@@ -39,13 +39,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	// TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
+	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 10)
 	// assuming tap e for hitbox offset
-	c.Core.QueueAttackWithSnap(
-		ai,
-		c.bloomSnapshot,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 5),
-		skillHitmark,
-	)
+	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 5), skillHitmark)
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -98,6 +94,10 @@ func (c *char) skillHook() {
 			return false
 		}
 		if dmg == 0 {
+			return false
+		}
+		// don't proc if target hit is outside of the skill area
+		if !combat.TargetIsWithinArea(trg, c.skillArea) {
 			return false
 		}
 

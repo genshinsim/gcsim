@@ -19,6 +19,7 @@ type char struct {
 	bloomSnapshot combat.Snapshot
 	// tracking skill information
 	skillActive     bool
+	skillArea       combat.AttackPattern
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
 	// c2 tracking

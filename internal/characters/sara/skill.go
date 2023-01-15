@@ -49,9 +49,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
-		// TODO: not sure of snapshot? timing
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), 50, c2Hitmark, c.a4)
-		c.attackBuff(c2Hitmark)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+
+		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.a4)
+		c.attackBuff(ap, c2Hitmark)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 7)
@@ -64,17 +65,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-const attackBuffKey = "sarabuff"
-
 // Handles attack boost from Sara's skills
 // Checks for the onfield character at the delay frame, then applies buff to that character
-func (c *char) attackBuff(delay int) {
+func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 	c.Core.Tasks.Add(func() {
-		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
+		if !combat.TargetIsWithinArea(c.Core.Combat.Player(), a) {
+			return
+		}
 
 		active := c.Core.Player.ActiveChar()
-		//TODO: i think this is only there to make conditionals work? prob not needed
-		active.AddStatus(attackBuffKey, 360, true)
+		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
+
 		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
 			Write("char", active.Index).
 			Write("buff", buff).

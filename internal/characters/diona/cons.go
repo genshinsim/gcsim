@@ -24,6 +24,9 @@ func (c *char) c6() {
 	//lasts 12.5 second, ticks every 0.5s; adds mod to active char for 2s
 	for i := 30; i < 750; i += 30 {
 		c.Core.Tasks.Add(func() {
+			if !combat.TargetIsWithinArea(c.Core.Combat.Player(), c.burstBuffArea) {
+				return
+			}
 			//add 200EM to active char
 			active := c.Core.Player.ActiveChar()
 			if active.HPCurrent/active.MaxHP() > 0.5 {

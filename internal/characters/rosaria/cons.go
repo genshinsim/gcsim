@@ -80,7 +80,7 @@ func (c *char) c6(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("rosaria-c6", 600),
 		Ele:   attributes.Physical,
 		Value: -0.2,

@@ -95,8 +95,10 @@ func (c *char) burstTicks(snap combat.Snapshot) {
 }
 
 func (c *char) burstA4Ticks() {
-	// TODO: add range check within field
 	if !c.StatusIsActive(burstKey) {
+		return
+	}
+	if !combat.TargetIsWithinArea(c.Core.Combat.Player(), combat.NewCircleHitOnTarget(c.burstPos, nil, 6)) {
 		return
 	}
 	c.Core.Player.ActiveChar().AddStatus(a4Key, 60, true)

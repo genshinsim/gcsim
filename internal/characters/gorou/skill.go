@@ -50,10 +50,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		snap := c.Snapshot(&ai)
 		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 1.56
 
+		c.eFieldArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 8)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 5),
+			combat.NewCircleHitOnTarget(c.eFieldArea.Shape.Pos(), nil, 5),
 			0,
 		)
 
@@ -98,10 +99,17 @@ func (c *char) gorouSkillBuffField(src int) func() {
 			return
 		}
 		//do nothing if both field expired
-		if c.Core.Status.Duration(generalWarBannerKey) == 0 && c.Core.Status.Duration(generalGloryKey) == 0 {
+		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
+		qActive := c.Core.Status.Duration(generalGloryKey) > 0
+		if !eActive && !qActive {
 			return
 		}
-		//do nothing if expired
+		// do nothing if only e is up and player is outside of the field area
+		// if q is up then the player is always inside of the field area
+		if eActive && !qActive && !combat.TargetIsWithinArea(c.Core.Combat.Player(), c.eFieldArea) {
+			return
+		}
+
 		//add buff to active char based on number of geo chars
 		//ok to overwrite existing mod
 		active := c.Core.Player.ActiveChar()

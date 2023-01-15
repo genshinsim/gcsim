@@ -32,32 +32,28 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 	if count == 4 {
 		return nil
 	}
+	done := false
 	return func(a combat.AttackCB) {
+		// shouldn't proc more than one chain if multiple enemies are hit
+		if done {
+			return
+		}
+		done = true
+
 		//check target is an enemey
 		t, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		t.SetTag(bounceKey, c.F+36)
-		trgs := c.Combat.EnemyByDistance(a.Target.Shape().Pos(), a.Target.Key())
-		next := -1
-		for _, v := range trgs {
-			trg, ok := c.Combat.Enemy(v).(*enemy.Enemy)
-			if !ok {
-				continue
-			}
-			if trg.GetTag(bounceKey) < c.F {
-				next = v
-				break
-			}
-		}
+		t.AddStatus(bounceKey, 36, true)
 
-		if next == -1 {
+		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(t, nil, 8), nil)
+		if enemy == nil {
 			return
 		}
 
 		cb := w.chain(count+1, c, char)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(c.Combat.Enemy(next), nil, 0.6), 10, cb)
+		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
 	}
 }
 
@@ -96,7 +92,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		cb := w.chain(0, c, char)
 		w.snap = char.Snapshot(&w.ai)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewSingleTargetHit(c.Combat.DefaultTarget), 10, cb)
+
+		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
+		if enemy == nil {
+			return false
+		}
+		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
 
 		return false
 	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))

@@ -16,7 +16,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	a1Expiry int
-	c4Stacks int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -29,7 +28,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.SkillCon = 5
 
 	c.a1Expiry = -1
-	c.c4Stacks = 0
 
 	if c.Base.Cons >= 2 {
 		c.SetNumCharges(action.ActionSkill, 2)

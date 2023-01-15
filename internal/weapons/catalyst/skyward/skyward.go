@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index)
-		trg := args[0].(combat.Target)
+
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Atlas Proc",
@@ -72,8 +72,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:       atk,
 		}
 		snap := char.Snapshot(&ai)
+
 		for i := 1; i <= 6; i++ {
-			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(trg, nil, 1.2), i*(147+travel))
+			c.Tasks.Add(func() {
+				enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 15), nil)
+				if enemy == nil {
+					return
+				}
+				c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(enemy, nil, 1.2), travel)
+			}, i*147)
 		}
 		char.AddStatus(icdKey, icd, true)
 		return false

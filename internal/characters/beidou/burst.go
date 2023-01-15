@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -50,8 +49,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 	)
 
+	dur := 15 * 60
 	// beidou burst is not hitlag extendable
-	c.AddStatus(burstKey, 900, false)
+	c.AddStatus(burstKey, dur, false)
 
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -78,25 +78,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Name:       "Beidou C1",
 			HP:         .16 * c.MaxHP(),
 			Ele:        attributes.Electro,
-			Expires:    c.Core.F + 900, //15 sec
+			Expires:    c.Core.F + dur,
 		})
 	}
 
 	// apply after hitmark
 	if c.Base.Cons >= 6 {
-		c.Core.Tasks.Add(func() {
-			for _, t := range c.Core.Combat.Enemies() {
-				e, ok := t.(*enemy.Enemy)
-				if !ok {
-					continue
+		for i := 30; i <= dur; i += 30 {
+			c.Core.Tasks.Add(func() {
+				enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), nil)
+				for _, v := range enemies {
+					v.AddResistMod(combat.ResistMod{
+						Base:  modifier.NewBaseWithHitlag("beidouc6", 90),
+						Ele:   attributes.Electro,
+						Value: -0.15,
+					})
 				}
-				e.AddResistMod(enemy.ResistMod{
-					Base:  modifier.NewBaseWithHitlag("beidouc6", 900-burstHitmark),
-					Ele:   attributes.Electro,
-					Value: -0.15,
-				})
-			}
-		}, burstHitmark)
+			}, i)
+		}
 	}
 
 	c.ConsumeEnergy(6)
@@ -158,17 +157,17 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 	}
 	return func(a combat.AttackCB) {
 		//on hit figure out the next target
-		trgs := c.Core.Combat.EnemyExcl(a.Target.Key())
-		if len(trgs) == 0 {
+		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t combat.Enemy) bool {
+			return a.Target.Key() != t.Key()
+		})
+		if next == nil {
 			//do nothing if no other target other than this one
 			return
 		}
-		//otherwise pick a random one
-		next := c.Core.Rand.Intn(len(trgs))
 		//queue an attack vs next target
 		atk := *c.burstAtk
 		atk.SourceFrame = src
-		atk.Pattern = combat.NewSingleTargetHit(c.Core.Combat.Enemy(trgs[next]).Key())
+		atk.Pattern = combat.NewSingleTargetHit(next.Key())
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)

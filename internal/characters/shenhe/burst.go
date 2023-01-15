@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,9 +40,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 8)
+	burstPos := burstArea.Shape.Pos()
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 8, 120),
+		combat.NewCircleHitOnTargetFanAngle(burstPos, nil, 8, 120),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -68,7 +69,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstdot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 7)
+	ap := combat.NewCircleHitOnTarget(burstPos, nil, 7)
 
 	// DoT snapshot before A1
 	c.Core.Tasks.Add(func() {
@@ -81,41 +82,36 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstStart)
 
-	// assumes player/target is inside shenhe burst
+	buffDuration := 38
 	for i := burstStart; i < burstStart+burstDuration; i += 18 {
 		c.Core.Tasks.Add(func() {
-			buffDuration := 38
-			active := c.Core.Player.ActiveChar()
-
-			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
-				AffectedStat: attributes.CryoP,
-				Amount: func() ([]float64, bool) {
-					return c.burstBuff, true
-				},
-			})
-			if c.Base.Cons >= 2 {
-				c.c2(active, buffDuration)
-			}
-
-			for _, t := range c.Core.Combat.Enemies() {
-				// skip non-enemy targets
-				e, ok := t.(*enemy.Enemy)
-				if !ok {
-					continue
+			// a1 & c2 buff tick
+			if combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
+				active := c.Core.Player.ActiveChar()
+				active.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
+					AffectedStat: attributes.CryoP,
+					Amount: func() ([]float64, bool) {
+						return c.burstBuff, true
+					},
+				})
+				if c.Base.Cons >= 2 {
+					c.c2(active, buffDuration)
 				}
-				e.AddResistMod(enemy.ResistMod{
+			}
+			// q debuff tick
+			for _, e := range c.Core.Combat.EnemiesWithinArea(burstArea, nil) {
+				e.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-cryo", buffDuration),
 					Ele:   attributes.Cryo,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})
-				e.AddResistMod(enemy.ResistMod{
+				e.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-phys", buffDuration),
 					Ele:   attributes.Physical,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})
 			}
-
 		}, i)
 	}
 	c.SetCD(action.ActionBurst, 20*60)

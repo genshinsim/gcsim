@@ -45,6 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	maxhp := c.MaxHP()
 	heal := burstHealPer[c.TalentLvlBurst()]*maxhp + burstHealFlat[c.TalentLvlBurst()]
 
+	c.burstBuffArea = combat.NewCircleHitOnTarget(ap.Shape.Pos(), nil, 7)
 	// apparently lasts for 12.5
 	// TODO: assumes that field starts when it lands (which is dynamic ingame)
 	c.Core.Tasks.Add(func() {
@@ -53,8 +54,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		//ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
 		for i := 0; i < 6; i++ {
 			c.Core.Tasks.Add(func() {
+				// attack
 				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
-				// c.Core.Log.NewEvent("diona healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+				// heal
+				if !combat.TargetIsWithinArea(c.Core.Combat.Player(), c.burstBuffArea) {
+					return
+				}
 				c.Core.Player.Heal(player.HealInfo{
 					Caller:  c.Index,
 					Target:  c.Core.Player.Active(),

@@ -128,16 +128,13 @@ func (t *Target) SetDirection(trg combat.Point) {
 func (t *Target) SetDirectionToClosestEnemy() {
 	src := t.Pos()
 	// calculate direction towards closest enemy, or forward direction if none
-	enemies := t.Core.Combat.EnemyByDistance(src, combat.InvalidTargetKey)
-	if len(enemies) == 0 {
+	enemy := t.Core.Combat.ClosestEnemy(src)
+	if enemy == nil {
 		t.direction = combat.DefaultDirection()
 		return
 	}
-
-	enemy := t.Core.Combat.Enemy(enemies[0])
 	t.SetDirection(enemy.Pos())
 	t.Core.Combat.Log.NewEvent("set target direction to closest enemy", glog.LogDebugEvent, -1).
-		Write("enemy index", enemies[0]).
 		Write("enemy key", enemy.Key()).
 		Write("direction", t.direction)
 }

@@ -57,7 +57,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	//The shockwave triggered by Wake of Earth regenerates 5 Energy for every opponent hit.
+	// C4
+	// The shockwave triggered by Wake of Earth regenerates 5 Energy for every opponent hit.
 	// A maximum of 25 Energy can be regenerated in this manner at any one time.
 	src := c.Core.F
 	var c4cb combat.AttackCBFunc
@@ -81,30 +82,35 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	//1.1 sec duration, tick every .25
+	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
+	// 1.1 sec duration, tick every .25
 	for i := 0; i < hits; i++ {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6),
+			combat.NewCircleHitOnTarget(c.burstArea.Shape.Pos(), nil, 6),
 			burstHitmark+(i+1)*15,
 			c4cb,
 		)
 	}
 
 	c.Core.Tasks.Add(func() {
-		dur := 15 * 60
-		if c.Base.Cons == 6 {
-			dur += 300
-		}
-		c.Core.Constructs.NewNoLimitCons(c.newBarrier(dur, maxConstructCount), true)
+		// C1
+		// Party members within the radius of Wake of Earth have their CRIT Rate increased by 10% and have increased resistance against interruption.
 		if c.Base.Cons >= 1 {
 			c.Tags["wall"] = 1
 		}
-		// C1
 		if c.Base.Cons >= 1 {
 			c.Core.Tasks.Add(c.c1(1), 60) // start checking in 1s
 		}
+		// C6
+		// The barrier created by Wake of Earth lasts 5s longer.
+		// The meteorite created by Starfell Sword lasts 10s longer.
+		dur := 15 * 60
+		if c.Base.Cons >= 6 {
+			dur += 300
+		}
+		c.Core.Constructs.NewNoLimitCons(c.newBarrier(dur, maxConstructCount), true)
 	}, burstStart)
 
 	c.SetCDWithDelay(action.ActionBurst, 900, burstStart)

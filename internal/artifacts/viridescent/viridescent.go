@@ -77,7 +77,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				t.AddResistMod(enemy.ResistMod{
+				t.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag(key, 10*60),
 					Ele:   ele,
 					Value: -0.4,
@@ -121,7 +121,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag(key, 10*60),
 				Ele:   ele,
 				Value: -0.4,

@@ -43,26 +43,30 @@ func (c *char) c6Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
 	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolibri
 	c.Core.Tasks.Add(func() {
-		if c.Core.Status.Duration(burstKey) > 0 { //burst isn't expired
-			active := c.Core.Player.ActiveChar()
-			m[attributes.DendroP] = 0.12
-			if c.burstTransfig != attributes.NoElement {
-				switch c.burstTransfig {
-				case attributes.Hydro:
-					m[attributes.HydroP] = 0.12
-				case attributes.Electro:
-					m[attributes.ElectroP] = 0.12
-				case attributes.Pyro:
-					m[attributes.PyroP] = 0.12
-				}
-
-			}
-			active.AddStatMod(character.StatMod{
-				Base: modifier.NewBaseWithHitlag("dmc-c6", 60),
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-			})
+		if c.Core.Status.Duration(burstKey) <= 0 {
+			return
 		}
+		if !combat.TargetIsWithinArea(c.Core.Combat.Player(), combat.NewCircleHitOnTarget(c.burstPos, nil, c.burstRadius)) {
+			return
+		}
+		m[attributes.DendroP] = 0.12
+		if c.burstTransfig != attributes.NoElement {
+			switch c.burstTransfig {
+			case attributes.Hydro:
+				m[attributes.HydroP] = 0.12
+			case attributes.Electro:
+				m[attributes.ElectroP] = 0.12
+			case attributes.Pyro:
+				m[attributes.PyroP] = 0.12
+			}
+
+		}
+		active := c.Core.Player.ActiveChar()
+		active.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag("dmc-c6", 60),
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}, delay)
 }

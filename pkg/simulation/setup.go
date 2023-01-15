@@ -41,8 +41,10 @@ func SetupTargetsInCore(core *core.Core, p combat.Point, r float64, targets []en
 	}
 
 	//default target is closest to player?
-	trgs := core.Combat.EnemyByDistance(player.Pos(), combat.InvalidTargetKey)
-	defaultEnemy := core.Combat.Enemy(trgs[0])
+	defaultEnemy := core.Combat.ClosestEnemy(player.Pos())
+	if defaultEnemy == nil {
+		return errors.New("cannot set default target, got nil")
+	}
 	core.Combat.DefaultTarget = defaultEnemy.Key()
 
 	// initialize player direction
@@ -184,7 +186,7 @@ func SetupResonance(s *core.Core) {
 					}
 					atk := args[1].(*combat.AttackEvent)
 					if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
-						t.AddResistMod(enemy.ResistMod{
+						t.AddResistMod(combat.ResistMod{
 							Base:  modifier.NewBase("geo-res", 15*60),
 							Ele:   attributes.Geo,
 							Value: -0.2,
@@ -294,7 +296,7 @@ func SetupMisc(c *core.Core) {
 			return false
 		}
 		//add shred
-		t.AddResistMod(enemy.ResistMod{
+		t.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.4,

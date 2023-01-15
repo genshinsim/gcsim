@@ -27,27 +27,29 @@ func (c *char) c2(src int) func() {
 			return
 		}
 
-		c.Core.Log.NewEvent("kazuha-c2 ticking", glog.LogCharacterEvent, -1)
+		if combat.TargetIsWithinArea(c.Core.Combat.Player(), combat.NewCircleHitOnTarget(c.qAbsorbCheckLocation.Shape.Pos(), nil, 9)) {
+			c.Core.Log.NewEvent("kazuha-c2 ticking", glog.LogCharacterEvent, -1)
 
-		// apply C2 buff to active char for 1s
-		active := c.Core.Player.ActiveChar()
-		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
-			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return c.c2buff, true
-			},
-		})
-
-		// apply C2 buff to Kazuha (even if off-field) for 1s
-		if active.Base.Key != c.Base.Key {
-			c.AddStatMod(character.StatMod{
+			// apply C2 buff to active char for 1s
+			active := c.Core.Player.ActiveChar()
+			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
 				AffectedStat: attributes.EM,
 				Amount: func() ([]float64, bool) {
 					return c.c2buff, true
 				},
 			})
+
+			// apply C2 buff to Kazuha (even if off-field) for 1s
+			if active.Base.Key != c.Base.Key {
+				c.AddStatMod(character.StatMod{
+					Base:         modifier.NewBaseWithHitlag("kazuha-c2", 60), // 1s
+					AffectedStat: attributes.EM,
+					Amount: func() ([]float64, bool) {
+						return c.c2buff, true
+					},
+				})
+			}
 		}
 
 		// check again in 0.5s

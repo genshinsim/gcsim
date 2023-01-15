@@ -37,10 +37,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 10)
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 4.5),
+		combat.NewCircleHitOnTarget(burstArea.Shape.Pos(), nil, 4.5),
 		burstHitmark,
 	)
 
@@ -73,28 +74,31 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// first tick is at 145
 		for i := 145 - tickTaskDelay; i < 145+540-tickTaskDelay; i += 90 {
 			c.Core.Tasks.Add(func() {
-				active := c.Core.Player.ActiveChar()
-				//this is going to be a bit slow..
-				//TODO: should check in radius 10 around gadget position
-				enemies := c.Core.Combat.EnemyByDistance(combat.Point{X: 0, Y: 0}, combat.InvalidTargetKey)
-				needHeal := len(enemies) == 0 || active.HPCurrent/active.MaxHP() <= .7
-				needAttack := !needHeal
+				// look for char with lowest HP to heal
+				char := c.Core.Player.LowestHPChar()
+				hasPlayer := combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) && char.HPCurrent/char.MaxHP() <= 0.7
+
+				enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)
+				hasEnemy := enemy != nil
+
+				needAttack := !hasPlayer && hasEnemy
+				needHeal := hasPlayer
 				if c.Base.Cons >= 1 {
-					needHeal = true
 					needAttack = true
-				}
-				if needHeal {
-					c.Core.Player.Heal(player.HealInfo{
-						Caller:  c.Index,
-						Target:  c.Core.Player.Active(),
-						Message: "Muji-Muji Daruma",
-						Src:     heal,
-						Bonus:   d.Snapshot.Stats[attributes.Heal],
-					})
+					needHeal = true
 				}
 				if needAttack {
 					d.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5) // including A4
 					c.Core.QueueAttackEvent(d, 0)
+				}
+				if needHeal {
+					c.Core.Player.Heal(player.HealInfo{
+						Caller:  c.Index,
+						Target:  char.Index,
+						Message: "Muji-Muji Daruma",
+						Src:     heal,
+						Bonus:   d.Snapshot.Stats[attributes.Heal],
+					})
 				}
 			}, i)
 		}

@@ -86,21 +86,11 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       skill[c.TalentLvlSkill()],
 		}
+		ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
 
 		//TODO: snapshot?
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				nil,
-				6,
-			),
-			aimedHitmarks[skillActive],
-			aimedHitmarks[skillActive]+travel+90,
-			c.a4,
-		)
-		c.attackBuff(aimedHitmarks[skillActive] + travel + 90)
+		c.Core.QueueAttack(ai, ap, aimedHitmarks[skillActive], aimedHitmarks[skillActive]+travel+90, c.a4)
+		c.attackBuff(ap, aimedHitmarks[skillActive]+travel+90)
 
 		// Particles are emitted after the ambush thing hits
 		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmarks[skillActive]+travel+90+c.ParticleDelay)

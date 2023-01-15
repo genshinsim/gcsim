@@ -137,8 +137,9 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
-	for _, v := range c.Core.Combat.EnemiesWithinRadius(c.Core.Combat.Player().Pos(), 10) {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Enemy(v), nil, 0.2), 0, skillHoldHitmark, c1cb)
+	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
+	for _, e := range enemies {
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 0.2), 0, skillHoldHitmark, c1cb)
 	}
 
 	// count := 4

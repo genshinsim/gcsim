@@ -10,14 +10,19 @@ import (
 )
 
 type kitsune struct {
-	src     int
-	deleted bool
+	src         int
+	deleted     bool
+	kitsuneArea combat.AttackPattern
 }
 
 func (c *char) makeKitsune() {
 	k := &kitsune{}
 	k.src = c.Core.F
 	k.deleted = false
+
+	// spawn kitsune detection area on player pos
+	k.kitsuneArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, c.kitsuneDetectionRadius)
+
 	//start ticking
 	c.Core.Tasks.Add(c.kitsuneTick(k), 120-skillStart)
 	//add task to delete this one if times out (and not deleted by anything else)
@@ -148,15 +153,17 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		if c.Base.Cons >= 6 {
 			ai.IgnoreDefPercent = 0.60
 		}
-
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget()), nil, 0.5),
-			1,
-			1,
-			particlecb,
-			c4cb,
-		)
+		enemy := c.Core.Combat.RandomEnemyWithinArea(totem.kitsuneArea, nil)
+		if enemy != nil {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHitOnTarget(enemy, nil, 0.5),
+				1,
+				1,
+				particlecb,
+				c4cb,
+			)
+		}
 		// tick per ~2.9s seconds
 		c.Core.Tasks.Add(c.kitsuneTick(totem), 176)
 	}

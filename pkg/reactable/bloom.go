@@ -143,10 +143,10 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
 		ai, snap := NewHyperbloomAttack(char, s)
-		// queue dmg nearest enemy
-		enemies := s.Core.Combat.EnemyByDistance(s.Gadget.Pos(), combat.InvalidTargetKey)
-		if len(enemies) > 0 {
-			ap := combat.NewCircleHitOnTarget(s.Core.Combat.Enemy(enemies[0]), nil, 1)
+		// queue dmg nearest enemy within radius 15
+		enemy := s.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(s.Gadget, nil, 15), nil)
+		if enemy != nil {
+			ap := combat.NewCircleHitOnTarget(enemy, nil, 1)
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 
 			// also queue self damage

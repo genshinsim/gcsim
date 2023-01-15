@@ -84,23 +84,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if c.burstSrc != currSrc {
 				return
 			}
-			for id := range c.Core.Combat.EnemiesWithinRadius(gadgetPos, 6) {
-				trg, ok := c.Core.Combat.Enemy(id).(*enemy.Enemy)
-				if !ok {
-					continue
-				}
-				applyBurstShred(trg)
+			enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(gadgetPos, nil, 6), nil)
+			for _, e := range enemies {
+				applyBurstShred(e)
 			}
 		}, 43+i)
 		count += 1
 	}
 
-	field := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 40)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 40)
 	buffFunc := func() {
 		if c.burstSrc != currSrc {
 			return
 		}
-		if !combat.WillCollide(field, c.Core.Combat.Player(), 0) {
+		if !combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
 			return
 		}
 		for _, char := range c.Core.Player.Chars() {
@@ -143,15 +140,15 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 }
 
 func applyBurstShredCb(a combat.AttackCB) {
-	t, ok := a.Target.(*enemy.Enemy)
+	applyBurstShred(a.Target)
+}
+
+func applyBurstShred(trg combat.Target) {
+	t, ok := trg.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	applyBurstShred(t)
-}
-
-func applyBurstShred(trg *enemy.Enemy) {
-	trg.AddResistMod(enemy.ResistMod{
+	t.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
 		Ele:   attributes.Anemo,
 		Value: -0.3,

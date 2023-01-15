@@ -27,7 +27,7 @@ func c6cb(ele attributes.Element) func(a combat.AttackCB) {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{
+		e.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("amc-c6-"+ele.String(), 600),
 			Ele:   ele,
 			Value: -0.20,
