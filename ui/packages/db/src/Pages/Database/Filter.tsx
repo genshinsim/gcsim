@@ -1,65 +1,26 @@
 import { Collapse } from "@blueprintjs/core";
 import { useEffect, useState } from "react";
-
-const charNames = [
-  //genshin characters
-  "albedo",
-  "amber",
-  "barbara",
-  "beidou",
-  "bennett",
-  "chongyun",
-  "diluc",
-  "diona",
-  "fischl",
-  "ganyu",
-  "hutao",
-  "jean",
-  "kaeya",
-  "keqing",
-  "klee",
-  "lisa",
-  "mona",
-  "ningguang",
-  "noelle",
-  "qiqi",
-  "razor",
-  "rosaria",
-  "sucrose",
-  "tartaglia",
-  "traveler",
-  "venti",
-  "xiangling",
-  "xingqiu",
-  "xinyan",
-  "xiao",
-  "yanfei",
-  "zhongli",
-  "nahida",
-  "yelan",
-  "raiden",
-];
+import { charNames } from "../../PipelineExtract/CharacterNames.";
 
 const useTranslation = (key: string) => key;
-enum FilterValue {
+export enum FilterValue {
   "none",
   "include",
   "exclude",
 }
-export function Filter() {
+export function Filter({
+  charFilter,
+  setCharFilter,
+}: {
+  charFilter: Record<string, FilterValue>;
+  setCharFilter: (newFilter: Record<string, FilterValue>) => void;
+}) {
   const t = useTranslation;
   const [charIsOpen, setCharIsOpen] = useState(false);
-  const [charFilter, setCharFilter] = useState<Record<string, FilterValue>>(
-    //use charNames to create an object with all characters as keys and empty strings as values
-    charNames.reduce((acc, charName) => {
-      acc[charName] = FilterValue.none;
-      return acc;
-    }, {} as Record<string, FilterValue>)
-  );
 
-  useEffect(() => {
-    // console.log(charFilter);
-  }, [charFilter]);
+  //   useEffect(() => {
+  //     console.log(charFilter);
+  //   }, [charFilter]);
 
   return (
     <div className="w-96 bg-slate-800 p-4">
