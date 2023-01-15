@@ -40,6 +40,10 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// Decreasing delay due to casting midair
+	if !(c.Core.Player.LastAction.Type == action.ActionSkill) {
+		delay = 7
+	}
+
 
 	collision, ok := p["collision"]
 	if !ok {
