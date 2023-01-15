@@ -106,10 +106,7 @@ func (c *char) absorbCheckA1() func() {
 				)
 
 			}
-
-			if 4-len(c.a1ValidBuffs) >= c.a1MaxAbsorb {
-				return
-			}
+			
 		}
 		//otherwise queue up
 		// TODO: determine delay
