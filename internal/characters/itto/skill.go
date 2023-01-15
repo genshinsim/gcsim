@@ -51,6 +51,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		IsDeployable:     true,
 	}
 
+	ushiDir := c.Core.Combat.Player().Direction()
+	ushiPos := c.Core.Combat.PrimaryTarget().Pos()
+
 	// Attack
 	// Ushi callback to create construct
 	done := false
@@ -60,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		done = true
 		// spawn ushi. on-field for 6s
-		c.Core.Constructs.New(c.newUshi(6*60), true)
+		c.Core.Constructs.New(c.newUshi(6*60, ushiDir, ushiPos), true)
 
 		// Energy. 50% chance of 4 particles
 		var count float64 = 3

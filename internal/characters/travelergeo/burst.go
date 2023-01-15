@@ -34,14 +34,13 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	hits, ok := p["hits"]
 	if !ok {
-		// assume all 4 instances of shockwave dmg hit the enemy
-		hits = 4
+		hits = 4 // assume all 4 instances of shockwave dmg hit the enemy
 	}
 	maxConstructCount, ok := p["construct_limit"]
 	if !ok {
-		// assume 2 barriers for zhongli pillar tick purposes (leads to 3 resonance ticks)
-		// zhongli resonance limit is separate param on his skill (res_count)
-		maxConstructCount = 2
+		// assume all 4 walls actually spawn
+		// going lower than 4 starts not spawning walls from top left, going counterclockwise
+		maxConstructCount = 4
 	}
 
 	ai := combat.AttackInfo{
@@ -81,8 +80,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			energyCount++
 		}
 	}
-
-	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
+	player := c.Core.Combat.Player()
+	c.burstArea = combat.NewCircleHitOnTarget(player, nil, 7)
 	// 1.1 sec duration, tick every .25
 	for i := 0; i < hits; i++ {
 		c.Core.QueueAttackWithSnap(
@@ -94,6 +93,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		)
 	}
 
+	// 4 walls spawn at +-2.75, +-6.67 assuming default viewing direction
+	// spawning starts top right, and goes clockwise
+	// if you rotate (2.75, 6.67) counterclockwise until ending up with (0, x), then the angle is around 22.5
+	// this angle gets used for determining the wall's viewing direction
+	angles := []float64{22.5, 112.5, 202.5, 292.5}
+	offsets := []combat.Point{{X: 2.75, Y: 6.67}, {X: 2.75, Y: -6.67}, {X: -2.75, Y: -6.67}, {X: -2.75, Y: 6.67}}
 	c.Core.Tasks.Add(func() {
 		// C1
 		// Party members within the radius of Wake of Earth have their CRIT Rate increased by 10% and have increased resistance against interruption.
@@ -110,7 +115,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if c.Base.Cons >= 6 {
 			dur += 300
 		}
-		c.Core.Constructs.NewNoLimitCons(c.newBarrier(dur, maxConstructCount), true)
+		// spawn walls up until the specified limit is reached
+		for i := 0; i < maxConstructCount; i++ {
+			dir := combat.DegreesToDirection(angles[i]).Rotate(player.Direction())
+			pos := combat.CalcOffsetPoint(player.Pos(), offsets[i], player.Direction())
+			c.Core.Constructs.NewNoLimitCons(c.newWall(dur, dir, pos), false)
+		}
 	}, burstStart)
 
 	c.SetCDWithDelay(action.ActionBurst, 900, burstStart)
@@ -124,30 +134,34 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-type barrier struct {
+type wall struct {
 	src    int
 	expiry int
 	char   *char
-	count  int
+	dir    combat.Point
+	pos    combat.Point
 }
 
-func (c *char) newBarrier(dur, maxCount int) *barrier {
-	return &barrier{
+func (c *char) newWall(dur int, dir, pos combat.Point) *wall {
+	return &wall{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
 		char:   c,
-		count:  maxCount,
+		dir:    dir,
+		pos:    pos,
 	}
 }
 
-func (b *barrier) OnDestruct() {
-	if b.char.Base.Cons >= 1 {
-		b.char.Tags["wall"] = 0
+func (w *wall) OnDestruct() {
+	if w.char.Base.Cons >= 1 {
+		w.char.Tags["wall"] = 0
 	}
 }
 
-func (b *barrier) Key() int                         { return b.src }
-func (b *barrier) Type() construct.GeoConstructType { return construct.GeoConstructTravellerBurst }
-func (b *barrier) Expiry() int                      { return b.expiry }
-func (b *barrier) IsLimited() bool                  { return true }
-func (b *barrier) Count() int                       { return b.count }
+func (w *wall) Key() int                         { return w.src }
+func (w *wall) Type() construct.GeoConstructType { return construct.GeoConstructTravellerBurst }
+func (w *wall) Expiry() int                      { return w.expiry }
+func (w *wall) IsLimited() bool                  { return true }
+func (w *wall) Count() int                       { return 1 }
+func (w *wall) Direction() combat.Point          { return w.dir }
+func (w *wall) Pos() combat.Point                { return w.pos }

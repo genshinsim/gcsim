@@ -39,9 +39,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	// TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
-	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 10)
+
+	player := c.Core.Combat.Player()
+	skillDir := player.Direction()
 	// assuming tap e for hitbox offset
-	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 5), skillHitmark)
+	skillPos := combat.CalcOffsetPoint(c.Core.Combat.Player().Pos(), combat.Point{Y: 3}, player.Direction())
+	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
+
+	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -54,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// create a construct
 	// Construct is not fully formed until after the hit lands (exact timing unknown)
 	c.Core.Tasks.Add(func() {
-		c.Core.Constructs.New(c.newConstruct(1800), true)
+		c.Core.Constructs.New(c.newConstruct(1800, skillDir, skillPos), true)
 		c.lastConstruct = c.Core.F
 		c.skillActive = true
 		// Reset ICD after construct is created
