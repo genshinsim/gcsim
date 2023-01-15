@@ -139,15 +139,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 }
 
-func (c *char) makeParticleGenCallback() func(cb combat.AttackCB) {
-	return func(a combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) {
+func (c *char) particleGenCB(cb combat.AttackCB) {
+	if !c.StatusIsActive(skillKey) {
 			return
 		}
-		if c.StatusIsActive(particleIcdKey) {
+	if c.StatusIsActive(particleIcdKey) {
 			return
 		}
-		c.AddStatus(particleIcdKey, 120, true)
-		c.Core.QueueParticle("wanderer", 1, attributes.Anemo, c.ParticleDelay)
-	}
+	c.AddStatus(particleIcdKey, 120, true)
+	c.Core.QueueParticle("wanderer", 1, attributes.Anemo, c.ParticleDelay)
 }

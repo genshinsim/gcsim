@@ -18,31 +18,28 @@ const (
 	a1CryoKey       = "wanderer-a1-cryo"
 )
 
-func (c *char) makeA4Callback() func(cb combat.AttackCB) {
-	return func(a combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
-			return
-		}
+func (c *char) a4CB(a combat.AttackCB){
+	if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
+		return
+	}
 
-		c.AddStatus(a4IcdKey, 6, true)
+	c.AddStatus(a4IcdKey, 6, true)
 
-		if c.Core.Rand.Float64() > c.a4Prob {
-			c.a4Prob += 0.12
-			return
-		}
+	if c.Core.Rand.Float64() > c.a4Prob {
+		c.a4Prob += 0.12
+		return
+	}
 
-		c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index).
-			Write("probability", c.a4Prob)
+	c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index).
+		Write("probability", c.a4Prob)
 
-		c.a4Prob = 0.16
+	c.a4Prob = 0.16
 
-		c.AddStatus(a4Key, 20*60, true)
+	c.AddStatus(a4Key, 20*60, true)
 
-		if c.Core.Player.CurrentState() == action.DashState {
-			c.a4()
-			return
-		}
-
+	if c.Core.Player.CurrentState() == action.DashState {
+		c.a4()
+		return
 	}
 }
 
@@ -158,17 +155,15 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 	}
 }
 
-func (c *char) makeA1ElectroCallback() func(cb combat.AttackCB) {
-	return func(a combat.AttackCB) {
-		if !c.StatusIsActive(a1ElectroKey) {
+func (c *char) a1ElectroCB(cb combat.AttackCB) {
+	if !c.StatusIsActive(a1ElectroKey) {
 			return
 		}
-		if c.StatusIsActive(a1ElectroIcdKey) {
+	if c.StatusIsActive(a1ElectroIcdKey) {
 			return
 		}
-		c.AddStatus(a1ElectroIcdKey, 12, true)
-		c.AddEnergy("wanderer-a1-electro-energy", 0.8)
-	}
+	c.AddStatus(a1ElectroIcdKey, 12, true)
+	c.AddEnergy("wanderer-a1-electro-energy", 0.8)
 }
 
 func (c *char) deleteFromValidBuffs(ele attributes.Element) {
