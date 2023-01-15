@@ -3,7 +3,7 @@
     "browser": true,
     "es2021": true
   },
-  "ignorePatterns": ["**/dist/*"],
+  "ignorePatterns": ["**/dist/*", "**/protos.d.ts"],
   "extends": [
     // "prettier",
     "plugin:@typescript-eslint/recommended",
