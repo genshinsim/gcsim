@@ -143,7 +143,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 			StrikeType: combat.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
-			Mult:       mult[c.TalentLvlAttack()],
+			Mult:       skillNABonus[c.TalentLvlSkill()] * mult[c.TalentLvlAttack()],
 		}
 		radius := attackRadiusE[c.NormalCounter]
 

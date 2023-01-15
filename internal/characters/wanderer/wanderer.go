@@ -5,8 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -59,28 +57,6 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
-}
-
-func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
-	ds := c.Character.Snapshot(ai)
-
-	if ai.AttackTag == combat.AttackTagNormal && c.StatusIsActive(skillKey) {
-		c.Core.Log.NewEvent("skill NA mult applied", glog.LogCharacterEvent, c.Index).
-			Write("prev", ai.Mult).
-			Write("next", skillNABonus[c.TalentLvlSkill()]*ai.Mult).
-			Write("char", c.Index)
-		ai.Mult = skillNABonus[c.TalentLvlSkill()] * ai.Mult
-	}
-
-	if ai.AttackTag == combat.AttackTagExtra && c.StatusIsActive(skillKey) {
-		c.Core.Log.NewEvent("skill CA mult applied", glog.LogCharacterEvent, c.Index).
-			Write("prev", ai.Mult).
-			Write("next", skillCABonus[c.TalentLvlSkill()]*ai.Mult).
-			Write("char", c.Index)
-		ai.Mult = skillCABonus[c.TalentLvlSkill()] * ai.Mult
-	}
-
-	return ds
 }
 
 // Overwriting of remaining actions to account for falling state
