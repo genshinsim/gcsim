@@ -46,7 +46,7 @@ func (c *char) Init() error {
 
 	c.a1MaxAbsorb = 2
 	if c.Base.Cons >= 4 {
-		c.a1MaxAbsorb = 3
+		c.a1MaxAbsorb = 1
 	}
 
 	return nil
