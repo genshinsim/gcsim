@@ -13,7 +13,7 @@ export function ListView(props: ListViewProps) {
   const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
   React.useEffect(() => {
-    const url = `https://simimpact.app/api/db?q=${encodeURIComponent(
+    const url = `/api/db?q=${encodeURIComponent(
       JSON.stringify(props.query)
     )}`;
     fetch(url)

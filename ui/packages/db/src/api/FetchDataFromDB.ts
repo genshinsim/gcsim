@@ -9,7 +9,7 @@ export const fetchDataFromDB = async (
 ) => {
   try {
     const response = await axios.get(
-      "https://simimpact.app/api/db" + urlParams
+      "/api/db" + urlParams
     );
 
     setData(response.data);
