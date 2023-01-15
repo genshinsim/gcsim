@@ -25,7 +25,7 @@ func init() {
 	burstFramesE[action.ActionCharge] = 119
 	burstFramesE[action.ActionDash] = 119
 	burstFramesE[action.ActionJump] = 119
-	burstFramesE[action.ActionWalk] = 116
+	burstFramesE[action.ActionWalk] = 117
 
 }
 
