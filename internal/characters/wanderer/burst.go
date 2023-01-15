@@ -97,7 +97,7 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.Tasks.Add(c.c2, 0)
+	c.c2()
 
 	for i := 0; i < 5; i++ {
 		progress := i
