@@ -40,7 +40,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		return c.WindfavoredChargeAttack(p)
 	}
 
-	windup := c.chargeWindupNormal()
+	windup := c.chargeWindupNormal() + delay
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -56,16 +56,16 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2.5),
-		delay+windup+chargeHitmarkNormal, delay+windup+chargeHitmarkNormal,
+		windup+chargeHitmarkNormal, windup+chargeHitmarkNormal,
 		c.makeA4Callback(),
 		c.makeParticleGenCallback())
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return delay + windup +
+			return windup +
 				frames.AtkSpdAdjust(chargeFramesNormal[next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + windup + chargeFramesNormal[action.InvalidAction],
-		CanQueueAfter:   delay + windup + chargeFramesNormal[action.ActionDash],
+		AnimationLength: windup + chargeFramesNormal[action.InvalidAction],
+		CanQueueAfter:   windup + chargeFramesNormal[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}
 }
