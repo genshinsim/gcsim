@@ -64,7 +64,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for i := 0; i < 5; i++ {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
-			burstSnapshotDelay, burstHitmark+i*burstHitmarkDelay)
+			delay + burstSnapshotDelay, delay + burstHitmark+i*burstHitmarkDelay)
 	}
 
 	//TODO: Check CD with or without delay, check energy consume frame
