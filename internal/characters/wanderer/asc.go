@@ -77,47 +77,37 @@ func (c *char) a4() bool {
 	return false
 }
 
-func (c *char) absorbCheckA1() func() {
-	return func() {
-
-		if len(c.a1ValidBuffs) <= c.a1MaxAbsorb {
+func (c *char) absorbCheckA1() {
+	if len(c.a1ValidBuffs) <= c.a1MaxAbsorb {
 			return
-		}
-
-		a1AbsorbCheckLocation := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
-
-		absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
-
-		if absorbCheck != attributes.NoElement {
-
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-				"wanderer a1 absorbed ", absorbCheck.String(),
-			)
-			c.deleteFromValidBuffs(absorbCheck)
-
-			c.addA1Buff(absorbCheck)
-
-			if c.Base.Cons >= 4 && len(c.a1ValidBuffs) == 3 {
-
-				chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
-				c.addA1Buff(chosenElement)
-				c.deleteFromValidBuffs(chosenElement)
-				c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-					"wanderer c4 applied a1 ", chosenElement.String(),
-				)
-
-			}
-
-		}
-		//otherwise queue up
-
-		delay := 6
-
-		if c.skydwellerPoints*6 > delay {
-			c.Core.Tasks.Add(c.absorbCheckA1(), delay)
-		}
-
 	}
+
+	a1AbsorbCheckLocation := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
+	absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
+
+	if absorbCheck != attributes.NoElement {
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+			"wanderer a1 absorbed ", absorbCheck.String(),
+		)
+		c.deleteFromValidBuffs(absorbCheck)
+		c.addA1Buff(absorbCheck)
+		if c.Base.Cons >= 4 && len(c.a1ValidBuffs) == 3 {
+			chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
+			c.addA1Buff(chosenElement)
+			c.deleteFromValidBuffs(chosenElement)
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+				"wanderer c4 applied a1 ", chosenElement.String(),
+			)
+		}
+	}
+
+	//otherwise queue up
+	delay := 6
+	if c.skydwellerPoints*6 > delay {
+		c.Core.Tasks.Add(c.absorbCheckA1, delay)
+	}
+
+
 }
 
 // Buffs, need to be manually removed when state is ending
