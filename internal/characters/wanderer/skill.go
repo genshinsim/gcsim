@@ -33,7 +33,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	c.maxSkydwellerPoints = 100
 	c.c6Count = 0
 
-	c.Core.Tasks.Add(c.depleteSkydwellerPoints(), 6)
+	c.Core.Tasks.Add(c.depleteSkydwellerPoints, 6)
 
 	// Initial Skill Damage
 	ai := combat.AttackInfo{
@@ -122,12 +122,10 @@ func (c *char) skillEndRoutine() int {
 	return 26
 }
 
-func (c *char) depleteSkydwellerPoints() func() {
-	return func() {
-		if c.StatusIsActive(skillKey) {
-			c.skydwellerPoints -= 1
-			c.Core.Tasks.Add(c.depleteSkydwellerPoints(), 6)
-		}
+func (c *char) depleteSkydwellerPoints() {
+	if c.StatusIsActive(skillKey) {
+		c.skydwellerPoints -= 1
+		c.Core.Tasks.Add(c.depleteSkydwellerPoints, 6)
 	}
 }
 
