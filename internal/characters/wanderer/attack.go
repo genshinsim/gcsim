@@ -14,7 +14,6 @@ var (
 	attackFramesE       [][]int
 	attackReleaseNormal = [][]int{{11}, {6}, {32, 41}}
 	attackReleaseE      = [][]int{{15}, {3}, {32, 40}}
-	attackRadiusNormal  = []float64{1, 1, 1}
 	attackRadiusE       = []float64{2.5, 2.5, 3}
 )
 
@@ -94,7 +93,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
 		}
-		radius := attackRadiusNormal[c.NormalCounter]
 
 		travel, ok := p["travel"]
 		if !ok {
@@ -105,7 +103,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, radius),
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
 			release,
 			release+travel,
 			c.makeA4Callback(),
