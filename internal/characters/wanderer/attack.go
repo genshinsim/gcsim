@@ -77,7 +77,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		return c.WindfavoredAttack(p)
 	}
 
-	windup := c.attackWindupNormal()
+	windup := c.attackWindupNormal() + delay
 
 	currentNormalCounter := c.NormalCounter
 
@@ -99,7 +99,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Mult:       mult[c.TalentLvlAttack()],
 		}
 
-		release := delay + windup + attackReleaseNormal[c.NormalCounter][i]
+		release := windup + attackReleaseNormal[c.NormalCounter][i]
 
 		c.Core.QueueAttack(
 			ai,
@@ -116,11 +116,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
-			return delay + windup +
+			return windup +
 				frames.AtkSpdAdjust(attackFramesNormal[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
 		},
-		AnimationLength: delay + windup + attackFramesNormal[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   delay + windup + attackReleaseNormal[c.NormalCounter][len(attackReleaseNormal[c.NormalCounter])-1],
+		AnimationLength: windup + attackFramesNormal[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   windup + attackReleaseNormal[c.NormalCounter][len(attackReleaseNormal[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 
