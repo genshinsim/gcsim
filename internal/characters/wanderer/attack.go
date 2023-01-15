@@ -127,6 +127,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
+	// TODO: E can expire during N3, not implemented yet
+
 	windup := c.attackWindupE()
 
 	currentNormalCounter := c.NormalCounter

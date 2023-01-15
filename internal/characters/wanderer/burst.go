@@ -67,8 +67,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			delay + burstSnapshotDelay, delay + burstHitmark+i*burstHitmarkDelay)
 	}
 
-	//TODO: Check CD with or without delay, check energy consume frame
-
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 

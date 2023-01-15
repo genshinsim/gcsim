@@ -113,7 +113,6 @@ func (c *char) absorbCheckA1() func() {
 
 		}
 		//otherwise queue up
-		// TODO: determine delay
 
 		delay := 6
 
