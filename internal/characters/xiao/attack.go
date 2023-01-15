@@ -14,7 +14,6 @@ var (
 	attackHitmarks        = [][]int{{4, 17}, {15}, {15}, {14, 31}, {16}, {39}}
 	attackHitlagHaltFrame = [][]float64{{0, 0.01}, {0.01}, {0.01}, {0.02, 0.02}, {0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{false, true}, {true}, {true}, {false, true}, {true}, {true}}
-	attackRadius          = [][][]float64{{{1.8, 1.52}, {1.6}, {1.6}, {1.6, 1.8}, {1.68}, {2}}, {{2, 1.7}, {1.8}, {1.8}, {1.8, 2}, {1.81}, {2.4}}}
 	attackStrikeTypes     = [][]combat.StrikeType{
 		{combat.StrikeTypeSlash, combat.StrikeTypeSpear},
 		{combat.StrikeTypeSlash},
@@ -23,6 +22,33 @@ var (
 		{combat.StrikeTypeSpear},
 		{combat.StrikeTypeSlash},
 	}
+	attackHitboxes = [][][][]float64{
+		{
+			{{1.8}, {1.4, 2.7}},
+			{{1.6}},
+			{{1.6}},
+			{{1.6}, {1.8}},
+			{{1.5, 3}},
+			{{2}},
+		},
+		{
+			{{2}, {1.6, 3}},
+			{{1.8}},
+			{{1.8}},
+			{{1.8}, {2}},
+			{{1.7, 3.2}},
+			{{2.4}},
+		},
+	}
+	attackOffsets = [][][]float64{
+		{{0, -0.1}, {0, 0}},
+		{{0, 1}},
+		{{0, 1.1}},
+		{{-0.1, 0.9}, {0, 0.8}},
+		{{0, 0}},
+		{{0, 1.1}},
+	}
+	attackFanAngles = [][]float64{{150, 360}, {300}, {300}, {320, 320}, {360}, {360}}
 )
 
 const normalHitNum = 6
@@ -72,14 +98,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.StatusIsActive(burstBuffKey) {
 			burstIndex = 1
 		}
-		radius := attackRadius[burstIndex][c.NormalCounter][i]
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), radius),
-				0,
-				0,
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			attackHitboxes[burstIndex][c.NormalCounter][i][0],
+			attackFanAngles[c.NormalCounter][i],
+		)
+		if (c.NormalCounter == 0 && i == 1) || c.NormalCounter == 4 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+				attackHitboxes[burstIndex][c.NormalCounter][i][0],
+				attackHitboxes[burstIndex][c.NormalCounter][i][1],
 			)
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

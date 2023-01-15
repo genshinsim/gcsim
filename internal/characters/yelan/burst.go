@@ -41,7 +41,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//triggered on normal attack or yelan's skill
 
 	//Initial hit
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{X: -1.5, Y: -1.7}, 6),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	//TODO: check if we need to add f to this
 	c.Core.Tasks.Add(func() {
@@ -81,13 +86,33 @@ func (c *char) summonExquisiteThrow() {
 	}
 	for i := 0; i < 3; i++ {
 		//TODO: probably snapshots before hitmark
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), burstDiceHitmarks[i], burstDiceHitmarks[i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.5,
+			),
+			burstDiceHitmarks[i],
+			burstDiceHitmarks[i],
+		)
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
 		ai.Abil = "Yelan C2 Proc"
 		ai.FlatDmg = 14.0 / 100 * c.MaxHP()
 		c.c2icd = c.Core.F + 1.8*60
 		//TODO: frames timing on this?
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), burstDiceHitmarks[3], burstDiceHitmarks[3])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.5,
+			),
+			burstDiceHitmarks[3],
+			burstDiceHitmarks[3],
+		)
 	}
 }

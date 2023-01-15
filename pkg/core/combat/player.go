@@ -9,6 +9,6 @@ func (h *Handler) Player() Target {
 	return h.player
 }
 
-func (h *Handler) SetPlayerPos(x, y float64) {
-	h.player.SetPos(x, y)
+func (h *Handler) SetPlayerPos(p Point) {
+	h.player.SetPos(p)
 }

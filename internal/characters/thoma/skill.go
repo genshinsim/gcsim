@@ -53,7 +53,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// damage component not final
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 3),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), combat.Point{Y: 1}, 3, 270),
 		skillHitmark,
 		skillHitmark,
 	)

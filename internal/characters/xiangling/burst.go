@@ -38,7 +38,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		radius := burstRadius[i]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(initialHit, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
+			c.Core.QueueAttack(initialHit, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), 0, 0)
 		}, burstHitmarks[i])
 	}
 
@@ -66,8 +66,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			max = 14 * 60
 		}
 		c.Core.Status.Add("xianglingburst", max)
+		snap := c.Snapshot(&burstHit)
 		for delay := 0; delay <= max; delay += 73 { //first hit on same frame as 3rd initial hit
-			c.Core.QueueAttack(burstHit, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 0, delay)
+			// TODO: proper hitbox
+			c.Core.Tasks.Add(func() {
+				c.Core.QueueAttackWithSnap(
+					burstHit,
+					snap,
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
+					0,
+				)
+			}, delay)
 		}
 		//add an effect starting at frame 55 to end of duration to increase pyro dmg by 15% if c6
 		if c.Base.Cons >= 6 {

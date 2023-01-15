@@ -72,8 +72,14 @@ func (c *char) c6() {
 			CanBeDefenseHalted: false,
 			IsDeployable:       true,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5.32), 20, 20)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5.32), 22, 22)
+		for i := 0; i < 2; i++ {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 8, 7),
+				20+i*2,
+				20+i*2,
+			)
+		}
 
 		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
 		c.c6ready = false

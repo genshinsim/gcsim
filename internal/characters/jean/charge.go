@@ -33,7 +33,17 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.8), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{Y: 1},
+			1.8,
+			160,
+		),
+		chargeHitmark,
+		chargeHitmark,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

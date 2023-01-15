@@ -63,7 +63,7 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
+	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
 	pattern.SkipTargets[combat.TargettableEnemy] = true
 
 	// check the cryo attaches
@@ -145,7 +145,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
+	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
 	pattern.SkipTargets[combat.TargettableEnemy] = true
 
 	// check the cryo attaches
@@ -261,7 +261,7 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
+	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
 	pattern.SkipTargets[combat.TargettableEnemy] = true
 
 	// check the cryo attaches

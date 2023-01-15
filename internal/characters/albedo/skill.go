@@ -39,7 +39,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	// TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), skillHitmark)
+	// assuming tap e for hitbox offset
+	c.Core.QueueAttackWithSnap(
+		ai,
+		c.bloomSnapshot,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 5),
+		skillHitmark,
+	)
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
@@ -78,6 +84,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		trg := args[0].(combat.Target)
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.skillActive {
@@ -100,7 +107,7 @@ func (c *char) skillHook() {
 		c.Core.QueueAttackWithSnap(
 			c.skillAttackInfo,
 			c.skillSnapshot,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 3.4),
+			combat.NewCircleHitOnTarget(trg, nil, 3.4),
 			1,
 		)
 

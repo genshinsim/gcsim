@@ -32,7 +32,18 @@ func (c *char) c6() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// C4 uses Oz Snapshot
-		c.Core.QueueAttackWithSnap(ai, c.ozSnapshot.Snapshot, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), c.ozTravel)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			c.ozSnapshot.Snapshot,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				combat.Point{Y: -1},
+				0.1,
+				1,
+			),
+			c.ozTravel,
+		)
 		return false
 	}, "fischl-c6")
 }

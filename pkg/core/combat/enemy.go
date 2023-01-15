@@ -1,7 +1,6 @@
 package combat
 
 import (
-	"math"
 	"sort"
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -15,15 +14,15 @@ func (h *Handler) Enemy(i int) Target {
 	return h.enemies[i]
 }
 
-func (h *Handler) SetEnemyPos(i int, x, y float64) bool {
+func (h *Handler) SetEnemyPos(i int, p Point) bool {
 	if i < 0 || i > len(h.enemies)-1 {
 		return false
 	}
-	h.enemies[i].SetPos(x, y)
+	h.enemies[i].SetPos(p)
 	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
 		Write("index", i).
-		Write("x", x).
-		Write("y", y)
+		Write("x", p.X).
+		Write("y", p.Y)
 	return true
 }
 
@@ -31,19 +30,6 @@ func (h *Handler) KillEnemy(i int) {
 	h.enemies[i].Kill()
 	h.Events.Emit(event.OnTargetDied, h.enemies[i], &AttackEvent{}) // TODO: it's fine?
 	h.Log.NewEvent("enemy dead", glog.LogSimEvent, -1).Write("index", i)
-	//try setting default target to a diff one if same as dead enemy
-	if h.enemies[i].Key() == h.DefaultTarget {
-		for j, v := range h.enemies {
-			if j == i {
-				continue
-			}
-			if v.IsAlive() {
-				h.DefaultTarget = v.Key()
-				h.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
-				break
-			}
-		}
-	}
 }
 
 func (h *Handler) AddEnemy(t Target) {
@@ -72,7 +58,7 @@ func (h *Handler) PrimaryTarget() Target {
 }
 
 // EnemyByDistance returns an array of indices of the enemies sorted by distance
-func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
+func (c *Handler) EnemyByDistance(p Point, excl TargetKey) []int {
 	//we dont actually need to know the exact distance. just find the lowest
 	//of x^2 + y^2 to avoid sqrt
 
@@ -85,8 +71,11 @@ func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
 		if v.Key() == excl {
 			continue
 		}
-		vx, vy := v.Shape().Pos()
-		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
+		if !v.IsAlive() {
+			continue
+		}
+		vPos := v.Shape().Pos()
+		dist := p.Sub(vPos).MagnitudeSquared()
 		tuples = append(tuples, struct {
 			ind  int
 			dist float64
@@ -107,12 +96,15 @@ func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
 }
 
 // EnemiesWithinRadius returns an array of indices of the enemies within radius r
-func (c *Handler) EnemiesWithinRadius(x, y, r float64) []int {
+func (c *Handler) EnemiesWithinRadius(p Point, r float64) []int {
 	result := make([]int, 0, len(c.enemies))
 	for i, v := range c.enemies {
-		vx, vy := v.Shape().Pos()
-		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
-		if dist > r {
+		vPos := v.Shape().Pos()
+		dist := p.Sub(vPos).MagnitudeSquared()
+		if dist > r*r {
+			continue
+		}
+		if !v.IsAlive() {
 			continue
 		}
 		result = append(result, i)
@@ -127,6 +119,9 @@ func (c *Handler) EnemyExcl(self TargetKey) []int {
 
 	for i, e := range c.enemies {
 		if e.Key() == self {
+			continue
+		}
+		if !e.IsAlive() {
 			continue
 		}
 		result = append(result, i)

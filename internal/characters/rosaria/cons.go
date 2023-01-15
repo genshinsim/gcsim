@@ -55,6 +55,9 @@ func (c *char) c1() {
 // Requires additional work and references - will leave implementation for later
 // TODO: conver this into a callback on first skill?
 func (c *char) c4(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.c4completed {
 		return
 	}

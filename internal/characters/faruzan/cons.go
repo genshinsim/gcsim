@@ -71,7 +71,7 @@ func (c *char) c6Collapse() {
 		}
 		c.AddStatus(c6ICDKey, 180, false)
 		enemy := args[0].(*enemy.Enemy)
-		c.pressurizedCollapse(enemy)
+		c.pressurizedCollapse(enemy.Pos())
 		return false
 	}, "faruzan-c6-hook")
 }

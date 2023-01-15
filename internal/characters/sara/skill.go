@@ -50,7 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
 		// TODO: not sure of snapshot? timing
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6), 50, c2Hitmark, c.a4)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), 50, c2Hitmark, c.a4)
 		c.attackBuff(c2Hitmark)
 	}
 

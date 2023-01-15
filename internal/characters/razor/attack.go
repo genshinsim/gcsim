@@ -14,7 +14,8 @@ var (
 	attackHitmarks        = []int{25, 16, 13, 38}
 	attackHitlagHaltFrame = []float64{0.1, 0.1, 0.1, 0.15}
 	attackHitlagFactor    = []float64{0.01, 0.01, 0.05, 0.01}
-	attackRadius          = []float64{2, 2.19, 2, 2}
+	attackHitboxes        = [][]float64{{2}, {3.2, 3}, {2}, {2}}
+	attackOffsets         = []float64{1, 0.5, 1, 1.8}
 )
 
 const normalHitNum = 4
@@ -43,13 +44,29 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter],
 		CanBeDefenseHalted: true,
 	}
-	radius := attackRadius[c.NormalCounter]
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		combat.Point{Y: attackOffsets[c.NormalCounter]},
+		attackHitboxes[c.NormalCounter][0],
 	)
+	if c.NormalCounter == 1 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackHitboxes[c.NormalCounter][1],
+		)
+	}
+
+	var cb combat.AttackCBFunc
+	if c.StatusIsActive(burstBuffKey) {
+		cb = c.wolfBurst(c.NormalCounter)
+	}
+	var c6cb func(a combat.AttackCB)
+	if c.Base.Cons >= 6 {
+		c6cb = c.c6cb
+	}
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], cb, c6cb)
 
 	defer c.AdvanceNormalIndex()
 

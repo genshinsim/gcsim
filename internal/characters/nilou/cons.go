@@ -92,7 +92,10 @@ func (c *char) c4cb() combat.AttackCBFunc {
 	}
 
 	done := false
-	return func(_ combat.AttackCB) {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}

@@ -42,10 +42,12 @@ func (c *char) a4() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// A4 uses Oz Snapshot
+
+		// TODO: this should target closest enemy within 15m of "elemental reaction position"
 		c.Core.QueueAttackWithSnap(
 			ai,
 			c.ozSnapshot.Snapshot,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.5),
 			3)
 		return false
 	}

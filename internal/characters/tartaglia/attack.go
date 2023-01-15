@@ -64,7 +64,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)
@@ -83,7 +89,9 @@ var (
 	meleeFrames           [][]int
 	meleeHitmarks         = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 20}}
 	meleeHitlagHaltFrames = [][]float64{{0.03}, {0.03}, {0.06}, {0.06}, {0.06}, {0.03, 0.12}}
-	meleeRadius           = [][]float64{{1.8}, {1.8}, {2.0}, {2.0}, {2.2}, {1.89, 2.2}}
+	meleeHitboxes         = [][][]float64{{{1.8}}, {{1.8}}, {{2}}, {{2}}, {{2.2}}, {{2, 3.2}, {2.2}}}
+	meleeOffsets          = [][]float64{{0.8}, {0.8}, {0.6}, {0.9}, {0.6}, {0.3, 1.5}}
+	meleeFanAngles        = []float64{300, 270, 300, 300, 360, 360}
 )
 
 func init() {
@@ -139,14 +147,25 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			Mult:               mult[c.TalentLvlSkill()],
 			HitlagHaltFrames:   meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
 		}
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{Y: meleeOffsets[c.NormalCounter][i]},
+			meleeHitboxes[c.NormalCounter][i][0],
+			meleeFanAngles[c.NormalCounter],
+		)
 		if c.NormalCounter == 5 && i == 0 {
 			ai.StrikeType = combat.StrikeTypeSpear
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: meleeOffsets[c.NormalCounter][i]},
+				meleeHitboxes[c.NormalCounter][i][0],
+				meleeHitboxes[c.NormalCounter][i][1],
+			)
 		}
-		radius := meleeRadius[c.NormalCounter][i]
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), radius),
+				ap,
 				0,
 				0,
 				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies

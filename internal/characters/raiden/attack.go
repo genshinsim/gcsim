@@ -17,7 +17,9 @@ var (
 	// same between polearm and burst attacks so just use these arrays for both
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.02}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
-	attackRadius          = []float64{1.66, 2.5, 2.19, 2.8, 3}
+	attackHitboxes        = [][]float64{{1.8, 2.8}, {2.5}, {1.8, 4}, {2.8}, {3}}
+	attackOffsets         = [][][]float64{{{0, -0.2}}, {{0, 0.5}}, {{0, -1.2}}, {{-0.5, 0.7}, {0.3, 0.7}}, {{0, 0}}}
+	attackFanAngles       = []float64{360, 270, 360, 360, 360}
 )
 
 func init() {
@@ -60,9 +62,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		ai.Mult = mult[c.TalentLvlAttack()]
-		radius := attackRadius[c.NormalCounter]
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			attackHitboxes[c.NormalCounter][0],
+			attackFanAngles[c.NormalCounter],
+		)
+		if c.NormalCounter == 0 || c.NormalCounter == 2 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
+			)
+		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
@@ -80,7 +95,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 var (
 	swordFrames   [][]int
 	swordHitmarks = [][]int{{12}, {13}, {11}, {22, 33}, {33}}
-	swordRadius   = [][]float64{{3.06}, {5.39}, {2.68}, {6.41, 4.8}, {6.15}}
+	swordHitboxes = [][][]float64{{{3.8, 4.8}}, {{9.8, 4.5}}, {{3.2, 4.3}}, {{11, 6.6}, {4.5, 8.5}}, {{11, 5.5}}}
+	swordOffsets  = [][][]float64{{{0, -0.1}}, {{1, -1}}, {{0, -0.1}}, {{1, 0}, {0.3, -1.5}}, {{0, -0.1}}}
 )
 
 func init() {
@@ -127,9 +143,14 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		if c.Base.Cons >= 2 {
 			ai.IgnoreDefPercent = .6
 		}
-		radius := swordRadius[c.NormalCounter][i]
+		ap := combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{X: swordOffsets[c.NormalCounter][i][0], Y: swordOffsets[c.NormalCounter][i][1]},
+			swordHitboxes[c.NormalCounter][i][0],
+			swordHitboxes[c.NormalCounter][i][1],
+		)
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0, c.burstRestorefunc, c.c6)
+			c.Core.QueueAttack(ai, ap, 0, 0, c.burstRestorefunc, c.c6)
 		}, swordHitmarks[c.NormalCounter][i])
 	}
 

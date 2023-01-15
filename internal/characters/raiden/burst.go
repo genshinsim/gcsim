@@ -70,7 +70,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai.Mult += resolveBaseBonus[c.TalentLvlBurst()] * c.stacksConsumed
 		c.Core.Log.NewEvent("resolve stacks", glog.LogCharacterEvent, c.Index).
 			Write("stacks", c.stacksConsumed)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 7.63), 0, 0)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 13, 8),
+			0,
+			0,
+		)
 	}, burstHitmark)
 
 	c.SetCD(action.ActionBurst, 18*60)
@@ -85,6 +90,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) burstRestorefunc(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.Core.F > c.restoreICD && c.restoreCount < 5 {
 		c.restoreCount++
 		c.restoreICD = c.Core.F + 60 // once every 1 second

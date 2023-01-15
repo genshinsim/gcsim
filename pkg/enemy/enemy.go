@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/queue"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -59,7 +60,7 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.resist = p.Resist
 	//TODO: this is kinda redundant to keep both profile and lvl/resist
 	e.prof = p
-	e.Target = target.New(core, p.Pos.X, p.Pos.Y, p.Pos.R)
+	e.Target = target.New(core, combat.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
 	e.mods = make([]modifier.Mod, 0, 10)
@@ -72,5 +73,30 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 
 func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
 
-func (t *Enemy) MaxHP() float64 { return t.maxhp }
-func (t *Enemy) HP() float64    { return t.hp }
+func (e *Enemy) MaxHP() float64 { return e.maxhp }
+func (e *Enemy) HP() float64    { return e.hp }
+func (e *Enemy) Kill() {
+	e.Alive = false
+	//try setting default target to closest enemy to player if target died
+	if e.Key() == e.Core.Combat.DefaultTarget {
+		player := e.Core.Combat.Player()
+		deadEnemyKey := e.Key()
+		enemies := e.Core.Combat.EnemyByDistance(player.Pos(), combat.InvalidTargetKey)
+		for _, v := range enemies {
+			potentialEnemy := e.Core.Combat.Enemy(v)
+			if deadEnemyKey == potentialEnemy.Key() {
+				continue
+			}
+			if potentialEnemy.IsAlive() {
+				e.Core.Combat.DefaultTarget = potentialEnemy.Key()
+				e.Core.Combat.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
+				player.SetDirection(potentialEnemy.Pos())
+				break
+			}
+		}
+	}
+}
+
+func (e *Enemy) SetDirection(trg combat.Point)                   {}
+func (e *Enemy) SetDirectionToClosestEnemy()                     {}
+func (e *Enemy) CalcTempDirection(trg combat.Point) combat.Point { return combat.DefaultDirection() }

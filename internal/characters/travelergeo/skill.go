@@ -74,7 +74,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 	// TODO: check snapshot timing
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 24, skillHitmark[short_hold])
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3),
+		24,
+		skillHitmark[short_hold],
+	)
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < 0.33 {
@@ -82,12 +87,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark[short_hold]+c.ParticleDelay)
 
+	stonePos := c.Core.Combat.PrimaryTarget().Pos()
 	c.Core.Tasks.Add(func() {
 		dur := 30 * 60
 		if c.Base.Cons >= 6 {
 			dur += 600
 		}
-		c.Core.Constructs.New(c.newStone(dur), false)
+		c.Core.Constructs.New(c.newStone(dur, stonePos), false)
 	}, skillHitmark[short_hold])
 
 	c.SetCDWithDelay(action.ActionSkill, 360, skillCDStart[short_hold])
@@ -104,13 +110,15 @@ type stone struct {
 	src    int
 	expiry int
 	char   *char
+	pos    combat.Point
 }
 
-func (c *char) newStone(dur int) *stone {
+func (c *char) newStone(dur int, pos combat.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
 		char:   c,
+		pos:    pos,
 	}
 }
 
@@ -131,7 +139,12 @@ func (s *stone) OnDestruct() {
 			CanBeDefenseHalted: true,
 			IsDeployable:       true,
 		}
-		s.char.Core.QueueAttack(ai, combat.NewCircleHit(s.char.Core.Combat.Player(), 3), 0, 0)
+		s.char.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(s.pos, nil, 3),
+			0,
+			0,
+		)
 	}
 }
 

@@ -11,8 +11,6 @@ import (
 
 var skillFrames []int
 
-const skillStart = 21
-
 func init() {
 	skillFrames = frames.InitAbilSlice(21)
 }
@@ -39,8 +37,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
+	ePos := c.Core.Combat.Player()
 	c.Core.Tasks.Add(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(ePos, nil, 3.5), 0, 0)
 		// A1:
 		// set namisen stacks to max
 		c.stacks = c.stacksMax
