@@ -110,12 +110,6 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 
-	// End Windfavored State after burst
-	// TODO: Probably redundant via ActionInfo.OnRemoved
-	c.Core.Tasks.Add(func() {
-		c.skydwellerPoints = 0
-	}, 90)
-
 	// Necessary, as transitioning into the SwapState is impossible otherwise
 	c.Core.Player.SwapCD = 26
 
