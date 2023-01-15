@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"math"
 )
 
 const (
@@ -151,7 +150,7 @@ func (c *char) addA1Buff(absorbCheck attributes.Element) {
 		})
 
 	case attributes.Electro:
-		c.AddStatus(a1ElectroKey, math.MaxInt16, true)
+		c.AddStatus(a1ElectroKey, 1200, true)
 	}
 }
 
