@@ -14,6 +14,7 @@ func init() {
 	EJumpFrames[action.ActionSkill] = 5
 	EJumpFrames[action.ActionBurst] = 5
 	EJumpFrames[action.ActionDash] = 5
+	EJumpFrames[action.ActionWalk] = 45
 }
 
 func (c *char) Jump(p map[string]int) action.ActionInfo {
