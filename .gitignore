@@ -28,3 +28,4 @@ cmd/gcsim/gcsim
 .env
 **/protos_gen
 keys.json
+/app/*
