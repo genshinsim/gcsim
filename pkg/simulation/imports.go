@@ -104,6 +104,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/travelerelectro"
 	_ "github.com/genshinsim/gcsim/internal/characters/travelergeo"
 	_ "github.com/genshinsim/gcsim/internal/characters/venti"
+	_ "github.com/genshinsim/gcsim/internal/characters/wanderer"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiao"
 	_ "github.com/genshinsim/gcsim/internal/characters/xingqiu"

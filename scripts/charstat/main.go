@@ -251,4 +251,5 @@ var CharNameToKey = map[string]string{
 	"candace":           "Candace",
 	"nilou":             "Nilou",
 	"layla":             "Layla",
+	"wanderer":          "Wanderer",
 }

@@ -299,6 +299,11 @@
   "element": "dendro",
   "weapon_class": "bow"
  },
+ "wanderer": {
+  "rarity": 5,
+  "element": "anemo",
+  "weapon_class": "catalyst"
+ },
  "venti": {
   "rarity": 5,
   "element": "anemo",
