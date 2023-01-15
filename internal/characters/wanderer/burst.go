@@ -75,26 +75,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 
-	// End Windfavored State after burst
-	// TODO: Probably redundant via ActionInfo.OnRemoved
-	c.Core.Tasks.Add(func() {
-		c.skydwellerPoints = 0
-	}, 90)
-
-	// Necessary, as transitioning into the SwapState is impossible otherwise
-	c.Core.Player.SwapCD = 26
-
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return delay + burstFramesNormal[next] },
 		AnimationLength: delay + burstFramesNormal[action.InvalidAction],
 		CanQueueAfter:   delay + burstFramesNormal[action.ActionAttack],
 		State:           action.BurstState,
-		OnRemoved: func(next action.AnimationState) {
-			c.skydwellerPoints = 0
-			if next == action.SwapState {
-				c.checkForSkillEnd()
-			}
-		},
 	}
 }
 
