@@ -27,8 +27,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
 	// Not in falling state
-	if delay == 0 || !(c.Core.Player.LastAction.Char == c.Index &&
-		c.Core.Player.LastAction.Type == action.ActionSkill && !c.StatusIsActive(skillKey)) {
+	if !c.StatusIsActive(plungeAvailableKey) {
 		c.Core.Log.NewEvent("only plunge after skill ends", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
 		return action.ActionInfo{
@@ -40,10 +39,9 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// Decreasing delay due to casting midair
-	if !(c.Core.Player.LastAction.Type == action.ActionSkill) {
+	if delay > 0 {
 		delay = 7
 	}
-
 
 	collision, ok := p["collision"]
 	if !ok {
@@ -75,6 +73,9 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeHitmark,
 		State:           action.PlungeAttackState,
+		OnRemoved: func(next action.AnimationState) {
+			c.DeleteStatus(plungeAvailableKey)
+		},
 	}
 }
 

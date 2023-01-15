@@ -12,6 +12,7 @@ import (
 const (
 	skillKey       = "windfavored-state"
 	particleIcdKey = "wanderer-particle-icd"
+	plungeAvailableKey = "wanderer-plunge-available"
 )
 
 var skillFramesNormal []int
@@ -114,6 +115,8 @@ func (c *char) skillEndRoutine() int {
 
 	// Delay due to falling
 	c.Core.Log.NewEvent("adding delay due to falling", glog.LogCharacterEvent, c.Index)
+
+	c.AddStatus(plungeAvailableKey, 26, true)
 
 	// Shorter delay for plunging is hard coded in the plunge action
 	return 26
