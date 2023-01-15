@@ -19,7 +19,6 @@ type char struct {
 	nextRegen     bool
 	burstCounter  int
 	orbitalActive bool
-	naHook        *common.NAHook
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -38,7 +37,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a4()
-	c.naHook = common.NewNAHook(c.CharWrapper, c.Core, "xingqiu burst", burstKey, 60, burstICDKey, common.Get5PercentN0Delay, c.summonSwordWave)
-	c.naHook.NAStateHook()
+	common.NewNAHook(
+		c.CharWrapper,
+		c.Core,
+		"xingqiu burst",
+		burstKey,
+		60,
+		burstICDKey,
+		common.Get5PercentN0Delay,
+		c.summonSwordWave).
+		NAStateHook()
 	return nil
 }

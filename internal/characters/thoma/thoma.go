@@ -18,7 +18,6 @@ type char struct {
 	*tmpl.Character
 	a1Stack int
 	c6buff  []float64
-	naHook  *common.NAHook
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -44,8 +43,16 @@ func (c *char) Init() error {
 		c.c6buff[attributes.DmgP] = .15
 	}
 
-	c.naHook = common.NewNAHook(c.CharWrapper, c.Core, "thoma burst", burstKey, 60, burstICDKey, common.Get5PercentN0Delay, c.summonFieryCollapse)
-	c.naHook.NAStateHook()
+	common.NewNAHook(
+		c.CharWrapper,
+		c.Core,
+		"thoma burst",
+		burstKey,
+		60,
+		burstICDKey,
+		common.Get5PercentN0Delay,
+		c.summonFieryCollapse).
+		NAStateHook()
 	return nil
 }
 

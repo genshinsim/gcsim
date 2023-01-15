@@ -28,7 +28,6 @@ type char struct {
 	c2icd   int
 	c6count int
 	c4count int //keep track of number of enemies tagged
-	naHook  *common.NAHook
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile) error {
@@ -60,7 +59,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile)
 func (c *char) Init() error {
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a1()
-	c.naHook = common.NewNAHook(c.CharWrapper, c.Core, "yelan burst", burstKey, 60, burstICDKey, common.Get0PercentN0Delay, c.summonExquisiteThrow)
-	c.naHook.NAStateHook()
+	common.NewNAHook(
+		c.CharWrapper,
+		c.Core,
+		"yelan burst",
+		burstKey,
+		60,
+		burstICDKey,
+		common.Get0PercentN0Delay,
+		c.summonExquisiteThrow).
+		NAStateHook()
 	return nil
 }
