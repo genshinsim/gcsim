@@ -106,12 +106,13 @@ func (h *Handler) PrimaryTarget() Target {
 func (c *Handler) getEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
 	var enemies []Enemy
 
+	hasFilter := filter != nil
 	for _, v := range c.enemies {
 		e, ok := v.(Enemy)
 		if !ok {
 			panic("c.enemies should contain targets that implement the Enemy interface")
 		}
-		if filter != nil && !filter(e) {
+		if hasFilter && !filter(e) {
 			continue
 		}
 		if !v.IsAlive() {
@@ -133,12 +134,13 @@ func (c *Handler) getEnemiesWithinArea(a AttackPattern, filter func(t Enemy) boo
 func (c *Handler) getEnemiesWithinAreaSorted(a AttackPattern, filter func(t Enemy) bool, skipAttackPattern bool) []enemyTuple {
 	var enemies []enemyTuple
 
+	hasFilter := filter != nil
 	for _, v := range c.enemies {
 		e, ok := v.(Enemy)
 		if !ok {
 			panic("c.enemies should contain targets that implement the Enemy interface")
 		}
-		if filter != nil && !filter(e) {
+		if hasFilter && !filter(e) {
 			continue
 		}
 		if !e.IsAlive() {
