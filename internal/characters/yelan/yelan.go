@@ -59,15 +59,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile)
 func (c *char) Init() error {
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a1()
-	common.NewNAHook(
-		c.CharWrapper,
-		c.Core,
-		"yelan burst",
-		burstKey,
-		60,
-		burstICDKey,
-		common.Get0PercentN0Delay,
-		c.summonExquisiteThrow).
-		NAStateHook()
+	(&common.NAHook{
+		C:           c.CharWrapper,
+		AbilName:    "yelan burst",
+		Core:        c.Core,
+		AbilKey:     burstKey,
+		AbilProcICD: 60,
+		AbilICDKey:  burstICDKey,
+		DelayFunc:   common.Get0PercentN0Delay,
+		SummonFunc:  c.summonExquisiteThrow,
+	}).Enable()
 	return nil
 }

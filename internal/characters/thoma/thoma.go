@@ -43,16 +43,16 @@ func (c *char) Init() error {
 		c.c6buff[attributes.DmgP] = .15
 	}
 
-	common.NewNAHook(
-		c.CharWrapper,
-		c.Core,
-		"thoma burst",
-		burstKey,
-		60,
-		burstICDKey,
-		common.Get5PercentN0Delay,
-		c.summonFieryCollapse).
-		NAStateHook()
+	(&common.NAHook{
+		C:           c.CharWrapper,
+		AbilName:    "thoma burst",
+		Core:        c.Core,
+		AbilKey:     burstKey,
+		AbilProcICD: 60,
+		AbilICDKey:  burstICDKey,
+		DelayFunc:   common.Get5PercentN0Delay,
+		SummonFunc:  c.summonFieryCollapse,
+	}).Enable()
 	return nil
 }
 

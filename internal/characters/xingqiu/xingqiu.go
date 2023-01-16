@@ -37,15 +37,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a4()
-	common.NewNAHook(
-		c.CharWrapper,
-		c.Core,
-		"xingqiu burst",
-		burstKey,
-		60,
-		burstICDKey,
-		common.Get5PercentN0Delay,
-		c.summonSwordWave).
-		NAStateHook()
+	(&common.NAHook{
+		C:           c.CharWrapper,
+		AbilName:    "xingqiu burst",
+		Core:        c.Core,
+		AbilKey:     burstKey,
+		AbilProcICD: 60,
+		AbilICDKey:  burstICDKey,
+		DelayFunc:   common.Get5PercentN0Delay,
+		SummonFunc:  c.summonSwordWave,
+	}).Enable()
 	return nil
 }
