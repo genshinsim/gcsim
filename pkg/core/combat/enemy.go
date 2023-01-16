@@ -171,14 +171,14 @@ func TargetIsWithinArea(target Target, a AttackPattern) bool {
 
 // all enemies
 
-// returns enemies within the given area, no sorting
+// returns enemies within the given area, no sorting, pass nil for no filter
 func (c *Handler) EnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
 	return c.getEnemiesWithinArea(a, filter)
 }
 
 // random enemies
 
-// returns a random enemy within the given area
+// returns a random enemy within the given area, pass nil for no filter
 func (c *Handler) RandomEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
 	enemies := c.getEnemiesWithinArea(a, filter)
 	if enemies == nil {
@@ -187,7 +187,7 @@ func (c *Handler) RandomEnemyWithinArea(a AttackPattern, filter func(t Enemy) bo
 	return enemies[c.Rand.Intn(len(enemies))]
 }
 
-// returns a list of random enemies within the given area
+// returns a list of random enemies within the given area, pass nil for no filter
 func (c *Handler) RandomEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool, maxCount int) []Enemy {
 	enemies := c.getEnemiesWithinArea(a, filter)
 	if enemies == nil {
@@ -223,7 +223,7 @@ func (c *Handler) ClosestEnemy(pos Point) Enemy {
 	return enemies[0].enemy
 }
 
-// returns the closest enemy within the given area
+// returns the closest enemy within the given area, pass nil for no filter
 func (c *Handler) ClosestEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
 	enemies := c.getEnemiesWithinAreaSorted(a, filter, false)
 	if enemies == nil {
@@ -232,7 +232,7 @@ func (c *Handler) ClosestEnemyWithinArea(a AttackPattern, filter func(t Enemy) b
 	return enemies[0].enemy
 }
 
-// returns enemies within the given area, sorted from closest to furthest
+// returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
 func (c *Handler) ClosestEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
 	enemies := c.getEnemiesWithinAreaSorted(a, filter, false)
 	if enemies == nil {
