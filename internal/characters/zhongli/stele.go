@@ -90,12 +90,12 @@ func (c *char) resonance(src int) func() {
 
 		boxOffset := combat.Point{Y: -4}
 		boxSize := 8.0
+		boxSizeSquared := boxSize * boxSize
 
 		ai := ae.Info
 		snap := ae.Snapshot
 
-		steles := c.Core.Constructs.ConstructsByType(construct.GeoConstructZhongliSkill)
-		constructs := c.Core.Constructs.Constructs() // includes steles
+		steles, others := c.Core.Constructs.ConstructsByType(construct.GeoConstructZhongliSkill)
 
 		orb := false
 		for _, s := range steles {
@@ -104,14 +104,11 @@ func (c *char) resonance(src int) func() {
 
 			// get all constructs except for the steles within radius 8 of each stele for resonance purposes
 			var resonanceConstructs []construct.Construct
-			for _, con := range constructs {
-				if con.Type() == construct.GeoConstructZhongliSkill {
+			for _, con := range others {
+				if con.Pos().Sub(stelePos).MagnitudeSquared() > boxSizeSquared {
 					continue
 				}
-				if con.Pos().Sub(stelePos).MagnitudeSquared() > 8*8 {
-					continue
-				}
-				resonanceConstructs = append(constructs, con)
+				resonanceConstructs = append(resonanceConstructs, con)
 			}
 
 			// queue stele attack

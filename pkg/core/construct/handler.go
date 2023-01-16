@@ -48,23 +48,23 @@ func (h *Handler) NewConstruct(c Construct, refresh bool, constructs *[]Construc
 		(*constructs)[ind] = nil
 		h.cleanOutNils(constructs)
 	} else {
-	//add this one to the end
+		//add this one to the end
 		(*constructs) = append((*constructs), c)
-	h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct created: ", c.Type().String()).
-		Write("key", c.Key()).
-		Write("type", c.Type())
+		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct created: ", c.Type().String()).
+			Write("key", c.Key()).
+			Write("type", c.Type())
 	}
 
 	if hasLimit {
-	//if length > 3, then destruct the beginning ones
+		//if length > 3, then destruct the beginning ones
 		for i := 0; i < len((*constructs))-3; i++ {
 			(*constructs)[i].OnDestruct()
 			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+(*constructs)[i].Type().String()).
 				Write("key", (*constructs)[i].Key()).
 				Write("type", (*constructs)[i].Type())
 			(*constructs)[i] = nil
+		}
 	}
-}
 
 	h.cleanOutNils(constructs)
 }
@@ -112,26 +112,24 @@ func (h *Handler) Tick() {
 
 }
 
-func (h *Handler) Constructs() []Construct {
-	var result []Construct
-	result = append(result, h.constructs...)
-	result = append(result, h.consNoLimit...)
-	return result
-}
-
-func (h *Handler) ConstructsByType(t GeoConstructType) []Construct {
-	var result []Construct
+func (h *Handler) ConstructsByType(t GeoConstructType) ([]Construct, []Construct) {
+	var match []Construct
+	var notMatch []Construct
 	for _, v := range h.constructs {
 		if v.Type() == t {
-			result = append(result, v)
+			match = append(match, v)
+		} else {
+			notMatch = append(notMatch, v)
 		}
 	}
 	for _, v := range h.consNoLimit {
 		if v.Type() == t {
-			result = append(result, v)
+			match = append(match, v)
+		} else {
+			notMatch = append(notMatch, v)
 		}
 	}
-	return result
+	return match, notMatch
 }
 
 // how many of the given
