@@ -103,34 +103,6 @@ func (h *Handler) PrimaryTarget() Target {
 	panic("default target does not exist?!")
 }
 
-func (c *Handler) getEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
-	var enemies []Enemy
-
-	hasFilter := filter != nil
-	for _, v := range c.enemies {
-		e, ok := v.(Enemy)
-		if !ok {
-			panic("c.enemies should contain targets that implement the Enemy interface")
-		}
-		if hasFilter && !filter(e) {
-			continue
-		}
-		if !v.IsAlive() {
-			continue
-		}
-		if !TargetIsWithinArea(e, a) {
-			continue
-		}
-		enemies = append(enemies, e)
-	}
-
-	if len(enemies) == 0 {
-		return nil
-	}
-
-	return enemies
-}
-
 func (c *Handler) getEnemiesWithinAreaSorted(a AttackPattern, filter func(t Enemy) bool, skipAttackPattern bool) []enemyTuple {
 	var enemies []enemyTuple
 
@@ -175,14 +147,38 @@ func TargetIsWithinArea(target Target, a AttackPattern) bool {
 
 // returns enemies within the given area, no sorting, pass nil for no filter
 func (c *Handler) EnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
-	return c.getEnemiesWithinArea(a, filter)
+	var enemies []Enemy
+
+	hasFilter := filter != nil
+	for _, v := range c.enemies {
+		e, ok := v.(Enemy)
+		if !ok {
+			panic("c.enemies should contain targets that implement the Enemy interface")
+		}
+		if hasFilter && !filter(e) {
+			continue
+		}
+		if !v.IsAlive() {
+			continue
+		}
+		if !TargetIsWithinArea(e, a) {
+			continue
+		}
+		enemies = append(enemies, e)
+	}
+
+	if len(enemies) == 0 {
+		return nil
+	}
+
+	return enemies
 }
 
 // random enemies
 
 // returns a random enemy within the given area, pass nil for no filter
 func (c *Handler) RandomEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
-	enemies := c.getEnemiesWithinArea(a, filter)
+	enemies := c.EnemiesWithinArea(a, filter)
 	if enemies == nil {
 		return nil
 	}
@@ -191,7 +187,7 @@ func (c *Handler) RandomEnemyWithinArea(a AttackPattern, filter func(t Enemy) bo
 
 // returns a list of random enemies within the given area, pass nil for no filter
 func (c *Handler) RandomEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool, maxCount int) []Enemy {
-	enemies := c.getEnemiesWithinArea(a, filter)
+	enemies := c.EnemiesWithinArea(a, filter)
 	if enemies == nil {
 		return nil
 	}
