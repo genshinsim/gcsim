@@ -144,10 +144,20 @@ func (h *Handler) ActiveChar() *character.CharWrapper {
 // returns the char with the lowest HP
 func (h *Handler) LowestHPChar() *character.CharWrapper {
 	result := make([]*character.CharWrapper, 0, len(h.chars))
-	result = append(result, h.chars...)
+
+	// filter out dead characters
+	for _, c := range h.chars {
+		if c.HPCurrent <= 0 {
+			continue
+		}
+		result = append(result, c)
+	}
+
+	// sort by HP
 	sort.Slice(result, func(i, j int) bool {
 		return result[i].HPCurrent < result[j].HPCurrent
 	})
+
 	return result[0]
 }
 
