@@ -16,7 +16,8 @@ var skillFrames []int
 
 const (
 	skillStart        = 14
-	paramitaBuff      = "paramita"
+	paramitaStatus    = "paramita"
+	paramitaBuff      = "paramitabuff"
 	paramitaEnergyICD = "paramita-ball-icd"
 	bbDebuff          = "blood-blossom"
 )
@@ -38,15 +39,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.ppbuff[attributes.ATK] = bonus
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(paramitaBuff, 540+skillStart),
+		Base:         modifier.NewBaseWithHitlag(paramitaBuff, -1), // The buff will last forever, until it gets removed on state change or on swap
 		AffectedStat: attributes.ATK,
 		Amount: func() ([]float64, bool) {
 			return c.ppbuff, true
 		},
 	})
-	//TODO; this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
-	c.applyA1 = true
-	c.QueueCharTask(c.a1, 540+skillStart)
+
+	c.AddStatus(paramitaStatus, 540+skillStart, true)
 
 	//remove some hp
 	c.Core.Player.Drain(player.DrainInfo{

@@ -34,7 +34,7 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
-	if c.StatModIsActive(paramitaBuff) {
+	if c.StatModIsActive(paramitaStatus) {
 		return c.ppChargeAttack(p)
 	}
 

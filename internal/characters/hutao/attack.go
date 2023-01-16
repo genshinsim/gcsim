@@ -72,7 +72,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.StatModIsActive(paramitaBuff) {
+	if c.StatModIsActive(paramitaStatus) {
 		return c.ppAttack(p)
 	}
 

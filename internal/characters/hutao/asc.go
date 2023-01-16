@@ -11,11 +11,6 @@ const (
 )
 
 func (c *char) a1() {
-	if !c.applyA1 {
-		return
-	}
-	c.applyA1 = false
-
 	for i, char := range c.Core.Player.Chars() {
 		//does not affect hutao
 		if c.Index == i {

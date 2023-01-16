@@ -19,12 +19,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1buff  []float64
-	a4buff  []float64
-	ppbuff  []float64
-	c4buff  []float64
-	c6buff  []float64
-	applyA1 bool
+	a1buff []float64
+	a4buff []float64
+	ppbuff []float64
+	c4buff []float64
+	c6buff []float64
 
 	burstHealCount  int
 	burstHealAmount player.HealInfo
@@ -44,7 +43,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.onExitField()
-
+	c.onStateChange()
 	c.a1buff = make([]float64, attributes.EndStatType)
 	c.a1buff[attributes.CR] = 0.12
 
@@ -64,18 +63,37 @@ func (c *char) Init() error {
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.StatModIsActive(paramitaBuff) {
+		if c.StatModIsActive(paramitaStatus) {
 			c.a1()
+			c.DeleteStatMod(paramitaStatus)
 			c.DeleteStatMod(paramitaBuff)
 		}
 		return false
 	}, "hutao-exit")
 }
 
+func (c *char) onStateChange() {
+	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
+		// Don't need to check for active character because the buff will be removed if Hutao swaps off
+		if c.StatusIsActive(paramitaStatus) {
+			return false
+		}
+		prev := args[0].(action.AnimationState)
+		next := args[1].(action.AnimationState)
+		if prev == action.ChargeAttackState && next == action.BurstState {
+			return false
+		}
+
+		c.DeleteStatMod(paramitaBuff)
+		c.a1()
+		return false
+	}, "hutao-state-change")
+}
+
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 1 {
+		if c.StatModIsActive(paramitaStatus) && c.Base.Cons >= 1 {
 			return 0
 		}
 		return 25
@@ -86,7 +104,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.StatModIsActive(paramitaBuff) {
+	if c.StatModIsActive(paramitaStatus) {
 		switch ai.AttackTag {
 		case combat.AttackTagNormal:
 		case combat.AttackTagExtra:
