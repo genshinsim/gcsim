@@ -17,7 +17,7 @@ const a1Key = "cyno-a1"
 // and firing off 3 Duststalker Bolts that deal 50% of Cyno's ATK as Electro DMG.
 // Duststalker Bolt DMG is considered Elemental Skill DMG.
 func (c *char) a1() {
-	if !c.StatusIsActive(burstKey) {
+	if !c.StatusIsActive(BurstKey) {
 		return
 	}
 	c.a1Extended = false

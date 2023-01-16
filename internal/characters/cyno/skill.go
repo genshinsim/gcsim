@@ -31,7 +31,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.skillB()
 	}
 
@@ -135,7 +135,7 @@ func (c *char) skillB() action.ActionInfo {
 
 	}
 	if c.burstExtension < 2 { // burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
-		c.ExtendStatus(burstKey, 240) // 4s*60
+		c.ExtendStatus(BurstKey, 240) // 4s*60
 		c.burstExtension++
 	}
 

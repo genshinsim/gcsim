@@ -99,10 +99,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
 		}
 		//TODO: icd on this??
-		if c.Core.Status.Duration(burstStatus) > 0 {
-			c.exquisiteThrowSkillProc()
-			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index).
-				Write("icd", c.burstDiceICD)
+		if c.Core.Status.Duration(burstKey) > 0 {
+			c.summonExquisiteThrow()
+			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index)
 		}
 	}
 

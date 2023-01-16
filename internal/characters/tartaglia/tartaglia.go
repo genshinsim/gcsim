@@ -15,7 +15,7 @@ const (
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
 	energyICDKey       = "riptide-energy-icd"
-	meleeKey           = "tartagliamelee"
+	MeleeKey           = "tartagliamelee"
 )
 
 func init() {

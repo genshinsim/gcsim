@@ -5,8 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var burstFrames []int
@@ -54,8 +52,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.AddStatus(burstKey, d*60, true)
 
-	c.burstProc()
-
 	// C4: restore 15 energy
 	if c.Base.Cons >= 4 {
 		c.Core.Tasks.Add(func() {
@@ -75,59 +71,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSkill],
 		State:           action.BurstState,
-	}
-}
-
-func (c *char) burstProc() {
-	// does not deactivate on death
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
-		if !c.StatusIsActive(burstKey) {
-			return false
-		}
-		next := args[1].(action.AnimationState)
-		if next != action.NormalAttackState {
-			return false
-		}
-		if c.StatusIsActive(burstICDKey) {
-			c.Core.Log.NewEvent("thoma Q (active) on icd", glog.LogCharacterEvent, c.Index).
-				Write("frame", c.Core.F)
-			return false
-		}
-		c.summonFieryCollapse()
-		c.Core.Log.NewEvent("thoma burst on state change", glog.LogCharacterEvent, c.Index).
-			Write("frame", c.Core.F).
-			Write("char", c.Core.Player.Active()).
-			Write("icd", c.StatusExpiry(burstICDKey))
-		c.burstTickSrc = c.Core.F
-		c.QueueCharTask(c.burstTickFunc(c.Core.F), 60)
-		return false
-	}, "thoma-burst-animation-check")
-}
-
-func (c *char) burstTickFunc(src int) func() {
-	return func() {
-		if !c.StatusIsActive(burstKey) {
-			return
-		}
-		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("thoma burst tick stopped, src diff", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("new src", c.burstTickSrc)
-			return
-		}
-		state := c.Core.Player.CurrentState()
-		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("thoma burst tick stopped, not normal state", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("state", state)
-			return
-		}
-		c.Core.Log.NewEvent("thoma burst triggered from tick", glog.LogCharacterEvent, c.Index).
-			Write("src", src).
-			Write("state", state).
-			Write("icd", c.StatusExpiry(burstICDKey))
-		c.summonFieryCollapse()
-		c.QueueCharTask(c.burstTickFunc(src), 60)
 	}
 }
 
@@ -161,5 +104,4 @@ func (c *char) summonFieryCollapse() {
 		11,
 		shieldCb,
 	)
-	c.AddStatus(burstICDKey, 60, true)
 }

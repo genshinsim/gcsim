@@ -20,7 +20,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.chargeB(p)
 	}
 

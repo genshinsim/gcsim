@@ -57,7 +57,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) AdvanceNormalIndex() {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		c.normalBCounter++
 		if c.normalBCounter == burstHitNum {
 			c.normalBCounter = 0
@@ -76,7 +76,7 @@ func (c *char) ResetNormalCounter() {
 }
 
 func (c *char) NextNormalCounter() int {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.normalBCounter + 1
 	}
 	return c.NormalCounter + 1

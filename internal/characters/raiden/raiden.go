@@ -53,7 +53,7 @@ func (c *char) Init() error {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.StatusIsActive(burstKey) {
+		if c.StatusIsActive(BurstKey) {
 			return 20
 		}
 		return 25
