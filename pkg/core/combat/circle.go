@@ -58,11 +58,10 @@ func (c *Circle) String() string {
 }
 
 func calcSegments(center Point, r float64, dir Point, fanAngle float64) []Point {
-	fanAngleRadian := fanAngle * math.Pi / 180
 	// assume circle center is origin at first to do the rotation stuff
 	segmentStart := Point{X: 0, Y: r}.Rotate(dir)
-	segmentLeft := segmentStart.Rotate(Point{X: math.Sin(-fanAngleRadian / 2), Y: math.Cos(-fanAngleRadian / 2)})
-	segmentRight := segmentStart.Rotate(Point{X: math.Sin(fanAngleRadian / 2), Y: math.Cos(fanAngleRadian / 2)})
+	segmentLeft := segmentStart.Rotate(DegreesToDirection(-fanAngle / 2))
+	segmentRight := segmentStart.Rotate(DegreesToDirection(fanAngle / 2))
 	// save segment points (the circle center and segment point make up a line segment)
 	// need to move segment to where the actual circle center is
 	return []Point{segmentLeft.Add(center), segmentRight.Add(center)}
