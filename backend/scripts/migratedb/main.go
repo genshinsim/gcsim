@@ -62,11 +62,6 @@ func main() {
 }
 
 func handleEntry(v entry) error {
-	defer func() {
-		if err := recover(); err != nil {
-			log.Println("panic occurred:", err)
-		}
-	}()
 	start := time.Now()
 	log.Printf("Recomputing %v\n", v.Key)
 	e, err := parseAndComputeEntry(v)
@@ -97,7 +92,7 @@ func getJson(url string, target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
-func parseAndComputeEntry(e entry) (*model.DBEntry, error) {
+func parseAndComputeEntry(e entry) (m *model.DBEntry, err error) {
 	z, err := base64.StdEncoding.DecodeString(e.ConfigHash)
 	if err != nil {
 		return nil, err
@@ -126,5 +121,7 @@ func parseAndComputeEntry(e entry) (*model.DBEntry, error) {
 		return nil, err
 	}
 
-	return summary.ToPBDBEntry(), nil
+	m = summary.ToPBDBEntry()
+
+	return
 }
