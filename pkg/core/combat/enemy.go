@@ -103,38 +103,6 @@ func (h *Handler) PrimaryTarget() Target {
 	panic("default target does not exist?!")
 }
 
-func (c *Handler) getEnemiesWithinAreaSorted(a AttackPattern, filter func(t Enemy) bool, skipAttackPattern bool) []enemyTuple {
-	var enemies []enemyTuple
-
-	hasFilter := filter != nil
-	for _, v := range c.enemies {
-		e, ok := v.(Enemy)
-		if !ok {
-			panic("c.enemies should contain targets that implement the Enemy interface")
-		}
-		if hasFilter && !filter(e) {
-			continue
-		}
-		if !e.IsAlive() {
-			continue
-		}
-		if !skipAttackPattern && !TargetIsWithinArea(e, a) {
-			continue
-		}
-		enemies = append(enemies, enemyTuple{enemy: e, dist: a.Shape.Pos().Sub(e.Pos()).MagnitudeSquared()})
-	}
-
-	if len(enemies) == 0 {
-		return nil
-	}
-
-	sort.Slice(enemies, func(i, j int) bool {
-		return enemies[i].dist < enemies[j].dist
-	})
-
-	return enemies
-}
-
 // area check
 
 // checks whether the given target is within the given area
@@ -211,6 +179,38 @@ func (c *Handler) RandomEnemiesWithinArea(a AttackPattern, filter func(t Enemy) 
 }
 
 // closest enemies
+
+func (c *Handler) getEnemiesWithinAreaSorted(a AttackPattern, filter func(t Enemy) bool, skipAttackPattern bool) []enemyTuple {
+	var enemies []enemyTuple
+
+	hasFilter := filter != nil
+	for _, v := range c.enemies {
+		e, ok := v.(Enemy)
+		if !ok {
+			panic("c.enemies should contain targets that implement the Enemy interface")
+		}
+		if hasFilter && !filter(e) {
+			continue
+		}
+		if !e.IsAlive() {
+			continue
+		}
+		if !skipAttackPattern && !TargetIsWithinArea(e, a) {
+			continue
+		}
+		enemies = append(enemies, enemyTuple{enemy: e, dist: a.Shape.Pos().Sub(e.Pos()).MagnitudeSquared()})
+	}
+
+	if len(enemies) == 0 {
+		return nil
+	}
+
+	sort.Slice(enemies, func(i, j int) bool {
+		return enemies[i].dist < enemies[j].dist
+	})
+
+	return enemies
+}
 
 // returns the closest enemy to the given position without any range restrictions; SHOULD NOT be used outside of pkg
 func (c *Handler) ClosestEnemy(pos Point) Enemy {
