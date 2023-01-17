@@ -7,6 +7,7 @@ import (
 
 type Shape interface {
 	positional
+	PointInShape(p Point) bool
 	IntersectCircle(c Circle) bool
 	IntersectRectangle(r Rectangle) bool
 	String() string
@@ -18,6 +19,15 @@ type positional interface {
 
 func DefaultDirection() Point {
 	return Point{X: 0, Y: 1}
+}
+
+// converts the given angle in degrees into a direction vector; + means clockwise
+func DegreesToDirection(angle float64) Point {
+	radians := angle * math.Pi / 180
+	return Point{
+		X: math.Sin(radians),
+		Y: math.Cos(radians),
+	}
 }
 
 // dir needs to be magnitude of 1 if passing custom dir;

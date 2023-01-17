@@ -1,6 +1,8 @@
 package combat
 
-import "github.com/genshinsim/gcsim/pkg/core/attributes"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+)
 
 type TargetKey int
 
@@ -14,9 +16,13 @@ type Target interface {
 	Pos() Point            // center of target
 	SetPos(p Point)        // move target
 	IsAlive() bool
+	SetTag(key string, val int)
+	GetTag(key string) int
+	RemoveTag(key string)
 	HandleAttack(*AttackEvent) float64
-	AttackWillLand(a AttackPattern) (bool, string)
-	Tick() // called every tick
+	AttackWillLand(a AttackPattern) (bool, string) // hurtbox collides with AttackPattern
+	IsWithinArea(a AttackPattern) bool             // center is in AttackPattern
+	Tick()                                         // called every tick
 	Kill()
 	// for collision check
 	CollidableWith(TargettableType) bool

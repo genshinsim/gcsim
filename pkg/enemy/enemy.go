@@ -35,11 +35,11 @@ type Enemy struct {
 	*target.Target
 	*reactable.Reactable
 
-	Level  int
-	resist map[attributes.Element]float64
-	prof   EnemyProfile
-	hp     float64
-	maxhp  float64
+	Level   int
+	resists map[attributes.Element]float64
+	prof    EnemyProfile
+	hp      float64
+	maxhp   float64
 
 	damageTaken      float64
 	lastParticleDrop int
@@ -57,7 +57,7 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e := &Enemy{}
 	e.Level = p.Level
 	//TODO: do we need to clone this map isntead?
-	e.resist = p.Resist
+	e.resists = p.Resist
 	//TODO: this is kinda redundant to keep both profile and lvl/resist
 	e.prof = p
 	e.Target = target.New(core, combat.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
@@ -77,23 +77,17 @@ func (e *Enemy) MaxHP() float64 { return e.maxhp }
 func (e *Enemy) HP() float64    { return e.hp }
 func (e *Enemy) Kill() {
 	e.Alive = false
-	//try setting default target to closest enemy to player if target died
 	if e.Key() == e.Core.Combat.DefaultTarget {
 		player := e.Core.Combat.Player()
-		deadEnemyKey := e.Key()
-		enemies := e.Core.Combat.EnemyByDistance(player.Pos(), combat.InvalidTargetKey)
-		for _, v := range enemies {
-			potentialEnemy := e.Core.Combat.Enemy(v)
-			if deadEnemyKey == potentialEnemy.Key() {
-				continue
-			}
-			if potentialEnemy.IsAlive() {
-				e.Core.Combat.DefaultTarget = potentialEnemy.Key()
-				e.Core.Combat.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
-				player.SetDirection(potentialEnemy.Pos())
-				break
-			}
+		// try setting default target to closest enemy to player if target died
+		enemy := e.Core.Combat.ClosestEnemy(player.Pos())
+		if enemy == nil {
+			// all enemies dead, do nothing for now
+			return
 		}
+		e.Core.Combat.DefaultTarget = enemy.Key()
+		e.Core.Combat.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
+		player.SetDirection(enemy.Pos())
 	}
 }
 

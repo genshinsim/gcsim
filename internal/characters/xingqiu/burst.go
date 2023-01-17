@@ -119,7 +119,7 @@ func (c *char) summonSwordWave() {
 
 			icd = c.Core.F + 1
 			c.Core.Tasks.Add(func() {
-				e.AddResistMod(enemy.ResistMod{
+				e.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("xingqiu-c2", 4*60),
 					Ele:   attributes.Hydro,
 					Value: -0.15,

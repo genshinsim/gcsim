@@ -49,8 +49,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	var a action.ActionInfo
 
-	// TODO: assumes that Diona is always inside Q radius
-	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 {
+	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 && c.Core.Combat.Player().IsWithinArea(c.burstBuffArea) {
 		a = action.ActionInfo{
 			Frames:          frames.NewAbilFunc(aimedC4Frames),
 			AnimationLength: aimedC4Frames[action.InvalidAction],

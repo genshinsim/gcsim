@@ -42,18 +42,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
-			nil,
-			6,
-		),
-		skillRelease,
-		skillRelease+travel,
-	)
+	c.skillArea = combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
+	c.Core.QueueAttack(ai, c.skillArea, skillRelease, skillRelease+travel)
 
 	var count float64 = 3
 	if c.Core.Rand.Float64() < 0.5 {

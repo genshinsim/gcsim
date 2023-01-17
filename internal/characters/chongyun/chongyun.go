@@ -15,8 +15,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	fieldSrc int
-	a4Snap   *combat.AttackEvent
+	skillArea combat.AttackPattern
+	fieldSrc  int
+	a4Snap    *combat.AttackEvent
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

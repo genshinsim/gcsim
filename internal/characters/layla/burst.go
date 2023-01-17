@@ -1,8 +1,6 @@
 package layla
 
 import (
-	"sort"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -49,15 +47,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Status.Add("laylaburst", 12*60+burstStart)
 
 	player := c.Core.Combat.Player()
-	burstPos := combat.CalcOffsetPoint(player.Pos(), combat.Point{Y: 1}, player.Direction()) // burst pos
+	burstArea := combat.NewCircleHitOnTarget(player, combat.Point{Y: 1}, 12)
 	for delay := burstStart; delay < 12*60+burstStart; delay += 90 {
 		c.Core.Tasks.Add(func() {
-			trgs := c.Core.Combat.EnemiesWithinRadius(burstPos, 12)
-			if len(trgs) == 0 {
+			enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)
+			if enemy == nil {
 				return
 			}
-			sort.Slice(trgs, func(i, j int) bool { return i < j })
-			nearTarget := trgs[0]
 
 			done := false
 			cb := func(_ combat.AttackCB) {
@@ -74,12 +70,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(
-					c.Core.Combat.Player(),
-					c.Core.Combat.Enemy(nearTarget),
-					nil,
-					1.5,
-				),
+				combat.NewCircleHit(c.Core.Combat.Player(), enemy, nil, 1.5),
 				tickRelease,
 				tickRelease+travel,
 				cb,

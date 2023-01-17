@@ -14,10 +14,9 @@ import (
 type LeaLotus struct {
 	*gadget.Gadget
 	*reactable.Reactable
-	burstAtk        *combat.AttackEvent
-	char            *char
-	targetingRadius float64
-	hitboxRadius    float64
+	burstAtk     *combat.AttackEvent
+	char         *char
+	hitboxRadius float64
 }
 
 func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
@@ -32,12 +31,12 @@ func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
 func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
-	pos := combat.CalcOffsetPoint(
+	c.burstPos = combat.CalcOffsetPoint(
 		player.Pos(),
 		combat.Point{Y: 1},
 		player.Direction(),
 	)
-	s.Gadget = gadget.New(c.Core, pos, 1, combat.GadgetTypLeaLotus)
+	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
 	s.Reactable = &reactable.Reactable{}
 	s.Reactable.Init(s, c.Core)
 	s.Durability[reactable.ModifierDendro] = 10
@@ -66,7 +65,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 	c.burstTransfig = attributes.NoElement
 	s.char = c
 
-	s.targetingRadius = 8
+	c.burstRadius = 8
 	s.hitboxRadius = 2
 	c.burstOverflowingLotuslight = 0
 
@@ -167,17 +166,16 @@ func (s *LeaLotus) Tick() {
 }
 
 func (l *LeaLotus) QueueAttack(delay int) {
-	enemies := l.Core.Combat.EnemiesWithinRadius(l.Gadget.Pos(), l.targetingRadius)
-	if len(enemies) > 0 {
-		idx := l.Core.Rand.Intn(len(enemies))
-
-		l.Core.QueueAttackWithSnap(
-			l.burstAtk.Info,
-			l.burstAtk.Snapshot,
-			combat.NewCircleHitOnTarget(l.Core.Combat.Enemy(enemies[idx]), nil, l.hitboxRadius),
-			delay,
-		)
+	enemy := l.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(l.Gadget, nil, l.char.burstRadius), nil)
+	if enemy == nil {
+		return
 	}
+	l.Core.QueueAttackWithSnap(
+		l.burstAtk.Info,
+		l.burstAtk.Snapshot,
+		combat.NewCircleHitOnTarget(enemy, nil, l.hitboxRadius),
+		delay,
+	)
 }
 
 func (r *LeaLotus) React(a *combat.AttackEvent) {
@@ -222,7 +220,7 @@ func (s *LeaLotus) TryBloom(a *combat.AttackEvent) {
 	if !s.Reactable.TryBloom(a) {
 		return
 	}
-	s.targetingRadius = 12
+	s.char.burstRadius = 12
 	s.hitboxRadius = 4
 	for t := 15; t <= s.Duration; t += 90 {
 		s.QueueAttack(t)

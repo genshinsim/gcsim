@@ -47,6 +47,9 @@ func (t *testtarg) Shape() Shape                                    { return t.s
 func (t *testtarg) Pos() Point                                      { return t.shp.Pos() }
 func (t *testtarg) SetPos(p Point)                                  {} //??
 func (t *testtarg) IsAlive() bool                                   { return t.alive }
+func (t *testtarg) SetTag(key string, val int)                      {}
+func (t *testtarg) GetTag(key string) int                           { return -1 }
+func (t *testtarg) RemoveTag(key string)                            {}
 func (t *testtarg) Attack(*AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (t *testtarg) Tick()                                           {}
 func (t *testtarg) Kill()                                           { t.hdlr.RemoveGadget(t.Key()) }

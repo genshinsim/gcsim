@@ -58,11 +58,10 @@ func (c *Circle) String() string {
 }
 
 func calcSegments(center Point, r float64, dir Point, fanAngle float64) []Point {
-	fanAngleRadian := fanAngle * math.Pi / 180
 	// assume circle center is origin at first to do the rotation stuff
 	segmentStart := Point{X: 0, Y: r}.Rotate(dir)
-	segmentLeft := segmentStart.Rotate(Point{X: math.Sin(-fanAngleRadian / 2), Y: math.Cos(-fanAngleRadian / 2)})
-	segmentRight := segmentStart.Rotate(Point{X: math.Sin(fanAngleRadian / 2), Y: math.Cos(fanAngleRadian / 2)})
+	segmentLeft := segmentStart.Rotate(DegreesToDirection(-fanAngle / 2))
+	segmentRight := segmentStart.Rotate(DegreesToDirection(fanAngle / 2))
 	// save segment points (the circle center and segment point make up a line segment)
 	// need to move segment to where the actual circle center is
 	return []Point{segmentLeft.Add(center), segmentRight.Add(center)}
@@ -71,6 +70,16 @@ func calcSegments(center Point, r float64, dir Point, fanAngle float64) []Point 
 // AABB is always for full circle
 func calcCircleAABB(center Point, r float64) []Point {
 	return []Point{{X: center.X - r, Y: center.Y - r}, {X: center.X + r, Y: center.Y + r}}
+}
+
+// collision related
+
+func (c *Circle) PointInShape(p Point) bool {
+	rangeCheck := c.center.Sub(p).MagnitudeSquared() <= c.r*c.r
+	if c.segments == nil {
+		return rangeCheck
+	}
+	return rangeCheck && fanAngleAreaCheck(c.center, p, c.dir, c.fanAngle)
 }
 
 func (c1 *Circle) IntersectCircle(c2 Circle) bool {

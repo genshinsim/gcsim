@@ -73,10 +73,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
+
+	stoneDir := c.Core.Combat.Player().Direction()
+	stonePos := c.Core.Combat.PrimaryTarget().Pos()
+
 	// TODO: check snapshot timing
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3),
+		combat.NewCircleHitOnTarget(stonePos, nil, 3),
 		24,
 		skillHitmark[short_hold],
 	)
@@ -87,13 +91,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark[short_hold]+c.ParticleDelay)
 
-	stonePos := c.Core.Combat.PrimaryTarget().Pos()
 	c.Core.Tasks.Add(func() {
 		dur := 30 * 60
 		if c.Base.Cons >= 6 {
 			dur += 600
 		}
-		c.Core.Constructs.New(c.newStone(dur, stonePos), false)
+		c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
 	}, skillHitmark[short_hold])
 
 	c.SetCDWithDelay(action.ActionSkill, 360, skillCDStart[short_hold])
@@ -110,14 +113,16 @@ type stone struct {
 	src    int
 	expiry int
 	char   *char
+	dir    combat.Point
 	pos    combat.Point
 }
 
-func (c *char) newStone(dur int, pos combat.Point) *stone {
+func (c *char) newStone(dur int, dir, pos combat.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
 		char:   c,
+		dir:    dir,
 		pos:    pos,
 	}
 }
@@ -153,3 +158,5 @@ func (s *stone) Type() construct.GeoConstructType { return construct.GeoConstruc
 func (s *stone) Expiry() int                      { return s.expiry }
 func (s *stone) IsLimited() bool                  { return true }
 func (s *stone) Count() int                       { return 1 }
+func (s *stone) Direction() combat.Point          { return s.dir }
+func (s *stone) Pos() combat.Point                { return s.pos }

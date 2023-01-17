@@ -1,5 +1,7 @@
 package construct
 
+import "github.com/genshinsim/gcsim/pkg/core/combat"
+
 type GeoConstructType int
 
 const (
@@ -43,4 +45,6 @@ type Construct interface {
 	Expiry() int
 	IsLimited() bool
 	Count() int
+	Direction() combat.Point
+	Pos() combat.Point
 }

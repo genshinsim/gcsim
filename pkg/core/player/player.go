@@ -1,4 +1,4 @@
-//Package player contains player related tracking and functionalities:
+// Package player contains player related tracking and functionalities:
 // - tracking characters on the team
 // - handling animations state
 // - handling normal attack state
@@ -7,6 +7,8 @@
 package player
 
 import (
+	"sort"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -139,6 +141,26 @@ func (h *Handler) ActiveChar() *character.CharWrapper {
 	return h.chars[h.active]
 }
 
+// returns the char with the lowest HP
+func (h *Handler) LowestHPChar() *character.CharWrapper {
+	result := make([]*character.CharWrapper, 0, len(h.chars))
+
+	// filter out dead characters
+	for _, c := range h.chars {
+		if c.HPCurrent <= 0 {
+			continue
+		}
+		result = append(result, c)
+	}
+
+	// sort by HP
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].HPCurrent < result[j].HPCurrent
+	})
+
+	return result[0]
+}
+
 func (h *Handler) CharIsActive(k keys.Char) bool {
 	return h.charPos[k] == h.active
 }
@@ -191,8 +213,8 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	h.ExtendInfusion(char, factor, dur)
 }
 
-//InitializeTeam will set up resonance event hooks and calculate
-//all character base stats
+// InitializeTeam will set up resonance event hooks and calculate
+// all character base stats
 func (h *Handler) InitializeTeam() error {
 	var err error
 	for _, c := range h.chars {

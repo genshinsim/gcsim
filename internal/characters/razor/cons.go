@@ -58,7 +58,7 @@ func (c *char) c4cb(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(enemy.DefMod{
+	e.AddDefMod(combat.DefMod{
 		Base:  modifier.NewBaseWithHitlag("razor-c4", 7*60),
 		Value: -0.15,
 	})

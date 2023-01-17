@@ -15,7 +15,7 @@ const a4BuffKey = "nahida-a4"
 // When unleashing Illusory Heart, the Shrine of Maya will gain the following effects:
 // The Elemental Mastery of the active character within the field will be increased by 25% of the Elemental Mastery of the party member with the highest Elemental Mastery.
 // You can gain a maximum of 250 Elemental Mastery in this manner.
-func (c *char) a1(dur int) {
+func (c *char) calcA1Buff() {
 	var max float64
 	team := c.Core.Player.Chars()
 	for _, char := range team {
@@ -31,8 +31,10 @@ func (c *char) a1(dur int) {
 	}
 
 	c.a1Buff[attributes.EM] = max
+}
 
-	for i, char := range team {
+func (c *char) applyA1(dur int) {
+	for i, char := range c.Core.Player.Chars() {
 		idx := i
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(a1BuffKey, dur),
@@ -42,7 +44,6 @@ func (c *char) a1(dur int) {
 			},
 		})
 	}
-
 }
 
 // Each point of Nahida's Elemental Mastery beyond 200 will grant 0.1% Bonus DMG and 0.03% CRIT Rate to Tri-Karma Purification from All Schemes to Know.

@@ -48,13 +48,13 @@ func (c *char) c2() {
 		}
 
 		if atk.Info.Element == attributes.Hydro {
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-hydro", 10*60),
 				Ele:   attributes.Hydro,
 				Value: -0.35,
 			})
 		} else if atk.Info.AttackTag == combat.AttackTagBloom {
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-dendro", 10*60),
 				Ele:   attributes.Dendro,
 				Value: -0.35,
