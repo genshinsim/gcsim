@@ -98,7 +98,7 @@ func (c *char) burstA4Ticks() {
 	if !c.StatusIsActive(burstKey) {
 		return
 	}
-	if !combat.TargetIsWithinArea(c.Core.Combat.Player(), combat.NewCircleHitOnTarget(c.burstPos, nil, 6)) {
+	if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), combat.NewCircleHitOnTarget(c.burstPos, nil, 6)) {
 		return
 	}
 	c.Core.Player.ActiveChar().AddStatus(a4Key, 60, true)

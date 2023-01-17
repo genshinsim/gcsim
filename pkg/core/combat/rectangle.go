@@ -85,6 +85,31 @@ func (r *Rectangle) String() string {
 	return fmt.Sprintf("w: %v h: %v center: %v topLeft: %v topRight: %v bottomRight: %v bottomLeft: %v dir: %v", r.w, r.h, r.center, r.corners[0], r.corners[1], r.corners[2], r.corners[3], r.dir)
 }
 
+// collision related
+
+func (r *Rectangle) PointInShape(p Point) bool {
+	// set origin to rectangle center by shifting point
+	relative := p.Sub(r.center)
+
+	// take direction from rectangle and rotate point in the opposite direction to remove rectangle rotation
+	dir := r.dir.Mul(Point{X: -1, Y: 1})
+	local := relative.Rotate(dir)
+
+	// check against unrotated rectangle
+	checkX := local.X
+	checkY := local.Y
+
+	bottomLeft := Point{X: -r.w / 2, Y: 0}.Add(r.center)
+	minX := bottomLeft.X
+	minY := bottomLeft.Y
+
+	topRight := Point{X: r.w / 2, Y: r.h}.Add(r.center)
+	maxX := topRight.X
+	maxY := topRight.Y
+
+	return checkX >= minX && checkX <= maxX && checkY >= minY && checkY <= maxY
+}
+
 func (r *Rectangle) IntersectCircle(c Circle) bool {
 	return IntersectRectangle(*r, c)
 }

@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					return
 				}
 				// don't apply anything if outside of burst area
-				if !combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
+				if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), burstArea) {
 					return
 				}
 

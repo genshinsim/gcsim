@@ -72,6 +72,16 @@ func calcCircleAABB(center Point, r float64) []Point {
 	return []Point{{X: center.X - r, Y: center.Y - r}, {X: center.X + r, Y: center.Y + r}}
 }
 
+// collision related
+
+func (c *Circle) PointInShape(p Point) bool {
+	rangeCheck := c.center.Sub(p).MagnitudeSquared() <= c.r*c.r
+	if c.segments == nil {
+		return rangeCheck
+	}
+	return rangeCheck && fanAngleAreaCheck(c.center, p, c.dir, c.fanAngle)
+}
+
 func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 	// TODO: circle with fanAngle hurtbox-circle collision
 	if c1.segments != nil {

@@ -33,7 +33,7 @@ func (c *char) c1(ticks int) func() {
 			Write("tick_number", ticks)
 
 		// apply C1 buff to active char for 2s
-		if combat.TargetIsWithinArea(c.Core.Combat.Player(), c.burstArea) {
+		if combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.burstArea) {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.CR] = .1
 

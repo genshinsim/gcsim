@@ -7,6 +7,7 @@ import (
 
 type Shape interface {
 	positional
+	PointInShape(p Point) bool
 	IntersectCircle(c Circle) bool
 	IntersectRectangle(r Rectangle) bool
 	String() string

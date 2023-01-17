@@ -86,7 +86,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	for i := burstStart; i < burstStart+burstDuration; i += 18 {
 		c.Core.Tasks.Add(func() {
 			// a1 & c2 buff tick
-			if combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
+			if combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), burstArea) {
 				active := c.Core.Player.ActiveChar()
 				active.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
