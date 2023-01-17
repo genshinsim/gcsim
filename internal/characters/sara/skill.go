@@ -69,7 +69,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 // Checks for the onfield character at the delay frame, then applies buff to that character
 func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 	c.Core.Tasks.Add(func() {
-		if !combat.TargetIsWithinArea(c.Core.Combat.Player(), a) {
+		// TODO: this should be a 0 dmg attack
+		if collision, _ := c.Core.Combat.Player().AttackWillLand(a); !collision {
 			return
 		}
 
