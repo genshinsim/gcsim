@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = burstatkp[c.TalentLvlBurst()]
 	// tick every 0.5s from burstStart
-	for i := burstStart; i <= burstStart+18*60; i += 30 {
+	for i := 0; i < 18*60; i += 30 {
 		c.Core.Tasks.Add(func() {
 			// burst tick
 			enemy := c.Core.Combat.RandomEnemyWithinArea(
@@ -76,7 +76,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					return m, a.Info.AttackTag == combat.AttackTagNormal
 				},
 			})
-		}, i)
+		}, i+burstStart)
 	}
 
 	if c.Base.Cons >= 4 {
