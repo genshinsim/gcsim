@@ -29,7 +29,7 @@ func (c *char) c1() {
 func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DendroP] = .2
-	for i := 0; i <= 8*60; i += 30 {
+	for i := 0; i < 8*60; i += 30 {
 		c.Core.Tasks.Add(func() {
 			if !combat.TargetIsWithinArea(c.Core.Combat.Player(), c.skillArea) {
 				return
