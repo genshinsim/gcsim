@@ -69,19 +69,18 @@ func (w *Weapon) enemyCheck(char *character.CharWrapper, c *core.Core, src int) 
 		if w.src != src {
 			return
 		}
-		if c.Player.Active() != char.Index {
-			return
+		if c.Player.Active() == char.Index {
+			enemies := c.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
+			change := len(enemies) >= 2
+			// apply changes in 0.8s
+			char.QueueCharTask(func() {
+				if c.Player.Active() != char.Index {
+					return
+				}
+				w.useMultiple = change
+			}, 48)
+			// only check for enemies while the char is active
+			char.QueueCharTask(w.enemyCheck(char, c, src), 60)
 		}
-		enemies := c.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
-		change := len(enemies) >= 2
-		// apply changes in 0.8s
-		char.QueueCharTask(func() {
-			if c.Player.Active() != char.Index {
-				return
-			}
-			w.useMultiple = change
-		}, 48)
-		// only check for enemies while the char is active
-		char.QueueCharTask(w.enemyCheck(char, c, src), 60)
 	}
 }

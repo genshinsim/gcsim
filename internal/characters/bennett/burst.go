@@ -59,10 +59,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
 	for i := burstStartFrame; i <= 720+burstStartFrame; i += 60 {
 		c.Core.Tasks.Add(func() {
-			if !combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
-				return
+			if combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
+				c.applyBennettField(stats)()
 			}
-			c.applyBennettField(stats)()
 		}, i)
 	}
 

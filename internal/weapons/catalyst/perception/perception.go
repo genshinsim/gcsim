@@ -48,12 +48,10 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 		t.AddStatus(bounceKey, 36, true)
 
 		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(t, nil, 8), nil)
-		if enemy == nil {
-			return
+		if enemy != nil {
+			cb := w.chain(count+1, c, char)
+			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
 		}
-
-		cb := w.chain(count+1, c, char)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
 	}
 }
 
@@ -94,10 +92,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		w.snap = char.Snapshot(&w.ai)
 
 		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
-		if enemy == nil {
-			return false
+		if enemy != nil {
+			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
 		}
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
 
 		return false
 	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))

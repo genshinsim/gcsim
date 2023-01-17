@@ -76,10 +76,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		for i := 1; i <= 6; i++ {
 			c.Tasks.Add(func() {
 				enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 15), nil)
-				if enemy == nil {
-					return
+				if enemy != nil {
+					c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(enemy, nil, 1.2), travel)
 				}
-				c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(enemy, nil, 1.2), travel)
 			}, i*147)
 		}
 		char.AddStatus(icdKey, icd, true)
