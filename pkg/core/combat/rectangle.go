@@ -71,7 +71,7 @@ func calcRectangleAABB(corners []Point) []Point {
 }
 
 func (r *Rectangle) Pos() Point {
-	return r.center
+	return r.spawn
 }
 
 func (r *Rectangle) SetPos(p Point) {
