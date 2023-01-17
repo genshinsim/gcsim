@@ -46,9 +46,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CryoP] = 0.2
 	// tick every 0.3s from burstStart
-	for i := burstStart; i <= burstStart+15*60; i += 18 {
+	for i := 0; i < 15*60; i += 18 {
 		// c4 related
-		tick := i - burstStart
+		tick := i
 		c.Core.Tasks.Add(func() {
 			// burst tick
 			enemy := c.Core.Combat.RandomEnemyWithinArea(
@@ -98,7 +98,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					}
 				}
 			}
-		}, i)
+		}, i+burstStart)
 	}
 
 	//add cooldown to sim
