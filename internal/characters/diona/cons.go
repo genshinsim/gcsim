@@ -22,7 +22,7 @@ func (c *char) c2() {
 func (c *char) c6() {
 	//c6 should last for the duration of the burst
 	//lasts 12.5 second, ticks every 0.5s; adds mod to active char for 2s
-	for i := 30; i < 750; i += 30 {
+	for i := 30; i <= 750; i += 30 {
 		c.Core.Tasks.Add(func() {
 			if !combat.TargetIsWithinArea(c.Core.Combat.Player(), c.burstBuffArea) {
 				return
