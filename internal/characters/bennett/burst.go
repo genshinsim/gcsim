@@ -48,12 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	const radius = 6.0
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, radius)
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(burstArea.Shape.Pos(), nil, radius),
-		37,
-		37,
-	)
+	c.Core.QueueAttack(ai, burstArea, 37, 37)
 
 	//apply right away
 	stats, _ := c.Stats()
