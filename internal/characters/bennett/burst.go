@@ -54,15 +54,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	stats, _ := c.Stats()
 	c.applyBennettField(stats)()
 
-	//add 12 ticks starting at t = 1 to t= 12
-	// Buff appears to start ticking right before hit
+	// add 13 ticks starting from t=0s to t=12s
+	// buff appears to start ticking right before hit (t=0s)
 	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
-	for i := burstStartFrame; i <= 720+burstStartFrame; i += 60 {
+	for i := 0; i <= 12*60; i += 60 {
 		c.Core.Tasks.Add(func() {
 			if combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
 				c.applyBennettField(stats)()
 			}
-		}, i)
+		}, i+burstStartFrame)
 	}
 
 	c.ConsumeEnergy(36)
