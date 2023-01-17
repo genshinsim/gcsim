@@ -50,13 +50,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, radius)
 	c.Core.QueueAttack(ai, burstArea, 37, 37)
 
-	//apply right away
-	stats, _ := c.Stats()
-	c.applyBennettField(stats)()
-
 	// add 13 ticks starting from t=0s to t=12s
 	// buff appears to start ticking right before hit (t=0s)
 	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
+	stats, _ := c.Stats()
 	for i := 0; i <= 12*60; i += 60 {
 		c.Core.Tasks.Add(func() {
 			if combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
