@@ -68,7 +68,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(pos, nil, 2.5), 8)
 
 			// a4 buff tick
-			if combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), burstArea) {
+			if c.Core.Combat.Player().IsWithinArea(burstArea) {
 				active := c.Core.Player.ActiveChar()
 				active.AddStatMod(character.StatMod{
 					Base:         modifier.NewBase("ganyu-field", 60),

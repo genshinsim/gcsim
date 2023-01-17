@@ -57,7 +57,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				// attack
 				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 				// heal
-				if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.burstBuffArea) {
+				if !c.Core.Combat.Player().IsWithinArea(c.burstBuffArea) {
 					return
 				}
 				c.Core.Player.Heal(player.HealInfo{

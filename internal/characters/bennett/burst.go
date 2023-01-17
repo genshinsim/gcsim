@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	stats, _ := c.Stats()
 	for i := 0; i <= 12*60; i += 60 {
 		c.Core.Tasks.Add(func() {
-			if combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), burstArea) {
+			if c.Core.Combat.Player().IsWithinArea(burstArea) {
 				c.applyBennettField(stats)()
 			}
 		}, i+burstStartFrame)

@@ -46,7 +46,7 @@ func (c *char) c6Buff(delay int) {
 		if c.Core.Status.Duration(burstKey) <= 0 {
 			return
 		}
-		if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), combat.NewCircleHitOnTarget(c.burstPos, nil, c.burstRadius)) {
+		if !c.Core.Combat.Player().IsWithinArea(combat.NewCircleHitOnTarget(c.burstPos, nil, c.burstRadius)) {
 			return
 		}
 		m[attributes.DendroP] = 0.12

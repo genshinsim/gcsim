@@ -102,7 +102,7 @@ func (c *char) skillHook() {
 			return false
 		}
 		// don't proc if target hit is outside of the skill area
-		if !combat.TargetIsWithinArea(trg.Pos(), c.skillArea) {
+		if !trg.IsWithinArea(c.skillArea) {
 			return false
 		}
 

@@ -31,7 +31,7 @@ func (c *char) c2() {
 	m[attributes.DendroP] = .2
 	for i := 0; i < 8*60; i += 30 {
 		c.Core.Tasks.Add(func() {
-			if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.skillArea) {
+			if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
 				return
 			}
 			c.AddStatMod(character.StatMod{

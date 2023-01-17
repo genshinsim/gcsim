@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if !ok {
 				panic("target 0 should be Player but is not!!")
 			}
-			if !combat.TargetIsWithinArea(p.Pos(), burstArea) {
+			if !p.IsWithinArea(burstArea) {
 				return
 			}
 
@@ -93,7 +93,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for i := 0; i < 6; i++ {
 		c.Core.Tasks.Add(func() {
-			if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), burstArea) {
+			if !c.Core.Combat.Player().IsWithinArea(burstArea) {
 				return
 			}
 			if c.Base.Cons >= 2 {

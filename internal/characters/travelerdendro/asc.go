@@ -27,7 +27,7 @@ func (c *char) a1Buff(delay int) {
 		if c.Core.Status.Duration(burstKey) <= 0 {
 			return
 		}
-		if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), combat.NewCircleHitOnTarget(c.burstPos, nil, c.burstRadius)) {
+		if !c.Core.Combat.Player().IsWithinArea(combat.NewCircleHitOnTarget(c.burstPos, nil, c.burstRadius)) {
 			return
 		}
 		m[attributes.EM] = float64(6 * c.burstOverflowingLotuslight)

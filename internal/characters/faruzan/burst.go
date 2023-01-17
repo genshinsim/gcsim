@@ -97,7 +97,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if c.burstSrc != currSrc {
 			return
 		}
-		if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), burstArea) {
+		if !c.Core.Combat.Player().IsWithinArea(burstArea) {
 			return
 		}
 		for _, char := range c.Core.Player.Chars() {

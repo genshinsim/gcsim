@@ -102,7 +102,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// duration is ~10.6s, first tick starts at frame 100, + 60 each
 	for i := 100; i <= 600+burstStart; i += 60 {
 		c.Core.Tasks.Add(func() {
-			if combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.burstArea) {
+			if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
 				// heal
 				c.Core.Player.Heal(player.HealInfo{
 					Caller:  c.Index,

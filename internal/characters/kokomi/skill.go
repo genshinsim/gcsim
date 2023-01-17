@@ -85,7 +85,7 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 	c.Core.QueueAttackEvent(d, 0)
 
 	// handle healing
-	if combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), d.Pattern) {
+	if c.Core.Combat.Player().IsWithinArea(d.Pattern) {
 		maxhp := d.Snapshot.BaseHP*(1+d.Snapshot.Stats[attributes.HPP]) + d.Snapshot.Stats[attributes.HP]
 		src := skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()]
 

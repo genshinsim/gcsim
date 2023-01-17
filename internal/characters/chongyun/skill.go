@@ -121,7 +121,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			if src != c.fieldSrc {
 				return
 			}
-			if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.skillArea) {
+			if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
 				return
 			}
 			active := c.Core.Player.ActiveChar()

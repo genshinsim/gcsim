@@ -2,7 +2,6 @@ package travelergeo
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -33,7 +32,7 @@ func (c *char) c1(ticks int) func() {
 			Write("tick_number", ticks)
 
 		// apply C1 buff to active char for 2s
-		if combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.burstArea) {
+		if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.CR] = .1
 

@@ -35,7 +35,7 @@ func (c *char) c1() {
 			// if q is up, then the area needs to be around the current player position
 			area = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
 		}
-		if !combat.TargetIsWithinArea(trg.Pos(), area) {
+		if !trg.IsWithinArea(area) {
 			return false
 		}
 

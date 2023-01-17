@@ -29,7 +29,7 @@ func (c *char) c4(lastConstruct int) func() {
 		}
 
 		// apply C4 buff to active char for 1s if within skill area
-		inSkillArea := combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.skillArea)
+		inSkillArea := c.Core.Combat.Player().IsWithinArea(c.skillArea)
 		if inSkillArea {
 			active := c.Core.Player.ActiveChar()
 			m := make([]float64, attributes.EndStatType)
@@ -65,7 +65,7 @@ func (c *char) c6(lastConstruct int) func() {
 
 		// apply C6 buff to active char for 1s if they are protected by crystallize and within the skill area
 		crystallizeShield := c.Core.Player.Shields.Get(shield.ShieldCrystallize) != nil
-		inSkillArea := combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.skillArea)
+		inSkillArea := c.Core.Combat.Player().IsWithinArea(c.skillArea)
 		if crystallizeShield && inSkillArea {
 			active := c.Core.Player.ActiveChar()
 			m := make([]float64, attributes.EndStatType)

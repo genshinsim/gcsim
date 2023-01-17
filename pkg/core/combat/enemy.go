@@ -103,13 +103,6 @@ func (h *Handler) PrimaryTarget() Target {
 	panic("default target does not exist?!")
 }
 
-// area check
-
-// checks whether the given target position is within the given area
-func TargetIsWithinArea(targetPos Point, a AttackPattern) bool {
-	return a.Shape.PointInShape(targetPos)
-}
-
 // all enemies
 
 // returns enemies within the given area, no sorting, pass nil for no filter
@@ -128,7 +121,7 @@ func (c *Handler) EnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) 
 		if !v.IsAlive() {
 			continue
 		}
-		if !TargetIsWithinArea(e.Pos(), a) {
+		if !e.IsWithinArea(a) {
 			continue
 		}
 		enemies = append(enemies, e)
@@ -194,7 +187,7 @@ func (c *Handler) getEnemiesWithinAreaSorted(a AttackPattern, filter func(t Enem
 		if !e.IsAlive() {
 			continue
 		}
-		if !skipAttackPattern && !TargetIsWithinArea(e.Pos(), a) {
+		if !skipAttackPattern && !e.IsWithinArea(a) {
 			continue
 		}
 		enemies = append(enemies, enemyTuple{enemy: e, dist: a.Shape.Pos().Sub(e.Pos()).MagnitudeSquared()})

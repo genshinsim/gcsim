@@ -76,7 +76,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.Tasks.Add(func() {
 				// look for char with lowest HP to heal
 				char := c.Core.Player.LowestHPChar()
-				hasPlayer := combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), burstArea) && char.HPCurrent/char.MaxHP() <= 0.7
+				hasPlayer := c.Core.Combat.Player().IsWithinArea(burstArea) && char.HPCurrent/char.MaxHP() <= 0.7
 
 				enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)
 				hasEnemy := enemy != nil

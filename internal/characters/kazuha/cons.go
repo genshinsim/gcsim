@@ -31,7 +31,7 @@ func (c *char) c2(src int) func() {
 		c.Core.Tasks.Add(c.c2(src), 30)
 
 		ap := combat.NewCircleHitOnTarget(c.qAbsorbCheckLocation.Shape.Pos(), nil, 9)
-		if !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), ap) {
+		if !c.Core.Combat.Player().IsWithinArea(ap) {
 			return
 		}
 

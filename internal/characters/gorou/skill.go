@@ -106,7 +106,7 @@ func (c *char) gorouSkillBuffField(src int) func() {
 		}
 		// do nothing if only e is up and player is outside of the field area
 		// if q is up then the player is always inside of the field area
-		if eActive && !qActive && !combat.TargetIsWithinArea(c.Core.Combat.Player().Pos(), c.eFieldArea) {
+		if eActive && !qActive && !c.Core.Combat.Player().IsWithinArea(c.eFieldArea) {
 			return
 		}
 
