@@ -147,14 +147,14 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 }
 
 func (c *char) updateTriKarmaInterval() {
-	var cd int
+	cd := int(2.5 * 60)
 	if c.electroCount > 0 && c.Core.Status.Duration(withinBurstKey) > 0 {
-		cd = int((2.5 - burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()]) * 60)
-		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
-	} else {
-		cd = int(2.5 * 60)
+		cd -= int(burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()] * 60)
 	}
-	c.triKarmaInterval = cd
+	if cd != c.triKarmaInterval {
+		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
+		c.triKarmaInterval = cd
+	}
 	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
