@@ -5,18 +5,22 @@ import (
 	"math"
 )
 
+// center = true center of rect
+// spawn = point rect extends outward from (centered on x, on y edge)
 type Rectangle struct {
 	center  Point
+	spawn   Point
 	w, h    float64
 	dir     Point
 	corners []Point
 	aabb    []Point
 }
 
-func NewRectangle(center Point, w, h float64, dir Point) *Rectangle {
-	corners := calcCorners(center, w, h, dir)
+func NewRectangle(spawn Point, w, h float64, dir Point) *Rectangle {
+	corners, newCenter := calcCorners(spawn, w, h, dir)
 	return &Rectangle{
-		center:  center,
+		center:  newCenter,
+		spawn:   spawn,
 		w:       w,
 		h:       h,
 		dir:     dir,
@@ -25,7 +29,7 @@ func NewRectangle(center Point, w, h float64, dir Point) *Rectangle {
 	}
 }
 
-func calcCorners(center Point, w, h float64, dir Point) []Point {
+func calcCorners(spawn Point, w, h float64, dir Point) ([]Point, Point) {
 	// center is on the bottomLeft - bottomRight edge and not the middle point of the rectangle
 	topLeft := Point{X: -w / 2, Y: h}
 	topRight := Point{X: w / 2, Y: h}
@@ -35,9 +39,11 @@ func calcCorners(center Point, w, h float64, dir Point) []Point {
 	// add rotation
 	for i := 0; i < len(corners); i++ {
 		rotatedCorner := corners[i].Rotate(dir)
-		corners[i] = rotatedCorner.Add(center)
+		corners[i] = rotatedCorner.Add(spawn)
 	}
-	return corners
+
+	newCenter := Point{X: 0, Y: h / 2}
+	return corners, newCenter.Rotate(dir).Add(spawn)
 }
 
 func calcRectangleAABB(corners []Point) []Point {
@@ -69,16 +75,17 @@ func (r *Rectangle) Pos() Point {
 }
 
 func (r *Rectangle) SetPos(p Point) {
-	if r.center == p {
+	if r.spawn == p {
 		return
 	}
 	for i := 0; i < len(r.corners); i++ {
-		r.corners[i] = r.corners[i].Add(p.Sub(r.center))
+		r.corners[i] = r.corners[i].Add(p.Sub(r.spawn))
 	}
 	for i := 0; i < len(r.aabb); i++ {
-		r.aabb[i] = r.aabb[i].Add(p.Sub(r.center))
+		r.aabb[i] = r.aabb[i].Add(p.Sub(r.spawn))
 	}
-	r.center = p
+	r.spawn = p
+	r.center = r.center.Add(p.Sub(r.spawn))
 }
 
 func (r *Rectangle) String() string {
@@ -99,11 +106,11 @@ func (r *Rectangle) PointInShape(p Point) bool {
 	checkX := local.X
 	checkY := local.Y
 
-	bottomLeft := Point{X: -r.w / 2, Y: 0}.Add(r.center)
+	bottomLeft := Point{X: -r.w / 2, Y: -r.h / 2}.Add(r.center)
 	minX := bottomLeft.X
 	minY := bottomLeft.Y
 
-	topRight := Point{X: r.w / 2, Y: r.h}.Add(r.center)
+	topRight := Point{X: r.w / 2, Y: r.h / 2}.Add(r.center)
 	maxX := topRight.X
 	maxY := topRight.Y
 
