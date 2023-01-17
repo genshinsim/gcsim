@@ -30,7 +30,7 @@ func NewRectangle(spawn Point, w, h float64, dir Point) *Rectangle {
 }
 
 func calcCorners(spawn Point, w, h float64, dir Point) ([]Point, Point) {
-	// center is on the bottomLeft - bottomRight edge and not the middle point of the rectangle
+	// spawn is on the bottomLeft - bottomRight edge and not the middle point of the rectangle
 	topLeft := Point{X: -w / 2, Y: h}
 	topRight := Point{X: w / 2, Y: h}
 	bottomRight := Point{X: w / 2, Y: 0}
