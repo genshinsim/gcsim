@@ -110,6 +110,10 @@ func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 	}
 }
 
+func (t *testtarg) IsWithinArea(a AttackPattern) bool {
+	return a.Shape.PointInShape(t.Pos())
+}
+
 func (t *testtarg) Direction() Point { return t.direction }
 func (t *testtarg) SetDirection(trg Point) {
 	src := t.Pos()
