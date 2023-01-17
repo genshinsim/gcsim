@@ -57,8 +57,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	firstTick := 119 // first tick at 119
 	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
-	for i := firstTick; i <= firstTick+900; i += 30 {
-		progress := i
+	for i := 0; i < 15*60; i += 30 {
+		progress := i + firstTick
 		c.Core.Tasks.Add(func() {
 			// logic below c4 is fairly simple: 1 discharge to a random enemy in the area
 			if c.Base.Cons < 4 {
