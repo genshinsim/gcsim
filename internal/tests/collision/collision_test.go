@@ -324,7 +324,7 @@ func TestRectangleAttackCollision(t *testing.T) {
 		want         int
 	}{
 		// no offset
-		"no offset, hit nothing": {attackWidth: 3, attackHeight: 3, attackOffset: combat.Point{}, want: 0},
+		"no offset, hit nothing": {attackWidth: 3, attackHeight: 1.5, attackOffset: combat.Point{}, want: 0},
 		"no offset, hit t0":      {attackWidth: 3, attackHeight: 4, attackOffset: combat.Point{}, want: 1},
 		"no offset, hit t0 & t1": {attackWidth: 3, attackHeight: 15, attackOffset: combat.Point{}, want: 2},
 		// offset
