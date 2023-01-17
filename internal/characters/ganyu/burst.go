@@ -13,7 +13,7 @@ import (
 var burstFrames []int
 
 const (
-	burstStart   = 130
+	burstStart   = 122
 	burstMarkKey = "ganyu-burst-mark"
 )
 
@@ -65,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				pos = combat.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
 			}
 			// deal dmg after a certain delay
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(pos, nil, 2.5), 10)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(pos, nil, 2.5), 8)
 
 			// a4 buff tick
 			if combat.TargetIsWithinArea(c.Core.Combat.Player(), burstArea) {
