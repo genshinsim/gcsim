@@ -39,12 +39,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
-	// Talisman is applied way before the damage is dealt
-	c.Core.Tasks.Add(func() {
-		for _, e := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
-			e.AddStatus(talismanKey, 15*60, true)
+	// Talisman is applied via a 0 dmg attack way before the damage is dealt
+	talismanAi := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Fortune-Preserving Talisman (Talisman application)",
+		AttackTag:  combat.AttackTagNone,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Physical,
+	}
+	talismanCB := func(a combat.AttackCB) {
+		e, ok := a.Target.(*enemy.Enemy)
+		if !ok {
+			return
 		}
-	}, 40)
+		e.AddStatus(talismanKey, 15*60, true)
+	}
+	c.Core.QueueAttack(talismanAi, ap, 40, 40, talismanCB)
 
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(8)
