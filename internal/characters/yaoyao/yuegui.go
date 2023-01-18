@@ -99,6 +99,7 @@ func (yg *yuegui) throw() {
 		particleCB,
 	)
 	if yg.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
+		hi.Bonus = yg.snap.Stats[attributes.Heal]
 		yg.c.radishHeal(hi)
 	}
 	yg.throwCounter += 1
@@ -113,23 +114,13 @@ func (yg *yuegui) getInfos() (combat.AttackInfo, player.HealInfo, float64) {
 		hi = yg.c.getBurstHealInfo()
 	} else {
 		ai = yg.ai
-		hi = yg.getSkillHealInfo()
+		hi = yg.c.getSkillHealInfo()
 	}
 
 	if yg.c.Base.Cons >= 6 {
 		return yg.c6(ai, hi, radishRad)
 	}
 	return ai, hi, radishRad
-}
-
-func (yg *yuegui) getSkillHealInfo() player.HealInfo {
-	return player.HealInfo{
-		Caller:  yg.c.Index,
-		Target:  yg.Core.Player.Active(),
-		Message: "Yuegui skill",
-		// Src:     skillHeal[c.TalentLvlSkill()],
-		Bonus: yg.snap.Stats[attributes.Heal],
-	}
 }
 
 func (yg *yuegui) Type() combat.TargettableType { return combat.TargettableGadget }

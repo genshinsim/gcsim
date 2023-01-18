@@ -17,7 +17,7 @@ func (c *char) c1() {
 	m[attributes.DendroP] = 0.15
 	active := c.Core.Player.ActiveChar()
 	active.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("yaoyao-c1", 8),
+		Base:         modifier.NewBaseWithHitlag("yaoyao-c1", 8*60),
 		AffectedStat: attributes.DendroP,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -47,7 +47,7 @@ func (c *char) c4() {
 		m[attributes.EM] = 120
 	}
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("yaoyao-c4", 8),
+		Base:         modifier.NewBaseWithHitlag("yaoyao-c4", 8*60),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			return m, true

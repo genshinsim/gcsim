@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var skillFrames []int
@@ -30,7 +31,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		// Mult:       skillDmg[c.TalentLvlSkill()],
+		Mult:       skillRadishDMG[c.TalentLvlSkill()],
 	}
 
 	yuegui := c.newYueguiThrow(procAI)
@@ -49,5 +50,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) getSkillHealInfo() player.HealInfo {
+	heal := skillRadishHealing[0][c.TalentLvlBurst()]*c.MaxHP() + skillRadishHealing[1][c.TalentLvlBurst()]
+	return player.HealInfo{
+		Caller:  c.Index,
+		Target:  c.Core.Player.Active(),
+		Message: "Yuegui skill",
+		Src:     heal,
 	}
 }

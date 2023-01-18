@@ -39,7 +39,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		// Mult:       burstDmg[c.TalentLvlBurst()],
+		Mult:       burstRadishDMG[c.TalentLvlBurst()],
 	}
 	c.QueueCharTask(c.newYueguiJump, 1*60+skillStart)
 	c.QueueCharTask(c.newYueguiJump, 2*60+skillStart)
@@ -71,11 +71,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) getBurstHealInfo() player.HealInfo {
+	heal := burstRadishHealing[0][c.TalentLvlBurst()]*c.MaxHP() + burstRadishHealing[1][c.TalentLvlBurst()]
 	return player.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
 		Message: "Yuegui burst heal",
-		// Src:     burstHeal[c.TalentLvlBurst()],
+		Src:     heal,
 	}
 }
 
