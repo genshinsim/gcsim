@@ -36,7 +36,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		travel = 10
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	// A1:
 	// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
@@ -62,7 +62,13 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		aimedHitmarks[skillActive],
 		aimedHitmarks[skillActive]+travel,
 	)
@@ -80,16 +86,11 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       skill[c.TalentLvlSkill()],
 		}
+		ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
 
 		//TODO: snapshot?
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 6),
-			aimedHitmarks[skillActive],
-			aimedHitmarks[skillActive]+travel+90,
-			c.a4,
-		)
-		c.attackBuff(aimedHitmarks[skillActive] + travel + 90)
+		c.Core.QueueAttack(ai, ap, aimedHitmarks[skillActive], aimedHitmarks[skillActive]+travel+90, c.a4)
+		c.attackBuff(ap, aimedHitmarks[skillActive]+travel+90)
 
 		// Particles are emitted after the ambush thing hits
 		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmarks[skillActive]+travel+90+c.ParticleDelay)

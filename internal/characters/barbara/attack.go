@@ -39,6 +39,9 @@ func init() {
 	// N4 -> x
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 60)
 	attackFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[3][action.ActionDash] = 2
+	attackFrames[3][action.ActionJump] = 3
+	attackFrames[3][action.ActionSwap] = 2
 	attackFrames[3][action.ActionWalk] = 57
 }
 
@@ -56,7 +59,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	done := false
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}
@@ -72,9 +78,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			done = true
 		}
 	}
-	radius := attackRadius[c.NormalCounter]
-	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			attackRadius[c.NormalCounter],
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 		cb,

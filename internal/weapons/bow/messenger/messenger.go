@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Mult:         dmg,
 			HitWeakPoint: true, // ensure crit by marking it as hitting weakspot
 		}
-		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 1)
+		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 
 		return false
 	}, fmt.Sprintf("messenger-%v", char.Base.Key.String()))

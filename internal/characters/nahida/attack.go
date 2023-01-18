@@ -11,8 +11,12 @@ import (
 
 const normalHitNum = 4
 
-var attackFrames [][]int
-var attackHitmarks = []int{23, 15, 26, 40}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{23, 15, 26, 40}
+	attackHitboxes = [][]float64{{2, 8}, {2.5, 8}, {2.5, 8}, {3, 10}}
+	attackOffsets  = []float64{0, 0, 0, -1.5}
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -70,7 +74,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 2),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackHitboxes[c.NormalCounter][1],
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)

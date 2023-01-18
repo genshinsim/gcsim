@@ -53,7 +53,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// damage component not final
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 3),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), combat.Point{Y: 1}, 3, 270),
 		skillHitmark,
 		skillHitmark,
 	)
@@ -68,8 +68,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, 9)
 
 	cd := 15
+	// TODO: this should only active if a char protected by Thoma's shield is hit, should also proc on stuff like Dori Q self attack
 	if c.Base.Cons >= 1 {
-		cd = 12 // the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 12 for sim purposes.
+		cd = 12
 	}
 	c.SetCDWithDelay(action.ActionSkill, cd*60, 9)
 

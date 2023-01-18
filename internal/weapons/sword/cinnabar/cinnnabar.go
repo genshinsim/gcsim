@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}, 6) //icd starts 6 frames after
 			char.AddStatus(durationKey, 6, false)
 		}
-		damageAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * defPer
+		damageAdd := (char.Base.Def*(1+char.Stat(attributes.DEFP)) + char.Stat(attributes.DEF)) * defPer
 		atk.Info.FlatDmg += damageAdd
 
 		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index).

@@ -99,6 +99,11 @@
     "element": "cryo",
     "weapon_class": "claymore"
   },
+  "faruzan": {
+    "rarity": 4,
+    "element": "anemo",
+    "weapon_class": "bow"
+  },
   "fischl": {
     "rarity": 4,
     "element": "electro",
@@ -278,6 +283,11 @@
     "rarity": 5,
     "element": "anemo",
     "weapon_class": "bow"
+  },
+  "wanderer": {
+    "rarity": 5,
+    "element": "anemo",
+    "weapon_class": "catalyst"
   },
   "xiangling": {
     "rarity": 4,

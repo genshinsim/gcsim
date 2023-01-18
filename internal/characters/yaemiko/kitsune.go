@@ -10,14 +10,19 @@ import (
 )
 
 type kitsune struct {
-	src     int
-	deleted bool
+	src         int
+	deleted     bool
+	kitsuneArea combat.AttackPattern
 }
 
 func (c *char) makeKitsune() {
 	k := &kitsune{}
 	k.src = c.Core.F
 	k.deleted = false
+
+	// spawn kitsune detection area on player pos
+	k.kitsuneArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, c.kitsuneDetectionRadius)
+
 	//start ticking
 	c.Core.Tasks.Add(c.kitsuneTick(k), 120-skillStart)
 	//add task to delete this one if times out (and not deleted by anything else)
@@ -119,17 +124,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
 			Write("sakura level", lvl+1)
 
-		if c.Base.Cons >= 6 {
-			ai.IgnoreDefPercent = 0.60
-		}
-
-		done := false
-		cb := func(_ combat.AttackCB) {
-			if c.Base.Cons >= 4 && !done {
-				done = true
-				c.c4()
-			}
-
+		particlecb := func(a combat.AttackCB) {
 			//on hit check for particles
 			c.Core.Log.NewEvent("sky kitsune particle", glog.LogCharacterEvent, c.Index).
 				Write("lastParticleF", c.totemParticleICD)
@@ -141,8 +136,34 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			//TODO: this used to be 30?
 			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, c.ParticleDelay)
 		}
-
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget()), 0.5), 1, 1, cb)
+		var c4cb combat.AttackCBFunc
+		if c.Base.Cons >= 4 {
+			done := false
+			c4cb = func(a combat.AttackCB) {
+				if a.Target.Type() != combat.TargettableEnemy {
+					return
+				}
+				if done {
+					return
+				}
+				done = true
+				c.c4()
+			}
+		}
+		if c.Base.Cons >= 6 {
+			ai.IgnoreDefPercent = 0.60
+		}
+		enemy := c.Core.Combat.RandomEnemyWithinArea(totem.kitsuneArea, nil)
+		if enemy != nil {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHitOnTarget(enemy, nil, 0.5),
+				1,
+				1,
+				particlecb,
+				c4cb,
+			)
+		}
 		// tick per ~2.9s seconds
 		c.Core.Tasks.Add(c.kitsuneTick(totem), 176)
 	}

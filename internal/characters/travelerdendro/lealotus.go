@@ -3,7 +3,6 @@ package travelerdendro
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -15,10 +14,9 @@ import (
 type LeaLotus struct {
 	*gadget.Gadget
 	*reactable.Reactable
-	burstAtk        *combat.AttackEvent
-	char            *char
-	targetingRadius float64
-	hitboxRadius    float64
+	burstAtk     *combat.AttackEvent
+	char         *char
+	hitboxRadius float64
 }
 
 func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
@@ -32,9 +30,13 @@ func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
 
 func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
-	x, y := c.Core.Combat.Player().Pos()
-	// TODO The gadget spawns 1 unit away from the player (in the direction the player is facing?)
-	s.Gadget = gadget.New(c.Core, core.Coord{X: x, Y: y, R: 1}, combat.GadgetTypLeaLotus)
+	player := c.Core.Combat.Player()
+	c.burstPos = combat.CalcOffsetPoint(
+		player.Pos(),
+		combat.Point{Y: 1},
+		player.Direction(),
+	)
+	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
 	s.Reactable = &reactable.Reactable{}
 	s.Reactable.Init(s, c.Core)
 	s.Durability[reactable.ModifierDendro] = 10
@@ -63,7 +65,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 	c.burstTransfig = attributes.NoElement
 	s.char = c
 
-	s.targetingRadius = 8
+	c.burstRadius = 8
 	s.hitboxRadius = 2
 	c.burstOverflowingLotuslight = 0
 
@@ -164,18 +166,16 @@ func (s *LeaLotus) Tick() {
 }
 
 func (l *LeaLotus) QueueAttack(delay int) {
-	x, y := l.Gadget.Pos()
-	enemies := l.Core.Combat.EnemiesWithinRadius(x, y, l.targetingRadius)
-	if len(enemies) > 0 {
-		idx := l.Core.Rand.Intn(len(enemies))
-
-		l.Core.QueueAttackWithSnap(
-			l.burstAtk.Info,
-			l.burstAtk.Snapshot,
-			combat.NewCircleHit(l.Core.Combat.Enemy(enemies[idx]), l.hitboxRadius),
-			delay,
-		)
+	enemy := l.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(l.Gadget, nil, l.char.burstRadius), nil)
+	if enemy == nil {
+		return
 	}
+	l.Core.QueueAttackWithSnap(
+		l.burstAtk.Info,
+		l.burstAtk.Snapshot,
+		combat.NewCircleHitOnTarget(enemy, nil, l.hitboxRadius),
+		delay,
+	)
 }
 
 func (r *LeaLotus) React(a *combat.AttackEvent) {
@@ -220,7 +220,7 @@ func (s *LeaLotus) TryBloom(a *combat.AttackEvent) {
 	if !s.Reactable.TryBloom(a) {
 		return
 	}
-	s.targetingRadius = 12
+	s.char.burstRadius = 12
 	s.hitboxRadius = 4
 	for t := 15; t <= s.Duration; t += 90 {
 		s.QueueAttack(t)
@@ -237,7 +237,12 @@ func (s *LeaLotus) TryBurning(a *combat.AttackEvent) {
 	s.burstAtk.Info.ICDTag = combat.ICDTagNone
 	s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]
 	s.Core.Tasks.Add(func() {
-		s.Core.QueueAttackWithSnap(s.burstAtk.Info, s.burstAtk.Snapshot, combat.NewCircleHit(s, 6.5), 0)
+		s.Core.QueueAttackWithSnap(
+			s.burstAtk.Info,
+			s.burstAtk.Snapshot,
+			combat.NewCircleHitOnTarget(s, nil, 6.5),
+			0,
+		)
 		s.Core.Status.Delete(burstKey)
 	}, 60)
 	s.transfig(attributes.Pyro)
@@ -251,3 +256,7 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	}
 	s.Kill()
 }
+
+func (s *LeaLotus) SetDirection(trg combat.Point)                   {}
+func (s *LeaLotus) SetDirectionToClosestEnemy()                     {}
+func (s *LeaLotus) CalcTempDirection(trg combat.Point) combat.Point { return combat.DefaultDirection() }

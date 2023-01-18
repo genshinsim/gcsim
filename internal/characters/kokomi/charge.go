@@ -50,7 +50,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		radius = 4
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius), chargeHitmark-windup, chargeHitmark-windup)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, radius),
+		chargeHitmark-windup,
+		chargeHitmark-windup,
+	)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

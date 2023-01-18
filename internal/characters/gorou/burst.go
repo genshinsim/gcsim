@@ -45,7 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHit(c.Core.Combat.Player(), 5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
 			0,
 		)
 
@@ -111,7 +111,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-//recursive function for dealing damage
+// recursive function for dealing damage
 func (c *char) gorouCrystalCollapse(src int) func() {
 	return func() {
 		//do nothing if this has been overwritten
@@ -138,13 +138,16 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		snap := c.Snapshot(&ai)
 		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 0.156
 
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
-			//TODO: skill damage frames
-			1,
-		)
+		enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8), nil)
+		if enemy != nil {
+			c.Core.QueueAttackWithSnap(
+				ai,
+				snap,
+				combat.NewCircleHitOnTarget(enemy, nil, 3.5),
+				//TODO: skill damage frames
+				1,
+			)
+		}
 
 		//tick every 1.5s
 		c.Core.Tasks.Add(c.gorouCrystalCollapse(src), 90)

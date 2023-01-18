@@ -66,7 +66,17 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.8), skillPressHitmark, skillPressHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			0.8,
+		),
+		skillPressHitmark,
+		skillPressHitmark,
+	)
 
 	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
 	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, skillPressHitmark+c.ParticleDelay)
@@ -95,7 +105,12 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), skillHoldHitmark, skillHoldHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 4),
+		skillHoldHitmark,
+		skillHoldHitmark,
+	)
 
 	// Particle spawn timing is a bit later than press E
 	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, skillHoldHitmark+c.ParticleDelay)

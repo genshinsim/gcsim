@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if !(atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra) {
 			return false
 		}
-		baseDmgAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * nacaBoost
+		baseDmgAdd := (char.Base.Def*(1+char.Stat(attributes.DEFP)) + char.Stat(attributes.DEF)) * nacaBoost
 		atk.Info.FlatDmg += baseDmgAdd
 		c.Log.NewEvent("Redhorn proc dmg add", glog.LogPreDamageMod, char.Index).
 			Write("base_added_dmg", baseDmgAdd)

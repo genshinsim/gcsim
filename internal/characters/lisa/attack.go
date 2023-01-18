@@ -43,7 +43,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1),
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 	)

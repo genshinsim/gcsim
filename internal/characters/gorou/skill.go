@@ -20,7 +20,8 @@ func init() {
 	skillFrames[action.ActionSwap] = 46    // E -> Swap
 }
 
-/**
+/*
+*
 Provides up to 3 buffs to active characters within the skill's AoE based on the number of Geo characters in
 the party at the time of casting:
 • 1 Geo character: Adds "Standing Firm" - DEF Bonus.
@@ -28,7 +29,8 @@ the party at the time of casting:
 • 3 Geo characters: Adds "Crunch" - Geo DMG Bonus.
 Gorou can deploy only 1 General's War Banner on the field at any one time. Characters can only benefit from
 1 General's War Banner at a time. When a party member leaves the field, the active buff will last for 2s.
-**/
+*
+*/
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		ai := combat.AttackInfo{
@@ -48,10 +50,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		snap := c.Snapshot(&ai)
 		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 1.56
 
+		c.eFieldArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 8)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHit(c.Core.Combat.Player(), 5),
+			combat.NewCircleHitOnTarget(c.eFieldArea.Shape.Pos(), nil, 5),
 			0,
 		)
 
@@ -88,7 +91,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-//recursive function for queueing up ticks
+// recursive function for queueing up ticks
 func (c *char) gorouSkillBuffField(src int) func() {
 	return func() {
 		//do nothing if this has been overwritten
@@ -96,10 +99,17 @@ func (c *char) gorouSkillBuffField(src int) func() {
 			return
 		}
 		//do nothing if both field expired
-		if c.Core.Status.Duration(generalWarBannerKey) == 0 && c.Core.Status.Duration(generalGloryKey) == 0 {
+		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
+		qActive := c.Core.Status.Duration(generalGloryKey) > 0
+		if !eActive && !qActive {
 			return
 		}
-		//do nothing if expired
+		// do nothing if only e is up and player is outside of the field area
+		// if q is up then the player is always inside of the field area
+		if eActive && !qActive && !c.Core.Combat.Player().IsWithinArea(c.eFieldArea) {
+			return
+		}
+
 		//add buff to active char based on number of geo chars
 		//ok to overwrite existing mod
 		active := c.Core.Player.ActiveChar()

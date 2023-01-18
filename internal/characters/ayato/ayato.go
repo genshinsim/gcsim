@@ -68,7 +68,7 @@ func (c *char) Init() error {
 func (c *char) AdvanceNormalIndex() {
 	c.NormalCounter++
 
-	if c.StatusIsActive(skillBuffKey) {
+	if c.StatusIsActive(SkillBuffKey) {
 		if c.NormalCounter == c.shunsuikenCounter {
 			c.NormalCounter = 0
 		}
@@ -84,7 +84,7 @@ func (c *char) AdvanceNormalIndex() {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.StatusIsActive(skillBuffKey) {
+	if c.StatusIsActive(SkillBuffKey) {
 		switch ai.AttackTag {
 		case combat.AttackTagNormal:
 		case combat.AttackTagExtra:
@@ -93,12 +93,12 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		}
 		ai.Element = attributes.Hydro
 		//add namisen stack
-		flatdmg := (c.Base.HP*(1+ds.Stats[attributes.HPP]) + ds.Stats[attributes.HP]) * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
+		flatdmg := c.MaxHP() * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
 		ai.FlatDmg += flatdmg
 		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).
 			Write("damage_added", flatdmg).
 			Write("stacks", c.stacks).
-			Write("expiry", c.StatusExpiry(skillBuffKey))
+			Write("expiry", c.StatusExpiry(SkillBuffKey))
 	}
 	return ds
 }

@@ -16,6 +16,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	qPos                combat.Point
 	qAbsorb             attributes.Element
 	absorbCheckLocation combat.AttackPattern
 	aiAbsorb            combat.AttackInfo
@@ -31,8 +32,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 3
 	c.SkillCon = 5
-
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1)
 
 	w.Character = &c
 

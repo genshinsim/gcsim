@@ -84,9 +84,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) //this way we're future proof if for whatever reason this misses
 	}
 
-	amuletCB := func(_ combat.AttackCB) {
+	amuletCB := func(a combat.AttackCB) {
 		// generate amulet if generated amulets < limit
 		if c.abundanceAmulets >= maxAmulets {
+			return
+		}
+		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
 
@@ -99,7 +102,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < hits; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.3), skillHitmark, particlesCB, amuletCB)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.1,
+				0.6,
+			),
+			skillHitmark,
+			particlesCB,
+			amuletCB,
+		)
 	}
 
 	// try to pick up amulets

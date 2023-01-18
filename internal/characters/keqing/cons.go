@@ -20,6 +20,9 @@ func (c *char) c2() {
 		if !ok {
 			return false
 		}
+		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+			return false
+		}
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}

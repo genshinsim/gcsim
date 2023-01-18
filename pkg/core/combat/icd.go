@@ -61,6 +61,7 @@ const (
 	ICDTagDoriC2
 	ICDTagDoriChargingStation
 	ICDTagNilouTranquilityAura
+	ICDTagWandererC6
 	ICDReactionDamageDelim
 	ICDTagOverloadDamage
 	ICDTagSuperconductDamage
@@ -76,6 +77,7 @@ const (
 	ICDTagHyperbloomDamage
 	ICDTagNahidaSkill
 	ICDTagNahidaC6
+	ICDTagWandererA4
 	ICDTagLength
 )
 
@@ -102,7 +104,10 @@ const (
 	ICDGroupBurning
 	ICDGroupNahidaSkill
 	ICDGroupLayla
-	ICDGroupYaoyaoRadish
+	ICDGroupWandererC6
+	ICDGroupWandererA4
+	ICDGroupYaoyaoRadishSkill
+	ICDGroupYaoyaoRadishBurst
 	ICDGroupLength
 )
 
@@ -126,7 +131,10 @@ var ICDGroupResetTimer = []int{
 	120, //burning
 	60,  //nahida skill
 	180, //layla
-	150, //yaoyao radish
+	120, //wanderer c6
+	60,  //wanderer a4
+	150, //yaoyao radish skill
+	90,  //yaoyao radish burst
 }
 
 var ICDGroupEleApplicationSequence = [][]float64{
@@ -168,7 +176,13 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//layla
 	{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-	//yaoyao radish
+	//wanderer c6
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//wanderer a4
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//yaoyao radish skill
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//yaoyao radish burst
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 }
 
@@ -213,6 +227,12 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//layla
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//yaoyao radish
+	//wanderer c6
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//wanderer a4
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//yaoyao radish skill
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//yaoyao radish burst
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 }

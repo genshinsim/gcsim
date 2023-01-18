@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 0, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5), 0, skillHitmark)
 
 	c.QueueCharTask(func() {
 		// add shield

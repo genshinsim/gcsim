@@ -10,7 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-const DendroCoreDelay = 20
+const DendroCoreDelay = 30
 
 func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 	//can be hydro bloom, dendro bloom, or quicken bloom
@@ -78,29 +78,32 @@ type DendroCore struct {
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
-		var t combat.Gadget = NewDendroCore(r.core, r.self, a)
+		var t combat.Gadget = NewDendroCore(r.core, r.self.Shape(), a)
 		r.core.Combat.AddGadget(t)
 		r.core.Events.Emit(event.OnDendroCore, t, a)
 	}, DendroCoreDelay)
 }
 
-func NewDendroCore(c *core.Core, pos combat.Positional, a *combat.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, shp combat.Shape, a *combat.AttackEvent) *DendroCore {
 	s := &DendroCore{
 		srcFrame: c.F,
 	}
 
-	x, y := pos.Pos()
-	// for simplicity, seeds spawn randomly within 1 radius of target
-	x = x + 2*c.Rand.Float64() - 1
-	y = y + 2*c.Rand.Float64() - 1
-	s.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
+	circ, ok := shp.(*combat.Circle)
+	if !ok {
+		panic("rectangle target hurtbox is not supported for dendro core spawning")
+	}
+
+	// for simplicity, seeds spawn randomly at radius + 0.5
+	r := circ.Radius() + 0.5
+	s.Gadget = gadget.New(c, combat.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
 	explode := func() {
 		ai, snap := NewBloomAttack(char, s)
-		ap := combat.NewCircleHit(s, 5)
+		ap := combat.NewCircleHitOnTarget(s, nil, 5)
 		c.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		//self damage
@@ -140,12 +143,11 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
 		ai, snap := NewHyperbloomAttack(char, s)
-		// queue dmg nearest enemy
-		x, y := s.Gadget.Pos()
-		enemies := s.Core.Combat.EnemyByDistance(x, y, combat.InvalidTargetKey)
-		if len(enemies) > 0 {
-			ap := combat.NewCircleHit(s.Core.Combat.Enemy(enemies[0]), 1)
-			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
+		// queue dmg nearest enemy within radius 15
+		enemy := s.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(s.Gadget, nil, 15), nil)
+		if enemy != nil {
+			ap := combat.NewCircleHitOnTarget(enemy, nil, 1)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
@@ -153,7 +155,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			ap.SkipTargets[combat.TargettablePlayer] = false
 			ap.SkipTargets[combat.TargettableEnemy] = true
 			ap.SkipTargets[combat.TargettableGadget] = true
-			s.Core.QueueAttackWithSnap(ai, snap, ap, 5)
+			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 		}
 
 		s.Gadget.OnKill = nil
@@ -163,7 +165,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// trigger burgeon, aoe dendro damage
 		// self damage
 		ai, snap := NewBurgeonAttack(char, s)
-		ap := combat.NewCircleHit(s.Gadget, 5)
+		ap := combat.NewCircleHitOnTarget(s, nil, 5)
 
 		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
@@ -184,8 +186,6 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 
 	return 0, false
 }
-
-func (s *DendroCore) ApplyDamage(*combat.AttackEvent, float64) {}
 
 const (
 	BloomMultiplier      = 2
@@ -245,4 +245,10 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 	flatdmg, snap := calcReactionDmg(char, ai, em)
 	ai.FlatDmg = HyperbloomMultiplier * flatdmg
 	return ai, snap
+}
+
+func (s *DendroCore) SetDirection(trg combat.Point) {}
+func (s *DendroCore) SetDirectionToClosestEnemy()   {}
+func (s *DendroCore) CalcTempDirection(trg combat.Point) combat.Point {
+	return combat.DefaultDirection()
 }

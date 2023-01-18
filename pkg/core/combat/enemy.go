@@ -1,12 +1,57 @@
 package combat
 
 import (
-	"math"
 	"sort"
 
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+type Status struct {
+	modifier.Base
+}
+type ResistMod struct {
+	Ele   attributes.Element
+	Value float64
+	modifier.Base
+}
+
+type DefMod struct {
+	Value float64
+	Dur   int
+	modifier.Base
+}
+
+type Enemy interface {
+	Target
+	// hp related
+	MaxHP() float64
+	HP() float64
+	// hitlag related
+	ApplyHitlag(factor, dur float64)
+	QueueEnemyTask(f func(), delay int)
+	// modifier related
+	// add
+	AddStatus(key string, dur int, hitlag bool)
+	AddResistMod(mod ResistMod)
+	AddDefMod(mod DefMod)
+	// delete
+	DeleteStatus(key string)
+	DeleteResistMod(key string)
+	DeleteDefMod(key string)
+	// active
+	StatusIsActive(key string) bool
+	ResistModIsActive(key string) bool
+	DefModIsActive(key string) bool
+	StatusExpiry(key string) int
+}
+
+type enemyTuple struct {
+	enemy Enemy
+	dist  float64
+}
 
 func (h *Handler) Enemy(i int) Target {
 	if i < 0 || i > len(h.enemies) {
@@ -15,15 +60,15 @@ func (h *Handler) Enemy(i int) Target {
 	return h.enemies[i]
 }
 
-func (h *Handler) SetEnemyPos(i int, x, y float64) bool {
+func (h *Handler) SetEnemyPos(i int, p Point) bool {
 	if i < 0 || i > len(h.enemies)-1 {
 		return false
 	}
-	h.enemies[i].SetPos(x, y)
+	h.enemies[i].SetPos(p)
 	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
 		Write("index", i).
-		Write("x", x).
-		Write("y", y)
+		Write("x", p.X).
+		Write("y", p.Y)
 	return true
 }
 
@@ -31,19 +76,6 @@ func (h *Handler) KillEnemy(i int) {
 	h.enemies[i].Kill()
 	h.Events.Emit(event.OnTargetDied, h.enemies[i], &AttackEvent{}) // TODO: it's fine?
 	h.Log.NewEvent("enemy dead", glog.LogSimEvent, -1).Write("index", i)
-	//try setting default target to a diff one if same as dead enemy
-	if h.enemies[i].Key() == h.DefaultTarget {
-		for j, v := range h.enemies {
-			if j == i {
-				continue
-			}
-			if v.IsAlive() {
-				h.DefaultTarget = v.Key()
-				h.Log.NewEvent("default target changed on enemy death", glog.LogWarnings, -1)
-				break
-			}
-		}
-	}
 }
 
 func (h *Handler) AddEnemy(t Target) {
@@ -71,76 +103,135 @@ func (h *Handler) PrimaryTarget() Target {
 	panic("default target does not exist?!")
 }
 
-// EnemyByDistance returns an array of indices of the enemies sorted by distance
-func (c *Handler) EnemyByDistance(x, y float64, excl TargetKey) []int {
-	//we dont actually need to know the exact distance. just find the lowest
-	//of x^2 + y^2 to avoid sqrt
+// all enemies
 
-	var tuples []struct {
-		ind  int
-		dist float64
-	}
+// returns enemies within the given area, no sorting, pass nil for no filter
+func (c *Handler) EnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
+	var enemies []Enemy
 
-	for i, v := range c.enemies {
-		if v.Key() == excl {
+	hasFilter := filter != nil
+	for _, v := range c.enemies {
+		e, ok := v.(Enemy)
+		if !ok {
+			panic("c.enemies should contain targets that implement the Enemy interface")
+		}
+		if hasFilter && !filter(e) {
 			continue
 		}
-		vx, vy := v.Shape().Pos()
-		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
-		tuples = append(tuples, struct {
-			ind  int
-			dist float64
-		}{ind: i, dist: dist})
+		if !v.IsAlive() {
+			continue
+		}
+		if !e.IsWithinArea(a) {
+			continue
+		}
+		enemies = append(enemies, e)
 	}
 
-	sort.Slice(tuples, func(i, j int) bool {
-		return tuples[i].dist < tuples[j].dist
+	if len(enemies) == 0 {
+		return nil
+	}
+
+	return enemies
+}
+
+// random enemies
+
+// returns a random enemy within the given area, pass nil for no filter
+func (c *Handler) RandomEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
+	enemies := c.EnemiesWithinArea(a, filter)
+	if enemies == nil {
+		return nil
+	}
+	return enemies[c.Rand.Intn(len(enemies))]
+}
+
+// returns a list of random enemies within the given area, pass nil for no filter
+func (c *Handler) RandomEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool, maxCount int) []Enemy {
+	enemies := c.EnemiesWithinArea(a, filter)
+	if enemies == nil {
+		return nil
+	}
+	enemyCount := len(enemies)
+
+	// generate random indexes to take from enemies (no duplicates!)
+	indexes := c.Rand.Perm(enemyCount)
+
+	// determine length of slice to return
+	count := maxCount
+	if enemyCount < maxCount {
+		count = enemyCount
+	}
+
+	// add enemies given by indexes to the result
+	result := make([]Enemy, 0, count)
+	for i := 0; i < count; i++ {
+		result = append(result, enemies[indexes[i]])
+	}
+	return result
+}
+
+// closest enemies
+
+func (c *Handler) getEnemiesWithinAreaSorted(a AttackPattern, filter func(t Enemy) bool, skipAttackPattern bool) []enemyTuple {
+	var enemies []enemyTuple
+
+	hasFilter := filter != nil
+	for _, v := range c.enemies {
+		e, ok := v.(Enemy)
+		if !ok {
+			panic("c.enemies should contain targets that implement the Enemy interface")
+		}
+		if hasFilter && !filter(e) {
+			continue
+		}
+		if !e.IsAlive() {
+			continue
+		}
+		if !skipAttackPattern && !e.IsWithinArea(a) {
+			continue
+		}
+		enemies = append(enemies, enemyTuple{enemy: e, dist: a.Shape.Pos().Sub(e.Pos()).MagnitudeSquared()})
+	}
+
+	if len(enemies) == 0 {
+		return nil
+	}
+
+	sort.Slice(enemies, func(i, j int) bool {
+		return enemies[i].dist < enemies[j].dist
 	})
 
-	result := make([]int, 0, len(tuples))
-
-	for _, v := range tuples {
-		result = append(result, v.ind)
-	}
-
-	return result
+	return enemies
 }
 
-// EnemiesWithinRadius returns an array of indices of the enemies within radius r
-func (c *Handler) EnemiesWithinRadius(x, y, r float64) []int {
-	result := make([]int, 0, len(c.enemies))
-	for i, v := range c.enemies {
-		vx, vy := v.Shape().Pos()
-		dist := math.Pow(x-vx, 2) + math.Pow(y-vy, 2)
-		if dist > r {
-			continue
-		}
-		result = append(result, i)
+// returns the closest enemy to the given position without any range restrictions; SHOULD NOT be used outside of pkg
+func (c *Handler) ClosestEnemy(pos Point) Enemy {
+	enemies := c.getEnemiesWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true)
+	if enemies == nil {
+		return nil
 	}
-
-	return result
+	return enemies[0].enemy
 }
 
-// EnemyExcl returns array of indices of enemies, excluding self
-func (c *Handler) EnemyExcl(self TargetKey) []int {
-	result := make([]int, 0, len(c.enemies))
-
-	for i, e := range c.enemies {
-		if e.Key() == self {
-			continue
-		}
-		result = append(result, i)
+// returns the closest enemy within the given area, pass nil for no filter
+func (c *Handler) ClosestEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
+	enemies := c.getEnemiesWithinAreaSorted(a, filter, false)
+	if enemies == nil {
+		return nil
 	}
-
-	return result
+	return enemies[0].enemy
 }
 
-func (c *Handler) RandomEnemyTarget() int {
-
-	count := len(c.enemies)
-	if count == 0 {
-		//this will basically cause that attack to hit nothing
-		return -1
+// returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
+func (c *Handler) ClosestEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
+	enemies := c.getEnemiesWithinAreaSorted(a, filter, false)
+	if enemies == nil {
+		return nil
 	}
-	return c.Rand.Intn(count)
+
+	result := make([]Enemy, 0, len(enemies))
+	for _, v := range enemies {
+		result = append(result, v.enemy)
+	}
+	return result
 }

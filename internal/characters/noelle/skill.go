@@ -50,15 +50,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.a4Counter = 0
 
 	// initial E hit can proc her heal
-	done := false
-	cb := c.skillHealCB(done)
+	cb := c.skillHealCB()
 
 	// center on player
 	// use char queue for this just to be safe in case of C4
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2),
 			0,
 			0,
 			cb,
@@ -85,8 +84,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHealCB(done bool) combat.AttackCBFunc {
+func (c *char) skillHealCB() combat.AttackCBFunc {
+	done := false
 	return func(atk combat.AttackCB) {
+		if atk.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}
@@ -135,5 +138,5 @@ func (c *char) explodeShield() {
 	}
 
 	//center on player
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 0, 0)
 }

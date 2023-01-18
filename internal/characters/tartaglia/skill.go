@@ -74,7 +74,7 @@ func init() {
 // Cast: AoE strong hydro damage
 // Melee Stance: infuse NA/CA to hydro damage
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(meleeKey) {
+	if c.StatusIsActive(MeleeKey) {
 		cdDelay := 11
 		switch c.Core.Player.CurrentState() {
 		case action.WalkState,
@@ -105,7 +105,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	c.eCast = c.Core.F
-	c.AddStatus(meleeKey, 30*60, true)
+	c.AddStatus(MeleeKey, 30*60, true)
 	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index).
 		Write("rtexpiry", c.Core.F+30*60)
 
@@ -131,11 +131,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		hitmark = skillDashHitmark
 		cdDelay = 0
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), hitmark, hitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), hitmark, hitmark)
 
 	src := c.eCast
 	c.QueueCharTask(func() {
-		if src == c.eCast && c.StatusIsActive(meleeKey) {
+		if src == c.eCast && c.StatusIsActive(MeleeKey) {
 			c.onExitMeleeStance(0)
 			c.ResetNormalCounter()
 		}
@@ -166,7 +166,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 // Hook to end Tartaglia's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.StatusIsActive(meleeKey) {
+		if c.StatusIsActive(MeleeKey) {
 			// TODO: need to verify if this is correct
 			// but if childe is currently in melee stance and skill is on CD that means that
 			// the button has lit up yet from original skill press
@@ -211,5 +211,5 @@ func (c *char) onExitMeleeStance(delay int) {
 	} else {
 		c.SetCDWithDelay(action.ActionSkill, skillCD, delay)
 	}
-	c.DeleteStatus(meleeKey)
+	c.DeleteStatus(MeleeKey)
 }

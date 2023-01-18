@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -48,12 +47,9 @@ func (c *char) c2() {
 func (c *char) c4() {
 	// gets called once right before burst start and then at the same time as heal ticks (every 1s)
 	// add debuff to all targets for 1.2 s
-	for _, t := range c.Core.Combat.Enemies() {
-		e, ok := t.(*enemy.Enemy)
-		if !ok {
-			continue
-		}
-		e.AddResistMod(enemy.ResistMod{
+	enemies := c.Core.Combat.EnemiesWithinArea(c.burstArea, nil)
+	for _, e := range enemies {
+		e.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("jean-c4", 72), // 1.2s
 			Ele:   attributes.Anemo,
 			Value: -0.4,

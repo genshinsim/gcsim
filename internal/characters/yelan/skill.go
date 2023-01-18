@@ -86,7 +86,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// hold := p["hold"]
 
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		//TODO: this used to be 82?
 		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.ParticleDelay)
 		//check for breakthrough
@@ -96,10 +99,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
 		}
 		//TODO: icd on this??
-		if c.Core.Status.Duration(burstStatus) > 0 {
-			c.exquisiteThrowSkillProc()
-			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index).
-				Write("icd", c.burstDiceICD)
+		if c.Core.Status.Duration(burstKey) > 0 {
+			c.summonExquisiteThrow()
+			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index)
 		}
 	}
 
@@ -119,7 +121,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			marked--
 			//queueing attack one frame later
 			//TODO: does hold have different attack size? don't think so?
-			c.Core.QueueAttack(ai, combat.NewDefSingleTarget(e.Key()), 1, 1, cb)
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, cb)
 		}
 
 		//activate c4 if relevant

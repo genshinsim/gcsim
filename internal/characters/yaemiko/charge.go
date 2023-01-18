@@ -43,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// TODO: check snapshot delay
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 1.41),
+		combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2, 2),
 		0,
 		chargeHitmark-windup,
 	)

@@ -7,13 +7,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
 
-const burstStart = 130
+const (
+	burstStart   = 122
+	burstMarkKey = "ganyu-burst-mark"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(125) // Q -> D/J
@@ -39,88 +41,64 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Status.Add("ganyuburst", 15*60+burstStart)
 
-	rad, ok := p["radius"]
-	if !ok {
-		rad = 1
-	}
-	r := 2.5 + float64(rad)
-	prob := r * r / 90.25
-
-	//tick every .3 sec, every fifth hit is targetted i.e. 1, 0, 0, 0, 0, 1
-	//first hit at 148
-	//duration is 15 seconds
-	//starts from end of cast
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10)
+	// a4 related
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CryoP] = 0.2
-	lastHit := make(map[combat.Target]int)
-	for delay := burstStart; delay < 900+burstStart; delay += 18 {
-		tick := delay
+	// tick every 0.3s from burstStart
+	for i := 0; i < 15*60; i += 18 {
+		// c4 related
+		tick := i
 		c.Core.Tasks.Add(func() {
-
-			// A4 every .3 seconds for the duration of the burst, add ice dmg up to active char for 1sec
-			active := c.Core.Player.ActiveChar()
-			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("ganyu-field", 60),
-				AffectedStat: attributes.CryoP,
-				Amount: func() ([]float64, bool) {
-					return m, true
+			// burst tick
+			enemy := c.Core.Combat.RandomEnemyWithinArea(
+				burstArea,
+				func(e combat.Enemy) bool {
+					return !e.StatusIsActive(burstMarkKey)
 				},
-			})
-			if tick >= 900+burstStart-18 {
-				c.Core.Log.NewEvent("a4 last tick", glog.LogCharacterEvent, c.Index).
-					Write("ends_on", c.Core.F+60)
+			)
+			var pos combat.Point
+			if enemy != nil {
+				pos = enemy.Pos()
+				enemy.AddStatus(burstMarkKey, 1.45*60, true) // same enemy can't be targeted again for 1.45s
+			} else {
+				pos = combat.CalcRandomPointFromCenter(burstArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
 			}
+			// deal dmg after a certain delay
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(pos, nil, 2.5), 8)
 
-			// increase C4 stacks at 3s interval
-			// assume this lasts for the full duration since no one moves...
-			if c.Base.Cons >= 4 && (tick-burstStart)%180 == 0 {
-				c.c4Stacks++
-				if c.c4Stacks > 5 {
-					c.c4Stacks = 5
-				}
-				c.Core.Log.NewEvent(c4Key+" tick", glog.LogCharacterEvent, c.Index).
-					Write("stacks", c.c4Stacks)
+			// a4 buff tick
+			if c.Core.Combat.Player().IsWithinArea(burstArea) {
+				active := c.Core.Player.ActiveChar()
+				active.AddStatMod(character.StatMod{
+					Base:         modifier.NewBase("ganyu-field", 60),
+					AffectedStat: attributes.CryoP,
+					Amount: func() ([]float64, bool) {
+						return m, true
+					},
+				})
 			}
-
-			// damage ticks and C4
-			//check if this hits first
-			target := -1
-			for i, t := range c.Core.Combat.Enemies() {
-				// skip non-enemy targets
-				x, ok := t.(*enemy.Enemy)
-				if !ok {
-					continue
-				}
-
-				// C4 lingers for 3s
-				if c.Base.Cons >= 4 {
-					x.SetTag(c4Key, c.Core.F+60*3)
-				}
-
-				if lastHit[t] < c.Core.F {
-					target = i
-					lastHit[t] = c.Core.F + 87 //cannot be targetted again for 1.45s
-					break
-				}
-			}
-			// log.Println(target)
-			//[1:14 PM] Aluminum | Harbinger of Jank: assuming uniform distribution and enemy at center:
-			//(radius_icicle + radius_enemy)^2 / radius_burst^2
-			trg := c.Core.Combat.Enemy(target)
-			if target == -1 {
-				if c.Core.Rand.Float64() > prob {
-					// no one getting hit
-					return
-				} else {
-					// icicle is not targeted but randomly clips enemy
-					// TODO: enemies with radius?
-					trg = c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget())
+			// c4 debuff tick
+			if c.Base.Cons >= 4 {
+				enemies := c.Core.Combat.EnemiesWithinArea(burstArea, nil)
+				// increase stacks every 3s but apply c4 status on every tick
+				// c4 lingers for 3s
+				increase := tick%180 == 0
+				for _, e := range enemies {
+					e.AddStatus(c4Key, c4Dur, true)
+					if increase {
+						c4Stacks := e.GetTag(c4Key) + 1
+						if c4Stacks > 5 {
+							c4Stacks = 5
+						}
+						e.SetTag(c4Key, c4Stacks)
+						c.Core.Log.NewEvent(c4Key+" tick on enemy", glog.LogCharacterEvent, c.Index).
+							Write("stacks", c4Stacks).
+							Write("enemy key", e.Key())
+					}
 				}
 			}
-			//deal dmg
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 2.5), 0)
-		}, delay)
-
+		}, i+burstStart)
 	}
 
 	//add cooldown to sim

@@ -35,9 +35,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstExplosion[c.TalentLvlBurst()],
 	}
+	c.burstPos = c.Core.Combat.Player().Pos()
+	//TODO: this should have its own position
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5.5),
+		combat.NewCircleHitOnTarget(c.burstPos, nil, 5.5),
 		explosionHitmark,
 		explosionHitmark,
 	)
@@ -84,7 +86,7 @@ func (c *char) burstTicks(snap combat.Snapshot) {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(c.Core.Combat.Player(), 4),
+		combat.NewCircleHitOnTarget(c.burstPos, nil, 4),
 		0,
 	)
 	c.Core.Tasks.Add(func() {
@@ -93,8 +95,10 @@ func (c *char) burstTicks(snap combat.Snapshot) {
 }
 
 func (c *char) burstA4Ticks() {
-	// TODO: add range check within field
 	if !c.StatusIsActive(burstKey) {
+		return
+	}
+	if !c.Core.Combat.Player().IsWithinArea(combat.NewCircleHitOnTarget(c.burstPos, nil, 6)) {
 		return
 	}
 	c.Core.Player.ActiveChar().AddStatus(a4Key, 60, true)

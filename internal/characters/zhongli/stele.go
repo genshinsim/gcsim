@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (c *char) newStele(dur int, max int) {
+func (c *char) newStele(dur int) {
 	//deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -21,13 +21,17 @@ func (c *char) newStele(dur int, max int) {
 		Mult:       skill[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, 0)
+	steleDir := c.Core.Combat.Player().Direction()
+	stelePos := combat.CalcOffsetPoint(c.Core.Combat.Player().Pos(), combat.Point{Y: 3}, steleDir)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(stelePos, nil, 2), 0, 0)
 
 	//create a construct
 	con := &stoneStele{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
 		c:      c,
+		dir:    steleDir,
+		pos:    stelePos,
 	}
 
 	num := c.Core.Constructs.CountByType(construct.GeoConstructZhongliSkill)
@@ -43,7 +47,6 @@ func (c *char) newStele(dur int, max int) {
 	).
 		Write("orig_count", num).
 		Write("cur_count", c.steleCount).
-		Write("max_hit", max).
 		Write("next_tick", c.Core.F+120)
 
 	// Snapshot buffs for resonance ticks
@@ -63,14 +66,13 @@ func (c *char) newStele(dur int, max int) {
 	c.steleSnapshot = combat.AttackEvent{
 		Info:        aiSnap,
 		Snapshot:    snap,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 5.66),
 		SourceFrame: c.Core.F,
 	}
 
-	c.Core.Tasks.Add(c.resonance(c.Core.F, max), 120)
+	c.Core.Tasks.Add(c.resonance(c.Core.F), 120)
 }
 
-func (c *char) resonance(src, max int) func() {
+func (c *char) resonance(src int) func() {
 	return func() {
 		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index).
 			Write("src", src).
@@ -86,14 +88,40 @@ func (c *char) resonance(src, max int) func() {
 		// Use snapshot for damage
 		ae := c.steleSnapshot
 
-		//check how many times to hit
-		count := c.Core.Constructs.Count() - c.Core.Constructs.CountByType(construct.GeoConstructZhongliSkill) + 1
-		if count > max {
-			count = max
-		}
+		boxOffset := combat.Point{Y: -4}
+		boxSize := 8.0
+		boxSizeSquared := boxSize * boxSize
+
+		ai := ae.Info
+		snap := ae.Snapshot
+
+		steles, others := c.Core.Constructs.ConstructsByType(construct.GeoConstructZhongliSkill)
+
 		orb := false
-		for i := 0; i < count; i++ {
-			c.Core.QueueAttackEvent(&ae, 0)
+		for _, s := range steles {
+			steleDir := s.Direction()
+			stelePos := s.Pos()
+
+			// get all constructs except for the steles within radius 8 of each stele for resonance purposes
+			var resonanceConstructs []construct.Construct
+			for _, con := range others {
+				if con.Pos().Sub(stelePos).MagnitudeSquared() > boxSizeSquared {
+					continue
+				}
+				resonanceConstructs = append(resonanceConstructs, con)
+			}
+
+			// queue stele attack
+			steleAttackPos := combat.CalcOffsetPoint(stelePos, boxOffset, steleDir)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(steleAttackPos, nil, boxSize, boxSize), 0)
+
+			// queue resonance attacks
+			for _, con := range resonanceConstructs {
+				resonanceAttackPos := combat.CalcOffsetPoint(con.Pos(), boxOffset, con.Direction())
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(resonanceAttackPos, nil, boxSize, boxSize), 0)
+			}
+
+			// particle check
 			if c.energyICD < c.Core.F && !orb && c.Core.Rand.Float64() < .5 {
 				orb = true
 			}
@@ -102,6 +130,6 @@ func (c *char) resonance(src, max int) func() {
 			c.energyICD = c.Core.F + 90
 			c.Core.QueueParticle("zhongli", 1, attributes.Geo, 20+c.ParticleDelay)
 		}
-		c.Core.Tasks.Add(c.resonance(src, max), 120)
+		c.Core.Tasks.Add(c.resonance(src), 120)
 	}
 }

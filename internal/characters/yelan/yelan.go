@@ -1,6 +1,7 @@
 package yelan
 
 import (
+	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -13,7 +14,8 @@ import (
 const (
 	breakthroughStatus = "yelan_breakthrough"
 	c6Status           = "yelan_c6"
-	burstStatus        = "yelanburst"
+	burstKey           = "yelanburst"
+	burstICDKey        = "yelanburstICD"
 )
 
 func init() {
@@ -22,12 +24,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a4buff       []float64
-	c2icd        int
-	burstDiceICD int
-	burstTickSrc int
-	c6count      int
-	c4count      int //keep track of number of enemies tagged
+	a4buff  []float64
+	c2icd   int
+	c6count int
+	c4count int //keep track of number of enemies tagged
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile) error {
@@ -59,6 +59,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile)
 func (c *char) Init() error {
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a1()
-	c.burstStateHook()
+	(&common.NAHook{
+		C:           c.CharWrapper,
+		AbilName:    "yelan burst",
+		Core:        c.Core,
+		AbilKey:     burstKey,
+		AbilProcICD: 60,
+		AbilICDKey:  burstICDKey,
+		DelayFunc:   common.Get0PercentN0Delay,
+		SummonFunc:  c.summonExquisiteThrow,
+	}).Enable()
 	return nil
 }
