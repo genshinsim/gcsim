@@ -19,6 +19,7 @@ type char struct {
 	burstAI           combat.AttackInfo
 	numYueguiJumping  int
 	yueguiJumping     []*yuegui
+	a1src             int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

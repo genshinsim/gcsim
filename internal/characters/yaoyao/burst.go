@@ -45,6 +45,23 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(c.newYueguiJump, 2*60+skillStart)
 	c.QueueCharTask(c.newYueguiJump, 3*60+skillStart)
 	c.QueueCharTask(c.removeBurst, 5*60+skillStart)
+
+	// TODO: Yaoyao gains 15% movespeed and 50% dendro res
+	// m := make([]float64, attributes.EndStatType)
+	// m[attributes.DendroRes] = 0.50
+	// m[attributes.Movespeed] = 0.15
+	// c.AddStatMod(character.StatMod{
+	// 		Base:         modifier.NewBaseWithHitlag(burstKey, 600),
+	// 		AffectedStat: attributes.DendroRes,
+	// 		Amount: func() ([]float64, bool) {
+	// 			return m, true
+	// 		}
+	// },)
+
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],

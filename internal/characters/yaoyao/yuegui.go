@@ -10,16 +10,17 @@ import (
 
 const skillParticleICD = 90
 const skillTargetingRad = 8 // TODO: replace with the actual range
-const radishRad = 1         // TODO: replace with the actual radish AoE
+const radishRad = 1.0       // TODO: replace with the actual radish AoE
 const travelDelay = 10      // TODO: replace with the actual travel delay
 
 type yuegui struct {
 	*gadget.Gadget
 	// *reactable.Reactable
-	c    *char
-	ai   combat.AttackInfo
-	snap combat.Snapshot
-	aoe  combat.AttackPattern
+	c            *char
+	ai           combat.AttackInfo
+	snap         combat.Snapshot
+	aoe          combat.AttackPattern
+	throwCounter int
 }
 
 func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
@@ -29,7 +30,7 @@ func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
 		snap: c.Snapshot(&procAI),
 		c:    c,
 	}
-	pos := c.Core.Combat.Player().Pos().Add(combat.Point{0, 1})
+	pos := c.Core.Combat.Player().Pos().Add(combat.Point{X: 0, Y: 1})
 	//TODO: yuegui placement??
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiThrowing)
 	yg.Gadget.Duration = 600
@@ -76,7 +77,7 @@ func (yg *yuegui) throw() {
 			return
 		}
 		yg.c.lastSkillParticle = yg.Core.F
-		yg.Core.QueueParticle("yaoyao", 1, attributes.Pyro, yg.c.ParticleDelay)
+		yg.Core.QueueParticle("yaoyao", 1, attributes.Dendro, yg.c.ParticleDelay)
 	}
 	currHPPerc := yg.Core.Player.ActiveChar().HPCurrent / yg.Core.Player.ActiveChar().MaxHP()
 	enemy := yg.Core.Combat.RandomEnemyWithinArea(yg.aoe, nil)
@@ -88,16 +89,8 @@ func (yg *yuegui) throw() {
 		// really it should be random if no targets are in range and the character's HP is full but we aren't really simming that
 		target = yg.Core.Combat.Player().Pos()
 	}
-	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
-	var ai combat.AttackInfo
-	var hi player.HealInfo
-	if yg.c.StatusIsActive(burstKey) {
-		ai = yg.c.burstAI
-		hi = yg.c.getBurstHealInfo()
-	} else {
-		ai = yg.ai
-		hi = yg.getSkillHealInfo()
-	}
+	ai, hi, radius := yg.getInfos()
+	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radius)
 	yg.Core.QueueAttackWithSnap(
 		ai,
 		yg.snap,
@@ -106,10 +99,29 @@ func (yg *yuegui) throw() {
 		particleCB,
 	)
 	if yg.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
-		yg.Core.Player.Heal(hi)
+		yg.c.radishHeal(hi)
+	}
+	yg.throwCounter += 1
+}
+
+func (yg *yuegui) getInfos() (combat.AttackInfo, player.HealInfo, float64) {
+	var ai combat.AttackInfo
+	var hi player.HealInfo
+
+	if yg.c.StatusIsActive(burstKey) {
+		ai = yg.c.burstAI
+		hi = yg.c.getBurstHealInfo()
+	} else {
+		ai = yg.ai
+		hi = yg.getSkillHealInfo()
 	}
 
+	if yg.c.Base.Cons >= 6 {
+		return yg.c6(ai, hi, radishRad)
+	}
+	return ai, hi, radishRad
 }
+
 func (yg *yuegui) getSkillHealInfo() player.HealInfo {
 	return player.HealInfo{
 		Caller:  yg.c.Index,

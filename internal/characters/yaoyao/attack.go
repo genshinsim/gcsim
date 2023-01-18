@@ -13,12 +13,17 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{12}, {8}, {11, 18}, {5, 15, 24, 29}, {21}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0}, {0, 0, 0, 0.03}, {0.09}}
-	attackRadius          = [][]float64{{1.61}, {1.83}, {1.83, 1.76}, {1.76, 1.76, 1.76, 1.76}, {1.83}}
+	attackHitboxes        = [][][]float64{
+		{{1.2, 3}},
+		{{1.6, 3.3}},
+		{{1.6, 3.3}, {1.2, 3.3}},
+		{{1.2, 3.3}, {1.2, 3.3}, {1.2, 3.3}, {1.2, 3.3}},
+		{{1.6, 3.3}},
+	}
 )
 
 const (
-	normalHitNum = 5
-	c2Debuff     = "yaoyao-c2"
+	normalHitNum = 4
 )
 
 func init() {
@@ -32,18 +37,10 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 24
 
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][3], 37)
-	attackFrames[3][action.ActionCharge] = 34
-
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 70)
-	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	done := false
-	var c2CB func(a combat.AttackCB)
-	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
-		c2CB = c.c2(done)
-	}
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -59,15 +56,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: true,
 		}
-		radius := attackRadius[c.NormalCounter][i]
+		ap := combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			nil,
+			attackHitboxes[c.NormalCounter][i][0],
+			attackHitboxes[c.NormalCounter][i][1],
+		)
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), radius),
-				0,
-				0,
-				c2CB,
-			)
+			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

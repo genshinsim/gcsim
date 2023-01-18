@@ -23,7 +23,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Radish (Throwing)",
+		Abil:       "Radish (Skill)",
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupYaoyaoRadishSkill,
@@ -39,6 +39,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, 13)
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 13)
+
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
