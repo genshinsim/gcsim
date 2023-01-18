@@ -26,13 +26,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:       "Radish (Throwing)",
 		AttackTag:  combat.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupYaoyaoRadish,
+		ICDGroup:   combat.ICDGroupYaoyaoRadishSkill,
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
+		// Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 
-	yuegui := c.newYuegui(procAI)
+	yuegui := c.newYueguiThrow(procAI)
 	c.Core.Tasks.Add(func() {
 		c.Core.Combat.AddGadget(yuegui)
 	}, 13)
