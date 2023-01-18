@@ -61,6 +61,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		// The buff is a ping dependent action, we're assuming the first hit won't
 		// have extra damage.
 		if !char.StatusIsActive(icdKey) {
+			if !(atk.Info.AttackTag == combat.AttackTagNormal) || atk.Info.Element == attributes.Physical {
+				return false
+			}
 			char.AddStatus(buffKey, 600, true)
 			char.AddStatus(icdKey, 720, true)
 			procCount = 28
