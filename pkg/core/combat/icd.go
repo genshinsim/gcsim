@@ -78,6 +78,7 @@ const (
 	ICDTagNahidaSkill
 	ICDTagNahidaC6
 	ICDTagWandererA4
+	ICDTagAlhaithamProjectionAttack
 	ICDTagLength
 )
 
@@ -103,6 +104,7 @@ const (
 	ICDGroupReactionB
 	ICDGroupBurning
 	ICDGroupNahidaSkill
+	ICDGroupAlhaithamProjectionAttack
 	ICDGroupLayla
 	ICDGroupWandererC6
 	ICDGroupWandererA4
@@ -128,6 +130,7 @@ var ICDGroupResetTimer = []int{
 	30,  //reaciton b
 	120, //burning
 	60,  //nahida skill
+	720, //alhaitham projection
 	180, //layla
 	120, //wanderer c6
 	60,  //wanderer a4
@@ -170,6 +173,8 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	{1, 0, 0, 0, 0, 0, 0, 0},
 	//nahida skill
 	{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//alhaitham projection
+	{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
 	//layla
 	{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
 	//wanderer c6
@@ -216,6 +221,8 @@ var ICDGroupDamageSequence = [][]float64{
 	//however there seems to be no limit to the amount of burning dmg a target can take
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//nahida-skill
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//alhaitham-projection
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//layla
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},

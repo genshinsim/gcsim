@@ -52,6 +52,7 @@ import (
 
 	//char
 	_ "github.com/genshinsim/gcsim/internal/characters/albedo"
+	_ "github.com/genshinsim/gcsim/internal/characters/alhaitham"
 	_ "github.com/genshinsim/gcsim/internal/characters/aloy"
 	_ "github.com/genshinsim/gcsim/internal/characters/amber"
 	_ "github.com/genshinsim/gcsim/internal/characters/ayaka"
