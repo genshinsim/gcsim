@@ -148,7 +148,7 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 
 func (c *char) updateTriKarmaInterval() {
 	cd := int(2.5 * 60)
-	if c.electroCount > 0 && c.Core.Status.Duration(withinBurstKey) > 0 {
+	if c.electroCount > 0 && c.StatusIsActive(withinBurstKey) {
 		cd -= int(burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()] * 60)
 	}
 	if cd != c.triKarmaInterval {
