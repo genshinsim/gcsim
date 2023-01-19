@@ -51,7 +51,7 @@ func (c *char) Init() error {
 func (c *char) onExitField() {
 	c.Core.Log.NewEvent("sub yes", glog.LogCharacterEvent, c.Index)
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		// do nothing if previous char wasn't ayato
+		// do nothing if previous char wasn't alhaitham
 		prev := args[0].(int)
 		if prev != c.Index {
 			return false
