@@ -86,3 +86,11 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	}
 	return ds
 }
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "mirrors":
+		return c.mirrorCount, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
