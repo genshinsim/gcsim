@@ -24,7 +24,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	c.AddStatus(burstKey, 5*60, true)
+
 	//add cooldown to sim
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 18)
 	//use up energy
@@ -45,7 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(c.newYueguiJump, 2*60+skillStart)
 	c.QueueCharTask(c.newYueguiJump, 3*60+skillStart)
 	c.QueueCharTask(c.removeBurst, 5*60+skillStart)
-
+	c.AddStatus(burstKey, 5*60+skillStart, true)
 	// TODO: Yaoyao gains 15% movespeed and 50% dendro res
 	// m := make([]float64, attributes.EndStatType)
 	// m[attributes.DendroRes] = 0.50

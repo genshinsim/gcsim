@@ -1,6 +1,8 @@
 package yaoyao
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -36,6 +38,10 @@ func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
 	yg.Gadget.Duration = 600
 	yg.Gadget.OnThinkInterval = yg.throw
 	yg.Gadget.ThinkInterval = 60
+	yg.Gadget.OnExpiry = func() {
+		yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Throwing) expiry"), glog.LogCharacterEvent, yg.c.Index)
+	}
+	yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Throwing) summoned"), glog.LogCharacterEvent, yg.c.Index)
 	// yg.Reactable = &reactable.Reactable{}
 	// yg.Reactable.Init(yg, c.Core)
 	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, 7)
@@ -57,6 +63,10 @@ func (c *char) newYueguiJump() {
 	yg.Gadget.Duration = -1 // They last until they get deleted by the burst
 	yg.Gadget.OnThinkInterval = yg.throw
 	yg.Gadget.ThinkInterval = 60
+	yg.Gadget.OnKill = func() {
+		yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Jumping) removed"), glog.LogCharacterEvent, yg.c.Index)
+	}
+	yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Jumping) summoned"), glog.LogCharacterEvent, yg.c.Index)
 	// yg.Reactable = &reactable.Reactable{}
 	// yg.Reactable.Init(yg, c.Core)
 	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, 7)
@@ -70,7 +80,6 @@ func (yg *yuegui) Tick() {
 	// yg.Reactable.Tick()
 	yg.Gadget.Tick()
 }
-
 func (yg *yuegui) throw() {
 	particleCB := func(_ combat.AttackCB) {
 		if yg.Core.F-yg.c.lastSkillParticle < skillParticleICD {
