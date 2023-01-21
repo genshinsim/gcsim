@@ -80,14 +80,19 @@ func (yg *yuegui) Tick() {
 	// yg.Reactable.Tick()
 	yg.Gadget.Tick()
 }
-func (yg *yuegui) throw() {
-	particleCB := func(_ combat.AttackCB) {
-		if yg.Core.F-yg.c.lastSkillParticle < skillParticleICD {
-			return
-		}
-		yg.c.lastSkillParticle = yg.Core.F
-		yg.Core.QueueParticle("yaoyao", 1, attributes.Dendro, yg.c.ParticleDelay)
+
+func (yg *yuegui) particleCB(_ combat.AttackCB) {
+	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing {
+		return
 	}
+	if yg.Core.F-yg.c.lastSkillParticle < skillParticleICD {
+		return
+	}
+	yg.c.lastSkillParticle = yg.Core.F
+	yg.Core.QueueParticle("yaoyao", 1, attributes.Dendro, yg.c.ParticleDelay)
+}
+
+func (yg *yuegui) throw() {
 	currHPPerc := yg.Core.Player.ActiveChar().HPCurrent / yg.Core.Player.ActiveChar().MaxHP()
 	enemy := yg.Core.Combat.RandomEnemyWithinArea(yg.aoe, nil)
 
@@ -100,12 +105,13 @@ func (yg *yuegui) throw() {
 	}
 	ai, hi, radius := yg.getInfos()
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radius)
+
 	yg.Core.QueueAttackWithSnap(
 		ai,
 		yg.snap,
 		radishExplodeAoE,
 		travelDelay,
-		particleCB,
+		yg.particleCB,
 	)
 	if yg.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
 		hi.Bonus = yg.snap.Stats[attributes.Heal]
