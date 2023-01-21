@@ -32,8 +32,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.EnergyMax = 80
 	c.NormalHitNum = normalHitNum
 
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.1)
-
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)
 	}

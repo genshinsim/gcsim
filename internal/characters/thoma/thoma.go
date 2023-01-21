@@ -1,6 +1,7 @@
 package thoma
 
 import (
+	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -15,9 +16,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstTickSrc int
-	a1Stack      int
-	c6buff       []float64
+	a1Stack int
+	c6buff  []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -42,6 +42,17 @@ func (c *char) Init() error {
 		c.c6buff = make([]float64, attributes.EndStatType)
 		c.c6buff[attributes.DmgP] = .15
 	}
+
+	(&common.NAHook{
+		C:           c.CharWrapper,
+		AbilName:    "thoma burst",
+		Core:        c.Core,
+		AbilKey:     burstKey,
+		AbilProcICD: 60,
+		AbilICDKey:  burstICDKey,
+		DelayFunc:   common.Get5PercentN0Delay,
+		SummonFunc:  c.summonFieryCollapse,
+	}).Enable()
 	return nil
 }
 

@@ -69,7 +69,7 @@ func (c *char) c6() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
 			waveHitmark,
 			waveHitmark,
 		)

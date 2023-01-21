@@ -128,6 +128,17 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	for i := 0; i < pawCount; i++ {
 		done := false
 		cb := pawCB(done)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), 0, travel+f-5+i, cb)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.5,
+			),
+			0,
+			travel+f-5+i,
+			cb,
+		)
 	}
 }

@@ -20,7 +20,7 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.swordCharge(p)
 	}
 
@@ -39,7 +39,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:               charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.78), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 2.8, 4.8),
+		chargeHitmark,
+		chargeHitmark,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -86,7 +91,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 5.48),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 7.5, 8),
 				0,
 				0,
 				c.burstRestorefunc,

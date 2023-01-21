@@ -35,8 +35,9 @@ export function ImportFromEnkaDialog(props: Props) {
     if (uid && validateUid(uid)) {
       try {
         const GOODchars = await FetchCharsFromEnka(uid);
-        // console.log(GOODchars);
+        console.log(GOODchars);
         const chars = parseFromGOOD(JSON.stringify(GOODchars));
+
         dispatch(userDataActions.loadFromGOOD({ data: chars.characters }));
         setMessage("success");
       } catch (e) {

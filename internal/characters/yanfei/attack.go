@@ -40,7 +40,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	addSeal := func(_ combat.AttackCB) {
+	addSeal := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		// doesn't gain seals off-field
 		if c.Core.Player.Active() != c.Index {
 			return
@@ -70,7 +73,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.75),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			0.75,
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 		addSeal,

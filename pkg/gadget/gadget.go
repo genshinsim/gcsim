@@ -23,13 +23,13 @@ type Gadget struct {
 	sinceLastThink int
 }
 
-func New(core *core.Core, pos core.Coord, typ combat.GadgetTyp) *Gadget {
+func New(core *core.Core, p combat.Point, r float64, typ combat.GadgetTyp) *Gadget {
 	g := &Gadget{
 		core:      core,
 		src:       core.F,
 		gadgetTyp: typ,
 	}
-	g.Target = target.New(core, pos.X, pos.Y, pos.R)
+	g.Target = target.New(core, p, r)
 	return g
 }
 

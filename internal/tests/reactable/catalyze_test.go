@@ -22,7 +22,7 @@ func TestQuicken(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -30,7 +30,7 @@ func TestQuicken(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -59,7 +59,7 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -67,7 +67,7 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -75,7 +75,7 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 

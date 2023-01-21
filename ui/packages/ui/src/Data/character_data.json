@@ -284,6 +284,11 @@
     "element": "anemo",
     "weapon_class": "bow"
   },
+  "wanderer": {
+    "rarity": 5,
+    "element": "anemo",
+    "weapon_class": "catalyst"
+  },
   "xiangling": {
     "rarity": 4,
     "element": "pyro",

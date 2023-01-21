@@ -21,11 +21,18 @@ func New(f *int, log glog.Logger) *Handler {
 }
 
 func (h *Handler) New(c Construct, refresh bool) {
+	h.NewConstruct(c, refresh, &h.constructs, true)
+}
 
+func (h *Handler) NewNoLimitCons(c Construct, refresh bool) {
+	h.NewConstruct(c, refresh, &h.consNoLimit, false)
+}
+
+func (h *Handler) NewConstruct(c Construct, refresh bool, constructs *[]Construct, hasLimit bool) {
 	//if refresh, we nil out the old one if any
 	ind := -1
 	if refresh {
-		for i, v := range h.constructs {
+		for i, v := range *constructs {
 			if v.Type() == c.Type() {
 				ind = i
 			}
@@ -33,69 +40,45 @@ func (h *Handler) New(c Construct, refresh bool) {
 	}
 	if ind > -1 {
 		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct replaced - new: ", c.Type().String()).
-			Write("key", h.constructs[ind].Key()).
-			Write("prev type", h.constructs[ind].Type()).
+			Write("key", (*constructs)[ind].Key()).
+			Write("prev type", (*constructs)[ind].Type()).
 			Write("next type", c.Type())
 		//remove construct from list, reset order by removing nils and add construct to end
-		h.constructs[ind].OnDestruct()
-		h.constructs[ind] = nil
-		h.cleanOutNils()
-		h.constructs = append(h.constructs, c)
+		(*constructs)[ind].OnDestruct()
+		(*constructs)[ind] = nil
+		h.cleanOutNils(constructs)
 	} else {
 		//add this one to the end
-		h.constructs = append(h.constructs, c)
+		(*constructs) = append((*constructs), c)
 		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct created: ", c.Type().String()).
 			Write("key", c.Key()).
 			Write("type", c.Type())
 	}
 
-	//if length > 3, then destruct the beginning ones
-	for i := 0; i < len(h.constructs)-3; i++ {
-		h.constructs[i].OnDestruct()
-		h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+h.constructs[i].Type().String()).
-			Write("key", h.constructs[i].Key()).
-			Write("type", h.constructs[i].Type())
-		h.constructs[i] = nil
+	if hasLimit {
+		//if length > 3, then destruct the beginning ones
+		for i := 0; i < len((*constructs))-3; i++ {
+			(*constructs)[i].OnDestruct()
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+(*constructs)[i].Type().String()).
+				Write("key", (*constructs)[i].Key()).
+				Write("type", (*constructs)[i].Type())
+			(*constructs)[i] = nil
+		}
 	}
 
-	h.cleanOutNils()
+	h.cleanOutNils(constructs)
 }
 
-func (h *Handler) cleanOutNils() {
+func (h *Handler) cleanOutNils(constructs *[]Construct) {
 	//clean out any nils
 	n := 0
-	for _, x := range h.constructs {
+	for _, x := range *constructs {
 		if x != nil {
-			h.constructs[n] = x
+			(*constructs)[n] = x
 			n++
 		}
 	}
-	h.constructs = h.constructs[:n]
-}
-
-func (h *Handler) NewNoLimitCons(c Construct, refresh bool) {
-	if refresh {
-		ind := -1
-		for i, v := range h.consNoLimit {
-			//if expired already, set to nil and ignore
-			if v.Key() == c.Key() {
-				ind = i
-			}
-		}
-		if ind > -1 {
-			//destroy the existing by setting expiry
-			h.consNoLimit[ind].OnDestruct()
-			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+h.consNoLimit[ind].Type().String()).
-				Write("key", h.consNoLimit[ind].Key()).
-				Write("type", h.consNoLimit[ind].Type())
-			h.consNoLimit[ind] = nil
-
-		}
-	}
-	h.consNoLimit = append(h.consNoLimit, c)
-	h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct created: ", c.Type().String()).
-		Write("key", c.Key()).
-		Write("type", c.Type())
+	(*constructs) = (*constructs)[:n]
 }
 
 func (h *Handler) Tick() {
@@ -129,7 +112,27 @@ func (h *Handler) Tick() {
 
 }
 
-//how many of the given
+func (h *Handler) ConstructsByType(t GeoConstructType) ([]Construct, []Construct) {
+	var match []Construct
+	var notMatch []Construct
+	for _, v := range h.constructs {
+		if v.Type() == t {
+			match = append(match, v)
+		} else {
+			notMatch = append(notMatch, v)
+		}
+	}
+	for _, v := range h.consNoLimit {
+		if v.Type() == t {
+			match = append(match, v)
+		} else {
+			notMatch = append(notMatch, v)
+		}
+	}
+	return match, notMatch
+}
+
+// how many of the given
 func (h *Handler) Count() int {
 	count := 0
 	for _, v := range h.constructs {
@@ -200,7 +203,7 @@ func (h *Handler) Expiry(t GeoConstructType) int {
 	return expiry
 }
 
-//destroy key if exist, return true if destroyed
+// destroy key if exist, return true if destroyed
 func (h *Handler) Destroy(key int) bool {
 	ok := false
 	//clean out expired

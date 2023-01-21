@@ -46,7 +46,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.09 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 0, skillHitmark)
+	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 8)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 2.5),
+		0,
+		skillHitmark,
+	)
 
 	c.Core.QueueParticle("chongyun", 4, attributes.Cryo, skillHitmark+c.ParticleDelay)
 
@@ -66,7 +72,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{
+		e.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("chongyun-a4", 480),
 			Ele:   attributes.Cryo,
 			Value: -0.10,
@@ -87,7 +93,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.a4Snap = &combat.AttackEvent{
 		Info:     ai,
 		Snapshot: snap,
-		Pattern:  combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
 	}
 	c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
 
@@ -97,6 +102,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		//if src changed then that means the field changed already
 		if src != c.fieldSrc {
 			return
+		}
+		enemy := c.Core.Combat.ClosestEnemyWithinArea(c.skillArea, nil)
+		if enemy != nil {
+			c.a4Snap.Pattern = combat.NewCircleHitOnTarget(enemy, nil, 3.5)
+		} else {
+			c.a4Snap.Pattern = combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 3.5)
 		}
 		//TODO: this needs to be fixed still for sac gs
 		c.Core.QueueAttackEvent(c.a4Snap, 0)
@@ -108,6 +119,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	for i := skillHitmark - 1; i <= 600; i += 60 {
 		c.Core.Tasks.Add(func() {
 			if src != c.fieldSrc {
+				return
+			}
+			if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
 				return
 			}
 			active := c.Core.Player.ActiveChar()

@@ -53,6 +53,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		}
 	}
 	if ind > -1 {
+		c.Base.Ascension = ind
 		//add hp/atk/bonus
 		c.Base.HP += b.PromotionBonus[ind].HP
 		c.Base.Atk += b.PromotionBonus[ind].Atk

@@ -1,6 +1,7 @@
 package noelle
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -43,4 +44,24 @@ func (c *char) a1() {
 		})
 		return false
 	}, "noelle-a1")
+}
+
+func (c *char) a4() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.a4Counter++
+		if c.a4Counter == 4 {
+			c.a4Counter = 0
+			if c.Cooldown(action.ActionSkill) > 0 {
+				c.ReduceActionCooldown(action.ActionSkill, 60)
+			}
+		}
+	}
 }

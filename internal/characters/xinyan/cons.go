@@ -71,7 +71,7 @@ func (c *char) c4(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("xinyan-c4", 12*60),
 		Ele:   attributes.Physical,
 		Value: -0.15,

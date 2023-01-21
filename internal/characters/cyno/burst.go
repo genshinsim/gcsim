@@ -13,7 +13,7 @@ import (
 var burstFrames []int
 
 const (
-	burstKey = "cyno-q"
+	BurstKey = "cyno-q"
 )
 
 func init() {
@@ -29,14 +29,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
 
-	if !c.StatusIsActive(burstKey) {
+	if !c.StatusIsActive(BurstKey) {
 		c.ReduceActionCooldown(action.ActionSkill, 270)
 	}
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 100
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
+		Base:         modifier.NewBaseWithHitlag(BurstKey, 712), // 112f extra duration
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 			return m, true
@@ -69,11 +69,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) tryBurstPPSlide(hitmark int) {
-	duration := c.StatusDuration(burstKey)
+	duration := c.StatusDuration(BurstKey)
 	if 0 < duration && duration < hitmark {
-		c.ExtendStatus(burstKey, hitmark-duration+1)
+		c.ExtendStatus(BurstKey, hitmark-duration+1)
 		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index).
-			Write("expiry", c.StatusExpiry(burstKey))
+			Write("expiry", c.StatusExpiry(BurstKey))
 		src := c.burstSrc
 		c.QueueCharTask(func() {
 			c.onBurstExpiry(src)
@@ -83,12 +83,12 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		if !c.StatusIsActive(burstKey) {
+		if !c.StatusIsActive(BurstKey) {
 			return false
 		}
 		prev := args[0].(int)
 		if prev == c.Index {
-			c.DeleteStatus(burstKey)
+			c.DeleteStatus(BurstKey)
 			c.onBurstExpiry(c.burstSrc)
 		}
 		return false
@@ -99,7 +99,7 @@ func (c *char) onBurstExpiry(burstSrc int) {
 	if burstSrc != c.burstSrc {
 		return
 	}
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return
 	}
 	cd := skillCD - (c.Core.F - c.lastSkillCast)

@@ -46,19 +46,26 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	radius := attackRadius[c.NormalCounter]
+
+	var c4cb combat.AttackCBFunc
+	if c.Base.Cons >= 4 {
+		c4cb = c.makeC4Callback()
+	}
+
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			attackRadius[c.NormalCounter],
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
+		c4cb,
 	)
 
 	defer c.AdvanceNormalIndex()
-
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),

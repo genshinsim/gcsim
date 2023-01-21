@@ -22,11 +22,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	hits, ok := p["bloom"]
-	if !ok {
-		hits = 2 //default 2 hits
-	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rite of Progeniture: Tectonic Tide",
@@ -46,18 +41,35 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.c2stacks = 0
 	}
 
-	//TODO: damage frame
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 8), burstHitmark)
+	// initial damage
+	// TODO: damage frame
+	c.Core.QueueAttackWithSnap(
+		ai,
+		snap,
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 8, 120),
+		burstHitmark,
+	)
 
 	// Blossoms are generated on a slight delay from initial hit
 	// TODO: no precise frame data for time between Blossoms
-	ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
-	ai.Mult = burstPerBloom[c.TalentLvlBurst()]
-	x, y := c.Core.Combat.Player().Pos()
-	enemies := c.Core.Combat.EnemiesWithinRadius(x, y, 10)
-	for i := 0; i < hits; i++ {
-		ind := c.Core.Rand.Intn(len(enemies))
-		c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHit(c.Core.Combat.Enemy(enemies[ind]), 3), fatalBlossomHitmark+i*5)
+	if c.skillActive {
+		ai.Abil = "Rite of Progeniture: Tectonic Tide (Blossom)"
+		ai.Mult = burstPerBloom[c.TalentLvlBurst()]
+		// generate 7 blossoms
+		maxBlossoms := 7
+		enemies := c.Core.Combat.RandomEnemiesWithinArea(c.skillArea, nil, maxBlossoms)
+		tracking := len(enemies)
+		var center combat.Point
+		for i := 0; i < maxBlossoms; i++ {
+			if i < tracking {
+				// each blossom targets a separate enemy if possible
+				center = enemies[i].Pos()
+			} else {
+				// if a blossom has no enemy then it randomly spawns in the skill area
+				center = combat.CalcRandomPointFromCenter(c.skillArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
+			}
+			c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(center, nil, 3), fatalBlossomHitmark+i*5)
+		}
 	}
 
 	//Party wide EM buff

@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var (
@@ -15,6 +14,7 @@ var (
 	attackHitmarks        = []int{13, 6, 17, 37, 25}
 	attackHitlagHaltFrame = []float64{.03, .03, .06, .06, .1}
 	attackRadius          = []float64{1.5, 2.2, 2.8, 1.6, 1.6}
+	attackOffsets         = []float64{1.5, -0.5, -1, 0.6, 0.6}
 )
 
 const normalHitNum = 5
@@ -54,23 +54,17 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	radius := attackRadius[c.NormalCounter]
-	c.Core.Tasks.Add(func() {
-		snap := c.Snapshot(&ai)
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0)
-
-		//check for healing
-		if c.Core.Rand.Float64() < 0.5 {
-			heal := 0.15 * (snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK])
-			c.Core.Player.Heal(player.HealInfo{
-				Caller:  c.Index,
-				Target:  -1,
-				Message: "Wind Companion",
-				Src:     heal,
-				Bonus:   c.Stat(attributes.Heal),
-			})
-		}
-	}, attackHitmarks[c.NormalCounter])
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackRadius[c.NormalCounter],
+		),
+		attackHitmarks[c.NormalCounter],
+		attackHitmarks[c.NormalCounter],
+		c.a1(),
+	)
 
 	defer c.AdvanceNormalIndex()
 

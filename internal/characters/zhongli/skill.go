@@ -29,22 +29,17 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	max, ok := p["res_count"]
-	if !ok {
-		max = 3
-	}
-
 	h := p["hold"]
 	nostele := p["hold_nostele"] > 0
 	if h > 0 || nostele {
-		return c.skillHold(max, !nostele)
+		return c.skillHold(!nostele)
 	}
-	return c.skillPress(max)
+	return c.skillPress()
 }
 
-func (c *char) skillPress(max int) action.ActionInfo {
+func (c *char) skillPress() action.ActionInfo {
 	c.Core.Tasks.Add(func() {
-		c.newStele(1860, max)
+		c.newStele(1860)
 	}, skillPressHimark)
 
 	c.SetCDWithDelay(action.ActionSkill, 240, 22)
@@ -57,7 +52,7 @@ func (c *char) skillPress(max int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(max int, createStele bool) action.ActionInfo {
+func (c *char) skillHold(createStele bool) action.ActionInfo {
 	//hold does dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -71,12 +66,12 @@ func (c *char) skillHold(max int, createStele bool) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 		FlatDmg:    0.019 * c.MaxHP(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 10), 0, skillHoldHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), 0, skillHoldHitmark)
 
 	//create a stele if less than zhongli's max stele count and desired by player
 	if (c.steleCount < c.maxStele) && createStele {
 		c.Core.Tasks.Add(func() {
-			c.newStele(1860, max) //31 seconds
+			c.newStele(1860) //31 seconds
 		}, skillHoldHitmark)
 	}
 

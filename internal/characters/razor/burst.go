@@ -1,6 +1,8 @@
 package razor
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -10,7 +12,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
+var (
+	burstFrames         []int
+	burstAttackHitboxes = [][]float64{{2.4}, {3.4, 3.4}, {2.4}, {2.4}}
+	burstAttackOffsets  = []float64{1, 0.5, 1, 1.8}
+)
 
 const (
 	burstHitmark = 32
@@ -45,7 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -77,41 +83,42 @@ func (c *char) speedBurst() {
 	})
 }
 
-func (c *char) wolfBurst() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if c.Core.Player.Active() != c.Index {
-			return false
-		}
-		if !c.StatusIsActive(burstBuffKey) {
-			return false
-		}
-
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
+func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
+	done := false
+	return func(a combat.AttackCB) {
+		if done {
+			return
 		}
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "The Wolf Within",
+			Abil:       fmt.Sprintf("The Wolf Within %v", normalCounter),
 			AttackTag:  combat.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 25,
-			Mult:       wolfDmg[c.TalentLvlBurst()] * atk.Info.Mult,
+			Mult:       wolfDmg[c.TalentLvlBurst()] * a.AttackEvent.Info.Mult,
 		}
 
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2.4),
-			1,
-			1,
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: burstAttackOffsets[normalCounter]},
+			burstAttackHitboxes[normalCounter][0],
 		)
+		if normalCounter == 1 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: burstAttackOffsets[normalCounter]},
+				burstAttackHitboxes[normalCounter][0],
+				burstAttackHitboxes[normalCounter][1],
+			)
+		}
+		c.Core.QueueAttack(ai, ap, 1, 1)
 
-		return false
-	}, "razor-wolf-burst")
+		done = true
+	}
 }
 
 func (c *char) onSwapClearBurst() {

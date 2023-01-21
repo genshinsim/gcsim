@@ -61,10 +61,9 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 6),
+		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 6),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})
@@ -82,31 +81,35 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 		d.Info.FlatDmg = c.burstDmgBonus(d.Info.AttackTag)
 	}
 
+	// handle damage
 	c.Core.QueueAttackEvent(d, 0)
 
-	maxhp := d.Snapshot.BaseHP*(1+d.Snapshot.Stats[attributes.HPP]) + d.Snapshot.Stats[attributes.HP]
-	src := skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()]
+	// handle healing
+	if c.Core.Combat.Player().IsWithinArea(d.Pattern) {
+		maxhp := d.Snapshot.BaseHP*(1+d.Snapshot.Stats[attributes.HPP]) + d.Snapshot.Stats[attributes.HP]
+		src := skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()]
 
-	// C2 handling
-	// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
-	// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
-	if c.Base.Cons >= 2 {
-		active := c.Core.Player.ActiveChar()
-		if active.HPCurrent/active.MaxHP() <= .5 {
-			bonus := 0.045 * maxhp
-			src += bonus
-			c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
-				Write("bonus", bonus)
+		// C2 handling
+		// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
+		// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
+		if c.Base.Cons >= 2 {
+			active := c.Core.Player.ActiveChar()
+			if active.HPCurrent/active.MaxHP() <= .5 {
+				bonus := 0.045 * maxhp
+				src += bonus
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
+					Write("bonus", bonus)
+			}
 		}
-	}
 
-	c.Core.Player.Heal(player.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Core.Player.Active(),
-		Message: "Bake-Kurage",
-		Src:     src,
-		Bonus:   d.Snapshot.Stats[attributes.Heal],
-	})
+		c.Core.Player.Heal(player.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.Player.Active(),
+			Message: "Bake-Kurage",
+			Src:     src,
+			Bonus:   d.Snapshot.Stats[attributes.Heal],
+		})
+	}
 
 	// Particles are 0~1 (1:2) on every damage instance
 	if c.Core.Rand.Float64() < .6667 {

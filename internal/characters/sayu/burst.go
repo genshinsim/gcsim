@@ -37,7 +37,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 4.5), burstHitmark)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 10)
+	c.Core.QueueAttackWithSnap(
+		ai,
+		snap,
+		combat.NewCircleHitOnTarget(burstArea.Shape.Pos(), nil, 4.5),
+		burstHitmark,
+	)
 
 	// heal
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
@@ -68,26 +74,31 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// first tick is at 145
 		for i := 145 - tickTaskDelay; i < 145+540-tickTaskDelay; i += 90 {
 			c.Core.Tasks.Add(func() {
-				active := c.Core.Player.ActiveChar()
-				//this is going to be a bit slow..
-				enemies := c.Core.Combat.EnemyByDistance(0, 0, 7) //TODO: no idea what the range of this check is
-				needHeal := len(enemies) == 0 || active.HPCurrent/active.MaxHP() <= .7
-				needAttack := !needHeal
+				// look for char with lowest HP to heal
+				char := c.Core.Player.LowestHPChar()
+				hasPlayer := c.Core.Combat.Player().IsWithinArea(burstArea) && char.HPCurrent/char.MaxHP() <= 0.7
+
+				enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)
+				hasEnemy := enemy != nil
+
+				needAttack := !hasPlayer && hasEnemy
+				needHeal := hasPlayer
 				if c.Base.Cons >= 1 {
-					needHeal = true
 					needAttack = true
+					needHeal = true
+				}
+				if needAttack {
+					d.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5) // including A4
+					c.Core.QueueAttackEvent(d, 0)
 				}
 				if needHeal {
 					c.Core.Player.Heal(player.HealInfo{
 						Caller:  c.Index,
-						Target:  c.Core.Player.Active(),
+						Target:  char.Index,
 						Message: "Muji-Muji Daruma",
 						Src:     heal,
 						Bonus:   d.Snapshot.Stats[attributes.Heal],
 					})
-				}
-				if needAttack {
-					c.Core.QueueAttackEvent(d, 0)
 				}
 			}, i)
 		}
@@ -104,7 +115,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-//TODO: is this helper function needed?
+// TODO: is this helper function needed?
 func (c *char) createBurstSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -121,7 +132,6 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 
 	return (&combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 3.5), // including A4
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})

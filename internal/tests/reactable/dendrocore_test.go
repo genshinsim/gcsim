@@ -4,7 +4,6 @@ import (
 	"log"
 	"testing"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -34,7 +33,7 @@ func TestModifyDendroCore(t *testing.T) {
 		if g, ok := args[0].(*reactable.DendroCore); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
-				Gadget: gadget.New(c, core.Coord{X: 0, Y: 0, R: 0.2}, combat.GadgetTypDendroCore),
+				Gadget: gadget.New(c, combat.Point{X: 0, Y: 0}, 0.2, combat.GadgetTypDendroCore),
 			})
 			//prevent blowing up
 			g.OnKill = nil
@@ -49,7 +48,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -58,7 +57,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -92,4 +91,6 @@ type fakeCore struct {
 func (f *fakeCore) Tick()                                                  {}
 func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { return 0 }
 func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (f *fakeCore) ApplyDamage(*combat.AttackEvent, float64)               {}
+func (f *fakeCore) SetDirection(trg combat.Point)                          {}
+func (f *fakeCore) SetDirectionToClosestEnemy()                            {}
+func (f *fakeCore) CalcTempDirection(trg combat.Point) combat.Point        { return combat.DefaultDirection() }

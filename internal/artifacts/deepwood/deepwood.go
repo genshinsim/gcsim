@@ -58,7 +58,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("dm-4pc", 8*60),
 				Ele:   attributes.Dendro,
 				Value: -0.3,

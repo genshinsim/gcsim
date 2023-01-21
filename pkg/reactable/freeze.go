@@ -86,7 +86,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewDefSingleTarget(r.self.Key()),
+		combat.NewSingleTargetHit(r.self.Key()),
 		1,
 	)
 	return true
@@ -118,6 +118,6 @@ func (r *Reactable) checkFreeze() {
 			DoNotLog:    true,
 		}
 		//TODO: delay attack by 1 frame ok?
-		r.core.QueueAttack(ai, combat.NewDefSingleTarget(r.self.Key()), -1, 1)
+		r.core.QueueAttack(ai, combat.NewSingleTargetHit(r.self.Key()), -1, 1)
 	}
 }

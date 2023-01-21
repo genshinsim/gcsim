@@ -10,7 +10,8 @@ import (
 
 // C1:
 // Party members within the radius of Wake of Earth have their CRIT Rate increased by 10%
-//  and have increased resistance against interruption.
+//
+//	and have increased resistance against interruption.
 func (c *char) c1(ticks int) func() {
 	return func() {
 		// different Q fields can co-exist at C6 if you do the following:
@@ -31,16 +32,19 @@ func (c *char) c1(ticks int) func() {
 			Write("tick_number", ticks)
 
 		// apply C1 buff to active char for 2s
-		active := c.Core.Player.ActiveChar()
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.CR] = .1
-		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("geo-traveler-c1", 120), // 2s
-			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
+		if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.CR] = .1
+
+			active := c.Core.Player.ActiveChar()
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("geo-traveler-c1", 120), // 2s
+				AffectedStat: attributes.CR,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
+		}
 
 		// check again in 1s
 		ticks += 1

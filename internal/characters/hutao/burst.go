@@ -27,6 +27,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		mult = burstLow[c.TalentLvlBurst()]
 		regen = regenLow[c.TalentLvlBurst()]
 	}
+	c.burstHealCount = 0
 	c.burstHealAmount = player.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Index,
@@ -45,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	var bbcb combat.AttackCBFunc
 
-	if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 2 {
+	if c.Base.Cons >= 2 {
 		bbcb = c.applyBB
 	}
 
@@ -61,7 +62,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       mult,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 6), 0, burstHitmark, bbcb, c.burstHealCB)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6),
+		0,
+		burstHitmark,
+		bbcb,
+		c.burstHealCB,
+	)
 
 	c.ConsumeEnergy(68)
 	c.SetCDWithDelay(action.ActionBurst, 900, 62)
@@ -78,5 +86,6 @@ func (c *char) burstHealCB(atk combat.AttackCB) {
 	if c.burstHealCount == 5 {
 		return
 	}
+	c.burstHealCount++
 	c.Core.Player.Heal(c.burstHealAmount)
 }

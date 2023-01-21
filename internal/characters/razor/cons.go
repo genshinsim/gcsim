@@ -58,7 +58,7 @@ func (c *char) c4cb(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(enemy.DefMod{
+	e.AddDefMod(combat.DefMod{
 		Base:  modifier.NewBaseWithHitlag("razor-c4", 7*60),
 		Value: -0.15,
 	})
@@ -68,46 +68,43 @@ const c6ICDKey = "razor-c6-icd"
 
 // Every 10s, Razor's sword charges up, causing the next Normal Attack to release lightning that deals 100% of Razor's ATK as Electro DMG.
 // When Razor is not using Lightning Fang, a lightning strike on an opponent will grant Razor an Electro Sigil for Claw and Thunder.
-func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if c.Core.Player.Active() != c.Index {
-			return false
-		}
-		trg := args[0].(combat.Target)
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
-		}
-		//effect can only happen every 10s
-		if c.StatusIsActive(c6ICDKey) {
-			return false
-		}
+func (c *char) c6cb(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	//effect can only happen every 10s
+	if c.StatusIsActive(c6ICDKey) {
+		return
+	}
 
-		c.AddStatus(c6ICDKey, 600, true)
+	c.AddStatus(c6ICDKey, 600, true)
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Lupus Fulguris",
-			AttackTag:  combat.AttackTagNone, // TODO: it has another tag?
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Electro,
-			Durability: 25,
-			Mult:       1,
-		}
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(trg, 1.5),
-			1,
-			1,
-		)
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Lupus Fulguris",
+		AttackTag:  combat.AttackTagNone, // TODO: it has another tag?
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Electro,
+		Durability: 25,
+		Mult:       1,
+	}
 
+	sigilcb := func(a combat.AttackCB) {
 		//add sigil only outside burst
-		if !c.StatusIsActive(burstBuffKey) {
-			c.addSigil()
+		if c.StatusIsActive(burstBuffKey) {
+			return
 		}
+		c.addSigil(false)(a)
+	}
 
-		return false
-	}, "razor-c6")
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), a.Target, combat.Point{Y: 0.7}, 1.5),
+		1,
+		1,
+		sigilcb,
+	)
+
 }

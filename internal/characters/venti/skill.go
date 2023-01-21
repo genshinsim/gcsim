@@ -50,12 +50,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	cdstart := 21
 	hitmark := 51
 	radius := 3.0
+	trg := c.Core.Combat.PrimaryTarget()
 	var count float64 = 3
 	if p["hold"] != 0 {
 		cd = 900
 		cdstart = 34
 		hitmark = 74
 		radius = 6
+		trg = c.Core.Combat.Player()
 		count = 4
 		ai.Mult = skillHold[c.TalentLvlSkill()]
 
@@ -67,7 +69,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, hitmark, c.c2)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, radius), 0, hitmark, c.c2)
 	c.Core.QueueParticle("venti", count, attributes.Anemo, hitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, cd, cdstart)

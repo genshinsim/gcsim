@@ -99,10 +99,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if done {
 			return
 		}
-		radius := attackRadius[c.NormalCounter]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				attackRadius[c.NormalCounter],
+			),
 			0,
 			travel,
 			c.a1,

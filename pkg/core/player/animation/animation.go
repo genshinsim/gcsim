@@ -106,6 +106,10 @@ func (h *AnimationHandler) CurrentState() action.AnimationState {
 	return h.state
 }
 
+func (h *AnimationHandler) CurrentStateStart() int {
+	return h.started
+}
+
 func (h *AnimationHandler) Tick() {
 	if h.aniEvt != nil && h.aniEvt.Tick() {
 		h.events.Emit(event.OnStateChange, h.state, action.Idle)

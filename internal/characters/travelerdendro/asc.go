@@ -24,17 +24,21 @@ func (c *char) a1Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
 	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolibri
 	c.Core.Tasks.Add(func() {
-		if c.Core.Status.Duration(burstKey) > 0 { //burst isn't expired
-			active := c.Core.Player.ActiveChar()
-			m[attributes.EM] = float64(6 * c.burstOverflowingLotuslight)
-			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase(a1Key, 60),
-				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-			})
+		if c.Core.Status.Duration(burstKey) <= 0 {
+			return
 		}
+		if !c.Core.Combat.Player().IsWithinArea(combat.NewCircleHitOnTarget(c.burstPos, nil, c.burstRadius)) {
+			return
+		}
+		m[attributes.EM] = float64(6 * c.burstOverflowingLotuslight)
+		active := c.Core.Player.ActiveChar()
+		active.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(a1Key, 60),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}, delay)
 }
 

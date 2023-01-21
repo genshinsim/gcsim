@@ -67,7 +67,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 4.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.2}, 4.6),
 		0, //TODO: snapshot delay?
 		skillPressHitmark,
 		c.skillMarkTargets,
@@ -108,7 +108,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 25),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
 		0, // TODO: snapshot timing
 		hold+3,
 		c.skillMarkTargets,
@@ -146,16 +146,16 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 	}
 }
 
-// TODO: this implementation will only affect the next icd; not sure
-// if it cuts short current as well
-func (c *char) triKarmaInterval() int {
-	if c.electroCount > 0 && c.Core.Status.Duration(burstKey) > 0 {
-		cd := int((2.5 - burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()]) * 60)
-		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
-		return cd
-
+func (c *char) updateTriKarmaInterval() {
+	cd := int(2.5 * 60)
+	if c.electroCount > 0 && c.StatusIsActive(withinBurstKey) {
+		cd -= int(burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()] * 60)
 	}
-	return int(2.5 * 60)
+	if cd != c.triKarmaInterval {
+		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
+		c.triKarmaInterval = cd
+	}
+	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
 func (c *char) triKarmaOnReaction(rx event.Event) func(args ...interface{}) bool {
@@ -198,7 +198,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 	if !t.StatusIsActive(skillMarkKey) {
 		return
 	}
-	c.AddStatus(skillICDKey, c.triKarmaInterval(), true) //TODO: this is affected by hitlag?
+	c.AddStatus(skillICDKey, c.triKarmaInterval, true) //TODO: this is affected by hitlag?
 	done := false
 	for _, v := range c.Core.Combat.Enemies() {
 		e, ok := v.(*enemy.Enemy)
@@ -232,7 +232,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewDefSingleTarget(e.Key()),
+			combat.NewSingleTargetHit(e.Key()),
 			4,
 			cb,
 		)

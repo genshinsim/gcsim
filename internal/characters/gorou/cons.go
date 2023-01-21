@@ -16,12 +16,29 @@ import (
 func (c *char) c1() {
 	icd := -1
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if c.Core.Status.Duration(generalGloryKey) == 0 && c.Core.Status.Duration(generalWarBannerKey) == 0 {
+		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
+		qActive := c.Core.Status.Duration(generalGloryKey) > 0
+		if !eActive && !qActive {
 			return false
 		}
 		if icd > c.Core.F {
 			return false
 		}
+
+		trg := args[0].(combat.Target)
+		// need to check if target hit is inside the field
+		var area combat.AttackPattern
+		if eActive {
+			area = c.eFieldArea
+		} else {
+			// e and q can't be up at the same time
+			// if q is up, then the area needs to be around the current player position
+			area = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
+		}
+		if !trg.IsWithinArea(area) {
+			return false
+		}
+
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex == c.Index {
 			return false
@@ -29,10 +46,12 @@ func (c *char) c1() {
 		if atk.Info.Element != attributes.Geo {
 			return false
 		}
+
 		dmg := args[2].(float64)
 		if dmg == 0 {
 			return false
 		}
+
 		icd = c.Core.F + 600
 		c.ReduceActionCooldown(action.ActionSkill, 120)
 		return false

@@ -72,7 +72,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 			return
 		}
 
-		if c.StatusIsActive(meleeKey) {
+		if c.StatusIsActive(MeleeKey) {
 			c.rtSlashTick(t)
 		} else {
 			c.rtFlashTick(t)
@@ -123,7 +123,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 
 	// proc 3 hits
 	for i := 1; i <= 3; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(t, 3), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
 	}
 
 	c.Core.Log.NewEvent(
@@ -131,7 +131,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
+		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
 		Write("target", t.Key()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -179,14 +179,14 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 3), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
 
 	c.Core.Log.NewEvent(
 		"riptide slash ticked",
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
+		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
 		Write("target", t.Key()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
@@ -227,14 +227,14 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 		Mult:       rtBlast[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 5), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 5), 1, 1)
 
 	c.Core.Log.NewEvent(
 		"riptide blast triggered",
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
+		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
 		Write("target", t.Key()).
 		Write("rtExpiry", t.StatusExpiry(riptideKey))
 
@@ -268,7 +268,7 @@ func (c *char) onDefeatTargets() {
 				Durability: 50,
 				Mult:       rtBurst[c.TalentLvlAttack()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(t, 5), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 5), 0, 0)
 		}, 5)
 		// TODO: re-index riptide expiry frame array if needed
 		if c.Base.Cons >= 2 {

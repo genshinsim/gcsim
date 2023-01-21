@@ -71,7 +71,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 		r.core.QueueAttackWithSnap(
 			r.ecAtk,
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Key()),
+			combat.NewSingleTargetHit(r.self.Key()),
 			10,
 		)
 
@@ -161,7 +161,7 @@ func (r *Reactable) nextTick(src int) func() {
 		r.core.QueueAttackWithSnap(
 			r.ecAtk,
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Key()),
+			combat.NewSingleTargetHit(r.self.Key()),
 			0,
 		)
 

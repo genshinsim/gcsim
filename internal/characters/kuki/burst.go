@@ -40,13 +40,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	interval := 2 * 60 / 7
 
 	// C1: Gyoei Narukami Kariyama Rite's AoE is increased by 50%.
-	var r float64 = 4
+	r := 4.0
 	if c.Base.Cons >= 1 {
 		r = 6
 	}
 
+	// assume that the target is close enough to make her Q center on it
 	for i := burstStart; i < count*interval+burstStart; i += interval {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), r), i)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, r),
+			i,
+		)
 	}
 
 	c.ConsumeEnergy(4)
