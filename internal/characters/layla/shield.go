@@ -164,7 +164,7 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 
 		c.RemoveTag(shootingStars)
 		c.starTickSrc = c.Core.F
-		c.tickNightStar(c.starTickSrc, false)
+		c.tickNightStar(c.starTickSrc, false)()
 	}
 }
 
