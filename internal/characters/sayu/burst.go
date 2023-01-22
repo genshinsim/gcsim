@@ -74,21 +74,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// first tick is at 145
 		for i := 145 - tickTaskDelay; i < 145+540-tickTaskDelay; i += 90 {
 			c.Core.Tasks.Add(func() {
-				// look for char with lowest HP to heal
-				char := c.Core.Player.LowestHPChar()
-				hasPlayer := c.Core.Combat.Player().IsWithinArea(burstArea) && char.HPCurrent/char.MaxHP() <= 0.7
+				// check for player
+				// only check HP of active character
+				char := c.Core.Player.ActiveChar()
+				hasC1 := c.Base.Cons >= 1
+				// C1 ignores HP limit
+				needHeal := c.Core.Combat.Player().IsWithinArea(burstArea) && (char.HPCurrent/char.MaxHP() <= 0.7 || hasC1)
 
+				// check for enemy
 				enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)
-				hasEnemy := enemy != nil
 
-				needAttack := !hasPlayer && hasEnemy
-				needHeal := hasPlayer
-				if c.Base.Cons >= 1 {
-					needAttack = true
-					needHeal = true
-				}
+				// determine whether to attack or heal
+				// - C1 makes burst able to attack both an enemy and heal the player at the same time
+				needAttack := enemy != nil && (!needHeal || hasC1)
 				if needAttack {
-					d.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5) // including A4
+					d.Pattern = combat.NewCircleHitOnTarget(enemy, nil, 3.5) // including A4
 					c.Core.QueueAttackEvent(d, 0)
 				}
 				if needHeal {
