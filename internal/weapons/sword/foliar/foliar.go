@@ -42,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.CR] = 0.03 + float64(r)*0.01
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("foliar-crit-rate", -1),
-		AffectedStat: attributes.NoStat,
+		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},
@@ -52,6 +52,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	procCount := 0
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -60,11 +63,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
 		// have extra damage.
-		if !char.StatusIsActive(icdKey) {
-			if !(atk.Info.AttackTag == combat.AttackTagNormal) || atk.Info.Element == attributes.Physical {
-				return false
-			}
-			char.AddStatus(buffKey, 600, true)
+		if !char.StatusIsActive(icdKey) && atk.Info.AttackTag == combat.AttackTagNormal && atk.Info.Element != attributes.Physical {
+			char.AddStatus(buffKey, 720, true)
 			char.AddStatus(icdKey, 720, true)
 			procCount = 28
 			return false
