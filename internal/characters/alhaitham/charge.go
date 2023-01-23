@@ -9,9 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-// TODO: CA frames, koli pls
 var chargeFrames []int
-var chargeHitmarks = []int{17, 27}
+var chargeHitmarks = []int{19, 27}
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(48)
@@ -38,8 +37,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
+			c.a1CB, //A1 adds a stack before the mirror count for the Projection Attack is determined
 			c.projectionAttack,
-			c.a1CB,
 		)
 	}
 

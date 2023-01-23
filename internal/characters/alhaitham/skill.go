@@ -11,27 +11,56 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillFrames []int
+var skillTapFrames []int
+var skillHoldFrames []int
 
-const skillHitmark = 25
+const (
+	skillTapHitmark  = 19
+	skillHoldHitmark = 28
+	projectionICDKey = "alhaitham-projection-icd"
+)
+
+var mirror1HitmarkLeft = []int{39}
+var mirror1HitmarkRight = []int{40}
+
+var mirror2HitmarksLeft = []int{28, 37}
+var mirror2HitmarksRight = []int{26, 35}
+
+var mirror3Hitmarks = []int{32, 41, 51}
 
 func init() {
-	// skill -> x
-	skillFrames = frames.InitAbilSlice(44)
-	skillFrames[action.ActionAttack] = 44
-	skillFrames[action.ActionSkill] = 44
-	skillFrames[action.ActionDash] = 30
-	skillFrames[action.ActionJump] = 30
-	skillFrames[action.ActionSwap] = 30
+	// skill (tap) -> x
+	skillTapFrames = frames.InitAbilSlice(44)
+	skillTapFrames[action.ActionAttack] = 27
+	skillTapFrames[action.ActionSkill] = 28
+	skillTapFrames[action.ActionDash] = 33
+	skillTapFrames[action.ActionJump] = 33
+	skillTapFrames[action.ActionSwap] = 36
+
+	// skill (hold)-> x
+	skillHoldFrames = frames.InitAbilSlice(86)
+	skillHoldFrames[action.ActionAttack] = 86
+	skillHoldFrames[action.ActionLowPlunge] = 35
+	skillHoldFrames[action.ActionSkill] = 86
+	skillHoldFrames[action.ActionDash] = 86
+	skillHoldFrames[action.ActionJump] = 86
+	skillHoldFrames[action.ActionSwap] = 86
 
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
-	if c.mirrorCount == 0 { //extra mirror if 0 when cast
-		c.mirrorGain()
+	hold := p["hold"]
+	if hold == 1 {
+		return c.SkillHold()
 	}
-	c.mirrorGain()
+
+	c.Core.Tasks.Add(func() {
+		if c.mirrorCount == 0 { //extra mirror if 0 when cast
+			c.mirrorGain()
+		}
+		c.mirrorGain()
+	}, 15)
+
 	ai := combat.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form",
 		ActorIndex:         c.Index,
@@ -47,14 +76,48 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 	//TODO: Add hold support
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillTapHitmark, skillTapHitmark)
 
-	c.SetCDWithDelay(action.ActionSkill, 18*60, 20) //TODO: delay value if needed on cast
+	c.SetCDWithDelay(action.ActionSkill, 18*60, 15)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillTapFrames),
+		AnimationLength: skillTapFrames[action.InvalidAction],
+		CanQueueAfter:   skillTapFrames[action.ActionDash], // earliest cancel
+		State:           action.SkillState,
+	}
+}
+func (c *char) SkillHold() action.ActionInfo {
+	c.Core.Tasks.Add(func() {
+		if c.mirrorCount == 0 { //extra mirror if 0 when cast
+			c.mirrorGain()
+		}
+		c.mirrorGain()
+	}, 23)
+
+	ai := combat.AttackInfo{
+		Abil:               "Universality: An Elaboration on Form (Hold)",
+		ActorIndex:         c.Index,
+		AttackTag:          combat.AttackTagElementalArt,
+		ICDTag:             combat.ICDTagNone,
+		ICDGroup:           combat.ICDGroupDefault,
+		Element:            attributes.Dendro,
+		Durability:         25,
+		Mult:               rushAtk[c.TalentLvlSkill()],
+		FlatDmg:            rushEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: false,
+	}
+	//TODO: Add hold support
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillHoldHitmark, skillHoldHitmark)
+
+	c.SetCDWithDelay(action.ActionSkill, 18*60, 23)
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(skillHoldFrames),
+		AnimationLength: skillHoldFrames[action.InvalidAction],
+		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -70,7 +133,7 @@ func (c *char) mirrorGain() {
 		}
 		if !queueOnFrame { //this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
 			c.lastInfusionSrc = c.Core.F
-			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 4*60)
+			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 234)
 		}
 		c.Core.Log.NewEvent("mirror overflowed", glog.LogCharacterEvent, c.Index)
 
@@ -81,7 +144,7 @@ func (c *char) mirrorGain() {
 	}
 	if c.mirrorCount == 0 {
 		c.lastInfusionSrc = c.Core.F
-		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 4*60)
+		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 234)
 		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
 
 	}
@@ -111,7 +174,7 @@ func (c *char) mirrorLoss(src int) func() {
 
 		// queue up again if we still have mirrors
 		if c.mirrorCount > 0 {
-			c.Core.Tasks.Add(c.mirrorLoss(src), 4*60) //not affected by hitlag
+			c.Core.Tasks.Add(c.mirrorLoss(src), 234) //not affected by hitlag
 		}
 	}
 }
@@ -120,7 +183,7 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 
 	ae := a.AttackEvent
 	//ignore if projection on icd
-	if c.projectionICD > c.Core.F {
+	if c.StatusIsActive(projectionICDKey) {
 		return
 	}
 	//ignore if it doesn't have at least a mirror
@@ -135,7 +198,7 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	if c.Base.Cons >= 1 {
 		c1cb = c.c1
 	}
-
+	mirrorsHitmark := make([]int, 3)
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Chisel-Light Mirror: Projection Attack %v", c.mirrorCount),
@@ -158,20 +221,27 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		ai.Mult = mirror1Atk[c.TalentLvlSkill()]
 		ai.FlatDmg = mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ap = combat.NewCircleHitOnTarget(trg, combat.Point{Y: 4}, 4)
+		mirrorsHitmark = mirror3Hitmarks
 	case 2:
 		ai.Mult = mirror1Atk[c.TalentLvlSkill()]
 		ai.FlatDmg = mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ap = combat.NewCircleHitOnTargetFanAngle(trg, combat.Point{Y: -0.1}, 5.5, 180)
+		mirrorsHitmark = mirror2HitmarksLeft
+		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
+			mirrorsHitmark = mirror2HitmarksRight
+		}
 	default:
-
+		mirrorsHitmark = mirror1HitmarkLeft
+		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
+			mirrorsHitmark = mirror1HitmarkRight
+		}
 	}
 
 	for i := 0; i < c.mirrorCount; i++ {
-		c.Core.QueueAttack(ai, ap, 5, 5, c1cb) //TODO: projection hit timings
+		c.Core.QueueAttack(ai, ap, mirrorsHitmark[i], mirrorsHitmark[i], c1cb) //TODO: projection hit timings
 	}
 
 	c.Core.QueueParticle("alhaitham", 1, attributes.Dendro, c.ParticleDelay)
-	c.projectionICD = c.Core.F + 96 //1.6 sec icd
-	return
+	c.AddStatus(projectionICDKey, 96, true) //1.6 sec icd
 
 }

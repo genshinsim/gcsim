@@ -21,7 +21,6 @@ type char struct {
 	*tmpl.Character
 	mirrorCount     int
 	lastInfusionSrc int
-	projectionICD   int
 	a1ICD           int
 	a4bonus         float64
 	c1ICD           int

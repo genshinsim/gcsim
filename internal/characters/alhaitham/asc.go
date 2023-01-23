@@ -21,7 +21,6 @@ func (c *char) a1CB(a combat.AttackCB) {
 	}
 	c.a1ICD = c.Core.F + 720 //12s
 	c.mirrorGain()
-	return
 }
 
 // Each point of Alhaitham's Elemental Mastery will increase the DMG dealt by

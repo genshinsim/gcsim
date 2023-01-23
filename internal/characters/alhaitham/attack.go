@@ -10,7 +10,7 @@ import (
 )
 
 var attackFrames [][]int
-var attackHitmarks = [][]int{{8}, {11}, {14, 28}, {18}, {34}}
+var attackHitmarks = [][]int{{11}, {13}, {15, 29}, {21}, {35}}
 var attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {0, .03}, {.06}, {0}}
 var attackDefHalt = [][]bool{{true}, {true}, {false, true}, {true}, {false}}
 var attackHitboxes = [][]float64{{2.5}, {2, 2.5}, {2, 3}, {3, 4.5}, {2.5}}
@@ -20,24 +20,26 @@ var attackFanAngles = []float64{180, 360, 360, 360, 360}
 const normalHitNum = 5
 
 func init() {
-	// TODO: Attack frames and cancels, koli pls
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 25)
-	attackFrames[0][action.ActionAttack] = 16
-	attackFrames[0][action.ActionCharge] = 25
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 29)
+	attackFrames[0][action.ActionAttack] = 15
+	attackFrames[0][action.ActionCharge] = 23
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 21)
-	attackFrames[1][action.ActionAttack] = 21
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 31)
+	attackFrames[1][action.ActionAttack] = 23
+	attackFrames[1][action.ActionCharge] = 25
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 47)
-	attackFrames[2][action.ActionAttack] = 47
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 55)
+	attackFrames[2][action.ActionAttack] = 44
+	attackFrames[2][action.ActionCharge] = 45
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 28)
-	attackFrames[3][action.ActionAttack] = 28
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 51)
+	attackFrames[3][action.ActionAttack] = 30
+	attackFrames[3][action.ActionCharge] = 37
 
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 34)
-	attackFrames[4][action.ActionAttack] = 34
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 90)
+	attackFrames[4][action.ActionAttack] = 67
 
 }
 
@@ -85,7 +87,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				0,
 				0,
 				c.projectionAttack,
-				c.a1CB,
 			)
 		}, attackHitmarks[c.NormalCounter][i])
 	}

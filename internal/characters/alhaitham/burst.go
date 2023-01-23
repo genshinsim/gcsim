@@ -9,13 +9,14 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 56 //todo:scuff
+const burstHitmark = 94
 
 func init() {
-	burstFrames = frames.InitAbilSlice(90) // Q -> D/J
-	burstFrames[action.ActionAttack] = 90  // Q -> N1
-	burstFrames[action.ActionSkill] = 90   // Q -> E
-	burstFrames[action.ActionSwap] = 90    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(89) // Q -> D/W
+	burstFrames[action.ActionAttack] = 88  // Q -> N1
+	burstFrames[action.ActionSkill] = 89   // Q -> E
+	burstFrames[action.ActionJump] = 91    // Q -> Jump
+	burstFrames[action.ActionSwap] = 87    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -33,11 +34,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//X number of hits depending on mirrors when casted
 	//TODO: does the number of mirror affects the length of the attacking animations?
 	for i := 0; i < 4+2*c.mirrorCount; i++ { //TODO:frame counting for dis
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 7.1}, 6.8), burstHitmark+i*5, burstHitmark+i*5)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 7.1}, 6.8), burstHitmark+i*21, burstHitmark+i*21)
 
 	}
-	c.ConsumeEnergy(55)                             //TODO can we prefunnel?
-	c.SetCDWithDelay(action.ActionBurst, 18*60, 52) //TODO: Delay needed here?
+	c.ConsumeEnergy(6)
+	c.SetCD(action.ActionBurst, 18*60)
 
 	for i := 0; i < 3; i++ {
 		if c.mirrorCount <= i {
@@ -72,5 +73,5 @@ func (c *char) burstRefundMirrors() {
 		if c.Core.Player.Active() == c.Index { //stacks are refunded as long as he is on field
 			c.mirrorGain()
 		}
-	}, 2*60+burstFrames[0]) //TODO:exact refund timing
+	}, 191+burstFrames[0]) //TODO:exact refund timing
 }
