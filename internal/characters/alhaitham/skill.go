@@ -28,6 +28,8 @@ var mirror2HitmarksRight = []int{26, 35}
 
 var mirror3Hitmarks = []int{32, 41, 51}
 
+var snapshotTimings = []int{20, 22, 26}
+
 func init() {
 	// skill (tap) -> x
 	skillTapFrames = frames.InitAbilSlice(44)
@@ -206,6 +208,7 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		c1cb = c.c1
 	}
 	mirrorsHitmark := make([]int, 3)
+	snapshotTiming := 21
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Chisel-Light Mirror: Projection Attack %v", c.mirrorCount),
@@ -229,15 +232,18 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		ai.FlatDmg = mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ap = combat.NewCircleHitOnTarget(trg, combat.Point{Y: 4}, 4)
 		mirrorsHitmark = mirror3Hitmarks
+		snapshotTiming = snapshotTimings[2]
 	case 2:
 		ai.Mult = mirror1Atk[c.TalentLvlSkill()]
 		ai.FlatDmg = mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ap = combat.NewCircleHitOnTargetFanAngle(trg, combat.Point{Y: -0.1}, 5.5, 180)
+		snapshotTiming = snapshotTimings[1]
 		mirrorsHitmark = mirror2HitmarksLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror2HitmarksRight
 		}
 	default:
+		snapshotTiming = snapshotTimings[0]
 		mirrorsHitmark = mirror1HitmarkLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror1HitmarkRight
@@ -245,7 +251,7 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	}
 
 	for i := 0; i < c.mirrorCount; i++ {
-		c.Core.QueueAttack(ai, ap, mirrorsHitmark[i], mirrorsHitmark[i], c1cb) //TODO: projection hit timings
+		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb) //TODO: projection hit timings
 	}
 
 	c.Core.QueueParticle("alhaitham", 1, attributes.Dendro, c.ParticleDelay)

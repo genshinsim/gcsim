@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//X number of hits depending on mirrors when casted
 	//TODO: does the number of mirror affects the length of the attacking animations?
 	for i := 0; i < 4+2*c.mirrorCount; i++ { //TODO:frame counting for dis
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 7.1}, 6.8), burstHitmark+i*21, burstHitmark+i*21)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 7.1}, 6.8), 67, burstHitmark+i*21)
 
 	}
 	c.ConsumeEnergy(6)
