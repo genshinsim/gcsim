@@ -49,7 +49,6 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		Mult:       lowPlunge[c.TalentLvlAttack()],
 	}
 
-	// TODO: check snapshot delay
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		lowPlungeHitmark, lowPlungeHitmark, c.a1CB)
 

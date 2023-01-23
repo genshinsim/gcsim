@@ -11,9 +11,11 @@ import (
 
 var attackFrames [][]int
 var attackHitmarks = [][]int{{11}, {13}, {15, 29}, {21}, {35}}
-var attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {0, .03}, {.06}, {0}}
+
+var attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {0, .03}, {.06}, {0}} //TODO: this are placeholders
 var attackDefHalt = [][]bool{{true}, {true}, {false, true}, {true}, {false}}
 var attackHitboxes = [][]float64{{2.5}, {2, 2.5}, {2, 3}, {3, 4.5}, {2.5}}
+
 var attackOffsets = []float64{-0.1, -0.1, 0, 0, 2.2}
 var attackFanAngles = []float64{180, 360, 360, 360, 360}
 

@@ -72,13 +72,6 @@ var (
 		319.2 / 100.0,
 	}
 
-	//TODO: if no beta changes clean this up later
-	// mirror2Atk = []float64{}
-	// mirror2Em  = []float64{}
-
-	// mirror3Atk = []float64{}
-	// mirror3Em  = []float64{}
-
 	burstAtk = []float64{
 		121.6 / 100,
 		130.72 / 100,

@@ -14,6 +14,8 @@ import (
 var skillTapFrames []int
 var skillHoldFrames []int
 
+//TODO: defhalt values are needed
+
 const (
 	skillTapHitmark  = 19
 	skillHoldHitmark = 28
@@ -77,7 +79,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: false,
 	}
-	//TODO: Add hold support
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillTapHitmark, skillTapHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 15)
@@ -111,7 +112,6 @@ func (c *char) SkillHold() action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: false,
 	}
-	//TODO: Add hold support
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 2}, 2.25), skillHoldHitmark, skillHoldHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 23)
@@ -225,7 +225,6 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		return
 	}
 	ap := combat.NewBoxHitOnTarget(trg, nil, 7, 3)
-	//TODO: clean this code later (currently redundant)
 	switch c.mirrorCount {
 	case 3:
 		ai.Mult = mirror1Atk[c.TalentLvlSkill()]
@@ -251,7 +250,7 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	}
 
 	for i := 0; i < c.mirrorCount; i++ {
-		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb) //TODO: projection hit timings
+		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb)
 	}
 
 	c.Core.QueueParticle("alhaitham", 1, attributes.Dendro, c.ParticleDelay)
