@@ -19,12 +19,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	mirrorCount     int
-	lastInfusionSrc int
-	a1ICD           int
-	a4bonus         float64
-	c1ICD           int
-	c2counter       int
+	recentlyMirrorGain bool
+	mirrorCount        int
+	lastInfusionSrc    int
+	a1ICD              int
+	a4bonus            float64
+	c1ICD              int
+	c2counter          int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

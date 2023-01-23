@@ -110,7 +110,7 @@ func (c *char) SkillHold() action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 	//TODO: Add hold support
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillHoldHitmark, skillHoldHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 2}, 2.25), skillHoldHitmark, skillHoldHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 23)
 
@@ -127,7 +127,7 @@ func (c *char) mirrorGain() {
 		c.c2()
 	}
 	if c.mirrorCount > 2 { //max 3 mirrors at a time.
-		queueOnFrame := false
+		queueOnFrame := false              //var tracks if this is the first overflowing in this frame
 		if c.Core.F == c.lastInfusionSrc { //check if c.lastinfusion has already been called on this frame
 			queueOnFrame = true
 		}
@@ -149,6 +149,7 @@ func (c *char) mirrorGain() {
 
 	}
 	c.mirrorCount++
+	c.recentlyMirrorGain = true
 	c.Core.Log.NewEvent("Gained 1 mirror", glog.LogCharacterEvent, c.Index)
 
 }
@@ -174,8 +175,14 @@ func (c *char) mirrorLoss(src int) func() {
 
 		// queue up again if we still have mirrors
 		if c.mirrorCount > 0 {
-			c.Core.Tasks.Add(c.mirrorLoss(src), 234) //not affected by hitlag
+			if c.recentlyMirrorGain { //if mirror has been gained recently, mirror is lost after 234f
+				c.Core.Tasks.Add(c.mirrorLoss(src), 234) //not affected by hitlag
+				return
+			}
+			c.Core.Tasks.Add(c.mirrorLoss(src), 214) //not affected by hitlag, 448-234
+
 		}
+		c.recentlyMirrorGain = false
 	}
 }
 
