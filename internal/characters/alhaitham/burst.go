@@ -44,14 +44,22 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if c.mirrorCount <= i {
 
 			c.burstRefundMirrors()
-			if c.Base.Cons >= 4 {
-				c.c4("gain", i) //TODO: exact timing of c4 buff application
+			if c.Base.Cons >= 4 { //apply c4 buff on gain
+				c.QueueCharTask(func() { //Affected by hitlag
+					if c.Core.Player.Active() == c.Index { //buff applied as long as he is on field
+						c.c4("gain", i)
+					}
+				}, 190+burstFrames[0])
 			}
 
 		} else {
 			c.Core.Tasks.Add(c.mirrorLoss(c.lastInfusionSrc), 0)
-			if c.Base.Cons >= 4 { //TODO: Execution on cast or posburst?
-				c.c4("loss", i)
+			if c.Base.Cons >= 4 { //apply c4 buff on loss
+				c.QueueCharTask(func() { //Affected by hitlag
+					if c.Core.Player.Active() == c.Index { //buff applied as long as he is on field
+						c.c4("loss", i)
+					}
+				}, 190+burstFrames[0])
 			}
 		}
 		if c.Base.Cons >= 6 {
@@ -69,9 +77,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) burstRefundMirrors() {
-	c.Core.Tasks.Add(func() {
+	c.QueueCharTask(func() { //Affected by hitlag
 		if c.Core.Player.Active() == c.Index { //stacks are refunded as long as he is on field
 			c.mirrorGain()
 		}
-	}, 191+burstFrames[0]) //TODO:exact refund timing
+	}, 190+burstFrames[0])
 }
