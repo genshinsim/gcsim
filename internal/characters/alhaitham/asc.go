@@ -10,6 +10,9 @@ import (
 // When Alhaitham's Charged or Plunging Attacks hit opponents, they will generate 1 Chisel-Light Mirror.
 // This effect can be triggered once every 12s.
 func (c *char) a1CB(a combat.AttackCB) {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	ae := a.AttackEvent
 	//ignore if projection on icd
 	if c.a1ICD > c.Core.F {
