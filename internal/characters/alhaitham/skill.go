@@ -64,8 +64,14 @@ func (c *char) mirrorGain() {
 		c.c2()
 	}
 	if c.mirrorCount > 2 { //max 3 mirrors at a time.
-		c.lastInfusionSrc = c.Core.F
-		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 4*60)
+		queueOnFrame := false
+		if c.Core.F == c.lastInfusionSrc { //check if c.lastinfusion has already been called on this frame
+			queueOnFrame = true
+		}
+		if !queueOnFrame { //this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
+			c.lastInfusionSrc = c.Core.F
+			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 4*60)
+		}
 		c.Core.Log.NewEvent("mirror overflowed", glog.LogCharacterEvent, c.Index)
 
 		if c.Base.Cons >= 6 {
