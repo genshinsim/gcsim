@@ -41,12 +41,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for i := 0; i < 3; i++ {
 		if c.mirrorCount <= i {
-			if c.Core.Player.Active() == c.Index { //stacks are refunded as long as he is on field
-				c.Core.Tasks.Add(c.mirrorGain, 2*60+burstFrames[0]) //TODO:exact refund timing
-				if c.Base.Cons >= 4 {
-					c.c4("gain", i) //TODO: exact timing of c4 buff application
+
+			c.Core.Tasks.Add(func() {
+				if c.Core.Player.Active() == c.Index { //stacks are refunded as long as he is on field
+					c.mirrorGain()
 				}
+			}, 2*60+burstFrames[0]) //TODO:exact refund timing
+			if c.Base.Cons >= 4 {
+				c.c4("gain", i) //TODO: exact timing of c4 buff application
 			}
+
 		} else {
 			c.Core.Tasks.Add(c.mirrorLoss(c.lastInfusionSrc), 0)
 			if c.Base.Cons >= 4 { //TODO: Execution on cast or posburst?
@@ -54,7 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 		}
 		if c.Base.Cons >= 6 {
-			c.Core.Tasks.Add(c.mirrorGain, 2*60+burstFrames[0]) //TODO:exact refund timing
+			c.Core.Tasks.Add(c.mirrorGain, 2*60+burstFrames[0]+i) //TODO:exact refund timing
 		}
 
 	}
