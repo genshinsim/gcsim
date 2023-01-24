@@ -48,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					if c.Core.Player.Active() == c.Index { //buff applied as long as he is on field
 						c.c4("gain", i)
 					}
-				}, 190+burstFrames[0])
+				}, 190)
 			}
 
 		} else {
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					if c.Core.Player.Active() == c.Index { //buff applied as long as he is on field
 						c.c4("loss", i)
 					}
-				}, 190+burstFrames[0])
+				}, 190)
 			}
 		}
 		if c.Base.Cons >= 6 {
@@ -80,5 +80,5 @@ func (c *char) burstRefundMirrors() {
 		if c.Core.Player.Active() == c.Index { //stacks are refunded as long as he is on field
 			c.mirrorGain()
 		}
-	}, 190+burstFrames[0])
+	}, 190)
 }
