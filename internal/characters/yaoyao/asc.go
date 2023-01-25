@@ -3,49 +3,19 @@ package yaoyao
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-const a1ICDKey = "yaoyao-a1-icd"
-
-func (c *char) a1hook() {
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
-		//check if buff is up
-		if !c.StatusIsActive(burstKey) {
-			return false
-		}
-		if c.StatusIsActive(a1ICDKey) {
-			return false
-		}
-		next := args[1].(action.AnimationState)
-		switch next {
-		case action.DashState:
-			fallthrough
-		case action.JumpState:
-			c.Core.Log.NewEvent("yaoyao a1 triggered from state change", glog.LogCharacterEvent, c.Index).
-				Write("state", next)
-			c.a1Throw()
-		}
-		return false
-	}, "yaoayo-a1")
-}
-
-func (c *char) a1ticker(src int) {
-	c.a1src = src
+func (c *char) a1ticker() {
 	c.QueueCharTask(func() {
 		if !c.StatusIsActive(burstKey) {
-			return
-		}
-		if c.a1src != src {
 			return
 		}
 		switch c.Core.Player.CurrentState() {
 		case action.JumpState:
 			fallthrough
 		case action.DashState:
-			c.Core.Log.NewEvent("yaoyao a1 triggered from ticker", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
+			c.Core.Log.NewEvent("yaoyao a1 triggered", glog.LogCharacterEvent, c.Index).
 				Write("state", c.Core.Player.CurrentState())
 			c.a1Throw()
 		}
@@ -75,8 +45,6 @@ func (c *char) a1Throw() {
 	if c.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
 		c.radishHeal(hi)
 	}
-	c.AddStatus(a1ICDKey, 0.6*60, true)
-	c.a1ticker(c.Core.F)
 }
 
 func (c *char) a4() {

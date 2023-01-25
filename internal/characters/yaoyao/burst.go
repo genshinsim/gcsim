@@ -16,6 +16,7 @@ var (
 	burstHitmarks = []int{18, 33, 56} // initial 3 hits
 	burstRadius   = []float64{2.5, 2.5, 3}
 	skillStart    = 40
+	skillDur      = 5 * 60
 )
 
 func init() {
@@ -45,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(c.newYueguiJump, 2*60+skillStart)
 	c.QueueCharTask(c.newYueguiJump, 3*60+skillStart)
 	c.QueueCharTask(c.removeBurst, 5*60+skillStart)
-	c.AddStatus(burstKey, 5*60+skillStart, true)
+	c.AddStatus(burstKey, skillDur+skillStart, true)
 	// TODO: Yaoyao gains 15% movespeed and 50% dendro res
 	// m := make([]float64, attributes.EndStatType)
 	// m[attributes.DendroRes] = 0.50
@@ -60,6 +61,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	if c.Base.Cons >= 4 {
 		c.c4()
+	}
+
+	if c.Base.Ascension >= 1 {
+		for i := 36; i <= skillDur; i += 36 { // 0.6*60 = 36
+			c.QueueCharTask(c.a1ticker, i+skillStart)
+		}
 	}
 
 	return action.ActionInfo{
