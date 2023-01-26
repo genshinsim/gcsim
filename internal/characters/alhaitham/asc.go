@@ -35,7 +35,7 @@ func (c *char) a4() {
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			// only trigger on projection attack and burst damage
 			if atk.Info.AttackTag != combat.AttackTagElementalBurst &&
-				combat.ICDGroup != combat.ICDGroupAlhaithamProjectionAttack {
+				combat.ICDGroup(atk.Info.ICDTag) != combat.ICDGroupAlhaithamProjectionAttack {
 				return nil, false
 			}
 
