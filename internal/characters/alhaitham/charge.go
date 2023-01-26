@@ -13,20 +13,22 @@ var chargeFrames []int
 var chargeHitmarks = []int{19, 27}
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(48)
-	chargeFrames[action.ActionSkill] = 48
-	chargeFrames[action.ActionBurst] = 48
+	chargeFrames = frames.InitAbilSlice(64)
+	chargeFrames[action.ActionAttack] = 50
+	chargeFrames[action.ActionSkill] = 50
+	chargeFrames[action.ActionBurst] = 50
 	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
 	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionSwap] = 48
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDTag:     combat.ICDTagExtraAttack,
+		ICDGroup:   combat.ICDGroupAlhaithamExtraAttack,
+		StrikeType: combat.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
