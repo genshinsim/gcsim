@@ -48,7 +48,10 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
+	strikeType := combat.StrikeTypeSlash
+	if c.NormalCounter == 1 {
+		strikeType = combat.StrikeTypeSpear
+	}
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -56,6 +59,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          combat.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
+			StrikeType:         strikeType,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -70,6 +74,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitboxes[c.NormalCounter][0],
 			attackFanAngles[c.NormalCounter],
 		)
+
 		if c.NormalCounter == 1 || c.NormalCounter == 2 || c.NormalCounter == 3 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
