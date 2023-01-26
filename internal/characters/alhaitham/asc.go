@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const a1IcdKey = "alhaitham-a1-icd"
+
 // When Alhaitham's Charged or Plunging Attacks hit opponents, they will generate 1 Chisel-Light Mirror.
 // This effect can be triggered once every 12s.
 func (c *char) a1CB(a combat.AttackCB) {
@@ -15,11 +17,11 @@ func (c *char) a1CB(a combat.AttackCB) {
 	}
 
 	//ignore if projection on icd
-	if c.a1ICD > c.Core.F {
+	if c.Core.Status.Duration(a1IcdKey) > 0 {
 		return
 	}
 
-	c.a1ICD = c.Core.F + 720 //12s
+	c.Core.Status.Add(a1IcdKey, 720) //12s
 	c.mirrorGain()
 }
 
