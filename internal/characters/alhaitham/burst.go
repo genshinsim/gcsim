@@ -48,9 +48,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		generated = 3
 	}
 
-	// c.burstRefundMirrors can be removed
-	// handle c2 and c6 calling inside of mirrorGain/mirrorLoss
-
 	c.mirrorLoss(c.lastInfusionSrc, consumed)() // consume mirrors right away
 	if hasC4 {
 		c.c4Loss(consumed)
