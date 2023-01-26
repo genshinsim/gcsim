@@ -230,21 +230,17 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		StrikeType: strikeType,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       mirror1Atk[c.TalentLvlSkill()],
-		FlatDmg:    mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM),
+		Mult:       mirrorAtk[c.TalentLvlSkill()],
+		FlatDmg:    mirrorEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
 	}
 
 	ap := combat.NewBoxHitOnTarget(trg, nil, 7, 3)
 	switch c.mirrorCount {
 	case 3:
-		ai.Mult = mirror1Atk[c.TalentLvlSkill()]
-		ai.FlatDmg = mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ap = combat.NewCircleHitOnTarget(trg, combat.Point{Y: 4}, 4)
 		mirrorsHitmark = mirror3Hitmarks
 		snapshotTiming = snapshotTimings[2]
 	case 2:
-		ai.Mult = mirror1Atk[c.TalentLvlSkill()]
-		ai.FlatDmg = mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ap = combat.NewCircleHitOnTargetFanAngle(trg, combat.Point{Y: -0.1}, 5.5, 180)
 		snapshotTiming = snapshotTimings[1]
 		mirrorsHitmark = mirror2HitmarksLeft
