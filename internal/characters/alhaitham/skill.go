@@ -129,9 +129,10 @@ func (c *char) SkillHold() action.ActionInfo {
 }
 
 func (c *char) mirrorGain(generated int) {
-	if c.Base.Cons >= 2 { //triggers on overflow
-		c.c2()
+	if generated == 0 {
+		return
 	}
+
 	if c.mirrorCount == 0 {
 		c.lastInfusionSrc = c.Core.F
 		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
@@ -141,6 +142,9 @@ func (c *char) mirrorGain(generated int) {
 
 	c.mirrorCount += generated
 	c.recentlyMirrorGain = true
+	if c.Base.Cons >= 2 { //triggers on overflow
+		c.c2(generated)
+	}
 
 	if c.mirrorCount > 3 { //max 3 mirrors at a time.
 		c.mirrorCount = 3
