@@ -41,33 +41,30 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(6)
 	c.SetCD(action.ActionBurst, 18*60)
 
-	for i := 0; i < 3; i++ {
-		if c.mirrorCount <= i {
-
-			c.burstRefundMirrors()
-			if c.Base.Cons >= 4 { //apply c4 buff on gain
-				c.QueueCharTask(func() { //Affected by hitlag
-					if c.Core.Player.Active() == c.Index { //buff applied as long as he is on field
-						c.c4("gain", i)
-					}
-				}, 190)
-			}
-
-		} else {
-			c.Core.Tasks.Add(c.mirrorLoss(c.lastInfusionSrc), 0)
-			if c.Base.Cons >= 4 { //apply c4 buff on loss
-				c.QueueCharTask(func() { //Affected by hitlag
-					if c.Core.Player.Active() == c.Index { //buff applied as long as he is on field
-						c.c4("loss", i)
-					}
-				}, 190)
-			}
-		}
-		if c.Base.Cons >= 6 {
-			c.burstRefundMirrors()
-		}
-
+	consumed := c.mirrorCount
+	generated := 3 - c.mirrorCount
+	hasC4 := c.Base.Cons >= 4
+	if c.Base.Cons >= 6 {
+		generated = 3
 	}
+
+	// c.burstRefundMirrors can be removed
+	// handle c2 and c6 calling inside of mirrorGain/mirrorLoss
+
+	c.mirrorLoss(c.lastInfusionSrc, consumed)() // consume mirrors right away
+	if hasC4 {
+		c.c4Loss(consumed)
+	}
+
+	c.QueueCharTask(func() {
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
+		c.mirrorGain(generated)
+		if hasC4 {
+			c.c4Gain(generated)
+		}
+	}, 190)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -75,12 +72,4 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
-}
-
-func (c *char) burstRefundMirrors() {
-	c.QueueCharTask(func() { //Affected by hitlag
-		if c.Core.Player.Active() == c.Index { //stacks are refunded as long as he is on field
-			c.mirrorGain()
-		}
-	}, 190)
 }

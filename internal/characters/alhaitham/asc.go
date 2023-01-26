@@ -22,7 +22,7 @@ func (c *char) a1CB(a combat.AttackCB) {
 	}
 
 	c.Core.Status.Add(a1IcdKey, 720) //12s
-	c.mirrorGain()
+	c.mirrorGain(1)
 }
 
 // Each point of Alhaitham's Elemental Mastery will increase the DMG dealt by

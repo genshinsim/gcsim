@@ -58,9 +58,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(func() {
 		if c.mirrorCount == 0 { //extra mirror if 0 when cast
-			c.mirrorGain()
+			c.mirrorGain(2)
+			return
 		}
-		c.mirrorGain()
+		c.mirrorGain(1)
+
 	}, 15)
 
 	ai := combat.AttackInfo{
@@ -92,9 +94,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) SkillHold() action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		if c.mirrorCount == 0 { //extra mirror if 0 when cast
-			c.mirrorGain()
+			c.mirrorGain(2)
+			return
 		}
-		c.mirrorGain()
+		c.mirrorGain(1)
+
 	}, 23)
 
 	ai := combat.AttackInfo{
@@ -124,66 +128,79 @@ func (c *char) SkillHold() action.ActionInfo {
 	}
 }
 
-func (c *char) mirrorGain() {
+func (c *char) mirrorGain(generated int) {
 	if c.Base.Cons >= 2 { //triggers on overflow
 		c.c2()
 	}
-	if c.mirrorCount > 2 { //max 3 mirrors at a time.
+	if c.mirrorCount == 0 {
+		c.lastInfusionSrc = c.Core.F
+		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
+		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
+
+	}
+
+	c.mirrorCount += generated
+	c.recentlyMirrorGain = true
+
+	if c.mirrorCount > 3 { //max 3 mirrors at a time.
+		c.mirrorCount = 3
 		queueOnFrame := false              //var tracks if this is the first overflowing in this frame
 		if c.Core.F == c.lastInfusionSrc { //check if c.lastinfusion has already been called on this frame
 			queueOnFrame = true
 		}
 		if !queueOnFrame { //this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
 			c.lastInfusionSrc = c.Core.F
-			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 234)
+			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
 		}
-		c.Core.Log.NewEvent("mirror overflowed", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("mirror overflowed", glog.LogCharacterEvent, c.Index).
+			Write("mirrors gained", generated).
+			Write("current mirrors", c.mirrorCount)
 
 		if c.Base.Cons >= 6 {
 			c.c6()
 		}
 		return
 	}
-	if c.mirrorCount == 0 {
-		c.lastInfusionSrc = c.Core.F
-		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F), 234)
-		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
-
-	}
-	c.mirrorCount++
-	c.recentlyMirrorGain = true
-	c.Core.Log.NewEvent("Gained 1 mirror", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent(fmt.Sprintf("Gained %v mirror(s)", generated), glog.LogCharacterEvent, c.Index).
+		Write("current mirrors", c.mirrorCount)
 
 }
 
-func (c *char) mirrorLoss(src int) func() {
+func (c *char) mirrorLoss(src int, consumed int) func() {
 	return func() {
+		if consumed <= 0 {
+			return
+		}
 		if c.lastInfusionSrc != src {
 			c.Core.Log.NewEvent("mirror decrease ignored, src diff", glog.LogCharacterEvent, c.Index).
 				Write("src", src).
 				Write("new src", c.lastInfusionSrc)
 			return
 		}
-		if c.mirrorCount == 0 { //for case when you swap out and have mirrorloss queue'd.
+		if c.mirrorCount == 0 { //just in case
 			c.Core.Log.NewEvent("Mirror count is 0, omitting reduction", glog.LogCharacterEvent, c.Index)
 			return
 		}
 
-		c.mirrorCount--
+		c.mirrorCount -= consumed
+		c.recentlyMirrorGain = false
+		if c.mirrorCount < 0 { //This shouldn't happen but just in case
+			c.mirrorCount = 0
+		}
 
-		c.Core.Log.NewEvent("Lost 1 mirror", glog.LogCharacterEvent, c.Index).
-			Write("mirrors", c.mirrorCount)
+		c.Core.Log.NewEvent(fmt.Sprintf("Consumed %v mirror(s)", consumed), glog.LogCharacterEvent, c.Index).
+			Write("current mirrors", c.mirrorCount)
 
 		// queue up again if we still have mirrors
 		if c.mirrorCount > 0 {
 			if c.recentlyMirrorGain { //if mirror has been gained recently, mirror is lost after 234f
-				c.Core.Tasks.Add(c.mirrorLoss(src), 234) //not affected by hitlag
+				c.Core.Tasks.Add(c.mirrorLoss(src, 1), 234) //not affected by hitlag
 				return
 			}
-			c.Core.Tasks.Add(c.mirrorLoss(src), 214) //not affected by hitlag, 448-234
+			c.Core.Tasks.Add(c.mirrorLoss(src, 1), 214) //not affected by hitlag, 448-234
 
 		}
-		c.recentlyMirrorGain = false
+
 	}
 }
 
@@ -195,14 +212,14 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		return
 	}
 	//ignore if alhaitham is not on field
-	if c.Core.Player.Active() == c.Index {
+	if c.Core.Player.Active() != c.Index {
 		return
 	}
 	//ignore if it doesn't have at least a mirror
 	if c.mirrorCount == 0 {
 		return
 	}
-	//ignore it isn't NA/CA/Plunge
+	//ignore if it isn't NA/CA/Plunge
 	if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra && ae.Info.AttackTag != combat.AttackTagPlunge {
 		return
 	}
