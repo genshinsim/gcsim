@@ -30,14 +30,14 @@ func (c *char) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 50
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c2-%v-stack", c.c2counter+1), 480), //8s
+		Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c2-%v-stack", c.c2Counter+1), 480), //8s
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
 
 			return m, true
 		},
 	})
-	c.c2counter = (c.c2counter + 1) % 4 //stacks are independent from each other, this will cycle them
+	c.c2Counter = (c.c2Counter + 1) % 4 //stacks are independent from each other, this will cycle them
 }
 
 // When Particular Field: Fetters of Phenomena is unleashed, the following effects will become active

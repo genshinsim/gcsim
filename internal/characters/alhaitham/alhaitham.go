@@ -24,7 +24,7 @@ type char struct {
 	lastInfusionSrc    int
 	a1ICD              int
 	c1ICD              int
-	c2counter          int
+	c2Counter          int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
