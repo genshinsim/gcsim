@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		c.applyC4 = true
 		src := c.burstCastF
-		c.Core.Tasks.Add(func() {
+		c.QueueCharTask(func() {
 			if src == c.burstCastF && c.applyC4 {
 				c.applyC4 = false
 				c.c4()
