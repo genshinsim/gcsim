@@ -56,7 +56,9 @@ func (c *char) onExitField() {
 			return false
 		}
 		c.mirrorCount = 0
-		c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index)
+		if c.mirrorCount > 0 {
+			c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index)
+		}
 
 		return false
 	}, "alhaitham-exit")
