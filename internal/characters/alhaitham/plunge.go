@@ -10,13 +10,13 @@ import (
 
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 19
+const lowPlungeHitmark = 18
 
 func init() {
 	lowPlungeFrames = frames.InitAbilSlice(50)
 	lowPlungeFrames[action.ActionAttack] = 29
-	lowPlungeFrames[action.ActionCharge] = 30
-	lowPlungeFrames[action.ActionBurst] = 31
+	lowPlungeFrames[action.ActionSkill] = 30
+	lowPlungeFrames[action.ActionBurst] = 30
 	lowPlungeFrames[action.ActionDash] = 20
 	lowPlungeFrames[action.ActionSwap] = 38
 
@@ -24,8 +24,7 @@ func init() {
 
 func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	//last action must be hold skill
-	if c.Core.Player.LastAction.Char != c.Index ||
-		c.Core.Player.LastAction.Type != action.ActionSkill ||
+	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["hold"] != 1 {
 		c.Core.Log.NewEvent("only plunge after hold skill ends", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
@@ -43,19 +42,19 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagPlunge,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
-		lowPlungeHitmark, lowPlungeHitmark, c.a1CB)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3),
+		lowPlungeHitmark, lowPlungeHitmark, c.a1CB, c.projectionAttack)
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return lowPlungeFrames[next] },
+		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeHitmark,
+		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
 		State:           action.PlungeAttackState,
 	}
 }
