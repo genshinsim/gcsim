@@ -11,15 +11,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const c1IcdKey = "alhaitham-c1-icd"
+
 // When a Projection Attack hits an opponent, Universality: An Elaboration on Form's CD is decreased by 1.2s.
 // This effect can be triggered once every 1s.
 func (c *char) c1(a combat.AttackCB) {
 	//ignore if c1 on icd
-	if c.c1ICD > c.Core.F {
+	if c.StatusIsActive(c1IcdKey) {
 		return
 	}
 	c.ReduceActionCooldown(action.ActionSkill, 72) //reduced by 1.2s
-	c.c1ICD = c.Core.F + 60                        //1s icd
+	c.AddStatus(c1IcdKey, 60, true)                //1s icd affected by hitlag
 }
 
 // When Alhaitham generates a Chisel-Light Mirror, his Elemental Mastery will be increased by 50 for 8 seconds,
