@@ -3,7 +3,6 @@ package alhaitham
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -62,14 +61,6 @@ func (c *char) onExitField() {
 
 		return false
 	}, "alhaitham-exit")
-}
-
-func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
-		return 20
-	}
-	return c.Character.ActionStam(a, p)
 }
 
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
