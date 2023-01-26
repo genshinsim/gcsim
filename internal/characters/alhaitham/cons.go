@@ -28,18 +28,21 @@ func (c *char) c1(a combat.AttackCB) {
 // max 4 stacks.
 // Each stack's duration is counted independently.
 // This effect can be triggered even when the maximum number of Chisel-Light Mirrors has been reached.
-func (c *char) c2() {
+func (c *char) c2(generated int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 50
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c2-%v-stack", c.c2Counter+1), 480), //8s
-		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
+	for i := 0; i < generated; i++ {
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c2-%v-stack", c.c2Counter+1), 480), //8s
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
 
-			return m, true
-		},
-	})
-	c.c2Counter = (c.c2Counter + 1) % 4 //stacks are independent from each other, this will cycle them
+				return m, true
+			},
+		})
+		c.c2Counter = (c.c2Counter + 1) % 4 //stacks are independent from each other, this will cycle them
+	}
+
 }
 
 // When Particular Field: Fetters of Phenomena is unleashed, the following effects will become active
@@ -47,38 +50,40 @@ func (c *char) c2() {
 // ·Each Mirror consumed will increase the Elemental Mastery of all other nearby party members by 30 for 15s.
 // ·Each Mirror generated will grant Alhaitham a 10% Dendro DMG Bonus for 15s.
 // The pre-existing duration of the aforementioned effects will be cleared if you use Particular Field: Fetters of Phenomena again while they are in effect
-func (c *char) c4(src string, counter int) {
-	//TODO: Refactor this and add on field check
+func (c *char) c4Loss(consumed int) {
+	if consumed <= 0 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
-	if src == "gain" {
-		m[attributes.DendroP] = 0.1
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c4-%v-instance", counter), 900), //15s
-			AffectedStat: attributes.DendroP,
+	m[attributes.EM] = 30.0 * float64(consumed)
+	for i, char := range c.Core.Player.Chars() {
+		// skip Alhaitham
+		if i == c.Index {
+			continue
+		}
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("alhaitham-c4-loss", 900),
+			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
-
 				return m, true
 			},
 		})
-		c.Core.Log.NewEvent("c4 buff on gain", glog.LogCharacterEvent, c.Index)
-	} else {
-		m[attributes.EM] = 30
-		for i, char := range c.Core.Player.Chars() {
-			// skip Alhaitham
-			if i == c.Index {
-				continue
-			}
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c4-%v-instance", counter+1), 900),
-				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-			})
-		}
-		c.Core.Log.NewEvent("c4 buff on loss", glog.LogCharacterEvent, c.Index)
 	}
+}
 
+func (c *char) c4Gain(generated int) {
+	if generated <= 0 {
+		return
+	}
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.DendroP] = 0.1 * float64(generated)
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag("alhaitham-c4-gain", 900),
+		AffectedStat: attributes.DendroP,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 }
 
 // Alhaitham gains the following effects:
@@ -95,7 +100,7 @@ func (c *char) c6() {
 	m[attributes.CR] = 0.1
 	m[attributes.CD] = 0.7
 
-	if c.StatModIsActive(c6key) { //TODO: Needs a check to work only during the first 6s of the buff?
+	if c.StatModIsActive(c6key) {
 		c.ExtendStatus(c6key, 360)
 		c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index).Write("c6 expiry on", c.StatusExpiry(c6key))
 	} else {
@@ -106,7 +111,7 @@ func (c *char) c6() {
 
 				return m, true
 			},
-		}) //TODO: does he lose the buff if he swaps out?
+		})
 	}
 
 }
