@@ -78,7 +78,6 @@ const (
 	ICDTagNahidaSkill
 	ICDTagNahidaC6
 	ICDTagWandererA4
-	ICDTagAlhaithamProjectionAttack
 	ICDTagLength
 )
 

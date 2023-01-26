@@ -14,12 +14,11 @@ import (
 var skillTapFrames []int
 var skillHoldFrames []int
 
-//TODO: defhalt values are needed
-
 const (
 	skillTapHitmark  = 19
 	skillHoldHitmark = 28
 	projectionICDKey = "alhaitham-projection-icd"
+	particleICDKey   = "alhaitham-particle-icd"
 )
 
 var mirror1HitmarkLeft = []int{39}
@@ -37,18 +36,17 @@ func init() {
 	skillTapFrames = frames.InitAbilSlice(44)
 	skillTapFrames[action.ActionAttack] = 27
 	skillTapFrames[action.ActionSkill] = 28
+	skillTapFrames[action.ActionBurst] = 28
 	skillTapFrames[action.ActionDash] = 33
 	skillTapFrames[action.ActionJump] = 33
 	skillTapFrames[action.ActionSwap] = 36
 
 	// skill (hold)-> x
-	skillHoldFrames = frames.InitAbilSlice(86)
+	skillHoldFrames = frames.InitAbilSlice(87)
 	skillHoldFrames[action.ActionAttack] = 86
 	skillHoldFrames[action.ActionLowPlunge] = 35
-	skillHoldFrames[action.ActionSkill] = 86
-	skillHoldFrames[action.ActionDash] = 86
-	skillHoldFrames[action.ActionJump] = 86
-	skillHoldFrames[action.ActionSwap] = 86
+	skillHoldFrames[action.ActionSkill] = 80
+	skillHoldFrames[action.ActionSwap] = 85
 
 }
 
@@ -71,13 +69,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               rushAtk[c.TalentLvlSkill()],
 		FlatDmg:            rushEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
-		HitlagHaltFrames:   0.09 * 60,
+		HitlagHaltFrames:   0.04 * 60,
 		HitlagFactor:       0.01,
-		CanBeDefenseHalted: false,
+		CanBeDefenseHalted: true,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillTapHitmark, skillTapHitmark)
 
@@ -86,7 +85,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillTapFrames),
 		AnimationLength: skillTapFrames[action.InvalidAction],
-		CanQueueAfter:   skillTapFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillTapFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -104,13 +103,14 @@ func (c *char) SkillHold() action.ActionInfo {
 		AttackTag:          combat.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
+		StrikeType:         combat.StrikeTypeDefault,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               rushAtk[c.TalentLvlSkill()],
 		FlatDmg:            rushEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
-		HitlagHaltFrames:   0.09 * 60,
+		HitlagHaltFrames:   0.04 * 60,
 		HitlagFactor:       0.01,
-		CanBeDefenseHalted: false,
+		CanBeDefenseHalted: true,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 2}, 2.25), skillHoldHitmark, skillHoldHitmark)
 
@@ -119,7 +119,7 @@ func (c *char) SkillHold() action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillHoldFrames[action.ActionLowPlunge], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -164,9 +164,8 @@ func (c *char) mirrorLoss(src int) func() {
 				Write("new src", c.lastInfusionSrc)
 			return
 		}
-		if c.mirrorCount == 0 { //for case when you swap out and have mirrorloss queue'd. T
-			//TODO:change the lastinfusionsrc on swap event perhaps?
-			c.Core.Log.NewEvent("Mirror count is 0, ommiting reduction", glog.LogCharacterEvent, c.Index)
+		if c.mirrorCount == 0 { //for case when you swap out and have mirrorloss queue'd.
+			c.Core.Log.NewEvent("Mirror count is 0, omitting reduction", glog.LogCharacterEvent, c.Index)
 			return
 		}
 
@@ -195,6 +194,10 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	if c.StatusIsActive(projectionICDKey) {
 		return
 	}
+	//ignore if alhaitham is not on field
+	if c.Core.Player.Active() == c.Index {
+		return
+	}
 	//ignore if it doesn't have at least a mirror
 	if c.mirrorCount == 0 {
 		return
@@ -203,27 +206,34 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra && ae.Info.AttackTag != combat.AttackTagPlunge {
 		return
 	}
+	trg, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
 	var c1cb combat.AttackCBFunc
 	if c.Base.Cons >= 1 {
 		c1cb = c.c1
 	}
 	mirrorsHitmark := make([]int, 3)
 	snapshotTiming := 21
+	strikeType := combat.StrikeTypeSlash
+	if c.mirrorCount == 3 {
+		strikeType = combat.StrikeTypeSpear
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Chisel-Light Mirror: Projection Attack %v", c.mirrorCount),
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagAlhaithamProjectionAttack,
+		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupAlhaithamProjectionAttack,
+		StrikeType: strikeType,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       mirror1Atk[c.TalentLvlSkill()],
 		FlatDmg:    mirror1Em[c.TalentLvlSkill()] * c.Stat(attributes.EM),
-	} //TODO: hitlag stuff?
-	trg, ok := a.Target.(*enemy.Enemy)
-	if !ok {
-		return
 	}
+
 	ap := combat.NewBoxHitOnTarget(trg, nil, 7, 3)
 	switch c.mirrorCount {
 	case 3:
@@ -248,12 +258,19 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 			mirrorsHitmark = mirror1HitmarkRight
 		}
 	}
-
-	for i := 0; i < c.mirrorCount; i++ {
-		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb)
+	particleCB := func(a combat.AttackCB) {
+		// particle icd is 1.5s, affected by hitlag
+		// need status here, because snapping a done bool into the closure isn't good enough when the same callback gets queued up for multiple attacks
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.Core.QueueParticle("alhaitham", 1, attributes.Dendro, c.ParticleDelay)
+		c.AddStatus(particleICDKey, 90, true)
 	}
 
-	c.Core.QueueParticle("alhaitham", 1, attributes.Dendro, c.ParticleDelay)
+	for i := 0; i < c.mirrorCount; i++ {
+		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb, particleCB)
+	}
 	c.AddStatus(projectionICDKey, 96, true) //1.6 sec icd
 
 }
