@@ -21,8 +21,6 @@ type char struct {
 	recentlyMirrorGain bool
 	mirrorCount        int
 	lastInfusionSrc    int
-	a1ICD              int
-	c1ICD              int
 	c2Counter          int
 }
 

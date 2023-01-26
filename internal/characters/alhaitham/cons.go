@@ -48,7 +48,7 @@ func (c *char) c2() {
 // ·Each Mirror generated will grant Alhaitham a 10% Dendro DMG Bonus for 15s.
 // The pre-existing duration of the aforementioned effects will be cleared if you use Particular Field: Fetters of Phenomena again while they are in effect
 func (c *char) c4(src string, counter int) {
-	//TODO: Does C4 apply the dendro dmg bonus to alhaitham even if he is NOT on field during the refund?
+	//TODO: Refactor this and add on field check
 	m := make([]float64, attributes.EndStatType)
 	if src == "gain" {
 		m[attributes.DendroP] = 0.1
