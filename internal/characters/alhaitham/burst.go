@@ -26,10 +26,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  combat.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       burstAtk[c.TalentLvlBurst()],
-		FlatDmg:    burstEm[c.TalentLvlSkill()] * c.Stat(attributes.EM)}
+		FlatDmg:    burstEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
+	}
 
 	//X number of hits depending on mirrors when casted
 	for i := 0; i < 4+2*c.mirrorCount; i++ {
