@@ -83,21 +83,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				attackHitboxes[c.NormalCounter][1],
 			)
 		}
-		if c.NormalCounter == 4 {
-			ap = combat.NewCircleHitOnTarget(
-				c.Core.Combat.Player(),
-				combat.Point{Y: attackOffsets[c.NormalCounter]},
-				attackHitboxes[c.NormalCounter][0])
-		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				ap,
-				0,
-				0,
-				c.projectionAttack,
-			)
-		}, attackHitmarks[c.NormalCounter][i])
+
+		c.Core.QueueAttack(
+			ai,
+			ap,
+			attackHitmarks[c.NormalCounter][i],
+			attackHitmarks[c.NormalCounter][i],
+			c.projectionAttack,
+		)
 	}
 
 	defer c.AdvanceNormalIndex()
