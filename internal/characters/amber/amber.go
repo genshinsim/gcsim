@@ -41,6 +41,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	c.a1()
 	if c.Base.Cons >= 2 {
+		c.c2()
 		c.overloadExplode()
 	}
 	return nil
