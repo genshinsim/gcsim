@@ -231,7 +231,6 @@ const (
 	FerrousShadow
 	FesteringDesire
 	FilletBlade
-	FoliarIncision
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
@@ -251,6 +250,7 @@ const (
 	KeyOfKhajNisut
 	KingsSquire
 	KitainCrossSpear
+	LightOfFoliarIncision
 	LionsRoar
 	LithicBlade
 	LithicSpear
