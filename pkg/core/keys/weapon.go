@@ -95,6 +95,7 @@ var weaponNames = []string{
 	"keyofkhajnisut",
 	"kingssquire",
 	"kitaincrossspear",
+	"lightoffoliarincision",
 	"lionsroar",
 	"lithicblade",
 	"lithicspear",
@@ -230,6 +231,7 @@ const (
 	FerrousShadow
 	FesteringDesire
 	FilletBlade
+	FoliarIncision
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
