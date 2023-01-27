@@ -108,6 +108,7 @@ func init() {
 	percentDelay5[keys.Layla] = 12
 	percentDelay5[keys.Shenhe] = 12
 	percentDelay5[keys.YaeMiko] = 7
+	percentDelay5[keys.Alhaitham] = 14
 
 	// TODO: Uncomment when Wanderer Implementation is done
 	// percentDelay5[keys.Wanderer] = 0
