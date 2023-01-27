@@ -161,7 +161,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
 		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
-	case attributes.Pyro:
+	case attributes.Cryo:
 		// trigger burgeon, aoe dendro damage
 		// self damage
 		ai, snap := NewBurgeonAttack(char, s)

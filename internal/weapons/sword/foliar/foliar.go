@@ -48,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	caBoost := 0.09 + 0.3*float64(r)
+	caBoost := 0.9 + 0.3*float64(r)
 	procCount := 0
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
