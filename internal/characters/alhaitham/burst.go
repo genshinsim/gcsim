@@ -12,10 +12,11 @@ var burstFrames []int
 const burstHitmark = 94
 
 func init() {
-	burstFrames = frames.InitAbilSlice(91) // Q -> D/W
+	burstFrames = frames.InitAbilSlice(91) // Q -> J
 	burstFrames[action.ActionAttack] = 88  // Q -> N1
 	burstFrames[action.ActionSkill] = 89   // Q -> E
 	burstFrames[action.ActionDash] = 89    // Q -> Dash
+	burstFrames[action.ActionWalk] = 89    // Q -> Walk
 	burstFrames[action.ActionSwap] = 87    // Q -> Swap
 }
 
