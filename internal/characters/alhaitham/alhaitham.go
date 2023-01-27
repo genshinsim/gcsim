@@ -52,9 +52,9 @@ func (c *char) onExitField() {
 		if prev != c.Index {
 			return false
 		}
-		c.mirrorCount = 0
 		c.lastInfusionSrc = -1 //Might prevent undesired behaviour
 		if c.mirrorCount > 0 {
+			c.mirrorCount = 0
 			c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index)
 		}
 
