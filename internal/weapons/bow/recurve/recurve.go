@@ -3,7 +3,6 @@ package recurve
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -15,7 +14,7 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.RecurveBow, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.RecurveBow, NewWeapon)
 }
 
 type Weapon struct {
