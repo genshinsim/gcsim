@@ -1498,7 +1498,7 @@
 			}
 		]
 	},
-	"foliarincision": {
+	"lightoffoliarincision": {
 		"base": {
 			"attack": 44.33580017089844,
 			"specialized": 0.19200000166893005

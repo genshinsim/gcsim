@@ -20,7 +20,7 @@ const (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.FoliarIncision, NewWeapon)
+	core.RegisterWeaponFunc(keys.LightOfFoliarIncision, NewWeapon)
 }
 
 type Weapon struct {
@@ -31,9 +31,9 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	//CRIT Rate is increased by 4%. 
-	//After Normal Attacks deal Elemental DMG, the Foliar Incision effect will be obtained, 
-	//increasing DMG dealt by Normal Attacks and Elemental Skills by 120% of Elemental Mastery. 
+	//CRIT Rate is increased by 4%.
+	//After Normal Attacks deal Elemental DMG, the Foliar Incision effect will be obtained,
+	//increasing DMG dealt by Normal Attacks and Elemental Skills by 120% of Elemental Mastery.
 	//This effect will disappear after 28 DMG instances or 12s. You can obtain Foliar Incision once every 12s.
 	w := &Weapon{}
 	r := p.Refine
