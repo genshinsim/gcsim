@@ -18,10 +18,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	recentlyMirrorGain bool
-	mirrorCount        int
-	lastInfusionSrc    int
-	c2Counter          int
+	mirrorCount     int
+	lastInfusionSrc int
+	c2Counter       int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
