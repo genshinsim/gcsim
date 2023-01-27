@@ -95,23 +95,23 @@ func (c *char) c4Gain(generated int) {
 // If this effect is triggered again during its initial duration, the duration remaining will be increased by 6s.
 const c6key = "alhaitham-c6"
 
-func (c *char) c6() {
+func (c *char) c6(generated int) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.1
 	m[attributes.CD] = 0.7
+	for i := 0; i < generated; i++ {
+		if c.StatModIsActive(c6key) {
+			c.ExtendStatus(c6key, 360)
+			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index).Write("c6 expiry on", c.StatusExpiry(c6key))
+		} else {
+			c.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag((c6key), 360), //6s
+				AffectedStat: attributes.CR,
+				Amount: func() ([]float64, bool) {
 
-	if c.StatModIsActive(c6key) {
-		c.ExtendStatus(c6key, 360)
-		c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index).Write("c6 expiry on", c.StatusExpiry(c6key))
-	} else {
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag((c6key), 360), //6s
-			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
-
-				return m, true
-			},
-		})
+					return m, true
+				},
+			})
+		}
 	}
-
 }

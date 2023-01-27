@@ -46,6 +46,7 @@ func init() {
 	skillHoldFrames[action.ActionAttack] = 86
 	skillHoldFrames[action.ActionLowPlunge] = 35
 	skillHoldFrames[action.ActionSkill] = 80
+	skillHoldFrames[action.ActionWalk] = 86
 	skillHoldFrames[action.ActionSwap] = 85
 
 }
@@ -56,14 +57,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		return c.SkillHold()
 	}
 
-	c.Core.Tasks.Add(func() {
-		if c.mirrorCount == 0 { //extra mirror if 0 when cast
-			c.mirrorGain(2)
-			return
-		}
-		c.mirrorGain(1)
-
-	}, 15)
+	c.Core.Tasks.Add(c.skillMirrorGain, 15)
 
 	ai := combat.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form",
@@ -92,14 +86,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 func (c *char) SkillHold() action.ActionInfo {
-	c.Core.Tasks.Add(func() {
-		if c.mirrorCount == 0 { //extra mirror if 0 when cast
-			c.mirrorGain(2)
-			return
-		}
-		c.mirrorGain(1)
-
-	}, 23)
+	c.Core.Tasks.Add(c.skillMirrorGain, 23)
 
 	ai := combat.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form (Hold)",
@@ -128,6 +115,14 @@ func (c *char) SkillHold() action.ActionInfo {
 	}
 }
 
+func (c *char) skillMirrorGain() {
+	if c.mirrorCount == 0 { //extra mirror if 0 when cast
+		c.mirrorGain(2)
+		return
+	}
+	c.mirrorGain(1)
+
+}
 func (c *char) mirrorGain(generated int) {
 	if generated == 0 {
 		return
@@ -141,18 +136,16 @@ func (c *char) mirrorGain(generated int) {
 	}
 
 	c.mirrorCount += generated
-	c.recentlyMirrorGain = true
 	if c.Base.Cons >= 2 { //triggers on overflow
 		c.c2(generated)
 	}
 
 	if c.mirrorCount > 3 { //max 3 mirrors at a time.
-		c.mirrorCount = 3
-		queueOnFrame := false              //var tracks if this is the first overflowing in this frame
-		if c.Core.F == c.lastInfusionSrc { //check if c.lastinfusion has already been called on this frame
-			queueOnFrame = true
+		if c.Base.Cons >= 6 {
+			c.c6(c.mirrorCount - 3)
 		}
-		if !queueOnFrame { //this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
+		c.mirrorCount = 3
+		if c.Core.F != c.lastInfusionSrc { //this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
 			c.lastInfusionSrc = c.Core.F
 			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
 		}
@@ -160,9 +153,6 @@ func (c *char) mirrorGain(generated int) {
 			Write("mirrors gained", generated).
 			Write("current mirrors", c.mirrorCount)
 
-		if c.Base.Cons >= 6 {
-			c.c6()
-		}
 		return
 	}
 	c.Core.Log.NewEvent(fmt.Sprintf("Gained %v mirror(s)", generated), glog.LogCharacterEvent, c.Index).
@@ -187,7 +177,6 @@ func (c *char) mirrorLoss(src int, consumed int) func() {
 		}
 
 		c.mirrorCount -= consumed
-		c.recentlyMirrorGain = false
 		if c.mirrorCount < 0 { //This shouldn't happen but just in case
 			c.mirrorCount = 0
 		}
@@ -197,12 +186,7 @@ func (c *char) mirrorLoss(src int, consumed int) func() {
 
 		// queue up again if we still have mirrors
 		if c.mirrorCount > 0 {
-			if c.recentlyMirrorGain { //if mirror has been gained recently, mirror is lost after 234f
-				c.Core.Tasks.Add(c.mirrorLoss(src, 1), 234) //not affected by hitlag
-				return
-			}
 			c.Core.Tasks.Add(c.mirrorLoss(src, 1), 214) //not affected by hitlag, 448-234
-
 		}
 
 	}
@@ -236,7 +220,7 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		c1cb = c.c1
 	}
 	mirrorsHitmark := make([]int, 3)
-	snapshotTiming := 21
+	snapshotTiming := snapshotTimings[c.mirrorCount-1]
 	strikeType := combat.StrikeTypeSlash
 	if c.mirrorCount == 3 {
 		strikeType = combat.StrikeTypeSpear
@@ -260,16 +244,13 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	case 3:
 		ap = combat.NewCircleHitOnTarget(trg, combat.Point{Y: 4}, 4)
 		mirrorsHitmark = mirror3Hitmarks
-		snapshotTiming = snapshotTimings[2]
 	case 2:
 		ap = combat.NewCircleHitOnTargetFanAngle(trg, combat.Point{Y: -0.1}, 5.5, 180)
-		snapshotTiming = snapshotTimings[1]
 		mirrorsHitmark = mirror2HitmarksLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror2HitmarksRight
 		}
 	default:
-		snapshotTiming = snapshotTimings[0]
 		mirrorsHitmark = mirror1HitmarkLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror1HitmarkRight
