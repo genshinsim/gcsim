@@ -10,15 +10,15 @@ import (
 
 var lowPlungeFrames []int
 
-const lowPlungeHitmark = 18
+const lowPlungeHitmark = 38
 
 func init() {
-	lowPlungeFrames = frames.InitAbilSlice(50)
-	lowPlungeFrames[action.ActionAttack] = 29
-	lowPlungeFrames[action.ActionSkill] = 30
-	lowPlungeFrames[action.ActionBurst] = 30
-	lowPlungeFrames[action.ActionDash] = 20
-	lowPlungeFrames[action.ActionSwap] = 38
+	lowPlungeFrames = frames.InitAbilSlice(70)
+	lowPlungeFrames[action.ActionAttack] = 49
+	lowPlungeFrames[action.ActionSkill] = 50
+	lowPlungeFrames[action.ActionBurst] = 50
+	lowPlungeFrames[action.ActionDash] = 40
+	lowPlungeFrames[action.ActionSwap] = 58
 
 }
 
@@ -36,6 +36,12 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		}
 	}
 
+	short := p["short"]
+	skip := 0
+	if short > 0 {
+		skip = 20
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge Attack",
@@ -49,12 +55,12 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3),
-		lowPlungeHitmark, lowPlungeHitmark, c.a1CB, c.projectionAttack)
+		lowPlungeHitmark-skip, lowPlungeHitmark-skip, c.a1CB, c.projectionAttack)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(lowPlungeFrames),
-		AnimationLength: lowPlungeFrames[action.InvalidAction],
-		CanQueueAfter:   lowPlungeFrames[action.ActionDash],
+		Frames:          func(next action.Action) int { return lowPlungeFrames[next] - skip },
+		AnimationLength: lowPlungeFrames[action.InvalidAction] - skip,
+		CanQueueAfter:   lowPlungeFrames[action.ActionDash] - skip,
 		State:           action.PlungeAttackState,
 	}
 }
