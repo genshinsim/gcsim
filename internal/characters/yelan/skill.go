@@ -94,8 +94,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.ParticleDelay)
 		//check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
-			//TODO: does this thing even time out?
-			c.SetTag(breakthroughStatus, 1)
+			c.breakthrough = true
 			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
 		}
 		//TODO: icd on this??
