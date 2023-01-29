@@ -31,7 +31,7 @@ export function ListView(props: ListViewProps) {
     return <div>Loading...</div>;
   }
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       {data.map((entry, index) => {
         return <DBEntryView dbEntry={entry} key={index} />;
       })}

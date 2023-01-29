@@ -12,14 +12,14 @@ export namespace model {
         /** DBEntry key */
         key?: (string|null);
 
-        /** DBEntry createDate */
-        createDate?: (number|Long|null);
+        /** DBEntry create_date */
+        create_date?: (number|Long|null);
 
-        /** DBEntry runDate */
-        runDate?: (number|Long|null);
+        /** DBEntry run_date */
+        run_date?: (number|Long|null);
 
-        /** DBEntry simDuration */
-        simDuration?: (model.IDescriptiveStats|null);
+        /** DBEntry sim_duration */
+        sim_duration?: (model.IDescriptiveStats|null);
 
         /** DBEntry config */
         config?: (string|null);
@@ -30,23 +30,23 @@ export namespace model {
         /** DBEntry mode */
         mode?: (model.SimMode|null);
 
-        /** DBEntry totalDamage */
-        totalDamage?: (model.IDescriptiveStats|null);
+        /** DBEntry total_damage */
+        total_damage?: (model.IDescriptiveStats|null);
 
-        /** DBEntry charNames */
-        charNames?: (string[]|null);
+        /** DBEntry char_names */
+        char_names?: (string[]|null);
 
-        /** DBEntry targetCount */
-        targetCount?: (number|null);
+        /** DBEntry target_count */
+        target_count?: (number|null);
 
-        /** DBEntry meanDpsPerTarget */
-        meanDpsPerTarget?: (number|null);
+        /** DBEntry mean_dps_per_target */
+        mean_dps_per_target?: (number|null);
 
         /** DBEntry team */
         team?: (model.ICharacter[]|null);
 
-        /** DBEntry dpsByTarget */
-        dpsByTarget?: ({ [k: string]: model.IDescriptiveStats }|null);
+        /** DBEntry dps_by_target */
+        dps_by_target?: ({ [k: string]: model.IDescriptiveStats }|null);
 
         /** DBEntry description */
         description?: (string|null);
@@ -70,14 +70,14 @@ export namespace model {
         /** DBEntry key. */
         public key: string;
 
-        /** DBEntry createDate. */
-        public createDate: (number|Long);
+        /** DBEntry create_date. */
+        public create_date: (number|Long);
 
-        /** DBEntry runDate. */
-        public runDate: (number|Long);
+        /** DBEntry run_date. */
+        public run_date: (number|Long);
 
-        /** DBEntry simDuration. */
-        public simDuration?: (model.IDescriptiveStats|null);
+        /** DBEntry sim_duration. */
+        public sim_duration?: (model.IDescriptiveStats|null);
 
         /** DBEntry config. */
         public config: string;
@@ -88,23 +88,23 @@ export namespace model {
         /** DBEntry mode. */
         public mode: model.SimMode;
 
-        /** DBEntry totalDamage. */
-        public totalDamage?: (model.IDescriptiveStats|null);
+        /** DBEntry total_damage. */
+        public total_damage?: (model.IDescriptiveStats|null);
 
-        /** DBEntry charNames. */
-        public charNames: string[];
+        /** DBEntry char_names. */
+        public char_names: string[];
 
-        /** DBEntry targetCount. */
-        public targetCount: number;
+        /** DBEntry target_count. */
+        public target_count: number;
 
-        /** DBEntry meanDpsPerTarget. */
-        public meanDpsPerTarget: number;
+        /** DBEntry mean_dps_per_target. */
+        public mean_dps_per_target: number;
 
         /** DBEntry team. */
         public team: model.ICharacter[];
 
-        /** DBEntry dpsByTarget. */
-        public dpsByTarget: { [k: string]: model.IDescriptiveStats };
+        /** DBEntry dps_by_target. */
+        public dps_by_target: { [k: string]: model.IDescriptiveStats };
 
         /** DBEntry description. */
         public description: string;
@@ -399,38 +399,38 @@ export namespace model {
     /** Properties of a SimulationResult. */
     interface ISimulationResult {
 
-        /** SimulationResult schemaVersion */
-        schemaVersion?: (model.IVersion|null);
+        /** SimulationResult schema_version */
+        schema_version?: (model.IVersion|null);
 
-        /** SimulationResult simVersion */
-        simVersion?: (string|null);
+        /** SimulationResult sim_version */
+        sim_version?: (string|null);
 
-        /** SimulationResult buildDate */
-        buildDate?: (string|null);
+        /** SimulationResult build_date */
+        build_date?: (string|null);
 
         /** SimulationResult modified */
         modified?: (boolean|null);
 
-        /** SimulationResult initialCharacter */
-        initialCharacter?: (string|null);
+        /** SimulationResult initial_character */
+        initial_character?: (string|null);
 
-        /** SimulationResult characterDetails */
-        characterDetails?: (model.ICharacter[]|null);
+        /** SimulationResult character_details */
+        character_details?: (model.ICharacter[]|null);
 
-        /** SimulationResult targetDetails */
-        targetDetails?: (model.IEnemy[]|null);
+        /** SimulationResult target_details */
+        target_details?: (model.IEnemy[]|null);
 
-        /** SimulationResult simulatorSettings */
-        simulatorSettings?: (model.ISimulatorSettings|null);
+        /** SimulationResult simulator_settings */
+        simulator_settings?: (model.ISimulatorSettings|null);
 
-        /** SimulationResult energySettings */
-        energySettings?: (model.IEnergySettings|null);
+        /** SimulationResult energy_settings */
+        energy_settings?: (model.IEnergySettings|null);
 
         /** SimulationResult config */
         config?: (string|null);
 
-        /** SimulationResult sampleSeed */
-        sampleSeed?: (string|null);
+        /** SimulationResult sample_seed */
+        sample_seed?: (string|null);
 
         /** SimulationResult statistics */
         statistics?: (model.ISimulationStatistics|null);
@@ -445,38 +445,38 @@ export namespace model {
          */
         constructor(properties?: model.ISimulationResult);
 
-        /** SimulationResult schemaVersion. */
-        public schemaVersion?: (model.IVersion|null);
+        /** SimulationResult schema_version. */
+        public schema_version?: (model.IVersion|null);
 
-        /** SimulationResult simVersion. */
-        public simVersion: string;
+        /** SimulationResult sim_version. */
+        public sim_version: string;
 
-        /** SimulationResult buildDate. */
-        public buildDate: string;
+        /** SimulationResult build_date. */
+        public build_date: string;
 
         /** SimulationResult modified. */
         public modified: boolean;
 
-        /** SimulationResult initialCharacter. */
-        public initialCharacter: string;
+        /** SimulationResult initial_character. */
+        public initial_character: string;
 
-        /** SimulationResult characterDetails. */
-        public characterDetails: model.ICharacter[];
+        /** SimulationResult character_details. */
+        public character_details: model.ICharacter[];
 
-        /** SimulationResult targetDetails. */
-        public targetDetails: model.IEnemy[];
+        /** SimulationResult target_details. */
+        public target_details: model.IEnemy[];
 
-        /** SimulationResult simulatorSettings. */
-        public simulatorSettings?: (model.ISimulatorSettings|null);
+        /** SimulationResult simulator_settings. */
+        public simulator_settings?: (model.ISimulatorSettings|null);
 
-        /** SimulationResult energySettings. */
-        public energySettings?: (model.IEnergySettings|null);
+        /** SimulationResult energy_settings. */
+        public energy_settings?: (model.IEnergySettings|null);
 
         /** SimulationResult config. */
         public config: string;
 
-        /** SimulationResult sampleSeed. */
-        public sampleSeed: string;
+        /** SimulationResult sample_seed. */
+        public sample_seed: string;
 
         /** SimulationResult statistics. */
         public statistics?: (model.ISimulationStatistics|null);
@@ -562,20 +562,20 @@ export namespace model {
     /** Properties of a SimulationStatistics. */
     interface ISimulationStatistics {
 
-        /** SimulationStatistics minSeed */
-        minSeed?: (string|null);
+        /** SimulationStatistics min_seed */
+        min_seed?: (string|null);
 
-        /** SimulationStatistics maxSeed */
-        maxSeed?: (string|null);
+        /** SimulationStatistics max_seed */
+        max_seed?: (string|null);
 
-        /** SimulationStatistics p25Seed */
-        p25Seed?: (string|null);
+        /** SimulationStatistics p25_seed */
+        p25_seed?: (string|null);
 
-        /** SimulationStatistics p50Seed */
-        p50Seed?: (string|null);
+        /** SimulationStatistics p50_seed */
+        p50_seed?: (string|null);
 
-        /** SimulationStatistics p75Seed */
-        p75Seed?: (string|null);
+        /** SimulationStatistics p75_seed */
+        p75_seed?: (string|null);
 
         /** SimulationStatistics runtime */
         runtime?: (number|null);
@@ -601,14 +601,14 @@ export namespace model {
         /** SimulationStatistics SPS */
         SPS?: (model.IOverviewStats|null);
 
-        /** SimulationStatistics totalDamage */
-        totalDamage?: (model.IOverviewStats|null);
+        /** SimulationStatistics total_damage */
+        total_damage?: (model.IOverviewStats|null);
 
         /** SimulationStatistics warnings */
         warnings?: (model.IWarnings|null);
 
-        /** SimulationStatistics failedActions */
-        failedActions?: (model.IFailedActions[]|null);
+        /** SimulationStatistics failed_actions */
+        failed_actions?: (model.IFailedActions[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -620,20 +620,20 @@ export namespace model {
          */
         constructor(properties?: model.ISimulationStatistics);
 
-        /** SimulationStatistics minSeed. */
-        public minSeed: string;
+        /** SimulationStatistics min_seed. */
+        public min_seed: string;
 
-        /** SimulationStatistics maxSeed. */
-        public maxSeed: string;
+        /** SimulationStatistics max_seed. */
+        public max_seed: string;
 
-        /** SimulationStatistics p25Seed. */
-        public p25Seed: string;
+        /** SimulationStatistics p25_seed. */
+        public p25_seed: string;
 
-        /** SimulationStatistics p50Seed. */
-        public p50Seed: string;
+        /** SimulationStatistics p50_seed. */
+        public p50_seed: string;
 
-        /** SimulationStatistics p75Seed. */
-        public p75Seed: string;
+        /** SimulationStatistics p75_seed. */
+        public p75_seed: string;
 
         /** SimulationStatistics runtime. */
         public runtime: number;
@@ -659,14 +659,14 @@ export namespace model {
         /** SimulationStatistics SPS. */
         public SPS?: (model.IOverviewStats|null);
 
-        /** SimulationStatistics totalDamage. */
-        public totalDamage?: (model.IOverviewStats|null);
+        /** SimulationStatistics total_damage. */
+        public total_damage?: (model.IOverviewStats|null);
 
         /** SimulationStatistics warnings. */
         public warnings?: (model.IWarnings|null);
 
-        /** SimulationStatistics failedActions. */
-        public failedActions: model.IFailedActions[];
+        /** SimulationStatistics failed_actions. */
+        public failed_actions: model.IFailedActions[];
 
         /**
          * Creates a new SimulationStatistics instance using the specified properties.
@@ -1003,20 +1003,20 @@ export namespace model {
     /** Properties of a Warnings. */
     interface IWarnings {
 
-        /** Warnings targetOverlap */
-        targetOverlap?: (boolean|null);
+        /** Warnings target_overlap */
+        target_overlap?: (boolean|null);
 
-        /** Warnings insufficientEnergy */
-        insufficientEnergy?: (boolean|null);
+        /** Warnings insufficient_energy */
+        insufficient_energy?: (boolean|null);
 
-        /** Warnings insufficientStamina */
-        insufficientStamina?: (boolean|null);
+        /** Warnings insufficient_stamina */
+        insufficient_stamina?: (boolean|null);
 
-        /** Warnings swapCd */
-        swapCd?: (boolean|null);
+        /** Warnings swap_cd */
+        swap_cd?: (boolean|null);
 
-        /** Warnings skillCd */
-        skillCd?: (boolean|null);
+        /** Warnings skill_cd */
+        skill_cd?: (boolean|null);
     }
 
     /** Represents a Warnings. */
@@ -1028,20 +1028,20 @@ export namespace model {
          */
         constructor(properties?: model.IWarnings);
 
-        /** Warnings targetOverlap. */
-        public targetOverlap: boolean;
+        /** Warnings target_overlap. */
+        public target_overlap: boolean;
 
-        /** Warnings insufficientEnergy. */
-        public insufficientEnergy: boolean;
+        /** Warnings insufficient_energy. */
+        public insufficient_energy: boolean;
 
-        /** Warnings insufficientStamina. */
-        public insufficientStamina: boolean;
+        /** Warnings insufficient_stamina. */
+        public insufficient_stamina: boolean;
 
-        /** Warnings swapCd. */
-        public swapCd: boolean;
+        /** Warnings swap_cd. */
+        public swap_cd: boolean;
 
-        /** Warnings skillCd. */
-        public skillCd: boolean;
+        /** Warnings skill_cd. */
+        public skill_cd: boolean;
 
         /**
          * Creates a new Warnings instance using the specified properties.
@@ -1124,17 +1124,17 @@ export namespace model {
     /** Properties of a FailedActions. */
     interface IFailedActions {
 
-        /** FailedActions insufficientEnergy */
-        insufficientEnergy?: (model.IDescriptiveStats|null);
+        /** FailedActions insufficient_energy */
+        insufficient_energy?: (model.IDescriptiveStats|null);
 
-        /** FailedActions insufficientStamina */
-        insufficientStamina?: (model.IDescriptiveStats|null);
+        /** FailedActions insufficient_stamina */
+        insufficient_stamina?: (model.IDescriptiveStats|null);
 
-        /** FailedActions swapCd */
-        swapCd?: (model.IDescriptiveStats|null);
+        /** FailedActions swap_cd */
+        swap_cd?: (model.IDescriptiveStats|null);
 
-        /** FailedActions skillCd */
-        skillCd?: (model.IDescriptiveStats|null);
+        /** FailedActions skill_cd */
+        skill_cd?: (model.IDescriptiveStats|null);
     }
 
     /** Represents a FailedActions. */
@@ -1146,17 +1146,17 @@ export namespace model {
          */
         constructor(properties?: model.IFailedActions);
 
-        /** FailedActions insufficientEnergy. */
-        public insufficientEnergy?: (model.IDescriptiveStats|null);
+        /** FailedActions insufficient_energy. */
+        public insufficient_energy?: (model.IDescriptiveStats|null);
 
-        /** FailedActions insufficientStamina. */
-        public insufficientStamina?: (model.IDescriptiveStats|null);
+        /** FailedActions insufficient_stamina. */
+        public insufficient_stamina?: (model.IDescriptiveStats|null);
 
-        /** FailedActions swapCd. */
-        public swapCd?: (model.IDescriptiveStats|null);
+        /** FailedActions swap_cd. */
+        public swap_cd?: (model.IDescriptiveStats|null);
 
-        /** FailedActions skillCd. */
-        public skillCd?: (model.IDescriptiveStats|null);
+        /** FailedActions skill_cd. */
+        public skill_cd?: (model.IDescriptiveStats|null);
 
         /**
          * Creates a new FailedActions instance using the specified properties.
@@ -1251,8 +1251,8 @@ export namespace model {
         /** Character level */
         level?: (number|Long|null);
 
-        /** Character maxLevel */
-        maxLevel?: (number|Long|null);
+        /** Character max_level */
+        max_level?: (number|Long|null);
 
         /** Character cons */
         cons?: (number|Long|null);
@@ -1294,8 +1294,8 @@ export namespace model {
         /** Character level. */
         public level: (number|Long);
 
-        /** Character maxLevel. */
-        public maxLevel: (number|Long);
+        /** Character max_level. */
+        public max_level: (number|Long);
 
         /** Character cons. */
         public cons: (number|Long);
@@ -1514,8 +1514,8 @@ export namespace model {
         /** Weapon level */
         level?: (number|Long|null);
 
-        /** Weapon maxLevel */
-        maxLevel?: (number|Long|null);
+        /** Weapon max_level */
+        max_level?: (number|Long|null);
     }
 
     /** Represents a Weapon. */
@@ -1536,8 +1536,8 @@ export namespace model {
         /** Weapon level. */
         public level: (number|Long);
 
-        /** Weapon maxLevel. */
-        public maxLevel: (number|Long);
+        /** Weapon max_level. */
+        public max_level: (number|Long);
 
         /**
          * Creates a new Weapon instance using the specified properties.
@@ -1632,14 +1632,14 @@ export namespace model {
         /** Enemy pos */
         pos?: (model.ICoord|null);
 
-        /** Enemy particleDropThreshold */
-        particleDropThreshold?: (number|null);
+        /** Enemy particle_drop_threshold */
+        particle_drop_threshold?: (number|null);
 
-        /** Enemy particleDropCount */
-        particleDropCount?: (number|null);
+        /** Enemy particle_drop_count */
+        particle_drop_count?: (number|null);
 
-        /** Enemy particleElement */
-        particleElement?: (string|null);
+        /** Enemy particle_element */
+        particle_element?: (string|null);
     }
 
     /** Represents an Enemy. */
@@ -1663,14 +1663,14 @@ export namespace model {
         /** Enemy pos. */
         public pos?: (model.ICoord|null);
 
-        /** Enemy particleDropThreshold. */
-        public particleDropThreshold: number;
+        /** Enemy particle_drop_threshold. */
+        public particle_drop_threshold: number;
 
-        /** Enemy particleDropCount. */
-        public particleDropCount: number;
+        /** Enemy particle_drop_count. */
+        public particle_drop_count: number;
 
-        /** Enemy particleElement. */
-        public particleElement: string;
+        /** Enemy particle_element. */
+        public particle_element: string;
 
         /**
          * Creates a new Enemy instance using the specified properties.
@@ -1865,20 +1865,20 @@ export namespace model {
         /** SimulatorSettings duration */
         duration?: (number|null);
 
-        /** SimulatorSettings damageMode */
-        damageMode?: (boolean|null);
+        /** SimulatorSettings damage_mode */
+        damage_mode?: (boolean|null);
 
-        /** SimulatorSettings enableHitlag */
-        enableHitlag?: (boolean|null);
+        /** SimulatorSettings enable_hitlag */
+        enable_hitlag?: (boolean|null);
 
-        /** SimulatorSettings defHalt */
-        defHalt?: (boolean|null);
+        /** SimulatorSettings def_halt */
+        def_halt?: (boolean|null);
 
-        /** SimulatorSettings numberOfWorkers */
-        numberOfWorkers?: (number|Long|null);
+        /** SimulatorSettings number_of_workers */
+        number_of_workers?: (number|Long|null);
 
-        /** SimulatorSettings numberOfIterations */
-        numberOfIterations?: (number|Long|null);
+        /** SimulatorSettings number_of_iterations */
+        number_of_iterations?: (number|Long|null);
 
         /** SimulatorSettings delays */
         delays?: (model.IDelays|null);
@@ -1896,20 +1896,20 @@ export namespace model {
         /** SimulatorSettings duration. */
         public duration: number;
 
-        /** SimulatorSettings damageMode. */
-        public damageMode: boolean;
+        /** SimulatorSettings damage_mode. */
+        public damage_mode: boolean;
 
-        /** SimulatorSettings enableHitlag. */
-        public enableHitlag: boolean;
+        /** SimulatorSettings enable_hitlag. */
+        public enable_hitlag: boolean;
 
-        /** SimulatorSettings defHalt. */
-        public defHalt: boolean;
+        /** SimulatorSettings def_halt. */
+        public def_halt: boolean;
 
-        /** SimulatorSettings numberOfWorkers. */
-        public numberOfWorkers: (number|Long);
+        /** SimulatorSettings number_of_workers. */
+        public number_of_workers: (number|Long);
 
-        /** SimulatorSettings numberOfIterations. */
-        public numberOfIterations: (number|Long);
+        /** SimulatorSettings number_of_iterations. */
+        public number_of_iterations: (number|Long);
 
         /** SimulatorSettings delays. */
         public delays?: (model.IDelays|null);
@@ -2107,8 +2107,8 @@ export namespace model {
         /** EnergySettings amount */
         amount?: (number|Long|null);
 
-        /** EnergySettings lastEnergyDrop */
-        lastEnergyDrop?: (number|Long|null);
+        /** EnergySettings last_energy_drop */
+        last_energy_drop?: (number|Long|null);
     }
 
     /** Represents an EnergySettings. */
@@ -2135,8 +2135,8 @@ export namespace model {
         /** EnergySettings amount. */
         public amount: (number|Long);
 
-        /** EnergySettings lastEnergyDrop. */
-        public lastEnergyDrop: (number|Long);
+        /** EnergySettings last_energy_drop. */
+        public last_energy_drop: (number|Long);
 
         /**
          * Creates a new EnergySettings instance using the specified properties.
@@ -2231,14 +2231,14 @@ export namespace model {
         /** AvatarData element */
         element?: (model.Element|null);
 
-        /** AvatarData weaponClass */
-        weaponClass?: (model.WeaponClass|null);
+        /** AvatarData weapon_class */
+        weapon_class?: (model.WeaponClass|null);
 
-        /** AvatarData imageName */
-        imageName?: (string|null);
+        /** AvatarData image_name */
+        image_name?: (string|null);
 
-        /** AvatarData baseStats */
-        baseStats?: (model.IAvatarStatsData|null);
+        /** AvatarData base_stats */
+        base_stats?: (model.IAvatarStatsData|null);
     }
 
     /** Represents an AvatarData. */
@@ -2262,14 +2262,14 @@ export namespace model {
         /** AvatarData element. */
         public element: model.Element;
 
-        /** AvatarData weaponClass. */
-        public weaponClass: model.WeaponClass;
+        /** AvatarData weapon_class. */
+        public weapon_class: model.WeaponClass;
 
-        /** AvatarData imageName. */
-        public imageName: string;
+        /** AvatarData image_name. */
+        public image_name: string;
 
-        /** AvatarData baseStats. */
-        public baseStats?: (model.IAvatarStatsData|null);
+        /** AvatarData base_stats. */
+        public base_stats?: (model.IAvatarStatsData|null);
 
         /**
          * Creates a new AvatarData instance using the specified properties.
@@ -2352,29 +2352,29 @@ export namespace model {
     /** Properties of an AvatarStatsData. */
     interface IAvatarStatsData {
 
-        /** AvatarStatsData baseHp */
-        baseHp?: (number|null);
+        /** AvatarStatsData base_hp */
+        base_hp?: (number|null);
 
-        /** AvatarStatsData baseAtk */
-        baseAtk?: (number|null);
+        /** AvatarStatsData base_atk */
+        base_atk?: (number|null);
 
-        /** AvatarStatsData baseDef */
-        baseDef?: (number|null);
+        /** AvatarStatsData base_def */
+        base_def?: (number|null);
 
-        /** AvatarStatsData hpCurve */
-        hpCurve?: (model.AvatarCurveType|null);
+        /** AvatarStatsData hp_curve */
+        hp_curve?: (model.AvatarCurveType|null);
 
-        /** AvatarStatsData atkCurve */
-        atkCurve?: (model.AvatarCurveType|null);
+        /** AvatarStatsData atk_curve */
+        atk_curve?: (model.AvatarCurveType|null);
 
-        /** AvatarStatsData defCruve */
-        defCruve?: (model.AvatarCurveType|null);
+        /** AvatarStatsData def_cruve */
+        def_cruve?: (model.AvatarCurveType|null);
 
         /** AvatarStatsData specialized */
         specialized?: (model.StatType|null);
 
-        /** AvatarStatsData promoData */
-        promoData?: (model.IPromotionData[]|null);
+        /** AvatarStatsData promo_data */
+        promo_data?: (model.IPromotionData[]|null);
     }
 
     /** Represents an AvatarStatsData. */
@@ -2386,29 +2386,29 @@ export namespace model {
          */
         constructor(properties?: model.IAvatarStatsData);
 
-        /** AvatarStatsData baseHp. */
-        public baseHp: number;
+        /** AvatarStatsData base_hp. */
+        public base_hp: number;
 
-        /** AvatarStatsData baseAtk. */
-        public baseAtk: number;
+        /** AvatarStatsData base_atk. */
+        public base_atk: number;
 
-        /** AvatarStatsData baseDef. */
-        public baseDef: number;
+        /** AvatarStatsData base_def. */
+        public base_def: number;
 
-        /** AvatarStatsData hpCurve. */
-        public hpCurve: model.AvatarCurveType;
+        /** AvatarStatsData hp_curve. */
+        public hp_curve: model.AvatarCurveType;
 
-        /** AvatarStatsData atkCurve. */
-        public atkCurve: model.AvatarCurveType;
+        /** AvatarStatsData atk_curve. */
+        public atk_curve: model.AvatarCurveType;
 
-        /** AvatarStatsData defCruve. */
-        public defCruve: model.AvatarCurveType;
+        /** AvatarStatsData def_cruve. */
+        public def_cruve: model.AvatarCurveType;
 
         /** AvatarStatsData specialized. */
         public specialized: model.StatType;
 
-        /** AvatarStatsData promoData. */
-        public promoData: model.IPromotionData[];
+        /** AvatarStatsData promo_data. */
+        public promo_data: model.IPromotionData[];
 
         /**
          * Creates a new AvatarStatsData instance using the specified properties.
@@ -2491,8 +2491,8 @@ export namespace model {
     /** Properties of a PromotionData. */
     interface IPromotionData {
 
-        /** PromotionData maxLevel */
-        maxLevel?: (number|Long|null);
+        /** PromotionData max_level */
+        max_level?: (number|Long|null);
 
         /** PromotionData hp */
         hp?: (number|null);
@@ -2516,8 +2516,8 @@ export namespace model {
          */
         constructor(properties?: model.IPromotionData);
 
-        /** PromotionData maxLevel. */
-        public maxLevel: (number|Long);
+        /** PromotionData max_level. */
+        public max_level: (number|Long);
 
         /** PromotionData hp. */
         public hp: number;
@@ -4026,8 +4026,8 @@ export namespace result {
     /** Properties of a ListRequest. */
     interface IListRequest {
 
-        /** ListRequest userFilter */
-        userFilter?: (string|null);
+        /** ListRequest user_filter */
+        user_filter?: (string|null);
     }
 
     /** Represents a ListRequest. */
@@ -4039,8 +4039,8 @@ export namespace result {
          */
         constructor(properties?: result.IListRequest);
 
-        /** ListRequest userFilter. */
-        public userFilter: string;
+        /** ListRequest user_filter. */
+        public user_filter: string;
 
         /**
          * Creates a new ListRequest instance using the specified properties.
@@ -4932,8 +4932,8 @@ export namespace result {
         /** ApproveResponse id */
         id?: (string|null);
 
-        /** ApproveResponse dbKey */
-        dbKey?: (string|null);
+        /** ApproveResponse db_key */
+        db_key?: (string|null);
     }
 
     /** Represents an ApproveResponse. */
@@ -4948,8 +4948,8 @@ export namespace result {
         /** ApproveResponse id. */
         public id: string;
 
-        /** ApproveResponse dbKey. */
-        public dbKey: string;
+        /** ApproveResponse db_key. */
+        public db_key: string;
 
         /**
          * Creates a new ApproveResponse instance using the specified properties.
@@ -5035,8 +5035,8 @@ export namespace result {
         /** ReplaceRequest id */
         id?: (string|null);
 
-        /** ReplaceRequest dbKey */
-        dbKey?: (string|null);
+        /** ReplaceRequest db_key */
+        db_key?: (string|null);
     }
 
     /** Represents a ReplaceRequest. */
@@ -5051,8 +5051,8 @@ export namespace result {
         /** ReplaceRequest id. */
         public id: string;
 
-        /** ReplaceRequest dbKey. */
-        public dbKey: string;
+        /** ReplaceRequest db_key. */
+        public db_key: string;
 
         /**
          * Creates a new ReplaceRequest instance using the specified properties.
@@ -5138,8 +5138,8 @@ export namespace result {
         /** ReplaceResponse id */
         id?: (string|null);
 
-        /** ReplaceResponse dbKey */
-        dbKey?: (string|null);
+        /** ReplaceResponse db_key */
+        db_key?: (string|null);
     }
 
     /** Represents a ReplaceResponse. */
@@ -5154,8 +5154,8 @@ export namespace result {
         /** ReplaceResponse id. */
         public id: string;
 
-        /** ReplaceResponse dbKey. */
-        public dbKey: string;
+        /** ReplaceResponse db_key. */
+        public db_key: string;
 
         /**
          * Creates a new ReplaceResponse instance using the specified properties.
@@ -5289,11 +5289,11 @@ export namespace result {
         /** RunRequest config */
         config?: (string|null);
 
-        /** RunRequest apiKey */
-        apiKey?: (string|null);
+        /** RunRequest api_key */
+        api_key?: (string|null);
 
-        /** RunRequest callbackUrl */
-        callbackUrl?: (string|null);
+        /** RunRequest callback_url */
+        callback_url?: (string|null);
     }
 
     /** Represents a RunRequest. */
@@ -5311,11 +5311,11 @@ export namespace result {
         /** RunRequest config. */
         public config: string;
 
-        /** RunRequest apiKey. */
-        public apiKey: string;
+        /** RunRequest api_key. */
+        public api_key: string;
 
-        /** RunRequest callbackUrl. */
-        public callbackUrl: string;
+        /** RunRequest callback_url. */
+        public callback_url: string;
 
         /**
          * Creates a new RunRequest instance using the specified properties.

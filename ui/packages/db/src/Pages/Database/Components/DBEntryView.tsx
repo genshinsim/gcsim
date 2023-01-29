@@ -10,7 +10,7 @@ function useTranslation() {
 export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
   const t = useTranslation();
   return (
-    <div className="flex flex-row bg-slate-800 max-w-fit p-4 gap-4 max-h-44">
+    <div className="flex flex-row bg-slate-800 p-4 gap-4 max-h-44">
       <div className="flex gap-2">
         {dbEntry.team &&
           dbEntry.team.map((char, index) => {
@@ -20,15 +20,12 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
           })}
       </div>
       <div className="flex flex-col max-w-md">
-        <div className="capitalize text-lg font-semibold">
-          {dbEntry?.charNames?.toString().replaceAll(",", ", ")}
-        </div>
         <DBEntryTags tags={dbEntry.tags} />
         <span className="  overflow-hidden">{dbEntry?.description}</span>
       </div>
 
       <DBEntryDetails {...dbEntry} />
-      <DBEntryActions />
+      <DBEntryActions {...dbEntry} />
     </div>
   );
 }
@@ -136,25 +133,25 @@ function DBEntryTags({ tags }: { tags: string[] | undefined | null }) {
 }
 
 function DBEntryDetails({
-  targetCount,
-  meanDpsPerTarget,
-  runDate,
+  target_count,
+  mean_dps_per_target,
+  run_date,
 }: model.IDBEntry) {
   return (
     <div className="flex flex-col justify-center">
-      {targetCount && <div>Target Count: {targetCount}</div>}
-      {meanDpsPerTarget && <div>Mean DPS Per Target: {meanDpsPerTarget}</div>}
-      {runDate && <div>Run Date: {JSON.stringify(runDate)}</div>}
+      {target_count && <div>Target Count: {target_count}</div>}
+      {mean_dps_per_target && <div>Mean DPS Per Target: {mean_dps_per_target.toLocaleString(navigator.language, {maximumFractionDigits: 0})}</div>}
+      {run_date && <div>Run Date: {JSON.stringify(run_date)}</div>}
     </div>
   );
 }
 
-function DBEntryActions() {
-  const simulation_key = "test"; // TODO: get simulation key from dbEntry
+function DBEntryActions({key = ""} : {key? : string | null }) {
+  // const simulation_key = "test"; // TODO: get simulation key from dbEntry
   return (
     <div className="flex flex-col justify-center">
       <a
-        href={`https://gcsim.app/v3/viewer/share/${simulation_key}`}
+        href={`https://gcsim.app/v3/viewer/share/${key}`}
         target="_blank"
         className="text-white bg-slate-600 rounded-md p-2"
         rel="noreferrer"
