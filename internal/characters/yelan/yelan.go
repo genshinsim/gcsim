@@ -24,10 +24,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a4buff  []float64
-	c2icd   int
-	c6count int
-	c4count int //keep track of number of enemies tagged
+	a4buff       []float64
+	breakthrough bool // tracks breakthrough state
+	c2icd        int
+	c6count      int
+	c4count      int // keep track of number of enemies tagged
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile) error {
@@ -42,9 +43,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile)
 	c.c2icd = 0
 	c.c6count = 0
 
-	barb, ok := p.Params["barb"]
-	if ok && barb > 0 {
-		c.SetTag(breakthroughStatus, 1)
+	breakthrough, ok := p.Params["breakthrough"]
+	if ok && breakthrough > 0 {
+		c.breakthrough = true
 	}
 
 	if c.Base.Cons >= 1 {
@@ -70,4 +71,13 @@ func (c *char) Init() error {
 		SummonFunc:  c.summonExquisiteThrow,
 	}).Enable()
 	return nil
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "breakthrough":
+		return c.breakthrough, nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }

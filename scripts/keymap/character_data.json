@@ -39,6 +39,11 @@
   "element": "geo",
   "weapon_class": "sword"
  },
+ "alhaitham": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "sword"
+},
  "aloy": {
   "rarity": 5,
   "element": "cryo",

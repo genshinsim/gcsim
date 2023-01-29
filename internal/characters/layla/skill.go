@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		player.ApplySelfInfusion(attributes.Cryo, 25, 0.1*60)
 
 		c.starTickSrc = c.Core.F
-		c.tickNightStar(c.starTickSrc, false)
+		c.tickNightStar(c.starTickSrc, false)()
 	}, 19)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 19)

@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		c:    c,
 	}
 	r := p.Refine
-	w.dmg = 0.04 + float64(r)*0.02
+	w.dmg = 0.06 + float64(r)*0.02
 	w.buff = make([]float64, attributes.EndStatType)
 
 	w.stacks = p.Params["stacks"]
