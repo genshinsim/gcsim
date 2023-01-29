@@ -5,7 +5,7 @@ import { scaleBand, scaleLinear } from "@visx/scale";
 import { BoxPlot } from "@visx/stats";
 import { useTooltip } from "@visx/tooltip";
 import { range } from "lodash-es";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { GraphAxisBottom, GraphAxisLeft, GraphGridRows, NoData } from "../../Util";
 import { RenderTooltip, TooltipData, useTooltipHandles } from "./Tooltip";
@@ -25,7 +25,7 @@ type Props = {
 const defaultMargin = { left: 76, right: 12, top: 5, bottom: 16 };
 const boxPlotHeight = 30;
 
-export const HistogramGraph = ({
+const Graph = ({
       width,
       height,
       margin = defaultMargin,
@@ -196,3 +196,5 @@ function useScales(data: SummaryStat | undefined, xMax: number, yMax: number) {
 
   return { xScale: xScale, yScale: yScale, xLin: xLin, delta: delta };
 }
+
+export const HistogramGraph = memo(Graph);

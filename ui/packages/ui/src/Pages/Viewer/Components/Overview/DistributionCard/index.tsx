@@ -2,7 +2,7 @@ import { Card, Colors, HTMLSelect } from "@blueprintjs/core";
 import { SimResults, SummaryStat } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useState } from "react";
-import { CardTitle } from "../../Util";
+import { CardTitle, useRefresh } from "../../Util";
 import { HistogramGraph } from "./HistogramGraph";
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
 
 export default ({ data }: Props) => {
   const [graph, setGraph] = useState("dps");
+  const stats = useGraphDataRefresh(data);
 
   return (
     <Card className="col-span-3 min-h-full h-72 min-w-[280px] flex flex-col justify-start gap-2">
@@ -27,10 +28,32 @@ export default ({ data }: Props) => {
           <GraphTitle graph={graph} />
         </div>
       </div>
-      <Graph graph={graph} data={data} />
+      <Graph graph={graph} data={stats} />
     </Card>
   );
 };
+
+type Stats = {
+  dps?: SummaryStat;
+  eps?: SummaryStat;
+  rps?: SummaryStat;
+  hps?: SummaryStat;
+  shp?: SummaryStat;
+  dur?: SummaryStat;
+}
+
+function useGraphDataRefresh(data: SimResults | null): Stats | undefined {
+  return useRefresh(d => {
+    return {
+      dps: d?.statistics?.dps,
+      eps: d?.statistics?.eps,
+      rps: d?.statistics?.rps,
+      hps: d?.statistics?.hps,
+      shp: d?.statistics?.shp,
+      dur: d?.statistics?.duration,
+    };
+  }, 250, data);
+}
 
 const GraphTitle = ({ graph }: { graph: string }) => {
   if (graph === "dps") {
@@ -49,55 +72,54 @@ const GraphTitle = ({ graph }: { graph: string }) => {
   return null;
 };
 
-const Graph = ({ graph, data }: { graph: string, data: SimResults | null }) => {
+const Graph = ({ graph, data }: { graph: string, data?: Stats }) => {
   if (graph === "dps") {
     return (
       <GraphContent
-        data={data?.statistics?.dps}
-        barColor={Colors.VERMILION3}
-        accentColor={Colors.VERMILION1}
-        hoverColor={Colors.VERMILION5} />
+          data={data?.dps}
+          barColor={Colors.VERMILION3}
+          accentColor={Colors.VERMILION1}
+          hoverColor={Colors.VERMILION5} />
     );
   } else if (graph === "eps") {
     return (
       <GraphContent
-        data={data?.statistics?.eps}
-        barColor={Colors.CERULEAN3}
-        accentColor={Colors.CERULEAN1}
-        hoverColor={Colors.CERULEAN5} />
+          data={data?.eps}
+          barColor={Colors.CERULEAN3}
+          accentColor={Colors.CERULEAN1}
+          hoverColor={Colors.CERULEAN5} />
     );
   } else if (graph === "rps") {
     return (
       <GraphContent
-        data={data?.statistics?.rps}
-        barColor={Colors.VIOLET3}
-        accentColor={Colors.VIOLET1}
-        hoverColor={Colors.VIOLET5} />
+          data={data?.rps}
+          barColor={Colors.VIOLET3}
+          accentColor={Colors.VIOLET1}
+          hoverColor={Colors.VIOLET5} />
     );
   } else if (graph === "hps") {
     return (
       <GraphContent
-        data={data?.statistics?.hps}
-        barColor={Colors.FOREST3}
-        accentColor={Colors.FOREST1}
-        hoverColor={Colors.FOREST5} />
+          data={data?.hps}
+          barColor={Colors.FOREST3}
+          accentColor={Colors.FOREST1}
+          hoverColor={Colors.FOREST5} />
     );
   } else if (graph === "shp") {
     return (
       <GraphContent
-        data={data?.statistics?.shp}
-        barColor={Colors.GOLD3}
-        accentColor={Colors.GOLD1}
-        hoverColor={Colors.GOLD5} />
+          data={data?.shp}
+          barColor={Colors.GOLD3}
+          accentColor={Colors.GOLD1}
+          hoverColor={Colors.GOLD5} />
     );
   } else if (graph === "dur") {
     return (
       <GraphContent
-        key="dur"
-        data={data?.statistics?.duration}
-        barColor={Colors.TURQUOISE3}
-        accentColor={Colors.TURQUOISE1}
-        hoverColor={Colors.TURQUOISE5} />
+          data={data?.dur}
+          barColor={Colors.TURQUOISE3}
+          accentColor={Colors.TURQUOISE1}
+          hoverColor={Colors.TURQUOISE5} />
     );
   }
   return null;
