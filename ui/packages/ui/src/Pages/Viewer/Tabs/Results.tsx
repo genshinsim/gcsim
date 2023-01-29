@@ -29,7 +29,7 @@ export default (props: Props) => {
 
 const Overview = ({ data }: Props) => (
   <Group>
-    <TeamHeader data={data} />
+    <TeamHeader characters={data?.character_details} />
     <RollupCards data={data} />
     <TargetInfo data={data} />
     <DistributionCard data={data} />

@@ -1,18 +1,21 @@
-import { SimResults } from "@gcsim/types";
+import { Character } from "@gcsim/types";
 import classNames from "classnames";
+import { memo } from "react";
 import { CharacterCard } from "../../../../Components/Cards";
 
 type Props = {
-  data: SimResults | null;
+  characters?: Character[];
 };
 
-export default ({ data }: Props) => {
+const TeamHeader = ({ characters }: Props) => {
   return (
     <div className="col-span-full flex flex-row gap-2 justify-center flex-wrap">
-      <CharacterCards data={data} />
+      <CharacterCards characters={characters} />
     </div>
   );
 };
+
+export default memo(TeamHeader);
 
 export function characterCardsClassNames(num: number): string {
   return classNames(
@@ -25,10 +28,10 @@ export function characterCardsClassNames(num: number): string {
   });
 }
 
-const CharacterCards = ({ data }: Props) => {
-  const cardClass = characterCardsClassNames(data?.character_details?.length ?? 4);
+const CharacterCards = ({ characters }: Props) => {
+  const cardClass = characterCardsClassNames(characters?.length ?? 4);
 
-  if (data?.character_details == null) {
+  if (characters == null) {
     return (
       <>
         <FakeCard className={cardClass} />
@@ -41,7 +44,7 @@ const CharacterCards = ({ data }: Props) => {
 
   return (
     <>
-    {data.character_details.map((c) => (
+    {characters.map((c) => (
       <CharacterCard
         key={c.name}
         char={c}
