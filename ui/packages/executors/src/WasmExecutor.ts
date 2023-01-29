@@ -163,9 +163,9 @@ export class WasmExecutor implements Executor {
       this.aggregator.onmessage = (ev) => {
         switch (ev.data.type as Aggregator.Response) {
           case Aggregator.Response.Result:
-            const out = Object.assign({}, result);
             const { hash, stats } = (ev.data as Aggregator.ResultResponse).result;
 
+            const out = Object.assign({}, result);
             out.statistics = stats;
             updateResult(out, hash);
 

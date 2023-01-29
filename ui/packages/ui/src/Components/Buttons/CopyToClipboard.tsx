@@ -1,5 +1,5 @@
 import { Button, Icon, Intent, Toaster } from "@blueprintjs/core";
-import { RefObject } from "react";
+import { memo, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   className?: string;
 }
 
-export default ({ copyToast, config, className }: Props) => {
+const CopyTo = ({ copyToast, config, className }: Props) => {
   const { t } = useTranslation();
 
   const action = () => {
@@ -32,3 +32,5 @@ export default ({ copyToast, config, className }: Props) => {
     </>
   );
 };
+
+export default memo(CopyTo);

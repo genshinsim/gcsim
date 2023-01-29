@@ -33,13 +33,14 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
 
   const cancel = useCallback(() => exec().cancel(), [exec]);
   const sampler = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
+  const resetTab = useCallback(() => setTabId("results"), []);
 
   const sample = useSample(running, data, sampler);
   const config = useConfig(data, exec);
 
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} />,
-    config: <ConfigUI config={config} running={running} resetTab={() => setTabId("results")} />,
+    config: <ConfigUI config={config} running={running} resetTab={resetTab} />,
     analyze: <div></div>,
     sample: <SampleUI sampler={sampler} data={data} sample={sample} running={running} />,
   };
