@@ -13,10 +13,9 @@ const burstKey = "yaoyaoburst"
 
 var (
 	burstFrames   []int
-	burstHitmarks = []int{18, 33, 56} // initial 3 hits
+	burstHitmarks = 16 // initial 3 hits
 	burstRadius   = []float64{2.5, 2.5, 3}
-	skillStart    = 40
-	skillDur      = 5 * 60
+	burstDur      = 5 * 60
 )
 
 func init() {
@@ -42,11 +41,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstRadishDMG[c.TalentLvlBurst()],
 	}
-	c.QueueCharTask(c.newYueguiJump, 1*60+skillStart)
-	c.QueueCharTask(c.newYueguiJump, 2*60+skillStart)
-	c.QueueCharTask(c.newYueguiJump, 3*60+skillStart)
-	c.QueueCharTask(c.removeBurst, 5*60+skillStart)
-	c.AddStatus(burstKey, skillDur+skillStart, true)
+	c.QueueCharTask(c.newYueguiJump, 1*60+42)
+	c.QueueCharTask(c.newYueguiJump, 2*60+42)
+	c.QueueCharTask(c.newYueguiJump, 3*60+42)
+	c.QueueCharTask(c.removeBurst, burstDur)
+	c.AddStatus(burstKey, burstDur, true)
+
 	// TODO: Yaoyao gains 15% movespeed and 50% dendro res
 	// m := make([]float64, attributes.EndStatType)
 	// m[attributes.DendroRes] = 0.50
@@ -64,11 +64,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Base.Ascension >= 1 {
-		for i := 36; i <= skillDur; i += 36 { // 0.6*60 = 36
-			c.QueueCharTask(c.a1ticker, i+skillStart)
+		for i := 36; i <= burstDur; i += 36 { // 0.6*60 = 36
+			c.QueueCharTask(c.a1ticker, i)
 		}
 	}
-
+	c.ConsumeEnergy(0)
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],

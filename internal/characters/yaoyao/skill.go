@@ -10,17 +10,19 @@ import (
 
 var skillFrames []int
 
+const skillStart = 15
+
 func init() {
-	skillFrames = frames.InitAbilSlice(39)
-	skillFrames[action.ActionDash] = 14
-	skillFrames[action.ActionJump] = 14
-	skillFrames[action.ActionSwap] = 38
+	skillFrames = frames.InitAbilSlice(52)
+	skillFrames[action.ActionDash] = 49
+	skillFrames[action.ActionJump] = 48
+	skillFrames[action.ActionSwap] = 50
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// yuegui spawns at cd frame
-	c.Core.Status.Add("yuegui", 500+13)
+	c.Core.Status.Add("yuegui", 500+skillStart)
 
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -37,9 +39,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	yuegui := c.newYueguiThrow(procAI)
 	c.Core.Tasks.Add(func() {
 		c.Core.Combat.AddGadget(yuegui)
-	}, 13)
+	}, skillStart+35+29)
 
-	c.SetCDWithDelay(action.ActionSkill, 15*60, 13)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, skillStart)
 
 	if c.Base.Cons >= 4 {
 		c.c4()
