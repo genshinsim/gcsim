@@ -6,4 +6,4 @@ export { DataColors } from "./DataColors";
 export { default as HorizontalBarStack } from "./HorizontalBarStack";
 export { GraphAxisLeft, GraphAxisBottom, GraphAxisRight } from "./Axes";
 export { GraphGrid, GraphGridRows, GraphGridColumns } from "./Grids";
-export { useRefresh } from "./Refresh";
+export { useRefresh, useRefreshWithTimer } from "./Refresh";

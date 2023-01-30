@@ -9,6 +9,8 @@ import { FiLink2 } from "react-icons/fi";
 
 type Props = {
   data: SimResults | null;
+  running: boolean;
+  names?: string[];
 };
 
 export default (props: Props) => {
@@ -36,12 +38,12 @@ const Overview = ({ data }: Props) => (
   </Group>
 );
 
-const Damage = ({ data }: Props) => (
+const Damage = ({ data, running, names }: Props) => (
   <Group>
     <Heading text="Damage" target="damage" color={Colors.VERMILION5} />
     <DamageTimelineCard data={data} />
 
-    <CharacterDPSCard data={data} />
+    <CharacterDPSCard data={data} running={running} names={names} />
     <ElementDPSCard data={data} />
     <TargetDPSCard data={data} />
 

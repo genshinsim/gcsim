@@ -1,5 +1,5 @@
 import { Alert, Intent } from "@blueprintjs/core";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import ConfigUI, { useConfig } from "./Tabs/Config";
 import SampleUI, { useSample } from "./Tabs/Sample";
 import Results from "./Tabs/Results";
@@ -37,9 +37,11 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
 
   const sample = useSample(running, data, sampler);
   const config = useConfig(data, exec);
+  const names = useMemo(
+      () => data?.character_details?.map(c => c.name), [data?.character_details]);
 
   const tabs: { [k: string]: React.ReactNode } = {
-    results: <Results data={data} />,
+    results: <Results data={data} running={running} names={names} />,
     config: <ConfigUI config={config} running={running} resetTab={resetTab} />,
     analyze: <div></div>,
     sample: <SampleUI sampler={sampler} data={data} sample={sample} running={running} />,

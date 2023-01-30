@@ -1,40 +1,34 @@
 import { Card } from "@blueprintjs/core";
 import { FloatStat, SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle, DataColors, FloatStatTooltipContent, NoData, OuterLabelPie } from "../Util";
+import { CardTitle, DataColors, FloatStatTooltipContent, NoData, OuterLabelPie, useRefreshWithTimer } from "../Util";
 
 type Props = {
   data: SimResults | null;
+  running: boolean;
+  names?: string[];
 }
 
-export default ({ data }: Props) => {
-  const names = data?.character_details?.map(c => c.name);
+export default ({ data, running, names }: Props) => {
+  const [dps, timer] = useRefreshWithTimer(
+      d => d?.statistics?.character_dps, 10000, data, running);
+
   return (
     <Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
-      <CardTitle title="Character DPS Distribution" tooltip="x" />
-      <ParentSize>
-        {({ width, height }) => (
-          <DPSPie
-              width={width}
-              height={height}
-              names={names}
-              dps={data?.statistics?.character_dps} />
-        )}
-      </ParentSize>
+      <CardTitle title="Character DPS Distribution" tooltip="x" timer={timer} />
+      <DPSPieMemo names={names} dps={dps} />
     </Card>
   );
 };
 
 type PieProps = {
-  width: number;
-  height: number;
   names?: string[];
   dps?: FloatStat[];
 }
 
-const DPSPie = ({ width, height, names, dps }: PieProps) => {
+const DPSPie = ({ names, dps }: PieProps) => {
   const { i18n } = useTranslation();
   const { data } = useData(dps, names);
 
@@ -43,28 +37,34 @@ const DPSPie = ({ width, height, names, dps }: PieProps) => {
   }
 
   return (
-    <OuterLabelPie
-        width={width}
-        height={height}
-        data={data}
-        pieValue={d => d.pct}
-        color={d => DataColors.character(d.index)}
-        labelColor={d => DataColors.characterLabel(d.index)}
-        labelText={d => d.name}
-        labelValue={d => {
-          return d.pct.toLocaleString(
-              i18n.language, { maximumFractionDigits: 0, style: "percent" });
-        }}
-        tooltipContent={d => (
-          <FloatStatTooltipContent
-              title={d.name + " dps"}
-              data={d.value}
-              color={DataColors.characterLabel(d.index)}
-              percent={d.pct} />
-        )}
-    />
+    <ParentSize>
+      {({ width, height }) => (
+        <OuterLabelPie
+            width={width}
+            height={height}
+            data={data}
+            pieValue={d => d.pct}
+            color={d => DataColors.character(d.index)}
+            labelColor={d => DataColors.characterLabel(d.index)}
+            labelText={d => d.name}
+            labelValue={d => {
+              return d.pct.toLocaleString(
+                  i18n.language, { maximumFractionDigits: 0, style: "percent" });
+            }}
+            tooltipContent={d => (
+              <FloatStatTooltipContent
+                  title={d.name + " dps"}
+                  data={d.value}
+                  color={DataColors.characterLabel(d.index)}
+                  percent={d.pct} />
+            )}
+        />
+      )}
+    </ParentSize>
   );
 };
+
+const DPSPieMemo = memo(DPSPie);
 
 type CharacterData = {
   name: string;
