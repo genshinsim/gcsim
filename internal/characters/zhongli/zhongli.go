@@ -18,10 +18,9 @@ type char struct {
 	steleSnapshot combat.AttackEvent
 	maxStele      int
 	steleCount    int
-	energyICD     int
 }
 
-//TODO: need to clean up zhongli code still
+// TODO: need to clean up zhongli code still
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
