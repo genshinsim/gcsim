@@ -1,34 +1,48 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
-import { SimResults } from "@gcsim/types";
+import { ElementDPS, FloatStat, SimResults, TargetDPS } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { useState } from "react";
-import { CardTitle, NoData } from "../../Util";
+import { memo, useState } from "react";
+import { CardTitle, NoData, useRefreshWithTimer } from "../../Util";
 import { ByCharacterChart, ByCharacterLegend } from "./ByCharacter";
 import { ByElementChart, ByElementLegend } from "./ByElement";
 import { ByTargetChart, ByTargetLegend } from "./ByTarget";
 
-type Props = {
-  data: SimResults | null;
+type GraphData = {
+  byElement?: ElementDPS[];
+  byCharacter?: FloatStat[];
+  byTarget?: TargetDPS[];
 }
 
-export default ({ data }: Props) => {
+type Props = {
+  data: SimResults | null;
+  running: boolean;
+  names?: string[];
+}
+
+export default ({ data, running, names }: Props) => {
   const [graph, setGraph] = useState("element");
-  const names = data?.character_details?.map(c => c.name);
+  const [stats, timer] = useRefreshWithTimer(d => {
+    return {
+      byElement: d?.statistics?.dps_by_element,
+      byCharacter: d?.statistics?.character_dps,
+      byTarget: d?.statistics?.dps_by_target,
+    };
+  }, 5000, data, running);
 
   return (
     <Card className="flex flex-col col-span-full h-96">
       <div className="flex flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
-          <CardTitle title="Character DPS" tooltip="x" />
+          <CardTitle title="Character DPS" tooltip="x" timer={timer} />
           <Options graph={graph} setGraph={setGraph} />
         </div>
         <div className="flex flex-grow justify-center items-center">
-          <Legend data={data} names={names} graph={graph} />
+          <Legend data={stats} names={names} graph={graph} />
         </div>
       </div>
       <ParentSize>
         {({ width, height }) => (
-          <Graph data={data} names={names} width={width} height={height} graph={graph} />
+          <Graph data={stats} names={names} width={width} height={height} graph={graph} />
         )}
       </ParentSize>
     </Card>
@@ -54,21 +68,21 @@ const Options = ({ graph, setGraph }: { graph: string, setGraph: (v: string) => 
 };
 
 type GraphProps = {
-  data: SimResults | null;
+  data: GraphData;
   names?: string[];
   graph: string;
   width: number;
   height: number;
 }
 
-const Graph = ({ data, names, graph, width, height }: GraphProps) => {
+const Graph = memo(({ data, names, graph, width, height }: GraphProps) => {
   if (graph === "element") {
     return (
       <ByElementChart
           width={width}
           height={height}
           names={names}
-          dps={data?.statistics?.dps_by_element} />
+          dps={data.byElement} />
     );
   } else if (graph === "character") {
     return (
@@ -76,7 +90,7 @@ const Graph = ({ data, names, graph, width, height }: GraphProps) => {
           width={width}
           height={height}
           names={names}
-          dps={data?.statistics?.character_dps} />
+          dps={data.byCharacter} />
     );
   } else if (graph === "target") {
     return (
@@ -84,25 +98,25 @@ const Graph = ({ data, names, graph, width, height }: GraphProps) => {
           width={width}
           height={height}
           names={names}
-          dps={data?.statistics?.dps_by_target} />
+          dps={data.byTarget} />
     );
   }
   return <NoData />;
-};
+});
 
 type LegendProps = {
-  data: SimResults | null;
+  data: GraphData;
   names?: string[];
   graph: string;
 }
 
-const Legend = ({ data, names, graph }: LegendProps) => {
+const Legend = memo(({ data, names, graph }: LegendProps) => {
   if (graph === "element") {
-    return <ByElementLegend dps={data?.statistics?.dps_by_element} />;
+    return <ByElementLegend dps={data.byElement} />;
   } else if (graph === "character") {
     return <ByCharacterLegend names={names} />;
   } else if (graph === "target") {
-    return <ByTargetLegend dps={data?.statistics?.dps_by_target} />;
+    return <ByTargetLegend dps={data.byTarget} />;
   }
   return null;
-};
+});

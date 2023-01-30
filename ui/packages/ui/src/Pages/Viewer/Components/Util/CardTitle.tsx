@@ -14,7 +14,7 @@ const CardTitle = (props: Props) => {
   }
 
   return (
-    <div className="flex flex-row justify-between items-center">
+    <div className="flex flex-row justify-between items-center gap-4">
       <TitleWithTooltipMemo {...props} />
       <RefreshStatus timer={props.timer} />
     </div>
@@ -58,7 +58,7 @@ const RefreshStatus = ({ timer }: { timer: number }) => {
   }, [timer]);
 
   return (
-    <div className="text-gray-400 outline-0 text-xs flex gap-1">
+    <div className="text-gray-400 outline-0 text-xs flex gap-1 cursor-default">
       <Icon icon="refresh" color={Colors.GRAY1} size={12} className="pt-[3px]" />
       <span>{time + "s"}</span>
     </div>

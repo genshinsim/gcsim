@@ -18,7 +18,7 @@ export default ({ data, running, names }: Props) => {
   return (
     <Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
       <CardTitle title="Character DPS Distribution" tooltip="x" timer={timer} />
-      <DPSPieMemo names={names} dps={dps} />
+      <DPSPie names={names} dps={dps} />
     </Card>
   );
 };
@@ -28,7 +28,7 @@ type PieProps = {
   dps?: FloatStat[];
 }
 
-const DPSPie = ({ names, dps }: PieProps) => {
+const DPSPie = memo(({ names, dps }: PieProps) => {
   const { i18n } = useTranslation();
   const { data } = useData(dps, names);
 
@@ -62,9 +62,7 @@ const DPSPie = ({ names, dps }: PieProps) => {
       )}
     </ParentSize>
   );
-};
-
-const DPSPieMemo = memo(DPSPie);
+});
 
 type CharacterData = {
   name: string;
