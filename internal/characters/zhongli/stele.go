@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+const particleICDKey = "zhongli-particle-icd"
+
 func (c *char) newStele(dur int) {
 	//deal damage when created
 	ai := combat.AttackInfo{
@@ -23,7 +25,7 @@ func (c *char) newStele(dur int) {
 	}
 	steleDir := c.Core.Combat.Player().Direction()
 	stelePos := combat.CalcOffsetPoint(c.Core.Combat.Player().Pos(), combat.Point{Y: 3}, steleDir)
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(stelePos, nil, 2), 0, 0)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(stelePos, nil, 2), 0, 0, c.steleEnergyCB())
 
 	//create a construct
 	con := &stoneStele{
@@ -97,8 +99,12 @@ func (c *char) resonance(src int) func() {
 
 		steles, others := c.Core.Constructs.ConstructsByType(construct.GeoConstructZhongliSkill)
 
-		orb := false
+		particleCB := c.steleEnergyCB()
 		for _, s := range steles {
+			// skip other stele
+			if s.Key() != src {
+				continue
+			}
 			steleDir := s.Direction()
 			stelePos := s.Pos()
 
@@ -113,23 +119,31 @@ func (c *char) resonance(src int) func() {
 
 			// queue stele attack
 			steleAttackPos := combat.CalcOffsetPoint(stelePos, boxOffset, steleDir)
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(steleAttackPos, nil, boxSize, boxSize), 0)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(steleAttackPos, nil, boxSize, boxSize), 0, particleCB)
 
 			// queue resonance attacks
 			for _, con := range resonanceConstructs {
 				resonanceAttackPos := combat.CalcOffsetPoint(con.Pos(), boxOffset, con.Direction())
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(resonanceAttackPos, nil, boxSize, boxSize), 0)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(resonanceAttackPos, nil, boxSize, boxSize), 0, particleCB)
 			}
-
-			// particle check
-			if c.energyICD < c.Core.F && !orb && c.Core.Rand.Float64() < .5 {
-				orb = true
-			}
-		}
-		if orb {
-			c.energyICD = c.Core.F + 90
-			c.Core.QueueParticle("zhongli", 1, attributes.Geo, 20+c.ParticleDelay)
 		}
 		c.Core.Tasks.Add(c.resonance(src), 120)
+	}
+}
+
+func (c *char) steleEnergyCB() combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 90, true)
+		// 50% chance
+		if c.Core.Rand.Float64() > 0.5 {
+			return
+		}
+		c.Core.QueueParticle("zhongli", 1, attributes.Geo, 20+c.ParticleDelay)
 	}
 }
