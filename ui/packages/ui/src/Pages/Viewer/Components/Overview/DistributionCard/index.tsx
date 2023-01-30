@@ -42,7 +42,7 @@ type Stats = {
   dur?: SummaryStat;
 }
 
-function useGraphDataRefresh(data: SimResults | null): Stats | undefined {
+function useGraphDataRefresh(data: SimResults | null): Stats {
   return useRefresh(d => {
     return {
       dps: d?.statistics?.dps,
@@ -72,11 +72,11 @@ const GraphTitle = ({ graph }: { graph: string }) => {
   return null;
 };
 
-const Graph = ({ graph, data }: { graph: string, data?: Stats }) => {
+const Graph = ({ graph, data }: { graph: string, data: Stats }) => {
   if (graph === "dps") {
     return (
       <GraphContent
-          data={data?.dps}
+          data={data.dps}
           barColor={Colors.VERMILION3}
           accentColor={Colors.VERMILION1}
           hoverColor={Colors.VERMILION5} />
@@ -84,7 +84,7 @@ const Graph = ({ graph, data }: { graph: string, data?: Stats }) => {
   } else if (graph === "eps") {
     return (
       <GraphContent
-          data={data?.eps}
+          data={data.eps}
           barColor={Colors.CERULEAN3}
           accentColor={Colors.CERULEAN1}
           hoverColor={Colors.CERULEAN5} />
@@ -92,7 +92,7 @@ const Graph = ({ graph, data }: { graph: string, data?: Stats }) => {
   } else if (graph === "rps") {
     return (
       <GraphContent
-          data={data?.rps}
+          data={data.rps}
           barColor={Colors.VIOLET3}
           accentColor={Colors.VIOLET1}
           hoverColor={Colors.VIOLET5} />
@@ -100,7 +100,7 @@ const Graph = ({ graph, data }: { graph: string, data?: Stats }) => {
   } else if (graph === "hps") {
     return (
       <GraphContent
-          data={data?.hps}
+          data={data.hps}
           barColor={Colors.FOREST3}
           accentColor={Colors.FOREST1}
           hoverColor={Colors.FOREST5} />
@@ -108,7 +108,7 @@ const Graph = ({ graph, data }: { graph: string, data?: Stats }) => {
   } else if (graph === "shp") {
     return (
       <GraphContent
-          data={data?.shp}
+          data={data.shp}
           barColor={Colors.GOLD3}
           accentColor={Colors.GOLD1}
           hoverColor={Colors.GOLD5} />
@@ -116,7 +116,7 @@ const Graph = ({ graph, data }: { graph: string, data?: Stats }) => {
   } else if (graph === "dur") {
     return (
       <GraphContent
-          data={data?.dur}
+          data={data.dur}
           barColor={Colors.TURQUOISE3}
           accentColor={Colors.TURQUOISE1}
           hoverColor={Colors.TURQUOISE5} />

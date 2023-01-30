@@ -20,7 +20,7 @@ type CardProps = {
   hashLink?: string;
 };
 
-export const RollupCard = ({
+const CardTemplate = ({
     title, color, value, label, auxStats, tooltip, hashLink }: CardProps) => {
   const history = useHistory();
   const interactable = hashLink != null;
@@ -39,11 +39,13 @@ export const RollupCard = ({
           <CardValue value={value} label={label} />
           <CardAux aux={auxStats} />
         </div>
-        <CardChevronMemo interactable={interactable} />
+        <CardChevron interactable={interactable} />
       </Card>
     </div>
   );
 };
+
+export const RollupCard = memo(CardTemplate);
 
 const CardValue = ({ value, label }: { value?: number | string | null, label?: string }) => {
   const { i18n } = useTranslation();
@@ -79,8 +81,6 @@ const CardChevron = ({ interactable }: { interactable: boolean }) => {
     </div>
   );
 };
-
-const CardChevronMemo = memo(CardChevron);
 
 const CardAux = ({ aux }: { aux?: Array<AuxStat> }) => {
   if (aux == null) {
