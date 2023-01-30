@@ -132,24 +132,18 @@ func (c *char) resonance(src int) func() {
 }
 
 func (c *char) steleEnergyCB() combat.AttackCBFunc {
-	done := false
 	return func(a combat.AttackCB) {
 		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
-		// can only proc once per skill cast / stele tick
-		if done {
-			return
-		}
-		done = true
 		if c.StatusIsActive(particleICDKey) {
 			return
 		}
+		c.AddStatus(particleICDKey, 90, true)
 		// 50% chance
 		if c.Core.Rand.Float64() > 0.5 {
 			return
 		}
-		c.AddStatus(particleICDKey, 90, true)
 		c.Core.QueueParticle("zhongli", 1, attributes.Geo, 20+c.ParticleDelay)
 	}
 }
