@@ -47,6 +47,7 @@ func (h *Handler) NewConstruct(c Construct, refresh bool, constructs *[]Construc
 		(*constructs)[ind].OnDestruct()
 		(*constructs)[ind] = nil
 		h.cleanOutNils(constructs)
+		(*constructs) = append((*constructs), c)
 	} else {
 		//add this one to the end
 		(*constructs) = append((*constructs), c)

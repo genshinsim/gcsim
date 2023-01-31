@@ -137,7 +137,7 @@ type SamplerProps = {
   setSettings: (val: string[]) => void;
 }
 
-export function Sampler({ sample, data, team, searchable, settings, setSettings }: SamplerProps) {
+function SamplerUI({ sample, data, team, searchable, settings, setSettings }: SamplerProps) {
   const parentRef = React.useRef<HTMLDivElement>(null);
   const searchRef = React.useRef<HTMLInputElement>(null);
   const [hl, sethl] = React.useState<buffSetting>({
@@ -314,3 +314,5 @@ export function Sampler({ sample, data, team, searchable, settings, setSettings 
     </div>
   );
 }
+
+export const Sampler = React.memo(SamplerUI);

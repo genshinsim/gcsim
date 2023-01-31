@@ -1,39 +1,40 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
-import { SimResults } from "@gcsim/types";
+import { FloatStat, SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { useState } from "react";
-import { CardTitle, NoData } from "../../Util";
+import { memo, useState } from "react";
+import { CardTitle, NoData, useRefreshWithTimer } from "../../Util";
 import { CumulativeGraph, CumulativeLegend } from "./CumulativeContribution";
+
+type GraphData = {
+  cumu?: FloatStat[][];
+}
 
 type Props = {
   data: SimResults | null;
+  running: boolean;
+  names?: string[];
 }
 
-export default ({ data }: Props) => {
+export default ({ data, running, names }: Props) => {
   const [graph, setGraph] = useState("cumu");
-  const names = data?.character_details?.map(c => c.name);
+  const [stats, timer] = useRefreshWithTimer(d => {
+    return {
+      cumu: d?.statistics?.cumu_damage_contrib,
+    };
+  }, 5000, data, running);
 
   return (
     <Card className="flex flex-col col-span-full h-[450px]">
       <div className="flex flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
-          <CardTitle title="Damage Timeline" tooltip="x" />
+          <CardTitle title="Damage Timeline" tooltip="x" timer={timer} />
           <Options graph={graph} setGraph={setGraph} />
         </div>
         <div className="flex flex-grow justify-center items-center">
           <Legend graph={graph} names={names} />
         </div>
       </div>
-      <ParentSize>
-        {({ width, height }) => (
-          <Graph
-              graph={graph}
-              width={width}
-              height={height}
-              data={data}
-              names={names} />
-        )}
-      </ParentSize>
+      <Graph graph={graph} data={stats} names={names} />
     </Card>
   );
 };
@@ -56,34 +57,36 @@ const Options = ({ graph, setGraph }: { graph: string, setGraph: (v: string) => 
 };
 
 type GraphProps = {
-  data: SimResults | null;
+  data: GraphData;
   names?: string[];
   graph: string;
-  width: number;
-  height: number;
 }
 
-const Graph = (props: GraphProps) => {
+const Graph = memo((props: GraphProps) => {
   if (props.graph === "cumu") {
     return (
-      <CumulativeGraph
-          width={props.width}
-          height={props.height}
-          names={props.names}
-          input={props.data?.statistics?.cumu_damage_contrib} />
+      <ParentSize>
+        {({ width, height }) => (
+          <CumulativeGraph
+              width={width}
+              height={height}
+              names={props.names}
+              input={props.data.cumu} />
+        )}
+      </ParentSize>
     );
   } else if (props.graph === "total") {
     return <NoData />;
   }
   return null;
-};
+});
 
 
-const Legend = ({ names, graph }: { names?: string[], graph: string }) => {
+const Legend = memo(({ names, graph }: { names?: string[], graph: string }) => {
   if (graph === "cumu") {
     return <CumulativeLegend names={names} />;
   } else if (graph === "total") {
     return null;
   }
   return null;
-};
+});

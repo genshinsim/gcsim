@@ -1,5 +1,5 @@
 import { NonIdealState } from "@blueprintjs/core";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 import qiqi from "./images/qiqi.png";
 import kuki from "./images/kuki.png";
@@ -28,7 +28,7 @@ const images = [
 ];
 
 // TODO: translation
-export default ({}) => {
+const NoData = ({}) => {
   return (
     <NonIdealState
         icon={<Icon />}
@@ -52,3 +52,5 @@ function image(): string {
   availableImages = options;
   return img;
 }
+
+export default memo(NoData);

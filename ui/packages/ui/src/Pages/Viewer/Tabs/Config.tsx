@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Editor from "react-simple-code-editor";
 import { Button, Callout, Intent, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
 import { SimResults } from '@gcsim/types';
@@ -30,7 +30,7 @@ type ConfigProps = {
   resetTab: () => void;
 };
 
-export default ({ config, running, resetTab }: ConfigProps) => {
+const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -126,13 +126,17 @@ export function useConfig(data: SimResults | null, exec: ExecutorSupplier<Execut
   // validated == true means we had a successful validation check run, not that it is valid
   const validated = useConfigValidateListener(exec, cfg ?? "", modified, setErr);
 
-  return {
-    cfg: cfg,
-    error: err,
-    isReady: isReady,
-    validated: validated,
-    modified: modified,
-    exec: exec,
-    setCfg: updateCfg,
-  };
+  return useMemo(() => {
+    return {
+      cfg: cfg,
+      error: err,
+      isReady: isReady,
+      validated: validated,
+      modified: modified,
+      exec: exec,
+      setCfg: updateCfg,
+    };
+  }, [cfg, err, exec, isReady, modified, validated]);
 }
+
+export default React.memo(ConfigUI);
