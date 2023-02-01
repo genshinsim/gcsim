@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"runtime"
 	"runtime/pprof"
+	"strings"
 	"sync"
 	"time"
 
@@ -80,7 +81,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		fmt.Println("What is the filepath of the config you would like to run?")
 		in := bufio.NewReader(os.Stdin)
 		line, _ := in.ReadString('\n')
-		opt.config = line
+		opt.config = strings.TrimSpace(line)
 		opt.serve = true
 	}
 
