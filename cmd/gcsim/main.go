@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -67,6 +69,20 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 cpu.prof" (
 can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (insert your desired host/port/filename, requires Graphviz)`)
 
 	flag.Parse()
+
+	_, err := os.Stat(opt.config)
+	usedCLI := false
+	flag.Visit(func(f *flag.Flag) {
+		usedCLI = true
+	})
+	if errors.Is(err, os.ErrNotExist) && !usedCLI {
+		fmt.Printf("The file %s does not exist.\n", opt.config)
+		fmt.Println("What is the filepath of the config you would like to run?")
+		in := bufio.NewReader(os.Stdin)
+		line, _ := in.ReadString('\n')
+		opt.config = line
+		opt.serve = true
+	}
 
 	if opt.cpuprofile != "" {
 		f, err := os.Create(opt.cpuprofile)
