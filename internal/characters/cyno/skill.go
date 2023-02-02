@@ -111,7 +111,7 @@ func (c *char) skillB() action.ActionInfo {
 		// Apply the extra hit
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
-		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 // this is the A4
+		ai.FlatDmg = c.a4Bolt()
 		ai.ICDTag = combat.ICDTagCynoBolt
 		ai.ICDGroup = combat.ICDGroupCynoBolt
 		ai.StrikeType = combat.StrikeTypeSlash
