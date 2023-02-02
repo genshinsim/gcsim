@@ -3,9 +3,8 @@ import { model } from "@gcsim/types";
 import { Spinner } from "@blueprintjs/core";
 import { useEffect, useState } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames.";
-import { mockData } from "./Components/mockData";
 import { Filter, FilterState } from "./Filter";
-import { ListViewProps } from "./ListView";
+import { ListView } from "./ListView";
 
 export function Database() {
   const [charFilter, setCharFilter] = useState<Record<string, FilterState>>(
@@ -18,6 +17,7 @@ export function Database() {
   const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
   useEffect(() => {
+    //https://simimpact.app/api
     const url = `https://simimpact.app/api/db?q=${encodeURIComponent(
       JSON.stringify(craftQuery(charFilter))
     )}`;
@@ -25,7 +25,7 @@ export function Database() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        setData(mockData);
+        setData(data.data);
       })
       .catch((e) => {
         console.log(e);
@@ -43,15 +43,13 @@ export function Database() {
   return (
     <div className="flex flex-row gap-4">
       <Filter charFilter={charFilter} setCharFilter={setCharFilter} />
-      {/* <ListView query={craftQuery(charFilter)} key={key} /> */}
+      <ListView data={data} />
     </div>
   );
 }
 
-function craftQuery(
-  charFilter: Record<string, FilterState>
-): ListViewProps["query"] {
-  const query: Record<string, any> = {};
+function craftQuery(charFilter: Record<string, FilterState>): unknown {
+  const query: Record<string, unknown> = {};
   // sort all characters into included and excluded from the filter
   const includedChars: string[] = [];
   const excludedChars: string[] = [];
