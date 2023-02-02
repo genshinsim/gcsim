@@ -14,6 +14,8 @@
     "@gcsim/ui": "workspace:^",
     "@gcsim/utils": "workspace:^",
     "axios": "^1.2.1",
+    "prettier": "^2.8.3",
+    "prettier-plugin-organize-imports": "^3.2.2",
     "react": "^18.2.0",
     "react-dom": "latest",
     "react-i18next": "^12.0.0",
@@ -21,6 +23,7 @@
     "wouter": "^2.9.0"
   },
   "devDependencies": {
+    "@types/prettier": "^2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^2.1.0",
