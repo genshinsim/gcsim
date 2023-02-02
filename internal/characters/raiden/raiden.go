@@ -45,6 +45,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.eyeOnDamage()
+	c.a1()
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
 	return nil
@@ -64,13 +65,17 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	s := c.Character.Snapshot(a)
 
-	//a1 add dmg based on ER%
-	excess := int(s.Stats[attributes.ER] / 0.01)
-
-	s.Stats[attributes.ElectroP] += float64(excess) * 0.004 /// 0.4% extra dmg
-	c.Core.Log.NewEvent("a4 adding electro dmg", glog.LogCharacterEvent, c.Index).
-		Write("stacks", excess).
-		Write("final", s.Stats[attributes.ElectroP])
+	// A4:
+	// Each 1% above 100% Energy Recharge that the Raiden Shogun possesses grants her:
+	//
+	// - 0.4% Electro DMG Bonus.
+	if c.Base.Ascension >= 4 {
+		excess := int(s.Stats[attributes.ER] / 0.01)
+		s.Stats[attributes.ElectroP] += float64(excess) * 0.004
+		c.Core.Log.NewEvent("a4 adding electro dmg", glog.LogCharacterEvent, c.Index).
+			Write("stacks", excess).
+			Write("final", s.Stats[attributes.ElectroP])
+	}
 
 	return s
 }
