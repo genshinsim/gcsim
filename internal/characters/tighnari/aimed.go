@@ -136,7 +136,9 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		aimedWreathHitmark-skip,
 		aimedWreathHitmark+travel-skip,
 	)
-	c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
+	if c.Base.Ascension >= 1 {
+		c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
+	}
 
 	ai = combat.AttackInfo{
 		ActorIndex:   c.Index,
