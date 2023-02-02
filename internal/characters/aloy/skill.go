@@ -24,7 +24,8 @@ func init() {
 }
 
 const (
-	rushingIceKey = "rushingice"
+	rushingIceKey      = "rushingice"
+	rushingIceDuration = 600
 )
 
 // Skill - Handles main damage, bomblet, and coil effects
@@ -118,22 +119,7 @@ func (c *char) coilStacks(a combat.AttackCB) {
 	c.Core.Log.NewEvent("coil stack gained", glog.LogCharacterEvent, c.Index).
 		Write("stacks", c.coils)
 
-	// A1
-	// When Aloy receives the Coil effect from Frozen Wilds, her ATK is increased by 16%, while nearby party members' ATK is increased by 8%. This effect lasts 10s.
-	for _, char := range c.Core.Player.Chars() {
-		valA1 := make([]float64, attributes.EndStatType)
-		valA1[attributes.ATKP] = .08
-		if char.Index == c.Index {
-			valA1[attributes.ATKP] = .16
-		}
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("aloy-a1", 600),
-			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return valA1, true
-			},
-		})
-	}
+	c.a1()
 
 	if c.coils == 4 {
 		c.coils = 0
@@ -143,14 +129,14 @@ func (c *char) coilStacks(a combat.AttackCB) {
 
 // Handles rushing ice state
 func (c *char) rushingIce() {
-	c.AddStatus(rushingIceKey, 600, true)
+	c.AddStatus(rushingIceKey, rushingIceDuration, true)
 	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, combat.AttackTagNormal)
 
 	// Rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = skillRushingIceNABonus[c.TalentLvlSkill()]
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", 600),
+		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", rushingIceDuration),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == combat.AttackTagNormal {
 				return val, true
@@ -159,25 +145,7 @@ func (c *char) rushingIce() {
 		},
 	})
 
-	// A4 cryo damage increase
-	valA4 := make([]float64, attributes.EndStatType)
-	stacks := 1
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("aloy-strong-strike", 600),
-		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			if stacks > 10 {
-				stacks = 10
-			}
-			valA4[attributes.CryoP] = float64(stacks) * 0.035
-			return valA4, true
-		},
-	})
-
-	for i := 0; i < 10; i++ {
-		//every 1 s, affected by hitlag
-		c.QueueCharTask(func() { stacks++ }, 60*(1+i))
-	}
+	c.a4()
 }
 
 // Add coil mod at the beginning of the sim
