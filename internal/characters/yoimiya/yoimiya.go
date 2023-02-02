@@ -20,7 +20,7 @@ type char struct {
 	a1stack   int
 	lastPart  int
 	a1bonus   []float64
-	a4bonus   []float64
+	a4Bonus   []float64
 	abApplied bool
 }
 
@@ -40,7 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a1bonus = make([]float64, attributes.EndStatType)
-	c.a4bonus = make([]float64, attributes.EndStatType)
+	c.a4Bonus = make([]float64, attributes.EndStatType)
 	c.a1()
 	c.onExit()
 	c.burstHook()
