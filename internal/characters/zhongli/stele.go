@@ -10,6 +10,7 @@ import (
 const particleICDKey = "zhongli-particle-icd"
 
 func (c *char) newStele(dur int) {
+	flat := c.a4Skill()
 	//deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -21,7 +22,7 @@ func (c *char) newStele(dur int) {
 		Element:    attributes.Geo,
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
-		FlatDmg:    0.019 * c.MaxHP(),
+		FlatDmg:    flat,
 	}
 	steleDir := c.Core.Combat.Player().Direction()
 	stelePos := combat.CalcOffsetPoint(c.Core.Combat.Player().Pos(), combat.Point{Y: 3}, steleDir)
@@ -62,7 +63,7 @@ func (c *char) newStele(dur int) {
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       skillTick[c.TalentLvlSkill()],
-		FlatDmg:    0.019 * c.MaxHP(),
+		FlatDmg:    flat,
 	}
 	snap := c.Snapshot(&aiSnap)
 	c.steleSnapshot = combat.AttackEvent{
