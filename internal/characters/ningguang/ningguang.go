@@ -71,7 +71,9 @@ func (c *char) Init() error {
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		if c.jadeCount > 0 {
+		// A1:
+		// When Ningguang is in possession of Star Jades, her Charged Attack does not consume Stamina.
+		if c.Base.Ascension >= 1 && c.jadeCount > 0 {
 			return 0
 		}
 		return 50
