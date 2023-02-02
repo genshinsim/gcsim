@@ -124,7 +124,7 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       starDmg[c.TalentLvlSkill()],
-			FlatDmg:    0.015 * c.MaxHP(), // A4
+			FlatDmg:    c.a4(),
 		}
 
 		done := false
