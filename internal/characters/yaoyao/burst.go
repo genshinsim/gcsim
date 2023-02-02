@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       burstDMG[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(burstAI, combat.NewCircleHit(c.Core.Combat.Player().Pos(), combat.Point{0, 0}, combat.Point{0, 0}, 5))
+	c.Core.QueueAttack(burstAI, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 5), 16, 16)
 	c.burstRadishAI = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Radish (Burst)",
