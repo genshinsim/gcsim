@@ -15,7 +15,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	bunnies []bunny
+	burstRadius float64
+	bunnies     []bunny
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -27,6 +28,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	c.burstRadius = 2
 	c.bunnies = make([]bunny, 0, 2)
 
 	if c.Base.Cons >= 4 {
