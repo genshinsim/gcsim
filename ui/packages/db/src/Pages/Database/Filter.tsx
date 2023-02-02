@@ -1,9 +1,9 @@
 import { Collapse } from "@blueprintjs/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames.";
 
 const useTranslation = (key: string) => key;
-export enum FilterValue {
+export enum FilterState {
   "none",
   "include",
   "exclude",
@@ -12,15 +12,11 @@ export function Filter({
   charFilter,
   setCharFilter,
 }: {
-  charFilter: Record<string, FilterValue>;
-  setCharFilter: (newFilter: Record<string, FilterValue>) => void;
+  charFilter: Record<string, FilterState>;
+  setCharFilter: (newFilter: Record<string, FilterState>) => void;
 }) {
   const t = useTranslation;
   const [charIsOpen, setCharIsOpen] = useState(false);
-
-  //   useEffect(() => {
-  //     console.log(charFilter);
-  //   }, [charFilter]);
 
   return (
     <div className="w-96 bg-slate-800 p-4">
@@ -33,9 +29,10 @@ export function Filter({
         <div>{charIsOpen ? "-" : "+"}</div>
       </div>
       <Collapse isOpen={charIsOpen}>
-        <div className="grid grid-cols-3 gap-2 mt-2">
+        <div className="grid grid-cols-3 gap-1 mt-1">
           {charNames.map((charName) => (
             <CharFilterButton
+              key={charName}
               charName={charName}
               charFilter={charFilter}
               setCharFilter={setCharFilter}
@@ -53,8 +50,8 @@ function CharFilterButton({
   setCharFilter,
 }: {
   charName: string;
-  charFilter: Record<string, FilterValue>;
-  setCharFilter: (newFilter: Record<string, FilterValue>) => void;
+  charFilter: Record<string, FilterState>;
+  setCharFilter: (newFilter: Record<string, FilterState>) => void;
 }) {
   const t = useTranslation;
   const displayCharName = t(charName);
@@ -62,16 +59,16 @@ function CharFilterButton({
   const handleClick = () => {
     const newFilter = { ...charFilter };
     newFilter[charName] =
-      newFilter[charName] === FilterValue.none
-        ? FilterValue.include
-        : newFilter[charName] === FilterValue.include
-        ? FilterValue.exclude
-        : FilterValue.none;
+      newFilter[charName] === FilterState.none
+        ? FilterState.include
+        : newFilter[charName] === FilterState.include
+        ? FilterState.exclude
+        : FilterState.none;
     setCharFilter(newFilter);
   };
 
   switch (charFilter[charName]) {
-    case FilterValue.include:
+    case FilterState.include:
       return (
         <button
           className={"bp4-button bp4-intent-success"}
@@ -80,7 +77,7 @@ function CharFilterButton({
           {`+ ` + displayCharName}
         </button>
       );
-    case FilterValue.exclude:
+    case FilterState.exclude:
       return (
         <button
           className={"bp4-button bp4-intent-danger"}
@@ -89,7 +86,7 @@ function CharFilterButton({
           {`- ` + displayCharName}
         </button>
       );
-    case FilterValue.none:
+    case FilterState.none:
     default:
       return (
         <button className={"bp4-button"} onClick={handleClick}>
