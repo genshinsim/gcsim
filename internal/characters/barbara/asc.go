@@ -6,20 +6,24 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+// The Stamina Consumption of characters within Let the Show Begin♪'s Melody Loop is reduced by 12%.
 func (c *char) a1() {
-	//a1 last for duration of barb skill which is 900 frames
+	if c.Base.Ascension < 1 {
+		return
+	}
+	// a1 lasts for duration of barb skill which is 900 frames
 	c.Core.Player.AddStamPercentMod("barb-a1-stam", skillDuration, func(a action.Action) (float64, bool) {
 		return -0.12, false
 	})
 }
 
+// When your active character gains an Elemental Orb/Particle, the duration of the Melody Loop of Let the Show Begin♪ is extended by 1s.
+// The maximum extension is 5s.
 func (c *char) a4() {
-	//When your active character gains an Elemental Orb/Particle, the duration
-	//of the Melody Loop of Let the Show Begin♪ is extended by 1s. The maximum
-	//extension is 5s.
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
-		//TODO: assuming this works no matter who's on field since it just says
-		//active char?
 		if c.Core.Status.Duration(barbSkillKey) == 0 {
 			return false
 		}
