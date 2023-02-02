@@ -104,6 +104,15 @@ func (c *char) pressurizedCollapse(pos combat.Point) {
 		done = true
 	}
 	snap := c.Snapshot(&ai)
+
+	// A1:
+	// She can apply The Wind's Secret Ways' Perfidious Wind's Bale to opponents
+	// who are hit by the vortex created by Pressurized Collapse.
+	var shredCb combat.AttackCBFunc
+	if c.Base.Ascension >= 1 {
+		shredCb = applyBurstShredCb
+	}
+
 	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttackWithSnap(
 			ai,
@@ -111,7 +120,7 @@ func (c *char) pressurizedCollapse(pos combat.Point) {
 			combat.NewCircleHitOnTarget(pos, nil, 6),
 			0,
 			c.makeC4Callback(),
-			applyBurstShredCb,
+			shredCb,
 			particleCb)
 	}, vortexHitmark)
 }

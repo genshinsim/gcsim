@@ -35,7 +35,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	skillActive := 0
 	if c.StatusIsActive(skillKey) && c.hurricaneCount > 0 {
-		skillActive = 1
+		// A1:
+		// When Faruzan is in the Manifest Gale state created by Wind Realm of Nasamjnin,
+		// the amount of time taken to charge a shot is decreased by 60%.
+		if c.Base.Ascension >= 1 {
+			skillActive = 1
+		}
 		c.hurricaneCount -= 1
 		if c.hurricaneCount <= 0 {
 			c.DeleteStatus(skillKey)
