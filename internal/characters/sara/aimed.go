@@ -28,7 +28,6 @@ func init() {
 
 // Aimed charge attack damage queue generator
 // Additionally handles crowfeather state, E skill damage, and A4
-// A4 effect is: When Tengu Juurai: Ambush hits opponents, Kujou Sara will restore 1.2 Energy to all party members for every 100% Energy Recharge she has. This effect can be triggered once every 3s.
 // Has two parameters, "travel", used to set the number of frames that the arrow is in the air (default = 10)
 // weak_point, used to determine if an arrow is hitting a weak point (default = 1 for true)
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
@@ -41,7 +40,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	// A1:
 	// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
 	skillActive := 0
-	if c.Core.Status.Duration(coverKey) > 0 {
+	if c.Base.Ascension >= 1 && c.Core.Status.Duration(coverKey) > 0 {
 		skillActive = 1
 	}
 
@@ -89,7 +88,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
 
 		//TODO: snapshot?
-		c.Core.QueueAttack(ai, ap, aimedHitmarks[skillActive], aimedHitmarks[skillActive]+travel+90, c.a4)
+		c.Core.QueueAttack(ai, ap, aimedHitmarks[skillActive], aimedHitmarks[skillActive]+travel+90, c.makeA4CB())
 		c.attackBuff(ap, aimedHitmarks[skillActive]+travel+90)
 
 		// Particles are emitted after the ambush thing hits

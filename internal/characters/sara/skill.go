@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
 
-		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.a4)
+		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.makeA4CB())
 		c.attackBuff(ap, c2Hitmark)
 	}
 
