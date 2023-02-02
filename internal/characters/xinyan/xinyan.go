@@ -10,10 +10,12 @@ import (
 
 type char struct {
 	*tmpl.Character
-	shieldLevel   int
-	c1Buff        []float64
-	c2Buff        []float64
-	shieldTickSrc int
+	shieldLevel             int
+	shieldLevel2Requirement int
+	shieldLevel3Requirement int
+	c1Buff                  []float64
+	c2Buff                  []float64
+	shieldTickSrc           int
 }
 
 func init() {
@@ -31,6 +33,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
+	c.shieldLevel2Requirement = 2
+	c.shieldLevel3Requirement = 3
+
 	w.Character = &c
 
 	c.shieldLevel = 1
@@ -39,6 +44,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.a1()
 	c.a4()
 
 	if c.Base.Cons >= 1 {
