@@ -54,15 +54,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 		burstHitmark,
 	)
-
-	// A4: When Glacial Illumination is cast, the CD of Icetide Vortex is reset and Eula gains 1 stack of Grimheart.
-	if c.grimheartStacks < 2 {
-		c.grimheartStacks++
-	}
-	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
-		Write("current count", c.grimheartStacks)
-	c.ResetActionCooldown(action.ActionSkill)
-	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index)
+	c.a4()
 
 	// handle Eula Q status start
 	// lightfall sword lights up ~9.5s from cast

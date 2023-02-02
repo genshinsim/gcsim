@@ -232,30 +232,8 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			}, icewhirlHitmarks[i])
 		}
 	}
-
-	//A1
 	if v == 2 {
-		// make sure this gets executed after hold e hitlag starts but before hold e is over
-		// this makes it so it doesn't get affected by hitlag after Hold E is over
-		aiA1 := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Icetide (Lightfall)",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
-			Element:    attributes.Physical,
-			Durability: 25,
-			Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
-		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				aiA1,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 6.5),
-				a1Hitmark-(skillHoldHitmark+1),
-				a1Hitmark-(skillHoldHitmark+1),
-			)
-		}, skillHoldHitmark+1)
+		c.a1()
 	}
 
 	//c1 add debuff
