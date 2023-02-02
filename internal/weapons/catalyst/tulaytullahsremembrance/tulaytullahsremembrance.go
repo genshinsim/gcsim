@@ -50,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	mAtkSpd := make([]float64, attributes.EndStatType)
 	mAtkSpd[attributes.AtkSpd] = 0.075 + float64(r)*0.025
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(atkSpdKey, 15*60),
+		Base:         modifier.NewBaseWithHitlag(atkSpdKey, -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			if c.Player.CurrentState() != action.NormalAttackState {

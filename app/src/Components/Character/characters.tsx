@@ -146,6 +146,11 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: 'hydro',
     weapon_type: 'sword',
   },
+  alhaitham: {
+    key: 'alhaitham',
+    element: 'dendro',
+    weapon_type: 'sword',
+  },
   layla: {
     key: 'layla',
     element: 'cryo',

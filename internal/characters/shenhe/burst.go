@@ -82,7 +82,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstStart)
 
-	buffDuration := 38
+	buffDuration := 36 // 0.6s
 	for i := burstStart; i < burstStart+burstDuration; i += 18 {
 		c.Core.Tasks.Add(func() {
 			// a1 & c2 buff tick

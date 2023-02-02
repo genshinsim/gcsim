@@ -115,6 +115,7 @@ const (
 	Candace
 	Nilou
 	Nahida
+	Alhaitham
 	Layla
 	Faruzan
 	Wanderer
@@ -199,6 +200,7 @@ var charNames = []string{
 	"candace",
 	"nilou",
 	"nahida",
+	"alhaitham",
 	"layla",
 	"faruzan",
 	"wanderer",
@@ -282,6 +284,7 @@ var charPrettyName = []string{
 	"Candace",
 	"Nilou",
 	"Nahida",
+	"Alhaitham",
 	"Layla",
 	"Faruzan",
 	"Wanderer",
@@ -361,6 +364,7 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Candace:          attributes.Hydro,
 	Nilou:            attributes.Hydro,
 	Nahida:           attributes.Dendro,
+	Alhaitham:        attributes.Dendro,
 	Layla:            attributes.Cryo,
 	Faruzan:          attributes.Anemo,
 	Wanderer:         attributes.Anemo,

@@ -33,8 +33,8 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	weakspot := p["weakspot"]
 
-	if c.Tag(breakthroughStatus) > 0 {
-		c.RemoveTag(breakthroughStatus)
+	if c.breakthrough {
+		c.breakthrough = false
 		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index)
 
 		ai := combat.AttackInfo{

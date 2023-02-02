@@ -80,8 +80,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		direction := combat.DegreesToDirection(i * stepSize).Rotate(burstInitialDirection)
 		// 6 ticks per stormcluster
 		for j := 0; j < 6; j++ {
-			// start at 1.35m offset, move 1.35m per tick
-			stormClusterPos := combat.CalcOffsetPoint(burstInitialPos, combat.Point{Y: 1.35 * float64(j+1)}, direction)
+			// start at 6 + 1.35 = 7.35 m offset, move 1.35m per tick
+			stormClusterPos := combat.CalcOffsetPoint(burstInitialPos, combat.Point{Y: 6 + 1.35*float64(j+1)}, direction)
 			stormClusterAp := combat.NewCircleHitOnTarget(stormClusterPos, nil, stormClusterRadius)
 
 			c.Core.QueueAttack(ai, stormClusterAp, burstStart, burstClusterHitmark+18*j, c1cb)
