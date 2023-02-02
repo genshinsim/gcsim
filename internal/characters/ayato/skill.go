@@ -37,19 +37,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
+
 	ePos := c.Core.Combat.Player()
+	c.a1OnSkill()
 	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(ePos, nil, 3.5), 0, 0)
-		// A1:
-		// set namisen stacks to max
-		c.stacks = c.stacksMax
-		c.Core.Log.NewEvent("ayato a1 set namisen stacks to max", glog.LogCharacterEvent, c.Index).
-			Write("stacks", c.stacks)
+		c.a1OnExplosion()
 	}, delay)
 
-	//start skill buff on cast
+	// start skill buff on cast
 	c.AddStatus(SkillBuffKey, 6*60, true)
-	//figure out atk buff
+	// figure out atk buff
 	if c.Base.Cons >= 6 {
 		c.c6ready = true
 	}
@@ -72,7 +70,7 @@ func (c *char) generateParticles(ac combat.AttackCB) {
 	if c.Core.Rand.Float64() < 0.5 {
 		count++
 	}
-	//TODO: this used to be 80 for particle delay
+	// TODO: this used to be 80 for particle delay
 	c.Core.QueueParticle("ayato", count, attributes.Hydro, c.ParticleDelay)
 }
 
