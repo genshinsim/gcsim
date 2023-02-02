@@ -39,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	yuegui := c.newYueguiThrow(procAI)
 	c.Core.Tasks.Add(func() {
 		c.Core.Combat.AddGadget(yuegui)
-	}, skillStart+35+29)
+	}, skillStart+33)
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillStart)
 

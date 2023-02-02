@@ -8,7 +8,11 @@ func (c *char) radishHeal(hi player.HealInfo) {
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
-	c.a4()
+
+	if c.Base.Ascension >= 4 {
+		c.a4()
+	}
+
 }
 
 func (c *char) radishHitCB(hi player.HealInfo) {

@@ -28,9 +28,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//add cooldown to sim
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 18)
 	//use up energy
-	c.ConsumeEnergy(24)
+	c.ConsumeEnergy(7)
 
-	c.burstAI = combat.AttackInfo{
+	burstAI := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Moonjade Descent",
+		AttackTag:  combat.AttackTagElementalBurst,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Dendro,
+		Durability: 25,
+		Mult:       burstDMG[c.TalentLvlBurst()],
+	}
+	c.Core.QueueAttack(burstAI, combat.NewCircleHit(c.Core.Combat.Player().Pos(), combat.Point{0, 0}, combat.Point{0, 0}, 5))
+	c.burstRadishAI = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Radish (Burst)",
 		AttackTag:  combat.AttackTagElementalBurst,

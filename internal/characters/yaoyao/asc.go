@@ -2,8 +2,10 @@ package yaoyao
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 func (c *char) a1ticker() {
@@ -33,7 +35,7 @@ func (c *char) a1Throw() {
 
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
 
-	ai := c.burstAI
+	ai := c.burstRadishAI
 	hi := c.getBurstHealInfo()
 
 	c.Core.QueueAttack(
@@ -48,5 +50,21 @@ func (c *char) a1Throw() {
 }
 
 func (c *char) a4() {
-	// fuck this shit I'll do it later it's just some healing anyways
+	if c.Core.Player.ActiveChar().StatusIsActive("yaoyao-a4") {
+		return
+	}
+	c.Core.Player.ActiveChar().AddStatus("yaoyao-a4", 5*60, true)
+	for i := 0; i < 5; i++ {
+		c.Core.Player.ActiveChar().QueueCharTask(func() {
+			heal := 0.008 * c.MaxHP()
+			hi := player.HealInfo{
+				Caller:  c.Index,
+				Target:  c.Core.Player.Active(),
+				Message: "yaoyao-a4-tick",
+				Src:     heal,
+				Bonus:   c.Stat(attributes.Heal),
+			}
+			c.Core.Player.Heal(hi)
+		}, i*60)
+	}
 }

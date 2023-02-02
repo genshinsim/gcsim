@@ -16,7 +16,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	lastSkillParticle int
-	burstAI           combat.AttackInfo
+	burstRadishAI     combat.AttackInfo
 	numYueguiJumping  int
 	yueguiJumping     []*yuegui
 	a1src             int
