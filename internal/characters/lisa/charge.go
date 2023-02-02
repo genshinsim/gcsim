@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var chargeFrames []int
@@ -50,16 +49,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	cb := func(a combat.AttackCB) {
-		t, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		count := t.GetTag(conductiveTag)
-		if count < 3 {
-			t.SetTag(conductiveTag, count+1)
-		}
-	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
@@ -70,7 +59,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
-		cb,
+		c.makeA1CB(),
 	)
 
 	return action.ActionInfo{
