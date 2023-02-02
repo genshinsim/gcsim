@@ -41,7 +41,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// We always assume that A1 procs on hit 1 to simplify
 	var a1cb combat.AttackCBFunc
 	if p["nobehind"] != 1 {
-		a1cb = c.a1()
+		a1cb = c.makeA1CB()
 	}
 	var c4cb combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
