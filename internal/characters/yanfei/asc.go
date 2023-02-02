@@ -8,11 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-// When Yan Fei's Charged Attack consumes Scarlet Seals, each Scarlet Seal
-// consumed will increase her Pyro DMG by 5% for 6 seconds. When this effect is
-// repeatedly triggered it will overwrite the oldest bonus first. The Pyro DMG
-// bonus from Proviso is applied before charged attack damage is calculated.
+// When Yanfei consumes Scarlet Seals by using a Charged Attack,
+// each Scarlet Seal will increase Yanfei's Pyro DMG Bonus by 5%.
+// This effects lasts for 6s. When a Charged Attack is used again
+// during the effect's duration, it will dispel the previous effect.
 func (c *char) a1(stacks int) {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	c.a1Buff[attributes.PyroP] = float64(stacks) * 0.05
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("yanfei-a1", 360),
@@ -23,10 +26,13 @@ func (c *char) a1(stacks int) {
 	})
 }
 
-// When Yan Fei's Charged Attacks deal CRIT Hits, she will deal an additional
-// instance of AoE Pyo DMG equal to 80% of her ATK. This DMG counts as Charged
-// Attack DMG.
+// When Yanfei's Charged Attack deals a CRIT Hit to opponents,
+// she will deal an additional instance of AoE Pyro DMG equal to 80% of her ATK.
+// This DMG counts as Charged Attack DMG.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		crit := args[3].(bool)
