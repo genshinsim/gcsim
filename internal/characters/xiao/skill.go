@@ -6,8 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
@@ -29,12 +27,6 @@ const a4BuffKey = "xiao-a4"
 // Additionally implements A4
 // Using Lemniscatic Wind Cycling increases the DMG of subsequent uses of Lemniscatic Wind Cycling by 15%. This effect lasts for 7s and has a maximum of 3 stacks. Gaining a new stack refreshes the duration of this effect.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
-	// Add damage based on A4
-	if !c.StatModIsActive(a4BuffKey) {
-		c.a4stacks = 0
-	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lemniscatic Wind Cycling",
@@ -59,21 +51,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillHitmark,
 	)
 
-	// apply A4 0.25s after cast
-	c.Core.Tasks.Add(func() {
-		// Text is not explicit, but assume that gaining a stack while at max still refreshes duration
-		c.a4stacks++
-		if c.a4stacks > 3 {
-			c.a4stacks = 3
-		}
-		c.a4buff[attributes.DmgP] = float64(c.a4stacks) * 0.15
-		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(a4BuffKey, 420),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				return c.a4buff, atk.Info.AttackTag == combat.AttackTagElementalArt
-			},
-		})
-	}, 15)
+	if c.Base.Ascension >= 4 {
+		// apply A4 0.25s after cast
+		c.Core.Tasks.Add(c.a4, 15)
+	}
 
 	// Cannot create energy during burst uptime
 	if !c.StatusIsActive(burstBuffKey) {
