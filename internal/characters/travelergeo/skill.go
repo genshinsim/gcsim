@@ -99,7 +99,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
 	}, skillHitmark[short_hold])
 
-	c.SetCDWithDelay(action.ActionSkill, 360, skillCDStart[short_hold])
+	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[short_hold])
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[short_hold][c.gender]),
