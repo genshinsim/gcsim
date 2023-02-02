@@ -14,6 +14,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	guobaFlameRange float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -25,11 +26,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 3
 	c.SkillCon = 5
 
+	c.guobaFlameRange = 5
+
 	w.Character = &c
 
 	return nil
 }
 
 func (c *char) Init() error {
+	c.a1()
 	return nil
 }
