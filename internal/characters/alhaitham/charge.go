@@ -36,10 +36,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
-			c.a1CB, //A1 adds a stack before the mirror count for the Projection Attack is determined
+			c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
 			c.projectionAttack,
 		)
 	}
