@@ -80,38 +80,49 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	//if field is overwriting last
-	//TODO: should really just make this a struct, keep a reference, and compare the reference instead
-	//of playing around with this int field
-	if src-c.fieldSrc < 600 {
-		//we're overriding previous field so trigger a4 here
+	// A4:
+	// When the field created by Spirit Blade: Chonghua's Layered Frost disappears,
+	// another spirit blade will be summoned to strike nearby opponents,
+	// dealing 100% of Chonghua's Layered Frost's Skill DMG as AoE Cryo DMG.
+	// Opponents hit by this blade will have their Cryo RES decreased by 10% for 8s.
+	hasA4 := c.Base.Ascension >= 4
+
+	// if field is overwriting last
+	// TODO: should really just make this a struct, keep a reference, and compare the reference instead
+	// of playing around with this int field
+	if src-c.fieldSrc < 600 && hasA4 {
+		// we're overriding previous field so trigger A4 here
 		atk := c.a4Snap
 		c.Core.QueueAttackEvent(atk, 1)
 	}
-	c.fieldSrc = src
-	//override previous snap
-	c.a4Snap = &combat.AttackEvent{
-		Info:     ai,
-		Snapshot: snap,
-	}
-	c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
 
-	//a4 delayed damage + cryo resist shred
-	//TODO: assuming this is NOT affected by hitlag since it should be tied to deployable?
-	c.Core.Tasks.Add(func() {
-		//if src changed then that means the field changed already
-		if src != c.fieldSrc {
-			return
+	c.fieldSrc = src
+
+	if hasA4 {
+		// override previous snap
+		c.a4Snap = &combat.AttackEvent{
+			Info:     ai,
+			Snapshot: snap,
 		}
-		enemy := c.Core.Combat.ClosestEnemyWithinArea(c.skillArea, nil)
-		if enemy != nil {
-			c.a4Snap.Pattern = combat.NewCircleHitOnTarget(enemy, nil, 3.5)
-		} else {
-			c.a4Snap.Pattern = combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 3.5)
-		}
-		//TODO: this needs to be fixed still for sac gs
-		c.Core.QueueAttackEvent(c.a4Snap, 0)
-	}, 665)
+		c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
+
+		// A4 delayed damage + cryo resist shred
+		// TODO: assuming this is NOT affected by hitlag since it should be tied to deployable?
+		c.Core.Tasks.Add(func() {
+			// if src changed then that means the field changed already
+			if src != c.fieldSrc {
+				return
+			}
+			enemy := c.Core.Combat.ClosestEnemyWithinArea(c.skillArea, nil)
+			if enemy != nil {
+				c.a4Snap.Pattern = combat.NewCircleHitOnTarget(enemy, nil, 3.5)
+			} else {
+				c.a4Snap.Pattern = combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 3.5)
+			}
+			// TODO: this needs to be fixed still for sac gs
+			c.Core.QueueAttackEvent(c.a4Snap, 0)
+		}, 665)
+	}
 
 	c.Core.Status.Add("chongyunfield", 600)
 
@@ -167,13 +178,9 @@ func (c *char) infuse(active *character.CharWrapper) {
 		})
 	}
 
-	// weapon infuse
+	// weapon infuse and A1
 	switch active.Weapon.Class {
-	case weapon.WeaponClassClaymore:
-		fallthrough
-	case weapon.WeaponClassSpear:
-		fallthrough
-	case weapon.WeaponClassSword:
+	case weapon.WeaponClassClaymore, weapon.WeaponClassSpear, weapon.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
 			active.Index,
 			"chongyun-ice-weapon",
@@ -184,18 +191,21 @@ func (c *char) infuse(active *character.CharWrapper) {
 		)
 		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
 			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+		// A1:
+		// Sword, Claymore, or Polearm-wielding characters within the field created by
+		// Spirit Blade: Chonghua's Layered Frost have their Normal ATK SPD increased by 8%.
+		if c.Base.Ascension >= 1 {
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.AtkSpd] = 0.08
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("chongyun-field", 126),
+				AffectedStat: attributes.NoStat,
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
+		}
 	default:
 		return
 	}
-
-	//a1 adds 8% atkspd for 2.1 seconds
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.AtkSpd] = 0.08
-	active.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("chongyun-field", 126),
-		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-	})
 }
