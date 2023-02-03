@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var skillTapFrames []int
@@ -211,15 +210,12 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra && ae.Info.AttackTag != combat.AttackTagPlunge {
 		return
 	}
-	trg, ok := a.Target.(*enemy.Enemy)
-	if !ok {
-		return
-	}
+
 	var c1cb combat.AttackCBFunc
 	if c.Base.Cons >= 1 {
 		c1cb = c.c1
 	}
-	mirrorsHitmark := make([]int, 3)
+
 	snapshotTiming := snapshotTimings[c.mirrorCount-1]
 	strikeType := combat.StrikeTypeSlash
 	if c.mirrorCount == 3 {
@@ -239,23 +235,26 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		FlatDmg:    mirrorEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
 	}
 
-	ap := combat.NewBoxHitOnTarget(trg, nil, 7, 3)
+	var ap combat.AttackPattern
+	var mirrorsHitmark []int
 	switch c.mirrorCount {
 	case 3:
-		ap = combat.NewCircleHitOnTarget(trg, combat.Point{Y: 4}, 4)
+		ap = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 4}, 4)
 		mirrorsHitmark = mirror3Hitmarks
 	case 2:
-		ap = combat.NewCircleHitOnTargetFanAngle(trg, combat.Point{Y: -0.1}, 5.5, 180)
+		ap = combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 5.5, 180)
 		mirrorsHitmark = mirror2HitmarksLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror2HitmarksRight
 		}
 	default:
+		ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 7, 3)
 		mirrorsHitmark = mirror1HitmarkLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror1HitmarkRight
 		}
 	}
+
 	particleCB := func(a combat.AttackCB) {
 		// particle icd is 1.5s, affected by hitlag
 		// need status here, because snapping a done bool into the closure isn't good enough when the same callback gets queued up for multiple attacks
