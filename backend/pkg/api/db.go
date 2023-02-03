@@ -16,6 +16,7 @@ import (
 type DBStore interface {
 	Create(context.Context, *model.DBEntry) (string, error)
 	Get(context.Context, *model.DBQueryOpt) (*model.DBEntries, error)
+	GetComputeWork(context.Context) (*model.ComputeWork, error)
 }
 
 type dbGetOpt struct {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/aidarkhanov/nanoid/v2"
+	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -16,10 +17,6 @@ type DBStore interface {
 	Get(ctx context.Context, query *model.DBQueryOpt) ([]*model.DBEntry, error)
 }
 
-type ComputeService interface {
-	Run(key string, cfg string, ctx context.Context) error
-}
-
 type Config struct {
 	DBStore DBStore
 }
@@ -28,11 +25,13 @@ type Server struct {
 	Config
 	Log *zap.SugaredLogger
 	UnimplementedDBStoreServer
+	ComputeQueue *queue.Queue
 }
 
 func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s := &Server{
-		Config: cfg,
+		Config:       cfg,
+		ComputeQueue: queue.NewQueue(5 * 60),
 	}
 
 	for _, f := range cust {
@@ -94,6 +93,26 @@ func (s *Server) Get(ctx context.Context, req *GetRequest) (*GetResponse, error)
 	return &GetResponse{
 		Data: &model.DBEntries{
 			Data: res,
+		},
+	}, nil
+}
+
+func (s *Server) GetComputeWork(ctx context.Context, req *GetComputeWorkRequest) (*GetComputeWorkReponse, error) {
+	w := s.ComputeQueue.Pop()
+	if w == nil {
+		// no work to do
+		return nil, nil
+	}
+
+	cfg, ok := w.Work.(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "work is not a string")
+	}
+
+	return &GetComputeWorkReponse{
+		Work: &model.ComputeWork{
+			Key: w.Key,
+			Cfg: cfg,
 		},
 	}, nil
 }

@@ -9,6 +9,9 @@ service DBStore {
     rpc Get (GetRequest) returns (GetResponse) {}
     //internally create request; not exposed
     rpc CreateOrUpdateDBEntry (CreateOrUpdateDBEntryRequest) returns (CreateOrUpdateDBEntryResponse) {}
+
+    //for compute work
+    rpc GetComputeWork (GetComputeWorkRequest) returns (GetComputeWorkReponse) {}
 }
 
 message GetRequest {
@@ -26,4 +29,10 @@ message CreateOrUpdateDBEntryRequest {
 
 message CreateOrUpdateDBEntryResponse {
     string key = 1 [json_name="key"];
+}
+
+message GetComputeWorkRequest {}
+
+message GetComputeWorkReponse {
+    model.ComputeWork work = 1 [json_name="work"];
 }

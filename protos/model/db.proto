@@ -60,3 +60,8 @@ message Submission {
     string preview = 5; //view key for preview
     repeated string tags = 6;
 }
+
+message ComputeWork {
+    string key = 1 [json_name="key"];
+    string cfg = 2 [json_name="cfg"];;;;
+}

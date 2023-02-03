@@ -26,6 +26,8 @@ type DBStoreClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	// internally create request; not exposed
 	CreateOrUpdateDBEntry(ctx context.Context, in *CreateOrUpdateDBEntryRequest, opts ...grpc.CallOption) (*CreateOrUpdateDBEntryResponse, error)
+	// for compute work
+	GetComputeWork(ctx context.Context, in *GetComputeWorkRequest, opts ...grpc.CallOption) (*GetComputeWorkReponse, error)
 }
 
 type dBStoreClient struct {
@@ -54,6 +56,15 @@ func (c *dBStoreClient) CreateOrUpdateDBEntry(ctx context.Context, in *CreateOrU
 	return out, nil
 }
 
+func (c *dBStoreClient) GetComputeWork(ctx context.Context, in *GetComputeWorkRequest, opts ...grpc.CallOption) (*GetComputeWorkReponse, error) {
+	out := new(GetComputeWorkReponse)
+	err := c.cc.Invoke(ctx, "/db.DBStore/GetComputeWork", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBStoreServer is the server API for DBStore service.
 // All implementations must embed UnimplementedDBStoreServer
 // for forward compatibility
@@ -62,6 +73,8 @@ type DBStoreServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	// internally create request; not exposed
 	CreateOrUpdateDBEntry(context.Context, *CreateOrUpdateDBEntryRequest) (*CreateOrUpdateDBEntryResponse, error)
+	// for compute work
+	GetComputeWork(context.Context, *GetComputeWorkRequest) (*GetComputeWorkReponse, error)
 	mustEmbedUnimplementedDBStoreServer()
 }
 
@@ -74,6 +87,9 @@ func (UnimplementedDBStoreServer) Get(context.Context, *GetRequest) (*GetRespons
 }
 func (UnimplementedDBStoreServer) CreateOrUpdateDBEntry(context.Context, *CreateOrUpdateDBEntryRequest) (*CreateOrUpdateDBEntryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateDBEntry not implemented")
+}
+func (UnimplementedDBStoreServer) GetComputeWork(context.Context, *GetComputeWorkRequest) (*GetComputeWorkReponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetComputeWork not implemented")
 }
 func (UnimplementedDBStoreServer) mustEmbedUnimplementedDBStoreServer() {}
 
@@ -124,6 +140,24 @@ func _DBStore_CreateOrUpdateDBEntry_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBStore_GetComputeWork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetComputeWorkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).GetComputeWork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBStore/GetComputeWork",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).GetComputeWork(ctx, req.(*GetComputeWorkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBStore_ServiceDesc is the grpc.ServiceDesc for DBStore service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -138,6 +172,10 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrUpdateDBEntry",
 			Handler:    _DBStore_CreateOrUpdateDBEntry_Handler,
+		},
+		{
+			MethodName: "GetComputeWork",
+			Handler:    _DBStore_GetComputeWork_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

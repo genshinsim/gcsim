@@ -467,6 +467,61 @@ func (x *Submission) GetTags() []string {
 	return nil
 }
 
+type ComputeWork struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	Cfg string `protobuf:"bytes,2,opt,name=cfg,proto3" json:"cfg,omitempty" bson:"cfg,omitempty"`
+}
+
+func (x *ComputeWork) Reset() {
+	*x = ComputeWork{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_db_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ComputeWork) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ComputeWork) ProtoMessage() {}
+
+func (x *ComputeWork) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_db_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ComputeWork.ProtoReflect.Descriptor instead.
+func (*ComputeWork) Descriptor() ([]byte, []int) {
+	return file_protos_model_db_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ComputeWork) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *ComputeWork) GetCfg() string {
+	if x != nil {
+		return x.Cfg
+	}
+	return ""
+}
+
 var File_protos_model_db_proto protoreflect.FileDescriptor
 
 var file_protos_model_db_proto_rawDesc = []byte{
@@ -551,11 +606,14 @@ var file_protos_model_db_proto_rawDesc = []byte{
 	0x69, 0x6f, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x72, 0x65, 0x76, 0x69, 0x65, 0x77, 0x18, 0x05,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x72, 0x65, 0x76, 0x69, 0x65, 0x77, 0x12, 0x12, 0x0a,
 	0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x74, 0x61, 0x67,
-	0x73, 0x2a, 0x2a, 0x0a, 0x07, 0x53, 0x69, 0x6d, 0x4d, 0x6f, 0x64, 0x65, 0x12, 0x11, 0x0a, 0x0d,
-	0x44, 0x55, 0x52, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x4f, 0x44, 0x45, 0x10, 0x00, 0x12,
-	0x0c, 0x0a, 0x08, 0x54, 0x54, 0x4b, 0x5f, 0x4d, 0x4f, 0x44, 0x45, 0x10, 0x01, 0x42, 0x0b, 0x5a,
-	0x09, 0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x73, 0x22, 0x31, 0x0a, 0x0b, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b,
+	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
+	0x65, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x66, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x63, 0x66, 0x67, 0x2a, 0x2a, 0x0a, 0x07, 0x53, 0x69, 0x6d, 0x4d, 0x6f, 0x64, 0x65, 0x12,
+	0x11, 0x0a, 0x0d, 0x44, 0x55, 0x52, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x4d, 0x4f, 0x44, 0x45,
+	0x10, 0x00, 0x12, 0x0c, 0x0a, 0x08, 0x54, 0x54, 0x4b, 0x5f, 0x4d, 0x4f, 0x44, 0x45, 0x10, 0x01,
+	0x42, 0x0b, 0x5a, 0x09, 0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -571,29 +629,30 @@ func file_protos_model_db_proto_rawDescGZIP() []byte {
 }
 
 var file_protos_model_db_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_protos_model_db_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_protos_model_db_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_protos_model_db_proto_goTypes = []interface{}{
 	(SimMode)(0),             // 0: model.SimMode
 	(*DBEntry)(nil),          // 1: model.DBEntry
 	(*DBEntries)(nil),        // 2: model.DBEntries
 	(*DBQueryOpt)(nil),       // 3: model.DBQueryOpt
 	(*Submission)(nil),       // 4: model.Submission
-	nil,                      // 5: model.DBEntry.DpsByTargetEntry
-	(*DescriptiveStats)(nil), // 6: model.DescriptiveStats
-	(*Character)(nil),        // 7: model.Character
-	(*structpb.Struct)(nil),  // 8: google.protobuf.Struct
+	(*ComputeWork)(nil),      // 5: model.ComputeWork
+	nil,                      // 6: model.DBEntry.DpsByTargetEntry
+	(*DescriptiveStats)(nil), // 7: model.DescriptiveStats
+	(*Character)(nil),        // 8: model.Character
+	(*structpb.Struct)(nil),  // 9: google.protobuf.Struct
 }
 var file_protos_model_db_proto_depIdxs = []int32{
-	6,  // 0: model.DBEntry.sim_duration:type_name -> model.DescriptiveStats
+	7,  // 0: model.DBEntry.sim_duration:type_name -> model.DescriptiveStats
 	0,  // 1: model.DBEntry.mode:type_name -> model.SimMode
-	6,  // 2: model.DBEntry.total_damage:type_name -> model.DescriptiveStats
-	7,  // 3: model.DBEntry.team:type_name -> model.Character
-	5,  // 4: model.DBEntry.dps_by_target:type_name -> model.DBEntry.DpsByTargetEntry
+	7,  // 2: model.DBEntry.total_damage:type_name -> model.DescriptiveStats
+	8,  // 3: model.DBEntry.team:type_name -> model.Character
+	6,  // 4: model.DBEntry.dps_by_target:type_name -> model.DBEntry.DpsByTargetEntry
 	1,  // 5: model.DBEntries.data:type_name -> model.DBEntry
-	8,  // 6: model.DBQueryOpt.query:type_name -> google.protobuf.Struct
-	8,  // 7: model.DBQueryOpt.sort:type_name -> google.protobuf.Struct
-	8,  // 8: model.DBQueryOpt.project:type_name -> google.protobuf.Struct
-	6,  // 9: model.DBEntry.DpsByTargetEntry.value:type_name -> model.DescriptiveStats
+	9,  // 6: model.DBQueryOpt.query:type_name -> google.protobuf.Struct
+	9,  // 7: model.DBQueryOpt.sort:type_name -> google.protobuf.Struct
+	9,  // 8: model.DBQueryOpt.project:type_name -> google.protobuf.Struct
+	7,  // 9: model.DBEntry.DpsByTargetEntry.value:type_name -> model.DescriptiveStats
 	10, // [10:10] is the sub-list for method output_type
 	10, // [10:10] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
@@ -657,6 +716,18 @@ func file_protos_model_db_proto_init() {
 				return nil
 			}
 		}
+		file_protos_model_db_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ComputeWork); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -664,7 +735,7 @@ func file_protos_model_db_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protos_model_db_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

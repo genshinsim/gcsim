@@ -51,3 +51,12 @@ func (c *Client) Get(ctx context.Context, query *model.DBQueryOpt) (*model.DBEnt
 
 	return resp.GetData(), nil
 }
+
+func (c *Client) GetComputeWork(ctx context.Context) (*model.ComputeWork, error) {
+	req := &GetComputeWorkRequest{}
+	resp, err := c.srvClient.GetComputeWork(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp.GetWork(), nil
+}
