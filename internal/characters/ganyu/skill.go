@@ -28,13 +28,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	snap := c.Snapshot(&ai)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
 	//flower damage immediately
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 4), 13)
+	c.Core.QueueAttackWithSnap(ai, snap, ap, 13)
 	//we get the orbs right away
 	c.Core.QueueParticle("ganyu", 2, attributes.Cryo, c.ParticleDelay)
 
 	//flower damage is after 6 seconds
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 4), 373)
+	c.Core.QueueAttackWithSnap(ai, snap, ap, 373)
 	c.Core.QueueParticle("ganyu", 2, attributes.Cryo, 373+c.ParticleDelay)
 
 	//add cooldown to sim

@@ -39,16 +39,27 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 5}, 10)
+	burstPos := burstArea.Shape.Pos()
 	icdSrc := []int{math.MinInt32, math.MinInt32, math.MinInt32, math.MinInt32}
 	// 32 damage ticks
 	for i := 0; i < 32; i++ {
 		c.Core.Tasks.Add(func() {
+			p, ok := c.Core.Combat.Player().(*avatar.Player)
+			if !ok {
+				panic("target 0 should be Player but is not!!")
+			}
+			if !p.IsWithinArea(burstArea) {
+				return
+			}
+
+			// queue attack
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewDefBoxHit(1, -2),
+				combat.NewBoxHit(p, burstPos, nil, 1, p.Pos().Distance(burstPos)),
 				0,
-			) // TODO: accurate hitbox
+			)
 
 			// dori self application
 			// TODO: change this to a ST attack later when self reactions need to be implemented
@@ -58,10 +69,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				Amount:     0,
 				External:   true,
 			})
-			p, ok := c.Core.Combat.Player().(*avatar.Player)
-			if !ok {
-				panic("target 0 should be Player but is not!!")
-			}
 			idx := c.Core.Player.ActiveChar().Index
 			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
 				dur := combat.Durability(25)
@@ -72,6 +79,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				icdSrc[idx] = c.Core.F
 			}
 
+			// C4
 			if c.Base.Cons >= 4 {
 				c.c4()
 			}
@@ -85,6 +93,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for i := 0; i < 6; i++ {
 		c.Core.Tasks.Add(func() {
+			if !c.Core.Combat.Player().IsWithinArea(burstArea) {
+				return
+			}
 			if c.Base.Cons >= 2 {
 				c.c2(c2Travel)
 			}

@@ -26,16 +26,14 @@ export function runSim(pool: Executor, cfg: string): AppThunk {
     dispatch(viewerActions.start());
 
     const updateResult = throttle(
-      (res: SimResults) => {
-        dispatch(viewerActions.setResult({ data: res }));
+      (res: SimResults, hash: string) => {
+        dispatch(viewerActions.setResult({ data: res, hash: hash }));
       },
       VIEWER_THROTTLE,
       { leading: true, trailing: true }
     );
 
-    pool.run(cfg, (result) => {
-      updateResult(result);
-    }).catch((err) => {
+    pool.run(cfg, updateResult).catch((err) => {
       dispatch(viewerActions.setError({ error: err }));
     });
   };

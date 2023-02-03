@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.5), 0, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5), 0, skillHitmark)
 
 	c.QueueCharTask(func() {
 		// add shield
@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		player.ApplySelfInfusion(attributes.Cryo, 25, 0.1*60)
 
 		c.starTickSrc = c.Core.F
-		c.tickNightStar(c.starTickSrc, false)
+		c.tickNightStar(c.starTickSrc, false)()
 	}, 19)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 19)

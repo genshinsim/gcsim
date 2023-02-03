@@ -19,15 +19,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProfile) error {
+func SetupTargetsInCore(core *core.Core, p combat.Point, r float64, targets []enemy.EnemyProfile) error {
 
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
 
-	if p.R == 0 {
+	if r == 0 {
 		return errors.New("player cannot have 0 radius")
 	}
-	player := avatar.New(core, p.X, p.Y, p.R)
+	player := avatar.New(core, p, r)
 	core.Combat.SetPlayer(player)
 
 	// add targets
@@ -41,8 +41,14 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 	}
 
 	//default target is closest to player?
-	trgs := core.Combat.EnemyByDistance(p.X, p.Y, combat.InvalidTargetKey)
-	core.Combat.DefaultTarget = core.Combat.Enemy(trgs[0]).Key()
+	defaultEnemy := core.Combat.ClosestEnemy(player.Pos())
+	if defaultEnemy == nil {
+		return errors.New("cannot set default target, got nil")
+	}
+	core.Combat.DefaultTarget = defaultEnemy.Key()
+
+	// initialize player direction
+	core.Combat.Player().SetDirection(defaultEnemy.Pos())
 
 	return nil
 }
@@ -180,7 +186,7 @@ func SetupResonance(s *core.Core) {
 					}
 					atk := args[1].(*combat.AttackEvent)
 					if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
-						t.AddResistMod(enemy.ResistMod{
+						t.AddResistMod(combat.ResistMod{
 							Base:  modifier.NewBase("geo-res", 15*60),
 							Ele:   attributes.Geo,
 							Value: -0.2,
@@ -290,7 +296,7 @@ func SetupMisc(c *core.Core) {
 			return false
 		}
 		//add shred
-		t.AddResistMod(enemy.ResistMod{
+		t.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.4,

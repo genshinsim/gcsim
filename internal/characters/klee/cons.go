@@ -32,7 +32,8 @@ func (c *char) c1(delay int) {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5), 0, delay)
+	// TODO: should center on target hit by attack that triggered c1
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 0, delay)
 }
 
 func (c *char) c2(a combat.AttackCB) {
@@ -43,7 +44,7 @@ func (c *char) c2(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(enemy.DefMod{
+	e.AddDefMod(combat.DefMod{
 		Base:  modifier.NewBaseWithHitlag("kleec2", 10*60),
 		Value: -0.233,
 	})

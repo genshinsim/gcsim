@@ -18,15 +18,17 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	pyroCount     int
-	electroCount  int
-	hydroCount    int
-	pyroBurstBuff []float64
-	a1Buff        []float64
-	a4Buff        []float64
-	c4Buff        []float64
-	c6Count       int
-	markCount     int
+	triKarmaInterval int
+	burstSrc         int
+	pyroCount        int
+	electroCount     int
+	hydroCount       int
+	pyroBurstBuff    []float64
+	a1Buff           []float64
+	a4Buff           []float64
+	c4Buff           []float64
+	c6Count          int
+	markCount        int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -47,6 +49,9 @@ func (c *char) Init() error {
 	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
 		c.Core.Events.Subscribe(i, c.triKarmaOnReaction(i), fmt.Sprintf("nahida-tri-karma-on-%v", i))
 	}
+	//skill cooldown
+	c.updateTriKarmaInterval()
+
 	//burst ele counts
 	for _, char := range c.Core.Player.Chars() {
 		switch char.Base.Element {

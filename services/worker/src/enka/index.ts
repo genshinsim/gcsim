@@ -26,7 +26,7 @@ export async function handleEnka(request: Request): Promise<Response> {
     },
   };
 
-  const requrl = `https://enka.network/u/${key}/__data.json?key=b21lZ2FsdWxrZWt3dGY`;
+  const requrl = `https://enka.network/api/uid/${key}/`;
   const response = await fetch(requrl, init);
   console.log(response);
   const results = await gatherResponse(response);

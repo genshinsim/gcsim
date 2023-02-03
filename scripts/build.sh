@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# sudo apt-get install gcc-multilib
-# sudo apt-get install gcc-mingw-w64
+# TODO: get from file or env
+SHARE_KEY=$GCSIM_SHARE_KEY
 
-# notice how we avoid spaces in $now to avoid quotation hell in go build command
-now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-GOOS=windows GOARCH=amd64 go build ./cmd/gcsim
+LDFLAGS=(
+  "-X 'main.shareKey=${SHARE_KEY}'"
+)
+
+GOOS=windows GOARCH=amd64 go build -ldflags="${LDFLAGS[*]}" ./cmd/gcsim

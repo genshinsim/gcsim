@@ -1,12 +1,12 @@
 import { Button, Callout, Checkbox, Classes, Dialog, Icon, Intent } from "@blueprintjs/core";
 import classNames from "classnames";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import { appActions } from "../../Stores/appSlice";
 import { useAppDispatch } from "../../Stores/store";
 
-export default ({ config }: { config?: string }) => {
+const SendTo = ({ config }: { config?: string }) => {
   const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -65,3 +65,5 @@ export default ({ config }: { config?: string }) => {
     </>
   );
 };
+
+export default memo(SendTo);

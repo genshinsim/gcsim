@@ -15,9 +15,9 @@ type Player struct {
 	*reactable.Reactable
 }
 
-func New(core *core.Core, x, y, r float64) *Player {
+func New(core *core.Core, pos combat.Point, r float64) *Player {
 	p := &Player{}
-	p.Target = target.New(core, x, y, r)
+	p.Target = target.New(core, pos, r)
 	p.Reactable = &reactable.Reactable{}
 	p.Reactable.Init(p, core)
 	return p

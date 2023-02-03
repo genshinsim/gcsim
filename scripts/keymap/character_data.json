@@ -39,6 +39,11 @@
   "element": "geo",
   "weapon_class": "sword"
  },
+ "alhaitham": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "sword"
+},
  "aloy": {
   "rarity": 5,
   "element": "cryo",
@@ -298,6 +303,11 @@
   "rarity": 5,
   "element": "dendro",
   "weapon_class": "bow"
+ },
+ "wanderer": {
+  "rarity": 5,
+  "element": "anemo",
+  "weapon_class": "catalyst"
  },
  "venti": {
   "rarity": 5,

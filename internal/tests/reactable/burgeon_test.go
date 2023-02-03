@@ -11,8 +11,8 @@ import (
 
 func TestBurgeon(t *testing.T) {
 	c, trg := makeCore(2)
-	trg[0].SetPos(1, 0)
-	trg[1].SetPos(3, 0)
+	trg[0].SetPos(combat.Point{X: 1, Y: 0})
+	trg[1].SetPos(combat.Point{X: 3, Y: 0})
 	err := c.Init()
 	if err != nil {
 		t.Errorf("error initializing core: %v", err)
@@ -33,7 +33,7 @@ func TestBurgeon(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key()),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -42,7 +42,7 @@ func TestBurgeon(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key()),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -61,7 +61,7 @@ func TestBurgeon(t *testing.T) {
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 10),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 10),
 	}, 0)
 	advanceCoreFrame(c)
 	if count != 2 {
@@ -96,7 +96,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -104,7 +104,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 	//reduce aura a bit
 	for i := 0; i < 10; i++ {
@@ -116,7 +116,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
 	for i := 0; i < reactable.DendroCoreDelay+1; i++ {
@@ -132,7 +132,7 @@ func TestECBurgeon(t *testing.T) {
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg[0], 100),
+		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
 
 	advanceCoreFrame(c)

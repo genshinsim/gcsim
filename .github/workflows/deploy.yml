@@ -3,7 +3,9 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+    - "v[0-9]+.[0-9]+.[0-9]+"
+    branches:
+    - "feature**"
 
 jobs:
   build:
@@ -16,18 +18,27 @@ jobs:
 
       # setup + test go and yarn
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/go-setup-and-test
-      - uses: ./.github/actions/yarn-setup-and-test
+      - name: go-setup-and-test
+        uses: ./.github/actions/go-setup-and-test
+      - name: yarn-setup-and-test
+        uses: ./.github/actions/yarn-setup-and-test
 
       # deploy
-      - uses: ./.github/actions/deploy-binary
-      - uses: ./.github/actions/deploy-ui
+      - name: deploy-binary
+        uses: ./.github/actions/deploy-binary
+        with:
+          shareKey: ${{ secrets.AES_KEY }}
+      - name: deploy-ui
+        uses: ./.github/actions/deploy-ui
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-      - uses: ./.github/actions/deploy-wasm
+          # name needs to be "main" if on mainline
+          branch: ${{ steps.extract_branch.outputs.branch == 'mainline' && 'main' || steps.extract_branch.outputs.branch }}
+      - name: deploy-wasm
+        uses: ./.github/actions/deploy-wasm
         with:
           rcloneConfig: ${{ secrets.CF_RCLONE }}
           branch: ${{ steps.extract_branch.outputs.branch }}
+          shareKey: ${{ secrets.AES_KEY }}

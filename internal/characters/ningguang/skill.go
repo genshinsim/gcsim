@@ -36,16 +36,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
+	player := c.Core.Combat.Player()
+	screenDir := player.Direction()
+	screenPos := combat.CalcOffsetPoint(player.Pos(), combat.Point{Y: 3}, player.Direction())
+
 	c.Core.Tasks.Add(func() {
 		c.skillSnapshot = c.Snapshot(&ai)
-		c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 5), 0)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			c.skillSnapshot,
+			combat.NewCircleHitOnTarget(screenPos, nil, 5),
+			0,
+		)
 	}, skillHitmark)
 
 	//put skill on cd first then check for construct/c2
 	c.SetCD(action.ActionSkill, 720)
 
 	//create a construct
-	c.Core.Constructs.New(c.newScreen(1800), true) //30 seconds
+	c.Core.Constructs.New(c.newScreen(1800, screenDir, screenPos), true) //30 seconds
 
 	c.lastScreen = c.Core.F
 

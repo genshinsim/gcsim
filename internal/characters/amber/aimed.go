@@ -54,11 +54,34 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Mult:         aim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), aimedHitmark, aimedHitmark+travel, c.a4)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		),
+		aimedHitmark,
+		aimedHitmark+travel,
+		c.a4,
+	)
 
 	if c.Base.Cons >= 1 {
 		ai.Mult = .2 * ai.Mult
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5), c1Hitmark, c1Hitmark+travel)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				combat.Point{Y: -0.5},
+				0.1,
+				1,
+			),
+			c1Hitmark,
+			c1Hitmark+travel,
+		)
 	}
 
 	return action.ActionInfo{

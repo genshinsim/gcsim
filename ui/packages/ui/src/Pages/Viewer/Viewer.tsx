@@ -1,5 +1,5 @@
 import { Alert, Intent } from "@blueprintjs/core";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import ConfigUI, { useConfig } from "./Tabs/Config";
 import SampleUI, { useSample } from "./Tabs/Sample";
 import Results from "./Tabs/Results";
@@ -15,7 +15,7 @@ import { useHistory } from "react-router";
 type ViewerProps = {
   running: boolean;
   data: SimResults | null;
-  hash: string;
+  hash: string | null;
   error: string | null;
   src: ResultSource;
   redirect: string;
@@ -33,13 +33,16 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
 
   const cancel = useCallback(() => exec().cancel(), [exec]);
   const sampler = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
+  const resetTab = useCallback(() => setTabId("results"), []);
 
   const sample = useSample(running, data, sampler);
   const config = useConfig(data, exec);
+  const names = useMemo(
+      () => data?.character_details?.map(c => c.name), [data?.character_details]);
 
   const tabs: { [k: string]: React.ReactNode } = {
-    results: <Results data={data} />,
-    config: <ConfigUI config={config} running={running} resetTab={() => setTabId("results")} />,
+    results: <Results data={data} running={running} names={names} />,
+    config: <ConfigUI config={config} running={running} resetTab={resetTab} />,
     analyze: <div></div>,
     sample: <SampleUI sampler={sampler} data={data} sample={sample} running={running} />,
   };

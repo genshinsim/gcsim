@@ -89,7 +89,9 @@ export class WasmExecutor implements Executor {
     return Promise.all(promises).then(() => true);
   }
 
-  public run(cfg: string, updateResult: (result: SimResults) => void): Promise<boolean | void> {
+  public run(
+        cfg: string, updateResult: (result: SimResults, hash: string) => void
+      ): Promise<boolean | void> {
     this.isRunning = true;
 
     // 1. Create Aggregator & Workers
@@ -161,9 +163,12 @@ export class WasmExecutor implements Executor {
       this.aggregator.onmessage = (ev) => {
         switch (ev.data.type as Aggregator.Response) {
           case Aggregator.Response.Result:
+            const { hash, stats } = (ev.data as Aggregator.ResultResponse).result;
+
             const out = Object.assign({}, result);
-            out.statistics = (ev.data as Aggregator.ResultResponse).result;
-            updateResult(out);
+            out.statistics = stats;
+            updateResult(out, hash);
+
             if (completed >= maxIterations) {
               this.isRunning = false;
               return Promise.resolve(true);

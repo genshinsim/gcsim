@@ -56,16 +56,17 @@ func (c *CharacterProfile) Clone() CharacterProfile {
 }
 
 type CharacterBase struct {
-	Key      keys.Char          `json:"key"`
-	Rarity   int                `json:"rarity"`
-	Element  attributes.Element `json:"element"`
-	Level    int                `json:"level"`
-	MaxLevel int                `json:"max_level"`
-	HP       float64            `json:"base_hp"`
-	Atk      float64            `json:"base_atk"`
-	Def      float64            `json:"base_def"`
-	Cons     int                `json:"cons"`
-	StartHP  float64            `json:"start_hp"`
+	Key       keys.Char          `json:"key"`
+	Rarity    int                `json:"rarity"`
+	Element   attributes.Element `json:"element"`
+	Level     int                `json:"level"`
+	MaxLevel  int                `json:"max_level"`
+	Ascension int                `json:"ascension"`
+	HP        float64            `json:"base_hp"`
+	Atk       float64            `json:"base_atk"`
+	Def       float64            `json:"base_def"`
+	Cons      int                `json:"cons"`
+	StartHP   float64            `json:"start_hp"`
 }
 
 type TalentProfile struct {

@@ -9,6 +9,8 @@ import { FiLink2 } from "react-icons/fi";
 
 type Props = {
   data: SimResults | null;
+  running: boolean;
+  names?: string[];
 };
 
 export default (props: Props) => {
@@ -29,23 +31,23 @@ export default (props: Props) => {
 
 const Overview = ({ data }: Props) => (
   <Group>
-    <TeamHeader data={data} />
+    <TeamHeader characters={data?.character_details} />
     <RollupCards data={data} />
     <TargetInfo data={data} />
     <DistributionCard data={data} />
   </Group>
 );
 
-const Damage = ({ data }: Props) => (
+const Damage = ({ data, running, names }: Props) => (
   <Group>
     <Heading text="Damage" target="damage" color={Colors.VERMILION5} />
-    <DamageTimelineCard data={data} />
+    <DamageTimelineCard data={data} running={running} names={names} />
 
-    <CharacterDPSCard data={data} />
-    <ElementDPSCard data={data} />
-    <TargetDPSCard data={data} />
+    <CharacterDPSCard data={data} running={running} names={names} />
+    <ElementDPSCard data={data} running={running} />
+    <TargetDPSCard data={data} running={running} />
 
-    <CharacterDPSBarChart data={data} />
+    <CharacterDPSBarChart data={data} running={running} names={names} />
 
     <Card className="flex col-span-full h-64 min-h-full">
       Damage breakdown table(s)

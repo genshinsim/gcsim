@@ -3,11 +3,13 @@ import { SimResults } from "@gcsim/types";
 
 export interface Viewer {
   data: SimResults | null;
+  hash: string | null;
   error: string | null;
 }
 
 export const viewerInitialState: Viewer = {
   data: null,
+  hash: null,
   error: null,
 };
 
@@ -15,8 +17,9 @@ export const viewerSlice = createSlice({
   name: "viewer",
   initialState: viewerInitialState,
   reducers: {
-    setResult: (state, action: PayloadAction<{ data: SimResults }>) => {
+    setResult: (state, action: PayloadAction<{ data: SimResults, hash: string | null }>) => {
       state.data = action.payload.data;
+      state.hash = action.payload.hash;
       return state;
     },
     start: (state) => {

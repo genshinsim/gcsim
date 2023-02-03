@@ -106,7 +106,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 1.5),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			1.5,
+		),
 		chargeHitmarks[chargeType]-windup,
 		chargeHitmarks[chargeType]-windup+travel,
 	)
@@ -124,6 +129,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 0.5)
 
 	jadeHitmarks := chargeJadeHitmarks
 	if c.jadeCount == 7 {
@@ -132,7 +138,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i := 0; i < c.jadeCount; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5),
+			ap,
 			jadeHitmarks[chargeType]-windup,
 			jadeHitmarks[chargeType]-windup+travel,
 		)

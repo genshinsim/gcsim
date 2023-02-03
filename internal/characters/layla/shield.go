@@ -1,8 +1,6 @@
 package layla
 
 import (
-	"sort"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -79,11 +77,11 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 	if stars == 4 && c.Tag(shootingStars) == 0 {
 		c.SetTag(shootingStars, 1)
 		c.shootStarSrc = c.Core.F
-		c.Core.Tasks.Add(c.shootStars(c.shootStarSrc, -1), 0.1*60)
+		c.Core.Tasks.Add(c.shootStars(c.shootStarSrc, nil), 0.1*60)
 	}
 }
 
-func (c *char) shootStars(src int, last int) func() {
+func (c *char) shootStars(src int, last combat.Enemy) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return
@@ -93,25 +91,20 @@ func (c *char) shootStars(src int, last int) func() {
 		}
 
 		// find near target
-		nearTarget := -1
-		x, y := c.Core.Combat.Player().Pos()
-		trgs := c.Core.Combat.EnemiesWithinRadius(x, y, 10)
-		if len(trgs) > 0 {
-			sort.Slice(trgs, func(i, j int) bool { return i < j })
-			nearTarget = trgs[0]
-		}
+		enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
+		enemyNotFound := enemy == nil
 
-		if last == -1 {
+		if last == nil {
 			// if not found
-			if nearTarget == -1 {
-				c.Core.Tasks.Add(c.shootStars(src, -1), 0.1*60)
+			if enemyNotFound {
+				c.Core.Tasks.Add(c.shootStars(src, nil), 0.1*60)
 				return
 			}
-			c.Core.Tasks.Add(c.shootStars(src, nearTarget), 0.5*60)
+			c.Core.Tasks.Add(c.shootStars(src, enemy), 0.5*60)
 			return
 		}
-		if nearTarget == -1 {
-			nearTarget = last
+		if enemyNotFound {
+			enemy = last
 		}
 
 		stars := c.Tag(nightStars)
@@ -154,18 +147,24 @@ func (c *char) shootStars(src int, last int) func() {
 			}
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Enemy(nearTarget), 0.5), 0, starsTravel[len(starsTravel)-stars], cb)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), enemy, nil, 0.8),
+			0,
+			starsTravel[len(starsTravel)-stars],
+			cb,
+		)
 
 		stars--
 		c.SetTag(nightStars, stars)
 		if stars != 0 {
-			c.Core.Tasks.Add(c.shootStars(src, nearTarget), 0.45*60)
+			c.Core.Tasks.Add(c.shootStars(src, enemy), 0.45*60)
 			return
 		}
 
 		c.RemoveTag(shootingStars)
 		c.starTickSrc = c.Core.F
-		c.tickNightStar(c.starTickSrc, false)
+		c.tickNightStar(c.starTickSrc, false)()
 	}
 }
 

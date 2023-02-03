@@ -9,6 +9,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/sample"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
@@ -17,6 +18,9 @@ import (
 
 const DefaultBufferLength = 1024 * 10
 
+// assigned by compiler
+var shareKey string
+
 // shared variables
 var cfg string
 var simcfg *ast.ActionList
@@ -24,6 +28,7 @@ var buffer []byte
 
 // Aggregator variables
 var aggregators []agg.Aggregator
+var cachedResult result.Summary
 
 func main() {
 	//GOOS=js GOARCH=wasm go build -o main.wasm
@@ -181,6 +186,9 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 		return marshal(err)
 	}
 
+	// // store the result for reuse
+	cachedResult = result
+
 	marshalled, err := json.Marshal(result)
 	if err != nil {
 		return marshal(err)
@@ -242,7 +250,15 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 	}
 	stats.Runtime = float64(time.Now().Nanosecond() - startTime)
 
-	marshalled, err := json.Marshal(stats)
+	// build full result from cache and sign
+	cachedResult.Statistics = stats
+	hash, _ := cachedResult.Sign(shareKey)
+
+	signedResults := make(map[string]interface{})
+	signedResults["stats"] = stats
+	signedResults["hash"] = hash
+
+	marshalled, err := json.Marshal(signedResults)
 	if err != nil {
 		return marshal(err)
 	}

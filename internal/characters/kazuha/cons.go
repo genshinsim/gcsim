@@ -27,6 +27,15 @@ func (c *char) c2(src int) func() {
 			return
 		}
 
+		// check again in 0.5s
+		c.Core.Tasks.Add(c.c2(src), 30)
+
+		ap := combat.NewCircleHitOnTarget(c.qAbsorbCheckLocation.Shape.Pos(), nil, 9)
+		if !c.Core.Combat.Player().IsWithinArea(ap) {
+			return
+		}
+
+		// apply buff if in burst area
 		c.Core.Log.NewEvent("kazuha-c2 ticking", glog.LogCharacterEvent, -1)
 
 		// apply C2 buff to active char for 1s
@@ -49,9 +58,6 @@ func (c *char) c2(src int) func() {
 				},
 			})
 		}
-
-		// check again in 0.5s
-		c.Core.Tasks.Add(c.c2(src), 30)
 	}
 }
 

@@ -5,7 +5,7 @@ export interface Executor {
   running(): boolean;
   validate(cfg: string): Promise<ParsedResult>;
   sample(cfg: string, seed: string): Promise<Sample>;
-  run(cfg: string, updateResult: (result: SimResults) => void): Promise<boolean | void>;
+  run(cfg: string, updateResult: (result: SimResults, hash: string) => void): Promise<boolean | void>;
   cancel(): void;
   buildInfo(): { hash: string; date: string };
 }

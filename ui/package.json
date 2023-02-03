@@ -26,7 +26,7 @@
     "build:embed": "yarn workspace @gcsim/embed build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
-    "gen": " yarn pbjs -t static-module -w commonjs -o ./packages/types/src/protos.js ../protos/model/db.proto ../protos/model/result.proto ../protos/model/sim.proto  ../protos/backend/db.proto ../protos/backend/submission.proto  ../protos/backend/compute.proto   && yarn pbts -o ./packages/types/src/protos.d.ts ./packages/types/src/protos.js && rm ./packages/types/src/protos.js ",
+    "gen": " yarn pbjs --keep-case -t static-module -w commonjs -o ./packages/types/src/protos.js ../protos/model/db.proto ../protos/model/result.proto ../protos/model/sim.proto  ../protos/backend/db.proto ../protos/backend/submission.proto  ../protos/backend/compute.proto   && yarn pbts -o ./packages/types/src/protos.d.ts ./packages/types/src/protos.js && rm ./packages/types/src/protos.js ",
     "gen:watch": "watch \"yarn run gen:copy:db\" ../protos/model ../protos/backend"
   },
   "devDependencies": {

@@ -11,6 +11,7 @@ const userDataKey = "redux-user-data-v0.0.1";
 const userLocalSettings = "redux-user-local-settings";
 const userAppDataKey = "redux-app-data";
 const userLocalResults = "redux-local-results";
+const userLocalResultsHash = "redux-local-results-hash";
 
 const persistedState = JSON.parse(
   JSON.stringify({
@@ -45,6 +46,7 @@ if (localStorage.getItem(userLocalSettings)) {
 const item = localStorage.getItem(userLocalResults);
 if (item) {
   persistedState.viewer.data = JSON.parse(item);
+  persistedState.viewer.hash = localStorage.getItem(userLocalResultsHash);
 }
 
 export const store = configureStore({
@@ -77,6 +79,7 @@ store.subscribe(() => {
 
   if (store.getState().viewer.data) {
     localStorage.setItem(userLocalResults, JSON.stringify(store.getState().viewer.data));
+    localStorage.setItem(userLocalResultsHash, store.getState().viewer.hash ?? "");
   }
 });
 

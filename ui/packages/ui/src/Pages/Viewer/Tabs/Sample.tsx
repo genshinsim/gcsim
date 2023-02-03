@@ -38,7 +38,11 @@ type Props = {
 // TODO: translation
 // TODO: The sampler should be refactored. This is a mess of passing around info
 export default ({ sampler, data, sample, running }: Props) => {
-  if (data?.character_details == null || data?.config_file == null || sample.generating) {
+  const names = useMemo(() => {
+    return data?.character_details?.map((c) => c.name);
+  }, [data?.character_details]);
+
+  if (names == null || data?.config_file == null || sample.generating) {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
   }
 
@@ -51,7 +55,6 @@ export default ({ sampler, data, sample, running }: Props) => {
     );
   }
 
-  const names = data.character_details.map((c) => c.name);
   return (
     <div className="flex flex-grow flex-col gap-[15px] px-2">
       <Generate sampler={sampler} data={data} sample={sample} running={running} />
@@ -256,16 +259,18 @@ export function useSample(
     return out;
   }, [parsed]);
 
-  return {
-    sample: sample,
-    parsed: parsed,
-    seed: seed,
-    searchable: searchable,
-    settings: selected,
-    generating: generating,
-    setGenerating: setGenerating,
-    setSample: SetSample,
-    setSettings: setAndStore,
-    setSeed: setSeed,
-  };
+  return useMemo(() => {
+    return {
+      sample: sample,
+      parsed: parsed,
+      seed: seed,
+      searchable: searchable,
+      settings: selected,
+      generating: generating,
+      setGenerating: setGenerating,
+      setSample: SetSample,
+      setSettings: setAndStore,
+      setSeed: setSeed,
+    };
+  }, [generating, parsed, sample, searchable, seed, selected]);
 }

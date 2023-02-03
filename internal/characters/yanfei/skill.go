@@ -25,7 +25,10 @@ func init() {
 // Summons flames that deal AoE Pyro DMG. Opponents hit by the flames will grant Yanfei the maximum number of Scarlet Seals.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	done := false
-	addSeal := func(_ combat.AttackCB) {
+	addSeal := func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}
@@ -51,7 +54,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	// TODO: Not sure of snapshot timing
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3.5), 0, skillHitmark, addSeal)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			3.5,
+		),
+		0,
+		skillHitmark,
+		addSeal,
+	)
 
 	c.Core.QueueParticle("yanfei", 3, attributes.Pyro, skillHitmark+c.ParticleDelay)
 

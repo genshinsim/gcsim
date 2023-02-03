@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+const manualExplosionAbil = "Baron Bunny (Manual Explosion)"
+
 type bunny struct {
 	ae  combat.AttackEvent
 	src int
@@ -30,7 +32,7 @@ func (c *char) makeBunny() {
 	snap := c.Snapshot(&ai)
 	b.ae = combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 3),
+		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	}
@@ -69,7 +71,7 @@ func (c *char) manualExplode() {
 	}
 	//only explode the first bunny
 	if len(c.bunnies) > 0 {
-		c.bunnies[0].ae.Info.Mult += 2
+		c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 		c.Core.QueueAttackEvent(&c.bunnies[0].ae, 1)
 		c.Core.QueueParticle("amber", 4, attributes.Pyro, c.ParticleDelay)
 	}
@@ -94,8 +96,7 @@ func (c *char) overloadExplode() {
 		}
 
 		for _, v := range c.bunnies {
-			//every bunny gets bonus multiplikers
-			v.ae.Info.Mult += 2
+			c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 			c.Core.QueueAttackEvent(&v.ae, 1)
 			c.Core.QueueParticle("amber", 4, attributes.Pyro, c.ParticleDelay)
 		}

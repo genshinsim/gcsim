@@ -1,6 +1,6 @@
 import { Card, Colors, Icon } from "@blueprintjs/core";
 import classNames from "classnames";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import { CardTitle } from "../../Util";
@@ -20,8 +20,7 @@ type CardProps = {
   hashLink?: string;
 };
 
-// TODO: hash link
-export const RollupCard = ({
+const CardTemplate = ({
     title, color, value, label, auxStats, tooltip, hashLink }: CardProps) => {
   const history = useHistory();
   const interactable = hashLink != null;
@@ -45,6 +44,8 @@ export const RollupCard = ({
     </div>
   );
 };
+
+export const RollupCard = memo(CardTemplate);
 
 const CardValue = ({ value, label }: { value?: number | string | null, label?: string }) => {
   const { i18n } = useTranslation();

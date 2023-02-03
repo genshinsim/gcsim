@@ -55,6 +55,9 @@ func (c *char) c1() {
 // Requires additional work and references - will leave implementation for later
 // TODO: conver this into a callback on first skill?
 func (c *char) c4(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.c4completed {
 		return
 	}
@@ -77,7 +80,7 @@ func (c *char) c6(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("rosaria-c6", 600),
 		Ele:   attributes.Physical,
 		Value: -0.2,

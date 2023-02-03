@@ -88,7 +88,10 @@ export namespace Aggregator {
 
   export interface ResultResponse {
     type: Response.Result;
-    result: any;
+    result: {
+      hash: string,
+      stats: any
+    };
   }
 
   export function ResultResponse(result: any): ResultResponse {

@@ -51,6 +51,7 @@ import (
 
 	//char
 	_ "github.com/genshinsim/gcsim/internal/characters/albedo"
+	_ "github.com/genshinsim/gcsim/internal/characters/alhaitham"
 	_ "github.com/genshinsim/gcsim/internal/characters/aloy"
 	_ "github.com/genshinsim/gcsim/internal/characters/amber"
 	_ "github.com/genshinsim/gcsim/internal/characters/ayaka"
@@ -103,6 +104,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/travelerelectro"
 	_ "github.com/genshinsim/gcsim/internal/characters/travelergeo"
 	_ "github.com/genshinsim/gcsim/internal/characters/venti"
+	_ "github.com/genshinsim/gcsim/internal/characters/wanderer"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiangling"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiao"
 	_ "github.com/genshinsim/gcsim/internal/characters/xingqiu"
@@ -244,6 +246,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/festering"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/filletblade"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/flute"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/foliar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/freedom"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/haran"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/harbinger"

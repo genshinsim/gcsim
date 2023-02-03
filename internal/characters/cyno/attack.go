@@ -14,7 +14,9 @@ var (
 	attackHitmarks        = [][]int{{14}, {17}, {13, 22}, {27}}
 	attackHitlagHaltFrame = [][]float64{{0.01}, {0.06}, {0, 0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{false}, {true}, {false, true}, {true}}
-	attackRadius          = []float64{1.8, 1.62, 2.11, 2.3}
+	attackHitboxes        = [][]float64{{1.8}, {1.8, 2.7}, {2.2, 3.6}, {2.3}}
+	attackOffsets         = []float64{0.5, -0.2, 0, 1}
+	attackFanAngles       = []float64{270, 360, 360, 360}
 )
 
 const normalHitNum = 4
@@ -35,7 +37,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.attackB(p) // go to burst mode attacks
 	}
 	for i, mult := range attack[c.NormalCounter] {
@@ -56,13 +58,21 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		if c.NormalCounter == 2 {
 			ai.StrikeType = combat.StrikeTypeSpear
 		}
-		radius := attackRadius[c.NormalCounter]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), radius),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackFanAngles[c.NormalCounter],
 		)
+		if c.NormalCounter == 1 || c.NormalCounter == 2 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
+			)
+		}
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
@@ -82,7 +92,8 @@ var (
 	attackBHitmarks        = [][]int{{12}, {14}, {18}, {5, 14}, {40}}
 	attackBHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.03}, {0.01, 0.03}, {0.05}}
 	attackBDefHalt         = [][]bool{{false}, {false}, {false}, {false, false}, {true}}
-	attackBRadius          = []float64{2, 2, 3.25, 2.5, 3.5}
+	attackBHitboxes        = [][]float64{{2}, {2}, {2.5, 6}, {2.5}, {3.5}}
+	attackBOffsets         = []float64{1, 1, -0.2, 0.8, 1.5}
 )
 
 func init() {
@@ -124,12 +135,24 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
 			IgnoreInfusion:     true,
 		}
-		if c.NormalCounter == 2 || c.NormalCounter == 4 {
+		if c.normalBCounter == 2 || c.normalBCounter == 4 {
 			ai.StrikeType = combat.StrikeTypeBlunt
 		}
-		radius := attackBRadius[c.normalBCounter]
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			combat.Point{Y: attackBOffsets[c.normalBCounter]},
+			attackBHitboxes[c.normalBCounter][0],
+		)
+		if c.normalBCounter == 2 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				combat.Point{Y: attackBOffsets[c.normalBCounter]},
+				attackBHitboxes[c.normalBCounter][0],
+				attackBHitboxes[c.normalBCounter][1],
+			)
+		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius), 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackBHitmarks[c.normalBCounter][i])
 	}
 
