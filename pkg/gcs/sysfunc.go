@@ -10,26 +10,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
 func (e *Eval) initSysFuncs(env *Env) {
+	// std funcs
 	e.addSysFunc("f", e.f, env)
 	e.addSysFunc("rand", e.rand, env)
 	e.addSysFunc("randnorm", e.randnorm, env)
 	e.addSysFunc("print", e.print, env)
 	e.addSysFunc("wait", e.wait, env)
 	e.addSysFunc("type", e.typeval, env)
+	e.addSysFunc("execute_action", e.executeAction, env)
+
+	// player/enemy
 	e.addSysFunc("set_target_pos", e.setTargetPos, env)
 	e.addSysFunc("set_player_pos", e.setPlayerPos, env)
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
 	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
+
+	// math
 	e.addSysFunc("sin", e.sin, env)
 	e.addSysFunc("cos", e.cos, env)
 	e.addSysFunc("asin", e.asin, env)
 	e.addSysFunc("acos", e.acos, env)
+
+	// events
 	e.addSysFunc("set_on_tick", e.setOnTick, env)
 }
 
@@ -475,5 +484,65 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 		e.evalNode(fn.Body, env)
 		return false
 	}, "sysfunc-ontick")
+	return &null{}, nil
+}
+
+func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
+	//eval(char, action[, params])
+	if len(c.Args) != 2 && len(c.Args) != 3 {
+		return nil, fmt.Errorf("invalid number of params for execute_action, expected 2 or 3 got %v", len(c.Args))
+	}
+
+	// char
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	if val.Typ() != typNum {
+		return nil, fmt.Errorf("execute_action argument char should evaluate to a number, got %v", val.Inspect())
+	}
+	char := val.(*number)
+
+	// action
+	val, err = e.evalExpr(c.Args[1], env)
+	if err != nil {
+		return nil, err
+	}
+	if val.Typ() != typNum {
+		return nil, fmt.Errorf("execute_action argument action should evaluate to a number, got %v", val.Inspect())
+	}
+	ac := val.(*number)
+
+	// params
+	var params map[string]int = nil
+	if len(c.Args) == 3 {
+		val, err = e.evalExpr(c.Args[2], env)
+		if err != nil {
+			return nil, err
+		}
+		if val.Typ() != typMap {
+			return nil, fmt.Errorf("execute_action argument params should evaluate to a map, got %v", val.Inspect())
+		}
+
+		p := val.(*mapval)
+		params = make(map[string]int)
+		for k, v := range p.fields {
+			if v.Typ() != typNum {
+				return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
+			}
+			params[k] = int(v.(*number).ival)
+		}
+	}
+
+	e.Work <- &ast.ActionStmt{
+		Char:   keys.Char(char.ival),
+		Action: action.Action(ac.ival),
+		Param:  params,
+	}
+	_, ok := <-e.Next
+	if !ok {
+		return nil, ErrTerminated // no more work, shutting down
+	}
+
 	return &null{}, nil
 }

@@ -31,6 +31,8 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 	}
 
 	switch typ {
+	case "id":
+		return int(char.Base.Key), nil
 	case "cons":
 		return char.Base.Cons, nil
 	case "energy":
