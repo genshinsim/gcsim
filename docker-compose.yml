@@ -12,6 +12,21 @@ services:
     depends_on:
       - jadechamber
     restart: unless-stopped
+  mqtt:
+    build:
+      context: .
+      dockerfile: ./backend/mosquitto/Dockerfile 
+    environment:
+      - MOSQUITTO_USERNAME=mosquitto
+      - MOSQUITTO_PASSWORD=password
+    container_name: mqtt
+    restart: unless-stopped
+    volumes:
+      - ./backend/mosquitto/config:/mosquitto/config:ro
+      - ./backend/mosquitto/data:/mosquitto/data
+      - ./backend/mosquitto/log:/mosquitto/log
+    ports:
+      - 1883:1883
   # generating embed for discord etc
   preview:
     container_name: preview
@@ -23,6 +38,9 @@ services:
     environment:
       - ASSETS_DATA_PATH=/assets
       - RESULT_STORE_URL=result:3000
+      - MQTT_URL=mqtt:1883
+      - MQTT_USERNAME=mosquitto
+      - MQTT_PASSWORD=password
     restart: unless-stopped
   jadechamber:
     container_name: jadechamber
