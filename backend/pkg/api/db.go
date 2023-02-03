@@ -15,15 +15,15 @@ import (
 
 type DBStore interface {
 	Create(context.Context, *model.DBEntry) (string, error)
-	Get(context.Context, *structpb.Struct, int64) (*model.DBEntries, error)
+	Get(context.Context, *model.DBQueryOpt) (*model.DBEntries, error)
 }
 
 type dbGetOpt struct {
 	Query   map[string]interface{} `json:"query"`
 	Sort    map[string]interface{} `json:"sort"`
 	Project map[string]interface{} `json:"project"`
-	Skip    int                    `json:"skip"`
-	Limit   int                    `json:"limit"`
+	Skip    int64                  `json:"skip"`
+	Limit   int64                  `json:"limit"`
 }
 
 func (s *Server) getDB() http.HandlerFunc {
@@ -32,7 +32,7 @@ func (s *Server) getDB() http.HandlerFunc {
 		var o dbGetOpt
 		queryStr := r.URL.Query().Get("q")
 		if queryStr != "" {
-			err := json.Unmarshal([]byte(queryStr), &o.Query)
+			err := json.Unmarshal([]byte(queryStr), &o)
 			if err != nil {
 				s.Log.Infow("error querying db - bad request", "err", err)
 				http.Error(w, err.Error(), http.StatusBadRequest)
@@ -40,14 +40,35 @@ func (s *Server) getDB() http.HandlerFunc {
 			}
 		}
 
+		s.Log.Infow("db query - query string parsed ok", "query_string", o.Query)
+
 		query, err := structpb.NewStruct(o.Query)
 		if err != nil {
-			s.Log.Warnw("error querying db - could not convert to structpb", "err", err)
+			s.Log.Warnw("error querying db - could not convert query to structpb", "err", err)
 			http.Error(w, "bad request", http.StatusBadRequest)
 			return
 		}
+		sort, err := structpb.NewStruct(o.Sort)
+		if err != nil {
+			s.Log.Warnw("error querying db - could not convert sort to structpb", "err", err)
+			http.Error(w, "bad request", http.StatusBadRequest)
+			return
+		}
+		project, err := structpb.NewStruct(o.Project)
+		if err != nil {
+			s.Log.Warnw("error querying db - could not convert project to structpb", "err", err)
+			http.Error(w, "bad request", http.StatusBadRequest)
+			return
+		}
+		opt := &model.DBQueryOpt{
+			Query:   query,
+			Sort:    sort,
+			Project: project,
+			Skip:    o.Skip,
+			Limit:   o.Limit,
+		}
 
-		res, err := s.cfg.DBStore.Get(r.Context(), query, 1)
+		res, err := s.cfg.DBStore.Get(r.Context(), opt)
 		if err != nil {
 			s.Log.Warnw("error querying db", "err", err)
 			if st, ok := status.FromError(err); ok {

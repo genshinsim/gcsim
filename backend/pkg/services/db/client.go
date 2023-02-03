@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/protobuf/types/known/structpb"
 )
 
 type ClientCfg struct {
@@ -32,20 +31,18 @@ func NewClient(cfg ClientCfg, cust ...func(*Client) error) (*Client, error) {
 }
 
 func (c *Client) Create(ctx context.Context, e *model.DBEntry) (string, error) {
-	req := &CreateRequest{
+	req := &CreateOrUpdateDBEntryRequest{
 		Data: e,
 	}
-	resp, err := c.srvClient.Create(ctx, req)
+	resp, err := c.srvClient.CreateOrUpdateDBEntry(ctx, req)
 	return resp.GetKey(), err
 }
 
 const limit = 30
 
-func (c *Client) Get(ctx context.Context, query *structpb.Struct, page int64) (*model.DBEntries, error) {
+func (c *Client) Get(ctx context.Context, query *model.DBQueryOpt) (*model.DBEntries, error) {
 	req := &GetRequest{
 		Query: query,
-		Limit: limit,
-		Page:  page,
 	}
 	resp, err := c.srvClient.Get(ctx, req)
 	if err != nil {

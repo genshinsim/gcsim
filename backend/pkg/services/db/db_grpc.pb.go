@@ -22,8 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DBStoreClient interface {
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	// generic get for pulling from approved db
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	// internally create request; not exposed
+	CreateOrUpdateDBEntry(ctx context.Context, in *CreateOrUpdateDBEntryRequest, opts ...grpc.CallOption) (*CreateOrUpdateDBEntryResponse, error)
 }
 
 type dBStoreClient struct {
@@ -32,15 +34,6 @@ type dBStoreClient struct {
 
 func NewDBStoreClient(cc grpc.ClientConnInterface) DBStoreClient {
 	return &dBStoreClient{cc}
-}
-
-func (c *dBStoreClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/db.DBStore/Create", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *dBStoreClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
@@ -52,12 +45,23 @@ func (c *dBStoreClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *dBStoreClient) CreateOrUpdateDBEntry(ctx context.Context, in *CreateOrUpdateDBEntryRequest, opts ...grpc.CallOption) (*CreateOrUpdateDBEntryResponse, error) {
+	out := new(CreateOrUpdateDBEntryResponse)
+	err := c.cc.Invoke(ctx, "/db.DBStore/CreateOrUpdateDBEntry", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBStoreServer is the server API for DBStore service.
 // All implementations must embed UnimplementedDBStoreServer
 // for forward compatibility
 type DBStoreServer interface {
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	// generic get for pulling from approved db
 	Get(context.Context, *GetRequest) (*GetResponse, error)
+	// internally create request; not exposed
+	CreateOrUpdateDBEntry(context.Context, *CreateOrUpdateDBEntryRequest) (*CreateOrUpdateDBEntryResponse, error)
 	mustEmbedUnimplementedDBStoreServer()
 }
 
@@ -65,11 +69,11 @@ type DBStoreServer interface {
 type UnimplementedDBStoreServer struct {
 }
 
-func (UnimplementedDBStoreServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
-}
 func (UnimplementedDBStoreServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedDBStoreServer) CreateOrUpdateDBEntry(context.Context, *CreateOrUpdateDBEntryRequest) (*CreateOrUpdateDBEntryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrUpdateDBEntry not implemented")
 }
 func (UnimplementedDBStoreServer) mustEmbedUnimplementedDBStoreServer() {}
 
@@ -82,24 +86,6 @@ type UnsafeDBStoreServer interface {
 
 func RegisterDBStoreServer(s grpc.ServiceRegistrar, srv DBStoreServer) {
 	s.RegisterService(&DBStore_ServiceDesc, srv)
-}
-
-func _DBStore_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DBStoreServer).Create(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/db.DBStore/Create",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBStoreServer).Create(ctx, req.(*CreateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _DBStore_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -120,6 +106,24 @@ func _DBStore_Get_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBStore_CreateOrUpdateDBEntry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrUpdateDBEntryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).CreateOrUpdateDBEntry(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBStore/CreateOrUpdateDBEntry",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).CreateOrUpdateDBEntry(ctx, req.(*CreateOrUpdateDBEntryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBStore_ServiceDesc is the grpc.ServiceDesc for DBStore service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -128,12 +132,12 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DBStoreServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _DBStore_Create_Handler,
-		},
-		{
 			MethodName: "Get",
 			Handler:    _DBStore_Get_Handler,
+		},
+		{
+			MethodName: "CreateOrUpdateDBEntry",
+			Handler:    _DBStore_CreateOrUpdateDBEntry_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

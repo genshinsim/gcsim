@@ -60,6 +60,7 @@ services:
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DATABASE=gcsim-database
       - MONGODB_COLLECTION=data
+      - MONGODB_QUERY_VIEW=gcsimvaliddb
       - MONGODB_USERNAME=root
       - MONOGDB_PASSWORD=root-password
     # ports are exposed in order to access the grpc directly via localhost during dev

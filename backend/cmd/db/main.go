@@ -15,6 +15,7 @@ func main() {
 		URL:        os.Getenv("MONGODB_URL"),
 		Database:   os.Getenv("MONGODB_DATABASE"),
 		Collection: os.Getenv("MONGODB_COLLECTION"),
+		QueryView:  os.Getenv("MONGODB_QUERY_VIEW"),
 		Username:   os.Getenv("MONGODB_USERNAME"),
 		Password:   os.Getenv("MONOGDB_PASSWORD"),
 	}

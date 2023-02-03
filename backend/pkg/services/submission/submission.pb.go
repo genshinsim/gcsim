@@ -261,7 +261,7 @@ type ListResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	//queued for compute + waiting for approval
+	// queued for compute + waiting for approval
 	Data []*Submission `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
 }
 

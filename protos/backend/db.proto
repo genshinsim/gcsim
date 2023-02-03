@@ -3,29 +3,27 @@ package db;
 option go_package="backend/pkg/services/db";
 
 import "protos/model/db.proto";
-import "google/protobuf/struct.proto";
 
 service DBStore {
-    rpc Create (CreateRequest) returns (CreateResponse) {}
+    //generic get for pulling from approved db
     rpc Get (GetRequest) returns (GetResponse) {}
-}
-
-message CreateRequest {
-   model.DBEntry data = 1; 
-}
-
-message CreateResponse {
-    string key = 1 [json_name="key"];
+    //internally create request; not exposed
+    rpc CreateOrUpdateDBEntry (CreateOrUpdateDBEntryRequest) returns (CreateOrUpdateDBEntryResponse) {}
 }
 
 message GetRequest {
-    google.protobuf.Struct query = 1;
-    int64 limit = 2;
-    int64 page = 3;
+    model.DBQueryOpt query = 1;
 }
 
 message GetResponse {
     model.DBEntries data = 1;
 }
 
+message CreateOrUpdateDBEntryRequest {
+   string id = 1 [json_name="_id"];
+   model.DBEntry data = 2; 
+}
 
+message CreateOrUpdateDBEntryResponse {
+    string key = 1 [json_name="key"];
+}

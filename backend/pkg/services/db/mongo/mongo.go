@@ -2,6 +2,8 @@ package mongo
 
 import (
 	"context"
+	"os"
+	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -9,26 +11,33 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/structpb"
 )
 
 type Config struct {
 	URL        string
 	Database   string
 	Collection string
+	QueryView  string
 	Username   string
 	Password   string
 }
 
 type Server struct {
-	cfg    Config
-	client *mongo.Client
-	Log    *zap.SugaredLogger
+	cfg          Config
+	client       *mongo.Client
+	Log          *zap.SugaredLogger
+	maxPageLimit int64
 }
 
 func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s := &Server{
-		cfg: cfg,
+		cfg:          cfg,
+		maxPageLimit: 100,
+	}
+
+	limitStr := os.Getenv("MONGO_STORE_MAX_LIMIT")
+	if limit, err := strconv.ParseInt(limitStr, 10, 64); err == nil && limit > 0 {
+		s.maxPageLimit = limit
 	}
 
 	for _, f := range cust {
@@ -99,7 +108,7 @@ type paginate struct {
 	page  int64
 }
 
-func newPaginate(limit, page int) *paginate {
+func newPaginate(limit, page int64) *paginate {
 	return &paginate{
 		limit: int64(limit),
 		page:  int64(page),
@@ -114,12 +123,23 @@ func (p *paginate) opts() *options.FindOptions {
 	return &fOpt
 }
 
-func (s *Server) Get(ctx context.Context, query *structpb.Struct, limit, page int) ([]*model.DBEntry, error) {
-	s.Log.Infow("mongodb: get request", "query", query)
+func (s *Server) parseLimit(opt *model.DBQueryOpt) int64 {
+	limit := opt.GetLimit()
+	if limit < 0 {
+		return 0
+	}
+	if limit > s.maxPageLimit {
+		return s.maxPageLimit
+	}
+	return limit
+}
 
-	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+func (s *Server) Get(ctx context.Context, opt *model.DBQueryOpt) ([]*model.DBEntry, error) {
+	s.Log.Infow("mongodb: get request", "query", opt)
 
-	cursor, err := col.Find(ctx, query.AsMap(), newPaginate(limit, page).opts())
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.QueryView)
+
+	cursor, err := col.Find(ctx, opt.GetQuery().AsMap(), newPaginate(s.parseLimit(opt), opt.GetSkip()).opts())
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, status.Error(codes.NotFound, "no records found")

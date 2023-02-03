@@ -4,6 +4,7 @@ option go_package="pkg/model";
 
 import "protos/model/result.proto";
 import "protos/model/sim.proto";
+import "google/protobuf/struct.proto";
 
 message DBEntry {
     //basic info
@@ -27,17 +28,35 @@ message DBEntry {
     repeated model.Character team = 13 [json_name="team"];
     map<string, model.DescriptiveStats> dps_by_target = 14 [json_name="dps_by_target"];
 
-
     //other stuff
     string description = 15 [json_name="description"];
-    repeated string tags = 16 [json_name="tags"];
+    repeated string accepted_tags = 16 [json_name="accepted_tags"];
+    repeated string rejected_tags = 17 [json_name="rejected_tags"];
+    bool is_db_valid = 18 [json_name="is_db_valid"];
 }
 
 message DBEntries {
     repeated DBEntry data = 1 [json_name="data"];
 }
 
+message DBQueryOpt {
+    google.protobuf.Struct query = 1;
+    google.protobuf.Struct sort = 2;
+    google.protobuf.Struct project = 3;
+    int64 skip = 4;
+    int64 limit = 5;
+}
+
 enum SimMode {
     DURATION_MODE = 0;
     TTK_MODE = 1;
+}
+
+message Submission {
+    string id = 1 [json_name="_id"]; // auto generated id for this submission
+    string config = 2;
+    string submitter = 3; //submitter discord id 
+    string description = 4;
+    string preview = 5; //view key for preview
+    repeated string tags = 6;
 }
