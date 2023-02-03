@@ -7,7 +7,7 @@ export function ListView({ data }: { data: model.IDBEntries["data"] }) {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       {data.map((entry, index) => {
         return <DBEntryView dbEntry={entry} key={index} />;
       })}

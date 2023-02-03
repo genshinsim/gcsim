@@ -1,6 +1,6 @@
 import { model } from "@gcsim/types";
 import { Long } from "protobufjs";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 
 function useTranslation() {
   return (text: string) => text;
@@ -10,8 +10,8 @@ function useTranslation() {
 export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
   const t = useTranslation();
   return (
-    <div className="flex flex-row bg-slate-800 max-w-fit p-4 gap-4 max-h-44">
-      <div className="flex gap-2">
+    <div className="flex flex-row bg-slate-800 max-w-fit p-4 gap-4 ">
+      <div className="grid gap-2 grid-cols-2">
         {dbEntry.team &&
           dbEntry.team.map((char, index) => {
             return (
@@ -20,9 +20,9 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
           })}
       </div>
       <div className="flex flex-col max-w-md">
-        <div className="capitalize text-lg font-semibold">
-          {dbEntry?.charNames?.toString().replaceAll(",", ", ")}
-        </div>
+        {/* <div className="capitalize text-lg font-semibold">
+          {dbEntry?.char_names?.toString().replaceAll(",", ", ")}
+        </div> */}
         <DBEntryTags tags={dbEntry.tags} />
         <span className="  overflow-hidden">{dbEntry?.description}</span>
       </div>
@@ -87,7 +87,7 @@ function PortraitArtifactsComponent({
     <div className="flex flex-row   ">
       {Object.entries(artifactSet).map(
         ([setName, setCount]) =>
-          setCount > 0 && (
+          (setCount as number) > 0 && (
             <div className=" relative h-8 w-8 ">
               <img
                 src={

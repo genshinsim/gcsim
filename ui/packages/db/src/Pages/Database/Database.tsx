@@ -18,7 +18,7 @@ export function Database() {
 
   useEffect(() => {
     //https://simimpact.app/api
-    const url = `https://simimpact.app/api/db?q=${encodeURIComponent(
+    const url = `api/db?q=${encodeURIComponent(
       JSON.stringify(craftQuery(charFilter))
     )}`;
     fetch(url)
@@ -32,18 +32,10 @@ export function Database() {
       });
   }, [charFilter]);
 
-  if (!data) {
-    return (
-      <div>
-        <Spinner />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-row gap-4">
       <Filter charFilter={charFilter} setCharFilter={setCharFilter} />
-      <ListView data={data} />
+      {data ? <ListView data={data} /> : <Spinner />}
     </div>
   );
 }
