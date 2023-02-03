@@ -237,7 +237,9 @@ func (r *Reactable) attachOverlap(mod ReactableModifier, amt combat.Durability, 
 		}
 	} else {
 		r.Durability[mod] = amt
-		r.DecayRate[mod] = amt / length
+		if length > ZeroDur {
+			r.DecayRate[mod] = amt / length
+		}
 	}
 }
 
