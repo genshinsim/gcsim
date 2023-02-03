@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -55,7 +56,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	// Initialize at some very low value so these happen correctly at start of sim
 	c.c2reset = -9999
-	c.jadeCount = 0
 	c.prevAttack = attackTypeLeft
 
 	w.Character = &c
@@ -65,7 +65,20 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a4()
+	c.onExitField()
 	return nil
+}
+
+// remove star jades on swap
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
+		if prev != c.Index {
+			return false
+		}
+		c.jadeCount = 0
+		return false
+	}, "ningguang-exit")
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
