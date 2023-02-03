@@ -248,8 +248,8 @@ func (p *Parser) parseStatement() (Node, error) {
 	return node, nil
 }
 
+// excepting let ident = expr;
 func (p *Parser) parseLet() (Stmt, error) {
-	//var ident = expr;
 	n := p.next()
 
 	ident, err := p.consume(itemIdentifier)
@@ -829,7 +829,7 @@ func (p *Parser) parseNumber() (Expr, error) {
 	return num, nil
 }
 
-func (p *Parser) paserBool() (Expr, error) {
+func (p *Parser) parseBool() (Expr, error) {
 	// bool is a number (true = 1, false = 0)
 	n := p.next()
 	num := &NumberLit{Pos: n.pos}
@@ -891,4 +891,44 @@ func (p *Parser) parseParen() (Expr, error) {
 	p.next() // consume the right paren
 
 	return exp, nil
+}
+
+func (p *Parser) parseMap() (Expr, error) {
+	//skip the paren
+	n := p.next()
+	expr := &MapExpr{
+		Pos:    n.pos,
+		Fields: make(map[string]Expr),
+	}
+
+	//loop until we hit square paren
+	for {
+		//we're expecting ident = int
+		i, err := p.consume(itemIdentifier)
+		if err != nil {
+			return nil, fmt.Errorf("ln%v: expecting identifier in map expression, got %v", i.line, i.Val)
+		}
+
+		a, err := p.consume(itemAssign)
+		if err != nil {
+			return nil, fmt.Errorf("ln%v: expecting = after identifier in map expression, got %v", a.line, a.Val)
+		}
+
+		e, err := p.parseExpr(Lowest)
+		if err != nil {
+			return nil, err
+		}
+		expr.Fields[i.Val] = e
+
+		//if we hit ], return; if we hit , keep going, other wise error
+		n := p.next()
+		switch n.Typ {
+		case itemRightSquareParen:
+			return expr, nil
+		case itemComma:
+			//do nothing, keep going
+		default:
+			return nil, fmt.Errorf("ln%v: <action param> bad token %v", n.line, n)
+		}
+	}
 }

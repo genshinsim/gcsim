@@ -706,6 +706,11 @@ type (
 		Right Expr  // need to evalute to same type as lhs
 		Op    Token //should be > itemCompareOP and < itemDot
 	}
+
+	MapExpr struct {
+		Pos
+		Fields map[string]Expr
+	}
 )
 
 //exprNode()
@@ -717,6 +722,7 @@ func (*Field) exprNode()      {}
 func (*CallExpr) exprNode()   {}
 func (*UnaryExpr) exprNode()  {}
 func (*BinaryExpr) exprNode() {}
+func (*MapExpr) exprNode()    {}
 
 // NumberLit.
 
@@ -984,4 +990,46 @@ func (b *BinaryExpr) writeTo(sb *strings.Builder) {
 	sb.WriteString(" ")
 	b.Right.writeTo(sb)
 	sb.WriteString(")")
+}
+
+// MapExpr.
+
+func (m *MapExpr) CopyExpr() Expr {
+	if m == nil {
+		return m
+	}
+	n := &MapExpr{
+		Pos:    m.Pos,
+		Fields: make(map[string]Expr),
+	}
+	for k, v := range m.Fields {
+		n.Fields[k] = v.CopyExpr()
+	}
+	return n
+}
+
+func (m *MapExpr) Copy() Node {
+	return m.CopyExpr()
+}
+
+func (m *MapExpr) String() string {
+	var sb strings.Builder
+	m.writeTo(&sb)
+	return sb.String()
+}
+
+func (m *MapExpr) writeTo(sb *strings.Builder) {
+	sb.WriteString("[")
+	done := false
+	for k, v := range m.Fields {
+		if done {
+			sb.WriteString(", ")
+		}
+		done = true
+
+		sb.WriteString(k)
+		sb.WriteString(" = ")
+		sb.WriteString(v.String())
+	}
+	sb.WriteString("]")
 }

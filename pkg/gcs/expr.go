@@ -26,6 +26,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 		return e.evalCallExpr(v, env)
 	case *ast.Field:
 		return e.evalField(v, env)
+	case *ast.MapExpr:
+		return e.evalMap(v, env)
 	default:
 		return &null{}, nil
 	}
@@ -198,4 +200,18 @@ func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("field condition '.%v' does not evaluate to a number, got %v", strings.Join(n.Value, "."), v)
 	}
 	return num, nil
+}
+
+func (e *Eval) evalMap(m *ast.MapExpr, env *Env) (Obj, error) {
+	r := &mapval{
+		fields: make(map[string]Obj),
+	}
+	for k, v := range m.Fields {
+		obj, err := e.evalExpr(v, env)
+		if err != nil {
+			return nil, err
+		}
+		r.fields[k] = obj
+	}
+	return r, nil
 }

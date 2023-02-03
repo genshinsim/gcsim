@@ -86,6 +86,7 @@ const (
 	typStr
 	typFun
 	typBif // built-in function
+	typMap
 	typRet
 	typCtr
 	// typTerminate
@@ -111,6 +112,10 @@ type (
 
 	bfuncval struct {
 		Body func(c *ast.CallExpr, env *Env) (Obj, error)
+	}
+
+	mapval struct {
+		fields map[string]Obj
 	}
 
 	retval struct {
@@ -157,6 +162,23 @@ func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
 func (n *retval) Typ() ObjTyp { return typRet }
+
+// mapval.
+func (m *mapval) Inspect() string {
+	str := "["
+	done := false
+	for k, v := range m.fields {
+		if done {
+			str += ", "
+		}
+		done = true
+
+		str += k + " = " + v.Inspect()
+	}
+	str += "]"
+	return str
+}
+func (m *mapval) Typ() ObjTyp { return typMap }
 
 // ctrl.
 func (c *ctrl) Inspect() string {

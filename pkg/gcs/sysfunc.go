@@ -137,6 +137,8 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 		str = "number"
 	case typStr:
 		str = "string"
+	case typMap:
+		str = "map"
 	case typFun:
 		fallthrough
 	case typBif:

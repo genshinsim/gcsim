@@ -131,12 +131,13 @@ func New(input string) *Parser {
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
 	p.prefixParseFns[itemField] = p.parseField
 	p.prefixParseFns[itemNumber] = p.parseNumber
-	p.prefixParseFns[itemBool] = p.paserBool
+	p.prefixParseFns[itemBool] = p.parseBool
 	p.prefixParseFns[itemString] = p.parseString
 	p.prefixParseFns[keywordFn] = p.parseFnLit
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
 	p.prefixParseFns[ItemMinus] = p.parseUnaryExpr
 	p.prefixParseFns[itemLeftParen] = p.parseParen
+	p.prefixParseFns[itemLeftSquareParen] = p.parseMap
 	p.infixParseFns[LogicAnd] = p.parseBinaryExpr
 	p.infixParseFns[LogicOr] = p.parseBinaryExpr
 	p.infixParseFns[ItemPlus] = p.parseBinaryExpr
@@ -150,7 +151,6 @@ func New(input string) *Parser {
 	p.infixParseFns[OpGreaterThan] = p.parseBinaryExpr
 	p.infixParseFns[OpGreaterThanOrEqual] = p.parseBinaryExpr
 	p.infixParseFns[itemLeftParen] = p.parseCall
-
 	return p
 }
 
