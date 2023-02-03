@@ -1,5 +1,5 @@
 import { model } from "@gcsim/types";
-import DBEntryView from "./Components/DBEntryView";
+import DBEntryView from "./DBEntryView";
 
 export function ListView({ data }: { data: model.IDBEntries["data"] }) {
   if (!data) {

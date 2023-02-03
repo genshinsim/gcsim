@@ -3,8 +3,8 @@ import { model } from "@gcsim/types";
 import { Spinner } from "@blueprintjs/core";
 import { useEffect, useState } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames.";
-import { Filter, FilterState } from "./Filter";
-import { ListView } from "./ListView";
+import { Filter, FilterState } from "./Components/Filter";
+import { ListView } from "./Components/ListView";
 
 export function Database() {
   const [charFilter, setCharFilter] = useState<Record<string, FilterState>>(

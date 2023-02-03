@@ -1,6 +1,6 @@
 import { Collapse } from "@blueprintjs/core";
 import { useState } from "react";
-import { charNames } from "../../PipelineExtract/CharacterNames.";
+import { charNames } from "../../../PipelineExtract/CharacterNames.";
 
 const useTranslation = (key: string) => key;
 export enum FilterState {

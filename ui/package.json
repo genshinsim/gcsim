@@ -17,7 +17,7 @@
     "start:watch-wasm": "yarn workspace @gcsim/executors watch:web",
     "start:web": "yarn workspace @gcsim/web dev",
     "start:embed": "yarn workspace @gcsim/embed dev",
-    "start:db": "yarn workspace @gcsim/db dev",
+    "start:db": "yarn gen && yarn workspace @gcsim/db dev",
     "preview": "yarn run preview:web",
     "preview:web": "yarn workspace @gcsim/web preview",
     "build": "yarn run gen && yarn run build:wasm && yarn run build:web",
