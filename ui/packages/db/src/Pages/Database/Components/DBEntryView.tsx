@@ -9,11 +9,18 @@ function useTranslation() {
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
   const t = useTranslation();
+  const team = dbEntry.team ?? [];
+  if (team.length < 4) {
+    const diff = 4 - team.length;
+    for (let i = 0; i < diff; i++) {
+      team.push({} as model.ICharacter);
+    }
+  }
   return (
     <div className="flex flex-row bg-slate-800  p-4 gap-4 w-full">
       <div className="flex gap-2 flex-row min-w-fit ">
-        {dbEntry.team &&
-          dbEntry.team.map((char, index) => {
+        {team &&
+          team.map((char, index) => {
             return (
               <DBEntryCharacterPortrait {...char} key={index.toString()} />
             );
@@ -30,9 +37,9 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
           </div>
 
           <DBEntryDetails {...dbEntry} />
-          <DBEntryActions simulation_key={dbEntry.key} />
         </div>
       </div>
+      <DBEntryActions simulation_key={dbEntry.key} />
     </div>
   );
 }
@@ -43,6 +50,9 @@ function DBEntryCharacterPortrait({
   weapon,
   cons,
 }: model.ICharacter) {
+  if (!name) {
+    return <div className="bg-slate-700 p-2 flex flex-row w-20 h-20"></div>;
+  }
   return (
     <div className="bg-slate-700 p-2 flex flex-row w-20 h-20">
       <div className="flex flex-col  min-h-min">
@@ -161,27 +171,27 @@ function DBEntryDetails({
 model.IDBEntry) {
   const t = useTranslation();
   return (
-    <table className="table-auto table ">
+    <table className="bp4-html-table  ">
       <thead>
         <tr className="">
-          <th className="pr-4">{t("Sim Mode")}</th>
-          <th className="px-4">{t("Target Count")}</th>
-          <th className="px-4">{t("DPS per Target")}</th>
-          <th className="px-4">{t("AVG Total Damage")}</th>
-          <th className="px-4">{t("AVG Sim Time")}</th>
-          <th className="px-4">{t("Run Date")}</th>
+          <th className="">{t("Sim Mode")}</th>
+          <th className="">{t("Target Count")}</th>
+          <th className="">{t("DPS per Target")}</th>
+          <th className="">{t("AVG Total Damage")}</th>
+          <th className="">{t("AVG Sim Time")}</th>
+          <th className="">{t("Run Date")}</th>
         </tr>
       </thead>
       <tbody>
         <tr className=" ">
-          <td className="pr-4">{mode ? t("Time to kill") : t(" Duration")}</td>
-          <td className="px-4">{target_count}</td>
-          <td className="px-4">{mean_dps_per_target?.toPrecision(8)}</td>
-          <td className="px-4">{total_damage?.mean?.toPrecision(8)}</td>
-          <td className="px-4">
+          <td className="">{mode ? t("Time to kill") : t(" Duration")}</td>
+          <td className="">{target_count}</td>
+          <td className="">{mean_dps_per_target?.toPrecision(8)}</td>
+          <td className="">{total_damage?.mean?.toPrecision(8)}</td>
+          <td className="">
             {sim_duration?.mean?.toPrecision(3) ?? t("Unknown")}s
           </td>
-          <td className="px-4">{run_date?.toString() ?? t("Unknown")}</td>
+          <td className="">{run_date?.toString() ?? t("Unknown")}</td>
         </tr>
       </tbody>
     </table>
