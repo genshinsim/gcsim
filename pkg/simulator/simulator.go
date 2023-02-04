@@ -189,6 +189,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.Si
 			EnableHitlag:    simcfg.Settings.EnableHitlag,
 			DefHalt:         simcfg.Settings.DefHalt,
 			NumberOfWorkers: int64(simcfg.Settings.NumberOfWorkers),
+			Iterations:      int64(simcfg.Settings.Iterations),
 			Delays: &model.Delays{
 				Skill:  int64(simcfg.Settings.Delays.Skill),
 				Burst:  int64(simcfg.Settings.Delays.Burst),
