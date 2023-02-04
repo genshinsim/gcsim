@@ -60,13 +60,13 @@ function CharacterFilter({
 
   return (
     <div className="w-full">
-      <div
+      <button
         className=" bp4-button bp4-intent-primary pl-5 pr-3 w-full "
         onClick={() => setCharIsOpen(!charIsOpen)}
       >
         <div className=" grow">{t("Character")}</div>
         <div className="">{charIsOpen ? "-" : "+"}</div>
-      </div>
+      </button>
       <Collapse isOpen={charIsOpen}>
         <div className="grid grid-cols-3 gap-1 mt-1 ">
           {charNames.map((charName) => (
