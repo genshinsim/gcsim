@@ -33,7 +33,7 @@ export function Database() {
   }, [charFilter]);
 
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex flex-row gap-4 m-8">
       <Filter charFilter={charFilter} setCharFilter={setCharFilter} />
       {data ? <ListView data={data} /> : <Spinner />}
     </div>

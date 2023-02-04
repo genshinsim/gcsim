@@ -163,9 +163,9 @@ function DBEntryDetails({
       {mean_dps_per_target && (
         <div>Mean DPS Per Target: {mean_dps_per_target.toPrecision(8)}</div>
       )}
-      {total_damage && (
+      {/* {total_damage && (
         <div>Total Damage AVG: {total_damage.mean.toPrecision(8)}</div>
-      )}
+      )} */}
       {sim_duration && <div>Sim Duration AVG: {sim_duration.mean}s</div>}
 
       {run_date && <div>Run Date: {JSON.stringify(run_date)}</div>}

@@ -1,5 +1,6 @@
-import { Collapse } from "@blueprintjs/core";
+import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
 import { useState } from "react";
+import { FaFilter } from "react-icons/fa";
 import { charNames } from "../../../PipelineExtract/CharacterNames.";
 
 const useTranslation = (key: string) => key;
@@ -16,20 +17,58 @@ export function Filter({
   setCharFilter: (newFilter: Record<string, FilterState>) => void;
 }) {
   const t = useTranslation;
+
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="">
+      <button
+        className="flex flex-row gap-2 bp4-button justify-center items-center p-3 bp4-intent-primary "
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <FaFilter size={24} className="opacity-80" />
+        {/* <div className="text-xl pb-1 ">{t("Filter")}</div> */}
+      </button>
+      <Drawer
+        isOpen={isOpen}
+        canEscapeKeyClose={true}
+        canOutsideClickClose
+        autoFocus
+        isCloseButtonShown
+        title={t("Filter")}
+        onClose={() => setIsOpen(false)}
+        position={Position.LEFT}
+        size={DrawerSize.SMALL}
+      >
+        <CharacterFilter
+          charFilter={charFilter}
+          setCharFilter={setCharFilter}
+        />
+      </Drawer>
+    </div>
+  );
+}
+
+function CharacterFilter({
+  charFilter,
+  setCharFilter,
+}: {
+  charFilter: Record<string, FilterState>;
+  setCharFilter: (newFilter: Record<string, FilterState>) => void;
+}) {
   const [charIsOpen, setCharIsOpen] = useState(false);
+  const t = useTranslation;
 
   return (
-    <div className="w-96 bg-slate-800 p-4">
-      <div className="text-2xl pb-2 ">{t("Filter")}</div>
+    <div className="w-full">
       <div
-        className="flex flex-row  bp4-button"
+        className=" bp4-button bp4-intent-primary pl-5 pr-3 w-full "
         onClick={() => setCharIsOpen(!charIsOpen)}
       >
-        <div className="grow ">{t("Character")}</div>
-        <div>{charIsOpen ? "-" : "+"}</div>
+        <div className=" grow">{t("Character")}</div>
+        <div className="">{charIsOpen ? "-" : "+"}</div>
       </div>
       <Collapse isOpen={charIsOpen}>
-        <div className="grid grid-cols-3 gap-1 mt-1">
+        <div className="grid grid-cols-3 gap-1 mt-1 ">
           {charNames.map((charName) => (
             <CharFilterButton
               key={charName}
