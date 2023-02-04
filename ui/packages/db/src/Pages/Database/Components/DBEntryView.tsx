@@ -8,7 +8,7 @@ function useTranslation() {
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
-  const t = useTranslation();
+  // const t = useTranslation();
   const team = dbEntry.team ?? [];
   if (team.length < 4) {
     const diff = 4 - team.length;
