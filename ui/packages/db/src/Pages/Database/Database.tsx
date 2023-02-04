@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames.";
 import { Filter, FilterState } from "./Components/Filter";
 import { ListView } from "./Components/ListView";
+import Sorter from "./Components/Sorter";
 
 export function Database() {
   const [charFilter, setCharFilter] = useState<Record<string, FilterState>>(
@@ -33,8 +34,14 @@ export function Database() {
   }, [charFilter]);
 
   return (
-    <div className="flex flex-row gap-4 m-8">
-      <Filter charFilter={charFilter} setCharFilter={setCharFilter} />
+    <div className="flex flex-col  gap-4 m-8 my-4">
+      <div className="flex flex-row justify-between items-center">
+        <Filter charFilter={charFilter} setCharFilter={setCharFilter} />
+        <div className="text-base  md:text-2xl">{`Showing ${
+          data?.length ?? 0
+        } Simulations `}</div>
+        <Sorter />
+      </div>
       {data ? <ListView data={data} /> : <Spinner />}
     </div>
   );
