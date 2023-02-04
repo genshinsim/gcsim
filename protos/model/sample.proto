@@ -1,0 +1,19 @@
+syntax = "proto3";
+package model;
+option go_package="github.com/genshinsim/gcsim/pkg/model";
+
+import "protos/model/sim.proto";
+import "google/protobuf/struct.proto";
+
+message Sample {
+  string sim_version = 1 [json_name="sim_version"];
+  string build_date = 2 [json_name="build_date"];
+  bool modified = 3 [json_name="modified"];
+  
+  string config = 4 [json_name="config"];
+  string initial_character = 5 [json_name="initial_character"];
+  repeated Character character_details = 6 [json_name="character_details"];
+  repeated Enemy target_details = 7 [json_name="target_details"];
+  string seed = 8 [json_name="seed"];
+  repeated google.protobuf.Struct logs = 9 [json_name="logs"];
+}

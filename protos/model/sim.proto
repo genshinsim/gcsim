@@ -1,20 +1,18 @@
 syntax = "proto3";
 package model;
-option go_package="pkg/model";
-
+option go_package="github.com/genshinsim/gcsim/pkg/model";
 
 message Character {
-    string key = 1 [json_name="key"];
-    string name = 2 [json_name="name"];
-    string element = 3 [json_name="element"];
-    int64 level = 4 [json_name="level"];
-    int64 max_level = 5 [json_name="max_level"];
-    int64 cons = 6 [json_name="cons"];
-    Weapon weapon = 7 [json_name="weapon"];
-    CharacterTalents talents = 8 [json_name="talents"];
-    map<string, int64> sets = 9 [json_name="sets"];
-    map<string, double> stats = 10 [json_name="stats"];
-    map<string, double> snapshot = 11 [json_name="snapshot"];
+    string name = 1 [json_name="name"];
+    string element = 2 [json_name="element"];
+    int64 level = 3 [json_name="level"];
+    int64 max_level = 4 [json_name="max_level"];
+    int64 cons = 5 [json_name="cons"];
+    Weapon weapon = 6 [json_name="weapon"];
+    CharacterTalents talents = 7 [json_name="talents"];
+    map<string, int64> sets = 8 [json_name="sets"];
+    repeated double stats = 9 [json_name="stats"];
+    repeated double snapshot_stats = 10 [json_name="snapshot"];
 }
 
 message CharacterTalents {
@@ -34,7 +32,7 @@ message Enemy {
     int64 level = 1 [json_name="level"];
     double HP = 2 [json_name="hp"];
     map<string, double> resist = 3 [json_name="resist"];
-    Coord pos = 4 [json_name="pos"];
+    Coord pos = 4 [json_name="position"];
     double particle_drop_threshold = 5 [json_name="particle_drop_threshold"];
     double particle_drop_count = 6 [json_name="particle_drop_count"];
     string particle_element = 7 [json_name="particle_element"];
@@ -52,13 +50,20 @@ message SimulatorSettings {
     bool enable_hitlag = 3 [json_name="enable_hitlag"];
     bool def_halt = 4 [json_name="def_halt"];
     int64 number_of_workers = 5 [json_name="number_of_workers"];
-    int64 number_of_iterations = 6 [json_name="number_of_iterations"];
+    int64 iterations = 6 [json_name="iterations"];
     Delays delays = 7 [json_name="delays"];
 
 }
 
 message Delays {
-    int64 swap = 1 [json_name="swap"];
+    int64 skill = 1 [json_name="skill"];
+    int64 burst = 2 [json_name="burst"];
+    int64 attack = 3 [json_name="attack"];
+    int64 charge = 4 [json_name="charge"];
+    int64 aim = 5 [json_name="aim"];
+    int64 dash = 6 [json_name="dash"];
+    int64 jump = 7 [json_name="jump"];
+    int64 swap = 8 [json_name="swap"];
 }
 
 
@@ -196,4 +201,9 @@ enum StatType {
     FIGHT_PROP_BASE_ATTACK = 23; // base attack
     FIGHT_PROP_BASE_DEFENSE = 24; // base defense
     FIGHT_PROP_MAX_HP = 25; // max hp; not really used?
+}
+
+enum SimMode {
+    DURATION_MODE = 0;
+    TTK_MODE = 1;
 }

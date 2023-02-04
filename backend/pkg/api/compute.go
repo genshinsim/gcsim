@@ -3,10 +3,7 @@ package api
 import (
 	"compress/gzip"
 	"net/http"
-
-	"google.golang.org/protobuf/encoding/protojson"
 )
-
 
 func (s *Server) getWork() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +18,7 @@ func (s *Server) getWork() http.HandlerFunc {
 			return
 		}
 
-		data, err := protojson.Marshal(work)
+		data, err := work.MarshalJson()
 		if err != nil {
 			s.Log.Warnw("error get compute work - cannot marshal result", "err", err)
 			http.Error(w, "internal server error", http.StatusInternalServerError)

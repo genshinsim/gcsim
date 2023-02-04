@@ -9,8 +9,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/result"
-	"github.com/genshinsim/gcsim/pkg/sample"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -28,7 +27,7 @@ var buffer []byte
 
 // Aggregator variables
 var aggregators []agg.Aggregator
-var cachedResult result.Summary
+var cachedResult *model.SimulationResult
 
 func main() {
 	//GOOS=js GOARCH=wasm go build -o main.wasm
@@ -69,12 +68,12 @@ func doSample(this js.Value, args []js.Value) (out interface{}) {
 	cfg := args[0].String()
 	seed, _ := strconv.ParseUint(args[1].String(), 10, 64)
 
-	data, err := sample.GenerateSampleWithSeed(cfg, seed, opts)
+	data, err := simulator.GenerateSampleWithSeed(cfg, seed, opts)
 	if err != nil {
 		return marshal(err)
 	}
 
-	marshalled, err := json.Marshal(data)
+	marshalled, err := data.MarshalJson()
 	if err != nil {
 		return marshal(err)
 	}
@@ -189,7 +188,7 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 	// // store the result for reuse
 	cachedResult = result
 
-	marshalled, err := json.Marshal(result)
+	marshalled, err := result.MarshalJson()
 	if err != nil {
 		return marshal(err)
 	}
@@ -244,9 +243,9 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 
 	startTime := args[0].Int()
 
-	stats := agg.Result{}
+	stats := &model.SimulationStatistics{}
 	for _, a := range aggregators {
-		a.Flush(&stats)
+		a.Flush(stats)
 	}
 	stats.Runtime = float64(time.Now().Nanosecond() - startTime)
 
@@ -254,11 +253,12 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 	cachedResult.Statistics = stats
 	hash, _ := cachedResult.Sign(shareKey)
 
-	signedResults := make(map[string]interface{})
-	signedResults["stats"] = stats
-	signedResults["hash"] = hash
+	signedResults := &model.SignedSimulationStatistics{
+		Stats: stats,
+		Hash:  hash,
+	}
 
-	marshalled, err := json.Marshal(signedResults)
+	marshalled, err := signedResults.MarshalJson()
 	if err != nil {
 		return marshal(err)
 	}

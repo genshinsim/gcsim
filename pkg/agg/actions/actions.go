@@ -1,12 +1,11 @@
 package actions
 
 import (
-	"math"
-
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -19,10 +18,10 @@ type buffer struct {
 }
 
 type charFailures struct {
-	energy  calc.StreamStats
-	stamina calc.StreamStats
-	swap    calc.StreamStats
-	skill   calc.StreamStats
+	energy  *calc.StreamStats
+	stamina *calc.StreamStats
+	swap    *calc.StreamStats
+	skill   *calc.StreamStats
 }
 
 func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
@@ -32,10 +31,10 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 
 	for i := 0; i < len(cfg.Characters); i++ {
 		out.failures[i] = charFailures{
-			energy:  calc.StreamStats{},
-			stamina: calc.StreamStats{},
-			swap:    calc.StreamStats{},
-			skill:   calc.StreamStats{},
+			energy:  &calc.StreamStats{},
+			stamina: &calc.StreamStats{},
+			swap:    &calc.StreamStats{},
+			skill:   &calc.StreamStats{},
 		}
 	}
 
@@ -66,27 +65,14 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *agg.Result) {
-	result.FailedActions = make([]agg.FailedActions, len(b.failures))
+func (b *buffer) Flush(result *model.SimulationStatistics) {
+	result.FailedActions = make([]*model.FailedActions, len(b.failures))
 	for i, c := range b.failures {
-		result.FailedActions[i] = agg.FailedActions{
-			InsufficientEnergy:  toFloatStat(c.energy),
-			InsufficientStamina: toFloatStat(c.stamina),
-			SwapCD:              toFloatStat(c.swap),
-			SkillCD:             toFloatStat(c.skill),
+		result.FailedActions[i] = &model.FailedActions{
+			InsufficientEnergy:  agg.ToDescriptiveStats(c.energy),
+			InsufficientStamina: agg.ToDescriptiveStats(c.stamina),
+			SwapCd:              agg.ToDescriptiveStats(c.swap),
+			SkillCd:             agg.ToDescriptiveStats(c.skill),
 		}
 	}
-}
-
-func toFloatStat(input calc.StreamStats) agg.FloatStat {
-	out := agg.FloatStat{
-		Min:  input.Min,
-		Max:  input.Max,
-		Mean: input.Mean(),
-		SD:   input.StdDev(),
-	}
-	if math.IsNaN(out.SD) {
-		out.SD = 0
-	}
-	return out
 }

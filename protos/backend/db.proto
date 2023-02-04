@@ -1,6 +1,6 @@
 syntax = "proto3";
 package db;
-option go_package="backend/pkg/services/db";
+option go_package="github.com/genshinsim/gcsim/backend/pkg/services/db";
 
 import "protos/model/db.proto";
 

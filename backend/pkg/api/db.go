@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -86,7 +85,7 @@ func (s *Server) getDB() http.HandlerFunc {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
-		data, err := protojson.Marshal(res)
+		data, err := res.MarshalJson()
 		if err != nil {
 			s.Log.Warnw("error query db - cannot marshal result", "err", err)
 			http.Error(w, "internal server error", http.StatusInternalServerError)

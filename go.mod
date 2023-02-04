@@ -13,6 +13,7 @@ require (
 )
 
 require (
+	github.com/golang/protobuf v1.5.0
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/philhofer/fwd v1.1.2-0.20210722190033-5c56ac6d0bb9 // indirect
 	go.uber.org/atomic v1.7.0 // indirect

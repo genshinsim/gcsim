@@ -7,59 +7,34 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-type CharacterDetail struct {
-	Name          string         `json:"name"`
-	Element       string         `json:"element"`
-	Level         int            `json:"level"`
-	MaxLevel      int            `json:"max_level"`
-	Cons          int            `json:"cons"`
-	Weapon        WeaponDetail   `json:"weapon"`
-	Talents       TalentDetail   `json:"talents"`
-	Sets          map[string]int `json:"sets"`
-	Stats         []float64      `json:"stats"`
-	SnapshotStats []float64      `json:"snapshot"`
-}
-
-type WeaponDetail struct {
-	Name     string `json:"name"`
-	Refine   int    `json:"refine"`
-	Level    int    `json:"level"`
-	MaxLevel int    `json:"max_level"`
-}
-
-type TalentDetail struct {
-	Attack int `json:"attack"`
-	Skill  int `json:"skill"`
-	Burst  int `json:"burst"`
-}
-
-func (sim *Simulation) CharacterDetails() []CharacterDetail {
-	out := make([]CharacterDetail, len(sim.C.Player.Chars()))
+func (sim *Simulation) CharacterDetails() []*model.Character {
+	out := make([]*model.Character, len(sim.C.Player.Chars()))
 
 	for i, v := range sim.cfg.Characters {
-		m := make(map[string]int)
+		m := make(map[string]int64)
 		for k, v := range v.Sets {
-			m[k.String()] = v
+			m[k.String()] = int64(v)
 		}
 
-		char := CharacterDetail{
+		char := &model.Character{
 			Name:     v.Base.Key.String(),
 			Element:  v.Base.Element.String(),
-			Level:    v.Base.Level,
-			MaxLevel: v.Base.MaxLevel,
-			Cons:     v.Base.Cons,
-			Weapon: WeaponDetail{
+			Level:    int64(v.Base.Level),
+			MaxLevel: int64(v.Base.MaxLevel),
+			Cons:     int64(v.Base.Cons),
+			Weapon: &model.Weapon{
 				Name:     v.Weapon.Key.String(),
-				Refine:   v.Weapon.Refine,
-				Level:    v.Weapon.Level,
-				MaxLevel: v.Weapon.MaxLevel,
+				Refine:   int64(v.Weapon.Refine),
+				Level:    int64(v.Weapon.Level),
+				MaxLevel: int64(v.Weapon.MaxLevel),
 			},
-			Talents: TalentDetail{
-				Attack: v.Talents.Attack,
-				Skill:  v.Talents.Skill,
-				Burst:  v.Talents.Burst,
+			Talents: &model.CharacterTalents{
+				Attack: int64(v.Talents.Attack),
+				Skill:  int64(v.Talents.Skill),
+				Burst:  int64(v.Talents.Burst),
 			},
 			Sets:  m,
 			Stats: v.Stats,

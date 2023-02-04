@@ -11,9 +11,8 @@ import (
 	"runtime/pprof"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/optimization"
-	"github.com/genshinsim/gcsim/pkg/result"
-	"github.com/genshinsim/gcsim/pkg/sample"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
@@ -113,7 +112,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	}
 
 	// TODO: should perform the config parsing here and then share the parsed results between run & sample
-	var res result.Summary
+	var res *model.SimulationResult
 	var hash string
 	var err error
 
@@ -141,7 +140,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 			return
 		}
 
-		sample, err := sample.GenerateSampleWithSeed(cfg, seed, simopt)
+		sample, err := simulator.GenerateSampleWithSeed(cfg, seed, simopt)
 		if err != nil {
 			log.Println(err)
 			return

@@ -17,7 +17,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
-	"github.com/genshinsim/gcsim/pkg/result"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 	"github.com/genshinsim/gcsim/pkg/worker"
 )
@@ -75,17 +75,17 @@ func Parse(cfg string) (*ast.ActionList, error) {
 }
 
 // Run will run the simulation given number of times
-func Run(opts Options, ctx context.Context) (result.Summary, error) {
+func Run(opts Options, ctx context.Context) (*model.SimulationResult, error) {
 	start := time.Now()
 
 	cfg, err := ReadConfig(opts.ConfigPath)
 	if err != nil {
-		return result.Summary{}, err
+		return &model.SimulationResult{}, err
 	}
 
 	simcfg, err := Parse(cfg)
 	if err != nil {
-		return result.Summary{}, err
+		return &model.SimulationResult{}, err
 	}
 
 	return RunWithConfig(cfg, simcfg, opts, start, ctx)
@@ -94,13 +94,13 @@ func Run(opts Options, ctx context.Context) (result.Summary, error) {
 // Runs the simulation with a given parsed config
 // TODO: cfg string should be in the action list instead
 // TODO: need to add a context here to avoid infinite looping
-func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.Time, ctx context.Context) (result.Summary, error) {
+func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.Time, ctx context.Context) (*model.SimulationResult, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
 		a, err := aggregator(simcfg)
 		if err != nil {
-			return result.Summary{}, err
+			return &model.SimulationResult{}, err
 		}
 		aggregators = append(aggregators, a)
 	}
@@ -138,9 +138,9 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 			count += 1
 		case err := <-errCh:
 			//error encountered
-			return result.Summary{}, err
+			return &model.SimulationResult{}, err
 		case <-ctx.Done():
-			return result.Summary{}, ctx.Err()
+			return &model.SimulationResult{}, ctx.Err()
 		}
 	}
 
@@ -150,9 +150,9 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 	}
 
 	// generate final agg results
-	stats := agg.Result{}
+	stats := &model.SimulationStatistics{}
 	for _, a := range aggregators {
-		a.Flush(&stats)
+		a.Flush(stats)
 	}
 	result.Statistics = stats
 	result.Statistics.Runtime = float64(time.Since(start).Nanoseconds())
@@ -169,8 +169,8 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 }
 
 // Note: this generation should be iteration independent (iterations do not change output)
-func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
-	result := result.Summary{
+func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.SimulationResult, error) {
+	result := &model.SimulationResult{
 		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
 		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES
 		// SemVer spec
@@ -179,20 +179,64 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (result.Su
 		//    Minor: increase if new schema is backwards compatible with previous
 		//        Ex - added new data for new graph on UI. UI still functional if this data is missing
 		// Increasing the version will result in the UI flagging all old sims as outdated
-		SchemaVersion:     result.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
-		SimVersion:        sha1ver,
-		BuildDate:         buildTime,
-		Modified:          modified,
-		SimulatorSettings: simcfg.Settings,
-		EnergySettings:    simcfg.Energy,
-		Config:            cfg,
-		SampleSeed:        strconv.FormatUint(uint64(CryptoRandSeed()), 10),
-		TargetDetails:     simcfg.Targets,
-		InitialCharacter:  simcfg.InitialChar.String(),
+		SchemaVersion: &model.Version{Major: 4, Minor: 0}, // MAKE SURE UI VERSION IS IN SYNC
+		SimVersion:    sha1ver,
+		BuildDate:     buildTime,
+		Modified:      modified,
+		SimulatorSettings: &model.SimulatorSettings{
+			Duration:        simcfg.Settings.Duration,
+			DamageMode:      simcfg.Settings.DamageMode,
+			EnableHitlag:    simcfg.Settings.EnableHitlag,
+			DefHalt:         simcfg.Settings.DefHalt,
+			NumberOfWorkers: int64(simcfg.Settings.NumberOfWorkers),
+			Delays: &model.Delays{
+				Skill:  int64(simcfg.Settings.Delays.Skill),
+				Burst:  int64(simcfg.Settings.Delays.Burst),
+				Attack: int64(simcfg.Settings.Delays.Attack),
+				Charge: int64(simcfg.Settings.Delays.Charge),
+				Aim:    int64(simcfg.Settings.Delays.Aim),
+				Dash:   int64(simcfg.Settings.Delays.Dash),
+				Jump:   int64(simcfg.Settings.Delays.Jump),
+				Swap:   int64(simcfg.Settings.Delays.Swap),
+			},
+		},
+		EnergySettings: &model.EnergySettings{
+			Active:         simcfg.Energy.Active,
+			Once:           simcfg.Energy.Once,
+			Start:          int64(simcfg.Energy.Start),
+			End:            int64(simcfg.Energy.End),
+			Amount:         int64(simcfg.Energy.Amount),
+			LastEnergyDrop: int64(simcfg.Energy.LastEnergyDrop),
+		},
+		Config:           cfg,
+		SampleSeed:       strconv.FormatUint(uint64(CryptoRandSeed()), 10),
+		InitialCharacter: simcfg.InitialChar.String(),
+		TargetDetails:    make([]*model.Enemy, len(simcfg.Targets)),
+	}
+
+	for i, target := range simcfg.Targets {
+		resist := make(map[string]float64)
+		for k, v := range target.Resist {
+			resist[k.String()] = v
+		}
+
+		result.TargetDetails[i] = &model.Enemy{
+			Level:  int64(target.Level),
+			HP:     target.HP,
+			Resist: resist,
+			Pos: &model.Coord{
+				X: target.Pos.X,
+				Y: target.Pos.Y,
+				R: target.Pos.R,
+			},
+			ParticleDropThreshold: target.ParticleDropThreshold,
+			ParticleDropCount:     target.ParticleDropCount,
+			ParticleElement:       target.ParticleElement.String(),
+		}
 	}
 
 	if simcfg.Settings.DamageMode {
-		result.Mode = 1
+		result.Mode = model.SimMode_TTK_MODE
 	}
 
 	charDetails, err := GenerateCharacterDetails(simcfg)

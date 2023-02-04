@@ -116,12 +116,11 @@ func parseAndComputeEntry(e entry) (m *model.DBEntry, err error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	summary, err := simulator.RunWithConfig(string(cfg), simcfg, simulator.Options{}, time.Now(), ctx)
+	result, err := simulator.RunWithConfig(string(cfg), simcfg, simulator.Options{}, time.Now(), ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	m = summary.ToPBDBEntry()
-
+	m = result.ToDBEntry()
 	return
 }

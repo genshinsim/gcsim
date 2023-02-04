@@ -6,6 +6,7 @@ import (
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -79,7 +80,7 @@ func (b *buffer) Add(result stats.Result) {
 	b.eps.Xs[i] /= b.duration.Xs[i]
 }
 
-func (b *buffer) Flush(result *agg.Result) {
+func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.Duration = convert(b.duration)
 	result.DPS = convert(b.dps)
 	result.RPS = convert(b.rps)
@@ -87,7 +88,7 @@ func (b *buffer) Flush(result *agg.Result) {
 	result.HPS = convert(b.hps)
 	result.SHP = convert(b.shp)
 
-	result.TotalDamage = agg.SummaryStat{
+	result.TotalDamage = &model.OverviewStats{
 		Min:  b.totalDamage.Min,
 		Max:  b.totalDamage.Max,
 		Mean: b.totalDamage.Mean(),
@@ -98,11 +99,11 @@ func (b *buffer) Flush(result *agg.Result) {
 	}
 }
 
-func convert(input calc.Sample) agg.SummaryStat {
+func convert(input calc.Sample) *model.OverviewStats {
 	input.Sorted = false
 	input.Sort()
 
-	out := agg.SummaryStat{
+	out := model.OverviewStats{
 		Mean: input.Mean(),
 		SD:   input.StdDev(),
 		Q1:   input.Quantile(0.25),
@@ -117,12 +118,12 @@ func convert(input calc.Sample) agg.SummaryStat {
 	// Scott's normal reference rule
 	h := (3.49 * out.SD) / (math.Pow(float64(len(input.Xs)), 1.0/3.0))
 	if h == 0.0 || out.Max == out.Min {
-		hist := make([]uint, 1)
-		hist[0] = uint(len(input.Xs))
+		hist := make([]uint64, 1)
+		hist[0] = uint64(len(input.Xs))
 		out.Hist = hist
 	} else {
 		nbins := int(math.Ceil((out.Max - out.Min) / h))
-		hist := calc.NewLinearHist(out.Min, out.Max, nbins)
+		hist := agg.NewLinearHist(out.Min, out.Max, nbins)
 		for _, x := range input.Xs {
 			hist.Add(x)
 		}
@@ -132,5 +133,5 @@ func convert(input calc.Sample) agg.SummaryStat {
 		out.Hist = bins
 	}
 
-	return out
+	return &out
 }
