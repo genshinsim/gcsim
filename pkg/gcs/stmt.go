@@ -3,8 +3,6 @@ package gcs
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -16,8 +14,6 @@ func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
 		return e.evalLet(v, env)
 	case *ast.FnStmt:
 		return e.evalFnStmt(v, env)
-	case *ast.ActionStmt:
-		return e.evalAction(v, env)
 	case *ast.ReturnStmt:
 		return e.evalReturnStmt(v, env)
 	case *ast.CtrlStmt:
@@ -107,41 +103,6 @@ func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) (Obj, error) {
 	*n = res
 
 	return *n, nil
-}
-
-func (e *Eval) execSwap(char keys.Char) (Obj, error) {
-	e.Work <- &ast.ActionStmt{
-		Char:   char,
-		Action: action.ActionSwap,
-	}
-	_, ok := <-e.Next
-	if !ok {
-		return nil, ErrTerminated // no more work, shutting down
-	}
-
-	return &null{}, nil
-}
-
-func (e *Eval) evalAction(a *ast.ActionStmt, env *Env) (Obj, error) {
-	// check if character is active, if not then issue a swap action first
-	if !e.Core.Player.CharIsActive(a.Char) {
-		res, err := e.execSwap(a.Char)
-		if err != nil {
-			return nil, err
-		}
-		if res.Typ() != typNull {
-			return res, nil
-		}
-	}
-
-	// TODO: should we make a copy of action here??
-	e.Work <- a
-	// block until sim is done with the action; unless we're done
-	_, ok := <-e.Next
-	if !ok {
-		return nil, ErrTerminated // no more work, shutting down
-	}
-	return &null{}, nil
 }
 
 func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {

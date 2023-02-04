@@ -114,7 +114,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 		return &number{}, nil
 	}
 
-	e.Work <- &ast.ActionStmt{
+	e.Work <- &action.ActionEval{
 		Action: action.ActionWait,
 		Param:  map[string]int{"f": f},
 	}
@@ -488,7 +488,7 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
-	//eval(char, action[, params])
+	//execute_action(char, action[, params])
 	if len(c.Args) != 2 && len(c.Args) != 3 {
 		return nil, fmt.Errorf("invalid number of params for execute_action, expected 2 or 3 got %v", len(c.Args))
 	}
@@ -534,9 +534,23 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 	}
 
-	e.Work <- &ast.ActionStmt{
-		Char:   keys.Char(char.ival),
-		Action: action.Action(ac.ival),
+	charKey := keys.Char(char.ival)
+	actionKey := action.Action(ac.ival)
+	if !e.Core.Player.CharIsActive(charKey) && actionKey != action.ActionSwap {
+		// swap
+		e.Work <- &action.ActionEval{
+			Char:   charKey,
+			Action: action.ActionSwap,
+		}
+		_, ok := <-e.Next
+		if !ok {
+			return nil, ErrTerminated // no more work, shutting down
+		}
+	}
+
+	e.Work <- &action.ActionEval{
+		Char:   charKey,
+		Action: actionKey,
 		Param:  params,
 	}
 	_, ok := <-e.Next

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 // TODO: add a sync.Pool here to save some memory allocs
@@ -22,6 +24,13 @@ type ActionInfo struct {
 	UseNormalizedTime    func(next Action) bool
 	//hidden stuff
 	queued []queuedAction
+}
+
+// ActionEval represents a sim action
+type ActionEval struct {
+	Char   keys.Char
+	Action Action
+	Param  map[string]int
 }
 
 type queuedAction struct {

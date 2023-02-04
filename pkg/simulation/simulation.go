@@ -3,6 +3,7 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -15,8 +16,8 @@ type Simulation struct {
 	C    *core.Core
 	//action list stuff
 	cfg           *ast.ActionList
-	queue         *ast.ActionStmt
-	nextAction    chan *ast.ActionStmt
+	queue         *action.ActionEval
+	nextAction    chan *action.ActionEval
 	continueEval  chan bool
 	evalErr       chan error
 	queuer        gcs.Eval

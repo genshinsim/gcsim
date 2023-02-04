@@ -10,7 +10,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/gcs"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -28,7 +27,7 @@ func (s *Simulation) Run() (stats.Result, error) {
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
 
 	//setup ast
-	s.nextAction = make(chan *ast.ActionStmt)
+	s.nextAction = make(chan *action.ActionEval)
 	s.continueEval = make(chan bool)
 	s.evalErr = make(chan error)
 	s.queuer = gcs.Eval{

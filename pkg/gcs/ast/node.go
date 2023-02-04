@@ -3,9 +3,6 @@ package ast
 import (
 	"strconv"
 	"strings"
-
-	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type Node interface {
@@ -39,14 +36,6 @@ type (
 	BlockStmt struct {
 		List []Node
 		Pos
-	}
-
-	// ActionStmt represents a sim action; Does not produce a value
-	ActionStmt struct {
-		Pos
-		Char   keys.Char
-		Action action.Action
-		Param  map[string]int
 	}
 
 	// AssignStmt represents assigning of a value to a previously declared variable
@@ -134,7 +123,6 @@ const (
 
 // stmtNode()
 func (*BlockStmt) stmtNode()  {}
-func (*ActionStmt) stmtNode() {}
 func (*AssignStmt) stmtNode() {}
 func (*LetStmt) stmtNode()    {}
 func (*CtrlStmt) stmtNode()   {}
@@ -184,55 +172,6 @@ func (b *BlockStmt) CopyStmt() Stmt {
 
 func (b *BlockStmt) Copy() Node {
 	return b.CopyBlock()
-}
-
-// ActionStmt.
-
-func (a *ActionStmt) String() string {
-	var sb strings.Builder
-	a.writeTo(&sb)
-	return sb.String()
-}
-
-func (a *ActionStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString(a.Char.String())
-	sb.WriteString(" ")
-	sb.WriteString(a.Action.String())
-	if a.Param != nil && len(a.Param) > 0 {
-		sb.WriteString("[")
-		for k, v := range a.Param {
-			sb.WriteString(k)
-			sb.WriteString("=")
-			sb.WriteString(strconv.FormatInt(int64(v), 10))
-		}
-		sb.WriteString("]")
-	}
-}
-
-func (a *ActionStmt) CopyActionStmt() *ActionStmt {
-	if a == nil {
-		return a
-	}
-	n := &ActionStmt{
-		Pos:    a.Pos,
-		Char:   a.Char,
-		Action: a.Action,
-	}
-	if a.Param != nil {
-		n.Param = make(map[string]int)
-		for k, v := range a.Param {
-			n.Param[k] = v
-		}
-	}
-	return n
-}
-
-func (a *ActionStmt) CopyStmt() Stmt {
-	return a.CopyActionStmt()
-}
-
-func (a *ActionStmt) Copy() Node {
-	return a.CopyActionStmt()
 }
 
 // AssignStmt.
@@ -668,11 +607,6 @@ type (
 		Pos
 		Args []*Ident
 		Body *BlockStmt
-	}
-
-	BoolLit struct {
-		Pos
-		Value float64
 	}
 
 	Ident struct {

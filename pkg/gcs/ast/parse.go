@@ -901,6 +901,11 @@ func (p *Parser) parseMap() (Expr, error) {
 		Fields: make(map[string]Expr),
 	}
 
+	if p.peek().Typ == itemRightSquareParen { // empty map
+		p.next()
+		return expr, nil
+	}
+
 	//loop until we hit square paren
 	for {
 		//we're expecting ident = int

@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -15,7 +16,7 @@ type Eval struct {
 	Core *core.Core
 	AST  ast.Node
 	Next chan bool
-	Work chan *ast.ActionStmt
+	Work chan *action.ActionEval
 	Log  *log.Logger
 	Err  chan error
 }

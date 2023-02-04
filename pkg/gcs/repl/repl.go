@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
@@ -14,7 +15,7 @@ const Prompt = ">> "
 
 func Eval(s string, log *log.Logger) {
 
-	simActions := make(chan *ast.ActionStmt)
+	simActions := make(chan *action.ActionEval)
 	done := make(chan bool)
 	go handleSimActions(simActions, done)
 
@@ -59,7 +60,7 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 	scanner := bufio.NewScanner(in)
 
 	for {
-		simActions := make(chan *ast.ActionStmt)
+		simActions := make(chan *action.ActionEval)
 		next := make(chan bool)
 		go handleSimActions(simActions, next)
 
@@ -96,13 +97,13 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 	}
 }
 
-func handleSimActions(in chan *ast.ActionStmt, next chan bool) {
+func handleSimActions(in chan *action.ActionEval, next chan bool) {
 	for {
 		next <- true
 		x, ok := <-in
 		if !ok {
 			return
 		}
-		fmt.Printf("\tExecuting: %v\n", x.String())
+		fmt.Printf("\tExecuting: %v\n", x.Action.String())
 	}
 }

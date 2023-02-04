@@ -98,7 +98,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 				}
 				p.backup()
 				//overriding here if it already exists
-				c.Params, err = p.acceptOptionalParamReturnMap()
+				c.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
 				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
 			}
@@ -167,7 +167,7 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 				}
 				p.backup()
 				//overriding here if it already exists
-				c.SetParams[label], err = p.acceptOptionalParamReturnMap()
+				c.SetParams[label], err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
 				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
 			}
@@ -228,7 +228,7 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 				}
 				p.backup()
 				//overriding here if it already exists
-				c.Weapon.Params, err = p.acceptOptionalParamReturnMap()
+				c.Weapon.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
 				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
 			}
