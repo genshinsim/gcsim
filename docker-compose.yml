@@ -38,9 +38,6 @@ services:
     environment:
       - ASSETS_DATA_PATH=/assets
       - RESULT_STORE_URL=result:3000
-      - MQTT_URL=mqtt:1883
-      - MQTT_USERNAME=mosquitto
-      - MQTT_PASSWORD=password
     restart: unless-stopped
   jadechamber:
     container_name: jadechamber
@@ -58,6 +55,9 @@ services:
       - RESULT_STORE_URL=result:3000
       - DB_STORE_URL=db:3000
       - SHARE_KEY_FILE=/keys.json
+      - MQTT_URL=mqtt:1883
+      - MQTT_USERNAME=mosquitto
+      - MQTT_PASSWORD=password
     restart: unless-stopped
   result:
     container_name: result
