@@ -91,6 +91,11 @@ func main() {
 			JWTKey:       os.Getenv("JWT_KEY"),
 		},
 		AESDecryptionKeys: keys,
+		MQTTConfig: api.MQTTConfig{
+			MQTTUser: os.Getenv("MQTT_USERNAME"),
+			MQTTPass: os.Getenv("MQTT_PASSWORD"),
+			MQTTHost: os.Getenv("MQTT_URL"),
+		},
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil
