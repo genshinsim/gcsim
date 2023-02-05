@@ -11,8 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
-const skillParticleICDKey = "ningguang-particle-icd"
-
 func init() {
 	core.RegisterCharFunc(keys.Ningguang, NewChar)
 }
