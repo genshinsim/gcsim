@@ -11,15 +11,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 const (
-	skillPressCDStart = 2
-	skillPressHitmark = 4
-	skillHoldCDStart  = 31
-	skillHoldHitmark  = 33
-	quillKey          = "shenhe-quill"
+	skillPressCDStart  = 2
+	skillPressHitmark  = 4
+	skillHoldCDStart   = 31
+	skillHoldHitmark   = 33
+	holdParticleICDKey = "shenhe-hold-particle-icd"
+	quillKey           = "shenhe-quill"
 )
 
 func init() {
@@ -76,10 +79,8 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		),
 		skillPressHitmark,
 		skillPressHitmark,
+		c.makePressParticleCB(),
 	)
-
-	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
-	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, skillPressHitmark+c.ParticleDelay)
 
 	if c.Base.Ascension >= 4 {
 		c.Core.Tasks.Add(c.skillPressBuff, skillPressCDStart+1)
@@ -91,6 +92,20 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makePressParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
+		c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Cryo, c.ParticleDelay)
 	}
 }
 
@@ -112,10 +127,8 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 4),
 		skillHoldHitmark,
 		skillHoldHitmark,
+		c.holdParticleCB,
 	)
-
-	// Particle spawn timing is a bit later than press E
-	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, skillHoldHitmark+c.ParticleDelay)
 
 	if c.Base.Ascension >= 4 {
 		c.Core.Tasks.Add(c.skillHoldBuff, skillHoldCDStart+1)
@@ -128,6 +141,18 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 0.5*60, true)
+	// Particle spawn timing is a bit later than press E
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Cryo, c.ParticleDelay)
 }
 
 // A4:
