@@ -191,6 +191,14 @@ func (c *char) mirrorLoss(src int, consumed int) func() {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Dendro, c.ParticleDelay)
+}
+
 func (c *char) projectionAttack(a combat.AttackCB) {
 
 	ae := a.AttackEvent
@@ -259,18 +267,8 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		}
 	}
 
-	particleCB := func(a combat.AttackCB) {
-		// particle icd is 1.5s, affected by hitlag
-		// need status here, because snapping a done bool into the closure isn't good enough when the same callback gets queued up for multiple attacks
-		if c.StatusIsActive(particleICDKey) {
-			return
-		}
-		c.Core.QueueParticle("alhaitham", 1, attributes.Dendro, c.ParticleDelay)
-		c.AddStatus(particleICDKey, 90, true)
-	}
-
 	for i := 0; i < c.mirrorCount; i++ {
-		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb, particleCB)
+		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb, c.particleCB)
 	}
 	c.AddStatus(projectionICDKey, 96, true) //1.6 sec icd
 
