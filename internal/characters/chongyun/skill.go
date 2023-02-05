@@ -15,7 +15,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 36
+const (
+	skillHitmark   = 36
+	particleICDKey = "chongyun-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52) // E -> N1
@@ -52,9 +55,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 2.5),
 		0,
 		skillHitmark,
+		c.particleCB,
 	)
-
-	c.Core.QueueParticle("chongyun", 4, attributes.Cryo, skillHitmark+c.ParticleDelay)
 
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -148,6 +150,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Cryo, c.ParticleDelay)
 }
 
 func (c *char) onSwapHook() {
