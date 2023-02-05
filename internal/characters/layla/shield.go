@@ -128,20 +128,11 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 		}
 
 		done := false
-		cb := func(_ combat.AttackCB) {
+		c2CB := func(_ combat.AttackCB) {
 			if done {
 				return
 			}
 			done = true
-
-			if !c.StatusIsActive(skillEnergy) {
-				var count float64 = 1
-				if c.Core.Rand.Float64() < 0.33 {
-					count = 2
-				}
-				c.Core.QueueParticle("layla", count, attributes.Cryo, c.ParticleDelay)
-				c.AddStatus(skillEnergy, 3.5*60, true)
-			}
 			if c.Base.Cons >= 2 {
 				c.AddEnergy("layla-c2", 1)
 			}
@@ -152,7 +143,8 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 			combat.NewCircleHit(c.Core.Combat.Player(), enemy, nil, 0.8),
 			0,
 			starsTravel[len(starsTravel)-stars],
-			cb,
+			c2CB,
+			c.particleCB,
 		)
 
 		stars--
@@ -166,6 +158,22 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 		c.starTickSrc = c.Core.F
 		c.tickNightStar(c.starTickSrc, false)()
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 3.5*60, false)
+
+	count := 1.0
+	if c.Core.Rand.Float64() < 0.33 {
+		count = 2
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 }
 
 func (c *char) tickNightStar(src int, star bool) func() {

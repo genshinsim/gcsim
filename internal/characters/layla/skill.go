@@ -13,9 +13,8 @@ import (
 var skillFrames []int
 
 const (
-	skillEnergy = "skill-energy-icd"
-
-	skillHitmark = 32
+	skillHitmark   = 32
+	particleICDKey = "skill-energy-icd"
 )
 
 func init() {
