@@ -9,7 +9,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 24
+const (
+	skillHitmark   = 24
+	particleICDKey = "nilou-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(51)
@@ -80,9 +83,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 2.8),
 			0,
 			0,
+			c.particleCB, // Particles are emitted after the second hit lands
 		)
-		// Particles are emitted after the second hit lands
-		c.Core.QueueParticle("rosaria", 3, attributes.Cryo, c.ParticleDelay)
 	}, skillHitmark+14)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, 23)
@@ -93,4 +95,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.6*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Cryo, c.ParticleDelay)
 }
