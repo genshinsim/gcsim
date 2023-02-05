@@ -30,7 +30,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Element:    attributes.Geo,
 		Durability: 100,
 		Mult:       burst[c.TalentLvlBurst()],
-		FlatDmg:    0.33 * c.MaxHP(),
+		FlatDmg:    c.a4Burst(),
 	}
 	r := 7.5
 	if c.Base.Cons >= 4 {

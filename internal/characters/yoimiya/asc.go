@@ -14,16 +14,19 @@ const a1Key = "yoimiyaa1"
 // her Pyro DMG Bonus by 2% on hit. This effect lasts for 3s and can have a
 // maximum of 10 stacks.
 func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	// TODO: change this to add mod on each hit instead
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("yoimiya-a1", -1),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
 			if c.StatusIsActive(a1Key) {
-				c.a1bonus[attributes.PyroP] = float64(c.a1stack) * 0.02
-				return c.a1bonus, true
+				c.a1Bonus[attributes.PyroP] = float64(c.a1Stack) * 0.02
+				return c.a1Bonus, true
 			}
-			c.a1stack = 0
+			c.a1Stack = 0
 			return nil, false
 		},
 	})
@@ -40,8 +43,8 @@ func (c *char) a1() {
 			return false
 		}
 		// here we can add stacks up to 10
-		if c.a1stack < 10 {
-			c.a1stack++
+		if c.a1Stack < 10 {
+			c.a1Stack++
 		}
 		c.AddStatus(a1Key, 180, true)
 		return false
@@ -54,7 +57,7 @@ func (c *char) a1() {
 // possesses when using Ryuukin Saxifrage. Each stack increases this ATK Bonus
 // by 1%.
 func (c *char) a4() {
-	c.a4bonus[attributes.ATKP] = 0.1 + float64(c.a1stack)*0.01
+	c.a4Bonus[attributes.ATKP] = 0.1 + float64(c.a1Stack)*0.01
 	for _, x := range c.Core.Player.Chars() {
 		if x.Index == c.Index {
 			continue
@@ -63,7 +66,7 @@ func (c *char) a4() {
 			Base:         modifier.NewBaseWithHitlag("yoimiya-a4", 900),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
-				return c.a4bonus, true
+				return c.a4Bonus, true
 			},
 		})
 	}

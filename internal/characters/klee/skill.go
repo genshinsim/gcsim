@@ -119,14 +119,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.Core.Log.NewEvent("attempted klee skill cancel without burst", glog.LogWarnings, -1)
 		}
 		for i, data := range bounceAttacks {
-			c.Core.QueueAttackWithSnap(data.ai, data.snap,
+			c.Core.QueueAttackWithSnap(
+				data.ai,
+				data.snap,
 				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4),
 				bounceHitmarks[i]-cooldownDelay,
-				c.a1,
+				c.makeA1CB(),
 			)
 		}
 		for _, data := range mineAttacks {
-			c.Core.QueueAttackWithSnap(data.ai, data.snap,
+			c.Core.QueueAttackWithSnap(
+				data.ai,
+				data.snap,
 				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2),
 				mineHitmark-cooldownDelay,
 				c.c2,

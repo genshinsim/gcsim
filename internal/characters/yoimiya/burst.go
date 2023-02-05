@@ -36,8 +36,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	// A4
-	c.Core.Tasks.Add(c.a4, burstHitmark)
+
+	if c.Base.Ascension >= 4 {
+		c.Core.Tasks.Add(c.a4, burstHitmark)
+	}
 
 	c.Core.QueueAttack(
 		ai,

@@ -99,7 +99,7 @@ func (c *char) bellTick(src int) func() {
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       skilldot[c.TalentLvlSkill()],
-			FlatDmg:    c.Stat(attributes.EM) * 0.25,
+			FlatDmg:    c.a4Damage(),
 		}
 		//trigger damage
 		//TODO: Check for snapshots
@@ -110,7 +110,7 @@ func (c *char) bellTick(src int) func() {
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Grass Ring of Sanctification Healing",
-			Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.Stat(attributes.EM)*0.75),
+			Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.a4Healing()),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 

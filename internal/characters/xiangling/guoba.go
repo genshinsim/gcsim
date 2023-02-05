@@ -76,7 +76,7 @@ func (p *panda) breath() {
 	p.Core.QueueAttackWithSnap(
 		p.ai,
 		p.snap,
-		combat.NewCircleHitOnTargetFanAngle(p, nil, 6, 60),
+		combat.NewCircleHitOnTargetFanAngle(p, nil, p.c.guobaFlameRange, 60),
 		10,
 		p.c.c1,
 		part,

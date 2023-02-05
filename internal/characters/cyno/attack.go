@@ -132,7 +132,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackBHitlagHaltFrame[c.normalBCounter][i],
 			CanBeDefenseHalted: attackBDefHalt[c.normalBCounter][i],
 			Mult:               mult[c.TalentLvlBurst()],
-			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
+			FlatDmg:            c.a4NormalAttack(),
 			IgnoreInfusion:     true,
 		}
 		if c.normalBCounter == 2 || c.normalBCounter == 4 {

@@ -109,8 +109,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		c.addSigil(false),
 	)
 
-	cd := 6 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCDWithDelay(action.ActionSkill, int(cd), skillPressCDStarts[burstActive])
+	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(6*60), skillPressCDStarts[burstActive])
 
 	if !c.StatusIsActive(burstBuffKey) {
 		//TODO: this delay used to be 80?
@@ -146,8 +145,7 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 
 	c.Core.Tasks.Add(c.clearSigil, skillHoldHitmarks[burstActive])
 
-	cd := 10 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCDWithDelay(action.ActionSkill, int(cd), skillHoldCDStarts[burstActive])
+	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(10*60), skillHoldCDStarts[burstActive])
 
 	if !c.StatusIsActive(burstBuffKey) {
 		//TODO: this delay used to be 80?

@@ -41,19 +41,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			return
 		}
 
-		heal := .15 * (a.AttackEvent.Snapshot.BaseAtk*(1+a.AttackEvent.Snapshot.Stats[attributes.ATKP]) + a.AttackEvent.Snapshot.Stats[attributes.ATK])
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Core.Player.Active(),
-			Message: "Cold-Blooded Strike",
-			Src:     heal,
-			Bonus:   c.Stat(attributes.Heal),
-		})
-		//if target is frozen after hit then drop additional energy;
-		if a4count == 2 {
-			return
+		// A1:
+		// Every hit with Frostgnaw regenerates HP for Kaeya equal to 15% of his ATK.
+		if c.Base.Ascension >= 1 {
+			heal := .15 * (a.AttackEvent.Snapshot.BaseAtk*(1+a.AttackEvent.Snapshot.Stats[attributes.ATKP]) + a.AttackEvent.Snapshot.Stats[attributes.ATK])
+			c.Core.Player.Heal(player.HealInfo{
+				Caller:  c.Index,
+				Target:  c.Core.Player.Active(),
+				Message: "Cold-Blooded Strike",
+				Src:     heal,
+				Bonus:   c.Stat(attributes.Heal),
+			})
 		}
-		if e.AuraContains(attributes.Frozen) {
+
+		// A4:
+		// Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
+		// Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
+		if c.Base.Ascension >= 4 && a4count < 2 && e.AuraContains(attributes.Frozen) {
 			a4count++
 			c.Core.QueueParticle("kaeya", 1, attributes.Cryo, c.ParticleDelay)
 			c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)

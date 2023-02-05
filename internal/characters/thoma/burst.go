@@ -85,7 +85,7 @@ func (c *char) summonFieryCollapse() {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstproc[c.TalentLvlBurst()],
-		FlatDmg:    0.022 * c.MaxHP(),
+		FlatDmg:    c.a4(),
 	}
 	done := false
 	shieldCb := func(_ combat.AttackCB) {

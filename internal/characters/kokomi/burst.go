@@ -58,15 +58,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// update jellyfish flat damage
 	c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)
 
-	// Ascension 1 - reset duration of E Skill and also resnapshots it
-	// Should not activate HoD consistent with in game since it is not a skill usage
-	// refreshes somewhere around cooldown start
-	c.Core.Tasks.Add(func() {
-		if c.Core.Status.Duration("kokomiskill") > 0 {
-			// +1 to avoid same frame expiry issues with skill tick
-			c.Core.Status.Add("kokomiskill", 12*60+1)
-		}
-	}, 46)
+	if c.Base.Ascension >= 1 {
+		c.Core.Tasks.Add(c.a1, 46)
+	}
 
 	// C4 attack speed buff
 	if c.Base.Cons >= 4 {

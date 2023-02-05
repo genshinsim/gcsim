@@ -5,8 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var dashFrames []int
@@ -38,35 +36,12 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	//restore on hit, once per attack
-	//a4 increase cryo dmg by 18% for 10s
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.CryoP] = 0.18
-	once := false
-	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
-			return
-		}
-		if once {
-			return
-		}
-		once = true
-
-		c.Core.Player.RestoreStam(10)
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("ayaka-a4", 600),
-			AffectedStat: attributes.CryoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.1}, 2),
 		dashHitmark+f,
 		dashHitmark+f,
-		cb,
+		c.makeA4CB(),
 	)
 
 	//add cryo infuse

@@ -43,20 +43,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       skill[c.TalentLvlSkill()],
+			FlatDmg:    c.a4Skill(),
 		}
-
-		// A1 Part 1
-		// Inuzaka All-Round Defense: Skill DMG increased by 156% of DEF
-		snap := c.Snapshot(&ai)
-		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 1.56
-
 		c.eFieldArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 8)
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHitOnTarget(c.eFieldArea.Shape.Pos(), nil, 5),
-			0,
-		)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.eFieldArea.Shape.Pos(), nil, 5), 0, 0)
 
 		// E
 		// so it looks like gorou fields works much the same was as bennett field

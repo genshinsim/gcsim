@@ -44,12 +44,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hitOpponents := 0
 	cb := func(_ combat.AttackCB) {
 		hitOpponents++
-
-		// including a1
 		c.QueueCharTask(func() {
-			if hitOpponents >= 2 && c.shieldLevel < 3 {
+			if hitOpponents >= c.shieldLevel3Requirement && c.shieldLevel < 3 {
 				c.updateShield(3, defFactor)
-			} else if hitOpponents >= 1 && c.shieldLevel < 2 {
+			} else if hitOpponents >= c.shieldLevel2Requirement && c.shieldLevel < 2 {
 				c.updateShield(2, defFactor)
 			}
 		}, skillShieldStart-skillHitmark)

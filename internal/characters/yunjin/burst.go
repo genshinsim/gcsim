@@ -81,13 +81,7 @@ func (c *char) burstProc() {
 			return false
 		}
 
-		finalBurstBuff := burstBuff[c.TalentLvlBurst()]
-		if c.partyElementalTypes == 4 {
-			finalBurstBuff += .115
-		} else {
-			finalBurstBuff += 0.025 * float64(c.partyElementalTypes)
-		}
-
+		finalBurstBuff := burstBuff[c.TalentLvlBurst()] + c.a4()
 		stats, _ := c.Stats()
 		dmgAdded := (c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]) * finalBurstBuff
 		ae.Info.FlatDmg += dmgAdded

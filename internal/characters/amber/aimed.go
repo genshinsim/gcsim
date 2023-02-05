@@ -65,7 +65,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		),
 		aimedHitmark,
 		aimedHitmark+travel,
-		c.a4,
+		c.makeA4CB(),
 	)
 
 	if c.Base.Cons >= 1 {

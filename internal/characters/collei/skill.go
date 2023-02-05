@@ -72,7 +72,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, skillRelease)
 
 	c.sproutShouldExtend = false
-	c.sproutShouldProc = c.Base.Cons >= 2
+	c.sproutShouldProc = c.Base.Cons >= 2 && c.Base.Ascension >= 1
 	c.Core.Tasks.Add(func() {
 		if !c.sproutShouldProc {
 			return

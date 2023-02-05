@@ -107,15 +107,7 @@ func (c *char) skillPress() action.ActionInfo {
 		count++
 	}
 	c.Core.QueueParticle("bennett", count, attributes.Pyro, skillPressHitmark+c.ParticleDelay)
-
-	// a4 reduce cd by 50%
-	if c.StatModIsActive(burstFieldKey) {
-		//a4 reduces it from 240 to 120
-		c.SetCDWithDelay(action.ActionSkill, 240/2, 14)
-	} else {
-		//default is 300, a2 reduces it by 20% to 240
-		c.SetCDWithDelay(action.ActionSkill, 240, 14)
-	}
+	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(5*60)), 14)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[0]),
@@ -192,8 +184,6 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		skillHoldHitmarks[level-1][len(skillHoldHitmarks[level-1])-1]+c.ParticleDelay,
 	)
 
-	applyA4 := c.StatModIsActive(burstFieldKey)
-
 	// figure out which frames to return
 	// 0: skill (press) -> x
 	// 1: skill (hold=1) -> x
@@ -205,27 +195,22 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	switch level {
 	case 1:
 		idx = 1
-		cd = 450 - 90 //-90 for a2
+		cd = 7.5 * 60
 		cdDelay = 43
 		if c4Active {
 			idx = 2
 		}
 	case 2:
 		idx = 3
-		cd = 600 - 120 //-120 from a2
+		cd = 10 * 60
 		cdDelay = 110
-		if applyA4 {
+		if c.a4NoLaunch() {
 			idx = 4
 		}
 	default:
 		panic("bennett skill (hold) level can only be 1 or 2")
 	}
-
-	// reduce cd by 50%
-	if applyA4 {
-		cd /= 2
-	}
-	c.SetCDWithDelay(action.ActionSkill, cd, cdDelay)
+	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(cd)), cdDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[idx]),

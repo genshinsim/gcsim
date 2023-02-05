@@ -45,7 +45,9 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	)
 
 	// A1
-	c.Core.Tasks.Add(c.a1(), 120)
+	if c.Base.Ascension >= 1 {
+		c.Core.Tasks.Add(c.a1, 120)
+	}
 	// C6
 	if c.Base.Cons >= 6 {
 		// reset c6 stacks in case we dash again before using a CA

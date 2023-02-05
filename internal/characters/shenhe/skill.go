@@ -81,7 +81,9 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
 	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, skillPressHitmark+c.ParticleDelay)
 
-	c.Core.Tasks.Add(func() { c.skillPressBuff() }, skillPressCDStart+1)
+	if c.Base.Ascension >= 4 {
+		c.Core.Tasks.Add(c.skillPressBuff, skillPressCDStart+1)
+	}
 	c.SetCDWithDelay(action.ActionSkill, 10*60, skillPressCDStart)
 
 	return action.ActionInfo{
@@ -115,7 +117,9 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	// Particle spawn timing is a bit later than press E
 	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, skillHoldHitmark+c.ParticleDelay)
 
-	c.Core.Tasks.Add(func() { c.skillHoldBuff() }, skillHoldCDStart+1)
+	if c.Base.Ascension >= 4 {
+		c.Core.Tasks.Add(c.skillHoldBuff, skillHoldCDStart+1)
+	}
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
 
 	return action.ActionInfo{
@@ -126,9 +130,13 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	}
 }
 
+// A4:
+// After Shenhe uses Spring Spirit Summoning, she will grant all nearby party members the following effects:
+//
+// - Press: Elemental Skill and Elemental Burst DMG increased by 15% for 10s.
 func (c *char) skillPressBuff() {
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(quillKey, 10*60, true) //10 sec duration
+		char.AddStatus(quillKey, 10*60, true) // 10 sec duration
 		char.SetTag(quillKey, 5)              // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
@@ -146,9 +154,13 @@ func (c *char) skillPressBuff() {
 	}
 }
 
+// A4:
+// After Shenhe uses Spring Spirit Summoning, she will grant all nearby party members the following effects:
+//
+// - Hold: Normal, Charged, and Plunging Attack DMG increased by 15% for 15s.
 func (c *char) skillHoldBuff() {
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(quillKey, 15*60, true) //15 sec duration
+		char.AddStatus(quillKey, 15*60, true) // 15 sec duration
 		char.SetTag(quillKey, 7)              // 5 quill on hold
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),

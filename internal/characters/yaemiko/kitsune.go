@@ -3,7 +3,6 @@ package yaemiko
 import (
 	"log"
 
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -87,7 +86,7 @@ func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) 
 				c.AddEnergy("yae-c1", 8)
 			}, burstThunderbolt1Hitmark+i*24)
 		}
-		c.ResetActionCooldown(action.ActionSkill)
+		c.a1()
 		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index).
 			Write("src", c.kitsunes[i].src).
 			Write("delay", burstThunderbolt1Hitmark+i*24)

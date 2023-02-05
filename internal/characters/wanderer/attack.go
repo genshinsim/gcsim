@@ -106,8 +106,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1),
 			release,
 			release+travel,
-			c.a4CB,
-			c.a1ElectroCB,
+			c.makeA4CB(),
+			c.makeA1ElectroCB(),
 			c.makeC6Callback(),
 			c.particleGenCB,
 		)
@@ -160,8 +160,8 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, radius),
 			release,
 			release+travel,
-			c.a4CB,
-			c.a1ElectroCB,
+			c.makeA4CB(),
+			c.makeA1ElectroCB(),
 			c.makeC6Callback(),
 			c.particleGenCB,
 		)

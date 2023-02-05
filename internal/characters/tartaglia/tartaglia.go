@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	riptideDuration    = 18 * 60
 	riptideFlashICDKey = "riptide-flash-icd"
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
@@ -25,9 +24,10 @@ func init() {
 // tartaglia specific character implementation
 type char struct {
 	*tmpl.Character
-	eCast       int  // the frame tartaglia casts E to enter melee stance
-	c4Src       int  // used for c4
-	mlBurstUsed bool // used for c6
+	riptideDuration int
+	eCast           int  // the frame tartaglia casts E to enter melee stance
+	c4Src           int  // used for c4
+	mlBurstUsed     bool // used for c6
 }
 
 // Initializes character
@@ -40,8 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 5
 	c.NormalHitNum = normalHitNum
 
-	c.eCast = 0
-	c.mlBurstUsed = false
+	c.riptideDuration = 10 * 60
 
 	w.Character = &c
 
@@ -49,6 +48,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.a1()
 	c.onExitField()
 	c.onDefeatTargets()
 

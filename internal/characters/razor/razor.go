@@ -18,7 +18,7 @@ type char struct {
 	*tmpl.Character
 	sigils          int
 	skillSigilBonus []float64
-	a4bonus         []float64
+	a4Bonus         []float64
 	c1bonus         []float64
 	c2bonus         []float64
 }

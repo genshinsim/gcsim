@@ -54,8 +54,14 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		Mult:       lowPlunge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3),
-		lowPlungeHitmark-skip, lowPlungeHitmark-skip, c.a1CB, c.projectionAttack)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3),
+		lowPlungeHitmark-skip,
+		lowPlungeHitmark-skip,
+		c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
+		c.projectionAttack,
+	)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return lowPlungeFrames[next] - skip },

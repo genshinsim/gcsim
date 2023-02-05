@@ -155,7 +155,7 @@ func (c *char) c6() {
 			Durability:   25,
 			IsDeployable: true,
 			Mult:         1.0,
-			FlatDmg:      c.Stat(attributes.EM) * 2.5, // this is the A4
+			FlatDmg:      c.a4Bolt(),
 		}
 
 		c.Core.QueueAttack(
