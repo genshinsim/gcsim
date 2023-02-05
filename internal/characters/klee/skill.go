@@ -118,6 +118,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if release == 0 {
 			c.Core.Log.NewEvent("attempted klee skill cancel without burst", glog.LogWarnings, -1)
 		}
+		particleCB := c.makeParticleCB()
 		for i, data := range bounceAttacks {
 			c.Core.QueueAttackWithSnap(
 				data.ai,
@@ -125,6 +126,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4),
 				bounceHitmarks[i]-cooldownDelay,
 				c.makeA1CB(),
+				particleCB,
 			)
 		}
 		for _, data := range mineAttacks {
@@ -137,10 +139,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			)
 		}
 		c.c1(bounceHitmarks[0] - cooldownDelay)
-		if bounce > 0 {
-			c.Core.QueueParticle("klee", 4, attributes.Pyro, (bounceHitmarks[0]-cooldownDelay)+c.ParticleDelay)
-		}
 		c.SetCD(action.ActionSkill, 1200)
 	}, cooldownDelay)
 	return actionInfo
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Pyro, c.ParticleDelay)
+	}
 }
