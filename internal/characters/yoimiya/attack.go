@@ -47,15 +47,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai.ICDTag = combat.ICDTagNormalAttack
 	}
 
-	particleCB := func(combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) {
-			return
-		}
-		if c.Core.F < c.lastPart {
-			return
-		}
-		c.Core.QueueParticle("yoimiya", 1, attributes.Pyro, c.ParticleDelay) // 1 particle
-		c.lastPart = c.Core.F + 120                                          // every 2s
+	var particleCB combat.AttackCBFunc
+	if c.StatusIsActive(skillKey) {
+		particleCB = c.particleCB
 	}
 
 	var totalMV float64
