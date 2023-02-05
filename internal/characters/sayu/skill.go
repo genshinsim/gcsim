@@ -9,19 +9,26 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var skillPressFrames []int
-var skillShortHoldFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames     []int
+	skillShortHoldFrames []int
+	skillHoldFrames      []int
+)
 
-const skillPressDoTHitmark = 7 // 1 DoT tick
-const skillPressCDStart = 14
-const skillPressKickHitmark = 25
+const (
+	skillPressDoTHitmark  = 7 // 1 DoT tick
+	skillPressCDStart     = 14
+	skillPressKickHitmark = 25
 
-const skillShortHoldCDStart = 30
-const skillShortHoldKickHitmark = 48
+	skillShortHoldCDStart     = 30
+	skillShortHoldKickHitmark = 48
 
-const skillHoldCDStart = 648
-const skillHoldKickHitmark = 667
+	skillHoldCDStart     = 648
+	skillHoldKickHitmark = 667
+
+	kickParticleICDKey = "sayu-kick-particle-icd"
+	rollParticleICDKey = "sayu-roll-particle-icd"
+)
 
 func init() {
 	// Tap E
@@ -58,6 +65,28 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		return c.skillHold(p, hold)
 	}
 	return c.skillPress(p)
+}
+
+func (c *char) kickParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(kickParticleICDKey) {
+		return
+	}
+	c.AddStatus(kickParticleICDKey, 0.5*60, true)
+	c.Core.QueueParticle("sayu-kick", 2, attributes.Anemo, c.ParticleDelay)
+}
+
+func (c *char) rollParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(rollParticleICDKey) {
+		return
+	}
+	c.AddStatus(rollParticleICDKey, 3*60, true)
+	c.Core.QueueParticle("sayu-roll", 1, attributes.Anemo, c.ParticleDelay)
 }
 
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
@@ -103,9 +132,8 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		snap,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 2.5),
 		skillPressKickHitmark,
+		c.kickParticleCB,
 	)
-
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressKickHitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 6*60, skillPressCDStart)
 
@@ -140,7 +168,6 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 				Write("dmg bonus%", c.c2Bonus)
 		}
 	}, 18)
-	c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+c.ParticleDelay)
 
 	// Fuufuu Whirlwind Kick Hold DMG
 	ai := combat.AttackInfo{
@@ -162,9 +189,8 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 		snap,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 3),
 		skillShortHoldKickHitmark,
+		c.kickParticleCB,
 	)
-
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillShortHoldKickHitmark+c.ParticleDelay)
 
 	// 6.2s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 372, skillShortHoldCDStart)
@@ -201,10 +227,6 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 					Write("dmg bonus%", c.c2Bonus)
 			}
 		}, 18+i)
-
-		if i%180 == 0 { // 3s
-			c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+i+c.ParticleDelay)
-		}
 	}
 
 	// Fuufuu Whirlwind Kick Hold DMG
@@ -227,9 +249,8 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		snap,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 3),
 		(skillHoldKickHitmark-600)+duration,
+		c.kickParticleCB,
 	)
-
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, (skillHoldKickHitmark-600)+duration+c.ParticleDelay)
 
 	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
 	c.SetCDWithDelay(action.ActionSkill, int(6*60+float64(duration)*0.5), (skillHoldCDStart-600)+duration+2)
@@ -259,13 +280,14 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 		IsDeployable:     true,
 	}
 	snap := c.Snapshot(&ai)
-
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
-	return (&combat.AttackEvent{
+	ae := (&combat.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	})
+	ae.Callbacks = append(ae.Callbacks, c.rollParticleCB)
+	return ae
 }
 
 func (c *char) absorbCheck(src, count, max int) func() {
