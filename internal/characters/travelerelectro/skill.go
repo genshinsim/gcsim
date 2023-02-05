@@ -74,16 +74,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		amuletDelay = 107 // ~1.79s
 	}
 
-	//particles appear to be generated if the blades lands but capped at 1
-	partCount := 0
-	particlesCB := func(_ combat.AttackCB) {
-		if partCount > 0 {
-			return
-		}
-		partCount++
-		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) //this way we're future proof if for whatever reason this misses
-	}
-
 	amuletCB := func(a combat.AttackCB) {
 		// generate amulet if generated amulets < limit
 		if c.abundanceAmulets >= maxAmulets {
@@ -113,7 +103,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				0.6,
 			),
 			skillHitmark,
-			particlesCB,
+			c.makeParticleCB(), // every blade generates 1 particle if it hits
 			amuletCB,
 		)
 	}
@@ -131,6 +121,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
 	}
 }
 
