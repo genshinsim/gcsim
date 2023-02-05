@@ -9,7 +9,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 33
+const (
+	skillHitmark   = 33
+	particleICDKey = "ayaka-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(49)
@@ -33,14 +36,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	c.a1()
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.5), 0, skillHitmark)
 
-	// 4 or 5, 1:1 ratio
-	var count float64 = 4
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 5
-	}
-	c.Core.QueueParticle("ayaka", count, attributes.Cryo, skillHitmark+c.ParticleDelay)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.5),
+		0,
+		skillHitmark,
+		c.particleCB,
+	)
 
 	c.SetCD(action.ActionSkill, 600)
 
@@ -50,4 +53,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, false)
+
+	count := 4.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 5
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 }
