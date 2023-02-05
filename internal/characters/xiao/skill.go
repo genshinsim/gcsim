@@ -38,27 +38,29 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(
+
+	// Cannot create energy during burst uptime
+	var particleCB combat.AttackCBFunc
+	if !c.StatusIsActive(burstBuffKey) {
+		particleCB = c.makeParticleCB()
+	}
+
+	c.Core.QueueAttack(
 		ai,
-		snap,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
 			nil,
 			0.8,
 		),
+		0,
 		skillHitmark,
+		particleCB,
 	)
 
 	if c.Base.Ascension >= 4 {
 		// apply A4 0.25s after cast
 		c.Core.Tasks.Add(c.a4, 15)
-	}
-
-	// Cannot create energy during burst uptime
-	if !c.StatusIsActive(burstBuffKey) {
-		c.Core.QueueParticle("xiao", 3, attributes.Anemo, skillHitmark+c.ParticleDelay)
 	}
 
 	// C6 handling - can use skill ignoring CD and without draining charges
@@ -75,5 +77,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionSkill], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Anemo, c.ParticleDelay)
 	}
 }
