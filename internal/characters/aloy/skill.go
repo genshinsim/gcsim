@@ -13,7 +13,7 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 20 // release frame for the Bomb, travel comes on top, bomb_delay comes on top afterwards
+const skillRelease = 20 // release frame for the Bomb, travel comes on top, bomb_delay comes on top afterwards
 
 func init() {
 	skillFrames = frames.InitAbilSlice(49) // E -> Dash
@@ -29,9 +29,13 @@ const (
 )
 
 // Skill - Handles main damage, bomblet, and coil effects
-// Has 3 parameters, "bomblets" = Number of bomblets that hit
-// "bomblet_coil_stacks" = Number of coil stacks gained
-// "delay" - Delay in frames before bomblets go off and coil stacks get added
+// Has 3 parameters:
+//
+// - "travel" = Delay in frames until
+//
+// - "bomblets" = Number of bomblets that hit
+//
+// - "bomb_delay" = Delay in frames before bomblets go off and coil stacks get added
 // Too many potential bomblet hit variations to keep syntax short, so we simplify how they can be handled here
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
@@ -49,29 +53,28 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		delay = 0
 	}
 
-	c.Core.Tasks.Add(func() {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Freeze Bomb",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Cryo,
-			Durability: 25,
-			Mult:       skillMain[c.TalentLvlSkill()],
-		}
-		// TODO: accurate snapshot timing, assumes snapshot on release and not on hit/bomb creation
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4),
-			0,
-			travel,
-		)
-	}, skillHitmark)
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Freeze Bomb",
+		AttackTag:  combat.AttackTagElementalArt,
+		ICDTag:     combat.ICDTagNone,
+		ICDGroup:   combat.ICDGroupDefault,
+		StrikeType: combat.StrikeTypeDefault,
+		Element:    attributes.Cryo,
+		Durability: 25,
+		Mult:       skillMain[c.TalentLvlSkill()],
+	}
+	// TODO: accurate snapshot timing, assumes snapshot on release and not on hit/bomb creation
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4),
+		skillRelease,
+		skillRelease+travel,
+		c.makeParticleCB(),
+	)
 
 	// Bomblets snapshot on cast
-	ai := combat.AttackInfo{
+	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Chillwater Bomblets",
 		AttackTag:          combat.AttackTagElementalArt,
@@ -87,17 +90,36 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Queue up bomblets
 	for i := 0; i < bomblets; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2), 0, skillHitmark+travel+delay+((i+1)*6), c.coilStacks)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2),
+			skillRelease+travel,
+			skillRelease+travel+delay+((i+1)*6),
+			c.coilStacks,
+		)
 	}
 
-	c.Core.QueueParticle("aloy", 5, attributes.Cryo, skillHitmark+travel+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 20*60, 19)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillHitmark,
+		CanQueueAfter:   skillRelease,
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Cryo, c.ParticleDelay)
 	}
 }
 
