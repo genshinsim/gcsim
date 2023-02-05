@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Sanctifying Ring",
 		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,
 		Element:    attributes.Electro,
@@ -87,9 +87,6 @@ func (c *char) bellTick(src int) func() {
 		if src != c.ringSrc {
 			return
 		}
-		if c.Core.Status.Duration(ringKey) == 0 {
-			return
-		}
 		c.Core.Log.NewEvent("Bell ticking", glog.LogCharacterEvent, c.Index)
 
 		ai := combat.AttackInfo{
@@ -123,6 +120,9 @@ func (c *char) bellTick(src int) func() {
 			c.Core.QueueParticle("kuki", 1, attributes.Electro, c.ParticleDelay) // TODO: idk the particle timing yet fml (or probability)
 		}
 
+		if c.Core.Status.Duration(ringKey) == 0 {
+			return
+		}
 		c.Core.Tasks.Add(c.bellTick(src), 90)
 	}
 }
