@@ -56,6 +56,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.c6(a.Target)
 		}
 	}
+	particleCB := c.makeParticleCB()
 	//TODO: this should have its own position
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
@@ -64,6 +65,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			skillRelease,
 			hitmark,
 			c6Cb,
+			particleCB,
 		)
 	}
 
@@ -91,8 +93,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, sproutHitmark)
 	}, skillReturn)
 
-	c.Core.QueueParticle("collei", 3, attributes.Dendro, skillHitmarks[0]+c.ParticleDelay)
-
 	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 
 	return action.ActionInfo{
@@ -100,5 +100,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 	}
 }
