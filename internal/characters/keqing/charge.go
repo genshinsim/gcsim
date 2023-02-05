@@ -72,15 +72,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
 				chargeHitmarks[i],
 				chargeHitmarks[i],
+				c.particleCB,
 			)
 		}
-
-		// TODO: Particle timing?
-		count := 2.0
-		if c.Core.Rand.Float64() < .5 {
-			count = 3
-		}
-		c.Core.QueueParticle("keqing", count, attributes.Electro, chargeHitmarks[1]+c.ParticleDelay)
 	}
 
 	if c.Base.Cons >= 6 {
