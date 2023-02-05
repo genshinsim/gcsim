@@ -77,20 +77,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) ppParticles(ac combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if !c.StatModIsActive(paramitaBuff) {
 		return
 	}
 	if c.StatusIsActive(paramitaEnergyICD) {
 		return
 	}
-	c.AddStatus(paramitaEnergyICD, 300, true)
-	var count float64 = 2
+	c.AddStatus(paramitaEnergyICD, 5*60, true)
+
+	count := 2.0
 	if c.Core.Rand.Float64() < 0.5 {
 		count = 3
 	}
-	//TODO: this used to be 80
-	c.Core.QueueParticle("hutao", count, attributes.Pyro, c.ParticleDelay)
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay) // TODO: this used to be 80
 }
 
 func (c *char) applyBB(a combat.AttackCB) {

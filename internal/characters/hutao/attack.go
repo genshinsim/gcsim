@@ -158,7 +158,7 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0, c.ppParticles)
+			c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 		}, ppAttackHitmarks[c.NormalCounter][i])
 	}
 
