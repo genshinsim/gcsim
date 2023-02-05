@@ -123,18 +123,6 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
 			Write("sakura level", lvl+1)
 
-		particlecb := func(a combat.AttackCB) {
-			//on hit check for particles
-			c.Core.Log.NewEvent("sky kitsune particle", glog.LogCharacterEvent, c.Index).
-				Write("lastParticleF", c.totemParticleICD)
-			if c.Core.F < c.totemParticleICD {
-				return
-			}
-			// 2.5s icd
-			c.totemParticleICD = c.Core.F + 150
-			//TODO: this used to be 30?
-			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, c.ParticleDelay)
-		}
 		var c4cb combat.AttackCBFunc
 		if c.Base.Cons >= 4 {
 			done := false
@@ -159,7 +147,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 				combat.NewCircleHitOnTarget(enemy, nil, 0.5),
 				1,
 				1,
-				particlecb,
+				c.particleCB,
 				c4cb,
 			)
 		}
