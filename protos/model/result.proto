@@ -25,7 +25,7 @@ message SimulationResult {
   SimulatorSettings simulator_settings = 9 [json_name="simulator_settings"];
   EnergySettings energy_settings = 10 [json_name="energy_settings"];
 
-  string config = 11 [json_name="config"];
+  string config = 11 [json_name="config_file"];
   string sample_seed = 12 [json_name="sample_seed"];
 
   SimulationStatistics statistics = 13 [json_name="statistics"];
