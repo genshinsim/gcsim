@@ -66,7 +66,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 		}
 
 		sample.TargetDetails[i] = &model.Enemy{
-			Level:  int64(target.Level),
+			Level:  int32(target.Level),
 			HP:     target.HP,
 			Resist: resist,
 			Pos: &model.Coord{

@@ -10,7 +10,7 @@ import (
 )
 
 // 30 = .5s
-const BUCKET_SIZE int = 30
+const BUCKET_SIZE uint32 = 30
 
 func init() {
 	agg.Register(NewAgg)
@@ -148,9 +148,9 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		}
 	}
 
-	result.TargetDps = make(map[int64]*model.DescriptiveStats)
+	result.TargetDps = make(map[int32]*model.DescriptiveStats)
 	for k, v := range b.targetDPS {
-		result.TargetDps[int64(k)] = agg.ToDescriptiveStats(v)
+		result.TargetDps[int32(k)] = agg.ToDescriptiveStats(v)
 	}
 
 	result.CharacterDps = make([]*model.DescriptiveStats, len(b.characterDPS))
@@ -174,9 +174,9 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 
 	result.BreakdownByTargetDps = make([]*model.TargetStats, len(b.dpsByTarget))
 	for i, t := range b.dpsByTarget {
-		targets := make(map[int64]*model.DescriptiveStats)
+		targets := make(map[int32]*model.DescriptiveStats)
 		for k, v := range t {
-			targets[int64(k)] = agg.ToDescriptiveStats(v)
+			targets[int32(k)] = agg.ToDescriptiveStats(v)
 		}
 
 		result.BreakdownByTargetDps[i] = &model.TargetStats{
@@ -189,7 +189,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		damageBuckets[i] = agg.ToDescriptiveStats(v)
 	}
 	result.DamageBuckets = &model.BucketStats{
-		BucketSize: int64(BUCKET_SIZE),
+		BucketSize: BUCKET_SIZE,
 		Buckets:    damageBuckets,
 	}
 
@@ -205,7 +205,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	}
 
 	result.CumulativeDamageContribution = &model.CharacterBucketStats{
-		BucketSize: int64(BUCKET_SIZE),
+		BucketSize: BUCKET_SIZE,
 		Characters: characterBuckets,
 	}
 }

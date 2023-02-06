@@ -37,7 +37,7 @@ func (b *buffer) Add(result stats.Result) {
 }
 
 func (b buffer) Flush(result *model.SimulationStatistics) {
-	result.Iterations = int64(b.runs.Len())
+	result.Iterations = uint32(b.runs.Len())
 
 	sort.Sort(b.runs)
 	result.MinSeed = strconv.FormatUint(b.runs[0].seed, 10)

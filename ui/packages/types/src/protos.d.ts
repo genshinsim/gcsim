@@ -304,10 +304,10 @@ export namespace model {
     interface IVersion {
 
         /** Version major */
-        major?: (number|Long|null);
+        major?: (number|null);
 
         /** Version minor */
-        minor?: (number|Long|null);
+        minor?: (number|null);
     }
 
     /** Represents a Version. */
@@ -320,10 +320,10 @@ export namespace model {
         constructor(properties?: model.IVersion);
 
         /** Version major. */
-        public major: (number|Long);
+        public major: number;
 
         /** Version minor. */
-        public minor: (number|Long);
+        public minor: number;
 
         /**
          * Gets the default type url for Version
@@ -454,7 +454,7 @@ export namespace model {
         runtime?: (number|null);
 
         /** SimulationStatistics iterations */
-        iterations?: (number|Long|null);
+        iterations?: (number|null);
 
         /** SimulationStatistics duration */
         duration?: (model.IOverviewStats|null);
@@ -536,7 +536,7 @@ export namespace model {
         public runtime: number;
 
         /** SimulationStatistics iterations. */
-        public iterations: (number|Long);
+        public iterations: number;
 
         /** SimulationStatistics duration. */
         public duration?: (model.IOverviewStats|null);
@@ -655,7 +655,7 @@ export namespace model {
         Q3?: (number|null);
 
         /** OverviewStats hist */
-        hist?: ((number|Long)[]|null);
+        hist?: (number[]|null);
     }
 
     /** Represents an OverviewStats. */
@@ -689,7 +689,7 @@ export namespace model {
         public Q3: number;
 
         /** OverviewStats hist. */
-        public hist: (number|Long)[];
+        public hist: number[];
 
         /**
          * Gets the default type url for OverviewStats
@@ -802,7 +802,7 @@ export namespace model {
     interface IBucketStats {
 
         /** BucketStats bucket_size */
-        bucket_size?: (number|Long|null);
+        bucket_size?: (number|null);
 
         /** BucketStats buckets */
         buckets?: (model.IDescriptiveStats[]|null);
@@ -818,7 +818,7 @@ export namespace model {
         constructor(properties?: model.IBucketStats);
 
         /** BucketStats bucket_size. */
-        public bucket_size: (number|Long);
+        public bucket_size: number;
 
         /** BucketStats buckets. */
         public buckets: model.IDescriptiveStats[];
@@ -835,7 +835,7 @@ export namespace model {
     interface ICharacterBucketStats {
 
         /** CharacterBucketStats bucket_size */
-        bucket_size?: (number|Long|null);
+        bucket_size?: (number|null);
 
         /** CharacterBucketStats characters */
         characters?: (model.ICharacterBuckets[]|null);
@@ -851,7 +851,7 @@ export namespace model {
         constructor(properties?: model.ICharacterBucketStats);
 
         /** CharacterBucketStats bucket_size. */
-        public bucket_size: (number|Long);
+        public bucket_size: number;
 
         /** CharacterBucketStats characters. */
         public characters: model.ICharacterBuckets[];
@@ -1105,13 +1105,13 @@ export namespace model {
         element?: (string|null);
 
         /** Character level */
-        level?: (number|Long|null);
+        level?: (number|null);
 
         /** Character max_level */
-        max_level?: (number|Long|null);
+        max_level?: (number|null);
 
         /** Character cons */
-        cons?: (number|Long|null);
+        cons?: (number|null);
 
         /** Character weapon */
         weapon?: (model.IWeapon|null);
@@ -1120,7 +1120,7 @@ export namespace model {
         talents?: (model.ICharacterTalents|null);
 
         /** Character sets */
-        sets?: ({ [k: string]: (number|Long) }|null);
+        sets?: ({ [k: string]: number }|null);
 
         /** Character stats */
         stats?: (number[]|null);
@@ -1145,13 +1145,13 @@ export namespace model {
         public element: string;
 
         /** Character level. */
-        public level: (number|Long);
+        public level: number;
 
         /** Character max_level. */
-        public max_level: (number|Long);
+        public max_level: number;
 
         /** Character cons. */
-        public cons: (number|Long);
+        public cons: number;
 
         /** Character weapon. */
         public weapon?: (model.IWeapon|null);
@@ -1160,7 +1160,7 @@ export namespace model {
         public talents?: (model.ICharacterTalents|null);
 
         /** Character sets. */
-        public sets: { [k: string]: (number|Long) };
+        public sets: { [k: string]: number };
 
         /** Character stats. */
         public stats: number[];
@@ -1180,13 +1180,13 @@ export namespace model {
     interface ICharacterTalents {
 
         /** CharacterTalents attack */
-        attack?: (number|Long|null);
+        attack?: (number|null);
 
         /** CharacterTalents skill */
-        skill?: (number|Long|null);
+        skill?: (number|null);
 
         /** CharacterTalents burst */
-        burst?: (number|Long|null);
+        burst?: (number|null);
     }
 
     /** Represents a CharacterTalents. */
@@ -1199,13 +1199,13 @@ export namespace model {
         constructor(properties?: model.ICharacterTalents);
 
         /** CharacterTalents attack. */
-        public attack: (number|Long);
+        public attack: number;
 
         /** CharacterTalents skill. */
-        public skill: (number|Long);
+        public skill: number;
 
         /** CharacterTalents burst. */
-        public burst: (number|Long);
+        public burst: number;
 
         /**
          * Gets the default type url for CharacterTalents
@@ -1222,13 +1222,13 @@ export namespace model {
         name?: (string|null);
 
         /** Weapon refine */
-        refine?: (number|Long|null);
+        refine?: (number|null);
 
         /** Weapon level */
-        level?: (number|Long|null);
+        level?: (number|null);
 
         /** Weapon max_level */
-        max_level?: (number|Long|null);
+        max_level?: (number|null);
     }
 
     /** Represents a Weapon. */
@@ -1244,13 +1244,13 @@ export namespace model {
         public name: string;
 
         /** Weapon refine. */
-        public refine: (number|Long);
+        public refine: number;
 
         /** Weapon level. */
-        public level: (number|Long);
+        public level: number;
 
         /** Weapon max_level. */
-        public max_level: (number|Long);
+        public max_level: number;
 
         /**
          * Gets the default type url for Weapon
@@ -1264,7 +1264,7 @@ export namespace model {
     interface IEnemy {
 
         /** Enemy level */
-        level?: (number|Long|null);
+        level?: (number|null);
 
         /** Enemy HP */
         HP?: (number|null);
@@ -1295,7 +1295,7 @@ export namespace model {
         constructor(properties?: model.IEnemy);
 
         /** Enemy level. */
-        public level: (number|Long);
+        public level: number;
 
         /** Enemy HP. */
         public HP: number;
@@ -1378,10 +1378,10 @@ export namespace model {
         def_halt?: (boolean|null);
 
         /** SimulatorSettings number_of_workers */
-        number_of_workers?: (number|Long|null);
+        number_of_workers?: (number|null);
 
         /** SimulatorSettings iterations */
-        iterations?: (number|Long|null);
+        iterations?: (number|null);
 
         /** SimulatorSettings delays */
         delays?: (model.IDelays|null);
@@ -1409,10 +1409,10 @@ export namespace model {
         public def_halt: boolean;
 
         /** SimulatorSettings number_of_workers. */
-        public number_of_workers: (number|Long);
+        public number_of_workers: number;
 
         /** SimulatorSettings iterations. */
-        public iterations: (number|Long);
+        public iterations: number;
 
         /** SimulatorSettings delays. */
         public delays?: (model.IDelays|null);
@@ -1429,28 +1429,28 @@ export namespace model {
     interface IDelays {
 
         /** Delays skill */
-        skill?: (number|Long|null);
+        skill?: (number|null);
 
         /** Delays burst */
-        burst?: (number|Long|null);
+        burst?: (number|null);
 
         /** Delays attack */
-        attack?: (number|Long|null);
+        attack?: (number|null);
 
         /** Delays charge */
-        charge?: (number|Long|null);
+        charge?: (number|null);
 
         /** Delays aim */
-        aim?: (number|Long|null);
+        aim?: (number|null);
 
         /** Delays dash */
-        dash?: (number|Long|null);
+        dash?: (number|null);
 
         /** Delays jump */
-        jump?: (number|Long|null);
+        jump?: (number|null);
 
         /** Delays swap */
-        swap?: (number|Long|null);
+        swap?: (number|null);
     }
 
     /** Represents a Delays. */
@@ -1463,28 +1463,28 @@ export namespace model {
         constructor(properties?: model.IDelays);
 
         /** Delays skill. */
-        public skill: (number|Long);
+        public skill: number;
 
         /** Delays burst. */
-        public burst: (number|Long);
+        public burst: number;
 
         /** Delays attack. */
-        public attack: (number|Long);
+        public attack: number;
 
         /** Delays charge. */
-        public charge: (number|Long);
+        public charge: number;
 
         /** Delays aim. */
-        public aim: (number|Long);
+        public aim: number;
 
         /** Delays dash. */
-        public dash: (number|Long);
+        public dash: number;
 
         /** Delays jump. */
-        public jump: (number|Long);
+        public jump: number;
 
         /** Delays swap. */
-        public swap: (number|Long);
+        public swap: number;
 
         /**
          * Gets the default type url for Delays
@@ -1504,16 +1504,16 @@ export namespace model {
         once?: (boolean|null);
 
         /** EnergySettings start */
-        start?: (number|Long|null);
+        start?: (number|null);
 
         /** EnergySettings end */
-        end?: (number|Long|null);
+        end?: (number|null);
 
         /** EnergySettings amount */
-        amount?: (number|Long|null);
+        amount?: (number|null);
 
         /** EnergySettings last_energy_drop */
-        last_energy_drop?: (number|Long|null);
+        last_energy_drop?: (number|null);
     }
 
     /** Represents an EnergySettings. */
@@ -1532,16 +1532,16 @@ export namespace model {
         public once: boolean;
 
         /** EnergySettings start. */
-        public start: (number|Long);
+        public start: number;
 
         /** EnergySettings end. */
-        public end: (number|Long);
+        public end: number;
 
         /** EnergySettings amount. */
-        public amount: (number|Long);
+        public amount: number;
 
         /** EnergySettings last_energy_drop. */
-        public last_energy_drop: (number|Long);
+        public last_energy_drop: number;
 
         /**
          * Gets the default type url for EnergySettings

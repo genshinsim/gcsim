@@ -118,8 +118,8 @@ func convert(input calc.Sample) *model.OverviewStats {
 	// Scott's normal reference rule
 	h := (3.49 * out.SD) / (math.Pow(float64(len(input.Xs)), 1.0/3.0))
 	if h == 0.0 || out.Max == out.Min {
-		hist := make([]uint64, 1)
-		hist[0] = uint64(len(input.Xs))
+		hist := make([]uint32, 1)
+		hist[0] = uint32(len(input.Xs))
 		out.Hist = hist
 	} else {
 		nbins := int(math.Ceil((out.Max - out.Min) / h))

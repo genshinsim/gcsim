@@ -14,27 +14,27 @@ func (sim *Simulation) CharacterDetails() []*model.Character {
 	out := make([]*model.Character, len(sim.C.Player.Chars()))
 
 	for i, v := range sim.cfg.Characters {
-		m := make(map[string]int64)
+		m := make(map[string]int32)
 		for k, v := range v.Sets {
-			m[k.String()] = int64(v)
+			m[k.String()] = int32(v)
 		}
 
 		char := &model.Character{
 			Name:     v.Base.Key.String(),
 			Element:  v.Base.Element.String(),
-			Level:    int64(v.Base.Level),
-			MaxLevel: int64(v.Base.MaxLevel),
-			Cons:     int64(v.Base.Cons),
+			Level:    int32(v.Base.Level),
+			MaxLevel: int32(v.Base.MaxLevel),
+			Cons:     int32(v.Base.Cons),
 			Weapon: &model.Weapon{
 				Name:     v.Weapon.Key.String(),
-				Refine:   int64(v.Weapon.Refine),
-				Level:    int64(v.Weapon.Level),
-				MaxLevel: int64(v.Weapon.MaxLevel),
+				Refine:   int32(v.Weapon.Refine),
+				Level:    int32(v.Weapon.Level),
+				MaxLevel: int32(v.Weapon.MaxLevel),
 			},
 			Talents: &model.CharacterTalents{
-				Attack: int64(v.Talents.Attack),
-				Skill:  int64(v.Talents.Skill),
-				Burst:  int64(v.Talents.Burst),
+				Attack: int32(v.Talents.Attack),
+				Skill:  int32(v.Talents.Skill),
+				Burst:  int32(v.Talents.Burst),
 			},
 			Sets:  m,
 			Stats: v.Stats,

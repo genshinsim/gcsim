@@ -25,15 +25,15 @@ func ToDescriptiveStats(ss *stats.StreamStats) *model.DescriptiveStats {
 type LinearHist struct {
 	min, max  float64
 	delta     float64 // 1/bin width (to avoid division in hot path)
-	low, high uint64
-	bins      []uint64
+	low, high uint32
+	bins      []uint32
 }
 
 // NewLinearHist returns an empty histogram with nbins uniformly-sized
 // bins spanning [min, max].
 func NewLinearHist(min, max float64, nbins int) *LinearHist {
 	delta := float64(nbins) / (max - min)
-	return &LinearHist{min, max, delta, 0, 0, make([]uint64, nbins)}
+	return &LinearHist{min, max, delta, 0, 0, make([]uint32, nbins)}
 }
 
 func (h *LinearHist) bin(x float64) int {
@@ -51,7 +51,7 @@ func (h *LinearHist) Add(x float64) {
 	}
 }
 
-func (h *LinearHist) Counts() (uint64, []uint64, uint64) {
+func (h *LinearHist) Counts() (uint32, []uint32, uint32) {
 	return h.low, h.bins, h.high
 }
 

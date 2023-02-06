@@ -5,11 +5,9 @@ option go_package="github.com/genshinsim/gcsim/pkg/model";
 import "protos/model/sim.proto";
 
 message Version {
-  int64 major = 1 [json_name="major"];
-  int64 minor = 2 [json_name="minor"];
+  uint32 major = 1 [json_name="major"];
+  uint32 minor = 2 [json_name="minor"];
 }
-
-// IMPORTANT NOTE: If a field is not in the required section, it must be marked optional
 
 message SimulationResult {
   // required fields (should always be here regardless of schema version)
@@ -42,7 +40,7 @@ message SimulationStatistics {
   string p50_seed = 4 [json_name="p50_seed"];
   string p75_seed = 5 [json_name="p75_seed"];
   double runtime = 6 [json_name="runtime"];
-  int64 iterations = 7 [json_name="iterations"];
+  uint32 iterations = 7 [json_name="iterations"];
 
   // global overview (global/no group by)
   OverviewStats duration = 8 [json_name="duration"];
@@ -58,7 +56,7 @@ message SimulationStatistics {
 
   // damage
   map<string, DescriptiveStats> element_dps = 17 [json_name="element_dps"];
-  map<int64, DescriptiveStats> target_dps = 18 [json_name="target_dps"];
+  map<int32, DescriptiveStats> target_dps = 18 [json_name="target_dps"];
   repeated DescriptiveStats character_dps = 19 [json_name="character_dps"];
   repeated ElementStats breakdown_by_element_dps = 20 [json_name="dps_by_element"];
   repeated TargetStats breakdown_by_target_dps = 21 [json_name="dps_by_target"];
@@ -85,7 +83,7 @@ message OverviewStats {
   double Q2 = 6 [json_name="q2"];
   double Q3 = 7 [json_name="q3"];
 
-  repeated uint64 hist = 8 [json_name="histogram"];
+  repeated uint32 hist = 8 [json_name="histogram"];
 }
 
 message DescriptiveStats {
@@ -100,16 +98,16 @@ message ElementStats {
 }
 
 message TargetStats {
-  map<int64, DescriptiveStats> targets = 1 [json_name="targets"];
+  map<int32, DescriptiveStats> targets = 1 [json_name="targets"];
 }
 
 message BucketStats {
-  int64 bucket_size = 1 [json_name="bucket_size"];
+  uint32 bucket_size = 1 [json_name="bucket_size"];
   repeated DescriptiveStats buckets = 2 [json_name="buckets"];
 }
 
 message CharacterBucketStats {
-  int64 bucket_size = 1 [json_name="bucket_size"];
+  uint32 bucket_size = 1 [json_name="bucket_size"];
   repeated CharacterBuckets characters = 2 [json_name="characters"];
 }
 

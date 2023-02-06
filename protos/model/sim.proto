@@ -5,31 +5,31 @@ option go_package="github.com/genshinsim/gcsim/pkg/model";
 message Character {
     string name = 1 [json_name="name"];
     string element = 2 [json_name="element"];
-    int64 level = 3 [json_name="level"];
-    int64 max_level = 4 [json_name="max_level"];
-    int64 cons = 5 [json_name="cons"];
+    int32 level = 3 [json_name="level"];
+    int32 max_level = 4 [json_name="max_level"];
+    int32 cons = 5 [json_name="cons"];
     Weapon weapon = 6 [json_name="weapon"];
     CharacterTalents talents = 7 [json_name="talents"];
-    map<string, int64> sets = 8 [json_name="sets"];
+    map<string, int32> sets = 8 [json_name="sets"];
     repeated double stats = 9 [json_name="stats"];
     repeated double snapshot_stats = 10 [json_name="snapshot"];
 }
 
 message CharacterTalents {
-    int64 attack = 1 [json_name="attack"];
-    int64 skill = 2 [json_name="skill"];
-    int64 burst = 3 [json_name="burst"];
+    int32 attack = 1 [json_name="attack"];
+    int32 skill = 2 [json_name="skill"];
+    int32 burst = 3 [json_name="burst"];
 }
 
 message Weapon {
     string name = 1 [json_name="name"];
-    int64 refine = 2 [json_name="refine"];
-    int64 level = 3 [json_name="level"];
-    int64 max_level = 4 [json_name="max_level"];
+    int32 refine = 2 [json_name="refine"];
+    int32 level = 3 [json_name="level"];
+    int32 max_level = 4 [json_name="max_level"];
 }
 
 message Enemy {
-    int64 level = 1 [json_name="level"];
+    int32 level = 1 [json_name="level"];
     double HP = 2 [json_name="hp"];
     map<string, double> resist = 3 [json_name="resist"];
     Coord pos = 4 [json_name="position"];
@@ -49,31 +49,31 @@ message SimulatorSettings {
     bool damage_mode = 2 [json_name="damage_mode"];
     bool enable_hitlag = 3 [json_name="enable_hitlag"];
     bool def_halt = 4 [json_name="def_halt"];
-    int64 number_of_workers = 5 [json_name="number_of_workers"];
-    int64 iterations = 6 [json_name="iterations"];
+    uint32 number_of_workers = 5 [json_name="number_of_workers"];
+    uint32 iterations = 6 [json_name="iterations"];
     Delays delays = 7 [json_name="delays"];
 
 }
 
 message Delays {
-    int64 skill = 1 [json_name="skill"];
-    int64 burst = 2 [json_name="burst"];
-    int64 attack = 3 [json_name="attack"];
-    int64 charge = 4 [json_name="charge"];
-    int64 aim = 5 [json_name="aim"];
-    int64 dash = 6 [json_name="dash"];
-    int64 jump = 7 [json_name="jump"];
-    int64 swap = 8 [json_name="swap"];
+    int32 skill = 1 [json_name="skill"];
+    int32 burst = 2 [json_name="burst"];
+    int32 attack = 3 [json_name="attack"];
+    int32 charge = 4 [json_name="charge"];
+    int32 aim = 5 [json_name="aim"];
+    int32 dash = 6 [json_name="dash"];
+    int32 jump = 7 [json_name="jump"];
+    int32 swap = 8 [json_name="swap"];
 }
 
 
 message EnergySettings {
     bool active = 1 [json_name="active"];
     bool once = 2 [json_name="once"];
-    int64 start = 3 [json_name="start"];
-    int64 end = 4 [json_name="end"];
-    int64 amount = 5 [json_name="amount"];
-    int64 last_energy_drop = 6 [json_name="last_energy_drop"];
+    int32 start = 3 [json_name="start"];
+    int32 end = 4 [json_name="end"];
+    int32 amount = 5 [json_name="amount"];
+    int32 last_energy_drop = 6 [json_name="last_energy_drop"];
 }
 
 message AvatarData {
