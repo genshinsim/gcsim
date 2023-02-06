@@ -342,14 +342,23 @@ export namespace model {
         /** SimulationResult sim_version */
         sim_version?: (string|null);
 
-        /** SimulationResult build_date */
-        build_date?: (string|null);
-
         /** SimulationResult modified */
         modified?: (boolean|null);
 
-        /** SimulationResult mode */
-        mode?: (model.SimMode|null);
+        /** SimulationResult build_date */
+        build_date?: (string|null);
+
+        /** SimulationResult sample_seed */
+        sample_seed?: (string|null);
+
+        /** SimulationResult config */
+        config?: (string|null);
+
+        /** SimulationResult simulator_settings */
+        simulator_settings?: (model.ISimulatorSettings|null);
+
+        /** SimulationResult energy_settings */
+        energy_settings?: (model.IEnergySettings|null);
 
         /** SimulationResult initial_character */
         initial_character?: (string|null);
@@ -360,20 +369,11 @@ export namespace model {
         /** SimulationResult target_details */
         target_details?: (model.IEnemy[]|null);
 
-        /** SimulationResult simulator_settings */
-        simulator_settings?: (model.ISimulatorSettings|null);
-
-        /** SimulationResult energy_settings */
-        energy_settings?: (model.IEnergySettings|null);
-
-        /** SimulationResult config */
-        config?: (string|null);
-
-        /** SimulationResult sample_seed */
-        sample_seed?: (string|null);
-
         /** SimulationResult statistics */
         statistics?: (model.ISimulationStatistics|null);
+
+        /** SimulationResult mode */
+        mode?: (model.SimMode|null);
     }
 
     /** Represents a SimulationResult. */
@@ -391,14 +391,23 @@ export namespace model {
         /** SimulationResult sim_version. */
         public sim_version: string;
 
-        /** SimulationResult build_date. */
-        public build_date: string;
-
         /** SimulationResult modified. */
         public modified: boolean;
 
-        /** SimulationResult mode. */
-        public mode: model.SimMode;
+        /** SimulationResult build_date. */
+        public build_date: string;
+
+        /** SimulationResult sample_seed. */
+        public sample_seed: string;
+
+        /** SimulationResult config. */
+        public config: string;
+
+        /** SimulationResult simulator_settings. */
+        public simulator_settings?: (model.ISimulatorSettings|null);
+
+        /** SimulationResult energy_settings. */
+        public energy_settings?: (model.IEnergySettings|null);
 
         /** SimulationResult initial_character. */
         public initial_character: string;
@@ -409,20 +418,11 @@ export namespace model {
         /** SimulationResult target_details. */
         public target_details: model.IEnemy[];
 
-        /** SimulationResult simulator_settings. */
-        public simulator_settings?: (model.ISimulatorSettings|null);
-
-        /** SimulationResult energy_settings. */
-        public energy_settings?: (model.IEnergySettings|null);
-
-        /** SimulationResult config. */
-        public config: string;
-
-        /** SimulationResult sample_seed. */
-        public sample_seed: string;
-
         /** SimulationResult statistics. */
         public statistics?: (model.ISimulationStatistics|null);
+
+        /** SimulationResult mode. */
+        public mode: model.SimMode;
 
         /**
          * Gets the default type url for SimulationResult

@@ -9,26 +9,29 @@ message Version {
   int64 minor = 2 [json_name="minor"];
 }
 
+// IMPORTANT NOTE: If a field is not in the required section, it must be marked optional
+
 message SimulationResult {
-  // sim metadata
+  // required fields (should always be here regardless of schema version)
   Version schema_version = 1 [json_name="schema_version"];
   string sim_version = 2 [json_name="sim_version"];
-  string build_date = 3 [json_name="build_date"];
-  bool modified = 4 [json_name="modified"];
-  SimMode mode = 5 [json_name="mode"];
+  bool modified = 3 [json_name="modified"];
+  string build_date = 4 [json_name="build_date"];
+  string sample_seed = 5 [json_name="sample_seed"];
 
-  // character & enemy metadata
-  // TODO: TargetDetails as map. Need changes to how target keys work
-  string initial_character = 6 [json_name="initial_character"];
-  repeated Character character_details = 7 [json_name="character_details"];
-  repeated Enemy target_details = 8 [json_name="target_details"];
-  SimulatorSettings simulator_settings = 9 [json_name="simulator_settings"];
-  EnergySettings energy_settings = 10 [json_name="energy_settings"];
+  string config = 6 [json_name="config_file"];
+  SimulatorSettings simulator_settings = 7 [json_name="simulator_settings"];
+  EnergySettings energy_settings = 8 [json_name="energy_settings"];
+  
+  string initial_character = 9 [json_name="initial_character"];
+  repeated Character character_details = 10 [json_name="character_details"];
+  repeated Enemy target_details = 11 [json_name="target_details"];
 
-  string config = 11 [json_name="config_file"];
-  string sample_seed = 12 [json_name="sample_seed"];
+  // All data that changes per iteration goes here
+  SimulationStatistics statistics = 12 [json_name="statistics"];
 
-  SimulationStatistics statistics = 13 [json_name="statistics"];
+  // --- optional metadata fields below ---
+  SimMode mode = 13 [json_name="mode"];
 }
 
 message SimulationStatistics {
