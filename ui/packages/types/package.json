@@ -2,5 +2,12 @@
   "name": "@gcsim/types",
   "main": "src/index.ts",
   "packageManager": "yarn@3.2.4",
-  "private": true
+  "private": true,
+  "scripts": {
+    "gen": "pbjs --keep-case -t static-module -w es6 --no-create --no-encode --no-decode --no-verify --no-convert --no-service ../../../protos/model/**/*.proto | pbts -o src/protos.d.ts -",
+    "gen:watch": "watch \"yarn run gen\" ../../../protos/model"
+  },
+  "devDependencies": {
+    "protobufjs-cli": "^1.1.1"
+  }
 }
