@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8",
+    "@types/git-rev-sync": "^2.0.0",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/rimraf": "^3",
@@ -45,7 +46,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-workspaces": "^0.7.0",
     "lerna": "^6.0.1",
-    "madge": "^5.0.1",
+    "madge": "^6.0.0",
     "postcss": "^8.4.18",
     "protobufjs": "^7.1.2",
     "protobufjs-cli": "^1.1.1",
