@@ -79,11 +79,10 @@ export namespace Aggregator {
 
   export interface FlushRequest {
     type: Request.Flush;
-    startTime: number;
   }
 
-  export function FlushRequest(startTime: number): FlushRequest {
-    return { type: Request.Flush, startTime: startTime };
+  export function FlushRequest(): FlushRequest {
+    return { type: Request.Flush };
   }
 
   export interface ResultResponse {

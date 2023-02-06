@@ -155,7 +155,6 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 		a.Flush(stats)
 	}
 	result.Statistics = stats
-	result.Statistics.Runtime = float64(time.Since(start).Nanoseconds())
 
 	//TODO: clean up this code
 	if opts.ResultSaveToPath != "" {

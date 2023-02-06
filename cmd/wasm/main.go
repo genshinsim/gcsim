@@ -5,7 +5,6 @@ import (
 	"errors"
 	"strconv"
 	"syscall/js"
-	"time"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -233,7 +232,7 @@ func aggregate(this js.Value, args []js.Value) (out interface{}) {
 	return nil
 }
 
-// flush(startTime: int) -> string
+// flush() -> string
 func flush(this js.Value, args []js.Value) (out interface{}) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -241,13 +240,10 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 		}
 	}()
 
-	startTime := args[0].Int()
-
 	stats := &model.SimulationStatistics{}
 	for _, a := range aggregators {
 		a.Flush(stats)
 	}
-	stats.Runtime = float64(time.Now().Nanosecond() - startTime)
 
 	// build full result from cache and sign
 	cachedResult.Statistics = stats

@@ -17,7 +17,7 @@ func (r *SimulationResult) PrettyPrint() string {
 		r.Statistics.TotalDamage.Mean, r.Statistics.Duration.Mean,
 		r.Statistics.DPS.Mean, r.Statistics.DPS.Min, r.Statistics.DPS.Max, r.Statistics.DPS.SD))
 	sb.WriteString(fmt.Sprintf(
-		"Simulation completed %v iterations in %.3f seconds\n", r.Statistics.Iterations, r.Statistics.Runtime/1000000000))
+		"Simulation completed %v iterations\n", r.Statistics.Iterations))
 
 	return sb.String()
 }

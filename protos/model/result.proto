@@ -39,33 +39,32 @@ message SimulationStatistics {
   string p25_seed = 3 [json_name="p25_seed"];
   string p50_seed = 4 [json_name="p50_seed"];
   string p75_seed = 5 [json_name="p75_seed"];
-  double runtime = 6 [json_name="runtime"];
-  uint32 iterations = 7 [json_name="iterations"];
+  uint32 iterations = 6 [json_name="iterations"];
 
   // global overview (global/no group by)
-  OverviewStats duration = 8 [json_name="duration"];
-  OverviewStats DPS = 9 [json_name="dps"];
-  OverviewStats RPS = 10 [json_name="rps"];
-  OverviewStats EPS = 11 [json_name="eps"];
-  OverviewStats HPS = 12 [json_name="hps"];
-  OverviewStats SHP = 13 [json_name="shp"];
-  OverviewStats total_damage = 14 [json_name="total_damage"];
+  OverviewStats duration = 7 [json_name="duration"];
+  OverviewStats DPS = 8 [json_name="dps"];
+  OverviewStats RPS = 9 [json_name="rps"];
+  OverviewStats EPS = 10 [json_name="eps"];
+  OverviewStats HPS = 11 [json_name="hps"];
+  OverviewStats SHP = 12 [json_name="shp"];
+  OverviewStats total_damage = 13 [json_name="total_damage"];
 
-  Warnings warnings = 15 [json_name="warnings"];
-  repeated FailedActions failed_actions = 16 [json_name="failed_actions"];
+  Warnings warnings = 14 [json_name="warnings"];
+  repeated FailedActions failed_actions = 15 [json_name="failed_actions"];
 
   // damage
-  map<string, DescriptiveStats> element_dps = 17 [json_name="element_dps"];
-  map<int32, DescriptiveStats> target_dps = 18 [json_name="target_dps"];
-  repeated DescriptiveStats character_dps = 19 [json_name="character_dps"];
-  repeated ElementStats breakdown_by_element_dps = 20 [json_name="dps_by_element"];
-  repeated TargetStats breakdown_by_target_dps = 21 [json_name="dps_by_target"];
+  map<string, DescriptiveStats> element_dps = 16 [json_name="element_dps"];
+  map<int32, DescriptiveStats> target_dps = 17 [json_name="target_dps"];
+  repeated DescriptiveStats character_dps = 18 [json_name="character_dps"];
+  repeated ElementStats breakdown_by_element_dps = 19 [json_name="dps_by_element"];
+  repeated TargetStats breakdown_by_target_dps = 20 [json_name="dps_by_target"];
 
-  BucketStats damage_buckets = 22 [json_name="damage_buckets"];
-  CharacterBucketStats cumulative_damage_contribution = 23 [json_name="cumu_damage_contrib"];
+  BucketStats damage_buckets = 21 [json_name="damage_buckets"];
+  CharacterBucketStats cumulative_damage_contribution = 22 [json_name="cumu_damage_contrib"];
 
   // shield
-  map<string, ShieldInfo> shields = 24 [json_name="shields"];
+  map<string, ShieldInfo> shields = 23 [json_name="shields"];
 }
 
 message SignedSimulationStatistics {

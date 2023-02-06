@@ -450,9 +450,6 @@ export namespace model {
         /** SimulationStatistics p75_seed */
         p75_seed?: (string|null);
 
-        /** SimulationStatistics runtime */
-        runtime?: (number|null);
-
         /** SimulationStatistics iterations */
         iterations?: (number|null);
 
@@ -531,9 +528,6 @@ export namespace model {
 
         /** SimulationStatistics p75_seed. */
         public p75_seed: string;
-
-        /** SimulationStatistics runtime. */
-        public runtime: number;
 
         /** SimulationStatistics iterations. */
         public iterations: number;

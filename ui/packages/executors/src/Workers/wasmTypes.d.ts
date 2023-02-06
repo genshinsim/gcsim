@@ -18,7 +18,7 @@ declare global {
   // Aggregator functions
   declare function initializeAggregator(cfg: string): string;
   declare function aggregate(result: Uint8Array): string | null;
-  declare function flush(startTime: number): string;
+  declare function flush(): string;
 
   // Worker functions
   declare function initializeWorker(cfg: string): string | null;
