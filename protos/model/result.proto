@@ -4,16 +4,44 @@ option go_package="github.com/genshinsim/gcsim/pkg/model";
 
 import "protos/model/sim.proto";
 
+// IMPORTANT NOTE:
+// By default all proto3 fields have "no presence". If the value is equal to the default value
+// then that field will be removed from the output. This is done to minimize data size, but may have
+// undesirable behaviors when reading from json. IE: for a bool field, a false value will never
+// be omitted. In JS, this makes the null/undefined case equivalent to false.
+//
+// This behavior can be removed by adding "optional" to the field, forcing "explicit presence". With
+// optional added, the field will only ever be omitted when it is unset (the value is null). This
+// should be used sparingly, as it increases the size of the generated code and overall data size.
+//
+// RECOMMENDATION: Only use "optional" when not emitting the default value is undesirable. This is
+// best limited to only boolean, numeric, and string/byte fields (map & list possible but unlikely).
+// Table of the default value for each type:
+//  ╔═══════╤════════════════════════════╗
+//  ║ JSON  │ Protobuf field             ║
+//  ╠═══════╪════════════════════════════╣
+//  ║ false │ proto3 boolean fields      ║
+//  ║ 0     │ proto3 numeric fields      ║
+//  ║ ""    │ proto3 string/bytes fields ║
+//  ║ null  │ message fields             ║
+//  ║ []    │ list fields                ║
+//  ║ {}    │ map fields                 ║
+//  ╚═══════╧════════════════════════════╝
+//
+// see: https://protobuf.dev/programming-guides/field_presence/
+// see: https://protobuf.dev/programming-guides/proto3/#json
+// see: https://pkg.go.dev/google.golang.org/protobuf/encoding/protojson#MarshalOptions
+
 message Version {
-  uint32 major = 1 [json_name="major"];
-  uint32 minor = 2 [json_name="minor"];
+  string major = 1 [json_name="major"];
+  string minor = 2 [json_name="minor"];
 }
 
 message SimulationResult {
   // required fields (should always be here regardless of schema version)
   Version schema_version = 1 [json_name="schema_version"];
-  string sim_version = 2 [json_name="sim_version"];
-  bool modified = 3 [json_name="modified"];
+  optional string sim_version = 2 [json_name="sim_version"];
+  optional bool modified = 3 [json_name="modified"];
   string build_date = 4 [json_name="build_date"];
   string sample_seed = 5 [json_name="sample_seed"];
 
@@ -48,7 +76,7 @@ message SimulationStatistics {
   OverviewStats EPS = 10 [json_name="eps"];
   OverviewStats HPS = 11 [json_name="hps"];
   OverviewStats SHP = 12 [json_name="shp"];
-  OverviewStats total_damage = 13 [json_name="total_damage"];
+  DescriptiveStats total_damage = 13 [json_name="total_damage"];
 
   Warnings warnings = 14 [json_name="warnings"];
   repeated FailedActions failed_actions = 15 [json_name="failed_actions"];
@@ -73,23 +101,23 @@ message SignedSimulationStatistics {
 }
 
 message OverviewStats {
-  double min = 1 [json_name="min"];
-  double max = 2 [json_name="max"];
-  double mean = 3 [json_name="mean"];
-  double SD = 4 [json_name="sd"];
+  optional double min = 1 [json_name="min"];
+  optional double max = 2 [json_name="max"];
+  optional double mean = 3 [json_name="mean"];
+  optional double SD = 4 [json_name="sd"];
 
-  double Q1 = 5 [json_name="q1"];
-  double Q2 = 6 [json_name="q2"];
-  double Q3 = 7 [json_name="q3"];
+  optional double Q1 = 5 [json_name="q1"];
+  optional double Q2 = 6 [json_name="q2"];
+  optional double Q3 = 7 [json_name="q3"];
 
   repeated uint32 hist = 8 [json_name="histogram"];
 }
 
 message DescriptiveStats {
-  double min = 1 [json_name="min"];
-  double max = 2 [json_name="max"];
-  double mean = 3 [json_name="mean"];
-  double SD = 4 [json_name="sd"];
+  optional double min = 1 [json_name="min"];
+  optional double max = 2 [json_name="max"];
+  optional double mean = 3 [json_name="mean"];
+  optional double SD = 4 [json_name="sd"];
 }
 
 message ElementStats {
@@ -115,6 +143,7 @@ message CharacterBuckets {
 }
 
 message Warnings {
+  // optional unnecessary, missing == false in ui
   bool target_overlap = 1 [json_name="target_overlap"];
   bool insufficient_energy = 2 [json_name="insufficient_energy"];
   bool insufficient_stamina = 3 [json_name="insufficient_stamina"];

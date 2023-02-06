@@ -6,7 +6,7 @@ func marshalOptions() protojson.MarshalOptions {
 	return protojson.MarshalOptions{
 		AllowPartial:    true,
 		UseEnumNumbers:  true, // TODO: prob better if we set to false?
-		EmitUnpopulated: true,
+		EmitUnpopulated: false,
 	}
 }
 

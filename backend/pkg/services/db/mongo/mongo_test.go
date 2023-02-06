@@ -41,9 +41,9 @@ func TestCreate(t *testing.T) {
 		CreateDate: uint64(time.Now().Unix()),
 		RunDate:    uint64(time.Now().Unix()),
 		SimDuration: &model.DescriptiveStats{
-			Min:  0,
-			Max:  100,
-			Mean: 50,
+			Min:  Ptr(float64(0)),
+			Max:  Ptr(float64(100)),
+			Mean: Ptr(float64(50)),
 		},
 		Config: "blah",
 		Hash:   "blah",
@@ -71,4 +71,8 @@ func TestCreate(t *testing.T) {
 
 	log.Println(entries)
 
+}
+
+func Ptr[T any](v T) *T {
+	return &v
 }

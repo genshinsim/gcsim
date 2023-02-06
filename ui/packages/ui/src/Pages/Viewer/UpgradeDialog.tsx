@@ -14,8 +14,8 @@ import { useHistory, useLocation } from "react-router";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
-const MAJOR = 4; // Make sure the gcsim binary has also been updated
-const MINOR = 0; // Make sure the gcsim binary has also been updated
+const MAJOR = "4"; // Make sure the gcsim binary has also been updated
+const MINOR = "0"; // Make sure the gcsim binary has also been updated
 
 enum MismatchType {
   MajorVersionMismatch,
@@ -93,7 +93,7 @@ function useMismatch(
       setMismatch(MismatchType.MajorVersionMismatch);
     } else if (schema_version.major != MAJOR) {
       setMismatch(MismatchType.MajorVersionMismatch);
-    } else if (schema_version.minor < MINOR) {
+    } else if (schema_version.minor != MINOR) {
       setMismatch(MismatchType.MinorVersionMismatch);
     } else if (resultCommit != latestCommit) {
       setMismatch(MismatchType.CommitMismatch);

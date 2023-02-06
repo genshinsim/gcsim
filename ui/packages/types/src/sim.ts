@@ -25,8 +25,8 @@ export interface Sample {
 }
 
 export interface Version {
-  major: number;
-  minor: number;
+  major: string;
+  minor: string;
 }
 
 export interface Statistics {

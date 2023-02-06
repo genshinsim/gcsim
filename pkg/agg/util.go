@@ -13,12 +13,54 @@ func ToDescriptiveStats(ss *stats.StreamStats) *model.DescriptiveStats {
 		sd = 0
 	}
 
+	mean := ss.Mean()
 	return &model.DescriptiveStats{
-		Min:  ss.Min,
-		Max:  ss.Max,
-		Mean: ss.Mean(),
-		SD:   sd,
+		Min:  &ss.Min,
+		Max:  &ss.Max,
+		Mean: &mean,
+		SD:   &sd,
 	}
+}
+
+func ToOverviewStats(input *stats.Sample) *model.OverviewStats {
+	input.Sorted = false
+	input.Sort()
+
+	min, max := input.Bounds()
+	std := input.StdDev()
+	if math.IsNaN(std) {
+		std = 0
+	}
+
+	out := model.OverviewStats{
+		SD:   &std,
+		Min:  &min,
+		Max:  &max,
+		Mean: Ptr(input.Mean()),
+		Q1:   Ptr(input.Quantile(0.25)),
+		Q2:   Ptr(input.Quantile(0.5)),
+		Q3:   Ptr(input.Quantile(0.75)),
+	}
+
+	// Scott's normal reference rule
+	h := (3.49 * std) / (math.Pow(float64(len(input.Xs)), 1.0/3.0))
+	if h == 0.0 || max == min {
+		hist := make([]uint32, 1)
+		hist[0] = uint32(len(input.Xs))
+		out.Hist = hist
+	} else {
+		nbins := int(math.Ceil((max - min) / h))
+		hist := NewLinearHist(min, max, nbins)
+		for _, x := range input.Xs {
+			hist.Add(x)
+		}
+		low, bins, high := hist.Counts()
+		bins[0] += low
+		bins[len(bins)-1] += high
+		out.Hist = bins
+	}
+
+	return &out
 }
 
 // taken from go-moremath. Need to reimplement for proto type compatibility
@@ -57,4 +99,8 @@ func (h *LinearHist) Counts() (uint32, []uint32, uint32) {
 
 func (h *LinearHist) BinToValue(bin float64) float64 {
 	return h.min + bin/h.delta
+}
+
+func Ptr[T any](v T) *T {
+	return &v
 }

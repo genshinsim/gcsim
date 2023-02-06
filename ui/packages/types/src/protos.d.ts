@@ -304,10 +304,10 @@ export namespace model {
     interface IVersion {
 
         /** Version major */
-        major?: (number|null);
+        major?: (string|null);
 
         /** Version minor */
-        minor?: (number|null);
+        minor?: (string|null);
     }
 
     /** Represents a Version. */
@@ -320,10 +320,10 @@ export namespace model {
         constructor(properties?: model.IVersion);
 
         /** Version major. */
-        public major: number;
+        public major: string;
 
         /** Version minor. */
-        public minor: number;
+        public minor: string;
 
         /**
          * Gets the default type url for Version
@@ -389,10 +389,10 @@ export namespace model {
         public schema_version?: (model.IVersion|null);
 
         /** SimulationResult sim_version. */
-        public sim_version: string;
+        public sim_version?: (string|null);
 
         /** SimulationResult modified. */
-        public modified: boolean;
+        public modified?: (boolean|null);
 
         /** SimulationResult build_date. */
         public build_date: string;
@@ -423,6 +423,12 @@ export namespace model {
 
         /** SimulationResult mode. */
         public mode: model.SimMode;
+
+        /** SimulationResult _sim_version. */
+        public _sim_version?: "sim_version";
+
+        /** SimulationResult _modified. */
+        public _modified?: "modified";
 
         /**
          * Gets the default type url for SimulationResult
@@ -472,7 +478,7 @@ export namespace model {
         SHP?: (model.IOverviewStats|null);
 
         /** SimulationStatistics total_damage */
-        total_damage?: (model.IOverviewStats|null);
+        total_damage?: (model.IDescriptiveStats|null);
 
         /** SimulationStatistics warnings */
         warnings?: (model.IWarnings|null);
@@ -551,7 +557,7 @@ export namespace model {
         public SHP?: (model.IOverviewStats|null);
 
         /** SimulationStatistics total_damage. */
-        public total_damage?: (model.IOverviewStats|null);
+        public total_damage?: (model.IDescriptiveStats|null);
 
         /** SimulationStatistics warnings. */
         public warnings?: (model.IWarnings|null);
@@ -662,28 +668,49 @@ export namespace model {
         constructor(properties?: model.IOverviewStats);
 
         /** OverviewStats min. */
-        public min: number;
+        public min?: (number|null);
 
         /** OverviewStats max. */
-        public max: number;
+        public max?: (number|null);
 
         /** OverviewStats mean. */
-        public mean: number;
+        public mean?: (number|null);
 
         /** OverviewStats SD. */
-        public SD: number;
+        public SD?: (number|null);
 
         /** OverviewStats Q1. */
-        public Q1: number;
+        public Q1?: (number|null);
 
         /** OverviewStats Q2. */
-        public Q2: number;
+        public Q2?: (number|null);
 
         /** OverviewStats Q3. */
-        public Q3: number;
+        public Q3?: (number|null);
 
         /** OverviewStats hist. */
         public hist: number[];
+
+        /** OverviewStats _min. */
+        public _min?: "min";
+
+        /** OverviewStats _max. */
+        public _max?: "max";
+
+        /** OverviewStats _mean. */
+        public _mean?: "mean";
+
+        /** OverviewStats _SD. */
+        public _SD?: "SD";
+
+        /** OverviewStats _Q1. */
+        public _Q1?: "Q1";
+
+        /** OverviewStats _Q2. */
+        public _Q2?: "Q2";
+
+        /** OverviewStats _Q3. */
+        public _Q3?: "Q3";
 
         /**
          * Gets the default type url for OverviewStats
@@ -719,16 +746,28 @@ export namespace model {
         constructor(properties?: model.IDescriptiveStats);
 
         /** DescriptiveStats min. */
-        public min: number;
+        public min?: (number|null);
 
         /** DescriptiveStats max. */
-        public max: number;
+        public max?: (number|null);
 
         /** DescriptiveStats mean. */
-        public mean: number;
+        public mean?: (number|null);
 
         /** DescriptiveStats SD. */
-        public SD: number;
+        public SD?: (number|null);
+
+        /** DescriptiveStats _min. */
+        public _min?: "min";
+
+        /** DescriptiveStats _max. */
+        public _max?: "max";
+
+        /** DescriptiveStats _mean. */
+        public _mean?: "mean";
+
+        /** DescriptiveStats _SD. */
+        public _SD?: "SD";
 
         /**
          * Gets the default type url for DescriptiveStats

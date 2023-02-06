@@ -86,11 +86,12 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for k, s := range b.shieldHP {
 		outHP := make(map[string]*model.DescriptiveStats)
 		for t, hp := range s {
+			mean, std := hp.Mean(), hp.StdDev()
 			outHP[t] = &model.DescriptiveStats{
-				Min:  hp.Min,
-				Max:  hp.Max,
-				Mean: hp.Mean(),
-				SD:   hp.StdDev(),
+				Min:  &hp.Min,
+				Max:  &hp.Max,
+				Mean: &mean,
+				SD:   &std,
 			}
 		}
 
