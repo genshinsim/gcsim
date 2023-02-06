@@ -1056,11 +1056,11 @@ export namespace model {
     /** Properties of a Sample. */
     interface ISample {
 
-        /** Sample sim_version */
-        sim_version?: (string|null);
-
         /** Sample build_date */
         build_date?: (string|null);
+
+        /** Sample sim_version */
+        sim_version?: (string|null);
 
         /** Sample modified */
         modified?: (boolean|null);
@@ -1093,14 +1093,14 @@ export namespace model {
          */
         constructor(properties?: model.ISample);
 
-        /** Sample sim_version. */
-        public sim_version: string;
-
         /** Sample build_date. */
         public build_date: string;
 
+        /** Sample sim_version. */
+        public sim_version?: (string|null);
+
         /** Sample modified. */
-        public modified: boolean;
+        public modified?: (boolean|null);
 
         /** Sample config. */
         public config: string;
@@ -1119,6 +1119,12 @@ export namespace model {
 
         /** Sample logs. */
         public logs: google.protobuf.IStruct[];
+
+        /** Sample _sim_version. */
+        public _sim_version?: "sim_version";
+
+        /** Sample _modified. */
+        public _modified?: "modified";
 
         /**
          * Gets the default type url for Sample

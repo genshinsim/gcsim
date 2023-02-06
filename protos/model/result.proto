@@ -7,8 +7,9 @@ import "protos/model/sim.proto";
 // IMPORTANT NOTE:
 // By default all proto3 fields have "no presence". If the value is equal to the default value
 // then that field will be removed from the output. This is done to minimize data size, but may have
-// undesirable behaviors when reading from json. IE: for a bool field, a false value will never
-// be omitted. In JS, this makes the null/undefined case equivalent to false.
+// undesirable behaviors when reading from json. IE: for a numeric field, a 0 value will never
+// be emitted. In JS, this makes the null/undefined case equivalent to 0 (so stats with 0 values
+// get treated as a "data not found" case).
 //
 // This behavior can be removed by adding "optional" to the field, forcing "explicit presence". With
 // optional added, the field will only ever be omitted when it is unset (the value is null). This

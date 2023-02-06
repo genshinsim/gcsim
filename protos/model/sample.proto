@@ -6,9 +6,9 @@ import "protos/model/sim.proto";
 import "google/protobuf/struct.proto";
 
 message Sample {
-  string sim_version = 1 [json_name="sim_version"];
   string build_date = 2 [json_name="build_date"];
-  bool modified = 3 [json_name="modified"];
+  optional string sim_version = 1 [json_name="sim_version"];
+  optional bool modified = 3 [json_name="modified"];
   
   string config = 4 [json_name="config"];
   string initial_character = 5 [json_name="initial_character"];
