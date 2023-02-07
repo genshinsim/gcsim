@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 6 {
 		c.Core.Player.AddWeaponInfuse(
 			c.Index,
-			c6key,
+			c6Key,
 			attributes.Electro,
 			228, // 3s + 0.8s according to dm
 			true,
