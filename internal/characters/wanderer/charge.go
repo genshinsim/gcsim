@@ -87,7 +87,7 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
 		StrikeType: combat.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       skillNABonus[c.TalentLvlSkill()] * charge[c.TalentLvlAttack()],
+		Mult:       skillCABonus[c.TalentLvlSkill()] * charge[c.TalentLvlAttack()],
 	}
 
 	// TODO: check snapshot delay
