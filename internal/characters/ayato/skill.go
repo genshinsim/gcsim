@@ -49,7 +49,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.AddStatus(SkillBuffKey, 6*60, true)
 	// figure out atk buff
 	if c.Base.Cons >= 6 {
-		c.c6ready = true
+		c.c6Ready = true
 	}
 	c.SetCD(action.ActionSkill, 12*60)
 

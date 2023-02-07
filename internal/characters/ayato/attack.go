@@ -117,6 +117,7 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 		shunsuikenHitmark,
 		c.particleCB,
 		c.skillStacks,
+		c.makeC6CB(),
 	)
 
 	defer c.AdvanceNormalIndex()
