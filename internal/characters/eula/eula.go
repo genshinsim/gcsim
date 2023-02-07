@@ -16,7 +16,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	burstCounter    int
-	burstCounterICD int
 	grimheartStacks int
 	c1buff          []float64
 	particleDone    bool
@@ -41,7 +40,6 @@ func (c *char) Init() error {
 		c.c1buff = make([]float64, attributes.EndStatType)
 		c.c1buff[attributes.PhyP] = 0.3
 	}
-	c.burstStacks()
 	c.onExitField()
 	if c.Base.Cons >= 4 {
 		c.c4()

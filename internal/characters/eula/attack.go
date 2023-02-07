@@ -32,7 +32,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
+	burstStackCB := c.makeBurstStackCB()
 	for i, mult := range auto[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -63,7 +63,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, burstStackCB)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

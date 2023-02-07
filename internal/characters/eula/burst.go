@@ -24,7 +24,8 @@ func init() {
 }
 
 const (
-	burstKey = "eula-q"
+	burstKey         = "eula-q"
+	burstStackICDKey = "eula-q-stack-icd"
 )
 
 // ult 365 to 415, 60fps = 120
@@ -117,44 +118,42 @@ func (c *char) triggerBurst() {
 	c.burstCounter = 0
 }
 
-func (c *char) burstStacks() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		dmg := args[2].(float64)
+// When Eula's own Normal Attack, Elemental Skill, and Elemental Burst deal DMG to opponents,
+// they will charge the Lightfall Sword, which can gain an energy stack once every 0.1s.
+func (c *char) makeBurstStackCB() combat.AttackCBFunc {
+	if c.Core.Status.Duration(burstKey) == 0 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
 		if c.Core.Status.Duration(burstKey) == 0 {
-			return false
+			return
 		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
+		if a.Damage == 0 {
+			return
 		}
-		//TODO: this looks like the icd is dependent on gadget timer. need to double check
-		if c.burstCounterICD > c.Core.F {
-			return false
+		if c.StatusIsActive(burstStackICDKey) {
+			return
 		}
-		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt:
-		case combat.AttackTagElementalBurst:
-		case combat.AttackTagNormal:
-		default:
-			return false
-		}
-		if dmg == 0 {
-			return false
-		}
+		//TODO: looks like the icd is dependent on gadget timer. need to double check
+		c.AddStatus(burstStackICDKey, 0.1*60, false)
 
-		//add to counter
+		// add to counter
 		c.burstCounter++
 		c.Core.Log.NewEvent("eula burst add stack", glog.LogCharacterEvent, c.Index).
 			Write("stack count", c.burstCounter)
-		//check for c6
+		// check for c6
 		if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 			c.burstCounter++
 			c.Core.Log.NewEvent("eula c6 add additional stack", glog.LogCharacterEvent, c.Index).
 				Write("stack count", c.burstCounter)
 		}
-		c.burstCounterICD = c.Core.F + 6
-		return false
-	}, "eula-burst-counter")
+	}
 }
 
 func (c *char) onExitField() {
