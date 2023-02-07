@@ -41,9 +41,9 @@ func TestCreate(t *testing.T) {
 		CreateDate: uint64(time.Now().Unix()),
 		RunDate:    uint64(time.Now().Unix()),
 		SimDuration: &model.DescriptiveStats{
-			Min:  0,
-			Max:  100,
-			Mean: 50,
+			Min:  Ptr(float64(0)),
+			Max:  Ptr(float64(100)),
+			Mean: Ptr(float64(50)),
 		},
 		Config: "blah",
 		Hash:   "blah",
@@ -54,21 +54,25 @@ func TestCreate(t *testing.T) {
 		t.Error(err)
 	}
 
-	var qs = &structpb.Struct{
-		Fields: map[string]*structpb.Value{
-			"key": {
-				Kind: &structpb.Value_StringValue{
-					StringValue: e.Key,
+	entries, err := srv.Get(context.TODO(), &model.DBQueryOpt{
+		Query: &structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"key": {
+					Kind: &structpb.Value_StringValue{
+						StringValue: e.Key,
+					},
 				},
 			},
 		},
-	}
-
-	entries, err := srv.Get(context.TODO(), qs, 30, 1)
+	})
 	if err != nil {
 		t.Error(err)
 	}
 
 	log.Println(entries)
 
+}
+
+func Ptr[T any](v T) *T {
+	return &v
 }

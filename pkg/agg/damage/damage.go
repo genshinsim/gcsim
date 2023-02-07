@@ -5,11 +5,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 // 30 = .5s
-const BUCKET_SIZE int = 30
+const BUCKET_SIZE uint32 = 30
 
 func init() {
 	agg.Register(NewAgg)
@@ -139,55 +140,74 @@ func (b *buffer) Add(result stats.Result) {
 	}
 }
 
-func (b *buffer) Flush(result *agg.Result) {
-	result.ElementDPS = make(map[string]agg.FloatStat)
+func (b *buffer) Flush(result *model.SimulationStatistics) {
+	result.ElementDps = make(map[string]*model.DescriptiveStats)
 	for k, v := range b.elementDPS {
 		if v.Min > 0 {
-			result.ElementDPS[k] = agg.ConvertToFloatStat(v)
+			result.ElementDps[k] = agg.ToDescriptiveStats(v)
 		}
 	}
 
-	result.TargetDPS = make(map[int]agg.FloatStat)
+	result.TargetDps = make(map[int32]*model.DescriptiveStats)
 	for k, v := range b.targetDPS {
-		result.TargetDPS[k] = agg.ConvertToFloatStat(v)
+		result.TargetDps[int32(k)] = agg.ToDescriptiveStats(v)
 	}
 
-	result.CharacterDPS = make([]agg.FloatStat, len(b.characterDPS))
+	result.CharacterDps = make([]*model.DescriptiveStats, len(b.characterDPS))
 	for i, v := range b.characterDPS {
-		result.CharacterDPS[i] = agg.ConvertToFloatStat(v)
+		result.CharacterDps[i] = agg.ToDescriptiveStats(v)
 	}
 
-	result.BreakdownByElementDPS = make([]map[string]agg.FloatStat, len(b.dpsByElement))
+	result.BreakdownByElementDps = make([]*model.ElementStats, len(b.dpsByElement))
 	for i, em := range b.dpsByElement {
-		result.BreakdownByElementDPS[i] = make(map[string]agg.FloatStat)
+		elements := make(map[string]*model.DescriptiveStats)
 		for k, v := range em {
 			if v.Min > 0 {
-				result.BreakdownByElementDPS[i][k] = agg.ConvertToFloatStat(v)
+				elements[k] = agg.ToDescriptiveStats(v)
 			}
 		}
+
+		result.BreakdownByElementDps[i] = &model.ElementStats{
+			Elements: elements,
+		}
 	}
 
-	result.BreakdownByTargetDPS = make([]map[int]agg.FloatStat, len(b.dpsByTarget))
+	result.BreakdownByTargetDps = make([]*model.TargetStats, len(b.dpsByTarget))
 	for i, t := range b.dpsByTarget {
-		result.BreakdownByTargetDPS[i] = make(map[int]agg.FloatStat)
+		targets := make(map[int32]*model.DescriptiveStats)
 		for k, v := range t {
-			result.BreakdownByTargetDPS[i][k] = agg.ConvertToFloatStat(v)
+			targets[int32(k)] = agg.ToDescriptiveStats(v)
+		}
+
+		result.BreakdownByTargetDps[i] = &model.TargetStats{
+			Targets: targets,
 		}
 	}
 
-	result.DamageBuckets = make([]agg.FloatStat, len(b.damageBuckets))
+	damageBuckets := make([]*model.DescriptiveStats, len(b.damageBuckets))
 	for i, v := range b.damageBuckets {
-		result.DamageBuckets[i] = agg.ConvertToFloatStat(v)
+		damageBuckets[i] = agg.ToDescriptiveStats(v)
+	}
+	result.DamageBuckets = &model.BucketStats{
+		BucketSize: BUCKET_SIZE,
+		Buckets:    damageBuckets,
 	}
 
-	result.CumulativeDamageContribution = make([][]agg.FloatStat, len(b.cumulativeContrib))
+	characterBuckets := make([]*model.CharacterBuckets, len(b.cumulativeContrib))
 	for i, c := range b.cumulativeContrib {
-		result.CumulativeDamageContribution[i] = make([]agg.FloatStat, len(c))
+		buckets := make([]*model.DescriptiveStats, len(c))
 		for j, v := range c {
-			result.CumulativeDamageContribution[i][j] = agg.ConvertToFloatStat(v)
+			buckets[j] = agg.ToDescriptiveStats(v)
+		}
+		characterBuckets[i] = &model.CharacterBuckets{
+			Buckets: buckets,
 		}
 	}
-	result.DamageBucketSize = BUCKET_SIZE
+
+	result.CumulativeDamageContribution = &model.CharacterBucketStats{
+		BucketSize: BUCKET_SIZE,
+		Characters: characterBuckets,
+	}
 }
 
 func makeElementMap() map[string]float64 {

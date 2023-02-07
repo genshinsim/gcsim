@@ -93,7 +93,7 @@ export const CumulativeGraph = (
   const tooltipHandles = useTooltipHandles(
       tooltip.showTooltip, tooltip.hideTooltip, xScale, yMax, margin, bucketSize);
 
-  if (names == null || input == null) {
+  if (names == null || input == null || data.length == 0) {
     return <NoData />;
   }
   

@@ -97,7 +97,6 @@ export class WasmExecutor implements Executor {
     // 1. Create Aggregator & Workers
     const created = Promise.all([this.createAggregator(), this.createWorkers()]);
 
-    const startTime = Date.now() * 1_000_000;
     let result: SimResults | null = null;
     let maxIterations = 0;
 
@@ -149,7 +148,7 @@ export class WasmExecutor implements Executor {
 
     const throttledFlush = throttle(() => {
       if (this.isRunning) {
-        this.aggregator?.postMessage(Aggregator.FlushRequest(startTime));
+        this.aggregator?.postMessage(Aggregator.FlushRequest());
       }
     }, VIEWER_THROTTLE, { leading: true, trailing: true });
 

@@ -23,13 +23,13 @@
   },
   "devDependencies": {
     "@types/prettier": "^2",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
-    "@vitejs/plugin-react": "^2.1.0",
     "prettier": "^2.8.3",
     "prettier-plugin-organize-imports": "^3.2.2",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^3.1.0",
     "rollup-plugin-visualizer": "^5.8.3",
-    "vite": "^3.1.8",
-    "vite-tsconfig-paths": "^3.5.2"
+    "vite": "^4.1.1",
+    "vite-tsconfig-paths": "^4.0.5"
   }
 }

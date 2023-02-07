@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -35,8 +36,8 @@ func (b *buffer) Add(result stats.Result) {
 	b.runs = append(b.runs, run{seed: result.Seed, dps: result.DPS})
 }
 
-func (b buffer) Flush(result *agg.Result) {
-	result.Iterations = b.runs.Len()
+func (b buffer) Flush(result *model.SimulationStatistics) {
+	result.Iterations = uint32(b.runs.Len())
 
 	sort.Sort(b.runs)
 	result.MinSeed = strconv.FormatUint(b.runs[0].seed, 10)

@@ -1,11 +1,10 @@
 package overview
 
 import (
-	"math"
-
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -14,17 +13,17 @@ func init() {
 }
 
 type buffer struct {
-	duration    calc.Sample
-	dps         calc.Sample
-	rps         calc.Sample
-	eps         calc.Sample
-	hps         calc.Sample
-	shp         calc.Sample
+	duration    *calc.Sample
+	dps         *calc.Sample
+	rps         *calc.Sample
+	eps         *calc.Sample
+	hps         *calc.Sample
+	shp         *calc.Sample
 	totalDamage calc.StreamStats
 }
 
-func newSample(itr int) calc.Sample {
-	return calc.Sample{
+func newSample(itr int) *calc.Sample {
+	return &calc.Sample{
 		Xs:     make([]float64, 0, itr),
 		Sorted: false,
 	}
@@ -79,58 +78,12 @@ func (b *buffer) Add(result stats.Result) {
 	b.eps.Xs[i] /= b.duration.Xs[i]
 }
 
-func (b *buffer) Flush(result *agg.Result) {
-	result.Duration = convert(b.duration)
-	result.DPS = convert(b.dps)
-	result.RPS = convert(b.rps)
-	result.EPS = convert(b.eps)
-	result.HPS = convert(b.hps)
-	result.SHP = convert(b.shp)
-
-	result.TotalDamage = agg.SummaryStat{
-		Min:  b.totalDamage.Min,
-		Max:  b.totalDamage.Max,
-		Mean: b.totalDamage.Mean(),
-		SD:   b.totalDamage.StdDev(),
-	}
-	if math.IsNaN(result.TotalDamage.SD) {
-		result.TotalDamage.SD = 0
-	}
-}
-
-func convert(input calc.Sample) agg.SummaryStat {
-	input.Sorted = false
-	input.Sort()
-
-	out := agg.SummaryStat{
-		Mean: input.Mean(),
-		SD:   input.StdDev(),
-		Q1:   input.Quantile(0.25),
-		Q2:   input.Quantile(0.5),
-		Q3:   input.Quantile(0.75),
-	}
-	out.Min, out.Max = input.Bounds()
-	if math.IsNaN(out.SD) {
-		out.SD = 0
-	}
-
-	// Scott's normal reference rule
-	h := (3.49 * out.SD) / (math.Pow(float64(len(input.Xs)), 1.0/3.0))
-	if h == 0.0 || out.Max == out.Min {
-		hist := make([]uint, 1)
-		hist[0] = uint(len(input.Xs))
-		out.Hist = hist
-	} else {
-		nbins := int(math.Ceil((out.Max - out.Min) / h))
-		hist := calc.NewLinearHist(out.Min, out.Max, nbins)
-		for _, x := range input.Xs {
-			hist.Add(x)
-		}
-		low, bins, high := hist.Counts()
-		bins[0] += low
-		bins[len(bins)-1] += high
-		out.Hist = bins
-	}
-
-	return out
+func (b *buffer) Flush(result *model.SimulationStatistics) {
+	result.Duration = agg.ToOverviewStats(b.duration)
+	result.DPS = agg.ToOverviewStats(b.dps)
+	result.RPS = agg.ToOverviewStats(b.rps)
+	result.EPS = agg.ToOverviewStats(b.eps)
+	result.HPS = agg.ToOverviewStats(b.hps)
+	result.SHP = agg.ToOverviewStats(b.shp)
+	result.TotalDamage = agg.ToDescriptiveStats(&b.totalDamage)
 }

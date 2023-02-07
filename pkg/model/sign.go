@@ -1,4 +1,4 @@
-package result
+package model
 
 import (
 	"crypto/aes"
@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func (s *Summary) Sign(key string) (string, error) {
+func (s *SimulationResult) Sign(key string) (string, error) {
 	if key == "" {
 		return "", nil
 	}
@@ -61,8 +61,8 @@ func decodeKey(key string) (string, []byte, error) {
 	return id, out, nil
 }
 
-func (s *Summary) hash() ([]byte, error) {
-	data, err := json.Marshal(s)
+func (s *SimulationResult) hash() ([]byte, error) {
+	data, err := s.MarshalJson()
 	if err != nil {
 		return nil, err
 	}

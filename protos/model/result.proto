@@ -1,89 +1,165 @@
 syntax = "proto3";
 package model;
-option go_package="pkg/model";
+option go_package="github.com/genshinsim/gcsim/pkg/model";
 
 import "protos/model/sim.proto";
 
+// IMPORTANT NOTE:
+// By default all proto3 fields have "no presence". If the value is equal to the default value
+// then that field will be removed from the output. This is done to minimize data size, but may have
+// undesirable behaviors when reading from json. IE: for a numeric field, a 0 value will never
+// be emitted. In JS, this makes the null/undefined case equivalent to 0 (so stats with 0 values
+// get treated as a "data not found" case).
+//
+// This behavior can be removed by adding "optional" to the field, forcing "explicit presence". With
+// optional added, the field will only ever be omitted when it is unset (the value is null). This
+// should be used sparingly, as it increases the size of the generated code and overall data size.
+//
+// RECOMMENDATION: Only use "optional" when not emitting the default value is undesirable. This is
+// best limited to only boolean, numeric, and string/byte fields (map & list possible but unlikely).
+// Table of the default value for each type:
+//  ╔═══════╤════════════════════════════╗
+//  ║ JSON  │ Protobuf field             ║
+//  ╠═══════╪════════════════════════════╣
+//  ║ false │ proto3 boolean fields      ║
+//  ║ 0     │ proto3 numeric fields      ║
+//  ║ ""    │ proto3 string/bytes fields ║
+//  ║ null  │ message fields             ║
+//  ║ []    │ list fields                ║
+//  ║ {}    │ map fields                 ║
+//  ╚═══════╧════════════════════════════╝
+//
+// see: https://protobuf.dev/programming-guides/field_presence/
+// see: https://protobuf.dev/programming-guides/proto3/#json
+// see: https://pkg.go.dev/google.golang.org/protobuf/encoding/protojson#MarshalOptions
+
 message Version {
-    int64 major = 1 [json_name="major"];
-    int64 minor = 2 [json_name="minor"];
+  string major = 1 [json_name="major"];
+  string minor = 2 [json_name="minor"];
 }
 
 message SimulationResult {
+  // required fields (should always be here regardless of schema version)
+  Version schema_version = 1 [json_name="schema_version"];
+  optional string sim_version = 2 [json_name="sim_version"];
+  optional bool modified = 3 [json_name="modified"];
+  string build_date = 4 [json_name="build_date"];
+  string sample_seed = 5 [json_name="sample_seed"];
 
-    //metadata
-    Version schema_version = 1 [json_name="schema_version"];
-    string sim_version = 2 [json_name="sim_version"];
-    string build_date = 3 [json_name="build_date"];
-    bool modified = 4 [json_name="modified"];
+  string config = 6 [json_name="config_file"];
+  SimulatorSettings simulator_settings = 7 [json_name="simulator_settings"];
+  EnergySettings energy_settings = 8 [json_name="energy_settings"];
+  
+  string initial_character = 9 [json_name="initial_character"];
+  repeated Character character_details = 10 [json_name="character_details"];
+  repeated Enemy target_details = 11 [json_name="target_details"];
 
-    //charater and enemey data
-    string initial_character = 5 [json_name="initial_character"];
-    repeated Character character_details = 6 [json_name="character_details"];
-    repeated Enemy target_details = 7 [json_name="target_details"];
-    SimulatorSettings simulator_settings = 8 [json_name="simulator_settings"];
-    EnergySettings energy_settings = 9 [json_name="energy_settings"];
+  // All data that changes per iteration goes here
+  SimulationStatistics statistics = 12 [json_name="statistics"];
 
-    string config = 10 [json_name="config"];
-    string sample_seed = 11 [json_name="sample_seed"];
-
-    SimulationStatistics statistics = 12 [json_name="statistics"];
+  // --- optional metadata fields below ---
+  SimMode mode = 13 [json_name="mode"];
 }
 
 message SimulationStatistics {
-    //metadata
-    string min_seed = 1 [json_name="min_seed"];
-    string max_seed = 2 [json_name="max_seed"];
-    string p25_seed = 3 [json_name="p25_seed"];
-    string p50_seed = 4 [json_name="p50_seed"];
-    string p75_seed = 5 [json_name="p75_seed"];
-    double runtime = 6 [json_name="runtime"];
-    int64 iterations = 7 [json_name="iterations"];
+  // metadata
+  string min_seed = 1 [json_name="min_seed"];
+  string max_seed = 2 [json_name="max_seed"];
+  string p25_seed = 3 [json_name="p25_seed"];
+  string p50_seed = 4 [json_name="p50_seed"];
+  string p75_seed = 5 [json_name="p75_seed"];
+  uint32 iterations = 6 [json_name="iterations"];
 
-    // global overview (global/no group by)
-    OverviewStats duration = 8 [json_name="duration"];
-    OverviewStats DPS = 9 [json_name="dps"];
-    OverviewStats RPS = 10 [json_name="rps"];
-    OverviewStats EPS = 11 [json_name="eps"];
-    OverviewStats HPS = 12 [json_name="hps"];
-    OverviewStats SPS = 13 [json_name="sps"];
-    OverviewStats total_damage = 14 [json_name="total_damage"];
+  // global overview (global/no group by)
+  OverviewStats duration = 7 [json_name="duration"];
+  OverviewStats DPS = 8 [json_name="dps"];
+  OverviewStats RPS = 9 [json_name="rps"];
+  OverviewStats EPS = 10 [json_name="eps"];
+  OverviewStats HPS = 11 [json_name="hps"];
+  OverviewStats SHP = 12 [json_name="shp"];
+  DescriptiveStats total_damage = 13 [json_name="total_damage"];
 
-    Warnings warnings = 15 [json_name="warnings"];
-    repeated FailedActions failed_actions = 16 [json_name="failed_actions"];
+  Warnings warnings = 14 [json_name="warnings"];
+  repeated FailedActions failed_actions = 15 [json_name="failed_actions"];
+
+  // damage
+  map<string, DescriptiveStats> element_dps = 16 [json_name="element_dps"];
+  map<int32, DescriptiveStats> target_dps = 17 [json_name="target_dps"];
+  repeated DescriptiveStats character_dps = 18 [json_name="character_dps"];
+  repeated ElementStats breakdown_by_element_dps = 19 [json_name="dps_by_element"];
+  repeated TargetStats breakdown_by_target_dps = 20 [json_name="dps_by_target"];
+
+  BucketStats damage_buckets = 21 [json_name="damage_buckets"];
+  CharacterBucketStats cumulative_damage_contribution = 22 [json_name="cumu_damage_contrib"];
+
+  // shield
+  map<string, ShieldInfo> shields = 23 [json_name="shields"];
+}
+
+message SignedSimulationStatistics {
+  SimulationStatistics stats = 1 [json_name="stats"];
+  string hash = 2 [json_name="hash"];
 }
 
 message OverviewStats {
-    double min = 1 [json_name="min"];
-    double max = 2 [json_name="max"];
-    double mean = 3 [json_name="mean"];
-    double SD = 4 [json_name="sd"];
+  optional double min = 1 [json_name="min"];
+  optional double max = 2 [json_name="max"];
+  optional double mean = 3 [json_name="mean"];
+  optional double SD = 4 [json_name="sd"];
 
-    double q1 = 5 [json_name="q1"];
-    double q2 = 6 [json_name="q2"];
-    double q3 = 7 [json_name="q3"];
+  optional double Q1 = 5 [json_name="q1"];
+  optional double Q2 = 6 [json_name="q2"];
+  optional double Q3 = 7 [json_name="q3"];
 
-    repeated uint64 hist = 8 [json_name="histogram"];
+  repeated uint32 hist = 8 [json_name="histogram"];
 }
 
 message DescriptiveStats {
-    double min = 1 [json_name="min"];
-    double max = 2 [json_name="max"];
-    double mean = 3 [json_name="mean"];
-    double SD = 4 [json_name="sd"];
+  optional double min = 1 [json_name="min"];
+  optional double max = 2 [json_name="max"];
+  optional double mean = 3 [json_name="mean"];
+  optional double SD = 4 [json_name="sd"];
+}
+
+message ElementStats {
+  map<string, DescriptiveStats> elements = 1 [json_name="elements"];
+}
+
+message TargetStats {
+  map<int32, DescriptiveStats> targets = 1 [json_name="targets"];
+}
+
+message BucketStats {
+  uint32 bucket_size = 1 [json_name="bucket_size"];
+  repeated DescriptiveStats buckets = 2 [json_name="buckets"];
+}
+
+message CharacterBucketStats {
+  uint32 bucket_size = 1 [json_name="bucket_size"];
+  repeated CharacterBuckets characters = 2 [json_name="characters"];
+}
+
+message CharacterBuckets {
+  repeated DescriptiveStats buckets = 1 [json_name="buckets"];
 }
 
 message Warnings {
-    bool target_overlap = 1 [json_name="target_overlap"];
-    bool insufficient_energy = 2 [json_name="insufficient_energy"];
-    bool insufficient_stamina = 3 [json_name="insufficient_stamina"];
-    bool swap_cd = 4 [json_name="swap_cd"];
-    bool skill_cd = 5 [json_name="skill_cd"];
+  // optional unnecessary, missing == false in ui
+  bool target_overlap = 1 [json_name="target_overlap"];
+  bool insufficient_energy = 2 [json_name="insufficient_energy"];
+  bool insufficient_stamina = 3 [json_name="insufficient_stamina"];
+  bool swap_cd = 4 [json_name="swap_cd"];
+  bool skill_cd = 5 [json_name="skill_cd"];
 }
 
 message FailedActions {
-	DescriptiveStats insufficient_energy = 1 [json_name="insufficient_energy"];
-	DescriptiveStats insufficient_stamina = 2 [json_name="insufficient_stamina"];
-	DescriptiveStats swap_cd = 3 [json_name="swap_cd"];
-	DescriptiveStats skill_cd = 4 [json_name="skill_cd"];
+  DescriptiveStats insufficient_energy = 1 [json_name="insufficient_energy"];
+  DescriptiveStats insufficient_stamina = 2 [json_name="insufficient_stamina"];
+  DescriptiveStats swap_cd = 3 [json_name="swap_cd"];
+  DescriptiveStats skill_cd = 4 [json_name="skill_cd"];
+}
+
+message ShieldInfo {
+  map<string, DescriptiveStats> hp = 1 [json_name="hp"];
+  DescriptiveStats uptime = 2 [json_name="uptime"];
 }

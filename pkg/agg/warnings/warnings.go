@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -55,12 +56,12 @@ func (b *buffer) Add(result stats.Result) {
 	b.overlap = b.overlap || result.TargetOverlap
 }
 
-func (b *buffer) Flush(result *agg.Result) {
-	result.Warnings = agg.Warnings{
+func (b *buffer) Flush(result *model.SimulationStatistics) {
+	result.Warnings = &model.Warnings{
 		TargetOverlap:       b.overlap,
 		InsufficientEnergy:  b.energy.StdDev() >= 1.0,
 		InsufficientStamina: b.stamina.Mean() >= 1.0,
-		SwapCD:              b.swap.Mean() >= 1.0,
-		SkillCD:             b.skill.Mean() >= 1.0,
+		SwapCd:              b.swap.Mean() >= 1.0,
+		SkillCd:             b.skill.Mean() >= 1.0,
 	}
 }

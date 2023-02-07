@@ -100,9 +100,8 @@ func TestComputeServer(t *testing.T) {
 	}
 
 	fmt.Printf(
-		"Simulation completed %v iterations in %.3f seconds\n",
+		"Simulation completed %v iterations\n",
 		r.res.GetStatistics().GetIterations(),
-		r.res.GetStatistics().GetRuntime()/1000000000,
 	)
 
 }

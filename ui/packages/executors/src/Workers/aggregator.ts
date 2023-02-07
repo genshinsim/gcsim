@@ -43,9 +43,9 @@ function add(req: { result: Uint8Array }) {
   return { type: AggResponse.Done };
 }
 
-function doFlush(req: { startTime: number }) {
+function doFlush() {
   // TODO: have a specific result response type to enforce (protos?)
-  const resp = JSON.parse(flush(req.startTime));
+  const resp = JSON.parse(flush());
   if (resp.error) {
     return { type: AggResponse.Failed, reason: resp.error };
   }
@@ -62,7 +62,7 @@ function handleRequest(req: any): any {
     case AggRequest.Add:
       return postMessage(add(req));
     case AggRequest.Flush:
-      return postMessage(doFlush(req));
+      return postMessage(doFlush());
     default:
       console.error("aggregator - unknown request: ", req);
       throw new Error("aggregator unknown request");

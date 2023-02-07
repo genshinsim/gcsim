@@ -146,12 +146,11 @@ func (s *Server) runner(work *RunRequest, done chan interface{}) {
 	defer cancel()
 
 	//TODO: need to insert version, builddate
-	summary, err := simulator.RunWithConfig(work.GetConfig(), simcfg, simulator.Options{}, time.Now(), ctx)
+	result, err := simulator.RunWithConfig(work.GetConfig(), simcfg, simulator.Options{}, time.Now(), ctx)
 	if err != nil {
 		s.Log.Infow("runner encounted error running sim", "key", key, "err", err)
 		s.cfg.ResultHandler.Post(key, work.CallbackUrl, nil, err)
 	}
 
-	s.cfg.ResultHandler.Post(key, work.CallbackUrl, summary.ToPBModel(), err)
-
+	s.cfg.ResultHandler.Post(key, work.CallbackUrl, result, err)
 }

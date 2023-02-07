@@ -1,12 +1,11 @@
 package shield
 
 import (
-	"math"
-
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -82,32 +81,23 @@ func (b *buffer) Add(result stats.Result) {
 	b.uptime["effective"].Add(effectiveUptime / float64(result.Duration))
 }
 
-func (b *buffer) Flush(result *agg.Result) {
-	result.Shields = make(map[string]agg.ShieldInfo)
+func (b *buffer) Flush(result *model.SimulationStatistics) {
+	result.Shields = make(map[string]*model.ShieldInfo)
 	for k, s := range b.shieldHP {
-		outHP := make(map[string]agg.FloatStat)
+		outHP := make(map[string]*model.DescriptiveStats)
 		for t, hp := range s {
-			outHP[t] = agg.FloatStat{
-				Min:  hp.Min,
-				Max:  hp.Max,
-				Mean: hp.Mean(),
-				SD:   hp.StdDev(),
+			mean, std := hp.Mean(), hp.StdDev()
+			outHP[t] = &model.DescriptiveStats{
+				Min:  &hp.Min,
+				Max:  &hp.Max,
+				Mean: &mean,
+				SD:   &std,
 			}
 		}
 
-		uptimeSD := b.uptime[k].StdDev()
-		if math.IsNaN(uptimeSD) {
-			uptimeSD = 0
-		}
-
-		result.Shields[k] = agg.ShieldInfo{
-			HP: outHP,
-			Uptime: agg.FloatStat{
-				Min:  b.uptime[k].Min,
-				Max:  b.uptime[k].Max,
-				Mean: b.uptime[k].Mean(),
-				SD:   uptimeSD,
-			},
+		result.Shields[k] = &model.ShieldInfo{
+			Hp:     outHP,
+			Uptime: agg.ToDescriptiveStats(b.uptime[k]),
 		}
 	}
 }

@@ -1,9 +1,10 @@
 syntax = "proto3";
 package model;
-option go_package="pkg/model";
+option go_package="github.com/genshinsim/gcsim/pkg/model";
 
 import "protos/model/result.proto";
 import "protos/model/sim.proto";
+import "google/protobuf/struct.proto";
 
 message DBEntry {
     //basic info
@@ -11,7 +12,7 @@ message DBEntry {
     string key = 2 [json_name="key"];
     uint64 create_date = 3 [json_name="create_date"];
     uint64 run_date = 4 [json_name="run_date"];
-    model.DescriptiveStats sim_duration = 5 [json_name="sim_duration"];
+    DescriptiveStats sim_duration = 5 [json_name="sim_duration"];
     string config = 6 [json_name="config"];
     string hash = 7 [json_name="hash"];
     SimMode mode = 8 [json_name="mode"];
@@ -27,17 +28,35 @@ message DBEntry {
     repeated model.Character team = 13 [json_name="team"];
     map<string, model.DescriptiveStats> dps_by_target = 14 [json_name="dps_by_target"];
 
-
     //other stuff
     string description = 15 [json_name="description"];
-    repeated string tags = 16 [json_name="tags"];
+    repeated string accepted_tags = 16 [json_name="accepted_tags"];
+    repeated string rejected_tags = 17 [json_name="rejected_tags"];
+    bool is_db_valid = 18 [json_name="is_db_valid"];
 }
 
 message DBEntries {
     repeated DBEntry data = 1 [json_name="data"];
 }
 
-enum SimMode {
-    DURATION_MODE = 0;
-    TTK_MODE = 1;
+message DBQueryOpt {
+    google.protobuf.Struct query = 1;
+    google.protobuf.Struct sort = 2;
+    google.protobuf.Struct project = 3;
+    int64 skip = 4;
+    int64 limit = 5;
+}
+
+message Submission {
+    string id = 1 [json_name="_id"]; // auto generated id for this submission
+    string config = 2;
+    string submitter = 3; //submitter discord id 
+    string description = 4;
+    string preview = 5; //view key for preview
+    repeated string tags = 6;
+}
+
+message ComputeWork {
+    string key = 1 [json_name="key"];
+    string cfg = 2 [json_name="cfg"];
 }

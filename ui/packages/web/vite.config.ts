@@ -2,7 +2,7 @@ import { ConfigEnv, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { visualizer } from "rollup-plugin-visualizer";
-import git from "git-rev-sync";
+import * as git from "git-rev-sync";
 
 export default ({ }: ConfigEnv) => {
   process.env.VITE_GIT_COMMIT_HASH = git.long();
@@ -17,6 +17,7 @@ export default ({ }: ConfigEnv) => {
     build: {
       rollupOptions: {
         output: {
+          // TODO: remove after using react lazy imports?
           manualChunks: (id) => {
             if (id.includes("node_modules")) {
               if (id.includes("@blueprintjs") && id.includes("icons")) {

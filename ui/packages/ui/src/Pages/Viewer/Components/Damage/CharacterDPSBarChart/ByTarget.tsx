@@ -39,7 +39,7 @@ export const ByTargetLegend = ({ dps }: { dps?: TargetDPS[] }) => {
 export const ByTargetChart = ({ width, height, names, dps }: Props) => {
   const { data, keys, xMax } = useData(dps, names);
 
-  if (dps == null || names == null) {
+  if (dps == null || names == null || keys.length == 0) {
     return <NoData />;
   }
 

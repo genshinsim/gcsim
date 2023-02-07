@@ -4,5 +4,4 @@ use (
 	./
 	./db
 	./services
-	./backend
 )

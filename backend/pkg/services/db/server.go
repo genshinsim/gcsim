@@ -5,20 +5,16 @@ import (
 	"fmt"
 
 	"github.com/aidarkhanov/nanoid/v2"
+	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/structpb"
 )
 
 type DBStore interface {
 	Create(context.Context, *model.DBEntry) (string, error)
-	Get(ctx context.Context, query *structpb.Struct, limit int, page int) ([]*model.DBEntry, error)
-}
-
-type ComputeService interface {
-	Run(key string, cfg string, ctx context.Context) error
+	Get(ctx context.Context, query *model.DBQueryOpt) ([]*model.DBEntry, error)
 }
 
 type Config struct {
@@ -29,11 +25,13 @@ type Server struct {
 	Config
 	Log *zap.SugaredLogger
 	UnimplementedDBStoreServer
+	ComputeQueue *queue.Queue
 }
 
 func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s := &Server{
-		Config: cfg,
+		Config:       cfg,
+		ComputeQueue: queue.NewQueue(5 * 60),
 	}
 
 	for _, f := range cust {
@@ -61,7 +59,7 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	return s, nil
 }
 
-func (s *Server) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
+func (s *Server) CreateOrUpdateDBEntry(ctx context.Context, req *CreateOrUpdateDBEntryRequest) (*CreateOrUpdateDBEntryResponse, error) {
 	var err error
 	e := req.GetData()
 	if e == nil {
@@ -73,15 +71,21 @@ func (s *Server) Create(ctx context.Context, req *CreateRequest) (*CreateRespons
 		return nil, status.Error(codes.Internal, "internal server error")
 	}
 	e.Key = key
+	e.IsDbValid = false
+	//check if accepted len > 1, then isvalid, else false
+	//TODO: this should check for valid tags; else purge
+	if len(e.AcceptedTags) > 0 {
+		e.IsDbValid = true
+	}
 	_, err = s.DBStore.Create(ctx, e)
 	if err != nil {
 		return nil, err
 	}
-	return &CreateResponse{Key: key}, nil
+	return &CreateOrUpdateDBEntryResponse{Key: key}, nil
 }
 
 func (s *Server) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
-	res, err := s.DBStore.Get(ctx, req.GetQuery(), int(req.GetLimit()), int(req.GetPage()))
+	res, err := s.DBStore.Get(ctx, req.GetQuery())
 	if err != nil {
 		return nil, err
 	}
@@ -89,6 +93,26 @@ func (s *Server) Get(ctx context.Context, req *GetRequest) (*GetResponse, error)
 	return &GetResponse{
 		Data: &model.DBEntries{
 			Data: res,
+		},
+	}, nil
+}
+
+func (s *Server) GetComputeWork(ctx context.Context, req *GetComputeWorkRequest) (*GetComputeWorkReponse, error) {
+	w := s.ComputeQueue.Pop()
+	if w == nil {
+		// no work to do
+		return nil, nil
+	}
+
+	cfg, ok := w.Work.(string)
+	if !ok {
+		return nil, status.Error(codes.Internal, "work is not a string")
+	}
+
+	return &GetComputeWorkReponse{
+		Work: &model.ComputeWork{
+			Key: w.Key,
+			Cfg: cfg,
 		},
 	}, nil
 }

@@ -25,6 +25,14 @@ export function useData(input?: FloatStat[][], bucketSize?: number, names?: stri
         y: v
       };
     });
+
+    if (data.length == 0) {
+      return {
+        data: [],
+        keys: [],
+        duration: 1,
+      };
+    }
     
     const duration = Math.floor(((data.length-1) * bucketSize) / 60);
     if (duration < data[data.length-1].x) {
