@@ -2,7 +2,6 @@ package klee
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -27,26 +26,26 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 	}
 }
 
+const a4ICDKey = "klee-a4-icd"
+
 // When Klee's Charged Attack results in a CRIT Hit, all party members gain 2 Elemental Energy.
-func (c *char) a4() {
+func (c *char) makeA4CB() combat.AttackCBFunc {
 	if c.Base.Ascension < 4 {
-		return
+		return nil
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		crit := args[3].(bool)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
 		}
-		if atk.Info.AttackTag != combat.AttackTagExtra {
-			return false
+		if !a.IsCrit {
+			return
 		}
-		if !crit {
-			return false
+		if c.StatusIsActive(a4ICDKey) {
+			return
 		}
+		c.AddStatus(a4ICDKey, 0.6*60, true)
 		for _, x := range c.Core.Player.Chars() {
 			x.AddEnergy("klee-a4", 2)
 		}
-		return false
-	}, "kleea1")
+	}
 }
