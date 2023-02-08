@@ -42,22 +42,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	// We always assume that A1 procs on hit 1 to simplify
-	var a1cb combat.AttackCBFunc
+	var a1CB combat.AttackCBFunc
 	if p["nobehind"] != 1 {
-		a1cb = c.makeA1CB()
+		a1CB = c.makeA1CB()
 	}
-	var c4cb combat.AttackCBFunc
-	if c.Base.Cons >= 4 {
-		c.c4completed = false
-		c4cb = c.c4
-	}
+	c1CB := c.makeC1CB()
+	c4CB := c.makeC4CB()
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 2, 4),
 		skillHitmark,
 		skillHitmark,
-		a1cb,
-		c4cb,
+		a1CB,
+		c1CB,
+		c4CB,
 	)
 
 	// Rosaria E is dynamic, so requires a second snapshot
@@ -84,6 +83,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			0,
 			0,
 			c.particleCB, // Particles are emitted after the second hit lands
+			c1CB,
+			c4CB,
 		)
 	}, skillHitmark+14)
 
