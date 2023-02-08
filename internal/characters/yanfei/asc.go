@@ -3,7 +3,6 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -29,26 +28,26 @@ func (c *char) a1(stacks int) {
 // When Yanfei's Charged Attack deals a CRIT Hit to opponents,
 // she will deal an additional instance of AoE Pyro DMG equal to 80% of her ATK.
 // This DMG counts as Charged Attack DMG.
-func (c *char) a4() {
+func (c *char) makeA4CB() combat.AttackCBFunc {
 	if c.Base.Ascension < 4 {
-		return
+		return nil
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		crit := args[3].(bool)
-		trg := args[0].(combat.Target)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+	done := false
+	return func(a combat.AttackCB) {
+		trg := a.Target
+		if trg.Type() != combat.TargettableEnemy {
+			return
 		}
-		if atk.Info.Abil == "Blazing Eye (A4)" {
-			return false
+		if c.Core.Player.Active() != c.Index {
+			return
 		}
-		if atk.Info.AttackTag != combat.AttackTagExtra || !crit {
-			return false
+		if !a.IsCrit {
+			return
 		}
-		// make it so a4 only applies hitlag once per A4 proc and not everytime an enemy gets hit
-		defhalt := !c.a4HitlagApplied
-		c.a4HitlagApplied = true
+		if done {
+			return
+		}
+		done = true
 
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -61,10 +60,8 @@ func (c *char) a4() {
 			Durability:         25,
 			Mult:               0.8,
 			HitlagFactor:       0.05,
-			CanBeDefenseHalted: defhalt,
+			CanBeDefenseHalted: true,
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3.5), 10, 10)
-
-		return false
-	}, "yanfei-a4")
+	}
 }
