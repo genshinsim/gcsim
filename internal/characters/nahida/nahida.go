@@ -99,9 +99,5 @@ func (c *char) Init() error {
 		c.c2()
 	}
 
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
-
 	return nil
 }
