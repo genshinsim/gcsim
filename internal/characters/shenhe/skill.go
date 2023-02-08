@@ -80,6 +80,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		skillPressHitmark,
 		skillPressHitmark,
 		c.makePressParticleCB(),
+		c.makeC4ResetCB(),
 	)
 
 	if c.Base.Ascension >= 4 {
@@ -128,6 +129,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		skillHoldHitmark,
 		skillHoldHitmark,
 		c.holdParticleCB,
+		c.makeC4ResetCB(),
 	)
 
 	if c.Base.Ascension >= 4 {
@@ -247,7 +249,7 @@ func (c *char) quillDamageMod() {
 
 			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
-				atk.Callbacks = append(atk.Callbacks, c.c4cb)
+				atk.Callbacks = append(atk.Callbacks, c.c4CB)
 			}
 		}
 
