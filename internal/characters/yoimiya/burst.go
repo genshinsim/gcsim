@@ -47,6 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		0,
 		burstHitmark,
 		c.applyAB, // callback to apply Aurous Blaze
+		c.makeC2CB(),
 	)
 
 	//add cooldown to sim
@@ -132,7 +133,7 @@ func (c *char) burstHook() {
 			Durability: 25,
 			Mult:       burstExplode[c.TalentLvlBurst()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1, c.makeC2CB())
 
 		trg.AddStatus(abIcdKey, 120, true) // trigger Aurous Blaze ICD
 
