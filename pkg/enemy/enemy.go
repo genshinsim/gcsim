@@ -48,8 +48,8 @@ type Enemy struct {
 	mods []modifier.Mod
 
 	//hitlag stuff
-	timePassed   float64
-	frozenFrames float64
+	timePassed   int
+	frozenFrames int
 	queue        []queue.Task
 }
 
