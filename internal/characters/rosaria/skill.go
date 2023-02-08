@@ -11,7 +11,7 @@ var skillFrames []int
 
 const (
 	skillHitmark   = 24
-	particleICDKey = "nilou-particle-icd"
+	particleICDKey = "rosaria-particle-icd"
 )
 
 func init() {
