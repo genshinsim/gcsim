@@ -67,8 +67,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillHitmark,
 		skillHitmark,
 		cb,
-		c.c4,
 		c.particleCB,
+		c.makeC1CB(),
+		c.makeC4CB(),
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 13)
@@ -115,7 +116,13 @@ func (c *char) shieldDot(src int) func() {
 			Durability: 25,
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), 1, 1)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
+			1,
+			1,
+			c.makeC1CB(),
+		)
 
 		c.Core.Tasks.Add(c.shieldDot(src), 2*60)
 	}
