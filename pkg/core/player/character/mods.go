@@ -166,7 +166,7 @@ func (c *CharWrapper) StatusDuration(key string) int { return c.getModDuration(k
 
 // Extend.
 
-//extendMod returns true if mod is active and is extended
+// extendMod returns true if mod is active and is extended
 func (c *CharWrapper) extendMod(key string, ext int) bool {
 	m, active := modifier.FindCheckExpiry(&c.mods, key, *c.f)
 	if m == -1 {
@@ -176,7 +176,7 @@ func (c *CharWrapper) extendMod(key string, ext int) bool {
 		return false //nothing to extend is not active
 	}
 	//other wise add to expiry
-	c.mods[m].Extend(float64(ext))
+	c.mods[m].Extend(ext)
 	return true
 }
 
@@ -317,8 +317,8 @@ func (c *CharWrapper) HealBonus() (amt float64) {
 	return amt
 }
 
-//TODO: consider merging this with just attack mods? reaction bonus should
-//maybe just be it's own stat instead of being a separate mod really
+// TODO: consider merging this with just attack mods? reaction bonus should
+// maybe just be it's own stat instead of being a separate mod really
 func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) (amt float64) {
 	n := 0
 	for _, v := range c.mods {
