@@ -158,7 +158,6 @@ func (c *char) skillB() action.ActionInfo {
 }
 
 func (c *char) makeParticleCB(burst bool) combat.AttackCBFunc {
-	var count float64
 	return func(a combat.AttackCB) {
 		if a.Target.Type() != combat.TargettableEnemy {
 			return
@@ -168,6 +167,7 @@ func (c *char) makeParticleCB(burst bool) combat.AttackCBFunc {
 		}
 		c.AddStatus(particleICDKey, 0.5*60, true)
 
+		var count float64
 		if burst {
 			count = 1
 			if c.Core.Rand.Float64() < 0.33 {
