@@ -61,7 +61,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		0,
 		skillHitmark,
 		cb,
-		c.makeParticleCB(),
+		c.particleCB,
+		c.makeA4ParticleCB(),
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, 25)
@@ -74,32 +75,42 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 2.0
+	if c.Core.Rand.Float64() < 0.67 {
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
+}
+
+// Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
+// Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
+func (c *char) makeA4ParticleCB() combat.AttackCBFunc {
+	if c.Base.Ascension < 4 {
+		return nil
+	}
 	a4Count := 0
 	return func(a combat.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		if c.StatusIsActive(particleICDKey) {
+		if a4Count == 2 {
 			return
 		}
-		c.AddStatus(particleICDKey, 0.3*60, true)
-
-		// base
-		count := 2.0
-		if c.Core.Rand.Float64() < 0.67 {
-			count = 3
+		if !e.AuraContains(attributes.Frozen) {
+			return
 		}
-		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
-
-		// A4:
-		// Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
-		// Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
-		if c.Base.Ascension >= 4 && a4Count < 2 && e.AuraContains(attributes.Frozen) {
-			a4Count++
-			c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
-			c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
-		}
+		c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
+		a4Count++
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
 	}
 }
