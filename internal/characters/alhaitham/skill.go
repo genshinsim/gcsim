@@ -192,6 +192,9 @@ func (c *char) mirrorLoss(src int, consumed int) func() {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
