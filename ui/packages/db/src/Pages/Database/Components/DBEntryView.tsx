@@ -32,7 +32,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
         </div> */}
         <div>
           <div className="flex flex-col max-w-4xl">
-            <DBEntryTags tags={dbEntry.tags} />
+            <DBEntryTags tags={dbEntry.accepted_tags} />
             <span className="  overflow-hidden">{dbEntry?.description}</span>
           </div>
 
@@ -113,14 +113,17 @@ function PortraitArtifactsComponent({
         ([setName, setCount]) =>
           (setCount as number) > 0 && (
             <div className=" relative  ">
-              <img
-                src={
-                  "https://gcsim.app/api/assets/artifacts/" +
-                  setName +
-                  "_flower.png"
-                }
-                alt={setName}
-              />
+              <div className=" h-16  bg-black -rotate-45 transform origin-top-left">
+                <img
+                  src={
+                    "https://gcsim.app/api/assets/artifacts/" +
+                    setName +
+                    "_flower.png"
+                  }
+                  alt={setName}
+                />
+              </div>
+
               <div className=" absolute bottom-0 right-0  text-xs  font-semibold">
                 {setCount.toString()}
               </div>
