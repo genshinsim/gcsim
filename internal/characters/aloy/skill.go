@@ -29,14 +29,16 @@ const (
 )
 
 // Skill - Handles main damage, bomblet, and coil effects
+//
 // Has 3 parameters:
 //
-// - "travel" = Delay in frames until
+// - "travel" = Delay in frames until main damage, bomblets spawn on main damage
 //
 // - "bomblets" = Number of bomblets that hit
 //
 // - "bomb_delay" = Delay in frames before bomblets go off and coil stacks get added
-// Too many potential bomblet hit variations to keep syntax short, so we simplify how they can be handled here
+//
+// - too many potential bomblet hit variations to keep syntax short, so we simplify how they can be handled here
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	travel, ok := p["travel"]
 	if !ok {
