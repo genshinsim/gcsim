@@ -77,11 +77,11 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 	if stars == 4 && c.Tag(shootingStars) == 0 {
 		c.SetTag(shootingStars, 1)
 		c.shootStarSrc = c.Core.F
-		c.Core.Tasks.Add(c.shootStars(c.shootStarSrc, nil), 0.1*60)
+		c.Core.Tasks.Add(c.shootStars(c.shootStarSrc, nil, c.makeParticleCB()), 0.1*60)
 	}
 }
 
-func (c *char) shootStars(src int, last combat.Enemy) func() {
+func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCBFunc) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return
@@ -97,10 +97,10 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 		if last == nil {
 			// if not found
 			if enemyNotFound {
-				c.Core.Tasks.Add(c.shootStars(src, nil), 0.1*60)
+				c.Core.Tasks.Add(c.shootStars(src, nil, particleCB), 0.1*60)
 				return
 			}
-			c.Core.Tasks.Add(c.shootStars(src, enemy), 0.5*60)
+			c.Core.Tasks.Add(c.shootStars(src, enemy, particleCB), 0.5*60)
 			return
 		}
 		if enemyNotFound {
@@ -144,13 +144,13 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 			0,
 			starsTravel[len(starsTravel)-stars],
 			c2CB,
-			c.particleCB,
+			particleCB,
 		)
 
 		stars--
 		c.SetTag(nightStars, stars)
 		if stars != 0 {
-			c.Core.Tasks.Add(c.shootStars(src, enemy), 0.45*60)
+			c.Core.Tasks.Add(c.shootStars(src, enemy, particleCB), 0.45*60)
 			return
 		}
 
@@ -160,20 +160,29 @@ func (c *char) shootStars(src int, last combat.Enemy) func() {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
-		return
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	var particleICDKey string
+	if c.particleCBSwitch {
+		particleICDKey = particleICD2Key
+	} else {
+		particleICDKey = particleICD1Key
 	}
-	if c.StatusIsActive(particleICDKey) {
-		return
-	}
-	c.AddStatus(particleICDKey, 3.5*60, false)
+	c.particleCBSwitch = !c.particleCBSwitch
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 3.5*60, false)
 
-	count := 1.0
-	if c.Core.Rand.Float64() < 0.33 {
-		count = 2
+		count := 1.0
+		if c.Core.Rand.Float64() < 0.33 {
+			count = 2
+		}
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 	}
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 }
 
 func (c *char) tickNightStar(src int, star bool) func() {

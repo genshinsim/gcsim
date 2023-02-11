@@ -14,9 +14,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1Stack      int
-	starTickSrc  int
-	shootStarSrc int
+	a1Stack          int
+	particleCBSwitch bool
+	starTickSrc      int
+	shootStarSrc     int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
