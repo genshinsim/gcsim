@@ -281,13 +281,13 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	}
 	snap := c.Snapshot(&ai)
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
-	ae := (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
 	ae.Callbacks = append(ae.Callbacks, c.rollParticleCB)
-	return ae
+	return &ae
 }
 
 func (c *char) absorbCheck(src, count, max int) func() {

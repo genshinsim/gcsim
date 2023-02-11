@@ -77,14 +77,14 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	ae := (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
 		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 6),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
 	ae.Callbacks = append(ae.Callbacks, c.particleCB)
-	return ae
+	return &ae
 
 }
 
