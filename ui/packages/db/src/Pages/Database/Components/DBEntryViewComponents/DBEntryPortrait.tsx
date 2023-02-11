@@ -28,7 +28,7 @@ export default function DBEntryPortrait({
           </div>
         </div>
 
-        <PortraitArtifactsComponent artifactSet={{}} />
+        <PortraitArtifactsComponent artifactSet={sets} />
         <PortraitWeaponComponent weapon={weapon} />
       </div>
     </div>
@@ -101,7 +101,7 @@ function PortraitArtifactsComponent({
               "_flower.png"
             }
             alt={artifacts[0][0]}
-            className="artifact-right-gap"
+            className="artifact-top-right-gap"
           />
           <img
             src={
@@ -110,7 +110,7 @@ function PortraitArtifactsComponent({
               "_flower.png"
             }
             alt={artifacts[1][0]}
-            className="artifact-left-gap"
+            className="artifact-bottom-left-gap"
           />
         </div>
       );
@@ -119,7 +119,7 @@ function PortraitArtifactsComponent({
     case 0:
       return (
         <div>
-          <img src={kuki} alt="kuki" className="relative max-h-64" />
+          <img src={kuki} alt="kuki" className="relative opacity-30" />
         </div>
       );
   }
