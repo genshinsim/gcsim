@@ -1,6 +1,7 @@
 import { model } from "@gcsim/types";
 import { Long } from "protobufjs";
 import kuki from "./images/kuki.png";
+import nahida from "./images/nahida.png";
 
 export default function DBEntryPortrait({
   name,
@@ -9,7 +10,11 @@ export default function DBEntryPortrait({
   cons,
 }: model.ICharacter) {
   if (!name) {
-    return <div className="bg-slate-700 p-2 flex flex-row w-20 h-20"></div>;
+    return (
+      <div className="bg-slate-700 p-2 w-20 flex flex-row justify-center">
+        <img src={nahida} className=" object-contain opacity-50" />
+      </div>
+    );
   }
   return (
     <div className="bg-slate-700 p-2 flex flex-row max-h-fit    w-20">

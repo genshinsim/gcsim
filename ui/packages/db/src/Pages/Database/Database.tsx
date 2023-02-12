@@ -1,6 +1,5 @@
-import { model } from "@gcsim/types";
-
 import { Spinner } from "@blueprintjs/core";
+import { model } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames.";
 import { Filter, FilterState } from "./Components/Filter";
@@ -25,7 +24,6 @@ export function Database() {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setData(data.data);
       })
       .catch((e) => {
