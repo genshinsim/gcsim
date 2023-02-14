@@ -9,17 +9,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressCDStarts = []int{30, 31}
-var skillHoldCDStarts = []int{52, 52}
+var (
+	skillPressCDStarts = []int{30, 31}
+	skillHoldCDStarts  = []int{52, 52}
 
-var skillPressHitmarks = []int{32, 33}
-var skillHoldHitmarks = []int{55, 55}
+	skillPressHitmarks = []int{32, 33}
+	skillHoldHitmarks  = []int{55, 55}
 
-var skillPressFrames [][]int
-var skillHoldFrames [][]int
+	skillPressFrames [][]int
+	skillHoldFrames  [][]int
+)
 
 const (
 	skillSigilDurationKey = "razor-sigil-duration"
+	pressParticleICDKey   = "razor-press-particle-icd"
+	holdParticleICDKey    = "razor-hold-particle-icd"
 )
 
 func init() {
@@ -85,7 +89,12 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	var c4cb func(a combat.AttackCB)
+	var particleCB combat.AttackCBFunc
+	if !c.StatusIsActive(burstBuffKey) {
+		particleCB = c.pressParticleCB
+	}
+
+	var c4cb combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		c4cb = c.c4cb
 	}
@@ -105,16 +114,12 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		),
 		skillPressHitmarks[burstActive],
 		skillPressHitmarks[burstActive],
+		particleCB,
 		c4cb,
 		c.addSigil(false),
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(6*60), skillPressCDStarts[burstActive])
-
-	if !c.StatusIsActive(burstBuffKey) {
-		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmarks[burstActive]+c.ParticleDelay)
-	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames[burstActive]),
@@ -122,6 +127,17 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		CanQueueAfter:   skillPressFrames[burstActive][action.ActionDash], // earliest cancel is 1f before skillPressHitmark
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) pressParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pressParticleICDKey) {
+		return
+	}
+	c.AddStatus(pressParticleICDKey, 1*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Electro, c.ParticleDelay)
 }
 
 func (c *char) SkillHold(burstActive int) action.ActionInfo {
@@ -136,21 +152,23 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
+
+	var particleCB combat.AttackCBFunc
+	if !c.StatusIsActive(burstBuffKey) {
+		particleCB = c.holdParticleCB
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
 		skillHoldHitmarks[burstActive],
 		skillHoldHitmarks[burstActive],
+		particleCB,
 	)
 
 	c.Core.Tasks.Add(c.clearSigil, skillHoldHitmarks[burstActive])
 
 	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(10*60), skillHoldCDStarts[burstActive])
-
-	if !c.StatusIsActive(burstBuffKey) {
-		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmarks[burstActive]+c.ParticleDelay)
-	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillHoldFrames[burstActive]),
@@ -158,6 +176,17 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 		CanQueueAfter:   skillHoldFrames[burstActive][action.ActionJump], // earliest cancel is 3f before skillHoldHitmark
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 1*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Electro, c.ParticleDelay)
 }
 
 func (c *char) addSigil(done bool) combat.AttackCBFunc {

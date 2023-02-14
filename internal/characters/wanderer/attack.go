@@ -109,7 +109,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			c.makeA4CB(),
 			c.makeA1ElectroCB(),
 			c.makeC6Callback(),
-			c.particleGenCB,
+			c.particleCB,
 		)
 	}
 
@@ -163,7 +163,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 			c.makeA4CB(),
 			c.makeA1ElectroCB(),
 			c.makeC6Callback(),
-			c.particleGenCB,
+			c.particleCB,
 		)
 	}
 

@@ -18,14 +18,14 @@ func init() {
 
 }
 
-const skillHitmark = 20
-const skillCDStart = 18
-
-// if you hold while at 4 stacks it takes 17 extra frames to release
-const holdAtFullStacksPenalty = 17
-
-const skillHitlagHaltFrame = 0.09
-const skillHitlagMaxStackHaltFrame = 0.12
+const (
+	skillHitmark                 = 20
+	skillCDStart                 = 18
+	holdAtFullStacksPenalty      = 17 // if you hold while at 4 stacks it takes 17 extra frames to release
+	skillHitlagHaltFrame         = 0.09
+	skillHitlagMaxStackHaltFrame = 0.12
+	particleICDKey               = "heizou-particle-icd"
+)
 
 func (c *char) skillHoldDuration(stacks int) int {
 	//animation duration only
@@ -50,7 +50,6 @@ func (c *char) addDecStack() {
 }
 
 func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
-
 	c.Core.Tasks.Add(func() {
 		hitDelay := skillHitmark - skillCDStart
 		ai := combat.AttackInfo{
@@ -101,20 +100,9 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			hitDelay,
 			hitDelay,
 			skillCB,
+			c.particleCB,
 		)
 		c.SetCD(action.ActionSkill, 10*60)
-
-		count := 2.0
-		switch c.decStack {
-		case 2, 3:
-			if c.Core.Rand.Float64() < .5 {
-				count++
-			}
-		case 4:
-			count++
-		}
-		c.Core.QueueParticle("heizou", count, attributes.Anemo, hitDelay+c.ParticleDelay)
-
 	}, skillCDStart+delay)
 
 	return action.ActionInfo{
@@ -145,4 +133,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		return c.skillHold(p)
 	}
 	return c.skillPress(p)
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+
+	count := 2.0
+	switch c.decStack {
+	case 2, 3:
+		if c.Core.Rand.Float64() < .5 {
+			count = 3
+		}
+	case 4:
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
 }

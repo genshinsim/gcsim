@@ -100,7 +100,7 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		),
 		0,
 		ppChargeHitmark,
-		c.ppParticles,
+		c.particleCB,
 		c.applyBB,
 	)
 

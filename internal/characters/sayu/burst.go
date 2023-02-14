@@ -129,10 +129,10 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 		Mult:       burstSkill[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-
-	return (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
+	return &ae
 }

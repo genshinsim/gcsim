@@ -110,7 +110,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 
 	// proc 3 hits
 	for i := 1; i <= 3; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1, c.particleCB)
 	}
 
 	c.Core.Log.NewEvent(
@@ -122,12 +122,6 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		Write("target", t.Key()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
-
-	// queue particles
-	if !c.StatusIsActive(energyICDKey) {
-		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
-	}
 }
 
 // Hitting an opponent affected by Riptide with a melee attack unleashes a Riptide Slash that deals AoE Hydro DMG.
@@ -166,7 +160,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1, c.particleCB)
 
 	c.Core.Log.NewEvent(
 		"riptide slash ticked",
@@ -177,12 +171,6 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		Write("target", t.Key()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
-
-	// queue particle if not on icd
-	if !c.StatusIsActive(energyICDKey) {
-		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
-	}
 }
 
 // When the obliterating waters hit an opponent affected by Riptide, it clears their Riptide status

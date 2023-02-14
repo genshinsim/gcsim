@@ -3,14 +3,17 @@ package yoimiya
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
 var skillFrames []int
 
 const (
-	skillKey   = "yoimiyaskill"
-	skillStart = 11
+	skillKey       = "yoimiyaskill"
+	particleICDKey = "yoimiya-particle-icd"
+	skillStart     = 11
 )
 
 func init() {
@@ -36,6 +39,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) onExit() {

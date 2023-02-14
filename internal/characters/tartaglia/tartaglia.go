@@ -13,7 +13,7 @@ const (
 	riptideFlashICDKey = "riptide-flash-icd"
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
-	energyICDKey       = "riptide-energy-icd"
+	particleICDKey     = "tartaglia-particle-icd"
 	MeleeKey           = "tartagliamelee"
 )
 

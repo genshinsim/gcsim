@@ -8,11 +8,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
-const skillPressHitmark = 5 // release
-const skillHoldHitmark = 29 // release
+const (
+	skillPressHitmark = 5  // release
+	skillHoldHitmark  = 29 // release
+	particleICDKey    = "diona-particle-icd"
+)
 
 func init() {
 	skillPressFrames = frames.InitAbilSlice(34) // Tap E -> E
@@ -39,6 +44,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		return c.skillHold(travel)
 	}
 	return c.skillPress(travel)
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, true)
+	if c.Core.Rand.Float64() < 0.8 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
+	}
 }
 
 func (c *char) skillPress(travel int) action.ActionInfo {
@@ -85,11 +103,6 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			}
 			//make sure this is only triggered once
 			done = true
-
-			//trigger particles if prob < 0.8
-			if c.Core.Rand.Float64() < 0.8 {
-				c.Core.QueueParticle("diona", 1, attributes.Cryo, c.ParticleDelay) //90s travel time
-			}
 
 			//check if shield already exists, if so then just update duration
 			exist := c.Core.Player.Shields.Get(shield.ShieldDionaSkill)
@@ -139,6 +152,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			0,
 			travel+f-5+i,
 			cb,
+			c.particleCB,
 		)
 	}
 }

@@ -61,17 +61,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) generateParticles(ac combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 114, true)
-	var count float64 = 1
+	c.AddStatus(particleICDKey, 1.9*60, true)
+
+	count := 1.0
 	if c.Core.Rand.Float64() < 0.5 {
-		count++
+		count = 2
 	}
-	// TODO: this used to be 80 for particle delay
-	c.Core.QueueParticle("ayato", count, attributes.Hydro, c.ParticleDelay)
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay) // TODO: this used to be 80 for particle delay
 }
 
 func (c *char) skillStacks(ac combat.AttackCB) {

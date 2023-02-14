@@ -18,7 +18,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	a1Stack   int
-	lastPart  int
 	a1Bonus   []float64
 	a4Bonus   []float64
 	abApplied bool

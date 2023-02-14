@@ -38,7 +38,9 @@ const (
 	lunarPrayerStatus     = "lunarprayer"
 	tranquilityAuraStatus = "tranquilityaura"
 
-	skillHitmark = 16 // init
+	skillHitmark            = 16 // init
+	initialParticleICDKey   = "nilou-initial-particle-icd"
+	pirouetteParticleICDKey = "nilou-pirouette-particle-icd"
 
 	delayDance = 30 // Lunar Prayer (8s) / Tranquility (12/18s) / A1 (30s) timers all start here
 	delaySteps = 40
@@ -107,17 +109,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		),
 		skillHitmark,
 		skillHitmark,
+		c.initialParticleCB,
 	)
 
 	c.SetTag(skillStep, 0)
 	c.AddStatus(pirouetteStatus, 10*60, true)
 	c.SetCD(action.ActionSkill, 18*60)
-
-	var count float64 = 1
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 2
-	}
-	c.Core.QueueParticle("nilou", count, attributes.Hydro, skillHitmark+c.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -125,6 +122,22 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) initialParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(initialParticleICDKey) {
+		return
+	}
+	c.AddStatus(initialParticleICDKey, 0.1*60, true)
+
+	count := 1.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 2
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay)
 }
 
 func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.ActionInfo {
@@ -160,6 +173,17 @@ func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.Action
 	}
 
 	return actionInfo
+}
+
+func (c *char) pirouetteParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pirouetteParticleICDKey) {
+		return
+	}
+	c.AddStatus(pirouetteParticleICDKey, 0.1*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Hydro, c.ParticleDelay)
 }
 
 func (c *char) AdvanceSkillIndex() {
@@ -210,11 +234,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 			swordDanceHitboxes[s][1],
 		)
 	}
-	c.Core.QueueAttack(ai, ap, swordDanceHitMarks[s]+travel, swordDanceHitMarks[s]+travel, c.c4cb())
-
-	if c.StatusIsActive(pirouetteStatus) {
-		c.Core.QueueParticle("nilou", 1, attributes.Hydro, swordDanceHitMarks[s]+travel+c.ParticleDelay)
-	}
+	c.Core.QueueAttack(ai, ap, swordDanceHitMarks[s]+travel, swordDanceHitMarks[s]+travel, c.c4cb(), c.pirouetteParticleCB)
 
 	defer c.AdvanceSkillIndex()
 
@@ -256,11 +276,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 			whirlingStepsHitboxes[s][1],
 		)
 	}
-	c.Core.QueueAttack(ai, ap, whirlingStepsHitMarks[s], whirlingStepsHitMarks[s], c.c4cb())
-
-	if c.StatusIsActive(pirouetteStatus) {
-		c.Core.QueueParticle("nilou", 1, attributes.Hydro, whirlingStepsHitMarks[s]+c.ParticleDelay)
-	}
+	c.Core.QueueAttack(ai, ap, whirlingStepsHitMarks[s], whirlingStepsHitMarks[s], c.c4cb(), c.pirouetteParticleCB)
 
 	defer c.AdvanceSkillIndex()
 

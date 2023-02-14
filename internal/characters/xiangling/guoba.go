@@ -2,7 +2,6 @@ package xiangling
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/faruzan"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -64,14 +63,6 @@ func (p *panda) Tick() {
 }
 
 func (p *panda) breath() {
-	done := false
-	part := func(_ combat.AttackCB) {
-		if done {
-			return
-		}
-		done = true
-		p.Core.QueueParticle("xiangling", 1, attributes.Pyro, p.c.ParticleDelay)
-	}
 	// assume A1
 	p.Core.QueueAttackWithSnap(
 		p.ai,
@@ -79,7 +70,7 @@ func (p *panda) breath() {
 		combat.NewCircleHitOnTargetFanAngle(p, nil, p.c.guobaFlameRange, 60),
 		10,
 		p.c.c1,
-		part,
+		p.c.particleCB,
 	)
 }
 

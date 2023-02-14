@@ -12,7 +12,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 28
+const (
+	skillHitmark   = 28
+	particleICDKey = "kaeya-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(53) // E -> N1
@@ -34,10 +37,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	a4count := 0
 	cb := func(a combat.AttackCB) {
-		e, ok := a.Target.(*enemy.Enemy)
-		if !ok {
+		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
 
@@ -53,15 +54,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				Bonus:   c.Stat(attributes.Heal),
 			})
 		}
-
-		// A4:
-		// Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
-		// Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
-		if c.Base.Ascension >= 4 && a4count < 2 && e.AuraContains(attributes.Frozen) {
-			a4count++
-			c.Core.QueueParticle("kaeya", 1, attributes.Cryo, c.ParticleDelay)
-			c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
-		}
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -69,14 +61,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		0,
 		skillHitmark,
 		cb,
+		c.particleCB,
+		c.makeA4ParticleCB(),
 	)
-
-	// 2 or 3, 1:2 ratio
-	var count float64 = 2
-	if c.Core.Rand.Float64() < 0.67 {
-		count = 3
-	}
-	c.Core.QueueParticle("kaeya", count, attributes.Cryo, skillHitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, 25)
 
@@ -85,5 +72,45 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 2.0
+	if c.Core.Rand.Float64() < 0.67 {
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
+}
+
+// Opponents Frozen by Frostgnaw will drop additional Elemental Particles.
+// Frostgnaw may only produce a maximum of 2 additional Elemental Particles per use.
+func (c *char) makeA4ParticleCB() combat.AttackCBFunc {
+	if c.Base.Ascension < 4 {
+		return nil
+	}
+	a4Count := 0
+	return func(a combat.AttackCB) {
+		e, ok := a.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
+		if a4Count == 2 {
+			return
+		}
+		if !e.AuraContains(attributes.Frozen) {
+			return
+		}
+		c.Core.Log.NewEvent("kaeya a4 proc", glog.LogCharacterEvent, c.Index)
+		a4Count++
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
 	}
 }

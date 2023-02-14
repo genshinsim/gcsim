@@ -61,7 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		windup+chargeHitmarkNormal, windup+chargeHitmarkNormal,
 		c.makeA4CB(),
 		c.makeA1ElectroCB(),
-		c.particleGenCB,
+		c.particleCB,
 	)
 
 	return action.ActionInfo{
@@ -98,7 +98,7 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
 		windup+chargeHitmarkE,
 		c.makeA4CB(),
 		c.makeA1ElectroCB(),
-		c.particleGenCB,
+		c.particleCB,
 	)
 
 	return action.ActionInfo{

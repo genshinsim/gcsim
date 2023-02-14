@@ -22,7 +22,8 @@ func init() {
 }
 
 const (
-	orbitalKey = "xingqiu-orbital"
+	orbitalKey     = "xingqiu-orbital"
+	particleICDKey = "xingqiu-particle-icd"
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -63,7 +64,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, ap, 0, 0)
+			c.Core.QueueAttack(ax, ap, 0, 0, c.particleCB)
 		}, skillHitmarks[i])
 	}
 
@@ -77,8 +78,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.applyOrbital(15*60, 43) //takes 1 frame to apply it
 	}
 
-	c.Core.QueueParticle("xingqiu", 5, attributes.Hydro, skillHitmarks[0]+c.ParticleDelay)
-
 	//should last 15s, cd 21s
 	c.SetCDWithDelay(action.ActionSkill, 21*60, 10)
 
@@ -88,4 +87,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Hydro, c.ParticleDelay)
 }

@@ -11,8 +11,11 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 15
-const skillShieldStart = 28
+const (
+	skillHitmark     = 15
+	skillShieldStart = 28
+	particleICDKey   = "xinyan-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(62) // E -> Swap
@@ -65,10 +68,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillHitmark,
 		cb,
 		c.c4,
+		c.particleCB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 13)
-	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+c.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -76,6 +79,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) shieldDot(src int) func() {

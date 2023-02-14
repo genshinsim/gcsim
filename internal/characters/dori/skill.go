@@ -10,7 +10,8 @@ import (
 var skillFrames []int
 
 const (
-	skillRelease = 16
+	skillRelease   = 16
+	particleICDKey = "dori-particle-icd"
 )
 
 var skillSalesHitmarks = []int{46, 59, 59} // counted starting from skill hitmark
@@ -66,10 +67,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillRelease+travel,
 		afterSalesCB,
 		c.makeA4CB(),
+		c.particleCB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 9*60, 16)
-	c.Core.QueueParticle("dori", 2, attributes.Electro, skillRelease+travel+c.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -77,6 +78,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Electro, c.ParticleDelay)
 }
 
 func (c *char) afterSales(travel int) func() {

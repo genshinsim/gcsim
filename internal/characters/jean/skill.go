@@ -9,7 +9,11 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 21
+const (
+	skillHitmark        = 21
+	baseParticleICDKey  = "jean-base-particle-icd"
+	extraParticleICDKey = "jean-extra-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(46)
@@ -47,13 +51,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		snap,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 4.1),
 		hitmark,
+		c.baseParticleCB,
+		c.extraParticleCB,
 	)
-
-	var count float64 = 2
-	if c.Core.Rand.Float64() < 2.0/3.0 {
-		count++
-	}
-	c.Core.QueueParticle("jean", count, attributes.Anemo, hitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, hitmark-2)
 
@@ -62,5 +62,29 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction] + hold,
 		CanQueueAfter:   skillFrames[action.ActionDash] + hold, // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) baseParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(baseParticleICDKey) {
+		return
+	}
+	c.AddStatus(baseParticleICDKey, 0.3*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
+}
+
+func (c *char) extraParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(extraParticleICDKey) {
+		return
+	}
+	c.AddStatus(extraParticleICDKey, 1*60, true)
+	if c.Core.Rand.Float64() < 0.67 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Anemo, c.ParticleDelay)
 	}
 }

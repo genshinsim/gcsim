@@ -9,8 +9,11 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 25
-const stilettoKey = "keqingstiletto"
+const (
+	skillHitmark   = 25
+	stilettoKey    = "keqingstiletto"
+	particleICDKey = "keqing-particle-icd"
+)
 
 func init() {
 	// skill -> x
@@ -140,17 +143,11 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3),
 		skillRecastHitmark,
 		skillRecastHitmark,
+		c.particleCB,
 	)
 
 	//add electro infusion
 	c.a1()
-
-	// TODO: Particle timing?
-	count := 2.0
-	if c.Core.Rand.Float64() < .5 {
-		count = 3
-	}
-	c.Core.QueueParticle("keqing", count, attributes.Electro, skillRecastHitmark+c.ParticleDelay)
 
 	// despawn stiletto
 	c.Core.Status.Delete(stilettoKey)
@@ -161,4 +158,20 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.6*60, true)
+
+	count := 2.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Electro, c.ParticleDelay)
 }

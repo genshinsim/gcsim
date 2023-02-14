@@ -7,9 +7,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillFrames [][]int
+var (
+	skillFrames   [][]int
+	skillHitmarks = []int{86, 101}
+)
 
-var skillHitmarks = []int{86, 101}
+const particleICDKey = "mona-particle-icd"
 
 func init() {
 	skillFrames = make([][]int, 2)
@@ -70,13 +73,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(aiExplode, ap, 0, skillHitmarks[hold]+313)
-
-	var count float64 = 3
-	if c.Core.Rand.Float64() < .33 {
-		count = 4
-	}
-	c.Core.QueueParticle("mona", count, attributes.Hydro, skillHitmarks[hold]+313+c.ParticleDelay)
+	c.Core.QueueAttack(aiExplode, ap, 0, skillHitmarks[hold]+313, c.particleCB)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 24)
 
@@ -86,4 +83,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[hold][action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < .33 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay)
 }

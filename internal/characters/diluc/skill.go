@@ -20,6 +20,8 @@ var (
 	skillFanAngles    = []float64{360, 300, 360}
 )
 
+const particleICDKey = "diluc-particle-icd"
+
 func init() {
 	skillFrames = make([][]int, 3)
 
@@ -110,13 +112,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			skillHitboxes[c.eCounter][1],
 		)
 	}
-	c.Core.QueueAttack(ai, ap, hitmark, hitmark)
-
-	var orb float64 = 1
-	if c.Core.Rand.Float64() < 0.33 {
-		orb = 2
-	}
-	c.Core.QueueParticle("diluc", orb, attributes.Pyro, hitmark+c.ParticleDelay)
+	c.Core.QueueAttack(ai, ap, hitmark, hitmark, c.particleCB)
 
 	// add a timer to activate c4
 	if c.Base.Cons >= 4 {
@@ -148,4 +144,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[idx][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 1.0
+	if c.Core.Rand.Float64() < 0.33 {
+		count = 2
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }
