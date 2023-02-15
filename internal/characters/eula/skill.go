@@ -112,7 +112,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		skillPressHitmark,
 		cb,
 		c.pressParticleCB,
-		c.makeBurstStackCB(),
+		c.burstStackCB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 60*4, 16)
@@ -160,14 +160,13 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	burstCB := c.makeBurstStackCB()
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 5.5),
 		skillHoldHitmark,
 		skillHoldHitmark,
 		c.holdParticleCB,
-		burstCB,
+		c.burstStackCB,
 	)
 
 	v := c.currentGrimheartStacks()
@@ -220,7 +219,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				icewhirlHitmarks[i],
 				icewhirlHitmarks[i],
 				shredCB,
-				burstCB,
+				c.burstStackCB,
 			)
 		} else {
 			c.QueueCharTask(func() {
@@ -231,7 +230,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 					0,
 					0,
 					shredCB,
-					burstCB,
+					c.burstStackCB,
 				)
 			}, icewhirlHitmarks[i])
 		}

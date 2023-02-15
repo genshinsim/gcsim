@@ -33,7 +33,7 @@ func (c *char) a1() {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 6.5),
 			a1Hitmark-(skillHoldHitmark+1),
 			a1Hitmark-(skillHoldHitmark+1),
-			c.makeBurstStackCB(),
+			c.burstStackCB,
 		)
 	}, skillHoldHitmark+1)
 }

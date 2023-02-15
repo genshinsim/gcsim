@@ -120,39 +120,34 @@ func (c *char) triggerBurst() {
 
 // When Eula's own Normal Attack, Elemental Skill, and Elemental Burst deal DMG to opponents,
 // they will charge the Lightfall Sword, which can gain an energy stack once every 0.1s.
-func (c *char) makeBurstStackCB() combat.AttackCBFunc {
-	if c.Core.Status.Duration(burstKey) == 0 {
-		return nil
+func (c *char) burstStackCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
-			return
-		}
-		if c.Core.Player.Active() != c.Index {
-			return
-		}
-		if c.Core.Status.Duration(burstKey) == 0 {
-			return
-		}
-		if a.Damage == 0 {
-			return
-		}
-		if c.StatusIsActive(burstStackICDKey) {
-			return
-		}
-		//TODO: looks like the icd is dependent on gadget timer. need to double check
-		c.AddStatus(burstStackICDKey, 0.1*60, false)
+	if c.Core.Player.Active() != c.Index {
+		return
+	}
+	if c.Core.Status.Duration(burstKey) == 0 {
+		return
+	}
+	if a.Damage == 0 {
+		return
+	}
+	if c.StatusIsActive(burstStackICDKey) {
+		return
+	}
+	//TODO: looks like the icd is dependent on gadget timer. need to double check
+	c.AddStatus(burstStackICDKey, 0.1*60, false)
 
-		// add to counter
+	// add to counter
+	c.burstCounter++
+	c.Core.Log.NewEvent("eula burst add stack", glog.LogCharacterEvent, c.Index).
+		Write("stack count", c.burstCounter)
+	// check for c6
+	if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
 		c.burstCounter++
-		c.Core.Log.NewEvent("eula burst add stack", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("eula c6 add additional stack", glog.LogCharacterEvent, c.Index).
 			Write("stack count", c.burstCounter)
-		// check for c6
-		if c.Base.Cons == 6 && c.Core.Rand.Float64() < 0.5 {
-			c.burstCounter++
-			c.Core.Log.NewEvent("eula c6 add additional stack", glog.LogCharacterEvent, c.Index).
-				Write("stack count", c.burstCounter)
-		}
 	}
 }
 
