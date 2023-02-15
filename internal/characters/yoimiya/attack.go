@@ -51,6 +51,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatusIsActive(skillKey) {
 		particleCB = c.particleCB
 	}
+	a1CB := c.makeA1CB()
+	c2CB := c.makeC2CB()
 
 	var totalMV float64
 	for i, mult := range attack[c.NormalCounter] {
@@ -68,6 +70,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel,
 			particleCB,
+			a1CB,
+			c2CB,
 		)
 	}
 
@@ -96,6 +100,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			),
 			0,
 			attackHitmarks[c.NormalCounter][0]+travel+5,
+			a1CB,
+			c2CB,
 		)
 	}
 

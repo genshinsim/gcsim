@@ -35,6 +35,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
+	c2CB := c.makeC2CB()
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
@@ -47,6 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
+			c2CB,
 		)
 	}
 

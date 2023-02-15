@@ -43,7 +43,7 @@ func init() {
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other characters
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
+	c1CB := c.makeC1CB()
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -77,7 +77,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, c1CB)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

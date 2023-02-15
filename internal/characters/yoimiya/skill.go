@@ -28,7 +28,7 @@ func init() {
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.AddStatus(skillKey, 600+skillStart, true) // activate for 10
 	if !c.StatusIsActive(a1Key) {
-		c.a1Stack = 0
+		c.a1Stacks = 0
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 1080, 11)

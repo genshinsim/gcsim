@@ -13,7 +13,6 @@ type char struct {
 	shieldLevel             int
 	shieldLevel2Requirement int
 	shieldLevel3Requirement int
-	c1Buff                  []float64
 	c2Buff                  []float64
 	shieldTickSrc           int
 }
@@ -47,9 +46,6 @@ func (c *char) Init() error {
 	c.a1()
 	c.a4()
 
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}

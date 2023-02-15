@@ -57,10 +57,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
-	if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on burst
-		c.c6Stacks = 4
-		c.AddStatus(c6Key, 480, true) // 8s*60
-	}
+	c.c6Init()
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),

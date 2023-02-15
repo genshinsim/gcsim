@@ -112,6 +112,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		skillPressHitmark,
 		cb,
 		c.pressParticleCB,
+		c.burstStackCB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 60*4, 16)
@@ -165,6 +166,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		skillHoldHitmark,
 		skillHoldHitmark,
 		c.holdParticleCB,
+		c.burstStackCB,
 	)
 
 	v := c.currentGrimheartStacks()
@@ -217,6 +219,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				icewhirlHitmarks[i],
 				icewhirlHitmarks[i],
 				shredCB,
+				c.burstStackCB,
 			)
 		} else {
 			c.QueueCharTask(func() {
@@ -227,6 +230,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 					0,
 					0,
 					shredCB,
+					c.burstStackCB,
 				)
 			}, icewhirlHitmarks[i])
 		}

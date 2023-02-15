@@ -50,12 +50,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 8)
+	c4CB := c.makeC4Callback()
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.skillArea.Shape.Pos(), nil, 2.5),
 		0,
 		skillHitmark,
 		c.particleCB,
+		c4CB,
 	)
 
 	ai = combat.AttackInfo{
@@ -69,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	cb := func(a combat.AttackCB) {
+	a4CB := func(a combat.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -106,7 +108,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Info:     ai,
 			Snapshot: snap,
 		}
-		c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, cb)
+		c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, a4CB, c4CB)
 
 		// A4 delayed damage + cryo resist shred
 		// TODO: assuming this is NOT affected by hitlag since it should be tied to deployable?
