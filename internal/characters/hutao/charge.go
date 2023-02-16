@@ -25,11 +25,10 @@ func init() {
 	chargeFrames[action.ActionJump] = chargeHitmark
 
 	// charge (paramita) -> x
-	ppChargeFrames = frames.InitAbilSlice(44)
+	ppChargeFrames = frames.InitAbilSlice(42)
 	ppChargeFrames[action.ActionBurst] = 33
 	ppChargeFrames[action.ActionDash] = ppChargeHitmark
 	ppChargeFrames[action.ActionJump] = ppChargeHitmark
-	ppChargeFrames[action.ActionSwap] = 42
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
