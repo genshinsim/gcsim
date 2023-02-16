@@ -74,6 +74,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 
+	// pp slide: add 1.8s to paramita on charge attack start which gets removed once the charge attack ends
+	c.ExtendStatus(paramitaBuff, 1.8*60)
+
 	//TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -149,5 +152,10 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		AnimationLength: ppChargeFrames[action.InvalidAction],
 		CanQueueAfter:   1,
 		State:           action.ChargeAttackState,
+		OnRemoved: func(next action.AnimationState) {
+			if next != action.BurstState {
+				c.ExtendStatus(paramitaBuff, -1.8*60)
+			}
+		},
 	}
 }

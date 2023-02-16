@@ -31,6 +31,9 @@ func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
 func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
 func (t *Base) Extend(amt int) {
 	t.extension += amt
+	if t.extension < 0 {
+		t.extension = 0
+	}
 	t.event.SetEnded(t.Expiry())
 }
 func (t *Base) SetExpiry(f int) {
