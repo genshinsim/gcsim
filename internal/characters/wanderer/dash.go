@@ -23,18 +23,10 @@ func init() {
 }
 
 func (c *char) Dash(p map[string]int) action.ActionInfo {
-	delay := c.checkForSkillEnd()
-
 	if c.StatusIsActive(skillKey) {
 		return c.WindfavoredDash(p)
 	}
-
-	ai := c.Character.Dash(p)
-	ai.Frames = func(action action.Action) int { return delay + ai.Frames(action) }
-	ai.AnimationLength = delay + ai.AnimationLength
-	ai.CanQueueAfter = delay + ai.CanQueueAfter
-
-	return ai
+	return c.Character.Dash(p)
 }
 
 func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {

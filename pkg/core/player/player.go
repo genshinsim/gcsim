@@ -7,6 +7,8 @@
 package player
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -44,6 +46,10 @@ type Handler struct {
 
 	//swap
 	SwapCD int
+
+	// dash: dash fails iff lockout && on CD
+	DashCDExpirationFrame int
+	DashLockout           bool
 
 	//last action
 	LastAction struct {
@@ -93,11 +99,35 @@ func (h *Handler) swap(to keys.Char) func() {
 	return func() {
 		prev := h.active
 		h.active = h.charPos[to]
-		h.Log.NewEvent("executed swap", glog.LogActionEvent, h.active).
-			Write("action", "swap").
-			Write("target", to.String())
+
+		// still have remaining frames left on dash CD, save in char for when the go on-field again
+		if h.DashCDExpirationFrame > *h.F {
+			h.chars[prev].RemainingDashCD = h.DashCDExpirationFrame - *h.F
+			h.chars[prev].DashLockout = h.DashLockout
+		}
+
+		// set the new DashCDExpirationFrame and reset character remaining back to 0
+		h.DashCDExpirationFrame = *h.F + h.chars[h.active].RemainingDashCD
+		h.DashLockout = h.chars[h.active].DashLockout
+		h.chars[h.active].RemainingDashCD = 0
+
 		h.SwapCD = SwapCDFrames
 		h.ResetAllNormalCounter()
+
+		evt := h.Log.NewEvent("executed swap", glog.LogActionEvent, h.active).
+			Write("action", "swap").
+			Write("target", to.String())
+
+		if h.chars[prev].RemainingDashCD > 0 {
+			evt.Write("prev_dash_cd", h.chars[prev].RemainingDashCD).
+				Write("prev_dash_lockout", h.chars[prev].DashLockout)
+		}
+
+		if h.DashCDExpirationFrame > *h.F {
+			evt.Write("target_dash_cd", h.DashCDExpirationFrame).
+				Write("target_dash_lockout", h.DashLockout)
+		}
+
 		h.Events.Emit(event.OnCharacterSwap, prev, h.active)
 	}
 }
@@ -185,10 +215,23 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	if char != h.active {
 		return
 	}
+
 	h.chars[char].ApplyHitlag(factor, dur)
+
 	//also extend infusion
 	//TODO: this is a really awkward place to apply this
 	h.ExtendInfusion(char, factor, dur)
+
+	// extend the dash cd by the hitlag extension amount
+	if h.DashCDExpirationFrame > *h.F {
+		ext := int(math.Ceil(dur * (1 - factor)))
+		h.DashCDExpirationFrame += ext
+		h.Log.NewEvent("dash cd hitlag extended", glog.LogHitlagEvent, char).
+			Write("extension", ext).
+			Write("expiry", h.DashCDExpirationFrame-*h.F).
+			Write("expiry_frame", h.DashCDExpirationFrame).
+			Write("lockout", h.DashLockout)
+	}
 }
 
 // InitializeTeam will set up resonance event hooks and calculate
