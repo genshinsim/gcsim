@@ -16,7 +16,6 @@ var (
 const (
 	skillPressHitmark = 5  // release
 	skillHoldHitmark  = 29 // release
-	particleICDKey    = "diona-particle-icd"
 )
 
 func init() {
@@ -46,16 +45,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillPress(travel)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
-		return
-	}
-	if c.StatusIsActive(particleICDKey) {
-		return
-	}
-	c.AddStatus(particleICDKey, 1*60, true)
-	if c.Core.Rand.Float64() < 0.8 {
-		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		if c.Core.Rand.Float64() < 0.8 {
+			c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
+		}
 	}
 }
 
@@ -152,7 +154,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			0,
 			travel+f-5+i,
 			cb,
-			c.particleCB,
+			c.makeParticleCB(),
 		)
 	}
 }
