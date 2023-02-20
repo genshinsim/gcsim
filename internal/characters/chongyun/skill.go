@@ -108,7 +108,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Info:     ai,
 			Snapshot: snap,
 		}
-		c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, a4CB, c4CB)
+		c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, a4CB)
+		if c4CB != nil {
+			c.a4Snap.Callbacks = append(c.a4Snap.Callbacks, c4CB)
+		}
 
 		// A4 delayed damage + cryo resist shred
 		// TODO: assuming this is NOT affected by hitlag since it should be tied to deployable?
