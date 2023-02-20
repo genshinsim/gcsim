@@ -16,20 +16,21 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
 )
 
 type ShareStore interface {
 	ShareReader
-	Create(ctx context.Context, data []byte) (string, error)
-	Update(ctx context.Context, id string, data []byte) error
+	Create(ctx context.Context, data *model.SimulationResult) (string, error)
+	Update(ctx context.Context, id string, data *model.SimulationResult) error
 	SetTTL(ctx context.Context, id string) error
 	Delete(ctx context.Context, id string) error
 	Random(ctx context.Context) (string, error)
 }
 
 type ShareReader interface {
-	Read(ctx context.Context, id string) ([]byte, uint64, error)
+	Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error)
 }
 
 var ErrKeyNotFound = errors.New("key does not exist")
@@ -138,7 +139,15 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			return
 		}
 
-		id, err := s.cfg.ShareStore.Create(context.WithValue(r.Context(), TTLContextKey, DefaultTLL), data)
+		var res *model.SimulationResult
+		err = res.UnmarshalJson(data)
+		if err != nil {
+			s.Log.Infow("create share request - unmarshall failed", "err", err)
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		id, err := s.cfg.ShareStore.Create(context.WithValue(r.Context(), TTLContextKey, DefaultTLL), res)
 
 		if err != nil {
 			s.Log.Errorw("unexpected error saving result", "err", err)
@@ -159,14 +168,20 @@ func (s *Server) GetShare() http.HandlerFunc {
 		share, ttl, err := s.cfg.ShareStore.Read(r.Context(), key)
 		switch err {
 		case nil:
+			d, err := share.MarshalJson()
+			if err != nil {
+				s.Log.Errorw("unexpected error marshalling to json", "err", err)
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+				return
+			}
 			w.Header().Set("Content-Type", "application/json")
 			w.Header().Set("x-gcsim-ttl", strconv.FormatUint(ttl, 10))
 			w.WriteHeader(http.StatusOK)
-			w.Write(share)
+			w.Write(d)
 		case ErrKeyNotFound:
-			w.WriteHeader(http.StatusNotFound)
+			http.Error(w, "not found", http.StatusNotFound)
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "internal server error", http.StatusInternalServerError)
 			s.Log.Errorw("unexpected error getting share", "err", err)
 		}
 
