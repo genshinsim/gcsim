@@ -38,6 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("scarletsands", -1),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			em := char.Stat(attributes.EM)
 			mATK[attributes.ATK] = atkBuff * em
@@ -69,6 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(skillBuff, 10*60),
 			AffectedStat: attributes.ATK,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				em := char.Stat(attributes.EM)
 				mATK[attributes.ATK] = atkSkillBuff * em * float64(w.stacks)

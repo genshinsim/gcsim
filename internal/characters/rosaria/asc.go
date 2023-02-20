@@ -61,6 +61,7 @@ func (c *char) a4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("rosaria-a4", 600),
 			AffectedStat: attributes.CR,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

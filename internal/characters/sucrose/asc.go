@@ -82,6 +82,7 @@ func (c *char) a4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("sucrose-a4", 480), //8 s
 			AffectedStat: attributes.EM,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return c.a4Buff, true
 			},

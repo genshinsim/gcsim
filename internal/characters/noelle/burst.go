@@ -68,6 +68,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("noelle-burst", dur),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return c.burstBuff, true
 		},

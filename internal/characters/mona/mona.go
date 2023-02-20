@@ -19,6 +19,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	a4Stats  []float64
 	c2icd    int
 	c6Src    int
 	c6Stacks int

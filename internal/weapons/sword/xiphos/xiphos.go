@@ -50,6 +50,7 @@ func (w *Weapon) updateStats() {
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("xiphos", 12*60),
 		AffectedStat: attributes.ER,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
@@ -65,6 +66,7 @@ func (w *Weapon) updateStats() {
 		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("xiphos-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ER,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return valTeam, true
 			},

@@ -50,6 +50,7 @@ func (w *Weapon) updateStats() {
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("aquamarine", 12*60),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
@@ -65,6 +66,7 @@ func (w *Weapon) updateStats() {
 		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("aquamarine-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ATK,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return valTeam, true
 			},

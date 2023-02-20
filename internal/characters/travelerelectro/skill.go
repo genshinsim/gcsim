@@ -181,6 +181,7 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	collector.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("abundance-amulet", 360),
 		AffectedStat: attributes.ER,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return mER, true
 		},

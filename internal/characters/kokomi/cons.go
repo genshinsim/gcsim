@@ -72,6 +72,7 @@ func (c *char) c6() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("kokomi-c6", 480),
 			AffectedStat: attributes.HydroP,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

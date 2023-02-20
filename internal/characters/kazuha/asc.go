@@ -67,6 +67,7 @@ func (c *char) a4() {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("kazuha-a4-"+key, 60*8),
 					AffectedStat: attributes.NoStat,
+					Extra:        true,
 					Amount: func() ([]float64, bool) {
 						m[attributes.CryoP] = 0
 						m[attributes.ElectroP] = 0
