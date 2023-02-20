@@ -23,10 +23,26 @@ func init() {
 }
 
 func (c *char) Dash(p map[string]int) action.ActionInfo {
+	delay := c.checkForSkillEnd()
+
 	if c.StatusIsActive(skillKey) {
 		return c.WindfavoredDash(p)
 	}
-	return c.Character.Dash(p)
+
+	// defer dash cd and stamina consumption til after delay (delay simulates falling)
+	c.Core.Tasks.Add(func() {
+		c.ApplyDashCD()
+		c.QueueDashStaminaConsumption(p)
+	}, delay)
+
+	// length is standard dash length + skill end delay (to simulate falling)
+	length := c.DashLength() + delay
+	return action.ActionInfo{
+		Frames:          func(action.Action) int { return length },
+		AnimationLength: length,
+		CanQueueAfter:   length,
+		State:           action.DashState,
+	}
 }
 
 func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {

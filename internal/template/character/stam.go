@@ -42,8 +42,22 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 func (c *Character) Dash(p map[string]int) action.ActionInfo {
-	length := c.DashLength()
+	// Execute dash CD logic
+	c.ApplyDashCD()
 
+	// consume stamina at end of the dash
+	c.QueueDashStaminaConsumption(p)
+
+	length := c.DashLength()
+	return action.ActionInfo{
+		Frames:          func(action.Action) int { return length },
+		AnimationLength: length,
+		CanQueueAfter:   length,
+		State:           action.DashState,
+	}
+}
+
+func (c *Character) ApplyDashCD() {
 	// set the dash CD. If the dash was on CD when this dash executes, lockout dash
 	if c.Core.Player.DashCDExpirationFrame > c.Core.F {
 		c.Core.Player.DashLockout = true
@@ -56,18 +70,7 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, "dash cooldown triggered").
 		Write("lockout", c.Core.Player.DashLockout).
 		Write("expiry", c.Core.Player.DashCDExpirationFrame-c.Core.F).
-		Write("expiry_frame", c.Core.Player.DashCDExpirationFrame).
-		Write("dash_length", length)
-
-	// consume stamina at end of the dash
-	c.QueueDashStaminaConsumption(p)
-
-	return action.ActionInfo{
-		Frames:          func(action.Action) int { return length },
-		AnimationLength: length,
-		CanQueueAfter:   length,
-		State:           action.DashState,
-	}
+		Write("expiry_frame", c.Core.Player.DashCDExpirationFrame)
 }
 
 func (c *Character) QueueDashStaminaConsumption(p map[string]int) {
