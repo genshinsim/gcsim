@@ -109,7 +109,7 @@ func (s *Server) Random(context.Context) (string, error) {
 		return "", status.Error(codes.NotFound, "not found")
 	}
 	n := s.Rand.Intn(max)
-	for k, _ := range s.data {
+	for k := range s.data {
 		if n == 0 {
 			return k, nil
 		}
