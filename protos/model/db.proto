@@ -9,7 +9,7 @@ import "google/protobuf/struct.proto";
 message DBEntry {
     //basic info
     string id = 1 [json_name="_id"];
-    string key = 2 [json_name="key"];
+    string share_key = 2 [json_name="share_key"];
     uint64 create_date = 3 [json_name="create_date"];
     uint64 run_date = 4 [json_name="run_date"];
     DescriptiveStats sim_duration = 5 [json_name="sim_duration"];
