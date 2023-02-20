@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/preview"
-	"github.com/genshinsim/gcsim/backend/pkg/services/result"
+	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 )
 
 //go:embed dist/*
@@ -15,7 +15,7 @@ var content embed.FS
 
 func main() {
 
-	resultStore, err := result.NewClient(result.ClientCfg{
+	shareStore, err := share.NewClient(share.ClientCfg{
 		Addr: os.Getenv("RESULT_STORE_URL"),
 	})
 
@@ -27,7 +27,7 @@ func main() {
 		URL:          "http://localhost:3000",
 		Files:        content,
 		AssetsFolder: os.Getenv(("ASSETS_DATA_PATH")),
-		ResultStore:  resultStore,
+		ShareStore:   shareStore,
 	})
 
 	if err != nil {

@@ -10,7 +10,7 @@ import (
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
-	"github.com/genshinsim/gcsim/backend/pkg/services/result"
+	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -26,7 +26,7 @@ func main() {
 	sugar := logger.Sugar()
 	sugar.Debugw("logger initiated")
 
-	resultStore, err := result.NewClient(result.ClientCfg{
+	shareStore, err := share.NewClient(share.ClientCfg{
 		Addr: os.Getenv("RESULT_STORE_URL"),
 	})
 
@@ -81,9 +81,9 @@ func main() {
 	log.Println("keys read sucessfully: ", hexKeys)
 
 	s, err := api.New(api.Config{
-		ResultStore: resultStore,
-		UserStore:   userStore,
-		DBStore:     dbStore,
+		ShareStore: shareStore,
+		UserStore:  userStore,
+		DBStore:    dbStore,
 		Discord: api.DiscordConfig{
 			RedirectURL:  os.Getenv("REDIRECT_URL"),
 			ClientID:     os.Getenv("DISCORD_ID"),
