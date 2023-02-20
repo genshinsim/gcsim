@@ -19,17 +19,17 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type ResultStore interface {
-	ResultReader
-	Create(data []byte, ctx context.Context) (string, error)
-	Update(id string, data []byte, ctx context.Context) error
-	SetTTL(id string, ctx context.Context) error
-	Delete(id string, ctx context.Context) error
+type ShareStore interface {
+	ShareReader
+	Create(ctx context.Context, data []byte) (string, error)
+	Update(ctx context.Context, id string, data []byte) error
+	SetTTL(ctx context.Context, id string) error
+	Delete(ctx context.Context, id string) error
 	Random(ctx context.Context) (string, error)
 }
 
-type ResultReader interface {
-	Read(id string, ctx context.Context) ([]byte, uint64, error)
+type ShareReader interface {
+	Read(ctx context.Context, id string) ([]byte, uint64, error)
 }
 
 var ErrKeyNotFound = errors.New("key does not exist")
@@ -138,17 +138,17 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			return
 		}
 
-		uuid, err := s.cfg.ResultStore.Create(data, context.WithValue(r.Context(), TTLContextKey, DefaultTLL))
+		id, err := s.cfg.ShareStore.Create(context.WithValue(r.Context(), TTLContextKey, DefaultTLL), data)
 
 		if err != nil {
 			s.Log.Errorw("unexpected error saving result", "err", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		s.Log.Infow("create share request success", "key", uuid)
+		s.Log.Infow("create share request success", "key", id)
 
 		w.WriteHeader(http.StatusAccepted)
-		w.Write([]byte(uuid))
+		w.Write([]byte(id))
 	}
 }
 
@@ -156,7 +156,7 @@ func (s *Server) GetShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := chi.URLParam(r, "share-key")
 
-		share, ttl, err := s.cfg.ResultStore.Read(key, r.Context())
+		share, ttl, err := s.cfg.ShareStore.Read(r.Context(), key)
 		switch err {
 		case nil:
 			w.Header().Set("Content-Type", "application/json")
@@ -176,7 +176,7 @@ func (s *Server) GetShare() http.HandlerFunc {
 func (s *Server) GetRandomShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		share, err := s.cfg.ResultStore.Random(r.Context())
+		share, err := s.cfg.ShareStore.Random(r.Context())
 		switch err {
 		case nil:
 			w.Header().Set("Content-Type", "application/json")

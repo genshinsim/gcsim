@@ -33,7 +33,7 @@ type MQTTConfig struct {
 }
 
 type Config struct {
-	ResultStore       ResultStore
+	ShareStore        ShareStore
 	UserStore         UserStore
 	Discord           DiscordConfig
 	DBStore           DBStore
@@ -79,7 +79,7 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s.routes()
 
 	//sanity checks
-	if s.cfg.ResultStore == nil {
+	if s.cfg.ShareStore == nil {
 		return nil, fmt.Errorf("no result store provided")
 	}
 	if s.cfg.DBStore == nil {

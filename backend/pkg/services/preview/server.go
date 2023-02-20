@@ -20,7 +20,7 @@ import (
 )
 
 type Config struct {
-	ResultStore  api.ResultReader
+	ShareStore   api.ShareReader
 	Files        embed.FS
 	AssetsFolder string
 	URL          string
@@ -44,7 +44,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	}
 
 	//sanity checks
-	if s.cfg.ResultStore == nil {
+	if s.cfg.ShareStore == nil {
 		return nil, fmt.Errorf("no result store provided")
 	}
 
@@ -121,7 +121,7 @@ func (s *Store) handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//pull data from result store, insert into template, and then server
 		key := chi.URLParam(r, "key")
-		data, _, err := s.cfg.ResultStore.Read(key, r.Context())
+		data, _, err := s.cfg.ShareStore.Read(r.Context(), key)
 		var out struct {
 			Data string
 		}
