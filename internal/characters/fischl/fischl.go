@@ -17,6 +17,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	// field use for calculating oz damage
+	ozPos         combat.Point
 	ozSnapshot    combat.AttackEvent
 	ozSource      int  // keep tracks of source of oz aka resets
 	ozActive      bool // purely used for gscl conditional purposes
