@@ -121,7 +121,7 @@ func (s *Store) handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//pull data from result store, insert into template, and then server
 		key := chi.URLParam(r, "key")
-		data, _, err := s.cfg.ShareStore.Read(r.Context(), key)
+		res, _, err := s.cfg.ShareStore.Read(r.Context(), key)
 		var out struct {
 			Data string
 		}
@@ -129,7 +129,12 @@ func (s *Store) handleServeHTML() http.HandlerFunc {
 		case api.ErrKeyNotFound:
 			out.Data = `{"err":"result not found"}`
 		case nil:
-			out.Data = string(data)
+			data, err := res.MarshalJson()
+			if err == nil {
+				out.Data = string(data)
+			} else {
+				out.Data = `{"err":"unexpected error getting result"}`
+			}
 		default:
 			out.Data = `{"err":"unexpected error getting result"}`
 		}
