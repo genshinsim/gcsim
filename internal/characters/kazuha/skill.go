@@ -7,50 +7,60 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var skillPressFrames [][]int
+var skillHoldFrames [][]int
 
 const (
 	skillPressHitmark = 10
+	skillPressRadius  = 5
 	skillPressCDStart = 8
 	skillHoldHitmark  = 33
+	skillHoldRadius   = 9
 	skillHoldCDStart  = 31
 	particleICDKey    = "kazuha-particle-icd"
 )
 
 func init() {
-	//TODO: glide cancel
-	// skill (press) -> x
-	//85 frames to float down
-	skillPressFrames = frames.InitAbilSlice(77) //averaged all abils
-	//27 frames before the start of plunge animation
-	skillPressFrames[action.ActionHighPlunge] = 24
+	// Tap E
+	skillPressFrames = make([][]int, 2)
+	// Tap E -> X
+	skillPressFrames[0] = frames.InitAbilSlice(77) // averaged all abils
+	skillPressFrames[0][action.ActionHighPlunge] = 24
+	// Tap E (Glide Cancel) -> X
+	skillPressFrames[1] = frames.InitAbilSlice(69)
+	skillPressFrames[1][action.ActionBurst] = 61
+	skillPressFrames[1][action.ActionDash] = 61
+	skillPressFrames[1][action.ActionJump] = 59
+	skillPressFrames[1][action.ActionSwap] = 60
 
-	// skill (hold) -> x
-	//177 frames to float down
-	skillHoldFrames = frames.InitAbilSlice(175) //averaged all abils
-	//58 frames before start of plunge animation
-	skillHoldFrames[action.ActionHighPlunge] = 58
+	// Hold E
+	skillHoldFrames = make([][]int, 2)
+	// Hold E -> X
+	skillHoldFrames[0] = frames.InitAbilSlice(175) // averaged all abils
+	skillHoldFrames[0][action.ActionHighPlunge] = 58
+	// Hold E (Glide Cancel) -> X
+	skillHoldFrames[1] = frames.InitAbilSlice(160)
+	skillHoldFrames[1][action.ActionAttack] = 158
+	skillHoldFrames[1][action.ActionBurst] = 159
+	skillHoldFrames[1][action.ActionSwap] = 155
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
+	glide := p["glide"]
+	if glide < 0 {
+		glide = 0
+	}
+	if glide > 1 {
+		glide = 1
+	}
 
 	c.a1Absorb = attributes.NoElement
 
-	radius := 5.0
-
-	if hold >= 1 {
-		radius = 9
-	}
-
-	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius)
-
-	// why is the same code written twice..
 	if hold == 0 {
-		return c.skillPress(p)
+		return c.skillPress(glide)
 	}
-	return c.skillHold(p)
+	return c.skillHold(glide)
 }
 
 func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
@@ -66,7 +76,8 @@ func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
 	}
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress(glide int) action.ActionInfo {
+	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillPressRadius)
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Chihayaburu",
@@ -80,7 +91,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillPressRadius),
 		0,
 		skillPressHitmark,
 		c.makeParticleCB(3),
@@ -103,15 +114,20 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, cd, skillPressCDStart)
 
+	shortestAction := action.ActionHighPlunge
+	if glide == 1 {
+		shortestAction = action.ActionJump
+	}
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillPressFrames),
-		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionHighPlunge], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillPressFrames[glide]),
+		AnimationLength: skillPressFrames[glide][action.InvalidAction],
+		CanQueueAfter:   skillPressFrames[glide][shortestAction], // earliest cancel
 		State:           action.SkillState,
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.ActionInfo {
+func (c *char) skillHold(glide int) action.ActionInfo {
+	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillHoldRadius)
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Chihayaburu",
@@ -125,7 +141,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 9),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillHoldRadius),
 		0,
 		skillHoldHitmark,
 		c.makeParticleCB(4),
@@ -148,10 +164,14 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, cd, skillHoldCDStart)
 
+	shortestAction := action.ActionHighPlunge
+	if glide == 1 {
+		shortestAction = action.ActionSwap
+	}
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillHoldFrames),
-		AnimationLength: skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldFrames[action.ActionHighPlunge], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillHoldFrames[glide]),
+		AnimationLength: skillHoldFrames[glide][action.InvalidAction],
+		CanQueueAfter:   skillHoldFrames[glide][shortestAction], // earliest cancel
 		State:           action.SkillState,
 	}
 }
