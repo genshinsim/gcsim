@@ -57,18 +57,21 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 	}
 }
 
+// set the dash CD. If the dash was on CD when this dash executes, lockout dash
 func (c *Character) ApplyDashCD() {
-	// set the dash CD. If the dash was on CD when this dash executes, lockout dash
+	var evt glog.Event
+
 	if c.Core.Player.DashCDExpirationFrame > c.Core.F {
 		c.Core.Player.DashLockout = true
 		c.Core.Player.DashCDExpirationFrame = c.Core.F + 1.5*60
+		evt = c.Core.Log.NewEvent("dash cooldown triggered", glog.LogCooldownEvent, c.Index)
 	} else {
 		c.Core.Player.DashLockout = false
 		c.Core.Player.DashCDExpirationFrame = c.Core.F + 0.8*60
+		evt = c.Core.Log.NewEvent("dash lockout evaluation started", glog.LogCooldownEvent, c.Index)
 	}
 
-	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, "dash cooldown triggered").
-		Write("lockout", c.Core.Player.DashLockout).
+	evt.Write("lockout", c.Core.Player.DashLockout).
 		Write("expiry", c.Core.Player.DashCDExpirationFrame-c.Core.F).
 		Write("expiry_frame", c.Core.Player.DashCDExpirationFrame)
 }

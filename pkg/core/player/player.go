@@ -100,7 +100,7 @@ func (h *Handler) swap(to keys.Char) func() {
 		prev := h.active
 		h.active = h.charPos[to]
 
-		// still have remaining frames left on dash CD, save in char for when the go on-field again
+		// still have remaining frames left on dash CD, save in char for when they go on-field again
 		if h.DashCDExpirationFrame > *h.F {
 			h.chars[prev].RemainingDashCD = h.DashCDExpirationFrame - *h.F
 			h.chars[prev].DashLockout = h.DashLockout
@@ -124,7 +124,8 @@ func (h *Handler) swap(to keys.Char) func() {
 		}
 
 		if h.DashCDExpirationFrame > *h.F {
-			evt.Write("target_dash_cd", h.DashCDExpirationFrame).
+			evt.Write("target_dash_cd", h.DashCDExpirationFrame-*h.F).
+				Write("target_dash_expiry_frame", h.DashCDExpirationFrame).
 				Write("target_dash_lockout", h.DashLockout)
 		}
 
@@ -226,8 +227,14 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	if h.DashCDExpirationFrame > *h.F {
 		ext := int(math.Ceil(dur * (1 - factor)))
 		h.DashCDExpirationFrame += ext
-		h.Log.NewEvent("dash cd hitlag extended", glog.LogHitlagEvent, char).
-			Write("extension", ext).
+
+		var evt glog.Event
+		if h.DashLockout {
+			evt = h.Log.NewEvent("dash cd hitlag extended", glog.LogHitlagEvent, char)
+		} else {
+			evt = h.Log.NewEvent("dash lockout evaluation hitlag extended", glog.LogHitlagEvent, char)
+		}
+		evt.Write("extension", ext).
 			Write("expiry", h.DashCDExpirationFrame-*h.F).
 			Write("expiry_frame", h.DashCDExpirationFrame).
 			Write("lockout", h.DashLockout)
