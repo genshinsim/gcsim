@@ -79,6 +79,15 @@ func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
+
+		// dash is still on cooldown and is locked out, cannot dash again until CD expires
+		if p.DashLockout && p.DashCDExpirationFrame > *p.F {
+			p.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
+				Write("dash_cd_expiration", p.DashCDExpirationFrame-*p.F)
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.DashCD)
+			return ErrActionNotReady
+		}
+
 		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
 		p.useAbility(t, param, char.Jump)

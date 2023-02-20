@@ -58,8 +58,8 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(c.c6(c.Core.F), 60)
 	}
 
-	// call default implementation to handle stamina
-	c.Character.Dash(p)
+	// handle stamina usage, avoid default dash implementation since dont want CD
+	c.QueueDashStaminaConsumption(p)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return dashFrames[next] + f },
