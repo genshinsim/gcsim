@@ -91,16 +91,16 @@ func (s *Server) Create(ctx context.Context, entry *model.DBEntry) (string, erro
 	res, err := col.InsertOne(ctx, entry)
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
-			s.Log.Infow("mongodb: create failed - duplicated id", "key", entry.Key, "err", err)
+			s.Log.Infow("mongodb: create failed - duplicated id", "key", entry.ShareKey, "err", err)
 			return "", status.Error(codes.InvalidArgument, "duplicated id")
 		}
-		s.Log.Infow("mongodb: create failed - unexpected error", "key", entry.Key, "err", err)
+		s.Log.Infow("mongodb: create failed - unexpected error", "key", entry.ShareKey, "err", err)
 		return "", status.Error(codes.Internal, "internal server error")
 	}
 
 	s.Log.Infow("mongodb: create successful", "id", res.InsertedID)
 
-	return entry.Key, nil
+	return entry.ShareKey, nil
 }
 
 type paginate struct {

@@ -37,7 +37,7 @@ func TestCreate(t *testing.T) {
 	srv.Log.Infow("delete done", "deleted_count", res.DeletedCount)
 
 	e := &model.DBEntry{
-		Key:        "blah",
+		ShareKey:   "blah",
 		CreateDate: uint64(time.Now().Unix()),
 		RunDate:    uint64(time.Now().Unix()),
 		SimDuration: &model.DescriptiveStats{
@@ -59,7 +59,7 @@ func TestCreate(t *testing.T) {
 			Fields: map[string]*structpb.Value{
 				"key": {
 					Kind: &structpb.Value_StringValue{
-						StringValue: e.Key,
+						StringValue: e.ShareKey,
 					},
 				},
 			},

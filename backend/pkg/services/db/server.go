@@ -70,7 +70,7 @@ func (s *Server) CreateOrUpdateDBEntry(ctx context.Context, req *CreateOrUpdateD
 		s.Log.Warnw("create: error generating nanoid", "err", err, "req", req.String())
 		return nil, status.Error(codes.Internal, "internal server error")
 	}
-	e.Key = key
+	e.ShareKey = key
 	e.IsDbValid = false
 	//check if accepted len > 1, then isvalid, else false
 	//TODO: this should check for valid tags; else purge
