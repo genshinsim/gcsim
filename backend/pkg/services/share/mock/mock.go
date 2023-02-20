@@ -54,6 +54,7 @@ func (s *Server) Create(ctx context.Context, e *share.ShareEntry) (string, error
 	if _, ok := s.data[key]; ok {
 		return "", status.Error(codes.Internal, "error creating nanoid")
 	}
+	s.data[key] = e
 	return key, nil
 }
 
