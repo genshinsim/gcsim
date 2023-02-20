@@ -37,13 +37,14 @@ message ReadRequest {
 message ReadResponse {
     string key = 1;
     model.SimulationResult result = 2;
-    uint64 ttl = 3;
+    uint64 expires_at = 3;
 }
 
 message UpdateRequest {
     string key = 1;
     model.SimulationResult result = 2;
-    uint64 ttl = 3;
+    uint64 expires_at = 3;
+    string submitter = 4;
 }
 
 message UpdateResponse {
@@ -52,7 +53,7 @@ message UpdateResponse {
 
 message SetTTLRequest {
     string key = 1;
-    uint64 ttl = 3;
+    uint64 expires_at = 3;
 }
 
 message SetTTLResponse {
