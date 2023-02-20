@@ -5,13 +5,24 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/aidarkhanov/nanoid/v2"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
+	"github.com/jaevor/go-nanoid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
+
+var generateID func() string
+
+func init() {
+	var err error
+	// dictionary from https://github.com/CyberAP/nanoid-dictionary#nolookalikessafe
+	generateID, err = nanoid.CustomASCII("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz", 12)
+	if err != nil {
+		panic(err)
+	}
+}
 
 // Server is a mock server for purpose of testing share RPC end points
 type Server struct {
@@ -46,11 +57,7 @@ func NewServer(cust ...func(*Server) error) (*Server, error) {
 }
 
 func (s *Server) Create(ctx context.Context, e *share.ShareEntry) (string, error) {
-	key, err := nanoid.New()
-	if err != nil {
-		s.Log.Infow("err creating nanoid", "err", err)
-		return "", status.Error(codes.Internal, "error creating nanoid")
-	}
+	key := generateID()
 	if _, ok := s.data[key]; ok {
 		return "", status.Error(codes.Internal, "error creating nanoid")
 	}
