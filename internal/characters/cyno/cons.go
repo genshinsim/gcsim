@@ -1,6 +1,7 @@
 package cyno
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -23,10 +24,11 @@ const (
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.2
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(c1Key, 600), // 10s
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagNormal {
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(c1Key, 600), // 10s
+		AffectedStat: attributes.AtkSpd,
+		Amount: func() ([]float64, bool) {
+			if c.Core.Player.CurrentState() != action.NormalAttackState {
 				return nil, false
 			}
 			return m, true

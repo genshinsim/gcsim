@@ -1,6 +1,7 @@
 package xinyan
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -33,9 +34,13 @@ func (c *char) makeC1CB() combat.AttackCBFunc {
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.AtkSpd] = 0.12
-		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("xinyan-c1", 5*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("xinyan-c1", 5*60),
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() ([]float64, bool) {
+				if c.Core.Player.CurrentState() != action.NormalAttackState && c.Core.Player.CurrentState() != action.ChargeAttackState {
+					return nil, false
+				}
 				return m, true
 			},
 		})

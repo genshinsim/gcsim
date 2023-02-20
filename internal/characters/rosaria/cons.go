@@ -1,6 +1,7 @@
 package rosaria
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -28,15 +29,27 @@ func (c *char) makeC1CB() combat.AttackCBFunc {
 		}
 
 		m := make([]float64, attributes.EndStatType)
-		m[attributes.AtkSpd] = 0.1
 		m[attributes.DmgP] = 0.1
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("rosaria-c1", 240), //4s
+			Base: modifier.NewBaseWithHitlag("rosaria-c1-dmg", 240), //4s
 			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				if atk.Info.AttackTag != combat.AttackTagNormal {
 					return nil, false
 				}
 				return m, true
+			},
+		})
+
+		mAtkSpd := make([]float64, attributes.EndStatType)
+		mAtkSpd[attributes.AtkSpd] = 0.1
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("rosaria-c1-speed", 240), //4s
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() ([]float64, bool) {
+				if c.Core.Player.CurrentState() != action.NormalAttackState {
+					return nil, false
+				}
+				return mAtkSpd, true
 			},
 		})
 	}
