@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// C6: After casting Searing Onslaught, the next 2 Normal Attacks within the
 	// next 6s will have their DMG and ATK SPD increased by 30%.
 	if c.Base.Cons >= 6 {
-		count := 0
+		c.c6Count = 0
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.3
 		c.AddAttackMod(character.AttackMod{
@@ -68,10 +68,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				if atk.Info.AttackTag != combat.AttackTagNormal {
 					return nil, false
 				}
-				if count > 1 {
+				if c.c6Count > 1 {
 					return nil, false
 				}
-				count++
+				c.c6Count++
 				return m, true
 			},
 		})
@@ -85,7 +85,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				if c.Core.Player.CurrentState() != action.NormalAttackState {
 					return nil, false
 				}
-				if count > 1 {
+				if c.c6Count > 1 {
 					return nil, false
 				}
 				return mAtkSpd, true
