@@ -103,18 +103,18 @@ func (s *Server) Delete(ctx context.Context, key string) error {
 	return nil
 }
 
-func (s *Server) Random(context.Context) (*share.ShareEntry, error) {
+func (s *Server) Random(context.Context) (string, error) {
 	max := len(s.data)
 	if max == 0 {
-		return nil, status.Error(codes.NotFound, "not found")
+		return "", status.Error(codes.NotFound, "not found")
 	}
 	n := s.Rand.Intn(max)
-	for _, v := range s.data {
+	for k, _ := range s.data {
 		if n == 0 {
-			return v, nil
+			return k, nil
 		}
 		n--
 	}
 
-	return nil, status.Error(codes.NotFound, "not found")
+	return "", status.Error(codes.NotFound, "not found")
 }

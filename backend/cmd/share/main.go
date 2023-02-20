@@ -3,14 +3,24 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
-	"github.com/genshinsim/gcsim/backend/pkg/services/share/mock"
+	"github.com/genshinsim/gcsim/backend/pkg/services/share/mongo"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	shareStore, err := mock.NewServer()
+	mongoCfg := mongo.Config{
+		URL:        os.Getenv("MONGODB_URL"),
+		Database:   os.Getenv("MONGODB_DATABASE"),
+		Collection: os.Getenv("MONGODB_COLLECTION"),
+		Username:   os.Getenv("MONGODB_USERNAME"),
+		Password:   os.Getenv("MONOGDB_PASSWORD"),
+	}
+	log.Println(os.Getenv("MONGODB_URL"))
+	log.Printf("Cfg: %v\n", mongoCfg)
+	shareStore, err := mongo.NewServer(mongoCfg)
 	if err != nil {
 		panic(err)
 	}

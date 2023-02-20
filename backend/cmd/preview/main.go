@@ -16,7 +16,7 @@ var content embed.FS
 func main() {
 
 	shareStore, err := share.NewClient(share.ClientCfg{
-		Addr: os.Getenv("RESULT_STORE_URL"),
+		Addr: os.Getenv("SHARE_STORE_URL"),
 	})
 
 	if err != nil {

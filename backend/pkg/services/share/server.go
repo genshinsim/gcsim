@@ -16,7 +16,7 @@ type ShareStore interface {
 	Update(context.Context, *ShareEntry) (string, error)
 	SetTTL(context.Context, string, uint64) (string, error)
 	Delete(context.Context, string) error
-	Random(context.Context) (*ShareEntry, error)
+	Random(context.Context) (string, error)
 }
 
 type Config struct {

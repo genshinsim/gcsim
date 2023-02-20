@@ -27,7 +27,7 @@ func main() {
 	sugar.Debugw("logger initiated")
 
 	shareStore, err := share.NewClient(share.ClientCfg{
-		Addr: os.Getenv("RESULT_STORE_URL"),
+		Addr: os.Getenv("SHARE_STORE_URL"),
 	})
 
 	if err != nil {

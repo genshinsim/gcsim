@@ -26,10 +26,10 @@ type ShareEntry struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        string                  `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty"`
-	Result    *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty"`
-	Submitter string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	Id        string                  `protobuf:"bytes,1,opt,name=id,json=_id,proto3" json:"id,omitempty" bson:"_id,omitempty"`
+	Result    *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt uint64                  `protobuf:"varint,3,opt,name=expires_at,proto3" json:"expires_at,omitempty" bson:"expires_at,omitempty"`
+	Submitter string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 }
 
 func (x *ShareEntry) Reset() {
@@ -97,9 +97,9 @@ type CreateRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Result    *model.SimulationResult `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt uint64                  `protobuf:"varint,2,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
-	Submitter string                  `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	Result    *model.SimulationResult `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt uint64                  `protobuf:"varint,2,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty" bson:"expiresAt,omitempty"`
+	Submitter string                  `protobuf:"bytes,3,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 }
 
 func (x *CreateRequest) Reset() {
@@ -160,7 +160,7 @@ type CreateResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
 }
 
 func (x *CreateResponse) Reset() {
@@ -207,7 +207,7 @@ type ReadRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
 }
 
 func (x *ReadRequest) Reset() {
@@ -254,9 +254,9 @@ type ReadResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key       string                  `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Result    *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt uint64                  `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	Key       string                  `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	Result    *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt uint64                  `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty" bson:"expiresAt,omitempty"`
 }
 
 func (x *ReadResponse) Reset() {
@@ -317,10 +317,10 @@ type UpdateRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key       string                  `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Result    *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty"`
-	ExpiresAt uint64                  `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
-	Submitter string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	Key       string                  `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	Result    *model.SimulationResult `protobuf:"bytes,2,opt,name=result,proto3" json:"result,omitempty" bson:"result,omitempty"`
+	ExpiresAt uint64                  `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty" bson:"expiresAt,omitempty"`
+	Submitter string                  `protobuf:"bytes,4,opt,name=submitter,proto3" json:"submitter,omitempty" bson:"submitter,omitempty"`
 }
 
 func (x *UpdateRequest) Reset() {
@@ -388,7 +388,7 @@ type UpdateResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
 }
 
 func (x *UpdateResponse) Reset() {
@@ -435,8 +435,8 @@ type SetTTLRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key       string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	ExpiresAt uint64 `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	Key       string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	ExpiresAt uint64 `protobuf:"varint,3,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty" bson:"expiresAt,omitempty"`
 }
 
 func (x *SetTTLRequest) Reset() {
@@ -490,7 +490,7 @@ type SetTTLResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
 }
 
 func (x *SetTTLResponse) Reset() {
@@ -537,7 +537,7 @@ type DeleteRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
 }
 
 func (x *DeleteRequest) Reset() {
@@ -584,7 +584,7 @@ type DeleteResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"` //TODO: add deleted data to response in future
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"` //TODO: add deleted data to response in future
 }
 
 func (x *DeleteResponse) Reset() {
@@ -669,7 +669,7 @@ type RandomResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
 }
 
 func (x *RandomResponse) Reset() {

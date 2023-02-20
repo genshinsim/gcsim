@@ -37,7 +37,7 @@ services:
       - ~/assets/assets:/assets
     environment:
       - ASSETS_DATA_PATH=/assets
-      - RESULT_STORE_URL=result:3000
+      - SHARE_STORE_URL=share:3000
     restart: unless-stopped
   jadechamber:
     container_name: jadechamber
@@ -52,23 +52,25 @@ services:
       - DISCORD_ID
       - DISCORD_SECRET
       - REDIRECT_URL
-      - RESULT_STORE_URL=result:3000
+      - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
       - SHARE_KEY_FILE=/keys.json
       - MQTT_URL=mqtt:1883
       - MQTT_USERNAME=mosquitto
       - MQTT_PASSWORD=password
     restart: unless-stopped
-  result:
-    container_name: result
+  share:
+    container_name: share
     build:
       context: .
-      dockerfile: ./backend/cmd/result/Dockerfile
+      dockerfile: ./backend/cmd/share/Dockerfile
     restart: unless-stopped
-    volumes:
-      - ~/data/result:/data
     environment:
-      - RESULT_DATA_PATH=/data
+      - MONGODB_URL=mongodb://mongo:27017
+      - MONGODB_DATABASE=gcsim-database
+      - MONGODB_COLLECTION=shares
+      - MONGODB_USERNAME=root
+      - MONOGDB_PASSWORD=root-password
   db:
     container_name: db
     build:

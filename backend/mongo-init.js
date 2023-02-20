@@ -4,6 +4,8 @@ db = db.getSiblingDB("gcsim-database");
 
 db.createCollection("data");
 
+db.createCollection("shares");
+
 db.createView(
     "gcsimvaliddb",
     "data",
