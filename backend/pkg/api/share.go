@@ -87,10 +87,10 @@ func (s *Server) validateShare(data []byte, str string) error {
 
 	var res map[string]interface{}
 	json.Unmarshal(data, &res)
-	data, _ = json.Marshal(res)
+	d, _ := json.Marshal(res)
 
 	h := sha256.New()
-	h.Write(data)
+	h.Write(d)
 	bs := h.Sum(nil)
 
 	dh, err := s.decryptHash(hash, key)
@@ -139,7 +139,7 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			return
 		}
 
-		var res *model.SimulationResult
+		res := &model.SimulationResult{}
 		err = res.UnmarshalJson(data)
 		if err != nil {
 			s.Log.Infow("create share request - unmarshall failed", "err", err)
