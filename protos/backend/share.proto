@@ -1,0 +1,75 @@
+syntax = "proto3";
+package result;
+option go_package="github.com/genshinsim/gcsim/backend/pkg/services/share";
+
+import "protos/model/result.proto";
+
+service ShareStore {
+    rpc Create (CreateRequest) returns (CreateResponse) {}
+    rpc Read (ReadRequest) returns (ReadResponse) {}
+    rpc Update (UpdateRequest) returns (UpdateResponse) {}
+    rpc SetTTL (SetTTLRequest) returns (SetTTLResponse) {}
+    rpc Delete (DeleteRequest) returns (DeleteResponse) {}
+    rpc Random (RandomRequest) returns (RandomResponse) {}
+}
+
+message ShareEntry {
+    string id = 1 [json_name="_id"];
+    model.SimulationResult result = 2 [json_name="result"];
+    uint64 expires_at = 3 [json_name="expires_at"];
+    string submitter = 4 [json_name="submitter"];
+}
+
+message CreateRequest {
+    model.SimulationResult result = 1;
+    uint64 expires_at = 2;
+    string submitter = 3;
+}
+
+message CreateResponse {
+    string key = 1;
+}
+
+message ReadRequest {
+    string key = 1;
+}
+
+message ReadResponse {
+    string key = 1;
+    model.SimulationResult result = 2;
+    uint64 ttl = 3;
+}
+
+message UpdateRequest {
+    string key = 1;
+    model.SimulationResult result = 2;
+    uint64 ttl = 3;
+}
+
+message UpdateResponse {
+    string key = 1;
+}
+
+message SetTTLRequest {
+    string key = 1;
+    uint64 ttl = 3;
+}
+
+message SetTTLResponse {
+    string key = 1;
+}
+
+message DeleteRequest {
+    string key = 1;
+}
+
+message DeleteResponse {
+    string key = 1;
+    //TODO: add deleted data to response in future
+}
+
+message RandomRequest {}
+
+message RandomResponse {
+    string key = 1;
+}
