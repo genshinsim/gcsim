@@ -32,7 +32,9 @@ type Server struct {
 }
 
 func NewServer(cust ...func(*Server) error) (*Server, error) {
-	s := &Server{}
+	s := &Server{
+		data: make(map[string]*share.ShareEntry),
+	}
 	s.Rand = rand.New(rand.NewSource(time.Now().Unix()))
 
 	for _, f := range cust {
