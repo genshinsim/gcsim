@@ -34,14 +34,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(func() {
 		s := c.newLeaLotusLamp()
-		// A1 adds a stack per second
-		for delay := 0; delay <= s.Gadget.Duration; delay += 60 {
-			c.a1Stack(delay)
-		}
 
-		// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - Kolibri
-		for delay := 0; delay <= s.Gadget.Duration; delay += 0.3 * 60 {
-			c.a1Buff(delay)
+		if c.Base.Ascension >= 1 {
+			// A1 adds a stack per second
+			for delay := 0; delay <= s.Gadget.Duration; delay += 60 {
+				c.a1Stack(delay)
+			}
+			// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - Kolibri
+			for delay := 0; delay <= s.Gadget.Duration; delay += 0.3 * 60 {
+				c.a1Buff(delay)
+			}
 		}
 
 		if c.Base.Cons >= 6 {

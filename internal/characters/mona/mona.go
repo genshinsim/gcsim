@@ -50,8 +50,5 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-	if c.Base.Cons >= 6 {
-		c.c6CAReset()
-	}
 	return nil
 }

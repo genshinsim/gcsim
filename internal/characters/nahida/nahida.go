@@ -88,7 +88,7 @@ func (c *char) Init() error {
 
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4()
-	c.a4tick()
+	c.a4Tick()
 
 	if c.Base.Cons >= 4 {
 		c.c4Buff = make([]float64, attributes.EndStatType)
@@ -97,10 +97,6 @@ func (c *char) Init() error {
 
 	if c.Base.Cons >= 2 {
 		c.c2()
-	}
-
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 
 	return nil

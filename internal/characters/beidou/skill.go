@@ -14,7 +14,10 @@ var (
 	skillRadius       = []float64{6, 7, 8}
 )
 
-const skillHitmark = 23
+const (
+	skillHitmark   = 23
+	particleICDKey = "beidou-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(45)
@@ -50,10 +53,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius[counter]),
 		skillHitmark,
 		skillHitmark,
+		c.makeParticleCB(counter),
 	)
-
-	//2 if no hit, 3 if 1 hit, 4 if perfect
-	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, skillHitmark+c.ParticleDelay)
 
 	if counter > 0 {
 		//add shield
@@ -74,5 +75,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB(counter int) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.4*60, true)
+
+		// 2 if no hit, 3 if 1 hit, 4 if perfect
+		c.Core.QueueParticle(c.Base.Key.String(), 2+float64(counter), attributes.Electro, c.ParticleDelay)
 	}
 }

@@ -18,8 +18,9 @@ Eye of Stormy Judgment
 var skillFrames []int
 
 const (
-	skillHitmark = 51
-	skillKey     = "raiden-e"
+	skillHitmark   = 51
+	skillKey       = "raiden-e"
+	particleICDKey = "raiden-particle-icd"
 )
 
 func init() {
@@ -79,6 +80,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.8*60, true)
+	if c.Core.Rand.Float64() < 0.5 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
+	}
+}
+
 /*
 *
 When characters with this buff attack and hit opponents, the Eye will unleash a coordinated attack, dealing AoE Electro DMG at the opponent's position.
@@ -110,9 +124,6 @@ func (c *char) eyeOnDamage() {
 		if dmg == 0 {
 			return false
 		}
-		if c.Core.Rand.Float64() < 0.5 {
-			c.Core.QueueParticle("raiden", 1, attributes.Electro, c.ParticleDelay)
-		}
 
 		//hit mark 857, eye land 862
 		//electro appears to be applied right away
@@ -130,7 +141,7 @@ func (c *char) eyeOnDamage() {
 		if c.Base.Cons >= 2 && c.StatusIsActive(BurstKey) {
 			ai.IgnoreDefPercent = 0.6
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 5, 5)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 5, 5, c.particleCB)
 
 		c.eyeICD = c.Core.F + 54 //0.9 sec icd
 		return false

@@ -8,6 +8,8 @@ import (
 )
 
 // After Tighnari fires a Wreath Arrow, his Elemental Mastery is increased by 50 for 4s.
+//
+// - checks for ascension level in aimed.go to avoid queuing this up only to fail the ascension level check
 func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 50
@@ -23,6 +25,9 @@ func (c *char) a1() {
 // For every point of Elemental Mastery Tighnari possesses, his Charged Attack and Fashioner's Tanglevine Shaft DMG are increased by 0.06%.
 // The maximum DMG Bonus obtainable this way is 60%.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("tighnari-a4", -1),

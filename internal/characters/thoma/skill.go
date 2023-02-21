@@ -10,7 +10,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 11
+const (
+	skillHitmark   = 11
+	particleICDKey = "thoma-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(46)
@@ -38,13 +41,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// snapshot unknown
 	// snap := c.Snapshot(&ai)
 
-	// 3 or 4, 1:1 ratio
-	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 4
-	}
-	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.ParticleDelay)
-
 	c.Core.Tasks.Add(func() {
 		shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
 		c.genShield("Thoma Skill", shieldamt, false)
@@ -56,6 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), combat.Point{Y: 1}, 3, 270),
 		skillHitmark,
 		skillHitmark,
+		c.particleCB,
 	)
 
 	player, ok := c.Core.Combat.Player().(*avatar.Player)
@@ -80,4 +77,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }

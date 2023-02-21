@@ -10,7 +10,8 @@ import (
 var skillFrames []int
 
 const (
-	skillRelease = 16
+	skillRelease   = 16
+	particleICDKey = "dori-particle-icd"
 )
 
 var skillSalesHitmarks = []int{46, 59, 59} // counted starting from skill hitmark
@@ -41,29 +42,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.afterSales(travel)
 	}
 
-	// When the Troubleshooter Shots or After-Sales Service Rounds from
-	// Spirit-Warding Lamp: Troubleshooter Cannon hit opponents, Dori will
-	// restore 5 Elemental Energy for every 100% Energy Recharge possessed. Per
-	// Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy
-	// restoration can be triggered and a maximum of 15 Energy can be restored
-	// this way.
-	done := false
-	a4CB := func(a combat.AttackCB) {
-		if done {
-			return
-		}
-		a4energy := a.AttackEvent.Snapshot.Stats[attributes.ER] * 5
-		if a4energy > 15 {
-			a4energy = 15
-		}
-		c.AddEnergy("dori-a4", a4energy)
-		done = true
-	}
-
 	if c.Base.Cons >= 6 {
 		c.Core.Player.AddWeaponInfuse(
 			c.Index,
-			c6key,
+			c6Key,
 			attributes.Electro,
 			228, // 3s + 0.8s according to dm
 			true,
@@ -84,11 +66,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		0,
 		skillRelease+travel,
 		afterSalesCB,
-		a4CB,
+		c.makeA4CB(),
+		c.particleCB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 9*60, 16)
-	c.Core.QueueParticle("dori", 2, attributes.Electro, skillRelease+travel+c.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -96,6 +78,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Electro, c.ParticleDelay)
 }
 
 func (c *char) afterSales(travel int) func() {

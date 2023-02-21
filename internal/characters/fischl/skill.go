@@ -19,6 +19,7 @@ const (
 	skillOzSpawn     = 32
 	skillRecastCD    = 92 // 2f CD delay
 	skillRecastCDKey = "fischl-skill-recast-cd"
+	particleICDKey   = "fischl-particle-icd"
 )
 
 func init() {
@@ -85,6 +86,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.1*60, true)
+	if c.Core.Rand.Float64() < .67 {
+		// TODO: this delay used to be 120
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
+	}
+}
+
 func (c *char) skillRecast() action.ActionInfo {
 	c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	c.Core.Tasks.Add(func() {
@@ -126,19 +141,17 @@ func (c *char) queueOz(src string, ozSpawn int) {
 			Durability: 25,
 			Mult:       birdAtk[c.TalentLvlSkill()],
 		}
+		player := c.Core.Combat.Player()
+		c.ozPos = combat.CalcOffsetPoint(player.Pos(), combat.Point{Y: 1.5}, player.Direction())
+
 		snap := c.Snapshot(&ai)
 		c.ozSnapshot = combat.AttackEvent{
-			Info:     ai,
-			Snapshot: snap,
-			Pattern: combat.NewBoxHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: -0.5},
-				0.1,
-				1,
-			),
+			Info:        ai,
+			Snapshot:    snap,
 			SourceFrame: c.Core.F,
 		}
+		c.ozSnapshot.Callbacks = append(c.ozSnapshot.Callbacks, c.particleCB)
+
 		c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)
 		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
 			Write("source", src).
@@ -164,13 +177,14 @@ func (c *char) ozTick(src int) func() {
 			Write("src", src)
 		// trigger damage
 		ae := c.ozSnapshot
+		ae.Pattern = combat.NewBoxHit(
+			c.ozPos,
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		)
 		c.Core.QueueAttackEvent(&ae, c.ozTravel)
-		// check for orb
-		// Particle check is 67% for particle, from datamine
-		// TODO: this delay used to be 120
-		if c.Core.Rand.Float64() < .67 {
-			c.Core.QueueParticle("fischl", 1, attributes.Electro, c.ParticleDelay)
-		}
 
 		// queue up next hit only if next hit oz is still active
 		if c.Core.F+60 <= c.ozActiveUntil {

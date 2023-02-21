@@ -88,7 +88,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				// - C1 makes burst able to attack both an enemy and heal the player at the same time
 				needAttack := enemy != nil && (!needHeal || hasC1)
 				if needAttack {
-					d.Pattern = combat.NewCircleHitOnTarget(enemy, nil, 3.5) // including A4
+					d.Pattern = combat.NewCircleHitOnTarget(enemy, nil, c.qTickRadius)
 					c.Core.QueueAttackEvent(d, 0)
 				}
 				if needHeal {
@@ -129,10 +129,10 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 		Mult:       burstSkill[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-
-	return (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
+	return &ae
 }

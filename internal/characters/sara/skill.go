@@ -12,10 +12,11 @@ import (
 
 var skillFrames []int
 
-// c2 hitmark
-const c2Hitmark = 103
-
-const coverKey = "sara-e-cover"
+const (
+	coverKey       = "sara-e-cover"
+	particleICDKey = "sara-particle-icd"
+	c2Hitmark      = 103
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52) // E -> D
@@ -51,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
 
-		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.a4)
+		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.makeA4CB())
 		c.attackBuff(ap, c2Hitmark)
 	}
 
@@ -63,6 +64,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.1*60, false)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Electro, c.ParticleDelay)
 }
 
 // Handles attack boost from Sara's skills

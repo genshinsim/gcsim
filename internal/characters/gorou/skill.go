@@ -11,7 +11,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 34
+const (
+	skillHitmark   = 34
+	particleICDKey = "gorou-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(47) // E -> N1/Q
@@ -43,20 +46,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       skill[c.TalentLvlSkill()],
+			FlatDmg:    c.a4Skill(),
 		}
-
-		// A1 Part 1
-		// Inuzaka All-Round Defense: Skill DMG increased by 156% of DEF
-		snap := c.Snapshot(&ai)
-		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 1.56
-
 		c.eFieldArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 8)
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHitOnTarget(c.eFieldArea.Shape.Pos(), nil, 5),
-			0,
-		)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.eFieldArea.Shape.Pos(), nil, 5), 0, 0, c.particleCB)
 
 		// E
 		// so it looks like gorou fields works much the same was as bennett field
@@ -76,10 +69,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}, skillHitmark)
 
-	// 2 particles apparently
-	// TODO: particle frames
-	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+c.ParticleDelay)
-
 	// 10s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 600, 32)
 
@@ -89,6 +78,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Geo, c.ParticleDelay)
 }
 
 // recursive function for queueing up ticks

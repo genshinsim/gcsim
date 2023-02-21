@@ -47,16 +47,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai.ICDTag = combat.ICDTagNormalAttack
 	}
 
-	particleCB := func(combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) {
-			return
-		}
-		if c.Core.F < c.lastPart {
-			return
-		}
-		c.Core.QueueParticle("yoimiya", 1, attributes.Pyro, c.ParticleDelay) // 1 particle
-		c.lastPart = c.Core.F + 120                                          // every 2s
+	var particleCB combat.AttackCBFunc
+	if c.StatusIsActive(skillKey) {
+		particleCB = c.particleCB
 	}
+	a1CB := c.makeA1CB()
+	c2CB := c.makeC2CB()
 
 	var totalMV float64
 	for i, mult := range attack[c.NormalCounter] {
@@ -74,6 +70,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel,
 			particleCB,
+			a1CB,
+			c2CB,
 		)
 	}
 
@@ -102,6 +100,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			),
 			0,
 			attackHitmarks[c.NormalCounter][0]+travel+5,
+			a1CB,
+			c2CB,
 		)
 	}
 

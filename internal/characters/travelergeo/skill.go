@@ -8,11 +8,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 )
 
-var skillFrames [][][]int
-
-// {Tap E, Short Hold E}
-var skillHitmark = []int{62, 29}
-var skillCDStart = []int{23, 25}
+var (
+	skillFrames [][][]int
+	// {Tap E, Short Hold E}
+	skillHitmark = []int{62, 29}
+	skillCDStart = []int{23, 25}
+)
 
 func init() {
 	skillFrames = make([][][]int, 2)
@@ -83,13 +84,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(stonePos, nil, 3),
 		24,
 		skillHitmark[short_hold],
+		c.makeParticleCB(),
 	)
-
-	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.33 {
-		count = 4
-	}
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark[short_hold]+c.ParticleDelay)
 
 	c.Core.Tasks.Add(func() {
 		dur := 30 * 60
@@ -99,13 +95,32 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
 	}, skillHitmark[short_hold])
 
-	c.SetCDWithDelay(action.ActionSkill, 360, skillCDStart[short_hold])
+	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[short_hold])
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[short_hold][c.gender]),
 		AnimationLength: skillFrames[short_hold][c.gender][action.InvalidAction],
 		CanQueueAfter:   skillFrames[short_hold][c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+
+		count := 3.0
+		if c.Core.Rand.Float64() < 0.33 {
+			count = 4
+		}
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
 	}
 }
 

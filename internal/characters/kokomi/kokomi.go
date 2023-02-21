@@ -17,7 +17,6 @@ type char struct {
 	skillFlatDmg  float64
 	skillLastUsed int
 	swapEarlyF    int
-	c4ICDExpiry   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -29,11 +28,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.skillFlatDmg = 0
-	c.skillLastUsed = 0
-	c.swapEarlyF = 0
-	c.c4ICDExpiry = 0
-
 	w.Character = &c
 
 	return nil
@@ -43,6 +37,5 @@ func (c *char) Init() error {
 	c.a4()
 	c.passive()
 	c.onExitField()
-	c.burstActiveHook()
 	return nil
 }

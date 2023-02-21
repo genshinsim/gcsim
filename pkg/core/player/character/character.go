@@ -92,9 +92,13 @@ type CharWrapper struct {
 	//mods
 	mods []modifier.Mod
 
+	//dash cd: keeps track of remaining cd frames for off-field chars
+	RemainingDashCD int
+	DashLockout     bool
+
 	//hitlag stuff
-	timePassed   float64 //how many frames have passed since start of sim
-	frozenFrames float64 //how many frames are we still frozen for
+	timePassed   int //how many frames have passed since start of sim
+	frozenFrames int //how many frames are we still frozen for
 	queue        []queue.Task
 }
 

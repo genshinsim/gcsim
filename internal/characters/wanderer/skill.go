@@ -1,17 +1,18 @@
 package wanderer
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"math"
 )
 
 const (
 	skillKey           = "windfavored-state"
-	particleIcdKey     = "wanderer-particle-icd"
+	particleICDKey     = "wanderer-particle-icd"
 	plungeAvailableKey = "wanderer-plunge-available"
 )
 
@@ -51,8 +52,10 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), skillHitmark, skillHitmark)
 
 	// Initial A1 Absorption test
-	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
-	c.absorbCheckA1()
+	if c.Base.Ascension >= 1 {
+		c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
+		c.absorbCheckA1()
+	}
 
 	c.c1()
 
@@ -137,13 +140,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 }
 
-func (c *char) particleGenCB(cb combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if !c.StatusIsActive(skillKey) {
 		return
 	}
-	if c.StatusIsActive(particleIcdKey) {
+	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleIcdKey, 120, true)
-	c.Core.QueueParticle("wanderer", 1, attributes.Anemo, c.ParticleDelay)
+	c.AddStatus(particleICDKey, 2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Anemo, c.ParticleDelay)
 }

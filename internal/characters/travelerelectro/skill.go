@@ -74,16 +74,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		amuletDelay = 107 // ~1.79s
 	}
 
-	//particles appear to be generated if the blades lands but capped at 1
-	partCount := 0
-	particlesCB := func(_ combat.AttackCB) {
-		if partCount > 0 {
-			return
-		}
-		partCount++
-		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) //this way we're future proof if for whatever reason this misses
-	}
-
 	amuletCB := func(a combat.AttackCB) {
 		// generate amulet if generated amulets < limit
 		if c.abundanceAmulets >= maxAmulets {
@@ -113,7 +103,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				0.6,
 			),
 			skillHitmark,
-			particlesCB,
+			c.makeParticleCB(), // every blade generates 1 particle if it hits
 			amuletCB,
 		)
 	}
@@ -134,6 +124,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
+	}
+}
+
 func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	// if there are no amulets to collect, return
 	if c.abundanceAmulets <= 0 {
@@ -146,13 +150,16 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 
 	mER[attributes.ER] = 0.20
 
-	// handle a4 - Increases the Energy Recharge effect granted by Lightning Blade's Abundance Amulet by 10% of the
-	//	 Traveler's Energy Recharge.
-	//   This effect only takes into account the Traveler's original Energy Recharge.
-	//   Picking up an Amulet to increase the Traveler's ER will not impact the amount of ER shared by
-	//   Resounding Roar for other Amulet pickups.
-	//   TODO how do we pull unbuffed energy recharge %? Store on init?
-	mER[attributes.ER] += c.BaseStats[attributes.ER] * .1
+	// A4:
+	// Increases the Energy Recharge effect granted by Lightning Blade's Abundance Amulet by 10% of the
+	// Traveler's Energy Recharge.
+	// - This effect only takes into account the Traveler's original Energy Recharge.
+	// - Picking up an Amulet to increase the Traveler's ER will not impact the amount of ER shared by
+	// - Resounding Roar for other Amulet pickups.
+	// - TODO how do we pull unbuffed energy recharge %? Store on init?
+	if c.Base.Ascension >= 4 {
+		mER[attributes.ER] += c.BaseStats[attributes.ER] * .1
+	}
 
 	// apply flat energy
 	buffEnergy := skillRegen[c.Talents.Skill] * float64(c.abundanceAmulets)
@@ -163,9 +170,10 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 
 	collector.AddEnergy("abundance-amulet", buffEnergy)
 
-	// handle a1 - When another nearby character in the party obtains an Abundance Amulet created by Lightning Blade,
-	//   Lightning Blade's CD is decreased by 1.5s.
-	if collector.Index != c.Index {
+	// A1:
+	// When another nearby character in the party obtains an Abundance Amulet created by Lightning Blade,
+	// Lightning Blade's CD is decreased by 1.5s.
+	if c.Base.Ascension >= 1 && collector.Index != c.Index {
 		c.ReduceActionCooldown(action.ActionSkill, 90*c.abundanceAmulets)
 	}
 

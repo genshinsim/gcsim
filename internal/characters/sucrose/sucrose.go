@@ -19,8 +19,8 @@ type char struct {
 	*tmpl.Character
 	qAbsorb             attributes.Element
 	absorbCheckLocation combat.AttackPattern
-	a1buff              []float64
-	a4buff              []float64
+	a1Buff              []float64
+	a4Buff              []float64
 	c4Count             int
 	c6buff              []float64
 }

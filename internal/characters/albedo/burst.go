@@ -5,8 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -51,25 +49,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 	)
 
-	// A4 and fatal blossom
-	// delay fatal blossom triggering until burstHitmark because that's when it:
+	// A4 and Fatal Blossom
+	// delay Fatal Blossom triggering until burstHitmark because that's when it:
 	// - checks whether the skill is still active
 	// - recalculates C2 damage
 	c.Core.Tasks.Add(func() {
-		// A4
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.EM] = 125
-		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("albedo-a4", 600),
-				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-			})
-		}
+		c.a4()
 
-		// fatal blossom
+		// Fatal Blossom
 		if !c.skillActive {
 			return
 		}

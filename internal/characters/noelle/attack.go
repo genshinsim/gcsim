@@ -67,7 +67,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	// need char queue because of potential hitlag from C4
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, ap, 0, 0, c.skillHealCB(), c.a4())
+		c.Core.QueueAttack(ai, ap, 0, 0, c.skillHealCB(), c.makeA4CB())
 	}, attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()

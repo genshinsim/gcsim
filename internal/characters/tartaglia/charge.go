@@ -61,8 +61,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
-			c.meleeApplyRiptide, // call back for applying riptide
-			c.rtSlashCallback,   // call back for triggering slash
+			c.makeA4CB(),      // callback for applying riptide
+			c.rtSlashCallback, // callback for triggering slash
 		)
 	}
 

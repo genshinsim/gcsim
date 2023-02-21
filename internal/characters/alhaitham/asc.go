@@ -11,24 +11,31 @@ const a1IcdKey = "alhaitham-a1-icd"
 
 // When Alhaitham's Charged or Plunging Attacks hit opponents, they will generate 1 Chisel-Light Mirror.
 // This effect can be triggered once every 12s.
-func (c *char) a1CB(a combat.AttackCB) {
+func (c *char) makeA1CB() combat.AttackCBFunc {
 	if c.Base.Ascension < 1 {
-		return
+		return nil
 	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		// ignore if projection on icd
+		if c.Core.Status.Duration(a1IcdKey) > 0 {
+			return
+		}
 
-	//ignore if projection on icd
-	if c.Core.Status.Duration(a1IcdKey) > 0 {
-		return
+		c.Core.Status.Add(a1IcdKey, 720) // 12s
+		c.mirrorGain(1)
 	}
-
-	c.Core.Status.Add(a1IcdKey, 720) //12s
-	c.mirrorGain(1)
 }
 
 // Each point of Alhaitham's Elemental Mastery will increase the DMG dealt by
 // Projection Attacks and Particular Field: Fetters of Phenomena by 0.1%.
 // The maximum DMG increase for both these abilities is 100%.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("alhaitham-a4", -1),

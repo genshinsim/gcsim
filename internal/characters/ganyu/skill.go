@@ -29,17 +29,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	snap := c.Snapshot(&ai)
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
-	//flower damage immediately
-	c.Core.QueueAttackWithSnap(ai, snap, ap, 13)
-	//we get the orbs right away
-	c.Core.QueueParticle("ganyu", 2, attributes.Cryo, c.ParticleDelay)
-
-	//flower damage is after 6 seconds
-	c.Core.QueueAttackWithSnap(ai, snap, ap, 373)
-	c.Core.QueueParticle("ganyu", 2, attributes.Cryo, 373+c.ParticleDelay)
-
-	//add cooldown to sim
-	// c.CD[charge] = c.Core.F + 10*60
+	// flower damage immediately
+	c.Core.QueueAttackWithSnap(ai, snap, ap, 13, c.makeParticleCB())
+	// flower explosion is after 6 seconds
+	c.Core.QueueAttackWithSnap(ai, snap, ap, 373, c.makeParticleCB())
 
 	if c.Base.Cons == 6 {
 		c.Core.Status.Add(c6Key, 1800)
@@ -52,5 +45,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Cryo, c.ParticleDelay)
 	}
 }

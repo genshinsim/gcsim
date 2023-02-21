@@ -29,26 +29,13 @@ func (c *char) rangedBurstApplyRiptide(a combat.AttackCB) {
 	c.applyRiptide("ranged burst", t)
 }
 
-// When Tartaglia is in Foul Legacy: Raging Tide's Melee Stance, on dealing a CRIT hit,
-// Normal and Charged Attacks apply the Riptide status effect to opponents.
-func (c *char) meleeApplyRiptide(a combat.AttackCB) {
-	// only applies if is crit
-	if a.IsCrit {
-		t, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		c.applyRiptide("melee", t)
-	}
-}
-
 func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 	if c.Base.Cons >= 4 && !t.StatusIsActive(riptideKey) {
 		c.c4Src = c.Core.F
 		t.QueueEnemyTask(c.rtC4Tick(c.Core.F, t), 60*3.9)
 	}
 
-	t.AddStatus(riptideKey, riptideDuration, true)
+	t.AddStatus(riptideKey, c.riptideDuration, true)
 	c.Core.Log.NewEvent(
 		fmt.Sprintf("riptide applied (%v)", src),
 		glog.LogCharacterEvent,
@@ -123,7 +110,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 
 	// proc 3 hits
 	for i := 1; i <= 3; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1, c.particleCB)
 	}
 
 	c.Core.Log.NewEvent(
@@ -135,12 +122,6 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		Write("target", t.Key()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
-
-	// queue particles
-	if !c.StatusIsActive(energyICDKey) {
-		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
-	}
 }
 
 // Hitting an opponent affected by Riptide with a melee attack unleashes a Riptide Slash that deals AoE Hydro DMG.
@@ -179,7 +160,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1, c.particleCB)
 
 	c.Core.Log.NewEvent(
 		"riptide slash ticked",
@@ -190,12 +171,6 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 		Write("target", t.Key()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
-
-	// queue particle if not on icd
-	if !c.StatusIsActive(energyICDKey) {
-		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
-	}
 }
 
 // When the obliterating waters hit an opponent affected by Riptide, it clears their Riptide status

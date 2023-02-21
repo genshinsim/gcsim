@@ -168,7 +168,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 				ap,
 				0,
 				0,
-				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies
+				c.makeA4CB(), // riptide can trigger on the same hit that applies
 				c.rtSlashCallback,
 			)
 		}, meleeHitmarks[c.NormalCounter][i])

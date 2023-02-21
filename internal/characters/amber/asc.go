@@ -7,7 +7,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+// Increases the CRIT Rate of Fiery Rain by 10% and widens its AoE by 30%.
 func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+	// crit
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = .1
 	c.AddAttackMod(character.AttackMod{
@@ -16,23 +21,36 @@ func (c *char) a1() {
 			return m, atk.Info.AttackTag == combat.AttackTagElementalBurst
 		},
 	})
+	// AoE
+	c.burstRadius *= 1.3
 }
 
-func (c *char) a4(a combat.AttackCB) {
-	if !a.AttackEvent.Info.HitWeakPoint {
-		return
+// Aimed Shot hits on weak points increase ATK by 15% for 10s.
+func (c *char) makeA4CB() combat.AttackCBFunc {
+	if c.Base.Ascension < 4 {
+		return nil
 	}
-	if a.Target.Type() != combat.TargettableEnemy {
-		return
-	}
+	done := false
+	return func(a combat.AttackCB) {
+		if !a.AttackEvent.Info.HitWeakPoint {
+			return
+		}
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.15
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("amber-a4", 600),
-		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			return m, true
-		},
-	})
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ATKP] = 0.15
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("amber-a4", 600),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+	}
 }

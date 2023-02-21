@@ -10,7 +10,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 32
+const (
+	skillHitmark   = 32
+	particleICDKey = "yanfei-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(46) // E -> N1
@@ -64,10 +67,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		),
 		0,
 		skillHitmark,
+		c.particleCB,
 		addSeal,
 	)
-
-	c.Core.QueueParticle("yanfei", 3, attributes.Pyro, skillHitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 540, 28)
 
@@ -77,4 +79,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Pyro, c.ParticleDelay)
 }

@@ -125,11 +125,14 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 }
 
-func (c *char) particlesOnDmg(_ combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(triKarmaParticleICD) {
 		return
 	}
-	c.AddStatus(triKarmaParticleICD, 7*60, false)
+	c.AddStatus(triKarmaParticleICD, 7*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 }
 
@@ -210,7 +213,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		}
 		var cb combat.AttackCBFunc
 		if !done {
-			cb = c.particlesOnDmg
+			cb = c.particleCB
 			done = true
 		}
 

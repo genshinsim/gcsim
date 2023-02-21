@@ -3,7 +3,6 @@ package ayato
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -45,18 +44,26 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+// After using Kamisato Art: Kyouka, Ayato's next Shunsuiken attack will create
+// 2 extra Shunsuiken strikes when they hit opponents, each one dealing 450% of Ayato's ATK as DMG.
+// Both these Shunsuiken attacks will not be affected by Namisen.
+func (c *char) makeC6CB() combat.AttackCBFunc {
+	if c.Base.Cons < 6 || !c.c6Ready {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
 		if c.Core.Player.Active() != c.Index {
-			return false
+			return
 		}
-		if !c.c6ready {
-			return false
+		if !c.c6Ready {
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
-		}
+		c.c6Ready = false
+
+		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
 		ai := combat.AttackInfo{
 			Abil:               "Ayato C6",
 			ActorIndex:         c.Index,
@@ -80,9 +87,5 @@ func (c *char) c6() {
 				20+i*2,
 			)
 		}
-
-		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
-		c.c6ready = false
-		return false
-	}, "ayato-c6")
+	}
 }
