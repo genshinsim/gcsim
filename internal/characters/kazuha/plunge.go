@@ -35,7 +35,7 @@ func init() {
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 	// last action must be skill without glide cancel
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
-		c.Core.Player.LastAction.Param["glide"] != 0 {
+		c.Core.Player.LastAction.Param["glide_cancel"] != 0 {
 		c.Core.Log.NewEvent("only plunge after skill without glide cancel", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
 		return action.ActionInfo{

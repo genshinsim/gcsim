@@ -47,7 +47,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
-	glide := p["glide"]
+	glide := p["glide_cancel"]
 	if glide < 0 {
 		glide = 0
 	}
