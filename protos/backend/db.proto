@@ -3,15 +3,31 @@ package db;
 option go_package="github.com/genshinsim/gcsim/backend/pkg/services/db";
 
 import "protos/model/db.proto";
+import "protos/model/result.proto";
 
 service DBStore {
     //generic get for pulling from approved db
     rpc Get (GetRequest) returns (GetResponse) {}
-    //internally create request; not exposed
-    rpc CreateOrUpdateDBEntry (CreateOrUpdateDBEntryRequest) returns (CreateOrUpdateDBEntryResponse) {}
+    rpc GetUnfiltered (GetUnfilteredRequest) returns (GetUnfilteredResponse) {}
+    rpc Create (CreateRequest) returns (CreateResponse) {}
+    rpc Update (UpdateRequest) returns (UpdateResponse) {}
 
-    //for compute work
-    rpc GetComputeWork (GetComputeWorkRequest) returns (GetComputeWorkReponse) {}
+    //new submissions
+    rpc Submit (SubmitRequest) returns (SubmitResponse) {} 
+    rpc GetComputeWork (GetComputeWorkRequest) returns (GetComputeWorkResponse) {}
+    rpc SubmitComputeWork (SubmitComputeWorkRequest) returns (SubmitComputeWorkResponse) {}
+    rpc DeletePending (DeletePendingRequest) returns (DeletePendingResponse) {}
+
+    //tagging
+    rpc ApproveTag(ApproveRequest) returns (ApproveResponse) {}
+    rpc RejectTag(RejectRequest) returns (RejectResponse) {}
+}
+
+message Submission {
+    string _id = 1;
+    string config = 2;
+    string submitter = 3; //submitter discord id 
+    string description = 4;
 }
 
 message GetRequest {
@@ -22,17 +38,75 @@ message GetResponse {
     model.DBEntries data = 1;
 }
 
-message CreateOrUpdateDBEntryRequest {
+message GetUnfilteredRequest {
+    model.DBQueryOpt query = 1;
+}
+
+message GetUnfilteredResponse {
+    model.DBEntries data = 1;
+}
+
+message CreateRequest {
+   model.DBEntry data = 1; 
+}
+
+message CreateResponse {
+    string key = 1 [json_name="key"];
+}
+
+message UpdateRequest {
    string id = 1 [json_name="_id"];
    model.DBEntry data = 2; 
 }
 
-message CreateOrUpdateDBEntryResponse {
+message UpdateResponse {
     string key = 1 [json_name="key"];
+}
+
+message SubmitRequest {
+    string config = 1;
+    string submitter = 2; //submitter discord id 
+    string description = 3;
+}
+
+message SubmitResponse {
+    string id = 1;
 }
 
 message GetComputeWorkRequest {}
 
-message GetComputeWorkReponse {
+message GetComputeWorkResponse {
     model.ComputeWork work = 1 [json_name="work"];
+}
+
+message SubmitComputeWorkRequest {
+    model.SimulationResult result = 1 [json_name="result"];
+}
+
+message SubmitComputeWorkResponse {
+}
+
+message DeletePendingRequest {
+    string key = 1 [json_name="key"];
+}
+
+message DeletePendingResponse {
+}
+
+message ApproveRequest {
+    string key = 1 [json_name="key"];
+    string tag = 2 [json_name="tag"];
+}
+
+message ApproveResponse {
+    string key = 1 [json_name="key"];
+}
+
+message RejectRequest {
+    string key = 1 [json_name="key"];
+    string tag = 2 [json_name="tag"];
+}
+
+message RejectResponse {
+    string key = 1 [json_name="key"];
 }
