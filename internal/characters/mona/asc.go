@@ -59,7 +59,7 @@ func (c *char) a4() {
 		c.a4Stats = make([]float64, attributes.EndStatType)
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("mona-a4", -1),
-			AffectedStat: attributes.ElectroP,
+			AffectedStat: attributes.HydroP,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return c.a4Stats, true
