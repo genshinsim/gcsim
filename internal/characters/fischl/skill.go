@@ -141,17 +141,13 @@ func (c *char) queueOz(src string, ozSpawn int) {
 			Durability: 25,
 			Mult:       birdAtk[c.TalentLvlSkill()],
 		}
+		player := c.Core.Combat.Player()
+		c.ozPos = combat.CalcOffsetPoint(player.Pos(), combat.Point{Y: 1.5}, player.Direction())
+
 		snap := c.Snapshot(&ai)
 		c.ozSnapshot = combat.AttackEvent{
-			Info:     ai,
-			Snapshot: snap,
-			Pattern: combat.NewBoxHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: -0.5},
-				0.1,
-				1,
-			),
+			Info:        ai,
+			Snapshot:    snap,
 			SourceFrame: c.Core.F,
 		}
 		c.ozSnapshot.Callbacks = append(c.ozSnapshot.Callbacks, c.particleCB)
@@ -181,6 +177,13 @@ func (c *char) ozTick(src int) func() {
 			Write("src", src)
 		// trigger damage
 		ae := c.ozSnapshot
+		ae.Pattern = combat.NewBoxHit(
+			c.ozPos,
+			c.Core.Combat.PrimaryTarget(),
+			combat.Point{Y: -0.5},
+			0.1,
+			1,
+		)
 		c.Core.QueueAttackEvent(&ae, c.ozTravel)
 
 		// queue up next hit only if next hit oz is still active
