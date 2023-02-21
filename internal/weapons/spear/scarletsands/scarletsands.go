@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		AffectedStat: attributes.ATK,
 		Extra:        true,
 		Amount: func() ([]float64, bool) {
-			em := char.Stat(attributes.EM)
+			em := char.NonExtraStat(attributes.EM)
 			mATK[attributes.ATK] = atkBuff * em
 			return mATK, true
 		},
@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			AffectedStat: attributes.ATK,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {
-				em := char.Stat(attributes.EM)
+				em := char.NonExtraStat(attributes.EM)
 				mATK[attributes.ATK] = atkSkillBuff * em * float64(w.stacks)
 				return mATK, true
 			},

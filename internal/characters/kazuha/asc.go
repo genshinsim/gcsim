@@ -61,7 +61,7 @@ func (c *char) a4() {
 			icd = c.Core.F + 1
 
 			//recalc em
-			dmg := 0.0004 * c.Stat(attributes.EM)
+			dmg := 0.0004 * c.NonExtraStat(attributes.EM)
 
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{

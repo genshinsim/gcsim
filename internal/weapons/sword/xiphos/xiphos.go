@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 func (w *Weapon) updateStats() {
 	val := make([]float64, attributes.EndStatType)
-	val[attributes.ER] = w.erBuff * w.char.Stat(attributes.EM)
+	val[attributes.ER] = w.erBuff * w.char.NonExtraStat(attributes.EM)
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("xiphos", 12*60),
 		AffectedStat: attributes.ER,

@@ -22,7 +22,7 @@ func (c *char) calcA1Buff() {
 	var max float64
 	team := c.Core.Player.Chars()
 	for _, char := range team {
-		em := char.Stat(attributes.EM)
+		em := char.NonExtraStat(attributes.EM)
 		if em > max {
 			max = em
 		}

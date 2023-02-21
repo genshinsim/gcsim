@@ -73,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if !char.StatusIsActive(buffKey) {
 			return false
 		}
-		baseDmgAdd := char.Stat(attributes.EM) * caBoost
+		baseDmgAdd := char.NonExtraStat(attributes.EM) * caBoost
 		atk.Info.FlatDmg += baseDmgAdd
 		procCount -= 1
 		if procCount <= 0 {

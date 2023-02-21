@@ -46,7 +46,7 @@ func (c *char) a4() {
 		return
 	}
 
-	crit_share := 0.15 * c.Stat(attributes.CR)
+	crit_share := 0.15 * c.NonExtraStat(attributes.CR)
 	if crit_share > 0.15 {
 		crit_share = 0.15
 	}
