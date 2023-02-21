@@ -74,7 +74,7 @@ func (c *char) a4() {
 	}
 
 	c.a4Buff = make([]float64, attributes.EndStatType)
-	c.a4Buff[attributes.EM] = c.Stat(attributes.EM) * .20
+	c.a4Buff[attributes.EM] = c.NonExtraStat(attributes.EM) * .20
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
 			continue //nothing for sucrose
