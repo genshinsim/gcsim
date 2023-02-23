@@ -51,7 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -60,7 +60,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		if c.NormalCounter == 3 {
-			ai.StrikeType = combat.StrikeTypeSpear
+			ai.StrikeType = attacks.StrikeTypeSpear
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),

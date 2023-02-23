@@ -59,7 +59,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             combat.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Anemo,
 			Durability:         50,
 			Mult:               skill[c.TalentLvlSkill()] + float64(c.decStack)*decBonus[c.TalentLvlSkill()],

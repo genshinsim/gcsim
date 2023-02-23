@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               rushAtk[c.TalentLvlSkill()],
@@ -94,7 +94,7 @@ func (c *char) SkillHold() action.ActionInfo {
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               rushAtk[c.TalentLvlSkill()],
@@ -232,9 +232,9 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	}
 
 	snapshotTiming := snapshotTimings[c.mirrorCount-1]
-	strikeType := combat.StrikeTypeSlash
+	strikeType := attacks.StrikeTypeSlash
 	if c.mirrorCount == 3 {
-		strikeType = combat.StrikeTypeSpear
+		strikeType = attacks.StrikeTypeSpear
 	}
 
 	ai := combat.AttackInfo{

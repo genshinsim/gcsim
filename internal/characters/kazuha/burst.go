@@ -36,7 +36,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Anemo,
 		Durability:         50,
 		Mult:               burstSlash[c.TalentLvlBurst()],
@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
-	ai.StrikeType = combat.StrikeTypeDefault
+	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	ai.Durability = 25
 	// no more hitlag after initial slash

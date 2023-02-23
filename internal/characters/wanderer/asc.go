@@ -75,7 +75,7 @@ func (c *char) a4() bool {
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagWandererA4,
 		ICDGroup:   combat.ICDGroupWandererA4,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       a4Mult,

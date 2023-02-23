@@ -69,7 +69,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagLisaElectro,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
@@ -118,7 +118,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 50,
 	}

@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -82,7 +82,7 @@ func (c *char) skillB() action.ActionInfo {
 		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           combat.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeBlunt,
+		StrikeType:       attacks.StrikeTypeBlunt,
 		Element:          attributes.Electro,
 		Durability:       25,
 		Mult:             skillB[c.TalentLvlSkill()],
@@ -113,7 +113,7 @@ func (c *char) skillB() action.ActionInfo {
 		ai.FlatDmg = c.a4Bolt()
 		ai.ICDTag = combat.ICDTagCynoBolt
 		ai.ICDGroup = combat.ICDGroupCynoBolt
-		ai.StrikeType = combat.StrikeTypeSlash
+		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.HitlagFactor = 0
 		ai.HitlagHaltFrames = 0
 

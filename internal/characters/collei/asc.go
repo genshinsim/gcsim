@@ -45,7 +45,7 @@ func (c *char) a1AttackInfo() combat.AttackInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagColleiSprout,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       0.4,

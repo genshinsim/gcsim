@@ -121,7 +121,7 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCB
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupLayla,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       starDmg[c.TalentLvlSkill()],

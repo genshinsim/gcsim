@@ -203,7 +203,7 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.Atta
 		AttackTag:        attacks.AttackTagBloom,
 		ICDTag:           combat.ICDTagBloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Abil:             string(combat.Bloom),
 		IgnoreDefPercent: 1,
 	}
@@ -221,7 +221,7 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 		AttackTag:        attacks.AttackTagBurgeon,
 		ICDTag:           combat.ICDTagBurgeonDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Abil:             string(combat.Burgeon),
 		IgnoreDefPercent: 1,
 	}
@@ -239,7 +239,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 		AttackTag:        attacks.AttackTagHyperbloom,
 		ICDTag:           combat.ICDTagHyperbloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Abil:             string(combat.Hyperbloom),
 		IgnoreDefPercent: 1,
 	}

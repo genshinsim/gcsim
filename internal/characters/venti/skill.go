@@ -33,7 +33,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       combat.ICDTagNone,
 		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypePierce,
+		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Anemo,
 		Durability:   50,
 		Mult:         skillPress[c.TalentLvlSkill()],

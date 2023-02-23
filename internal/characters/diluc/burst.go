@@ -96,7 +96,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             combat.ICDTagElementalBurst,
 			ICDGroup:           combat.ICDGroupDiluc,
-			StrikeType:         combat.StrikeTypeBlunt,
+			StrikeType:         attacks.StrikeTypeBlunt,
 			Element:            attributes.Pyro,
 			Durability:         50,
 			Mult:               burstInitial[c.TalentLvlBurst()],
@@ -112,7 +112,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			1,
 		)
 
-		ai.StrikeType = combat.StrikeTypeDefault
+		ai.StrikeType = attacks.StrikeTypeDefault
 		// both initial hit, DoT and explosion all have 50 durability
 		ai.Abil = "Dawn (Tick)"
 		ai.Mult = burstDOT[c.TalentLvlBurst()]

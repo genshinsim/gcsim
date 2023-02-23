@@ -20,7 +20,7 @@ func (c *char) a1() {
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupPoleExtraAttack,
-		StrikeType: combat.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       0.6,

@@ -49,9 +49,9 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	strikeType := combat.StrikeTypeSlash
+	strikeType := attacks.StrikeTypeSlash
 	if c.NormalCounter == 1 {
-		strikeType = combat.StrikeTypeSpear
+		strikeType = attacks.StrikeTypeSpear
 	}
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{

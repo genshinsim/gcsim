@@ -15,13 +15,13 @@ var (
 	attackHitmarks        = [][]int{{4, 17}, {15}, {15}, {14, 31}, {16}, {39}}
 	attackHitlagHaltFrame = [][]float64{{0, 0.01}, {0.01}, {0.01}, {0.02, 0.02}, {0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{false, true}, {true}, {true}, {false, true}, {true}, {true}}
-	attackStrikeTypes     = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash, combat.StrikeTypeSpear},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
-		{combat.StrikeTypeSpear},
-		{combat.StrikeTypeSlash},
+	attackStrikeTypes     = [][]attacks.StrikeType{
+		{attacks.StrikeTypeSlash, attacks.StrikeTypeSpear},
+		{attacks.StrikeTypeSlash},
+		{attacks.StrikeTypeSlash},
+		{attacks.StrikeTypeSlash, attacks.StrikeTypeSlash},
+		{attacks.StrikeTypeSpear},
+		{attacks.StrikeTypeSlash},
 	}
 	attackHitboxes = [][][][]float64{
 		{

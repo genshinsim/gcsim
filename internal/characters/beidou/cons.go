@@ -54,7 +54,7 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.2,

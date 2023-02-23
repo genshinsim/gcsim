@@ -146,7 +146,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNahidaC6,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       2,

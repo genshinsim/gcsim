@@ -31,7 +31,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               burst[0][c.TalentLvlBurst()],
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	)
 
 	ai.Abil = "Rites of Termination (Hit 2)"
-	ai.StrikeType = combat.StrikeTypeDefault
+	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burst[1][c.TalentLvlBurst()]
 	//no more hitlag after first hit
 	ai.HitlagHaltFrames = 0

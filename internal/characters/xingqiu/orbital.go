@@ -58,7 +58,7 @@ func (c *char) orbitalTickTask(src int) func() {
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}

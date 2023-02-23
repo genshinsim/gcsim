@@ -86,7 +86,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 		AttackTag:  attacks.AttackTagNone, // TODO: it has another tag?
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       1,

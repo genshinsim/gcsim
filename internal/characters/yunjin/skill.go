@@ -63,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSpear,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               skillDmg[chargeLevel][c.TalentLvlSkill()],

@@ -93,7 +93,7 @@ func (c *char) c2(a combat.AttackCB) {
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],

@@ -30,7 +30,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       guobaTick[c.TalentLvlSkill()],

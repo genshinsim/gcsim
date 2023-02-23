@@ -85,7 +85,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       0.01,
@@ -93,7 +93,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		if c.NormalCounter == 1 {
-			ai.StrikeType = combat.StrikeTypeSpear
+			ai.StrikeType = attacks.StrikeTypeSpear
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
@@ -134,7 +134,7 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       0.01,
@@ -142,7 +142,7 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: ppAttackDefHalt[c.NormalCounter][i],
 		}
 		if c.NormalCounter == 1 {
-			ai.StrikeType = combat.StrikeTypeSpear
+			ai.StrikeType = attacks.StrikeTypeSpear
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),

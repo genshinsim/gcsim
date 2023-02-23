@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
@@ -47,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 	}
 	talismanCB := func(a combat.AttackCB) {

@@ -85,7 +85,7 @@ func (c *char) summonSwordWave() {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],

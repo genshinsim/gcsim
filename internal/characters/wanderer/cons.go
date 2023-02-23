@@ -81,7 +81,7 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     combat.ICDTagWandererC6,
 			ICDGroup:   combat.ICDGroupWandererC6,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
 			Mult:       a.AttackEvent.Info.Mult * 0.4,

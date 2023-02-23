@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}
 			active := c.Player.ByIndex(atk.Info.ActorIndex)
 			if active.Base.Key == keys.Tartaglia &&
-				atk.Info.StrikeType == combat.StrikeTypeSlash {
+				atk.Info.StrikeType == attacks.StrikeTypeSlash {
 				return nil, false
 			}
 			travel = c.F - atk.Snapshot.SourceFrame

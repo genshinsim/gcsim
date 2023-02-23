@@ -58,7 +58,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -140,7 +140,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			HitlagFactor:       0.01,
@@ -155,7 +155,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			meleeFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 5 && i == 0 {
-			ai.StrikeType = combat.StrikeTypeSpear
+			ai.StrikeType = attacks.StrikeTypeSpear
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
 				combat.Point{Y: meleeOffsets[c.NormalCounter][i]},

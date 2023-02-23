@@ -33,7 +33,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     combat.ICDTagExtraAttack,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}

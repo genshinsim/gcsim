@@ -23,7 +23,7 @@ func (c *char) c2(travel int) {
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagDoriC2,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       0.5,

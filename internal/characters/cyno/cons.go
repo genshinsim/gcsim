@@ -161,7 +161,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 			AttackTag:    attacks.AttackTagElementalArt,
 			ICDTag:       combat.ICDTagElementalArt,
 			ICDGroup:     combat.ICDGroupDefault,
-			StrikeType:   combat.StrikeTypeSlash,
+			StrikeType:   attacks.StrikeTypeSlash,
 			Element:      attributes.Electro,
 			Durability:   25,
 			IsDeployable: true,

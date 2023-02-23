@@ -24,7 +24,7 @@ func (c *char) c6() {
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupFischl,
-			StrikeType: combat.StrikeTypePierce,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.3,

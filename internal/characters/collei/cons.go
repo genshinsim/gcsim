@@ -68,7 +68,7 @@ func (c *char) c6(t combat.Target) {
 		AttackTag:  attacks.AttackTagNone, // in game has this as AttackTagColleiC6
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       2,

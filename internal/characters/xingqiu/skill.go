@@ -34,7 +34,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Hydro,
 		Durability:         25,
 		HitlagHaltFrames:   0.02 * 60,

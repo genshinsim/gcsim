@@ -56,7 +56,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 			AttackTag:          attacks.AttackTagExtra,
 			ICDTag:             combat.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
 			Mult:               0.8,

@@ -42,7 +42,7 @@ func (c *char) a4() {
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupFischl,
-			StrikeType: combat.StrikeTypePierce,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.8,

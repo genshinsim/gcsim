@@ -115,7 +115,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						AttackTag:        attacks.AttackTagNoneStat,
 						ICDTag:           combat.ICDTagNone,
 						ICDGroup:         combat.ICDGroupDefault,
-						StrikeType:       combat.StrikeTypeDefault,
+						StrikeType:       attacks.StrikeTypeDefault,
 						Element:          attributes.Physical,
 						IgnoreDefPercent: 1,
 						FlatDmg:          s.bubbleHealStacks * .9,

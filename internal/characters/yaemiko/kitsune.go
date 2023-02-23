@@ -116,7 +116,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			Mult:       skill[lvl][c.TalentLvlSkill()],
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 		}

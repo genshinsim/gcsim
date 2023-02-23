@@ -25,7 +25,7 @@ func (c *char) makeBunny() {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       bunnyExplode[c.TalentLvlSkill()],

@@ -49,7 +49,7 @@ func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       .75,

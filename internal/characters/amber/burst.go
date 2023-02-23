@@ -29,7 +29,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupAmber,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],

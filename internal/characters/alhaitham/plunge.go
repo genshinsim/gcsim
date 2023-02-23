@@ -49,7 +49,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],

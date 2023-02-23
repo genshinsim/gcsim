@@ -40,7 +40,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         combat.ICDTagNone,
 		ICDGroup:       combat.ICDGroupDefault,
-		StrikeType:     combat.StrikeTypePierce,
+		StrikeType:     attacks.StrikeTypePierce,
 		Element:        attributes.Physical,
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlAttack()],

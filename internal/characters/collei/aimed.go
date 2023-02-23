@@ -31,7 +31,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               combat.ICDTagNone,
 		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Dendro,
 		Durability:           25,
 		Mult:                 fullaim[c.TalentLvlAttack()],

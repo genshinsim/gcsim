@@ -96,7 +96,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    skill[c.TalentLvlSkill()] * c.MaxHP(),
@@ -205,7 +205,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    swordDance[s][c.TalentLvlSkill()] * c.MaxHP(),
@@ -213,7 +213,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	centerTarget := c.Core.Combat.Player()
 	if s == 2 {
 		ai.Abil = "Luminous Illusion"
-		ai.StrikeType = combat.StrikeTypePierce
+		ai.StrikeType = attacks.StrikeTypePierce
 		centerTarget = c.Core.Combat.PrimaryTarget()
 
 		if t, ok := p["travel"]; ok {
@@ -258,7 +258,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    whirlingSteps[s][c.TalentLvlSkill()] * c.MaxHP(),
@@ -304,7 +304,7 @@ func (c *char) TranquilityAura(src int) func() {
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     combat.ICDTagNilouTranquilityAura,
 			ICDGroup:   combat.ICDGroupNilou,
-			StrikeType: combat.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}

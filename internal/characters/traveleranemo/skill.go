@@ -62,7 +62,7 @@ func (c *char) SkillPress() action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skillInitialStorm[c.TalentLvlSkill()],
@@ -108,7 +108,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skillInitialCutting[c.TalentLvlSkill()],
@@ -117,7 +117,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	aiCutAbs := aiCut
 	aiCutAbs.Abil = "Palm Vortex Initial Cutting Absorbed (Hold)"
 	aiCutAbs.ICDTag = combat.ICDTagNone
-	aiCutAbs.StrikeType = combat.StrikeTypeDefault
+	aiCutAbs.StrikeType = attacks.StrikeTypeDefault
 	aiCutAbs.Element = attributes.NoElement
 	aiCutAbs.Mult = skillInitialCuttingAbsorb[c.TalentLvlSkill()]
 
@@ -185,7 +185,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skillInitialStorm[c.TalentLvlSkill()],

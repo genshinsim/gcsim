@@ -135,7 +135,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       paw[c.TalentLvlSkill()],

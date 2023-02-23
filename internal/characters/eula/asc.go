@@ -23,7 +23,7 @@ func (c *char) a1() {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,

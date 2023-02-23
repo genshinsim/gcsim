@@ -36,7 +36,7 @@ type AttackInfo struct {
 	NoImpulse        bool
 	HitWeakPoint     bool
 	Mult             float64 //ability multiplier. could set to 0 from initial Mona dmg
-	StrikeType       StrikeType
+	StrikeType       attacks.StrikeType
 	UseDef           bool    //we use this instead of flatdmg to make sure stat snapshotting works properly
 	FlatDmg          float64 //flat dmg;
 	IgnoreDefPercent float64 //by default this value is 0; if = 1 then the attack will ignore defense; raiden c2 should be set to 0.6 (i.e. ignore 60%)
@@ -58,16 +58,6 @@ type AttackInfo struct {
 	IsDeployable         bool    //if this is true, then hitlag does not affect owner
 	HitlagOnHeadshotOnly bool    //if this is true, will only apply if HitWeakpoint is also true
 }
-
-type StrikeType int
-
-const (
-	StrikeTypeDefault StrikeType = iota
-	StrikeTypePierce
-	StrikeTypeBlunt
-	StrikeTypeSlash
-	StrikeTypeSpear
-)
 
 type Snapshot struct {
 	CharLvl    int

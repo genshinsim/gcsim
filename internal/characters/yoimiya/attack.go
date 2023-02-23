@@ -39,7 +39,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -84,7 +84,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     combat.ICDTagNormalAttack,
 			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       totalMV * 0.6,
