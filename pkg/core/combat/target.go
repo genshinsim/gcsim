@@ -6,12 +6,12 @@ import (
 )
 
 type Target interface {
-	Key() targets.TargetKey     // unique key for the target
-	SetKey(k targets.TargetKey) // update key
-	Type() TargettableType      // type of target
-	Shape() Shape               // shape of target
-	Pos() Point                 // center of target
-	SetPos(p Point)             // move target
+	Key() targets.TargetKey        // unique key for the target
+	SetKey(k targets.TargetKey)    // update key
+	Type() targets.TargettableType // type of target
+	Shape() Shape                  // shape of target
+	Pos() Point                    // center of target
+	SetPos(p Point)                // move target
 	IsAlive() bool
 	SetTag(key string, val int)
 	GetTag(key string) int
@@ -22,7 +22,7 @@ type Target interface {
 	Tick()                                         // called every tick
 	Kill()
 	// for collision check
-	CollidableWith(TargettableType) bool
+	CollidableWith(targets.TargettableType) bool
 	CollidedWith(t Target)
 	WillCollide(Shape) bool
 	// direction related
@@ -36,12 +36,3 @@ type TargetWithAura interface {
 	Target
 	AuraContains(e ...attributes.Element) bool
 }
-
-type TargettableType int
-
-const (
-	TargettableEnemy TargettableType = iota
-	TargettablePlayer
-	TargettableGadget
-	TargettableTypeCount
-)

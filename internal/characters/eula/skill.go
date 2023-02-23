@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -97,7 +98,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	}
 	//add 1 to grim heart if not capped by icd
 	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(grimheartICD) {
@@ -127,7 +128,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) pressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -268,7 +269,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {

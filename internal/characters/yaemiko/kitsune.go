@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type kitsune struct {
@@ -128,7 +129,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		if c.Base.Cons >= 4 {
 			done := false
 			c4cb = func(a combat.AttackCB) {
-				if a.Target.Type() != combat.TargettableEnemy {
+				if a.Target.Type() != targets.TargettableEnemy {
 					return
 				}
 				if done {

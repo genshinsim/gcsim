@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -31,9 +32,9 @@ func newBountifulCore(c *core.Core, p combat.Point, a *combat.AttackEvent) *Boun
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[combat.TargettablePlayer] = false
-		ap.SkipTargets[combat.TargettableEnemy] = true
-		ap.SkipTargets[combat.TargettableGadget] = true
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
 		c.QueueAttackWithSnap(ai, snap, ap, 1)
 	}
 	b.Gadget.OnExpiry = explode

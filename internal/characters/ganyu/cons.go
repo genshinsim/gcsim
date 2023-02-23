@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -26,7 +27,7 @@ func (c *char) c1() combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
 
 		e := a.Target.(*enemy.Enemy)
-		if e.Type() != combat.TargettableEnemy {
+		if e.Type() != targets.TargettableEnemy {
 			return
 		}
 		e.AddResistMod(combat.ResistMod{

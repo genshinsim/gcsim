@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/queue"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -71,7 +72,7 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	return e
 }
 
-func (e *Enemy) Type() combat.TargettableType { return combat.TargettableEnemy }
+func (e *Enemy) Type() targets.TargettableType { return targets.TargettableEnemy }
 
 func (e *Enemy) MaxHP() float64 { return e.maxhp }
 func (e *Enemy) HP() float64    { return e.hp }

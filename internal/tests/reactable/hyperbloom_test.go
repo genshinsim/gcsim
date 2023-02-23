@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -22,7 +23,7 @@ func TestHyperbloom(t *testing.T) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
-		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
+		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
 			count++
 		}
 		return false
@@ -90,7 +91,7 @@ func TestECHyperbloom(t *testing.T) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
-		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
+		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "hyperbloom" {
 			count++
 		}
 		return false

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -22,7 +23,7 @@ func TestBurgeon(t *testing.T) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
-		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "burgeon" {
+		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "burgeon" {
 			count++
 		}
 		return false
@@ -84,7 +85,7 @@ func TestECBurgeon(t *testing.T) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
-		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "burgeon" {
+		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "burgeon" {
 			count++
 		}
 		return false

@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
@@ -223,7 +224,7 @@ func TestSkipTargets(t *testing.T) {
 		ae := &combat.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
-		ae.Pattern.SkipTargets[combat.TargettableEnemy] = true
+		ae.Pattern.SkipTargets[targets.TargettableEnemy] = true
 
 		c.QueueAttackEvent(ae, 0)
 		advanceCoreFrame(c)
@@ -238,8 +239,8 @@ func TestSkipTargets(t *testing.T) {
 		ae := &combat.AttackEvent{
 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
 		}
-		ae.Pattern.SkipTargets[combat.TargettablePlayer] = false
-		ae.Pattern.SkipTargets[combat.TargettableEnemy] = true
+		ae.Pattern.SkipTargets[targets.TargettablePlayer] = false
+		ae.Pattern.SkipTargets[targets.TargettableEnemy] = true
 
 		c.QueueAttackEvent(ae, 0)
 		advanceCoreFrame(c)

@@ -4,7 +4,7 @@ import "github.com/genshinsim/gcsim/pkg/core/targets"
 
 type AttackPattern struct {
 	Shape       Shape
-	SkipTargets [TargettableTypeCount]bool
+	SkipTargets [targets.TargettableTypeCount]bool
 	IgnoredKeys []targets.TargetKey
 }
 
@@ -50,7 +50,7 @@ func NewCircleHit(src, center, offset positional, r float64) AttackPattern {
 	a := AttackPattern{
 		Shape: NewCircle(c, r, dir, 360),
 	}
-	a.SkipTargets[TargettablePlayer] = true
+	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
 }
 
@@ -59,7 +59,7 @@ func NewCircleHitFanAngle(src, center, offset positional, r, fanAngle float64) A
 	a := AttackPattern{
 		Shape: NewCircle(c, r, dir, fanAngle),
 	}
-	a.SkipTargets[TargettablePlayer] = true
+	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
 }
 
@@ -76,7 +76,7 @@ func NewBoxHit(src, center, offset positional, w, h float64) AttackPattern {
 	a := AttackPattern{
 		Shape: NewRectangle(c, w, h, dir),
 	}
-	a.SkipTargets[TargettablePlayer] = true
+	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
 }
 

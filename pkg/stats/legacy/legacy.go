@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -125,7 +126,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		dmg := args[2].(float64)
 
 		// No need to pull damage stats for non-enemies
-		if t.Type() != combat.TargettableEnemy {
+		if t.Type() != targets.TargettableEnemy {
 			return false
 		}
 

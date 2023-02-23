@@ -33,7 +33,7 @@ func testCore() *core.Core {
 	trg := &testTarget{}
 	trg.Target = target.New(c, combat.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
-	trg.typ = combat.TargettablePlayer
+	trg.typ = targets.TargettablePlayer
 	trg.Reactable.Init(trg, c)
 	c.Combat.SetPlayer(trg)
 
@@ -98,11 +98,11 @@ type testTarget struct {
 	*Reactable
 	*target.Target
 	src  int
-	typ  combat.TargettableType
+	typ  targets.TargettableType
 	last combat.AttackEvent
 }
 
-func (t *testTarget) Type() combat.TargettableType { return t.typ }
+func (t *testTarget) Type() targets.TargettableType { return t.typ }
 
 func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	t.Attack(atk, nil)

@@ -15,7 +15,7 @@ type (
 	testchar struct{}
 	testteam struct{}
 	testtarg struct {
-		typ         TargettableType
+		typ         targets.TargettableType
 		gadgetTyp   GadgetTyp
 		hdlr        *Handler
 		src         int //source of gadget
@@ -23,7 +23,7 @@ type (
 		key         targets.TargetKey
 		shp         Shape
 		alive       bool
-		collideWith [TargettableTypeCount]bool
+		collideWith [targets.TargettableTypeCount]bool
 		onCollision func(Target)
 		direction   Point
 	}
@@ -43,7 +43,7 @@ func (t *testtarg) Index() int                                      { return t.i
 func (t *testtarg) SetIndex(i int)                                  { t.idx = i }
 func (t *testtarg) Key() targets.TargetKey                          { return t.key }
 func (t *testtarg) SetKey(i targets.TargetKey)                      { t.key = i }
-func (t *testtarg) Type() TargettableType                           { return t.typ }
+func (t *testtarg) Type() targets.TargettableType                   { return t.typ }
 func (t *testtarg) Shape() Shape                                    { return t.shp }
 func (t *testtarg) Pos() Point                                      { return t.shp.Pos() }
 func (t *testtarg) SetPos(p Point)                                  {} //??
@@ -54,7 +54,7 @@ func (t *testtarg) RemoveTag(key string)                            {}
 func (t *testtarg) Attack(*AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (t *testtarg) Tick()                                           {}
 func (t *testtarg) Kill()                                           { t.hdlr.RemoveGadget(t.Key()) }
-func (t *testtarg) CollidableWith(x TargettableType) bool           { return t.collideWith[x] }
+func (t *testtarg) CollidableWith(x targets.TargettableType) bool   { return t.collideWith[x] }
 func (t *testtarg) GadgetTyp() GadgetTyp                            { return t.gadgetTyp }
 func (t *testtarg) Src() int                                        { return t.src }
 func (t *testtarg) CollidedWith(x Target) {

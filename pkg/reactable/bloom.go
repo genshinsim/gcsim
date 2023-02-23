@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -111,9 +112,9 @@ func NewDendroCore(c *core.Core, shp combat.Shape, a *combat.AttackEvent) *Dendr
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[combat.TargettablePlayer] = false
-		ap.SkipTargets[combat.TargettableEnemy] = true
-		ap.SkipTargets[combat.TargettableGadget] = true
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
 		c.QueueAttackWithSnap(ai, snap, ap, 1)
 	}
 	s.Gadget.OnExpiry = explode
@@ -154,9 +155,9 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			// also queue self damage
 			ai.Abil += " (self damage)"
 			ai.FlatDmg = 0.05 * ai.FlatDmg
-			ap.SkipTargets[combat.TargettablePlayer] = false
-			ap.SkipTargets[combat.TargettableEnemy] = true
-			ap.SkipTargets[combat.TargettableGadget] = true
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 		}
 
@@ -174,9 +175,9 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// queue self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[combat.TargettablePlayer] = false
-		ap.SkipTargets[combat.TargettableEnemy] = true
-		ap.SkipTargets[combat.TargettableGadget] = true
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
 		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		s.Gadget.OnKill = nil

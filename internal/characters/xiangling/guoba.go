@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -75,7 +76,7 @@ func (p *panda) breath() {
 	)
 }
 
-func (p *panda) Type() combat.TargettableType { return combat.TargettableGadget }
+func (p *panda) Type() targets.TargettableType { return targets.TargettableGadget }
 
 func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
 	p.Core.Events.Emit(event.OnGadgetHit, p, atk)

@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var chargeFrames []int
@@ -38,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	done := false
 	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
@@ -61,7 +62,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		energyCount := 0
 		c4CB = func(a combat.AttackCB) {
-			if a.Target.Type() != combat.TargettableEnemy {
+			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}
 			// check for healing

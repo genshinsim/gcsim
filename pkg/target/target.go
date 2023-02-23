@@ -15,7 +15,7 @@ type Target struct {
 	key             targets.TargetKey
 	Hitbox          combat.Circle
 	Tags            map[string]int
-	CollidableTypes [combat.TargettableTypeCount]bool
+	CollidableTypes [targets.TargettableTypeCount]bool
 	OnCollision     func(combat.Target)
 
 	Alive bool
@@ -41,8 +41,8 @@ func New(core *core.Core, p combat.Point, r float64) *Target {
 	return t
 }
 
-func (t *Target) Collidable() bool                             { return t.OnCollision != nil }
-func (t *Target) CollidableWith(x combat.TargettableType) bool { return t.CollidableTypes[x] }
+func (t *Target) Collidable() bool                              { return t.OnCollision != nil }
+func (t *Target) CollidableWith(x targets.TargettableType) bool { return t.CollidableTypes[x] }
 func (t *Target) CollidedWith(x combat.Target) {
 	if t.OnCollision != nil {
 		t.OnCollision(x)

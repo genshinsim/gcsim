@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -122,7 +123,7 @@ func (c *char) triggerBurst() {
 // When Eula's own Normal Attack, Elemental Skill, and Elemental Burst deal DMG to opponents,
 // they will charge the Lightfall Sword, which can gain an energy stack once every 0.1s.
 func (c *char) burstStackCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.Core.Player.Active() != c.Index {

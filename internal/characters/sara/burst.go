@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -47,7 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	var c1cb combat.AttackCBFunc
 	if c.Base.Cons >= 1 {
 		c1cb = func(a combat.AttackCB) {
-			if a.Target.Type() != combat.TargettableEnemy {
+			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}
 			c.c1()

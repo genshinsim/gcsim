@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -27,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstTaggedCount = 0
 	burstCB := func(a combat.AttackCB) {
 		//check if enemy
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		//max 4 tagged
@@ -55,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// should only hit enemies
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
-	ap.SkipTargets[combat.TargettableGadget] = true
+	ap.SkipTargets[targets.TargettableGadget] = true
 	c.Core.QueueAttack(auraCheck, ap, burstHitmark, burstHitmark, burstCB)
 
 	ai := combat.AttackInfo{
