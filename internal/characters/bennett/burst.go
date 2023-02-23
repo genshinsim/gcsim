@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Fantastic Voyage",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 50,

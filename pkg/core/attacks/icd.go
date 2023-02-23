@@ -51,3 +51,33 @@ const (
 	ICDTagWandererA4
 	ICDTagLength
 )
+
+// group dictate both the sequence and the reset timer
+type ICDGroup int //same ICD group shares the same timer
+
+const (
+	ICDGroupDefault ICDGroup = iota
+	ICDGroupAmber
+	ICDGroupVenti
+	ICDGroupFischl
+	ICDGroupDiluc
+	ICDGroupPoleExtraAttack
+	ICDGroupXiaoDash
+	ICDGroupYelanBreakthrough
+	ICDGroupYelanBurst
+	ICDGroupColleiBurst
+	ICDGroupTighnari
+	ICDGroupCynoBolt
+	ICDGroupDoriBurst
+	ICDGroupNilou
+	ICDGroupReactionA
+	ICDGroupReactionB
+	ICDGroupBurning
+	ICDGroupNahidaSkill
+	ICDGroupLayla
+	ICDGroupWandererC6
+	ICDGroupWandererA4
+	ICDGroupAlhaithamProjectionAttack
+	ICDGroupAlhaithamExtraAttack //CA
+	ICDGroupLength
+)

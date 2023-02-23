@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Abil:         "Messenger Proc",
 			AttackTag:    attacks.AttackTagNone,
 			ICDTag:       attacks.ICDTagNone,
-			ICDGroup:     combat.ICDGroupDefault,
+			ICDGroup:     attacks.ICDGroupDefault,
 			StrikeType:   attacks.StrikeTypePierce,
 			Element:      attributes.Physical,
 			Durability:   100,

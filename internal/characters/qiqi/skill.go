@@ -38,7 +38,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Abil:               "Herald of Frost: Initial Damage",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagElementalArt,
-			ICDGroup:           combat.ICDGroupDefault,
+			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Cryo,
 			Durability:         25,

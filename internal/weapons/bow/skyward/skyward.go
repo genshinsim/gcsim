@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Abil:       "Skyward Harp Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Physical,
 			Durability: 100,

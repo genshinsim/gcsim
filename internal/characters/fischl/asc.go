@@ -41,7 +41,7 @@ func (c *char) a4() {
 			Abil:       "Fischl A4",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   combat.ICDGroupFischl,
+			ICDGroup:   attacks.ICDGroupFischl,
 			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,

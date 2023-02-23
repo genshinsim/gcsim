@@ -25,7 +25,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Gyoei Narukami Kariyama Rite",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,

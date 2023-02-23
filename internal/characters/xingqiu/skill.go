@@ -33,7 +33,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:               "Guhua Sword: Fatal Rainscreen",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
+		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Hydro,
 		Durability:         25,

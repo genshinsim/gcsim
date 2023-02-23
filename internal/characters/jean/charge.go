@@ -27,7 +27,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Abil:       "Charge",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,

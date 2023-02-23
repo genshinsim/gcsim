@@ -22,7 +22,7 @@ func (c *char) a1() {
 		Abil:       "Icetide (Lightfall)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Physical,
 		Durability: 25,

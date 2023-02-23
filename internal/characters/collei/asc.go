@@ -44,7 +44,7 @@ func (c *char) a1AttackInfo() combat.AttackInfo {
 		Abil:       "Floral Sidewinder (A1)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagColleiSprout,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,

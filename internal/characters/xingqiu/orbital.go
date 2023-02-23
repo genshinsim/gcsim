@@ -57,7 +57,7 @@ func (c *char) orbitalTickTask(src int) func() {
 			Abil:       "Xingqiu Orbital",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,

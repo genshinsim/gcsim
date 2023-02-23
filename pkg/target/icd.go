@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (t *Target) WillApplyEle(tag attacks.ICDTag, grp combat.ICDGroup, char int) float64 {
+func (t *Target) WillApplyEle(tag attacks.ICDTag, grp attacks.ICDGroup, char int) float64 {
 	// no icd if no tag
 	if tag == attacks.ICDTagNone {
 		return 1
@@ -39,7 +39,7 @@ func (t *Target) WillApplyEle(tag attacks.ICDTag, grp combat.ICDGroup, char int)
 	return groupSeq
 }
 
-func (t *Target) GroupTagDamageMult(tag attacks.ICDTag, grp combat.ICDGroup, char int) float64 {
+func (t *Target) GroupTagDamageMult(tag attacks.ICDTag, grp attacks.ICDGroup, char int) float64 {
 	// check if we need to start timer
 	if !t.icdDamageTagOnTimer[char][tag] {
 		t.icdDamageTagOnTimer[char][tag] = true
@@ -58,7 +58,7 @@ func (t *Target) GroupTagDamageMult(tag attacks.ICDTag, grp combat.ICDGroup, cha
 	return groupSeq
 }
 
-func (t *Target) ResetDamageCounterAfterDelay(tag attacks.ICDTag, grp combat.ICDGroup, char int) {
+func (t *Target) ResetDamageCounterAfterDelay(tag attacks.ICDTag, grp attacks.ICDGroup, char int) {
 	t.Core.Tasks.Add(func() {
 		// set the counter back to 0
 		t.icdDamageTagCounter[char][tag] = 0
@@ -73,7 +73,7 @@ func (t *Target) ResetDamageCounterAfterDelay(tag attacks.ICDTag, grp combat.ICD
 		Write("reset", t.Core.F+combat.ICDGroupResetTimer[grp]-1)
 }
 
-func (t *Target) ResetTagCounterAfterDelay(tag attacks.ICDTag, grp combat.ICDGroup, char int) {
+func (t *Target) ResetTagCounterAfterDelay(tag attacks.ICDTag, grp attacks.ICDGroup, char int) {
 	t.Core.Tasks.Add(func() {
 		// set the counter back to 0
 		t.icdTagCounter[char][tag] = 0

@@ -36,7 +36,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupAmber,
+		ICDGroup:   attacks.ICDGroupAmber,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,

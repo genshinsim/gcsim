@@ -85,7 +85,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 		Abil:       "Lupus Fulguris",
 		AttackTag:  attacks.AttackTagNone, // TODO: it has another tag?
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,

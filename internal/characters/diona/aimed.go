@@ -36,7 +36,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Abil:                 "Aim (Charged)",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagExtraAttack,
-		ICDGroup:             combat.ICDGroupDefault,
+		ICDGroup:             attacks.ICDGroupDefault,
 		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Cryo,
 		Durability:           25,

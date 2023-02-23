@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				Abil:       "Dragonspine Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     attacks.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
+				ICDGroup:   attacks.ICDGroupDefault,
 				StrikeType: attacks.StrikeTypeDefault,
 				Element:    attributes.Physical,
 				Durability: 100,

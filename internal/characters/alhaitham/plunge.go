@@ -48,7 +48,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		Abil:       "Low Plunge Attack",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Dendro,
 		Durability: 25,

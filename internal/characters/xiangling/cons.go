@@ -48,7 +48,7 @@ func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 			Abil:       "Oil Meets Fire (C2)",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Pyro,
 			Durability: 25,

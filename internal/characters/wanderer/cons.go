@@ -80,7 +80,7 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 			Abil:       "Shugen: The Curtains’ Melancholic Sway",
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagWandererC6,
-			ICDGroup:   combat.ICDGroupWandererC6,
+			ICDGroup:   attacks.ICDGroupWandererC6,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,

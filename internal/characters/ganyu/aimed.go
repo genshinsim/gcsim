@@ -36,7 +36,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		Abil:                 "Frost Flake Arrow",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
+		ICDGroup:             attacks.ICDGroupDefault,
 		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Cryo,
 		Durability:           25,

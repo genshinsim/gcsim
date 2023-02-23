@@ -134,7 +134,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 		Abil:       "Icy Paw",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Cryo,
 		Durability: 25,

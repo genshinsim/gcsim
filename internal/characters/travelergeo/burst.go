@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Wake of Earth",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagTravelerWakeOfEarth,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 50,

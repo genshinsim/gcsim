@@ -30,7 +30,7 @@ type AttackInfo struct {
 	Abil             string    //name of ability triggering the damage
 	AttackTag        attacks.AttackTag
 	ICDTag           attacks.ICDTag
-	ICDGroup         ICDGroup
+	ICDGroup         attacks.ICDGroup
 	Element          attributes.Element //element of ability
 	Durability       Durability         //durability of aura, 0 if nothing applied
 	NoImpulse        bool

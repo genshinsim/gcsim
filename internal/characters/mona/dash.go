@@ -33,7 +33,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagDash,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,

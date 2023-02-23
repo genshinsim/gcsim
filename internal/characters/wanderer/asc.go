@@ -74,7 +74,7 @@ func (c *char) a4() bool {
 		Abil:       "Gales of Reverie",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagWandererA4,
-		ICDGroup:   combat.ICDGroupWandererA4,
+		ICDGroup:   attacks.ICDGroupWandererA4,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,

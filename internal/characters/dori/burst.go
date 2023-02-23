@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDoriBurst,
+		ICDGroup:   attacks.ICDGroupDoriBurst,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				External:   true,
 			})
 			idx := c.Core.Player.ActiveChar().Index
-			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
+			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
 				dur := combat.Durability(25)
 				if p.AuraCount() == 0 {
 					dur = 20

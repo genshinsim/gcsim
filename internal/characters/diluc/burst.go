@@ -95,7 +95,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Abil:               "Dawn (Strike)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagElementalBurst,
-			ICDGroup:           combat.ICDGroupDiluc,
+			ICDGroup:           attacks.ICDGroupDiluc,
 			StrikeType:         attacks.StrikeTypeBlunt,
 			Element:            attributes.Pyro,
 			Durability:         50,

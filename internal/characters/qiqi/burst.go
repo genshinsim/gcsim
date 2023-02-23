@@ -31,7 +31,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Fortune-Preserving Talisman",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 50,
@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Fortune-Preserving Talisman (Talisman application)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 	}

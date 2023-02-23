@@ -22,7 +22,7 @@ func (c *char) c2(travel int) {
 		Abil:       "Special Franchise",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagDoriC2,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,

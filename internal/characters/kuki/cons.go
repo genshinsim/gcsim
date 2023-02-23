@@ -45,7 +45,7 @@ func (c *char) c4() {
 			Abil:       "Thundergrass Mark",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,

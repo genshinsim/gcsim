@@ -36,7 +36,7 @@ func (c *char) a1() {
 				Abil:       "Mirror Reflection of Doom (A1 Explode)",
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
+				ICDGroup:   attacks.ICDGroupDefault,
 				StrikeType: attacks.StrikeTypeDefault,
 				Element:    attributes.Hydro,
 				Durability: 25,

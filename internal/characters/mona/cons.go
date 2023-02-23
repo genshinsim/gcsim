@@ -92,7 +92,7 @@ func (c *char) c2(a combat.AttackCB) {
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,

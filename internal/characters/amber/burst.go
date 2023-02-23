@@ -28,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupAmber,
+		ICDGroup:   attacks.ICDGroupAmber,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Pyro,
 		Durability: 25,

@@ -40,7 +40,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:               "Tidecaller (E)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
+		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Electro,
 		Durability:         50,

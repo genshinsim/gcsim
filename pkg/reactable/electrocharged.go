@@ -52,7 +52,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 		Abil:             string(combat.ElectroCharged),
 		AttackTag:        attacks.AttackTagECDamage,
 		ICDTag:           attacks.ICDTagECDamage,
-		ICDGroup:         combat.ICDGroupReactionB,
+		ICDGroup:         attacks.ICDGroupReactionB,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Electro,
 		IgnoreDefPercent: 1,

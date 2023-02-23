@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Abil:       "Inuzaka All-Round Defense",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeBlunt,
 			Element:    attributes.Geo,
 			Durability: 25,

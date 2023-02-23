@@ -43,7 +43,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 		Abil:       "Hanega: Song of the Wind",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,

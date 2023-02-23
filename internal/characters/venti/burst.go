@@ -31,7 +31,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Wind's Grand Ode",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurstAnemo,
-		ICDGroup:   combat.ICDGroupVenti,
+		ICDGroup:   attacks.ICDGroupVenti,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,

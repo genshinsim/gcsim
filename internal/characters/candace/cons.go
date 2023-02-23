@@ -61,7 +61,7 @@ func (c *char) c6() {
 			Abil:               "The Overflow (C6)",
 			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             attacks.ICDTagNone,
-			ICDGroup:           combat.ICDGroupDefault,
+			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Hydro,
 			Durability:         25,

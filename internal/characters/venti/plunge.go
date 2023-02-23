@@ -39,7 +39,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		Abil:           "High Plunge",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       combat.ICDGroupDefault,
+		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypePierce,
 		Element:        attributes.Physical,
 		Durability:     25,

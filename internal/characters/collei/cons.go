@@ -67,7 +67,7 @@ func (c *char) c6(t combat.Target) {
 		Abil:       "Forest of Falling Arrows (C6)",
 		AttackTag:  attacks.AttackTagNone, // in game has this as AttackTagColleiC6
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,

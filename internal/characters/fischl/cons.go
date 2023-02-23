@@ -23,7 +23,7 @@ func (c *char) c6() {
 			Abil:       "Fischl C6",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupFischl,
+			ICDGroup:   attacks.ICDGroupFischl,
 			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,

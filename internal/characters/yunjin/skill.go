@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:               "Opening Flourish Press (E)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
+		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Geo,
 		Durability:         50,

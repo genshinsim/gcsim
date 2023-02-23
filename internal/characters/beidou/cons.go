@@ -53,7 +53,7 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 			Abil:       "Beidou C4",
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,

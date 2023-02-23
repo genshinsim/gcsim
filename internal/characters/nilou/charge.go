@@ -29,7 +29,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			Abil:       fmt.Sprintf("Charge %v", i),
 			AttackTag:  attacks.AttackTagExtra,
 			ICDTag:     attacks.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Physical,
 			Durability: 25,

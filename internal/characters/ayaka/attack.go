@@ -44,10 +44,10 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i, mult := range attack[c.NormalCounter] {
-		icdGroup := combat.ICDGroupDefault
+		icdGroup := attacks.ICDGroupDefault
 		centerTarget := c.Core.Combat.Player()
 		if c.NormalCounter == 4 {
-			icdGroup = combat.ICDGroupPoleExtraAttack    // N5 has a different ICDGroup
+			icdGroup = attacks.ICDGroupPoleExtraAttack   // N5 has a different ICDGroup
 			centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
 		}
 		ai := combat.AttackInfo{

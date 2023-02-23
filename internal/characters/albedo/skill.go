@@ -33,7 +33,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:       "Abiogenesis: Solar Isotoma",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,

@@ -120,7 +120,7 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCB
 			Abil:       "Shooting Star",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupLayla,
+			ICDGroup:   attacks.ICDGroupLayla,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,

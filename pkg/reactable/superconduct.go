@@ -75,7 +75,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 		Abil:             string(combat.Superconduct),
 		AttackTag:        attacks.AttackTagSuperconductDamage,
 		ICDTag:           attacks.ICDTagSuperconductDamage,
-		ICDGroup:         combat.ICDGroupReactionA,
+		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Cryo,
 		IgnoreDefPercent: 1,

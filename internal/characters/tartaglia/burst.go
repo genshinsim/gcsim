@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Ranged Stance: Flash of Havoc",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 50,

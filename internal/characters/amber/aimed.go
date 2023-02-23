@@ -48,7 +48,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ActorIndex:   c.Index,
 		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       attacks.ICDTagExtraAttack,
-		ICDGroup:     combat.ICDGroupAmber,
+		ICDGroup:     attacks.ICDGroupAmber,
 		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Pyro,
 		Durability:   50,

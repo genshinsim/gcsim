@@ -19,7 +19,7 @@ func (c *char) a1() {
 		Abil:       "Slitting Wind (A1)",
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   combat.ICDGroupPoleExtraAttack,
+		ICDGroup:   attacks.ICDGroupPoleExtraAttack,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Anemo,
 		Durability: 25,

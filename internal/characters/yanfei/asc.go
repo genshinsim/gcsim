@@ -55,7 +55,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 			Abil:               "Blazing Eye (A4)",
 			AttackTag:          attacks.AttackTagExtra,
 			ICDTag:             attacks.ICDTagNone,
-			ICDGroup:           combat.ICDGroupDefault,
+			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
