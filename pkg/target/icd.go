@@ -2,7 +2,6 @@ package target
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -50,9 +49,9 @@ func (t *Target) GroupTagDamageMult(tag attacks.ICDTag, grp attacks.ICDGroup, ch
 	t.icdDamageTagCounter[char][tag]++
 
 	// if counter > length, then use 0 for group seq
-	groupSeq := combat.ICDGroupDamageSequence[grp][len(combat.ICDGroupDamageSequence[grp])-1]
-	if val < len(combat.ICDGroupDamageSequence[grp]) {
-		groupSeq = combat.ICDGroupDamageSequence[grp][val]
+	groupSeq := attacks.ICDGroupDamageSequence[grp][len(attacks.ICDGroupDamageSequence[grp])-1]
+	if val < len(attacks.ICDGroupDamageSequence[grp]) {
+		groupSeq = attacks.ICDGroupDamageSequence[grp][val]
 	}
 
 	return groupSeq
