@@ -1,12 +1,14 @@
 package combat
 
+import "github.com/genshinsim/gcsim/pkg/core/targets"
+
 type AttackPattern struct {
 	Shape       Shape
 	SkipTargets [TargettableTypeCount]bool
-	IgnoredKeys []TargetKey
+	IgnoredKeys []targets.TargetKey
 }
 
-func NewSingleTargetHit(ind TargetKey) AttackPattern {
+func NewSingleTargetHit(ind targets.TargetKey) AttackPattern {
 	return AttackPattern{
 		Shape: &SingleTarget{Target: ind},
 	}

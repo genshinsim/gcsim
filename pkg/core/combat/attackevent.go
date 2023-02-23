@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type AttackEvent struct {
@@ -26,9 +27,9 @@ type AttackCB struct {
 type AttackCBFunc func(AttackCB)
 
 type AttackInfo struct {
-	ActorIndex       int       //character this attack belongs to
-	DamageSrc        TargetKey //source of this attack; should be a unique key identifying the target
-	Abil             string    //name of ability triggering the damage
+	ActorIndex       int               //character this attack belongs to
+	DamageSrc        targets.TargetKey //source of this attack; should be a unique key identifying the target
+	Abil             string            //name of ability triggering the damage
 	AttackTag        attacks.AttackTag
 	ICDTag           attacks.ICDTag
 	ICDGroup         attacks.ICDGroup

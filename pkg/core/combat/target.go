@@ -2,19 +2,16 @@ package combat
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-type TargetKey int
-
-const InvalidTargetKey TargetKey = -1
-
 type Target interface {
-	Key() TargetKey        // unique key for the target
-	SetKey(k TargetKey)    // update key
-	Type() TargettableType // type of target
-	Shape() Shape          // shape of target
-	Pos() Point            // center of target
-	SetPos(p Point)        // move target
+	Key() targets.TargetKey     // unique key for the target
+	SetKey(k targets.TargetKey) // update key
+	Type() TargettableType      // type of target
+	Shape() Shape               // shape of target
+	Pos() Point                 // center of target
+	SetPos(p Point)             // move target
 	IsAlive() bool
 	SetTag(key string, val int)
 	GetTag(key string) int

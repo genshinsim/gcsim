@@ -10,6 +10,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
@@ -29,7 +30,7 @@ type Handler struct {
 	player      Target
 	TotalDamage float64
 	gccount     int
-	keycount    TargetKey
+	keycount    targets.TargetKey
 }
 
 type Opt struct {
@@ -42,7 +43,7 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
-	DefaultTarget TargetKey //index for default target
+	DefaultTarget targets.TargetKey //index for default target
 }
 
 func New(opt Opt) *Handler {
@@ -56,7 +57,7 @@ func New(opt Opt) *Handler {
 	return h
 }
 
-func (h *Handler) nextkey() TargetKey {
+func (h *Handler) nextkey() targets.TargetKey {
 	h.keycount++
 	return h.keycount - 1
 }

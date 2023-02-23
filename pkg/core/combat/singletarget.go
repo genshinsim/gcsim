@@ -1,9 +1,13 @@
 ﻿package combat
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core/targets"
+)
 
 type SingleTarget struct {
-	Target TargetKey
+	Target targets.TargetKey
 }
 
 func (s *SingleTarget) PointInShape(p Point) bool            { return true }

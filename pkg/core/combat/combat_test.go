@@ -8,6 +8,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type (
@@ -19,7 +20,7 @@ type (
 		hdlr        *Handler
 		src         int //source of gadget
 		idx         int
-		key         TargetKey
+		key         targets.TargetKey
 		shp         Shape
 		alive       bool
 		collideWith [TargettableTypeCount]bool
@@ -40,8 +41,8 @@ func (t *testteam) ApplyHitlag(char int, factor, dur float64) {}
 // target
 func (t *testtarg) Index() int                                      { return t.idx }
 func (t *testtarg) SetIndex(i int)                                  { t.idx = i }
-func (t *testtarg) Key() TargetKey                                  { return t.key }
-func (t *testtarg) SetKey(i TargetKey)                              { t.key = i }
+func (t *testtarg) Key() targets.TargetKey                          { return t.key }
+func (t *testtarg) SetKey(i targets.TargetKey)                      { t.key = i }
 func (t *testtarg) Type() TargettableType                           { return t.typ }
 func (t *testtarg) Shape() Shape                                    { return t.shp }
 func (t *testtarg) Pos() Point                                      { return t.shp.Pos() }

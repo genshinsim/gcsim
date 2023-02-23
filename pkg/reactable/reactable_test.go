@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
@@ -82,7 +83,7 @@ func makeAOEAttack(c *core.Core, ele attributes.Element, dur reactions.Durabilit
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur reactions.Durability, trg combat.TargetKey) *combat.AttackEvent {
+func makeSTAttack(ele attributes.Element, dur reactions.Durability, trg targets.TargetKey) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,

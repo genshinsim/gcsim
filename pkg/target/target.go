@@ -5,13 +5,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const MaxTeamSize = 4
 
 type Target struct {
 	Core            *core.Core
-	key             combat.TargetKey
+	key             targets.TargetKey
 	Hitbox          combat.Circle
 	Tags            map[string]int
 	CollidableTypes [combat.TargettableTypeCount]bool
@@ -48,13 +49,13 @@ func (t *Target) CollidedWith(x combat.Target) {
 	}
 }
 
-func (t *Target) Key() combat.TargetKey     { return t.key }
-func (t *Target) SetKey(x combat.TargetKey) { t.key = x }
-func (t *Target) Shape() combat.Shape       { return &t.Hitbox }
-func (t *Target) SetPos(p combat.Point)     { t.Hitbox.SetPos(p) }
-func (t *Target) Pos() combat.Point         { return t.Hitbox.Pos() }
-func (t *Target) Kill()                     { t.Alive = false }
-func (t *Target) IsAlive() bool             { return t.Alive }
+func (t *Target) Key() targets.TargetKey     { return t.key }
+func (t *Target) SetKey(x targets.TargetKey) { t.key = x }
+func (t *Target) Shape() combat.Shape        { return &t.Hitbox }
+func (t *Target) SetPos(p combat.Point)      { t.Hitbox.SetPos(p) }
+func (t *Target) Pos() combat.Point          { return t.Hitbox.Pos() }
+func (t *Target) Kill()                      { t.Alive = false }
+func (t *Target) IsAlive() bool              { return t.Alive }
 func (t *Target) SetTag(key string, val int) {
 	t.Tags[key] = val
 }
