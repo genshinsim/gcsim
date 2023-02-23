@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Musou Shinsetsu",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,

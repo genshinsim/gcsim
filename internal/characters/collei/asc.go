@@ -43,7 +43,7 @@ func (c *char) a1AttackInfo() combat.AttackInfo {
 		ActorIndex: c.Index,
 		Abil:       "Floral Sidewinder (A1)",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagColleiSprout,
+		ICDTag:     attacks.ICDTagColleiSprout,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,

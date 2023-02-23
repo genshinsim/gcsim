@@ -23,7 +23,7 @@ func (c *char) makeBunny() {
 		Abil:       "Baron Bunny",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,

@@ -35,7 +35,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupAmber,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,

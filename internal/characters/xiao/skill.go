@@ -32,7 +32,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Lemniscatic Wind Cycling",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupXiaoDash,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Anemo,

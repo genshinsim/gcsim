@@ -60,7 +60,7 @@ func (c *char) c6() {
 			ActorIndex:         c.Index,
 			Abil:               "The Overflow (C6)",
 			AttackTag:          attacks.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagNone,
+			ICDTag:             attacks.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Hydro,

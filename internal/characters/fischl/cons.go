@@ -22,7 +22,7 @@ func (c *char) c6() {
 			ActorIndex: c.Index,
 			Abil:       "Fischl C6",
 			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupFischl,
 			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,

@@ -133,7 +133,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 		ActorIndex: c.Index,
 		Abil:       "Icy Paw",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Cryo,

@@ -59,7 +59,7 @@ func (c *char) skillHold(createStele bool) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,

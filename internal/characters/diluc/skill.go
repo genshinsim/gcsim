@@ -104,7 +104,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Searing Onslaught %v", c.eCounter),
 		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
+		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Pyro,

@@ -27,7 +27,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Spirit Blade: Cloud-Parting Star",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Cryo,

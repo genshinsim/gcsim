@@ -31,7 +31,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex:   c.Index,
 		Abil:         "Skyward Sonnett",
 		AttackTag:    attacks.AttackTagElementalArt,
-		ICDTag:       combat.ICDTagNone,
+		ICDTag:       attacks.ICDTagNone,
 		ICDGroup:     combat.ICDGroupDefault,
 		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Anemo,

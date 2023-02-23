@@ -36,7 +36,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Tengu Juurai: Titanbreaker",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
@@ -63,7 +63,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// stormcluster
 	ai.Abil = "Tengu Juurai: Stormcluster"
-	ai.ICDTag = combat.ICDTagElementalBurst
+	ai.ICDTag = attacks.ICDTagElementalBurst
 	ai.Mult = burstCluster[c.TalentLvlBurst()]
 
 	stormClusterRadius := 3.0

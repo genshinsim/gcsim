@@ -35,7 +35,7 @@ func (c *char) a1() {
 				ActorIndex: c.Index,
 				Abil:       "Mirror Reflection of Doom (A1 Explode)",
 				AttackTag:  attacks.AttackTagElementalArt,
-				ICDTag:     combat.ICDTagNone,
+				ICDTag:     attacks.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: attacks.StrikeTypeDefault,
 				Element:    attributes.Hydro,

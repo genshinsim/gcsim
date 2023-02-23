@@ -29,7 +29,7 @@ type AttackInfo struct {
 	DamageSrc        TargetKey //source of this attack; should be a unique key identifying the target
 	Abil             string    //name of ability triggering the damage
 	AttackTag        attacks.AttackTag
-	ICDTag           ICDTag
+	ICDTag           attacks.ICDTag
 	ICDGroup         ICDGroup
 	Element          attributes.Element //element of ability
 	Durability       Durability         //durability of aura, 0 if nothing applied

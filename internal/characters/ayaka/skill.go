@@ -28,7 +28,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Abil:       "Hyouka",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,

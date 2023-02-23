@@ -37,7 +37,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex:         c.Index,
 		Abil:               "Floral Brush",
 		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
+		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Dendro,

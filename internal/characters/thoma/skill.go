@@ -29,7 +29,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex:         c.Index,
 		Abil:               "Blazing Blessing",
 		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
+		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Pyro,

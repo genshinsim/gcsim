@@ -21,7 +21,7 @@ func (c *char) a1() {
 		ActorIndex: c.Index,
 		Abil:       "Icetide (Lightfall)",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Physical,

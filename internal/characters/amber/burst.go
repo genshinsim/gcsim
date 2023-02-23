@@ -27,7 +27,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Fiery Rain",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupAmber,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Pyro,

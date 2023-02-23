@@ -49,7 +49,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Heron's Sanctum (E)",
 		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
+		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Hydro,

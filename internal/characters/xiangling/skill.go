@@ -28,7 +28,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Guoba",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,

@@ -29,7 +29,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ActorIndex:         c.Index,
 		Abil:               "Charge",
 		AttackTag:          attacks.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
+		ICDTag:             attacks.ICDTagExtraAttack,
 		ICDGroup:           combat.ICDGroupPoleExtraAttack,
 		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Physical,

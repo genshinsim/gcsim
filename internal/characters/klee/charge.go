@@ -36,7 +36,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Charge",
 		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,

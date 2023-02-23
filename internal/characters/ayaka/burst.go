@@ -25,7 +25,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Soumetsu",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,

@@ -21,7 +21,7 @@ func (c *char) c2(travel int) {
 		ActorIndex: c.Index,
 		Abil:       "Special Franchise",
 		AttackTag:  attacks.AttackTagNone,
-		ICDTag:     combat.ICDTagDoriC2,
+		ICDTag:     attacks.ICDTagDoriC2,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,

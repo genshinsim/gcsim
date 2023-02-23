@@ -23,7 +23,7 @@ func (c *char) a4() {
 		ActorIndex: c.Index,
 		Abil:       "Frenzied Rockslide (A4)",
 		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,

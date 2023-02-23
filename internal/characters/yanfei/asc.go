@@ -54,7 +54,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 			ActorIndex:         c.Index,
 			Abil:               "Blazing Eye (A4)",
 			AttackTag:          attacks.AttackTagExtra,
-			ICDTag:             combat.ICDTagNone,
+			ICDTag:             attacks.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Pyro,

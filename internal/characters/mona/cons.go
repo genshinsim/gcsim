@@ -91,7 +91,7 @@ func (c *char) c2(a combat.AttackCB) {
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
 		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,

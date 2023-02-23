@@ -37,7 +37,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
@@ -45,7 +45,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	if c.StatusIsActive("yoimiyaskill") {
-		ai.ICDTag = combat.ICDTagNormalAttack
+		ai.ICDTag = attacks.ICDTagNormalAttack
 	}
 
 	var particleCB combat.AttackCBFunc
@@ -82,7 +82,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,
-			ICDTag:     combat.ICDTagNormalAttack,
+			ICDTag:     attacks.ICDTagNormalAttack,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Pyro,

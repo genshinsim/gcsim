@@ -52,7 +52,7 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",
 			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     combat.ICDTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,

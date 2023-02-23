@@ -26,7 +26,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Particular Field: Fetters of Phenomena",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,

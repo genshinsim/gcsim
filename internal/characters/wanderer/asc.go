@@ -73,7 +73,7 @@ func (c *char) a4() bool {
 		ActorIndex: c.Index,
 		Abil:       "Gales of Reverie",
 		AttackTag:  attacks.AttackTagNone,
-		ICDTag:     combat.ICDTagWandererA4,
+		ICDTag:     attacks.ICDTagWandererA4,
 		ICDGroup:   combat.ICDGroupWandererA4,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,

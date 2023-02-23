@@ -14,7 +14,7 @@ func calcSwirlAtkDurability(consumed, src combat.Durability) combat.Durability {
 	return 1.25*(src-1) + 25
 }
 
-func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd combat.ICDTag, dur combat.Durability, charIndex int) {
+func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur combat.Durability, charIndex int) {
 	//swirl triggers two attacks; one self with no gauge
 	//and one aoe with gauge
 	ai := combat.AttackInfo{
@@ -72,7 +72,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 		combat.SwirlElectro,
 		attributes.Electro,
 		attacks.AttackTagSwirlElectro,
-		combat.ICDTagSwirlElectro,
+		attacks.ICDTagSwirlElectro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -104,7 +104,7 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 		combat.SwirlHydro,
 		attributes.Hydro,
 		attacks.AttackTagSwirlHydro,
-		combat.ICDTagSwirlHydro,
+		attacks.ICDTagSwirlHydro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -128,7 +128,7 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 		combat.SwirlCryo,
 		attributes.Cryo,
 		attacks.AttackTagSwirlCryo,
-		combat.ICDTagSwirlCryo,
+		attacks.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -153,7 +153,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 		combat.SwirlPyro,
 		attributes.Pyro,
 		attacks.AttackTagSwirlPyro,
-		combat.ICDTagSwirlPyro,
+		attacks.ICDTagSwirlPyro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -177,7 +177,7 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 		combat.SwirlCryo,
 		attributes.Cryo,
 		attacks.AttackTagSwirlCryo,
-		combat.ICDTagSwirlCryo,
+		attacks.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
 	)

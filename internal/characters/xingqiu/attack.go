@@ -43,7 +43,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
+		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,

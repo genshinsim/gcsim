@@ -2,6 +2,7 @@ package target
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
@@ -19,10 +20,10 @@ type Target struct {
 	Alive bool
 
 	//icd related
-	icdTagOnTimer       [MaxTeamSize][combat.ICDTagLength]bool
-	icdTagCounter       [MaxTeamSize][combat.ICDTagLength]int
-	icdDamageTagOnTimer [MaxTeamSize][combat.ICDTagLength]bool
-	icdDamageTagCounter [MaxTeamSize][combat.ICDTagLength]int
+	icdTagOnTimer       [MaxTeamSize][attacks.ICDTagLength]bool
+	icdTagCounter       [MaxTeamSize][attacks.ICDTagLength]int
+	icdDamageTagOnTimer [MaxTeamSize][attacks.ICDTagLength]bool
+	icdDamageTagCounter [MaxTeamSize][attacks.ICDTagLength]int
 
 	direction combat.Point
 }

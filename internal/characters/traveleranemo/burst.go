@@ -38,14 +38,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Status.Add("amcburst", duration)
 
 	c.qAbsorb = attributes.NoElement
-	c.qICDTag = combat.ICDTagNone
+	c.qICDTag = attacks.ICDTagNone
 	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1.5}, 2.5, 2.5)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalArtAnemo,
+		ICDTag:     attacks.ICDTagElementalArtAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
@@ -59,7 +59,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge (Absorbed)",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.NoElement,
@@ -113,13 +113,13 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.qAbsorb {
 		case attributes.Cryo:
-			c.qICDTag = combat.ICDTagElementalBurstCryo
+			c.qICDTag = attacks.ICDTagElementalBurstCryo
 		case attributes.Pyro:
-			c.qICDTag = combat.ICDTagElementalBurstPyro
+			c.qICDTag = attacks.ICDTagElementalBurstPyro
 		case attributes.Electro:
-			c.qICDTag = combat.ICDTagElementalBurstElectro
+			c.qICDTag = attacks.ICDTagElementalBurstElectro
 		case attributes.Hydro:
-			c.qICDTag = combat.ICDTagElementalBurstHydro
+			c.qICDTag = attacks.ICDTagElementalBurstHydro
 		case attributes.NoElement:
 			//otherwise queue up
 			c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)

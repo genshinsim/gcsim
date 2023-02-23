@@ -74,7 +74,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 		ActorIndex: c.Index,
 		Abil:       "Lea Lotus Lamp",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
@@ -235,7 +235,7 @@ func (s *LeaLotus) TryBurning(a *combat.AttackEvent) {
 	}
 	s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion"
 	s.burstAtk.Info.Durability = 50
-	s.burstAtk.Info.ICDTag = combat.ICDTagNone
+	s.burstAtk.Info.ICDTag = attacks.ICDTagNone
 	s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]
 	s.Core.Tasks.Add(func() {
 		s.Core.QueueAttackWithSnap(

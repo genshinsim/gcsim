@@ -18,7 +18,7 @@ func (c *char) a1() {
 		ActorIndex: c.Index,
 		Abil:       "Slitting Wind (A1)",
 		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupPoleExtraAttack,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Anemo,

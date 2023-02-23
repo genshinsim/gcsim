@@ -40,7 +40,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Let the Show Begin♪ (Droplet)",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,

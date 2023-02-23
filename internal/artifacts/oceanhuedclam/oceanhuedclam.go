@@ -113,7 +113,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						ActorIndex:       char.Index,
 						Abil:             "Sea-Dyed Foam",
 						AttackTag:        attacks.AttackTagNoneStat,
-						ICDTag:           combat.ICDTagNone,
+						ICDTag:           attacks.ICDTagNone,
 						ICDGroup:         combat.ICDGroupDefault,
 						StrikeType:       attacks.StrikeTypeDefault,
 						Element:          attributes.Physical,

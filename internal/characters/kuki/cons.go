@@ -44,7 +44,7 @@ func (c *char) c4() {
 			ActorIndex: c.Index,
 			Abil:       "Thundergrass Mark",
 			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
+			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,

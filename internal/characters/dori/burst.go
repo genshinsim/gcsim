@@ -31,7 +31,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDoriBurst,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,

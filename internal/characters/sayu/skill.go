@@ -98,7 +98,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Fuufuu Windwheel (DoT Press)",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArtAnemo,
+		ICDTag:     attacks.ICDTagElementalArtAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
@@ -118,7 +118,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Press)",
 		AttackTag:        attacks.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagNone,
+		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
@@ -151,7 +151,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	c.c2Bonus = .0
 
 	c.eAbsorb = attributes.NoElement
-	c.eAbsorbTag = combat.ICDTagNone
+	c.eAbsorbTag = attacks.ICDTagNone
 	c.absorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2)
 
 	// 1 DoT Tick
@@ -175,7 +175,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArtHold,
-		ICDTag:           combat.ICDTagNone,
+		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
@@ -209,7 +209,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	c.c2Bonus = .0
 
 	c.eAbsorb = attributes.NoElement
-	c.eAbsorbTag = combat.ICDTagNone
+	c.eAbsorbTag = attacks.ICDTagNone
 	c.absorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2)
 
 	// ticks
@@ -235,7 +235,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
 		AttackTag:        attacks.AttackTagElementalArtHold,
-		ICDTag:           combat.ICDTagNone,
+		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
@@ -270,7 +270,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Windwheel (DoT Hold)",
 		AttackTag:        attacks.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagElementalArtAnemo,
+		ICDTag:           attacks.ICDTagElementalArtAnemo,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
@@ -301,13 +301,13 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		if c.eAbsorb != attributes.NoElement {
 			switch c.eAbsorb {
 			case attributes.Pyro:
-				c.eAbsorbTag = combat.ICDTagElementalArtPyro
+				c.eAbsorbTag = attacks.ICDTagElementalArtPyro
 			case attributes.Hydro:
-				c.eAbsorbTag = combat.ICDTagElementalArtHydro
+				c.eAbsorbTag = attacks.ICDTagElementalArtHydro
 			case attributes.Electro:
-				c.eAbsorbTag = combat.ICDTagElementalArtElectro
+				c.eAbsorbTag = attacks.ICDTagElementalArtElectro
 			case attributes.Cryo:
-				c.eAbsorbTag = combat.ICDTagElementalArtCryo
+				c.eAbsorbTag = attacks.ICDTagElementalArtCryo
 			}
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
 				"sayu absorbed ", c.eAbsorb.String(),
@@ -355,7 +355,7 @@ func (c *char) rollAbsorb() {
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Whirlwind Elemental (Elemental Kick Hold)",
 				AttackTag:  attacks.AttackTagElementalArt,
-				ICDTag:     combat.ICDTagNone,
+				ICDTag:     attacks.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: attacks.StrikeTypeDefault,
 				Element:    c.eAbsorb,

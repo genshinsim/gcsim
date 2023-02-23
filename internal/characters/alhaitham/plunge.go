@@ -47,7 +47,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge Attack",
 		AttackTag:  attacks.AttackTagPlunge,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Dendro,

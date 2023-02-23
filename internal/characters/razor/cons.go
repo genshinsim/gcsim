@@ -84,7 +84,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 		ActorIndex: c.Index,
 		Abil:       "Lupus Fulguris",
 		AttackTag:  attacks.AttackTagNone, // TODO: it has another tag?
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,

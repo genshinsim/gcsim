@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Secret Rite: Chasmic Soulfarer",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,
@@ -80,7 +80,7 @@ func (c *char) skillB() action.ActionInfo {
 		ActorIndex:       c.Index,
 		Abil:             skillBName,
 		AttackTag:        attacks.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagNone,
+		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,
 		Element:          attributes.Electro,
@@ -111,7 +111,7 @@ func (c *char) skillB() action.ActionInfo {
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
 		ai.FlatDmg = c.a4Bolt()
-		ai.ICDTag = combat.ICDTagCynoBolt
+		ai.ICDTag = attacks.ICDTagCynoBolt
 		ai.ICDGroup = combat.ICDGroupCynoBolt
 		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.HitlagFactor = 0

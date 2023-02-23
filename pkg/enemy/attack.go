@@ -4,6 +4,7 @@ import (
 	"log"
 	"math"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -87,7 +88,7 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		//check for ICD first
 		atk.Info.Durability *= combat.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		//special global ICD for Burning DMG
-		if atk.Info.ICDTag == combat.ICDTagBurningDamage {
+		if atk.Info.ICDTag == attacks.ICDTagBurningDamage {
 			//checks for ICD on all the other characters as well
 			for i := 0; i < len(e.Core.Player.Chars()); i++ {
 				if i != atk.Info.ActorIndex {

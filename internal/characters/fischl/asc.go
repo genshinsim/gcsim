@@ -40,7 +40,7 @@ func (c *char) a4() {
 			ActorIndex: c.Index,
 			Abil:       "Fischl A4",
 			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
+			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   combat.ICDGroupFischl,
 			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,

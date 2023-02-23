@@ -24,7 +24,7 @@ func (c *char) c1(delay int) {
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash C1",
 		AttackTag:          attacks.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,

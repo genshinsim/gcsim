@@ -77,7 +77,7 @@ func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Burning),
 		AttackTag:        attacks.AttackTagBurningDamage,
-		ICDTag:           combat.ICDTagBurningDamage,
+		ICDTag:           attacks.ICDTagBurningDamage,
 		ICDGroup:         combat.ICDGroupBurning,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Pyro,

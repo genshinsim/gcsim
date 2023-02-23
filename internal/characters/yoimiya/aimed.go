@@ -66,7 +66,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ActorIndex:           c.Index,
 		Abil:                 "Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
+		ICDTag:               attacks.ICDTagNone,
 		ICDGroup:             combat.ICDGroupDefault,
 		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Pyro,
@@ -95,7 +95,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	// Kindling Arrows
 	if kindling > 0 {
-		ai.ICDTag = combat.ICDTagExtraAttack
+		ai.ICDTag = attacks.ICDTagExtraAttack
 		ai.Mult = aimExtra[c.TalentLvlAttack()]
 
 		// TODO:

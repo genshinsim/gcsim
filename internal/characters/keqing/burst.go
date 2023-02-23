@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:       "Starward Sword (Initial)",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,

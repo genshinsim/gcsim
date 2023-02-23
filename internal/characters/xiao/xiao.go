@@ -80,7 +80,7 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 			}
 		case attacks.AttackTagExtra:
 			// Q-CA has different hitlag from CA
-			a.ICDTag = combat.ICDTagNormalAttack
+			a.ICDTag = attacks.ICDTagNormalAttack
 			a.HitlagHaltFrames = 0.04 * 60
 		case attacks.AttackTagPlunge:
 		default:

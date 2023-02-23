@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex:         c.Index,
 		Abil:               "Kazuha Slash",
 		AttackTag:          attacks.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
+		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Anemo,

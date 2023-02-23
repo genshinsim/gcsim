@@ -144,7 +144,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
 			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNahidaC6,
+			ICDTag:     attacks.ICDTagNahidaC6,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,

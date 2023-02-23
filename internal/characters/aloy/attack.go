@@ -38,7 +38,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
@@ -46,7 +46,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	if c.StatusIsActive(rushingIceKey) {
-		ai.ICDTag = combat.ICDTagNormalAttack
+		ai.ICDTag = attacks.ICDTagNormalAttack
 	}
 
 	for i, mult := range attack[c.NormalCounter] {

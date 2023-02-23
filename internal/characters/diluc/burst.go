@@ -94,7 +94,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			ActorIndex:         c.Index,
 			Abil:               "Dawn (Strike)",
 			AttackTag:          attacks.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagElementalBurst,
+			ICDTag:             attacks.ICDTagElementalBurst,
 			ICDGroup:           combat.ICDGroupDiluc,
 			StrikeType:         attacks.StrikeTypeBlunt,
 			Element:            attributes.Pyro,

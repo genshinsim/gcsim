@@ -175,7 +175,7 @@ If the dendro core does not come in contact with `pyro` or `electro` (simple att
 		DamageSrc:        r.self.Index(),
 		Abil:             string(combat.Bloom),
 		AttackTag:        attacks.AttackTagBloom,
-		ICDTag:           combat.ICDTagBloomDamage,
+		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		Element:          attributes.Dendro,
 		Durability:       0,
@@ -187,11 +187,11 @@ If the dendro core does not come in contact with `pyro` or `electro` (simple att
 
 ### Burgeon
 
-When the dendro core comes in contact with `pyro`, `burgeon` is triggered, dealing an attack with radius 5. AttackInfo is the same as `bloom` except with `attacks.AttackTagBurgeon`, `attacks.AttackTagBurgeon` and `combat.ICDTagBurgeon`
+When the dendro core comes in contact with `pyro`, `burgeon` is triggered, dealing an attack with radius 5. AttackInfo is the same as `bloom` except with `attacks.AttackTagBurgeon`, `attacks.AttackTagBurgeon` and `attacks.ICDTagBurgeon`
 
 ### Hyperbloom
 
-When dendro core comes in contact with `electro`, `hyperbloom` is triggered, dealing an attack with radius 1. AttackInfo is the same as `bloom` except with `attacks.AttackTagHyperbloom`, `attacks.AttackTagHyperbloom` and `combat.ICDTagHyperbloom`
+When dendro core comes in contact with `electro`, `hyperbloom` is triggered, dealing an attack with radius 1. AttackInfo is the same as `bloom` except with `attacks.AttackTagHyperbloom`, `attacks.AttackTagHyperbloom` and `attacks.ICDTagHyperbloom`
 
 ### Bloom/Burgeon/Hyperbloom self damage
 
@@ -203,7 +203,7 @@ All 3 explosions will trigger an additional attack that damages the player, with
 		DamageSrc:        r.self.Index(),
 		Abil:             string(combat.Bloom),
 		AttackTag:        attacks.AttackTagBloom, // or AttackTagBurgeon, AttackTagHyperbloom
-		ICDTag:           combat.ICDTagBloomDamage,
+		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		Element:          attributes.Dendro,
 		Durability:       0,
@@ -303,7 +303,7 @@ AttackInfo is as follows:
 		DamageSrc:        r.self.Index(),
 		Abil:             string(combat.Burning),
 		AttackTag:        attacks.AttackTagBurningDamage,
-		ICDTag:           combat.ICDTagBurningDamage,
+		ICDTag:           attacks.ICDTagBurningDamage,
 		ICDGroup:         combat.ICDGroupBurning,
 		Element:          attributes.Pyro,
 		Durability:       25,

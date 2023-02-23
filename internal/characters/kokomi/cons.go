@@ -21,7 +21,7 @@ func (c *char) c1(f, travel int) {
 		ActorIndex: c.Index,
 		Abil:       "At Water's Edge (C1)",
 		AttackTag:  attacks.AttackTagNone,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,

@@ -72,7 +72,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			ActorIndex: char.Index,
 			Abil:       "Skyward Spine Proc",
 			AttackTag:  attacks.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
+			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,

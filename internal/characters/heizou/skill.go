@@ -57,7 +57,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			ActorIndex:         c.Index,
 			Abil:               "Heartstopper Strike",
 			AttackTag:          attacks.AttackTagElementalArt,
-			ICDTag:             combat.ICDTagNone,
+			ICDTag:             attacks.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Anemo,

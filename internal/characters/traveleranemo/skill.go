@@ -60,7 +60,7 @@ func (c *char) SkillPress() action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex (Tap)",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
@@ -99,14 +99,14 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	c.eAbsorb = attributes.NoElement
-	c.eICDTag = combat.ICDTagNone
+	c.eICDTag = attacks.ICDTagNone
 	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.2}, 3)
 
 	aiCut := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Cutting (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Anemo,
@@ -116,7 +116,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	aiCutAbs := aiCut
 	aiCutAbs.Abil = "Palm Vortex Initial Cutting Absorbed (Hold)"
-	aiCutAbs.ICDTag = combat.ICDTagNone
+	aiCutAbs.ICDTag = attacks.ICDTagNone
 	aiCutAbs.StrikeType = attacks.StrikeTypeDefault
 	aiCutAbs.Element = attributes.NoElement
 	aiCutAbs.Mult = skillInitialCuttingAbsorb[c.TalentLvlSkill()]
@@ -183,7 +183,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Storm (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
@@ -193,7 +193,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	aiStormAbs := aiStorm
 	aiStormAbs.Abil = "Palm Vortex Initial Storm Absorbed (Hold)"
-	aiStormAbs.ICDTag = combat.ICDTagNone
+	aiStormAbs.ICDTag = attacks.ICDTagNone
 	aiStormAbs.Element = attributes.NoElement
 	aiStormAbs.Mult = skillInitialStormAbsorb[c.TalentLvlSkill()]
 
@@ -285,13 +285,13 @@ func (c *char) absorbCheckE(src, count, max int) func() {
 		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.eAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.eAbsorb {
 		case attributes.Cryo:
-			c.eICDTag = combat.ICDTagElementalArtCryo
+			c.eICDTag = attacks.ICDTagElementalArtCryo
 		case attributes.Pyro:
-			c.eICDTag = combat.ICDTagElementalArtPyro
+			c.eICDTag = attacks.ICDTagElementalArtPyro
 		case attributes.Electro:
-			c.eICDTag = combat.ICDTagElementalArtElectro
+			c.eICDTag = attacks.ICDTagElementalArtElectro
 		case attributes.Hydro:
-			c.eICDTag = combat.ICDTagElementalArtHydro
+			c.eICDTag = attacks.ICDTagElementalArtHydro
 		case attributes.NoElement:
 			//otherwise queue up
 			c.Core.Tasks.Add(c.absorbCheckE(src, count+1, max), 18)

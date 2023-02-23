@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			ActorIndex:   char.Index,
 			Abil:         "Messenger Proc",
 			AttackTag:    attacks.AttackTagNone,
-			ICDTag:       combat.ICDTagNone,
+			ICDTag:       attacks.ICDTagNone,
 			ICDGroup:     combat.ICDGroupDefault,
 			StrikeType:   attacks.StrikeTypePierce,
 			Element:      attributes.Physical,

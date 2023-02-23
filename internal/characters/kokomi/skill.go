@@ -70,7 +70,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 		ActorIndex: c.Index,
 		Abil:       "Bake-Kurage",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,

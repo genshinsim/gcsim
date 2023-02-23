@@ -83,7 +83,7 @@ func (c *char) summonSwordWave() {
 		ActorIndex: c.Index,
 		Abil:       "Guhua Sword: Raincutter",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,

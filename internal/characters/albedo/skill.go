@@ -32,7 +32,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Abiogenesis: Solar Isotoma",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
-	ai.ICDTag = combat.ICDTagElementalArt
+	ai.ICDTag = attacks.ICDTagElementalArt
 	ai.Mult = skillTick[c.TalentLvlSkill()]
 	ai.UseDef = true
 	c.skillAttackInfo = ai

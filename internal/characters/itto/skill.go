@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex:       c.Index,
 		Abil:             "Masatsu Zetsugi: Akaushi Burst!",
 		AttackTag:        attacks.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagElementalArt,
+		ICDTag:           attacks.ICDTagElementalArt,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,
 		Element:          attributes.Geo,

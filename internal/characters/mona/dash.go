@@ -32,7 +32,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		Abil:       "Dash",
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagNone,
-		ICDTag:     combat.ICDTagDash,
+		ICDTag:     attacks.ICDTagDash,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
