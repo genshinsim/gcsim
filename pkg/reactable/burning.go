@@ -62,7 +62,7 @@ func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durability) {
+func (r *Reactable) attachBurningFuel(dur reactions.Durability, mult reactions.Durability) {
 	//burning fuel always overwrites
 	r.Durability[ModifierBurningFuel] = mult * dur
 	decayRate := mult * dur / (6*dur + 420)

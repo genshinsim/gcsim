@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 var burstFrames []int
@@ -72,7 +73,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			})
 			idx := c.Core.Player.ActiveChar().Index
 			if c.Core.F > icdSrc[idx]+attacks.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
-				dur := combat.Durability(25)
+				dur := reactions.Durability(25)
 				if p.AuraCount() == 0 {
 					dur = 20
 				}

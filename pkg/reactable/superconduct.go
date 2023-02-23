@@ -16,7 +16,7 @@ func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
 	if r.Durability[ModifierFrozen] >= ZeroDur {
 		return false
 	}
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		if r.Durability[ModifierCryo] < ZeroDur {

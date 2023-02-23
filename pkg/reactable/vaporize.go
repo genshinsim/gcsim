@@ -11,7 +11,7 @@ func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		//make sure there's hydro

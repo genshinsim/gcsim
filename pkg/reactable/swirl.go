@@ -8,14 +8,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
-func calcSwirlAtkDurability(consumed, src combat.Durability) combat.Durability {
+func calcSwirlAtkDurability(consumed, src reactions.Durability) reactions.Durability {
 	if consumed < src {
 		return 1.25*(0.5*consumed-1) + 25
 	}
 	return 1.25*(src-1) + 25
 }
 
-func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur combat.Durability, charIndex int) {
+func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur reactions.Durability, charIndex int) {
 	//swirl triggers two attacks; one self with no gauge
 	//and one aoe with gauge
 	ai := combat.AttackInfo{

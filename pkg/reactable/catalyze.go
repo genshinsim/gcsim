@@ -50,7 +50,7 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 		return false
 	}
 
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Dendro:
 		if r.Durability[ModifierElectro] < ZeroDur {
@@ -82,6 +82,6 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 	return true
 }
 
-func (r *Reactable) attachQuicken(dur combat.Durability) {
+func (r *Reactable) attachQuicken(dur reactions.Durability) {
 	r.attachOverlapRefreshDuration(ModifierQuicken, dur, 12*dur+360)
 }

@@ -15,7 +15,7 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	//so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		//if cryo exists we'll trigger freeze regardless if frozen already coexists
@@ -43,14 +43,14 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	return true
 }
 
-func max(a, b combat.Durability) combat.Durability {
+func max(a, b reactions.Durability) reactions.Durability {
 	if a > b {
 		return a
 	}
 	return b
 }
 
-func min(a, b combat.Durability) combat.Durability {
+func min(a, b reactions.Durability) reactions.Durability {
 	if a > b {
 		return b
 	}
@@ -95,7 +95,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 }
 
 // add to freeze durability and return amount of durability consumed
-func (r *Reactable) triggerFreeze(a, b combat.Durability) combat.Durability {
+func (r *Reactable) triggerFreeze(a, b reactions.Durability) reactions.Durability {
 	d := min(a, b)
 	//trigger freeze should only addDurability and should not touch decay rate
 	r.attachOverlap(ModifierFrozen, 2*d, ZeroDur)

@@ -19,7 +19,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		//this part is annoying. bloom will happen if any of the dendro like aura is present

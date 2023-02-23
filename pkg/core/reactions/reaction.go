@@ -28,3 +28,5 @@ const (
 	NoReaction         ReactionType = ""
 	FreezeExtend       ReactionType = "freeze-extend"
 )
+
+type Durability float64

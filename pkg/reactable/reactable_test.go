@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/target"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
@@ -71,7 +72,7 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 	return c, r
 }
 
-func makeAOEAttack(c *core.Core, ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
+func makeAOEAttack(c *core.Core, ele attributes.Element, dur reactions.Durability) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
@@ -81,7 +82,7 @@ func makeAOEAttack(c *core.Core, ele attributes.Element, dur combat.Durability) 
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.TargetKey) *combat.AttackEvent {
+func makeSTAttack(ele attributes.Element, dur reactions.Durability, trg combat.TargetKey) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
@@ -261,7 +262,7 @@ func TestTick(t *testing.T) {
 		trg.Tick()
 	}
 	//calculate expected duration
-	decay := combat.Durability(20.0 / (6*25 + 420))
+	decay := reactions.Durability(20.0 / (6*25 + 420))
 	left := 20 - 100*decay
 	life := int((left + 40) / decay)
 	// log.Println(decay, left, life)
@@ -342,7 +343,7 @@ func (target *testTarget) allNil(t *testing.T) bool {
 	return ok
 }
 
-func durApproxEqual(expect, result, tol combat.Durability) bool {
+func durApproxEqual(expect, result, tol reactions.Durability) bool {
 	if expect > result {
 		return expect-result < tol
 	}

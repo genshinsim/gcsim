@@ -11,7 +11,7 @@ func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
 		if r.Durability[ModifierCryo] < ZeroDur && r.Durability[ModifierFrozen] < ZeroDur {

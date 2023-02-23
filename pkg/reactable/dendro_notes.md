@@ -107,7 +107,7 @@ The reaction has a 1:1 multiplier between `electro` and `dendro`
 Quicken have different formula than normal "attachment". Existing code uses [this function](https://github.com/genshinsim/gcsim/blob/40b1617647c1dbcd541e684b7f5b09d9dd424851/pkg/reactable/reactable.go#L182) to handle attachment:
 
 ```go
-func (r *Reactable) attach(e attributes.Element, dur combat.Durability, m combat.Durability) {
+func (r *Reactable) attach(e attributes.Element, dur reactions.Durability, m reactions.Durability) {
 	//calculate duration based on dur
 	r.DecayRate[e] = m * dur / (6*dur + 420)
 	r.addDurability(e, m*dur)

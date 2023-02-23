@@ -32,8 +32,8 @@ type AttackInfo struct {
 	AttackTag        attacks.AttackTag
 	ICDTag           attacks.ICDTag
 	ICDGroup         attacks.ICDGroup
-	Element          attributes.Element //element of ability
-	Durability       Durability         //durability of aura, 0 if nothing applied
+	Element          attributes.Element   //element of ability
+	Durability       reactions.Durability //durability of aura, 0 if nothing applied
 	NoImpulse        bool
 	HitWeakPoint     bool
 	Mult             float64 //ability multiplier. could set to 0 from initial Mona dmg
