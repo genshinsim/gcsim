@@ -23,9 +23,9 @@ func (t *Target) WillApplyEle(tag attacks.ICDTag, grp attacks.ICDGroup, char int
 	t.icdTagCounter[char][tag]++
 
 	// if counter > length, then use 0 for group seq
-	groupSeq := combat.ICDGroupEleApplicationSequence[grp][len(combat.ICDGroupEleApplicationSequence[grp])-1]
-	if val < len(combat.ICDGroupEleApplicationSequence[grp]) {
-		groupSeq = combat.ICDGroupEleApplicationSequence[grp][val]
+	groupSeq := attacks.ICDGroupEleApplicationSequence[grp][len(attacks.ICDGroupEleApplicationSequence[grp])-1]
+	if val < len(attacks.ICDGroupEleApplicationSequence[grp]) {
+		groupSeq = attacks.ICDGroupEleApplicationSequence[grp][val]
 	}
 
 	t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char).
