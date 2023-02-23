@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -54,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 6.3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 6.3),
 		burstHitmark,
 		burstHitmark,
 		applyBurstShredCb,
@@ -73,10 +74,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	player := c.Core.Combat.Player()
 	playerPos := player.Pos()
 	direction := player.Direction()
-	gadgetPositions := []combat.Point{
-		combat.CalcOffsetPoint(playerPos, combat.Point{X: 5.19, Y: 10.5}, direction),
-		combat.CalcOffsetPoint(playerPos, combat.Point{X: -5.19, Y: 10.5}, direction),
-		combat.CalcOffsetPoint(playerPos, combat.Point{Y: 1.5}, direction),
+	gadgetPositions := []geometry.Point{
+		geometry.CalcOffsetPoint(playerPos, geometry.Point{X: 5.19, Y: 10.5}, direction),
+		geometry.CalcOffsetPoint(playerPos, geometry.Point{X: -5.19, Y: 10.5}, direction),
+		geometry.CalcOffsetPoint(playerPos, geometry.Point{Y: 1.5}, direction),
 	}
 	count := 0
 	for i := 137; i <= duration; i += 120 {

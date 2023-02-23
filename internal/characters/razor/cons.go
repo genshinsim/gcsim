@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -103,7 +104,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), a.Target, combat.Point{Y: 0.7}, 1.5),
+		combat.NewCircleHit(c.Core.Combat.Player(), a.Target, geometry.Point{Y: 0.7}, 1.5),
 		1,
 		1,
 		sigilcb,

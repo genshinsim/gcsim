@@ -4,11 +4,12 @@ import (
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-func newSimpleCircle(x, y, r float64) *Circle {
-	return NewCircle(Point{X: x, Y: y}, r, DefaultDirection(), 360)
+func newSimpleCircle(x, y, r float64) *geometry.Circle {
+	return geometry.NewCircle(geometry.Point{X: x, Y: y}, r, geometry.DefaultDirection(), 360)
 }
 
 func TestGadgetCollision(t *testing.T) {

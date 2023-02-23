@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
@@ -87,19 +88,19 @@ func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	}, DendroCoreDelay)
 }
 
-func NewDendroCore(c *core.Core, shp combat.Shape, a *combat.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *DendroCore {
 	s := &DendroCore{
 		srcFrame: c.F,
 	}
 
-	circ, ok := shp.(*combat.Circle)
+	circ, ok := shp.(*geometry.Circle)
 	if !ok {
 		panic("rectangle target hurtbox is not supported for dendro core spawning")
 	}
 
 	// for simplicity, seeds spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
-	s.Gadget = gadget.New(c, combat.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
+	s.Gadget = gadget.New(c, geometry.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
@@ -250,8 +251,8 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 	return ai, snap
 }
 
-func (s *DendroCore) SetDirection(trg combat.Point) {}
-func (s *DendroCore) SetDirectionToClosestEnemy()   {}
-func (s *DendroCore) CalcTempDirection(trg combat.Point) combat.Point {
-	return combat.DefaultDirection()
+func (s *DendroCore) SetDirection(trg geometry.Point) {}
+func (s *DendroCore) SetDirectionToClosestEnemy()     {}
+func (s *DendroCore) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
 }

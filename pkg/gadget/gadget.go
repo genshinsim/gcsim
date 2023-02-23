@@ -6,6 +6,7 @@ package gadget
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
@@ -24,7 +25,7 @@ type Gadget struct {
 	sinceLastThink int
 }
 
-func New(core *core.Core, p combat.Point, r float64, typ combat.GadgetTyp) *Gadget {
+func New(core *core.Core, p geometry.Point, r float64, typ combat.GadgetTyp) *Gadget {
 	g := &Gadget{
 		core:      core,
 		src:       core.F,

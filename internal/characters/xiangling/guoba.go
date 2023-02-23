@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -28,9 +29,9 @@ func (c *char) newGuoba(ai combat.AttackInfo) *panda {
 		c:    c,
 	}
 	player := c.Core.Combat.Player()
-	pos := combat.CalcOffsetPoint(
+	pos := geometry.CalcOffsetPoint(
 		player.Pos(),
-		combat.Point{Y: 1.3},
+		geometry.Point{Y: 1.3},
 		player.Direction(),
 	)
 	p.Gadget = gadget.New(c.Core, pos, 0.2, combat.GadgetTypGuoba)

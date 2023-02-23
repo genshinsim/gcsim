@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -224,14 +225,14 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	ap := combat.NewCircleHit(
 		c.Core.Combat.Player(),
 		centerTarget,
-		combat.Point{Y: swordDanceOffsets[s]},
+		geometry.Point{Y: swordDanceOffsets[s]},
 		swordDanceHitboxes[s][0],
 	)
 	if s == 0 {
 		ap = combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			centerTarget,
-			combat.Point{Y: swordDanceOffsets[s]},
+			geometry.Point{Y: swordDanceOffsets[s]},
 			swordDanceHitboxes[s][0],
 			swordDanceHitboxes[s][1],
 		)
@@ -266,14 +267,14 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		combat.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+		geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 		whirlingStepsHitboxes[s][0],
 	)
 	if s == 2 {
 		ai.Abil = "Water Wheel"
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+			geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 			whirlingStepsHitboxes[s][0],
 			whirlingStepsHitboxes[s][1],
 		)

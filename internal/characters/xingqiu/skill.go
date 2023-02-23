@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -54,13 +55,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[i]},
+			geometry.Point{Y: skillOffsets[i]},
 			skillHitboxes[i][0],
 		)
 		if i == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: skillOffsets[i]},
+				geometry.Point{Y: skillOffsets[i]},
 				skillHitboxes[i][0],
 				skillHitboxes[i][1],
 			)

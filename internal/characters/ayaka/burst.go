@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -80,7 +81,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: 0.3},
+				geometry.Point{Y: 0.3},
 				3,
 			),
 			burstHitmark,
@@ -100,7 +101,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					combat.NewCircleHit(
 						c.Core.Combat.Player(),
 						c.Core.Combat.PrimaryTarget(),
-						combat.Point{Y: 0.3},
+						geometry.Point{Y: 0.3},
 						1.5,
 					),
 					burstHitmark,

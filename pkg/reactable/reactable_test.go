@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -31,7 +32,7 @@ func testCore() *core.Core {
 	})
 	//add player (first target)
 	trg := &testTarget{}
-	trg.Target = target.New(c, combat.Point{X: 0, Y: 0}, 1)
+	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.typ = targets.TargettablePlayer
 	trg.Reactable.Init(trg, c)
@@ -79,7 +80,7 @@ func makeAOEAttack(c *core.Core, ele attributes.Element, dur reactions.Durabilit
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}
 }
 
@@ -133,7 +134,7 @@ func (t *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
 
 func addTargetToCore(c *core.Core) *testTarget {
 	trg := &testTarget{}
-	trg.Target = target.New(c, combat.Point{X: 0, Y: 0}, 1)
+	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
 	c.Combat.AddEnemy(trg)

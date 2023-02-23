@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -130,11 +131,11 @@ type stone struct {
 	src    int
 	expiry int
 	char   *char
-	dir    combat.Point
-	pos    combat.Point
+	dir    geometry.Point
+	pos    geometry.Point
 }
 
-func (c *char) newStone(dur int, dir, pos combat.Point) *stone {
+func (c *char) newStone(dur int, dir, pos geometry.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -175,5 +176,5 @@ func (s *stone) Type() construct.GeoConstructType { return construct.GeoConstruc
 func (s *stone) Expiry() int                      { return s.expiry }
 func (s *stone) IsLimited() bool                  { return true }
 func (s *stone) Count() int                       { return 1 }
-func (s *stone) Direction() combat.Point          { return s.dir }
-func (s *stone) Pos() combat.Point                { return s.pos }
+func (s *stone) Direction() geometry.Point        { return s.dir }
+func (s *stone) Pos() geometry.Point              { return s.pos }

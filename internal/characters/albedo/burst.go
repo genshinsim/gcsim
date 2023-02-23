@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -73,14 +74,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		maxBlossoms := 7
 		enemies := c.Core.Combat.RandomEnemiesWithinArea(c.skillArea, nil, maxBlossoms)
 		tracking := len(enemies)
-		var center combat.Point
+		var center geometry.Point
 		for i := 0; i < maxBlossoms; i++ {
 			if i < tracking {
 				// each blossom targets a separate enemy if possible
 				center = enemies[i].Pos()
 			} else {
 				// if a blossom has no enemy then it randomly spawns in the skill area
-				center = combat.CalcRandomPointFromCenter(c.skillArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
+				center = geometry.CalcRandomPointFromCenter(c.skillArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
 			}
 			// Blossoms are generated on a slight delay from initial hit
 			// TODO: no precise frame data for time between Blossoms

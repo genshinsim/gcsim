@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -75,7 +76,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillTapHitmark, skillTapHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1}, 2.25), skillTapHitmark, skillTapHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 15)
 
@@ -104,7 +105,7 @@ func (c *char) SkillHold() action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 2}, 2.25), skillHoldHitmark, skillHoldHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 2}, 2.25), skillHoldHitmark, skillHoldHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 23)
 
@@ -256,10 +257,10 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	var mirrorsHitmark []int
 	switch c.mirrorCount {
 	case 3:
-		ap = combat.NewCircleHitOnTarget(player, combat.Point{Y: 4}, 4)
+		ap = combat.NewCircleHitOnTarget(player, geometry.Point{Y: 4}, 4)
 		mirrorsHitmark = mirror3Hitmarks
 	case 2:
-		ap = combat.NewCircleHitOnTargetFanAngle(player, combat.Point{Y: -0.1}, 5.5, 180)
+		ap = combat.NewCircleHitOnTargetFanAngle(player, geometry.Point{Y: -0.1}, 5.5, 180)
 		mirrorsHitmark = mirror2HitmarksLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror2HitmarksRight

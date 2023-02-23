@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -62,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// hitmark is 5 frames after oz spawns
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1.5}, radius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, radius),
 		skillOzSpawn,
 		skillOzSpawn+5,
 	)
@@ -144,7 +145,7 @@ func (c *char) queueOz(src string, ozSpawn int) {
 			Mult:       birdAtk[c.TalentLvlSkill()],
 		}
 		player := c.Core.Combat.Player()
-		c.ozPos = combat.CalcOffsetPoint(player.Pos(), combat.Point{Y: 1.5}, player.Direction())
+		c.ozPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 1.5}, player.Direction())
 
 		snap := c.Snapshot(&ai)
 		c.ozSnapshot = combat.AttackEvent{
@@ -182,7 +183,7 @@ func (c *char) ozTick(src int) func() {
 		ae.Pattern = combat.NewBoxHit(
 			c.ozPos,
 			c.Core.Combat.PrimaryTarget(),
-			combat.Point{Y: -0.5},
+			geometry.Point{Y: -0.5},
 			0.1,
 			1,
 		)

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -99,13 +100,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		combat.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+		geometry.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
 		attackHitboxes[attackIndex][c.NormalCounter][0],
 	)
 	if c.NormalCounter == 3 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+			geometry.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
 			attackHitboxes[attackIndex][c.NormalCounter][0],
 			attackHitboxes[attackIndex][c.NormalCounter][1],
 		)

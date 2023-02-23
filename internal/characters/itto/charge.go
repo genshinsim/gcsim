@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -216,13 +217,13 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		combat.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+		geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 		chargeHitboxes[burstIndex][c.slashState][0],
 	)
 	if c.slashState == LeftSlash || c.slashState == RightSlash {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+			geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 			chargeHitboxes[burstIndex][c.slashState][0],
 			chargeHitboxes[burstIndex][c.slashState][1],
 		)

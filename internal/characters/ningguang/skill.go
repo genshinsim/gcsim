@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -43,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	player := c.Core.Combat.Player()
 	screenDir := player.Direction()
-	screenPos := combat.CalcOffsetPoint(player.Pos(), combat.Point{Y: 3}, player.Direction())
+	screenPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
 
 	c.Core.Tasks.Add(func() {
 		c.skillSnapshot = c.Snapshot(&ai)

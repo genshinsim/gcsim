@@ -1,22 +1,29 @@
 package combat
 
-import "github.com/genshinsim/gcsim/pkg/core/targets"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
+)
 
 type AttackPattern struct {
-	Shape       Shape
+	Shape       geometry.Shape
 	SkipTargets [targets.TargettableTypeCount]bool
 	IgnoredKeys []targets.TargetKey
 }
 
+type positional interface {
+	Pos() geometry.Point
+}
+
 func NewSingleTargetHit(ind targets.TargetKey) AttackPattern {
 	return AttackPattern{
-		Shape: &SingleTarget{Target: ind},
+		Shape: &geometry.SingleTarget{Target: ind},
 	}
 }
 
-func getCenterAndDirection(src, center, offset positional) (Point, Point) {
+func getCenterAndDirection(src, center, offset positional) (geometry.Point, geometry.Point) {
 	c := center.Pos()
-	dir := DefaultDirection()
+	dir := geometry.DefaultDirection()
 	srcTrg, srcIsATarget := src.(Target)
 	centerTrg, centerIsATarget := center.(Target)
 
@@ -41,14 +48,14 @@ func getCenterAndDirection(src, center, offset positional) (Point, Point) {
 	if off.X == 0 && off.Y == 0 {
 		return c, dir
 	}
-	newCenter := CalcOffsetPoint(c, off, dir)
+	newCenter := geometry.CalcOffsetPoint(c, off, dir)
 	return newCenter, dir
 }
 
 func NewCircleHit(src, center, offset positional, r float64) AttackPattern {
 	c, dir := getCenterAndDirection(src, center, offset)
 	a := AttackPattern{
-		Shape: NewCircle(c, r, dir, 360),
+		Shape: geometry.NewCircle(c, r, dir, 360),
 	}
 	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
@@ -57,7 +64,7 @@ func NewCircleHit(src, center, offset positional, r float64) AttackPattern {
 func NewCircleHitFanAngle(src, center, offset positional, r, fanAngle float64) AttackPattern {
 	c, dir := getCenterAndDirection(src, center, offset)
 	a := AttackPattern{
-		Shape: NewCircle(c, r, dir, fanAngle),
+		Shape: geometry.NewCircle(c, r, dir, fanAngle),
 	}
 	a.SkipTargets[targets.TargettablePlayer] = true
 	return a
@@ -74,7 +81,7 @@ func NewCircleHitOnTargetFanAngle(trg, offset positional, r, fanAngle float64) A
 func NewBoxHit(src, center, offset positional, w, h float64) AttackPattern {
 	c, dir := getCenterAndDirection(src, center, offset)
 	a := AttackPattern{
-		Shape: NewRectangle(c, w, h, dir),
+		Shape: geometry.NewRectangle(c, w, h, dir),
 	}
 	a.SkipTargets[targets.TargettablePlayer] = true
 	return a

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -79,7 +80,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
-		combat.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
+		geometry.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
 		attackHitboxes[c.gender][c.NormalCounter][0],
 		attackFanAngles[c.gender][c.NormalCounter],
 	)
@@ -87,7 +88,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		(c.gender == 1 && c.NormalCounter == 1) {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
+			geometry.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
 			attackHitboxes[c.gender][c.NormalCounter][0],
 			attackHitboxes[c.gender][c.NormalCounter][1],
 		)

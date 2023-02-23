@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -33,9 +34,9 @@ func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
 func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
-	c.burstPos = combat.CalcOffsetPoint(
+	c.burstPos = geometry.CalcOffsetPoint(
 		player.Pos(),
-		combat.Point{Y: 1},
+		geometry.Point{Y: 1},
 		player.Direction(),
 	)
 	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
@@ -259,6 +260,8 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.Kill()
 }
 
-func (s *LeaLotus) SetDirection(trg combat.Point)                   {}
-func (s *LeaLotus) SetDirectionToClosestEnemy()                     {}
-func (s *LeaLotus) CalcTempDirection(trg combat.Point) combat.Point { return combat.DefaultDirection() }
+func (s *LeaLotus) SetDirection(trg geometry.Point) {}
+func (s *LeaLotus) SetDirectionToClosestEnemy()     {}
+func (s *LeaLotus) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
+}

@@ -2,6 +2,7 @@ package combat
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -9,9 +10,9 @@ type Target interface {
 	Key() targets.TargetKey        // unique key for the target
 	SetKey(k targets.TargetKey)    // update key
 	Type() targets.TargettableType // type of target
-	Shape() Shape                  // shape of target
-	Pos() Point                    // center of target
-	SetPos(p Point)                // move target
+	Shape() geometry.Shape         // geometry.Shape of target
+	Pos() geometry.Point           // center of target
+	SetPos(p geometry.Point)       // move target
 	IsAlive() bool
 	SetTag(key string, val int)
 	GetTag(key string) int
@@ -24,12 +25,12 @@ type Target interface {
 	// for collision check
 	CollidableWith(targets.TargettableType) bool
 	CollidedWith(t Target)
-	WillCollide(Shape) bool
+	WillCollide(geometry.Shape) bool
 	// direction related
-	Direction() Point                  // returns viewing direction as a Point
-	SetDirection(trg Point)            // calculates viewing direction relative to default direction (0, 1)
-	SetDirectionToClosestEnemy()       // looks for closest enemy
-	CalcTempDirection(trg Point) Point // used for stuff like Bow CA
+	Direction() geometry.Point                           // returns viewing direction as a geometry.Point
+	SetDirection(trg geometry.Point)                     // calculates viewing direction relative to default direction (0, 1)
+	SetDirectionToClosestEnemy()                         // looks for closest enemy
+	CalcTempDirection(trg geometry.Point) geometry.Point // used for stuff like Bow CA
 }
 
 type TargetWithAura interface {

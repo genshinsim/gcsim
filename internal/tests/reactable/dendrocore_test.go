@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -34,7 +35,7 @@ func TestModifyDendroCore(t *testing.T) {
 		if g, ok := args[0].(*reactable.DendroCore); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
-				Gadget: gadget.New(c, combat.Point{X: 0, Y: 0}, 0.2, combat.GadgetTypDendroCore),
+				Gadget: gadget.New(c, geometry.Point{X: 0, Y: 0}, 0.2, combat.GadgetTypDendroCore),
 			})
 			//prevent blowing up
 			g.OnKill = nil
@@ -49,7 +50,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -58,7 +59,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -92,6 +93,8 @@ type fakeCore struct {
 func (f *fakeCore) Tick()                                                  {}
 func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { return 0 }
 func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (f *fakeCore) SetDirection(trg combat.Point)                          {}
+func (f *fakeCore) SetDirection(trg geometry.Point)                        {}
 func (f *fakeCore) SetDirectionToClosestEnemy()                            {}
-func (f *fakeCore) CalcTempDirection(trg combat.Point) combat.Point        { return combat.DefaultDirection() }
+func (f *fakeCore) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
+}

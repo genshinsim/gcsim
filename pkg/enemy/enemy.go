@@ -4,7 +4,7 @@ package enemy
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -61,7 +61,7 @@ func New(core *core.Core, p EnemyProfile) *Enemy {
 	e.resists = p.Resist
 	//TODO: this is kinda redundant to keep both profile and lvl/resist
 	e.prof = p
-	e.Target = target.New(core, combat.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
+	e.Target = target.New(core, geometry.Point{X: p.Pos.X, Y: p.Pos.Y}, p.Pos.R)
 	e.Reactable = &reactable.Reactable{}
 	e.Reactable.Init(e, core)
 	e.mods = make([]modifier.Mod, 0, 10)
@@ -92,6 +92,8 @@ func (e *Enemy) Kill() {
 	}
 }
 
-func (e *Enemy) SetDirection(trg combat.Point)                   {}
-func (e *Enemy) SetDirectionToClosestEnemy()                     {}
-func (e *Enemy) CalcTempDirection(trg combat.Point) combat.Point { return combat.DefaultDirection() }
+func (e *Enemy) SetDirection(trg geometry.Point) {}
+func (e *Enemy) SetDirectionToClosestEnemy()     {}
+func (e *Enemy) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
+}

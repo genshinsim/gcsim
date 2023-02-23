@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -117,14 +118,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
-		combat.Point{Y: skillOffsets[c.eCounter]},
+		geometry.Point{Y: skillOffsets[c.eCounter]},
 		skillHitboxes[c.eCounter][0],
 		skillFanAngles[c.eCounter],
 	)
 	if c.eCounter == 0 || c.eCounter == 2 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[c.eCounter]},
+			geometry.Point{Y: skillOffsets[c.eCounter]},
 			skillHitboxes[c.eCounter][0],
 			skillHitboxes[c.eCounter][1],
 		)

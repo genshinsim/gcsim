@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -21,11 +22,11 @@ type (
 		src         int //source of gadget
 		idx         int
 		key         targets.TargetKey
-		shp         Shape
+		shp         geometry.Shape
 		alive       bool
 		collideWith [targets.TargettableTypeCount]bool
 		onCollision func(Target)
-		direction   Point
+		direction   geometry.Point
 	}
 )
 
@@ -44,9 +45,9 @@ func (t *testtarg) SetIndex(i int)                                  { t.idx = i 
 func (t *testtarg) Key() targets.TargetKey                          { return t.key }
 func (t *testtarg) SetKey(i targets.TargetKey)                      { t.key = i }
 func (t *testtarg) Type() targets.TargettableType                   { return t.typ }
-func (t *testtarg) Shape() Shape                                    { return t.shp }
-func (t *testtarg) Pos() Point                                      { return t.shp.Pos() }
-func (t *testtarg) SetPos(p Point)                                  {} //??
+func (t *testtarg) Shape() geometry.Shape                           { return t.shp }
+func (t *testtarg) Pos() geometry.Point                             { return t.shp.Pos() }
+func (t *testtarg) SetPos(p geometry.Point)                         {} //??
 func (t *testtarg) IsAlive() bool                                   { return t.alive }
 func (t *testtarg) SetTag(key string, val int)                      {}
 func (t *testtarg) GetTag(key string) int                           { return -1 }
@@ -62,14 +63,14 @@ func (t *testtarg) CollidedWith(x Target) {
 		t.onCollision(x)
 	}
 }
-func (t *testtarg) WillCollide(s Shape) bool {
+func (t *testtarg) WillCollide(s geometry.Shape) bool {
 	if !t.alive {
 		return false
 	}
 	switch v := s.(type) {
-	case *Circle:
+	case *geometry.Circle:
 		return t.Shape().IntersectCircle(*v)
-	case *Rectangle:
+	case *geometry.Rectangle:
 		return t.Shape().IntersectRectangle(*v)
 	default:
 		return false
@@ -79,14 +80,14 @@ func (t *testtarg) WillCollide(s Shape) bool {
 func (t *testtarg) HandleAttack(*AttackEvent) float64 { return 0 }
 
 func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
-	//shape shouldn't be nil; panic here
+	//geometry.Shape shouldn't be nil; panic here
 	if a.Shape == nil {
-		panic("unexpected nil shape")
+		panic("unexpected nil geometry.Shape")
 	}
 	if !t.alive {
 		return false, "target dead"
 	}
-	//shape can't be nil now, check if type matches
+	//geometry.Shape can't be nil now, check if type matches
 	// if !a.Targets[t.typ] {
 	// 	return false, "wrong type"
 	// }
@@ -97,17 +98,17 @@ func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 		}
 	}
 
-	//check if shape matches
+	//check if geometry.Shape matches
 	switch v := a.Shape.(type) {
-	case *Circle:
+	case *geometry.Circle:
 		return t.Shape().IntersectCircle(*v), "intersect circle"
-	case *Rectangle:
+	case *geometry.Rectangle:
 		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
-	case *SingleTarget:
+	case *geometry.SingleTarget:
 		//only true if
 		return v.Target == t.key, "target"
 	default:
-		return false, "unknown shape"
+		return false, "unknown geometry.Shape"
 	}
 }
 
@@ -115,13 +116,15 @@ func (t *testtarg) IsWithinArea(a AttackPattern) bool {
 	return a.Shape.PointInShape(t.Pos())
 }
 
-func (t *testtarg) Direction() Point { return t.direction }
-func (t *testtarg) SetDirection(trg Point) {
+func (t *testtarg) Direction() geometry.Point { return t.direction }
+func (t *testtarg) SetDirection(trg geometry.Point) {
 	src := t.Pos()
-	t.direction = CalcDirection(src, trg)
+	t.direction = geometry.CalcDirection(src, trg)
 }
-func (t *testtarg) SetDirectionToClosestEnemy()       {} // ???
-func (t *testtarg) CalcTempDirection(trg Point) Point { return DefaultDirection() }
+func (t *testtarg) SetDirectionToClosestEnemy() {} // ???
+func (t *testtarg) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
+}
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())

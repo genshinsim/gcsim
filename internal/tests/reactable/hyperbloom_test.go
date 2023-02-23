@@ -6,14 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestHyperbloom(t *testing.T) {
 	c, trg := makeCore(2)
-	trg[0].SetPos(combat.Point{X: 1, Y: 0})
-	trg[1].SetPos(combat.Point{X: 3.1, Y: 0})
+	trg[0].SetPos(geometry.Point{X: 1, Y: 0})
+	trg[1].SetPos(geometry.Point{X: 3.1, Y: 0})
 	err := c.Init()
 	if err != nil {
 		t.Errorf("error initializing core: %v", err)
@@ -79,8 +80,8 @@ func TestHyperbloom(t *testing.T) {
 
 func TestECHyperbloom(t *testing.T) {
 	c, trg := makeCore(2)
-	trg[0].SetPos(combat.Point{X: 1, Y: 0})
-	trg[1].SetPos(combat.Point{X: 3.1, Y: 0})
+	trg[0].SetPos(geometry.Point{X: 1, Y: 0})
+	trg[1].SetPos(geometry.Point{X: 3.1, Y: 0})
 	err := c.Init()
 	if err != nil {
 		t.Errorf("error initializing core: %v", err)

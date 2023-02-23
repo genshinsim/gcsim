@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -101,7 +102,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	c.eAbsorb = attributes.NoElement
 	c.eICDTag = attacks.ICDTagNone
-	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.2}, 3)
+	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3)
 
 	aiCut := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -133,7 +134,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 		c.Core.QueueAttack(
 			aiCut,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.2}, 1.7),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
 			hitmark,
 			hitmark,
 		)
@@ -144,7 +145,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 					aiMaxCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(
 						aiMaxCutAbs,
-						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.2}, 3.6),
+						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3.6),
 						0,
 						0,
 					)
@@ -158,7 +159,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 					aiCutAbs.ICDTag = c.eICDTag
 					c.Core.QueueAttack(
 						aiCutAbs,
-						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.2}, 1.7),
+						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
 						0,
 						0,
 					)

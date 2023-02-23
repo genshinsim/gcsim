@@ -20,7 +20,7 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 				Write("applied_ele", a.Info.Element).
 				Write("dur", a.Info.Durability).
 				Write("target", t.Key()).
-				Write("shape", a.Pattern.Shape.String())
+				Write("geometry.Shape", a.Pattern.Shape.String())
 		}
 		return 0, false
 	}

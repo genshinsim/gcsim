@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -17,7 +18,7 @@ type Player struct {
 	*reactable.Reactable
 }
 
-func New(core *core.Core, pos combat.Point, r float64) *Player {
+func New(core *core.Core, pos geometry.Point, r float64) *Player {
 	p := &Player{}
 	p.Target = target.New(core, pos, r)
 	p.Reactable = &reactable.Reactable{}

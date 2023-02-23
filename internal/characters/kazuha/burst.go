@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -28,7 +29,7 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	player := c.Core.Combat.Player()
 	c.qAbsorb = attributes.NoElement
-	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, combat.Point{Y: 1}, 8)
+	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -44,7 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.05,
 		CanBeDefenseHalted: false,
 	}
-	ap := combat.NewCircleHitOnTarget(player, combat.Point{Y: 1}, 9)
+	ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 9)
 
 	c.Core.QueueAttack(ai, ap, 0, burstHitmark)
 

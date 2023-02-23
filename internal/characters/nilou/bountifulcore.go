@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -15,7 +16,7 @@ type BountifulCore struct {
 	*gadget.Gadget
 }
 
-func newBountifulCore(c *core.Core, p combat.Point, a *combat.AttackEvent) *BountifulCore {
+func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *BountifulCore {
 	b := &BountifulCore{
 		srcFrame: c.F,
 	}
@@ -53,8 +54,8 @@ func (b *BountifulCore) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 func (b *BountifulCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (b *BountifulCore) SetDirection(trg combat.Point)                          {}
+func (b *BountifulCore) SetDirection(trg geometry.Point)                        {}
 func (b *BountifulCore) SetDirectionToClosestEnemy()                            {}
-func (b *BountifulCore) CalcTempDirection(trg combat.Point) combat.Point {
-	return combat.DefaultDirection()
+func (b *BountifulCore) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
 }

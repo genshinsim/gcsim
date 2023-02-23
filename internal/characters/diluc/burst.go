@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -32,7 +33,7 @@ func (c *char) phoenixDMG(ai combat.AttackInfo, dot int, explode int) func() {
 		for i := 0; i < dot; i++ {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -5}, 16, 8),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -5}, 16, 8),
 				0,
 				i*12,
 			)
@@ -43,7 +44,7 @@ func (c *char) phoenixDMG(ai combat.AttackInfo, dot int, explode int) func() {
 			ai.Mult = burstExplode[c.TalentLvlBurst()]
 			c.Core.QueueAttack(
 				ai,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -6}, 16, 10),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -6}, 16, 10),
 				0,
 				98,
 			)
@@ -107,7 +108,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 16, 6),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 16, 6),
 			0,
 			1,
 		)

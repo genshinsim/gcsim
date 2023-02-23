@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -67,7 +68,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ap := combat.NewCircleHitFanAngle(
 			c.Core.Combat.Player(),
 			centerTarget,
-			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackRadius[c.NormalCounter],
 			attackFanAngles[c.NormalCounter],
 		)

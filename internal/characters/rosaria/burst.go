@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -48,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// center on player
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 3.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3.5),
 		15,
 		15,
 		c1CB,
@@ -69,7 +70,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	playerPos := c.Core.Combat.Player()
-	gadgetOffset := combat.Point{Y: 3}
+	gadgetOffset := geometry.Point{Y: 3}
 	apHit2 := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6)
 	apTick := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6.5)
 	// Handle Hit 2 and DoT
