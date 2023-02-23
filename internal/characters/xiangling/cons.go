@@ -1,6 +1,7 @@
 package xiangling
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -45,7 +46,7 @@ func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Oil Meets Fire (C2)",
-			AttackTag:  combat.AttackTagNone,
+			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,

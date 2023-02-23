@@ -3,6 +3,7 @@ package sayu
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -96,7 +97,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fuufuu Windwheel (DoT Press)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArtAnemo,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -116,7 +117,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Press)",
-		AttackTag:        combat.AttackTagElementalArt,
+		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           combat.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -173,7 +174,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
-		AttackTag:        combat.AttackTagElementalArtHold,
+		AttackTag:        attacks.AttackTagElementalArtHold,
 		ICDTag:           combat.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -233,7 +234,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
-		AttackTag:        combat.AttackTagElementalArtHold,
+		AttackTag:        attacks.AttackTagElementalArtHold,
 		ICDTag:           combat.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -268,7 +269,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Windwheel (DoT Hold)",
-		AttackTag:        combat.AttackTagElementalArt,
+		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           combat.ICDTagElementalArtAnemo,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -323,7 +324,7 @@ func (c *char) rollAbsorb() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
 		if atk.Info.Element != attributes.Anemo || c.eAbsorb == attributes.NoElement {
@@ -334,12 +335,12 @@ func (c *char) rollAbsorb() {
 		}
 
 		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt:
+		case attacks.AttackTagElementalArt:
 			// DoT Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Windwheel Elemental (Elemental DoT Hold)",
-				AttackTag:  combat.AttackTagElementalArtHold,
+				AttackTag:  attacks.AttackTagElementalArtHold,
 				ICDTag:     c.eAbsorbTag,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: combat.StrikeTypeDefault,
@@ -348,12 +349,12 @@ func (c *char) rollAbsorb() {
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), 1, 1)
-		case combat.AttackTagElementalArtHold:
+		case attacks.AttackTagElementalArtHold:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Whirlwind Elemental (Elemental Kick Hold)",
-				AttackTag:  combat.AttackTagElementalArt,
+				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: combat.StrikeTypeDefault,

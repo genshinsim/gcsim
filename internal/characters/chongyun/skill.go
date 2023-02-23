@@ -3,6 +3,7 @@ package chongyun
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -38,7 +39,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Spirit Blade: Chonghua's Layered Frost",
-		AttackTag:          combat.AttackTagElementalArt,
+		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagElementalArt,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeBlunt,
@@ -63,7 +64,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Blade: Chonghua's Layered Frost (A4)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,
@@ -205,7 +206,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 			attributes.Cryo,
 			infuseDur[c.TalentLvlSkill()],
 			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
 		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
 			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])

@@ -3,6 +3,7 @@ package eula
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -83,7 +84,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex",
-		AttackTag:          combat.AttackTagElementalArt,
+		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeBlunt,
@@ -149,7 +150,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex (Hold)",
-		AttackTag:          combat.AttackTagElementalArt,
+		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeBlunt,
@@ -203,7 +204,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		icewhirlAI := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Icetide Vortex (Icewhirl)",
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,

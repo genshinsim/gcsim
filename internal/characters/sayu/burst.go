@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -26,7 +27,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Yoohoo Art: Mujina Flurry",
-		AttackTag:        combat.AttackTagElementalBurst,
+		AttackTag:        attacks.AttackTagElementalBurst,
 		ICDTag:           combat.ICDTagNone,
 		ICDGroup:         combat.ICDGroupDefault,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -120,7 +121,7 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Muji-Muji Daruma",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,

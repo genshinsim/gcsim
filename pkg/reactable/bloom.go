@@ -2,6 +2,7 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -199,7 +200,7 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.Atta
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
-		AttackTag:        combat.AttackTagBloom,
+		AttackTag:        attacks.AttackTagBloom,
 		ICDTag:           combat.ICDTagBloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -217,7 +218,7 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
-		AttackTag:        combat.AttackTagBurgeon,
+		AttackTag:        attacks.AttackTagBurgeon,
 		ICDTag:           combat.ICDTagBurgeonDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -235,7 +236,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
-		AttackTag:        combat.AttackTagHyperbloom,
+		AttackTag:        attacks.AttackTagHyperbloom,
 		ICDTag:           combat.ICDTagHyperbloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		StrikeType:       combat.StrikeTypeDefault,

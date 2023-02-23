@@ -3,6 +3,7 @@ package shenhe
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -27,7 +28,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge",
-		AttackTag:          combat.AttackTagExtra,
+		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             combat.ICDTagExtraAttack,
 		ICDGroup:           combat.ICDGroupPoleExtraAttack,
 		StrikeType:         combat.StrikeTypeSpear,

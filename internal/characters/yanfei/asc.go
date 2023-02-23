@@ -1,6 +1,7 @@
 package yanfei
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -52,7 +53,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Blazing Eye (A4)",
-			AttackTag:          combat.AttackTagExtra,
+			AttackTag:          attacks.AttackTagExtra,
 			ICDTag:             combat.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         combat.StrikeTypeDefault,

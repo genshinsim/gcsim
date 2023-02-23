@@ -2,6 +2,7 @@ package yaemiko
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -27,7 +28,7 @@ func (c *char) a4() {
 		Base: modifier.NewBase("yaemiko-a1", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			// only trigger on elemental art damage
-			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			m[attributes.DmgP] = c.Stat(attributes.EM) * 0.0015

@@ -1,6 +1,7 @@
 package traveleranemo
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -16,7 +17,7 @@ func (c *char) a1() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Slitting Wind (A1)",
-		AttackTag:  combat.AttackTagNormal,
+		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupPoleExtraAttack,
 		StrikeType: combat.StrikeTypeSlash,
@@ -55,7 +56,7 @@ func (c *char) a4() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 			return false
 		}
 		if c.StatusIsActive(a4ICDKey) {

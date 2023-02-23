@@ -3,6 +3,7 @@ package ayato
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -29,7 +30,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kamisato Art: Suiyuu",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -73,7 +74,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			active.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("ayato-burst", 90),
 				Amount: func(a *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					return m, a.Info.AttackTag == combat.AttackTagNormal
+					return m, a.Info.AttackTag == attacks.AttackTagNormal
 				},
 			})
 		}, i+burstStart)

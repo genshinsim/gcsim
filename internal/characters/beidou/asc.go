@@ -1,6 +1,7 @@
 package beidou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -23,7 +24,7 @@ func (c *char) a4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("beidou-a4-dmg", 600),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}
 			return mDmg, true

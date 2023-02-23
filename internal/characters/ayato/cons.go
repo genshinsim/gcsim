@@ -1,6 +1,7 @@
 package ayato
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -20,7 +21,7 @@ func (c *char) c1() {
 				if !ok {
 					return nil, false
 				}
-				if a.Info.AttackTag != combat.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
+				if a.Info.AttackTag != attacks.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
 					return nil, false
 				}
 				return m, true
@@ -67,7 +68,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			Abil:               "Ayato C6",
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagNormal,
+			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         combat.StrikeTypeSlash,

@@ -2,6 +2,7 @@ package noelle
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -36,7 +37,7 @@ func (c *char) a1() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A1 Shield",
-			AttackTag:  combat.AttackTagNone,
+			AttackTag:  attacks.AttackTagNone,
 		}
 		snap := c.Snapshot(&ai)
 

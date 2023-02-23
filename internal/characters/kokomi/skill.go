@@ -3,6 +3,7 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -68,7 +69,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bake-Kurage",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -41,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
@@ -49,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Prototype Archaic Proc",
-				AttackTag:  combat.AttackTagWeaponSkill,
+				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: combat.StrikeTypeDefault,

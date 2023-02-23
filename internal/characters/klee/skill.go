@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -49,7 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Jumpy Dumpty",
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagKleeFireDamage,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeBlunt,
@@ -74,7 +75,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	mineAi := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Jumpy Dumpty Mine Hit",
-		AttackTag:          combat.AttackTagElementalArt,
+		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagKleeFireDamage,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeDefault,

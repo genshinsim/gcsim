@@ -3,6 +3,7 @@ package yelan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -40,7 +41,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
-			AttackTag:  combat.AttackTagExtra,
+			AttackTag:  attacks.AttackTagExtra,
 			ICDTag:     combat.ICDTagYelanBreakthrough,
 			ICDGroup:   combat.ICDGroupYelanBreakthrough,
 			StrikeType: combat.StrikeTypePierce,
@@ -71,7 +72,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim Charge Attack",
-		AttackTag:    combat.AttackTagExtra,
+		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       combat.ICDTagNone,
 		ICDGroup:     combat.ICDGroupDefault,
 		StrikeType:   combat.StrikeTypePierce,

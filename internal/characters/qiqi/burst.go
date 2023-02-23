@@ -3,6 +3,7 @@ package qiqi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -28,7 +29,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fortune-Preserving Talisman",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -43,7 +44,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	talismanAi := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fortune-Preserving Talisman (Talisman application)",
-		AttackTag:  combat.AttackTagNone,
+		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -115,8 +116,8 @@ func (c *char) onNACAHitHook() {
 
 		// All of the below only occur on Qiqi NA/CA hits
 		switch atk.Info.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
 		default:
 			return false
 		}

@@ -3,6 +3,7 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -34,7 +35,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Eye of Stormy Judgement",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -59,7 +60,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
 				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-					if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+					if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 						return nil, false
 					}
 
@@ -113,7 +114,7 @@ func (c *char) eyeOnDamage() {
 			return false
 		}
 		//ignore EC and hydro swirl damage
-		if ae.Info.AttackTag == combat.AttackTagECDamage || ae.Info.AttackTag == combat.AttackTagSwirlHydro {
+		if ae.Info.AttackTag == attacks.AttackTagECDamage || ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
 			return false
 		}
 		//ignore self dmg
@@ -130,7 +131,7 @@ func (c *char) eyeOnDamage() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Eye of Stormy Judgement (Strike)",
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeSlash,

@@ -3,6 +3,7 @@ package nahida
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -56,7 +57,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -97,7 +98,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -183,9 +184,9 @@ func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
 		return false
 	}
 	switch ae.Info.AttackTag {
-	case combat.AttackTagBloom:
-	case combat.AttackTagHyperbloom:
-	case combat.AttackTagBurgeon:
+	case attacks.AttackTagBloom:
+	case attacks.AttackTagHyperbloom:
+	case attacks.AttackTagBurgeon:
 	default:
 		return false
 	}
@@ -220,7 +221,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification",
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNahidaSkill,
 			ICDGroup:   combat.ICDGroupNahidaSkill,
 			StrikeType: combat.StrikeTypeDefault,

@@ -3,6 +3,7 @@ package xingqiu
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -81,7 +82,7 @@ func (c *char) summonSwordWave() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Guhua Sword: Raincutter",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypePierce,

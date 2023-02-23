@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -57,10 +58,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return 0.2, false
 				}
 				switch ai.AttackTag {
-				case combat.AttackTagOverloadDamage,
-					combat.AttackTagECDamage,
-					combat.AttackTagSuperconductDamage,
-					combat.AttackTagHyperbloom:
+				case attacks.AttackTagOverloadDamage,
+					attacks.AttackTagECDamage,
+					attacks.AttackTagSuperconductDamage,
+					attacks.AttackTagHyperbloom:
 					return 0.4, false
 				}
 				return 0, false

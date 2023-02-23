@@ -3,6 +3,7 @@ package travelerdendro
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -72,7 +73,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lea Lotus Lamp",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,

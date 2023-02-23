@@ -3,6 +3,7 @@ package tartaglia
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -99,7 +100,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Flash",
-		AttackTag:  combat.AttackTagNormal,
+		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     combat.ICDTagTartagliaRiptideFlash,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeSlash,
@@ -151,7 +152,7 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Slash",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeSlash,
@@ -193,7 +194,7 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Blast",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -235,7 +236,7 @@ func (c *char) onDefeatTargets() {
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Riptide Burst",
-				AttackTag:  combat.AttackTagNormal,
+				AttackTag:  attacks.AttackTagNormal,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: combat.StrikeTypeSlash,

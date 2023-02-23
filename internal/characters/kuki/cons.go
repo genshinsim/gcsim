@@ -1,6 +1,7 @@
 package kuki
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -26,7 +27,7 @@ func (c *char) c4() {
 			return false
 		}
 		//On normal,charge and plunge attack
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra && ae.Info.AttackTag != combat.AttackTagPlunge {
+		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra && ae.Info.AttackTag != attacks.AttackTagPlunge {
 			return false
 		}
 		//make sure the person triggering the attack is on field still
@@ -42,7 +43,7 @@ func (c *char) c4() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Thundergrass Mark",
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,

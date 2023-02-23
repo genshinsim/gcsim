@@ -3,6 +3,7 @@ package reactable
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -49,7 +50,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.ElectroCharged),
-		AttackTag:        combat.AttackTagECDamage,
+		AttackTag:        attacks.AttackTagECDamage,
 		ICDTag:           combat.ICDTagECDamage,
 		ICDGroup:         combat.ICDGroupReactionB,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -86,7 +87,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 			if n.Key() != r.self.Key() {
 				return false
 			}
-			if a.Info.AttackTag != combat.AttackTagECDamage {
+			if a.Info.AttackTag != attacks.AttackTagECDamage {
 				return false
 			}
 			//ignore if this dmg instance has been wiped out due to icd

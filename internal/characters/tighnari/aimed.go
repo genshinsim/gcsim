@@ -3,6 +3,7 @@ package tighnari
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -45,7 +46,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim (Charged)",
-		AttackTag:            combat.AttackTagExtra,
+		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               combat.ICDTagNone,
 		ICDGroup:             combat.ICDGroupDefault,
 		StrikeType:           combat.StrikeTypePierce,
@@ -111,7 +112,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Wreath Arrow",
-		AttackTag:            combat.AttackTagExtra,
+		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               combat.ICDTagNone,
 		ICDGroup:             combat.ICDGroupDefault,
 		StrikeType:           combat.StrikeTypePierce,
@@ -143,7 +144,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Clusterbloom Arrow",
-		AttackTag:    combat.AttackTagExtra,
+		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       combat.ICDTagExtraAttack,
 		ICDGroup:     combat.ICDGroupTighnari,
 		StrikeType:   combat.StrikeTypePierce,
@@ -172,7 +173,7 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			ai = combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Karma Adjudged From the Leaden Fruit",
-				AttackTag:  combat.AttackTagExtra,
+				AttackTag:  attacks.AttackTagExtra,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: combat.StrikeTypePierce,

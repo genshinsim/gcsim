@@ -1,6 +1,7 @@
 package kokomi
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -19,7 +20,7 @@ func (c *char) c1(f, travel int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "At Water's Edge (C1)",
-		AttackTag:  combat.AttackTagNone,
+		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,

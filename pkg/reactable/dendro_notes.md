@@ -174,7 +174,7 @@ If the dendro core does not come in contact with `pyro` or `electro` (simple att
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
 		Abil:             string(combat.Bloom),
-		AttackTag:        combat.AttackTagBloom,
+		AttackTag:        attacks.AttackTagBloom,
 		ICDTag:           combat.ICDTagBloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		Element:          attributes.Dendro,
@@ -187,11 +187,11 @@ If the dendro core does not come in contact with `pyro` or `electro` (simple att
 
 ### Burgeon
 
-When the dendro core comes in contact with `pyro`, `burgeon` is triggered, dealing an attack with radius 5. AttackInfo is the same as `bloom` except with `combat.AttackTagBurgeon`, `combat.AttackTagBurgeon` and `combat.ICDTagBurgeon`
+When the dendro core comes in contact with `pyro`, `burgeon` is triggered, dealing an attack with radius 5. AttackInfo is the same as `bloom` except with `attacks.AttackTagBurgeon`, `attacks.AttackTagBurgeon` and `combat.ICDTagBurgeon`
 
 ### Hyperbloom
 
-When dendro core comes in contact with `electro`, `hyperbloom` is triggered, dealing an attack with radius 1. AttackInfo is the same as `bloom` except with `combat.AttackTagHyperbloom`, `combat.AttackTagHyperbloom` and `combat.ICDTagHyperbloom`
+When dendro core comes in contact with `electro`, `hyperbloom` is triggered, dealing an attack with radius 1. AttackInfo is the same as `bloom` except with `attacks.AttackTagHyperbloom`, `attacks.AttackTagHyperbloom` and `combat.ICDTagHyperbloom`
 
 ### Bloom/Burgeon/Hyperbloom self damage
 
@@ -202,7 +202,7 @@ All 3 explosions will trigger an additional attack that damages the player, with
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
 		Abil:             string(combat.Bloom),
-		AttackTag:        combat.AttackTagBloom, // or AttackTagBurgeon, AttackTagHyperbloom
+		AttackTag:        attacks.AttackTagBloom, // or AttackTagBurgeon, AttackTagHyperbloom
 		ICDTag:           combat.ICDTagBloomDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		Element:          attributes.Dendro,
@@ -302,7 +302,7 @@ AttackInfo is as follows:
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
 		Abil:             string(combat.Burning),
-		AttackTag:        combat.AttackTagBurningDamage,
+		AttackTag:        attacks.AttackTagBurningDamage,
 		ICDTag:           combat.ICDTagBurningDamage,
 		ICDGroup:         combat.ICDGroupBurning,
 		Element:          attributes.Pyro,

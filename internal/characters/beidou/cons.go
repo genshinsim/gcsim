@@ -1,6 +1,7 @@
 package beidou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -50,7 +51,7 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",
-			AttackTag:  combat.AttackTagNone,
+			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,

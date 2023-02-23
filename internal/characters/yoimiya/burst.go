@@ -3,6 +3,7 @@ package yoimiya
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -28,7 +29,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Aurous Blaze",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,
@@ -113,11 +114,11 @@ func (c *char) burstHook() {
 		}
 		//ignore if wrong tags
 		switch ae.Info.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
-		case combat.AttackTagPlunge:
-		case combat.AttackTagElementalArt:
-		case combat.AttackTagElementalBurst:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagElementalArt:
+		case attacks.AttackTagElementalBurst:
 		default:
 			return false
 		}
@@ -125,7 +126,7 @@ func (c *char) burstHook() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Aurous Blaze (Explode)",
-			AttackTag:  combat.AttackTagElementalBurst,
+			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeBlunt,

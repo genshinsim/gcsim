@@ -2,6 +2,7 @@ package mona
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -33,7 +34,7 @@ func (c *char) a1() {
 			aiExplode := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Mirror Reflection of Doom (A1 Explode)",
-				AttackTag:  combat.AttackTagElementalArt,
+				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     combat.ICDTagNone,
 				ICDGroup:   combat.ICDGroupDefault,
 				StrikeType: combat.StrikeTypeDefault,

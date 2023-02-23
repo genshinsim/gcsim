@@ -3,6 +3,7 @@ package keqing
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -44,7 +45,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:               "Stellar Restoration",
 		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagElementalArt,
+		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeDefault,
@@ -98,7 +99,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			Abil:       "Stellar Restoration (C1)",
 			ActorIndex: c.Index,
-			AttackTag:  combat.AttackTagElementalArtHold,
+			AttackTag:  attacks.AttackTagElementalArtHold,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,
@@ -129,7 +130,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Stellar Restoration (Slashing)",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeSlash,

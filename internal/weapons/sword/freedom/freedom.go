@@ -3,6 +3,7 @@ package freedom
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -94,7 +95,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 					Base: modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 						switch atk.Info.AttackTag {
-						case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
+						case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
 							return sharedVal, true
 						}
 						return nil, false

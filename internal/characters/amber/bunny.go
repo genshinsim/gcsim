@@ -1,6 +1,7 @@
 package amber
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -21,7 +22,7 @@ func (c *char) makeBunny() {
 	ai := combat.AttackInfo{
 		Abil:       "Baron Bunny",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,
@@ -103,7 +104,7 @@ func (c *char) overloadExplode() {
 			return false
 		}
 
-		if atk.Info.AttackTag != combat.AttackTagOverloadDamage {
+		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {
 			return false
 		}
 

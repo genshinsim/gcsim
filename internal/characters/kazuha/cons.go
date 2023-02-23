@@ -1,6 +1,7 @@
 package kazuha
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -74,7 +75,7 @@ func (c *char) c6() {
 		attributes.Anemo,
 		60*5,
 		true,
-		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+		attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 	)
 	// add em based buff
 	m := make([]float64, attributes.EndStatType)
@@ -82,9 +83,9 @@ func (c *char) c6() {
 		Base: modifier.NewBaseWithHitlag("kazuha-c6-dmgup", 60*5), // 5s
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			// skip if not normal/charged/plunge
-			if atk.Info.AttackTag != combat.AttackTagNormal &&
-				atk.Info.AttackTag != combat.AttackTagExtra &&
-				atk.Info.AttackTag != combat.AttackTagPlunge {
+			if atk.Info.AttackTag != attacks.AttackTagNormal &&
+				atk.Info.AttackTag != attacks.AttackTagExtra &&
+				atk.Info.AttackTag != attacks.AttackTagPlunge {
 				return nil, false
 			}
 			// apply buff

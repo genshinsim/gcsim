@@ -1,6 +1,7 @@
 package faruzan
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -36,12 +37,12 @@ func (c *char) a4() {
 		}
 
 		switch atk.Info.AttackTag {
-		case combat.AttackTagNormal,
-			combat.AttackTagExtra,
-			combat.AttackTagPlunge,
-			combat.AttackTagElementalArt,
-			combat.AttackTagElementalArtHold,
-			combat.AttackTagElementalBurst:
+		case attacks.AttackTagNormal,
+			attacks.AttackTagExtra,
+			attacks.AttackTagPlunge,
+			attacks.AttackTagElementalArt,
+			attacks.AttackTagElementalArtHold,
+			attacks.AttackTagElementalBurst:
 		default:
 			return false
 		}

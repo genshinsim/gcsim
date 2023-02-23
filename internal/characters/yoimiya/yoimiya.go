@@ -3,6 +3,7 @@ package yoimiya
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -50,7 +51,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	//infusion to normal attack only
-	if c.StatusIsActive(skillKey) && ai.AttackTag == combat.AttackTagNormal {
+	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index).

@@ -3,6 +3,7 @@ package rosaria
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -27,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Rites of Termination (Hit 1)",
-		AttackTag:          combat.AttackTagElementalBurst,
+		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeSlash,
@@ -84,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai = combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Rites of Termination (DoT)",
-			AttackTag:  combat.AttackTagElementalBurst,
+			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			Element:    attributes.Cryo,

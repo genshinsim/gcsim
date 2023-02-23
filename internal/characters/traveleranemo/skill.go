@@ -3,6 +3,7 @@ package traveleranemo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -58,7 +59,7 @@ func (c *char) SkillPress() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex (Tap)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -104,7 +105,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	aiCut := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Cutting (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeSlash,
@@ -181,7 +182,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	aiStorm := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Storm (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,

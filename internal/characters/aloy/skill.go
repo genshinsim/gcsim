@@ -3,6 +3,7 @@ package aloy
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -58,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Freeze Bomb",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -79,7 +80,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Chillwater Bomblets",
-		AttackTag:          combat.AttackTagElementalArt,
+		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagElementalArt,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeDefault,
@@ -154,7 +155,7 @@ func (c *char) coilStacks(a combat.AttackCB) {
 // Handles rushing ice state
 func (c *char) rushingIce() {
 	c.AddStatus(rushingIceKey, rushingIceDuration, true)
-	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, combat.AttackTagNormal)
+	c.Core.Player.AddWeaponInfuse(c.Index, "aloy-rushing-ice", attributes.Cryo, 600, true, attacks.AttackTagNormal)
 
 	// Rushing ice NA bonus
 	val := make([]float64, attributes.EndStatType)
@@ -162,7 +163,7 @@ func (c *char) rushingIce() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("aloy-rushing-ice", rushingIceDuration),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagNormal {
+			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				return val, true
 			}
 			return nil, false
@@ -179,7 +180,7 @@ func (c *char) coilMod() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("aloy-coil-stacks", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagNormal && c.coils > 0 {
+			if atk.Info.AttackTag == attacks.AttackTagNormal && c.coils > 0 {
 				val[attributes.DmgP] = skillCoilNABonus[c.coils-1][c.TalentLvlSkill()]
 				return val, true
 			}

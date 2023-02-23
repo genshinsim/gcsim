@@ -1,6 +1,7 @@
 package travelerdendro
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -69,10 +70,10 @@ func (c *char) a4Init() {
 		Base: modifier.NewBaseWithHitlag("dmc-a4", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
-			case combat.AttackTagElementalArt:
+			case attacks.AttackTagElementalArt:
 				m[attributes.DmgP] = c.Stat(attributes.EM) * 0.0015
 				return m, true
-			case combat.AttackTagElementalBurst:
+			case attacks.AttackTagElementalBurst:
 				m[attributes.DmgP] = c.Stat(attributes.EM) * 0.001
 				return m, true
 			default:

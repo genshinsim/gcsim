@@ -1,13 +1,14 @@
 package xingqiu
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-//start a new orbital or extended if already active; duration is length
-//and delay is first tick starting
+// start a new orbital or extended if already active; duration is length
+// and delay is first tick starting
 func (c *char) applyOrbital(duration int, delay int) {
 	src := c.Core.F
 	c.Core.Log.NewEvent(
@@ -54,7 +55,7 @@ func (c *char) orbitalTickTask(src int) func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Xingqiu Orbital",
-			AttackTag:  combat.AttackTagNone,
+			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,

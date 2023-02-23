@@ -1,6 +1,7 @@
 package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -13,7 +14,7 @@ func calcSwirlAtkDurability(consumed, src combat.Durability) combat.Durability {
 	return 1.25*(src-1) + 25
 }
 
-func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, tag combat.AttackTag, icd combat.ICDTag, dur combat.Durability, charIndex int) {
+func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd combat.ICDTag, dur combat.Durability, charIndex int) {
 	//swirl triggers two attacks; one self with no gauge
 	//and one aoe with gauge
 	ai := combat.AttackInfo{
@@ -70,7 +71,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	r.queueSwirl(
 		combat.SwirlElectro,
 		attributes.Electro,
-		combat.AttackTagSwirlElectro,
+		attacks.AttackTagSwirlElectro,
 		combat.ICDTagSwirlElectro,
 		atkDur,
 		a.Info.ActorIndex,
@@ -102,7 +103,7 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	r.queueSwirl(
 		combat.SwirlHydro,
 		attributes.Hydro,
-		combat.AttackTagSwirlHydro,
+		attacks.AttackTagSwirlHydro,
 		combat.ICDTagSwirlHydro,
 		atkDur,
 		a.Info.ActorIndex,
@@ -126,7 +127,7 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	r.queueSwirl(
 		combat.SwirlCryo,
 		attributes.Cryo,
-		combat.AttackTagSwirlCryo,
+		attacks.AttackTagSwirlCryo,
 		combat.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
@@ -151,7 +152,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	r.queueSwirl(
 		combat.SwirlPyro,
 		attributes.Pyro,
-		combat.AttackTagSwirlPyro,
+		attacks.AttackTagSwirlPyro,
 		combat.ICDTagSwirlPyro,
 		atkDur,
 		a.Info.ActorIndex,
@@ -175,7 +176,7 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	r.queueSwirl(
 		combat.SwirlCryo,
 		attributes.Cryo,
-		combat.AttackTagSwirlCryo,
+		attacks.AttackTagSwirlCryo,
 		combat.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,

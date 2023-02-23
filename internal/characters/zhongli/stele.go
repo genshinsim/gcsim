@@ -1,6 +1,7 @@
 package zhongli
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
@@ -15,7 +16,7 @@ func (c *char) newStele(dur int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Initial)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,
@@ -56,7 +57,7 @@ func (c *char) newStele(dur int) {
 	aiSnap := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Tick)",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,

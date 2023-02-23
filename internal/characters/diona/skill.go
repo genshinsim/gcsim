@@ -3,6 +3,7 @@ package diona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
@@ -131,7 +132,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Icy Paw",
-		AttackTag:  combat.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     combat.ICDTagElementalArt,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypePierce,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -50,11 +51,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		buffIcd = c.F + 1
 
-		if atk.Info.AttackTag == combat.AttackTagNormal {
+		if atk.Info.AttackTag == attacks.AttackTagNormal {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-ele", 300),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
+					if (atk.Info.AttackTag == attacks.AttackTagElementalArt) || (atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
 						m[attributes.DmgP] = buffAmount
 						return m, true
 					}
@@ -63,11 +64,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			})
 		}
 
-		if (atk.Info.AttackTag == combat.AttackTagElementalArt) || (atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
+		if (atk.Info.AttackTag == attacks.AttackTagElementalArt) || (atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("mitternachtswaltz-na", 300),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					if atk.Info.AttackTag == combat.AttackTagNormal {
+					if atk.Info.AttackTag == attacks.AttackTagNormal {
 						m[attributes.DmgP] = buffAmount
 						return m, true
 					}

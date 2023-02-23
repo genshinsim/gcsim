@@ -3,6 +3,7 @@ package travelergeo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
@@ -62,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starfell Sword",
-		AttackTag:          combat.AttackTagElementalArt,
+		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             combat.ICDTagElementalArt,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeBlunt,
@@ -147,7 +148,7 @@ func (s *stone) OnDestruct() {
 		ai := combat.AttackInfo{
 			ActorIndex:         s.char.Index,
 			Abil:               "Rockcore Meltdown",
-			AttackTag:          combat.AttackTagElementalArt,
+			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             combat.ICDTagElementalArt,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         combat.StrikeTypeBlunt,

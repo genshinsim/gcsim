@@ -3,6 +3,7 @@ package fischl
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -24,7 +25,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Midnight Phantasmagoria",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupFischl,
 		StrikeType: combat.StrikeTypeBlunt,
@@ -44,7 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Her Pilgrimage of Bleak (C4)",
-			AttackTag:  combat.AttackTagElementalBurst,
+			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupFischl,
 			StrikeType: combat.StrikeTypePierce,

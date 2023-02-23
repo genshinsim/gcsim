@@ -2,6 +2,7 @@ package xinyan
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -55,7 +56,7 @@ func (c *char) c2() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("xinyan-c2", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
 			return c.c2Buff, true

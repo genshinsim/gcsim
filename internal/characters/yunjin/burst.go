@@ -3,6 +3,7 @@ package yunjin
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -29,7 +30,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Cliffbreaker's Banner",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,
@@ -69,7 +70,7 @@ func (c *char) burstProc() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 
-		if ae.Info.AttackTag != combat.AttackTagNormal {
+		if ae.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		char := c.Core.Player.ByIndex(ae.Info.ActorIndex)

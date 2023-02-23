@@ -2,6 +2,7 @@ package xiangling
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/faruzan"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -83,7 +84,7 @@ func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
 }
 
 func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	if atk.Info.AttackTag != combat.AttackTagElementalArt {
+	if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 		return 0, false
 	}
 	// check pyro window

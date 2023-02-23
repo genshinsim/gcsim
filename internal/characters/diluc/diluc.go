@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -75,9 +76,9 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	if c.StatusIsActive(burstBuffKey) {
 		//infusion to attacks only
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagPlunge:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -111,7 +112,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					atk := combat.AttackInfo{
 						ActorIndex:       char.Index,
 						Abil:             "Sea-Dyed Foam",
-						AttackTag:        combat.AttackTagNoneStat,
+						AttackTag:        attacks.AttackTagNoneStat,
 						ICDTag:           combat.ICDTagNone,
 						ICDGroup:         combat.ICDGroupDefault,
 						StrikeType:       combat.StrikeTypeDefault,

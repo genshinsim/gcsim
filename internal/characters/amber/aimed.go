@@ -3,6 +3,7 @@ package amber
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -45,7 +46,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:         "Aim (Charged)",
 		ActorIndex:   c.Index,
-		AttackTag:    combat.AttackTagExtra,
+		AttackTag:    attacks.AttackTagExtra,
 		ICDTag:       combat.ICDTagExtraAttack,
 		ICDGroup:     combat.ICDGroupAmber,
 		StrikeType:   combat.StrikeTypePierce,

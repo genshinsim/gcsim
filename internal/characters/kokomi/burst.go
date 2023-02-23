@@ -3,6 +3,7 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -41,7 +42,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Nereid's Ascension",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagElementalBurst,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -56,7 +57,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Status.Add(burstKey, 10*60)
 
 	// update jellyfish flat damage
-	c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)
+	c.skillFlatDmg = c.burstDmgBonus(attacks.AttackTagElementalArt)
 
 	if c.Base.Ascension >= 1 {
 		c.Core.Tasks.Add(c.a1, 46)
@@ -88,16 +89,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 // Helper function for determining whether burst damage bonus should apply
-func (c *char) burstDmgBonus(a combat.AttackTag) float64 {
+func (c *char) burstDmgBonus(a attacks.AttackTag) float64 {
 	if c.Core.Status.Duration("kokomiburst") == 0 {
 		return 0
 	}
 	switch a {
-	case combat.AttackTagNormal:
+	case attacks.AttackTagNormal:
 		return burstBonusNormal[c.TalentLvlBurst()] * c.MaxHP()
-	case combat.AttackTagExtra:
+	case attacks.AttackTagExtra:
 		return burstBonusCharge[c.TalentLvlBurst()] * c.MaxHP()
-	case combat.AttackTagElementalArt:
+	case attacks.AttackTagElementalArt:
 		return burstBonusSkill[c.TalentLvlBurst()] * c.MaxHP()
 	default:
 		return 0
@@ -158,7 +159,7 @@ func (c *char) onExitField() {
 		// update jellyfish flat damage. regardless if burst is active or not
 		if prev == c.Index {
 			c.swapEarlyF = c.Core.F
-			c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)
+			c.skillFlatDmg = c.burstDmgBonus(attacks.AttackTagElementalArt)
 		}
 		c.Core.Status.Delete("kokomiburst")
 		return false

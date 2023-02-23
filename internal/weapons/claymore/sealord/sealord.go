@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -38,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("luxurious-sea-lord", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagElementalBurst {
+			if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
 				return val, true
 			}
 			return nil, false
@@ -58,14 +59,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+		if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 			return false
 		}
 		char.AddStatus(icdKey, 900, true)
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Luxurious Sea-Lord Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
+			AttackTag:  attacks.AttackTagWeaponSkill,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,

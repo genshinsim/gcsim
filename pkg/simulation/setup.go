@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -292,7 +293,7 @@ func SetupMisc(c *core.Core) {
 			return false
 		}
 		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagSuperconductDamage {
+		if atk.Info.AttackTag != attacks.AttackTagSuperconductDamage {
 			return false
 		}
 		//add shred

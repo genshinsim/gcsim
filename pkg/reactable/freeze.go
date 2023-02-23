@@ -1,6 +1,7 @@
 package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -71,7 +72,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Shatter),
-		AttackTag:        combat.AttackTagShatter,
+		AttackTag:        attacks.AttackTagShatter,
 		ICDTag:           combat.ICDTagShatter,
 		ICDGroup:         combat.ICDGroupReactionA,
 		StrikeType:       combat.StrikeTypeDefault,
@@ -109,7 +110,7 @@ func (r *Reactable) checkFreeze() {
 			ActorIndex:  0,
 			DamageSrc:   r.self.Key(),
 			Abil:        "Freeze Broken",
-			AttackTag:   combat.AttackTagNone,
+			AttackTag:   attacks.AttackTagNone,
 			ICDTag:      combat.ICDTagNone,
 			ICDGroup:    combat.ICDGroupDefault,
 			StrikeType:  combat.StrikeTypeDefault,

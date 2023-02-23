@@ -3,6 +3,7 @@ package candace
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -33,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Wagtail's Tide (Q)",
-		AttackTag:          combat.AttackTagElementalBurst,
+		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagNone,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeDefault,
@@ -93,7 +94,7 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 			attributes.Hydro,
 			60,
 			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
 	}
 	c.QueueCharTask(func() { c.burstInfuseFn(char, src) }, 30)
@@ -113,7 +114,7 @@ func (c *char) burstSwap() {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Sacred Rite: Wagtail's Tide (Wave)",
-			AttackTag:          combat.AttackTagElementalBurst,
+			AttackTag:          attacks.AttackTagElementalBurst,
 			ICDTag:             combat.ICDTagNone,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         combat.StrikeTypeDefault,
@@ -143,7 +144,7 @@ func (c *char) burstInit(char *character.CharWrapper) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false
 			}
-			if atk.Info.AttackTag != combat.AttackTagNormal {
+			if atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
 			}
 			if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {

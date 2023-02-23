@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -47,7 +48,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
-			AttackTag:          combat.AttackTagNormal,
+			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         combat.StrikeTypeSlash,
@@ -133,7 +134,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Pactsworn Pathclearer %v", c.normalBCounter),
-			AttackTag:          combat.AttackTagNormal,
+			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             combat.ICDTagNormalAttack,
 			ICDGroup:           combat.ICDGroupDefault,
 			StrikeType:         combat.StrikeTypeSlash,

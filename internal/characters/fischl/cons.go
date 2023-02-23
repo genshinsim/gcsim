@@ -1,6 +1,7 @@
 package fischl
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -20,7 +21,7 @@ func (c *char) c6() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl C6",
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupFischl,
 			StrikeType: combat.StrikeTypePierce,

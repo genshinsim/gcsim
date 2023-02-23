@@ -1,6 +1,7 @@
 ﻿package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -75,7 +76,7 @@ func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Burning),
-		AttackTag:        combat.AttackTagBurningDamage,
+		AttackTag:        attacks.AttackTagBurningDamage,
 		ICDTag:           combat.ICDTagBurningDamage,
 		ICDGroup:         combat.ICDGroupBurning,
 		StrikeType:       combat.StrikeTypeDefault,

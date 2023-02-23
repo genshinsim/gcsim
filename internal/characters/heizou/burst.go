@@ -3,6 +3,7 @@ package heizou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -43,7 +44,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	auraCheck := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris (Aura check)",
-		AttackTag:  combat.AttackTagNone,
+		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -60,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fudou Style Vacuum Slugger",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -102,7 +103,7 @@ func (c *char) irisDmg(t combat.Target) {
 	aiAbs := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,

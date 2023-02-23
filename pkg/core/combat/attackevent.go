@@ -1,6 +1,7 @@
 package combat
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
 
@@ -27,7 +28,7 @@ type AttackInfo struct {
 	ActorIndex       int       //character this attack belongs to
 	DamageSrc        TargetKey //source of this attack; should be a unique key identifying the target
 	Abil             string    //name of ability triggering the damage
-	AttackTag        AttackTag
+	AttackTag        attacks.AttackTag
 	ICDTag           ICDTag
 	ICDGroup         ICDGroup
 	Element          attributes.Element //element of ability

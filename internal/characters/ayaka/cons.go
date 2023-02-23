@@ -2,6 +2,7 @@ package ayaka
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -86,7 +87,7 @@ func (c *char) c6AddBuff() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("ayaka-c6", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagExtra {
+			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}
 			return m, true

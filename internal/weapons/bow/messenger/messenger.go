@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -58,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		ai := combat.AttackInfo{
 			ActorIndex:   char.Index,
 			Abil:         "Messenger Proc",
-			AttackTag:    combat.AttackTagNone,
+			AttackTag:    attacks.AttackTagNone,
 			ICDTag:       combat.ICDTagNone,
 			ICDGroup:     combat.ICDGroupDefault,
 			StrikeType:   combat.StrikeTypePierce,

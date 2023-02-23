@@ -3,6 +3,7 @@ package yaemiko
 import (
 	"log"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -111,7 +112,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		ai := combat.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
 			ActorIndex: c.Index,
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			Mult:       skill[lvl][c.TalentLvlSkill()],
 			ICDTag:     combat.ICDTagElementalArt,
 			ICDGroup:   combat.ICDGroupDefault,

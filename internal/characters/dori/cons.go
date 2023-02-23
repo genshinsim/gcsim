@@ -1,6 +1,7 @@
 package dori
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -19,7 +20,7 @@ func (c *char) c2(travel int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Special Franchise",
-		AttackTag:  combat.AttackTagNone,
+		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagDoriC2,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -47,7 +48,7 @@ func (c *char) c1() {
 							return 0, false
 						}
 						// Electro-Charged DMG increases by 15%.
-						if ai.AttackTag == combat.AttackTagECDamage {
+						if ai.AttackTag == attacks.AttackTagECDamage {
 							return 0.15, false
 						}
 						// Vaporize DMG increases by 15%.
@@ -56,7 +57,7 @@ func (c *char) c1() {
 							return 0.15, false
 						}
 						// Hydro Swirl DMG increases by 15%.
-						if ai.AttackTag == combat.AttackTagSwirlHydro {
+						if ai.AttackTag == attacks.AttackTagSwirlHydro {
 							return 0.15, false
 						}
 						return 0, false
@@ -89,7 +90,7 @@ func (c *char) c2(a combat.AttackCB) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
+		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
@@ -157,7 +158,7 @@ func (c *char) c6(src int) func() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c6Key, 8*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagExtra {
+				if atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false
 				}
 				m[attributes.DmgP] = 0.60 * float64(c.c6Stacks)

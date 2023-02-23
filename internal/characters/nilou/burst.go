@@ -3,6 +3,7 @@ package nilou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -29,7 +30,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dance of Abzendegi: Distant Dreams, Listening Spring",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeSlash,
@@ -68,7 +69,7 @@ func (c *char) LingeringAeon(a combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lingering Aeon",
-			AttackTag:  combat.AttackTagElementalBurst,
+			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagNone,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeDefault,

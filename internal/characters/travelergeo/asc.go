@@ -1,6 +1,7 @@
 package travelergeo
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -21,7 +22,7 @@ func (c *char) a4() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Frenzied Rockslide (A4)",
-		AttackTag:  combat.AttackTagNormal,
+		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,

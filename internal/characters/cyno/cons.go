@@ -2,6 +2,7 @@ package cyno
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -157,7 +158,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         "Raiment: Just Scales (C6)",
-			AttackTag:    combat.AttackTagElementalArt,
+			AttackTag:    attacks.AttackTagElementalArt,
 			ICDTag:       combat.ICDTagElementalArt,
 			ICDGroup:     combat.ICDGroupDefault,
 			StrikeType:   combat.StrikeTypeSlash,

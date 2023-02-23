@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -40,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Fang",
-		AttackTag:  combat.AttackTagElementalBurst,
+		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeBlunt,
@@ -93,7 +94,7 @@ func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("The Wolf Within %v", normalCounter),
-			AttackTag:  combat.AttackTagElementalBurst,
+			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     combat.ICDTagElementalBurst,
 			ICDGroup:   combat.ICDGroupDefault,
 			StrikeType: combat.StrikeTypeSlash,

@@ -1,6 +1,7 @@
 package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -72,7 +73,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
 		Abil:             string(combat.Superconduct),
-		AttackTag:        combat.AttackTagSuperconductDamage,
+		AttackTag:        attacks.AttackTagSuperconductDamage,
 		ICDTag:           combat.ICDTagSuperconductDamage,
 		ICDGroup:         combat.ICDGroupReactionA,
 		StrikeType:       combat.StrikeTypeDefault,

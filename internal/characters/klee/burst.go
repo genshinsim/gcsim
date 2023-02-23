@@ -3,6 +3,7 @@ package klee
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -27,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash",
-		AttackTag:          combat.AttackTagElementalBurst,
+		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             combat.ICDTagElementalBurst,
 		ICDGroup:           combat.ICDGroupDefault,
 		StrikeType:         combat.StrikeTypeDefault,
@@ -131,7 +132,7 @@ func (c *char) onExitField() {
 			ai := combat.AttackInfo{
 				ActorIndex:         c.Index,
 				Abil:               "Sparks'n'Splash C4",
-				AttackTag:          combat.AttackTagNone,
+				AttackTag:          attacks.AttackTagNone,
 				ICDTag:             combat.ICDTagNone,
 				ICDGroup:           combat.ICDGroupDefault,
 				StrikeType:         combat.StrikeTypeDefault,

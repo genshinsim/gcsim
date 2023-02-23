@@ -2,6 +2,7 @@ package wanderer
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -71,7 +72,7 @@ func (c *char) a4() bool {
 	a4Info := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gales of Reverie",
-		AttackTag:  combat.AttackTagNone,
+		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     combat.ICDTagWandererA4,
 		ICDGroup:   combat.ICDGroupWandererA4,
 		StrikeType: combat.StrikeTypeDefault,

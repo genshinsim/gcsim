@@ -1,6 +1,7 @@
 package razor
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -82,7 +83,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lupus Fulguris",
-		AttackTag:  combat.AttackTagNone, // TODO: it has another tag?
+		AttackTag:  attacks.AttackTagNone, // TODO: it has another tag?
 		ICDTag:     combat.ICDTagNone,
 		ICDGroup:   combat.ICDGroupDefault,
 		StrikeType: combat.StrikeTypeDefault,
