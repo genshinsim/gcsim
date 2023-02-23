@@ -3,6 +3,7 @@ package combat
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 type AttackEvent struct {
@@ -42,12 +43,12 @@ type AttackInfo struct {
 	IgnoreDefPercent float64 //by default this value is 0; if = 1 then the attack will ignore defense; raiden c2 should be set to 0.6 (i.e. ignore 60%)
 	IgnoreInfusion   bool
 	//amp info
-	Amped   bool         //new flag used by new reaction system
-	AmpMult float64      //amplier
-	AmpType ReactionType //melt or vape i guess
+	Amped   bool                   //new flag used by new reaction system
+	AmpMult float64                //amplier
+	AmpType reactions.ReactionType //melt or vape i guess
 	// catalyze info
 	Catalyzed     bool
-	CatalyzedType ReactionType
+	CatalyzedType reactions.ReactionType
 	//special flag for sim generated attack
 	SourceIsSim bool
 	DoNotLog    bool

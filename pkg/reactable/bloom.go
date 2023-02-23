@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -204,7 +205,7 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.Atta
 		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(combat.Bloom),
+		Abil:             string(reactions.Bloom),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
@@ -222,7 +223,7 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 		ICDTag:           attacks.ICDTagBurgeonDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(combat.Burgeon),
+		Abil:             string(reactions.Burgeon),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
@@ -240,7 +241,7 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 		ICDTag:           attacks.ICDTagHyperbloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
 		StrikeType:       attacks.StrikeTypeDefault,
-		Abil:             string(combat.Hyperbloom),
+		Abil:             string(reactions.Hyperbloom),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)

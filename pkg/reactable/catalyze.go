@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
@@ -20,7 +21,7 @@ func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
-	a.Info.CatalyzedType = combat.Aggravate
+	a.Info.CatalyzedType = reactions.Aggravate
 	a.Info.FlatDmg += 1.15 * r.calcCatalyzeDmg(a.Info, em)
 	return true
 }
@@ -39,7 +40,7 @@ func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
 	//em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
-	a.Info.CatalyzedType = combat.Spread
+	a.Info.CatalyzedType = reactions.Spread
 	a.Info.FlatDmg += 1.25 * r.calcCatalyzeDmg(a.Info, em)
 	return true
 }

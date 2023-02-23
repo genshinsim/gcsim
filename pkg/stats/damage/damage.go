@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -55,9 +56,9 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 		if attack.Info.Catalyzed {
 			switch attack.Info.CatalyzedType {
-			case combat.Aggravate:
+			case reactions.Aggravate:
 				event.ReactionModifier = stats.Aggravate
-			case combat.Spread:
+			case reactions.Spread:
 				event.ReactionModifier = stats.Spread
 			}
 		}

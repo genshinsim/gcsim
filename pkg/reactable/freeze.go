@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
@@ -71,7 +72,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	ai := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.Shatter),
+		Abil:             string(reactions.Shatter),
 		AttackTag:        attacks.AttackTagShatter,
 		ICDTag:           attacks.ICDTagShatter,
 		ICDGroup:         attacks.ICDGroupReactionA,

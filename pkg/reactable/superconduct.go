@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
@@ -72,7 +73,7 @@ func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.Superconduct),
+		Abil:             string(reactions.Superconduct),
 		AttackTag:        attacks.AttackTagSuperconductDamage,
 		ICDTag:           attacks.ICDTagSuperconductDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,

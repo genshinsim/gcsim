@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
@@ -75,7 +76,7 @@ func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.Burning),
+		Abil:             string(reactions.Burning),
 		AttackTag:        attacks.AttackTagBurningDamage,
 		ICDTag:           attacks.ICDTagBurningDamage,
 		ICDGroup:         attacks.ICDGroupBurning,

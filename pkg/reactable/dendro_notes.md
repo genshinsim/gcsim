@@ -173,7 +173,7 @@ If the dendro core does not come in contact with `pyro` or `electro` (simple att
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
-		Abil:             string(combat.Bloom),
+		Abil:             string(reactions.Bloom),
 		AttackTag:        attacks.AttackTagBloom,
 		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
@@ -201,7 +201,7 @@ All 3 explosions will trigger an additional attack that damages the player, with
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
-		Abil:             string(combat.Bloom),
+		Abil:             string(reactions.Bloom),
 		AttackTag:        attacks.AttackTagBloom, // or AttackTagBurgeon, AttackTagHyperbloom
 		ICDTag:           attacks.ICDTagBloomDamage,
 		ICDGroup:         attacks.ICDGroupReactionA,
@@ -301,7 +301,7 @@ AttackInfo is as follows:
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
-		Abil:             string(combat.Burning),
+		Abil:             string(reactions.Burning),
 		AttackTag:        attacks.AttackTagBurningDamage,
 		ICDTag:           attacks.ICDTagBurningDamage,
 		ICDGroup:         attacks.ICDGroupBurning,

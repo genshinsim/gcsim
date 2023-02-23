@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
@@ -49,7 +50,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.ElectroCharged),
+		Abil:             string(reactions.ElectroCharged),
 		AttackTag:        attacks.AttackTagECDamage,
 		ICDTag:           attacks.ICDTagECDamage,
 		ICDGroup:         attacks.ICDGroupReactionB,

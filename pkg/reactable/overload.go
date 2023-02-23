@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
@@ -42,7 +43,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.Overload),
+		Abil:             string(reactions.Overload),
 		AttackTag:        attacks.AttackTagOverloadDamage,
 		ICDTag:           attacks.ICDTagOverloadDamage,
 		ICDGroup:         attacks.ICDGroupReactionB,
