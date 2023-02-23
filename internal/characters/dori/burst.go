@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				External:   true,
 			})
 			idx := c.Core.Player.ActiveChar().Index
-			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
+			if c.Core.F > icdSrc[idx]+attacks.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
 				dur := combat.Durability(25)
 				if p.AuraCount() == 0 {
 					dur = 20

@@ -81,3 +81,29 @@ const (
 	ICDGroupAlhaithamExtraAttack //CA
 	ICDGroupLength
 )
+
+var ICDGroupResetTimer = []int{
+	150, //default
+	60,  //amber
+	60,  //venti
+	300, //fischl
+	300, //diluc
+	30,  //pole extra
+	6,   //xiao dash
+	18,  //yelan pew pew
+	120, //yelan burst
+	180, //collei burst
+	150, //tighnari
+	150, //cyno skill bolts
+	180, //dori burst
+	114, //nilou
+	30,  //reaction a
+	30,  //reaciton b
+	120, //burning
+	60,  //nahida skill
+	180, //layla
+	120, //wanderer c6
+	60,  //wanderer a4
+	720, //alhaitham projection
+	120, //alhaitham CA
+}
