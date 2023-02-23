@@ -2,11 +2,13 @@ package noelle
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a1IcdKey = "noelle-a1-icd"
@@ -36,7 +38,7 @@ func (c *char) a1() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "A1 Shield",
-			AttackTag:  combat.AttackTagNone,
+			AttackTag:  attacks.AttackTagNone,
 		}
 		snap := c.Snapshot(&ai)
 
@@ -62,7 +64,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 	}
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {

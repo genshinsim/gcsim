@@ -7,7 +7,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -53,7 +53,7 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 	if elekey == attributes.UnknownElement {
 		return 0, fmt.Errorf("bad element condition: invalid element %v", ele)
 	}
-	result := combat.Durability(0)
+	result := reactions.Durability(0)
 	for i := reactable.ModifierInvalid; i < reactable.EndReactableModifier; i++ {
 		if i.Element() == elekey && e.Durability[i] > reactable.ZeroDur && e.Durability[i] > result {
 			result = e.Durability[i]

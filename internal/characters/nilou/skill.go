@@ -5,9 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -92,10 +95,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dance of Haftkarsvar",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    skill[c.TalentLvlSkill()] * c.MaxHP(),
@@ -125,7 +128,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) initialParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(initialParticleICDKey) {
@@ -176,7 +179,7 @@ func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.Action
 }
 
 func (c *char) pirouetteParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pirouetteParticleICDKey) {
@@ -201,10 +204,10 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Sword Dance %v", s),
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    swordDance[s][c.TalentLvlSkill()] * c.MaxHP(),
@@ -212,7 +215,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	centerTarget := c.Core.Combat.Player()
 	if s == 2 {
 		ai.Abil = "Luminous Illusion"
-		ai.StrikeType = combat.StrikeTypePierce
+		ai.StrikeType = attacks.StrikeTypePierce
 		centerTarget = c.Core.Combat.PrimaryTarget()
 
 		if t, ok := p["travel"]; ok {
@@ -222,14 +225,14 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	ap := combat.NewCircleHit(
 		c.Core.Combat.Player(),
 		centerTarget,
-		combat.Point{Y: swordDanceOffsets[s]},
+		geometry.Point{Y: swordDanceOffsets[s]},
 		swordDanceHitboxes[s][0],
 	)
 	if s == 0 {
 		ap = combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			centerTarget,
-			combat.Point{Y: swordDanceOffsets[s]},
+			geometry.Point{Y: swordDanceOffsets[s]},
 			swordDanceHitboxes[s][0],
 			swordDanceHitboxes[s][1],
 		)
@@ -254,24 +257,24 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Whirling Steps %v", s),
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    whirlingSteps[s][c.TalentLvlSkill()] * c.MaxHP(),
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		combat.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+		geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 		whirlingStepsHitboxes[s][0],
 	)
 	if s == 2 {
 		ai.Abil = "Water Wheel"
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
+			geometry.Point{X: whirlingStepsOffsets[s][0], Y: whirlingStepsOffsets[s][1]},
 			whirlingStepsHitboxes[s][0],
 			whirlingStepsHitboxes[s][1],
 		)
@@ -300,10 +303,10 @@ func (c *char) TranquilityAura(src int) func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tranquility Aura",
-			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagNilouTranquilityAura,
-			ICDGroup:   combat.ICDGroupNilou,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagNone,
+			ICDTag:     attacks.ICDTagNilouTranquilityAura,
+			ICDGroup:   attacks.ICDGroupNilou,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}

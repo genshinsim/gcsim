@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -22,7 +23,7 @@ func TestQuicken(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -30,7 +31,7 @@ func TestQuicken(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -59,7 +60,7 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -67,7 +68,7 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -75,7 +76,7 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(combat.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 

@@ -1,6 +1,7 @@
 package candace
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -33,7 +34,7 @@ func (c *char) c6() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
-		if atk.Info.AttackTag != combat.AttackTagNormal {
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
@@ -58,10 +59,10 @@ func (c *char) c6() {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "The Overflow (C6)",
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagNone,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			FlatDmg:            0.15 * c.MaxHP(),

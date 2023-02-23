@@ -3,8 +3,11 @@ package keqing
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -44,10 +47,10 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:               "Stellar Restoration",
 		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -98,10 +101,10 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			Abil:       "Stellar Restoration (C1)",
 			ActorIndex: c.Index,
-			AttackTag:  combat.AttackTagElementalArtHold,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArtHold,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       .5,
@@ -119,7 +122,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		if hits == 2 {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 2),
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 2),
 				skillRecastHitmark,
 				skillRecastHitmark,
 			)
@@ -129,10 +132,10 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Stellar Restoration (Slashing)",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 50,
 		Mult:       skillPress[c.TalentLvlSkill()],
@@ -140,7 +143,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3),
 		skillRecastHitmark,
 		skillRecastHitmark,
 		c.particleCB,
@@ -161,7 +164,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

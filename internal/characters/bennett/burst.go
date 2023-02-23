@@ -4,8 +4,10 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -38,16 +40,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fantastic Voyage",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	const radius = 6.0
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, radius)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, radius)
 	c.Core.QueueAttack(ai, burstArea, 37, 37)
 
 	// add 13 ticks starting from t=0s to t=12s
@@ -130,7 +132,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 						attributes.Pyro,
 						burstBuffDuration,
 						true,
-						combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+						attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 					)
 				}
 			}

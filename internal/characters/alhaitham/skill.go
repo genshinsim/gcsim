@@ -5,9 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillTapFrames []int
@@ -61,10 +64,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form",
 		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               rushAtk[c.TalentLvlSkill()],
@@ -73,7 +76,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1}, 2.25), skillTapHitmark, skillTapHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1}, 2.25), skillTapHitmark, skillTapHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 15)
 
@@ -90,10 +93,10 @@ func (c *char) SkillHold() action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:               "Universality: An Elaboration on Form (Hold)",
 		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               rushAtk[c.TalentLvlSkill()],
@@ -102,7 +105,7 @@ func (c *char) SkillHold() action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: 2}, 2.25), skillHoldHitmark, skillHoldHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 2}, 2.25), skillHoldHitmark, skillHoldHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 23)
 
@@ -192,7 +195,7 @@ func (c *char) mirrorLoss(src int, consumed int) func() {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -218,10 +221,10 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		return
 	}
 	//ignore if it isn't NA/CA/Plunge
-	if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra && ae.Info.AttackTag != combat.AttackTagPlunge {
+	if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra && ae.Info.AttackTag != attacks.AttackTagPlunge {
 		return
 	}
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 
@@ -231,17 +234,17 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	}
 
 	snapshotTiming := snapshotTimings[c.mirrorCount-1]
-	strikeType := combat.StrikeTypeSlash
+	strikeType := attacks.StrikeTypeSlash
 	if c.mirrorCount == 3 {
-		strikeType = combat.StrikeTypeSpear
+		strikeType = attacks.StrikeTypeSpear
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Chisel-Light Mirror: Projection Attack %v", c.mirrorCount),
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupAlhaithamProjectionAttack,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupAlhaithamProjectionAttack,
 		StrikeType: strikeType,
 		Element:    attributes.Dendro,
 		Durability: 25,
@@ -254,10 +257,10 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	var mirrorsHitmark []int
 	switch c.mirrorCount {
 	case 3:
-		ap = combat.NewCircleHitOnTarget(player, combat.Point{Y: 4}, 4)
+		ap = combat.NewCircleHitOnTarget(player, geometry.Point{Y: 4}, 4)
 		mirrorsHitmark = mirror3Hitmarks
 	case 2:
-		ap = combat.NewCircleHitOnTargetFanAngle(player, combat.Point{Y: -0.1}, 5.5, 180)
+		ap = combat.NewCircleHitOnTargetFanAngle(player, geometry.Point{Y: -0.1}, 5.5, 180)
 		mirrorsHitmark = mirror2HitmarksLeft
 		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
 			mirrorsHitmark = mirror2HitmarksRight

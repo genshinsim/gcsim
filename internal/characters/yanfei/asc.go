@@ -1,9 +1,11 @@
 package yanfei
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -35,7 +37,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
 		trg := a.Target
-		if trg.Type() != combat.TargettableEnemy {
+		if trg.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.Core.Player.Active() != c.Index {
@@ -52,10 +54,10 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Blazing Eye (A4)",
-			AttackTag:          combat.AttackTagExtra,
-			ICDTag:             combat.ICDTagNone,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			AttackTag:          attacks.AttackTagExtra,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
 			Mult:               0.8,

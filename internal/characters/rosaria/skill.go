@@ -3,8 +3,11 @@ package rosaria
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -29,10 +32,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ravaging Confession (Hit 1)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skill[0][c.TalentLvlSkill()],
@@ -51,7 +54,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 2, 4),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 2, 4),
 		skillHitmark,
 		skillHitmark,
 		a1CB,
@@ -64,10 +67,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ravaging Confession (Hit 2)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skill[1][c.TalentLvlSkill()],
@@ -79,7 +82,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		//second hit is 14 frames after the first (if we exclude hitlag)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 2.8),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.8),
 			0,
 			0,
 			c.particleCB, // Particles are emitted after the second hit lands
@@ -99,7 +102,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

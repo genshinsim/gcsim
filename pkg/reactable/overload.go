@@ -1,16 +1,18 @@
 package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Electro:
 		//must have pyro; pyro cant coexist (for now) so ok to ignore count?
@@ -41,11 +43,11 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.Overload),
-		AttackTag:        combat.AttackTagOverloadDamage,
-		ICDTag:           combat.ICDTagOverloadDamage,
-		ICDGroup:         combat.ICDGroupReactionB,
-		StrikeType:       combat.StrikeTypeBlunt,
+		Abil:             string(reactions.Overload),
+		AttackTag:        attacks.AttackTagOverloadDamage,
+		ICDTag:           attacks.ICDTagOverloadDamage,
+		ICDGroup:         attacks.ICDGroupReactionB,
+		StrikeType:       attacks.StrikeTypeBlunt,
 		Element:          attributes.Pyro,
 		IgnoreDefPercent: 1,
 	}

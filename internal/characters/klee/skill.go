@@ -5,9 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -49,10 +51,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Jumpy Dumpty",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagKleeFireDamage,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagKleeFireDamage,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       jumpy[c.TalentLvlSkill()],
@@ -74,10 +76,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	mineAi := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Jumpy Dumpty Mine Hit",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagKleeFireDamage,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagKleeFireDamage,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               mine[c.TalentLvlSkill()],
@@ -147,7 +149,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) makeParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {

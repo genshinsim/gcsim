@@ -4,7 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -17,7 +17,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	burstPos                   combat.Point
+	burstPos                   geometry.Point
 	burstRadius                float64
 	burstOverflowingLotuslight int
 	skillC1                    bool // this variable also ensures that C1 only restores energy once per cast

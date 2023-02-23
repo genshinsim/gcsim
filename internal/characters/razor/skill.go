@@ -3,9 +3,12 @@ package razor
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -77,10 +80,10 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Claw and Thunder (Press)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               skillPress[c.TalentLvlSkill()],
@@ -108,7 +111,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{Y: 1},
+			geometry.Point{Y: 1},
 			radius,
 			240,
 		),
@@ -130,7 +133,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 }
 
 func (c *char) pressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -144,10 +147,10 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Claw and Thunder (Hold)",
-		AttackTag:  combat.AttackTagElementalArtHold,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArtHold,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
@@ -179,7 +182,7 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 }
 
 func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {
@@ -191,7 +194,7 @@ func (c *char) holdParticleCB(a combat.AttackCB) {
 
 func (c *char) addSigil(done bool) combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {

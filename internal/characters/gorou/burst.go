@@ -3,6 +3,7 @@ package gorou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -27,10 +28,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Juuga: Forward Unto Victory",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       burst[c.TalentLvlBurst()],
@@ -64,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			// TODO: not sure if this actually snapshots stats
 			// ai := combat.AttackInfo{
 			// 	Abil:      "Inuzaka All-Round Defense C4",
-			// 	AttackTag: combat.AttackTagNone,
+			// 	AttackTag: attacks.AttackTagNone,
 			// }
 			c.healFieldStats, _ = c.Stats()
 			c.Core.Tasks.Add(c.gorouBurstHealField(c.Core.F), 90)
@@ -106,10 +107,10 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Crystal Collapse",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       burstTick[c.TalentLvlBurst()],

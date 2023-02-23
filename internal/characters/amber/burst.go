@@ -3,8 +3,10 @@ package amber
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -25,10 +27,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Fiery Rain",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupAmber,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupAmber,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],
@@ -38,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	burstCenter := c.Core.Combat.PrimaryTarget().Pos()
 	// 2sec duration, spawn arrow every .4s at a random position, burstRadius from burst center
 	for i := 24; i <= 120; i += 24 {
-		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
+		arrowPos := geometry.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
@@ -48,7 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// 2sec duration, spawn arrow every .6s at a random position burstRadius from burst center
 	for i := 36; i <= 120; i += 36 {
-		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
+		arrowPos := geometry.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
@@ -58,7 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// 2sec duration, spawn arrow every .2s between 0.1m and burstRadius from burst center
 	for i := 12; i <= 120; i += 12 {
-		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, 0.1, c.burstRadius, c.Core.Rand)
+		arrowPos := geometry.CalcRandomPointFromCenter(burstCenter, 0.1, c.burstRadius, c.Core.Rand)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,

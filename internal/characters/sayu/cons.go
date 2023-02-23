@@ -1,6 +1,7 @@
 package sayu
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -21,7 +22,7 @@ func (c *char) c2() {
 			if atk.Info.ActorIndex != c.Index {
 				return nil, false
 			}
-			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 				return nil, false
 			}
 			m[attributes.DmgP] = c.c2Bonus

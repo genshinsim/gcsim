@@ -3,12 +3,15 @@ package chongyun
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -38,10 +41,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Spirit Blade: Chonghua's Layered Frost",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagElementalArt,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagElementalArt,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Cryo,
 		Durability:         50,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -49,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.09 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 8)
+	c.skillArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 8)
 	c4CB := c.makeC4Callback()
 	c.Core.QueueAttack(
 		ai,
@@ -63,10 +66,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Blade: Chonghua's Layered Frost (A4)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -158,7 +161,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -205,7 +208,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 			attributes.Cryo,
 			infuseDur[c.TalentLvlSkill()],
 			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
 		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
 			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])

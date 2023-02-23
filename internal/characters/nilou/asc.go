@@ -1,6 +1,7 @@
 package nilou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -93,7 +94,7 @@ func (c *char) a4() {
 		this.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				if ai.AttackTag != combat.AttackTagBloom {
+				if ai.AttackTag != attacks.AttackTagBloom {
 					return 0, false
 				}
 

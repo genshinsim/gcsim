@@ -1,6 +1,7 @@
 package chongyun
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -45,7 +46,7 @@ func (c *char) c6() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("chongyun-c6", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false
 				}
 				x, ok := t.(*enemy.Enemy)

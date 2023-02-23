@@ -3,10 +3,13 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -51,10 +54,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Musou Shinsetsu",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 50,
 		Mult:       burstBase[c.TalentLvlBurst()],
@@ -72,7 +75,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Write("stacks", c.stacksConsumed)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 13, 8),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 13, 8),
 			0,
 			0,
 		)
@@ -90,7 +93,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) burstRestorefunc(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.Core.F > c.restoreICD && c.restoreCount < 5 {

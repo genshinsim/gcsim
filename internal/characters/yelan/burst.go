@@ -3,8 +3,10 @@ package yelan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -25,10 +27,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Depth-Clarion Dice",
-		AttackTag:        combat.AttackTagElementalBurst,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypePierce,
+		AttackTag:        attacks.AttackTagElementalBurst,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypePierce,
 		Element:          attributes.Hydro,
 		Durability:       50,
 		Mult:             0,
@@ -43,7 +45,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//Initial hit
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{X: -1.5, Y: -1.7}, 6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -1.5, Y: -1.7}, 6),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -75,10 +77,10 @@ func (c *char) summonExquisiteThrow() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Exquisite Throw",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagYelanBurst,
-		ICDGroup:   combat.ICDGroupYelanBurst,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagYelanBurst,
+		ICDGroup:   attacks.ICDGroupYelanBurst,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,

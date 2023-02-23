@@ -2,9 +2,11 @@ package xinyan
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -18,7 +20,7 @@ func (c *char) makeC1CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.Core.Player.Active() != c.Index {
@@ -55,7 +57,7 @@ func (c *char) c2() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("xinyan-c2", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
 			return c.c2Buff, true

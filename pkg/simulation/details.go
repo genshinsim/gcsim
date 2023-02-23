@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -71,7 +72,7 @@ func (sim *Simulation) CharacterDetails() []CharacterDetail {
 	for i, c := range sim.C.Player.Chars() {
 		snap := c.Snapshot(&combat.AttackInfo{
 			Abil:      "stats-check",
-			AttackTag: combat.AttackTagNone,
+			AttackTag: attacks.AttackTagNone,
 		})
 		//convert all atk%, def% and hp% into flat amounts by tacking on base
 		snap.Stats[attributes.HP] += c.Base.HP * (1 + snap.Stats[attributes.HPP])

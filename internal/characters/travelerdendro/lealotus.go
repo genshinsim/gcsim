@@ -3,10 +3,13 @@ package travelerdendro
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -31,9 +34,9 @@ func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
 func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
-	c.burstPos = combat.CalcOffsetPoint(
+	c.burstPos = geometry.CalcOffsetPoint(
 		player.Pos(),
-		combat.Point{Y: 1},
+		geometry.Point{Y: 1},
 		player.Direction(),
 	)
 	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
@@ -72,10 +75,10 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lea Lotus Lamp",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],
@@ -96,7 +99,7 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 	s.ShatterCheck(atk)
 
 	if atk.Info.Durability > 0 {
-		atk.Info.Durability *= combat.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
+		atk.Info.Durability *= reactions.Durability(s.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
 			existing := s.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability
@@ -234,7 +237,7 @@ func (s *LeaLotus) TryBurning(a *combat.AttackEvent) {
 	}
 	s.burstAtk.Info.Abil = "Lea Lotus Lamp Explosion"
 	s.burstAtk.Info.Durability = 50
-	s.burstAtk.Info.ICDTag = combat.ICDTagNone
+	s.burstAtk.Info.ICDTag = attacks.ICDTagNone
 	s.burstAtk.Info.Mult = burstExplode[s.char.TalentLvlBurst()]
 	s.Core.Tasks.Add(func() {
 		s.Core.QueueAttackWithSnap(
@@ -257,6 +260,8 @@ func (s *LeaLotus) transfig(ele attributes.Element) {
 	s.Kill()
 }
 
-func (s *LeaLotus) SetDirection(trg combat.Point)                   {}
-func (s *LeaLotus) SetDirectionToClosestEnemy()                     {}
-func (s *LeaLotus) CalcTempDirection(trg combat.Point) combat.Point { return combat.DefaultDirection() }
+func (s *LeaLotus) SetDirection(trg geometry.Point) {}
+func (s *LeaLotus) SetDirectionToClosestEnemy()     {}
+func (s *LeaLotus) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
+}

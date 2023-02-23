@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -14,13 +16,13 @@ var (
 	attackHitmarks        = [][]int{{4, 17}, {15}, {15}, {14, 31}, {16}, {39}}
 	attackHitlagHaltFrame = [][]float64{{0, 0.01}, {0.01}, {0.01}, {0.02, 0.02}, {0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{false, true}, {true}, {true}, {false, true}, {true}, {true}}
-	attackStrikeTypes     = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash, combat.StrikeTypeSpear},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
-		{combat.StrikeTypeSpear},
-		{combat.StrikeTypeSlash},
+	attackStrikeTypes     = [][]attacks.StrikeType{
+		{attacks.StrikeTypeSlash, attacks.StrikeTypeSpear},
+		{attacks.StrikeTypeSlash},
+		{attacks.StrikeTypeSlash},
+		{attacks.StrikeTypeSlash, attacks.StrikeTypeSlash},
+		{attacks.StrikeTypeSpear},
+		{attacks.StrikeTypeSlash},
 	}
 	attackHitboxes = [][][][]float64{
 		{
@@ -82,9 +84,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attackStrikeTypes[c.NormalCounter][i],
 			Element:            attributes.Physical,
 			Durability:         25,
@@ -100,14 +102,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 			attackHitboxes[burstIndex][c.NormalCounter][i][0],
 			attackFanAngles[c.NormalCounter][i],
 		)
 		if (c.NormalCounter == 0 && i == 1) || c.NormalCounter == 4 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+				geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 				attackHitboxes[burstIndex][c.NormalCounter][i][0],
 				attackHitboxes[burstIndex][c.NormalCounter][i][1],
 			)

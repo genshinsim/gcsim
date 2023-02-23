@@ -3,6 +3,7 @@ package nahida
 import (
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -61,7 +62,7 @@ func (c *char) a4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4BuffKey, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			if !strings.HasPrefix(atk.Info.Abil, "Tri-Karma") {

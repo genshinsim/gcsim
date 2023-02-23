@@ -1,6 +1,7 @@
 package candace
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -25,7 +26,7 @@ func (c *char) a4(char *character.CharWrapper) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false
 			}
-			if atk.Info.AttackTag != combat.AttackTagNormal {
+			if atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
 			}
 			if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
