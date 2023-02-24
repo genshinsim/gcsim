@@ -86,7 +86,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				// Attack buff snapshots so it needs to be in a separate mod
 				char.AddStatMod(character.StatMod{
 					Base: modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
-					
 					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
 						return sharedVal, true
