@@ -70,10 +70,10 @@ func (c *char) a4Init() {
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case combat.AttackTagElementalArt:
-				m[attributes.DmgP] = c.NonExtraStat(attributes.EM) * 0.0015
+				m[attributes.DmgP] = c.Stat(attributes.EM) * 0.0015
 				return m, true
 			case combat.AttackTagElementalBurst:
-				m[attributes.DmgP] = c.NonExtraStat(attributes.EM) * 0.001
+				m[attributes.DmgP] = c.Stat(attributes.EM) * 0.001
 				return m, true
 			default:
 				return nil, false

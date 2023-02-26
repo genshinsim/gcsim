@@ -36,7 +36,7 @@ func (c *char) a4() {
 				return nil, false
 			}
 
-			bonus := c.NonExtraStat(attributes.EM) * 0.0006
+			bonus := c.Stat(attributes.EM) * 0.0006
 			if bonus > 0.6 {
 				bonus = 0.6
 			}
