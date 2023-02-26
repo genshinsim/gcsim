@@ -104,6 +104,8 @@ services:
       - MONGODB_USERNAME=root
       - MONOGDB_PASSWORD=root-password
       - SHARE_STORE_URL=share:3000
+    ports:
+      - 8083:3000
     restart: unless-stopped
     depends_on:
       - mongo

@@ -30,7 +30,7 @@ func NewClient(addr string) (*Client, error) {
 func (c *Client) Submit(ctx context.Context, s *model.Submission) (string, error) {
 	res, err := c.conn.Submit(ctx, &SubmitRequest{
 		Config:      s.GetConfig(),
-		Submitter:   s.GetConfig(),
+		Submitter:   s.GetSubmitter(),
 		Description: s.GetDescription(),
 	})
 	if err != nil {
