@@ -3,6 +3,7 @@ version: "3.8"
 services:
   # tunnel for the backend service
   cloudflared:
+    container_name: cloudflared
     image: cloudflare/cloudflared:latest
     command: "tunnel --no-autoupdate run --token $CF_TUNNEL_TOKEN"
     volumes:
@@ -83,14 +84,32 @@ services:
       - MONGODB_QUERY_VIEW=gcsimvaliddb
       - MONGODB_USERNAME=root
       - MONOGDB_PASSWORD=root-password
+      - SHARE_STORE_URL=share:3000
     # ports are exposed in order to access the grpc directly via localhost during dev
     ports:
       - 8082:3000
     restart: unless-stopped
     depends_on:
       - mongo
+  submission:
+    container_name: submission
+    build:
+      context: .
+      dockerfile: ./backend/cmd/submission/Dockerfile
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017
+      - MONGODB_DATABASE=gcsim-database
+      - MONGODB_COLLECTION=data
+      - MONGODB_QUERY_VIEW=gcsimvaliddb
+      - MONGODB_USERNAME=root
+      - MONOGDB_PASSWORD=root-password
+      - SHARE_STORE_URL=share:3000
+    restart: unless-stopped
+    depends_on:
+      - mongo
   # mongo server for db
   mongo:
+    container_name: mongo
     image: mongo
     restart: always
     # ports:
@@ -103,6 +122,7 @@ services:
       - ~/data/mongo:/data/db:rw
   # dev stuff
   mongo-express:
+    container_name: mongo-express
     image: mongo-express
     restart: always
     ports:
