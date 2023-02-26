@@ -9,7 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -63,8 +65,8 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -145,8 +147,8 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -261,8 +263,8 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{

@@ -1,15 +1,24 @@
 package fischl
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-func (c *char) a4() {
-	last := 0
+// A1 is not implemented:
+// TODO: When Fischl hits Oz with a fully-charged Aimed Shot, Oz brings down Thundering Retribution, dealing AoE Electro DMG equal to 152.7% of the arrow's DMG.
 
+// If your current active character triggers an Electro-related Elemental Reaction when Oz is on the field,
+// the opponent shall be stricken with Thundering Retribution that deals Electro DMG equal to 80% of Fischl's ATK.
+func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+
+	last := 0
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
 	a4cb := func(args ...interface{}) bool {
 
@@ -30,10 +39,10 @@ func (c *char) a4() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl A4",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupFischl,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupFischl,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.8,

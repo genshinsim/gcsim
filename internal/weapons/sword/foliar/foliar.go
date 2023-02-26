@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -58,12 +59,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if !(atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagElementalArt || atk.Info.AttackTag == combat.AttackTagElementalArtHold) {
+		if !(atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold) {
 			return false
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
 		// have extra damage.
-		if !char.StatusIsActive(icdKey) && atk.Info.AttackTag == combat.AttackTagNormal && atk.Info.Element != attributes.Physical {
+		if !char.StatusIsActive(icdKey) && atk.Info.AttackTag == attacks.AttackTagNormal && atk.Info.Element != attributes.Physical {
 			char.AddStatus(buffKey, 720, true)
 			char.AddStatus(icdKey, 720, true)
 			procCount = 28

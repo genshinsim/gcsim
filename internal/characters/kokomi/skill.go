@@ -3,15 +3,21 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 24
+const (
+	skillHitmark   = 24
+	particleICDKey = "kokomi-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(61)
@@ -46,27 +52,42 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+	if c.Core.Rand.Float64() < 0.67 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Hydro, c.ParticleDelay)
+	}
+}
+
 // Helper function since this needs to be created both on skill use and burst use
 func (c *char) createSkillSnapshot() *combat.AttackEvent {
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bake-Kurage",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	return (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 6),
+		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3}, 6),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
+	ae.Callbacks = append(ae.Callbacks, c.particleCB)
+	return &ae
 
 }
 
@@ -109,11 +130,6 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 			Src:     src,
 			Bonus:   d.Snapshot.Stats[attributes.Heal],
 		})
-	}
-
-	// Particles are 0~1 (1:2) on every damage instance
-	if c.Core.Rand.Float64() < .6667 {
-		c.Core.QueueParticle("kokomi", 1, attributes.Hydro, c.ParticleDelay)
 	}
 }
 

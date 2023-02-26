@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -28,13 +30,14 @@ func init() {
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
+	c2CB := c.makeC2CB()
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
@@ -42,11 +45,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: chargeOffsets[i]},
+				geometry.Point{Y: chargeOffsets[i]},
 				chargeRadius[i],
 			),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
+			c2CB,
 		)
 	}
 
@@ -58,10 +62,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Thunderclap Slash",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeSlash,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 50,
 			Mult:       skillCA[c.TalentLvlSkill()],
@@ -72,15 +76,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
 				chargeHitmarks[i],
 				chargeHitmarks[i],
+				c.particleCB,
 			)
 		}
-
-		// TODO: Particle timing?
-		count := 2.0
-		if c.Core.Rand.Float64() < .5 {
-			count = 3
-		}
-		c.Core.QueueParticle("keqing", count, attributes.Electro, chargeHitmarks[1]+c.ParticleDelay)
 	}
 
 	if c.Base.Cons >= 6 {

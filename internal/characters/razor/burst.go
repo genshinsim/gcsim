@@ -5,9 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -33,17 +35,17 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
-		c.ResetActionCooldown(action.ActionSkill) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
+		c.a1CDReset()
 		c.AddStatus(burstBuffKey, 15*60, true)
 	}, burstHitmark)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Fang",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Electro,
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
@@ -93,10 +95,10 @@ func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("The Wolf Within %v", normalCounter),
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeSlash,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       wolfDmg[c.TalentLvlBurst()] * a.AttackEvent.Info.Mult,
@@ -104,13 +106,13 @@ func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
 
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: burstAttackOffsets[normalCounter]},
+			geometry.Point{Y: burstAttackOffsets[normalCounter]},
 			burstAttackHitboxes[normalCounter][0],
 		)
 		if normalCounter == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: burstAttackOffsets[normalCounter]},
+				geometry.Point{Y: burstAttackOffsets[normalCounter]},
 				burstAttackHitboxes[normalCounter][0],
 				burstAttackHitboxes[normalCounter][1],
 			)

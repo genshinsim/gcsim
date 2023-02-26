@@ -2,6 +2,7 @@ package hamayumi
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -31,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base: modifier.NewBase("hamayumi", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			val := make([]float64, attributes.EndStatType)
-			if atk.Info.AttackTag == combat.AttackTagNormal {
+			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				val[attributes.DmgP] = nm
 				if char.Energy == char.EnergyMax {
 					val[attributes.DmgP] = nm * 2
@@ -39,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				return val, true
 			}
 
-			if atk.Info.AttackTag == combat.AttackTagExtra {
+			if atk.Info.AttackTag == attacks.AttackTagExtra {
 				val[attributes.DmgP] = ca
 				if char.Energy == char.EnergyMax {
 					val[attributes.DmgP] = ca * 2

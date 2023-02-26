@@ -3,6 +3,7 @@ package tartaglia
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -45,10 +46,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Charged Attack",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagExtraAttack,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypeSlash,
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagExtraAttack,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeSlash,
 		Element:      attributes.Hydro,
 		Durability:   25,
 		HitWeakPoint: hitWeakPoint != 0,
@@ -61,8 +62,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
-			c.meleeApplyRiptide, // call back for applying riptide
-			c.rtSlashCallback,   // call back for triggering slash
+			c.makeA4CB(),      // callback for applying riptide
+			c.rtSlashCallback, // callback for triggering slash
 		)
 	}
 

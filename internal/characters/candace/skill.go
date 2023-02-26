@@ -3,9 +3,12 @@ package candace
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -16,6 +19,8 @@ var (
 	skillHitboxes = [][]float64{{3, 4.5}, {4}}
 	skillOffsets  = []float64{-0.1, 0.3}
 )
+
+const particleICDKey = "candace-particle-icd"
 
 func init() {
 	skillFrames = make([][]int, 2)
@@ -45,10 +50,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Heron's Sanctum (E)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Hydro,
 		Durability:         25,
 		FlatDmg:            skillDmg[chargeLevel][c.TalentLvlSkill()] * c.MaxHP(),
@@ -58,24 +63,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	var ap combat.AttackPattern
+	var particleCount float64
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
 	case 0:
-		c.Core.QueueParticle("candace", 2, attributes.Hydro, c.ParticleDelay+hitmark)
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[chargeLevel]},
+			geometry.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 			skillHitboxes[chargeLevel][1],
 		)
+		particleCount = 2
 	case 1:
-		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitmark)
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[chargeLevel]},
+			geometry.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 		)
+		particleCount = 3
 	}
 
 	c.Core.QueueAttack(
@@ -88,6 +94,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				c.c2()
 			}
 		},
+		c.makeParticleCB(particleCount),
 	)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
@@ -111,5 +118,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[chargeLevel][action.InvalidAction],
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB(particleCount float64) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.5*60, true)
+		c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Hydro, c.ParticleDelay)
 	}
 }

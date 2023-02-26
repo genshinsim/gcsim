@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -52,7 +53,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("nob-2pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false
 				}
 				return s.nob2buff, true

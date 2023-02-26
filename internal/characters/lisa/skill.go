@@ -3,19 +3,26 @@ package lisa
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
-const skillPressHitmark = 22
-const skillHoldHitmark = 117
+const (
+	skillPressHitmark = 22
+	skillHoldHitmark  = 117
+	particleICDKey    = "lisa-particle-icd"
+)
 
 func init() {
 	// skill (press) -> x
@@ -44,15 +51,26 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillPress(p)
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Electro, c.ParticleDelay)
+}
+
 // TODO: how long do stacks last?
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagLisaElectro,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagLisaElectro,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
@@ -98,10 +116,10 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 50,
 	}
@@ -124,7 +142,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	var c1cb func(a combat.AttackCB)
 	if c.Base.Cons > 0 {
 		c1cb = func(a combat.AttackCB) {
-			if a.Target.Type() != combat.TargettableEnemy {
+			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}
 			if count == 5 {
@@ -139,16 +157,9 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 	for _, e := range enemies {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 0.2), 0, skillHoldHitmark, c1cb)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 0.2), 0, skillHoldHitmark, c1cb, c.particleCB)
 	}
 
-	// count := 4
-	// if c.Core.Rand.Float64() < 0.5 {
-	// 	count = 5
-	// }
-	c.Core.QueueParticle("lisa", 5, attributes.Electro, skillHoldHitmark+c.ParticleDelay)
-
-	// c.CD[def.SkillCD] = c.Core.F + 960 //16seconds, starts after 114 frames
 	c.SetCDWithDelay(action.ActionSkill, 960, 114)
 
 	return action.ActionInfo{

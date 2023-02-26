@@ -3,10 +3,13 @@ package nahida
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -56,10 +59,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
@@ -67,7 +70,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.2}, 4.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.2}, 4.6),
 		0, //TODO: snapshot delay?
 		skillPressHitmark,
 		c.skillMarkTargets,
@@ -97,10 +100,10 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
@@ -125,11 +128,14 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 }
 
-func (c *char) particlesOnDmg(_ combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(triKarmaParticleICD) {
 		return
 	}
-	c.AddStatus(triKarmaParticleICD, 7*60, false)
+	c.AddStatus(triKarmaParticleICD, 7*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 }
 
@@ -180,9 +186,9 @@ func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
 		return false
 	}
 	switch ae.Info.AttackTag {
-	case combat.AttackTagBloom:
-	case combat.AttackTagHyperbloom:
-	case combat.AttackTagBurgeon:
+	case attacks.AttackTagBloom:
+	case attacks.AttackTagHyperbloom:
+	case attacks.AttackTagBurgeon:
 	default:
 		return false
 	}
@@ -210,17 +216,17 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		}
 		var cb combat.AttackCBFunc
 		if !done {
-			cb = c.particlesOnDmg
+			cb = c.particleCB
 			done = true
 		}
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNahidaSkill,
-			ICDGroup:   combat.ICDGroupNahidaSkill,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNahidaSkill,
+			ICDGroup:   attacks.ICDGroupNahidaSkill,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       triKarmaAtk[c.TalentLvlSkill()],

@@ -1,13 +1,15 @@
 package wanderer
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"math"
 )
 
 const (
@@ -76,10 +78,10 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Shugen: The Curtains’ Melancholic Sway",
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagWandererC6,
-			ICDGroup:   combat.ICDGroupWandererC6,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagNormal,
+			ICDTag:     attacks.ICDTagWandererC6,
+			ICDGroup:   attacks.ICDGroupWandererC6,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
 			Mult:       a.AttackEvent.Info.Mult * 0.4,

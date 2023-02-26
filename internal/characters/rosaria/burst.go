@@ -3,8 +3,10 @@ package rosaria
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -27,10 +29,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Rites of Termination (Hit 1)",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               burst[0][c.TalentLvlBurst()],
@@ -39,19 +41,23 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 
+	c1CB := c.makeC1CB()
+	c6CB := c.makeC6CB()
+
 	// Hit 1 comes out on frame 15
 	// 2nd hit comes after lance drop animation finishes
 	// center on player
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 3.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3.5),
 		15,
 		15,
-		c.c6,
+		c1CB,
+		c6CB,
 	)
 
 	ai.Abil = "Rites of Termination (Hit 2)"
-	ai.StrikeType = combat.StrikeTypeDefault
+	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burst[1][c.TalentLvlBurst()]
 	//no more hitlag after first hit
 	ai.HitlagHaltFrames = 0
@@ -64,14 +70,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	playerPos := c.Core.Combat.Player()
-	gadgetOffset := combat.Point{Y: 3}
+	gadgetOffset := geometry.Point{Y: 3}
 	apHit2 := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6)
 	apTick := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6.5)
 	// Handle Hit 2 and DoT
 	// lance lands at 56f if we exclude hitlag (60f was with hitlag)
 	c.QueueCharTask(func() {
 		// Hit 2
-		c.Core.QueueAttack(ai, apHit2, 0, 0, c.c6)
+		c.Core.QueueAttack(ai, apHit2, 0, 0, c1CB, c6CB)
 
 		// Burst status
 		c.Core.Status.Add("rosariaburst", dur)
@@ -80,9 +86,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai = combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Rites of Termination (DoT)",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       burstDot[c.TalentLvlBurst()],
@@ -90,7 +96,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 		// DoT every 2 seconds after lance lands
 		for i := 120; i < dur; i += 120 {
-			c.Core.QueueAttack(ai, apTick, 0, i, c.c6)
+			c.Core.QueueAttack(ai, apTick, 0, i, c1CB, c6CB)
 		}
 	}, 56)
 

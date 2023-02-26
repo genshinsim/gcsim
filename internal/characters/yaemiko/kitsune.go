@@ -3,10 +3,11 @@ package yaemiko
 import (
 	"log"
 
-	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type kitsune struct {
@@ -87,7 +88,7 @@ func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) 
 				c.AddEnergy("yae-c1", 8)
 			}, burstThunderbolt1Hitmark+i*24)
 		}
-		c.ResetActionCooldown(action.ActionSkill)
+		c.a1()
 		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index).
 			Write("src", c.kitsunes[i].src).
 			Write("delay", burstThunderbolt1Hitmark+i*24)
@@ -112,11 +113,11 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		ai := combat.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
 			ActorIndex: c.Index,
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			Mult:       skill[lvl][c.TalentLvlSkill()],
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 		}
@@ -124,23 +125,11 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
 			Write("sakura level", lvl+1)
 
-		particlecb := func(a combat.AttackCB) {
-			//on hit check for particles
-			c.Core.Log.NewEvent("sky kitsune particle", glog.LogCharacterEvent, c.Index).
-				Write("lastParticleF", c.totemParticleICD)
-			if c.Core.F < c.totemParticleICD {
-				return
-			}
-			// 2.5s icd
-			c.totemParticleICD = c.Core.F + 150
-			//TODO: this used to be 30?
-			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, c.ParticleDelay)
-		}
 		var c4cb combat.AttackCBFunc
 		if c.Base.Cons >= 4 {
 			done := false
 			c4cb = func(a combat.AttackCB) {
-				if a.Target.Type() != combat.TargettableEnemy {
+				if a.Target.Type() != targets.TargettableEnemy {
 					return
 				}
 				if done {
@@ -160,7 +149,7 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 				combat.NewCircleHitOnTarget(enemy, nil, 0.5),
 				1,
 				1,
-				particlecb,
+				c.particleCB,
 				c4cb,
 			)
 		}

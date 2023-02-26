@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -65,10 +67,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagNormal,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -78,7 +80,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
-		combat.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
+		geometry.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
 		attackHitboxes[c.gender][c.NormalCounter][0],
 		attackFanAngles[c.gender][c.NormalCounter],
 	)
@@ -86,7 +88,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		(c.gender == 1 && c.NormalCounter == 1) {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
+			geometry.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
 			attackHitboxes[c.gender][c.NormalCounter][0],
 			attackHitboxes[c.gender][c.NormalCounter][1],
 		)
@@ -97,34 +99,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.gender][c.NormalCounter],
 		attackHitmarks[c.gender][c.NormalCounter],
 	)
-
-	if c.NormalCounter == c.NormalHitNum-1 {
-		//add 60% as anemo dmg
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Slitting Wind (A1)",
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupPoleExtraAttack,
-			StrikeType: combat.StrikeTypeSlash,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       0.6,
-		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(
-					c.Core.Combat.Player(),
-					c.Core.Combat.PrimaryTarget(),
-					nil,
-					1,
-				),
-				0,
-				0,
-			)
-		}, a1Hitmark[c.gender])
-	}
+	c.a1()
 
 	defer c.AdvanceNormalIndex()
 

@@ -3,10 +3,10 @@ package albedo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -25,10 +25,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rite of Progeniture: Tectonic Tide",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -51,25 +51,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 	)
 
-	// A4 and fatal blossom
-	// delay fatal blossom triggering until burstHitmark because that's when it:
+	// A4 and Fatal Blossom
+	// delay Fatal Blossom triggering until burstHitmark because that's when it:
 	// - checks whether the skill is still active
 	// - recalculates C2 damage
 	c.Core.Tasks.Add(func() {
-		// A4
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.EM] = 125
-		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("albedo-a4", 600),
-				AffectedStat: attributes.EM,
-				Amount: func() ([]float64, bool) {
-					return m, true
-				},
-			})
-		}
+		c.a4()
 
-		// fatal blossom
+		// Fatal Blossom
 		if !c.skillActive {
 			return
 		}
@@ -85,14 +74,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		maxBlossoms := 7
 		enemies := c.Core.Combat.RandomEnemiesWithinArea(c.skillArea, nil, maxBlossoms)
 		tracking := len(enemies)
-		var center combat.Point
+		var center geometry.Point
 		for i := 0; i < maxBlossoms; i++ {
 			if i < tracking {
 				// each blossom targets a separate enemy if possible
 				center = enemies[i].Pos()
 			} else {
 				// if a blossom has no enemy then it randomly spawns in the skill area
-				center = combat.CalcRandomPointFromCenter(c.skillArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
+				center = geometry.CalcRandomPointFromCenter(c.skillArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
 			}
 			// Blossoms are generated on a slight delay from initial hit
 			// TODO: no precise frame data for time between Blossoms

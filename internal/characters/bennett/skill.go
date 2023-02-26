@@ -5,8 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -16,7 +19,11 @@ var (
 	skillHoldOffsets  = []float64{0.5, 0}
 )
 
-const skillPressHitmark = 16
+const (
+	skillPressHitmark   = 16
+	pressParticleICDKey = "bennett-press-particle-icd"
+	holdParticleICDKey  = "bennett-hold-particle-icd"
+)
 
 func init() {
 	skillFrames = make([][]int, 5)
@@ -77,10 +84,10 @@ func (c *char) skillPress() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Passion Overload (Press)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		Durability:         50,
 		HitlagHaltFrames:   0.09 * 60,
@@ -93,29 +100,16 @@ func (c *char) skillPress() action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{Y: 0.8},
+			geometry.Point{Y: 0.8},
 			2.5,
 			270,
 		),
 		skillPressHitmark,
 		skillPressHitmark,
+		c.pressParticleCB,
 	)
 
-	//25 % chance of 3 orbs
-	var count float64 = 2
-	if c.Core.Rand.Float64() < .25 {
-		count++
-	}
-	c.Core.QueueParticle("bennett", count, attributes.Pyro, skillPressHitmark+c.ParticleDelay)
-
-	// a4 reduce cd by 50%
-	if c.StatModIsActive(burstFieldKey) {
-		//a4 reduces it from 240 to 120
-		c.SetCDWithDelay(action.ActionSkill, 240/2, 14)
-	} else {
-		//default is 300, a2 reduces it by 20% to 240
-		c.SetCDWithDelay(action.ActionSkill, 240, 14)
-	}
+	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(5*60)), 14)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[0]),
@@ -125,15 +119,31 @@ func (c *char) skillPress() action.ActionInfo {
 	}
 }
 
+func (c *char) pressParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pressParticleICDKey) {
+		return
+	}
+	c.AddStatus(pressParticleICDKey, 0.3*60, true)
+
+	count := 2.0
+	if c.Core.Rand.Float64() < 0.25 {
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
+}
+
 func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
@@ -146,30 +156,31 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ax.HitlagHaltFrames = 0.09 * 60
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillHoldOffsets[i]},
+			geometry.Point{Y: skillHoldOffsets[i]},
 			skillHoldHitboxes[i][0],
 		)
 		if i == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: skillHoldOffsets[i]},
+				geometry.Point{Y: skillHoldOffsets[i]},
 				skillHoldHitboxes[i][0],
 				skillHoldHitboxes[i][1],
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, ap, 0, 0)
+			c.Core.QueueAttack(ax, ap, 0, 0, c.holdParticleCB)
 		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
-		ai.StrikeType = combat.StrikeTypeDefault
+		ai.StrikeType = attacks.StrikeTypeDefault
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3.5),
 			166,
 			166,
+			c.holdParticleCB,
 		)
 	}
 
@@ -180,19 +191,12 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ai.HitlagHaltFrames = 0.12 * 60
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 3, 4),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 3, 4),
 			94,
 			94,
+			c.holdParticleCB,
 		)
 	}
-
-	// TODO: particle timing??
-	//Bennett Hold E is guaranteed 3 orbs
-	c.Core.QueueParticle("bennett", 3, attributes.Pyro,
-		skillHoldHitmarks[level-1][len(skillHoldHitmarks[level-1])-1]+c.ParticleDelay,
-	)
-
-	applyA4 := c.StatModIsActive(burstFieldKey)
 
 	// figure out which frames to return
 	// 0: skill (press) -> x
@@ -205,27 +209,22 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	switch level {
 	case 1:
 		idx = 1
-		cd = 450 - 90 //-90 for a2
+		cd = 7.5 * 60
 		cdDelay = 43
 		if c4Active {
 			idx = 2
 		}
 	case 2:
 		idx = 3
-		cd = 600 - 120 //-120 from a2
+		cd = 10 * 60
 		cdDelay = 110
-		if applyA4 {
+		if c.a4NoLaunch() {
 			idx = 4
 		}
 	default:
 		panic("bennett skill (hold) level can only be 1 or 2")
 	}
-
-	// reduce cd by 50%
-	if applyA4 {
-		cd /= 2
-	}
-	c.SetCDWithDelay(action.ActionSkill, cd, cdDelay)
+	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(cd)), cdDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[idx]),
@@ -233,4 +232,15 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		CanQueueAfter:   skillFrames[idx][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 1.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Pyro, c.ParticleDelay)
 }

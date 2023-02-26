@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -25,10 +26,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		initialHit := combat.AttackInfo{
 			Abil:               fmt.Sprintf("Pyronado Hit %v", i+1),
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagElementalBurst,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagElementalBurst,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
 			HitlagHaltFrames:   0.03 * 60,
@@ -50,10 +51,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	burstHit := combat.AttackInfo{
 		Abil:       "Pyronado",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       pyronadoSpin[c.TalentLvlBurst()],

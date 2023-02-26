@@ -1,10 +1,12 @@
 package amber
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const manualExplosionAbil = "Baron Bunny (Manual Explosion)"
@@ -21,10 +23,10 @@ func (c *char) makeBunny() {
 	ai := combat.AttackInfo{
 		Abil:       "Baron Bunny",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       bunnyExplode[c.TalentLvlSkill()],
@@ -36,6 +38,7 @@ func (c *char) makeBunny() {
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	}
+	b.ae.Callbacks = append(b.ae.Callbacks, c.makeParticleCB())
 
 	c.bunnies = append(c.bunnies, b)
 
@@ -46,6 +49,20 @@ func (c *char) makeBunny() {
 	}, 492)
 }
 
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Pyro, c.ParticleDelay)
+	}
+}
+
 func (c *char) explode(src int) {
 	n := 0
 	c.Core.Log.NewEvent("amber exploding bunny", glog.LogCharacterEvent, c.Index).
@@ -53,8 +70,6 @@ func (c *char) explode(src int) {
 	for _, v := range c.bunnies {
 		if v.src == src {
 			c.Core.QueueAttackEvent(&v.ae, 1)
-			//4 orbs
-			c.Core.QueueParticle("amber", 4, attributes.Pyro, c.ParticleDelay)
 		} else {
 			c.bunnies[n] = v
 			n++
@@ -73,7 +88,6 @@ func (c *char) manualExplode() {
 	if len(c.bunnies) > 0 {
 		c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 		c.Core.QueueAttackEvent(&c.bunnies[0].ae, 1)
-		c.Core.QueueParticle("amber", 4, attributes.Pyro, c.ParticleDelay)
 	}
 	c.bunnies = c.bunnies[1:]
 }
@@ -91,14 +105,13 @@ func (c *char) overloadExplode() {
 			return false
 		}
 
-		if atk.Info.AttackTag != combat.AttackTagOverloadDamage {
+		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {
 			return false
 		}
 
 		for _, v := range c.bunnies {
 			c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 			c.Core.QueueAttackEvent(&v.ae, 1)
-			c.Core.QueueParticle("amber", 4, attributes.Pyro, c.ParticleDelay)
 		}
 		c.bunnies = make([]bunny, 0, 2)
 

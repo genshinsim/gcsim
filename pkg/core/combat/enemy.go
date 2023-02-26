@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -60,7 +61,7 @@ func (h *Handler) Enemy(i int) Target {
 	return h.enemies[i]
 }
 
-func (h *Handler) SetEnemyPos(i int, p Point) bool {
+func (h *Handler) SetEnemyPos(i int, p geometry.Point) bool {
 	if i < 0 || i > len(h.enemies)-1 {
 		return false
 	}
@@ -205,7 +206,7 @@ func (c *Handler) getEnemiesWithinAreaSorted(a AttackPattern, filter func(t Enem
 }
 
 // returns the closest enemy to the given position without any range restrictions; SHOULD NOT be used outside of pkg
-func (c *Handler) ClosestEnemy(pos Point) Enemy {
+func (c *Handler) ClosestEnemy(pos geometry.Point) Enemy {
 	enemies := c.getEnemiesWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true)
 	if enemies == nil {
 		return nil

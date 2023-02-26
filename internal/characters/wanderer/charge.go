@@ -3,6 +3,7 @@ package wanderer
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -45,21 +46,25 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
 	// TODO: check snapshot delay
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2.5),
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2.5),
 		windup+chargeHitmarkNormal, windup+chargeHitmarkNormal,
-		c.a4CB,
-		c.a1ElectroCB,
-		c.particleGenCB)
+		c.makeA4CB(),
+		c.makeA1ElectroCB(),
+		c.particleCB,
+	)
+
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			return windup +
@@ -77,19 +82,26 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack (Windfavored)",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       skillNABonus[c.TalentLvlSkill()] * charge[c.TalentLvlAttack()],
+		Mult:       skillCABonus[c.TalentLvlSkill()] * charge[c.TalentLvlAttack()],
 	}
 
 	// TODO: check snapshot delay
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
-		windup+chargeHitmarkE, windup+chargeHitmarkE,
-		c.a4CB, c.a1ElectroCB, c.particleGenCB)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
+		windup+chargeHitmarkE,
+		windup+chargeHitmarkE,
+		c.makeA4CB(),
+		c.makeA1ElectroCB(),
+		c.particleCB,
+	)
+
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			return windup +

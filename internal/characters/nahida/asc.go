@@ -3,6 +3,7 @@ package nahida
 import (
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -16,6 +17,9 @@ const a4BuffKey = "nahida-a4"
 // The Elemental Mastery of the active character within the field will be increased by 25% of the Elemental Mastery of the party member with the highest Elemental Mastery.
 // You can gain a maximum of 250 Elemental Mastery in this manner.
 func (c *char) calcA1Buff() {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	var max float64
 	team := c.Core.Player.Chars()
 	for _, char := range team {
@@ -34,6 +38,9 @@ func (c *char) calcA1Buff() {
 }
 
 func (c *char) applyA1(dur int) {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	for i, char := range c.Core.Player.Chars() {
 		idx := i
 		char.AddStatMod(character.StatMod{
@@ -49,10 +56,13 @@ func (c *char) applyA1(dur int) {
 // Each point of Nahida's Elemental Mastery beyond 200 will grant 0.1% Bonus DMG and 0.03% CRIT Rate to Tri-Karma Purification from All Schemes to Know.
 // A maximum of 80% Bonus DMG and 24% CRIT Rate can be granted to Tri-Karma Purification in this manner.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4BuffKey, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			if !strings.HasPrefix(atk.Info.Abil, "Tri-Karma") {
@@ -63,7 +73,10 @@ func (c *char) a4() {
 	})
 }
 
-func (c *char) a4tick() {
+func (c *char) a4Tick() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	em := c.Stat(attributes.EM)
 	var dmgBuff, crBuff float64
 	if em > 200 {
@@ -80,5 +93,5 @@ func (c *char) a4tick() {
 	c.a4Buff[attributes.DmgP] = dmgBuff
 	c.a4Buff[attributes.CR] = crBuff
 
-	c.Core.Tasks.Add(c.a4tick, 30)
+	c.Core.Tasks.Add(c.a4Tick, 30)
 }

@@ -3,13 +3,19 @@ package rosaria
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 24
+const (
+	skillHitmark   = 24
+	particleICDKey = "rosaria-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(51)
@@ -26,10 +32,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ravaging Confession (Hit 1)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skill[0][c.TalentLvlSkill()],
@@ -39,22 +45,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	// We always assume that A1 procs on hit 1 to simplify
-	var a1cb combat.AttackCBFunc
+	var a1CB combat.AttackCBFunc
 	if p["nobehind"] != 1 {
-		a1cb = c.a1()
+		a1CB = c.makeA1CB()
 	}
-	var c4cb combat.AttackCBFunc
-	if c.Base.Cons >= 4 {
-		c.c4completed = false
-		c4cb = c.c4
-	}
+	c1CB := c.makeC1CB()
+	c4CB := c.makeC4CB()
+
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 2, 4),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 2, 4),
 		skillHitmark,
 		skillHitmark,
-		a1cb,
-		c4cb,
+		a1CB,
+		c1CB,
+		c4CB,
 	)
 
 	// Rosaria E is dynamic, so requires a second snapshot
@@ -62,10 +67,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ravaging Confession (Hit 2)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skill[1][c.TalentLvlSkill()],
@@ -77,12 +82,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		//second hit is 14 frames after the first (if we exclude hitlag)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 2.8),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.8),
 			0,
 			0,
+			c.particleCB, // Particles are emitted after the second hit lands
+			c1CB,
+			c4CB,
 		)
-		// Particles are emitted after the second hit lands
-		c.Core.QueueParticle("rosaria", 3, attributes.Cryo, c.ParticleDelay)
 	}, skillHitmark+14)
 
 	c.SetCDWithDelay(action.ActionSkill, 360, 23)
@@ -93,4 +99,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.6*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Cryo, c.ParticleDelay)
 }

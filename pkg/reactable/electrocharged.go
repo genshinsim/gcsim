@@ -3,10 +3,12 @@ package reactable
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
@@ -48,11 +50,11 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.ElectroCharged),
-		AttackTag:        combat.AttackTagECDamage,
-		ICDTag:           combat.ICDTagECDamage,
-		ICDGroup:         combat.ICDGroupReactionB,
-		StrikeType:       combat.StrikeTypeDefault,
+		Abil:             string(reactions.ElectroCharged),
+		AttackTag:        attacks.AttackTagECDamage,
+		ICDTag:           attacks.ICDTagECDamage,
+		ICDGroup:         attacks.ICDGroupReactionB,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Electro,
 		IgnoreDefPercent: 1,
 	}
@@ -86,7 +88,7 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 			if n.Key() != r.self.Key() {
 				return false
 			}
-			if a.Info.AttackTag != combat.AttackTagECDamage {
+			if a.Info.AttackTag != attacks.AttackTagECDamage {
 				return false
 			}
 			//ignore if this dmg instance has been wiped out due to icd

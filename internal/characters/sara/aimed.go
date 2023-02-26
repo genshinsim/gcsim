@@ -3,8 +3,10 @@ package sara
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames [][]int
@@ -28,7 +30,6 @@ func init() {
 
 // Aimed charge attack damage queue generator
 // Additionally handles crowfeather state, E skill damage, and A4
-// A4 effect is: When Tengu Juurai: Ambush hits opponents, Kujou Sara will restore 1.2 Energy to all party members for every 100% Energy Recharge she has. This effect can be triggered once every 3s.
 // Has two parameters, "travel", used to set the number of frames that the arrow is in the air (default = 10)
 // weak_point, used to determine if an arrow is hitting a weak point (default = 1 for true)
 func (c *char) Aimed(p map[string]int) action.ActionInfo {
@@ -41,17 +42,17 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	// A1:
 	// While in the Crowfeather Cover state provided by Tengu Stormcall, Aimed Shot charge times are decreased by 60%.
 	skillActive := 0
-	if c.Core.Status.Duration(coverKey) > 0 {
+	if c.Base.Ascension >= 1 && c.Core.Status.Duration(coverKey) > 0 {
 		skillActive = 1
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim Charge Attack",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Electro,
 		Durability:           25,
 		Mult:                 aimChargeFull[c.TalentLvlAttack()],
@@ -65,7 +66,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			combat.Point{Y: -0.5},
+			geometry.Point{Y: -0.5},
 			0.1,
 			1,
 		),
@@ -78,22 +79,20 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       skill[c.TalentLvlSkill()],
 		}
 		ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
 
-		//TODO: snapshot?
-		c.Core.QueueAttack(ai, ap, aimedHitmarks[skillActive], aimedHitmarks[skillActive]+travel+90, c.a4)
-		c.attackBuff(ap, aimedHitmarks[skillActive]+travel+90)
-
+		// TODO: snapshot?
 		// Particles are emitted after the ambush thing hits
-		c.Core.QueueParticle("sara", 3, attributes.Electro, aimedHitmarks[skillActive]+travel+90+c.ParticleDelay)
+		c.Core.QueueAttack(ai, ap, aimedHitmarks[skillActive], aimedHitmarks[skillActive]+travel+90, c.makeA4CB(), c.particleCB)
+		c.attackBuff(ap, aimedHitmarks[skillActive]+travel+90)
 
 		c.Core.Status.Delete(coverKey)
 	}

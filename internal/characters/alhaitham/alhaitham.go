@@ -3,6 +3,7 @@ package alhaitham
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -39,9 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.onExitField()
-	if c.Base.Ascension >= 4 {
-		c.a4()
-	}
+	c.a4()
 	return nil
 }
 func (c *char) onExitField() {
@@ -66,9 +65,9 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 
 	if c.mirrorCount > 0 { //weapon infusion can't be overriden for haitham
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagPlunge:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}

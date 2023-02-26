@@ -4,13 +4,19 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 11
+const (
+	skillHitmark   = 11
+	particleICDKey = "thoma-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(46)
@@ -24,10 +30,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Blazing Blessing",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -38,13 +44,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// snapshot unknown
 	// snap := c.Snapshot(&ai)
 
-	// 3 or 4, 1:1 ratio
-	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 4
-	}
-	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.ParticleDelay)
-
 	c.Core.Tasks.Add(func() {
 		shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
 		c.genShield("Thoma Skill", shieldamt, false)
@@ -53,9 +52,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// damage component not final
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), combat.Point{Y: 1}, 3, 270),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3, 270),
 		skillHitmark,
 		skillHitmark,
+		c.particleCB,
 	)
 
 	player, ok := c.Core.Combat.Player().(*avatar.Player)
@@ -80,4 +80,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }

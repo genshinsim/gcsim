@@ -3,10 +3,13 @@ package albedo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -22,17 +25,18 @@ func init() {
 }
 
 const (
-	skillICDKey = "albedo-skill-icd"
+	skillICDKey    = "albedo-skill-icd"
+	particleICDKey = "albedo-particle-icd"
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Abiogenesis: Solar Isotoma",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -43,14 +47,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	player := c.Core.Combat.Player()
 	skillDir := player.Direction()
 	// assuming tap e for hitbox offset
-	skillPos := combat.CalcOffsetPoint(c.Core.Combat.Player().Pos(), combat.Point{Y: 3}, player.Direction())
+	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 
 	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
-	ai.ICDTag = combat.ICDTagElementalArt
+	ai.ICDTag = attacks.ICDTagElementalArt
 	ai.Mult = skillTick[c.TalentLvlSkill()]
 	ai.UseDef = true
 	c.skillAttackInfo = ai
@@ -80,6 +84,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillHitmark,
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+	if c.Core.Rand.Float64() < 0.67 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Geo, c.ParticleDelay)
 	}
 }
 
@@ -114,12 +131,8 @@ func (c *char) skillHook() {
 			c.skillSnapshot,
 			combat.NewCircleHitOnTarget(trg, nil, 3.4),
 			1,
+			c.particleCB,
 		)
-
-		// 67% chance to generate 1 geo orb
-		if c.Core.Rand.Float64() < 0.67 {
-			c.Core.QueueParticle("albedo", 1, attributes.Geo, c.ParticleDelay)
-		}
 
 		// c1: skill tick regen 1.2 energy
 		if c.Base.Cons >= 1 {

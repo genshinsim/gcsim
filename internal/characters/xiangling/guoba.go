@@ -2,11 +2,13 @@ package xiangling
 
 import (
 	"github.com/genshinsim/gcsim/internal/characters/faruzan"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -27,9 +29,9 @@ func (c *char) newGuoba(ai combat.AttackInfo) *panda {
 		c:    c,
 	}
 	player := c.Core.Combat.Player()
-	pos := combat.CalcOffsetPoint(
+	pos := geometry.CalcOffsetPoint(
 		player.Pos(),
-		combat.Point{Y: 1.3},
+		geometry.Point{Y: 1.3},
 		player.Direction(),
 	)
 	p.Gadget = gadget.New(c.Core, pos, 0.2, combat.GadgetTypGuoba)
@@ -64,26 +66,18 @@ func (p *panda) Tick() {
 }
 
 func (p *panda) breath() {
-	done := false
-	part := func(_ combat.AttackCB) {
-		if done {
-			return
-		}
-		done = true
-		p.Core.QueueParticle("xiangling", 1, attributes.Pyro, p.c.ParticleDelay)
-	}
 	// assume A1
 	p.Core.QueueAttackWithSnap(
 		p.ai,
 		p.snap,
-		combat.NewCircleHitOnTargetFanAngle(p, nil, 6, 60),
+		combat.NewCircleHitOnTargetFanAngle(p, nil, p.c.guobaFlameRange, 60),
 		10,
 		p.c.c1,
-		part,
+		p.c.particleCB,
 	)
 }
 
-func (p *panda) Type() combat.TargettableType { return combat.TargettableGadget }
+func (p *panda) Type() targets.TargettableType { return targets.TargettableGadget }
 
 func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
 	p.Core.Events.Emit(event.OnGadgetHit, p, atk)
@@ -92,7 +86,7 @@ func (p *panda) HandleAttack(atk *combat.AttackEvent) float64 {
 }
 
 func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	if atk.Info.AttackTag != combat.AttackTagElementalArt {
+	if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 		return 0, false
 	}
 	// check pyro window

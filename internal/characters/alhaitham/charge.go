@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -25,10 +26,10 @@ func init() {
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupAlhaithamExtraAttack,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagExtraAttack,
+		ICDGroup:   attacks.ICDGroupAlhaithamExtraAttack,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -36,10 +37,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
-			c.a1CB, //A1 adds a stack before the mirror count for the Projection Attack is determined
+			c.makeA1CB(), // A1 adds a stack before the mirror count for the Projection Attack is determined
 			c.projectionAttack,
 		)
 	}

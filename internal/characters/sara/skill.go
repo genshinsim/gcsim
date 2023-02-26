@@ -3,19 +3,22 @@ package sara
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
 
-// c2 hitmark
-const c2Hitmark = 103
-
-const coverKey = "sara-e-cover"
+const (
+	coverKey       = "sara-e-cover"
+	particleICDKey = "sara-particle-icd"
+	c2Hitmark      = 103
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52) // E -> D
@@ -41,17 +44,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush C2",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
 
-		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.a4)
+		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.makeA4CB())
 		c.attackBuff(ap, c2Hitmark)
 	}
 
@@ -63,6 +66,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.1*60, false)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Electro, c.ParticleDelay)
 }
 
 // Handles attack boost from Sara's skills

@@ -3,8 +3,10 @@ package collei
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
@@ -35,10 +37,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Floral Brush",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -56,6 +58,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.c6(a.Target)
 		}
 	}
+	particleCB := c.makeParticleCB()
 	//TODO: this should have its own position
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
@@ -64,6 +67,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			skillRelease,
 			hitmark,
 			c6Cb,
+			particleCB,
 		)
 	}
 
@@ -72,7 +76,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, skillRelease)
 
 	c.sproutShouldExtend = false
-	c.sproutShouldProc = c.Base.Cons >= 2
+	c.sproutShouldProc = c.Base.Cons >= 2 && c.Base.Ascension >= 1
 	c.Core.Tasks.Add(func() {
 		if !c.sproutShouldProc {
 			return
@@ -91,8 +95,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, sproutHitmark)
 	}, skillReturn)
 
-	c.Core.QueueParticle("collei", 3, attributes.Dendro, skillHitmarks[0]+c.ParticleDelay)
-
 	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 
 	return action.ActionInfo{
@@ -100,5 +102,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 	}
 }
