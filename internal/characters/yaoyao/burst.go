@@ -107,9 +107,10 @@ func (c *char) removeBurst() {
 	c.DeleteStatMod(burstKey)
 	// remove all jumping yuegui
 	for i, yg := range c.yueguiJumping {
-		yg.Kill()
-		c.yueguiJumping[i] = nil
-
+		if yg != nil {
+			yg.Kill()
+			c.yueguiJumping[i] = nil
+		}
 	}
 	c.numYueguiJumping = 0
 }
