@@ -60,6 +60,14 @@ services:
       - MQTT_USERNAME=mosquitto
       - MQTT_PASSWORD=password
     restart: unless-stopped
+  queue:
+    container_name: queue
+    build:
+      context: .
+      dockerfile: ./backend/cmd/queue/Dockerfile
+    restart: unless-stopped
+    environment:
+      - TZ=America/Toronto
   share:
     container_name: share
     build:
