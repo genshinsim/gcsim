@@ -13,9 +13,9 @@ import (
 var skillFrames []int
 
 const (
-	skillEnergy = "skill-energy-icd"
-
-	skillHitmark = 32
+	skillHitmark    = 32
+	particleICD1Key = "layla-particle-icd-1"
+	particleICD2Key = "layla-particle-icd-2"
 )
 
 func init() {

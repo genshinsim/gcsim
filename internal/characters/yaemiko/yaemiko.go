@@ -23,7 +23,6 @@ type char struct {
 	*tmpl.Character
 	kitsuneDetectionRadius float64
 	kitsunes               []*kitsune
-	totemParticleICD       int
 	c4buff                 []float64
 }
 

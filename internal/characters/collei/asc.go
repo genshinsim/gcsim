@@ -13,7 +13,15 @@ const (
 	a4Key            = "collei-a4-modcheck"
 )
 
+// If one of your party members has triggered Burning, Quicken, Aggravate, Spread, Bloom, Hyperbloom, or Burgeon reactions
+// before the Floral Ring returns, it will grant the character the Sprout effect upon return, which will continuously deal
+// Dendro DMG equivalent to 40% of Collei's ATK to nearby opponents for 3s.
+// If another Sprout effect is triggered during its initial duration, the initial effect will be removed.
+// DMG dealt by Sprout is considered Elemental Skill DMG.
 func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
 			if c.sproutShouldProc {
@@ -43,7 +51,13 @@ func (c *char) a1AttackInfo() combat.AttackInfo {
 	}
 }
 
+// When a character within the Cuilein-Anbar Zone triggers Burning, Quicken, Aggravate, Spread, Bloom, Hyperbloom, or Burgeon reactions,
+// the Zone's duration will be increased by 1s.
+// A single Trump-Card Kitty can be extended this way by up to 3s.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	for _, event := range dendroEvents {
 		c.Core.Events.Subscribe(event, func(args ...interface{}) bool {
 			if !c.StatusIsActive(burstKey) {

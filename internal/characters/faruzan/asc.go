@@ -7,6 +7,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+// A1 is implemented in aimed.go and skill.go:
+// When Faruzan is in the Manifest Gale state created by Wind Realm of Nasamjnin,
+// the amount of time taken to charge a shot is decreased by 60%,
+// and she can apply The Wind's Secret Ways' Perfidious Wind's Bale to opponents
+// who are hit by the vortex created by Pressurized Collapse.
+
 const (
 	a4Key    = "faruzan-a4"
 	a4ICDKey = "faruzan-a4-icd"
@@ -20,6 +26,9 @@ const (
 // after Prayerful Wind's Benefit expires or after the effect is triggered
 // once.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.Element != attributes.Anemo {

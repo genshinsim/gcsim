@@ -11,8 +11,11 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 15
-const skillShieldStart = 28
+const (
+	skillHitmark     = 15
+	skillShieldStart = 28
+	particleICDKey   = "xinyan-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(62) // E -> Swap
@@ -44,12 +47,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hitOpponents := 0
 	cb := func(_ combat.AttackCB) {
 		hitOpponents++
-
-		// including a1
 		c.QueueCharTask(func() {
-			if hitOpponents >= 2 && c.shieldLevel < 3 {
+			if hitOpponents >= c.shieldLevel3Requirement && c.shieldLevel < 3 {
 				c.updateShield(3, defFactor)
-			} else if hitOpponents >= 1 && c.shieldLevel < 2 {
+			} else if hitOpponents >= c.shieldLevel2Requirement && c.shieldLevel < 2 {
 				c.updateShield(2, defFactor)
 			}
 		}, skillShieldStart-skillHitmark)
@@ -66,11 +67,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillHitmark,
 		skillHitmark,
 		cb,
-		c.c4,
+		c.particleCB,
+		c.makeC1CB(),
+		c.makeC4CB(),
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 13)
-	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+c.ParticleDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -78,6 +80,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) shieldDot(src int) func() {
@@ -103,7 +116,13 @@ func (c *char) shieldDot(src int) func() {
 			Durability: 25,
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), 1, 1)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
+			1,
+			1,
+			c.makeC1CB(),
+		)
 
 		c.Core.Tasks.Add(c.shieldDot(src), 2*60)
 	}

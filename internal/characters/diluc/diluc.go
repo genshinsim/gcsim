@@ -17,12 +17,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	eCounter int
-	a4buff   []float64
-	c2buff   []float64
-	c2stack  int
-	c4buff   []float64
+	eCounter           int
+	a4buff             []float64
+	c2buff             []float64
+	c2stack            int
+	c4buff             []float64
 	savedNormalCounter int
+	c6Count            int
 }
 
 const eWindowKey = "diluc-e-window"

@@ -51,6 +51,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
+		c.makeC6CAResetCB(),
 	)
 
 	return action.ActionInfo{

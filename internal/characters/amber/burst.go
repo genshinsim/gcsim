@@ -36,38 +36,33 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	burstCenter := c.Core.Combat.PrimaryTarget().Pos()
-	burstRadius := 2.6
-	if c.Base.Ascension < 4 {
-		burstRadius = 2
-	}
-
 	// 2sec duration, spawn arrow every .4s at a random position, burstRadius from burst center
 	for i := 24; i <= 120; i += 24 {
-		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, burstRadius, burstRadius, c.Core.Rand)
+		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(arrowPos, nil, burstRadius),
+			combat.NewCircleHitOnTarget(arrowPos, nil, c.burstRadius),
 			burstStart+i)
 	}
 
 	// 2sec duration, spawn arrow every .6s at a random position burstRadius from burst center
 	for i := 36; i <= 120; i += 36 {
-		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, burstRadius, burstRadius, c.Core.Rand)
+		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(arrowPos, nil, burstRadius),
+			combat.NewCircleHitOnTarget(arrowPos, nil, c.burstRadius),
 			burstStart+i)
 	}
 
 	// 2sec duration, spawn arrow every .2s between 0.1m and burstRadius from burst center
 	for i := 12; i <= 120; i += 12 {
-		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, 0.1, burstRadius, c.Core.Rand)
+		arrowPos := combat.CalcRandomPointFromCenter(burstCenter, 0.1, c.burstRadius, c.Core.Rand)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewCircleHitOnTarget(arrowPos, nil, burstRadius),
+			combat.NewCircleHitOnTarget(arrowPos, nil, c.burstRadius),
 			burstStart+i)
 	}
 

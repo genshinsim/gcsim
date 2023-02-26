@@ -51,12 +51,8 @@ func (c *char) c4() {
 			Mult:       0,
 			FlatDmg:    c.MaxHP() * 0.097,
 		}
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2), 5, 5, c.particleCB)
 
-		//Particle check is 45% for particle
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2), 5, 5)
-		if c.Core.Rand.Float64() < .45 {
-			c.Core.QueueParticle("kuki", 1, attributes.Electro, 100) // TODO: idk the particle timing yet fml (or probability)
-		}
 		return false
 	}, "kuki-c4")
 }

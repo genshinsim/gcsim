@@ -9,7 +9,10 @@ import (
 
 var skillFrames []int
 
-const skillRelease = 14
+const (
+	skillRelease   = 14
+	particleICDKey = "itto-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> N1/Q
@@ -64,13 +67,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		done = true
 		// spawn ushi. on-field for 6s
 		c.Core.Constructs.New(c.newUshi(6*60, ushiDir, ushiPos), true)
-
-		// Energy. 50% chance of 4 particles
-		var count float64 = 3
-		if c.Core.Rand.Float64() < 0.50 {
-			count++
-		}
-		c.Core.QueueParticle("itto", count, attributes.Geo, c.ParticleDelay)
 	}
 
 	// Assume that Ushi always hits for a stack
@@ -81,6 +77,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillRelease,
 		skillRelease+travel,
 		cb,
+		c.particleCB,
 	)
 
 	// Cooldown
@@ -92,4 +89,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.50 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
 }

@@ -116,36 +116,29 @@ const (
 // is considered Elemental Skill DMG and can be triggered once every 0.2s. This
 // effect can last up to 10s and will be removed after Nahida has unleashed 6
 // instances of Tri-Karma Purification: Karmic Oblivion.
-func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		e, ok := args[0].(*enemy.Enemy)
+func (c *char) makeC6CB() combat.AttackCBFunc {
+	if c.Base.Cons < 6 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
-			return false
-		}
-		if c.c6Count >= 6 {
-			return false
-		}
-		if c.StatusIsActive(c6ICDKey) {
-			return false
-		}
-		if !c.StatusIsActive(c6ActiveKey) {
-			return false
-		}
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != c.Index {
-			return false
-		}
-		switch ae.Info.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
-		default:
-			return false
+			return
 		}
 		if !e.StatusIsActive(skillMarkKey) {
-			return false
+			return
 		}
-		c.AddStatus(c6ICDKey, 12, true) //TODO: hitlag?
-		c.c6Count++
+		if c.c6Count >= 6 {
+			return
+		}
+		if !c.StatusIsActive(c6ActiveKey) {
+			return
+		}
+		if c.StatusIsActive(c6ICDKey) {
+			return
+		}
+		c.AddStatus(c6ICDKey, 0.2*60, true)
+
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
@@ -175,7 +168,6 @@ func (c *char) c6() {
 			)
 		}
 
-		return false
-	}, "nahida-c6")
-
+		c.c6Count++
+	}
 }

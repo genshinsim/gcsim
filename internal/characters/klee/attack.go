@@ -109,7 +109,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			),
 			0,
 			travel,
-			c.a1,
+			c.makeA1CB(),
 		)
 		c.c1(travel)
 		done = true

@@ -40,6 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.a1Absorb = attributes.NoElement
 	c.a4()
 
 	// make sure to use the same key everywhere so that these passives don't stack

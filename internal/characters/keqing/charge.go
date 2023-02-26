@@ -35,6 +35,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
+	c2CB := c.makeC2CB()
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
@@ -47,6 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
+			c2CB,
 		)
 	}
 
@@ -72,15 +74,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
 				chargeHitmarks[i],
 				chargeHitmarks[i],
+				c.particleCB,
 			)
 		}
-
-		// TODO: Particle timing?
-		count := 2.0
-		if c.Core.Rand.Float64() < .5 {
-			count = 3
-		}
-		c.Core.QueueParticle("keqing", count, attributes.Electro, chargeHitmarks[1]+c.ParticleDelay)
 	}
 
 	if c.Base.Cons >= 6 {

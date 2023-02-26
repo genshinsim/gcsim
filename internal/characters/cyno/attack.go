@@ -40,6 +40,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatusIsActive(BurstKey) {
 		return c.attackB(p) // go to burst mode attacks
 	}
+	c2CB := c.makeC2CB()
+	c6CB := c.makeC6CB()
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -72,7 +74,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				attackHitboxes[c.NormalCounter][1],
 			)
 		}
-		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
+		c.Core.QueueAttack(
+			ai,
+			ap,
+			attackHitmarks[c.NormalCounter][i],
+			attackHitmarks[c.NormalCounter][i],
+			c2CB,
+			c6CB,
+		)
 	}
 
 	defer c.AdvanceNormalIndex()
@@ -118,6 +127,8 @@ func init() {
 func (c *char) attackB(p map[string]int) action.ActionInfo {
 	c.tryBurstPPSlide(attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1])
 
+	c2CB := c.makeC2CB()
+	c6CB := c.makeC6CB()
 	for i, mult := range attackB[c.normalBCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -132,7 +143,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackBHitlagHaltFrame[c.normalBCounter][i],
 			CanBeDefenseHalted: attackBDefHalt[c.normalBCounter][i],
 			Mult:               mult[c.TalentLvlBurst()],
-			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
+			FlatDmg:            c.a4NormalAttack(),
 			IgnoreInfusion:     true,
 		}
 		if c.normalBCounter == 2 || c.normalBCounter == 4 {
@@ -152,7 +163,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, c2CB, c6CB)
 		}, attackBHitmarks[c.normalBCounter][i])
 	}
 

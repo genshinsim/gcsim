@@ -7,8 +7,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var skillPressFrames [][]int
-var skillHoldDelayFrames [][]int
+var (
+	skillPressFrames     [][]int
+	skillHoldDelayFrames [][]int
+)
+
+const (
+	pressParticleICDKey = "traveleranemo-press-particle-icd"
+	holdParticleICDKey  = "traveleranemo-hold-particle-icd"
+)
 
 func init() {
 	// Tap E
@@ -64,9 +71,9 @@ func (c *char) SkillPress() action.ActionInfo {
 		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 6, 100),
 		hitmark,
 		hitmark,
+		c.pressParticleCB,
 	)
 
-	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 
 	return action.ActionInfo{
@@ -75,6 +82,17 @@ func (c *char) SkillPress() action.ActionInfo {
 		CanQueueAfter:   skillPressFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) pressParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pressParticleICDKey) {
+		return
+	}
+	c.AddStatus(pressParticleICDKey, 0.6*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
 }
 
 func (c *char) SkillHold(holdTicks int) action.ActionInfo {
@@ -178,6 +196,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	aiStormAbs.Element = attributes.NoElement
 	aiStormAbs.Mult = skillInitialStormAbsorb[c.TalentLvlSkill()]
 
+	var particleCB combat.AttackCBFunc
 	// it does max storm when there are 2 or more ticks
 	if holdTicks >= 2 {
 		aiStorm.Mult = skillMaxStorm[c.TalentLvlSkill()]
@@ -185,15 +204,10 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 		aiStormAbs.Mult = skillMaxStormAbsorb[c.TalentLvlSkill()]
 		aiStormAbs.Abil = "Palm Vortex Max Storm Absorbed (Hold)"
-
-		count := 3.0
-		if c.Core.Rand.Float64() < 0.33 {
-			count = 4
-		}
-		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, hitmark+c.ParticleDelay)
+		particleCB = c.holdParticleCB
 		c.SetCDWithDelay(action.ActionSkill, 8*60, hitmark-5)
 	} else {
-		c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.ParticleDelay)
+		particleCB = c.pressParticleCB
 		c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 	}
 
@@ -202,6 +216,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 6, 100),
 		hitmark,
 		hitmark,
+		particleCB,
 	)
 	c.Core.Tasks.Add(func() {
 		if c.eAbsorb != attributes.NoElement {
@@ -225,6 +240,21 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionDash] + hitmark, // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 0.6*60, true)
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.33 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {

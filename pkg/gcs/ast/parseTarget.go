@@ -12,6 +12,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 	var err error
 	var r enemy.EnemyProfile
 	r.Resist = make(map[attributes.Element]float64)
+	r.ParticleElement = attributes.NoElement
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
 		case itemIdentifier:

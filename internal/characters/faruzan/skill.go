@@ -79,6 +79,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 5.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
+}
+
 func (c *char) pressurizedCollapse(pos combat.Point) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -91,19 +102,16 @@ func (c *char) pressurizedCollapse(pos combat.Point) {
 		Durability: 25,
 		Mult:       vortexDmg[c.TalentLvlSkill()],
 	}
-	done := false
-	particleCb := func(a combat.AttackCB) {
-		if done {
-			return
-		}
-		if c.StatusIsActive(particleICDKey) {
-			return
-		}
-		c.Core.QueueParticle("faruzan", 2.0, attributes.Anemo, c.ParticleDelay)
-		c.AddStatus(particleICDKey, 330, true)
-		done = true
-	}
 	snap := c.Snapshot(&ai)
+
+	// A1:
+	// She can apply The Wind's Secret Ways' Perfidious Wind's Bale to opponents
+	// who are hit by the vortex created by Pressurized Collapse.
+	var shredCb combat.AttackCBFunc
+	if c.Base.Ascension >= 1 {
+		shredCb = applyBurstShredCb
+	}
+
 	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttackWithSnap(
 			ai,
@@ -111,7 +119,8 @@ func (c *char) pressurizedCollapse(pos combat.Point) {
 			combat.NewCircleHitOnTarget(pos, nil, 6),
 			0,
 			c.makeC4Callback(),
-			applyBurstShredCb,
-			particleCb)
+			shredCb,
+			c.particleCB,
+		)
 	}, vortexHitmark)
 }

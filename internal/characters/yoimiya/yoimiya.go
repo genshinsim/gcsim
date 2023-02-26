@@ -17,10 +17,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1stack   int
-	lastPart  int
-	a1bonus   []float64
-	a4bonus   []float64
+	a1Stacks  int
+	a4Bonus   []float64
 	abApplied bool
 }
 
@@ -39,16 +37,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.a1bonus = make([]float64, attributes.EndStatType)
-	c.a4bonus = make([]float64, attributes.EndStatType)
-	c.a1()
+	c.a4Bonus = make([]float64, attributes.EndStatType)
 	c.onExit()
 	c.burstHook()
 	if c.Base.Cons >= 1 {
 		c.c1()
-	}
-	if c.Base.Cons >= 2 {
-		c.c2()
 	}
 	return nil
 }

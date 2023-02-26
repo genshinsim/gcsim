@@ -17,6 +17,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	skillCD     int
 	burstArea   combat.AttackPattern // needed for c1
 	c1TickCount int
 	gender      int
@@ -35,6 +36,8 @@ func NewChar(gender int) core.NewCharacterFunc {
 		c.SkillCon = 5
 		c.NormalHitNum = normalHitNum
 
+		c.skillCD = 6 * 60
+
 		w.Character = &c
 
 		return nil
@@ -42,6 +45,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 }
 
 func (c *char) Init() error {
+	c.a1()
 	// setup number of C1 ticks
 	c.c1TickCount = 15
 	if c.Base.Cons >= 6 {

@@ -97,34 +97,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.gender][c.NormalCounter],
 		attackHitmarks[c.gender][c.NormalCounter],
 	)
-
-	if c.NormalCounter == c.NormalHitNum-1 {
-		//add 60% as anemo dmg
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Slitting Wind (A1)",
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupPoleExtraAttack,
-			StrikeType: combat.StrikeTypeSlash,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       0.6,
-		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(
-					c.Core.Combat.Player(),
-					c.Core.Combat.PrimaryTarget(),
-					nil,
-					1,
-				),
-				0,
-				0,
-			)
-		}, a1Hitmark[c.gender])
-	}
+	c.a1()
 
 	defer c.AdvanceNormalIndex()
 

@@ -20,7 +20,7 @@ type char struct {
 	stacks            int
 	stacksMax         int
 	shunsuikenCounter int
-	c6ready           bool
+	c6Ready           bool
 }
 
 const (
@@ -37,7 +37,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.NormalHitNum = normalHitNum
 
 	c.shunsuikenCounter = 3
-	c.c6ready = false
 
 	c.stacksMax = 4
 	if c.Base.Cons >= 2 {
@@ -50,7 +49,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.a1()
 	c.a4()
 	c.onExitField()
 	if c.Base.Cons >= 1 {
@@ -58,9 +56,6 @@ func (c *char) Init() error {
 	}
 	if c.Base.Cons >= 2 {
 		c.c2()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 	return nil
 }

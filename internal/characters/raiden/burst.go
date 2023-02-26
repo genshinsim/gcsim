@@ -96,13 +96,7 @@ func (c *char) burstRestorefunc(a combat.AttackCB) {
 	if c.Core.F > c.restoreICD && c.restoreCount < 5 {
 		c.restoreCount++
 		c.restoreICD = c.Core.F + 60 // once every 1 second
-		energy := burstRestore[c.TalentLvlBurst()]
-		// apply a4
-		excess := int(a.AttackEvent.Snapshot.Stats[attributes.ER] / 0.01)
-		c.Core.Log.NewEvent("a4 energy restore stacks", glog.LogCharacterEvent, c.Index).
-			Write("stacks", excess).
-			Write("increase", float64(excess)*0.006)
-		energy = energy * (1 + float64(excess)*0.006)
+		energy := burstRestore[c.TalentLvlBurst()] * (1 + c.a4Energy(a.AttackEvent.Snapshot.Stats[attributes.ER]))
 		for _, char := range c.Core.Player.Chars() {
 			char.AddEnergy("raiden-burst", energy)
 		}
@@ -149,18 +143,4 @@ func (c *char) onBurstStackCount() {
 		}
 		return false
 	}, "raiden-stacks")
-
-	// a4 stack gain
-	particleICD := 0
-	c.Core.Events.Subscribe(event.OnParticleReceived, func(_ ...interface{}) bool {
-		if particleICD > c.Core.F {
-			return false
-		}
-		particleICD = c.Core.F + 180 // once every 3 seconds
-		c.stacks += 2
-		if c.stacks > 60 {
-			c.stacks = 60
-		}
-		return false
-	}, "raiden-particle-stacks")
 }

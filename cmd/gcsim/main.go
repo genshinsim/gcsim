@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -10,6 +12,7 @@ import (
 	"runtime"
 	"runtime/pprof"
 	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/optimization"
@@ -71,6 +74,20 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 
 	flag.Parse()
 
+	_, err := os.Stat(opt.config)
+	usedCLI := false
+	flag.Visit(func(f *flag.Flag) {
+		usedCLI = true
+	})
+	if errors.Is(err, os.ErrNotExist) && !usedCLI {
+		fmt.Printf("The file %s does not exist.\n", opt.config)
+		fmt.Println("What is the filepath of the config you would like to run?")
+		in := bufio.NewReader(os.Stdin)
+		line, _ := in.ReadString('\n')
+		opt.config = strings.TrimSpace(line)
+		opt.serve = true
+	}
+
 	if opt.cpuprofile != "" {
 		f, err := os.Create(opt.cpuprofile)
 		if err != nil {
@@ -114,7 +131,6 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	// TODO: should perform the config parsing here and then share the parsed results between run & sample
 	var res *model.SimulationResult
 	var hash string
-	var err error
 
 	if !opt.norun {
 		res, err = simulator.Run(simopt, context.Background())

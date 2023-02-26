@@ -22,7 +22,23 @@ func (c *char) passive() {
 	})
 }
 
+// If Sangonomiya Kokomi's own Bake-Kurage is on the field when she uses Nereid's Ascension, the Bake-Kurage's duration will be refreshed.
+//
+// - checks for ascension level in burst.go to avoid queuing this up only to fail the ascension level check
+func (c *char) a1() {
+	if c.Core.Status.Duration("kokomiskill") <= 0 {
+		return
+	}
+	// +1 to avoid same frame expiry issues with skill tick
+	c.Core.Status.Add("kokomiskill", 12*60+1)
+}
+
+// While donning the Ceremonial Garment created by Nereid's Ascension, the Normal and Charged Attack DMG Bonus
+// Sangonomiya Kokomi gains based on her Max HP will receive a further increase based on 15% of her Healing Bonus.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {

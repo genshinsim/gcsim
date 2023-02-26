@@ -6,8 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -36,18 +34,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       burst[c.TalentLvlBurst()],
+			FlatDmg:    c.a4Burst(),
 		}
-		// A4 Part 2
-		// Juuga: Forward Unto Victory: Skill DMG and Crystal Collapse DMG increased by 15.6% of DEF
-		snap := c.Snapshot(&ai)
-		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 0.156
-
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
-			0,
-		)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, 0)
 
 		// Q General's Glory:
 		// Like the General's War Banner created by Inuzaka All-Round Defense, provides buffs to active characters
@@ -68,16 +57,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.qFieldSrc = c.Core.F
 		c.Core.Tasks.Add(c.gorouCrystalCollapse(c.Core.F), 90) // first crystal collapse is 1.5s after Hitmark Initial
 
-		// A1: After using Juuga: Forward Unto Victory, all nearby party members' DEF is increased by 25% for 12s.
-		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(a1Key, 720),
-				AffectedStat: attributes.DEFP,
-				Amount: func() ([]float64, bool) {
-					return c.a1Buff, true
-				},
-			})
-		}
+		c.a1()
 
 		// C4
 		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
@@ -133,20 +113,13 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       burstTick[c.TalentLvlBurst()],
+			FlatDmg:    c.a4Burst(),
 		}
-		//Juuga: Forward Unto Victory: Skill DMG and Crystal Collapse DMG increased by 15.6% of DEF
-		snap := c.Snapshot(&ai)
-		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 0.156
 
 		enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8), nil)
 		if enemy != nil {
-			c.Core.QueueAttackWithSnap(
-				ai,
-				snap,
-				combat.NewCircleHitOnTarget(enemy, nil, 3.5),
-				//TODO: skill damage frames
-				1,
-			)
+			//TODO: skill damage frames
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(enemy, nil, 3.5), 0, 1)
 		}
 
 		//tick every 1.5s

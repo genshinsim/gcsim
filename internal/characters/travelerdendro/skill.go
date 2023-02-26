@@ -9,8 +9,11 @@ import (
 
 var skillFrames [][]int
 
-const skillHitmark = 28
-const cdStart = 25
+const (
+	skillHitmark   = 28
+	particleICDKey = "travelerdendro-particle-icd"
+	cdStart        = 25
+)
 
 func init() {
 	skillFrames = make([][]int, 2)
@@ -41,11 +44,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	var count float64 = 2
-	if c.Core.Rand.Float64() < 0.50 {
-		count = 3
-	}
-
 	var skillCB func(a combat.AttackCB)
 	if c.Base.Cons >= 1 {
 		c.skillC1 = true
@@ -57,9 +55,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skillHitmark,
 		skillHitmark,
 		skillCB,
+		c.particleCB,
 	)
 
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, skillHitmark+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 8*60, cdStart)
 
 	return action.ActionInfo{
@@ -68,4 +66,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 2.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, c.ParticleDelay)
 }

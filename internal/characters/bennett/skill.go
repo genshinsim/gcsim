@@ -16,7 +16,11 @@ var (
 	skillHoldOffsets  = []float64{0.5, 0}
 )
 
-const skillPressHitmark = 16
+const (
+	skillPressHitmark   = 16
+	pressParticleICDKey = "bennett-press-particle-icd"
+	holdParticleICDKey  = "bennett-hold-particle-icd"
+)
 
 func init() {
 	skillFrames = make([][]int, 5)
@@ -99,23 +103,10 @@ func (c *char) skillPress() action.ActionInfo {
 		),
 		skillPressHitmark,
 		skillPressHitmark,
+		c.pressParticleCB,
 	)
 
-	//25 % chance of 3 orbs
-	var count float64 = 2
-	if c.Core.Rand.Float64() < .25 {
-		count++
-	}
-	c.Core.QueueParticle("bennett", count, attributes.Pyro, skillPressHitmark+c.ParticleDelay)
-
-	// a4 reduce cd by 50%
-	if c.StatModIsActive(burstFieldKey) {
-		//a4 reduces it from 240 to 120
-		c.SetCDWithDelay(action.ActionSkill, 240/2, 14)
-	} else {
-		//default is 300, a2 reduces it by 20% to 240
-		c.SetCDWithDelay(action.ActionSkill, 240, 14)
-	}
+	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(5*60)), 14)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[0]),
@@ -123,6 +114,22 @@ func (c *char) skillPress() action.ActionInfo {
 		CanQueueAfter:   skillFrames[0][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) pressParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pressParticleICDKey) {
+		return
+	}
+	c.AddStatus(pressParticleICDKey, 0.3*60, true)
+
+	count := 2.0
+	if c.Core.Rand.Float64() < 0.25 {
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
@@ -158,7 +165,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ax, ap, 0, 0)
+			c.Core.QueueAttack(ax, ap, 0, 0, c.holdParticleCB)
 		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
@@ -170,6 +177,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3.5),
 			166,
 			166,
+			c.holdParticleCB,
 		)
 	}
 
@@ -183,16 +191,9 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 3, 4),
 			94,
 			94,
+			c.holdParticleCB,
 		)
 	}
-
-	// TODO: particle timing??
-	//Bennett Hold E is guaranteed 3 orbs
-	c.Core.QueueParticle("bennett", 3, attributes.Pyro,
-		skillHoldHitmarks[level-1][len(skillHoldHitmarks[level-1])-1]+c.ParticleDelay,
-	)
-
-	applyA4 := c.StatModIsActive(burstFieldKey)
 
 	// figure out which frames to return
 	// 0: skill (press) -> x
@@ -205,27 +206,22 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	switch level {
 	case 1:
 		idx = 1
-		cd = 450 - 90 //-90 for a2
+		cd = 7.5 * 60
 		cdDelay = 43
 		if c4Active {
 			idx = 2
 		}
 	case 2:
 		idx = 3
-		cd = 600 - 120 //-120 from a2
+		cd = 10 * 60
 		cdDelay = 110
-		if applyA4 {
+		if c.a4NoLaunch() {
 			idx = 4
 		}
 	default:
 		panic("bennett skill (hold) level can only be 1 or 2")
 	}
-
-	// reduce cd by 50%
-	if applyA4 {
-		cd /= 2
-	}
-	c.SetCDWithDelay(action.ActionSkill, cd, cdDelay)
+	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(cd)), cdDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[idx]),
@@ -233,4 +229,15 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		CanQueueAfter:   skillFrames[idx][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 1.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Pyro, c.ParticleDelay)
 }

@@ -97,29 +97,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.gender][c.NormalCounter],
 		attackHitmarks[c.gender][c.NormalCounter],
 	)
-
-	if c.NormalCounter == c.NormalHitNum-1 {
-		//add 60% as geo dmg
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Frenzied Rockslide (A4)",
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
-			Element:    attributes.Geo,
-			Durability: 25,
-			Mult:       0.6,
-		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.2}, 2.4),
-				0,
-				0,
-			)
-		}, a4Hitmark[c.gender])
-	}
+	c.a4()
 
 	defer c.AdvanceNormalIndex()
 

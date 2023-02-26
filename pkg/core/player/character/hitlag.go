@@ -9,13 +9,13 @@ import (
 )
 
 func (c *CharWrapper) QueueCharTask(f func(), delay int) {
-	queue.Add(&c.queue, f, c.timePassed+float64(delay))
+	queue.Add(&c.queue, f, c.timePassed+delay)
 }
 
 func (c *CharWrapper) Tick() {
 	//decrement frozen time first
-	c.frozenFrames -= 1.0
-	left := 0.0
+	c.frozenFrames -= 1
+	left := 0
 	if c.frozenFrames < 0 {
 		left = -c.frozenFrames
 		c.frozenFrames = 0
@@ -35,10 +35,10 @@ func (c *CharWrapper) FramePausedOnHitlag() bool {
 	return c.frozenFrames > 0
 }
 
-//ApplyHitlag adds hitlag to the character for specified duration
+// ApplyHitlag adds hitlag to the character for specified duration
 func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	//number of frames frozen is total duration * (1 - factor)
-	ext := dur * (1 - factor)
+	ext := int(math.Ceil(dur * (1 - factor)))
 	c.frozenFrames += ext
 	var logs []string
 	var evt glog.Event

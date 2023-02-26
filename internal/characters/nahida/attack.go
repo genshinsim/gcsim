@@ -83,6 +83,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
+		c.makeC6CB(),
 	)
 
 	defer c.AdvanceNormalIndex()

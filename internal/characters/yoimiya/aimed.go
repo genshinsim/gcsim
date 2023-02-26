@@ -77,6 +77,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
+	c2CB := c.makeC2CB()
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHit(
@@ -88,6 +89,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		),
 		aimedHitmarks[kindling],
 		aimedHitmarks[kindling]+travel,
+		c2CB,
 	)
 
 	// Kindling Arrows
@@ -119,6 +121,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				),
 				aimedHitmarks[kindling],
 				aimedHitmarks[kindling]+kindling_travel,
+				c2CB,
 			)
 		}
 	}

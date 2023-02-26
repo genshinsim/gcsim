@@ -62,6 +62,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		snap,
 		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 3),
 		chargeHitmark-windup+travel,
+		c.makeA4CB(),
 	)
 
 	c.c1(chargeHitmark - windup + travel)

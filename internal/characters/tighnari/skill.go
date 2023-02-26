@@ -11,6 +11,7 @@ var skillFrames []int
 
 const (
 	skillRelease           = 15
+	particleICDKey         = "tighnari-particle-icd"
 	vijnanasuffusionStatus = "vijnanasuffusion"
 	wreatharrows           = "wreatharrows"
 )
@@ -43,13 +44,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	c.skillArea = combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
-	c.Core.QueueAttack(ai, c.skillArea, skillRelease, skillRelease+travel)
+	c.Core.QueueAttack(ai, c.skillArea, skillRelease, skillRelease+travel, c.particleCB)
 
-	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.5 {
-		count++
-	}
-	c.Core.QueueParticle("tighnari", count, attributes.Dendro, skillRelease+travel+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
 
 	c.Core.Tasks.Add(func() {
@@ -67,4 +63,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionAim], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, c.ParticleDelay)
 }
