@@ -35,7 +35,7 @@ func (c *char) a4Energy(er float64) float64 {
 	if c.Base.Ascension < 4 {
 		return 0
 	}
-	excess := int(er / 0.01)
+	excess := int(er * 100)
 	increase := float64(excess) * 0.006
 	c.Core.Log.NewEvent("a4 energy restore stacks", glog.LogCharacterEvent, c.Index).
 		Write("stacks", excess).
