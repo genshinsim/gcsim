@@ -55,12 +55,18 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("mona-a4", -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			m[attributes.HydroP] = .2 * (1 + atk.Snapshot.Stats[attributes.ER])
-			return m, true
-		},
-	})
+
+	if c.a4Stats == nil {
+		c.a4Stats = make([]float64, attributes.EndStatType)
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("mona-a4", -1),
+			AffectedStat: attributes.HydroP,
+			Extra:        true,
+			Amount: func() ([]float64, bool) {
+				return c.a4Stats, true
+			},
+		})
+	}
+	c.a4Stats[attributes.HydroP] = 0.2 * (1 + c.NonExtraStat(attributes.ER))
+	c.QueueCharTask(c.a4, 60)
 }

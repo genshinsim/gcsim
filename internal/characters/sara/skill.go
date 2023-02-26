@@ -101,6 +101,7 @@ func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("sara-attack-buff", 360),
 			AffectedStat: attributes.ATK,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

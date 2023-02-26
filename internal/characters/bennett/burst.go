@@ -140,6 +140,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(burstFieldKey, burstBuffDuration),
 				AffectedStat: attributes.NoStat,
+				Extra:        true,
 				Amount: func() ([]float64, bool) {
 					return m, true
 				},

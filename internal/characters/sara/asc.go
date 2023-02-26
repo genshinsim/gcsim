@@ -30,7 +30,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		}
 		c.AddStatus(a4ICDKey, 180, true)
 
-		energyAddAmt := 1.2 * (1 + c.Stat(attributes.ER))
+		energyAddAmt := 1.2 * (1 + c.NonExtraStat(attributes.ER))
 		for _, char := range c.Core.Player.Chars() {
 			char.AddEnergy("sara-a4", energyAddAmt)
 		}

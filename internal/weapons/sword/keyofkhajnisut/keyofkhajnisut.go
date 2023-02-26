@@ -79,6 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, duration),
 			AffectedStat: attributes.EM,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},
@@ -91,6 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				this.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(teamBuffKey, duration),
 					AffectedStat: attributes.EM,
+					Extra:        true,
 					Amount: func() ([]float64, bool) {
 						return val, true
 					},

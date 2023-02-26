@@ -23,7 +23,7 @@ func (c *char) calcA1Buff() {
 	var max float64
 	team := c.Core.Player.Chars()
 	for _, char := range team {
-		em := char.Stat(attributes.EM)
+		em := char.NonExtraStat(attributes.EM)
 		if em > max {
 			max = em
 		}
@@ -46,6 +46,7 @@ func (c *char) applyA1(dur int) {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(a1BuffKey, dur),
 			AffectedStat: attributes.EM,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return c.a1Buff, c.Core.Player.Active() == idx
 			},
