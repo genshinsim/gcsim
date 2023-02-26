@@ -45,6 +45,7 @@ func (c *char) applyA1(dur int) {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(a1BuffKey, dur),
 			AffectedStat: attributes.EM,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return c.a1Buff, c.Core.Player.Active() == idx
 			},
