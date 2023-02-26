@@ -114,6 +114,7 @@ func (c *char) c6() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("nilou-c6-cr", -1),
 		AffectedStat: attributes.CR,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			cr := c.MaxHP() * 0.001 * 0.006
 			if cr > 0.3 {
@@ -128,6 +129,7 @@ func (c *char) c6() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("nilou-c6-cd", -1),
 		AffectedStat: attributes.CD,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			cd := c.MaxHP() * 0.001 * 0.012
 			if cd > 0.6 {
@@ -137,4 +139,6 @@ func (c *char) c6() {
 			return mCD, true
 		},
 	})
+
+	c.QueueCharTask(c.c6, 60)
 }

@@ -160,7 +160,7 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	// - Resounding Roar for other Amulet pickups.
 	// - TODO how do we pull unbuffed energy recharge %? Store on init?
 	if c.Base.Ascension >= 4 {
-		mER[attributes.ER] += c.BaseStats[attributes.ER] * .1
+		mER[attributes.ER] += (1 + c.NonExtraStat(attributes.ER)) * .1
 	}
 
 	// apply flat energy
@@ -183,6 +183,7 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	collector.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("abundance-amulet", 360),
 		AffectedStat: attributes.ER,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return mER, true
 		},

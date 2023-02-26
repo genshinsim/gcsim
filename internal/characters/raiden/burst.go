@@ -99,7 +99,7 @@ func (c *char) burstRestorefunc(a combat.AttackCB) {
 	if c.Core.F > c.restoreICD && c.restoreCount < 5 {
 		c.restoreCount++
 		c.restoreICD = c.Core.F + 60 // once every 1 second
-		energy := burstRestore[c.TalentLvlBurst()] * (1 + c.a4Energy(a.AttackEvent.Snapshot.Stats[attributes.ER]))
+		energy := burstRestore[c.TalentLvlBurst()] * (1 + c.a4Energy(c.NonExtraStat(attributes.ER)))
 		for _, char := range c.Core.Player.Chars() {
 			char.AddEnergy("raiden-burst", energy)
 		}

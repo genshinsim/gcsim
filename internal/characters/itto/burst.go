@@ -47,8 +47,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Royal Descent: Behold, Itto the Evil! (Stat Snapshot)",
 	}
-	snapshot := c.Snapshot(&aiSnapshot)
-	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[attributes.DEFP]) + snapshot.Stats[attributes.DEF]
+	c.Snapshot(&aiSnapshot)
+	burstDefSnapshot := c.Base.Def*(1+c.NonExtraStat(attributes.DEFP)) + c.NonExtraStat(attributes.DEF)
 	mult := defconv[c.TalentLvlBurst()]
 
 	// TODO: Confirm exact timing of buff
@@ -58,6 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstBuffKey, burstDuration),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return mATK, true
 		},

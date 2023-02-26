@@ -49,6 +49,7 @@ type (
 
 	StatMod struct {
 		AffectedStat attributes.Stat
+		Extra        bool
 		Amount       StatModFunc
 		modifier.Base
 	}

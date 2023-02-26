@@ -42,6 +42,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(paramitaBuff, 540+skillStart),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return c.ppbuff, true
 		},

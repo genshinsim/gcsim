@@ -47,7 +47,7 @@ func (c *char) a4() {
 		return
 	}
 
-	crit_share := 0.15 * c.Stat(attributes.CR)
+	crit_share := 0.15 * c.NonExtraStat(attributes.CR)
 	if crit_share > 0.15 {
 		crit_share = 0.15
 	}
@@ -62,6 +62,7 @@ func (c *char) a4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("rosaria-a4", 600),
 			AffectedStat: attributes.CR,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

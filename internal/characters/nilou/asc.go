@@ -91,6 +91,7 @@ func (c *char) a4() {
 		return
 	}
 	for _, this := range c.Core.Player.Chars() {
+		// TODO: a4 should be an extra buff
 		this.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
