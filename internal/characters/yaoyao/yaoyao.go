@@ -15,12 +15,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	lastSkillParticle int
-	burstRadishAI     combat.AttackInfo
-	numYueguiJumping  int
-	yueguiJumping     []*yuegui
-	a1src             int
-	a4Srcs            []int
+	burstRadishAI    combat.AttackInfo
+	numYueguiJumping int
+	yueguiJumping    []*yuegui
+	a4Srcs           []int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
