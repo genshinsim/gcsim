@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -21,9 +20,13 @@ type DBStore interface {
 	GetSubmissionWork(ctx context.Context) ([]*model.Submission, error)
 }
 
+type ShareStore interface {
+	CreatePerm(ctx context.Context, data *model.SimulationResult) (string, error)
+}
+
 type Config struct {
 	DBStore    DBStore
-	ShareStore api.ShareWriter
+	ShareStore ShareStore
 }
 
 type Server struct {
@@ -112,7 +115,7 @@ func (s *Server) CompletePending(ctx context.Context, req *CompletePendingReques
 	if data == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request payload")
 	}
-	key, err := s.Config.ShareStore.Create(ctx, data)
+	key, err := s.Config.ShareStore.CreatePerm(ctx, data)
 	if err != nil {
 		return nil, err
 	}
