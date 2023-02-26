@@ -62,6 +62,7 @@ func (c *char) c4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("yaoyao-c4", 8*60),
 		AffectedStat: attributes.EM,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},
