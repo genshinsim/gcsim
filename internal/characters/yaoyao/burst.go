@@ -3,6 +3,7 @@ package yaoyao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -33,10 +34,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	burstAI := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Moonjade Descent",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       burstDMG[c.TalentLvlBurst()],
@@ -45,10 +46,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstRadishAI = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Radish (Burst)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupYaoyaoRadishBurst,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupYaoyaoRadishBurst,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       burstRadishDMG[c.TalentLvlBurst()],

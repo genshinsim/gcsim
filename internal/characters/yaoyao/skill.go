@@ -3,6 +3,7 @@ package yaoyao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -27,10 +28,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	procAI := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Radish (Skill)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupYaoyaoRadishSkill,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupYaoyaoRadishSkill,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       skillRadishDMG[c.TalentLvlSkill()],

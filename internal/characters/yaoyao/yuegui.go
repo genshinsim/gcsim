@@ -1,12 +1,12 @@
 package yaoyao
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -32,7 +32,7 @@ func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
 		snap: c.Snapshot(&procAI),
 		c:    c,
 	}
-	pos := c.Core.Combat.Player().Pos().Add(combat.Point{X: 0, Y: 1})
+	pos := c.Core.Combat.Player().Pos().Add(geometry.Point{X: 0, Y: 1})
 	//TODO: yuegui placement??
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiThrowing)
 
@@ -44,9 +44,9 @@ func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
 	yg.Gadget.ThinkInterval = 30
 
 	yg.Gadget.OnExpiry = func() {
-		yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Throwing) expiry"), glog.LogCharacterEvent, yg.c.Index)
+		yg.Core.Log.NewEvent("Yuegui (Throwing) expiry", glog.LogCharacterEvent, yg.c.Index)
 	}
-	yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Throwing) summoned"), glog.LogCharacterEvent, yg.c.Index)
+	yg.Core.Log.NewEvent("Yuegui (Throwing) summoned", glog.LogCharacterEvent, yg.c.Index)
 	// yg.Reactable = &reactable.Reactable{}
 	// yg.Reactable.Init(yg, c.Core)
 	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, 7)
@@ -72,9 +72,9 @@ func (c *char) newYueguiJump() {
 	yg.Gadget.ThinkInterval = 30
 
 	yg.Gadget.OnKill = func() {
-		yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Jumping) removed"), glog.LogCharacterEvent, yg.c.Index)
+		yg.Core.Log.NewEvent("Yuegui (Jumping) removed", glog.LogCharacterEvent, yg.c.Index)
 	}
-	yg.Core.Log.NewEvent(fmt.Sprintf("Yuegui (Jumping) summoned"), glog.LogCharacterEvent, yg.c.Index)
+	yg.Core.Log.NewEvent("Yuegui (Jumping) summoned", glog.LogCharacterEvent, yg.c.Index)
 	// yg.Reactable = &reactable.Reactable{}
 	// yg.Reactable.Init(yg, c.Core)
 	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, 7)
@@ -105,7 +105,7 @@ func (yg *yuegui) throw() {
 	currHPPerc := yg.Core.Player.ActiveChar().HPCurrent / yg.Core.Player.ActiveChar().MaxHP()
 	enemy := yg.Core.Combat.RandomEnemyWithinArea(yg.aoe, nil)
 
-	var target combat.Point
+	var target geometry.Point
 	if currHPPerc > 0.7 && enemy != nil {
 		target = enemy.Pos()
 	} else {
@@ -147,7 +147,7 @@ func (yg *yuegui) getInfos() (combat.AttackInfo, player.HealInfo, float64) {
 	return ai, hi, radishRad
 }
 
-func (yg *yuegui) Type() combat.TargettableType { return combat.TargettableGadget }
+func (yg *yuegui) Type() targets.TargettableType { return targets.TargettableGadget }
 
 // TODO: Confirm if yueguis can infuse cryo
 func (yg *yuegui) HandleAttack(atk *combat.AttackEvent) float64 {
