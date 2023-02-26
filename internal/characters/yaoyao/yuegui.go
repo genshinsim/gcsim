@@ -87,6 +87,23 @@ func (c *char) newYueguiJump() {
 	c.numYueguiJumping += 1
 }
 
+func (c *char) makeHealCB(area combat.AttackPattern, hi player.HealInfo) func(combat.AttackCB) {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+
+		if done {
+			return
+		}
+		if c.Core.Combat.Player().IsWithinArea(area) {
+			c.radishHeal(hi)
+			done = true
+		}
+	}
+}
+
 func (yg *yuegui) Tick() {
 	//this is needed since both reactable and gadget tick
 	// yg.Reactable.Tick()
@@ -130,12 +147,10 @@ func (yg *yuegui) throw() {
 		yg.snap,
 		radishExplodeAoE,
 		travelDelay,
+		yg.c.makeHealCB(radishExplodeAoE, hi),
 		yg.makeParticleCB(),
 		yg.c.makeC2CB(),
 	)
-	if yg.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
-		yg.c.radishHeal(hi)
-	}
 	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing && yg.c.Base.Cons >= 6 && (yg.throwCounter == 2 || yg.throwCounter == 5) {
 		yg.c6(target, yg.ai, hi)
 	}

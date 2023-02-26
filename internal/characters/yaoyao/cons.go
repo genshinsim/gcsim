@@ -80,8 +80,19 @@ func (yg *yuegui) c6(target geometry.Point, ai combat.AttackInfo, hi player.Heal
 	hi.Src = yg.c.MaxHP() * 0.075
 
 	c6MegaRadishAoE := combat.NewCircleHitOnTarget(target, nil, c6MegaRadishRad)
-	yg.Core.QueueAttackWithSnap(ai, yg.snap, c6MegaRadishAoE, c6TravelDelay)
-	if yg.Core.Combat.Player().IsWithinArea(c6MegaRadishAoE) {
-		yg.c.Core.Player.Heal(hi)
+	done := false
+	heal := func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+
+		if done {
+			return
+		}
+		if yg.Core.Combat.Player().IsWithinArea(c6MegaRadishAoE) {
+			yg.c.Core.Player.Heal(hi)
+			done = true
+		}
 	}
+	yg.Core.QueueAttackWithSnap(ai, yg.snap, c6MegaRadishAoE, c6TravelDelay, heal)
 }

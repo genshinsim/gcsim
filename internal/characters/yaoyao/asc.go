@@ -43,11 +43,9 @@ func (c *char) a1Throw() {
 		radishExplodeAoE,
 		travelDelay,
 		travelDelay,
+		c.makeHealCB(radishExplodeAoE, hi),
 		c.makeC2CB(),
 	)
-	if c.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
-		c.radishHeal(hi)
-	}
 }
 
 func (c *char) a4(index int, src int) func() {
