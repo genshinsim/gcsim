@@ -96,7 +96,7 @@ func (c *char) getBurstHealInfo(snap *combat.Snapshot) player.HealInfo {
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.StatModIsActive(burstKey) {
+		if c.StatusIsActive(burstKey) {
 			c.removeBurst()
 		}
 		return false
@@ -104,7 +104,7 @@ func (c *char) onExitField() {
 }
 
 func (c *char) removeBurst() {
-	c.DeleteStatMod(burstKey)
+	c.DeleteStatus(burstKey)
 	// remove all jumping yuegui
 	for i, yg := range c.yueguiJumping {
 		if yg != nil {
