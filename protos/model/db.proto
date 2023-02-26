@@ -33,6 +33,7 @@ message DBEntry {
     repeated string accepted_tags = 16 [json_name="accepted_tags"];
     repeated string rejected_tags = 17 [json_name="rejected_tags"];
     bool is_db_valid = 18 [json_name="is_db_valid"];
+    string submitter = 19 [json_name="submitter"];
 }
 
 message DBEntries {
@@ -52,11 +53,16 @@ message Submission {
     string config = 2;
     string submitter = 3; //submitter discord id 
     string description = 4;
-    string preview = 5; //view key for preview
-    repeated string tags = 6;
 }
 
 message ComputeWork {
-    string key = 1 [json_name="key"];
-    string cfg = 2 [json_name="cfg"];
+    string id = 1 [json_name="_id"];
+    string config = 2 [json_name="config"];
+    ComputeWorkSource source = 3 [json_name="source"];
+}
+
+enum ComputeWorkSource {
+    InvalidWork = 0;
+    DBWork = 1;
+    SubmissionWork = 2;
 }
