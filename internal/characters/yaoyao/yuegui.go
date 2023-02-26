@@ -15,7 +15,7 @@ const (
 	skillTargetingRad = 8
 	radishRad         = 2.0
 	travelDelay       = 13
-	c6TravelDelay     = 13
+	c6TravelDelay     = 20
 )
 
 type yuegui struct {

@@ -64,7 +64,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][i],
+			attackHitboxes[c.NormalCounter][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 0 {
