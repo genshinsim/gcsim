@@ -9,25 +9,12 @@ service DBStore {
     //generic get for pulling from approved db
     rpc Get (GetRequest) returns (GetResponse) {}
     rpc GetUnfiltered (GetUnfilteredRequest) returns (GetUnfilteredResponse) {}
-    rpc Create (CreateRequest) returns (CreateResponse) {}
     rpc Update (UpdateRequest) returns (UpdateResponse) {}
-
-    //new submissions
-    rpc Submit (SubmitRequest) returns (SubmitResponse) {} 
-    rpc GetComputeWork (GetComputeWorkRequest) returns (GetComputeWorkResponse) {}
-    rpc SubmitComputeWork (SubmitComputeWorkRequest) returns (SubmitComputeWorkResponse) {}
-    rpc DeletePending (DeletePendingRequest) returns (DeletePendingResponse) {}
+    rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
 
     //tagging
-    rpc ApproveTag(ApproveRequest) returns (ApproveResponse) {}
-    rpc RejectTag(RejectRequest) returns (RejectResponse) {}
-}
-
-message Submission {
-    string _id = 1;
-    string config = 2;
-    string submitter = 3; //submitter discord id 
-    string description = 4;
+    rpc ApproveTag(ApproveTagRequest) returns (ApproveTagResponse) {}
+    rpc RejectTag(RejectTagRequest) returns (RejectTagResponse) {}
 }
 
 message GetRequest {
@@ -46,67 +33,45 @@ message GetUnfilteredResponse {
     model.DBEntries data = 1;
 }
 
-message CreateRequest {
-   model.DBEntry data = 1; 
-}
-
-message CreateResponse {
-    string key = 1 [json_name="key"];
-}
-
 message UpdateRequest {
    string id = 1 [json_name="_id"];
-   model.DBEntry data = 2; 
+   model.SimulationResult result = 2; 
 }
 
 message UpdateResponse {
-    string key = 1 [json_name="key"];
+    string id = 1 [json_name="id"];
 }
 
-message SubmitRequest {
-    string config = 1;
-    string submitter = 2; //submitter discord id 
-    string description = 3;
+
+message GetWorkRequest {}
+
+message GetWorkResponse {
+    repeated model.ComputeWork data = 1 [json_name="data"];
 }
 
-message SubmitResponse {
+message CompleteWorkRequest {
     string id = 1;
+    model.SimulationResult result = 2 [json_name="result"];
 }
 
-message GetComputeWorkRequest {}
-
-message GetComputeWorkResponse {
-    model.ComputeWork work = 1 [json_name="work"];
+message CompleteWorkResponse {
+    string id = 1 [json_name="id"];
 }
 
-message SubmitComputeWorkRequest {
-    model.SimulationResult result = 1 [json_name="result"];
-}
-
-message SubmitComputeWorkResponse {
-}
-
-message DeletePendingRequest {
-    string key = 1 [json_name="key"];
-}
-
-message DeletePendingResponse {
-}
-
-message ApproveRequest {
-    string key = 1 [json_name="key"];
+message ApproveTagRequest {
+    string id = 1 [json_name="id"];
     string tag = 2 [json_name="tag"];
 }
 
-message ApproveResponse {
-    string key = 1 [json_name="key"];
+message ApproveTagResponse {
+    string id = 1 [json_name="id"];
 }
 
-message RejectRequest {
-    string key = 1 [json_name="key"];
+message RejectTagRequest {
+    string id = 1 [json_name="id"];
     string tag = 2 [json_name="tag"];
 }
 
-message RejectResponse {
-    string key = 1 [json_name="key"];
+message RejectTagResponse {
+    string id = 1 [json_name="id"];
 }
