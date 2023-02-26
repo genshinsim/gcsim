@@ -40,11 +40,24 @@ func (c *Client) Create(ctx context.Context, data *model.SimulationResult) (stri
 	if err != nil {
 		return "", err
 	}
-	return resp.GetKey(), nil
+	return resp.GetId(), nil
 }
 
-func (c *Client) Update(ctx context.Context, id string, data *model.SimulationResult) error {
-	return fmt.Errorf("not implemented")
+func (c *Client) CreatePerm(ctx context.Context, data *model.SimulationResult) (string, error) {
+	//TODO: handle ttl properly
+	return c.Create(ctx, data)
+}
+
+func (c *Client) Replace(ctx context.Context, id string, data *model.SimulationResult) error {
+	//TODO: handle ttl; should be ok for now since we only call this for db update..
+	_, err := c.srvClient.Update(ctx, &UpdateRequest{
+		Id:     id,
+		Result: data,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *Client) SetTTL(ctx context.Context, id string) error {
@@ -61,7 +74,7 @@ func (c *Client) Random(ctx context.Context) (string, error) {
 
 func (c *Client) Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error) {
 	resp, err := c.srvClient.Read(ctx, &ReadRequest{
-		Key: id,
+		Id: id,
 	})
 
 	if err != nil {

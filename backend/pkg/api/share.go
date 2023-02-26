@@ -22,8 +22,7 @@ import (
 
 type ShareStore interface {
 	ShareReader
-	Create(ctx context.Context, data *model.SimulationResult) (string, error)
-	Update(ctx context.Context, id string, data *model.SimulationResult) error
+	ShareWriter
 	SetTTL(ctx context.Context, id string) error
 	Delete(ctx context.Context, id string) error
 	Random(ctx context.Context) (string, error)
@@ -31,6 +30,10 @@ type ShareStore interface {
 
 type ShareReader interface {
 	Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error)
+}
+
+type ShareWriter interface {
+	Create(ctx context.Context, data *model.SimulationResult) (string, error)
 }
 
 var ErrKeyNotFound = errors.New("key does not exist")

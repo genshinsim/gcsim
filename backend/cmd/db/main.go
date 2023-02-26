@@ -5,8 +5,9 @@ import (
 	"net"
 	"os"
 
+	"github.com/genshinsim/gcsim/backend/pkg/mongo"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
-	"github.com/genshinsim/gcsim/backend/pkg/services/db/mongo"
+	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"google.golang.org/grpc"
 )
 
@@ -25,9 +26,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	shareStore, err := share.NewClient(share.ClientCfg{
+		Addr: os.Getenv("SHARE_STORE_URL"),
+	})
+
+	if err != nil {
+		panic(err)
+	}
 
 	server, err := db.NewServer(db.Config{
-		DBStore: dbStore,
+		DBStore:    dbStore,
+		ShareStore: shareStore,
 	})
 
 	if err != nil {

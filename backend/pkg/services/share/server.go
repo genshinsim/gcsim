@@ -80,31 +80,31 @@ func (s *Server) Create(ctx context.Context, req *CreateRequest) (*CreateRespons
 	}
 
 	return &CreateResponse{
-		Key: id,
+		Id: id,
 	}, nil
 }
 
 func (s *Server) Read(ctx context.Context, req *ReadRequest) (*ReadResponse, error) {
-	s.Log.Infow("share read request", "key", req.GetKey())
+	s.Log.Infow("share read request", "key", req.GetId())
 
-	res, err := s.cfg.Store.Read(ctx, req.GetKey())
+	res, err := s.cfg.Store.Read(ctx, req.GetId())
 
 	if err != nil {
 		return nil, err
 	}
 
 	return &ReadResponse{
-		Key:       req.GetKey(),
+		Id:        req.GetId(),
 		Result:    res.GetResult(),
 		ExpiresAt: res.GetExpiresAt(),
 	}, nil
 }
 
 func (s *Server) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse, error) {
-	s.Log.Infow("share update request", "key", req.GetKey())
+	s.Log.Infow("share update request", "key", req.GetId())
 
 	_, err := s.cfg.Store.Update(ctx, &ShareEntry{
-		Id:        req.GetKey(),
+		Id:        req.GetId(),
 		Result:    req.GetResult(),
 		ExpiresAt: req.GetExpiresAt(),
 		Submitter: req.GetSubmitter(),
@@ -118,9 +118,9 @@ func (s *Server) Update(ctx context.Context, req *UpdateRequest) (*UpdateRespons
 }
 
 func (s *Server) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLResponse, error) {
-	s.Log.Infow("share set ttl request", "key", req.GetKey(), "expires_at", req.GetExpiresAt())
+	s.Log.Infow("share set ttl request", "key", req.GetId(), "expires_at", req.GetExpiresAt())
 
-	_, err := s.cfg.Store.SetTTL(ctx, req.GetKey(), req.GetExpiresAt())
+	_, err := s.cfg.Store.SetTTL(ctx, req.GetId(), req.GetExpiresAt())
 
 	if err != nil {
 		return nil, err
@@ -130,9 +130,9 @@ func (s *Server) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLRespons
 }
 
 func (s *Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse, error) {
-	s.Log.Infow("share delete request", "key", req.GetKey())
+	s.Log.Infow("share delete request", "key", req.GetId())
 
-	err := s.cfg.Store.Delete(ctx, req.GetKey())
+	err := s.cfg.Store.Delete(ctx, req.GetId())
 
 	if err != nil {
 		return nil, err
