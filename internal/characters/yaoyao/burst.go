@@ -87,7 +87,7 @@ func (c *char) getBurstHealInfo(snap *combat.Snapshot) player.HealInfo {
 	heal := burstRadishHealing[0][c.TalentLvlBurst()]*maxhp + burstRadishHealing[1][c.TalentLvlBurst()]
 	return player.HealInfo{
 		Caller:  c.Index,
-		Target:  c.Core.Player.Active(),
+		Target:  -1,
 		Message: "Yuegui Burst Heal",
 		Src:     heal,
 		Bonus:   snap.Stats[attributes.Heal],
