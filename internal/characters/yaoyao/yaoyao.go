@@ -20,6 +20,7 @@ type char struct {
 	numYueguiJumping  int
 	yueguiJumping     []*yuegui
 	a1src             int
+	a4Srcs            []int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -37,6 +38,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.onExitField()
 	c.yueguiJumping = make([]*yuegui, 3)
+	c.a4Srcs = make([]int, 4)
 	return nil
 }

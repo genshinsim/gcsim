@@ -11,7 +11,10 @@ import (
 
 var skillFrames []int
 
-const skillStart = 15
+const (
+	skillCDStart     = 15
+	yueguiThrowSpawn = 48
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52)
@@ -22,27 +25,29 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 
-	// yuegui spawns at cd frame
-	c.Core.Status.Add("yuegui", 500+skillStart)
+	// yuegui spawns after 48f
+	c.Core.Status.Add("yuegui", 600+yueguiThrowSpawn)
 
 	procAI := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Radish (Skill)",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   attacks.ICDGroupYaoyaoRadishSkill,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       skillRadishDMG[c.TalentLvlSkill()],
+		ActorIndex:         c.Index,
+		Abil:               "Radish (Skill)",
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagElementalArt,
+		ICDGroup:           attacks.ICDGroupYaoyaoRadishSkill,
+		StrikeType:         attacks.StrikeTypeDefault,
+		Element:            attributes.Dendro,
+		Durability:         25,
+		Mult:               skillRadishDMG[c.TalentLvlSkill()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
-	yuegui := c.newYueguiThrow(procAI)
 	c.Core.Tasks.Add(func() {
+		yuegui := c.newYueguiThrow(procAI)
 		c.Core.Combat.AddGadget(yuegui)
-	}, skillStart+33)
+	}, skillCDStart+yueguiThrowSpawn)
 
-	c.SetCDWithDelay(action.ActionSkill, 15*60, skillStart)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, skillCDStart)
 
 	if c.Base.Cons >= 4 {
 		c.c4()
@@ -51,17 +56,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }
 
-func (c *char) getSkillHealInfo() player.HealInfo {
-	heal := skillRadishHealing[0][c.TalentLvlBurst()]*c.MaxHP() + skillRadishHealing[1][c.TalentLvlBurst()]
+func (c *char) getSkillHealInfo(snap *combat.Snapshot) player.HealInfo {
+	maxhp := snap.BaseHP*(1+snap.Stats[attributes.HPP]) + snap.Stats[attributes.HP]
+	heal := skillRadishHealing[0][c.TalentLvlSkill()]*maxhp + skillRadishHealing[1][c.TalentLvlSkill()]
 	return player.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
-		Message: "Yuegui skill",
+		Message: "Yuegui Skill",
 		Src:     heal,
+		Bonus:   snap.Stats[attributes.Heal],
 	}
 }

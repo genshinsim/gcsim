@@ -10,10 +10,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-const skillParticleICD = 90
-const skillTargetingRad = 8 // TODO: replace with the actual range
-const radishRad = 1.0       // TODO: replace with the actual radish AoE
-const travelDelay = 10      // TODO: replace with the actual travel delay
+const (
+	skillParticleICD  = "skill-particle-icd"
+	skillTargetingRad = 8
+	radishRad         = 2.0
+	travelDelay       = 13
+	c6TravelDelay     = 13
+)
 
 type yuegui struct {
 	*gadget.Gadget
@@ -32,24 +35,23 @@ func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
 		snap: c.Snapshot(&procAI),
 		c:    c,
 	}
-	pos := c.Core.Combat.Player().Pos().Add(geometry.Point{X: 0, Y: 1})
-	//TODO: yuegui placement??
+	player := c.Core.Combat.Player()
+	pos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 2}, player.Direction())
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiThrowing)
 
-	// duration starts from when first throw happens?
-	yg.Gadget.Duration = 630
+	yg.Gadget.Duration = 600
 	yg.Gadget.OnThinkInterval = yg.throw
 
-	// they start throwing 30f after being spawned
-	yg.Gadget.ThinkInterval = 30
+	// they start throwing 29f after being spawned
+	yg.Gadget.ThinkInterval = 29
 
-	yg.Gadget.OnExpiry = func() {
+	yg.Gadget.OnKill = func() {
 		yg.Core.Log.NewEvent("Yuegui (Throwing) expiry", glog.LogCharacterEvent, yg.c.Index)
 	}
 	yg.Core.Log.NewEvent("Yuegui (Throwing) summoned", glog.LogCharacterEvent, yg.c.Index)
 	// yg.Reactable = &reactable.Reactable{}
 	// yg.Reactable.Init(yg, c.Core)
-	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, 7)
+	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, skillTargetingRad)
 
 	return yg
 }
@@ -59,17 +61,18 @@ func (c *char) newYueguiJump() {
 		return
 	}
 	yg := &yuegui{
+		ai:   c.burstRadishAI,
 		snap: c.Snapshot(&c.burstRadishAI),
 		c:    c,
 	}
-	pos := c.Core.Combat.Player().Pos()
-	//TODO: yuegui placement??
+	player := c.Core.Combat.Player()
+	pos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: -2}, player.Direction())
 	yg.Gadget = gadget.New(c.Core, pos, 0.5, combat.GadgetTypYueguiJumping)
 	yg.Gadget.Duration = -1 // They last until they get deleted by the burst
 	yg.Gadget.OnThinkInterval = yg.throw
 
-	// they start throwing 30f after being spawned
-	yg.Gadget.ThinkInterval = 30
+	// they start throwing 29f after being spawned
+	yg.Gadget.ThinkInterval = 29
 
 	yg.Gadget.OnKill = func() {
 		yg.Core.Log.NewEvent("Yuegui (Jumping) removed", glog.LogCharacterEvent, yg.c.Index)
@@ -77,8 +80,9 @@ func (c *char) newYueguiJump() {
 	yg.Core.Log.NewEvent("Yuegui (Jumping) summoned", glog.LogCharacterEvent, yg.c.Index)
 	// yg.Reactable = &reactable.Reactable{}
 	// yg.Reactable.Init(yg, c.Core)
-	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, 7)
+	yg.aoe = combat.NewCircleHitOnTarget(pos, nil, skillTargetingRad)
 
+	c.Core.Combat.AddGadget(yg)
 	c.yueguiJumping[c.numYueguiJumping] = yg
 	c.numYueguiJumping += 1
 }
@@ -89,15 +93,21 @@ func (yg *yuegui) Tick() {
 	yg.Gadget.Tick()
 }
 
-func (yg *yuegui) particleCB(_ combat.AttackCB) {
-	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing {
-		return
+func (yg *yuegui) makeParticleCB() combat.AttackCBFunc {
+	if yg.GadgetTyp() != combat.GadgetTypYueguiThrowing {
+		return nil
 	}
-	if yg.Core.F-yg.c.lastSkillParticle < skillParticleICD {
-		return
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+
+		if yg.c.StatusIsActive(skillParticleICD) {
+			return
+		}
+		yg.c.AddStatus(skillParticleICD, 1.5*60, true)
+		yg.Core.QueueParticle(yg.c.Base.Key.String(), 1, attributes.Dendro, yg.c.ParticleDelay)
 	}
-	yg.c.lastSkillParticle = yg.Core.F
-	yg.Core.QueueParticle("yaoyao", 1, attributes.Dendro, yg.c.ParticleDelay)
 }
 
 func (yg *yuegui) throw() {
@@ -112,42 +122,32 @@ func (yg *yuegui) throw() {
 		// really it should be random if no targets are in range and the character's HP is full but we aren't really simming that
 		target = yg.Core.Combat.Player().Pos()
 	}
-	ai, hi, radius := yg.getInfos()
-	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radius)
+	hi := yg.getHeal()
+	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
 
 	yg.Core.QueueAttackWithSnap(
-		ai,
+		yg.ai,
 		yg.snap,
 		radishExplodeAoE,
 		travelDelay,
-		yg.particleCB,
+		yg.makeParticleCB(),
+		yg.c.makeC2CB(),
 	)
 	if yg.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
-		hi.Bonus = yg.snap.Stats[attributes.Heal]
 		yg.c.radishHeal(hi)
+	}
+	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing && yg.c.Base.Cons >= 6 && (yg.throwCounter == 2 || yg.throwCounter == 5) {
+		yg.c6(target, yg.ai, hi)
 	}
 	yg.throwCounter += 1
 }
 
-func (yg *yuegui) getInfos() (combat.AttackInfo, player.HealInfo, float64) {
-	var ai combat.AttackInfo
-	var hi player.HealInfo
-
-	if yg.c.StatusIsActive(burstKey) {
-		ai = yg.c.burstRadishAI
-		hi = yg.c.getBurstHealInfo()
-	} else {
-		ai = yg.ai
-		hi = yg.c.getSkillHealInfo()
+func (yg *yuegui) getHeal() player.HealInfo {
+	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing {
+		return yg.c.getSkillHealInfo(&yg.snap)
 	}
-
-	if yg.c.Base.Cons >= 6 {
-		return yg.c6(ai, hi, radishRad)
-	}
-	return ai, hi, radishRad
+	return yg.c.getBurstHealInfo(&yg.snap)
 }
-
-func (yg *yuegui) Type() targets.TargettableType { return targets.TargettableGadget }
 
 // TODO: Confirm if yueguis can infuse cryo
 func (yg *yuegui) HandleAttack(atk *combat.AttackEvent) float64 {
@@ -156,8 +156,9 @@ func (yg *yuegui) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 
-func (yg *yuegui) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	return 0, false
+func (yg *yuegui) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (yg *yuegui) SetDirection(trg geometry.Point)                        {}
+func (yg *yuegui) SetDirectionToClosestEnemy()                            {}
+func (yg *yuegui) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
 }
-
-func (yg *yuegui) ApplyDamage(*combat.AttackEvent, float64) {}

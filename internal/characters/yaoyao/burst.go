@@ -13,75 +13,67 @@ import (
 const burstKey = "yaoyaoburst"
 
 var (
-	burstFrames   []int
-	burstHitmarks = 16 // initial 3 hits
-	burstRadius   = []float64{2.5, 2.5, 3}
-	burstDur      = 5 * 60
+	burstFrames         []int
+	burstInitialHitmark = 16
+	burstDur            = 6 * 60
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(80)
-	burstFrames[action.ActionSwap] = 79
+	burstFrames = frames.InitAbilSlice(63)
+	burstFrames[action.ActionAttack] = 58
+	burstFrames[action.ActionSkill] = 57
+	burstFrames[action.ActionDash] = 58
+	burstFrames[action.ActionJump] = 57
+	burstFrames[action.ActionSwap] = 56
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	//add cooldown to sim
-	c.SetCDWithDelay(action.ActionBurst, 20*60, 18)
+	c.SetCD(action.ActionBurst, 20*60)
 	//use up energy
 	c.ConsumeEnergy(7)
 
 	burstAI := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Moonjade Descent",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       burstDMG[c.TalentLvlBurst()],
+		ActorIndex:       c.Index,
+		Abil:             "Moonjade Descent",
+		AttackTag:        attacks.AttackTagElementalBurst,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Element:          attributes.Dendro,
+		Durability:       25,
+		Mult:             burstDMG[c.TalentLvlBurst()],
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.05,
 	}
-	c.Core.QueueAttack(burstAI, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 5), 16, 16)
+	c.Core.QueueAttack(burstAI, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 3), burstInitialHitmark, burstInitialHitmark)
 	c.burstRadishAI = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Radish (Burst)",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupYaoyaoRadishBurst,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       burstRadishDMG[c.TalentLvlBurst()],
+		ActorIndex:         c.Index,
+		Abil:               "Radish (Burst)",
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
+		ICDGroup:           attacks.ICDGroupYaoyaoRadishBurst,
+		StrikeType:         attacks.StrikeTypeDefault,
+		Element:            attributes.Dendro,
+		Durability:         25,
+		Mult:               burstRadishDMG[c.TalentLvlBurst()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
-	c.QueueCharTask(c.newYueguiJump, 1*60+42)
-	c.QueueCharTask(c.newYueguiJump, 2*60+42)
-	c.QueueCharTask(c.newYueguiJump, 3*60+42)
+	c.Core.Tasks.Add(c.newYueguiJump, 104)
+	c.Core.Tasks.Add(c.newYueguiJump, 162)
+	c.Core.Tasks.Add(c.newYueguiJump, 221)
 	c.QueueCharTask(c.removeBurst, burstDur)
-	c.AddStatus(burstKey, burstDur, true)
-
-	// TODO: Yaoyao gains 15% movespeed and 50% dendro res
-	// m := make([]float64, attributes.EndStatType)
-	// m[attributes.DendroRes] = 0.50
-	// m[attributes.Movespeed] = 0.15
-	// c.AddStatMod(character.StatMod{
-	// 		Base:         modifier.NewBaseWithHitlag(burstKey, 600),
-	// 		AffectedStat: attributes.DendroRes,
-	// 		Amount: func() ([]float64, bool) {
-	// 			return m, true
-	// 		}
-	// },)
+	c.AddStatus(burstKey, burstDur, false)
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
 
 	if c.Base.Ascension >= 1 {
-		for i := 36; i <= burstDur; i += 36 { // 0.6*60 = 36
-			c.QueueCharTask(c.a1ticker, i)
-		}
+		c.QueueCharTask(c.a1Ticker, 0.6*60)
 	}
-	c.ConsumeEnergy(0)
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
@@ -90,13 +82,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) getBurstHealInfo() player.HealInfo {
-	heal := burstRadishHealing[0][c.TalentLvlBurst()]*c.MaxHP() + burstRadishHealing[1][c.TalentLvlBurst()]
+func (c *char) getBurstHealInfo(snap *combat.Snapshot) player.HealInfo {
+	maxhp := snap.BaseHP*(1+snap.Stats[attributes.HPP]) + snap.Stats[attributes.HP]
+	heal := burstRadishHealing[0][c.TalentLvlBurst()]*maxhp + burstRadishHealing[1][c.TalentLvlBurst()]
 	return player.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
-		Message: "Yuegui burst heal",
+		Message: "Yuegui Burst Heal",
 		Src:     heal,
+		Bonus:   snap.Stats[attributes.Heal],
 	}
 }
 

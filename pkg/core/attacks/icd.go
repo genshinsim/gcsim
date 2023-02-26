@@ -160,9 +160,9 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	//alhaitham CA
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//yaoyao radish skill
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{1, 0, 0, 0, 0, 0},
 	//yaoyao radish burst
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{1, 0, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -215,7 +215,7 @@ var ICDGroupDamageSequence = [][]float64{
 	//alhaitham-CA
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//yaoyao radish skill
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	{1, 1, 1, 1, 1, 1},
 	//yaoyao radish burst
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	{1, 1, 1, 1, 1, 1},
 }

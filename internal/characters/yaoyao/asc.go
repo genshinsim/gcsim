@@ -8,25 +8,24 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-func (c *char) a1ticker() {
-	c.QueueCharTask(func() {
-		if !c.StatusIsActive(burstKey) {
-			return
-		}
-		switch c.Core.Player.CurrentState() {
-		case action.JumpState:
-			fallthrough
-		case action.DashState:
-			c.Core.Log.NewEvent("yaoyao a1 triggered", glog.LogCharacterEvent, c.Index).
-				Write("state", c.Core.Player.CurrentState())
-			c.a1Throw()
-		}
-	}, 0.6*60)
+const a4Status = "yaoyao-a4"
 
+func (c *char) a1Ticker() {
+	if !c.StatusIsActive(burstKey) {
+		return
+	}
+	switch c.Core.Player.CurrentState() {
+	case action.DashState, action.JumpState:
+		c.Core.Log.NewEvent("yaoyao a1 triggered", glog.LogCharacterEvent, c.Index).
+			Write("state", c.Core.Player.CurrentState())
+		c.Core.Tasks.Add(c.a1Throw, 24)
+	}
+	c.QueueCharTask(c.a1Ticker, 0.6*60)
 }
+
 func (c *char) a1Throw() {
 
-	a1aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 7)
+	a1aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, skillTargetingRad)
 	enemy := c.Core.Combat.RandomEnemyWithinArea(a1aoe, nil)
 	if enemy == nil {
 		return
@@ -36,35 +35,40 @@ func (c *char) a1Throw() {
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
 
 	ai := c.burstRadishAI
-	hi := c.getBurstHealInfo()
+	snap := c.Snapshot(&ai)
+	hi := c.getBurstHealInfo(&snap)
 
 	c.Core.QueueAttack(
 		ai,
 		radishExplodeAoE,
 		travelDelay,
 		travelDelay,
+		c.makeC2CB(),
 	)
 	if c.Core.Combat.Player().IsWithinArea(radishExplodeAoE) {
 		c.radishHeal(hi)
 	}
 }
 
-func (c *char) a4() {
-	if c.Core.Player.ActiveChar().StatusIsActive("yaoyao-a4") {
-		return
-	}
-	c.Core.Player.ActiveChar().AddStatus("yaoyao-a4", 5*60, true)
-	for i := 0; i < 5; i++ {
-		c.Core.Player.ActiveChar().QueueCharTask(func() {
-			heal := 0.008 * c.MaxHP()
-			hi := player.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Core.Player.Active(),
-				Message: "yaoyao-a4-tick",
-				Src:     heal,
-				Bonus:   c.Stat(attributes.Heal),
-			}
-			c.Core.Player.Heal(hi)
-		}, i*60)
+func (c *char) a4(index int, src int) func() {
+	return func() {
+		if c.a4Srcs[index] != c.Core.F {
+			return
+		}
+
+		char := c.Core.Player.Chars()[index]
+		if char.StatusIsActive(a4Status) {
+			return
+		}
+
+		hi := player.HealInfo{
+			Caller:  c.Index,
+			Target:  index,
+			Message: "Yaoyao A4",
+			Src:     0.008 * c.MaxHP(),
+			Bonus:   c.Stat(attributes.Heal),
+		}
+		c.Core.Player.Heal(hi)
+		c.QueueCharTask(c.a4(index, src), 60)
 	}
 }

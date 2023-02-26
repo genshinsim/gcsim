@@ -204,7 +204,7 @@ var charNames = []string{
 	"layla",
 	"faruzan",
 	"wanderer",
-	"yaoayo",
+	"yaoyao",
 	"test_char_do_not_use",
 }
 
