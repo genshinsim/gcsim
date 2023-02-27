@@ -139,13 +139,15 @@ func (s *Server) Replace(ctx context.Context, entry *model.DBEntry) (string, err
 }
 
 func (s *Server) GetDBWork(ctx context.Context) ([]*model.DBEntry, error) {
-	s.Log.Infow("mongodb: get db work request")
+	s.Log.Infow("mongodb: get db work request", "current_hash", s.cfg.CurrentHash)
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	cursor, err := col.Find(
 		ctx,
 		bson.M{
 			"hash": bson.M{
-				"$ne":     s.cfg.CurrentHash,
+				"$ne": s.cfg.CurrentHash,
+			},
+			"share_key": bson.M{
 				"$exists": true,
 			},
 		},

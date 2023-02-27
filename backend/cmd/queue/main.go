@@ -12,7 +12,7 @@ import (
 func main() {
 
 	server, err := queue.NewQueue(queue.Config{
-		Timeout: 5 * time.Minute,
+		Timeout: 1 * time.Minute,
 	})
 
 	if err != nil {

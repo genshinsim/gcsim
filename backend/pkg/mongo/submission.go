@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -18,14 +17,14 @@ func (s *Server) GetSubmission(ctx context.Context, id string) (*model.Submissio
 
 	res := col.FindOne(
 		ctx,
-		bson.M{
-			"_id":       id,
-			"share_key": bson.D{{Key: "$exists", Value: false}},
+		bson.D{
+			{Key: "_id", Value: id},
+			// "share_key": bson.D{{Key: "$exists", Value: false}},
 		},
 	)
 
 	if res.Err() == mongo.ErrNoDocuments {
-		s.Log.Infow("submission not found", "id", "id")
+		s.Log.Infow("submission not found", "id", id)
 		return nil, status.Error(codes.NotFound, "submission not found")
 	}
 
@@ -56,7 +55,7 @@ func (s *Server) CreateSubmission(ctx context.Context, entry *model.Submission) 
 
 	s.Log.Infow("create submission successful", "id", res.InsertedID)
 
-	return res.InsertedID.(primitive.ObjectID).Hex(), nil
+	return entry.GetId(), nil
 }
 
 func (s *Server) DeletePending(ctx context.Context, id string) error {
@@ -68,8 +67,8 @@ func (s *Server) DeletePending(ctx context.Context, id string) error {
 	res, err := col.DeleteOne(
 		ctx,
 		bson.M{
-			"_id":       id,
-			"share_key": bson.D{{Key: "$exists", Value: false}},
+			"_id": id,
+			// "share_key": bson.D{{Key: "$exists", Value: false}},
 		},
 	)
 	if err != nil {

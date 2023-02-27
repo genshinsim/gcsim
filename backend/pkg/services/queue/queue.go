@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -60,7 +61,9 @@ func NewQueue(cfg Config, cust ...func(*Server) error) (*Server, error) {
 		}
 	}
 	if s.Log == nil {
-		logger, err := zap.NewProduction()
+		config := zap.NewDevelopmentConfig()
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		logger, err := config.Build()
 		if err != nil {
 			return nil, err
 		}
@@ -79,15 +82,9 @@ func NewQueue(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	return s, nil
 }
 
-type queueBlock struct {
-	work  []*model.ComputeWork //this is the priority queue
-	index map[string]*model.ComputeWork
-	wip   map[string]wipWork
-}
-
 type wipWork struct {
 	w      *model.ComputeWork
-	expiry time.Time
+	Expiry time.Time
 }
 
 func (s *Server) Populate(ctx context.Context, req *PopulateReq) (*PopulateResp, error) {
@@ -125,13 +122,22 @@ func (s *Server) Complete(ctx context.Context, req *CompleteReq) (*CompleteResp,
 	s.Log.Infow("complete work request", "id", id)
 	resp := make(chan error)
 	s.completeWork <- completeWorkReq{
+		id:   id,
 		resp: resp,
 	}
 	err := <-resp
+	s.Log.Infow("completed", "err", err)
 	if err != nil {
 		return nil, err
 	}
 	return &CompleteResp{}, nil
+}
+
+type queueBlock struct {
+	work  []*model.ComputeWork //this is the priority queue
+	index map[string]*model.ComputeWork
+	wip   map[string]wipWork
+	log   *zap.SugaredLogger
 }
 
 // TODO: we need to handle timeouts on these requests somehow???
@@ -139,6 +145,8 @@ func (s *Server) queueCtrl() {
 	//single thread keep tracking of queue etc...
 	q := queueBlock{
 		index: make(map[string]*model.ComputeWork),
+		wip:   make(map[string]wipWork),
+		log:   s.Log,
 	}
 	//when request for work comes in, pop off the work at the front and mark it as wip
 	//as wip expires (no result came in), they should be appended again to the front of the queue
@@ -158,22 +166,25 @@ func (s *Server) queueCtrl() {
 			if w != nil {
 				q.wip[w.GetId()] = wipWork{
 					w:      w,
-					expiry: time.Now().Add(s.Timeout),
+					Expiry: time.Now().Add(s.Timeout),
 				}
 			}
+			s.Log.Infow("found next work", "id", w.GetId(), "wip", q.wip)
 			req.resp <- w
 		case req := <-s.completeWork:
+			s.Log.Infow("complete work request", "id", req.id, "wip", q.wip)
 			//work should exist in wip; other wise NotFound
 			if _, ok := q.wip[req.id]; !ok {
 				req.resp <- status.Error(codes.NotFound, "work not found")
+			} else {
+				//ok to delete from wip
+				delete(q.wip, req.id)
+				req.resp <- nil
 			}
-			//ok to delete from wip
-			delete(q.wip, req.id)
-			req.resp <- nil
 		case t := <-wipTicker.C:
 			s.Log.Infow("purging expired wip...", "t", t.Format(time.RFC1123))
 			expired := q.purge()
-			s.Log.Infow("purge done", "expired", expired)
+			s.Log.Infow("purge done", "expired", expired, "wip", q.wip)
 		}
 
 	}
@@ -191,7 +202,7 @@ func (q *queueBlock) purge() []string {
 	}
 	for _, k := range keys {
 		v := q.wip[k]
-		if now.After(v.expiry) {
+		if now.After(v.Expiry) {
 			//add it back
 			q.insert(v.w)
 			delete(q.wip, k)

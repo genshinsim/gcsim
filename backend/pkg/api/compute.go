@@ -29,6 +29,9 @@ func (s *Server) populateQueue(ctx context.Context) error {
 	s.Log.Infow("got work from submissions", "count", len(sw))
 	//TODO: should we do subs first or db first??
 	dw = append(dw, sw...)
+	if len(dw) == 0 {
+		return nil
+	}
 	res, err := s.cfg.QueueService.Add(ctx, dw)
 	if err != nil {
 		return err
@@ -40,6 +43,7 @@ func (s *Server) populateQueue(ctx context.Context) error {
 // callback endpoint for compute instance to submit result
 func (s *Server) computeCallback() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		s.Log.Info("submitting compute work")
 
 		data, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -104,7 +108,7 @@ func (s *Server) computeCallback() http.HandlerFunc {
 		case "DB":
 			err = s.cfg.DBStore.Update(ctx, id, res)
 		case "SUB":
-			err = s.cfg.SubmissionStore.Complete(ctx, res)
+			err = s.cfg.SubmissionStore.Complete(ctx, id, res)
 		}
 
 		if err != nil {
@@ -121,7 +125,9 @@ func (s *Server) getWork() http.HandlerFunc {
 		s.Log.Infow("get compute work request received")
 		work, err := s.cfg.QueueService.Get(r.Context())
 		if err != nil {
+			s.Log.Infow("error getting work from queue", "err", err)
 			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
 		}
 		if work == nil {
 			w.WriteHeader(http.StatusNoContent)

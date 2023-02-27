@@ -6,10 +6,22 @@ import (
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/jaevor/go-nanoid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+var generateID func() string
+
+func init() {
+	var err error
+	// dictionary from https://github.com/CyberAP/nanoid-dictionary#nolookalikessafe
+	generateID, err = nanoid.CustomASCII("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz", 12)
+	if err != nil {
+		panic(err)
+	}
+}
 
 type DBStore interface {
 	//submission specific
@@ -68,6 +80,7 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitResponse, error) {
 	s.Log.Infow("new submission received", "req", req.String())
 	sub := &model.Submission{
+		Id:          generateID(),
 		Config:      req.GetConfig(),
 		Submitter:   req.GetSubmitter(),
 		Description: req.GetDescription(),
@@ -107,7 +120,7 @@ func (s *Server) CompletePending(ctx context.Context, req *CompletePendingReques
 	s.Log.Infow("complete pending req", "id", id)
 	sub, err := s.DBStore.GetSubmission(ctx, id)
 	if err != nil {
-		s.Log.Infof("error getting submission with id", "id", id)
+		s.Log.Infow("error getting submission with id", "id", id)
 		return nil, err
 	}
 	//add result to share

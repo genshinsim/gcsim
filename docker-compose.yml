@@ -40,28 +40,6 @@ services:
       - ASSETS_DATA_PATH=/assets
       - SHARE_STORE_URL=share:3000
     restart: unless-stopped
-  jadechamber:
-    container_name: jadechamber
-    build:
-      context: .
-      dockerfile: ./backend/cmd/jadechamber/Dockerfile
-    volumes:
-      - ~/data:/data
-      - ./keys.json:/keys.json
-    environment:
-      - USER_DATA_PATH=/data/user
-      - DISCORD_ID
-      - DISCORD_SECRET
-      - REDIRECT_URL
-      - SHARE_STORE_URL=share:3000
-      - DB_STORE_URL=db:3000
-      - SUBMISSION_STORE_URL=submission:3000
-      - QUEUE_SERVICE_URL=queue:3000
-      - SHARE_KEY_FILE=/keys.json
-      - MQTT_URL=mqtt:1883
-      - MQTT_USERNAME=mosquitto
-      - MQTT_PASSWORD=password
-    restart: unless-stopped
   queue:
     container_name: queue
     build:
@@ -119,6 +97,30 @@ services:
     restart: unless-stopped
     depends_on:
       - mongo
+  jadechamber:
+    container_name: jadechamber
+    build:
+      context: .
+      dockerfile: ./backend/cmd/jadechamber/Dockerfile
+    volumes:
+      - ~/data:/data
+      - ./keys.json:/keys.json
+    environment:
+      - USER_DATA_PATH=/data/user
+      - DISCORD_ID
+      - DISCORD_SECRET
+      - REDIRECT_URL
+      - SHARE_STORE_URL=share:3000
+      - DB_STORE_URL=db:3000
+      - SUBMISSION_STORE_URL=submission:3000
+      - QUEUE_SERVICE_URL=queue:3000
+      - SHARE_KEY_FILE=/keys.json
+      - MQTT_URL=mqtt:1883
+      - MQTT_USERNAME=mosquitto
+      - MQTT_PASSWORD=password
+    restart: unless-stopped
+    depends_on:
+      - queue
   # mongo server for db
   mongo:
     container_name: mongo
@@ -145,3 +147,10 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root-password
       ME_CONFIG_MONGODB_URL: mongodb://root:root-password@mongo:27017/
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080

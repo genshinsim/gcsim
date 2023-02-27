@@ -50,8 +50,9 @@ func (c *Client) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (c *Client) Complete(ctx context.Context, result *model.SimulationResult) error {
+func (c *Client) Complete(ctx context.Context, id string, result *model.SimulationResult) error {
 	_, err := c.conn.CompletePending(ctx, &CompletePendingRequest{
+		Id:     id,
 		Result: result,
 	})
 	if err != nil {

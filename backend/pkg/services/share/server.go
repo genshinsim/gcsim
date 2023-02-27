@@ -114,7 +114,7 @@ func (s *Server) Update(ctx context.Context, req *UpdateRequest) (*UpdateRespons
 		return nil, err
 	}
 
-	return nil, nil
+	return &UpdateResponse{Id: req.GetId()}, nil
 }
 
 func (s *Server) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLResponse, error) {
@@ -126,7 +126,7 @@ func (s *Server) SetTTL(ctx context.Context, req *SetTTLRequest) (*SetTTLRespons
 		return nil, err
 	}
 
-	return nil, nil
+	return &SetTTLResponse{}, nil
 }
 
 func (s *Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteResponse, error) {
@@ -138,8 +138,8 @@ func (s *Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteRespons
 		return nil, err
 	}
 
-	return nil, nil
+	return &DeleteResponse{}, nil
 }
 func (s *Server) Random(ctx context.Context, req *RandomRequest) (*RandomResponse, error) {
-	return nil, nil
+	return &RandomResponse{}, nil
 }

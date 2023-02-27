@@ -12,7 +12,7 @@ import (
 // It's up to the store implementation to keep track of which tags has already approved/rejected a submission
 // and purge any submission that has been fully approved/rejected for all tags
 type SubmissionStore interface {
-	Complete(context.Context, *model.SimulationResult) error
+	Complete(context.Context, string, *model.SimulationResult) error
 	GetWork(context.Context) ([]*model.ComputeWork, error)
 	Submit(context.Context, *model.Submission) (string, error)
 }
