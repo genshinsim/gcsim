@@ -11,17 +11,23 @@ import (
 	"google.golang.org/grpc"
 )
 
+var (
+	sha1ver string
+)
+
 func main() {
 	mongoCfg := mongo.Config{
-		URL:        os.Getenv("MONGODB_URL"),
-		Database:   os.Getenv("MONGODB_DATABASE"),
-		Collection: os.Getenv("MONGODB_COLLECTION"),
-		QueryView:  os.Getenv("MONGODB_QUERY_VIEW"),
-		Username:   os.Getenv("MONGODB_USERNAME"),
-		Password:   os.Getenv("MONOGDB_PASSWORD"),
+		URL:         os.Getenv("MONGODB_URL"),
+		Database:    os.Getenv("MONGODB_DATABASE"),
+		Collection:  os.Getenv("MONGODB_COLLECTION"),
+		QueryView:   os.Getenv("MONGODB_QUERY_VIEW"),
+		Username:    os.Getenv("MONGODB_USERNAME"),
+		Password:    os.Getenv("MONOGDB_PASSWORD"),
+		CurrentHash: sha1ver,
 	}
 	log.Println(os.Getenv("MONGODB_URL"))
 	log.Printf("Cfg: %v\n", mongoCfg)
+	log.Printf("Current hash: %v\n", sha1ver)
 	dbStore, err := mongo.NewServer(mongoCfg)
 	if err != nil {
 		panic(err)
