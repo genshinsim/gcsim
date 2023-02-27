@@ -14,7 +14,6 @@ import (
 
 type DBStore interface {
 	Get(context.Context, *model.DBQueryOpt) (*model.DBEntries, error)
-	GetWork(context.Context) ([]*model.ComputeWork, error)
 	Update(ctx context.Context, id string, result *model.SimulationResult) error
 }
 

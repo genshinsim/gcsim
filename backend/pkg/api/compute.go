@@ -16,30 +16,6 @@ type QueueService interface {
 	Complete(context.Context, string) error
 }
 
-func (s *Server) populateQueue(ctx context.Context) error {
-	dw, err := s.cfg.DBStore.GetWork(ctx)
-	if err != nil {
-		return err
-	}
-	s.Log.Infow("got work from db", "count", len(dw))
-	sw, err := s.cfg.SubmissionStore.GetWork(ctx)
-	if err != nil {
-		return err
-	}
-	s.Log.Infow("got work from submissions", "count", len(sw))
-	//TODO: should we do subs first or db first??
-	dw = append(dw, sw...)
-	if len(dw) == 0 {
-		return nil
-	}
-	res, err := s.cfg.QueueService.Add(ctx, dw)
-	if err != nil {
-		return err
-	}
-	s.Log.Infow("work added", "work", res)
-	return nil
-}
-
 // callback endpoint for compute instance to submit result
 func (s *Server) computeCallback() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

@@ -25,17 +25,6 @@ func NewClient(addr string) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) Add(ctx context.Context, w []*model.ComputeWork) ([]string, error) {
-	res, err := c.conn.Populate(ctx, &PopulateReq{
-		Data: w,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return res.GetIds(), nil
-}
-
 func (c *Client) Get(ctx context.Context) (*model.ComputeWork, error) {
 	res, err := c.conn.Get(ctx, &GetReq{})
 	if err != nil {

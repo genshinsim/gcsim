@@ -22,7 +22,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WorkQueueClient interface {
-	Populate(ctx context.Context, in *PopulateReq, opts ...grpc.CallOption) (*PopulateResp, error)
 	Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*GetResp, error)
 	Complete(ctx context.Context, in *CompleteReq, opts ...grpc.CallOption) (*CompleteResp, error)
 }
@@ -33,15 +32,6 @@ type workQueueClient struct {
 
 func NewWorkQueueClient(cc grpc.ClientConnInterface) WorkQueueClient {
 	return &workQueueClient{cc}
-}
-
-func (c *workQueueClient) Populate(ctx context.Context, in *PopulateReq, opts ...grpc.CallOption) (*PopulateResp, error) {
-	out := new(PopulateResp)
-	err := c.cc.Invoke(ctx, "/queue.WorkQueue/Populate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *workQueueClient) Get(ctx context.Context, in *GetReq, opts ...grpc.CallOption) (*GetResp, error) {
@@ -66,7 +56,6 @@ func (c *workQueueClient) Complete(ctx context.Context, in *CompleteReq, opts ..
 // All implementations must embed UnimplementedWorkQueueServer
 // for forward compatibility
 type WorkQueueServer interface {
-	Populate(context.Context, *PopulateReq) (*PopulateResp, error)
 	Get(context.Context, *GetReq) (*GetResp, error)
 	Complete(context.Context, *CompleteReq) (*CompleteResp, error)
 	mustEmbedUnimplementedWorkQueueServer()
@@ -76,9 +65,6 @@ type WorkQueueServer interface {
 type UnimplementedWorkQueueServer struct {
 }
 
-func (UnimplementedWorkQueueServer) Populate(context.Context, *PopulateReq) (*PopulateResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Populate not implemented")
-}
 func (UnimplementedWorkQueueServer) Get(context.Context, *GetReq) (*GetResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
@@ -96,24 +82,6 @@ type UnsafeWorkQueueServer interface {
 
 func RegisterWorkQueueServer(s grpc.ServiceRegistrar, srv WorkQueueServer) {
 	s.RegisterService(&WorkQueue_ServiceDesc, srv)
-}
-
-func _WorkQueue_Populate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PopulateReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(WorkQueueServer).Populate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/queue.WorkQueue/Populate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WorkQueueServer).Populate(ctx, req.(*PopulateReq))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _WorkQueue_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -159,10 +127,6 @@ var WorkQueue_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "queue.WorkQueue",
 	HandlerType: (*WorkQueueServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Populate",
-			Handler:    _WorkQueue_Populate_Handler,
-		},
 		{
 			MethodName: "Get",
 			Handler:    _WorkQueue_Get_Handler,

@@ -3,16 +3,32 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 	"time"
 
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
+	"github.com/genshinsim/gcsim/backend/pkg/services/submission"
 	"google.golang.org/grpc"
 )
 
 func main() {
+	subStore, err := submission.NewClient(os.Getenv("SUBMISSION_STORE_URL"))
+	if err != nil {
+		panic(err)
+	}
+
+	dbStore, err := db.NewClient(db.ClientCfg{
+		Addr: os.Getenv("DB_STORE_URL"),
+	})
+	if err != nil {
+		panic(err)
+	}
 
 	server, err := queue.NewQueue(queue.Config{
 		Timeout: 1 * time.Minute,
+		DBWork:  dbStore,
+		SubWork: subStore,
 	})
 
 	if err != nil {

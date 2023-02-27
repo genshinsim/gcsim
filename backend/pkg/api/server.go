@@ -10,7 +10,6 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"golang.org/x/net/context"
 )
 
 type Server struct {
@@ -104,26 +103,9 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 	s.mqttClient = client
 
-	go s.scheduledPopulate()
-
 	s.Log.Info("server is ready")
 
 	return s, nil
-}
-
-func (s *Server) scheduledPopulate() {
-	//do this every min
-	tick := time.NewTicker(time.Minute * 2)
-	for {
-		s.Log.Info("starting populating queue")
-		ctx, _ := context.WithTimeout(context.Background(), time.Minute)
-		err := s.populateQueue(ctx)
-		if err != nil {
-			s.Log.Warnw("error populating", "err", err)
-		}
-		//this should force it to populate at start
-		<-tick.C
-	}
 }
 
 func mqttOpts(cfg Config) *mqtt.ClientOptions {

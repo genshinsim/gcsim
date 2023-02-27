@@ -13,7 +13,6 @@ import (
 // and purge any submission that has been fully approved/rejected for all tags
 type SubmissionStore interface {
 	Complete(context.Context, string, *model.SimulationResult) error
-	GetWork(context.Context) ([]*model.ComputeWork, error)
 	Submit(context.Context, *model.Submission) (string, error)
 }
 

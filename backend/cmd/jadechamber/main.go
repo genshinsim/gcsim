@@ -10,7 +10,6 @@ import (
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
-	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"github.com/genshinsim/gcsim/backend/pkg/services/submission"
 	"github.com/genshinsim/gcsim/backend/pkg/user"
@@ -55,11 +54,6 @@ func main() {
 	}
 
 	subStore, err := submission.NewClient(os.Getenv("SUBMISSION_STORE_URL"))
-	if err != nil {
-		panic(err)
-	}
-
-	queueService, err := queue.NewClient(os.Getenv("QUEUE_SERVICE_URL"))
 	if err != nil {
 		panic(err)
 	}
@@ -109,7 +103,6 @@ func main() {
 			MQTTPass: os.Getenv("MQTT_PASSWORD"),
 			MQTTHost: os.Getenv("MQTT_URL"),
 		},
-		QueueService: queueService,
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil

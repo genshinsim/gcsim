@@ -1,137 +1,14 @@
 package queue
 
 import (
-	context "context"
+	"context"
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
-
-type NotifyService interface {
-	Notify(topic string, message string)
-}
-
-type Config struct {
-	Timeout time.Duration
-}
-
-type Server struct {
-	Config
-	Log *zap.SugaredLogger
-	UnimplementedWorkQueueServer
-	addToQueue   chan addToQueueReq
-	getWork      chan getWorkReq
-	completeWork chan completeWorkReq
-}
-
-type getWorkReq struct {
-	resp chan *model.ComputeWork
-}
-
-type completeWorkReq struct {
-	id   string
-	resp chan error
-}
-
-type addToQueueReq struct {
-	w    []*model.ComputeWork
-	resp chan []string
-}
-
-type Work struct {
-	Key  string
-	Work any
-}
-
-func NewQueue(cfg Config, cust ...func(*Server) error) (*Server, error) {
-	s := &Server{
-		Config:       cfg,
-		addToQueue:   make(chan addToQueueReq),
-		getWork:      make(chan getWorkReq),
-		completeWork: make(chan completeWorkReq),
-	}
-	for _, f := range cust {
-		err := f(s)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if s.Log == nil {
-		config := zap.NewDevelopmentConfig()
-		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-		logger, err := config.Build()
-		if err != nil {
-			return nil, err
-		}
-		sugar := logger.Sugar()
-
-		s.Log = sugar
-	}
-
-	if s.Timeout <= 0 {
-		s.Timeout = 5 * time.Minute //default 5 min
-	}
-
-	go s.queueCtrl()
-
-	s.Log.Infow("queue service started")
-	return s, nil
-}
-
-type wipWork struct {
-	w      *model.ComputeWork
-	Expiry time.Time
-}
-
-func (s *Server) Populate(ctx context.Context, req *PopulateReq) (*PopulateResp, error) {
-	d := req.GetData()
-	s.Log.Infow("populate queue req received", "length", len(d))
-	if len(d) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "populate request data is blank")
-	}
-	resp := make(chan []string)
-	s.addToQueue <- addToQueueReq{
-		w:    d,
-		resp: resp,
-	}
-	res := <-resp
-	s.Log.Infow("populate done", "added", res)
-	return &PopulateResp{
-		Ids: res,
-	}, nil
-}
-
-func (s *Server) Get(ctx context.Context, req *GetReq) (*GetResp, error) {
-	s.Log.Infow("get work request received")
-	resp := make(chan *model.ComputeWork)
-	s.getWork <- getWorkReq{
-		resp: resp,
-	}
-	res := <-resp
-	return &GetResp{
-		Data: res,
-	}, nil
-}
-
-func (s *Server) Complete(ctx context.Context, req *CompleteReq) (*CompleteResp, error) {
-	id := req.GetId()
-	s.Log.Infow("complete work request", "id", id)
-	resp := make(chan error)
-	s.completeWork <- completeWorkReq{
-		id:   id,
-		resp: resp,
-	}
-	err := <-resp
-	s.Log.Infow("completed", "err", err)
-	if err != nil {
-		return nil, err
-	}
-	return &CompleteResp{}, nil
-}
 
 type queueBlock struct {
 	work  []*model.ComputeWork //this is the priority queue
@@ -153,14 +30,14 @@ func (s *Server) queueCtrl() {
 	//wip is scanned periodically for expiry
 	wipTicker := time.NewTicker(10 * time.Second)
 
+	//regular ticker to poll for work;
+	pollTicker := time.NewTicker(30 * time.Second)
+
+	//populate at start
+	s.populate(&q)
+
 	for {
 		select {
-		case x := <-s.addToQueue:
-			//this comes in periodically for the scheduled pulls
-			//we need to resolve (and block) at this point which is alerady in queue (ignore)
-			//and which are new (add to end)
-			res := q.populate(x.w)
-			x.resp <- res
 		case req := <-s.getWork:
 			w := q.pop()
 			if w != nil {
@@ -181,13 +58,37 @@ func (s *Server) queueCtrl() {
 				delete(q.wip, req.id)
 				req.resp <- nil
 			}
-		case t := <-wipTicker.C:
-			s.Log.Infow("purging expired wip...", "t", t.Format(time.RFC1123))
+		case <-wipTicker.C:
+			s.Log.Info("purging expired wip...")
 			expired := q.purge()
 			s.Log.Infow("purge done", "expired", expired, "wip", q.wip)
+		case <-pollTicker.C:
+			s.populate(&q)
 		}
 
 	}
+}
+
+func (s *Server) populate(q *queueBlock) {
+	s.Log.Info("polling for work")
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+
+	w, err := s.DBWork.GetWork(ctx)
+	if err != nil {
+		s.Log.Infow("error getting work from db", "err", err)
+	} else {
+		res := q.populate(w)
+		s.Log.Infow("db work populated", "res", res)
+	}
+
+	w, err = s.SubWork.GetWork(ctx)
+	if err != nil {
+		s.Log.Infow("error getting work from sub", "err", err)
+	} else {
+		res := q.populate(w)
+		s.Log.Infow("sub work populated", "res", res)
+	}
+	cancel()
 }
 
 func (q *queueBlock) purge() []string {

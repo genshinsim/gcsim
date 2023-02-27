@@ -5,17 +5,8 @@ option go_package="github.com/genshinsim/gcsim/backend/pkg/services/queue";
 import "protos/model/db.proto";
 
 service WorkQueue {
-    rpc Populate (PopulateReq) returns (PopulateResp);
     rpc Get (GetReq) returns (GetResp);
     rpc Complete (CompleteReq) returns (CompleteResp);
-}
-
-message PopulateReq {
-    repeated model.ComputeWork data = 1;
-}
-
-message PopulateResp {
-    repeated string ids = 1;
 }
 
 message GetReq {
