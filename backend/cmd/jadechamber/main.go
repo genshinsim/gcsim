@@ -10,7 +10,9 @@ import (
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
+	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
+	"github.com/genshinsim/gcsim/backend/pkg/services/submission"
 	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -52,6 +54,16 @@ func main() {
 		panic(err)
 	}
 
+	subStore, err := submission.NewClient(os.Getenv("SUBMISSION_STORE_URL"))
+	if err != nil {
+		panic(err)
+	}
+
+	queueService, err := queue.NewClient(os.Getenv("QUEUE_SERVICE_URL"))
+	if err != nil {
+		panic(err)
+	}
+
 	//read from key file
 	var hexKeys map[string]string
 	f, err := os.Open(os.Getenv("SHARE_KEY_FILE"))
@@ -81,9 +93,10 @@ func main() {
 	log.Println("keys read sucessfully: ", hexKeys)
 
 	s, err := api.New(api.Config{
-		ShareStore: shareStore,
-		UserStore:  userStore,
-		DBStore:    dbStore,
+		ShareStore:      shareStore,
+		UserStore:       userStore,
+		DBStore:         dbStore,
+		SubmissionStore: subStore,
 		Discord: api.DiscordConfig{
 			RedirectURL:  os.Getenv("REDIRECT_URL"),
 			ClientID:     os.Getenv("DISCORD_ID"),
@@ -96,6 +109,7 @@ func main() {
 			MQTTPass: os.Getenv("MQTT_PASSWORD"),
 			MQTTHost: os.Getenv("MQTT_URL"),
 		},
+		QueueService: queueService,
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil

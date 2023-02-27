@@ -55,6 +55,8 @@ services:
       - REDIRECT_URL
       - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
+      - SUBMISSION_STORE_URL=submission:3000
+      - QUEUE_SERVICE_URL=queue:3000
       - SHARE_KEY_FILE=/keys.json
       - MQTT_URL=mqtt:1883
       - MQTT_USERNAME=mosquitto

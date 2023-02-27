@@ -87,7 +87,7 @@ func TestValidation(t *testing.T) {
 
 	s.Log = sugar
 
-	err = s.validateShare([]byte(randomJSON), id+":"+hashStr)
+	err = s.validateSigning([]byte(randomJSON), id+":"+hashStr)
 	if err != nil {
 		t.Error(err)
 	}

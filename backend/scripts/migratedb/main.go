@@ -11,9 +11,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/genshinsim/gcsim/backend/pkg/services/db"
+	"github.com/genshinsim/gcsim/backend/pkg/services/submission"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
 type entry struct {
@@ -27,7 +26,7 @@ type entry struct {
 const iters = 100
 const workers = 30
 
-var client *db.Client
+var client *submission.Client
 
 func main() {
 
@@ -40,9 +39,7 @@ func main() {
 
 	// log.Println(data)
 
-	client, err = db.NewClient(db.ClientCfg{
-		Addr: "192.168.100.47:8082",
-	})
+	client, err = submission.NewClient("192.168.100.47:8083")
 	if err != nil {
 		panic(err)
 	}
@@ -52,8 +49,8 @@ func main() {
 		log.Println("no data; exiting")
 	}
 
-	for _, v := range data {
-		err := handleEntry(v)
+	for i, v := range data[:10] {
+		err := addSubmission(v, i)
 		if err != nil {
 			log.Printf("Skipping db entry: %v; error encountered: %v\n", v.Key, err)
 		}
@@ -61,21 +58,31 @@ func main() {
 
 }
 
-func handleEntry(v entry) error {
-	start := time.Now()
-	log.Printf("Recomputing %v\n", v.Key)
-	e, err := parseAndComputeEntry(v)
+func addSubmission(v entry, i int) error {
+	z, err := base64.StdEncoding.DecodeString(v.ConfigHash)
 	if err != nil {
 		return err
 	}
-	key, err := client.Create(context.TODO(), e)
+	r, err := zlib.NewReader(bytes.NewReader(z))
+	if err != nil {
+		return err
+	}
+	cfg, err := io.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	sub := &model.Submission{
+		Config:      string(cfg),
+		Submitter:   "gcsim#0000",
+		Description: v.Desc,
+	}
+	key, err := client.Submit(context.TODO(), sub)
 
 	if err != nil {
 		return err
 	}
 
-	elapsed := time.Since(start)
-	log.Printf("%v completed in %s; new entry with key %v", v.Key, elapsed, key)
+	log.Printf("%v submitted; new entry with key %v", v.Key, key)
 
 	return nil
 }
@@ -90,37 +97,4 @@ func getJson(url string, target interface{}) error {
 	defer r.Body.Close()
 
 	return json.NewDecoder(r.Body).Decode(target)
-}
-
-func parseAndComputeEntry(e entry) (m *model.DBEntry, err error) {
-	z, err := base64.StdEncoding.DecodeString(e.ConfigHash)
-	if err != nil {
-		return nil, err
-	}
-	r, err := zlib.NewReader(bytes.NewReader(z))
-	if err != nil {
-		return nil, err
-	}
-	cfg, err := io.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-
-	simcfg, err := simulator.Parse(string(cfg))
-	if err != nil {
-		return nil, err
-	}
-
-	simcfg.Settings.Iterations = iters
-	simcfg.Settings.NumberOfWorkers = workers
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	result, err := simulator.RunWithConfig(string(cfg), simcfg, simulator.Options{}, time.Now(), ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	m = result.ToDBEntry()
-	return
 }

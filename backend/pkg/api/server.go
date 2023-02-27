@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"golang.org/x/net/context"
 )
 
 type Server struct {
@@ -37,9 +38,12 @@ type Config struct {
 	UserStore         UserStore
 	Discord           DiscordConfig
 	DBStore           DBStore
+	SubmissionStore   SubmissionStore
 	AESDecryptionKeys map[string][]byte
 	//mqtt for notification purposes
 	MQTTConfig MQTTConfig
+	//queue service for getting work etc
+	QueueService QueueService
 }
 
 type APIContextKey string
@@ -100,9 +104,26 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 	s.mqttClient = client
 
+	go s.scheduledPopulate()
+
 	s.Log.Info("server is ready")
 
 	return s, nil
+}
+
+func (s *Server) scheduledPopulate() {
+	//do this every min
+	tick := time.NewTicker(time.Minute * 2)
+	for {
+		s.Log.Info("starting populating queue")
+		ctx, _ := context.WithTimeout(context.Background(), time.Minute)
+		err := s.populateQueue(ctx)
+		if err != nil {
+			s.Log.Warnw("error populating", "err", err)
+		}
+		//this should force it to populate at start
+		<-tick.C
+	}
 }
 
 func mqttOpts(cfg Config) *mqtt.ClientOptions {
@@ -147,7 +168,7 @@ func (s *Server) routes() {
 
 		r.Route("/db", func(r chi.Router) {
 			r.Get("/", s.getDB())
-			// r.Post("/submit", s.submitEntry())
+			r.Post("/submit", s.submitEntry())
 
 			r.Get("/work", s.getWork())
 			r.Post("/work", s.computeCallback())
