@@ -12,7 +12,7 @@ router.get("/api/login", proxyRequest);
 router.post("/api/user/save", proxyRequest);
 router.get("/api/share/random", proxyRequest);
 router.get("/api/db/work", proxyRequest);
-router.post("/api/db/work", proxyRequest);
+router.post("/api/db/compute/work", proxyRequest);
 router.post("/api/db/submit", proxyRequest);
 router.get("/api/db", proxyRequest);
 // viewer files

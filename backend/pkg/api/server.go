@@ -45,7 +45,8 @@ type Config struct {
 	QueueService QueueService
 	//hash for verifying compute submissions
 	//TODO: this logic really should not be embedded into the api gateway....
-	CurrentHash string
+	CurrentHash   string
+	ComputeAPIKey string
 }
 
 type APIContextKey string
@@ -155,8 +156,11 @@ func (s *Server) routes() {
 			r.Get("/", s.getDB())
 			r.Post("/submit", s.submitEntry())
 
-			r.Get("/work", s.getWork())
-			r.Post("/work", s.computeCallback())
+			r.Route("/compute", func(r chi.Router) {
+				r.Use(s.computeAPIKeyCheck)
+				r.Get("/work", s.getWork())
+				r.Post("/work", s.computeCallback())
+			})
 		})
 	})
 

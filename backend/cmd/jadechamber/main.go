@@ -110,7 +110,8 @@ func main() {
 			MQTTPass: os.Getenv("MQTT_PASSWORD"),
 			MQTTHost: os.Getenv("MQTT_URL"),
 		},
-		CurrentHash: sha1ver,
+		CurrentHash:   sha1ver,
+		ComputeAPIKey: os.Getenv("COMPUTE_API_KEY"),
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil

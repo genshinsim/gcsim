@@ -16,6 +16,23 @@ type QueueService interface {
 	Complete(context.Context, string) error
 }
 
+func (s *Server) computeAPIKeyCheck(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		key := r.Header.Get("X-GCSIM-COMPUTE-API-KEY")
+		if key == "" {
+			s.Log.Infow("compute key missing", "header", r.Header)
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+		if key != s.cfg.ComputeAPIKey {
+			s.Log.Infow("compute key missing", "header", r.Header)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 // callback endpoint for compute instance to submit result
 func (s *Server) computeCallback() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +54,7 @@ func (s *Server) computeCallback() http.HandlerFunc {
 		str := r.Header.Get("X-GCSIM-SIGNED-HASH")
 		if str == "" {
 			s.Log.Infow("compute callback request failed - no hash received", "header", r.Header)
-			http.Error(w, "Forbidden", http.StatusForbidden)
+			http.Error(w, "Missing Signature", http.StatusBadRequest)
 			return
 		}
 
@@ -51,7 +68,7 @@ func (s *Server) computeCallback() http.HandlerFunc {
 		src := r.Header.Get("X-GCSIM-COMPUTE-SRC")
 		if src == "" {
 			s.Log.Infow("compute callback request failed - no id received", "header", r.Header)
-			http.Error(w, "Forbidden", http.StatusForbidden)
+			http.Error(w, "Missing Src", http.StatusBadRequest)
 			return
 		}
 
@@ -66,7 +83,7 @@ func (s *Server) computeCallback() http.HandlerFunc {
 		//check hash matches current
 		if res.GetSimVersion() != s.cfg.CurrentHash {
 			s.Log.Infow("compute callback request - invalid hash", "expected", s.cfg.CurrentHash, "got", res.GetSimVersion())
-			http.Error(w, "Bad Request", http.StatusBadRequest)
+			http.Error(w, "Bad Hash", http.StatusForbidden)
 			return
 		}
 
@@ -74,7 +91,7 @@ func (s *Server) computeCallback() http.HandlerFunc {
 		id := r.Header.Get("X-GCSIM-COMPUTE-ID")
 		if id == "" {
 			s.Log.Infow("compute callback request failed - no id received", "header", r.Header)
-			http.Error(w, "Forbidden", http.StatusForbidden)
+			http.Error(w, "Missing ID", http.StatusBadRequest)
 			return
 		}
 
