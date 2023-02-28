@@ -145,8 +145,8 @@ func (s *Server) CompletePending(ctx context.Context, req *CompletePendingReques
 	e.Submitter = sub.GetSubmitter()
 	e.Id = id
 	e.IsDbValid = false
-	e.AcceptedTags = []string{}
-	e.RejectedTags = []string{}
+	e.AcceptedTags = []model.DBTag{}
+	e.RejectedTags = []model.DBTag{}
 
 	//create new db entry
 	err = s.DBStore.CreateNewDBEntry(ctx, e)

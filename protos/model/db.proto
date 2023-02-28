@@ -30,8 +30,8 @@ message DBEntry {
 
     //other stuff
     string description = 15 [json_name="description"];
-    repeated string accepted_tags = 16 [json_name="accepted_tags"];
-    repeated string rejected_tags = 17 [json_name="rejected_tags"];
+    repeated DBTag accepted_tags = 16 [json_name="accepted_tags"];
+    repeated DBTag rejected_tags = 17 [json_name="rejected_tags"];
     bool is_db_valid = 18 [json_name="is_db_valid"];
     string submitter = 19 [json_name="submitter"];
 }
@@ -65,4 +65,10 @@ enum ComputeWorkSource {
     InvalidWork = 0;
     DBWork = 1;
     SubmissionWork = 2;
+}
+
+enum DBTag {
+    TAG_INVALID = 0;
+    TAG_GCSIM = 1;
+    TAG_TESTING = 2;
 }

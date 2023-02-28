@@ -18,8 +18,8 @@ type DBStore interface {
 	GetUnfiltered(ctx context.Context, query *model.DBQueryOpt) ([]*model.DBEntry, error)
 	GetDBWork(ctx context.Context) ([]*model.DBEntry, error)
 	//tagging
-	ApproveTag(ctx context.Context, id string, tag string) error
-	RejectTag(ctx context.Context, id string, tag string) error
+	ApproveTag(ctx context.Context, id string, tag model.DBTag) error
+	RejectTag(ctx context.Context, id string, tag model.DBTag) error
 }
 
 type ShareStore interface {
@@ -166,7 +166,7 @@ func (s *Server) ApproveTag(ctx context.Context, req *ApproveTagRequest) (*Appro
 	if req.GetId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}
-	if req.GetTag() == "" {
+	if req.GetTag() == model.DBTag_TAG_INVALID {
 		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
 	}
 	err := s.DBStore.ApproveTag(ctx, req.GetId(), req.GetTag())
@@ -182,7 +182,7 @@ func (s *Server) RejectTag(ctx context.Context, req *RejectTagRequest) (*RejectT
 	if req.GetId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}
-	if req.GetTag() == "" {
+	if req.GetTag() == model.DBTag_TAG_INVALID {
 		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
 	}
 	err := s.DBStore.RejectTag(ctx, req.GetId(), req.GetTag())

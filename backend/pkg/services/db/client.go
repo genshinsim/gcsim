@@ -78,7 +78,7 @@ func (c *Client) GetWork(ctx context.Context) ([]*model.ComputeWork, error) {
 	return res.GetData(), nil
 }
 
-func (c *Client) ApproveTag(ctx context.Context, id, tag string) error {
+func (c *Client) ApproveTag(ctx context.Context, id string, tag model.DBTag) error {
 	_, err := c.conn.ApproveTag(ctx, &ApproveTagRequest{
 		Id:  id,
 		Tag: tag,
@@ -86,7 +86,7 @@ func (c *Client) ApproveTag(ctx context.Context, id, tag string) error {
 	return err
 }
 
-func (c *Client) RejectTag(ctx context.Context, id, tag string) error {
+func (c *Client) RejectTag(ctx context.Context, id string, tag model.DBTag) error {
 	_, err := c.conn.RejectTag(ctx, &RejectTagRequest{
 		Id:  id,
 		Tag: tag,

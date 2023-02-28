@@ -52,10 +52,10 @@ export namespace model {
         description?: (string|null);
 
         /** DBEntry accepted_tags */
-        accepted_tags?: (string[]|null);
+        accepted_tags?: (model.DBTag[]|null);
 
         /** DBEntry rejected_tags */
-        rejected_tags?: (string[]|null);
+        rejected_tags?: (model.DBTag[]|null);
 
         /** DBEntry is_db_valid */
         is_db_valid?: (boolean|null);
@@ -119,10 +119,10 @@ export namespace model {
         public description: string;
 
         /** DBEntry accepted_tags. */
-        public accepted_tags: string[];
+        public accepted_tags: model.DBTag[];
 
         /** DBEntry rejected_tags. */
-        public rejected_tags: string[];
+        public rejected_tags: model.DBTag[];
 
         /** DBEntry is_db_valid. */
         public is_db_valid: boolean;
@@ -305,6 +305,13 @@ export namespace model {
         InvalidWork = 0,
         DBWork = 1,
         SubmissionWork = 2
+    }
+
+    /** DBTag enum. */
+    enum DBTag {
+        TAG_INVALID = 0,
+        TAG_GCSIM = 1,
+        TAG_TESTING = 2
     }
 
     /** Properties of a Version. */

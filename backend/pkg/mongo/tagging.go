@@ -3,22 +3,23 @@ package mongo
 import (
 	"context"
 
+	"github.com/genshinsim/gcsim/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) ApproveTag(ctx context.Context, id string, tag string) error {
+func (s *Server) ApproveTag(ctx context.Context, id string, tag model.DBTag) error {
 	s.Log.Infow("approve tag request", "id", id, "tag", tag)
 	return s.updateTag(ctx, id, tag, false)
 }
 
-func (s *Server) RejectTag(ctx context.Context, id string, tag string) error {
+func (s *Server) RejectTag(ctx context.Context, id string, tag model.DBTag) error {
 	s.Log.Infow("reject tag request", "id", id, "tag", tag)
 	return s.updateTag(ctx, id, tag, true)
 }
 
-func (s *Server) updateTag(ctx context.Context, id string, tag string, isRemove bool) error {
+func (s *Server) updateTag(ctx context.Context, id string, tag model.DBTag, isRemove bool) error {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	remove := bson.M{
 		"$pull": bson.M{
