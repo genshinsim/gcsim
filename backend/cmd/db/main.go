@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/backend/pkg/mongo"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
@@ -16,6 +17,12 @@ var (
 )
 
 func main() {
+	info, _ := debug.ReadBuildInfo()
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			sha1ver = bs.Value
+		}
+	}
 	mongoCfg := mongo.Config{
 		URL:         os.Getenv("MONGODB_URL"),
 		Database:    os.Getenv("MONGODB_DATABASE"),
