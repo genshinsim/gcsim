@@ -167,7 +167,7 @@ func (s *Server) ApproveTag(ctx context.Context, req *ApproveTagRequest) (*Appro
 	if req.GetId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}
-	if req.GetTag() == model.DBTag_TAG_INVALID {
+	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
 		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
 	}
 	err := s.DBStore.ApproveTag(ctx, req.GetId(), req.GetTag())
@@ -183,7 +183,7 @@ func (s *Server) RejectTag(ctx context.Context, req *RejectTagRequest) (*RejectT
 	if req.GetId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}
-	if req.GetTag() == model.DBTag_TAG_INVALID {
+	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
 		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
 	}
 	err := s.DBStore.RejectTag(ctx, req.GetId(), req.GetTag())

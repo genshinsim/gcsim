@@ -315,9 +315,9 @@ export namespace model {
 
     /** DBTag enum. */
     enum DBTag {
-        TAG_INVALID = 0,
-        TAG_GCSIM = 1,
-        TAG_TESTING = 2
+        DB_TAG_INVALID = 0,
+        DB_TAG_GCSIM = 1,
+        DB_TAG_TESTING = 2
     }
 
     /** Properties of a Version. */
