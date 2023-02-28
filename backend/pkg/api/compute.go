@@ -104,10 +104,11 @@ func (s *Server) computeCallback() http.HandlerFunc {
 		}
 
 		//TODO: proto should be handling the constants here
-		switch src {
-		case "DB":
+		workSrc := model.ComputeWorkSource_value[src]
+		switch model.ComputeWorkSource(workSrc) {
+		case model.ComputeWorkSource_DBWork:
 			err = s.cfg.DBStore.Update(ctx, id, res)
-		case "SUB":
+		case model.ComputeWorkSource_SubmissionWork:
 			err = s.cfg.SubmissionStore.Complete(ctx, id, res)
 		}
 
