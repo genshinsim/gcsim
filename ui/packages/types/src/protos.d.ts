@@ -272,6 +272,9 @@ export namespace model {
 
         /** ComputeWork source */
         source?: (model.ComputeWorkSource|null);
+
+        /** ComputeWork iterations */
+        iterations?: (number|null);
     }
 
     /** Represents a ComputeWork. */
@@ -291,6 +294,9 @@ export namespace model {
 
         /** ComputeWork source. */
         public source: model.ComputeWorkSource;
+
+        /** ComputeWork iterations. */
+        public iterations: number;
 
         /**
          * Gets the default type url for ComputeWork

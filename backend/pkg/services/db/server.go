@@ -149,9 +149,10 @@ func (s *Server) GetWork(ctx context.Context, req *GetWorkRequest) (*GetWorkResp
 
 	for _, v := range resp {
 		res = append(res, &model.ComputeWork{
-			Id:     v.GetId(),
-			Config: v.GetConfig(),
-			Source: model.ComputeWorkSource_DBWork,
+			Id:         v.GetId(),
+			Config:     v.GetConfig(),
+			Source:     model.ComputeWorkSource_DBWork,
+			Iterations: 1000, //TODO: this should be adjustable
 		})
 	}
 

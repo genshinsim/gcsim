@@ -59,6 +59,7 @@ message ComputeWork {
     string id = 1 [json_name="_id"];
     string config = 2 [json_name="config"];
     ComputeWorkSource source = 3 [json_name="source"];
+    int32 iterations = 4 [json_name="iterations"];
 }
 
 enum ComputeWorkSource {
