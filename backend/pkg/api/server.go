@@ -89,8 +89,14 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	if s.cfg.ShareStore == nil {
 		return nil, fmt.Errorf("no result store provided")
 	}
+	if s.cfg.UserStore == nil {
+		return nil, fmt.Errorf("no user store provided")
+	}
 	if s.cfg.DBStore == nil {
 		return nil, fmt.Errorf("no db store provided")
+	}
+	if s.cfg.QueueService == nil {
+		return nil, fmt.Errorf("no queue service provided")
 	}
 
 	//connect to mqtt

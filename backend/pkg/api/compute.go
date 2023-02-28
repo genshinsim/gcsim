@@ -11,7 +11,6 @@ import (
 )
 
 type QueueService interface {
-	Add(context.Context, []*model.ComputeWork) ([]string, error)
 	Get(context.Context) (*model.ComputeWork, error)
 	Complete(context.Context, string) error
 }
@@ -19,6 +18,7 @@ type QueueService interface {
 func (s *Server) computeAPIKeyCheck(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		key := r.Header.Get("X-GCSIM-COMPUTE-API-KEY")
+		s.Log.Infow("compute key check", "key", key)
 		if key == "" {
 			s.Log.Infow("compute key missing", "header", r.Header)
 			http.Error(w, "Bad Request", http.StatusBadRequest)

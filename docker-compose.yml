@@ -48,6 +48,8 @@ services:
     restart: unless-stopped
     environment:
       - TZ=America/Toronto
+      - SUBMISSION_STORE_URL=submission:3000
+      - DB_STORE_URL=db:3000
   share:
     container_name: share
     build:
