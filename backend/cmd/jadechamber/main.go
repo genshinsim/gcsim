@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
@@ -17,7 +18,13 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+var (
+	sha1ver string
+)
+
 func main() {
+	setHash()
+
 	config := zap.NewDevelopmentConfig()
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	logger, err := config.Build()
@@ -103,6 +110,7 @@ func main() {
 			MQTTPass: os.Getenv("MQTT_PASSWORD"),
 			MQTTHost: os.Getenv("MQTT_URL"),
 		},
+		CurrentHash: sha1ver,
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil
@@ -115,4 +123,13 @@ func main() {
 	log.Println("API gateway starting to listen at port 3000")
 	log.Fatal(http.ListenAndServe(":3000", s.Router))
 
+}
+
+func setHash() {
+	info, _ := debug.ReadBuildInfo()
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			sha1ver = bs.Value
+		}
+	}
 }

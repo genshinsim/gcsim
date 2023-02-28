@@ -63,7 +63,14 @@ func (s *Server) computeCallback() http.HandlerFunc {
 			return
 		}
 
-		//check to make sure this one is actually queu4ed
+		//check hash matches current
+		if res.GetSimVersion() != s.cfg.CurrentHash {
+			s.Log.Infow("compute callback request - invalid hash", "expected", s.cfg.CurrentHash, "got", res.GetSimVersion())
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		//check to make sure this one is actually queued
 		id := r.Header.Get("X-GCSIM-COMPUTE-ID")
 		if id == "" {
 			s.Log.Infow("compute callback request failed - no id received", "header", r.Header)

@@ -43,6 +43,9 @@ type Config struct {
 	MQTTConfig MQTTConfig
 	//queue service for getting work etc
 	QueueService QueueService
+	//hash for verifying compute submissions
+	//TODO: this logic really should not be embedded into the api gateway....
+	CurrentHash string
 }
 
 type APIContextKey string

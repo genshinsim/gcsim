@@ -6,12 +6,12 @@ RUN mkdir -p /gcsim
 WORKDIR /gcsim
 
 ### download deps and caches
-COPY .git /gcsim/.git
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
 ## copy all files in
+COPY .git /gcsim/.git
 COPY backend /gcsim/backend
 COPY pkg /gcsim/pkg
 
