@@ -140,19 +140,22 @@ func (yg *yuegui) throw() {
 		target = yg.Core.Combat.Player().Pos()
 	}
 	ai, hi := yg.getInfos()
-	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
+	yg.c.QueueCharTask(func() {
+		radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
+		radishExplodeAoE.SkipTargets[targets.TargettablePlayer] = false
 
-	yg.Core.QueueAttackWithSnap(
-		ai,
-		yg.snap,
-		radishExplodeAoE,
-		travelDelay,
-		yg.c.makeHealCB(radishExplodeAoE, hi),
-		yg.makeParticleCB(),
-		yg.c.makeC2CB(),
-	)
+		yg.Core.QueueAttackWithSnap(
+			ai,
+			yg.snap,
+			radishExplodeAoE,
+			1,
+			yg.c.makeHealCB(radishExplodeAoE, hi),
+			yg.makeParticleCB(),
+			yg.c.makeC2CB(),
+		)
+	}, travelDelay-1)
 	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing && yg.c.Base.Cons >= 6 && (yg.throwCounter == 2 || yg.throwCounter == 5) {
-		yg.c6(target, ai, hi)
+		yg.c6(target)
 	}
 	yg.throwCounter += 1
 }

@@ -69,20 +69,31 @@ func (c *char) c4() {
 	})
 }
 
-func (yg *yuegui) c6(target geometry.Point, ai combat.AttackInfo, hi player.HealInfo) {
-	ai.Abil = "Mega Radish"
-	ai.Mult = 0.75
-	ai.AttackTag = attacks.AttackTagNone
-	ai.ICDTag = attacks.ICDTagNone
-	ai.ICDGroup = attacks.ICDGroupDefault
-
-	hi.Message = "Radish C6"
-	hi.Src = yg.c.MaxHP() * 0.075
+func (yg *yuegui) c6(target geometry.Point) {
+	ai := combat.AttackInfo{
+		ActorIndex: yg.c.Index,
+		Abil:       "Mega Radish",
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Dendro,
+		Durability: 25,
+		Mult:       0.75,
+	}
+	hi := player.HealInfo{
+		Caller:  yg.c.Index,
+		Target:  yg.c.Core.Player.Active(),
+		Message: "Radish C6",
+		Src:     yg.c.MaxHP() * 0.075,
+		Bonus:   yg.c.Stat(attributes.Heal),
+	}
 
 	c6MegaRadishAoE := combat.NewCircleHitOnTarget(target, nil, c6MegaRadishRad)
+	c6MegaRadishAoE.SkipTargets[targets.TargettablePlayer] = false
 	done := false
 	heal := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy && a.Target.Type() != targets.TargettablePlayer {
 			return
 		}
 
