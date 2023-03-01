@@ -71,19 +71,20 @@ func (c *char) c4() {
 
 func (yg *yuegui) c6(target geometry.Point) {
 	ai := combat.AttackInfo{
-		ActorIndex: yg.c.Index,
-		Abil:       "Mega Radish",
-		AttackTag:  attacks.AttackTagNone,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       0.75,
+		ActorIndex:         yg.c.Index,
+		Abil:               "Mega Radish",
+		AttackTag:          attacks.AttackTagNone,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
+		Element:            attributes.Dendro,
+		Durability:         25,
+		Mult:               0.75,
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 	hi := player.HealInfo{
 		Caller:  yg.c.Index,
-		Target:  yg.c.Core.Player.Active(),
 		Message: "Radish C6",
 		Src:     yg.c.MaxHP() * 0.075,
 		Bonus:   yg.c.Stat(attributes.Heal),
@@ -101,6 +102,7 @@ func (yg *yuegui) c6(target geometry.Point) {
 			return
 		}
 		if yg.Core.Combat.Player().IsWithinArea(c6MegaRadishAoE) {
+			hi.Target = yg.Core.Player.Active()
 			yg.c.Core.Player.Heal(hi)
 			done = true
 		}

@@ -66,7 +66,6 @@ func (c *char) getSkillHealInfo(snap *combat.Snapshot) player.HealInfo {
 	heal := skillRadishHealing[0][c.TalentLvlSkill()]*maxhp + skillRadishHealing[1][c.TalentLvlSkill()]
 	return player.HealInfo{
 		Caller:  c.Index,
-		Target:  c.Core.Player.Active(),
 		Message: "Yuegui Skill",
 		Src:     heal,
 		Bonus:   snap.Stats[attributes.Heal],

@@ -98,6 +98,7 @@ func (c *char) makeHealCB(area combat.AttackPattern, hi player.HealInfo) func(co
 			return
 		}
 		if c.Core.Combat.Player().IsWithinArea(area) {
+			hi.Target = c.Core.Player.Active()
 			c.radishHeal(hi)
 			done = true
 		}
@@ -139,10 +140,10 @@ func (yg *yuegui) throw() {
 		// really it should be random if no targets are in range and the character's HP is full but we aren't really simming that
 		target = yg.Core.Combat.Player().Pos()
 	}
-	ai, hi := yg.getInfos()
+	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
+	radishExplodeAoE.SkipTargets[targets.TargettablePlayer] = false
 	yg.c.QueueCharTask(func() {
-		radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
-		radishExplodeAoE.SkipTargets[targets.TargettablePlayer] = false
+		ai, hi := yg.getInfos()
 
 		yg.Core.QueueAttackWithSnap(
 			ai,
