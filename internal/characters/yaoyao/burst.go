@@ -47,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 		HitlagFactor:     0.05,
 	}
-	c.Core.QueueAttack(burstAI, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 3), burstInitialHitmark, burstInitialHitmark)
+	c.Core.QueueAttack(burstAI, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), burstInitialHitmark, burstInitialHitmark)
 	c.burstRadishAI = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Radish (Burst)",
@@ -64,7 +64,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(c.newYueguiJump, 104)
 	c.Core.Tasks.Add(c.newYueguiJump, 162)
 	c.Core.Tasks.Add(c.newYueguiJump, 221)
-	c.QueueCharTask(c.removeBurst, burstDur)
+	c.Core.Tasks.Add(c.removeBurst, burstDur)
 	c.AddStatus(burstKey, burstDur, false)
 
 	if c.Base.Cons >= 4 {

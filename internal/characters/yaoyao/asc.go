@@ -18,7 +18,7 @@ func (c *char) a1Ticker() {
 	case action.DashState, action.JumpState:
 		c.Core.Log.NewEvent("yaoyao a1 triggered", glog.LogCharacterEvent, c.Index).
 			Write("state", c.Core.Player.CurrentState())
-		c.Core.Tasks.Add(c.a1Throw, 24)
+		c.a1Throw()
 	}
 	c.QueueCharTask(c.a1Ticker, 0.6*60)
 }
@@ -41,7 +41,7 @@ func (c *char) a1Throw() {
 	c.Core.QueueAttack(
 		ai,
 		radishExplodeAoE,
-		travelDelay,
+		0,
 		travelDelay,
 		c.makeHealCB(radishExplodeAoE, hi),
 		c.makeC2CB(),
@@ -54,7 +54,7 @@ func (c *char) a4(index int, src int) func() {
 			return
 		}
 
-		char := c.Core.Player.Chars()[index]
+		char := c.Core.Player.ByIndex(index)
 		if char.StatusIsActive(a4Status) {
 			return
 		}

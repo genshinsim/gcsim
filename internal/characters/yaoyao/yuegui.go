@@ -46,7 +46,7 @@ func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
 	yg.Gadget.ThinkInterval = 29
 
 	yg.Gadget.OnKill = func() {
-		yg.Core.Log.NewEvent("Yuegui (Throwing) expiry", glog.LogCharacterEvent, yg.c.Index)
+		yg.Core.Log.NewEvent("Yuegui (Throwing) removed", glog.LogCharacterEvent, yg.c.Index)
 	}
 	yg.Core.Log.NewEvent("Yuegui (Throwing) summoned", glog.LogCharacterEvent, yg.c.Index)
 	// yg.Reactable = &reactable.Reactable{}
