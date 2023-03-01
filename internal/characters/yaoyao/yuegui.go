@@ -90,7 +90,7 @@ func (c *char) newYueguiJump() {
 func (c *char) makeHealCB(area combat.AttackPattern, hi player.HealInfo) func(combat.AttackCB) {
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy && a.Target.Type() != targets.TargettablePlayer {
 			return
 		}
 
@@ -139,11 +139,11 @@ func (yg *yuegui) throw() {
 		// really it should be random if no targets are in range and the character's HP is full but we aren't really simming that
 		target = yg.Core.Combat.Player().Pos()
 	}
-	hi := yg.getHeal()
+	ai, hi := yg.getInfos()
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
 
 	yg.Core.QueueAttackWithSnap(
-		yg.ai,
+		ai,
 		yg.snap,
 		radishExplodeAoE,
 		travelDelay,
@@ -152,16 +152,23 @@ func (yg *yuegui) throw() {
 		yg.c.makeC2CB(),
 	)
 	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing && yg.c.Base.Cons >= 6 && (yg.throwCounter == 2 || yg.throwCounter == 5) {
-		yg.c6(target, yg.ai, hi)
+		yg.c6(target, ai, hi)
 	}
 	yg.throwCounter += 1
 }
 
-func (yg *yuegui) getHeal() player.HealInfo {
-	if yg.GadgetTyp() == combat.GadgetTypYueguiThrowing {
-		return yg.c.getSkillHealInfo(&yg.snap)
+func (yg *yuegui) getInfos() (combat.AttackInfo, player.HealInfo) {
+	var ai combat.AttackInfo
+	var hi player.HealInfo
+
+	if yg.c.StatusIsActive(burstKey) {
+		ai = yg.c.burstRadishAI
+		hi = yg.c.getBurstHealInfo(&yg.snap)
+	} else {
+		ai = yg.ai
+		hi = yg.c.getSkillHealInfo(&yg.snap)
 	}
-	return yg.c.getBurstHealInfo(&yg.snap)
+	return ai, hi
 }
 
 // TODO: Confirm if yueguis can infuse cryo
