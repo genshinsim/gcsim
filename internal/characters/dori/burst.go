@@ -57,10 +57,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 
 			// queue attack
+			distance := p.Pos().Distance(burstPos)
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewBoxHit(p, burstPos, nil, 1, p.Pos().Distance(burstPos)),
+				combat.NewBoxHit(p, burstPos, geometry.Point{Y: -distance}, 1, distance),
 				0,
 			)
 
