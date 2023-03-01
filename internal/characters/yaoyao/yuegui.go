@@ -98,7 +98,9 @@ func (c *char) makeHealCB(area combat.AttackPattern, hi player.HealInfo) func(co
 			return
 		}
 		if c.Core.Combat.Player().IsWithinArea(area) {
-			hi.Target = c.Core.Player.Active()
+			if hi.Target != -1 {
+				hi.Target = c.Core.Player.Active()
+			}
 			c.radishHeal(hi)
 			done = true
 		}
