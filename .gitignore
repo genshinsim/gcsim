@@ -25,3 +25,4 @@ cmd/gcsim/gcsim
 !release-notes.txt
 \.vscode/
 **/node_modules
+cmd/gcsim/run_optimizer_full.bat
