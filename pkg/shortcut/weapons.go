@@ -20,6 +20,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"athousandfloatingdreams":       keys.AThousandFloatingDreams,
 	"thousandfloatingdreams":        keys.AThousandFloatingDreams,
 	"tfd":                           keys.AThousandFloatingDreams,
+	"beaconofthereedsea":            keys.BeaconOfTheReedSea,
+	"beacon":                        keys.BeaconOfTheReedSea,
 	"beginnersprotector":            keys.BeginnersProtector,
 	"beginners":                     keys.BeginnersProtector,
 	"beginner":                      keys.BeginnersProtector,
