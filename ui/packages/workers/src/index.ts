@@ -1,6 +1,6 @@
 import { Router } from "itty-router";
 import { handleAssets } from "./assets";
-import { handleInjectHead, handlePreview } from "./preview";
+import { handleInjectHead, handleInjectHeadDB, handlePreview } from "./preview";
 import { proxyRequest } from "./proxy";
 import { handleLegacy, handleShare, handleView } from "./share";
 import { handleWasm } from "./wasm";
@@ -20,9 +20,11 @@ router.post("/api/share", handleShare);
 router.get("/api/share/:key", handleView);
 router.get("/api/legacy-share/:key", handleLegacy); //TODO: this endpoint should be deleted once we convert over to new
 router.get("/api/preview/:key", handlePreview);
+router.get("/api/preview/db/:key", handlePreview);
 
 // rewrite doc head
 router.get("/viewer/share/:key", handleInjectHead);
+router.get("/viewer/db/:key", handleInjectHeadDB);
 
 router.get("/api/assets/*", handleAssets);
 router.get("/api/wasm/*", handleWasm);

@@ -33,7 +33,7 @@ export async function handlePreview(
     );
 
     const resp = await fetch(
-      new Request(API_ENDPOINT + "/preview/" + last),
+      new Request(API_ENDPOINT + "/api/preview/" + last),
       {
         cf: {
           cacheTtl: 60 * 24 * 60 * 60,
