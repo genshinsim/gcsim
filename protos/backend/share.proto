@@ -1,5 +1,5 @@
 syntax = "proto3";
-package result;
+package share;
 option go_package="github.com/genshinsim/gcsim/backend/pkg/services/share";
 
 import "protos/model/result.proto";

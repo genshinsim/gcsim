@@ -11,6 +11,7 @@ import (
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
+	"github.com/genshinsim/gcsim/backend/pkg/services/preview"
 	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"github.com/genshinsim/gcsim/backend/pkg/services/submission"
@@ -42,6 +43,7 @@ func main() {
 		UserStore:       makeUserStore(sugar),
 		DBStore:         makeDBStore(),
 		SubmissionStore: makeSubStore(),
+		PreviewStore:    makePreviewStore(),
 		Discord: api.DiscordConfig{
 			RedirectURL:  os.Getenv("REDIRECT_URL"),
 			ClientID:     os.Getenv("DISCORD_ID"),
@@ -126,6 +128,16 @@ func makeDBStore() api.DBStore {
 
 func makeSubStore() api.SubmissionStore {
 	store, err := submission.NewClient(os.Getenv("SUBMISSION_STORE_URL"))
+	if err != nil {
+		panic(err)
+	}
+	return store
+}
+
+func makePreviewStore() api.PreviewStore {
+	store, err := preview.NewClient(preview.ClientCfg{
+		Addr: os.Getenv("PREVIEW_STORE_URL"),
+	})
 	if err != nil {
 		panic(err)
 	}

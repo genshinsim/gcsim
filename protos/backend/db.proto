@@ -9,6 +9,7 @@ service DBStore {
     //generic get for pulling from approved db
     rpc Get (GetRequest) returns (GetResponse) {}
     rpc GetUnfiltered (GetUnfilteredRequest) returns (GetUnfilteredResponse) {}
+    rpc GetOne (GetOneRequest) returns (GetOneResponse) {}
     rpc Update (UpdateRequest) returns (UpdateResponse) {}
     rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
 
@@ -23,6 +24,14 @@ message GetRequest {
 
 message GetResponse {
     model.DBEntries data = 1;
+}
+
+message GetOneRequest {
+    string id = 1 [json_name="_id"];
+}
+
+message GetOneResponse {
+    model.DBEntry data = 1;
 }
 
 message GetUnfilteredRequest {

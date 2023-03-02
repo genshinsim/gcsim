@@ -126,6 +126,16 @@ func (s *Server) Get(ctx context.Context, req *GetRequest) (*GetResponse, error)
 	}, nil
 }
 
+func (s *Server) GetOne(ctx context.Context, req *GetOneRequest) (*GetOneResponse, error) {
+	res, err := s.DBStore.GetOne(ctx, req.GetId())
+	if err != nil {
+		return nil, err
+	}
+	return &GetOneResponse{
+		Data: res,
+	}, nil
+}
+
 func (s *Server) GetUnfiltered(ctx context.Context, req *GetUnfilteredRequest) (*GetUnfilteredResponse, error) {
 	res, err := s.DBStore.Get(ctx, req.GetQuery())
 	if err != nil {

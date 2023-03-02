@@ -44,6 +44,18 @@ func (c *Client) Get(ctx context.Context, query *model.DBQueryOpt) (*model.DBEnt
 	return resp.GetData(), nil
 }
 
+func (c *Client) GetOne(ctx context.Context, id string) (*model.DBEntry, error) {
+	req := &GetOneRequest{
+		Id: id,
+	}
+	resp, err := c.conn.GetOne(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.GetData(), nil
+}
+
 func (c *Client) GetUnfiltered(ctx context.Context, query *model.DBQueryOpt) (*model.DBEntries, error) {
 	req := &GetUnfilteredRequest{
 		Query: query,

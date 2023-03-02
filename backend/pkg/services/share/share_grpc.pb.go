@@ -40,7 +40,7 @@ func NewShareStoreClient(cc grpc.ClientConnInterface) ShareStoreClient {
 
 func (c *shareStoreClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
 	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/result.ShareStore/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/share.ShareStore/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (c *shareStoreClient) Create(ctx context.Context, in *CreateRequest, opts .
 
 func (c *shareStoreClient) Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error) {
 	out := new(ReadResponse)
-	err := c.cc.Invoke(ctx, "/result.ShareStore/Read", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/share.ShareStore/Read", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *shareStoreClient) Read(ctx context.Context, in *ReadRequest, opts ...gr
 
 func (c *shareStoreClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
 	out := new(UpdateResponse)
-	err := c.cc.Invoke(ctx, "/result.ShareStore/Update", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/share.ShareStore/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *shareStoreClient) Update(ctx context.Context, in *UpdateRequest, opts .
 
 func (c *shareStoreClient) SetTTL(ctx context.Context, in *SetTTLRequest, opts ...grpc.CallOption) (*SetTTLResponse, error) {
 	out := new(SetTTLResponse)
-	err := c.cc.Invoke(ctx, "/result.ShareStore/SetTTL", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/share.ShareStore/SetTTL", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *shareStoreClient) SetTTL(ctx context.Context, in *SetTTLRequest, opts .
 
 func (c *shareStoreClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
 	out := new(DeleteResponse)
-	err := c.cc.Invoke(ctx, "/result.ShareStore/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/share.ShareStore/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (c *shareStoreClient) Delete(ctx context.Context, in *DeleteRequest, opts .
 
 func (c *shareStoreClient) Random(ctx context.Context, in *RandomRequest, opts ...grpc.CallOption) (*RandomResponse, error) {
 	out := new(RandomResponse)
-	err := c.cc.Invoke(ctx, "/result.ShareStore/Random", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/share.ShareStore/Random", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +150,7 @@ func _ShareStore_Create_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/result.ShareStore/Create",
+		FullMethod: "/share.ShareStore/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ShareStoreServer).Create(ctx, req.(*CreateRequest))
@@ -168,7 +168,7 @@ func _ShareStore_Read_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/result.ShareStore/Read",
+		FullMethod: "/share.ShareStore/Read",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ShareStoreServer).Read(ctx, req.(*ReadRequest))
@@ -186,7 +186,7 @@ func _ShareStore_Update_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/result.ShareStore/Update",
+		FullMethod: "/share.ShareStore/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ShareStoreServer).Update(ctx, req.(*UpdateRequest))
@@ -204,7 +204,7 @@ func _ShareStore_SetTTL_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/result.ShareStore/SetTTL",
+		FullMethod: "/share.ShareStore/SetTTL",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ShareStoreServer).SetTTL(ctx, req.(*SetTTLRequest))
@@ -222,7 +222,7 @@ func _ShareStore_Delete_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/result.ShareStore/Delete",
+		FullMethod: "/share.ShareStore/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ShareStoreServer).Delete(ctx, req.(*DeleteRequest))
@@ -240,7 +240,7 @@ func _ShareStore_Random_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/result.ShareStore/Random",
+		FullMethod: "/share.ShareStore/Random",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ShareStoreServer).Random(ctx, req.(*RandomRequest))
@@ -252,7 +252,7 @@ func _ShareStore_Random_Handler(srv interface{}, ctx context.Context, dec func(i
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ShareStore_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "result.ShareStore",
+	ServiceName: "share.ShareStore",
 	HandlerType: (*ShareStoreServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

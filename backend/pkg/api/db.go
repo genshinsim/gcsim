@@ -14,6 +14,7 @@ import (
 
 type DBStore interface {
 	Get(context.Context, *model.DBQueryOpt) (*model.DBEntries, error)
+	GetOne(ctx context.Context, id string) (*model.DBEntry, error)
 	Update(ctx context.Context, id string, result *model.SimulationResult) error
 }
 

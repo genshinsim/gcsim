@@ -25,6 +25,7 @@ type DBStoreClient interface {
 	// generic get for pulling from approved db
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetUnfiltered(ctx context.Context, in *GetUnfilteredRequest, opts ...grpc.CallOption) (*GetUnfilteredResponse, error)
+	GetOne(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	GetWork(ctx context.Context, in *GetWorkRequest, opts ...grpc.CallOption) (*GetWorkResponse, error)
 	// tagging
@@ -52,6 +53,15 @@ func (c *dBStoreClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.Ca
 func (c *dBStoreClient) GetUnfiltered(ctx context.Context, in *GetUnfilteredRequest, opts ...grpc.CallOption) (*GetUnfilteredResponse, error) {
 	out := new(GetUnfilteredResponse)
 	err := c.cc.Invoke(ctx, "/db.DBStore/GetUnfiltered", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBStoreClient) GetOne(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error) {
+	out := new(GetOneResponse)
+	err := c.cc.Invoke(ctx, "/db.DBStore/GetOne", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,6 +111,7 @@ type DBStoreServer interface {
 	// generic get for pulling from approved db
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetUnfiltered(context.Context, *GetUnfilteredRequest) (*GetUnfilteredResponse, error)
+	GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error)
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	GetWork(context.Context, *GetWorkRequest) (*GetWorkResponse, error)
 	// tagging
@@ -118,6 +129,9 @@ func (UnimplementedDBStoreServer) Get(context.Context, *GetRequest) (*GetRespons
 }
 func (UnimplementedDBStoreServer) GetUnfiltered(context.Context, *GetUnfilteredRequest) (*GetUnfilteredResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUnfiltered not implemented")
+}
+func (UnimplementedDBStoreServer) GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOne not implemented")
 }
 func (UnimplementedDBStoreServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
@@ -176,6 +190,24 @@ func _DBStore_GetUnfiltered_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBStoreServer).GetUnfiltered(ctx, req.(*GetUnfilteredRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_GetOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).GetOne(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/db.DBStore/GetOne",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).GetOne(ctx, req.(*GetOneRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,6 +298,10 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUnfiltered",
 			Handler:    _DBStore_GetUnfiltered_Handler,
+		},
+		{
+			MethodName: "GetOne",
+			Handler:    _DBStore_GetOne_Handler,
 		},
 		{
 			MethodName: "Update",

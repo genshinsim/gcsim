@@ -3,9 +3,14 @@ export async function handlePreview(
   event: FetchEvent
 ): Promise<Response> {
   //get last bit of url and change if valid uuid
-  const segments = new URL(request.url).pathname.split("/");
+  const pn = new URL(request.url).pathname
+  const segments = pn.split("/");
   let last = segments.pop() || segments.pop(); // Handle potential trailing slash
   console.log(last);
+  //if this ends in db/{key}, we need to stick in the db in front
+  if (pn.includes("/db/")) {
+    last = "db/" + last
+  }
 
   if (last === undefined) {
     return new Response(null, {
@@ -28,7 +33,7 @@ export async function handlePreview(
     );
 
     const resp = await fetch(
-      new Request(PREVIEW_ENDPOINT + "/snapshot/" + last),
+      new Request(API_ENDPOINT + "/preview/" + last),
       {
         cf: {
           cacheTtl: 60 * 24 * 60 * 60,

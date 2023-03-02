@@ -38,6 +38,7 @@ type Config struct {
 	Discord           DiscordConfig
 	DBStore           DBStore
 	SubmissionStore   SubmissionStore
+	PreviewStore      PreviewStore
 	AESDecryptionKeys map[string][]byte
 	//mqtt for notification purposes
 	MQTTConfig MQTTConfig
@@ -52,8 +53,9 @@ type Config struct {
 type APIContextKey string
 
 const (
-	TTLContextKey  APIContextKey = "ttl"
-	UserContextKey APIContextKey = "user"
+	TTLContextKey   APIContextKey = "ttl"
+	UserContextKey  APIContextKey = "user"
+	ShareContextKey APIContextKey = "share"
 )
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
@@ -146,10 +148,12 @@ func (s *Server) routes() {
 	r.Route("/api", func(r chi.Router) {
 
 		r.Route("/share", func(r chi.Router) {
-			r.Post("/", s.CreateShare())        // share a sim
+			r.Post("/", s.CreateShare()) // share a sim
+			r.Get("/preview/{share-key}", s.GetPreview())
+			r.Get("/preview/db/{db-key}", s.GetPreviewByDBID())
 			r.Get("/{share-key}", s.GetShare()) // get a shared sim
 			r.Get("/random", s.GetRandomShare())
-			r.Get("/preview/{share-key}", s.notImplemented()) // preview (embed) for a shared sim
+			r.Get("/db/{db-key}", s.GetShareByDBID())
 		})
 
 		r.Get("/login", s.Login())

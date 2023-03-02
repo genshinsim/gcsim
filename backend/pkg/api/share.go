@@ -10,6 +10,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type ShareStore interface {
@@ -85,30 +87,51 @@ func (s *Server) CreateShare() http.HandlerFunc {
 	}
 }
 
+func (s *Server) sendShare(w http.ResponseWriter, r *http.Request, key string) {
+	share, ttl, err := s.cfg.ShareStore.Read(r.Context(), key)
+	if err != nil {
+		if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
+			http.Error(w, "not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		s.Log.Errorw("unexpected error getting share", "err", err)
+		return
+	}
+	d, err := share.MarshalJson()
+	if err != nil {
+		s.Log.Errorw("unexpected error marshalling to json", "err", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("x-gcsim-ttl", strconv.FormatUint(ttl, 10))
+	w.WriteHeader(http.StatusOK)
+	w.Write(d)
+}
+
 func (s *Server) GetShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := chi.URLParam(r, "share-key")
+		s.sendShare(w, r, key)
+	}
+}
 
-		share, ttl, err := s.cfg.ShareStore.Read(r.Context(), key)
-		switch err {
-		case nil:
-			d, err := share.MarshalJson()
-			if err != nil {
-				s.Log.Errorw("unexpected error marshalling to json", "err", err)
-				http.Error(w, "internal server error", http.StatusInternalServerError)
+func (s *Server) GetShareByDBID() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		key := chi.URLParam(r, "db-key")
+
+		e, err := s.cfg.DBStore.GetOne(r.Context(), key)
+		if err != nil {
+			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
+				http.Error(w, "not found", http.StatusNotFound)
 				return
 			}
-			w.Header().Set("Content-Type", "application/json")
-			w.Header().Set("x-gcsim-ttl", strconv.FormatUint(ttl, 10))
-			w.WriteHeader(http.StatusOK)
-			w.Write(d)
-		case ErrKeyNotFound:
-			http.Error(w, "not found", http.StatusNotFound)
-		default:
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			s.Log.Errorw("unexpected error getting share", "err", err)
+			return
 		}
-
+		s.sendShare(w, r, e.GetShareKey())
 	}
 }
 
