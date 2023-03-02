@@ -112,6 +112,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/xinyan"
 	_ "github.com/genshinsim/gcsim/internal/characters/yaemiko"
 	_ "github.com/genshinsim/gcsim/internal/characters/yanfei"
+	_ "github.com/genshinsim/gcsim/internal/characters/yaoyao"
 	_ "github.com/genshinsim/gcsim/internal/characters/yelan"
 	_ "github.com/genshinsim/gcsim/internal/characters/yoimiya"
 	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
