@@ -28,6 +28,12 @@ export async function handleView(
   console.log(`checking for cache key: ${cacheUrl}`);
   const cache = caches.default;
 
+  //check if this is db route
+  let dbStr = ""
+  if (request.url.includes("/db/")) {
+    dbStr = "db/"
+  }
+
   let response = await cache.match(cacheKey);
 
   if (!response) {
@@ -35,7 +41,7 @@ export async function handleView(
       `Response for request url: ${request.url} not present in cache. Fetching and caching request.`
     );
 
-    response = await fetch(new Request(API_ENDPOINT + "/api/share/" + key));
+    response = await fetch(new Request(API_ENDPOINT + "/api/share/" + dbStr + key));
 
     response = new Response(response.body, response);
     response.headers.append("Cache-Control", "s-maxage=1800");

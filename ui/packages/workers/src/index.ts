@@ -18,6 +18,7 @@ router.get("/api/db", proxyRequest);
 // viewer files
 router.post("/api/share", handleShare);
 router.get("/api/share/:key", handleView);
+router.get("/api/share/db/:key", handleView);
 router.get("/api/legacy-share/:key", handleLegacy); //TODO: this endpoint should be deleted once we convert over to new
 router.get("/api/preview/:key", handlePreview);
 router.get("/api/preview/db/:key", handlePreview);
