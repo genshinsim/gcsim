@@ -39,6 +39,7 @@ type Config struct {
 	DBStore           DBStore
 	SubmissionStore   SubmissionStore
 	PreviewStore      PreviewStore
+	RoleCheck         RoleChecker
 	AESDecryptionKeys map[string][]byte
 	//mqtt for notification purposes
 	MQTTConfig MQTTConfig
@@ -56,6 +57,7 @@ const (
 	TTLContextKey   APIContextKey = "ttl"
 	UserContextKey  APIContextKey = "user"
 	ShareContextKey APIContextKey = "share"
+	DBTagContextKey APIContextKey = "db-tag"
 )
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
@@ -173,6 +175,12 @@ func (s *Server) routes() {
 				r.Use(s.computeAPIKeyCheck)
 				r.Get("/work", s.getWork())
 				r.Post("/work", s.computeCallback())
+			})
+
+			r.Route("/tag/{tag-key}", func(r chi.Router) {
+				r.Use(s.tagRoleCheck)
+				r.Post("/approve/{db-key}", s.approveTag())
+				r.Post("/reject/{db-key}", s.rejectTag())
 			})
 		})
 	})

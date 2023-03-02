@@ -7,8 +7,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
+	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/go-chi/chi"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/oauth2"
 )
@@ -18,6 +21,10 @@ type UserStore interface {
 	Read(id string, ctx context.Context) ([]byte, error)      //"user" should be set in ctx for auth purpose
 	UpdateData(data []byte, ctx context.Context) error        //"user" should be set in ctx for auth purpose
 	Has(id string, ctx context.Context) (bool, error)         //return true if user exists
+}
+
+type RoleChecker interface {
+	UserHasDBTagRole(userid string, tag model.DBTag) bool
 }
 
 var ErrUserAlreadyExists = errors.New("user already exist")
@@ -211,4 +218,27 @@ func (s *Server) UserSave() http.HandlerFunc {
 			s.Log.Errorw("unexpected error updating data", "err", err)
 		}
 	}
+}
+
+func (s *Server) tagRoleCheck(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//if role not authorized, return unauthorized
+		user := r.Context().Value(UserContextKey).(string)
+		if user == "" {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		key := chi.URLParam(r, "tag-key")
+		if key == "" {
+			http.Error(w, "Forbidden", http.StatusForbidden)
+			return
+		}
+		tagID := model.DBTag_value[strings.ToUpper(key)]
+		if !s.cfg.RoleCheck.UserHasDBTagRole(user, model.DBTag(tagID)) {
+			http.Error(w, "Forbidden", http.StatusForbidden)
+			return
+		}
+		r = r.WithContext(context.WithValue(r.Context(), DBTagContextKey, tagID))
+		next.ServeHTTP(w, r)
+	})
 }
