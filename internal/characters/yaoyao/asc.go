@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const a4Status = "yaoyao-a4"
@@ -24,7 +25,6 @@ func (c *char) a1Ticker() {
 }
 
 func (c *char) a1Throw() {
-
 	a1aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, skillTargetingRad)
 	enemy := c.Core.Combat.RandomEnemyWithinArea(a1aoe, nil)
 	if enemy == nil {
@@ -33,19 +33,32 @@ func (c *char) a1Throw() {
 	target := enemy.Pos()
 
 	radishExplodeAoE := combat.NewCircleHitOnTarget(target, nil, radishRad)
+	radishExplodeAoE.SkipTargets[targets.TargettablePlayer] = false
 
-	ai := c.burstRadishAI
-	snap := c.Snapshot(&ai)
-	hi := c.getBurstHealInfo(&snap)
+	c.QueueCharTask(func() {
+		var hi player.HealInfo
+		var ai combat.AttackInfo
+		var snap combat.Snapshot
 
-	c.Core.QueueAttack(
-		ai,
-		radishExplodeAoE,
-		0,
-		travelDelay,
-		c.makeHealCB(radishExplodeAoE, hi),
-		c.makeC2CB(),
-	)
+		if c.StatusIsActive(burstKey) {
+			ai = c.burstRadishAI
+			snap = c.Snapshot(&ai)
+			hi = c.getBurstHealInfo(&snap)
+		} else {
+			ai = c.skillRadishAI
+			snap = c.Snapshot(&ai)
+			hi = c.getSkillHealInfo(&snap)
+		}
+
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			radishExplodeAoE,
+			1,
+			c.makeHealCB(radishExplodeAoE, hi),
+			c.makeC2CB(),
+		)
+	}, travelDelay-1)
 }
 
 func (c *char) a4(index int, src int) func() {

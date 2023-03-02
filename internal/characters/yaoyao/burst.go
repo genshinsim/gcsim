@@ -48,19 +48,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagFactor:     0.05,
 	}
 	c.Core.QueueAttack(burstAI, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), burstInitialHitmark, burstInitialHitmark)
-	c.burstRadishAI = combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Radish (Burst)",
-		AttackTag:          attacks.AttackTagElementalBurst,
-		ICDTag:             attacks.ICDTagElementalBurst,
-		ICDGroup:           attacks.ICDGroupYaoyaoRadishBurst,
-		StrikeType:         attacks.StrikeTypeDefault,
-		Element:            attributes.Dendro,
-		Durability:         25,
-		Mult:               burstRadishDMG[c.TalentLvlBurst()],
-		CanBeDefenseHalted: true,
-		IsDeployable:       true,
-	}
+
 	c.Core.Tasks.Add(c.newYueguiJump, 104)
 	c.Core.Tasks.Add(c.newYueguiJump, 162)
 	c.Core.Tasks.Add(c.newYueguiJump, 221)

@@ -3,7 +3,6 @@ package yaoyao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -28,22 +27,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// yuegui spawns after 48f
 	c.Core.Status.Add("yuegui", 600+yueguiThrowSpawn)
 
-	procAI := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Radish (Skill)",
-		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             attacks.ICDTagElementalArt,
-		ICDGroup:           attacks.ICDGroupYaoyaoRadishSkill,
-		StrikeType:         attacks.StrikeTypeDefault,
-		Element:            attributes.Dendro,
-		Durability:         25,
-		Mult:               skillRadishDMG[c.TalentLvlSkill()],
-		CanBeDefenseHalted: true,
-		IsDeployable:       true,
-	}
-
 	c.Core.Tasks.Add(func() {
-		yuegui := c.newYueguiThrow(procAI)
+		yuegui := c.newYueguiThrow()
 		c.Core.Combat.AddGadget(yuegui)
 	}, skillCDStart+yueguiThrowSpawn)
 

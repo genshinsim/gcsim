@@ -28,11 +28,10 @@ type yuegui struct {
 	throwCounter int
 }
 
-func (c *char) newYueguiThrow(procAI combat.AttackInfo) *yuegui {
-
+func (c *char) newYueguiThrow() *yuegui {
 	yg := &yuegui{
-		ai:   procAI,
-		snap: c.Snapshot(&procAI),
+		ai:   c.skillRadishAI,
+		snap: c.Snapshot(&c.skillRadishAI),
 		c:    c,
 	}
 	player := c.Core.Combat.Player()
