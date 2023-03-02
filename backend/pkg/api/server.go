@@ -147,10 +147,13 @@ func (s *Server) routes() {
 
 	r.Route("/api", func(r chi.Router) {
 
+		r.Route("/preview", func(r chi.Router) {
+			r.Get("/{share-key}", s.GetPreview())
+			r.Get("/db/{db-key}", s.GetPreviewByDBID())
+		})
+
 		r.Route("/share", func(r chi.Router) {
-			r.Post("/", s.CreateShare()) // share a sim
-			r.Get("/preview/{share-key}", s.GetPreview())
-			r.Get("/preview/db/{db-key}", s.GetPreviewByDBID())
+			r.Post("/", s.CreateShare())        // share a sim
 			r.Get("/{share-key}", s.GetShare()) // get a shared sim
 			r.Get("/random", s.GetRandomShare())
 			r.Get("/db/{db-key}", s.GetShareByDBID())

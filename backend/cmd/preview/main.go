@@ -17,7 +17,6 @@ var content embed.FS
 func main() {
 
 	server, err := preview.New(preview.Config{
-		URL:          "http://localhost:3001",
 		Files:        content,
 		AssetsFolder: os.Getenv(("ASSETS_DATA_PATH")),
 	})
@@ -26,8 +25,10 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("starting img generation listener")
-	go log.Fatal(http.ListenAndServe(":3001", server.Router))
+	go func() {
+		log.Println("starting img generation listener")
+		log.Fatal(http.ListenAndServe("localhost:3001", server.Router))
+	}()
 
 	lis, err := net.Listen("tcp", ":3000")
 	if err != nil {

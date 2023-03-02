@@ -25,7 +25,6 @@ import (
 type Config struct {
 	Files        embed.FS
 	AssetsFolder string
-	URL          string
 }
 
 type Store struct {
@@ -46,6 +45,8 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	s := &Store{
 		cfg: cfg,
 	}
+
+	log.Println("setting up router....")
 
 	s.Router = chi.NewRouter()
 	for _, f := range cust {
@@ -90,6 +91,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 func (s *Store) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
 	data := req.GetData()
 	key := req.GetId()
+	s.Log.Infow("get request received on grpc", "key", key)
 	if data == nil {
 		return nil, status.Error(codes.InvalidArgument, "payload cannot be nil")
 	}
@@ -123,7 +125,7 @@ func (s *Store) generateSnapshot(key string) ([]byte, error) {
 	var buf []byte
 
 	// capture entire browser viewport, returning png with quality=90
-	if err := chromedp.Run(ctx, s.fullScreenshot(s.cfg.URL+"/"+key, 100, &buf)); err != nil {
+	if err := chromedp.Run(ctx, s.fullScreenshot("http://localhost:3001/"+key, 100, &buf)); err != nil {
 		return nil, err
 	}
 
@@ -159,6 +161,7 @@ func (s *Store) routes() {
 
 func (s *Store) handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		s.Log.Info("received request for embed html page")
 		//pull data from result store, insert into template, and then server
 		key := chi.URLParam(r, "key")
 		var out struct {
