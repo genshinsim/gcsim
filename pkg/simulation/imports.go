@@ -57,6 +57,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/amber"
 	_ "github.com/genshinsim/gcsim/internal/characters/ayaka"
 	_ "github.com/genshinsim/gcsim/internal/characters/ayato"
+	_ "github.com/genshinsim/gcsim/internal/characters/baizhu"
 	_ "github.com/genshinsim/gcsim/internal/characters/barbara"
 	_ "github.com/genshinsim/gcsim/internal/characters/beidou"
 	_ "github.com/genshinsim/gcsim/internal/characters/bennett"
