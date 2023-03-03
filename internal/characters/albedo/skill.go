@@ -22,7 +22,8 @@ func init() {
 }
 
 const (
-	skillICDKey = "albedo-skill-icd"
+	skillICDKey    = "albedo-skill-icd"
+	particleICDKey = "albedo-particle-icd"
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -83,6 +84,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+	if c.Core.Rand.Float64() < 0.67 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Geo, c.ParticleDelay)
+	}
+}
+
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
@@ -114,12 +128,8 @@ func (c *char) skillHook() {
 			c.skillSnapshot,
 			combat.NewCircleHitOnTarget(trg, nil, 3.4),
 			1,
+			c.particleCB,
 		)
-
-		// 67% chance to generate 1 geo orb
-		if c.Core.Rand.Float64() < 0.67 {
-			c.Core.QueueParticle("albedo", 1, attributes.Geo, c.ParticleDelay)
-		}
 
 		// c1: skill tick regen 1.2 energy
 		if c.Base.Cons >= 1 {

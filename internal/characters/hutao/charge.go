@@ -25,11 +25,10 @@ func init() {
 	chargeFrames[action.ActionJump] = chargeHitmark
 
 	// charge (paramita) -> x
-	ppChargeFrames = frames.InitAbilSlice(44)
+	ppChargeFrames = frames.InitAbilSlice(42)
 	ppChargeFrames[action.ActionBurst] = 33
 	ppChargeFrames[action.ActionDash] = ppChargeHitmark
 	ppChargeFrames[action.ActionJump] = ppChargeHitmark
-	ppChargeFrames[action.ActionSwap] = 42
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -75,6 +74,9 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 
+	// pp slide: add 1.8s to paramita on charge attack start which gets removed once the charge attack ends
+	c.ExtendStatus(paramitaBuff, 1.8*60)
+
 	//TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -100,7 +102,7 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		),
 		0,
 		ppChargeHitmark,
-		c.ppParticles,
+		c.particleCB,
 		c.applyBB,
 	)
 
@@ -150,5 +152,10 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		AnimationLength: ppChargeFrames[action.InvalidAction],
 		CanQueueAfter:   1,
 		State:           action.ChargeAttackState,
+		OnRemoved: func(next action.AnimationState) {
+			if next != action.BurstState {
+				c.ExtendStatus(paramitaBuff, -1.8*60)
+			}
+		},
 	}
 }

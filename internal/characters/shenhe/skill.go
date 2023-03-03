@@ -11,15 +11,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
 const (
-	skillPressCDStart = 2
-	skillPressHitmark = 4
-	skillHoldCDStart  = 31
-	skillHoldHitmark  = 33
-	quillKey          = "shenhe-quill"
+	skillPressCDStart  = 2
+	skillPressHitmark  = 4
+	skillHoldCDStart   = 31
+	skillHoldHitmark   = 33
+	holdParticleICDKey = "shenhe-hold-particle-icd"
+	quillKey           = "shenhe-quill"
 )
 
 func init() {
@@ -76,12 +79,13 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		),
 		skillPressHitmark,
 		skillPressHitmark,
+		c.makePressParticleCB(),
+		c.makeC4ResetCB(),
 	)
 
-	// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
-	c.Core.QueueParticle("shenhe", 3, attributes.Cryo, skillPressHitmark+c.ParticleDelay)
-
-	c.Core.Tasks.Add(func() { c.skillPressBuff() }, skillPressCDStart+1)
+	if c.Base.Ascension >= 4 {
+		c.Core.Tasks.Add(c.skillPressBuff, skillPressCDStart+1)
+	}
 	c.SetCDWithDelay(action.ActionSkill, 10*60, skillPressCDStart)
 
 	return action.ActionInfo{
@@ -89,6 +93,20 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makePressParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		// Skill actually moves you in game - actual catch is anywhere from 90-110 frames, take 100 as an average
+		c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Cryo, c.ParticleDelay)
 	}
 }
 
@@ -110,12 +128,13 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 4),
 		skillHoldHitmark,
 		skillHoldHitmark,
+		c.holdParticleCB,
+		c.makeC4ResetCB(),
 	)
 
-	// Particle spawn timing is a bit later than press E
-	c.Core.QueueParticle("shenhe", 4, attributes.Cryo, skillHoldHitmark+c.ParticleDelay)
-
-	c.Core.Tasks.Add(func() { c.skillHoldBuff() }, skillHoldCDStart+1)
+	if c.Base.Ascension >= 4 {
+		c.Core.Tasks.Add(c.skillHoldBuff, skillHoldCDStart+1)
+	}
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
 
 	return action.ActionInfo{
@@ -126,9 +145,25 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 0.5*60, true)
+	// Particle spawn timing is a bit later than press E
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Cryo, c.ParticleDelay)
+}
+
+// A4:
+// After Shenhe uses Spring Spirit Summoning, she will grant all nearby party members the following effects:
+//
+// - Press: Elemental Skill and Elemental Burst DMG increased by 15% for 10s.
 func (c *char) skillPressBuff() {
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(quillKey, 10*60, true) //10 sec duration
+		char.AddStatus(quillKey, 10*60, true) // 10 sec duration
 		char.SetTag(quillKey, 5)              // 5 quill on press
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
@@ -146,9 +181,13 @@ func (c *char) skillPressBuff() {
 	}
 }
 
+// A4:
+// After Shenhe uses Spring Spirit Summoning, she will grant all nearby party members the following effects:
+//
+// - Hold: Normal, Charged, and Plunging Attack DMG increased by 15% for 15s.
 func (c *char) skillHoldBuff() {
 	for _, char := range c.Core.Player.Chars() {
-		char.AddStatus(quillKey, 15*60, true) //15 sec duration
+		char.AddStatus(quillKey, 15*60, true) // 15 sec duration
 		char.SetTag(quillKey, 7)              // 5 quill on hold
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
@@ -210,7 +249,7 @@ func (c *char) quillDamageMod() {
 
 			atk.Info.FlatDmg += amt
 			if c.Base.Cons >= 4 {
-				atk.Callbacks = append(atk.Callbacks, c.c4cb)
+				atk.Callbacks = append(atk.Callbacks, c.c4CB)
 			}
 		}
 

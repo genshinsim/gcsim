@@ -16,11 +16,13 @@ var skillHoldFrames []int
 var icewhirlHitmarks = []int{79, 92}
 
 const (
-	skillPressHitmark = 20
-	skillHoldHitmark  = 49
-	a1Hitmark         = 108
-	grimheartICD      = "eula-grimheart-icd"
-	grimheartDuration = "eula-grimheart-duration"
+	skillPressHitmark   = 20
+	skillHoldHitmark    = 49
+	pressParticleICDKey = "eula-press-particle-icd"
+	holdParticleICDKey  = "eula-hold-particle-icd"
+	a1Hitmark           = 108
+	grimheartICD        = "eula-grimheart-icd"
+	grimheartDuration   = "eula-grimheart-duration"
 )
 
 func init() {
@@ -92,7 +94,6 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	c.particleDone = false
 	//add 1 to grim heart if not capped by icd
 	cb := func(a combat.AttackCB) {
 		if a.Target.Type() != combat.TargettableEnemy {
@@ -103,14 +104,6 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		}
 		c.AddStatus(grimheartICD, 18, true)
 		c.addGrimheartStack()
-		if !c.particleDone {
-			var count float64 = 1
-			if c.Core.Rand.Float64() < .5 {
-				count = 2
-			}
-			c.Core.QueueParticle("eula", count, attributes.Cryo, c.ParticleDelay)
-			c.particleDone = true
-		}
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -118,6 +111,8 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		skillPressHitmark,
 		skillPressHitmark,
 		cb,
+		c.pressParticleCB,
+		c.burstStackCB,
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, 60*4, 16)
@@ -128,6 +123,22 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) pressParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pressParticleICDKey) {
+		return
+	}
+	c.AddStatus(pressParticleICDKey, 0.3*60, true)
+
+	count := 1.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 2
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 }
 
 func (c *char) holdSkill(p map[string]int) action.ActionInfo {
@@ -149,23 +160,13 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	c.particleDone = false
-	energyCB := func(_ combat.AttackCB) {
-		if !c.particleDone {
-			var count float64 = 2
-			if c.Core.Rand.Float64() < .5 {
-				count = 3
-			}
-			c.Core.QueueParticle("eula", count, attributes.Cryo, c.ParticleDelay)
-			c.particleDone = true
-		}
-	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 5.5),
 		skillHoldHitmark,
 		skillHoldHitmark,
-		energyCB,
+		c.holdParticleCB,
+		c.burstStackCB,
 	)
 
 	v := c.currentGrimheartStacks()
@@ -218,6 +219,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				icewhirlHitmarks[i],
 				icewhirlHitmarks[i],
 				shredCB,
+				c.burstStackCB,
 			)
 		} else {
 			c.QueueCharTask(func() {
@@ -228,34 +230,13 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 					0,
 					0,
 					shredCB,
+					c.burstStackCB,
 				)
 			}, icewhirlHitmarks[i])
 		}
 	}
-
-	//A1
 	if v == 2 {
-		// make sure this gets executed after hold e hitlag starts but before hold e is over
-		// this makes it so it doesn't get affected by hitlag after Hold E is over
-		aiA1 := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Icetide (Lightfall)",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
-			Element:    attributes.Physical,
-			Durability: 25,
-			Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
-		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				aiA1,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 6.5),
-				a1Hitmark-(skillHoldHitmark+1),
-				a1Hitmark-(skillHoldHitmark+1),
-			)
-		}, skillHoldHitmark+1)
+		c.a1()
 	}
 
 	//c1 add debuff
@@ -283,4 +264,20 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 0.5*60, true)
+
+	count := 2.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 3
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 }

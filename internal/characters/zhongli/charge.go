@@ -31,7 +31,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
-		FlatDmg:            0.0139 * c.MaxHP(),
+		FlatDmg:            c.a4Attacks(),
 		HitlagHaltFrames:   0.06 * 60,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,

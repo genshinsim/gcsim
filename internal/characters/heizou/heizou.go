@@ -18,7 +18,7 @@ type char struct {
 	*tmpl.Character
 	decStack         int
 	c1buff           []float64
-	a4buff           []float64
+	a4Buff           []float64
 	burstTaggedCount int
 }
 
@@ -40,8 +40,8 @@ func (c *char) Init() error {
 
 	c.a1()
 
-	c.a4buff = make([]float64, attributes.EndStatType)
-	c.a4buff[attributes.EM] = 80
+	c.a4Buff = make([]float64, attributes.EndStatType)
+	c.a4Buff[attributes.EM] = 80
 
 	// make sure to use the same key everywhere so that these passives don't stack
 	c.Core.Player.AddStamPercentMod("utility-dash", -1, func(a action.Action) (float64, bool) {

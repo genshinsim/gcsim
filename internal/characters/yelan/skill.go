@@ -13,10 +13,13 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 35
-const skillTargetCountTag = "marked"
-const skillHoldDuration = "hold_length" //not yet implemented
-const skillMarkedTag = "yelan-skill-marked"
+const (
+	skillHitmark        = 35
+	particleICDKey      = "yelan-particle-icd"
+	skillTargetCountTag = "marked"
+	skillHoldDuration   = "hold_length" // not yet implemented
+	skillMarkedTag      = "yelan-skill-marked"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42)
@@ -90,8 +93,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
-		//TODO: this used to be 82?
-		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.ParticleDelay)
 		//check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
 			c.breakthrough = true
@@ -120,7 +121,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			marked--
 			//queueing attack one frame later
 			//TODO: does hold have different attack size? don't think so?
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, cb)
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, c.particleCB, cb)
 		}
 
 		//activate c4 if relevant
@@ -154,4 +155,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Hydro, c.ParticleDelay) // TODO: this used to be 82?
 }

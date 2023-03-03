@@ -2,42 +2,54 @@ package submission
 
 import (
 	context "context"
+	"fmt"
+	"time"
 
+	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/jaevor/go-nanoid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-//submission service requirements:
-// - user submit online? must be discord logged in; paste in config only + a comment
-// - allow user to view list of unapproved submissions/update unapproved submissions/delete unapproved submissions
-// - discord bot auto notify submission received + computed
-// - mgmt list all unapproved submission
-// - mgmt list all submission waiting for first compute
-// - submission service rerun all unapproved submission if hash updates
-// - mgmt approve submission as either new addition, or replacement of existing
+var generateID func() string
 
-type Config struct {
-	DB DBStore
+func init() {
+	var err error
+	// dictionary from https://github.com/CyberAP/nanoid-dictionary#nolookalikessafe
+	generateID, err = nanoid.CustomASCII("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz", 12)
+	if err != nil {
+		panic(err)
+	}
 }
 
 type DBStore interface {
-	Get(id string) (*Submission, error)
-	Set(s *Submission) error
-	Delete(id string) error
-	New(s *Submission) (string, error)
-	List(filter string) ([]*Submission, error)
+	//submission specific
+	GetSubmission(ctx context.Context, id string) (*model.Submission, error)
+	CreateSubmission(ctx context.Context, s *model.Submission) (string, error)
+	DeletePending(ctx context.Context, id string) error
+	CreateNewDBEntry(ctx context.Context, entry *model.DBEntry) error //it's expected this will delete the pending
+	GetSubmissionWork(ctx context.Context) ([]*model.Submission, error)
+}
+
+type ShareStore interface {
+	CreatePerm(ctx context.Context, data *model.SimulationResult) (string, error)
+}
+
+type Config struct {
+	DBStore    DBStore
+	ShareStore ShareStore
 }
 
 type Server struct {
+	Config
 	Log *zap.SugaredLogger
 	UnimplementedSubmissionStoreServer
-	cfg Config
 }
 
-func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
+func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s := &Server{
-		cfg: cfg,
+		Config: cfg,
 	}
 
 	for _, f := range cust {
@@ -48,38 +60,39 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	}
 
 	if s.Log == nil {
-		logger, err := zap.NewDevelopment()
+		logger, err := zap.NewProduction()
 		if err != nil {
 			return nil, err
 		}
 		sugar := logger.Sugar()
-		sugar.Debugw("logger initiated")
 
 		s.Log = sugar
 	}
 
+	if s.DBStore == nil {
+		return nil, fmt.Errorf("db store cannot be nil")
+	}
+	s.Log.Info("submission store started")
+
 	return s, nil
 }
 
-func (s *Server) List(ctx context.Context, req *ListRequest) (*ListResponse, error) {
-	res, err := s.cfg.DB.List(req.GetUserFilter())
-	if err != nil {
-		//TODO: do we handle status here or in db?
-		return nil, err
-	}
-	return &ListResponse{
-		Data: res,
-	}, nil
-}
-
 func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitResponse, error) {
-	id, err := s.cfg.DB.New(&Submission{
+	s.Log.Infow("new submission received", "req", req.String())
+	sub := &model.Submission{
+		Id:          generateID(),
 		Config:      req.GetConfig(),
 		Submitter:   req.GetSubmitter(),
 		Description: req.GetDescription(),
-	})
+	}
+	if sub.Config == "" {
+		return nil, status.Error(codes.InvalidArgument, "config cannot be blank")
+	}
+	if sub.Description == "" {
+		return nil, status.Error(codes.InvalidArgument, "description cannot be blank")
+	}
+	id, err := s.DBStore.CreateSubmission(ctx, sub)
 	if err != nil {
-		//TODO: do we handle status here or in db?
 		return nil, err
 	}
 	return &SubmitResponse{
@@ -87,52 +100,81 @@ func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitRespons
 	}, nil
 }
 
-func (s *Server) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse, error) {
-	orig, err := s.cfg.DB.Get(req.GetId())
-
+func (s *Server) DeletePending(ctx context.Context, req *DeletePendingRequest) (*DeletePendingResponse, error) {
+	id := req.GetId()
+	s.Log.Infow("delete pending request", "id", id)
+	if id == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
+	}
+	err := s.DBStore.DeletePending(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	if orig.GetSubmitter() != req.GetSubmitter() {
-		//only original user can update
-		return nil, status.Error(codes.PermissionDenied, "permission denied")
-	}
-
-	err = s.cfg.DB.Set(&Submission{
-		Id:          req.GetId(),
-		Config:      req.GetConfig(),
-		Submitter:   req.GetSubmitter(),
-		Description: req.GetDescription(),
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &UpdateResponse{
-		Id: req.GetId(),
-	}, nil
+	return &DeletePendingResponse{Id: id}, nil
 }
 
-func (s *Server) Remove(ctx context.Context, req *RemoveRequest) (*RemoveResponse, error) {
-	orig, err := s.cfg.DB.Get(req.GetId())
-
+func (s *Server) CompletePending(ctx context.Context, req *CompletePendingRequest) (*CompletePendingResponse, error) {
+	//check res exists in db
+	id := req.GetId()
+	s.Log.Infow("complete pending req", "id", id)
+	sub, err := s.DBStore.GetSubmission(ctx, id)
+	if err != nil {
+		s.Log.Infow("error getting submission with id", "id", id)
+		return nil, err
+	}
+	//add result to share
+	data := req.GetResult()
+	if data == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request payload")
+	}
+	key, err := s.Config.ShareStore.CreatePerm(ctx, data)
 	if err != nil {
 		return nil, err
 	}
 
-	if orig.GetSubmitter() != req.GetSubmitter() {
-		//only original user can remove
-		return nil, status.Error(codes.PermissionDenied, "permission denied")
-	}
+	//convert result to dbentry
+	e := data.ToDBEntry()
+	//add share key to dbentry
+	e.ShareKey = key
+	//update meta data
+	now := uint64(time.Now().Unix())
+	e.Description = sub.GetDescription()
+	e.CreateDate = now
+	e.RunDate = now
+	e.Submitter = sub.GetSubmitter()
+	e.Id = id
+	e.IsDbValid = false
+	e.AcceptedTags = []model.DBTag{}
+	e.RejectedTags = []model.DBTag{}
 
-	err = s.cfg.DB.Delete(req.GetId())
+	//create new db entry
+	err = s.DBStore.CreateNewDBEntry(ctx, e)
 	if err != nil {
 		return nil, err
 	}
 
-	return &RemoveResponse{
-		Id: req.GetId(),
+	return &CompletePendingResponse{Id: e.Id}, nil
+}
+
+func (s *Server) GetWork(ctx context.Context, req *GetWorkRequest) (*GetWorkResponse, error) {
+	resp, err := s.DBStore.GetSubmissionWork(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var res []*model.ComputeWork
+
+	for _, v := range resp {
+		res = append(res, &model.ComputeWork{
+			Id:         v.GetId(),
+			Config:     v.GetConfig(),
+			Source:     model.ComputeWorkSource_SubmissionWork,
+			Iterations: 1000, //TODO: this should be adjustable
+		})
+
+	}
+
+	return &GetWorkResponse{
+		Data: res,
 	}, nil
 }

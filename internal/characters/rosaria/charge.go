@@ -46,6 +46,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		),
 		chargeHitmark,
 		chargeHitmark,
+		c.makeC1CB(),
 	)
 
 	return action.ActionInfo{

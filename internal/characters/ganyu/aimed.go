@@ -57,10 +57,13 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	// snapshot delay and handles A1
-	// A1 doesn't apply to the first aimed shot
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		if c.Core.F < c.a1Expiry {
+		// A1:
+		// After firing a Frostflake Arrow, the CRIT Rate of subsequent Frostflake Arrows
+		// and their resulting bloom effects is increased by 20% for 5s.
+		// - doesn't apply to the first aimed shot
+		if c.Base.Ascension >= 1 && c.Core.F < c.a1Expiry {
 			old := snap.Stats[attributes.CR]
 			snap.Stats[attributes.CR] += .20
 			c.Core.Log.NewEvent("a1 adding crit rate", glog.LogCharacterEvent, c.Index).

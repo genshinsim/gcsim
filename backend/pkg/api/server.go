@@ -33,20 +33,29 @@ type MQTTConfig struct {
 }
 
 type Config struct {
-	ResultStore       ResultStore
+	ShareStore        ShareStore
 	UserStore         UserStore
 	Discord           DiscordConfig
 	DBStore           DBStore
+	SubmissionStore   SubmissionStore
+	PreviewStore      PreviewStore
 	AESDecryptionKeys map[string][]byte
 	//mqtt for notification purposes
 	MQTTConfig MQTTConfig
+	//queue service for getting work etc
+	QueueService QueueService
+	//hash for verifying compute submissions
+	//TODO: this logic really should not be embedded into the api gateway....
+	CurrentHash   string
+	ComputeAPIKey string
 }
 
 type APIContextKey string
 
 const (
-	TTLContextKey  APIContextKey = "ttl"
-	UserContextKey APIContextKey = "user"
+	TTLContextKey   APIContextKey = "ttl"
+	UserContextKey  APIContextKey = "user"
+	ShareContextKey APIContextKey = "share"
 )
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
@@ -79,11 +88,17 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s.routes()
 
 	//sanity checks
-	if s.cfg.ResultStore == nil {
+	if s.cfg.ShareStore == nil {
 		return nil, fmt.Errorf("no result store provided")
+	}
+	if s.cfg.UserStore == nil {
+		return nil, fmt.Errorf("no user store provided")
 	}
 	if s.cfg.DBStore == nil {
 		return nil, fmt.Errorf("no db store provided")
+	}
+	if s.cfg.QueueService == nil {
+		return nil, fmt.Errorf("no queue service provided")
 	}
 
 	//connect to mqtt
@@ -132,11 +147,16 @@ func (s *Server) routes() {
 
 	r.Route("/api", func(r chi.Router) {
 
+		r.Route("/preview", func(r chi.Router) {
+			r.Get("/{share-key}", s.GetPreview())
+			r.Get("/db/{db-key}", s.GetPreviewByDBID())
+		})
+
 		r.Route("/share", func(r chi.Router) {
 			r.Post("/", s.CreateShare())        // share a sim
 			r.Get("/{share-key}", s.GetShare()) // get a shared sim
 			r.Get("/random", s.GetRandomShare())
-			r.Get("/preview/{share-key}", s.notImplemented()) // preview (embed) for a shared sim
+			r.Get("/db/{db-key}", s.GetShareByDBID())
 		})
 
 		r.Get("/login", s.Login())
@@ -147,10 +167,13 @@ func (s *Server) routes() {
 
 		r.Route("/db", func(r chi.Router) {
 			r.Get("/", s.getDB())
-			// r.Post("/submit", s.submitEntry())
+			r.Post("/submit", s.submitEntry())
 
-			r.Get("/work", s.getWork())
-			r.Post("/work", s.computeCallback())
+			r.Route("/compute", func(r chi.Router) {
+				r.Use(s.computeAPIKeyCheck)
+				r.Get("/work", s.getWork())
+				r.Post("/work", s.computeCallback())
+			})
 		})
 	})
 

@@ -10,20 +10,21 @@ import (
 	"net/http"
 	"path"
 	"regexp"
+	"sync"
 
 	"github.com/chromedp/chromedp"
-	"github.com/genshinsim/gcsim/backend/pkg/api"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Config struct {
-	ResultStore  api.ResultReader
 	Files        embed.FS
 	AssetsFolder string
-	URL          string
 }
 
 type Store struct {
@@ -31,6 +32,8 @@ type Store struct {
 	Log    *zap.SugaredLogger
 	cfg    Config
 	tmpl   *template.Template
+	data   sync.Map
+	UnimplementedEmbedServer
 }
 
 var re = regexp.MustCompile(`(?m)^\s*\<script\>[\s+\n\r]+var data = "\{[\S\s\n\r]*\}";[\s+\n\r]+\</script\>$`)
@@ -43,10 +46,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 		cfg: cfg,
 	}
 
-	//sanity checks
-	if s.cfg.ResultStore == nil {
-		return nil, fmt.Errorf("no result store provided")
-	}
+	log.Println("setting up router....")
 
 	s.Router = chi.NewRouter()
 	for _, f := range cust {
@@ -88,6 +88,50 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 
 }
 
+func (s *Store) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
+	data := req.GetData()
+	key := req.GetId()
+	s.Log.Infow("get request received on grpc", "key", key)
+	if data == nil {
+		return nil, status.Error(codes.InvalidArgument, "payload cannot be nil")
+	}
+	if key == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
+	}
+	s.data.Store(key, data)
+
+	snap, err := s.generateSnapshot(key)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "error getting snapshot: "+err.Error())
+	}
+
+	return &GetResponse{
+		Data: snap,
+	}, nil
+}
+
+func (s *Store) generateSnapshot(key string) ([]byte, error) {
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.WindowSize(540, 250),
+	)
+	allocCtx, cancel := chromedp.NewExecAllocator(
+		context.Background(),
+		opts...,
+	)
+	defer cancel()
+	ctx, cancel := chromedp.NewContext(allocCtx, chromedp.WithLogf(log.Printf))
+	defer cancel()
+
+	var buf []byte
+
+	// capture entire browser viewport, returning png with quality=90
+	if err := chromedp.Run(ctx, s.fullScreenshot("http://localhost:3001/"+key, 100, &buf)); err != nil {
+		return nil, err
+	}
+
+	return buf, nil
+}
+
 type myFS struct {
 	content embed.FS
 }
@@ -113,56 +157,39 @@ func (s *Store) routes() {
 	//root should serve index
 	s.Router.Handle("/{key}", s.handleServeHTML())
 
-	s.Router.Get("/snapshot/{key}", s.snapshot())
-
 }
 
 func (s *Store) handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		s.Log.Info("received request for embed html page")
 		//pull data from result store, insert into template, and then server
 		key := chi.URLParam(r, "key")
-		data, _, err := s.cfg.ResultStore.Read(key, r.Context())
 		var out struct {
 			Data string
 		}
-		switch err {
-		case api.ErrKeyNotFound:
-			out.Data = `{"err":"result not found"}`
-		case nil:
-			out.Data = string(data)
-		default:
-			out.Data = `{"err":"unexpected error getting result"}`
+
+		defer func() {
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("content-type", "text/html")
+			s.tmpl.Execute(w, out)
+		}()
+
+		d, ok := s.data.LoadAndDelete(key)
+		if !ok {
+			out.Data = `{"err":"unexpected error getting result; key not found"}`
+			return
 		}
-
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("content-type", "text/html")
-		s.tmpl.Execute(w, out)
-	}
-}
-
-func (s *Store) snapshot() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		key := chi.URLParam(r, "key")
-		opts := append(chromedp.DefaultExecAllocatorOptions[:],
-			chromedp.WindowSize(540, 250),
-		)
-		allocCtx, cancel := chromedp.NewExecAllocator(
-			context.Background(),
-			opts...,
-		)
-		defer cancel()
-		ctx, cancel := chromedp.NewContext(allocCtx, chromedp.WithLogf(log.Printf))
-		defer cancel()
-
-		var buf []byte
-
-		// capture entire browser viewport, returning png with quality=90
-		if err := chromedp.Run(ctx, s.fullScreenshot(s.cfg.URL+"/"+key, 100, &buf)); err != nil {
-			log.Fatal(err)
+		res, ok := d.(*model.SimulationResult)
+		if !ok {
+			out.Data = `{"err":"unexpected error getting result; bad data"}`
+			return
 		}
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("content-type", "application/octet-stream")
-		w.Write(buf)
+		data, err := res.MarshalJson()
+		if err != nil {
+			out.Data = `{"err":"unexpected error getting result: cannot convert to json"}`
+			return
+		}
+		out.Data = string(data)
 	}
 }
 

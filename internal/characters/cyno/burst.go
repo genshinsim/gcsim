@@ -48,17 +48,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+240)
 	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+480)
 
-	c.QueueCharTask(c.a1, 328)
+	if c.Base.Ascension >= 1 {
+		c.QueueCharTask(c.a1, 328)
+	}
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(3)
 
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
-	if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on burst
-		c.c6Stacks = 4
-		c.AddStatus(c6Key, 480, true) // 8s*60
-	}
+	c.c6Init()
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),

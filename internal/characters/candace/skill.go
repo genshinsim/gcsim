@@ -17,6 +17,8 @@ var (
 	skillOffsets  = []float64{-0.1, 0.3}
 )
 
+const particleICDKey = "candace-particle-icd"
+
 func init() {
 	skillFrames = make([][]int, 2)
 	// Tap E
@@ -58,24 +60,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	var ap combat.AttackPattern
+	var particleCount float64
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
 	case 0:
-		c.Core.QueueParticle("candace", 2, attributes.Hydro, c.ParticleDelay+hitmark)
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			combat.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 			skillHitboxes[chargeLevel][1],
 		)
+		particleCount = 2
 	case 1:
-		c.Core.QueueParticle("candace", 3, attributes.Hydro, c.ParticleDelay+hitmark)
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			combat.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 		)
+		particleCount = 3
 	}
 
 	c.Core.QueueAttack(
@@ -88,6 +91,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				c.c2()
 			}
 		},
+		c.makeParticleCB(particleCount),
 	)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
@@ -111,5 +115,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[chargeLevel][action.InvalidAction],
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB(particleCount float64) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.5*60, true)
+		c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Hydro, c.ParticleDelay)
 	}
 }

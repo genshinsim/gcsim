@@ -63,18 +63,28 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		explode = 0 //if explode hits
 	}
 
-	//enhance weapon for 12 seconds (with a4)
-	// Infusion starts when burst starts and ends when burst comes off CD - check any diluc video
-	c.AddStatus(burstBuffKey, 720, true)
+	// A4:
+	// The Pyro Infusion provided by Dawn lasts for 4s longer.
+	duration := 480
+	hasA4 := c.Base.Ascension >= 4
+	if hasA4 {
+		duration += 240
+	}
 
-	// a4: add 20% pyro damage
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(burstBuffKey, 720),
-		AffectedStat: attributes.PyroP,
-		Amount: func() ([]float64, bool) {
-			return c.a4buff, true
-		},
-	})
+	// infusion starts when burst starts and ends when burst comes off CD - check any diluc video
+	c.AddStatus(burstBuffKey, duration, true)
+
+	// A4:
+	// Additionally, Diluc gains 20% Pyro DMG Bonus during the duration of this effect.
+	if hasA4 {
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(burstBuffKey, duration),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				return c.a4buff, true
+			},
+		})
+	}
 
 	// Snapshot occurs late in the animation when it is released from the claymore
 	// For our purposes, snapshot upon damage proc

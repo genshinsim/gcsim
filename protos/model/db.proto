@@ -9,7 +9,7 @@ import "google/protobuf/struct.proto";
 message DBEntry {
     //basic info
     string id = 1 [json_name="_id"];
-    string key = 2 [json_name="key"];
+    string share_key = 2 [json_name="share_key"];
     uint64 create_date = 3 [json_name="create_date"];
     uint64 run_date = 4 [json_name="run_date"];
     DescriptiveStats sim_duration = 5 [json_name="sim_duration"];
@@ -30,9 +30,10 @@ message DBEntry {
 
     //other stuff
     string description = 15 [json_name="description"];
-    repeated string accepted_tags = 16 [json_name="accepted_tags"];
-    repeated string rejected_tags = 17 [json_name="rejected_tags"];
+    repeated DBTag accepted_tags = 16 [json_name="accepted_tags"];
+    repeated DBTag rejected_tags = 17 [json_name="rejected_tags"];
     bool is_db_valid = 18 [json_name="is_db_valid"];
+    string submitter = 19 [json_name="submitter"];
 }
 
 message DBEntries {
@@ -52,11 +53,23 @@ message Submission {
     string config = 2;
     string submitter = 3; //submitter discord id 
     string description = 4;
-    string preview = 5; //view key for preview
-    repeated string tags = 6;
 }
 
 message ComputeWork {
-    string key = 1 [json_name="key"];
-    string cfg = 2 [json_name="cfg"];
+    string id = 1 [json_name="_id"];
+    string config = 2 [json_name="config"];
+    ComputeWorkSource source = 3 [json_name="source"];
+    int32 iterations = 4 [json_name="iterations"];
+}
+
+enum ComputeWorkSource {
+    InvalidWork = 0;
+    DBWork = 1;
+    SubmissionWork = 2;
+}
+
+enum DBTag {
+    DB_TAG_INVALID = 0;
+    DB_TAG_GCSIM = 1;
+    DB_TAG_TESTING = 2;
 }

@@ -15,6 +15,7 @@ const (
 	skillPressCDStart = 8
 	skillHoldHitmark  = 33
 	skillHoldCDStart  = 31
+	particleICDKey    = "kazuha-particle-icd"
 )
 
 func init() {
@@ -52,6 +53,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillHold(p)
 }
 
+func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.2*60, true)
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
+	}
+}
+
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -64,11 +78,16 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, skillPressHitmark)
-
-	c.Core.QueueParticle("kazuha", 3, attributes.Anemo, skillPressHitmark+c.ParticleDelay)
-
-	c.Core.Tasks.Add(c.absorbCheckA1(c.Core.F, 0, int(skillPressHitmark/6)), 1)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
+		0,
+		skillPressHitmark,
+		c.makeParticleCB(3),
+	)
+	if c.Base.Ascension >= 1 {
+		c.Core.Tasks.Add(c.absorbCheckA1(c.Core.F, 0, int(skillPressHitmark/6)), 1)
+	}
 
 	cd := 360
 	if c.Base.Cons >= 1 {
@@ -104,12 +123,17 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Durability: 50,
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 9),
+		0,
+		skillHoldHitmark,
+		c.makeParticleCB(4),
+	)
+	if c.Base.Ascension >= 1 {
+		c.Core.Tasks.Add(c.absorbCheckA1(c.Core.F, 0, int(skillHoldHitmark/6)), 1)
+	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 9), 0, skillHoldHitmark)
-
-	c.Core.QueueParticle("kazuha", 4, attributes.Anemo, skillHoldHitmark+c.ParticleDelay)
-
-	c.Core.Tasks.Add(c.absorbCheckA1(c.Core.F, 0, int(skillHoldHitmark/6)), 1)
 	cd := 540
 	if c.Base.Cons >= 1 {
 		cd = 486

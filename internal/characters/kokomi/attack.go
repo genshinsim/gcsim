@@ -61,6 +61,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, radius),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
+		c.makeBurstHealCB(),
+		c.makeC4CB(),
 	)
 	if c.NormalCounter == c.NormalHitNum-1 {
 		c.c1(attackHitmarks[c.NormalCounter], travel)

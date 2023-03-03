@@ -9,8 +9,8 @@ export namespace model {
         /** DBEntry id */
         id?: (string|null);
 
-        /** DBEntry key */
-        key?: (string|null);
+        /** DBEntry share_key */
+        share_key?: (string|null);
 
         /** DBEntry create_date */
         create_date?: (number|Long|null);
@@ -52,13 +52,16 @@ export namespace model {
         description?: (string|null);
 
         /** DBEntry accepted_tags */
-        accepted_tags?: (string[]|null);
+        accepted_tags?: (model.DBTag[]|null);
 
         /** DBEntry rejected_tags */
-        rejected_tags?: (string[]|null);
+        rejected_tags?: (model.DBTag[]|null);
 
         /** DBEntry is_db_valid */
         is_db_valid?: (boolean|null);
+
+        /** DBEntry submitter */
+        submitter?: (string|null);
     }
 
     /** Represents a DBEntry. */
@@ -73,8 +76,8 @@ export namespace model {
         /** DBEntry id. */
         public id: string;
 
-        /** DBEntry key. */
-        public key: string;
+        /** DBEntry share_key. */
+        public share_key: string;
 
         /** DBEntry create_date. */
         public create_date: (number|Long);
@@ -116,13 +119,16 @@ export namespace model {
         public description: string;
 
         /** DBEntry accepted_tags. */
-        public accepted_tags: string[];
+        public accepted_tags: model.DBTag[];
 
         /** DBEntry rejected_tags. */
-        public rejected_tags: string[];
+        public rejected_tags: model.DBTag[];
 
         /** DBEntry is_db_valid. */
         public is_db_valid: boolean;
+
+        /** DBEntry submitter. */
+        public submitter: string;
 
         /**
          * Gets the default type url for DBEntry
@@ -224,12 +230,6 @@ export namespace model {
 
         /** Submission description */
         description?: (string|null);
-
-        /** Submission preview */
-        preview?: (string|null);
-
-        /** Submission tags */
-        tags?: (string[]|null);
     }
 
     /** Represents a Submission. */
@@ -253,12 +253,6 @@ export namespace model {
         /** Submission description. */
         public description: string;
 
-        /** Submission preview. */
-        public preview: string;
-
-        /** Submission tags. */
-        public tags: string[];
-
         /**
          * Gets the default type url for Submission
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
@@ -270,11 +264,17 @@ export namespace model {
     /** Properties of a ComputeWork. */
     interface IComputeWork {
 
-        /** ComputeWork key */
-        key?: (string|null);
+        /** ComputeWork id */
+        id?: (string|null);
 
-        /** ComputeWork cfg */
-        cfg?: (string|null);
+        /** ComputeWork config */
+        config?: (string|null);
+
+        /** ComputeWork source */
+        source?: (model.ComputeWorkSource|null);
+
+        /** ComputeWork iterations */
+        iterations?: (number|null);
     }
 
     /** Represents a ComputeWork. */
@@ -286,11 +286,17 @@ export namespace model {
          */
         constructor(properties?: model.IComputeWork);
 
-        /** ComputeWork key. */
-        public key: string;
+        /** ComputeWork id. */
+        public id: string;
 
-        /** ComputeWork cfg. */
-        public cfg: string;
+        /** ComputeWork config. */
+        public config: string;
+
+        /** ComputeWork source. */
+        public source: model.ComputeWorkSource;
+
+        /** ComputeWork iterations. */
+        public iterations: number;
 
         /**
          * Gets the default type url for ComputeWork
@@ -298,6 +304,20 @@ export namespace model {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** ComputeWorkSource enum. */
+    enum ComputeWorkSource {
+        InvalidWork = 0,
+        DBWork = 1,
+        SubmissionWork = 2
+    }
+
+    /** DBTag enum. */
+    enum DBTag {
+        DB_TAG_INVALID = 0,
+        DB_TAG_GCSIM = 1,
+        DB_TAG_TESTING = 2
     }
 
     /** Properties of a Version. */
@@ -374,6 +394,12 @@ export namespace model {
 
         /** SimulationResult mode */
         mode?: (model.SimMode|null);
+
+        /** SimulationResult key_type */
+        key_type?: (string|null);
+
+        /** SimulationResult created_date */
+        created_date?: (number|Long|null);
     }
 
     /** Represents a SimulationResult. */
@@ -423,6 +449,12 @@ export namespace model {
 
         /** SimulationResult mode. */
         public mode: model.SimMode;
+
+        /** SimulationResult key_type. */
+        public key_type: string;
+
+        /** SimulationResult created_date. */
+        public created_date: (number|Long);
 
         /** SimulationResult _sim_version. */
         public _sim_version?: "sim_version";

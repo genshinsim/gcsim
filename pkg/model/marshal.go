@@ -1,6 +1,8 @@
 package model
 
-import "google.golang.org/protobuf/encoding/protojson"
+import (
+	"google.golang.org/protobuf/encoding/protojson"
+)
 
 func marshalOptions() protojson.MarshalOptions {
 	return protojson.MarshalOptions{
@@ -9,9 +11,18 @@ func marshalOptions() protojson.MarshalOptions {
 		EmitUnpopulated: false,
 	}
 }
+func unmarshalOptions() protojson.UnmarshalOptions {
+	return protojson.UnmarshalOptions{
+		AllowPartial: true,
+	}
+}
 
 func (r *SimulationResult) MarshalJson() ([]byte, error) {
 	return marshalOptions().Marshal(r)
+}
+
+func (r *SimulationResult) UnmarshalJson(b []byte) error {
+	return unmarshalOptions().Unmarshal(b, r)
 }
 
 func (r *SimulationStatistics) MarshalJson() ([]byte, error) {

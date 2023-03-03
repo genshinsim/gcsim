@@ -9,7 +9,10 @@ import (
 
 var skillFrames []int
 
-const skillHitmark = 17
+const (
+	skillHitmark   = 17
+	particleICDKey = "ningguang-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(62)
@@ -47,6 +50,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.skillSnapshot,
 			combat.NewCircleHitOnTarget(screenPos, nil, 5),
 			0,
+			c.particleCB,
 		)
 	}, skillHitmark)
 
@@ -65,20 +69,26 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, 1)
 	}
 
-	if !c.StatusIsActive(skillParticleICDKey) {
-		//3 balls, 33% chance of a fourth
-		var count float64 = 3
-		if c.Core.Rand.Float64() < .33 {
-			count = 4
-		}
-		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.ParticleDelay)
-		c.AddStatus(skillParticleICDKey, 360, true)
-	}
-
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 6*60, true)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < .33 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
 }

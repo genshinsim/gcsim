@@ -64,7 +64,7 @@ func (c *char) skillHold(createStele bool) action.ActionInfo {
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
-		FlatDmg:    0.019 * c.MaxHP(),
+		FlatDmg:    c.a4Skill(),
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), 0, skillHoldHitmark)
 

@@ -33,7 +33,7 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
-		c.ResetActionCooldown(action.ActionSkill) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
+		c.a1CDReset()
 		c.AddStatus(burstBuffKey, 15*60, true)
 	}, burstHitmark)
 

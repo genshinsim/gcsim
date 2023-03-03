@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					snap,
 					combat.NewCircleHitOnTarget(enemy, nil, 1),
 					0,
-					c.a4,
+					c.makeA4CB(),
 				)
 				return
 			}
@@ -123,7 +123,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 						snap,
 						combat.NewCircleHitOnTarget(v, nil, 1),
 						0,
-						c.a4,
+						c.makeA4CB(),
 					)
 				}
 			}

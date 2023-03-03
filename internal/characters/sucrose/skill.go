@@ -9,6 +9,8 @@ import (
 
 var skillFrames []int
 
+const particleICDKey = "sucrose-particle-icd"
+
 func init() {
 	skillFrames = frames.InitAbilSlice(57)
 	skillFrames[action.ActionCharge] = 56
@@ -32,7 +34,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	done := false
-	cb := func(a combat.AttackCB) {
+	a4CB := func(a combat.AttackCB) {
 		if a.Target.Type() != combat.TargettableEnemy {
 			return
 		}
@@ -41,10 +43,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		done = true
 		c.a4()
-		c.Core.QueueParticle("sucrose", 4, attributes.Anemo, c.ParticleDelay)
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 5}, 6), 0, 42, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 5}, 6),
+		0,
+		42,
+		a4CB,
+		c.particleCB,
+	)
 
 	//reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, 900, 9)
@@ -55,4 +63,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.4*60, false)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Anemo, c.ParticleDelay)
 }

@@ -67,8 +67,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			// deal dmg after a certain delay
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(pos, nil, 2.5), 8)
 
-			// a4 buff tick
-			if c.Core.Combat.Player().IsWithinArea(burstArea) {
+			// A4:
+			// Celestial Shower grants a 20% Cryo DMG Bonus to active party members in the AoE.
+			if c.Base.Ascension >= 4 && c.Core.Combat.Player().IsWithinArea(burstArea) {
 				active := c.Core.Player.ActiveChar()
 				active.AddStatMod(character.StatMod{
 					Base:         modifier.NewBase("ganyu-field", 60),

@@ -32,11 +32,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Mult:               burstDmg[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 	}
+	c1CB := c.makeC1CB()
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		burstInitialHitmark,
 		burstInitialHitmark,
+		c1CB,
 	)
 
 	// 7 hits
@@ -54,7 +56,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// 1st DoT
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4), 0, 0)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4),
+			0,
+			0,
+			c1CB,
+		)
 		ai.CanBeDefenseHalted = false // only the first DoT has hitlag
 		// 2nd DoT onwards
 		c.QueueCharTask(func() {
@@ -64,6 +72,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4),
 					i*17,
 					i*17,
+					c1CB,
 				)
 			}
 		}, 17)

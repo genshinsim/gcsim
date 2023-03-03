@@ -35,17 +35,25 @@ func (c *char) c1() {
 	}, "yoimiya-c1")
 }
 
-func (c *char) c2() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.PyroP] = 0.25
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		crit := args[3].(bool)
-
-		if atk.Info.ActorIndex != c.Index || !crit {
-			return false
+// When Yoimiya's Pyro DMG scores a CRIT Hit, Yoimiya will gain a 25% Pyro DMG Bonus for 6s.
+// This effect can be triggered even when Yoimiya is not the active character.
+func (c *char) makeC2CB() combat.AttackCBFunc {
+	if c.Base.Cons < 2 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != combat.TargettableEnemy {
+			return
+		}
+		if !a.IsCrit {
+			return
+		}
+		if a.AttackEvent.Info.Element != attributes.Pyro {
+			return
 		}
 
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.PyroP] = 0.25
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("yoimiya-c2", 360),
 			AffectedStat: attributes.PyroP,
@@ -53,7 +61,5 @@ func (c *char) c2() {
 				return m, true
 			},
 		})
-
-		return false
-	}, "yoimiya-c2")
+	}
 }

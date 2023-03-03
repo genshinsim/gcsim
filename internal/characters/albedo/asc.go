@@ -14,6 +14,9 @@ func (c *char) a1() {
 	if !c.Core.Combat.DamageMode {
 		return
 	}
+	if c.Base.Ascension < 1 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.25
 	c.AddAttackMod(character.AttackMod{
@@ -32,4 +35,22 @@ func (c *char) a1() {
 			return m, true
 		},
 	})
+}
+
+// Using Rite of Progeniture: Tectonic Tide increases the Elemental Mastery of nearby party members by 125 for 10s.
+func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.EM] = 125
+	for _, char := range c.Core.Player.Chars() {
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("albedo-a4", 600),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+	}
 }

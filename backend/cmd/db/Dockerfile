@@ -1,5 +1,7 @@
 FROM golang:1.19.3-alpine3.16 AS build 
 
+RUN apk update && apk add git
+
 RUN mkdir -p /gcsim
 WORKDIR /gcsim
 
@@ -9,6 +11,7 @@ COPY go.sum .
 RUN go mod download
 
 ## copy all files in
+COPY .git /gcsim/.git
 COPY backend /gcsim/backend
 COPY pkg /gcsim/pkg
 

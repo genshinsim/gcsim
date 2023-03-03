@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -39,7 +38,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 // Occurs after all characters are loaded, so getPartyElementalTypeCounts works properly
 func (c *char) Init() error {
-	c.getPartyElementalTypeCounts()
+	c.a4Init()
 	c.burstProc()
 	if c.Base.Cons >= 4 {
 		c.c4()
@@ -50,17 +49,4 @@ func (c *char) Init() error {
 	}
 
 	return nil
-}
-
-// Adds event to get the number of elemental types in the party for Yunjin A4
-func (c *char) getPartyElementalTypeCounts() {
-	partyElementalTypes := make(map[attributes.Element]int)
-	for _, char := range c.Core.Player.Chars() {
-		partyElementalTypes[char.Base.Element]++
-	}
-	for range partyElementalTypes {
-		c.partyElementalTypes += 1
-	}
-	c.Core.Log.NewEvent("Yun Jin Party Elemental Types (A4)", glog.LogCharacterEvent, c.Index).
-		Write("party_elements", c.partyElementalTypes)
 }

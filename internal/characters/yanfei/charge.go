@@ -60,6 +60,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, radius),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
+		c.makeA4CB(),
 	)
 
 	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index).
@@ -70,9 +71,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.sealCount = 0
 		c.DeleteStatus(sealBuffKey)
 	}, 1)
-
-	// needed for a4 hitlag handling
-	c.a4HitlagApplied = false
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

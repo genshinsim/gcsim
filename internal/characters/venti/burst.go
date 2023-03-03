@@ -64,10 +64,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int((480-24*4)/18)), 106+24*3)
 
-	// a4: restore 15 energy on burst end
-	c.Core.Tasks.Add(func() {
-		c.a4()
-	}, 480+burstStart)
+	if c.Base.Ascension >= 4 {
+		c.Core.Tasks.Add(c.a4, 480+burstStart)
+	}
 
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 81)
 	c.ConsumeEnergy(84)

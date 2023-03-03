@@ -8,8 +8,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-// activate a4 if screen is on-field and character uses dash
+// A1 is implemented in ningguang.go:
+// When Ningguang is in possession of Star Jades, her Charged Attack does not consume Stamina.
+
+// A character that passes through the Jade Screen will gain a 12% Geo DMG Bonus for 10s.
+//
+// - activate if screen is on-field and character uses dash
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.GeoP] = 0.12
 	//TODO: this used to be on PostDash; need to check if working correctly still

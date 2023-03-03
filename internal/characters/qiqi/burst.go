@@ -121,9 +121,11 @@ func (c *char) onNACAHitHook() {
 			return false
 		}
 
-		// A4
-		// When Qiqi hits opponents with her Normal and Charged Attacks, she has a 50% chance to apply a Fortune-Preserving Talisman to them for 6s. This effect can only occur once every 30s.
-		if !c.StatusIsActive(a4ICDKey) && (c.Core.Rand.Float64() < 0.5) {
+		// A4:
+		// When Qiqi hits opponents with her Normal and Charged Attacks,
+		// she has a 50% chance to apply a Fortune-Preserving Talisman to them for 6s.
+		// This effect can only occur once every 30s.
+		if c.Base.Ascension >= 4 && !c.StatusIsActive(a4ICDKey) && (c.Core.Rand.Float64() < 0.5) {
 			// Don't want to overwrite a longer burst duration talisman with a shorter duration one
 			// TODO: Unclear how the interaction works if there is already a talisman on enemy
 			// TODO: Being generous for now and not putting it on CD if there is a conflict

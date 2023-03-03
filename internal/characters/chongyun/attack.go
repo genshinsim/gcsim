@@ -58,7 +58,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitboxes[c.NormalCounter][1],
 		)
 	}
-	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
+	c4CB := c.makeC4Callback()
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c4CB)
 
 	if c.Base.Cons >= 1 && c.NormalCounter == 3 {
 		ai := combat.AttackInfo{
@@ -84,6 +85,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				),
 				attackHitmarks[c.NormalCounter]+i*5,
 				attackHitmarks[c.NormalCounter]+i*5,
+				c4CB,
 			)
 		}
 	}

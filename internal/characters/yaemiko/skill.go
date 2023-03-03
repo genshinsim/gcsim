@@ -3,12 +3,17 @@ package yaemiko
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
 var skillFrames []int
 
 // kitsune spawn frame
-const skillStart = 34
+const (
+	skillStart     = 34
+	particleICDKey = "yaemiko-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(37) // E -> N1/E
@@ -30,4 +35,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != combat.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 2.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) // TODO: this used to be 30?
 }

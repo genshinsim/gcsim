@@ -58,7 +58,7 @@ func (c *char) Init() error {
 
 	if c.Base.Cons >= 4 {
 		c.c4bonus = make([]float64, attributes.EndStatType)
-		c.c4()
+		c.c4Init()
 	}
 	return nil
 }

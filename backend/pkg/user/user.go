@@ -12,7 +12,7 @@ import (
 
 type Config struct {
 	DBPath      string
-	ResultStore api.ResultStore
+	ResultStore api.ShareStore
 }
 
 type Store struct {

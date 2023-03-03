@@ -27,6 +27,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
+	c6CB := c.makeC6CB()
 	for i, mult := range auto[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -48,7 +49,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			2,
 		)
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, c6CB)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

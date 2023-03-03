@@ -2,26 +2,15 @@ syntax = "proto3";
 package submission;
 option go_package="github.com/genshinsim/gcsim/backend/pkg/services/submission";
 
+import "protos/model/result.proto";
+import "protos/model/db.proto";
+
 service SubmissionStore {
-    rpc Submit (SubmitRequest) returns (SubmitResponse) {}
-    rpc Update (UpdateRequest) returns (UpdateResponse) {}
-    rpc Remove (RemoveRequest) returns (RemoveResponse) {}
-    rpc List (ListRequest) returns (ListResponse) {}
-    // these following methods are management methods
-    rpc Approve (ApproveRequest) returns (ApproveResponse) {}
-    rpc Replace (ReplaceRequest) returns (ReplaceResponse) {}
-    rpc Reject (RejectRequest) returns (RejectResponse) {}
+    rpc Submit (SubmitRequest) returns (SubmitResponse) {} 
+    rpc DeletePending (DeletePendingRequest) returns (DeletePendingResponse) {}
+    rpc CompletePending (CompletePendingRequest) returns (CompletePendingResponse) {}
+    rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
 }
-
-message Submission {
-    string id = 1 [json_name="_id"]; // auto generated id for this submission
-    string config = 2;
-    string submitter = 3; //submitter discord id 
-    string description = 4;
-    string preview = 5; //view key for preview
-}
-
-// submit new submission - user only
 
 message SubmitRequest {
     string config = 1;
@@ -30,77 +19,29 @@ message SubmitRequest {
 }
 
 message SubmitResponse {
-    string id = 1;
+    string id = 1 [json_name="_id"];
 }
 
-// list all submissions; can filter by user to allow user to see their
-// own submissions
-
-message ListRequest {
-    string user_filter = 1; //comma separated string list of users
+message DeletePendingRequest {
+    string id = 1 [json_name="_id"];
 }
 
-message ListResponse {
-    //queued for compute + waiting for approval
-    repeated Submission data = 1;
+message DeletePendingResponse {
+    string id = 1 [json_name="_id"];
 }
 
-
-// update a submission - user only
-
-message UpdateRequest {
-    string id = 1;
-    string config = 2;
-    string submitter = 3; //submitter discord id 
-    string description = 4;
+message CompletePendingRequest {
+    string id = 1 [json_name="_id"];
+    model.SimulationResult result = 2; 
 }
 
-message UpdateResponse {
-    string id = 1;
+message CompletePendingResponse {
+    string id = 1 [json_name="_id"];
 }
 
-
-// remove a submission - this is by user to take back a submission 
-
-message RemoveRequest {
-    string id = 1;
-    string submitter = 2;
+message GetWorkRequest {
 }
 
-message RemoveResponse {
-    string id = 1;
-}
-
-// reject a submission - require a reason that will be sent to user
-
-message RejectRequest {
-    string id = 1;
-    string reason = 2;
-}
-
-message RejectResponse {
-    string id = 1;
-}
-
-// approve a submission
-
-message ApproveRequest {
-    string id = 1;
-}
-
-message ApproveResponse {
-    string id = 1;
-    string db_key = 2;
-}
-
-// replace an existing entry in db
-
-message ReplaceRequest {
-    string id = 1;
-    string db_key = 2; //this is the db key that this entry is replacing
-}
-
-message ReplaceResponse {
-    string id = 1;
-    string db_key = 2;
+message GetWorkResponse {
+    repeated model.ComputeWork data = 1;
 }

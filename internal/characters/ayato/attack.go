@@ -115,8 +115,9 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 8, 7),
 		0,
 		shunsuikenHitmark,
-		c.generateParticles,
+		c.particleCB,
 		c.skillStacks,
+		c.makeC6CB(),
 	)
 
 	defer c.AdvanceNormalIndex()

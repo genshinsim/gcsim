@@ -20,6 +20,7 @@ type char struct {
 	eAbsorb             attributes.Element
 	eAbsorbTag          combat.ICDTag
 	absorbCheckLocation combat.AttackPattern
+	qTickRadius         float64
 	c2Bonus             float64
 }
 
@@ -34,6 +35,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.eDuration = -1
 	c.eAbsorb = attributes.NoElement
+	c.qTickRadius = 1
 	c.c2Bonus = .0
 
 	w.Character = &c
@@ -43,6 +45,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a1()
+	c.a4()
 	c.rollAbsorb()
 	if c.Base.Cons >= 2 {
 		c.c2()

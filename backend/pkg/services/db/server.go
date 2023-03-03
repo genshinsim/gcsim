@@ -3,9 +3,8 @@ package db
 import (
 	"context"
 	"fmt"
+	"time"
 
-	"github.com/aidarkhanov/nanoid/v2"
-	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -13,25 +12,34 @@ import (
 )
 
 type DBStore interface {
-	Create(context.Context, *model.DBEntry) (string, error)
+	Replace(context.Context, *model.DBEntry) (string, error)
 	Get(ctx context.Context, query *model.DBQueryOpt) ([]*model.DBEntry, error)
+	GetOne(ctx context.Context, id string) (*model.DBEntry, error)
+	GetUnfiltered(ctx context.Context, query *model.DBQueryOpt) ([]*model.DBEntry, error)
+	GetDBWork(ctx context.Context) ([]*model.DBEntry, error)
+	//tagging
+	ApproveTag(ctx context.Context, id string, tag model.DBTag) error
+	RejectTag(ctx context.Context, id string, tag model.DBTag) error
+}
+
+type ShareStore interface {
+	Replace(context.Context, string, *model.SimulationResult) error
 }
 
 type Config struct {
-	DBStore DBStore
+	DBStore    DBStore
+	ShareStore ShareStore
 }
 
 type Server struct {
 	Config
 	Log *zap.SugaredLogger
 	UnimplementedDBStoreServer
-	ComputeQueue *queue.Queue
 }
 
 func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s := &Server{
-		Config:       cfg,
-		ComputeQueue: queue.NewQueue(5 * 60),
+		Config: cfg,
 	}
 
 	for _, f := range cust {
@@ -47,41 +55,62 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 			return nil, err
 		}
 		sugar := logger.Sugar()
-		sugar.Debugw("logger initiated")
-
 		s.Log = sugar
 	}
 
 	if s.DBStore == nil {
 		return nil, fmt.Errorf("db store cannot be nil")
 	}
+	s.Log.Info("db server started")
 
 	return s, nil
 }
 
-func (s *Server) CreateOrUpdateDBEntry(ctx context.Context, req *CreateOrUpdateDBEntryRequest) (*CreateOrUpdateDBEntryResponse, error) {
-	var err error
-	e := req.GetData()
-	if e == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+// TODO: this service is a bit inconsistent. for submission it's CompletePending, but here is Replace
+func (s *Server) Update(ctx context.Context, req *UpdateRequest) (*UpdateResponse, error) {
+	id := req.GetId()
+	s.Log.Infow("update db entry request", "id", id)
+	if id == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}
-	key, err := nanoid.New()
+	//check res/id exists in db
+	x, err := s.DBStore.GetOne(ctx, req.GetId())
 	if err != nil {
-		s.Log.Warnw("create: error generating nanoid", "err", err, "req", req.String())
-		return nil, status.Error(codes.Internal, "internal server error")
+		s.Log.Infow("error getting entry", "id", id, "err", err)
+		return nil, err
 	}
-	e.Key = key
-	e.IsDbValid = false
-	//check if accepted len > 1, then isvalid, else false
-	//TODO: this should check for valid tags; else purge
-	if len(e.AcceptedTags) > 0 {
-		e.IsDbValid = true
+	//replace existing share with new
+	data := req.GetResult()
+	if data == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request payload")
 	}
-	_, err = s.DBStore.Create(ctx, e)
+	err = s.ShareStore.Replace(ctx, x.GetShareKey(), data)
+	if err != nil {
+		s.Log.Infow("error replacing existing share", "err", err)
+		return nil, err
+	}
+	//convert to dbentry
+	//convert result to dbentry
+	next := data.ToDBEntry()
+	//add share key to dbentry
+	next.ShareKey = x.GetShareKey()
+	//update meta data
+	now := uint64(time.Now().Unix())
+	next.Description = x.GetDescription()
+	next.CreateDate = x.GetCreateDate()
+	next.RunDate = now
+	next.Submitter = x.GetSubmitter()
+	next.Id = id
+	next.IsDbValid = x.GetIsDbValid()
+	next.AcceptedTags = x.GetAcceptedTags()
+	next.RejectedTags = x.GetRejectedTags()
+
+	//replace existing
+	_, err = s.DBStore.Replace(ctx, next)
 	if err != nil {
 		return nil, err
 	}
-	return &CreateOrUpdateDBEntryResponse{Key: key}, nil
+	return &UpdateResponse{Id: id}, nil
 }
 
 func (s *Server) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
@@ -97,22 +126,80 @@ func (s *Server) Get(ctx context.Context, req *GetRequest) (*GetResponse, error)
 	}, nil
 }
 
-func (s *Server) GetComputeWork(ctx context.Context, req *GetComputeWorkRequest) (*GetComputeWorkReponse, error) {
-	w := s.ComputeQueue.Pop()
-	if w == nil {
-		// no work to do
-		return nil, nil
+func (s *Server) GetOne(ctx context.Context, req *GetOneRequest) (*GetOneResponse, error) {
+	res, err := s.DBStore.GetOne(ctx, req.GetId())
+	if err != nil {
+		return nil, err
+	}
+	return &GetOneResponse{
+		Data: res,
+	}, nil
+}
+
+func (s *Server) GetUnfiltered(ctx context.Context, req *GetUnfilteredRequest) (*GetUnfilteredResponse, error) {
+	res, err := s.DBStore.Get(ctx, req.GetQuery())
+	if err != nil {
+		return nil, err
 	}
 
-	cfg, ok := w.Work.(string)
-	if !ok {
-		return nil, status.Error(codes.Internal, "work is not a string")
-	}
-
-	return &GetComputeWorkReponse{
-		Work: &model.ComputeWork{
-			Key: w.Key,
-			Cfg: cfg,
+	return &GetUnfilteredResponse{
+		Data: &model.DBEntries{
+			Data: res,
 		},
 	}, nil
+}
+
+func (s *Server) GetWork(ctx context.Context, req *GetWorkRequest) (*GetWorkResponse, error) {
+	resp, err := s.DBStore.GetDBWork(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var res []*model.ComputeWork
+
+	for _, v := range resp {
+		res = append(res, &model.ComputeWork{
+			Id:         v.GetId(),
+			Config:     v.GetConfig(),
+			Source:     model.ComputeWorkSource_DBWork,
+			Iterations: 1000, //TODO: this should be adjustable
+		})
+	}
+
+	return &GetWorkResponse{
+		Data: res,
+	}, nil
+
+}
+
+func (s *Server) ApproveTag(ctx context.Context, req *ApproveTagRequest) (*ApproveTagResponse, error) {
+	//TODO: tag validation should be done at API gateway lvl?? need to check both auth and tag is valid
+	if req.GetId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
+	}
+	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
+		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
+	}
+	err := s.DBStore.ApproveTag(ctx, req.GetId(), req.GetTag())
+	if err != nil {
+		return nil, err
+	}
+
+	return &ApproveTagResponse{Id: req.GetId()}, nil
+}
+
+func (s *Server) RejectTag(ctx context.Context, req *RejectTagRequest) (*RejectTagResponse, error) {
+	//TODO: tag validation should be done at API gateway lvl?? need to check both auth and tag is valid
+	if req.GetId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
+	}
+	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
+		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
+	}
+	err := s.DBStore.RejectTag(ctx, req.GetId(), req.GetTag())
+	if err != nil {
+		return nil, err
+	}
+
+	return &RejectTagResponse{Id: req.GetId()}, nil
 }

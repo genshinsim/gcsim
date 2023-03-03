@@ -45,6 +45,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.NormalCounter == 4 {
 		centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
 	}
+	c2CB := c.makeC2CB()
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -76,7 +77,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, c2CB)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

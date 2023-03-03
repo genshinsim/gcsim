@@ -1,0 +1,18 @@
+syntax = "proto3";
+package preview;
+option go_package="github.com/genshinsim/gcsim/backend/pkg/services/preview";
+
+import "protos/model/result.proto";
+
+service Embed {
+    rpc Get (GetRequest) returns (GetResponse);
+}
+
+message GetRequest {
+    string id = 1 [json_name="_id"];
+    model.SimulationResult data = 2;
+}
+
+message GetResponse {
+    bytes data = 1;
+}

@@ -3,15 +3,19 @@ package db;
 option go_package="github.com/genshinsim/gcsim/backend/pkg/services/db";
 
 import "protos/model/db.proto";
+import "protos/model/result.proto";
 
 service DBStore {
     //generic get for pulling from approved db
     rpc Get (GetRequest) returns (GetResponse) {}
-    //internally create request; not exposed
-    rpc CreateOrUpdateDBEntry (CreateOrUpdateDBEntryRequest) returns (CreateOrUpdateDBEntryResponse) {}
+    rpc GetUnfiltered (GetUnfilteredRequest) returns (GetUnfilteredResponse) {}
+    rpc GetOne (GetOneRequest) returns (GetOneResponse) {}
+    rpc Update (UpdateRequest) returns (UpdateResponse) {}
+    rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
 
-    //for compute work
-    rpc GetComputeWork (GetComputeWorkRequest) returns (GetComputeWorkReponse) {}
+    //tagging
+    rpc ApproveTag(ApproveTagRequest) returns (ApproveTagResponse) {}
+    rpc RejectTag(RejectTagRequest) returns (RejectTagResponse) {}
 }
 
 message GetRequest {
@@ -22,17 +26,61 @@ message GetResponse {
     model.DBEntries data = 1;
 }
 
-message CreateOrUpdateDBEntryRequest {
+message GetOneRequest {
+    string id = 1 [json_name="_id"];
+}
+
+message GetOneResponse {
+    model.DBEntry data = 1;
+}
+
+message GetUnfilteredRequest {
+    model.DBQueryOpt query = 1;
+}
+
+message GetUnfilteredResponse {
+    model.DBEntries data = 1;
+}
+
+message UpdateRequest {
    string id = 1 [json_name="_id"];
-   model.DBEntry data = 2; 
+   model.SimulationResult result = 2; 
 }
 
-message CreateOrUpdateDBEntryResponse {
-    string key = 1 [json_name="key"];
+message UpdateResponse {
+    string id = 1 [json_name="id"];
 }
 
-message GetComputeWorkRequest {}
 
-message GetComputeWorkReponse {
-    model.ComputeWork work = 1 [json_name="work"];
+message GetWorkRequest {}
+
+message GetWorkResponse {
+    repeated model.ComputeWork data = 1 [json_name="data"];
+}
+
+message CompleteWorkRequest {
+    string id = 1;
+    model.SimulationResult result = 2 [json_name="result"];
+}
+
+message CompleteWorkResponse {
+    string id = 1 [json_name="id"];
+}
+
+message ApproveTagRequest {
+    string id = 1 [json_name="id"];
+    model.DBTag tag = 2 [json_name="tag"];
+}
+
+message ApproveTagResponse {
+    string id = 1 [json_name="id"];
+}
+
+message RejectTagRequest {
+    string id = 1 [json_name="id"];
+    model.DBTag tag = 2 [json_name="tag"];
+}
+
+message RejectTagResponse {
+    string id = 1 [json_name="id"];
 }

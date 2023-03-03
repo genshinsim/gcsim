@@ -55,6 +55,8 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, radius),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
+		c.makeBurstHealCB(),
+		c.makeC4CB(),
 	)
 
 	return action.ActionInfo{
