@@ -1,6 +1,6 @@
 import { model } from "@gcsim/types";
-import { useState } from "react";
 import DBEntryPortrait from "./DBEntryViewComponents/DBEntryPortrait";
+import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 function useTranslation() {
   return (text: string) => text;
@@ -37,35 +37,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
           <DBEntryDetails {...dbEntry} />
         </div>
       </div>
-      <DBEntryActions simulation_key={dbEntry.key} />
-    </div>
-  );
-}
-
-function DBEntryTags({ tags }: { tags: string[] | undefined | null }) {
-  const t = useTranslation();
-  const [showAll, setShowAll] = useState(false);
-  return (
-    <div
-      className={
-        "flex flex-row h-full flex-wrap  relative   " +
-        (showAll ? " " : " truncate")
-      }
-    >
-      {tags?.map((tag) => (
-        <div
-          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 mt-1 whitespace-nowrap "
-          key={tag}
-        >
-          {t(tag)}
-        </div>
-      ))}
-      <button
-        className=" absolute right-0 top-1  text-xs font-semibold     bg-blue-400/30 p-1 mr-1   whitespace-nowrap rounded-sm h-fit   "
-        onClick={() => setShowAll(!showAll)}
-      >
-        {showAll ? "▲" : "▼"}
-      </button>
+      <DBEntryActions simulation_key={dbEntry.id} />
     </div>
   );
 }
@@ -94,7 +66,7 @@ model.IDBEntry) {
         </tr>
       </thead>
       <tbody>
-        <tr className=" ">
+        <tr className=" text-xs ">
           <td className="">{mode ? t("Time to kill") : t(" Duration")}</td>
           <td className="">{target_count}</td>
           <td className="">{mean_dps_per_target?.toPrecision(8)}</td>

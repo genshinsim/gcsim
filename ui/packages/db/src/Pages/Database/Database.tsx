@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames.";
 import { Filter, FilterState } from "./Components/Filter";
 import { ListView } from "./Components/ListView";
+import { mockData } from "./Components/mockData";
 import Sorter from "./Components/Sorter";
 
 export function Database() {
@@ -24,7 +25,8 @@ export function Database() {
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        setData(data.data);
+        // setData(data.data);
+        setData(mockData);
       })
       .catch((e) => {
         console.log(e);
