@@ -59,7 +59,7 @@ function CharacterFilter({
   const t = useTranslation;
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-auto">
       <button
         className=" bp4-button bp4-intent-primary pl-5 pr-3 w-full "
         onClick={() => setCharIsOpen(!charIsOpen)}
