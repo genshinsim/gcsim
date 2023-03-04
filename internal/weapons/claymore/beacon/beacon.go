@@ -1,8 +1,13 @@
 package beacon
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -14,8 +19,7 @@ func init() {
 }
 
 type Weapon struct {
-	Index  int
-	stacks int
+	Index int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -31,22 +35,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	stackAtk := .15 + float64(r)*.05
-	w.stacks = p.Params["stacks"]
+	damaged := p.Params["damaged"]
 
-	//not modeling damage yet, so no duration
-	//stackDuration := 720 // 12s * 60
+	stackDuration := 480 //8s * 60
+	const skillKey = "beacon-of-the-reed-sea-skill"
+	const damagedKey = "beacon-of-the-reed-sea-damaged"
 
 	mATK := make([]float64, attributes.EndStatType)
 	mHP := make([]float64, attributes.EndStatType)
+	mHP[attributes.HPP] = 0.24 + float64(r)*.08
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("beacon-atk", -1),
+		Base:         modifier.NewBase("beacon-atk", stackDuration),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
-			if w.stacks >= 2 {
-				w.stacks = 2
+			count := 0
+
+			if char.StatusIsActive(skillKey) {
+				count++
+			}
+			if char.StatusIsActive(damagedKey) {
+				count++
 			}
 
-			atkbonus := stackAtk * float64(w.stacks)
+			atkbonus := stackAtk * float64(count)
 
 			mATK[attributes.ATKP] = atkbonus
 
@@ -57,12 +68,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base:         modifier.NewBase("beacon-hp", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
-			if !c.Player.Shields.PlayerIsShielded() {
-				mHP[attributes.HPP] = 0.24 + float64(r)*.08
+			if c.Player.Shields.PlayerIsShielded() {
+				return nil, false
 			}
 			return mHP, true
 		},
 	})
+
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
+
+		if atk.Info.AttackTag == attacks.AttackTagElementalArt || atk.Info.AttackTag == attacks.AttackTagElementalArtHold {
+			char.AddStatus(skillKey, stackDuration, true)
+			if damaged > 0 {
+				char.AddStatus(damagedKey, stackDuration, true)
+			}
+
+		}
+		return false
+	}, fmt.Sprintf("beacon-of-the-reed-sea-%v", char.Base.Key.String()))
 
 	return w, nil
 }
