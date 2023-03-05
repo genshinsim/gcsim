@@ -15,10 +15,7 @@ const App = ({ }) => {
   };
   //draw some cards
   const cards = parsed.character_details?.map((c) => {
-    console.log(c.sets)
-    var arr = Object.entries(c.sets)
-    const sets = arr.filter(([key, value]) => typeof value === 'number' && value >=2) as [string, Number][]
-    console.log(sets)
+    const sets = Object.entries(c.sets).filter(([key, value]) => typeof value === 'number' && value >=2) as [string, Number][]
     var artifacts;
    if (sets.length >= 2){
       artifacts =  <g filter="url(#outlineb)">
