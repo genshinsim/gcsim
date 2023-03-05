@@ -45,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	mHP := make([]float64, attributes.EndStatType)
 	mHP[attributes.HPP] = 0.24 + float64(r)*.08
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("beacon-of-the-reed-sea-atk", stackDuration),
+		Base:         modifier.NewBase("beacon-of-the-reed-sea-atk", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			count := 0
