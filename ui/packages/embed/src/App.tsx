@@ -15,6 +15,18 @@ const App = ({ }) => {
   };
   //draw some cards
   const cards = parsed.character_details?.map((c) => {
+    console.log(c.sets)
+    var arr = Object.entries(c.sets)
+    const sets = arr.filter(([key, value]) => typeof value === 'number' && value >=2) as [string, Number][]
+    console.log(sets)
+    var artifacts;
+    if (sets[0][1] >= 4) {
+      artifacts = <image filter="url(#outline)" href={`/api/assets/artifacts/${sets[0][0]}_flower.png`} height="43.33" width="43.33" x="30" y="52"/>
+    }else if (sets.length > 0){
+      artifacts = ""
+    } else if (sets.length > 0) {
+      artifacts = ""
+    }
     return (
       <div className="card">
         <div className="char">
@@ -25,7 +37,7 @@ const App = ({ }) => {
           />
         </div>
         <div className="equip">          
-          <svg key={c.weapon.name} width="91" height="91">
+          <svg key={c.weapon.name} width="91" height="95">
             <filter id="outline">
               <feMorphology in="SourceAlpha" result="expanded" operator="dilate" radius="2.5"/>
               <feFlood flood-color="black"/>
@@ -41,6 +53,7 @@ const App = ({ }) => {
               </feMerge>
             </filter>
             <image filter="url(#outline)" href={`/api/assets/weapons/${c.weapon.name}.png`} height="85" width="85" x="3" y="3"/>
+            {artifacts}
           </svg>
         </div>
       </div>
@@ -54,11 +67,12 @@ const App = ({ }) => {
   const css = `
   .card {
     position: relative;
+    height: 140px;
   }
   .equip {
     position: absolute;
-    bottom: -10px;
-    right: -3px;
+    bottom: -5px;
+    right: -7px;
     width: 91px;
   }
   `
