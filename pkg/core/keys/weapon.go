@@ -41,6 +41,7 @@ var weaponNames = []string{
 	"aquasimulacra",
 	"aquilafavonia",
 	"athousandfloatingdreams",
+	"beaconofthereedsea",
 	"beginnersprotector",
 	"blackcliffagate",
 	"blackclifflongsword",
@@ -196,6 +197,7 @@ const (
 	AquaSimulacra
 	AquilaFavonia
 	AThousandFloatingDreams
+	BeaconOfTheReedSea
 	BeginnersProtector
 	BlackcliffAgate
 	BlackcliffLongsword
