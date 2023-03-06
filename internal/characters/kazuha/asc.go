@@ -61,12 +61,13 @@ func (c *char) a4() {
 			icd = c.Core.F + 1
 
 			//recalc em
-			dmg := 0.0004 * c.Stat(attributes.EM)
+			dmg := 0.0004 * c.NonExtraStat(attributes.EM)
 
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("kazuha-a4-"+key, 60*8),
 					AffectedStat: attributes.NoStat,
+					Extra:        true,
 					Amount: func() ([]float64, bool) {
 						m[attributes.CryoP] = 0
 						m[attributes.ElectroP] = 0

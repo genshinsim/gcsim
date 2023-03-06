@@ -2,6 +2,7 @@ package dragonbane
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -15,7 +16,7 @@ func init() {
 	core.RegisterWeaponFunc(keys.LionsRoar, NewWeapon)
 }
 
-//Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
+// Increases DMG against enemies affected by Hydro or Electro by 20/24/28/32/36%.
 type Weapon struct {
 	Index int
 }
@@ -33,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("lionsroar", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag > combat.ReactionAttackDelim {
+			if atk.Info.AttackTag > attacks.ReactionAttackDelim {
 				return nil, false
 			}
 			x, ok := t.(*enemy.Enemy)

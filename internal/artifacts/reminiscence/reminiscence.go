@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -71,9 +72,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Base: modifier.NewBaseWithHitlag("shim-4pc", 60*10),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
-					case combat.AttackTagNormal:
-					case combat.AttackTagExtra:
-					case combat.AttackTagPlunge:
+					case attacks.AttackTagNormal:
+					case attacks.AttackTagExtra:
+					case attacks.AttackTagPlunge:
 					default:
 						return nil, false
 					}

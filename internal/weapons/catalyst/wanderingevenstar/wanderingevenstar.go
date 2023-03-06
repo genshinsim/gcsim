@@ -46,10 +46,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 func (w *Weapon) updateStats() {
 	val := make([]float64, attributes.EndStatType)
-	val[attributes.ATK] = w.atkBuff * w.char.Stat(attributes.EM)
+	val[attributes.ATK] = w.atkBuff * w.char.NonExtraStat(attributes.EM)
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("wanderingevenstar", 12*60),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
@@ -65,6 +66,7 @@ func (w *Weapon) updateStats() {
 		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("wanderingevenstar-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ATK,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return valTeam, true
 			},

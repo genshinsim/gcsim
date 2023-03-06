@@ -1,9 +1,11 @@
 package ayaka
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -17,7 +19,7 @@ func (c *char) a1() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("ayaka-a1", 360),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == combat.AttackTagNormal || atk.Info.AttackTag == combat.AttackTagExtra
+			return m, atk.Info.AttackTag == attacks.AttackTagNormal || atk.Info.AttackTag == attacks.AttackTagExtra
 		},
 	})
 }
@@ -33,7 +35,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 	}
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {

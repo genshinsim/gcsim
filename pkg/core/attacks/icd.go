@@ -1,33 +1,4 @@
-package combat
-
-type AttackTag int //attacktag is used instead of actions etc..
-
-const (
-	AttackTagNone AttackTag = iota
-	AttackTagNormal
-	AttackTagExtra
-	AttackTagPlunge
-	AttackTagElementalArt
-	AttackTagElementalArtHold
-	AttackTagElementalBurst
-	AttackTagWeaponSkill
-	AttackTagMonaBubbleBreak
-	AttackTagNoneStat
-	ReactionAttackDelim
-	AttackTagOverloadDamage
-	AttackTagSuperconductDamage
-	AttackTagECDamage
-	AttackTagShatter
-	AttackTagSwirlPyro
-	AttackTagSwirlHydro
-	AttackTagSwirlCryo
-	AttackTagSwirlElectro
-	AttackTagBurningDamage
-	AttackTagBloom
-	AttackTagBurgeon
-	AttackTagHyperbloom
-	AttackTagLength
-)
+package attacks
 
 type ICDTag int //same ICD tag shares the same counter
 
@@ -108,6 +79,8 @@ const (
 	ICDGroupWandererA4
 	ICDGroupAlhaithamProjectionAttack
 	ICDGroupAlhaithamExtraAttack //CA
+	ICDGroupYaoyaoRadishSkill
+	ICDGroupYaoyaoRadishBurst
 	ICDGroupLength
 )
 
@@ -135,6 +108,8 @@ var ICDGroupResetTimer = []int{
 	60,  //wanderer a4
 	720, //alhaitham projection
 	120, //alhaitham CA
+	150, //yaoyao radish skill
+	90,  //yaoyao radish burst
 }
 
 var ICDGroupEleApplicationSequence = [][]float64{
@@ -184,6 +159,10 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
 	//alhaitham CA
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	//yaoyao radish skill
+	{1, 0, 0, 0, 0, 0},
+	//yaoyao radish burst
+	{1, 0, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -235,4 +214,8 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	//alhaitham-CA
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//yaoyao radish skill
+	{1, 1, 1, 1, 1, 1},
+	//yaoyao radish burst
+	{1, 1, 1, 1, 1, 1},
 }

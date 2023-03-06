@@ -3,6 +3,7 @@ package traveleranemo
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -18,10 +19,10 @@ func init() {
 type char struct {
 	*tmpl.Character
 	qAbsorb              attributes.Element
-	qICDTag              combat.ICDTag
+	qICDTag              attacks.ICDTag
 	qAbsorbCheckLocation combat.AttackPattern
 	eAbsorb              attributes.Element
-	eICDTag              combat.ICDTag
+	eICDTag              attacks.ICDTag
 	eAbsorbCheckLocation combat.AttackPattern
 	gender               int
 }

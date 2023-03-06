@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -50,7 +51,7 @@ func NewWavebreaker(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("wavebreaker", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag == combat.AttackTagElementalBurst {
+				if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
 					return m, true
 				}
 				return nil, false

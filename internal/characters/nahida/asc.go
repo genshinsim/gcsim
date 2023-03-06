@@ -3,6 +3,7 @@ package nahida
 import (
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -22,7 +23,7 @@ func (c *char) calcA1Buff() {
 	var max float64
 	team := c.Core.Player.Chars()
 	for _, char := range team {
-		em := char.Stat(attributes.EM)
+		em := char.NonExtraStat(attributes.EM)
 		if em > max {
 			max = em
 		}
@@ -45,6 +46,7 @@ func (c *char) applyA1(dur int) {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(a1BuffKey, dur),
 			AffectedStat: attributes.EM,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return c.a1Buff, c.Core.Player.Active() == idx
 			},
@@ -61,7 +63,7 @@ func (c *char) a4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4BuffKey, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			if !strings.HasPrefix(atk.Info.Abil, "Tri-Karma") {

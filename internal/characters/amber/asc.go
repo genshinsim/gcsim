@@ -1,9 +1,11 @@
 package amber
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -18,7 +20,7 @@ func (c *char) a1() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("amber-a1", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			return m, atk.Info.AttackTag == combat.AttackTagElementalBurst
+			return m, atk.Info.AttackTag == attacks.AttackTagElementalBurst
 		},
 	})
 	// AoE
@@ -35,7 +37,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		if !a.AttackEvent.Info.HitWeakPoint {
 			return
 		}
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {

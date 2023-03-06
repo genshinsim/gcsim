@@ -93,6 +93,32 @@ func (h *CharWrapper) Stat(s attributes.Stat) float64 {
 	return val
 }
 
+func (h *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
+	val := h.BaseStats[s]
+	for _, v := range h.mods {
+		m, ok := v.(*StatMod)
+		if !ok {
+			continue
+		}
+		// ignore this mod if stat type doesnt match
+		if m.AffectedStat != attributes.NoStat && m.AffectedStat != s {
+			continue
+		}
+		// is extra stat
+		if m.Extra {
+			continue
+		}
+		// check expiry
+		if m.Expiry() > *h.f || m.Expiry() == -1 {
+			if amt, ok := m.Amount(); ok {
+				val += amt[s]
+			}
+		}
+	}
+
+	return val
+}
+
 func (c *CharWrapper) MaxHP() float64 {
 	hpp := c.BaseStats[attributes.HPP]
 	hp := c.BaseStats[attributes.HP]

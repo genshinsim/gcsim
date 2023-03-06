@@ -107,7 +107,7 @@ The reaction has a 1:1 multiplier between `electro` and `dendro`
 Quicken have different formula than normal "attachment". Existing code uses [this function](https://github.com/genshinsim/gcsim/blob/40b1617647c1dbcd541e684b7f5b09d9dd424851/pkg/reactable/reactable.go#L182) to handle attachment:
 
 ```go
-func (r *Reactable) attach(e attributes.Element, dur combat.Durability, m combat.Durability) {
+func (r *Reactable) attach(e attributes.Element, dur reactions.Durability, m reactions.Durability) {
 	//calculate duration based on dur
 	r.DecayRate[e] = m * dur / (6*dur + 420)
 	r.addDurability(e, m*dur)
@@ -173,10 +173,10 @@ If the dendro core does not come in contact with `pyro` or `electro` (simple att
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
-		Abil:             string(combat.Bloom),
-		AttackTag:        combat.AttackTagBloom,
-		ICDTag:           combat.ICDTagBloomDamage,
-		ICDGroup:         combat.ICDGroupReactionA,
+		Abil:             string(reactions.Bloom),
+		AttackTag:        attacks.AttackTagBloom,
+		ICDTag:           attacks.ICDTagBloomDamage,
+		ICDGroup:         attacks.ICDGroupReactionA,
 		Element:          attributes.Dendro,
 		Durability:       0,
 		IgnoreDefPercent: 1,
@@ -187,11 +187,11 @@ If the dendro core does not come in contact with `pyro` or `electro` (simple att
 
 ### Burgeon
 
-When the dendro core comes in contact with `pyro`, `burgeon` is triggered, dealing an attack with radius 5. AttackInfo is the same as `bloom` except with `combat.AttackTagBurgeon`, `combat.AttackTagBurgeon` and `combat.ICDTagBurgeon`
+When the dendro core comes in contact with `pyro`, `burgeon` is triggered, dealing an attack with radius 5. AttackInfo is the same as `bloom` except with `attacks.AttackTagBurgeon`, `attacks.AttackTagBurgeon` and `attacks.ICDTagBurgeon`
 
 ### Hyperbloom
 
-When dendro core comes in contact with `electro`, `hyperbloom` is triggered, dealing an attack with radius 1. AttackInfo is the same as `bloom` except with `combat.AttackTagHyperbloom`, `combat.AttackTagHyperbloom` and `combat.ICDTagHyperbloom`
+When dendro core comes in contact with `electro`, `hyperbloom` is triggered, dealing an attack with radius 1. AttackInfo is the same as `bloom` except with `attacks.AttackTagHyperbloom`, `attacks.AttackTagHyperbloom` and `attacks.ICDTagHyperbloom`
 
 ### Bloom/Burgeon/Hyperbloom self damage
 
@@ -201,10 +201,10 @@ All 3 explosions will trigger an additional attack that damages the player, with
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
-		Abil:             string(combat.Bloom),
-		AttackTag:        combat.AttackTagBloom, // or AttackTagBurgeon, AttackTagHyperbloom
-		ICDTag:           combat.ICDTagBloomDamage,
-		ICDGroup:         combat.ICDGroupReactionA,
+		Abil:             string(reactions.Bloom),
+		AttackTag:        attacks.AttackTagBloom, // or AttackTagBurgeon, AttackTagHyperbloom
+		ICDTag:           attacks.ICDTagBloomDamage,
+		ICDGroup:         attacks.ICDGroupReactionA,
 		Element:          attributes.Dendro,
 		Durability:       0,
 		IgnoreDefPercent: 1,
@@ -301,10 +301,10 @@ AttackInfo is as follows:
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Index(),
-		Abil:             string(combat.Burning),
-		AttackTag:        combat.AttackTagBurningDamage,
-		ICDTag:           combat.ICDTagBurningDamage,
-		ICDGroup:         combat.ICDGroupBurning,
+		Abil:             string(reactions.Burning),
+		AttackTag:        attacks.AttackTagBurningDamage,
+		ICDTag:           attacks.ICDTagBurningDamage,
+		ICDGroup:         attacks.ICDGroupBurning,
 		Element:          attributes.Pyro,
 		Durability:       25,
 		IgnoreDefPercent: 1,

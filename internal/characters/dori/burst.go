@@ -6,9 +6,12 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 var burstFrames []int
@@ -29,17 +32,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDoriBurst,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDoriBurst,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
 
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 5}, 10)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 10)
 	burstPos := burstArea.Shape.Pos()
 	icdSrc := []int{math.MinInt32, math.MinInt32, math.MinInt32, math.MinInt32}
 	// 32 damage ticks
@@ -54,10 +57,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 
 			// queue attack
+			distance := p.Pos().Distance(burstPos)
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewBoxHit(p, burstPos, nil, 1, p.Pos().Distance(burstPos)),
+				combat.NewBoxHit(p, burstPos, geometry.Point{Y: -distance}, 1, distance),
 				0,
 			)
 
@@ -70,8 +74,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				External:   true,
 			})
 			idx := c.Core.Player.ActiveChar().Index
-			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
-				dur := combat.Durability(25)
+			if c.Core.F > icdSrc[idx]+attacks.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
+				dur := reactions.Durability(25)
 				if p.AuraCount() == 0 {
 					dur = 20
 				}

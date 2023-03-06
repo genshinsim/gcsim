@@ -1,9 +1,11 @@
 package alhaitham
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -16,7 +18,7 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		// ignore if projection on icd
@@ -41,8 +43,8 @@ func (c *char) a4() {
 		Base: modifier.NewBase("alhaitham-a4", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			// only trigger on projection attack and burst damage
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst &&
-				atk.Info.ICDGroup != combat.ICDGroupAlhaithamProjectionAttack {
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst &&
+				atk.Info.ICDGroup != attacks.ICDGroupAlhaithamProjectionAttack {
 				return nil, false
 			}
 

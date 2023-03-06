@@ -1,6 +1,7 @@
 package yunjin
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -17,7 +18,7 @@ func (c *char) c2() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("yunjin-c2", 12*60),
 			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if ae.Info.AttackTag == combat.AttackTagNormal {
+				if ae.Info.AttackTag == attacks.AttackTagNormal {
 					return m, true
 				}
 				return nil, false

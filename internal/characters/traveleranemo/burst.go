@@ -3,8 +3,10 @@ package traveleranemo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstHitmarks = []int{96, 94}
@@ -37,35 +39,35 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Status.Add("amcburst", duration)
 
 	c.qAbsorb = attributes.NoElement
-	c.qICDTag = combat.ICDTagNone
-	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1.5}, 2.5, 2.5)
+	c.qICDTag = attacks.ICDTagNone
+	c.qAbsorbCheckLocation = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.5}, 2.5, 2.5)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalArtAnemo,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalArtAnemo,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: -1.5}, 3, 3)
+	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1.5}, 3, 3)
 	snap := c.Snapshot(&ai)
 
 	aiAbs := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gust Surge (Absorbed)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.NoElement,
 		Durability: 50,
 		Mult:       burstAbsorbDot[c.TalentLvlBurst()],
 	}
-	apAbs := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), combat.Point{Y: -1}, 2.5, 2.5)
+	apAbs := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -1}, 2.5, 2.5)
 
 	snapAbs := c.Snapshot(&aiAbs)
 
@@ -112,13 +114,13 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.qAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.qAbsorb {
 		case attributes.Cryo:
-			c.qICDTag = combat.ICDTagElementalBurstCryo
+			c.qICDTag = attacks.ICDTagElementalBurstCryo
 		case attributes.Pyro:
-			c.qICDTag = combat.ICDTagElementalBurstPyro
+			c.qICDTag = attacks.ICDTagElementalBurstPyro
 		case attributes.Electro:
-			c.qICDTag = combat.ICDTagElementalBurstElectro
+			c.qICDTag = attacks.ICDTagElementalBurstElectro
 		case attributes.Hydro:
-			c.qICDTag = combat.ICDTagElementalBurstHydro
+			c.qICDTag = attacks.ICDTagElementalBurstHydro
 		case attributes.NoElement:
 			//otherwise queue up
 			c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)

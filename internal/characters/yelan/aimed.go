@@ -3,8 +3,10 @@ package yelan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -40,10 +42,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
-			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagYelanBreakthrough,
-			ICDGroup:   combat.ICDGroupYelanBreakthrough,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagExtra,
+			ICDTag:     attacks.ICDTagYelanBreakthrough,
+			ICDGroup:   attacks.ICDGroupYelanBreakthrough,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Hydro,
 			Durability: 25,
 			FlatDmg:    barb[c.TalentLvlAttack()] * c.MaxHP(),
@@ -71,10 +73,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim Charge Attack",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypePierce,
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Hydro,
 		Durability:   25,
 		Mult:         aimed[c.TalentLvlAttack()],
@@ -85,7 +87,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			combat.Point{Y: -0.5},
+			geometry.Point{Y: -0.5},
 			0.1,
 			1,
 		),

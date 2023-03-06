@@ -1,4 +1,4 @@
-package combat
+package reactions
 
 type ReactionType string
 

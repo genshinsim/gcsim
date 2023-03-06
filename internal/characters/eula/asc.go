@@ -2,8 +2,10 @@ package eula
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -19,10 +21,10 @@ func (c *char) a1() {
 	aiA1 := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Icetide (Lightfall)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,
@@ -30,7 +32,7 @@ func (c *char) a1() {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			aiA1,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 6.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 6.5),
 			a1Hitmark-(skillHoldHitmark+1),
 			a1Hitmark-(skillHoldHitmark+1),
 			c.burstStackCB,

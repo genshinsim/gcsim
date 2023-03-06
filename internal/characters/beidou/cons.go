@@ -1,11 +1,13 @@
 package beidou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const c4Key = "beidou-c4"
@@ -38,7 +40,7 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 	}
 	return func(a combat.AttackCB) {
 		trg := a.Target
-		if trg.Type() != combat.TargettableEnemy {
+		if trg.Type() != targets.TargettableEnemy {
 			return
 		}
 		if !c.StatusIsActive(c4Key) {
@@ -50,10 +52,10 @@ func (c *char) makeC4Callback() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Beidou C4",
-			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagNone,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.2,

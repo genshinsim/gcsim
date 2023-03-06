@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -22,7 +23,7 @@ func TestBurningTicks(t *testing.T) {
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
+		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 		}
 		return false
@@ -94,7 +95,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	countByActor := []int{0, 0}
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
+		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 			countByActor[ae.Info.ActorIndex]++
 		}

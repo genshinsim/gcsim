@@ -3,10 +3,12 @@ package noelle
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -27,10 +29,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Breastplate",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagElementalArt,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagElementalArt,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               shieldDmg[c.TalentLvlSkill()],
@@ -87,7 +89,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) skillHealCB() combat.AttackCBFunc {
 	done := false
 	return func(atk combat.AttackCB) {
-		if atk.Target.Type() != combat.TargettableEnemy {
+		if atk.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
@@ -125,10 +127,10 @@ func (c *char) explodeShield() {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Breastplate (C4)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagElementalArt,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagElementalArt,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               4,

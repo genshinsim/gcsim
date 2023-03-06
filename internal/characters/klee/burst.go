@@ -3,6 +3,7 @@ package klee
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -27,10 +28,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               burst[c.TalentLvlBurst()],
@@ -131,10 +132,10 @@ func (c *char) onExitField() {
 			ai := combat.AttackInfo{
 				ActorIndex:         c.Index,
 				Abil:               "Sparks'n'Splash C4",
-				AttackTag:          combat.AttackTagNone,
-				ICDTag:             combat.ICDTagNone,
-				ICDGroup:           combat.ICDGroupDefault,
-				StrikeType:         combat.StrikeTypeDefault,
+				AttackTag:          attacks.AttackTagNone,
+				ICDTag:             attacks.ICDTagNone,
+				ICDGroup:           attacks.ICDGroupDefault,
+				StrikeType:         attacks.StrikeTypeDefault,
 				Element:            attributes.Pyro,
 				Durability:         50,
 				Mult:               5.55,

@@ -2,6 +2,7 @@ package generic
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -31,11 +32,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("rust", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagNormal {
+			if atk.Info.AttackTag == attacks.AttackTagNormal {
 				m[attributes.DmgP] = inc
 				return m, true
 			}
-			if atk.Info.AttackTag == combat.AttackTagExtra {
+			if atk.Info.AttackTag == attacks.AttackTagExtra {
 				m[attributes.DmgP] = -0.1
 				return m, true
 			}

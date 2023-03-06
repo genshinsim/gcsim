@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -27,7 +28,8 @@ func (s *Set) Init() error      { return nil }
 
 // 2pc - Anemo DMG Bonus +15%
 // 4pc - When Charged Attacks hit opponents, the equipping character's Normal Attack SPD will increase by 10% while Normal,
-//       Charged, and Plunging Attack DMG will increase by 40% for 15s.
+//
+//	Charged, and Plunging Attack DMG will increase by 40% for 15s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -49,7 +51,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
-			if atk.Info.AttackTag != combat.AttackTagExtra {
+			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return false
 			}
 
@@ -72,9 +74,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Base: modifier.NewBaseWithHitlag("desert-4pc-dmg", 15*60),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
-					case combat.AttackTagNormal:
-					case combat.AttackTagExtra:
-					case combat.AttackTagPlunge:
+					case attacks.AttackTagNormal:
+					case attacks.AttackTagExtra:
+					case attacks.AttackTagPlunge:
 					default:
 						return nil, false
 					}

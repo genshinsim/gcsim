@@ -3,9 +3,12 @@ package heizou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillEndFrames []int
@@ -55,10 +58,10 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Heartstopper Strike",
-			AttackTag:          combat.AttackTagElementalArt,
-			ICDTag:             combat.ICDTagNone,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			AttackTag:          attacks.AttackTagElementalArt,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Anemo,
 			Durability:         50,
 			Mult:               skill[c.TalentLvlSkill()] + float64(c.decStack)*decBonus[c.TalentLvlSkill()],
@@ -83,7 +86,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 		done := false
 		skillCB := func(a combat.AttackCB) {
 			c.decStack = 0
-			if a.Target.Type() != combat.TargettableEnemy {
+			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}
 			if done {
@@ -96,7 +99,7 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: offset}, width, height),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: offset}, width, height),
 			hitDelay,
 			hitDelay,
 			skillCB,
@@ -136,7 +139,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

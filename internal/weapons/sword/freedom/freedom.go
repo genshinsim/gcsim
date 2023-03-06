@@ -3,6 +3,7 @@ package freedom
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -84,18 +85,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			for _, char := range c.Player.Chars() {
 				// Attack buff snapshots so it needs to be in a separate mod
 				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("freedomsworn", buffDuration),
-					AffectedStat: attributes.DmgP,
+					Base: modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
+					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
-						return uniqueVal, true
+						return sharedVal, true
 					},
 				})
 				char.AddAttackMod(character.AttackMod{
-					Base: modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
+					Base: modifier.NewBaseWithHitlag("freedomsworn", buffDuration),
 					Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 						switch atk.Info.AttackTag {
-						case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
-							return sharedVal, true
+						case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
+							return uniqueVal, true
 						}
 						return nil, false
 					},

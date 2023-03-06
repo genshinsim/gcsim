@@ -3,10 +3,12 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -34,10 +36,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Eye of Stormy Judgement",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -59,7 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			this.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag(skillKey, 1500),
 				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-					if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+					if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 						return nil, false
 					}
 
@@ -81,7 +83,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -113,7 +115,7 @@ func (c *char) eyeOnDamage() {
 			return false
 		}
 		//ignore EC and hydro swirl damage
-		if ae.Info.AttackTag == combat.AttackTagECDamage || ae.Info.AttackTag == combat.AttackTagSwirlHydro {
+		if ae.Info.AttackTag == attacks.AttackTagECDamage || ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
 			return false
 		}
 		//ignore self dmg
@@ -130,10 +132,10 @@ func (c *char) eyeOnDamage() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Eye of Stormy Judgement (Strike)",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeSlash,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       skillTick[c.TalentLvlSkill()],

@@ -3,6 +3,7 @@ package mona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -34,10 +35,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Initial)",
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,
@@ -59,10 +60,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	aiBreak := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Break)",
-		AttackTag:  combat.AttackTagMonaBubbleBreak,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagMonaBubbleBreak,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 		Durability: 0,
 		Mult:       0,
@@ -120,7 +121,7 @@ func (c *char) burstHook() {
 		}
 		//always break if it's due to time up
 		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag == combat.AttackTagMonaBubbleBreak {
+		if atk.Info.AttackTag == attacks.AttackTagMonaBubbleBreak {
 			c.triggerBubbleBurst(t)
 			return false
 		}
@@ -144,10 +145,10 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Explosion)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 50,
 		Mult:       explosion[c.TalentLvlBurst()],

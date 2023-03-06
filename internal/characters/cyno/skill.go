@@ -3,8 +3,11 @@ package cyno
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
@@ -41,10 +44,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Secret Rite: Chasmic Soulfarer",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -78,10 +81,10 @@ func (c *char) skillB() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             skillBName,
-		AttackTag:        combat.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeBlunt,
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeBlunt,
 		Element:          attributes.Electro,
 		Durability:       25,
 		Mult:             skillB[c.TalentLvlSkill()],
@@ -91,7 +94,7 @@ func (c *char) skillB() action.ActionInfo {
 
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		combat.Point{Y: 1.5},
+		geometry.Point{Y: 1.5},
 		6,
 	)
 	particleCB := c.makeParticleCB(true)
@@ -110,9 +113,9 @@ func (c *char) skillB() action.ActionInfo {
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
 		ai.FlatDmg = c.a4Bolt()
-		ai.ICDTag = combat.ICDTagCynoBolt
-		ai.ICDGroup = combat.ICDGroupCynoBolt
-		ai.StrikeType = combat.StrikeTypeSlash
+		ai.ICDTag = attacks.ICDTagCynoBolt
+		ai.ICDGroup = attacks.ICDGroupCynoBolt
+		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.HitlagFactor = 0
 		ai.HitlagHaltFrames = 0
 
@@ -153,7 +156,7 @@ func (c *char) skillB() action.ActionInfo {
 
 func (c *char) makeParticleCB(burst bool) combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

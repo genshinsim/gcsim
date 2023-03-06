@@ -3,9 +3,12 @@ package candace
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -47,10 +50,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Heron's Sanctum (E)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Hydro,
 		Durability:         25,
 		FlatDmg:            skillDmg[chargeLevel][c.TalentLvlSkill()] * c.MaxHP(),
@@ -66,7 +69,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	case 0:
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[chargeLevel]},
+			geometry.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 			skillHitboxes[chargeLevel][1],
 		)
@@ -75,7 +78,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[chargeLevel]},
+			geometry.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 		)
 		particleCount = 3
@@ -120,7 +123,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) makeParticleCB(particleCount float64) combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

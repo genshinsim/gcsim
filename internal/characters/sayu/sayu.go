@@ -3,6 +3,7 @@ package sayu
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -18,7 +19,7 @@ type char struct {
 	*tmpl.Character
 	eDuration           int
 	eAbsorb             attributes.Element
-	eAbsorbTag          combat.ICDTag
+	eAbsorbTag          attacks.ICDTag
 	absorbCheckLocation combat.AttackPattern
 	qTickRadius         float64
 	c2Bonus             float64

@@ -1,6 +1,7 @@
 package heizou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -30,10 +31,10 @@ func (c *char) a1() {
 				return false
 			}
 			switch atk.Info.AttackTag {
-			case combat.AttackTagSwirlPyro:
-			case combat.AttackTagSwirlHydro:
-			case combat.AttackTagSwirlElectro:
-			case combat.AttackTagSwirlCryo:
+			case attacks.AttackTagSwirlPyro:
+			case attacks.AttackTagSwirlHydro:
+			case attacks.AttackTagSwirlElectro:
+			case attacks.AttackTagSwirlCryo:
 			default:
 				return false
 			}

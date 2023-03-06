@@ -1,6 +1,7 @@
 package nahida
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -32,10 +33,10 @@ func (c *char) c2() {
 		ae := args[1].(*combat.AttackEvent)
 
 		switch ae.Info.AttackTag {
-		case combat.AttackTagBurningDamage:
-		case combat.AttackTagBloom:
-		case combat.AttackTagHyperbloom:
-		case combat.AttackTagBurgeon:
+		case attacks.AttackTagBurningDamage:
+		case attacks.AttackTagBloom:
+		case attacks.AttackTagHyperbloom:
+		case attacks.AttackTagBurgeon:
 		default:
 			return false
 		}
@@ -142,10 +143,10 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNahidaC6,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNahidaC6,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       2,

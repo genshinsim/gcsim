@@ -3,12 +3,14 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,10 +43,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Nereid's Ascension",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 50,
 		Mult:       0,
@@ -56,7 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Status.Add(burstKey, 10*60)
 
 	// update jellyfish flat damage
-	c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)
+	c.skillFlatDmg = c.burstDmgBonus(attacks.AttackTagElementalArt)
 
 	if c.Base.Ascension >= 1 {
 		c.Core.Tasks.Add(c.a1, 46)
@@ -88,16 +90,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 // Helper function for determining whether burst damage bonus should apply
-func (c *char) burstDmgBonus(a combat.AttackTag) float64 {
+func (c *char) burstDmgBonus(a attacks.AttackTag) float64 {
 	if c.Core.Status.Duration("kokomiburst") == 0 {
 		return 0
 	}
 	switch a {
-	case combat.AttackTagNormal:
+	case attacks.AttackTagNormal:
 		return burstBonusNormal[c.TalentLvlBurst()] * c.MaxHP()
-	case combat.AttackTagExtra:
+	case attacks.AttackTagExtra:
 		return burstBonusCharge[c.TalentLvlBurst()] * c.MaxHP()
-	case combat.AttackTagElementalArt:
+	case attacks.AttackTagElementalArt:
 		return burstBonusSkill[c.TalentLvlBurst()] * c.MaxHP()
 	default:
 		return 0
@@ -112,7 +114,7 @@ func (c *char) burstDmgBonus(a combat.AttackTag) float64 {
 func (c *char) makeBurstHealCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.Core.Status.Duration("kokomiburst") == 0 {
@@ -158,7 +160,7 @@ func (c *char) onExitField() {
 		// update jellyfish flat damage. regardless if burst is active or not
 		if prev == c.Index {
 			c.swapEarlyF = c.Core.F
-			c.skillFlatDmg = c.burstDmgBonus(combat.AttackTagElementalArt)
+			c.skillFlatDmg = c.burstDmgBonus(attacks.AttackTagElementalArt)
 		}
 		c.Core.Status.Delete("kokomiburst")
 		return false

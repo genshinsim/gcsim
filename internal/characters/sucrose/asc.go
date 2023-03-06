@@ -74,7 +74,7 @@ func (c *char) a4() {
 	}
 
 	c.a4Buff = make([]float64, attributes.EndStatType)
-	c.a4Buff[attributes.EM] = c.Stat(attributes.EM) * .20
+	c.a4Buff[attributes.EM] = c.NonExtraStat(attributes.EM) * .20
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
 			continue //nothing for sucrose
@@ -82,6 +82,7 @@ func (c *char) a4() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("sucrose-a4", 480), //8 s
 			AffectedStat: attributes.EM,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return c.a4Buff, true
 			},

@@ -1,6 +1,7 @@
 package layla
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -17,7 +18,7 @@ const c4Key = "layla-c4"
 func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 
@@ -47,7 +48,7 @@ func (c *char) c6() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("layla-c6", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst && atk.Info.Abil != "Shooting Star" {
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst && atk.Info.Abil != "Shooting Star" {
 				return nil, false
 			}
 			return m, true

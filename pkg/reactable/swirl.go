@@ -1,19 +1,22 @@
 package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-func calcSwirlAtkDurability(consumed, src combat.Durability) combat.Durability {
+func calcSwirlAtkDurability(consumed, src reactions.Durability) reactions.Durability {
 	if consumed < src {
 		return 1.25*(0.5*consumed-1) + 25
 	}
 	return 1.25*(src-1) + 25
 }
 
-func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, tag combat.AttackTag, icd combat.ICDTag, dur combat.Durability, charIndex int) {
+func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur reactions.Durability, charIndex int) {
 	//swirl triggers two attacks; one self with no gauge
 	//and one aoe with gauge
 	ai := combat.AttackInfo{
@@ -22,8 +25,8 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 		Abil:             string(rt),
 		AttackTag:        tag,
 		ICDTag:           icd,
-		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
+		ICDGroup:         attacks.ICDGroupReactionA,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          ele,
 		IgnoreDefPercent: 1,
 	}
@@ -45,7 +48,7 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	ai.Durability = dur
 	ai.Abil = string(rt) + " (aoe)"
 	ap := combat.NewCircleHitOnTarget(r.self, nil, 5)
-	ap.IgnoredKeys = []combat.TargetKey{r.self.Key()}
+	ap.IgnoredKeys = []targets.TargetKey{r.self.Key()}
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
@@ -68,10 +71,10 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlElectro, r.self, a)
 	r.queueSwirl(
-		combat.SwirlElectro,
+		reactions.SwirlElectro,
 		attributes.Electro,
-		combat.AttackTagSwirlElectro,
-		combat.ICDTagSwirlElectro,
+		attacks.AttackTagSwirlElectro,
+		attacks.ICDTagSwirlElectro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -100,10 +103,10 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlHydro, r.self, a)
 	r.queueSwirl(
-		combat.SwirlHydro,
+		reactions.SwirlHydro,
 		attributes.Hydro,
-		combat.AttackTagSwirlHydro,
-		combat.ICDTagSwirlHydro,
+		attacks.AttackTagSwirlHydro,
+		attacks.ICDTagSwirlHydro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -124,10 +127,10 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
-		combat.SwirlCryo,
+		reactions.SwirlCryo,
 		attributes.Cryo,
-		combat.AttackTagSwirlCryo,
-		combat.ICDTagSwirlCryo,
+		attacks.AttackTagSwirlCryo,
+		attacks.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -149,10 +152,10 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlPyro, r.self, a)
 	r.queueSwirl(
-		combat.SwirlPyro,
+		reactions.SwirlPyro,
 		attributes.Pyro,
-		combat.AttackTagSwirlPyro,
-		combat.ICDTagSwirlPyro,
+		attacks.AttackTagSwirlPyro,
+		attacks.ICDTagSwirlPyro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -173,10 +176,10 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
-		combat.SwirlCryo,
+		reactions.SwirlCryo,
 		attributes.Cryo,
-		combat.AttackTagSwirlCryo,
-		combat.ICDTagSwirlCryo,
+		attacks.AttackTagSwirlCryo,
+		attacks.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
 	)

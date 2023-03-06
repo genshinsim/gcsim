@@ -1,19 +1,19 @@
 package albedo
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 type skillConstruct struct {
 	src    int
 	expiry int
 	char   *char
-	dir    combat.Point
-	pos    combat.Point
+	dir    geometry.Point
+	pos    geometry.Point
 }
 
-func (c *char) newConstruct(dur int, dir, pos combat.Point) *skillConstruct {
+func (c *char) newConstruct(dur int, dir, pos geometry.Point) *skillConstruct {
 	return &skillConstruct{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -29,5 +29,5 @@ func (c *skillConstruct) Type() construct.GeoConstructType { return construct.Ge
 func (c *skillConstruct) Expiry() int                      { return c.expiry }
 func (c *skillConstruct) IsLimited() bool                  { return true }
 func (c *skillConstruct) Count() int                       { return 1 }
-func (c *skillConstruct) Direction() combat.Point          { return c.dir }
-func (c *skillConstruct) Pos() combat.Point                { return c.pos }
+func (c *skillConstruct) Direction() geometry.Point        { return c.dir }
+func (c *skillConstruct) Pos() geometry.Point              { return c.pos }
