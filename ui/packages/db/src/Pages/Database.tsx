@@ -1,11 +1,11 @@
 import { Spinner } from "@blueprintjs/core";
 import { model } from "@gcsim/types";
 import { useEffect, useState } from "react";
-import { charNames } from "../../PipelineExtract/CharacterNames.";
-import { Filter, FilterState } from "./Components/Filter";
-import { ListView } from "./Components/ListView";
-import { mockData } from "./Components/mockData";
-import Sorter from "./Components/Sorter";
+import { charNames } from "../PipelineExtract/CharacterNames.";
+import { Filter, FilterState } from "../SharedComponents/Filter";
+import { ListView } from "../SharedComponents/ListView";
+import { mockData } from "../SharedComponents/mockData";
+import Sorter from "../SharedComponents/Sorter";
 
 export function Database() {
   const [charFilter, setCharFilter] = useState<Record<string, FilterState>>(

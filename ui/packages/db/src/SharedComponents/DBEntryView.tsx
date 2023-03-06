@@ -1,5 +1,9 @@
 import { model } from "@gcsim/types";
-import DBEntryPortrait from "./DBEntryViewComponents/DBEntryPortrait";
+import DBEntryActions from "./DBEntryViewComponents/DBEntryActions";
+import {
+  DBEntryMobilePortrait,
+  DBEntryPortrait,
+} from "./DBEntryViewComponents/DBEntryPortrait";
 import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 function useTranslation() {
@@ -17,28 +21,39 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
     }
   }
   return (
-    <div className="flex flex-row bg-slate-800  p-4 gap-4 w-full">
-      <div className="flex gap-2 flex-row min-w-fit ">
-        {team &&
-          team.map((char, index) => {
-            return <DBEntryPortrait {...char} key={index.toString()} />;
-          })}
-      </div>
-      <div className="flex flex-col grow ">
-        {/* <div className="capitalize text-lg font-semibold ">
+    <>
+      <div className="hidden md:flex  flex-row bg-slate-800  p-4 gap-4 w-full">
+        <div className="flex gap-2 flex-row min-w-fit ">
+          {team &&
+            team.map((char, index) => {
+              return <DBEntryPortrait {...char} key={index.toString()} />;
+            })}
+        </div>
+        <div className="flex flex-col grow ">
+          {/* <div className="capitalize text-lg font-semibold ">
           {dbEntry?.char_names?.toString().replaceAll(",", ", ")}
         </div> */}
-        <div className="max-w-2xl">
-          <div className="flex flex-col ">
-            <DBEntryTags tags={dbEntry.accepted_tags} />
-            <span className="  overflow-hidden">{dbEntry?.description}</span>
-          </div>
+          <div className="max-w-2xl">
+            <div className="flex flex-col ">
+              <DBEntryTags tags={dbEntry.accepted_tags} />
+              <span className="  overflow-hidden">{dbEntry?.description}</span>
+            </div>
 
-          <DBEntryDetails {...dbEntry} />
+            <DBEntryDetails {...dbEntry} />
+          </div>
         </div>
+        <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />
       </div>
-      <DBEntryActions simulation_key={dbEntry.id} />
-    </div>
+      <div className="md:hidden flex flex-row bg-slate-700 max-w-xs pr-2 gap-2">
+        <div className="grid grid-cols-2 grid-row-2">
+          {team &&
+            team.map((char, index) => {
+              return <DBEntryMobilePortrait {...char} key={index.toString()} />;
+            })}
+        </div>
+        <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />
+      </div>
+    </>
   );
 }
 
@@ -78,24 +93,5 @@ model.IDBEntry) {
         </tr>
       </tbody>
     </table>
-  );
-}
-
-function DBEntryActions({
-  simulation_key,
-}: {
-  simulation_key: string | undefined | null;
-}) {
-  return (
-    <div className="flex flex-col justify-center">
-      <a
-        href={`https://gcsim.app/v3/viewer/share/${simulation_key}`}
-        target="_blank"
-        className="bp4-button    bp4-intent-primary"
-        rel="noreferrer"
-      >
-        Open in Viewer
-      </a>
-    </div>
   );
 }

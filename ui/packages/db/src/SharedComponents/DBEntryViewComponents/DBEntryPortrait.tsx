@@ -3,7 +3,7 @@ import { Long } from "protobufjs";
 import kuki from "./images/kuki.png";
 import nahida from "./images/nahida.png";
 
-export default function DBEntryPortrait({
+export function DBEntryPortrait({
   name,
   sets,
   weapon,
@@ -39,6 +39,44 @@ export default function DBEntryPortrait({
     </div>
   );
 }
+
+export function DBEntryMobilePortrait({
+  name,
+  sets,
+  weapon,
+  cons,
+}: model.ICharacter) {
+  if (!name) {
+    return (
+      <div className="bg-slate-700 p-2 w-24 h-20 flex flex-row justify-center">
+        <img src={nahida} className=" object-contain opacity-50" />
+      </div>
+    );
+  }
+  return (
+    <div className="bg-slate-700 p-2 flex flex-row max-h-fit    w-24">
+      <div className="grid grid-cols-3 grid-rows-2 ">
+        <div className="col-span-2 row-span-2 ">
+          <div className=" relative ">
+            {name && (
+              <img
+                src={"https://gcsim.app/api/assets/avatar/" + name + ".png"}
+                alt={name}
+              />
+            )}
+            <div className="absolute  right-0 bottom-0 text-xs font-bold opacity-80">
+              {(cons as number) ?? 0}
+            </div>
+          </div>
+        </div>
+
+        <PortraitArtifactsComponent artifactSet={sets} />
+        <PortraitWeaponComponent weapon={weapon} />
+      </div>
+    </div>
+  );
+}
+
 function PortraitWeaponComponent({
   weapon,
 }: {

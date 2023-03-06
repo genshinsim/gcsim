@@ -1,7 +1,7 @@
 import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
 import { useState } from "react";
 import { FaFilter } from "react-icons/fa";
-import { charNames } from "../../../PipelineExtract/CharacterNames.";
+import { charNames } from "../PipelineExtract/CharacterNames.";
 
 const useTranslation = (key: string) => key;
 export enum FilterState {
