@@ -61,6 +61,7 @@ var SetNameToKey = map[string]keys.Set{
 	"noblesseoblige":          keys.NoblesseOblige,
 	"noblesse":                keys.NoblesseOblige,
 	"no":                      keys.NoblesseOblige,
+	"nymphsdream":             keys.NymphsDream,
 	"oceanhuedclam":           keys.OceanHuedClam,
 	"ohc":                     keys.OceanHuedClam,
 	"clam":                    keys.OceanHuedClam,
