@@ -3,9 +3,11 @@ package dehya
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -45,10 +47,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Molten Inferno",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt, //TODO ???
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt, //TODO ???
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -59,7 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	player := c.Core.Combat.Player()
 	// assuming tap e for hitbox offset
-	skillPos := combat.CalcOffsetPoint(c.Core.Combat.Player().Pos(), combat.Point{Y: 3}, player.Direction())
+	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
@@ -70,7 +72,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// snapshot for ticks
 	ai.Abil = "Molten Inferno (DoT)"
-	ai.ICDTag = combat.ICDTagElementalArt
+	ai.ICDTag = attacks.ICDTagElementalArt
 	ai.Mult = skillDotAtk[c.TalentLvlSkill()]
 	ai.FlatDmg = skillDotHP[c.TalentLvlSkill()] * c.MaxHP()
 	c.skillAttackInfo = ai
@@ -131,10 +133,10 @@ func (c *char) skillRecast() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Ranging Flame",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt, //TODO ???
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt, //TODO ???
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       skillReposition[c.TalentLvlSkill()],
@@ -160,7 +162,7 @@ func (c *char) skillRecast() action.ActionInfo {
 
 	player := c.Core.Combat.Player()
 	// assuming tap e for hitbox offset
-	skillPos := combat.CalcOffsetPoint(c.Core.Combat.Player().Pos(), combat.Point{Y: 3}, player.Direction())
+	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillRecastHitmark)
 
@@ -170,7 +172,7 @@ func (c *char) skillRecast() action.ActionInfo {
 		c.Core.Tasks.Add(c.removeSanctum(c.sanctumExpiry), c.sanctumExpiry-c.Core.F)
 		// snapshot for ticks
 		ai.Abil = "Molten Inferno (DoT)"
-		ai.ICDTag = combat.ICDTagElementalArt
+		ai.ICDTag = attacks.ICDTagElementalArt
 		ai.Mult = skillDotAtk[c.TalentLvlSkill()]
 		ai.FlatDmg = skillDotHP[c.TalentLvlSkill()] * c.MaxHP()
 		c.skillAttackInfo = ai

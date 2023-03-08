@@ -3,8 +3,10 @@ package dehya
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -44,10 +46,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Flame-Mane's Fist",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurstPyro,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurstPyro,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstPunchAtk[c.TalentLvlBurst()],
@@ -60,13 +62,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		punchCounter := 0
 		punchTimer := 0
 		// one punch on burst hitmark
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4), 0, 0)
 
 		for i := 0; i < 240; {
 			if punchCounter < punches && punches == 10 {
 				c.Core.QueueAttack(
 					ai,
-					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4),
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
 					i+punchHitmarks[punchCounter],
 					i+punchHitmarks[punchCounter],
 				)
@@ -77,7 +79,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			} else {
 				c.Core.QueueAttack(
 					ai,
-					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4),
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
 					i+slowPunchHitmark,
 					i+slowPunchHitmark,
 				)
@@ -89,10 +91,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai.Abil = "Incineration Drive"
 		ai.Mult = burstKickAtk[c.TalentLvlBurst()]
 		ai.FlatDmg = burstKickHP[c.TalentLvlBurst()] * c.MaxHP()
-		ai.ICDTag = combat.ICDTagElementalBurst
+		ai.ICDTag = attacks.ICDTagElementalBurst
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
 			punchTimer+kickHitmark,
 			punchTimer+kickHitmark,
 		)
@@ -104,7 +106,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 				// snapshot for ticks
 				ai.Abil = "Molten Inferno (DoT)"
-				ai.ICDTag = combat.ICDTagElementalArt
+				ai.ICDTag = attacks.ICDTagElementalArt
 				ai.Mult = skillDotAtk[c.TalentLvlSkill()]
 				ai.FlatDmg = skillDotHP[c.TalentLvlSkill()] * c.MaxHP()
 				c.skillAttackInfo = ai
