@@ -1,23 +1,21 @@
 import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaFilter } from "react-icons/fa";
-import { charNames } from "../PipelineExtract/CharacterNames.";
-import { FilterState } from "./FilterComponents/Filter.utils";
+import { charNames } from "../PipelineExtract/CharacterNames";
+import {
+  FilterContext,
+  FilterDispatchContext,
+  FilterState,
+} from "./FilterComponents/Filter.utils";
 
 const useTranslation = (key: string) => key;
 
-export function Filter({
-  charFilter,
-  setCharFilter,
-}: {
-  charFilter: Record<string, FilterState>;
-  setCharFilter: (newFilter: Record<string, FilterState>) => void;
-}) {
+export function Filter() {
   const t = useTranslation;
 
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="">
+    <div>
       <button
         className="flex flex-row gap-2 bp4-button justify-center items-center p-3 bp4-intent-primary "
         onClick={() => setIsOpen(!isOpen)}
@@ -36,22 +34,19 @@ export function Filter({
         position={Position.LEFT}
         size={DrawerSize.SMALL}
       >
-        <CharacterFilter
-          charFilter={charFilter}
-          setCharFilter={setCharFilter}
-        />
+        <CharacterFilter />
       </Drawer>
     </div>
   );
 }
 
-function CharacterFilter({
-  charFilter,
-  setCharFilter,
-}: {
-  charFilter: Record<string, FilterState>;
-  setCharFilter: (newFilter: Record<string, FilterState>) => void;
-}) {
+// function FilterDrawer(charFilter: Record<string, FilterState>) {
+//   return (
+//     <div className="w-full overflow-y-auto overflow-x-hidden no-scrollbar"></div>
+//   );
+// }
+
+function CharacterFilter() {
   const [charIsOpen, setCharIsOpen] = useState(false);
   const t = useTranslation;
 
@@ -67,12 +62,7 @@ function CharacterFilter({
       <Collapse isOpen={charIsOpen}>
         <div className="grid grid-cols-3 gap-1 mt-1 ">
           {charNames.map((charName) => (
-            <FilterButton
-              key={charName}
-              charName={charName}
-              charFilter={charFilter}
-              setCharFilter={setCharFilter}
-            />
+            <FilterButton key={charName} charName={charName} />
           ))}
         </div>
       </Collapse>
@@ -80,30 +70,21 @@ function CharacterFilter({
   );
 }
 
-function FilterButton({
-  charName,
-  charFilter,
-  setCharFilter,
-}: {
-  charName: string;
-  charFilter: Record<string, FilterState>;
-  setCharFilter: (newFilter: Record<string, FilterState>) => void;
-}) {
+function FilterButton({ charName }: { charName: string }) {
   const t = useTranslation;
   const displayCharName = t(charName);
+  const filter = useContext(FilterContext);
+  const dispatch = useContext(FilterDispatchContext);
 
   const handleClick = () => {
-    const newFilter = { ...charFilter };
-    newFilter[charName] =
-      newFilter[charName] === FilterState.none
-        ? FilterState.include
-        : newFilter[charName] === FilterState.include
-        ? FilterState.exclude
-        : FilterState.none;
-    setCharFilter(newFilter);
+    dispatch({
+      type: "handleChar",
+      char: charName,
+    });
+    console.log(filter);
   };
 
-  switch (charFilter[charName]) {
+  switch (filter.charFilter[charName].state) {
     case FilterState.include:
       return (
         <button
@@ -126,7 +107,7 @@ function FilterButton({
     default:
       return (
         <button className={"bp4-button"} onClick={handleClick}>
-          {displayCharName}
+          {displayCharName + `${filter.charFilter[charName].state}`}
         </button>
       );
   }

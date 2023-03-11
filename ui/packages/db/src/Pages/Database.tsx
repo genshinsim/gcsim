@@ -1,28 +1,30 @@
 import { Spinner } from "@blueprintjs/core";
 import { model } from "@gcsim/types";
-import { useEffect, useState } from "react";
-import { charNames } from "../PipelineExtract/CharacterNames.";
+import { useEffect, useReducer, useState } from "react";
 import { Filter } from "../SharedComponents/Filter";
-import { FilterState } from "../SharedComponents/FilterComponents/Filter.utils";
+import {
+  CharFilter,
+  FilterContext,
+  FilterDispatchContext,
+  filterReducer,
+  FilterState,
+  initialCharFilter,
+} from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
 import { mockData } from "../SharedComponents/mockData";
 import Sorter from "../SharedComponents/Sorter";
 
 export function Database() {
-  const [charFilter, setCharFilter] = useState<Record<string, FilterState>>(
-    //use charNames to create an object with all characters as keys and empty strings as values for default
-    charNames.reduce((acc, charName) => {
-      acc[charName] = FilterState.none;
-      return acc;
-    }, {} as Record<string, FilterState>)
-  );
+  const [filter, dispatch] = useReducer(filterReducer, {
+    charFilter: initialCharFilter,
+  });
 
   const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
   useEffect(() => {
     //https://simimpact.app/api
     const url = `api/db?q=${encodeURIComponent(
-      JSON.stringify(craftQuery(charFilter))
+      JSON.stringify(filter.charFilter)
     )}`;
     fetch(url)
       .then((res) => res.json())
@@ -33,23 +35,27 @@ export function Database() {
       .catch((e) => {
         console.log(e);
       });
-  }, [charFilter]);
+  }, [filter.charFilter]);
 
   return (
-    <div className="flex flex-col  gap-4 m-8 my-4 ">
-      <div className="flex flex-row justify-between items-center">
-        <Filter charFilter={charFilter} setCharFilter={setCharFilter} />
-        <div className="text-base  md:text-2xl">{`Showing ${
-          data?.length ?? 0
-        } Simulations `}</div>
-        <Sorter />
-      </div>
-      {data ? <ListView data={data} /> : <Spinner />}
-    </div>
+    <FilterContext.Provider value={filter}>
+      <FilterDispatchContext.Provider value={dispatch}>
+        <div className="flex flex-col  gap-4 m-8 my-4 ">
+          <div className="flex flex-row justify-between items-center">
+            <Filter />
+            <div className="text-base  md:text-2xl">{`Showing ${
+              data?.length ?? 0
+            } Simulations `}</div>
+            <Sorter />
+          </div>
+          {data ? <ListView data={data} /> : <Spinner />}
+        </div>
+      </FilterDispatchContext.Provider>
+    </FilterContext.Provider>
   );
 }
 
-function craftQuery(charFilter: Record<string, FilterState>): unknown {
+function craftQuery({ charFilter }: CharFilter): unknown {
   const query: Record<string, unknown> = {};
   // sort all characters into included and excluded from the filter
   const includedChars: string[] = [];
