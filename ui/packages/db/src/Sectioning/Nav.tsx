@@ -43,7 +43,7 @@ export default function Nav() {
         </Navbar.Group>
         <Navbar.Group
           align={Alignment.LEFT}
-          className="!hidden min-[550px]:!flex !items-stretch"
+          className=" min-[550px]:!flex !items-stretch"
         >
           <Navbar.Divider className="self-center" />
           {PageNavs}

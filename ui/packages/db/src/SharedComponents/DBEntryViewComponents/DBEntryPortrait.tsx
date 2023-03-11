@@ -48,15 +48,15 @@ export function DBEntryMobilePortrait({
 }: model.ICharacter) {
   if (!name) {
     return (
-      <div className="bg-slate-700 p-2 w-24 h-20 flex flex-row justify-center">
+      <div className="bg-slate-700 p-2  max-h-20 flex flex-row justify-center">
         <img src={nahida} className=" object-contain opacity-50" />
       </div>
     );
   }
   return (
-    <div className="bg-slate-700 p-2 flex flex-row max-h-fit    w-24">
-      <div className="grid grid-cols-3 grid-rows-2 ">
-        <div className="col-span-2 row-span-2 ">
+    <div className="bg-slate-700 p-2 flex flex-row max-h-fit    w-32">
+      <div className="grid grid-cols-3 grid-rows-2 bg-slate-400/50 gap-[1px]  ">
+        <div className="col-span-2 row-span-2 bg-slate-700">
           <div className=" relative ">
             {name && (
               <img
@@ -86,7 +86,7 @@ function PortraitWeaponComponent({
     return <div className="h-16 w-16">No weapon</div>;
   }
   return (
-    <div className=" relative">
+    <div className="bg-slate-700 relative">
       <img
         src={"https://gcsim.app/api/assets/weapons/" + weapon.name + ".png"}
         alt={weapon.name}
@@ -123,7 +123,7 @@ function PortraitArtifactsComponent({
   switch (artifacts.length) {
     case 1:
       return (
-        <div className="relative">
+        <div className="relative bg-slate-700">
           <img
             src={
               "https://gcsim.app/api/assets/artifacts/" +

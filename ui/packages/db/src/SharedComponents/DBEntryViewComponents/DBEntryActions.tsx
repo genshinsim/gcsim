@@ -1,7 +1,7 @@
 import { Position, Toaster } from "@blueprintjs/core";
 import axios, { HttpStatusCode } from "axios";
 import { useContext } from "react";
-import { AuthContext } from "../../Pages/Management";
+import { AuthContext } from "../Management.context";
 function useTranslation() {
   return (text: string) => text;
 }

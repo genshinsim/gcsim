@@ -2,7 +2,8 @@ import { Spinner } from "@blueprintjs/core";
 import { model } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { charNames } from "../PipelineExtract/CharacterNames.";
-import { Filter, FilterState } from "../SharedComponents/Filter";
+import { Filter } from "../SharedComponents/Filter";
+import { FilterState } from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
 import { mockData } from "../SharedComponents/mockData";
 import Sorter from "../SharedComponents/Sorter";
@@ -15,6 +16,7 @@ export function Database() {
       return acc;
     }, {} as Record<string, FilterState>)
   );
+
   const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export function Database() {
   }, [charFilter]);
 
   return (
-    <div className="flex flex-col  gap-4 m-8 my-4">
+    <div className="flex flex-col  gap-4 m-8 my-4 ">
       <div className="flex flex-row justify-between items-center">
         <Filter charFilter={charFilter} setCharFilter={setCharFilter} />
         <div className="text-base  md:text-2xl">{`Showing ${
