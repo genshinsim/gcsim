@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -79,9 +80,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			Base: modifier.NewBase("crimson-4pc", -1),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
-				case combat.AttackTagOverloadDamage,
-				combat.AttackTagBurningDamage,
-				combat.AttackTagBurgeon:
+				case attacks.AttackTagOverloadDamage,
+					attacks.AttackTagBurningDamage,
+					attacks.AttackTagBurgeon:
 					return 0.4, false
 				}
 				if ai.Amped {

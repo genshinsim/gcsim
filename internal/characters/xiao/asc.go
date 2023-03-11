@@ -1,6 +1,7 @@
 package xiao
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -49,7 +50,7 @@ func (c *char) a4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(a4BuffKey, 420),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			return c.a4buff, atk.Info.AttackTag == combat.AttackTagElementalArt
+			return c.a4buff, atk.Info.AttackTag == attacks.AttackTagElementalArt
 		},
 	})
 }

@@ -1,6 +1,7 @@
 package albedo
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -37,7 +38,7 @@ func (c *char) c4(lastConstruct int) func() {
 			active.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase("albedo-c4", 60), // 1s
 				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-					if atk.Info.AttackTag != combat.AttackTagPlunge {
+					if atk.Info.AttackTag != attacks.AttackTagPlunge {
 						return nil, false
 					}
 					return m, true

@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -48,10 +50,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       attackHitlagFactor[c.NormalCounter][i],
@@ -60,14 +62,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{Y: attackOffsets[c.NormalCounter][i]},
+			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][0],
 			attackFanAngles[c.NormalCounter][i],
 		)
 		if c.NormalCounter == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: attackOffsets[c.NormalCounter][i]},
+				geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)

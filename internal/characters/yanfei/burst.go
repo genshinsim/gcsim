@@ -3,6 +3,7 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -35,7 +36,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagExtra {
+			if atk.Info.AttackTag == attacks.AttackTagExtra {
 				return c.burstBuff, true
 			}
 			return nil, false
@@ -60,10 +61,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Done Deal",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Pyro,
 		Durability:         50,
 		Mult:               burst[c.TalentLvlBurst()],

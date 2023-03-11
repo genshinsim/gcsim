@@ -3,10 +3,12 @@ package lisa
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -50,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -65,10 +67,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagLisaElectro,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagLisaElectro,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
@@ -114,10 +116,10 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 50,
 	}
@@ -140,7 +142,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	var c1cb func(a combat.AttackCB)
 	if c.Base.Cons > 0 {
 		c1cb = func(a combat.AttackCB) {
-			if a.Target.Type() != combat.TargettableEnemy {
+			if a.Target.Type() != targets.TargettableEnemy {
 				return
 			}
 			if count == 5 {

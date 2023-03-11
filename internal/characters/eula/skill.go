@@ -3,10 +3,13 @@ package eula
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -83,10 +86,10 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skillPress[c.TalentLvlSkill()],
@@ -96,7 +99,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	}
 	//add 1 to grim heart if not capped by icd
 	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(grimheartICD) {
@@ -107,7 +110,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3.5),
 		skillPressHitmark,
 		skillPressHitmark,
 		cb,
@@ -126,7 +129,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) pressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -149,10 +152,10 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex (Hold)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skillHold[lvl],
@@ -162,7 +165,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 5.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 5.5),
 		skillHoldHitmark,
 		skillHoldHitmark,
 		c.holdParticleCB,
@@ -203,10 +206,10 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		icewhirlAI := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Icetide Vortex (Icewhirl)",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       icewhirl[lvl],
@@ -267,7 +270,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {

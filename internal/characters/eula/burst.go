@@ -3,10 +3,12 @@ package eula
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -41,10 +43,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Glacial Illumination",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Cryo,
 		Durability: 50,
 		Mult:       burstInitial[c.TalentLvlBurst()],
@@ -95,10 +97,10 @@ func (c *char) triggerBurst() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Glacial Illumination (Lightfall)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Physical,
 		Durability: 50,
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] + burstExplodeStack[c.TalentLvlBurst()]*float64(c.burstCounter),
@@ -121,7 +123,7 @@ func (c *char) triggerBurst() {
 // When Eula's own Normal Attack, Elemental Skill, and Elemental Burst deal DMG to opponents,
 // they will charge the Lightfall Sword, which can gain an energy stack once every 0.1s.
 func (c *char) burstStackCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.Core.Player.Active() != c.Index {

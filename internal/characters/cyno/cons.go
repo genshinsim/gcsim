@@ -2,10 +2,12 @@ package cyno
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -47,7 +49,7 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(c2ICD) {
@@ -138,7 +140,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.c6Stacks == 0 {
@@ -157,10 +159,10 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         "Raiment: Just Scales (C6)",
-			AttackTag:    combat.AttackTagElementalArt,
-			ICDTag:       combat.ICDTagElementalArt,
-			ICDGroup:     combat.ICDGroupDefault,
-			StrikeType:   combat.StrikeTypeSlash,
+			AttackTag:    attacks.AttackTagElementalArt,
+			ICDTag:       attacks.ICDTagElementalArt,
+			ICDGroup:     attacks.ICDGroupDefault,
+			StrikeType:   attacks.StrikeTypeSlash,
 			Element:      attributes.Electro,
 			Durability:   25,
 			IsDeployable: true,

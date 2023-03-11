@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -16,7 +17,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	qPos                combat.Point
+	qPos                geometry.Point
 	qAbsorb             attributes.Element
 	absorbCheckLocation combat.AttackPattern
 	aiAbsorb            combat.AttackInfo

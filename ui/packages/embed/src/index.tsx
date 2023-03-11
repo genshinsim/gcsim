@@ -26,7 +26,7 @@ if (import.meta.env.DEV) {
         cons: 0,
         weapon: { name: "favoniuslance", refine: 3, level: 90, max_level: 90 },
         talents: { attack: 9, skill: 9, burst: 9 },
-        sets: { archaicpetra: 4 },
+        sets: { archaicpetra: 2, noblesseoblige:2 },
         stats: [
           0, 0.124, 39.36, 5287.88, 0.0992, 344.08, 0.6644, 0.1102, 39.64,
           0.642, 0.7944, 0, 0, 0, 0, 0, 0, 0.466, 0, 0, 0, 0,
@@ -45,7 +45,7 @@ if (import.meta.env.DEV) {
         cons: 6,
         weapon: { name: "deathmatch", refine: 1, level: 90, max_level: 90 },
         talents: { attack: 9, skill: 9, burst: 9 },
-        sets: { noblesseoblige: 5 },
+        sets: { noblesseoblige: 2 },
         stats: [
           0, 0.124, 39.36, 5287.88, 0.0992, 344.08, 0.5652, 0.2204, 39.64,
           0.3972, 1.284, 0, 0, 0, 0.466, 0, 0, 0, 0, 0, 0, 0,
@@ -69,7 +69,7 @@ if (import.meta.env.DEV) {
           max_level: 90,
         },
         talents: { attack: 9, skill: 9, burst: 9 },
-        sets: { huskofopulentdreams: 4 },
+        sets: { huskofopulentdreams: 1 },
         stats: [
           0, 0.831, 39.36, 5287.88, 0.0992, 344.08, 0.0992, 0.1102, 39.64,
           0.642, 0.7944, 0, 0, 0, 0, 0, 0, 0.466, 0, 0, 0, 0,

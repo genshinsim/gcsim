@@ -5,9 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -65,7 +68,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("diluc-c6-dmg", 360),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal {
+				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
 				if c.c6Count > 1 {
@@ -102,10 +105,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Searing Onslaught %v", c.eCounter),
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.eCounter][c.TalentLvlSkill()],
@@ -115,14 +118,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
-		combat.Point{Y: skillOffsets[c.eCounter]},
+		geometry.Point{Y: skillOffsets[c.eCounter]},
 		skillHitboxes[c.eCounter][0],
 		skillFanAngles[c.eCounter],
 	)
 	if c.eCounter == 0 || c.eCounter == 2 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[c.eCounter]},
+			geometry.Point{Y: skillOffsets[c.eCounter]},
 			skillHitboxes[c.eCounter][0],
 			skillHitboxes[c.eCounter][1],
 		)
@@ -162,7 +165,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

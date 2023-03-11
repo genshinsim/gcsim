@@ -1,6 +1,7 @@
 package klee
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -22,10 +23,10 @@ func (c *char) c1(delay int) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash C1",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               1.2 * burst[c.TalentLvlBurst()],

@@ -3,8 +3,11 @@ package xingqiu
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -30,10 +33,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Guhua Sword: Fatal Rainscreen",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Hydro,
 		Durability:         25,
 		HitlagHaltFrames:   0.02 * 60,
@@ -52,13 +55,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillOffsets[i]},
+			geometry.Point{Y: skillOffsets[i]},
 			skillHitboxes[i][0],
 		)
 		if i == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: skillOffsets[i]},
+				geometry.Point{Y: skillOffsets[i]},
 				skillHitboxes[i][0],
 				skillHitboxes[i][1],
 			)
@@ -90,7 +93,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

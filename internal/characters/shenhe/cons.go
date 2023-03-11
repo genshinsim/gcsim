@@ -1,6 +1,7 @@
 package shenhe
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -31,7 +32,7 @@ func (c *char) c4Init() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("shenhe-c4-dmg", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 				return nil, false
 			}
 			if !c.StatusIsActive(c4BuffKey) {

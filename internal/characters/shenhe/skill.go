@@ -3,11 +3,14 @@ package shenhe
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -57,10 +60,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Spring Spirit Summoning (Press)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               skillPress[c.TalentLvlSkill()],
@@ -99,7 +102,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 func (c *char) makePressParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
@@ -114,10 +117,10 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Hold)",
-		AttackTag:  combat.AttackTagElementalArtHold,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalArtHold,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Cryo,
 		Durability: 50,
 		Mult:       skillHold[c.TalentLvlSkill()],
@@ -125,7 +128,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 4),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 4),
 		skillHoldHitmark,
 		skillHoldHitmark,
 		c.holdParticleCB,
@@ -146,7 +149,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {
@@ -169,9 +172,9 @@ func (c *char) skillPressBuff() {
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-press", 10*60),
 			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
-				case combat.AttackTagElementalArt:
-				case combat.AttackTagElementalArtHold:
-				case combat.AttackTagElementalBurst:
+				case attacks.AttackTagElementalArt:
+				case attacks.AttackTagElementalArtHold:
+				case attacks.AttackTagElementalBurst:
 				default:
 					return nil, false
 				}
@@ -193,9 +196,9 @@ func (c *char) skillHoldBuff() {
 			Base: modifier.NewBaseWithHitlag("shenhe-a4-hold", 15*60),
 			Amount: func(a *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 				switch a.Info.AttackTag {
-				case combat.AttackTagNormal:
-				case combat.AttackTagExtra:
-				case combat.AttackTagPlunge:
+				case attacks.AttackTagNormal:
+				case attacks.AttackTagExtra:
+				case attacks.AttackTagPlunge:
 				default:
 					return nil, false
 				}
@@ -214,14 +217,14 @@ func (c *char) quillDamageMod() {
 		}
 
 		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalBurst:
-		case combat.AttackTagElementalArt:
-		case combat.AttackTagElementalArtHold:
-		case combat.AttackTagNormal:
+		case attacks.AttackTagElementalBurst:
+		case attacks.AttackTagElementalArt:
+		case attacks.AttackTagElementalArtHold:
+		case attacks.AttackTagNormal:
 			consumeStack = c.Base.Cons < 6
-		case combat.AttackTagExtra:
+		case attacks.AttackTagExtra:
 			consumeStack = c.Base.Cons < 6
-		case combat.AttackTagPlunge:
+		case attacks.AttackTagPlunge:
 		default:
 			return false
 		}

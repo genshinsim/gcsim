@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -26,10 +28,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Yoohoo Art: Mujina Flurry",
-		AttackTag:        combat.AttackTagElementalBurst,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeDefault,
+		AttackTag:        attacks.AttackTagElementalBurst,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		Mult:             burst[c.TalentLvlBurst()],
@@ -37,7 +39,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
-	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 10)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 10)
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
@@ -120,10 +122,10 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Muji-Muji Daruma",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       burstSkill[c.TalentLvlBurst()],

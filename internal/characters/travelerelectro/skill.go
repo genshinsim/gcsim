@@ -3,10 +3,12 @@ package travelerelectro
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -35,10 +37,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Blade",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -79,7 +81,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if c.abundanceAmulets >= maxAmulets {
 			return
 		}
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 
@@ -127,7 +129,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) makeParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
@@ -158,7 +160,7 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	// - Resounding Roar for other Amulet pickups.
 	// - TODO how do we pull unbuffed energy recharge %? Store on init?
 	if c.Base.Ascension >= 4 {
-		mER[attributes.ER] += c.BaseStats[attributes.ER] * .1
+		mER[attributes.ER] += (1 + c.NonExtraStat(attributes.ER)) * .1
 	}
 
 	// apply flat energy
@@ -181,6 +183,7 @@ func (c *char) collectAmulets(collector *character.CharWrapper) bool {
 	collector.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("abundance-amulet", 360),
 		AffectedStat: attributes.ER,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return mER, true
 		},

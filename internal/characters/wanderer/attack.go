@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -90,10 +91,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagNormal,
+			ICDTag:     attacks.ICDTagNormalAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
@@ -143,10 +144,10 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Normal %v (Windfavored)", c.NormalCounter),
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagNormal,
+			ICDTag:     attacks.ICDTagNormalAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Anemo,
 			Durability: 25,
 			Mult:       skillNABonus[c.TalentLvlSkill()] * mult[c.TalentLvlAttack()],

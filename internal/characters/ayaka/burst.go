@@ -3,8 +3,10 @@ package ayaka
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -23,16 +25,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Soumetsu",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 	}
 
 	//5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
 	ai.Mult = burstBloom[c.TalentLvlBurst()]
-	ai.StrikeType = combat.StrikeTypeDefault
+	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Abil = "Soumetsu (Bloom)"
 	c.Core.QueueAttack(
 		ai,
@@ -72,14 +74,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for i := 0; i < 19; i++ {
 		ai.Mult = burstCut[c.TalentLvlBurst()]
-		ai.StrikeType = combat.StrikeTypeSlash
+		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.Abil = "Soumetsu (Cutting)"
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: 0.3},
+				geometry.Point{Y: 0.3},
 				3,
 			),
 			burstHitmark,
@@ -90,7 +92,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// C2 mini-frostflake cutting
 		if c.Base.Cons >= 2 {
 			aiC2.Mult = burstCut[c.TalentLvlBurst()] * .2
-			aiC2.StrikeType = combat.StrikeTypeSlash
+			aiC2.StrikeType = attacks.StrikeTypeSlash
 			aiC2.Abil = "C2 Mini-Frostflake Seki no To (Cutting)"
 			// TODO: Not sure about the positioning/size...
 			for j := 0; j < 2; j++ {
@@ -99,7 +101,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					combat.NewCircleHit(
 						c.Core.Combat.Player(),
 						c.Core.Combat.PrimaryTarget(),
-						combat.Point{Y: 0.3},
+						geometry.Point{Y: 0.3},
 						1.5,
 					),
 					burstHitmark,

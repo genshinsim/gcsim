@@ -1,10 +1,12 @@
 package layla
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
@@ -117,10 +119,10 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCB
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Shooting Star",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupLayla,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupLayla,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       starDmg[c.TalentLvlSkill()],
@@ -169,7 +171,7 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 	c.particleCBSwitch = !c.particleCBSwitch
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

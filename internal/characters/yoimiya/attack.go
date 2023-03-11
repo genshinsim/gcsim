@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -35,16 +37,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
 
 	if c.StatusIsActive("yoimiyaskill") {
-		ai.ICDTag = combat.ICDTagNormalAttack
+		ai.ICDTag = attacks.ICDTagNormalAttack
 	}
 
 	var particleCB combat.AttackCBFunc
@@ -63,7 +65,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: -0.5},
+				geometry.Point{Y: -0.5},
 				0.1,
 				1,
 			),
@@ -80,10 +82,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter),
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagNormal,
+			ICDTag:     attacks.ICDTagNormalAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       totalMV * 0.6,
@@ -94,7 +96,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: -0.5},
+				geometry.Point{Y: -0.5},
 				0.1,
 				1,
 			),

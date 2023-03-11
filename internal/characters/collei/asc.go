@@ -1,6 +1,7 @@
 package collei
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -41,10 +42,10 @@ func (c *char) a1AttackInfo() combat.AttackInfo {
 	return combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Floral Sidewinder (A1)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagColleiSprout,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagColleiSprout,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       0.4,

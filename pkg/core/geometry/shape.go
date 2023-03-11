@@ -1,4 +1,4 @@
-package combat
+package geometry
 
 import (
 	"math"
@@ -6,15 +6,11 @@ import (
 )
 
 type Shape interface {
-	positional
+	Pos() Point
 	PointInShape(p Point) bool
 	IntersectCircle(c Circle) bool
 	IntersectRectangle(r Rectangle) bool
 	String() string
-}
-
-type positional interface {
-	Pos() Point
 }
 
 func DefaultDirection() Point {

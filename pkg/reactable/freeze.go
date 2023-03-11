@@ -1,9 +1,11 @@
 package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
@@ -13,7 +15,7 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	//so if already frozen there are 2 cases:
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		//if cryo exists we'll trigger freeze regardless if frozen already coexists
@@ -41,14 +43,14 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	return true
 }
 
-func max(a, b combat.Durability) combat.Durability {
+func max(a, b reactions.Durability) reactions.Durability {
 	if a > b {
 		return a
 	}
 	return b
 }
 
-func min(a, b combat.Durability) combat.Durability {
+func min(a, b reactions.Durability) reactions.Durability {
 	if a > b {
 		return b
 	}
@@ -59,7 +61,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	if r.Durability[ModifierFrozen] < ZeroDur {
 		return false
 	}
-	if a.Info.StrikeType != combat.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
+	if a.Info.StrikeType != attacks.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
 		return false
 	}
 	//remove 200 freeze gauge if availabe
@@ -70,11 +72,11 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	ai := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.Shatter),
-		AttackTag:        combat.AttackTagShatter,
-		ICDTag:           combat.ICDTagShatter,
-		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
+		Abil:             string(reactions.Shatter),
+		AttackTag:        attacks.AttackTagShatter,
+		ICDTag:           attacks.ICDTagShatter,
+		ICDGroup:         attacks.ICDGroupReactionA,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Physical,
 		IgnoreDefPercent: 1,
 	}
@@ -93,7 +95,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 }
 
 // add to freeze durability and return amount of durability consumed
-func (r *Reactable) triggerFreeze(a, b combat.Durability) combat.Durability {
+func (r *Reactable) triggerFreeze(a, b reactions.Durability) reactions.Durability {
 	d := min(a, b)
 	//trigger freeze should only addDurability and should not touch decay rate
 	r.attachOverlap(ModifierFrozen, 2*d, ZeroDur)
@@ -109,10 +111,10 @@ func (r *Reactable) checkFreeze() {
 			ActorIndex:  0,
 			DamageSrc:   r.self.Key(),
 			Abil:        "Freeze Broken",
-			AttackTag:   combat.AttackTagNone,
-			ICDTag:      combat.ICDTagNone,
-			ICDGroup:    combat.ICDGroupDefault,
-			StrikeType:  combat.StrikeTypeDefault,
+			AttackTag:   attacks.AttackTagNone,
+			ICDTag:      attacks.ICDTagNone,
+			ICDGroup:    attacks.ICDGroupDefault,
+			StrikeType:  attacks.StrikeTypeDefault,
 			Element:     attributes.NoElement,
 			SourceIsSim: true,
 			DoNotLog:    true,

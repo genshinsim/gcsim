@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/weapons/common"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -67,9 +68,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt:
-		case combat.AttackTagElementalArtHold:
-		case combat.AttackTagElementalBurst:
+		case attacks.AttackTagElementalArt:
+		case attacks.AttackTagElementalArtHold:
+		case attacks.AttackTagElementalBurst:
 		default:
 			return false
 		}

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -48,6 +49,7 @@ type (
 
 	StatMod struct {
 		AffectedStat attributes.Stat
+		Extra        bool
 		Amount       StatModFunc
 		modifier.Base
 	}
@@ -186,7 +188,7 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 
 func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
 	//skip if this is reaction damage
-	if a.Info.AttackTag >= combat.AttackTagNoneStat {
+	if a.Info.AttackTag >= attacks.AttackTagNoneStat {
 		return nil
 	}
 

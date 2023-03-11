@@ -1,6 +1,7 @@
 package diluc
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -70,7 +71,7 @@ func (c *char) c4() {
 		Base: modifier.NewBaseWithHitlag(c4BuffKey, 120),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			//should only affect skill dmg
-			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			return c.c4buff, true

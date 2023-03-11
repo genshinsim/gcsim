@@ -1,10 +1,12 @@
 package ayato
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -20,7 +22,7 @@ func (c *char) c1() {
 				if !ok {
 					return nil, false
 				}
-				if a.Info.AttackTag != combat.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
+				if a.Info.AttackTag != attacks.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
 					return nil, false
 				}
 				return m, true
@@ -52,7 +54,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.Core.Player.Active() != c.Index {
@@ -67,10 +69,10 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			Abil:               "Ayato C6",
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			Mult:               4.5,

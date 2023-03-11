@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -30,12 +31,12 @@ const (
 	maxWavespikeStacks = 2
 )
 
-//Obtain 12% All Elemental DMG Bonus. When other nearby party members use
-//Elemental Skills, the character equipping this weapon will gain 1 Wavespike
-//stack. Max 2 stacks. This effect can be triggered once every 0.3s. When the
-//character equipping this weapon uses an Elemental Skill, all stacks of
-//Wavespike will be consumed to gain Rippling Upheaval: each stack of Wavespike
-//consumed will increase Normal Attack DMG by 20% for 8s.
+// Obtain 12% All Elemental DMG Bonus. When other nearby party members use
+// Elemental Skills, the character equipping this weapon will gain 1 Wavespike
+// stack. Max 2 stacks. This effect can be triggered once every 0.3s. When the
+// character equipping this weapon uses an Elemental Skill, all stacks of
+// Wavespike will be consumed to gain Rippling Upheaval: each stack of Wavespike
+// consumed will increase Normal Attack DMG by 20% for 8s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -81,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("ripping-upheaval", 480),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal {
+				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
 				return val, true

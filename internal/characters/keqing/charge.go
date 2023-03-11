@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -28,10 +30,10 @@ func init() {
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -43,7 +45,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: chargeOffsets[i]},
+				geometry.Point{Y: chargeOffsets[i]},
 				chargeRadius[i],
 			),
 			chargeHitmarks[i],
@@ -60,10 +62,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Thunderclap Slash",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeSlash,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 50,
 			Mult:       skillCA[c.TalentLvlSkill()],

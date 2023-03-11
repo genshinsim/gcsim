@@ -3,8 +3,10 @@ package ayaka
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var dashFrames []int
@@ -28,17 +30,17 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Dash",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagDash,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagDash,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.1}, 2),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.1}, 2),
 		dashHitmark+f,
 		dashHitmark+f,
 		c.makeA4CB(),
@@ -53,7 +55,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 			attributes.Cryo,
 			300,
 			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
 	}, dashHitmark+f)
 

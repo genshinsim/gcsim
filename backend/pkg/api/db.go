@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/go-chi/chi"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -16,6 +17,8 @@ type DBStore interface {
 	Get(context.Context, *model.DBQueryOpt) (*model.DBEntries, error)
 	GetOne(ctx context.Context, id string) (*model.DBEntry, error)
 	Update(ctx context.Context, id string, result *model.SimulationResult) error
+	ApproveTag(context.Context, string, model.DBTag) error
+	RejectTag(context.Context, string, model.DBTag) error
 }
 
 type dbGetOpt struct {
@@ -105,5 +108,39 @@ func (s *Server) getDB() http.HandlerFunc {
 		writer.Write(data)
 		// w.Write(data)
 
+	}
+}
+
+func (s *Server) approveTag() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tag := r.Context().Value(DBTagContextKey).(model.DBTag)
+		key := chi.URLParam(r, "db-key")
+		err := s.cfg.DBStore.ApproveTag(r.Context(), key, tag)
+		if err != nil {
+			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
+				http.Error(w, "id not found", http.StatusNotFound)
+				return
+			}
+			http.Error(w, "internal server error", http.StatusNotFound)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s *Server) rejectTag() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tag := r.Context().Value(DBTagContextKey).(model.DBTag)
+		key := chi.URLParam(r, "db-key")
+		err := s.cfg.DBStore.RejectTag(r.Context(), key, tag)
+		if err != nil {
+			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
+				http.Error(w, "id not found", http.StatusNotFound)
+				return
+			}
+			http.Error(w, "internal server error", http.StatusNotFound)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	}
 }

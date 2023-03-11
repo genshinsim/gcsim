@@ -1,10 +1,12 @@
 package amber
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const manualExplosionAbil = "Baron Bunny (Manual Explosion)"
@@ -21,10 +23,10 @@ func (c *char) makeBunny() {
 	ai := combat.AttackInfo{
 		Abil:       "Baron Bunny",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       bunnyExplode[c.TalentLvlSkill()],
@@ -50,7 +52,7 @@ func (c *char) makeBunny() {
 func (c *char) makeParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
@@ -103,7 +105,7 @@ func (c *char) overloadExplode() {
 			return false
 		}
 
-		if atk.Info.AttackTag != combat.AttackTagOverloadDamage {
+		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {
 			return false
 		}
 

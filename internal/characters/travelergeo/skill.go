@@ -3,9 +3,12 @@ package travelergeo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -62,10 +65,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starfell Sword",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagElementalArt,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagElementalArt,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -108,7 +111,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) makeParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
@@ -128,11 +131,11 @@ type stone struct {
 	src    int
 	expiry int
 	char   *char
-	dir    combat.Point
-	pos    combat.Point
+	dir    geometry.Point
+	pos    geometry.Point
 }
 
-func (c *char) newStone(dur int, dir, pos combat.Point) *stone {
+func (c *char) newStone(dur int, dir, pos geometry.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -147,10 +150,10 @@ func (s *stone) OnDestruct() {
 		ai := combat.AttackInfo{
 			ActorIndex:         s.char.Index,
 			Abil:               "Rockcore Meltdown",
-			AttackTag:          combat.AttackTagElementalArt,
-			ICDTag:             combat.ICDTagElementalArt,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeBlunt,
+			AttackTag:          attacks.AttackTagElementalArt,
+			ICDTag:             attacks.ICDTagElementalArt,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeBlunt,
 			Element:            attributes.Geo,
 			Durability:         50,
 			Mult:               skill[s.char.TalentLvlSkill()],
@@ -173,5 +176,5 @@ func (s *stone) Type() construct.GeoConstructType { return construct.GeoConstruc
 func (s *stone) Expiry() int                      { return s.expiry }
 func (s *stone) IsLimited() bool                  { return true }
 func (s *stone) Count() int                       { return 1 }
-func (s *stone) Direction() combat.Point          { return s.dir }
-func (s *stone) Pos() combat.Point                { return s.pos }
+func (s *stone) Direction() geometry.Point        { return s.dir }
+func (s *stone) Pos() geometry.Point              { return s.pos }

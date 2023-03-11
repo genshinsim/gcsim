@@ -3,7 +3,7 @@ import re
 
 replace = [
     [r"core\.AttackInfo", "combat.AttackInfo"],
-    [r"core\.AttackTag(\w+)", "combat.AttackTag\\1"],
+    [r"core\.AttackTag(\w+)", "attacks.AttackTag\\1"],
     [
         r"func weapon\(char core\.Character, c \*core\.Core, r int, param map\[string\]int\) string {",
         'type Weapon struct {\n'

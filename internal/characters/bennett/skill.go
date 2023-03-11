@@ -5,8 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -81,10 +84,10 @@ func (c *char) skillPress() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Passion Overload (Press)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		Durability:         50,
 		HitlagHaltFrames:   0.09 * 60,
@@ -97,7 +100,7 @@ func (c *char) skillPress() action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{Y: 0.8},
+			geometry.Point{Y: 0.8},
 			2.5,
 			270,
 		),
@@ -117,7 +120,7 @@ func (c *char) skillPress() action.ActionInfo {
 }
 
 func (c *char) pressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -137,10 +140,10 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
@@ -153,13 +156,13 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ax.HitlagHaltFrames = 0.09 * 60
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: skillHoldOffsets[i]},
+			geometry.Point{Y: skillHoldOffsets[i]},
 			skillHoldHitboxes[i][0],
 		)
 		if i == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: skillHoldOffsets[i]},
+				geometry.Point{Y: skillHoldOffsets[i]},
 				skillHoldHitboxes[i][0],
 				skillHoldHitboxes[i][1],
 			)
@@ -169,12 +172,12 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		}, skillHoldHitmarks[level-1][i])
 	}
 	if level == 2 {
-		ai.StrikeType = combat.StrikeTypeDefault
+		ai.StrikeType = attacks.StrikeTypeDefault
 		ai.Mult = explosion[c.TalentLvlSkill()]
 		ai.HitlagHaltFrames = 0
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1}, 3.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3.5),
 			166,
 			166,
 			c.holdParticleCB,
@@ -188,7 +191,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		ai.HitlagHaltFrames = 0.12 * 60
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -1}, 3, 4),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 3, 4),
 			94,
 			94,
 			c.holdParticleCB,
@@ -232,7 +235,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 }
 
 func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {

@@ -3,6 +3,7 @@ package sara
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 // A1 is implemented in aimed.go:
@@ -21,7 +22,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(a4ICDKey) {
@@ -29,7 +30,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		}
 		c.AddStatus(a4ICDKey, 180, true)
 
-		energyAddAmt := 1.2 * (1 + c.Stat(attributes.ER))
+		energyAddAmt := 1.2 * (1 + c.NonExtraStat(attributes.ER))
 		for _, char := range c.Core.Player.Chars() {
 			char.AddEnergy("sara-a4", energyAddAmt)
 		}
