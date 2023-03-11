@@ -22,7 +22,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
   }
   return (
     <>
-      <div className="hidden md:flex  flex-row bg-slate-800  p-4 gap-4 w-full">
+      <div className="hidden lg:flex  flex-row bg-slate-800  p-4 gap-4 w-full max-w-7xl">
         <div className="flex gap-2 flex-row min-w-fit ">
           {team &&
             team.map((char, index) => {
@@ -44,8 +44,8 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
         </div>
         <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />
       </div>
-      <div className="md:hidden flex flex-row bg-slate-700 max-w-xs pr-2 gap-2">
-        <div className="grid grid-cols-2 grid-row-2">
+      <div className="lg:hidden flex flex-row bg-slate-700 max-w-xs pr-2 gap-2  ">
+        <div className="grid grid-cols-2 grid-row-2  ">
           {team &&
             team.map((char, index) => {
               return <DBEntryMobilePortrait {...char} key={index.toString()} />;
