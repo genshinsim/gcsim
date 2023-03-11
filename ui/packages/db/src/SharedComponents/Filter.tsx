@@ -2,13 +2,10 @@ import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
 import { useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import { charNames } from "../PipelineExtract/CharacterNames.";
+import { FilterState } from "./FilterComponents/Filter.utils";
 
 const useTranslation = (key: string) => key;
-export enum FilterState {
-  "none",
-  "include",
-  "exclude",
-}
+
 export function Filter({
   charFilter,
   setCharFilter,
@@ -59,18 +56,18 @@ function CharacterFilter({
   const t = useTranslation;
 
   return (
-    <div className="w-full overflow-auto">
+    <div className="w-full overflow-y-auto overflow-x-hidden no-scrollbar">
       <button
         className=" bp4-button bp4-intent-primary pl-5 pr-3 w-full "
         onClick={() => setCharIsOpen(!charIsOpen)}
       >
-        <div className=" grow">{t("Character")}</div>
+        <div className=" grow">{t("Characters")}</div>
         <div className="">{charIsOpen ? "-" : "+"}</div>
       </button>
       <Collapse isOpen={charIsOpen}>
         <div className="grid grid-cols-3 gap-1 mt-1 ">
           {charNames.map((charName) => (
-            <CharFilterButton
+            <FilterButton
               key={charName}
               charName={charName}
               charFilter={charFilter}
@@ -83,7 +80,7 @@ function CharacterFilter({
   );
 }
 
-function CharFilterButton({
+function FilterButton({
   charName,
   charFilter,
   setCharFilter,

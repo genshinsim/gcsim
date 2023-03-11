@@ -65,6 +65,16 @@
       clip-path: polygon(51% 0, 100% 0, 100% 100%, 51% 100% );
   }
 
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+}
+
 }
 
 body {
