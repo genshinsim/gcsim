@@ -13,6 +13,7 @@ import { Router } from 'itty-router';
 import { handleAssets } from './assets';
 import { handleAuth } from './auth';
 import { handleListDBChars, handleListDBSims } from './db';
+import { handleListAllDBSims } from './db/listAll';
 import { handleEnka } from './enka';
 import { handlePreview } from './preview';
 import { handleShare } from './share';
@@ -35,6 +36,7 @@ router.get('/api/enka/:key', handleEnka);
 
 // db routes
 router.get('/api/db', handleListDBChars);
+router.get('/api/db/all', handleListAllDBSims);
 router.get('/api/db/:key', handleListDBSims);
 
 // user sims

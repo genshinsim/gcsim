@@ -11,6 +11,7 @@ export interface DBState {
   charSims: {
     [key in string]: DBAvatarSimDetails[];
   };
+  all: DBAvatarSimDetails[];
   status: statusType;
   errorMsg: string;
 }
@@ -20,7 +21,39 @@ export const dbInitialState: DBState = {
   charSims: {},
   status: "idle",
   errorMsg: "",
+  all: [],
 };
+
+export function loadAllDB(): AppThunk {
+  return function (dispatch) {
+    dispatch(dbActions.setStatus("loading"));
+    const url = "/api/db/all";
+    axios
+      .get(url)
+      .then((resp) => {
+        let next: DBAvatarSimDetails[] = [];
+        resp.data.forEach((e: any) => {
+          const binaryStr = Uint8Array.from(window.atob(e.config_hash), (v) =>
+            v.charCodeAt(0)
+          );
+          const restored = pako.inflate(binaryStr, { to: "string" });
+          next.push({
+            ...e,
+            metadata: JSON.parse(e.metadata),
+            create_time: Math.floor(new Date(e.create_time).getTime() / 1000),
+            config: restored,
+          });
+        });
+        dispatch(dbActions.setFullDB(next));
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+        dispatch(dbActions.setError(`Error encountered: ${error}`));
+      });
+  };
+}
+
 
 export function loadDB(): AppThunk {
   return function (dispatch) {
@@ -90,6 +123,10 @@ export const dbSlice = createSlice({
       const { char, data } = action.payload;
       state.charSims[char] = data;
       return state;
+    },
+    setFullDB: (state, action: PayloadAction<DBAvatarSimDetails[]>) => {
+      state.all = action.payload
+      return state
     },
     setError: (state, action: PayloadAction<string>) => {
       state.errorMsg = action.payload;
