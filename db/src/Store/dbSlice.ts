@@ -44,6 +44,9 @@ export function loadAllDB(): AppThunk {
             config: restored,
           });
         });
+        next.sort((a,b) => {
+          return (b.metadata.dps.mean / b.metadata.num_targets) - (a.metadata.dps.mean / a.metadata.num_targets)
+        })
         dispatch(dbActions.setFullDB(next));
       })
       .catch(function (error) {

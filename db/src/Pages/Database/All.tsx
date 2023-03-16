@@ -61,7 +61,7 @@ export function AllSims() {
 
   return (
     <main className="flex flex-col h-full m-2 w-full xs:w-full sm:w-[640px] hd:w-full wide:w-[1160px] ml-auto mr-auto ">
-      <div className="text-white font-bold mb-2 text-xl">Showing full DB</div>
+      <div className="text-white font-bold mb-2 text-xl">Showing full DB (HIDDEN DEV VIEW DON'T TELL ANYONE)</div>
       <div className="flex flex-col">{rows}</div>
     </main>
   );
