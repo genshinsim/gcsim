@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			}
 			c.Core.Player.Shields.Add(c.newShield(shield, 12*60))
 		} else {
-			shd, _ := exist.(*shield.Tmpl)
+			shd, _ := exist.(*shd)
 			shd.Expires = c.Core.F + 12*60
 		}
 

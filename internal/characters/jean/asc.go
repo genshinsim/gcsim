@@ -41,5 +41,5 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	c.Energy = 16
+	c.AddEnergy("jean-a4", 16)
 }
