@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -37,21 +38,25 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		prob = 1
 	}
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if char.Cooldown(action.ActionSkill) == 0 {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 		if c.Rand.Float64() < prob {

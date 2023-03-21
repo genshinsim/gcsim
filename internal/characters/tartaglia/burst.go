@@ -3,6 +3,7 @@ package tartaglia
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -40,10 +41,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Ranged Stance: Flash of Havoc",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -52,25 +53,36 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	cancels := burstRangedFrames
 	hitmark := burstRangedHitmark
 	cb := c.rangedBurstApplyRiptide
+	center := c.Core.Combat.Player()
+	radius := 6.0
 
-	if c.StatusIsActive(meleeKey) {
+	if c.StatusIsActive(MeleeKey) {
 		ai.Abil = "Melee Stance: Light of Obliteration"
+		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.Mult = meleeBurst[c.TalentLvlBurst()]
 		cancels = burstMeleeFrames
 		hitmark = burstMeleeHitmark
 		cb = c.rtBlastCallback
+		radius = 8
 		if c.Base.Cons >= 6 {
 			c.mlBurstUsed = true
 		}
 	} else {
+		center = c.Core.Combat.PrimaryTarget()
 		c.Core.Tasks.Add(func() {
 			c.AddEnergy("tartaglia-ranged-burst-refund", 20)
 		}, 4)
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), hitmark, hitmark, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(center, nil, radius),
+		hitmark,
+		hitmark,
+		cb,
+	)
 
-	if c.StatusIsActive(meleeKey) {
+	if c.StatusIsActive(MeleeKey) {
 		c.ConsumeEnergy(71)
 		c.SetCDWithDelay(action.ActionBurst, 900, 66)
 	} else {

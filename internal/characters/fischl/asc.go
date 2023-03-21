@@ -1,14 +1,27 @@
 package fischl
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
+// A1 is not implemented:
+// TODO: When Fischl hits Oz with a fully-charged Aimed Shot, Oz brings down Thundering Retribution, dealing AoE Electro DMG equal to 152.7% of the arrow's DMG.
+
+// If your current active character triggers an Electro-related Elemental Reaction when Oz is on the field,
+// the opponent shall be stricken with Thundering Retribution that deals Electro DMG equal to 80% of Fischl's ATK.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+
 	last := 0
-	cb := func(args ...interface{}) bool {
+	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
+	a4cb := func(args ...interface{}) bool {
+
 		ae := args[1].(*combat.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
@@ -26,10 +39,10 @@ func (c *char) a4() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Fischl A4",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupFischl,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupFischl,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.8,
@@ -38,20 +51,30 @@ func (c *char) a4() {
 		// Technically should have a separate snapshot for each attack info?
 		// ai.ModsLog = c.ozSnapshot.Info.ModsLog
 		// A4 uses Oz Snapshot
+
+		// TODO: this should target closest enemy within 15m of "elemental reaction position"
 		c.Core.QueueAttackWithSnap(
 			ai,
 			c.ozSnapshot.Snapshot,
-			combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget),
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.5),
 			3)
-
 		return false
 	}
-	c.Core.Events.Subscribe(event.OnOverload, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnElectroCharged, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnSuperconduct, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnHyperbloom, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnQuicken, cb, "fischl-a4")
-	c.Core.Events.Subscribe(event.OnAggravate, cb, "fischl-a4")
+
+	a4cbNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
+		return a4cb(args...)
+	}
+
+	c.Core.Events.Subscribe(event.OnOverload, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnHyperbloom, a4cb, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnQuicken, a4cbNoGadget, "fischl-a4")
+	c.Core.Events.Subscribe(event.OnAggravate, a4cbNoGadget, "fischl-a4")
 }

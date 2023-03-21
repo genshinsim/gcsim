@@ -5,15 +5,28 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{12}, {8}, {11, 18}, {5, 15, 24, 29}, {21}}
-var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0}, {0, 0, 0, 0.03}, {0.09}}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{12}, {8}, {11, 18}, {5, 15, 24, 29}, {21}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.03, 0}, {0, 0, 0, 0.03}, {0.09}}
+	attackHitboxes        = [][][]float64{
+		{{1.2, 3}},
+		{{1.6, 3.3}},
+		{{1.6, 3.3}, {1.2, 3.3}},
+		{{1.2, 3.3}, {1.2, 3.3}, {1.2, 3.3}, {1.2, 3.3}},
+		{{1.6, 3.3}},
+	}
+)
 
-const normalHitNum = 5
+const (
+	normalHitNum = 5
+	c2Debuff     = "xiangling-c2"
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
@@ -33,46 +46,35 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
+	done := false
+	var c2CB func(a combat.AttackCB)
+	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
+		c2CB = c.c2(done)
+	}
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSpear,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: true,
 		}
+		ap := combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			nil,
+			attackHitboxes[c.NormalCounter][i][0],
+			attackHitboxes[c.NormalCounter][i][1],
+		)
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-				0,
-				0,
-			)
+			c.Core.QueueAttack(ai, ap, 0, 0, c2CB)
 		}, attackHitmarks[c.NormalCounter][i])
-	}
-
-	//if n = 5, add explosion for c2
-	if c.Base.Cons >= 2 && c.NormalCounter == 4 {
-		//No icd, no attack tag, 25 durability
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Oil Meets Fire (C2)",
-			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			Element:    attributes.Pyro,
-			Durability: 25,
-			Mult:       .75,
-		}
-		//TODO: explosion frames
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), 120, 120)
 	}
 
 	defer c.AdvanceNormalIndex()

@@ -3,7 +3,10 @@ package nilou
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -13,23 +16,27 @@ type BountifulCore struct {
 	*gadget.Gadget
 }
 
-func newBountifulCore(c *core.Core, x float64, y float64, a *combat.AttackEvent) *BountifulCore {
+func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *BountifulCore {
 	b := &BountifulCore{
 		srcFrame: c.F,
 	}
 
-	b.Gadget = gadget.New(c, core.Coord{X: x, Y: y, R: 0.2}, combat.GadgetTypDendroCore)
+	b.Gadget = gadget.New(c, p, 2, combat.GadgetTypDendroCore)
 	b.Gadget.Duration = 0.4 * 60
 
 	char := b.Core.Player.ByIndex(a.Info.ActorIndex)
 	explode := func() {
-		ai := reactable.NewBloomAttack(char, b)
-		c.QueueAttack(ai, combat.NewCircleHit(b, 6.5, false, combat.TargettableEnemy), -1, 1)
+		ai, snap := reactable.NewBloomAttack(char, b)
+		ap := combat.NewCircleHitOnTarget(b.Gadget, nil, 6.5)
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		c.QueueAttack(ai, combat.NewCircleHit(b.Gadget, 6.5, true, combat.TargettablePlayer), -1, 1)
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
+		c.QueueAttackWithSnap(ai, snap, ap, 1)
 	}
 	b.Gadget.OnExpiry = explode
 	b.Gadget.OnKill = explode
@@ -41,5 +48,14 @@ func (b *BountifulCore) Tick() {
 	//this is needed since gadget tick
 	b.Gadget.Tick()
 }
+
+func (b *BountifulCore) HandleAttack(atk *combat.AttackEvent) float64 {
+	b.Core.Events.Emit(event.OnGadgetHit, b, atk)
+	return 0
+}
 func (b *BountifulCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (b *BountifulCore) ApplyDamage(*combat.AttackEvent, float64)               {}
+func (b *BountifulCore) SetDirection(trg geometry.Point)                        {}
+func (b *BountifulCore) SetDirectionToClosestEnemy()                            {}
+func (b *BountifulCore) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
+}

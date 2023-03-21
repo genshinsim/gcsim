@@ -3,6 +3,7 @@ package qiqi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -35,10 +36,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Herald of Frost: Initial Damage",
-			AttackTag:          combat.AttackTagElementalArt,
-			ICDTag:             combat.ICDTagElementalArt,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			AttackTag:          attacks.AttackTagElementalArt,
+			ICDTag:             attacks.ICDTagElementalArt,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Cryo,
 			Durability:         25,
 			Mult:               skillInitialDmg[c.TalentLvlSkill()],
@@ -85,7 +86,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		tickAE := &combat.AttackEvent{
 			Info:        aiTick,
 			Snapshot:    snapTick,
-			Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
 			SourceFrame: c.Core.F,
 		}
 
@@ -94,7 +94,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(c.skillDmgTickTask(src, tickAE, 60), 57+7)
 
 		// Apply damage needs to take place after above takes place to ensure stats are handled correctly
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5), 0)
 	}, skillHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 1800, 3) // 30s * 60
@@ -123,6 +123,8 @@ func (c *char) skillDmgTickTask(src int, ae *combat.AttackEvent, lastTickDuratio
 
 		// Clones initial snapshot
 		tick := *ae //deference the pointer here
+		// pattern shouldn't snapshot on attack event creation because the skill follows the player
+		tick.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5)
 
 		if c.Base.Cons >= 1 {
 			tick.Callbacks = append(tick.Callbacks, c.c1)

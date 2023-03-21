@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -38,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("luxurious-sea-lord", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagElementalBurst {
+			if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
 				return val, true
 			}
 			return nil, false
@@ -47,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	tunaDmg := .75 + float64(r)*0.25
 	const icdKey = "sealord-icd"
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -58,23 +59,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+		if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 			return false
 		}
 		char.AddStatus(icdKey, 900, true)
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Luxurious Sea-Lord Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       tunaDmg,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 1, false, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 
 		return false
 	}, fmt.Sprintf("sealord-%v", char.Base.Key.String()))

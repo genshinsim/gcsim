@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -37,12 +38,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	defPer := .3 + float64(r)*.1
-	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
 		//don't do anything if we're in icd period
@@ -58,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			}, 6) //icd starts 6 frames after
 			char.AddStatus(durationKey, 6, false)
 		}
-		damageAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * defPer
+		damageAdd := (char.Base.Def*(1+char.Stat(attributes.DEFP)) + char.Stat(attributes.DEF)) * defPer
 		atk.Info.FlatDmg += damageAdd
 
 		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index).

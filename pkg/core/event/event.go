@@ -3,8 +3,11 @@ package event
 type Event int
 
 const (
-	OnAttackWillLand Event = iota //target, AttackEvent
-	OnDamage                      //target, AttackEvent, amount, crit
+	OnEnemyHit     Event = iota //target, AttackEvent
+	OnPlayerHit                 //target, AttackEvent
+	OnGadgetHit                 //target, AttackEvent
+	OnEnemyDamage               //target, AttackEvent, amount, crit
+	OnGadgetDamage              //target, AttackEvent
 	//reaction related
 	// OnReactionOccured //target, AttackEvent
 	// OnTransReaction   //target, AttackEvent
@@ -14,27 +17,28 @@ const (
 	OnAuraDurabilityDepleted //target, ele
 	// OnReaction               //target, AttackEvent, ReactionType
 	ReactionEventStartDelim
-	OnOverload       //target, AttackEvent
-	OnSuperconduct   //target, AttackEvent
-	OnMelt           //target, AttackEvent
-	OnVaporize       //target, AttackEvent
-	OnFrozen         //target, AttackEvent
-	OnElectroCharged //target, AttackEvent
-	OnSwirlHydro
-	OnSwirlCryo
-	OnSwirlElectro
-	OnSwirlPyro
-	OnCrystallizeHydro
-	OnCrystallizeCryo
-	OnCrystallizeElectro
-	OnCrystallizePyro
-	OnAggravate //target, AttackEvent
-	OnSpread    //target, AttackEvent
-	OnQuicken
-	OnBloom //target, AttackEvent
-	OnHyperbloom
-	OnBurgeon
-	OnBurning //target, AttackEvent
+	OnOverload           //target, AttackEvent
+	OnSuperconduct       //target, AttackEvent
+	OnMelt               //target, AttackEvent
+	OnVaporize           //target, AttackEvent
+	OnFrozen             //target, AttackEvent
+	OnShatter            //target, AttackEvent
+	OnElectroCharged     //target, AttackEvent
+	OnSwirlHydro         //target, AttackEvent
+	OnSwirlCryo          //target, AttackEvent
+	OnSwirlElectro       //target, AttackEvent
+	OnSwirlPyro          //target, AttackEvent
+	OnCrystallizeHydro   //target, AttackEvent
+	OnCrystallizeCryo    //target, AttackEvent
+	OnCrystallizeElectro //target, AttackEvent
+	OnCrystallizePyro    //target, AttackEvent
+	OnAggravate          //target, AttackEvent
+	OnSpread             //target, AttackEvent
+	OnQuicken            //target, AttackEvent
+	OnBloom              //target, AttackEvent
+	OnHyperbloom         //target, AttackEvent
+	OnBurgeon            //target, AttackEvent
+	OnBurning            //target, AttackEvent
 	ReactionEventEndDelim
 	OnDendroCore //Gadget
 	//other stuff
@@ -44,9 +48,8 @@ const (
 	OnParticleReceived //particle
 	OnEnergyChange     //character_received_index, pre_energy, energy_change, src (post-energy available in character_received)
 	OnTargetDied       //target, AttackEvent
-	OnCharacterHit     //nil <- this is for when the character is going to get hit but might be shielded from dmg
-	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount
+	OnPlayerHPDrain    //DrainInfo
 	//ability use
 	OnActionFailed //ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   //ActiveCharIndex, action.Action, param

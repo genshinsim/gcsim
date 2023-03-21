@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -110,17 +111,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 					atk := combat.AttackInfo{
 						ActorIndex:       char.Index,
-						DamageSrc:        c.Combat.Player().Key(), // from player
 						Abil:             "Sea-Dyed Foam",
-						AttackTag:        combat.AttackTagNoneStat,
-						ICDTag:           combat.ICDTagNone,
-						ICDGroup:         combat.ICDGroupDefault,
+						AttackTag:        attacks.AttackTagNoneStat,
+						ICDTag:           attacks.ICDTagNone,
+						ICDGroup:         attacks.ICDGroupDefault,
+						StrikeType:       attacks.StrikeTypeDefault,
 						Element:          attributes.Physical,
 						IgnoreDefPercent: 1,
 						FlatDmg:          s.bubbleHealStacks * .9,
 					}
 					//snapshot -1 since we don't need stats
-					c.QueueAttack(atk, combat.NewCircleHit(c.Combat.Player(), 3, true, combat.TargettableEnemy), -1, 1)
+					c.QueueAttack(atk, combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 6), -1, 1)
 
 					// Reset
 					c.Flags.Custom["OHCActiveChar"] = -1

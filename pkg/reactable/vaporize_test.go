@@ -26,7 +26,7 @@ func TestHydroVaporize(t *testing.T) {
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(trg, 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHitOnTarget(trg, nil, 100),
 	}, 0)
 	c.Tick()
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -34,7 +34,7 @@ func TestHydroVaporize(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg, 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHitOnTarget(trg, nil, 100),
 	}, 0)
 	c.Tick()
 
@@ -68,15 +68,15 @@ func TestPyroVaporize(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(trg, 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHitOnTarget(trg, nil, 100),
 	}, 0)
 	c.Tick()
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
-			Element:    attributes.Hydro,
+			Element:    attributes.Pyro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(trg, 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHitOnTarget(trg, nil, 100),
 	}, 0)
 	c.Tick()
 

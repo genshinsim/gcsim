@@ -3,6 +3,7 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -27,6 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		mult = burstLow[c.TalentLvlBurst()]
 		regen = regenLow[c.TalentLvlBurst()]
 	}
+	c.burstHealCount = 0
 	c.burstHealAmount = player.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Index,
@@ -45,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	var bbcb combat.AttackCBFunc
 
-	if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 2 {
+	if c.Base.Cons >= 2 {
 		bbcb = c.applyBB
 	}
 
@@ -53,15 +55,22 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Soother",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       mult,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, burstHitmark, bbcb, c.burstHealCB)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6),
+		0,
+		burstHitmark,
+		bbcb,
+		c.burstHealCB,
+	)
 
 	c.ConsumeEnergy(68)
 	c.SetCDWithDelay(action.ActionBurst, 900, 62)
@@ -78,5 +87,6 @@ func (c *char) burstHealCB(atk combat.AttackCB) {
 	if c.burstHealCount == 5 {
 		return
 	}
+	c.burstHealCount++
 	c.Core.Player.Heal(c.burstHealAmount)
 }

@@ -1,6 +1,7 @@
 package candace
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -30,9 +31,10 @@ func (c *char) c2() {
 // AoE Hydro DMG equal to 15% of Candace's Max HP. This effect can trigger once
 // every 2.3s and is considered Elemental Burst DMG.
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagNormal {
+		dmg := args[2].(float64)
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {
@@ -50,22 +52,25 @@ func (c *char) c6() {
 		if c.StatusIsActive(c6ICDKey) {
 			return false
 		}
+		if dmg == 0 {
+			return false
+		}
 		c.AddStatus(c6ICDKey, 138, true)
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "The Overflow (C6)",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			FlatDmg:    0.15 * c.MaxHP(),
+			ActorIndex:         c.Index,
+			Abil:               "The Overflow (C6)",
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
+			Element:            attributes.Hydro,
+			Durability:         25,
+			FlatDmg:            0.15 * c.MaxHP(),
 			CanBeDefenseHalted: true,
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy, combat.TargettableGadget),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
 			waveHitmark,
 			waveHitmark,
 		)

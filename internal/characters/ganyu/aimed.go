@@ -3,8 +3,10 @@ package ganyu
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -28,15 +30,15 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		bloom = 24
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Frost Flake Arrow",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Cryo,
 		Durability:           25,
 		Mult:                 ffa[c.TalentLvlAttack()],
@@ -45,7 +47,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-
+	c1cb := c.c1()
 	// TODO: not sure if this works as intended
 	skip := 0
 	if c.Core.Status.Duration(c6Key) > 0 {
@@ -57,10 +59,13 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	// snapshot delay and handles A1
-	// A1 doesn't apply to the first aimed shot
 	c.Core.Tasks.Add(func() {
 		snap := c.Snapshot(&ai)
-		if c.Core.F < c.a1Expiry {
+		// A1:
+		// After firing a Frostflake Arrow, the CRIT Rate of subsequent Frostflake Arrows
+		// and their resulting bloom effects is increased by 20% for 5s.
+		// - doesn't apply to the first aimed shot
+		if c.Base.Ascension >= 1 && c.Core.F < c.a1Expiry {
 			old := snap.Stats[attributes.CR]
 			snap.Stats[attributes.CR] += .20
 			c.Core.Log.NewEvent("a1 adding crit rate", glog.LogCharacterEvent, c.Index).
@@ -69,12 +74,30 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				Write("expiry", c.a1Expiry)
 		}
 
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), travel)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				geometry.Point{Y: -0.5},
+				0.1,
+				1,
+			),
+			travel,
+			c1cb,
+		)
 
 		ai.Abil = "Frost Flake Bloom"
 		ai.Mult = ffb[c.TalentLvlAttack()]
 		ai.HitWeakPoint = false
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), travel+bloom)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
+			travel+bloom,
+			c1cb,
+		)
 
 		// first shot/bloom do not benefit from a1
 		c.a1Expiry = c.Core.F + 60*5

@@ -3,8 +3,10 @@ package aloy
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -27,15 +29,21 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Prophecies of Dawn",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), burstHitmark)
+	c.Core.QueueAttackWithSnap(
+		ai,
+		snap,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 6.5}, 6.5),
+		burstHitmark,
+	)
 
 	c.SetCD(action.ActionBurst, 12*60)
 	c.ConsumeEnergy(2)

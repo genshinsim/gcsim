@@ -1,10 +1,14 @@
 package cyno
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -22,10 +26,11 @@ const (
 func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.AtkSpd] = 0.2
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(c1Key, 600), // 10s
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagNormal {
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(c1Key, 600), // 10s
+		AffectedStat: attributes.AtkSpd,
+		Amount: func() ([]float64, bool) {
+			if c.Core.Player.CurrentState() != action.NormalAttackState {
 				return nil, false
 			}
 			return m, true
@@ -33,45 +38,43 @@ func (c *char) c1() {
 	})
 }
 
+const c2Key = "cyno-c2"
+const c2ICD = "cyno-c2-icd"
+
 // When Cyno's Normal Attacks hit opponents, his Electro DMG Bonus will
 // increase by 10% for 4s. This effect can be triggered once every 0.1s. Max 5
 // stacks.
-func (c *char) c2() {
-	const c2Key = "cyno-c2"
-	const c2Icd = "cyno-c2-icd"
-	stacks := 0
-	m := make([]float64, attributes.EndStatType)
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+func (c *char) makeC2CB() combat.AttackCBFunc {
+	if c.Base.Cons < 2 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
 		}
-		if c.StatusIsActive(c2Icd) {
-			return false
+		if c.StatusIsActive(c2ICD) {
+			return
 		}
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
-		}
+		c.AddStatus(c2ICD, 0.1*60, true)
 
 		if !c.StatModIsActive(c2Key) {
-			stacks = 0
+			c.c2Stacks = 0
 		}
-		stacks++
-		if stacks > 5 {
-			stacks = 5
+		c.c2Stacks++
+		if c.c2Stacks > 5 {
+			c.c2Stacks = 5
 		}
 
+		m := make([]float64, attributes.EndStatType)
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c2Key, 240), // 4s
+			Base:         modifier.NewBaseWithHitlag(c2Key, 4*60),
 			AffectedStat: attributes.ElectroP,
 			Amount: func() ([]float64, bool) {
-				m[attributes.ElectroP] = 0.1 * float64(stacks)
+				m[attributes.ElectroP] = 0.1 * float64(c.c2Stacks)
 				return m, true
 			},
 		})
-		c.AddStatus(c2Icd, 6, true) // 0.1s icd
-		return false
-	}, "cyno-c2")
+	}
 }
 
 // When Cyno is in the Pactsworn Pathclearer state triggered by Sacred Rite:
@@ -99,65 +102,84 @@ func (c *char) c4() {
 
 		return false
 	}
-	c.Core.Events.Subscribe(event.OnOverload, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnElectroCharged, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnSuperconduct, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnQuicken, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnAggravate, restore, "cyno-c4")
+
+	restoreNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+		return restore(args...)
+	}
+	c.Core.Events.Subscribe(event.OnOverload, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnElectroCharged, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSuperconduct, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnQuicken, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnAggravate, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnHyperbloom, restore, "cyno-c4")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, restore, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, restoreNoGadget, "cyno-c4")
 }
 
 // After using Sacred Rite: Wolf's Swiftness or triggering the Judication effect of the Passive Talent "Featherfall Judgment,"
-// Cyno will gain 4 stacks of the "Day of the Jackal" effect. When he hits opponents with Normal Attacks,
-// he will consume 1 stack of "Day of the Jackal" to fire off one Duststalker Bolt.
+// Cyno will gain 4 stacks of the "Day of the Jackal" effect.
+func (c *char) c6Init() {
+	if c.Base.Cons < 6 {
+		return
+	}
+	c.AddStatus(c6Key, 8*60, true)
+	c.c6Stacks += 4
+	if c.c6Stacks > 8 {
+		c.c6Stacks = 8
+	}
+}
+
+// When he hits opponents with Normal Attacks, he will consume 1 stack of "Day of the Jackal" to fire off one Duststalker Bolt.
 // "Day of the Jackal" lasts for 8s. Max 8 stacks. It will be canceled once Pactsworn Pathclearer ends.
 // A maximum of 1 Duststalker Bolt can be unleashed this way every 0.4s.
 // You must first unlock the Passive Talent "Featherfall Judgment."
-func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+func (c *char) makeC6CB() combat.AttackCBFunc {
+	if c.Base.Cons < 6 || c.c6Stacks == 0 || !c.StatusIsActive(c6Key) {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
 		}
 		if c.c6Stacks == 0 {
-			return false
-		}
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
+			return
 		}
 		if !c.StatusIsActive(c6Key) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6ICDKey) {
-			return false
+			return
 		}
-
-		c.AddStatus(c6ICDKey, 24, true)
+		c.AddStatus(c6ICDKey, 0.4*60, true)
+		c.c6Stacks--
 
 		// technically should use ICDGroupCynoC6, but it's just reskinned standard ICD
 		ai := combat.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         "Raiment: Just Scales (C6)",
-			AttackTag:    combat.AttackTagElementalArt,
-			ICDTag:       combat.ICDTagElementalArt,
-			ICDGroup:     combat.ICDGroupDefault,
-			StrikeType:   combat.StrikeTypeSlash,
+			AttackTag:    attacks.AttackTagElementalArt,
+			ICDTag:       attacks.ICDTagElementalArt,
+			ICDGroup:     attacks.ICDGroupDefault,
+			StrikeType:   attacks.StrikeTypeSlash,
 			Element:      attributes.Electro,
 			Durability:   25,
 			IsDeployable: true,
 			Mult:         1.0,
-			FlatDmg:      c.Stat(attributes.EM) * 2.5, // this is the A4
+			FlatDmg:      c.a4Bolt(),
 		}
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.3,
+			),
 			0,
 			0,
 		)
-
-		c.c6Stacks--
-		return false
-	}, "cyno-c6")
+	}
 }

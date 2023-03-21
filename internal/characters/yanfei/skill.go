@@ -3,14 +3,19 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 32
+const (
+	skillHitmark   = 32
+	particleICDKey = "yanfei-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(46) // E -> N1
@@ -25,7 +30,10 @@ func init() {
 // Summons flames that deal AoE Pyro DMG. Opponents hit by the flames will grant Yanfei the maximum number of Scarlet Seals.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	done := false
-	addSeal := func(_ combat.AttackCB) {
+	addSeal := func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}
@@ -42,18 +50,28 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Signed Edict",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	// TODO: Not sure of snapshot timing
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, skillHitmark, addSeal)
-
-	c.Core.QueueParticle("yanfei", 3, attributes.Pyro, skillHitmark+c.ParticleDelay)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			3.5,
+		),
+		0,
+		skillHitmark,
+		c.particleCB,
+		addSeal,
+	)
 
 	c.SetCDWithDelay(action.ActionSkill, 540, 28)
 
@@ -63,4 +81,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Pyro, c.ParticleDelay)
 }

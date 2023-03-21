@@ -5,9 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -15,7 +18,12 @@ var (
 	skillFrames       [][]int
 	skillHitmarks     = []int{24, 28, 46}
 	skillHitlagStages = []float64{.12, .12, .16}
+	skillHitboxes     = [][]float64{{3, 3.5}, {2.2}, {3.5, 4}}
+	skillOffsets      = []float64{0, 1.2, -0.3}
+	skillFanAngles    = []float64{360, 300, 360}
 )
+
+const particleICDKey = "diluc-particle-icd"
 
 func init() {
 	skillFrames = make([][]int, 3)
@@ -54,21 +62,36 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// C6: After casting Searing Onslaught, the next 2 Normal Attacks within the
 	// next 6s will have their DMG and ATK SPD increased by 30%.
 	if c.Base.Cons >= 6 {
-		count := 0
+		c.c6Count = 0
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.3
-		m[attributes.AtkSpd] = 0.3
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("diluc-c6", 360),
+			Base: modifier.NewBaseWithHitlag("diluc-c6-dmg", 360),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal {
+				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
-				if count > 1 {
+				if c.c6Count > 1 {
 					return nil, false
 				}
-				count++
+				c.c6Count++
 				return m, true
+			},
+		})
+
+		mAtkSpd := make([]float64, attributes.EndStatType)
+		mAtkSpd[attributes.AtkSpd] = 0.3
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("diluc-c6-speed", 360),
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() ([]float64, bool) {
+				if c.Core.Player.CurrentState() != action.NormalAttackState {
+					return nil, false
+				}
+				if c.c6Count > 1 {
+					return nil, false
+				}
+				return mAtkSpd, true
 			},
 		})
 	}
@@ -82,10 +105,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Searing Onslaught %v", c.eCounter),
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.eCounter][c.TalentLvlSkill()],
@@ -93,19 +116,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   skillHitlagStages[c.eCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget),
-		hitmark,
-		hitmark,
+	ap := combat.NewCircleHitOnTargetFanAngle(
+		c.Core.Combat.Player(),
+		geometry.Point{Y: skillOffsets[c.eCounter]},
+		skillHitboxes[c.eCounter][0],
+		skillFanAngles[c.eCounter],
 	)
-
-	var orb float64 = 1
-	if c.Core.Rand.Float64() < 0.33 {
-		orb = 2
+	if c.eCounter == 0 || c.eCounter == 2 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: skillOffsets[c.eCounter]},
+			skillHitboxes[c.eCounter][0],
+			skillHitboxes[c.eCounter][1],
+		)
 	}
-	c.Core.QueueParticle("diluc", orb, attributes.Pyro, hitmark+c.ParticleDelay)
+	c.Core.QueueAttack(ai, ap, hitmark, hitmark, c.particleCB)
 
 	// add a timer to activate c4
 	if c.Base.Cons >= 4 {
@@ -137,4 +162,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[idx][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 1.0
+	if c.Core.Rand.Float64() < 0.33 {
+		count = 2
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }

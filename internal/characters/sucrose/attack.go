@@ -5,12 +5,16 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{17, 18, 28, 28}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{17, 18, 28, 28}
+	attackRadius   = []float64{1, 1, 1, 2}
+)
 
 const normalHitNum = 4
 
@@ -35,27 +39,34 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
+	var c4cb combat.AttackCBFunc
+	if c.Base.Cons >= 4 {
+		c4cb = c.makeC4Callback()
+	}
+
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			attackRadius[c.NormalCounter],
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
+		c4cb,
 	)
 
 	defer c.AdvanceNormalIndex()
-
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
 
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),

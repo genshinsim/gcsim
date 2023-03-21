@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -33,9 +34,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	cd := 960 - 60*r
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-
+		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -48,20 +49,24 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Rand.Float64() > 0.5 {
 			return false
 		}
+		if dmg == 0 {
+			return false
+		}
 		// add a new action that deals % dmg immediately
 		// superconduct attack
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Fillet Blade Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       2.0 + 0.4*float64(r),
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 
 		// trigger cd
 		char.AddStatus(icdKey, cd, true)

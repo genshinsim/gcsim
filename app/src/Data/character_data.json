@@ -99,6 +99,11 @@
     "element": "cryo",
     "weapon_class": "claymore"
   },
+  "faruzan": {
+    "rarity": 4,
+    "element": "anemo",
+    "weapon_class": "bow"
+  },
   "fischl": {
     "rarity": 4,
     "element": "electro",
@@ -164,6 +169,11 @@
     "element": "electro",
     "weapon_class": "sword"
   },
+  "layla": {
+    "rarity": 4,
+    "element": "cryo",
+    "weapon_class": "sword"
+  },
   "lisa": {
     "rarity": 4,
     "element": "electro",
@@ -192,6 +202,11 @@
   "mona": {
     "rarity": 5,
     "element": "hydro",
+    "weapon_class": "catalyst"
+  },
+  "nahida": {
+    "rarity": 5,
+    "element": "dendro",
     "weapon_class": "catalyst"
   },
   "nilou": {
@@ -268,6 +283,11 @@
     "rarity": 5,
     "element": "anemo",
     "weapon_class": "bow"
+  },
+  "wanderer": {
+    "rarity": 5,
+    "element": "anemo",
+    "weapon_class": "catalyst"
   },
   "xiangling": {
     "rarity": 4,

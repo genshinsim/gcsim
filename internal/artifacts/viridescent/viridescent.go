@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -50,10 +51,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return 0, false
 				}
 				switch ai.AttackTag {
-				case combat.AttackTagSwirlCryo:
-				case combat.AttackTagSwirlElectro:
-				case combat.AttackTagSwirlHydro:
-				case combat.AttackTagSwirlPyro:
+				case attacks.AttackTagSwirlCryo:
+				case attacks.AttackTagSwirlElectro:
+				case attacks.AttackTagSwirlHydro:
+				case attacks.AttackTagSwirlPyro:
 				default:
 					return 0, false
 				}
@@ -77,12 +78,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				t.AddResistMod(enemy.ResistMod{
+				t.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag(key, 10*60),
 					Ele:   ele,
 					Value: -0.4,
 				})
-				c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Index())
+				c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
 
 				return false
 			}
@@ -95,7 +96,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		// Additional event for on damage proc on secondary targets
 		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
 		// Possibly closure related? Not sure
-		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
@@ -113,20 +114,20 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			ele := atk.Info.Element
 			key := "vv" + ele.String()
 			switch atk.Info.AttackTag {
-			case combat.AttackTagSwirlCryo:
-			case combat.AttackTagSwirlElectro:
-			case combat.AttackTagSwirlHydro:
-			case combat.AttackTagSwirlPyro:
+			case attacks.AttackTagSwirlCryo:
+			case attacks.AttackTagSwirlElectro:
+			case attacks.AttackTagSwirlHydro:
+			case attacks.AttackTagSwirlPyro:
 			default:
 				return false
 			}
 
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag(key, 10*60),
 				Ele:   ele,
 				Value: -0.4,
 			})
-			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Index())
+			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
 
 			return false
 		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))

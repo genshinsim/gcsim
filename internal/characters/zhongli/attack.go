@@ -5,15 +5,22 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var attackFrames [][]int
-var attackEarliestCancel = []int{11, 9, 8, 16, 4, 29}
-var attackHitmarks = [][]int{{11}, {9}, {8}, {16}, {11, 18, 23, 29}, {29}}
-var attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0.02}, {0, 0, 0, 0}, {0.02}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {true}, {false, false, false, false}, {true}}
+var (
+	attackFrames          [][]int
+	attackEarliestCancel  = []int{11, 9, 8, 16, 4, 29}
+	attackHitmarks        = [][]int{{11}, {9}, {8}, {16}, {11, 18, 23, 29}, {29}}
+	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0.02}, {0, 0, 0, 0}, {0.02}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {true}, {false, false, false, false}, {true}}
+	attackHitboxes        = [][]float64{{1.5, 3.8}, {2}, {1, 1.5}, {1.7}, {1, 4}, {1, 4}}
+	attackOffsets         = []float64{0, 0.8, 0.5, 1.8, -1, 0.2}
+	attackFanAngles       = []float64{360, 180, 360, 360, 360, 360}
+)
 
 const normalHitNum = 6
 
@@ -49,24 +56,37 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSpear,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
-			FlatDmg:            0.0139 * c.MaxHP(),
+			FlatDmg:            c.a4Attacks(),
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		//the multihit part generates no hitlag so this is fine
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i],
+		if c.NormalCounter == 1 || c.NormalCounter == 4 {
+			ai.StrikeType = attacks.StrikeTypeSlash
+		}
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackFanAngles[c.NormalCounter],
 		)
+		if c.NormalCounter == 0 || c.NormalCounter == 2 || c.NormalCounter == 4 || c.NormalCounter == 5 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
+			)
+		}
+		//the multihit part generates no hitlag so this is fine
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()

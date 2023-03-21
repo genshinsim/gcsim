@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -49,14 +50,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		})
 		return false
 	}
-
-	c.Events.Subscribe(event.OnOverload, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSuperconduct, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnElectroCharged, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnQuicken, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnAggravate, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	buffNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+		return buff(args...)
+	}
+	c.Events.Subscribe(event.OnOverload, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSuperconduct, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnElectroCharged, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnQuicken, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnAggravate, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnHyperbloom, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSwirlElectro, buff, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlElectro, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 
 	return w, nil
 }

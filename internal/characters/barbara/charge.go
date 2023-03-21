@@ -3,9 +3,12 @@ package barbara
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var chargeFrames []int
@@ -26,16 +29,20 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
 	done := false
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}
@@ -55,7 +62,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	var c4CB combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		energyCount := 0
-		c4CB = func(_ combat.AttackCB) {
+		c4CB = func(a combat.AttackCB) {
+			if a.Target.Type() != targets.TargettableEnemy {
+				return
+			}
 			// check for healing
 			if c.Core.Status.Duration(barbSkillKey) > 0 && energyCount < 5 {
 				// regen energy
@@ -73,12 +83,14 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	// TODO: Not sure of snapshot timing
-	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy),
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 3),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
 		cb,
-		c4CB)
+		c4CB,
+	)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

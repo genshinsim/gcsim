@@ -9,7 +9,12 @@ import (
 
 func fieldsCheck(fields []string, expecting int, category string) error {
 	if len(fields) < expecting {
-		return fmt.Errorf("bad %v condition; invalid num of fields; expecting at least %v; got %v", category, expecting, len(fields))
+		return fmt.Errorf(
+			"bad %v condition; invalid num of fields; expecting at least %v; got %v",
+			category,
+			expecting,
+			len(fields),
+		)
 	}
 	return nil
 }
@@ -33,8 +38,10 @@ func Eval(c *core.Core, fields []string) (any, error) {
 		return evalGadgets(c, fields)
 	case "keys":
 		return evalKeys(c, fields)
+	case "state":
+		return int(c.Player.CurrentState()), nil
 	default:
-		//check if it's a char name; if so check char custom eval func
+		// check if it's a char name; if so check char custom eval func
 		name := fields[0]
 		if key, ok := shortcut.CharNameToKey[name]; ok {
 			return evalCharacter(c, key, fields)

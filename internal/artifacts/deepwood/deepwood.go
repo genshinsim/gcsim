@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -44,7 +45,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 	if count >= 4 {
-		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
@@ -54,11 +55,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold && atk.Info.AttackTag != combat.AttackTagElementalBurst {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return false
 			}
 
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("dm-4pc", 8*60),
 				Ele:   attributes.Dendro,
 				Value: -0.3,

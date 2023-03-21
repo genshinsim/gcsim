@@ -3,16 +3,15 @@ package ningguang
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-var burstFrames []int
-
 var (
-	burstHitmarks       = []int{62, 97, 106, 110, 116, 124}
-	burstScreenHitmarks []int
+	burstFrames   []int
+	burstHitmarks = []int{62, 97, 106, 110, 116, 124}
 )
 
 func init() {
@@ -32,16 +31,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starshatter",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               burst[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 0.5)
 
 	// fires 6 normally
 	jade, ok := p["jade"]
@@ -49,12 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		jade = 6
 	}
 	for i := 0; i < jade; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			0,
-			burstHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, 0, burstHitmarks[i]+travel)
 	}
 	// if jade screen is active add 6 jades
 	if c.Core.Constructs.Destroy(c.lastScreen) {
@@ -64,12 +59,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		ai.Abil = "Starshatter (Jade Screen Gems)"
 		for i := 0; i < screen; i++ {
-			c.Core.QueueAttackWithSnap(
-				ai,
-				c.skillSnapshot,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-				burstHitmarks[len(burstHitmarks)-1]+30+travel,
-			) // TODO: figure out jade screen hitmarks
+			c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, ap, burstHitmarks[len(burstHitmarks)-1]+30+travel) // TODO: figure out jade screen hitmarks
 		}
 	}
 

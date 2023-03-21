@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -22,7 +23,6 @@ type char struct {
 	qStarted int
 	a4stacks int
 	a4buff   []float64
-	c6Src    int
 	c6Count  int
 }
 
@@ -58,9 +58,6 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
 	return nil
 }
 
@@ -75,17 +72,17 @@ func (c *char) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		// Anemo conversion and dmg bonus application to normal, charged, and plunge attacks
 		// Also handle burst CA ICD change to share with Normal
 		switch a.AttackTag {
-		case combat.AttackTagNormal:
+		case attacks.AttackTagNormal:
 			// QN1-1 has different hitlag from N1-1
 			if a.Abil == "Normal 0" {
 				// this also overwrites N1-2 HitlagHaltFrames but they have the same value so it's fine
 				a.HitlagHaltFrames = 0.01 * 60
 			}
-		case combat.AttackTagExtra:
+		case attacks.AttackTagExtra:
 			// Q-CA has different hitlag from CA
-			a.ICDTag = combat.ICDTagNormalAttack
+			a.ICDTag = attacks.ICDTagNormalAttack
 			a.HitlagHaltFrames = 0.04 * 60
-		case combat.AttackTagPlunge:
+		case attacks.AttackTagPlunge:
 		default:
 			return ds
 		}

@@ -1,19 +1,22 @@
 package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-func calcSwirlAtkDurability(consumed, src combat.Durability) combat.Durability {
+func calcSwirlAtkDurability(consumed, src reactions.Durability) reactions.Durability {
 	if consumed < src {
 		return 1.25*(0.5*consumed-1) + 25
 	}
 	return 1.25*(src-1) + 25
 }
 
-func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, tag combat.AttackTag, icd combat.ICDTag, dur combat.Durability, charIndex int) {
+func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur reactions.Durability, charIndex int) {
 	//swirl triggers two attacks; one self with no gauge
 	//and one aoe with gauge
 	ai := combat.AttackInfo{
@@ -22,23 +25,20 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 		Abil:             string(rt),
 		AttackTag:        tag,
 		ICDTag:           icd,
-		ICDGroup:         combat.ICDGroupReactionA,
+		ICDGroup:         attacks.ICDGroupReactionA,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          ele,
 		IgnoreDefPercent: 1,
 	}
 	char := r.core.Player.ByIndex(charIndex)
 	em := char.Stat(attributes.EM)
-	ai.FlatDmg = 0.6 * calcReactionDmg(char, ai, em)
-	snap := combat.Snapshot{
-		CharLvl:  char.Base.Level,
-		ActorEle: char.Base.Element,
-	}
-	snap.Stats[attributes.EM] = em
+	flatdmg, snap := calcReactionDmg(char, ai, em)
+	ai.FlatDmg = 0.6 * flatdmg
 	//first attack is self no hitbox
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
+		combat.NewSingleTargetHit(r.self.Key()),
 		1,
 	)
 	//next is aoe - hydro swirls never do AoE damage, as they only spread the element
@@ -47,20 +47,22 @@ func (r *Reactable) queueSwirl(rt combat.ReactionType, ele attributes.Element, t
 	}
 	ai.Durability = dur
 	ai.Abil = string(rt) + " (aoe)"
+	ap := combat.NewCircleHitOnTarget(r.self, nil, 5)
+	ap.IgnoredKeys = []targets.TargetKey{r.self.Key()}
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHit(r.self, 5, false, combat.TargettableEnemy, combat.TargettableGadget),
+		ap,
 		1,
 	)
 }
 
-func (r *Reactable) trySwirlElectro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierElectro] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Electro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -69,10 +71,10 @@ func (r *Reactable) trySwirlElectro(a *combat.AttackEvent) {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlElectro, r.self, a)
 	r.queueSwirl(
-		combat.SwirlElectro,
+		reactions.SwirlElectro,
 		attributes.Electro,
-		combat.AttackTagSwirlElectro,
-		combat.ICDTagSwirlElectro,
+		attacks.AttackTagSwirlElectro,
+		attacks.ICDTagSwirlElectro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
@@ -80,18 +82,19 @@ func (r *Reactable) trySwirlElectro(a *combat.AttackEvent) {
 	//hydro in case of EC
 	if a.Info.Durability > ZeroDur && r.Durability[ModifierHydro] > ZeroDur {
 		//trigger swirl hydro
-		r.trySwirlHydro(a)
+		r.TrySwirlHydro(a)
 		//check EC clean up
 		r.checkEC()
 	}
+	return true
 }
 
-func (r *Reactable) trySwirlHydro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierHydro] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Hydro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -100,21 +103,22 @@ func (r *Reactable) trySwirlHydro(a *combat.AttackEvent) {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlHydro, r.self, a)
 	r.queueSwirl(
-		combat.SwirlHydro,
+		reactions.SwirlHydro,
 		attributes.Hydro,
-		combat.AttackTagSwirlHydro,
-		combat.ICDTagSwirlHydro,
+		attacks.AttackTagSwirlHydro,
+		attacks.ICDTagSwirlHydro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
+	return true
 }
 
-func (r *Reactable) trySwirlCryo(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierCryo] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Cryo, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -123,21 +127,22 @@ func (r *Reactable) trySwirlCryo(a *combat.AttackEvent) {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
-		combat.SwirlCryo,
+		reactions.SwirlCryo,
 		attributes.Cryo,
-		combat.AttackTagSwirlCryo,
-		combat.ICDTagSwirlCryo,
+		attacks.AttackTagSwirlCryo,
+		attacks.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
 	)
+	return true
 }
 
-func (r *Reactable) trySwirlPyro(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierPyro] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Pyro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -147,21 +152,22 @@ func (r *Reactable) trySwirlPyro(a *combat.AttackEvent) {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlPyro, r.self, a)
 	r.queueSwirl(
-		combat.SwirlPyro,
+		reactions.SwirlPyro,
 		attributes.Pyro,
-		combat.AttackTagSwirlPyro,
-		combat.ICDTagSwirlPyro,
+		attacks.AttackTagSwirlPyro,
+		attacks.ICDTagSwirlPyro,
 		atkDur,
 		a.Info.ActorIndex,
 	)
+	return true
 }
 
-func (r *Reactable) trySwirlFrozen(a *combat.AttackEvent) {
+func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	if r.Durability[ModifierFrozen] < ZeroDur {
-		return
+		return false
 	}
 	rd := r.reduce(attributes.Frozen, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
@@ -170,12 +176,13 @@ func (r *Reactable) trySwirlFrozen(a *combat.AttackEvent) {
 	//queue an attack first
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
-		combat.SwirlCryo,
+		reactions.SwirlCryo,
 		attributes.Cryo,
-		combat.AttackTagSwirlCryo,
-		combat.ICDTagSwirlCryo,
+		attacks.AttackTagSwirlCryo,
+		attacks.ICDTagSwirlCryo,
 		atkDur,
 		a.Info.ActorIndex,
 	)
 	r.checkFreeze()
+	return true
 }

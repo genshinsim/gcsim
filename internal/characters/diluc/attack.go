@@ -5,14 +5,19 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{24, 39, 26, 49}
 	attackHitlagHaltFrame = []float64{.1, .09, .09, .12}
+	attackHitboxes        = [][]float64{{2}, {2, 3}, {2}, {2, 3}}
+	attackOffsets         = []float64{0.5, -1, 0.5, -0.5}
+	attackFanAngles       = []float64{300, 360, 300, 360}
 )
 
 const normalHitNum = 4
@@ -35,10 +40,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagNormal,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -46,13 +51,21 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+	ap := combat.NewCircleHitOnTargetFanAngle(
+		c.Core.Combat.Player(),
+		geometry.Point{Y: attackOffsets[c.NormalCounter]},
+		attackHitboxes[c.NormalCounter][0],
+		attackFanAngles[c.NormalCounter],
 	)
+	if c.NormalCounter == 1 || c.NormalCounter == 3 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackHitboxes[c.NormalCounter][1],
+		)
+	}
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 
 	defer func() {
 		c.AdvanceNormalIndex()

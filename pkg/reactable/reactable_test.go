@@ -8,9 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
@@ -28,8 +32,9 @@ func testCore() *core.Core {
 	})
 	//add player (first target)
 	trg := &testTarget{}
-	trg.Target = target.New(c, 0, 0, 1)
+	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
+	trg.typ = targets.TargettablePlayer
 	trg.Reactable.Init(trg, c)
 	c.Combat.SetPlayer(trg)
 
@@ -69,23 +74,23 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 	return c, r
 }
 
-func makeAOEAttack(ele attributes.Element, dur combat.Durability) *combat.AttackEvent {
+func makeAOEAttack(c *core.Core, ele attributes.Element, dur reactions.Durability) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100, false, combat.TargettableEnemy),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}
 }
 
-func makeSTAttack(ele attributes.Element, dur combat.Durability, trg combat.TargetKey) *combat.AttackEvent {
+func makeSTAttack(ele attributes.Element, dur reactions.Durability, trg targets.TargetKey) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
 			Durability: dur,
 		},
-		Pattern: combat.NewDefSingleTarget(trg, combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg),
 	}
 
 }
@@ -94,13 +99,21 @@ type testTarget struct {
 	*Reactable
 	*target.Target
 	src  int
-	typ  combat.TargettableType
+	typ  targets.TargettableType
 	last combat.AttackEvent
 }
 
-func (t *testTarget) Type() combat.TargettableType { return t.typ }
-func (t *testTarget) AttackWillLand(a combat.AttackPattern, src combat.TargetKey) (bool, string) {
-	return true, ""
+func (t *testTarget) Type() targets.TargettableType { return t.typ }
+
+func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
+	t.Attack(atk, nil)
+	//delay damage event to end of the frame
+	t.Core.Combat.Tasks.Add(func() {
+		//apply the damage
+		t.applyDamage(atk, 1)
+		t.Core.Combat.Events.Emit(event.OnEnemyDamage, t, atk, 1.0, false)
+	}, 0)
+	return 1
 }
 
 func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
@@ -113,7 +126,7 @@ func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 	return 0, false
 }
 
-func (t *testTarget) ApplyDamage(atk *combat.AttackEvent, amt float64) {
+func (t *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
 	if !atk.Reacted {
 		t.Reactable.AttachOrRefill(atk)
 	}
@@ -121,11 +134,10 @@ func (t *testTarget) ApplyDamage(atk *combat.AttackEvent, amt float64) {
 
 func addTargetToCore(c *core.Core) *testTarget {
 	trg := &testTarget{}
-	trg.Target = target.New(c, 0, 0, 1)
+	trg.Target = target.New(c, geometry.Point{X: 0, Y: 0}, 1)
 	trg.Reactable = &Reactable{}
 	trg.Reactable.Init(trg, c)
 	c.Combat.AddEnemy(trg)
-	trg.SetIndex(c.Combat.EnemyCount() - 1)
 	return trg
 }
 
@@ -252,7 +264,7 @@ func TestTick(t *testing.T) {
 		trg.Tick()
 	}
 	//calculate expected duration
-	decay := combat.Durability(20.0 / (6*25 + 420))
+	decay := reactions.Durability(20.0 / (6*25 + 420))
 	left := 20 - 100*decay
 	life := int((left + 40) / decay)
 	// log.Println(decay, left, life)
@@ -333,7 +345,7 @@ func (target *testTarget) allNil(t *testing.T) bool {
 	return ok
 }
 
-func durApproxEqual(expect, result, tol combat.Durability) bool {
+func durApproxEqual(expect, result, tol reactions.Durability) bool {
 	if expect > result {
 		return expect-result < tol
 	}

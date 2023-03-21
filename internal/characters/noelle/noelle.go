@@ -3,6 +3,7 @@ package noelle
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -19,7 +20,6 @@ type char struct {
 	shieldTimer int
 	a4Counter   int
 	burstBuff   []float64
-	healDone    bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -47,9 +47,9 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	if c.StatModIsActive(burstBuffKey) {
 		//infusion to attacks only
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagPlunge:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}

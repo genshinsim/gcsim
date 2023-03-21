@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -14,12 +16,9 @@ var (
 	attackHitmarks        = [][]int{{14}, {17}, {13, 22}, {27}}
 	attackHitlagHaltFrame = [][]float64{{0.01}, {0.06}, {0, 0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{false}, {true}, {false, true}, {true}}
-	attackStrikeType      = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSpear, combat.StrikeTypeSpear},
-		{combat.StrikeTypeSlash},
-	}
+	attackHitboxes        = [][]float64{{1.8}, {1.8, 2.7}, {2.2, 3.6}, {2.3}}
+	attackOffsets         = []float64{0.5, -0.2, 0, 1}
+	attackFanAngles       = []float64{270, 360, 360, 360}
 )
 
 const normalHitNum = 4
@@ -40,30 +39,50 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.attackB(p) // go to burst mode attacks
 	}
+	c2CB := c.makeC2CB()
+	c6CB := c.makeC6CB()
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         attackStrikeType[c.NormalCounter][i],
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i],
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-
+		if c.NormalCounter == 2 {
+			ai.StrikeType = attacks.StrikeTypeSpear
+		}
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+			attackFanAngles[c.NormalCounter],
+		)
+		if c.NormalCounter == 1 || c.NormalCounter == 2 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
+			)
+		}
 		c.Core.QueueAttack(
 			ai,
-			c.attackPattern(c.NormalCounter),
+			ap,
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i],
+			c2CB,
+			c6CB,
 		)
 	}
 
@@ -77,32 +96,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) attackPattern(attackIndex int) combat.AttackPattern {
-	switch attackIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 1.8, false, combat.TargettableEnemy, combat.TargettableGadget)
-	case 1:
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			1.35,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
-		) // supposed to be box x=1.8,z=2.7
-	case 2:
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			1.8,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
-		) // both hits supposed to be box x=2.2,z=3.6
-	case 3:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2.3, false, combat.TargettableEnemy, combat.TargettableGadget)
-	}
-	panic("unreachable code")
-}
-
 const burstHitNum = 5
 
 var (
@@ -110,13 +103,8 @@ var (
 	attackBHitmarks        = [][]int{{12}, {14}, {18}, {5, 14}, {40}}
 	attackBHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.03}, {0.01, 0.03}, {0.05}}
 	attackBDefHalt         = [][]bool{{false}, {false}, {false}, {false, false}, {true}}
-	attackBStrikeType      = [][]combat.StrikeType{
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeSlash},
-		{combat.StrikeTypeBlunt},
-		{combat.StrikeTypeSlash, combat.StrikeTypeSlash},
-		{combat.StrikeTypeBlunt},
-	}
+	attackBHitboxes        = [][]float64{{2}, {2}, {2.5, 6}, {2.5}, {3.5}}
+	attackBOffsets         = []float64{1, 1, -0.2, 0.8, 1.5}
 )
 
 func init() {
@@ -141,25 +129,43 @@ func init() {
 func (c *char) attackB(p map[string]int) action.ActionInfo {
 	c.tryBurstPPSlide(attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1])
 
+	c2CB := c.makeC2CB()
+	c6CB := c.makeC6CB()
 	for i, mult := range attackB[c.normalBCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Pactsworn Pathclearer %v", c.normalBCounter),
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         attackBStrikeType[c.normalBCounter][i],
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackBHitlagHaltFrame[c.normalBCounter][i],
 			CanBeDefenseHalted: attackBDefHalt[c.normalBCounter][i],
 			Mult:               mult[c.TalentLvlBurst()],
-			FlatDmg:            c.Stat(attributes.EM) * 1.5, // this is A4
+			FlatDmg:            c.a4NormalAttack(),
 			IgnoreInfusion:     true,
 		}
+		if c.normalBCounter == 2 || c.normalBCounter == 4 {
+			ai.StrikeType = attacks.StrikeTypeBlunt
+		}
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackBOffsets[c.normalBCounter]},
+			attackBHitboxes[c.normalBCounter][0],
+		)
+		if c.normalBCounter == 2 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackBOffsets[c.normalBCounter]},
+				attackBHitboxes[c.normalBCounter][0],
+				attackBHitboxes[c.normalBCounter][1],
+			)
+		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, c.attackBPattern(c.normalBCounter), 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, c2CB, c6CB)
 		}, attackBHitmarks[c.normalBCounter][i])
 	}
 
@@ -177,32 +183,4 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1],
 		State:           action.NormalAttackState,
 	}
-}
-
-func (c *char) attackBPattern(attackIndex int) combat.AttackPattern {
-	switch attackIndex {
-	case 0:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget)
-	case 1:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget)
-	case 2:
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			3.0,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
-		) // supposed to be box x=2.5,z=6.0
-	case 3: // both hits are 2.5m radius circles
-		return combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			2.5,
-			false,
-			combat.TargettableEnemy,
-			combat.TargettableGadget,
-		)
-	case 4:
-		return combat.NewCircleHit(c.Core.Combat.Player(), 3.5, false, combat.TargettableEnemy, combat.TargettableGadget)
-	}
-	panic("unreachable code")
 }

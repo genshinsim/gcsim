@@ -5,12 +5,18 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var chargeFrames [][]int
-var chargeHitmarks = []int{89, 51, 24, 71}
+var (
+	chargeFrames   [][]int
+	chargeHitmarks = []int{89, 51, 24, 71}
+	chargeHitboxes = [][][]float64{{{3}, {3.8, 5.5}, {3.8, 5.5}, {3.5}}, {{4}, {5, 7}, {5, 7}, {4.3}}}
+	chargeOffsets  = [][]float64{{0, -2, -2, 0.6}, {0, -2.5, -2.5, 0.8}}
+)
 
 func init() {
 	chargeFrames = make([][]int, EndSlashType)
@@ -162,10 +168,10 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Physical,
 		Durability:         25,
 		HitlagHaltFrames:   0.10 * 60, // defaults to CA0/CAF hitlag
@@ -198,25 +204,33 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	case FinalSlash:
 		ai.Mult = akFinal[c.TalentLvlAttack()]
 	}
+
 	// apply a4
 	if c.slashState != SaichiSlash {
 		c.a4(&ai)
 	}
 
-	// check burst status for radius
-	// TODO: proper hitbox
-	r := 1.0
-	if c.StatModIsActive(burstBuffKey) {
-		r = 3
+	// to index hitbox
+	burstIndex := 0
+	if c.StatusIsActive(burstBuffKey) {
+		burstIndex = 1
+	}
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+		chargeHitboxes[burstIndex][c.slashState][0],
+	)
+	if c.slashState == LeftSlash || c.slashState == RightSlash {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+			chargeHitboxes[burstIndex][c.slashState][0],
+			chargeHitboxes[burstIndex][c.slashState][1],
+		)
 	}
 	// TODO: hitmark is not getting adjusted for atk speed
 	// TODO: Does Itto CA snapshot at the start of CA? (rn assuming he does)
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
-		0,
-		chargeHitmarks[c.slashState]-windup,
-	)
+	c.Core.QueueAttack(ai, ap, 0, chargeHitmarks[c.slashState]-windup)
 
 	// C6: has a 50% chance to not consume stacks of Superlative Superstrength.
 	if !c.c6Proc {

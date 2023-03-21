@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -24,8 +25,8 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-//Normal Attack hits on opponents increase Charged Attack DMG by 16% for 6s. Charged Attack hits on opponents
-//increase ATK by 8% for 6s.
+// Normal Attack hits on opponents increase Charged Attack DMG by 16% for 6s. Charged Attack hits on opponents
+// increase ATK by 8% for 6s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -36,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	n := make([]float64, attributes.EndStatType)
 	n[attributes.ATKP] = .06 + float64(r)*0.02
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -45,17 +46,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		switch atk.Info.AttackTag {
-		case combat.AttackTagNormal:
+		case attacks.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("dodoco-ca", 360),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					if atk.Info.AttackTag != combat.AttackTagExtra {
+					if atk.Info.AttackTag != attacks.AttackTagExtra {
 						return nil, false
 					}
 					return m, true
 				},
 			})
-		case combat.AttackTagExtra:
+		case attacks.AttackTagExtra:
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("dodoco-atk", 360),
 				AffectedStat: attributes.NoStat,

@@ -4,9 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -35,7 +37,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const icdKey = "skyward-atlas-icd"
 	icd := 1800 // 30s * 60
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	travel, ok := p.Params["travel"]
+	if !ok {
+		travel = 10
+	}
+
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
@@ -43,7 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal {
+		if ae.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -52,20 +59,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Rand.Float64() < 0.5 {
 			return false
 		}
-		trg := args[0].(combat.Target)
+		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index)
+
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Atlas Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       atk,
 		}
 		snap := char.Snapshot(&ai)
-		for i := 0; i < 6; i++ {
-			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), i*150)
+
+		for i := 1; i <= 6; i++ {
+			c.Tasks.Add(func() {
+				enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 15), nil)
+				if enemy != nil {
+					c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(enemy, nil, 1.2), travel)
+				}
+			}, i*147)
 		}
 		char.AddStatus(icdKey, icd, true)
 		return false

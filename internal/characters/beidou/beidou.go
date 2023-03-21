@@ -33,7 +33,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	c.burstProc()
 	if c.Base.Cons >= 4 {
-		c.c4()
+		c.c4Init()
 	}
 	return nil
 }

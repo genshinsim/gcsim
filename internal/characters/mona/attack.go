@@ -5,12 +5,16 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{11, 14, 25, 27}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{11, 14, 25, 27}
+	attackRadius   = []float64{1, 1, 1, 2}
+)
 
 const normalHitNum = 4
 
@@ -34,18 +38,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagMonaWaterDamage,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagMonaWaterDamage,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			attackRadius[c.NormalCounter],
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 		c.c2,

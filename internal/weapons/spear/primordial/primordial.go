@@ -38,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	perStackBuff := float64(r)*0.007 + 0.025
 	dmgBuffAtMax := 0.09 + float64(r)*0.03
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		//check if char is correct?
 		if atk.Info.ActorIndex != char.Index {

@@ -1,6 +1,7 @@
 package klee
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -22,16 +23,18 @@ func (c *char) c1(delay int) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash C1",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               1.2 * burst[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, delay)
+	// TODO: should center on target hit by attack that triggered c1
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 0, delay)
 }
 
 func (c *char) c2(a combat.AttackCB) {
@@ -42,7 +45,7 @@ func (c *char) c2(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(enemy.DefMod{
+	e.AddDefMod(combat.DefMod{
 		Base:  modifier.NewBaseWithHitlag("kleec2", 10*60),
 		Value: -0.233,
 	})

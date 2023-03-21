@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -46,35 +47,38 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const icdKey = "skyward-harp-icd"
 	cd := 270 - 30*r
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		trg := args[0].(combat.Target)
-
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if c.Player.Active() != char.Index {
 			return false
 		}
-
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		if c.Rand.Float64() > prob {
 			return false
 		}
+		if dmg == 0 {
+			return false
+		}
 
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Harp Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       1.25,
 		}
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 2, true, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 
 		char.AddStatus(icdKey, cd, true)
 

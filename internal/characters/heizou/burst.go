@@ -3,9 +3,11 @@ package heizou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -26,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstTaggedCount = 0
 	burstCB := func(a combat.AttackCB) {
 		//check if enemy
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		//max 4 tagged
@@ -43,30 +45,39 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	auraCheck := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris (Aura check)",
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 		Durability: 0,
 		Mult:       0,
 		NoImpulse:  true,
 	}
-	c.Core.QueueAttack(auraCheck, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy), burstHitmark, burstHitmark, burstCB)
+	// should only hit enemies
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
+	ap.SkipTargets[targets.TargettableGadget] = true
+	c.Core.QueueAttack(auraCheck, ap, burstHitmark, burstHitmark, burstCB)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fudou Style Vacuum Slugger",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	//TODO: does heizou burst snapshot?
 	//TODO: heizou burst travel time parameter
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), 4, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	//TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(action.ActionBurst, 12*60)
@@ -93,10 +104,10 @@ func (c *char) irisDmg(t combat.Target) {
 	aiAbs := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.NoElement,
 		Durability: 25,
 		Mult:       burstIris[c.TalentLvlBurst()],
@@ -113,8 +124,8 @@ func (c *char) irisDmg(t combat.Target) {
 			"No valid aura detected, omiting iris",
 			glog.LogCharacterEvent,
 			c.Index,
-		).Write("target", t.Index())
+		).Write("target", t.Key())
 	}
 
-	c.Core.QueueAttack(aiAbs, combat.NewCircleHit(t, 2.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 40) //if any of this is wrong blame Koli
+	c.Core.QueueAttack(aiAbs, combat.NewCircleHitOnTarget(t, nil, 2.5), 0, 40) // if any of this is wrong blame Koli
 }

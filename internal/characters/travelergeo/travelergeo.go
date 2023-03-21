@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -16,6 +17,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	skillCD     int
+	burstArea   combat.AttackPattern // needed for c1
 	c1TickCount int
 	gender      int
 }
@@ -33,6 +36,8 @@ func NewChar(gender int) core.NewCharacterFunc {
 		c.SkillCon = 5
 		c.NormalHitNum = normalHitNum
 
+		c.skillCD = 6 * 60
+
 		w.Character = &c
 
 		return nil
@@ -40,6 +45,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 }
 
 func (c *char) Init() error {
+	c.a1()
 	// setup number of C1 ticks
 	c.c1TickCount = 15
 	if c.Base.Cons >= 6 {

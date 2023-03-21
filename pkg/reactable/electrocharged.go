@@ -3,15 +3,22 @@ package reactable
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
-func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
+func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
+	}
+	//if there's still frozen left don't try to ec
+	//game actively rejects ec reaction if frozen is present
+	if r.Durability[ModifierFrozen] > ZeroDur {
+		return false
 	}
 
 	//adding ec or hydro just adds to durability
@@ -19,7 +26,7 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	case attributes.Hydro:
 		//if there's no existing hydro or electro then do nothing
 		if r.Durability[ModifierElectro] < ZeroDur {
-			return
+			return false
 		}
 		//add to hydro durability
 		//TODO: this shouldn't happen here
@@ -27,12 +34,12 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	case attributes.Electro:
 		//if there's no existing hydro or electro then do nothing
 		if r.Durability[ModifierHydro] < ZeroDur {
-			return
+			return false
 		}
 		//add to electro durability
 		r.attachOrRefillNormalEle(ModifierElectro, a.Info.Durability)
 	default:
-		return
+		return false
 	}
 
 	a.Reacted = true
@@ -43,43 +50,45 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.ElectroCharged),
-		AttackTag:        combat.AttackTagECDamage,
-		ICDTag:           combat.ICDTagECDamage,
-		ICDGroup:         combat.ICDGroupReactionB,
+		Abil:             string(reactions.ElectroCharged),
+		AttackTag:        attacks.AttackTagECDamage,
+		ICDTag:           attacks.ICDTagECDamage,
+		ICDGroup:         attacks.ICDGroupReactionB,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Electro,
 		IgnoreDefPercent: 1,
 	}
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	em := char.Stat(attributes.EM)
-	atk.FlatDmg = 1.2 * calcReactionDmg(char, atk, em)
-	r.ecSnapshot = atk
+	flatdmg, snap := calcReactionDmg(char, atk, em)
+	atk.FlatDmg = 1.2 * flatdmg
+	r.ecAtk = atk
+	r.ecSnapshot = snap
 
 	//if this is a new ec then trigger tick immediately and queue up ticks
 	//otherwise do nothing
 	//TODO: need to check if refresh ec triggers new tick immediately or not
 	if r.ecTickSrc == -1 {
 		r.ecTickSrc = r.core.F
-
-		r.core.QueueAttack(
+		r.core.QueueAttackWithSnap(
+			r.ecAtk,
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
-			-1,
+			combat.NewSingleTargetHit(r.self.Key()),
 			10,
 		)
 
 		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
 		//subscribe to wane ticks
-		r.core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			//target should be first, then snapshot
 			n := args[0].(combat.Target)
 			a := args[1].(*combat.AttackEvent)
 			dmg := args[2].(float64)
 			//TODO: there's no target index
-			if n.Index() != r.self.Index() {
+			if n.Key() != r.self.Key() {
 				return false
 			}
-			if a.Info.AttackTag != combat.AttackTagECDamage {
+			if a.Info.AttackTag != attacks.AttackTagECDamage {
 				return false
 			}
 			//ignore if this dmg instance has been wiped out due to icd
@@ -96,11 +105,12 @@ func (r *Reactable) tryAddEC(a *combat.AttackEvent) {
 				r.waneEC()
 			}, 6)
 			return false
-		}, fmt.Sprintf("ec-%v", r.self.Index()))
+		}, fmt.Sprintf("ec-%v", r.self.Key()))
 	}
 
 	//ticks are 60 frames since last tick
 	//taking tick dmg resets last tick
+	return true
 }
 
 func (r *Reactable) waneEC() {
@@ -113,7 +123,7 @@ func (r *Reactable) waneEC() {
 		-1,
 	).
 		Write("aura", "ec").
-		Write("target", r.self.Index()).
+		Write("target", r.self.Key()).
 		Write("hydro", r.Durability[ModifierHydro]).
 		Write("electro", r.Durability[ModifierElectro])
 
@@ -124,13 +134,13 @@ func (r *Reactable) waneEC() {
 func (r *Reactable) checkEC() {
 	if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 		r.ecTickSrc = -1
-		r.core.Events.Unsubscribe(event.OnDamage, fmt.Sprintf("ec-%v", r.self.Index()))
+		r.core.Events.Unsubscribe(event.OnEnemyDamage, fmt.Sprintf("ec-%v", r.self.Key()))
 		r.core.Log.NewEvent("ec expired",
 			glog.LogElementEvent,
 			-1,
 		).
 			Write("aura", "ec").
-			Write("target", r.self.Index()).
+			Write("target", r.self.Key()).
 			Write("hydro", r.Durability[ModifierHydro]).
 			Write("electro", r.Durability[ModifierElectro])
 
@@ -150,10 +160,10 @@ func (r *Reactable) nextTick(src int) func() {
 		}
 
 		//so ec is active, which means both aura must still have value > 0; so we can do dmg
-		r.core.QueueAttack(
+		r.core.QueueAttackWithSnap(
+			r.ecAtk,
 			r.ecSnapshot,
-			combat.NewDefSingleTarget(r.self.Key(), r.self.Type()),
-			-1,
+			combat.NewSingleTargetHit(r.self.Key()),
 			0,
 		)
 

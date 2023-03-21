@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -30,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	atk := 1.8 + float64(r)*0.6
 	const icdKey = "prototype-archaic-icd"
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		if ae.Info.ActorIndex != char.Index {
 			return false
@@ -41,7 +42,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < 0.5 {
@@ -49,16 +50,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Prototype Archaic Proc",
-				AttackTag:  combat.AttackTagWeaponSkill,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				StrikeType: combat.StrikeTypeDefault,
+				AttackTag:  attacks.AttackTagWeaponSkill,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
 				Element:    attributes.Physical,
 				Durability: 100,
 				Mult:       atk,
 			}
 			trg := args[0].(combat.Target)
-			c.QueueAttack(ai, combat.NewCircleHit(trg, .6, false, combat.TargettableEnemy), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, 1)
 		}
 		return false
 	}, fmt.Sprintf("forstbearer-%v", char.Base.Key.String()))

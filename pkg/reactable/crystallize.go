@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 type CrystallizeShield struct {
@@ -12,32 +13,46 @@ type CrystallizeShield struct {
 	emBonus float64
 }
 
-func (r *Reactable) tryCrystallize(a *combat.AttackEvent) {
-	//can't double crystallize it looks like
-	//freeze can trigger hydro first
-	//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
+func (r *Reactable) TryCrystallizeElectro(a *combat.AttackEvent) bool {
 	if r.Durability[ModifierElectro] > ZeroDur {
-		r.tryCrystallizeWithEle(a, attributes.Electro, combat.CrystallizeElectro, event.OnCrystallizeElectro)
+		return r.tryCrystallizeWithEle(a, attributes.Electro, reactions.CrystallizeElectro, event.OnCrystallizeElectro)
 	}
-	if r.Durability[ModifierHydro] > ZeroDur {
-		r.tryCrystallizeWithEle(a, attributes.Hydro, combat.CrystallizeHydro, event.OnCrystallizeHydro)
-	}
-	if r.Durability[ModifierCryo] > ZeroDur {
-		r.tryCrystallizeWithEle(a, attributes.Cryo, combat.CrystallizeCryo, event.OnCrystallizeCryo)
-	}
-	if r.Durability[ModifierPyro] > ZeroDur || r.Durability[ModifierBurning] > ZeroDur {
-		r.tryCrystallizeWithEle(a, attributes.Pyro, combat.CrystallizePyro, event.OnCrystallizePyro)
-		r.burningCheck()
-	}
-	if r.Durability[ModifierFrozen] > ZeroDur {
-		r.tryCrystallizeWithEle(a, attributes.Frozen, combat.CrystallizeCryo, event.OnCrystallizeCryo)
-	}
-
+	return false
 }
 
-func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt combat.ReactionType, evt event.Event) {
+func (r *Reactable) TryCrystallizeHydro(a *combat.AttackEvent) bool {
+	if r.Durability[ModifierHydro] > ZeroDur {
+		return r.tryCrystallizeWithEle(a, attributes.Hydro, reactions.CrystallizeHydro, event.OnCrystallizeHydro)
+	}
+	return false
+}
+
+func (r *Reactable) TryCrystallizeCryo(a *combat.AttackEvent) bool {
+	if r.Durability[ModifierCryo] > ZeroDur {
+		return r.tryCrystallizeWithEle(a, attributes.Cryo, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
+	}
+	return false
+}
+
+func (r *Reactable) TryCrystallizePyro(a *combat.AttackEvent) bool {
+	if r.Durability[ModifierPyro] > ZeroDur || r.Durability[ModifierBurning] > ZeroDur {
+		reacted := r.tryCrystallizeWithEle(a, attributes.Pyro, reactions.CrystallizePyro, event.OnCrystallizePyro)
+		r.burningCheck()
+		return reacted
+	}
+	return false
+}
+
+func (r *Reactable) TryCrystallizeFrozen(a *combat.AttackEvent) bool {
+	if r.Durability[ModifierFrozen] > ZeroDur {
+		return r.tryCrystallizeWithEle(a, attributes.Frozen, reactions.CrystallizeCryo, event.OnCrystallizeCryo)
+	}
+	return false
+}
+
+func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.Element, rt reactions.ReactionType, evt event.Event) bool {
 	if a.Info.Durability < ZeroDur {
-		return
+		return false
 	}
 	//grab current snapshot for shield
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
@@ -63,7 +78,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	case ele == attributes.Frozen:
 		r.checkFreeze()
 	}
-
+	return true
 }
 
 func NewCrystallizeShield(typ attributes.Element, src int, lvl int, em float64, expiry int) *CrystallizeShield {

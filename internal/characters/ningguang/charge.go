@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -15,7 +16,7 @@ var (
 	chargeHitmarks     []int
 	chargeJadeHitmarks []int
 	chargeC6Hitmarks   []int
-	chargeOptions  = map[attackType][]attackType{
+	chargeOptions      = map[attackType][]attackType{
 		attackTypeLeft:  {attackTypeRight, attackTypeTwirl},
 		attackTypeRight: {attackTypeLeft, attackTypeTwirl},
 		attackTypeTwirl: {attackTypeLeft, attackTypeRight},
@@ -88,10 +89,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Charge (%s)", chargeType),
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagExtraAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -106,7 +107,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			1.5,
+		),
 		chargeHitmarks[chargeType]-windup,
 		chargeHitmarks[chargeType]-windup+travel,
 	)
@@ -114,16 +120,17 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Charge Gem (%s)", chargeType),
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               jade[c.TalentLvlAttack()],
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 0.5)
 
 	jadeHitmarks := chargeJadeHitmarks
 	if c.jadeCount == 7 {
@@ -132,7 +139,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i := 0; i < c.jadeCount; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			ap,
 			jadeHitmarks[chargeType]-windup,
 			jadeHitmarks[chargeType]-windup+travel,
 		)

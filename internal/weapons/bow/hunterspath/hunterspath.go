@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -16,7 +17,7 @@ import (
 
 const (
 	buffKey = "hunterspath-tireless-hunt"
-	icdKey = "hunterspath-icd"
+	icdKey  = "hunterspath-icd"
 )
 
 func init() {
@@ -54,12 +55,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	caBoost := 1.2 + 0.4*float64(r)
 	procCount := 0
-	c.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagExtra {
+		if atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
@@ -73,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if !char.StatusIsActive(buffKey) {
 			return false
 		}
-		baseDmgAdd := atk.Snapshot.Stats[attributes.EM] * caBoost
+		baseDmgAdd := char.Stat(attributes.EM) * caBoost
 		atk.Info.FlatDmg += baseDmgAdd
 		procCount -= 1
 		if procCount <= 0 {

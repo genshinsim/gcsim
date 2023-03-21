@@ -1,6 +1,7 @@
 package nilou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -25,7 +26,7 @@ const (
 // is considered DMG dealt by Dendro Cores produced by Bloom.
 // Should the party not meet the conditions for this Passive Talent, any existing Golden Chalice’s Bounty effects will be canceled.
 func (c *char) a1() {
-	if !c.onlyBloomTeam {
+	if c.Base.Ascension < 1 || !c.onlyBloomTeam {
 		return
 	}
 
@@ -46,8 +47,7 @@ func (c *char) a1() {
 			return false
 		}
 
-		x, y := g.Gadget.Pos()
-		b := newBountifulCore(c.Core, x, y, atk)
+		b := newBountifulCore(c.Core, g.Gadget.Pos(), atk)
 		b.Gadget.SetKey(g.Gadget.Key())
 		c.Core.Combat.ReplaceGadget(g.Key(), b)
 		//prevent blowing up
@@ -57,16 +57,12 @@ func (c *char) a1() {
 		return false
 	}, "nilou-a1-cores")
 
-	c.Core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		t, ok := args[0].(combat.Target)
-		if !ok {
+		if atk.Info.Element != attributes.Dendro {
 			return false
 		}
-		if t.Type() != combat.TargettablePlayer || atk.Info.Element != attributes.Dendro {
-			return false
-		}
-		char := c.Core.Player.ByIndex(t.Index())
+		char := c.Core.Player.ActiveChar()
 		if !char.StatusIsActive(a1Status) {
 			return false
 		}
@@ -91,11 +87,15 @@ func (c *char) a1() {
 // by Golden Chalice’s Bounty to increase by 9%.
 // The maximum increase in Bountiful Core DMG that can be achieved this way is 400%.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	for _, this := range c.Core.Player.Chars() {
+		// TODO: a4 should be an extra buff
 		this.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				if ai.AttackTag != combat.AttackTagBloom {
+				if ai.AttackTag != attacks.AttackTagBloom {
 					return 0, false
 				}
 

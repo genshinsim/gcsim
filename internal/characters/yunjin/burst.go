@@ -3,6 +3,7 @@ package yunjin
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -29,15 +30,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Cliffbreaker's Banner",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), burstHitmark, burstHitmark)
 
 	// Reset number of burst triggers to 30
 	for _, char := range c.Core.Player.Chars() {
@@ -66,10 +67,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 func (c *char) burstProc() {
 	// Add Flying Cloud Flag Formation as a pre-damage hook
-	c.Core.Events.Subscribe(event.OnAttackWillLand, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 
-		if ae.Info.AttackTag != combat.AttackTagNormal {
+		if ae.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
@@ -81,13 +82,7 @@ func (c *char) burstProc() {
 			return false
 		}
 
-		finalBurstBuff := burstBuff[c.TalentLvlBurst()]
-		if c.partyElementalTypes == 4 {
-			finalBurstBuff += .115
-		} else {
-			finalBurstBuff += 0.025 * float64(c.partyElementalTypes)
-		}
-
+		finalBurstBuff := burstBuff[c.TalentLvlBurst()] + c.a4()
 		stats, _ := c.Stats()
 		dmgAdded := (c.Base.Def*(1+stats[attributes.DEFP]) + stats[attributes.DEF]) * finalBurstBuff
 		ae.Info.FlatDmg += dmgAdded

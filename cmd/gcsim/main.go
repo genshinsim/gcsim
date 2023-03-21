@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -11,6 +13,8 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"runtime/pprof"
+	"strings"
 	"sync"
 	"time"
 
@@ -27,7 +31,6 @@ type opts struct {
 	config       string
 	out          string //file result name
 	gz           bool
-	prof         bool
 	serve        bool
 	nobrowser    bool
 	keepserving  bool
@@ -35,6 +38,8 @@ type opts struct {
 	verbose      bool
 	options      string
 	debugMinMax  bool
+	cpuprofile   string
+	memprofile   string
 }
 
 // command line tool; following options are available:
@@ -43,10 +48,9 @@ func main() {
 	var opt opts
 	var version bool
 	flag.BoolVar(&version, "version", false, "check gcsim version (git hash)")
-	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use; default config.txt")
+	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use")
 	flag.StringVar(&opt.out, "out", "", "output result to file? supply file path (otherwise empty string for disabled). default disabled")
 	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require out flag")
-	flag.BoolVar(&opt.prof, "p", false, "run cpu profile; default false")
 	flag.BoolVar(&opt.serve, "s", false, "serve file to viewer (local). default false")
 	flag.BoolVar(&opt.nobrowser, "nb", false, "disable opening default browser")
 	flag.BoolVar(&opt.keepserving, "ks", false, "keep serving same file without terminating web server")
@@ -60,16 +64,42 @@ func main() {
 - sim_iter (default = 350): RECOMMENDED TO NOT TOUCH. Number of iterations used when optimizing. Only change (increase) this if you are working with a team with extremely high standard deviation (>25% of mean)
 - tol_mean (default = 0.015): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS mean used in ER optimization
 - tol_sd (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization`)
+	flag.StringVar(&opt.cpuprofile, "cpuprofile", "", `write cpu profile to a file. supply file path (otherwise empty string for disabled). 
+can be viewed in the browser via "go tool pprof -http=localhost:3000 cpu.prof" (insert your desired host/port/filename, requires Graphviz)`)
+	flag.StringVar(&opt.memprofile, "memprofile", "", `write memory profile to a file. supply file path (otherwise empty string for disabled). 
+can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (insert your desired host/port/filename, requires Graphviz)`)
 
 	flag.Parse()
+
+	_, err := os.Stat(opt.config)
+	usedCLI := false
+	flag.Visit(func(f *flag.Flag) {
+		usedCLI = true
+	})
+	if errors.Is(err, os.ErrNotExist) && !usedCLI {
+		fmt.Printf("The file %s does not exist.\n", opt.config)
+		fmt.Println("What is the filepath of the config you would like to run?")
+		in := bufio.NewReader(os.Stdin)
+		line, _ := in.ReadString('\n')
+		opt.config = strings.TrimSpace(line)
+		opt.serve = true
+	}
+
+	if opt.cpuprofile != "" {
+		f, err := os.Create(opt.cpuprofile)
+		if err != nil {
+			log.Fatal("could not create CPU profile: ", err)
+		}
+		defer f.Close() // error handling omitted for example
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatal("could not start CPU profile: ", err)
+		}
+		defer pprof.StopCPUProfile()
+	}
 
 	if version {
 		fmt.Println(sha1ver)
 		return
-	}
-
-	if opt.prof {
-		// defer profile.Start(profile.ProfilePath("./"), profile.CPUProfile).Stop()
 	}
 
 	if opt.serve {
@@ -119,6 +149,18 @@ func main() {
 			}
 		}
 		serverDone.Wait()
+	}
+
+	if opt.memprofile != "" {
+		f, err := os.Create(fmt.Sprintf(opt.memprofile))
+		if err != nil {
+			log.Fatal("could not create memory profile: ", err)
+		}
+		defer f.Close() // error handling omitted for example
+		runtime.GC()    // get up-to-date statistics
+		if err := pprof.WriteHeapProfile(f); err != nil {
+			log.Fatal("could not write memory profile: ", err)
+		}
 	}
 }
 

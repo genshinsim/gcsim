@@ -1,10 +1,11 @@
-package reactable_test
+﻿package reactable_test
 
 import (
 	"fmt"
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -20,9 +21,9 @@ func TestBurningTicks(t *testing.T) {
 	}
 	//expecting 8 ticks: https://www.youtube.com/watch?v=PdZ6Qxo7pSY
 	count := 0
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
+		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 		}
 		return false
@@ -34,7 +35,7 @@ func TestBurningTicks(t *testing.T) {
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 70)
 	//tighnari skill at 200
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -42,7 +43,7 @@ func TestBurningTicks(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 200)
 	//lisa 250
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -50,7 +51,7 @@ func TestBurningTicks(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 250)
 
 	//burning starts ticking at 200 and ticks every 15 frames
@@ -92,9 +93,9 @@ func TestBurningQuickenFuel(t *testing.T) {
 	//https://www.youtube.com/watch?v=En3Ki_vVgR0
 	count := 0
 	countByActor := []int{0, 0}
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
+		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 			countByActor[ae.Info.ActorIndex]++
 		}
@@ -106,7 +107,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 290)
 	//beidou e should apply hitlag here
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -114,7 +115,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 327)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -122,7 +123,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 			Durability: 25,
 			ActorIndex: 0,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 396)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -130,14 +131,14 @@ func TestBurningQuickenFuel(t *testing.T) {
 			Durability: 25,
 			ActorIndex: 1,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 462)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 100,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 536)
 
 	f := make(map[event.Event]int)
@@ -205,49 +206,49 @@ func TestPyroDendroCoexist(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 121)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 133)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 195)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 202)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 249)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 327)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 344)
 	//pyro ended 546, dendro ended 689
 
@@ -282,28 +283,28 @@ func TestDendroDecayTry1(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 155)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 168)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 50,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 230)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 263)
 
 	f := make(map[event.Event]int)
@@ -340,21 +341,21 @@ func TestDendroDecayTry2(t *testing.T) {
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 80)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 440)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 453)
 
 	f := make(map[event.Event]int)
@@ -391,28 +392,28 @@ func TestQuickenBurningDecay(t *testing.T) {
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 61)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 128)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 188)
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
-		Pattern: combat.NewDefSingleTarget(trg[0].Key(), combat.TargettableEnemy),
+		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 206)
 
 	f := make(map[event.Event]int)

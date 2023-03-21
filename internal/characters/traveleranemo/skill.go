@@ -3,12 +3,22 @@ package traveleranemo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillPressFrames [][]int
-var skillHoldDelayFrames [][]int
+var (
+	skillPressFrames     [][]int
+	skillHoldDelayFrames [][]int
+)
+
+const (
+	pressParticleICDKey = "traveleranemo-press-particle-icd"
+	holdParticleICDKey  = "traveleranemo-hold-particle-icd"
+)
 
 func init() {
 	// Tap E
@@ -51,16 +61,22 @@ func (c *char) SkillPress() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex (Tap)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skillInitialStorm[c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 6, 100),
+		hitmark,
+		hitmark,
+		c.pressParticleCB,
+	)
 
-	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.ParticleDelay)
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 
 	return action.ActionInfo{
@@ -71,18 +87,30 @@ func (c *char) SkillPress() action.ActionInfo {
 	}
 }
 
+func (c *char) pressParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pressParticleICDKey) {
+		return
+	}
+	c.AddStatus(pressParticleICDKey, 0.6*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
+}
+
 func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	c.eAbsorb = attributes.NoElement
-	c.eICDTag = combat.ICDTagNone
-	c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.eICDTag = attacks.ICDTagNone
+	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3)
 
 	aiCut := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Cutting (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skillInitialCutting[c.TalentLvlSkill()],
@@ -90,7 +118,8 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	aiCutAbs := aiCut
 	aiCutAbs.Abil = "Palm Vortex Initial Cutting Absorbed (Hold)"
-	aiCutAbs.ICDTag = combat.ICDTagNone
+	aiCutAbs.ICDTag = attacks.ICDTagNone
+	aiCutAbs.StrikeType = attacks.StrikeTypeDefault
 	aiCutAbs.Element = attributes.NoElement
 	aiCutAbs.Mult = skillInitialCuttingAbsorb[c.TalentLvlSkill()]
 
@@ -103,13 +132,23 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	hitmark := firstTick
 	for i := 0; i < holdTicks; i += 1 {
 
-		c.Core.QueueAttack(aiCut, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), hitmark, hitmark)
+		c.Core.QueueAttack(
+			aiCut,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
+			hitmark,
+			hitmark,
+		)
 		if i > 1 {
 			c.Core.Tasks.Add(func() {
 				if c.eAbsorb != attributes.NoElement {
 					aiMaxCutAbs.Element = c.eAbsorb
 					aiMaxCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiMaxCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+					c.Core.QueueAttack(
+						aiMaxCutAbs,
+						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3.6),
+						0,
+						0,
+					)
 				}
 				//check if absorbed
 			}, hitmark)
@@ -118,7 +157,12 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				if c.eAbsorb != attributes.NoElement {
 					aiCutAbs.Element = c.eAbsorb
 					aiCutAbs.ICDTag = c.eICDTag
-					c.Core.QueueAttack(aiCutAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+					c.Core.QueueAttack(
+						aiCutAbs,
+						combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
+						0,
+						0,
+					)
 				}
 				//check if absorbed
 			}, hitmark)
@@ -140,9 +184,10 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	aiStorm := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Storm (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skillInitialStorm[c.TalentLvlSkill()],
@@ -150,10 +195,11 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	aiStormAbs := aiStorm
 	aiStormAbs.Abil = "Palm Vortex Initial Storm Absorbed (Hold)"
-	aiStormAbs.ICDTag = combat.ICDTagNone
+	aiStormAbs.ICDTag = attacks.ICDTagNone
 	aiStormAbs.Element = attributes.NoElement
 	aiStormAbs.Mult = skillInitialStormAbsorb[c.TalentLvlSkill()]
 
+	var particleCB combat.AttackCBFunc
 	// it does max storm when there are 2 or more ticks
 	if holdTicks >= 2 {
 		aiStorm.Mult = skillMaxStorm[c.TalentLvlSkill()]
@@ -161,24 +207,30 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 		aiStormAbs.Mult = skillMaxStormAbsorb[c.TalentLvlSkill()]
 		aiStormAbs.Abil = "Palm Vortex Max Storm Absorbed (Hold)"
-
-		count := 3.0
-		if c.Core.Rand.Float64() < 0.33 {
-			count = 4
-		}
-		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, hitmark+c.ParticleDelay)
+		particleCB = c.holdParticleCB
 		c.SetCDWithDelay(action.ActionSkill, 8*60, hitmark-5)
 	} else {
-		c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, hitmark+c.ParticleDelay)
+		particleCB = c.pressParticleCB
 		c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 	}
 
-	c.Core.QueueAttack(aiStorm, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(
+		aiStorm,
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 6, 100),
+		hitmark,
+		hitmark,
+		particleCB,
+	)
 	c.Core.Tasks.Add(func() {
 		if c.eAbsorb != attributes.NoElement {
 			aiStormAbs.Element = c.eAbsorb
 			aiStormAbs.ICDTag = c.eICDTag
-			c.Core.QueueAttack(aiStormAbs, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+			c.Core.QueueAttack(
+				aiStormAbs,
+				combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 6, 100),
+				0,
+				0,
+			)
 		}
 		//check if absorbed
 	}, hitmark)
@@ -191,6 +243,21 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionDash] + hitmark, // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 0.6*60, true)
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.33 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -217,16 +284,16 @@ func (c *char) absorbCheckE(src, count, max int) func() {
 		if count == max {
 			return
 		}
-		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.absorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
+		c.eAbsorb = c.Core.Combat.AbsorbCheck(c.eAbsorbCheckLocation, attributes.Cryo, attributes.Pyro, attributes.Hydro, attributes.Electro)
 		switch c.eAbsorb {
 		case attributes.Cryo:
-			c.eICDTag = combat.ICDTagElementalArtCryo
+			c.eICDTag = attacks.ICDTagElementalArtCryo
 		case attributes.Pyro:
-			c.eICDTag = combat.ICDTagElementalArtPyro
+			c.eICDTag = attacks.ICDTagElementalArtPyro
 		case attributes.Electro:
-			c.eICDTag = combat.ICDTagElementalArtElectro
+			c.eICDTag = attacks.ICDTagElementalArtElectro
 		case attributes.Hydro:
-			c.eICDTag = combat.ICDTagElementalArtHydro
+			c.eICDTag = attacks.ICDTagElementalArtHydro
 		case attributes.NoElement:
 			//otherwise queue up
 			c.Core.Tasks.Add(c.absorbCheckE(src, count+1, max), 18)

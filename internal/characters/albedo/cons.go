@@ -1,6 +1,7 @@
 package albedo
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -28,19 +29,22 @@ func (c *char) c4(lastConstruct int) func() {
 			return
 		}
 
-		// apply C4 buff to active char for 1s
-		active := c.Core.Player.ActiveChar()
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.DmgP] = 0.3
-		active.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("albedo-c4", 60), // 1s
-			Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagPlunge {
-					return nil, false
-				}
-				return m, true
-			},
-		})
+		// apply C4 buff to active char for 1s if within skill area
+		inSkillArea := c.Core.Combat.Player().IsWithinArea(c.skillArea)
+		if inSkillArea {
+			active := c.Core.Player.ActiveChar()
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.DmgP] = 0.3
+			active.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("albedo-c4", 60), // 1s
+				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+					if atk.Info.AttackTag != attacks.AttackTagPlunge {
+						return nil, false
+					}
+					return m, true
+				},
+			})
+		}
 
 		// check again in 0.3s
 		c.Core.Tasks.Add(c.c4(lastConstruct), 18)
@@ -60,8 +64,10 @@ func (c *char) c6(lastConstruct int) func() {
 			return
 		}
 
-		// apply C6 buff to active char for 1s if they are protected by crystallize
-		if c.Core.Player.Shields.Get(shield.ShieldCrystallize) != nil {
+		// apply C6 buff to active char for 1s if they are protected by crystallize and within the skill area
+		crystallizeShield := c.Core.Player.Shields.Get(shield.ShieldCrystallize) != nil
+		inSkillArea := c.Core.Combat.Player().IsWithinArea(c.skillArea)
+		if crystallizeShield && inSkillArea {
 			active := c.Core.Player.ActiveChar()
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.DmgP] = 0.17

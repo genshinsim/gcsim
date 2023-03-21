@@ -3,6 +3,7 @@ package yaemiko
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -25,19 +26,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Great Secret Art: Tenko Kenshin",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       burst[0][c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 7),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	ai.Abil = "Tenko Thunderbolt"
 	ai.Mult = burst[1][c.TalentLvlBurst()]
-	c.kitsuneBurst(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget))
+	c.kitsuneBurst(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 7))
 
 	c.ConsumeEnergy(2)
 	c.SetCD(action.ActionBurst, 22*60)

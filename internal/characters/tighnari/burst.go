@@ -3,6 +3,7 @@ package tighnari
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -32,32 +33,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Tanglevine Shaft",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1)
+
 	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			burstRelease,
-			burstHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, burstRelease, burstHitmarks[i]+travel)
 	}
 
 	ai.Abil = "Secondary Tanglevine Shaft"
 	ai.Mult = burstSecond[c.TalentLvlBurst()]
 	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-			burstHitmarks[i]+travel,
-			burstSecondHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, burstHitmarks[i]+travel, burstSecondHitmarks[i]+travel)
 	}
 
 	c.ConsumeEnergy(7)

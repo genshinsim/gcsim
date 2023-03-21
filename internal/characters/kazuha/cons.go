@@ -1,6 +1,7 @@
 package kazuha
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -27,6 +28,15 @@ func (c *char) c2(src int) func() {
 			return
 		}
 
+		// check again in 0.5s
+		c.Core.Tasks.Add(c.c2(src), 30)
+
+		ap := combat.NewCircleHitOnTarget(c.qAbsorbCheckLocation.Shape.Pos(), nil, 9)
+		if !c.Core.Combat.Player().IsWithinArea(ap) {
+			return
+		}
+
+		// apply buff if in burst area
 		c.Core.Log.NewEvent("kazuha-c2 ticking", glog.LogCharacterEvent, -1)
 
 		// apply C2 buff to active char for 1s
@@ -49,9 +59,6 @@ func (c *char) c2(src int) func() {
 				},
 			})
 		}
-
-		// check again in 0.5s
-		c.Core.Tasks.Add(c.c2(src), 30)
 	}
 }
 
@@ -68,7 +75,7 @@ func (c *char) c6() {
 		attributes.Anemo,
 		60*5,
 		true,
-		combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+		attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 	)
 	// add em based buff
 	m := make([]float64, attributes.EndStatType)
@@ -76,9 +83,9 @@ func (c *char) c6() {
 		Base: modifier.NewBaseWithHitlag("kazuha-c6-dmgup", 60*5), // 5s
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			// skip if not normal/charged/plunge
-			if atk.Info.AttackTag != combat.AttackTagNormal &&
-				atk.Info.AttackTag != combat.AttackTagExtra &&
-				atk.Info.AttackTag != combat.AttackTagPlunge {
+			if atk.Info.AttackTag != attacks.AttackTagNormal &&
+				atk.Info.AttackTag != attacks.AttackTagExtra &&
+				atk.Info.AttackTag != attacks.AttackTagPlunge {
 				return nil, false
 			}
 			// apply buff

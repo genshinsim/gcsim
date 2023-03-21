@@ -3,8 +3,10 @@ package amber
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames []int
@@ -45,19 +47,43 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:         "Aim (Charged)",
 		ActorIndex:   c.Index,
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagExtraAttack,
-		ICDGroup:     combat.ICDGroupAmber,
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagExtraAttack,
+		ICDGroup:     attacks.ICDGroupAmber,
+		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Pyro,
 		Durability:   50,
 		Mult:         aim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel, c.a4)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
+		aimedHitmark,
+		aimedHitmark+travel,
+		c.makeA4CB(),
+	)
 
 	if c.Base.Cons >= 1 {
 		ai.Mult = .2 * ai.Mult
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), c1Hitmark, c1Hitmark+travel)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				geometry.Point{Y: -0.5},
+				0.1,
+				1,
+			),
+			c1Hitmark,
+			c1Hitmark+travel,
+		)
 	}
 
 	return action.ActionInfo{

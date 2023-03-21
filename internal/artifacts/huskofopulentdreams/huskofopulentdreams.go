@@ -43,14 +43,16 @@ func (s *Set) Init() error {
 	return nil
 }
 
-/**
+/*
+*
 A character equipped with this Artifact set will obtain the Curiosity effect in the following conditions:
 When on the field, the character gains 1 stack after hitting an opponent with a Geo attack,
 triggering a maximum of once every 0.3s. When off the field, the character gains 1 stack every 3s.
 
 Curiosity can stack up to 4 times, each providing 6% DEF and a 6% Geo DMG Bonus. When 6 seconds pass
 without gaining a Curiosity stack, 1 stack is lost.
-**/
+*
+*/
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{
 		core: c,
@@ -91,7 +93,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Key.String()))
 
-		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			// Only triggers when onfield
 			if c.Player.Active() != char.Index {

@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 type ReactableModifier int
@@ -97,28 +98,29 @@ func (r *ReactableModifier) UnmarshalJSON(b []byte) error {
 }
 
 type Reactable struct {
-	Durability [EndReactableModifier]combat.Durability
-	DecayRate  [EndReactableModifier]combat.Durability
+	Durability [EndReactableModifier]reactions.Durability
+	DecayRate  [EndReactableModifier]reactions.Durability
 	// Source     []int //source frame of the aura
 	self combat.Target
 	core *core.Core
 	//ec specific
-	ecSnapshot combat.AttackInfo //index of owner of next ec ticks
+	ecAtk      combat.AttackInfo //index of owner of next ec ticks
+	ecSnapshot combat.Snapshot
 	ecTickSrc  int
 	//burning specific
-	burningSnapshot       combat.AttackInfo
-	burningTickSrc        int
-	burningEventSubExists bool
+	burningAtk      combat.AttackInfo
+	burningSnapshot combat.Snapshot
+	burningTickSrc  int
 }
 
 type Enemy interface {
 	QueueEnemyTask(f func(), delay int)
 }
 
-const frzDelta combat.Durability = 2.5 / (60 * 60) // 2 * 1.25
-const frzDecayCap combat.Durability = 10.0 / 60.0
+const frzDelta reactions.Durability = 2.5 / (60 * 60) // 2 * 1.25
+const frzDecayCap reactions.Durability = 10.0 / 60.0
 
-const ZeroDur combat.Durability = 0.00000000001
+const ZeroDur reactions.Durability = 0.00000000001
 
 func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
 	r.self = self
@@ -154,40 +156,47 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 	switch a.Info.Element {
 	case attributes.Electro:
 		//hyperbloom
-		r.tryAggravate(a)
-		r.tryOverload(a)
-		r.tryAddEC(a)
-		r.tryFrozenSuperconduct(a)
-		r.trySuperconduct(a)
-		r.tryQuicken(a)
+		r.TryAggravate(a)
+		r.TryOverload(a)
+		r.TryAddEC(a)
+		r.TryFrozenSuperconduct(a)
+		r.TrySuperconduct(a)
+		r.TryQuicken(a)
 	case attributes.Pyro:
 		//burgeon
-		r.tryOverload(a)
-		r.tryVaporize(a)
-		r.tryMelt(a)
-		r.tryBurning(a)
+		r.TryOverload(a)
+		r.TryVaporize(a)
+		r.TryMelt(a)
+		r.TryBurning(a)
 	case attributes.Cryo:
-		r.trySuperconduct(a)
-		r.tryMelt(a)
-		r.tryFreeze(a)
+		r.TrySuperconduct(a)
+		r.TryMelt(a)
+		r.TryFreeze(a)
 	case attributes.Hydro:
-		r.tryVaporize(a)
-		r.tryFreeze(a)
-		r.tryBloom(a)
-		r.tryAddEC(a)
+		r.TryVaporize(a)
+		r.TryFreeze(a)
+		r.TryBloom(a)
+		r.TryAddEC(a)
 	case attributes.Anemo:
-		r.trySwirlElectro(a)
-		r.trySwirlPyro(a)
-		r.trySwirlHydro(a)
-		r.trySwirlCryo(a)
-		r.trySwirlFrozen(a)
+		r.TrySwirlElectro(a)
+		r.TrySwirlPyro(a)
+		r.TrySwirlHydro(a)
+		r.TrySwirlCryo(a)
+		r.TrySwirlFrozen(a)
 	case attributes.Geo:
-		r.tryCrystallize(a)
+		//can't double crystallize it looks like
+		//freeze can trigger hydro first
+		//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
+		r.TryCrystallizeElectro(a)
+		r.TryCrystallizeHydro(a)
+		r.TryCrystallizeCryo(a)
+		r.TryCrystallizePyro(a)
+		r.TryCrystallizeFrozen(a)
 	case attributes.Dendro:
-		r.trySpread(a)
-		r.tryQuicken(a)
-		r.tryBurning(a)
-		r.tryBloom(a)
+		r.TrySpread(a)
+		r.TryQuicken(a)
+		r.TryBurning(a)
+		r.TryBloom(a)
 	}
 }
 
@@ -212,7 +221,7 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 
 // attachOrRefillNormalEle is used for pyro, electro, hydro, cryo, and dendro which don't have special attachment
 // rules
-func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur combat.Durability) {
+func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur reactions.Durability) {
 	amt := 0.8 * dur
 	if mod == ModifierPyro {
 		r.attachOverlapRefreshDuration(ModifierPyro, amt, 6*dur+420)
@@ -221,7 +230,7 @@ func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur combat.Du
 	}
 }
 
-func (r *Reactable) attachOverlap(mod ReactableModifier, amt combat.Durability, length combat.Durability) {
+func (r *Reactable) attachOverlap(mod ReactableModifier, amt reactions.Durability, length reactions.Durability) {
 	if r.Durability[mod] > ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
@@ -229,11 +238,13 @@ func (r *Reactable) attachOverlap(mod ReactableModifier, amt combat.Durability, 
 		}
 	} else {
 		r.Durability[mod] = amt
-		r.DecayRate[mod] = amt / length
+		if length > ZeroDur {
+			r.DecayRate[mod] = amt / length
+		}
 	}
 }
 
-func (r *Reactable) attachOverlapRefreshDuration(mod ReactableModifier, amt combat.Durability, length combat.Durability) {
+func (r *Reactable) attachOverlapRefreshDuration(mod ReactableModifier, amt reactions.Durability, length reactions.Durability) {
 	if amt < r.Durability[mod] {
 		return
 	}
@@ -246,7 +257,7 @@ func (r *Reactable) attachBurning() {
 	r.DecayRate[ModifierBurning] = 0
 }
 
-func (r *Reactable) addDurability(mod ReactableModifier, amt combat.Durability) {
+func (r *Reactable) addDurability(mod ReactableModifier, amt reactions.Durability) {
 	r.Durability[mod] += amt
 	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
@@ -270,10 +281,10 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 // reduce the requested element by dur * factor, return the amount of dur consumed
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
-func (r *Reactable) reduce(e attributes.Element, dur combat.Durability, factor combat.Durability) combat.Durability {
+func (r *Reactable) reduce(e attributes.Element, dur reactions.Durability, factor reactions.Durability) reactions.Durability {
 
 	m := dur * factor //maximum amount reduceable
-	var reduced combat.Durability
+	var reduced reactions.Durability
 
 	for i := ModifierInvalid; i < EndReactableModifier; i++ {
 		if i.Element() != e {
@@ -388,7 +399,7 @@ func (r *Reactable) Tick() {
 	}
 }
 
-func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em float64) float64 {
+func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em float64) (float64, combat.Snapshot) {
 	lvl := char.Base.Level - 1
 	if lvl > 89 {
 		lvl = 89
@@ -396,7 +407,12 @@ func calcReactionDmg(char *character.CharWrapper, atk combat.AttackInfo, em floa
 	if lvl < 0 {
 		lvl = 0
 	}
-	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl]
+	snap := combat.Snapshot{
+		CharLvl:  char.Base.Level,
+		ActorEle: char.Base.Element,
+	}
+	snap.Stats[attributes.EM] = em
+	return (1 + ((16 * em) / (2000 + em)) + char.ReactBonus(atk)) * reactionLvlBase[lvl], snap
 }
 
 func (r *Reactable) calcCatalyzeDmg(atk combat.AttackInfo, em float64) float64 {

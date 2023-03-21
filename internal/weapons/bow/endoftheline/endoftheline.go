@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -59,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("endoftheline-effect-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		// do nothing if holder is off-field
 		if c.Player.Active() != char.Index {
@@ -81,16 +82,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "End of the Line Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       flowriderDmg,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 2.5, false, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2.5), 0, 1)
 
 		w.procCount++
 		c.Log.NewEvent("endoftheline proc", glog.LogWeaponEvent, char.Index).

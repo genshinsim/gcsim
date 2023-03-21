@@ -17,11 +17,12 @@ type char struct {
 	*tmpl.Character
 	lastConstruct int
 	bloomSnapshot combat.Snapshot
-	//tracking skill information
+	// tracking skill information
 	skillActive     bool
+	skillArea       combat.AttackPattern
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
-	//c2 tracking
+	// c2 tracking
 	c2stacks int
 }
 
@@ -39,6 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.skillHook()
+	c.a1()
 	return nil
 }
 

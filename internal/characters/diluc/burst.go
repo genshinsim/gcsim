@@ -3,8 +3,10 @@ package diluc
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -29,13 +31,23 @@ func (c *char) phoenixDMG(ai combat.AttackInfo, dot int, explode int) func() {
 		// DoT does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
 		// DoT
 		for i := 0; i < dot; i++ {
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, i*12)
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -5}, 16, 8),
+				0,
+				i*12,
+			)
 		}
 		// Explosion
 		if explode > 0 {
 			ai.Abil = "Dawn (Explode)"
 			ai.Mult = burstExplode[c.TalentLvlBurst()]
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 98)
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -6}, 16, 10),
+				0,
+				98,
+			)
 		}
 	}
 }
@@ -53,18 +65,28 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		explode = 0 //if explode hits
 	}
 
-	//enhance weapon for 12 seconds (with a4)
-	// Infusion starts when burst starts and ends when burst comes off CD - check any diluc video
-	c.AddStatus(burstBuffKey, 720, true)
+	// A4:
+	// The Pyro Infusion provided by Dawn lasts for 4s longer.
+	duration := 480
+	hasA4 := c.Base.Ascension >= 4
+	if hasA4 {
+		duration += 240
+	}
 
-	// a4: add 20% pyro damage
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(burstBuffKey, 720),
-		AffectedStat: attributes.PyroP,
-		Amount: func() ([]float64, bool) {
-			return c.a4buff, true
-		},
-	})
+	// infusion starts when burst starts and ends when burst comes off CD - check any diluc video
+	c.AddStatus(burstBuffKey, duration, true)
+
+	// A4:
+	// Additionally, Diluc gains 20% Pyro DMG Bonus during the duration of this effect.
+	if hasA4 {
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(burstBuffKey, duration),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				return c.a4buff, true
+			},
+		})
+	}
 
 	// Snapshot occurs late in the animation when it is released from the claymore
 	// For our purposes, snapshot upon damage proc
@@ -72,10 +94,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Dawn (Strike)",
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagElementalBurst,
-			ICDGroup:           combat.ICDGroupDiluc,
-			StrikeType:         combat.StrikeTypeBlunt,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagElementalBurst,
+			ICDGroup:           attacks.ICDGroupDiluc,
+			StrikeType:         attacks.StrikeTypeBlunt,
 			Element:            attributes.Pyro,
 			Durability:         50,
 			Mult:               burstInitial[c.TalentLvlBurst()],
@@ -84,8 +106,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 1)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1}, 16, 6),
+			0,
+			1,
+		)
 
+		ai.StrikeType = attacks.StrikeTypeDefault
 		// both initial hit, DoT and explosion all have 50 durability
 		ai.Abil = "Dawn (Tick)"
 		ai.Mult = burstDOT[c.TalentLvlBurst()]

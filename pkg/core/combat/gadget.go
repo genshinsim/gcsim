@@ -1,6 +1,10 @@
 package combat
 
-import "math"
+import (
+	"math"
+
+	"github.com/genshinsim/gcsim/pkg/core/targets"
+)
 
 type GadgetTyp int
 
@@ -8,6 +12,9 @@ const (
 	GadgetTypUnknown GadgetTyp = iota
 	GadgetTypDendroCore
 	GadgetTypGuoba
+	GadgetTypLeaLotus
+	GadgetTypYueguiThrowing
+	GadgetTypYueguiJumping
 	GadgetTypTest
 	EndGadgetTyp
 )
@@ -18,6 +25,9 @@ func init() {
 	gadgetLimits = make([]int, EndGadgetTyp)
 	gadgetLimits[GadgetTypDendroCore] = 5
 	gadgetLimits[GadgetTypTest] = 2
+	gadgetLimits[GadgetTypLeaLotus] = 1
+	gadgetLimits[GadgetTypYueguiThrowing] = 2
+	gadgetLimits[GadgetTypYueguiJumping] = 3
 }
 
 type Gadget interface {
@@ -26,7 +36,7 @@ type Gadget interface {
 	GadgetTyp() GadgetTyp
 }
 
-func (h *Handler) RemoveGadget(key TargetKey) {
+func (h *Handler) RemoveGadget(key targets.TargetKey) {
 	h.ReplaceGadget(key, nil)
 }
 
@@ -52,11 +62,10 @@ func (h *Handler) AddGadget(t Gadget) {
 		}
 	}
 	h.gadgets = append(h.gadgets, t)
-	t.SetIndex(len(h.gadgets) - 1)
 	t.SetKey(h.nextkey())
 }
 
-func (h *Handler) ReplaceGadget(key TargetKey, t Gadget) {
+func (h *Handler) ReplaceGadget(key targets.TargetKey, t Gadget) {
 	//do nothing if not found
 	for i, v := range h.gadgets {
 		if v != nil && v.Key() == key {

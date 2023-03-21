@@ -5,14 +5,17 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{6, 11, 12, 32}
+	attackRadius   = []float64{1, 1, 1, 2}
 )
 
 const normalHitNum = 4
@@ -38,6 +41,9 @@ func init() {
 	// N4 -> x
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 60)
 	attackFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[3][action.ActionDash] = 2
+	attackFrames[3][action.ActionJump] = 3
+	attackFrames[3][action.ActionSwap] = 2
 	attackFrames[3][action.ActionWalk] = 57
 }
 
@@ -46,15 +52,19 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	done := false
-	cb := func(_ combat.AttackCB) {
+	cb := func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
 		if done {
 			return
 		}
@@ -70,9 +80,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			done = true
 		}
 	}
-
-	c.Core.QueueAttack(ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			attackRadius[c.NormalCounter],
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 		cb,

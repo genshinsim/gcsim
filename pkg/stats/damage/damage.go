@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -20,7 +22,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		events: make([][]stats.DamageEvent, len(core.Player.Chars())),
 	}
 
-	core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		target := args[0].(combat.Target)
 		attack := args[1].(*combat.AttackEvent)
 		damage := args[2].(float64)
@@ -28,7 +30,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 		// TODO: validate if this is still true?
 		// No need to pull damage stats for non-enemies
-		if target.Type() != combat.TargettableEnemy {
+		if target.Type() != targets.TargettableEnemy {
 			return false
 		}
 
@@ -38,7 +40,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		event := stats.DamageEvent{
 			Frame:   attack.SourceFrame,
 			Source:  attack.Info.Abil,
-			Target:  target.Index(),
+			Target:  int(target.Key()),
 			Element: attack.Info.Element.String(),
 			Crit:    crit,
 			Damage:  damage,
@@ -55,9 +57,9 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 		if attack.Info.Catalyzed {
 			switch attack.Info.CatalyzedType {
-			case combat.Aggravate:
+			case reactions.Aggravate:
 				event.ReactionModifier = stats.Aggravate
-			case combat.Spread:
+			case reactions.Spread:
 				event.ReactionModifier = stats.Spread
 			}
 		}

@@ -3,6 +3,7 @@ package fischl
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -24,31 +25,36 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Midnight Phantasmagoria",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupFischl,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupFischl,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget), burstHitmark, burstHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0.5),
+		burstHitmark,
+		burstHitmark,
+	)
 
 	//check for C4 damage
 	if c.Base.Cons >= 4 {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Her Pilgrimage of Bleak (C4)",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupFischl,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupFischl,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 50,
 			Mult:       2.22,
 		}
 		// C4 damage always occurs before burst damage.
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 8, 8)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 8, 8)
 		//heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.Core.Tasks.Add(func() {

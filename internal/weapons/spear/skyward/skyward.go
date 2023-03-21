@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -24,10 +25,10 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-//Increases CRIT Rate by 8% and increases Normal ATK SPD by 12%. Additionally,
-//Normal and Charged Attacks hits on opponents have a 50% chance to trigger a
-//vacuum blade that deals 40% of ATK as DMG in a small AoE. This effect can
-//occur no more than once every 2s.
+// Increases CRIT Rate by 8% and increases Normal ATK SPD by 12%. Additionally,
+// Normal and Charged Attacks hits on opponents have a 50% chance to trigger a
+// vacuum blade that deals 40% of ATK as DMG in a small AoE. This effect can
+// occur no more than once every 2s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -46,7 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	const icdKey = "skyward-spine-icd"
 	atk := .25 + .15*float64(r)
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		//check if char is correct?
 		if ae.Info.ActorIndex != char.Index {
@@ -55,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		//check if cd is up
@@ -70,15 +71,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Spine Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       atk,
 		}
 		trg := args[0].(combat.Target)
-		c.QueueAttack(ai, combat.NewCircleHit(trg, 0.1, false, combat.TargettableEnemy), 0, 1)
+		c.QueueAttack(ai, combat.NewBoxHitOnTarget(trg, nil, 0.1, 0.1), 0, 1)
 
 		//trigger cd
 		char.AddStatus(icdKey, 120, true)

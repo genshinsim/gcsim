@@ -1,5 +1,5 @@
-import { Omnibar } from "@blueprintjs/select";
-import { artifactSelectProps, IArtifact } from "./artifacts";
+import { Omnibar } from '@blueprintjs/select';
+import { artifactSelectProps, IArtifact } from './artifacts';
 
 const ArtifactOmnibar = Omnibar.ofType<IArtifact>();
 
@@ -17,6 +17,7 @@ export function ArtifactSelect(props: Props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onItemSelect={props.onSelect}
+      overlayProps={{ usePortal: false }}
     />
   );
 }

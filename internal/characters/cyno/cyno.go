@@ -17,7 +17,7 @@ type char struct {
 	burstExtension int
 	burstSrc       int
 	lastSkillCast  int
-	c1Buff         []float64
+	c2Stacks       int
 	c4Counter      int
 	c6Stacks       int
 	a1Extended     bool
@@ -42,23 +42,15 @@ func (c *char) Init() error {
 	c.onExitField()
 	c.a1Extension()
 
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-
 	if c.Base.Cons >= 4 {
 		c.c4()
-	}
-
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 
 	return nil
 }
 
 func (c *char) AdvanceNormalIndex() {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		c.normalBCounter++
 		if c.normalBCounter == burstHitNum {
 			c.normalBCounter = 0
@@ -77,7 +69,7 @@ func (c *char) ResetNormalCounter() {
 }
 
 func (c *char) NextNormalCounter() int {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.normalBCounter + 1
 	}
 	return c.NormalCounter + 1

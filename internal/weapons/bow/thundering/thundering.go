@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -40,12 +41,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	key := fmt.Sprintf("thundering-pulse-%v", char.Base.Key.String())
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagNormal {
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
+			return false
+		}
+		if dmg == 0 {
 			return false
 		}
 		char.AddStatus(normalKey, normalDuration, true)
@@ -64,7 +69,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base: modifier.NewBase("thundering-pulse", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			m[attributes.DmgP] = 0
-			if atk.Info.AttackTag != combat.AttackTagNormal {
+			if atk.Info.AttackTag != attacks.AttackTagNormal {
 				return m, true
 			}
 			count := 0

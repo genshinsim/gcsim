@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -35,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	cd := 900 - r*60
 	mult := 0.3 + float64(r)*0.1
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -47,8 +48,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		//only proc on normal and charge attack
 		switch atk.Info.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
 		default:
 			return false
 		}
@@ -64,22 +65,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Viridescent",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       mult,
 		}
 
 		for i := 0; i <= 240; i += 30 {
-			c.QueueAttack(ai, combat.NewCircleHit(trg, 3, false, combat.TargettableEnemy), 0, i+1)
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, i+1)
 		}
 
 		char.AddStatus(icdKey, cd, true)
 
 		return false
-	}, fmt.Sprintf("veridescent-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("viridescent-%v", char.Base.Key.String()))
 
 	return w, nil
 }

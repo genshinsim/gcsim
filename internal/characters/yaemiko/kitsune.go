@@ -3,21 +3,27 @@ package yaemiko
 import (
 	"log"
 
-	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 type kitsune struct {
-	src     int
-	deleted bool
+	src         int
+	deleted     bool
+	kitsuneArea combat.AttackPattern
 }
 
 func (c *char) makeKitsune() {
 	k := &kitsune{}
 	k.src = c.Core.F
 	k.deleted = false
+
+	// spawn kitsune detection area on player pos
+	k.kitsuneArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, c.kitsuneDetectionRadius)
+
 	//start ticking
 	c.Core.Tasks.Add(c.kitsuneTick(k), 120-skillStart)
 	//add task to delete this one if times out (and not deleted by anything else)
@@ -82,7 +88,7 @@ func (c *char) kitsuneBurst(ai combat.AttackInfo, pattern combat.AttackPattern) 
 				c.AddEnergy("yae-c1", 8)
 			}, burstThunderbolt1Hitmark+i*24)
 		}
-		c.ResetActionCooldown(action.ActionSkill)
+		c.a1()
 		c.Core.Log.NewEvent("sky kitsune thunderbolt", glog.LogCharacterEvent, c.Index).
 			Write("src", c.kitsunes[i].src).
 			Write("delay", burstThunderbolt1Hitmark+i*24)
@@ -107,42 +113,46 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		ai := combat.AttackInfo{
 			Abil:       "Sesshou Sakura Tick",
 			ActorIndex: c.Index,
-			AttackTag:  combat.AttackTagElementalArt,
+			AttackTag:  attacks.AttackTagElementalArt,
 			Mult:       skill[lvl][c.TalentLvlSkill()],
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 		}
 
 		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index).
-			Write("sakura level", lvl)
+			Write("sakura level", lvl+1)
 
-		if c.Base.Cons >= 6 {
-			ai.IgnoreDefPercent = 0.60
-		}
-
-		done := false
-		cb := func(_ combat.AttackCB) {
-			if c.Base.Cons >= 4 && !done {
+		var c4cb combat.AttackCBFunc
+		if c.Base.Cons >= 4 {
+			done := false
+			c4cb = func(a combat.AttackCB) {
+				if a.Target.Type() != targets.TargettableEnemy {
+					return
+				}
+				if done {
+					return
+				}
 				done = true
 				c.c4()
 			}
-
-			//on hit check for particles
-			c.Core.Log.NewEvent("sky kitsune particle", glog.LogCharacterEvent, c.Index).
-				Write("lastParticleF", c.totemParticleICD)
-			if c.Core.F < c.totemParticleICD {
-				return
-			}
-			// 2.5s icd
-			c.totemParticleICD = c.Core.F + 150
-			//TODO: this used to be 30?
-			c.Core.QueueParticle("yaemiko", 1, attributes.Electro, c.ParticleDelay)
 		}
-
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.Enemy(c.Core.Combat.RandomEnemyTarget()).Key(), combat.TargettableEnemy), 1, 1, cb)
+		if c.Base.Cons >= 6 {
+			ai.IgnoreDefPercent = 0.60
+		}
+		enemy := c.Core.Combat.RandomEnemyWithinArea(totem.kitsuneArea, nil)
+		if enemy != nil {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHitOnTarget(enemy, nil, 0.5),
+				1,
+				1,
+				c.particleCB,
+				c4cb,
+			)
+		}
 		// tick per ~2.9s seconds
 		c.Core.Tasks.Add(c.kitsuneTick(totem), 176)
 	}

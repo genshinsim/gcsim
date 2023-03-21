@@ -3,10 +3,12 @@ package kuki
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -14,6 +16,8 @@ var skillFrames []int
 const (
 	skillHitmark     = 11 // Initial Hit
 	hpDrainThreshold = 0.2
+	ringKey          = "kuki-e"
+	particleICDKey   = "kuki-particle-icd"
 )
 
 func init() {
@@ -42,16 +46,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Sanctifying Ring",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 		FlatDmg:    c.Stat(attributes.EM) * 0.25,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), skillHitmark, skillHitmark)
 
 	// C2: Grass Ring of Sanctification's duration is increased by 3s.
 	skilldur := 720
@@ -59,16 +63,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		skilldur = 900 //12+3s
 	}
 
-	// this gets executed before kuki can expierence hitlag so no need for char queue
+	// this gets executed before kuki can experience hitlag so no need for char queue
 	// ring duration starts after hitmark
 	c.Core.Tasks.Add(func() {
 		// E duration and ticks are not affected by hitlag
-		c.Core.Status.Add("kuki-e", skilldur)
-		c.Core.Tasks.Add(c.bellTick(), 90) // Assuming this executes every 90 frames = 1.5s
-		c.bellActiveUntil = c.Core.F + skilldur
+		c.Core.Status.Add(ringKey, skilldur)
+		c.ringSrc = c.Core.F
+		c.Core.Tasks.Add(c.bellTick(c.Core.F), 90) // Assuming this executes every 90 frames = 1.5s
 		c.Core.Log.NewEvent("Bell activated", glog.LogCharacterEvent, c.Index).
-			Write("expected end", c.bellActiveUntil).
-			Write("next expected tick", c.Core.F+90)
+			Write("next expected tick", c.Core.F+90).
+			Write("expected end", c.Core.F+skilldur)
 	}, 23)
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 7)
@@ -81,49 +85,54 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) bellTick() func() {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, false)
+	if c.Core.Rand.Float64() < .45 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
+	}
+}
+
+func (c *char) bellTick(src int) func() {
 	return func() {
+		if src != c.ringSrc {
+			return
+		}
 		c.Core.Log.NewEvent("Bell ticking", glog.LogCharacterEvent, c.Index)
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Grass Ring of Sanctification",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       skilldot[c.TalentLvlSkill()],
-			FlatDmg:    c.Stat(attributes.EM) * 0.25,
+			FlatDmg:    c.a4Damage(),
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget), 2, 2)
+		//trigger damage
+		//TODO: Check for snapshots
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 2, 2, c.particleCB)
 
 		//A4 is considered here
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
 			Message: "Grass Ring of Sanctification Healing",
-			Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.Stat(attributes.EM)*0.75),
+			Src:     (skillhealpp[c.TalentLvlSkill()]*c.MaxHP() + skillhealflat[c.TalentLvlSkill()] + c.a4Healing()),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
-		c.Core.Log.NewEvent("Bell ticked", glog.LogCharacterEvent, c.Index).
-			Write("next expected tick", c.Core.F+90).
-			Write("active", c.bellActiveUntil)
-		//trigger damage
-		//TODO: Check for snapshots
-
-		//c.Core.QueueAttackEvent(&ae, 0)
-		//check for orb
-		//Particle check is 45% for particle
-		if c.Core.Rand.Float64() < .45 {
-			c.Core.QueueParticle("kuki", 1, attributes.Electro, c.ParticleDelay) // TODO: idk the particle timing yet fml (or probability)
+		if c.Core.Status.Duration(ringKey) == 0 {
+			return
 		}
-
-		//queue up next hit only if next hit bell is still active
-		if c.Core.F+90 <= c.bellActiveUntil {
-			c.Core.Tasks.Add(c.bellTick(), 90)
-		}
+		c.Core.Tasks.Add(c.bellTick(src), 90)
 	}
 }

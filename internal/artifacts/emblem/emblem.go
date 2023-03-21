@@ -2,6 +2,7 @@ package emblem
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -37,7 +38,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		er := char.Stat(attributes.ER) + 1
+		er := char.NonExtraStat(attributes.ER) + 1
 		amt := 0.25 * er
 		if amt > 0.75 {
 			amt = 0.75
@@ -47,11 +48,11 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("esr-4pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil, false
 				}
 				//calc er
-				er := char.Stat(attributes.ER) + 1
+				er := char.NonExtraStat(attributes.ER) + 1
 				amt := 0.25 * er
 				if amt > 0.75 {
 					amt = 0.75

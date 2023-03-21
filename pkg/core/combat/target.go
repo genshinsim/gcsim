@@ -2,44 +2,38 @@ package combat
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-type TargetKey int
-
-const InvalidTargetKey TargetKey = -1
-
 type Target interface {
-	Index() int              //should correspond to index
-	SetIndex(index int)      //update the current index
-	Key() TargetKey          //unique key for the target
-	SetKey(k TargetKey)      //update key
-	Type() TargettableType   //type of target
-	Shape() Shape            // shape of target
-	Pos() (float64, float64) // center of target
-	SetPos(x, y float64)     // move target
+	Key() targets.TargetKey        // unique key for the target
+	SetKey(k targets.TargetKey)    // update key
+	Type() targets.TargettableType // type of target
+	Shape() geometry.Shape         // geometry.Shape of target
+	Pos() geometry.Point           // center of target
+	SetPos(p geometry.Point)       // move target
 	IsAlive() bool
-	AttackWillLand(a AttackPattern, src TargetKey) (bool, string)
-	Attack(*AttackEvent, glog.Event) (float64, bool)
-	ApplyDamage(*AttackEvent, float64)
-	Tick() //called every tick
+	SetTag(key string, val int)
+	GetTag(key string) int
+	RemoveTag(key string)
+	HandleAttack(*AttackEvent) float64
+	AttackWillLand(a AttackPattern) (bool, string) // hurtbox collides with AttackPattern
+	IsWithinArea(a AttackPattern) bool             // center is in AttackPattern
+	Tick()                                         // called every tick
 	Kill()
-	//for collision check
-	CollidableWith(TargettableType) bool
+	// for collision check
+	CollidableWith(targets.TargettableType) bool
 	CollidedWith(t Target)
-	WillCollide(Shape) bool
+	WillCollide(geometry.Shape) bool
+	// direction related
+	Direction() geometry.Point                           // returns viewing direction as a geometry.Point
+	SetDirection(trg geometry.Point)                     // calculates viewing direction relative to default direction (0, 1)
+	SetDirectionToClosestEnemy()                         // looks for closest enemy
+	CalcTempDirection(trg geometry.Point) geometry.Point // used for stuff like Bow CA
 }
 
 type TargetWithAura interface {
 	Target
 	AuraContains(e ...attributes.Element) bool
 }
-
-type TargettableType int
-
-const (
-	TargettableEnemy TargettableType = iota
-	TargettablePlayer
-	TargettableGadget
-	TargettableTypeCount
-)

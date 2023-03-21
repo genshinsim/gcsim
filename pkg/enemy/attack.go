@@ -1,17 +1,80 @@
 package enemy
 
 import (
+	"log"
 	"math"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
-func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
+	//at this point attack will land
+	e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
+
+	var amp string
+	var cata string
+	var dmg float64
+	var crit bool
+
+	evt := e.Core.Combat.Log.NewEvent(atk.Info.Abil, glog.LogDamageEvent, atk.Info.ActorIndex).
+		Write("target", e.Key()).
+		Write("attack-tag", atk.Info.AttackTag).
+		Write("ele", atk.Info.Element.String()).
+		Write("damage", &dmg).
+		Write("crit", &crit).
+		Write("amp", &amp).
+		Write("cata", &cata).
+		Write("abil", atk.Info.Abil).
+		Write("source_frame", atk.SourceFrame)
+	evt.WriteBuildMsg(atk.Snapshot.Logs...)
+
+	if !atk.Info.SourceIsSim {
+		if atk.Info.ActorIndex < 0 {
+			log.Println(atk)
+		}
+		preDmgModDebug := e.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).ApplyAttackMods(atk, e)
+		evt.Write("pre_damage_mods", preDmgModDebug)
+	}
+
+	dmg, crit = e.attack(atk, evt)
+
+	//delay damage event to end of the frame
+	e.Core.Combat.Tasks.Add(func() {
+		//apply the damage
+		e.applyDamage(atk, dmg)
+		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, dmg, crit)
+		//callbacks
+		cb := combat.AttackCB{
+			Target:      e,
+			AttackEvent: atk,
+			Damage:      dmg,
+			IsCrit:      crit,
+		}
+		for _, f := range atk.Callbacks {
+			f(cb)
+		}
+	}, 0)
+
+	// this works because string in golang is a slice underneath, so the &amp points to the slice info
+	// that's why when the underlying string in amp changes (has to be reallocated) the pointer doesn't
+	// change since it's just pointing to the slice "header"
+	if atk.Info.Amped {
+		amp = string(atk.Info.AmpType)
+	}
+	if atk.Info.Catalyzed {
+		cata = string(atk.Info.CatalyzedType)
+	}
+	return dmg
+}
+
+func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//if target is frozen prior to attack landing, set impulse to 0
 	//let the break freeze attack to trigger actual impulse
 	if e.Durability[reactable.ModifierFrozen] > reactable.ZeroDur {
@@ -24,17 +87,18 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	//check tags
 	if atk.Info.Durability > 0 {
 		//check for ICD first
-		atk.OnICD = !e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
+		atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		//special global ICD for Burning DMG
-		if atk.Info.ICDTag == combat.ICDTagBurningDamage {
+		if atk.Info.ICDTag == attacks.ICDTagBurningDamage {
 			//checks for ICD on all the other characters as well
 			for i := 0; i < len(e.Core.Player.Chars()); i++ {
 				if i != atk.Info.ActorIndex {
-					atk.OnICD = atk.OnICD || !e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i)
+					//burning durability wiped out to 0 if any of the other char still on icd re burning dmg
+					atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
 				}
 			}
 		}
-		if !atk.OnICD && atk.Info.Element != attributes.Physical {
+		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
 			existing := e.Reactable.ActiveAuraString()
 			applied := atk.Info.Durability
 			e.React(atk)
@@ -48,7 +112,7 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 					Write("applied_ele", atk.Info.Element.String()).
 					Write("dur", applied).
 					Write("abil", atk.Info.Abil).
-					Write("target", e.TargetIndex).
+					Write("target", e.Key()).
 					Write("existing", existing).
 					Write("after", e.Reactable.ActiveAuraString())
 
@@ -101,7 +165,7 @@ func (e *Enemy) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	return damage, isCrit
 }
 
-func (e *Enemy) ApplyDamage(atk *combat.AttackEvent, damage float64) {
+func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
 	//record dmg
 	e.hp -= damage
 	e.damageTaken += damage //TODO: do we actually need this?
@@ -114,7 +178,7 @@ func (e *Enemy) ApplyDamage(atk *combat.AttackEvent, damage float64) {
 	}
 
 	//apply auras
-	if atk.Info.Durability > 0 && !atk.Reacted && !atk.OnICD && atk.Info.Element != attributes.Physical {
+	if atk.Info.Durability > 0 && !atk.Reacted && atk.Info.Element != attributes.Physical {
 		//check for ICD first
 		existing := e.Reactable.ActiveAuraString()
 		applied := atk.Info.Durability
@@ -129,7 +193,7 @@ func (e *Enemy) ApplyDamage(atk *combat.AttackEvent, damage float64) {
 				Write("applied_ele", atk.Info.Element.String()).
 				Write("dur", applied).
 				Write("abil", atk.Info.Abil).
-				Write("target", e.TargetIndex).
+				Write("target", e.Key()).
 				Write("existing", existing).
 				Write("after", e.Reactable.ActiveAuraString())
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -40,21 +41,29 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	ai.FlatDmg = c.burstDmgBonus(ai.AttackTag)
 
+	radius := 0.7
+	if c.Core.Status.Duration(burstKey) > 0 {
+		radius = 1.2
+	}
+
 	// TODO: Assume that this is not dynamic (snapshot on projectile release)
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, radius),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
+		c.makeBurstHealCB(),
+		c.makeC4CB(),
 	)
 	if c.NormalCounter == c.NormalHitNum-1 {
 		c.c1(attackHitmarks[c.NormalCounter], travel)

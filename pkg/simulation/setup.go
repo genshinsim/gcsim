@@ -7,26 +7,29 @@ import (
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProfile) error {
+func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []enemy.EnemyProfile) error {
 
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
 
-	if p.R == 0 {
+	if r == 0 {
 		return errors.New("player cannot have 0 radius")
 	}
-	player := avatar.New(core, p.X, p.Y, p.R)
+	player := avatar.New(core, p, r)
 	core.Combat.SetPlayer(player)
 
 	// add targets
@@ -40,8 +43,14 @@ func SetupTargetsInCore(core *core.Core, p core.Coord, targets []enemy.EnemyProf
 	}
 
 	//default target is closest to player?
-	trgs := core.Combat.EnemyByDistance(p.X, p.Y, combat.InvalidTargetKey)
-	core.Combat.DefaultTarget = core.Combat.Enemy(trgs[0]).Key()
+	defaultEnemy := core.Combat.ClosestEnemy(player.Pos())
+	if defaultEnemy == nil {
+		return errors.New("cannot set default target, got nil")
+	}
+	core.Combat.DefaultTarget = defaultEnemy.Key()
+
+	// initialize player direction
+	core.Combat.Player().SetDirection(defaultEnemy.Pos())
 
 	return nil
 }
@@ -150,11 +159,18 @@ func SetupResonance(s *core.Core) {
 					last = s.F
 					return false
 				}
-				s.Events.Subscribe(event.OnOverload, recover, "electro-res")
-				s.Events.Subscribe(event.OnSuperconduct, recover, "electro-res")
-				s.Events.Subscribe(event.OnElectroCharged, recover, "electro-res")
-				s.Events.Subscribe(event.OnQuicken, recover, "electro-res")
-				s.Events.Subscribe(event.OnAggravate, recover, "electro-res")
+
+				recoverNoGadget := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
+					return recover(args...)
+				}
+				s.Events.Subscribe(event.OnOverload, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnSuperconduct, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnElectroCharged, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnQuicken, recoverNoGadget, "electro-res")
+				s.Events.Subscribe(event.OnAggravate, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnHyperbloom, recover, "electro-res")
 			case attributes.Geo:
 				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
@@ -165,14 +181,14 @@ func SetupResonance(s *core.Core) {
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
 				//shred geo res of target
-				s.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+				s.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 					t, ok := args[0].(*enemy.Enemy)
 					if !ok {
 						return false
 					}
 					atk := args[1].(*combat.AttackEvent)
 					if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
-						t.AddResistMod(enemy.ResistMod{
+						t.AddResistMod(combat.ResistMod{
 							Base:  modifier.NewBase("geo-res", 15*60),
 							Ele:   attributes.Geo,
 							Value: -0.2,
@@ -223,6 +239,9 @@ func SetupResonance(s *core.Core) {
 				twoBuff := make([]float64, attributes.EndStatType)
 				twoBuff[attributes.EM] = 30
 				twoEl := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
 					for _, c := range chars {
 						c.AddStatMod(character.StatMod{
 							Base:         modifier.NewBaseWithHitlag("dendro-res-30", 6*60),
@@ -252,8 +271,14 @@ func SetupResonance(s *core.Core) {
 					}
 					return false
 				}
-				s.Events.Subscribe(event.OnAggravate, threeEl, "dendro-res")
-				s.Events.Subscribe(event.OnSpread, threeEl, "dendro-res")
+				threeElNoGadget := func(args ...interface{}) bool {
+					if _, ok := args[0].(*gadget.Gadget); ok {
+						return false
+					}
+					return threeEl(args...)
+				}
+				s.Events.Subscribe(event.OnAggravate, threeElNoGadget, "dendro-res")
+				s.Events.Subscribe(event.OnSpread, threeElNoGadget, "dendro-res")
 				s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
 				s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 			}
@@ -262,18 +287,18 @@ func SetupResonance(s *core.Core) {
 }
 
 func SetupMisc(c *core.Core) {
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		//dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
 		}
 		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagSuperconductDamage {
+		if atk.Info.AttackTag != attacks.AttackTagSuperconductDamage {
 			return false
 		}
 		//add shred
-		t.AddResistMod(enemy.ResistMod{
+		t.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
 			Ele:   attributes.Physical,
 			Value: -0.4,

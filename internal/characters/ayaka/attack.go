@@ -5,15 +5,22 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
-var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.03}, {0}}
-var attackHitlagFactor = [][]float64{{0.01}, {0.01}, {0.01}, {0, 0, 0.05}, {0.01}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false, true}, {false}}
+var (
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{8}, {10}, {16}, {8, 15, 22}, {27}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0, 0.03}, {0}}
+	attackHitlagFactor    = [][]float64{{0.01}, {0.01}, {0.01}, {0, 0, 0.05}, {0.01}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false, true}, {false}}
+	attackRadius          = []float64{1.6, 1.2, 2.8, 1.6, 0.8}
+	attackOffsets         = []float64{0.8, 0.8, -0.5, 0.6, 0}
+	attackFanAngles       = []float64{360, 360, 60, 360, 360}
+)
 
 const normalHitNum = 5
 
@@ -38,16 +45,19 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i, mult := range attack[c.NormalCounter] {
-		icdGroup := combat.ICDGroupDefault
+		icdGroup := attacks.ICDGroupDefault
+		centerTarget := c.Core.Combat.Player()
 		if c.NormalCounter == 4 {
-			icdGroup = combat.ICDGroupPoleExtraAttack // N5 has a different ICDGroup
+			icdGroup = attacks.ICDGroupPoleExtraAttack   // N5 has a different ICDGroup
+			centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
 		}
 		ai := combat.AttackInfo{
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           icdGroup,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagFactor:       attackHitlagFactor[c.NormalCounter][i],
@@ -55,14 +65,15 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 			Mult:               mult[c.TalentLvlAttack()],
 		}
+		ap := combat.NewCircleHitFanAngle(
+			c.Core.Combat.Player(),
+			centerTarget,
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackRadius[c.NormalCounter],
+			attackFanAngles[c.NormalCounter],
+		)
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-				0,
-				0,
-				c.c1,
-			)
+			c.Core.QueueAttack(ai, ap, 0, 0, c.c1)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 

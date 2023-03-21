@@ -50,8 +50,8 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	if atk.Snapshot.Stats[attributes.CR] > 1 {
 		atk.Snapshot.Stats[attributes.CR] = 1
 	}
-	res := t.Resist(&atk.Info, evt)
-	defadj := t.DefAdj(&atk.Info, evt)
+	res := t.resist(&atk.Info, evt)
+	defadj := t.defAdj(&atk.Info, evt)
 
 	if defadj > 0.9 {
 		defadj = 0.9
@@ -99,10 +99,6 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	if !atk.Info.SourceIsSim {
 		x = t.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
 		damage = damage * x
-	}
-
-	if damage == 0 {
-		isCrit = false
 	}
 
 	if t.Core.Flags.LogDebug {
@@ -158,7 +154,7 @@ func (t *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("pre_crit_dmg_react", precritdmg*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
-			Write("target", t.TargetIndex)
+			Write("target", t.Key())
 
 	}
 

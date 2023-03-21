@@ -1,8 +1,10 @@
 package xiangling
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -16,11 +18,48 @@ func (c *char) c1(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("xiangling-c1", 6*60),
 		Ele:   attributes.Pyro,
 		Value: -0.15,
 	})
+}
+
+func (c *char) c2(done bool) combat.AttackCBFunc {
+	return func(atk combat.AttackCB) {
+		if done {
+			return
+		}
+		trg, ok := atk.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
+		if !trg.StatusIsActive(c2Debuff) {
+			trg.QueueEnemyTask(c.c2Explode(c.Core.F, trg), 120)
+			trg.AddStatus(c2Debuff, 120, true)
+		}
+		done = true
+	}
+}
+func (c *char) c2Explode(src int, trg *enemy.Enemy) func() {
+	return func() {
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Oil Meets Fire (C2)",
+			AttackTag:  attacks.AttackTagNone,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Element:    attributes.Pyro,
+			Durability: 25,
+			Mult:       .75,
+		}
+
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2), 0, 0)
+
+		c.Core.Log.NewEvent("Triggered Xiangling C2 explosion", glog.LogCharacterEvent, c.Index).
+			Write("src", src)
+	}
 }
 
 func (c *char) c6(dur int) {

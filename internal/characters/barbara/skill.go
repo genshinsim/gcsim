@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -38,20 +39,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Let the Show Begin♪ (Droplet)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
 	// 2 Droplets
-	// TODO: review barbara AOE size?
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 			5,
 			hitmark,
 		) // need to confirm snapshot timing
@@ -66,7 +67,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// setup Melody Loop ticks (first tick at skillCDStart, once every 1.5s)
 	ai.Abil = "Let the Show Begin♪ (Melody Loop)"
-	ai.AttackTag = combat.AttackTagNone
+	ai.AttackTag = attacks.AttackTagNone
 	ai.Mult = 0
 	ai.HitlagFactor = 0.05
 	ai.HitlagHaltFrames = 0.05 * 60
@@ -144,7 +145,7 @@ func (c *char) barbaraMelodyTick(ai combat.AttackInfo, skillInitF int) func() {
 		c.Core.Log.NewEvent("barbara melody loop ticking", glog.LogCharacterEvent, c.Index)
 
 		// 0 DMG attack that causes hitlag on enemy only
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), -1, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), -1, 0)
 
 		// tick every 1.5s
 		c.Core.Tasks.Add(c.barbaraMelodyTick(ai, skillInitF), 1.5*60)

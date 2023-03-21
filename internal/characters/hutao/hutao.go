@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -88,8 +89,8 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 
 	if c.StatModIsActive(paramitaBuff) {
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}

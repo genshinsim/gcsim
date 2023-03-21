@@ -3,6 +3,7 @@ package klee
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -27,9 +28,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               burst[c.TalentLvlBurst()],
@@ -55,16 +57,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return
 			}
 			//wave 1 = 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 0)
 			//wave 2 = 1 + 30% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 12)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 12)
 			if c.Core.Rand.Float64() < 0.3 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 12)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 12)
 			}
 			//wave 3 = 1 + 50% chance of 1
-			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 24)
+			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 24)
 			if c.Core.Rand.Float64() < 0.5 {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), 24)
+				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 24)
 			}
 		}, start)
 	}
@@ -130,16 +132,17 @@ func (c *char) onExitField() {
 			ai := combat.AttackInfo{
 				ActorIndex:         c.Index,
 				Abil:               "Sparks'n'Splash C4",
-				AttackTag:          combat.AttackTagNone,
-				ICDTag:             combat.ICDTagNone,
-				ICDGroup:           combat.ICDGroupDefault,
+				AttackTag:          attacks.AttackTagNone,
+				ICDTag:             attacks.ICDTagNone,
+				ICDGroup:           attacks.ICDGroupDefault,
+				StrikeType:         attacks.StrikeTypeDefault,
 				Element:            attributes.Pyro,
 				Durability:         50,
 				Mult:               5.55,
 				CanBeDefenseHalted: true,
 				IsDeployable:       true,
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, 0)
 		}
 
 		return false

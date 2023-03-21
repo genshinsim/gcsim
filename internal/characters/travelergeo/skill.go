@@ -3,16 +3,20 @@ package travelergeo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillFrames [][][]int
-
-// {Tap E, Short Hold E}
-var skillHitmark = []int{62, 29}
-var skillCDStart = []int{23, 25}
+var (
+	skillFrames [][][]int
+	// {Tap E, Short Hold E}
+	skillHitmark = []int{62, 29}
+	skillCDStart = []int{23, 25}
+)
 
 func init() {
 	skillFrames = make([][][]int, 2)
@@ -61,10 +65,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starfell Sword",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagElementalArt,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagElementalArt,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -73,24 +77,28 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	// TODO: check snapshot timing
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 24, skillHitmark[short_hold])
 
-	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.33 {
-		count = 4
-	}
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, skillHitmark[short_hold]+c.ParticleDelay)
+	stoneDir := c.Core.Combat.Player().Direction()
+	stonePos := c.Core.Combat.PrimaryTarget().Pos()
+
+	// TODO: check snapshot timing
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(stonePos, nil, 3),
+		24,
+		skillHitmark[short_hold],
+		c.makeParticleCB(),
+	)
 
 	c.Core.Tasks.Add(func() {
 		dur := 30 * 60
 		if c.Base.Cons >= 6 {
 			dur += 600
 		}
-		c.Core.Constructs.New(c.newStone(dur), false)
+		c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
 	}, skillHitmark[short_hold])
 
-	c.SetCDWithDelay(action.ActionSkill, 360, skillCDStart[short_hold])
+	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[short_hold])
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[short_hold][c.gender]),
@@ -100,17 +108,40 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+
+		count := 3.0
+		if c.Core.Rand.Float64() < 0.33 {
+			count = 4
+		}
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
+	}
+}
+
 type stone struct {
 	src    int
 	expiry int
 	char   *char
+	dir    geometry.Point
+	pos    geometry.Point
 }
 
-func (c *char) newStone(dur int) *stone {
+func (c *char) newStone(dur int, dir, pos geometry.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
 		char:   c,
+		dir:    dir,
+		pos:    pos,
 	}
 }
 
@@ -119,10 +150,10 @@ func (s *stone) OnDestruct() {
 		ai := combat.AttackInfo{
 			ActorIndex:         s.char.Index,
 			Abil:               "Rockcore Meltdown",
-			AttackTag:          combat.AttackTagElementalArt,
-			ICDTag:             combat.ICDTagElementalArt,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeBlunt,
+			AttackTag:          attacks.AttackTagElementalArt,
+			ICDTag:             attacks.ICDTagElementalArt,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeBlunt,
 			Element:            attributes.Geo,
 			Durability:         50,
 			Mult:               skill[s.char.TalentLvlSkill()],
@@ -131,7 +162,12 @@ func (s *stone) OnDestruct() {
 			CanBeDefenseHalted: true,
 			IsDeployable:       true,
 		}
-		s.char.Core.QueueAttack(ai, combat.NewCircleHit(s.char.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
+		s.char.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(s.pos, nil, 3),
+			0,
+			0,
+		)
 	}
 }
 
@@ -140,3 +176,5 @@ func (s *stone) Type() construct.GeoConstructType { return construct.GeoConstruc
 func (s *stone) Expiry() int                      { return s.expiry }
 func (s *stone) IsLimited() bool                  { return true }
 func (s *stone) Count() int                       { return 1 }
+func (s *stone) Direction() geometry.Point        { return s.dir }
+func (s *stone) Pos() geometry.Point              { return s.pos }

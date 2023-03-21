@@ -2,22 +2,26 @@ package dori
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-// A1:
 // After a character connected to the Jinni triggers an Electro-Charged, Superconduct, Overloaded, Quicken, Aggravate, Hyperbloom,
-//
-//	or an Electro Swirl or Crystallize reaction, the CD of Spirit-Warding Lamp: Troubleshooter Cannon is decreased by 1s.
-//
+// or an Electro Swirl or Crystallize reaction, the CD of Spirit-Warding Lamp: Troubleshooter Cannon is decreased by 1s.
 // This effect can be triggered once every 3s.
 func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+
 	const icdKey = "dori-a1"
 	icd := 180 // 3s * 60
-
 	reduce := func(args ...interface{}) bool {
+
 		atk := args[1].(*combat.AttackEvent)
 
 		if c.Core.Player.Active() != atk.Info.ActorIndex { // only for on field character
@@ -34,12 +38,46 @@ func (c *char) a1() {
 		return false
 	}
 
-	c.Core.Events.Subscribe(event.OnOverload, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnElectroCharged, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnSuperconduct, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnQuicken, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnAggravate, reduce, "dori-a1")
+	reduceNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+
+		return reduce(args...)
+	}
+	c.Core.Events.Subscribe(event.OnOverload, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnQuicken, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnAggravate, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnHyperbloom, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnCrystallizeElectro, reduce, "dori-a1")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, reduce, "dori-a1")
+	c.Core.Events.Subscribe(event.OnCrystallizeElectro, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, reduceNoGadget, "dori-a1")
+}
+
+// When the Troubleshooter Shots or After-Sales Service Rounds from Spirit-Warding Lamp: Troubleshooter Cannon hit opponents,
+// Dori will restore 5 Elemental Energy for every 100% Energy Recharge possessed.
+// Per Spirit-Warding Lamp: Troubleshooter Cannon, only one instance of Energy restoration can be triggered
+// and a maximum of 15 Energy can be restored this way.
+func (c *char) makeA4CB() combat.AttackCBFunc {
+	if c.Base.Ascension < 4 {
+		return nil
+	}
+
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+
+		a4Energy := a.AttackEvent.Snapshot.Stats[attributes.ER] * 5
+		if a4Energy > 15 {
+			a4Energy = 15
+		}
+		c.AddEnergy("dori-a4", a4Energy)
+	}
 }

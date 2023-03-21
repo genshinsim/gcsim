@@ -3,12 +3,12 @@ package lisa
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var chargeFramesNoWindup []int
 var chargeFrames []int
 
 const (
@@ -31,9 +31,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -50,17 +51,18 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	cb := func(a combat.AttackCB) {
-		t, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		count := t.GetTag(conductiveTag)
-		if count < 3 {
-			t.SetTag(conductiveTag, count+1)
-		}
-	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettableGadget), chargeHitmark-windup, chargeHitmark-windup, cb)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: 1},
+			10,
+			40,
+		),
+		chargeHitmark-windup,
+		chargeHitmark-windup,
+		c.makeA1CB(),
+	)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

@@ -10,33 +10,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-var reactions = map[event.Event]combat.ReactionType{
-	event.OnOverload:           combat.Overload,
-	event.OnSuperconduct:       combat.Superconduct,
-	event.OnMelt:               combat.Melt,
-	event.OnVaporize:           combat.Vaporize,
-	event.OnFrozen:             combat.Freeze,
-	event.OnElectroCharged:     combat.ElectroCharged,
-	event.OnSwirlHydro:         combat.SwirlHydro,
-	event.OnSwirlCryo:          combat.SwirlCryo,
-	event.OnSwirlElectro:       combat.SwirlElectro,
-	event.OnSwirlPyro:          combat.SwirlPyro,
-	event.OnCrystallizeCryo:    combat.CrystallizeCryo,
-	event.OnCrystallizeElectro: combat.CrystallizeElectro,
-	event.OnCrystallizeHydro:   combat.CrystallizeHydro,
-	event.OnCrystallizePyro:    combat.CrystallizePyro,
-	event.OnAggravate:          combat.Aggravate,
-	event.OnSpread:             combat.Spread,
-	event.OnQuicken:            combat.Quicken,
-	event.OnBloom:              combat.Bloom,
-	event.OnHyperbloom:         combat.Hyperbloom,
-	event.OnBurgeon:            combat.Burgeon,
-	event.OnBurning:            combat.Burning,
+var eventToReaction = map[event.Event]reactions.ReactionType{
+	event.OnOverload:           reactions.Overload,
+	event.OnSuperconduct:       reactions.Superconduct,
+	event.OnMelt:               reactions.Melt,
+	event.OnVaporize:           reactions.Vaporize,
+	event.OnFrozen:             reactions.Freeze,
+	event.OnElectroCharged:     reactions.ElectroCharged,
+	event.OnSwirlHydro:         reactions.SwirlHydro,
+	event.OnSwirlCryo:          reactions.SwirlCryo,
+	event.OnSwirlElectro:       reactions.SwirlElectro,
+	event.OnSwirlPyro:          reactions.SwirlPyro,
+	event.OnCrystallizeCryo:    reactions.CrystallizeCryo,
+	event.OnCrystallizeElectro: reactions.CrystallizeElectro,
+	event.OnCrystallizeHydro:   reactions.CrystallizeHydro,
+	event.OnCrystallizePyro:    reactions.CrystallizePyro,
+	event.OnAggravate:          reactions.Aggravate,
+	event.OnSpread:             reactions.Spread,
+	event.OnQuicken:            reactions.Quicken,
+	event.OnBloom:              reactions.Bloom,
+	event.OnHyperbloom:         reactions.Hyperbloom,
+	event.OnBurgeon:            reactions.Burgeon,
+	event.OnBurning:            reactions.Burning,
 }
 
 func init() {
@@ -93,14 +95,14 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		return false
 	}, "legacy-particles-log")
 
-	eventSubFunc := func(reaction combat.ReactionType) func(args ...interface{}) bool {
+	eventSubFunc := func(reaction reactions.ReactionType) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
 			out.reactionsTriggered[string(reaction)]++
 			return false
 		}
 	}
 
-	for k, v := range reactions {
+	for k, v := range eventToReaction {
 		core.Events.Subscribe(k, eventSubFunc(v), "legacy-reaction-log")
 	}
 
@@ -118,13 +120,13 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		return false
 	}, "legacy-on-tick")
 
-	core.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t := args[0].(combat.Target)
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
 
 		// No need to pull damage stats for non-enemies
-		if t.Type() != combat.TargettableEnemy {
+		if t.Type() != targets.TargettableEnemy {
 			return false
 		}
 
@@ -143,15 +145,15 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		}
 
 		if atk.Info.Catalyzed {
-			if atk.Info.CatalyzedType == combat.Aggravate {
+			if atk.Info.CatalyzedType == reactions.Aggravate {
 				sb.WriteString(" [aggravate]")
-			} else if atk.Info.CatalyzedType == combat.Spread {
+			} else if atk.Info.CatalyzedType == reactions.Spread {
 				sb.WriteString(" [spread]")
 			}
 		}
 
 		out.damageByChar[atk.Info.ActorIndex][sb.String()] += dmg
-		out.damageByCharByTargets[atk.Info.ActorIndex][strconv.Itoa(t.Index())] += dmg
+		out.damageByCharByTargets[atk.Info.ActorIndex][strconv.Itoa(int(t.Key()))] += dmg
 		if dmg > 0 {
 			out.damageInstancesByChar[atk.Info.ActorIndex][sb.String()] += 1
 		}

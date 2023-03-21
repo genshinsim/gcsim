@@ -3,8 +3,11 @@ package kazuha
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var plungePressFrames []int
@@ -32,10 +35,17 @@ func init() {
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
-	ele := attributes.Physical
-	//TODO: this really shouldn't be anything else since it should only be used after skill?
-	if c.Core.Player.LastAction.Char == c.Index && c.Core.Player.LastAction.Type == action.ActionSkill {
-		ele = attributes.Anemo
+	// last action must be skill without glide cancel
+	if c.Core.Player.LastAction.Type != action.ActionSkill ||
+		c.Core.Player.LastAction.Param["glide_cancel"] != 0 {
+		c.Core.Log.NewEvent("only plunge after skill without glide cancel", glog.LogActionEvent, c.Index).
+			Write("action", action.ActionLowPlunge)
+		return action.ActionInfo{
+			Frames:          func(action.Action) int { return 1200 },
+			AnimationLength: 1200,
+			CanQueueAfter:   1200,
+			State:           action.Idle,
+		}
 	}
 
 	act := action.ActionInfo{
@@ -61,49 +71,65 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Plunge (Collide)",
-			AttackTag:      combat.AttackTagPlunge,
-			ICDTag:         combat.ICDTagNone,
-			ICDGroup:       combat.ICDGroupDefault,
-			Element:        ele,
+			AttackTag:      attacks.AttackTagPlunge,
+			ICDTag:         attacks.ICDTagNone,
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeSlash,
+			Element:        attributes.Anemo,
 			Durability:     0,
 			Mult:           plunge[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3, false, combat.TargettableEnemy), hitmark, hitmark)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1),
+			hitmark,
+			hitmark,
+		)
 	}
 
 	//aoe dmg
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
-		Abil:           "Plunge",
-		AttackTag:      combat.AttackTagPlunge,
-		ICDTag:         combat.ICDTagNone,
-		ICDGroup:       combat.ICDGroupDefault,
-		StrikeType:     combat.StrikeTypeBlunt,
-		Element:        ele,
+		Abil:           "High Plunge",
+		AttackTag:      attacks.AttackTagPlunge,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
+		Element:        attributes.Anemo,
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlAttack()],
 		IgnoreInfusion: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), hitmark, hitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 4.5),
+		hitmark,
+		hitmark,
+	)
 
 	// a1 if applies
 	if c.a1Absorb != attributes.NoElement {
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Kazuha A1",
-			AttackTag:      combat.AttackTagPlunge,
-			ICDTag:         combat.ICDTagNone,
-			ICDGroup:       combat.ICDGroupDefault,
-			StrikeType:     combat.StrikeTypeDefault,
+			AttackTag:      attacks.AttackTagPlunge,
+			ICDTag:         attacks.ICDTagNone,
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeBlunt,
 			Element:        c.a1Absorb,
 			Durability:     25,
 			Mult:           2,
 			IgnoreInfusion: true,
 		}
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettableGadget), hitmark-1, hitmark-1)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 4.5),
+			hitmark-1,
+			hitmark-1,
+		)
 		c.a1Absorb = attributes.NoElement
 	}
 

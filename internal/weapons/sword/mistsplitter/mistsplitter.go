@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -29,14 +30,14 @@ const (
 	burstBuffKey  = "mistsplitter-burst"
 )
 
-//Gain a 12% Elemental DMG Bonus for all elements and receive the might of the
-//Mistsplitter's Emblem. At stack levels 1/2/3, the Mistsplitter's Emblem
-//provides a 8/16/28% Elemental DMG Bonus for the character's Elemental Type.
-//The character will obtain 1 stack of Mistsplitter's Emblem in each of the
-//following scenarios: Normal Attack deals Elemental DMG (stack lasts 5s),
-//casting Elemental Burst (stack lasts 10s); Energy is less than 100% (stack
-//disappears when Energy is full). Each stack's duration is calculated
-//independently.
+// Gain a 12% Elemental DMG Bonus for all elements and receive the might of the
+// Mistsplitter's Emblem. At stack levels 1/2/3, the Mistsplitter's Emblem
+// provides a 8/16/28% Elemental DMG Bonus for the character's Elemental Type.
+// The character will obtain 1 stack of Mistsplitter's Emblem in each of the
+// following scenarios: Normal Attack deals Elemental DMG (stack lasts 5s),
+// casting Elemental Burst (stack lasts 10s); Energy is less than 100% (stack
+// disappears when Energy is full). Each stack's duration is calculated
+// independently.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -54,12 +55,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	bonus := attributes.EleToDmgP(char.Base.Element)
 
 	//normal dealing dmg
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		if atk.Info.Element == attributes.Physical {

@@ -3,13 +3,18 @@ package mona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillFrames [][]int
+var (
+	skillFrames   [][]int
+	skillHitmarks = []int{86, 101}
+)
 
-var skillHitmarks = []int{86, 101}
+const particleICDKey = "mona-particle-icd"
 
 func init() {
 	skillFrames = make([][]int, 2)
@@ -42,39 +47,35 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Mirror Reflection of Doom (Tick)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skillDot[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 
 	// tick every 1s
 	for i := skillHitmarks[hold]; i < 300; i += 60 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), i)
+		c.Core.QueueAttackWithSnap(ai, snap, ap, i)
 	}
 
 	// Explosion
 	aiExplode := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Mirror Reflection of Doom (Explode)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-
-	c.Core.QueueAttack(aiExplode, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, skillHitmarks[hold]+313)
-
-	var count float64 = 3
-	if c.Core.Rand.Float64() < .33 {
-		count = 4
-	}
-	c.Core.QueueParticle("mona", count, attributes.Hydro, skillHitmarks[hold]+313+c.ParticleDelay)
+	c.Core.QueueAttack(aiExplode, ap, 0, skillHitmarks[hold]+313, c.particleCB)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 24)
 
@@ -84,4 +85,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[hold][action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < .33 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay)
 }

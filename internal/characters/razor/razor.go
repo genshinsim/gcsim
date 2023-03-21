@@ -18,7 +18,7 @@ type char struct {
 	*tmpl.Character
 	sigils          int
 	skillSigilBonus []float64
-	a4bonus         []float64
+	a4Bonus         []float64
 	c1bonus         []float64
 	c2bonus         []float64
 }
@@ -44,7 +44,6 @@ func (c *char) Init() error {
 
 	// burst
 	c.speedBurst()
-	c.wolfBurst()
 	c.onSwapClearBurst()
 
 	c.a4()
@@ -61,9 +60,6 @@ func (c *char) Init() error {
 	}
 	if c.Base.Cons >= 2 {
 		c.c2()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 
 	return nil

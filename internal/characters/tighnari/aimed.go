@@ -3,8 +3,10 @@ package tighnari
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames []int
@@ -45,9 +47,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim (Charged)",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Dendro,
 		Durability:           25,
 		Mult:                 fullaim[c.TalentLvlAttack()],
@@ -58,7 +61,18 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
+		aimedHitmark,
+		aimedHitmark+travel,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedFrames),
@@ -99,9 +113,10 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Wreath Arrow",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Dendro,
 		Durability:           25,
 		Mult:                 wreath[c.TalentLvlAttack()],
@@ -111,15 +126,29 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1, false, combat.TargettableEnemy), aimedWreathHitmark-skip, aimedWreathHitmark+travel-skip)
-	c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
+		aimedWreathHitmark-skip,
+		aimedWreathHitmark+travel-skip,
+	)
+	if c.Base.Ascension >= 1 {
+		c.Core.Tasks.Add(c.a1, aimedWreathHitmark-skip+1)
+	}
 
 	ai = combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Clusterbloom Arrow",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagExtraAttack,
-		ICDGroup:     combat.ICDGroupTighnari,
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagExtraAttack,
+		ICDGroup:     attacks.ICDGroupTighnari,
+		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Dendro,
 		Durability:   25,
 		Mult:         clusterbloom[c.TalentLvlAttack()],
@@ -131,7 +160,12 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					1,
+				),
 				wreathTravel,
 			)
 		}
@@ -140,9 +174,10 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			ai = combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Karma Adjudged From the Leaden Fruit",
-				AttackTag:  combat.AttackTagExtra,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
+				AttackTag:  attacks.AttackTagExtra,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypePierce,
 				Element:    attributes.Dendro,
 				Durability: 25,
 				Mult:       1.5,
@@ -150,7 +185,12 @@ func (c *char) WreathAimed(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					1,
+				),
 				wreathTravel,
 			)
 		}

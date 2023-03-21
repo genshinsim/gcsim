@@ -3,7 +3,9 @@ package fischl
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -15,14 +17,17 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	//field use for calculating oz damage
+	// field use for calculating oz damage
+	ozPos         geometry.Point
 	ozSnapshot    combat.AttackEvent
 	ozSource      int  // keep tracks of source of oz aka resets
 	ozActive      bool // purely used for gscl conditional purposes
 	ozActiveUntil int  // used for oz ticks, a4, c1 and c6
+	ozTickSrc     int  // used for oz recast attacks
+	ozTravel      int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -32,6 +37,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.ozSource = -1
 	c.ozActive = false
 	c.ozActiveUntil = -1
+	c.ozTickSrc = -1
+
+	c.ozTravel = 10
+	travel, ok := p.Params["oz_travel"]
+	if ok {
+		c.ozTravel = travel
+	}
 
 	w.Character = &c
 
@@ -61,4 +73,16 @@ func (c *char) Condition(fields []string) (any, error) {
 	default:
 		return c.Character.Condition(fields)
 	}
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+	// check if it is possible to recast oz
+	if a == action.ActionSkill && p["recast"] != 0 && c.ozActive {
+		return !c.StatusIsActive(skillRecastCDKey), action.SkillCD
+	}
+	// check if cast skill with oz on-field
+	if a == action.ActionSkill && c.ozActive {
+		return false, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
 }

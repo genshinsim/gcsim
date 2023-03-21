@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -35,10 +36,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dandelion Breeze",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -46,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	// initial hit at 40f
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 40)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), burstStart)
 
 	// field status
 	c.Core.Status.Add("jean-q", 600+burstStart)
@@ -57,11 +58,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
 	// first enter is at frame 55
 	for i := 0; i < enter; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 55+i*delay)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), 55+i*delay)
 	}
 
 	// handle In/Out damage on field expiry
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 600+burstStart)
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), 600+burstStart)
 
 	//heal on cast
 	hpplus := snap.Stats[attributes.Heal]
@@ -92,28 +93,35 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
+	// C4 also applies once right before burst start
+	if c.Base.Cons >= 4 {
+		c.Core.Tasks.Add(func() {
+			c.c4()
+		}, burstStart-1)
+	}
+	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
 	// duration is ~10.6s, first tick starts at frame 100, + 60 each
 	for i := 100; i <= 600+burstStart; i += 60 {
 		c.Core.Tasks.Add(func() {
-			// heal
-			// c.Core.Log.NewEvent("jean q healing", glog.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
-			c.Core.Player.Heal(player.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Core.Player.Active(),
-				Message: "Dandelion Field",
-				Src:     healDot,
-				Bonus:   hpplus,
-			})
+			if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
+				// heal
+				c.Core.Player.Heal(player.HealInfo{
+					Caller:  c.Index,
+					Target:  c.Core.Player.Active(),
+					Message: "Dandelion Field",
+					Src:     healDot,
+					Bonus:   hpplus,
+				})
 
-			// self swirl
-			ae := combat.AttackEvent{
-				Info:        selfSwirl,
-				Pattern:     combat.NewDefSingleTarget(0, combat.TargettablePlayer),
-				SourceFrame: c.Core.F,
+				// self swirl
+				ae := combat.AttackEvent{
+					Info:        selfSwirl,
+					Pattern:     combat.NewSingleTargetHit(0),
+					SourceFrame: c.Core.F,
+				}
+				c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)
+				self.ReactWithSelf(&ae)
 			}
-			c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)
-			self.ReactWithSelf(&ae)
-
 			// C4
 			if c.Base.Cons >= 4 {
 				c.c4()
@@ -122,10 +130,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 38)
-	// handle energy delay and a4
+	// A4
 	c.Core.Tasks.Add(func() {
-		c.Energy = 16 //jean a4
-	}, 41)
+		c.a4()
+	}, burstStart+1)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),

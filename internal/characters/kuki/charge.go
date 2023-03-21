@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -27,10 +28,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Charge %v", i),
-			AttackTag:          combat.AttackTagExtra,
-			ICDTag:             combat.ICDTagExtraAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagExtra,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -39,7 +40,12 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: chargeDefHalt[i],
 		}
 		// only the last multihit has hitlag so no need for char queue here
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.8),
+			chargeHitmarks[i],
+			chargeHitmarks[i],
+		)
 	}
 
 	return action.ActionInfo{

@@ -1,6 +1,7 @@
 package diluc
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -36,9 +37,9 @@ const (
 
 func (c *char) c2() {
 	c.c2buff = make([]float64, attributes.EndStatType)
-	//we use OnCharacterHit here because he just has to get hit but triggers even if shielded
+	//we use OnPlayerHit here because he just has to get hit but triggers even if shielded
 	//TODO: double check if this event is even needed
-	c.Core.Events.Subscribe(event.OnCharacterHit, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(_ ...interface{}) bool {
 		if c.StatusIsActive(c2ICDKey) {
 			return false
 		}
@@ -70,7 +71,7 @@ func (c *char) c4() {
 		Base: modifier.NewBaseWithHitlag(c4BuffKey, 120),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			//should only affect skill dmg
-			if atk.Info.AttackTag != combat.AttackTagElementalArt {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			return c.c4buff, true

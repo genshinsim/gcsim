@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -79,9 +80,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		done = true
 	}
 
-	r := 0.1
+	r := 0.5
 	if c.Base.Cons >= 1 {
-		r = 2
+		r = 3.5
 	}
 
 	nextAttack := attackOptions[c.prevAttack][c.Core.Rand.Intn(2)]
@@ -92,10 +93,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal (%s)", nextAttack),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       attack[c.TalentLvlAttack()],
@@ -104,7 +105,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i := 0; i < 2; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), r, false, combat.TargettableEnemy),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				r,
+			),
 			attackHitmarks[nextAttack],
 			attackHitmarks[nextAttack]+travel,
 			cb,

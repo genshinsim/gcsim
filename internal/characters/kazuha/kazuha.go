@@ -34,15 +34,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
-	c.a1AbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
-	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
-
 	w.Character = &c
 
 	return nil
 }
 
 func (c *char) Init() error {
+	c.a1Absorb = attributes.NoElement
 	c.a4()
 
 	// make sure to use the same key everywhere so that these passives don't stack

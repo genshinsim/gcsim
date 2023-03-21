@@ -3,8 +3,10 @@ package kazuha
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -25,17 +27,17 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
+	player := c.Core.Combat.Player()
 	c.qAbsorb = attributes.NoElement
-	c.qAbsorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
+	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Kazuha Slash",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Anemo,
 		Durability:         50,
 		Mult:               burstSlash[c.TalentLvlBurst()],
@@ -43,11 +45,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.05,
 		CanBeDefenseHalted: false,
 	}
+	ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 9)
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1.5, false, combat.TargettableEnemy), 0, burstHitmark)
+	c.Core.QueueAttack(ai, ap, 0, burstHitmark)
 
 	//apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
+	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	ai.Durability = 25
 	// no more hitlag after initial slash
@@ -62,6 +66,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
 
+	// handle C2
+	// first tick is right before initial hit, ticks every 0.5s while burst is up
+	c.QueueCharTask(func() {
+		c.Core.Status.Add(burstStatus, (burstFirstTick-(burstHitmark-1))+117*4)
+		if c.Base.Cons >= 2 {
+			c.qFieldSrc = c.Core.F
+			c.c2(c.Core.F)() // start ticking right away
+		}
+	}, burstHitmark-1)
+
 	// make sure that this task gets executed:
 	// - inside Q hitlag
 	// - before kazuha can get affected by any more hitlag
@@ -73,20 +87,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.Tasks.Add(func() {
 				if c.qAbsorb != attributes.NoElement {
 					aiAbsorb.Element = c.qAbsorb
-					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy, combat.TargettableGadget), 0)
+					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, ap, 0)
 				}
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5, false, combat.TargettableEnemy), 0)
+				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
 			}, (burstFirstTick-(burstHitmark+1))+117*i)
-		}
-		// C2:
-		// TODO: Not sure when it lasts from and until
-		// -> For now, assume that it lasts from Initial Hit hitlag end to the last Q tick.
-		// TODO: Does it apply to Kazuha's initial hit?
-		// -> For now, assume that it doesn't.
-		c.Core.Status.Add(burstStatus, (burstFirstTick-(burstHitmark+1))+117*4)
-		if c.Base.Cons >= 2 {
-			c.qFieldSrc = c.Core.F
-			c.Core.Tasks.Add(c.c2(c.Core.F), 30) // start checking in 0.5s
 		}
 		// C6:
 		// TODO: when does the infusion kick in?

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -31,8 +32,8 @@ const (
 	buffKey = "prototype-rancour"
 )
 
-//On hit, Normal or Charged Attacks increase ATK and DEF by 4% for 6s. Max 4
-//stacks. This effect can only occur once every 0.3s.
+// On hit, Normal or Charged Attacks increase ATK and DEF by 4% for 6s. Max 4
+// stacks. This effect can only occur once every 0.3s.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
@@ -40,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w.buff = make([]float64, attributes.EndStatType)
 	perStack := 0.03 + 0.01*float64(r)
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -48,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {

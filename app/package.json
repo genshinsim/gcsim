@@ -3,6 +3,7 @@
   "source": "src/index.html",
   "scripts": {
     "start": "parcel src/index.html",
+    "enka": "node ./src/Components/Enka/GenshinData/DownloadFromEnkaScript.js",
     "build": "parcel build src/index.html --dist-dir build"
   },
   "devDependencies": {
@@ -25,7 +26,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.30.1",
-    "genshin-db": "^4.3.0",
+    "genshin-db": "^4.3.5",
     "parcel-reporter-static-files-copy": "^1.3.4",
     "parcel-resolver-ignore": "^2.0.0",
     "postcss": "^8.3.11",
@@ -39,6 +40,7 @@
     "@blueprintjs/core": "~4.0.0",
     "@blueprintjs/popover2": "~1.0.0",
     "@blueprintjs/select": "~4.0.0",
+    "@fontsource/fira-mono": "^4.5.10",
     "@reduxjs/toolkit": "^1.6.2",
     "ajv": "^8.8.2",
     "axios": "^0.26.0",

@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var attackFrames [][]int
@@ -34,9 +36,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -45,7 +48,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				geometry.Point{Y: -0.5},
+				0.1,
+				1,
+			),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel,
 		)

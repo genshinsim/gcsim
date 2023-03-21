@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -35,7 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	const icdKey = "frostbearer-icd"
 	icd := 600
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
@@ -50,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		if c.Rand.Float64() < prob {
@@ -59,9 +60,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Frostbearer Proc",
-				AttackTag:  combat.AttackTagWeaponSkill,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
+				AttackTag:  attacks.AttackTagWeaponSkill,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
 				Element:    attributes.Physical,
 				Durability: 100,
 				Mult:       atk,
@@ -71,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				ai.Mult = atkc
 			}
 
-			c.QueueAttack(ai, combat.NewCircleHit(t, 3, false, combat.TargettableEnemy), 0, 1)
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
 
 		}
 		return false

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
@@ -125,7 +126,8 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		y = float64(n.ival)
 	}
 
-	e.Core.Combat.SetPlayerPos(x, y)
+	e.Core.Combat.SetPlayerPos(geometry.Point{X: x, Y: y})
+	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return bton(true), nil
 }
@@ -201,6 +203,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Combat.DefaultTarget = e.Core.Combat.Enemy(idx - 1).Key()
+	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return &number{}, nil
 
@@ -260,7 +263,8 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
-	e.Core.Combat.SetEnemyPos(idx-1, x, y)
+	e.Core.Combat.SetEnemyPos(idx-1, geometry.Point{X: x, Y: y})
+	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return &number{}, nil
 }

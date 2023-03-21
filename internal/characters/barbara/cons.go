@@ -3,6 +3,7 @@ package barbara
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -31,9 +32,13 @@ func (c *char) c2() {
 }
 
 // inspired from hutao c6
-//TODO: does this even work?
+// TODO: does this even work?
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnCharacterHurt, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if di.Amount <= 0 {
+			return false
+		}
 		if c.Core.Player.Active() != c.Index { //trigger only when not barbara
 			c.checkc6()
 		}

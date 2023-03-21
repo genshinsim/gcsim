@@ -3,6 +3,7 @@ package tartaglia
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -29,32 +30,19 @@ func (c *char) rangedBurstApplyRiptide(a combat.AttackCB) {
 	c.applyRiptide("ranged burst", t)
 }
 
-// When Tartaglia is in Foul Legacy: Raging Tide's Melee Stance, on dealing a CRIT hit,
-// Normal and Charged Attacks apply the Riptide status effect to opponents.
-func (c *char) meleeApplyRiptide(a combat.AttackCB) {
-	// only applies if is crit
-	if a.IsCrit {
-		t, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		c.applyRiptide("melee", t)
-	}
-}
-
 func (c *char) applyRiptide(src string, t *enemy.Enemy) {
 	if c.Base.Cons >= 4 && !t.StatusIsActive(riptideKey) {
 		c.c4Src = c.Core.F
 		t.QueueEnemyTask(c.rtC4Tick(c.Core.F, t), 60*3.9)
 	}
 
-	t.AddStatus(riptideKey, riptideDuration, true)
+	t.AddStatus(riptideKey, c.riptideDuration, true)
 	c.Core.Log.NewEvent(
 		fmt.Sprintf("riptide applied (%v)", src),
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("target", t.Index()).
+		Write("target", t.Key()).
 		Write("expiry", t.StatusExpiry(riptideKey))
 }
 
@@ -72,7 +60,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 			return
 		}
 
-		if c.StatusIsActive(meleeKey) {
+		if c.StatusIsActive(MeleeKey) {
 			c.rtSlashTick(t)
 		} else {
 			c.rtFlashTick(t)
@@ -81,7 +69,7 @@ func (c *char) rtC4Tick(src int, t *enemy.Enemy) func() {
 		t.QueueEnemyTask(c.rtC4Tick(src, t), 60*3.9)
 		c.Core.Log.NewEvent("tartaglia c4 applied", glog.LogCharacterEvent, c.Index).
 			Write("src", src).
-			Write("target", t.Index())
+			Write("target", t.Key())
 	}
 }
 
@@ -112,10 +100,10 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Flash",
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagTartagliaRiptideFlash,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagTartagliaRiptideFlash,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       rtFlash[c.TalentLvlAttack()],
@@ -123,7 +111,7 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 
 	// proc 3 hits
 	for i := 1; i <= 3; i++ {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(t, 0.5, false, combat.TargettableEnemy), 1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1, c.particleCB)
 	}
 
 	c.Core.Log.NewEvent(
@@ -131,16 +119,10 @@ func (c *char) rtFlashTick(t *enemy.Enemy) {
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
-		Write("target", t.Index()).
+		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
+		Write("target", t.Key()).
 		Write("riptide_flash_icd", t.StatusExpiry(riptideFlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
-
-	// queue particles
-	if !c.StatusIsActive(energyICDKey) {
-		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
-	}
 }
 
 // Hitting an opponent affected by Riptide with a melee attack unleashes a Riptide Slash that deals AoE Hydro DMG.
@@ -170,32 +152,26 @@ func (c *char) rtSlashTick(t *enemy.Enemy) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Slash",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       rtSlash[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(t, 2, false, combat.TargettableEnemy), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 1, 1, c.particleCB)
 
 	c.Core.Log.NewEvent(
 		"riptide slash ticked",
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
-		Write("target", t.Index()).
+		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
+		Write("target", t.Key()).
 		Write("riptide_slash_icd", t.StatusExpiry(riptideSlashICDKey)).
 		Write("riptide_expiry", t.StatusExpiry(riptideKey))
-
-	// queue particle if not on icd
-	if !c.StatusIsActive(energyICDKey) {
-		c.AddStatus(energyICDKey, 180, true) // 3 sec
-		c.Core.QueueParticle("tartaglia", 1, attributes.Hydro, c.ParticleDelay)
-	}
 }
 
 // When the obliterating waters hit an opponent affected by Riptide, it clears their Riptide status
@@ -218,24 +194,24 @@ func (c *char) rtBlastCallback(a combat.AttackCB) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Riptide Blast",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 50,
 		Mult:       rtBlast[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3, false, combat.TargettableEnemy), 1, 1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 5), 1, 1)
 
 	c.Core.Log.NewEvent(
 		"riptide blast triggered",
 		glog.LogCharacterEvent,
 		c.Index,
 	).
-		Write("dur", c.StatusExpiry(meleeKey)-c.Core.F).
-		Write("target", t.Index()).
+		Write("dur", c.StatusExpiry(MeleeKey)-c.Core.F).
+		Write("target", t.Key()).
 		Write("rtExpiry", t.StatusExpiry(riptideKey))
 
 	// clear riptide status
@@ -260,15 +236,15 @@ func (c *char) onDefeatTargets() {
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Riptide Burst",
-				AttackTag:  combat.AttackTagNormal,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				StrikeType: combat.StrikeTypeDefault,
+				AttackTag:  attacks.AttackTagNormal,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeSlash,
 				Element:    attributes.Hydro,
 				Durability: 50,
 				Mult:       rtBurst[c.TalentLvlAttack()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, 0)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 5), 0, 0)
 		}, 5)
 		// TODO: re-index riptide expiry frame array if needed
 		if c.Base.Cons >= 2 {

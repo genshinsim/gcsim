@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -72,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		},
 	})
 
-	c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -82,13 +83,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		switch atk.Info.AttackTag {
-		case combat.AttackTagNormal:
+		case attacks.AttackTagNormal:
 			char.AddStatus(normalKey, stackDuration, true)
-		case combat.AttackTagExtra:
+		case attacks.AttackTagExtra:
 			char.AddStatus(chargedKey, stackDuration, true)
-		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold:
+		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
 			char.AddStatus(skillKey, stackDuration, true)
-		case combat.AttackTagElementalBurst:
+		case attacks.AttackTagElementalBurst:
 			char.AddStatus(burstKey, stackDuration, true)
 		}
 
@@ -101,7 +102,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base: modifier.NewBase("polar-star-dmg", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
-			case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
 				return mDmg, true
 			}
 			return nil, false

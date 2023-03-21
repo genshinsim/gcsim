@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -35,27 +37,24 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
 
 	if c.StatusIsActive("yoimiyaskill") {
-		ai.ICDTag = combat.ICDTagNormalAttack
+		ai.ICDTag = attacks.ICDTagNormalAttack
 	}
 
-	particleCB := func(combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) {
-			return
-		}
-		if c.Core.F < c.lastPart {
-			return
-		}
-		c.Core.QueueParticle("yoimiya", 1, attributes.Pyro, c.ParticleDelay) // 1 particle
-		c.lastPart = c.Core.F + 120                                          // every 2s
+	var particleCB combat.AttackCBFunc
+	if c.StatusIsActive(skillKey) {
+		particleCB = c.particleCB
 	}
+	a1CB := c.makeA1CB()
+	c2CB := c.makeC2CB()
 
 	var totalMV float64
 	for i, mult := range attack[c.NormalCounter] {
@@ -63,10 +62,18 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		totalMV += mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				geometry.Point{Y: -0.5},
+				0.1,
+				1,
+			),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel,
 			particleCB,
+			a1CB,
+			c2CB,
 		)
 	}
 
@@ -75,9 +82,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Kindling (C6) - N%v", c.NormalCounter),
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagNormal,
+			ICDTag:     attacks.ICDTagNormalAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       totalMV * 0.6,
@@ -85,9 +93,17 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		// TODO: frames?
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				geometry.Point{Y: -0.5},
+				0.1,
+				1,
+			),
 			0,
 			attackHitmarks[c.NormalCounter][0]+travel+5,
+			a1CB,
+			c2CB,
 		)
 	}
 

@@ -4,8 +4,10 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -38,31 +40,28 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fantastic Voyage",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	const radius = 6.0
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), radius, false, combat.TargettableEnemy, combat.TargettableGadget), 37, 37)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, radius)
+	c.Core.QueueAttack(ai, burstArea, 37, 37)
 
-	//apply right away
-	stats, _ := c.Stats()
-	c.applyBennettField(stats)()
-
-	field := combat.NewCircleHit(c.Core.Combat.Player(), radius, false, combat.TargettablePlayer)
-
-	//add 12 ticks starting at t = 1 to t= 12
-	// Buff appears to start ticking right before hit
+	// add 13 ticks starting from t=0s to t=12s
+	// buff appears to start ticking right before hit (t=0s)
 	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
-	for i := burstStartFrame; i <= 720+burstStartFrame; i += 60 {
+	stats, _ := c.Stats()
+	for i := 0; i <= 12*60; i += 60 {
 		c.Core.Tasks.Add(func() {
-			if combat.WillCollide(field, c.Core.Combat.Player(), 0) {
+			if c.Core.Combat.Player().IsWithinArea(burstArea) {
 				c.applyBennettField(stats)()
 			}
-		}, i)
+		}, i+burstStartFrame)
 	}
 
 	c.ConsumeEnergy(36)
@@ -133,7 +132,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 						attributes.Pyro,
 						burstBuffDuration,
 						true,
-						combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+						attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 					)
 				}
 			}
@@ -141,6 +140,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(burstFieldKey, burstBuffDuration),
 				AffectedStat: attributes.NoStat,
+				Extra:        true,
 				Amount: func() ([]float64, bool) {
 					return m, true
 				},

@@ -126,15 +126,50 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: 'geo',
     weapon_type: 'Sword',
   },
-  collei: {
-    key: 'collei',
+  travelerdendro: {
+    key: 'travelerdendro',
     element: 'dendro',
+    weapon_type: 'Sword',
+  },
+  nahida: {
+    key: 'nahida',
+    element: 'dendro',
+    weapon_type: 'catalyst',
+  },
+  cyno: {
+    key: 'cyno',
+    element: 'electro',
+    weapon_type: 'polearm',
+  },
+  nilou: {
+    key: 'nilou',
+    element: 'hydro',
+    weapon_type: 'sword',
+  },
+  alhaitham: {
+    key: 'alhaitham',
+    element: 'dendro',
+    weapon_type: 'sword',
+  },
+  layla: {
+    key: 'layla',
+    element: 'cryo',
+    weapon_type: 'sword',
+  },
+  faruzan: {
+    key: 'faruzan',
+    element: 'anemo',
     weapon_type: 'bow',
   },
-  tighnari: {
-    key: 'tighnari',
+  wanderer: {
+    key: 'wanderer',
+    element: 'anemo',
+    weapon_type: 'catalyst',
+  },
+  yaoyao: {
+    key: 'yaoyao',
     element: 'dendro',
-    weapon_type: 'bow',
+    weapon_type: 'polearm',
   },
 };
 

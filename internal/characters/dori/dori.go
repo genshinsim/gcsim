@@ -17,8 +17,6 @@ type char struct {
 	afterCount int
 }
 
-const c6key = "dori-c6"
-
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
@@ -38,10 +36,6 @@ func (c *char) Init() error {
 	c.a1()
 	if c.Base.Cons >= 1 {
 		c.c1()
-	}
-
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 	return nil
 }

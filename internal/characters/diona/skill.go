@@ -3,16 +3,22 @@ package diona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillPressFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames []int
+	skillHoldFrames  []int
+)
 
-const skillPressHitmark = 5 // release
-const skillHoldHitmark = 29 // release
+const (
+	skillPressHitmark = 5  // release
+	skillHoldHitmark  = 29 // release
+)
 
 func init() {
 	skillPressFrames = frames.InitAbilSlice(34) // Tap E -> E
@@ -39,6 +45,22 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		return c.skillHold(travel)
 	}
 	return c.skillPress(travel)
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		if c.Core.Rand.Float64() < 0.8 {
+			c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
+		}
+	}
 }
 
 func (c *char) skillPress(travel int) action.ActionInfo {
@@ -86,11 +108,6 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			//make sure this is only triggered once
 			done = true
 
-			//trigger particles if prob < 0.8
-			if c.Core.Rand.Float64() < 0.8 {
-				c.Core.QueueParticle("diona", 1, attributes.Cryo, c.ParticleDelay) //90s travel time
-			}
-
 			//check if shield already exists, if so then just update duration
 			exist := c.Core.Player.Shields.Get(shield.ShieldDionaSkill)
 			var shd *shield.Tmpl
@@ -116,10 +133,10 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Icy Paw",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       paw[c.TalentLvlSkill()],
@@ -128,6 +145,18 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 	for i := 0; i < pawCount; i++ {
 		done := false
 		cb := pawCB(done)
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), 0, travel+f-5+i, cb)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.5,
+			),
+			0,
+			travel+f-5+i,
+			cb,
+			c.makeParticleCB(),
+		)
 	}
 }

@@ -47,12 +47,12 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
 			return 0, err
 		}
-		return char.StatusIsActive(fields[2]), nil
+		return char.StatusDuration(fields[2]), nil
 	case "mods":
 		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
 			return 0, err
 		}
-		return char.StatModIsActive(fields[2]), nil
+		return char.StatusDuration(fields[2]), nil
 	case "infusion":
 		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
 			return 0, err
@@ -71,7 +71,6 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 	default: // .kokomi.*
 		return char.Condition(fields[1:])
 	}
-
 }
 
 func evalCharacterStats(char *character.CharWrapper, stat string) (float64, error) {
@@ -95,7 +94,7 @@ func evalCharacterAbil(c *core.Core, char *character.CharWrapper, act action.Act
 		if act == action.ActionSwap {
 			return c.Player.SwapCD == 0 || c.Player.Active() == char.Index, nil
 		}
-		//TODO: nil map may cause problems here??
+		// TODO: nil map may cause problems here??
 		ok, _ := char.ActionReady(act, nil)
 		return ok, nil
 	default:

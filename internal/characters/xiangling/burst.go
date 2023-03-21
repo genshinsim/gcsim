@@ -5,12 +5,16 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var burstFrames []int
-var burstHitmarks = []int{18, 33, 56} // initial 3 hits
+var (
+	burstFrames   []int
+	burstHitmarks = []int{18, 33, 56} // initial 3 hits
+	burstRadius   = []float64{2.5, 2.5, 3}
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(80)
@@ -22,9 +26,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		initialHit := combat.AttackInfo{
 			Abil:               fmt.Sprintf("Pyronado Hit %v", i+1),
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagElementalBurst,
-			ICDGroup:           combat.ICDGroupDefault,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagElementalBurst,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
 			HitlagHaltFrames:   0.03 * 60,
@@ -32,8 +37,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: true,
 			Mult:               pyronadoInitial[i][c.TalentLvlBurst()],
 		}
+		radius := burstRadius[i]
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(initialHit, combat.NewCircleHit(c.Core.Combat.Player(), 0.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, 0)
+			c.Core.QueueAttack(initialHit, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), 0, 0)
 		}, burstHitmarks[i])
 	}
 
@@ -45,9 +51,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	burstHit := combat.AttackInfo{
 		Abil:       "Pyronado",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       pyronadoSpin[c.TalentLvlBurst()],
@@ -60,8 +67,17 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			max = 14 * 60
 		}
 		c.Core.Status.Add("xianglingburst", max)
+		snap := c.Snapshot(&burstHit)
 		for delay := 0; delay <= max; delay += 73 { //first hit on same frame as 3rd initial hit
-			c.Core.QueueAttack(burstHit, combat.NewCircleHit(c.Core.Combat.Player(), 2.5, false, combat.TargettableEnemy, combat.TargettableGadget), 0, delay)
+			// TODO: proper hitbox
+			c.Core.Tasks.Add(func() {
+				c.Core.QueueAttackWithSnap(
+					burstHit,
+					snap,
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5),
+					0,
+				)
+			}, delay)
 		}
 		//add an effect starting at frame 55 to end of duration to increase pyro dmg by 15% if c6
 		if c.Base.Cons >= 6 {

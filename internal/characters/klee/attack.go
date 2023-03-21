@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -15,6 +16,7 @@ var (
 	attackFramesWithLag   [][]int
 	attackHitmarks        = []int{16, 23, 37}
 	attackHitmarksWithLag []int
+	attackRadius          = []float64{1, 1, 1.5}
 )
 
 const normalHitNum = 3
@@ -84,10 +86,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagKleeFireDamage,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagKleeFireDamage,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -100,10 +102,15 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy, combat.TargettableGadget),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				attackRadius[c.NormalCounter],
+			),
 			0,
 			travel,
-			c.a1,
+			c.makeA1CB(),
 		)
 		c.c1(travel)
 		done = true

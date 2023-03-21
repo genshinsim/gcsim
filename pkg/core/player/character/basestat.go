@@ -12,6 +12,7 @@ import (
 func (c *CharWrapper) UpdateBaseStats() error {
 	//calculate char base t.Stats
 	ck := c.Base.Key
+	isTraveler := false
 	//TODO: do something about traveler :(
 	if ck < keys.TravelerDelim {
 		// male keys are odd, female keys are even
@@ -20,6 +21,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		} else {
 			ck = keys.Lumine
 		}
+		isTraveler = true
 	}
 	b, ok := curves.CharBaseMap[ck]
 	if !ok {
@@ -51,6 +53,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		}
 	}
 	if ind > -1 {
+		c.Base.Ascension = ind
 		//add hp/atk/bonus
 		c.Base.HP += b.PromotionBonus[ind].HP
 		c.Base.Atk += b.PromotionBonus[ind].Atk
@@ -90,10 +93,14 @@ func (c *CharWrapper) UpdateBaseStats() error {
 
 	//misc data
 	c.Base.Rarity = b.Rarity
-	c.Base.Element = b.Element
 	c.Weapon.Class = b.WeaponType
 	c.CharZone = b.Region
 	c.CharBody = b.Body
+
+	//only set it if not traveler - traveler code needs to set this manually
+	if !isTraveler {
+		c.Base.Element = b.Element
+	}
 
 	//log stats
 	c.log.NewEvent(

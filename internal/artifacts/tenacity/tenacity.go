@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -51,12 +52,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.2
 
-		c.Events.Subscribe(event.OnDamage, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
-			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 				return false
 			}
 			if char.StatusIsActive(icdKey) {

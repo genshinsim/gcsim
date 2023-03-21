@@ -3,8 +3,10 @@ package yelan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -33,21 +35,32 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 	weakspot := p["weakspot"]
 
-	if c.Tag(breakthroughStatus) > 0 {
-		c.RemoveTag(breakthroughStatus)
+	if c.breakthrough {
+		c.breakthrough = false
 		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index)
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
-			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagYelanBreakthrough,
-			ICDGroup:   combat.ICDGroupYelanBreakthrough,
+			AttackTag:  attacks.AttackTagExtra,
+			ICDTag:     attacks.ICDTagYelanBreakthrough,
+			ICDGroup:   attacks.ICDGroupYelanBreakthrough,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Hydro,
 			Durability: 25,
 			FlatDmg:    barb[c.TalentLvlAttack()] * c.MaxHP(),
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1, false, combat.TargettableEnemy), aimedBarbHitmark, aimedBarbHitmark+travel)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				6,
+			),
+			aimedBarbHitmark,
+			aimedBarbHitmark+travel,
+		)
 
 		return action.ActionInfo{
 			Frames:          frames.NewAbilFunc(aimedBarbFrames),
@@ -60,15 +73,27 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Aim Charge Attack",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Hydro,
 		Durability:   25,
 		Mult:         aimed[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
+		aimedHitmark,
+		aimedHitmark+travel,
+	)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(aimedFrames),

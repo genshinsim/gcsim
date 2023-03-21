@@ -1,9 +1,11 @@
 package kokomi
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -19,9 +21,10 @@ func (c *char) c1(f, travel int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "At Water's Edge (C1)",
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,
@@ -29,18 +32,36 @@ func (c *char) c1(f, travel int) {
 	ai.FlatDmg = 0.3 * c.MaxHP()
 
 	// TODO: Is this snapshotted/dynamic?
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy), f, f+travel)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1.2),
+		f,
+		f+travel,
+	)
 }
+
+const c4ICDKey = "kokomi-c4-icd"
 
 // C4 (Energy piece only) handling
 // While donning the Ceremonial Garment created by Nereid's Ascension, Sangonomiya Kokomi's Normal Attack SPD is increased by 10%.
 // and Normal Attacks that hit opponents will restore 0.8 Energy for her. This effect can occur once every 0.2s.
-func (c *char) c4() {
-	if c.Core.F < c.c4ICDExpiry {
-		return
+func (c *char) makeC4CB() combat.AttackCBFunc {
+	if c.Base.Cons < 4 {
+		return nil
 	}
-	c.c4ICDExpiry = c.Core.F + 12
-	c.AddEnergy("kokomi-c4", 0.8)
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.Core.Status.Duration("kokomiburst") == 0 {
+			return
+		}
+		if c.StatusIsActive(c4ICDKey) {
+			return
+		}
+		c.AddStatus(c4ICDKey, 0.2*60, true)
+		c.AddEnergy("kokomi-c4", 0.8)
+	}
 }
 
 // C6 handling
@@ -56,6 +77,7 @@ func (c *char) c6() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("kokomi-c6", 480),
 			AffectedStat: attributes.HydroP,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

@@ -7,7 +7,9 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func evalDebuff(c *core.Core, fields []string) (bool, error) {
@@ -34,24 +36,30 @@ func evalDebuff(c *core.Core, fields []string) (bool, error) {
 	}
 }
 
-func evalElement(c *core.Core, fields []string) (bool, error) {
+func evalElement(c *core.Core, fields []string) (float64, error) {
 	//.element.t1.pyro
 	if err := fieldsCheck(fields, 3, "element"); err != nil {
-		return false, err
+		return 0, err
 	}
 	trg := fields[1]
 	ele := fields[2]
 
 	e, err := parseTarget(c, trg)
 	if err != nil {
-		return false, fmt.Errorf("bad element condition: %v", err)
+		return 0, fmt.Errorf("bad element condition: %v", err)
 	}
 
 	elekey := attributes.StringToEle(ele)
 	if elekey == attributes.UnknownElement {
-		return false, fmt.Errorf("bad element condition: invalid element %v", ele)
+		return 0, fmt.Errorf("bad element condition: invalid element %v", ele)
 	}
-	return e.AuraContains(elekey), nil
+	result := reactions.Durability(0)
+	for i := reactable.ModifierInvalid; i < reactable.EndReactableModifier; i++ {
+		if i.Element() == elekey && e.Durability[i] > reactable.ZeroDur && e.Durability[i] > result {
+			result = e.Durability[i]
+		}
+	}
+	return float64(result), nil
 }
 
 func parseTarget(c *core.Core, trg string) (*enemy.Enemy, error) {

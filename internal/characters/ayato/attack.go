@@ -5,15 +5,21 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var attackFrames [][]int
-var attackHitmarks = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
-var attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0}, {0.08}}
-var attackDefHalt = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
-var shunsuikenFrames []int
+var (
+	shunsuikenFrames      []int
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{12}, {18}, {20}, {22, 25}, {41}}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06}, {0, 0}, {0.08}}
+	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
+	attackHitboxes        = [][]float64{{1.7}, {1.7}, {1.6, 2.8}, {2, 2.6}, {6, 2}}
+	attackOffsets         = []float64{0.6, 0.8, 0.3, -0.2, 0.6}
+)
 
 const normalHitNum = 5
 const shunsuikenHitmark = 5
@@ -42,7 +48,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 
-	if c.StatusIsActive(skillBuffKey) {
+	if c.StatusIsActive(SkillBuffKey) {
 		return c.SoukaiKanka(p)
 	}
 
@@ -50,9 +56,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -60,13 +67,21 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy),
-				0,
-				0,
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
+		)
+		if c.NormalCounter >= 2 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
 			)
+		}
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(ai, ap, 0, 0)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
@@ -86,9 +101,10 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagNormal,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               shunsuiken[c.NormalCounter][c.TalentLvlSkill()],
@@ -96,7 +112,15 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.03 * 60,
 		CanBeDefenseHalted: false,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2, false, combat.TargettableEnemy), 0, shunsuikenHitmark, c.generateParticles, c.skillStacks)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 8, 7),
+		0,
+		shunsuikenHitmark,
+		c.particleCB,
+		c.skillStacks,
+		c.makeC6CB(),
+	)
 
 	defer c.AdvanceNormalIndex()
 

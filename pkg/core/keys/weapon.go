@@ -40,6 +40,8 @@ var weaponNames = []string{
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
+	"athousandfloatingdreams",
+	"beaconofthereedsea",
 	"beginnersprotector",
 	"blackcliffagate",
 	"blackclifflongsword",
@@ -94,6 +96,7 @@ var weaponNames = []string{
 	"keyofkhajnisut",
 	"kingssquire",
 	"kitaincrossspear",
+	"lightoffoliarincision",
 	"lionsroar",
 	"lithicblade",
 	"lithicspear",
@@ -167,7 +170,9 @@ var weaponNames = []string{
 	"thewidsith",
 	"thrillingtalesofdragonslayers",
 	"thunderingpulse",
+	"toukaboushigure",
 	"travelershandysword",
+	"tulaytullahsremembrance",
 	"twinnephrite",
 	"vortexvanquisher",
 	"wanderingevenstar",
@@ -191,6 +196,8 @@ const (
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
+	AThousandFloatingDreams
+	BeaconOfTheReedSea
 	BeginnersProtector
 	BlackcliffAgate
 	BlackcliffLongsword
@@ -245,6 +252,7 @@ const (
 	KeyOfKhajNisut
 	KingsSquire
 	KitainCrossSpear
+	LightOfFoliarIncision
 	LionsRoar
 	LithicBlade
 	LithicSpear
@@ -318,7 +326,9 @@ const (
 	TheWidsith
 	ThrillingTalesOfDragonSlayers
 	ThunderingPulse
+	ToukabouShigure
 	TravelersHandySword
+	TulaytullahsRemembrance
 	TwinNephrite
 	VortexVanquisher
 	WanderingEvenstar

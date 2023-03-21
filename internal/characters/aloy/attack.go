@@ -5,12 +5,15 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-var attackHitmarks = [][]int{{11, 24}, {16}, {23}, {30}}
-var attackFrames [][]int
+var (
+	attackFrames   [][]int
+	attackHitmarks = [][]int{{11, 24}, {16}, {23}, {30}}
+)
 
 const normalHitNum = 4
 
@@ -34,22 +37,29 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
 
 	if c.StatusIsActive(rushingIceKey) {
-		ai.ICDTag = combat.ICDTagNormalAttack
+		ai.ICDTag = attacks.ICDTagNormalAttack
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget, combat.TargettableEnemy),
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.1,
+				1,
+			),
 			attackHitmarks[c.NormalCounter][i],
 			attackHitmarks[c.NormalCounter][i]+travel)
 	}

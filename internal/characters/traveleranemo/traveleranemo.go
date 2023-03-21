@@ -3,6 +3,7 @@ package traveleranemo
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -17,12 +18,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	qAbsorb             attributes.Element
-	qICDTag             combat.ICDTag
-	eAbsorb             attributes.Element
-	eICDTag             combat.ICDTag
-	absorbCheckLocation combat.AttackPattern
-	gender              int
+	qAbsorb              attributes.Element
+	qICDTag              attacks.ICDTag
+	qAbsorbCheckLocation combat.AttackPattern
+	eAbsorb              attributes.Element
+	eICDTag              attacks.ICDTag
+	eAbsorbCheckLocation combat.AttackPattern
+	gender               int
 }
 
 func NewChar(gender int) core.NewCharacterFunc {
@@ -37,7 +39,6 @@ func NewChar(gender int) core.NewCharacterFunc {
 		c.BurstCon = 3
 		c.SkillCon = 5
 		c.NormalHitNum = normalHitNum
-		c.absorbCheckLocation = combat.NewCircleHit(c.Core.Combat.Player(), 0.1, false, combat.TargettableEnemy, combat.TargettablePlayer, combat.TargettableGadget)
 
 		w.Character = &c
 
@@ -46,6 +47,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 }
 
 func (c *char) Init() error {
+	c.a4()
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
