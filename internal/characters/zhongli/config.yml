@@ -1,0 +1,7 @@
+package_name: "zhongli"
+genshin_id: "123567"
+key: "zhongli"
+shortcuts:
+  - "zl"
+  - "geoarchon"
+  - "morax"
