@@ -199,145 +199,18 @@
     "element": "geo",
     "weapon_class": "sword"
   },
-  "mona": {
-    "rarity": 5,
-    "element": "hydro",
-    "weapon_class": "catalyst"
-  },
-  "nahida": {
-    "rarity": 5,
+
+  "alhaitham": {
     "element": "dendro",
-    "weapon_class": "catalyst"
+    "weapon_class": "sword",
+    "rarity": 5
   },
-  "nilou": {
-    "rarity": 5,
-    "element": "hydro",
-    "weapon_class": "sword"
-  },
-  "ningguang": {
-    "rarity": 4,
-    "element": "geo",
-    "weapon_class": "catalyst"
-  },
-  "noelle": {
-    "rarity": 4,
-    "element": "geo",
-    "weapon_class": "claymore"
-  },
-  "qiqi": {
-    "rarity": 5,
-    "element": "cryo",
-    "weapon_class": "sword"
-  },
-  "raiden": {
-    "rarity": 5,
-    "element": "electro",
-    "weapon_class": "polearm"
-  },
-  "razor": {
-    "rarity": 4,
-    "element": "electro",
-    "weapon_class": "claymore"
-  },
-  "rosaria": {
-    "rarity": 4,
-    "element": "cryo",
-    "weapon_class": "polearm"
-  },
-  "sara": {
-    "rarity": 4,
-    "element": "electro",
-    "weapon_class": "bow"
-  },
-  "sayu": {
-    "rarity": 4,
-    "element": "anemo",
-    "weapon_class": "claymore"
-  },
-  "shenhe": {
-    "rarity": 5,
-    "element": "cryo",
-    "weapon_class": "polearm"
-  },
-  "sucrose": {
-    "rarity": 4,
-    "element": "anemo",
-    "weapon_class": "catalyst"
-  },
-  "tartaglia": {
-    "rarity": 5,
-    "element": "hydro",
-    "weapon_class": "bow"
-  },
-  "thoma": {
-    "rarity": 4,
-    "element": "pyro",
-    "weapon_class": "polearm"
-  },
-  "tighnari": {
-    "rarity": 5,
+
+  "yaoyao": {
+    "key": "yaoyao",
     "element": "dendro",
-    "weapon_class": "bow"
-  },
-  "venti": {
-    "rarity": 5,
-    "element": "anemo",
-    "weapon_class": "bow"
-  },
-  "wanderer": {
-    "rarity": 5,
-    "element": "anemo",
-    "weapon_class": "catalyst"
-  },
-  "xiangling": {
-    "rarity": 4,
-    "element": "pyro",
-    "weapon_class": "polearm"
-  },
-  "xiao": {
-    "rarity": 5,
-    "element": "anemo",
-    "weapon_class": "polearm"
-  },
-  "xingqiu": {
-    "rarity": 4,
-    "element": "hydro",
-    "weapon_class": "sword"
-  },
-  "xinyan": {
-    "rarity": 4,
-    "element": "pyro",
-    "weapon_class": "claymore"
-  },
-  "yaemiko": {
-    "rarity": 5,
-    "element": "electro",
-    "weapon_class": "catalyst"
-  },
-  "yanfei": {
-    "rarity": 4,
-    "element": "pyro",
-    "weapon_class": "catalyst"
-  },
-  "yelan": {
-    "rarity": 5,
-    "element": "hydro",
-    "weapon_class": "bow"
-  },
-  "yoimiya": {
-    "rarity": 5,
-    "element": "pyro",
-    "weapon_class": "bow"
-  },
-  "yunjin": {
-    "rarity": 4,
-    "element": "geo",
-    "weapon_class": "polearm"
-  },
-  "zhongli": {
-    "rarity": 5,
-    "element": "geo",
-    "weapon_class": "polearm"
+    "weapon_class": "polearm",
+    "rarity": 4
   },
   "travelerelectro": {
     "rarity": 5,
