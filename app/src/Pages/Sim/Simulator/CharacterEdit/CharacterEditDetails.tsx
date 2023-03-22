@@ -14,10 +14,11 @@ import {
 export function CharacterEditDetails() {
   let { t } = useTranslation();
 
-  const { char, team } = useAppSelector((state: RootState) => {
+  const { char, team, imported } = useAppSelector((state: RootState) => {
     return {
       team: state.sim.team,
       char: state.sim.team[state.sim.edit_index],
+      imported: state.user_data.GOODImport,
     };
   });
   const dispatch = useAppDispatch();
@@ -69,6 +70,14 @@ export function CharacterEditDetails() {
   const disabled = team.map((c) => c.name);
 
   const items: Item[] = GenerateDefaultCharacters();
+  Object.keys(imported).forEach((k) => {
+    items.push({
+      key: imported[k].name,
+      text: t('game:character_names.' + imported[k].name),
+      label: t(`elements.${imported[k].element}`),
+      notes: `Imported on ${imported[k].date_added}`,
+    });
+  });
 
   return (
     <div className="flex flex-row gap-2 flex-wrap">

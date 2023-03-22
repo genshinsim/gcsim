@@ -1,15 +1,9 @@
 import { Button, Checkbox } from '@blueprintjs/core';
 import React from 'react';
-import { Character } from '~/src/types';
 import { ArtifactSelect, IArtifact } from '~src/Components/Artifacts';
 import { RootState, useAppDispatch, useAppSelector } from '~src/store';
 import { simActions } from '../..';
 import { Trans, useTranslation } from 'react-i18next';
-
-type Props = {
-  char: Character;
-  onChange: (char: Character) => void;
-};
 
 export function CharacterEditArtifactSets() {
   useTranslation();

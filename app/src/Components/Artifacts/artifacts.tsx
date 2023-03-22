@@ -1,44 +1,48 @@
-import { MenuItem } from "@blueprintjs/core";
-import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
-import i18n from "i18next";
+import { MenuItem } from '@blueprintjs/core';
+import { ItemPredicate, ItemRenderer } from '@blueprintjs/select';
+import i18n from 'i18next';
 
 export const items = [
-  "archaicpetra",
-  "berserker",
-  "blizzardstrayer",
-  "bloodstainedchivalry",
-  "braveheart",
-  "crimsonwitchofflames",
-  "defenderswill",
-  "echoesofanoffering",
-  "emblemofseveredfate",
-  "gambler",
-  "gladiatorsfinale",
-  "heartofdepth",
-  "huskofopulentdreams",
-  "instructor",
-  "lavawalker",
-  "maidenbeloved",
-  "martialartist",
-  "noblesseoblige",
-  "oceanhuedclam",
-  "paleflame",
-  "prayersfordestiny",
-  "prayersforillumination",
-  "prayersforwisdom",
-  "prayerstospringtime",
-  "resolutionofsojourner",
-  "retracingbolide",
-  "scholar",
-  "shimenawasreminiscence",
-  "tenacityofthemillelith",
-  "theexile",
-  "thunderingfury",
-  "thundersoother",
-  "tinymiracle",
-  "vermillionhereafter",
-  "viridescentvenerer",
-  "wandererstroupe",
+  'archaicpetra',
+  'berserker',
+  'blizzardstrayer',
+  'bloodstainedchivalry',
+  'braveheart',
+  'crimsonwitchofflames',
+  'defenderswill',
+  'echoesofanoffering',
+  'emblemofseveredfate',
+  'gambler',
+  'gladiatorsfinale',
+  'heartofdepth',
+  'huskofopulentdreams',
+  'instructor',
+  'lavawalker',
+  'maidenbeloved',
+  'martialartist',
+  'noblesseoblige',
+  'oceanhuedclam',
+  'paleflame',
+  'prayersfordestiny',
+  'prayersforillumination',
+  'prayersforwisdom',
+  'prayerstospringtime',
+  'resolutionofsojourner',
+  'retracingbolide',
+  'scholar',
+  'shimenawasreminiscence',
+  'tenacityofthemillelith',
+  'theexile',
+  'thunderingfury',
+  'thundersoother',
+  'tinymiracle',
+  'vermillionhereafter',
+  'viridescentvenerer',
+  'wandererstroupe',
+  'flowerofparadiselost',
+  'desertpavilionchronicle',
+  'gildeddreams',
+  'deepwoodmemories',
 ];
 
 export type IArtifact = string;
@@ -54,11 +58,11 @@ export const render: ItemRenderer<IArtifact> = (
     <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
-      label={""}
+      label={''}
       key={item}
       onClick={handleClick}
       text={highlightText(
-        i18n.t("artifact_names." + item, { ns: "game" }),
+        i18n.t('artifact_names.' + item, { ns: 'game' }),
         query
       )}
     />
@@ -73,8 +77,8 @@ export const filter: ItemPredicate<IArtifact> = (
 ) => {
   const normalizedQuery = query.toLowerCase();
   const transItem = i18n
-    .t("artifact_names." + item, { ns: "game" })
-    .replace(" ", "")
+    .t('artifact_names.' + item, { ns: 'game' })
+    .replace(' ', '')
     .toLowerCase();
   if (exactMatch) {
     return item === normalizedQuery;
@@ -84,7 +88,7 @@ export const filter: ItemPredicate<IArtifact> = (
 };
 
 function escapeRegExpChars(text: string) {
-  return text.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  return text.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
 }
 
 function highlightText(text: string, query: string) {
@@ -96,7 +100,7 @@ function highlightText(text: string, query: string) {
   if (words.length === 0) {
     return [text];
   }
-  const regexp = new RegExp(words.join("|"), "gi");
+  const regexp = new RegExp(words.join('|'), 'gi');
   const tokens: React.ReactNode[] = [];
   while (true) {
     const match = regexp.exec(text);
