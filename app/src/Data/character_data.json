@@ -205,7 +205,11 @@
     "weapon_class": "sword",
     "rarity": 5
   },
-
+  "wanderer": {
+    "element": "anemo",
+    "weapon_class": "catalyst",
+    "rarity": 5
+  },
   "yaoyao": {
     "key": "yaoyao",
     "element": "dendro",
