@@ -1,6 +1,6 @@
-package data
+package dm
 
-type Avatar struct {
+type AvatarExcel struct {
 	// ScriptDataPathHashSuffix     int           `json:"scriptDataPathHashSuffix"`
 	// ScriptDataPathHashPre        int           `json:"scriptDataPathHashPre"`
 	// SideIconName                 string        `json:"sideIconName"`
@@ -37,8 +37,8 @@ type Avatar struct {
 	// InitialWeapon   int     `json:"initialWeapon"`
 	// Critical        float64 `json:"critical"`
 	// CriticalHurt    float64 `json:"criticalHurt"`
-	SkillDepotID    int             `json:"skillDepotId"`
 	BodyType        string          `json:"bodyType"`
+	SkillDepotID    int             `json:"skillDepotId"`
 	IconName        string          `json:"iconName"`
 	QualityType     string          `json:"qualityType"`
 	WeaponType      string          `json:"weaponType"`
@@ -60,7 +60,7 @@ type PropGrowCurve struct {
 
 type TextMap map[int]string
 
-type SkillDepot struct {
+type AvatarSkillDepot struct {
 	ID          int `json:"id"`
 	EnergySkill int `json:"energySkill"`
 	// Skills                  []int    `json:"skills"`
@@ -73,7 +73,7 @@ type SkillDepot struct {
 	// SkillDepotAbilityGroup string `json:"skillDepotAbilityGroup"`
 	// LeaderTalent           int    `json:"leaderTalent,omitempty"`
 }
-type AvatarSkillInfo struct {
+type AvatarSkillExcel struct {
 	ID           int    `json:"id"`
 	CostElemType string `json:"costElemType,omitempty"`
 	// NameTextMapHash    int64     `json:"nameTextMapHash"`
@@ -113,7 +113,7 @@ type AddProp struct {
 	Value    float64 `json:"value"`
 }
 
-type WeaponConfig struct {
+type WeaponExcel struct {
 	WeaponType string `json:"weaponType"`
 	RankLevel  int    `json:"rankLevel"`
 	// WeaponBaseExp int    `json:"weaponBaseExp"`
@@ -141,6 +141,9 @@ type WeaponConfig struct {
 	// Weight                     int           `json:"weight"`
 	Rank int `json:"rank"`
 	// GadgetID                   int           `json:"gadgetId"`
+}
+
+type WeaponCurve struct {
 }
 
 type WeaponPromoteConfig struct {
