@@ -1,55 +1,55 @@
 package dm
 
 type AvatarExcel struct {
-	// ScriptDataPathHashSuffix     int           `json:"scriptDataPathHashSuffix"`
-	// ScriptDataPathHashPre        int           `json:"scriptDataPathHashPre"`
+	// ScriptDataPathHashSuffix     int64           `json:"scriptDataPathHashSuffix"`
+	// ScriptDataPathHashPre        int64           `json:"scriptDataPathHashPre"`
 	// SideIconName                 string        `json:"sideIconName"`
 	// ChargeEfficiency             float64       `json:"chargeEfficiency"`
-	// CombatConfigHashSuffix       int           `json:"combatConfigHashSuffix"`
-	// CombatConfigHashPre          int           `json:"combatConfigHashPre"`
-	// ManekinPathHashSuffix        int           `json:"manekinPathHashSuffix"`
-	// ManekinPathHashPre           int           `json:"manekinPathHashPre"`
-	// GachaCardNameHashPre         int           `json:"gachaCardNameHashPre"`
+	// CombatConfigHashSuffix       int64           `json:"combatConfigHashSuffix"`
+	// CombatConfigHashPre          int64           `json:"combatConfigHashPre"`
+	// ManekinPathHashSuffix        int64           `json:"manekinPathHashSuffix"`
+	// ManekinPathHashPre           int64           `json:"manekinPathHashPre"`
+	// GachaCardNameHashPre         int64           `json:"gachaCardNameHashPre"`
 	// CutsceneShow                 string        `json:"cutsceneShow"`
 	// StaminaRecoverSpeed          float64       `json:"staminaRecoverSpeed"`
 	// CandSkillDepotIds            []interface{} `json:"candSkillDepotIds"`
-	// ManekinJSONConfigHashSuffix  int           `json:"manekinJsonConfigHashSuffix"`
-	// ManekinJSONConfigHashPre     int           `json:"manekinJsonConfigHashPre"`
-	// ManekinMotionConfig          int           `json:"manekinMotionConfig"`
-	// DescTextMapHash              int           `json:"descTextMapHash"`
+	// ManekinJSONConfigHashSuffix  int64           `json:"manekinJsonConfigHashSuffix"`
+	// ManekinJSONConfigHashPre     int64           `json:"manekinJsonConfigHashPre"`
+	// ManekinMotionConfig          int64           `json:"manekinMotionConfig"`
+	// DescTextMapHash              int64           `json:"descTextMapHash"`
 	// AvatarIdentityType string `json:"avatarIdentityType"`
-	// AvatarPromoteRewardLevelList []int         `json:"avatarPromoteRewardLevelList"`
-	// AvatarPromoteRewardIDList    []int         `json:"avatarPromoteRewardIdList"`
-	// FeatureTagGroupID            int           `json:"featureTagGroupID"`
-	// InfoDescTextMapHash          int           `json:"infoDescTextMapHash"`
-	// PrefabPathRagdollHashSuffix    int    `json:"prefabPathRagdollHashSuffix"`
-	// PrefabPathRagdollHashPre       int    `json:"prefabPathRagdollHashPre"`
+	// AvatarPromoteRewardLevelList []int64         `json:"avatarPromoteRewardLevelList"`
+	// AvatarPromoteRewardIDList    []int64         `json:"avatarPromoteRewardIdList"`
+	// FeatureTagGroupID            int64           `json:"featureTagGroupID"`
+	// InfoDescTextMapHash          int64           `json:"infoDescTextMapHash"`
+	// PrefabPathRagdollHashSuffix    int64    `json:"prefabPathRagdollHashSuffix"`
+	// PrefabPathRagdollHashPre       int64    `json:"prefabPathRagdollHashPre"`
 	// AnimatorConfigPathHashSuffix   int64  `json:"animatorConfigPathHashSuffix"`
 	// PrefabPathHashSuffix           int64  `json:"prefabPathHashSuffix"`
-	// PrefabPathHashPre              int    `json:"prefabPathHashPre"`
+	// PrefabPathHashPre              int64    `json:"prefabPathHashPre"`
 	// PrefabPathRemoteHashSuffix     int64  `json:"prefabPathRemoteHashSuffix"`
-	// PrefabPathRemoteHashPre        int    `json:"prefabPathRemoteHashPre"`
+	// PrefabPathRemoteHashPre        int64    `json:"prefabPathRemoteHashPre"`
 	// ControllerPathHashSuffix       int64  `json:"controllerPathHashSuffix"`
-	// ControllerPathHashPre          int    `json:"controllerPathHashPre"`
+	// ControllerPathHashPre          int64    `json:"controllerPathHashPre"`
 	// ControllerPathRemoteHashSuffix int64  `json:"controllerPathRemoteHashSuffix"`
-	// ControllerPathRemoteHashPre    int    `json:"controllerPathRemoteHashPre"`
+	// ControllerPathRemoteHashPre    int64    `json:"controllerPathRemoteHashPre"`
 	// LODPatternName                 string `json:"LODPatternName"`
-	// InitialWeapon   int     `json:"initialWeapon"`
+	// InitialWeapon   int64     `json:"initialWeapon"`
 	// Critical        float64 `json:"critical"`
 	// CriticalHurt    float64 `json:"criticalHurt"`
-	BodyType        string          `json:"bodyType"`
-	SkillDepotID    int             `json:"skillDepotId"`
-	IconName        string          `json:"iconName"`
-	QualityType     string          `json:"qualityType"`
-	WeaponType      string          `json:"weaponType"`
-	ImageName       string          `json:"imageName"`
-	AvatarPromoteID int             `json:"avatarPromoteId"`
+	BodyType     string `json:"bodyType"`
+	SkillDepotID int64  `json:"skillDepotId"`
+	IconName     string `json:"iconName"`
+	QualityType  string `json:"qualityType"`
+	WeaponType   string `json:"weaponType"`
+	// ImageName       string          `json:"imageName"`
+	AvatarPromoteID int64           `json:"avatarPromoteId"`
 	HpBase          float64         `json:"hpBase"`
 	AttackBase      float64         `json:"attackBase"`
 	DefenseBase     float64         `json:"defenseBase"`
 	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
-	ID              int             `json:"id"`
-	NameTextMapHash int             `json:"nameTextMapHash"`
+	ID              int64           `json:"id"`
+	NameTextMapHash int64           `json:"nameTextMapHash"`
 	UseType         string          `json:"useType,omitempty"`
 }
 
@@ -58,32 +58,32 @@ type PropGrowCurve struct {
 	GrowCurve string `json:"growCurve"`
 }
 
-type TextMap map[int]string
+type TextMap map[int64]string
 
 type AvatarSkillDepot struct {
-	ID          int `json:"id"`
-	EnergySkill int `json:"energySkill"`
-	// Skills                  []int    `json:"skills"`
-	// SubSkills               []int    `json:"subSkills"`
+	ID          int64   `json:"id"`
+	EnergySkill int64   `json:"energySkill"`
+	Skills      []int64 `json:"skills"`
+	// SubSkills               []int64    `json:"subSkills"`
 	// ExtraAbilities          []string `json:"extraAbilities"`
-	// Talents                 []int    `json:"talents"`
+	// Talents                 []int64    `json:"talents"`
 	// TalentStarName          string   `json:"talentStarName"`
 	// InherentProudSkillOpens []struct {
 	// } `json:"inherentProudSkillOpens"`
 	// SkillDepotAbilityGroup string `json:"skillDepotAbilityGroup"`
-	// LeaderTalent           int    `json:"leaderTalent,omitempty"`
+	// LeaderTalent           int64    `json:"leaderTalent,omitempty"`
 }
 type AvatarSkillExcel struct {
-	ID           int    `json:"id"`
+	ID           int64  `json:"id"`
 	CostElemType string `json:"costElemType,omitempty"`
 	// NameTextMapHash    int64     `json:"nameTextMapHash"`
 	// AbilityName        string    `json:"abilityName"`
-	// DescTextMapHash    int       `json:"descTextMapHash"`
+	// DescTextMapHash    int64       `json:"descTextMapHash"`
 	// SkillIcon          string    `json:"skillIcon"`
 	// CdTime             float64   `json:"cdTime,omitempty"`
-	// CostElemVal        float64   `json:"costElemVal,omitempty"`
-	// MaxChargeNum       int       `json:"maxChargeNum"`
-	// TriggerID          int       `json:"triggerID,omitempty"`
+	CostElemVal float64 `json:"costElemVal,omitempty"`
+	// MaxChargeNum       int64       `json:"maxChargeNum"`
+	// TriggerID          int64       `json:"triggerID,omitempty"`
 	// LockShape          string    `json:"lockShape"`
 	// LockWeightParams   []float64 `json:"lockWeightParams"`
 	// IsAttackCameraLock bool      `json:"isAttackCameraLock"`
@@ -92,21 +92,22 @@ type AvatarSkillExcel struct {
 	// CostStamina        float64   `json:"costStamina,omitempty"`
 }
 
-type FetterInfo struct {
+type AvatarFetterInfo struct {
 	AvatarAssocType string `json:"avatarAssocType"`
-	AvatarId        int    `json:"avatarId"`
+	AvatarId        int64  `json:"avatarId"`
+	FetterID        int64  `json:"fetterId"`
 }
 
 type AvatarPromote struct {
-	AvatarPromoteID int       `json:"avatarPromoteId"`
+	AvatarPromoteID int64     `json:"avatarPromoteId"`
 	AddProps        []AddProp `json:"addProps"`
-	PromoteLevel    int       `json:"promoteLevel,omitempty"`
+	// PromoteLevel    int64     `json:"promoteLevel,omitempty"`
 	// PromoteAudio    string `json:"promoteAudio"`
 	// CostItems       []struct {
 	// } `json:"costItems"`
-	UnlockMaxLevel int `json:"unlockMaxLevel"`
-	// ScoinCost           int `json:"scoinCost,omitempty"`
-	// RequiredPlayerLevel int `json:"requiredPlayerLevel,omitempty"`
+	UnlockMaxLevel int64 `json:"unlockMaxLevel"`
+	// ScoinCost           int64 `json:"scoinCost,omitempty"`
+	// RequiredPlayerLevel int64 `json:"requiredPlayerLevel,omitempty"`
 }
 type AddProp struct {
 	PropType string  `json:"propType"`
@@ -115,9 +116,9 @@ type AddProp struct {
 
 type WeaponExcel struct {
 	WeaponType string `json:"weaponType"`
-	RankLevel  int    `json:"rankLevel"`
-	// WeaponBaseExp int    `json:"weaponBaseExp"`
-	SkillAffix []int `json:"skillAffix"`
+	RankLevel  int64  `json:"rankLevel"`
+	// WeaponBaseExp int64    `json:"weaponBaseExp"`
+	SkillAffix []int64 `json:"skillAffix"`
 	WeaponProp []struct {
 		PropType  string  `json:"propType,omitempty"`
 		InitValue float64 `json:"initValue,omitempty"`
@@ -126,33 +127,33 @@ type WeaponExcel struct {
 	// AwakenTexture              string        `json:"awakenTexture"`
 	// AwakenLightMapTexture      string        `json:"awakenLightMapTexture"`
 	// AwakenIcon                 string        `json:"awakenIcon"`
-	WeaponPromoteID int `json:"weaponPromoteId"`
-	// StoryID                    int           `json:"storyId"`
+	WeaponPromoteID int64 `json:"weaponPromoteId"`
+	// StoryID                    int64           `json:"storyId"`
 	// AwakenCosts                []interface{} `json:"awakenCosts"`
 	// GachaCardNameHashSuffix    int64         `json:"gachaCardNameHashSuffix"`
 	// DestroyRule                string        `json:"destroyRule"`
-	// DestroyReturnMaterial      []int         `json:"destroyReturnMaterial"`
-	// DestroyReturnMaterialCount []int         `json:"destroyReturnMaterialCount"`
-	ID              int   `json:"id"`
+	// DestroyReturnMaterial      []int64         `json:"destroyReturnMaterial"`
+	// DestroyReturnMaterialCount []int64         `json:"destroyReturnMaterialCount"`
+	ID              int64 `json:"id"`
 	NameTextMapHash int64 `json:"nameTextMapHash"`
 	// DescTextMapHash            int64         `json:"descTextMapHash"`
 	Icon     string `json:"icon"`
 	ItemType string `json:"itemType"`
-	// Weight                     int           `json:"weight"`
-	Rank int `json:"rank"`
-	// GadgetID                   int           `json:"gadgetId"`
+	// Weight                     int64           `json:"weight"`
+	Rank int64 `json:"rank"`
+	// GadgetID                   int64           `json:"gadgetId"`
 }
 
 type WeaponCurve struct {
 }
 
 type WeaponPromoteConfig struct {
-	WeaponPromoteID int `json:"weaponPromoteId"`
+	WeaponPromoteID int64 `json:"weaponPromoteId"`
 	// CostItems       []struct {
 	// } `json:"costItems"`
 	AddProps       []AddProp
-	UnlockMaxLevel int `json:"unlockMaxLevel"`
-	PromoteLevel   int `json:"promoteLevel,omitempty"`
-	// RequiredPlayerLevel int `json:"requiredPlayerLevel,omitempty"`
-	// CoinCost            int `json:"coinCost,omitempty"`
+	UnlockMaxLevel int64 `json:"unlockMaxLevel"`
+	PromoteLevel   int64 `json:"promoteLevel,omitempty"`
+	// RequiredPlayerLevel int64 `json:"requiredPlayerLevel,omitempty"`
+	// CoinCost            int64 `json:"coinCost,omitempty"`
 }
