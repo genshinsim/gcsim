@@ -1,5 +1,5 @@
 package_name: "zhongli"
-genshin_id: "123567"
+genshin_id: 10000030
 key: "zhongli"
 shortcuts:
   - "zl"
