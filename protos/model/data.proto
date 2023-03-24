@@ -4,16 +4,23 @@ option go_package = "github.com/genshinsim/gcsim/pkg/model";
 
 import "protos/model/enums.proto";
 
+message AvatarDataMap {
+  map<int64, AvatarData> data = 1 [ json_name = "data" ];
+}
+
+message AvatarKeyMap { map<string, int64> data = 1 [ json_name = "data" ]; }
+
 message AvatarData {
   int64 id = 1 [ json_name = "id" ];
-  QualityType rarity = 2 [ json_name = "rarity" ];
-  BodyType body = 3 [ json_name = "body" ];
-  ZoneType region = 4 [ json_name = "region" ];
-  Element element = 5 [ json_name = "element" ];
-  WeaponClass weapon_class = 6 [ json_name = "weapon_class" ];
-  string icon_name = 7 [ json_name = "icon_name" ];
-  AvatarStatsData stats = 8 [ json_name = "stats" ];
-  AvatarSkillsData skill_details = 9 [ json_name = "skill_details" ];
+  string key = 2 [ json_name = "key" ];
+  QualityType rarity = 3 [ json_name = "rarity" ];
+  BodyType body = 4 [ json_name = "body" ];
+  ZoneType region = 5 [ json_name = "region" ];
+  Element element = 6 [ json_name = "element" ];
+  WeaponClass weapon_class = 7 [ json_name = "weapon_class" ];
+  string icon_name = 8 [ json_name = "icon_name" ];
+  AvatarStatsData stats = 9 [ json_name = "stats" ];
+  AvatarSkillsData skill_details = 10 [ json_name = "skill_details" ];
 }
 
 message AvatarStatsData {
@@ -33,7 +40,7 @@ message AvatarSkillsData {
   int64 skill = 1 [ json_name = "skill" ];
   int64 burst = 2 [ json_name = "burst" ];
   int64 attack = 3 [ json_name = "attack" ];
-  double burst_energy_cost = 4 [ json_name="burst_energy_cost"];
+  double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
 }
 
 message WeaponData {

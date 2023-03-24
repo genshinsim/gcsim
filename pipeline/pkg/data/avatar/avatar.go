@@ -17,20 +17,17 @@ Avatar data is found in AvatarExcelConfigData.json
 
 **/
 
-type AvatarDataSource struct {
+type DataSource struct {
 	avatarExcel map[int64]dm.AvatarExcel
 	skillDepot  map[int64]dm.AvatarSkillDepot
 	skillExcel  map[int64]dm.AvatarSkillExcel
 	fetterInfo  map[int64]dm.AvatarFetterInfo
 	promoteData map[int64][]dm.AvatarPromote
-
-	//for results
-	avatar map[int64]*model.AvatarData
 }
 
-func NewDataSource(root string) (*AvatarDataSource, error) {
+func NewDataSource(root string) (*DataSource, error) {
 	var err error
-	a := &AvatarDataSource{}
+	a := &DataSource{}
 	a.avatarExcel, err = loadAvatarExcel(root + "/" + AvatarExcelConfigData)
 	if err != nil {
 		return nil, err
@@ -55,27 +52,11 @@ func NewDataSource(root string) (*AvatarDataSource, error) {
 	return a, nil
 }
 
-func (a *AvatarDataSource) GetAvatarData(id int64) (*model.AvatarData, error) {
-	m, ok := a.avatar[id]
-	if !ok {
-		return nil, fmt.Errorf("avatar data for id %v not found", id)
-	}
-	return m, nil
+func (a *DataSource) GetAvatarData(id int64) (*model.AvatarData, error) {
+	return a.parseChar(id)
 }
 
-// parse the data for the provide valid char array
-func (a *AvatarDataSource) LoadCharacters(c []int64) error {
-	for _, v := range c {
-		d, err := a.parseChar(v)
-		if err != nil {
-			return err
-		}
-		a.avatar[v] = d
-	}
-	return nil
-}
-
-func (a *AvatarDataSource) parseChar(id int64) (*model.AvatarData, error) {
+func (a *DataSource) parseChar(id int64) (*model.AvatarData, error) {
 	var err error
 	c := &model.AvatarData{
 		SkillDetails: &model.AvatarSkillsData{},
@@ -106,7 +87,7 @@ func (a *AvatarDataSource) parseChar(id int64) (*model.AvatarData, error) {
 	return c, nil
 }
 
-func (a *AvatarDataSource) parseBodyType(c *model.AvatarData, err error) error {
+func (a *DataSource) parseBodyType(c *model.AvatarData, err error) error {
 	ad, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in excel data", c.Id))
@@ -118,7 +99,7 @@ func (a *AvatarDataSource) parseBodyType(c *model.AvatarData, err error) error {
 	return err
 }
 
-func (a *AvatarDataSource) parseRarity(c *model.AvatarData, err error) error {
+func (a *DataSource) parseRarity(c *model.AvatarData, err error) error {
 	ad, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in excel data", c.Id))
@@ -130,7 +111,7 @@ func (a *AvatarDataSource) parseRarity(c *model.AvatarData, err error) error {
 	return err
 }
 
-func (a *AvatarDataSource) parseCharAssociation(c *model.AvatarData, err error) error {
+func (a *DataSource) parseCharAssociation(c *model.AvatarData, err error) error {
 	fd, ok := a.fetterInfo[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in fetter info data", c.Id))
@@ -142,7 +123,7 @@ func (a *AvatarDataSource) parseCharAssociation(c *model.AvatarData, err error) 
 	return err
 }
 
-func (a *AvatarDataSource) parseWeaponClass(c *model.AvatarData, err error) error {
+func (a *DataSource) parseWeaponClass(c *model.AvatarData, err error) error {
 	ad, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in avatar data", c.Id))
@@ -154,7 +135,7 @@ func (a *AvatarDataSource) parseWeaponClass(c *model.AvatarData, err error) erro
 	return err
 }
 
-func (a *AvatarDataSource) parseIconName(c *model.AvatarData, err error) error {
+func (a *DataSource) parseIconName(c *model.AvatarData, err error) error {
 	d, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in avatar data", c.Id))
@@ -163,7 +144,7 @@ func (a *AvatarDataSource) parseIconName(c *model.AvatarData, err error) error {
 	return err
 }
 
-func (a *AvatarDataSource) parseSkillIDs(c *model.AvatarData, err error) error {
+func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 	//steps:
 	// 1. find skill depot id
 	// 2. energySkill gives the burst id
@@ -190,7 +171,7 @@ func (a *AvatarDataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 	return err
 }
 
-func (a *AvatarDataSource) parseElement(c *model.AvatarData, err error) error {
+func (a *DataSource) parseElement(c *model.AvatarData, err error) error {
 	//element is found from burstID
 	burstId := c.GetSkillDetails().GetBurst()
 	se, ok := a.skillExcel[burstId]
@@ -204,7 +185,7 @@ func (a *AvatarDataSource) parseElement(c *model.AvatarData, err error) error {
 	return err
 }
 
-func (a *AvatarDataSource) parseBaseStats(c *model.AvatarData, err error) error {
+func (a *DataSource) parseBaseStats(c *model.AvatarData, err error) error {
 	ad, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in excel data", c.Id))
@@ -216,7 +197,7 @@ func (a *AvatarDataSource) parseBaseStats(c *model.AvatarData, err error) error 
 	return err
 }
 
-func (a *AvatarDataSource) parseStatCurves(c *model.AvatarData, err error) error {
+func (a *DataSource) parseStatCurves(c *model.AvatarData, err error) error {
 	ad, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in excel data", c.Id))
@@ -243,7 +224,7 @@ func (a *AvatarDataSource) parseStatCurves(c *model.AvatarData, err error) error
 	return err
 }
 
-func (a *AvatarDataSource) parsePromoData(c *model.AvatarData, err error) error {
+func (a *DataSource) parsePromoData(c *model.AvatarData, err error) error {
 	ad, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in excel data", c.Id))

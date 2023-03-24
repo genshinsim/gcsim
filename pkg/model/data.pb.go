@@ -20,26 +20,121 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type AvatarDataMap struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data map[int64]*AvatarData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3" bson:"data,omitempty"`
+}
+
+func (x *AvatarDataMap) Reset() {
+	*x = AvatarDataMap{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_data_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AvatarDataMap) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvatarDataMap) ProtoMessage() {}
+
+func (x *AvatarDataMap) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_data_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvatarDataMap.ProtoReflect.Descriptor instead.
+func (*AvatarDataMap) Descriptor() ([]byte, []int) {
+	return file_protos_model_data_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AvatarDataMap) GetData() map[int64]*AvatarData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type AvatarKeyMap struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data map[string]int64 `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3" bson:"data,omitempty"`
+}
+
+func (x *AvatarKeyMap) Reset() {
+	*x = AvatarKeyMap{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_data_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AvatarKeyMap) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvatarKeyMap) ProtoMessage() {}
+
+func (x *AvatarKeyMap) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_data_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvatarKeyMap.ProtoReflect.Descriptor instead.
+func (*AvatarKeyMap) Descriptor() ([]byte, []int) {
+	return file_protos_model_data_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *AvatarKeyMap) GetData() map[string]int64 {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 type AvatarData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Id           int64             `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
-	Rarity       QualityType       `protobuf:"varint,2,opt,name=rarity,proto3,enum=model.QualityType" json:"rarity,omitempty" bson:"rarity,omitempty"`
-	Body         BodyType          `protobuf:"varint,3,opt,name=body,proto3,enum=model.BodyType" json:"body,omitempty" bson:"body,omitempty"`
-	Region       ZoneType          `protobuf:"varint,4,opt,name=region,proto3,enum=model.ZoneType" json:"region,omitempty" bson:"region,omitempty"`
-	Element      Element           `protobuf:"varint,5,opt,name=element,proto3,enum=model.Element" json:"element,omitempty" bson:"element,omitempty"`
-	WeaponClass  WeaponClass       `protobuf:"varint,6,opt,name=weapon_class,proto3,enum=model.WeaponClass" json:"weapon_class,omitempty" bson:"weapon_class,omitempty"`
-	IconName     string            `protobuf:"bytes,7,opt,name=icon_name,proto3" json:"icon_name,omitempty" bson:"icon_name,omitempty"`
-	Stats        *AvatarStatsData  `protobuf:"bytes,8,opt,name=stats,proto3" json:"stats,omitempty" bson:"stats,omitempty"`
-	SkillDetails *AvatarSkillsData `protobuf:"bytes,9,opt,name=skill_details,proto3" json:"skill_details,omitempty" bson:"skill_details,omitempty"`
+	Key          string            `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty" bson:"key,omitempty"`
+	Rarity       QualityType       `protobuf:"varint,3,opt,name=rarity,proto3,enum=model.QualityType" json:"rarity,omitempty" bson:"rarity,omitempty"`
+	Body         BodyType          `protobuf:"varint,4,opt,name=body,proto3,enum=model.BodyType" json:"body,omitempty" bson:"body,omitempty"`
+	Region       ZoneType          `protobuf:"varint,5,opt,name=region,proto3,enum=model.ZoneType" json:"region,omitempty" bson:"region,omitempty"`
+	Element      Element           `protobuf:"varint,6,opt,name=element,proto3,enum=model.Element" json:"element,omitempty" bson:"element,omitempty"`
+	WeaponClass  WeaponClass       `protobuf:"varint,7,opt,name=weapon_class,proto3,enum=model.WeaponClass" json:"weapon_class,omitempty" bson:"weapon_class,omitempty"`
+	IconName     string            `protobuf:"bytes,8,opt,name=icon_name,proto3" json:"icon_name,omitempty" bson:"icon_name,omitempty"`
+	Stats        *AvatarStatsData  `protobuf:"bytes,9,opt,name=stats,proto3" json:"stats,omitempty" bson:"stats,omitempty"`
+	SkillDetails *AvatarSkillsData `protobuf:"bytes,10,opt,name=skill_details,proto3" json:"skill_details,omitempty" bson:"skill_details,omitempty"`
 }
 
 func (x *AvatarData) Reset() {
 	*x = AvatarData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[0]
+		mi := &file_protos_model_data_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -52,7 +147,7 @@ func (x *AvatarData) String() string {
 func (*AvatarData) ProtoMessage() {}
 
 func (x *AvatarData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[0]
+	mi := &file_protos_model_data_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -65,7 +160,7 @@ func (x *AvatarData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AvatarData.ProtoReflect.Descriptor instead.
 func (*AvatarData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{0}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *AvatarData) GetId() int64 {
@@ -73,6 +168,13 @@ func (x *AvatarData) GetId() int64 {
 		return x.Id
 	}
 	return 0
+}
+
+func (x *AvatarData) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
 }
 
 func (x *AvatarData) GetRarity() QualityType {
@@ -151,7 +253,7 @@ type AvatarStatsData struct {
 func (x *AvatarStatsData) Reset() {
 	*x = AvatarStatsData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[1]
+		mi := &file_protos_model_data_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -164,7 +266,7 @@ func (x *AvatarStatsData) String() string {
 func (*AvatarStatsData) ProtoMessage() {}
 
 func (x *AvatarStatsData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[1]
+	mi := &file_protos_model_data_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,7 +279,7 @@ func (x *AvatarStatsData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AvatarStatsData.ProtoReflect.Descriptor instead.
 func (*AvatarStatsData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{1}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AvatarStatsData) GetBaseHp() float64 {
@@ -243,7 +345,7 @@ type AvatarSkillsData struct {
 func (x *AvatarSkillsData) Reset() {
 	*x = AvatarSkillsData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[2]
+		mi := &file_protos_model_data_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -256,7 +358,7 @@ func (x *AvatarSkillsData) String() string {
 func (*AvatarSkillsData) ProtoMessage() {}
 
 func (x *AvatarSkillsData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[2]
+	mi := &file_protos_model_data_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -269,7 +371,7 @@ func (x *AvatarSkillsData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AvatarSkillsData.ProtoReflect.Descriptor instead.
 func (*AvatarSkillsData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{2}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *AvatarSkillsData) GetSkill() int64 {
@@ -315,7 +417,7 @@ type WeaponData struct {
 func (x *WeaponData) Reset() {
 	*x = WeaponData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[3]
+		mi := &file_protos_model_data_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -328,7 +430,7 @@ func (x *WeaponData) String() string {
 func (*WeaponData) ProtoMessage() {}
 
 func (x *WeaponData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[3]
+	mi := &file_protos_model_data_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -341,7 +443,7 @@ func (x *WeaponData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WeaponData.ProtoReflect.Descriptor instead.
 func (*WeaponData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{3}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *WeaponData) GetId() int64 {
@@ -395,7 +497,7 @@ type WeaponStatsData struct {
 func (x *WeaponStatsData) Reset() {
 	*x = WeaponStatsData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[4]
+		mi := &file_protos_model_data_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -408,7 +510,7 @@ func (x *WeaponStatsData) String() string {
 func (*WeaponStatsData) ProtoMessage() {}
 
 func (x *WeaponStatsData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[4]
+	mi := &file_protos_model_data_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -421,7 +523,7 @@ func (x *WeaponStatsData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WeaponStatsData.ProtoReflect.Descriptor instead.
 func (*WeaponStatsData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{4}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *WeaponStatsData) GetBaseAtk() float64 {
@@ -477,7 +579,7 @@ type ArtifactData struct {
 func (x *ArtifactData) Reset() {
 	*x = ArtifactData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[5]
+		mi := &file_protos_model_data_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -490,7 +592,7 @@ func (x *ArtifactData) String() string {
 func (*ArtifactData) ProtoMessage() {}
 
 func (x *ArtifactData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[5]
+	mi := &file_protos_model_data_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -503,7 +605,7 @@ func (x *ArtifactData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ArtifactData.ProtoReflect.Descriptor instead.
 func (*ArtifactData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{5}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ArtifactData) GetId() int64 {
@@ -525,7 +627,7 @@ type PromotionData struct {
 func (x *PromotionData) Reset() {
 	*x = PromotionData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[6]
+		mi := &file_protos_model_data_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -538,7 +640,7 @@ func (x *PromotionData) String() string {
 func (*PromotionData) ProtoMessage() {}
 
 func (x *PromotionData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[6]
+	mi := &file_protos_model_data_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -551,7 +653,7 @@ func (x *PromotionData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PromotionData.ProtoReflect.Descriptor instead.
 func (*PromotionData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{6}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *PromotionData) GetMaxLevel() int64 {
@@ -580,7 +682,7 @@ type PromotionAddProp struct {
 func (x *PromotionAddProp) Reset() {
 	*x = PromotionAddProp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[7]
+		mi := &file_protos_model_data_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -593,7 +695,7 @@ func (x *PromotionAddProp) String() string {
 func (*PromotionAddProp) ProtoMessage() {}
 
 func (x *PromotionAddProp) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[7]
+	mi := &file_protos_model_data_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -606,7 +708,7 @@ func (x *PromotionAddProp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PromotionAddProp.ProtoReflect.Descriptor instead.
 func (*PromotionAddProp) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{7}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *PromotionAddProp) GetPropType() StatType {
@@ -629,29 +731,47 @@ var file_protos_model_data_proto_rawDesc = []byte{
 	0x0a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2f, 0x64,
 	0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
 	0x1a, 0x18, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2f, 0x65,
-	0x6e, 0x75, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x83, 0x03, 0x0a, 0x0a, 0x41,
-	0x76, 0x61, 0x74, 0x61, 0x72, 0x44, 0x61, 0x74, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x2a, 0x0a, 0x06, 0x72, 0x61, 0x72,
-	0x69, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
+	0x6e, 0x75, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x8f, 0x01, 0x0a, 0x0d, 0x41,
+	0x76, 0x61, 0x74, 0x61, 0x72, 0x44, 0x61, 0x74, 0x61, 0x4d, 0x61, 0x70, 0x12, 0x32, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x2e, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x44, 0x61, 0x74, 0x61, 0x4d, 0x61, 0x70,
+	0x2e, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61,
+	0x1a, 0x4a, 0x0a, 0x09, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a,
+	0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12,
+	0x27, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11,
+	0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x44, 0x61, 0x74,
+	0x61, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x7a, 0x0a, 0x0c,
+	0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x4b, 0x65, 0x79, 0x4d, 0x61, 0x70, 0x12, 0x31, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x2e, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x4b, 0x65, 0x79, 0x4d, 0x61, 0x70, 0x2e,
+	0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x1a,
+	0x37, 0x0a, 0x09, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03,
+	0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14,
+	0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x95, 0x03, 0x0a, 0x0a, 0x41, 0x76, 0x61,
+	0x74, 0x61, 0x72, 0x44, 0x61, 0x74, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x2a, 0x0a, 0x06, 0x72, 0x61, 0x72,
+	0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
 	0x6c, 0x2e, 0x51, 0x75, 0x61, 0x6c, 0x69, 0x74, 0x79, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x72,
-	0x61, 0x72, 0x69, 0x74, 0x79, 0x12, 0x23, 0x0a, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x18, 0x03, 0x20,
+	0x61, 0x72, 0x69, 0x74, 0x79, 0x12, 0x23, 0x0a, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x18, 0x04, 0x20,
 	0x01, 0x28, 0x0e, 0x32, 0x0f, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x42, 0x6f, 0x64, 0x79,
 	0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x12, 0x27, 0x0a, 0x06, 0x72, 0x65,
-	0x67, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0f, 0x2e, 0x6d, 0x6f, 0x64,
+	0x67, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0f, 0x2e, 0x6d, 0x6f, 0x64,
 	0x65, 0x6c, 0x2e, 0x5a, 0x6f, 0x6e, 0x65, 0x54, 0x79, 0x70, 0x65, 0x52, 0x06, 0x72, 0x65, 0x67,
-	0x69, 0x6f, 0x6e, 0x12, 0x28, 0x0a, 0x07, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x05,
+	0x69, 0x6f, 0x6e, 0x12, 0x28, 0x0a, 0x07, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x06,
 	0x20, 0x01, 0x28, 0x0e, 0x32, 0x0e, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x45, 0x6c, 0x65,
 	0x6d, 0x65, 0x6e, 0x74, 0x52, 0x07, 0x65, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x36, 0x0a,
-	0x0c, 0x77, 0x65, 0x61, 0x70, 0x6f, 0x6e, 0x5f, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x18, 0x06, 0x20,
+	0x0c, 0x77, 0x65, 0x61, 0x70, 0x6f, 0x6e, 0x5f, 0x63, 0x6c, 0x61, 0x73, 0x73, 0x18, 0x07, 0x20,
 	0x01, 0x28, 0x0e, 0x32, 0x12, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x57, 0x65, 0x61, 0x70,
 	0x6f, 0x6e, 0x43, 0x6c, 0x61, 0x73, 0x73, 0x52, 0x0c, 0x77, 0x65, 0x61, 0x70, 0x6f, 0x6e, 0x5f,
 	0x63, 0x6c, 0x61, 0x73, 0x73, 0x12, 0x1c, 0x0a, 0x09, 0x69, 0x63, 0x6f, 0x6e, 0x5f, 0x6e, 0x61,
-	0x6d, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x69, 0x63, 0x6f, 0x6e, 0x5f, 0x6e,
-	0x61, 0x6d, 0x65, 0x12, 0x2c, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x08, 0x20, 0x01,
+	0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x69, 0x63, 0x6f, 0x6e, 0x5f, 0x6e,
+	0x61, 0x6d, 0x65, 0x12, 0x2c, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x09, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x41, 0x76, 0x61, 0x74, 0x61,
 	0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x44, 0x61, 0x74, 0x61, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74,
 	0x73, 0x12, 0x3d, 0x0a, 0x0d, 0x73, 0x6b, 0x69, 0x6c, 0x6c, 0x5f, 0x64, 0x65, 0x74, 0x61, 0x69,
-	0x6c, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
+	0x6c, 0x73, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
 	0x2e, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x53, 0x6b, 0x69, 0x6c, 0x6c, 0x73, 0x44, 0x61, 0x74,
 	0x61, 0x52, 0x0d, 0x73, 0x6b, 0x69, 0x6c, 0x6c, 0x5f, 0x64, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x73,
 	0x22, 0xb9, 0x02, 0x0a, 0x0f, 0x41, 0x76, 0x61, 0x74, 0x61, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73,
@@ -746,49 +866,56 @@ func file_protos_model_data_proto_rawDescGZIP() []byte {
 	return file_protos_model_data_proto_rawDescData
 }
 
-var file_protos_model_data_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_protos_model_data_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_protos_model_data_proto_goTypes = []interface{}{
-	(*AvatarData)(nil),       // 0: model.AvatarData
-	(*AvatarStatsData)(nil),  // 1: model.AvatarStatsData
-	(*AvatarSkillsData)(nil), // 2: model.AvatarSkillsData
-	(*WeaponData)(nil),       // 3: model.WeaponData
-	(*WeaponStatsData)(nil),  // 4: model.WeaponStatsData
-	(*ArtifactData)(nil),     // 5: model.ArtifactData
-	(*PromotionData)(nil),    // 6: model.PromotionData
-	(*PromotionAddProp)(nil), // 7: model.PromotionAddProp
-	(QualityType)(0),         // 8: model.QualityType
-	(BodyType)(0),            // 9: model.BodyType
-	(ZoneType)(0),            // 10: model.ZoneType
-	(Element)(0),             // 11: model.Element
-	(WeaponClass)(0),         // 12: model.WeaponClass
-	(AvatarCurveType)(0),     // 13: model.AvatarCurveType
-	(StatType)(0),            // 14: model.StatType
+	(*AvatarDataMap)(nil),    // 0: model.AvatarDataMap
+	(*AvatarKeyMap)(nil),     // 1: model.AvatarKeyMap
+	(*AvatarData)(nil),       // 2: model.AvatarData
+	(*AvatarStatsData)(nil),  // 3: model.AvatarStatsData
+	(*AvatarSkillsData)(nil), // 4: model.AvatarSkillsData
+	(*WeaponData)(nil),       // 5: model.WeaponData
+	(*WeaponStatsData)(nil),  // 6: model.WeaponStatsData
+	(*ArtifactData)(nil),     // 7: model.ArtifactData
+	(*PromotionData)(nil),    // 8: model.PromotionData
+	(*PromotionAddProp)(nil), // 9: model.PromotionAddProp
+	nil,                      // 10: model.AvatarDataMap.DataEntry
+	nil,                      // 11: model.AvatarKeyMap.DataEntry
+	(QualityType)(0),         // 12: model.QualityType
+	(BodyType)(0),            // 13: model.BodyType
+	(ZoneType)(0),            // 14: model.ZoneType
+	(Element)(0),             // 15: model.Element
+	(WeaponClass)(0),         // 16: model.WeaponClass
+	(AvatarCurveType)(0),     // 17: model.AvatarCurveType
+	(StatType)(0),            // 18: model.StatType
 }
 var file_protos_model_data_proto_depIdxs = []int32{
-	8,  // 0: model.AvatarData.rarity:type_name -> model.QualityType
-	9,  // 1: model.AvatarData.body:type_name -> model.BodyType
-	10, // 2: model.AvatarData.region:type_name -> model.ZoneType
-	11, // 3: model.AvatarData.element:type_name -> model.Element
-	12, // 4: model.AvatarData.weapon_class:type_name -> model.WeaponClass
-	1,  // 5: model.AvatarData.stats:type_name -> model.AvatarStatsData
-	2,  // 6: model.AvatarData.skill_details:type_name -> model.AvatarSkillsData
-	13, // 7: model.AvatarStatsData.hp_curve:type_name -> model.AvatarCurveType
-	13, // 8: model.AvatarStatsData.atk_curve:type_name -> model.AvatarCurveType
-	13, // 9: model.AvatarStatsData.def_cruve:type_name -> model.AvatarCurveType
-	6,  // 10: model.AvatarStatsData.promo_data:type_name -> model.PromotionData
-	12, // 11: model.WeaponData.weapon_class:type_name -> model.WeaponClass
-	4,  // 12: model.WeaponData.base_stats:type_name -> model.WeaponStatsData
-	13, // 13: model.WeaponStatsData.atk_curve:type_name -> model.AvatarCurveType
-	13, // 14: model.WeaponStatsData.specialized_curve:type_name -> model.AvatarCurveType
-	14, // 15: model.WeaponStatsData.specialized:type_name -> model.StatType
-	6,  // 16: model.WeaponStatsData.promo_data:type_name -> model.PromotionData
-	7,  // 17: model.PromotionData.add_props:type_name -> model.PromotionAddProp
-	14, // 18: model.PromotionAddProp.prop_type:type_name -> model.StatType
-	19, // [19:19] is the sub-list for method output_type
-	19, // [19:19] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	10, // 0: model.AvatarDataMap.data:type_name -> model.AvatarDataMap.DataEntry
+	11, // 1: model.AvatarKeyMap.data:type_name -> model.AvatarKeyMap.DataEntry
+	12, // 2: model.AvatarData.rarity:type_name -> model.QualityType
+	13, // 3: model.AvatarData.body:type_name -> model.BodyType
+	14, // 4: model.AvatarData.region:type_name -> model.ZoneType
+	15, // 5: model.AvatarData.element:type_name -> model.Element
+	16, // 6: model.AvatarData.weapon_class:type_name -> model.WeaponClass
+	3,  // 7: model.AvatarData.stats:type_name -> model.AvatarStatsData
+	4,  // 8: model.AvatarData.skill_details:type_name -> model.AvatarSkillsData
+	17, // 9: model.AvatarStatsData.hp_curve:type_name -> model.AvatarCurveType
+	17, // 10: model.AvatarStatsData.atk_curve:type_name -> model.AvatarCurveType
+	17, // 11: model.AvatarStatsData.def_cruve:type_name -> model.AvatarCurveType
+	8,  // 12: model.AvatarStatsData.promo_data:type_name -> model.PromotionData
+	16, // 13: model.WeaponData.weapon_class:type_name -> model.WeaponClass
+	6,  // 14: model.WeaponData.base_stats:type_name -> model.WeaponStatsData
+	17, // 15: model.WeaponStatsData.atk_curve:type_name -> model.AvatarCurveType
+	17, // 16: model.WeaponStatsData.specialized_curve:type_name -> model.AvatarCurveType
+	18, // 17: model.WeaponStatsData.specialized:type_name -> model.StatType
+	8,  // 18: model.WeaponStatsData.promo_data:type_name -> model.PromotionData
+	9,  // 19: model.PromotionData.add_props:type_name -> model.PromotionAddProp
+	18, // 20: model.PromotionAddProp.prop_type:type_name -> model.StatType
+	2,  // 21: model.AvatarDataMap.DataEntry.value:type_name -> model.AvatarData
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_protos_model_data_proto_init() }
@@ -799,7 +926,7 @@ func file_protos_model_data_proto_init() {
 	file_protos_model_enums_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_protos_model_data_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AvatarData); i {
+			switch v := v.(*AvatarDataMap); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -811,7 +938,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AvatarStatsData); i {
+			switch v := v.(*AvatarKeyMap); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -823,7 +950,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AvatarSkillsData); i {
+			switch v := v.(*AvatarData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -835,7 +962,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WeaponData); i {
+			switch v := v.(*AvatarStatsData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -847,7 +974,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*WeaponStatsData); i {
+			switch v := v.(*AvatarSkillsData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -859,7 +986,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ArtifactData); i {
+			switch v := v.(*WeaponData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -871,7 +998,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PromotionData); i {
+			switch v := v.(*WeaponStatsData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -883,6 +1010,30 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ArtifactData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protos_model_data_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PromotionData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protos_model_data_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PromotionAddProp); i {
 			case 0:
 				return &v.state
@@ -901,7 +1052,7 @@ func file_protos_model_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protos_model_data_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
