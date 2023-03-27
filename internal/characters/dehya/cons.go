@@ -8,6 +8,7 @@ import (
 )
 
 func (c *char) c1() {
+	c.c1var = 0.06
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.2
 	c.AddStatMod(character.StatMod{

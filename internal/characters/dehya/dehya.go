@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -24,6 +25,10 @@ type char struct {
 	sanctumExpiry          int
 	sanctumICD             int
 	sanctumPickupExtension int
+	burstCast              int
+	burstCounter           int
+	punchSrc               bool
+	c1var                  float64
 }
 
 func init() {
@@ -48,9 +53,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.onExitField()
 	c.skillHook()
 	c.a4()
-
+	c.burstCast = -241
+	c.c1var = 0.0
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
@@ -67,4 +74,19 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Acti
 		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		if c.StatusIsActive(burstKey) {
+			c.a1()
+			c.DeleteStatus(burstKey)
+		}
+		return false
+	}, "dehya-exit")
+}
+
+func (c *char) Jump(p map[string]int) action.ActionInfo {
+	c.DeleteStatus(burstKey)
+	return c.Character.Jump(p)
 }

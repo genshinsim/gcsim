@@ -7,40 +7,61 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var burstFrames []int
 var kickFrames []int
 
+const burstKey = "dehya-burst"
 const burstDoT1Hitmark = 102
 const fastPunchHitmark = 24 //10 hits max on 240 f
 const slowPunchHitmark = 40 //6 hits minimum
 const kickHitmark = 46      //6 hits minimum
-var punchHitmarks = []int{42, 30, 30, 27, 27, 24, 24, 24, 24}
+var punchHitmarks = []int{42, 30, 30, 27, 27, 24, 24, 24, 24, 24, 24}
 
 func init() {
-	burstFrames = frames.InitAbilSlice(87) // Q -> E/D/J
-	burstFrames[action.ActionAttack] = 86  // Q -> N1
-	burstFrames[action.ActionSwap] = 86    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(102) // Q -> E/D/J
+	burstFrames[action.ActionSwap] = 102    // Q -> Swap
 
 	kickFrames = frames.InitAbilSlice(101) // Q -> E/D/J
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	c1var := 0.0
-	if c.Base.Cons >= 1 {
-		c1var = 0.06
-	}
-	punches, ok := p["hits"]
-	if !ok || punches < 6 || punches > 10 {
-		punches = 10
-	}
+	// punches, ok := p["hits"]
+	// if !ok || punches > 10 {
+	// 	punches = 10
+	// }
 	if c.sanctumActive {
 		c.sanctumActive = false
 		c.sanctumExpiry += c.sanctumPickupExtension
 		c.sanctumRetrieved = true
 		c.sanctumICD = c.StatusDuration("dehya-skill-icd")
+	}
+
+	c.QueueCharTask(func() {
+		c.AddStatus(burstKey, 280, false)
+		c.burstCast = c.Core.F
+		c.punchSrc = true
+		c.burstCounter = 0
+		c.burstPunch(c.punchSrc, true)
+	}, burstDoT1Hitmark)
+
+	c.ConsumeEnergy(5)
+	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(burstFrames),
+		AnimationLength: burstFrames[action.ActionAttack],
+		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
+		State:           action.BurstState,
+	}
+}
+
+func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
+
+	hitmark := 44
+	if !auto {
+		hitmark = punchHitmarks[c.burstCounter]
 	}
 
 	ai := combat.AttackInfo{
@@ -53,84 +74,79 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstPunchAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c1var + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
+		FlatDmg:    (c.c1var + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
 
 	c.QueueCharTask(func() {
-		//c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4), 0, 0)
-		ai.CanBeDefenseHalted = false // TODO:no hitlag?
-		punchCounter := 0
-		punchTimer := 0
-		// one punch on burst hitmark
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4), 0, 0)
-
-		for i := 0; i < 240; {
-			if punchCounter < punches && punches == 10 {
-				c.Core.QueueAttack(
-					ai,
-					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
-					i+punchHitmarks[punchCounter],
-					i+punchHitmarks[punchCounter],
-				)
-				i += punchHitmarks[punchCounter]
-				// c.Core.Log.NewEvent("Dehya burst punch ", glog.LogCharacterEvent, c.Index).
-				// 	Write("punchCount", punchCounter+1).
-				// 	Write("frameCount", i)
-			} else {
-				c.Core.QueueAttack(
-					ai,
-					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
-					i+slowPunchHitmark,
-					i+slowPunchHitmark,
-				)
-				i += slowPunchHitmark
-			}
-			punchCounter++
-			punchTimer = i
+		if c.punchSrc != src {
+			return
 		}
-		ai.Abil = "Incineration Drive"
-		ai.Mult = burstKickAtk[c.TalentLvlBurst()]
-		ai.FlatDmg = burstKickHP[c.TalentLvlBurst()] * c.MaxHP()
-		ai.ICDTag = attacks.ICDTagElementalBurst
+		if !c.StatusIsActive(burstKey) {
+			return
+		}
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
-			punchTimer+kickHitmark,
-			punchTimer+kickHitmark,
+			0,
+			0,
 		)
-
-		if c.sanctumRetrieved {
-			c.Core.Tasks.Add(func() {
-				c.sanctumActive = true
-				c.sanctumExpiry += burstDoT1Hitmark + punchTimer + kickHitmark
-
-				// snapshot for ticks
-				ai.Abil = "Molten Inferno (DoT)"
-				ai.ICDTag = attacks.ICDTagElementalArt
-				ai.Mult = skillDotAtk[c.TalentLvlSkill()]
-				ai.FlatDmg = skillDotHP[c.TalentLvlSkill()] * c.MaxHP()
-				c.skillAttackInfo = ai
-				c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
-				c.Core.Tasks.Add(c.removeSanctum(c.sanctumExpiry), c.sanctumExpiry-c.Core.F)
-			}, punchTimer+kickHitmark)
-			c.AddStatus(skillICDKey, 1+punchTimer+kickHitmark+c.sanctumICD, false)
-
-			c.Core.Log.NewEvent("Sanctum Expiration Info ", glog.LogCharacterEvent, c.Index).
-				Write("Duration Remaining", c.sanctumExpiry-c.Core.F+burstDoT1Hitmark).
-				Write("New Expiry Frame", c.sanctumExpiry+burstDoT1Hitmark+punchTimer+kickHitmark).
-				Write("Field Source", c.sanctumSource).
-				Write("DoT tick CD", c.StatusDuration("dehya-skill-icd")-punchTimer-kickHitmark)
+		if c.burstCast+240 > c.Core.F {
+			c.burstCounter++
+			c.punchSrc = true
+			c.burstPunch(c.punchSrc, true)
+		} else {
+			c.punchSrc = true
+			c.burstKick(c.punchSrc)
 		}
+	}, hitmark)
+	if auto {
+		return action.ActionInfo{
+			Frames:          func(action.Action) int { return 44 },
+			AnimationLength: 44,
+			CanQueueAfter:   44,
+			State:           action.BurstState,
+		}
+	}
+	return action.ActionInfo{
+		Frames:          func(action.Action) int { return punchHitmarks[c.burstCounter] },
+		AnimationLength: punchHitmarks[c.burstCounter],
+		CanQueueAfter:   punchHitmarks[c.burstCounter], // earliest cancel
+		State:           action.BurstState,
+	}
+}
 
-	}, burstDoT1Hitmark)
-
-	c.ConsumeEnergy(5)
-	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
+func (c *char) burstKick(src bool) action.ActionInfo {
+	if !c.StatusIsActive(burstKey) || src != c.punchSrc {
+		return action.ActionInfo{
+			Frames:          func(action.Action) int { return 0 },
+			AnimationLength: 0,
+			CanQueueAfter:   0,
+			State:           action.BurstState,
+		}
+	}
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Incineration Drive",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurstPyro,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Pyro,
+		Durability: 25,
+		Mult:       burstKickAtk[c.TalentLvlBurst()],
+		FlatDmg:    (c.c1var + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
+	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+		kickHitmark,
+		kickHitmark,
+	)
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstFrames[action.ActionAttack] + 240 + kickFrames[action.ActionAttack],
-		CanQueueAfter:   burstFrames[action.ActionAttack] + 240 + kickFrames[action.ActionAttack], // earliest cancel
+		Frames:          frames.NewAbilFunc(kickFrames),
+		AnimationLength: kickFrames[action.ActionAttack],
+		CanQueueAfter:   kickFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}
 }
