@@ -19,8 +19,8 @@ var (
 	attackFrames   [][]int
 	attackHitmarks = [][]int{{14}, {9}, {14}, {14, 27}, {34}}
 	// same between polearm and burst attacks so just use these arrays for both
-	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.02}}
-	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, false}, {true}}
+	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.04}}
+	attackDefHalt         = [][]bool{{false}, {true}, {false}, {true, true}, {true}}
 	attackHitboxes        = [][]float64{{1.8, 2.8}, {2.5}, {1.8, 4}, {2.8}, {3}}
 	attackOffsets         = [][][]float64{{{0, -0.2}}, {{0, 0.5}}, {{0, -1.2}}, {{-0.5, 0.7}, {0.3, 0.7}}, {{0, 0}}}
 	attackFanAngles       = []float64{360, 270, 360, 360, 360}

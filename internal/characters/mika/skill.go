@@ -130,18 +130,15 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), nil)
-	if enemy != nil {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewSingleTargetHit(enemy.Key()),
-			skillHoldHitmark,
-			skillHoldHitmark,
-			c.makeParticleCB(),
-			c.makeRimestarShardsCB(),
-			c.c2(),
-		)
-	}
+	c.Core.QueueAttack(
+		ai,
+		combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()),
+		skillHoldHitmark,
+		skillHoldHitmark,
+		c.makeParticleCB(),
+		c.makeRimestarShardsCB(),
+		c.c2(),
+	)
 
 	c.QueueCharTask(func() {
 		c.SetTag(a1Stacks, 0)
