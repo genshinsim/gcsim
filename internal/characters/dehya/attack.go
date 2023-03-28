@@ -15,9 +15,8 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{23, 26, 11, 44}
 	attackHitlagHaltFrame = []float64{.1, .1, .12, .12}
-	attackHitboxes        = [][]float64{{2}, {2, 2.5}, {2}, {2}}
-	attackOffsets         = []float64{0.5, 0, 1, 1}
-	attackFanAngles       = []float64{270, 360, 360, 270}
+	attackHitboxes        = [][]float64{{2.2}, {2.3, 4.3}, {1.8}, {3, 4.3}}
+	attackOffsets         = []float64{0.5, -1.3, 0.5, -0.8}
 )
 
 const normalHitNum = 4
@@ -52,13 +51,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	ap := combat.NewCircleHitOnTargetFanAngle(
-		c.Core.Combat.Player(),
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(),
 		geometry.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[c.NormalCounter][0],
-		attackFanAngles[c.NormalCounter],
-	)
-	if c.NormalCounter == 1 {
+		attackHitboxes[c.NormalCounter][0])
+	if c.NormalCounter == 1 || c.NormalCounter == 3 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},

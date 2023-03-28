@@ -91,7 +91,7 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
 			0,
 			0,
 		)
@@ -149,7 +149,7 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 6.5),
 		kickHitmark,
 		kickHitmark,
 	)

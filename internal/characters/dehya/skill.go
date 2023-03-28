@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	player := c.Core.Combat.Player()
 	// assuming tap e for hitbox offset
-	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, player.Direction())
+	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.8}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
@@ -102,7 +102,7 @@ func (c *char) skillHook() {
 		c.Core.QueueAttackWithSnap(
 			c.skillAttackInfo,
 			c.skillSnapshot,
-			combat.NewCircleHitOnTarget(trg, nil, 3.4),
+			combat.NewCircleHitOnTarget(trg, nil, 4.5),
 			1,
 		)
 
@@ -145,9 +145,9 @@ func (c *char) skillRecast() action.ActionInfo {
 
 	player := c.Core.Combat.Player()
 	// assuming tap e for hitbox offset
-	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, player.Direction())
+	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 0.5}, player.Direction())
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
-	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillRecastHitmark)
+	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 6), skillRecastHitmark)
 
 	// place field back down
 	c.QueueCharTask(func() { //place field
