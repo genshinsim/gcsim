@@ -13,7 +13,7 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = []int{23, 26, 11, 44}
+	attackHitmarks        = []int{22, 27, 27, 41}
 	attackHitlagHaltFrame = []float64{.1, .1, .12, .12}
 	attackHitboxes        = [][]float64{{2.2}, {2.3, 4.3}, {1.8}, {3, 4.3}}
 	attackOffsets         = []float64{0.5, -1.3, 0.5, -0.8}
@@ -24,10 +24,10 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 25) // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 46) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 30) // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 94) // N4 -> N1
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 31) // N1 -> N2
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 34) // N2 -> N3
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 44) // N3 -> N4
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 85) // N4 -> N1
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {

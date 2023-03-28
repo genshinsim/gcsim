@@ -16,16 +16,20 @@ var remainingFieldDur int
 
 const burstKey = "dehya-burst"
 const burstDoT1Hitmark = 102
-const fastPunchHitmark = 24 //10 hits max on 240 f
-const slowPunchHitmark = 40 //6 hits minimum
-const kickHitmark = 46      //6 hits minimum
+const kickHitmark = 46 //6 hits minimum
 var punchHitmarks = []int{42, 30, 30, 27, 27, 24, 24, 24, 24, 24, 24}
 
 func init() {
+	//TODO:Deprecate bursty frames in favor of a constant?
 	burstFrames = frames.InitAbilSlice(102) // Q -> E/D/J
 	burstFrames[action.ActionSwap] = 102    // Q -> Swap
 
-	kickFrames = frames.InitAbilSlice(101) // Q -> E/D/J
+	kickFrames = frames.InitAbilSlice(72)       // Q -> Dash/Walk
+	kickFrames[action.ActionAttack] = 75        // Q -> N1
+	kickFrames[action.ActionSkill] = 71         // Q -> E
+	kickFrames[action.ActionJump] = 73          // Q -> J
+	kickFrames[action.ActionSwap] = kickHitmark //Q -> Swap
+
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -39,7 +43,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		remainingFieldDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F //dur gets extended on field recast by a low margin, apparently
 		c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
 			Write("Duration Remaining ", remainingFieldDur+sanctumPickupExtension).
-			Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
+			Write("DoT tick CD", c.StatusDuration(skillICDKey))
 	}
 	c.DeleteStatus(dehyaFieldKey)
 
@@ -51,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.burstPunch(c.punchSrc, true)
 	}, burstDoT1Hitmark)
 
-	c.ConsumeEnergy(5)
+	c.ConsumeEnergy(15) //TODO: If this is ping related, this could be closer to 1 at 0 ping
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
 
 	return action.ActionInfo{
@@ -82,7 +86,7 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 		FlatDmg:    (c.c1var[0] + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
 
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
 		if c.punchSrc != src {
 			return
 		}

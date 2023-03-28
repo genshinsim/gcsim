@@ -14,13 +14,22 @@ import (
 var skillFrames []int
 var skillRecastFrames []int
 
-const skillHitmark = 25
-const skillRecastHitmark = 37
+const skillHitmark = 20
+const skillRecastHitmark = 40
 
 func init() {
-	skillFrames = frames.InitAbilSlice(26) // E -> Swap (E -> E could be shorter)
+	skillFrames = frames.InitAbilSlice(25) // E -> Swap/Dash/Walk
+	skillFrames[action.ActionAttack] = 39  // E -> N1
+	skillFrames[action.ActionSkill] = 30   // E -> E
+	skillFrames[action.ActionJump] = 28    // E -> J
+	skillFrames[action.ActionBurst] = 29   // E -> Q
 
-	skillRecastFrames = frames.InitAbilSlice(46) // E Recast -> Swap
+	skillRecastFrames = frames.InitAbilSlice(44) // E -> Swap/Walk
+	skillRecastFrames[action.ActionAttack] = 74  // E -> N1
+	skillRecastFrames[action.ActionSkill] = 45   // E -> E
+	skillRecastFrames[action.ActionDash] = 45    // E -> D
+	skillRecastFrames[action.ActionJump] = 50    // E -> J
+	skillRecastFrames[action.ActionBurst] = 45   // E -> Q
 }
 
 const (
@@ -43,16 +52,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.recastBefore = false
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Molten Inferno",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt, //TODO ???
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       skill[c.TalentLvlSkill()],
-		FlatDmg:    c.c1var[1] * c.MaxHP(),
+		ActorIndex:         c.Index,
+		Abil:               "Molten Inferno",
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt, //TODO ???
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		FlatDmg:            c.c1var[1] * c.MaxHP(),
+		HitlagHaltFrames:   0.0 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: false,
 	}
 	// TODO: damage frame
 	c.skillSnapshot = c.Snapshot(&ai)
@@ -64,10 +76,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
-	c.addField(dur)
+	c.Core.Tasks.Add(func() { //place field
+		c.addField(dur)
+	}, skillHitmark+1)
 
 	c.AddStatus(skillICDKey, skillHitmark+1, false)
-	c.SetCD(action.ActionSkill, 1200)
+	c.SetCDWithDelay(action.ActionSkill, 1200, 18)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -117,23 +131,28 @@ func (c *char) skillRecast() action.ActionInfo {
 
 	dur := c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F //dur gets extended on field recast by a low margin, apparently
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Ranging Flame",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt, //TODO ???
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       skillReposition[c.TalentLvlSkill()],
-		FlatDmg:    c.c1var[1] * c.MaxHP(),
+		ActorIndex:         c.Index,
+		Abil:               "Ranging Flame",
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt, //TODO ???
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               skillReposition[c.TalentLvlSkill()],
+		FlatDmg:            c.c1var[1] * c.MaxHP(),
+		HitlagHaltFrames:   0.02 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: false,
 	}
 
 	// pick up field at start
 	c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
 		Write("Duration Remaining ", dur).
 		Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
-	c.DeleteStatus(dehyaFieldKey)
+	c.Core.Tasks.Add(func() {
+		c.DeleteStatus(dehyaFieldKey)
+	}, 1)
 
 	// save current DoT icd
 	c.sanctumICD = c.StatusDuration(skillICDKey)
@@ -150,7 +169,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 6), skillRecastHitmark)
 
 	// place field back down
-	c.QueueCharTask(func() { //place field
+	c.Core.Tasks.Add(func() { //place field
 		c.addField(dur)
 	}, skillRecastHitmark)
 
@@ -164,16 +183,19 @@ func (c *char) skillRecast() action.ActionInfo {
 
 func (c *char) addField(dur int) {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Molten Inferno (DoT)",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt, //TODO ???
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       skillDotAtk[c.TalentLvlSkill()],
-		FlatDmg:    (skillDotHP[c.TalentLvlSkill()] + c.c1var[1]) * c.MaxHP(),
+		ActorIndex:         c.Index,
+		Abil:               "Molten Inferno (DoT)",
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagElementalArt,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt, //TODO ???
+		Element:            attributes.Pyro,
+		Durability:         25,
+		Mult:               skillDotAtk[c.TalentLvlSkill()],
+		FlatDmg:            (skillDotHP[c.TalentLvlSkill()] + c.c1var[1]) * c.MaxHP(),
+		HitlagHaltFrames:   0.02 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: false,
 	}
 	//places field
 	c.AddStatus(dehyaFieldKey, dur, false)
