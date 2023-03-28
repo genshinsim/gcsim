@@ -15,9 +15,10 @@ var kickFrames []int
 var remainingFieldDur int
 
 const burstKey = "dehya-burst"
-const burstDoT1Hitmark = 102
+const burstDoT1Hitmark = 105
 const kickHitmark = 46 //6 hits minimum
-var punchHitmarks = []int{42, 30, 30, 27, 27, 24, 24, 24, 24, 24, 24}
+var punchSlowHitmark = 43
+var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27}
 
 func init() {
 	//TODO:Deprecate bursty frames in favor of a constant?
@@ -33,6 +34,19 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Flame-Mane's Fist",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurstPyro,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Pyro,
+		Durability: 25,
+		Mult:       burstPunchAtk[c.TalentLvlBurst()],
+		FlatDmg:    (c.c1var[0] + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
+	}
+
 	c.c6count = 0
 	remainingFieldDur = 0
 	if c.StatusIsActive(dehyaFieldKey) {
@@ -41,16 +55,25 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
 			Write("Duration Remaining ", remainingFieldDur+sanctumPickupExtension).
 			Write("DoT tick CD", c.StatusDuration(skillICDKey))
+		c.DeleteStatus(dehyaFieldKey)
 	}
-	c.DeleteStatus(dehyaFieldKey)
 
 	c.QueueCharTask(func() {
-		c.AddStatus(burstKey, 280, false)
+		c.AddStatus(burstKey, 282, false) //should be 240, but I don't want this to expire before dehya does her kick (this is similar to PP slide)
 		c.burstCast = c.Core.F
 		c.punchSrc = true
 		c.burstCounter = 0
 		c.burstPunch(c.punchSrc, true)
 	}, burstDoT1Hitmark)
+
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
+		burstDoT1Hitmark,
+		burstDoT1Hitmark,
+		c.c4cb(),
+		c.c6cb(),
+	)
 
 	c.ConsumeEnergy(15) //TODO: If this is ping related, this could be closer to 1 at 0 ping
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
@@ -65,7 +88,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 
-	hitmark := 44
+	hitmark := punchSlowHitmark
 	if !auto {
 		hitmark = punchHitmarks[c.burstCounter]
 	}
@@ -109,9 +132,9 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 	}, hitmark)
 	if auto {
 		return action.ActionInfo{
-			Frames:          func(action.Action) int { return 44 },
-			AnimationLength: 44,
-			CanQueueAfter:   44,
+			Frames:          func(action.Action) int { return punchSlowHitmark },
+			AnimationLength: punchSlowHitmark,
+			CanQueueAfter:   punchSlowHitmark,
 			State:           action.BurstState,
 		}
 	}
@@ -124,14 +147,6 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 }
 
 func (c *char) burstKick(src bool) action.ActionInfo {
-	if !c.StatusIsActive(burstKey) || src != c.punchSrc {
-		return action.ActionInfo{
-			Frames:          func(action.Action) int { return 0 },
-			AnimationLength: 0,
-			CanQueueAfter:   0,
-			State:           action.BurstState,
-		}
-	}
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Incineration Drive",
@@ -150,13 +165,18 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 		}, kickHitmark)
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 6.5),
-		kickHitmark,
-		kickHitmark,
-		c.c4cb(),
-	)
+	c.Core.Tasks.Add(func() {
+		if !c.StatusIsActive(burstKey) || src != c.punchSrc { //prevents duplicates
+			return
+		}
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 6.5),
+			0,
+			0,
+			c.c4cb(),
+		)
+	}, kickHitmark)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(kickFrames),
