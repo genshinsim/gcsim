@@ -14,21 +14,16 @@ import (
 type char struct {
 	*tmpl.Character
 	// tracking skill information
-	sanctumActive          bool
-	recastBefore           bool
-	nextIsRecast           bool
-	sanctumRetrieved       bool
-	skillArea              combat.AttackPattern
-	skillAttackInfo        combat.AttackInfo
-	skillSnapshot          combat.Snapshot
-	sanctumSource          int
-	sanctumExpiry          int
-	sanctumICD             int
-	sanctumPickupExtension int
-	burstCast              int
-	burstCounter           int
-	punchSrc               bool
-	c1var                  float64
+	recastBefore    bool
+	nextIsRecast    bool
+	skillArea       combat.AttackPattern
+	skillAttackInfo combat.AttackInfo
+	skillSnapshot   combat.Snapshot
+	sanctumICD      int
+	burstCast       int
+	burstCounter    int
+	punchSrc        bool
+	c1var           []float64
 }
 
 func init() {
@@ -45,7 +40,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 5
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
-	c.sanctumPickupExtension = 24 // On recast from Burst/Skill-2 the field duration is extended by 0.4s
 
 	w.Character = &c
 
@@ -57,7 +51,7 @@ func (c *char) Init() error {
 	c.skillHook()
 	c.a4()
 	c.burstCast = -241
-	c.c1var = 0.0
+	c.c1var = []float64{0.0, 0.0}
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
@@ -69,7 +63,7 @@ func (c *char) Init() error {
 }
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
 	// check if it is possible to use next skill
-	if a == action.ActionSkill && c.sanctumActive && !c.recastBefore {
+	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.recastBefore {
 		c.nextIsRecast = true
 		return true, action.NoFailure
 	}
@@ -81,6 +75,11 @@ func (c *char) onExitField() {
 		if c.StatusIsActive(burstKey) {
 			c.a1()
 			c.DeleteStatus(burstKey)
+			if remainingFieldDur > 0 { //place field
+				c.QueueCharTask(func() {
+					c.addField(remainingFieldDur)
+				}, kickHitmark)
+			}
 		}
 		return false
 	}, "dehya-exit")
@@ -88,5 +87,10 @@ func (c *char) onExitField() {
 
 func (c *char) Jump(p map[string]int) action.ActionInfo {
 	c.DeleteStatus(burstKey)
+	if remainingFieldDur > 0 { //place field
+		c.QueueCharTask(func() {
+			c.addField(remainingFieldDur)
+		}, kickHitmark)
+	}
 	return c.Character.Jump(p)
 }

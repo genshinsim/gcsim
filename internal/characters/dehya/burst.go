@@ -7,10 +7,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var burstFrames []int
 var kickFrames []int
+var remainingFieldDur int
 
 const burstKey = "dehya-burst"
 const burstDoT1Hitmark = 102
@@ -31,12 +33,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// if !ok || punches > 10 {
 	// 	punches = 10
 	// }
-	if c.sanctumActive {
-		c.sanctumActive = false
-		c.sanctumExpiry += c.sanctumPickupExtension
-		c.sanctumRetrieved = true
-		c.sanctumICD = c.StatusDuration("dehya-skill-icd")
+	remainingFieldDur = 0
+	if c.StatusIsActive(dehyaFieldKey) {
+		// pick up field at start
+		remainingFieldDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F //dur gets extended on field recast by a low margin, apparently
+		c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
+			Write("Duration Remaining ", remainingFieldDur+sanctumPickupExtension).
+			Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
 	}
+	c.DeleteStatus(dehyaFieldKey)
 
 	c.QueueCharTask(func() {
 		c.AddStatus(burstKey, 280, false)
@@ -74,7 +79,7 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstPunchAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1var + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
+		FlatDmg:    (c.c1var[0] + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
 
 	c.QueueCharTask(func() {
@@ -134,8 +139,14 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstKickAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1var + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
+		FlatDmg:    (c.c1var[0] + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
+	if remainingFieldDur > 0 {
+		c.QueueCharTask(func() { //place field
+			c.addField(remainingFieldDur)
+		}, kickHitmark)
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),

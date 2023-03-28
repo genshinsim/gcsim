@@ -24,7 +24,9 @@ func init() {
 }
 
 const (
-	skillICDKey = "dehya-skill-icd"
+	skillICDKey            = "dehya-skill-icd"
+	dehyaFieldKey          = "dehya-field-status"
+	sanctumPickupExtension = 24 // On recast from Burst/Skill-2 the field duration is extended by 0.4s
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -40,10 +42,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	c.recastBefore = false
-	c1var := 0.0
-	if c.Base.Cons >= 1 {
-		c1var = 0.036
-	}
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Molten Inferno",
@@ -54,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
-		FlatDmg:    c1var * c.MaxHP(),
+		FlatDmg:    c.c1var[1] * c.MaxHP(),
 	}
 	// TODO: damage frame
 	c.skillSnapshot = c.Snapshot(&ai)
@@ -65,18 +63,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
 
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
-	c.sanctumActive = true
-	c.sanctumSource = c.Core.F
-	c.sanctumExpiry = c.sanctumSource + dur + skillHitmark
-	c.Core.Tasks.Add(c.removeSanctum(c.sanctumExpiry), c.sanctumExpiry-c.Core.F)
 
-	// snapshot for ticks
-	ai.Abil = "Molten Inferno (DoT)"
-	ai.ICDTag = attacks.ICDTagElementalArt
-	ai.Mult = skillDotAtk[c.TalentLvlSkill()]
-	ai.FlatDmg = skillDotHP[c.TalentLvlSkill()] * c.MaxHP()
-	c.skillAttackInfo = ai
-	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
+	c.addField(dur)
 
 	c.AddStatus(skillICDKey, skillHitmark+1, false)
 	c.SetCD(action.ActionSkill, 1200)
@@ -94,7 +82,7 @@ func (c *char) skillHook() {
 		trg := args[0].(combat.Target)
 		//atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
-		if !c.sanctumActive {
+		if !c.StatusIsActive(dehyaFieldKey) {
 			return false
 		}
 		if c.StatusIsActive(skillICDKey) {
@@ -126,10 +114,8 @@ func (c *char) skillHook() {
 
 func (c *char) skillRecast() action.ActionInfo {
 	c.recastBefore = true
-	c1var := 0.0
-	if c.Base.Cons >= 1 {
-		c1var = 0.036
-	}
+
+	dur := c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F //dur gets extended on field recast by a low margin, apparently
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Ranging Flame",
@@ -140,17 +126,14 @@ func (c *char) skillRecast() action.ActionInfo {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       skillReposition[c.TalentLvlSkill()],
-		FlatDmg:    c1var * c.MaxHP(),
+		FlatDmg:    c.c1var[1] * c.MaxHP(),
 	}
 
 	// pick up field at start
-	c.Core.Log.NewEvent("Sanctum Expiration Info ", glog.LogCharacterEvent, c.Index).
-		Write("Duration Remaining ", c.sanctumExpiry+c.sanctumPickupExtension-c.Core.F).
-		Write("New Expiry Frame", c.sanctumExpiry+c.sanctumPickupExtension+skillRecastHitmark).
-		Write("Field Source", c.sanctumSource).
+	c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
+		Write("Duration Remaining ", dur).
 		Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
-	c.sanctumActive = false
-	c.sanctumExpiry += c.sanctumPickupExtension + skillRecastHitmark
+	c.DeleteStatus(dehyaFieldKey)
 
 	// save current DoT icd
 	c.sanctumICD = c.StatusDuration(skillICDKey)
@@ -167,16 +150,8 @@ func (c *char) skillRecast() action.ActionInfo {
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillRecastHitmark)
 
 	// place field back down
-	c.Core.Tasks.Add(func() {
-		c.sanctumActive = true
-		c.Core.Tasks.Add(c.removeSanctum(c.sanctumExpiry), c.sanctumExpiry-c.Core.F)
-		// snapshot for ticks
-		ai.Abil = "Molten Inferno (DoT)"
-		ai.ICDTag = attacks.ICDTagElementalArt
-		ai.Mult = skillDotAtk[c.TalentLvlSkill()]
-		ai.FlatDmg = skillDotHP[c.TalentLvlSkill()] * c.MaxHP()
-		c.skillAttackInfo = ai
-		c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
+	c.QueueCharTask(func() { //place field
+		c.addField(dur)
 	}, skillRecastHitmark)
 
 	return action.ActionInfo{
@@ -187,16 +162,27 @@ func (c *char) skillRecast() action.ActionInfo {
 	}
 }
 
-func (c *char) removeSanctum(src int) func() {
-	return func() {
-		// if expiration has changed, then this is no longer the same sanctum, do nothing
-		if c.sanctumExpiry != src {
-			c.Core.Log.NewEvent("sanctum not removed, src changed", glog.LogCharacterEvent, c.Index).
-				Write("src", src)
-			return
-		}
-		c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
-			Write("src", src)
-		c.sanctumActive = false
+func (c *char) addField(dur int) {
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Molten Inferno (DoT)",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt, //TODO ???
+		Element:    attributes.Pyro,
+		Durability: 25,
+		Mult:       skillDotAtk[c.TalentLvlSkill()],
+		FlatDmg:    (skillDotHP[c.TalentLvlSkill()] + c.c1var[1]) * c.MaxHP(),
 	}
+	//places field
+	c.AddStatus(dehyaFieldKey, dur, false)
+	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
+		Write("Duration Remaining ", dur).
+		Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
+		Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
+
+	// snapshot for ticks
+	c.skillAttackInfo = ai
+	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 }
