@@ -39,6 +39,12 @@ const (
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	c.punchSrc = false
+	if c.burstCast+240 > c.Core.F && c.StatusIsActive(burstKey) {
+		return c.burstPunch(c.punchSrc, false)
+	} else if c.StatusIsActive(burstKey) {
+		return c.burstKick(c.punchSrc)
+	}
 	if c.nextIsRecast {
 		c.recastBefore = true
 		c.nextIsRecast = false

@@ -24,6 +24,7 @@ type char struct {
 	burstCounter    int
 	punchSrc        bool
 	c1var           []float64
+	c6count         int
 }
 
 func init() {
@@ -37,8 +38,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.Character = t
 
 	c.EnergyMax = 70
-	c.BurstCon = 5
-	c.SkillCon = 3
+	c.BurstCon = 3
+	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
 	w.Character = &c
@@ -55,8 +56,8 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
-	if c.Base.Cons >= 2 {
-		c.c2()
+	if c.Base.Cons >= 6 {
+		c.c6()
 	}
 
 	return nil
@@ -66,6 +67,12 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Acti
 	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.recastBefore {
 		c.nextIsRecast = true
 		return true, action.NoFailure
+	}
+	if a == action.ActionSkill && c.StatusIsActive(burstKey) {
+		return true, action.NoFailure
+	}
+	if a == action.ActionAttack && c.StatusIsActive(burstKey) {
+		return false, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
 }

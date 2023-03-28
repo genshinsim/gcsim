@@ -33,10 +33,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	// punches, ok := p["hits"]
-	// if !ok || punches > 10 {
-	// 	punches = 10
-	// }
+	c.c6count = 0
 	remainingFieldDur = 0
 	if c.StatusIsActive(dehyaFieldKey) {
 		// pick up field at start
@@ -98,6 +95,8 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
 			0,
 			0,
+			c.c4cb(),
+			c.c6cb(),
 		)
 		if c.burstCast+240 > c.Core.F {
 			c.burstCounter++
@@ -156,6 +155,7 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 6.5),
 		kickHitmark,
 		kickHitmark,
+		c.c4cb(),
 	)
 
 	return action.ActionInfo{
