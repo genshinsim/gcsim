@@ -18,22 +18,23 @@ const burstKey = "dehya-burst"
 const burstDoT1Hitmark = 105
 const kickHitmark = 46 //6 hits minimum
 var punchSlowHitmark = 43
-var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27}
+var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27}
 
 func init() {
 	//TODO:Deprecate bursty frames in favor of a constant?
 	burstFrames = frames.InitAbilSlice(102) // Q -> E/D/J
 	burstFrames[action.ActionSwap] = 102    // Q -> Swap
 
-	kickFrames = frames.InitAbilSlice(72)       // Q -> Dash/Walk
-	kickFrames[action.ActionAttack] = 75        // Q -> N1
-	kickFrames[action.ActionSkill] = 71         // Q -> E
-	kickFrames[action.ActionJump] = 73          // Q -> J
-	kickFrames[action.ActionSwap] = kickHitmark //Q -> Swap
+	kickFrames = frames.InitAbilSlice(72)           // Q -> Dash/Walk
+	kickFrames[action.ActionAttack] = 75            // Q -> N1
+	kickFrames[action.ActionSkill] = 71             // Q -> E
+	kickFrames[action.ActionJump] = 73              // Q -> J
+	kickFrames[action.ActionSwap] = kickHitmark + 1 //Q -> Swap
 
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
+	burstIsJumpCancelled = false
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Flame-Mane's Fist",
@@ -58,8 +59,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.DeleteStatus(dehyaFieldKey)
 	}
 
-	c.QueueCharTask(func() {
-		c.AddStatus(burstKey, 282, false) //should be 240, but I don't want this to expire before dehya does her kick (this is similar to PP slide)
+	c.Core.Tasks.Add(func() {
+		c.AddStatus(burstKey, 240, false)
 		c.burstCast = c.Core.F
 		c.punchSrc = true
 		c.burstCounter = 0
@@ -87,7 +88,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
-
 	hitmark := punchSlowHitmark
 	if !auto {
 		hitmark = punchHitmarks[c.burstCounter]
@@ -110,7 +110,10 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 		if c.punchSrc != src {
 			return
 		}
-		if !c.StatusIsActive(burstKey) {
+		if c.Core.Player.Active() != c.Index {
+			return
+		}
+		if burstIsJumpCancelled {
 			return
 		}
 		c.Core.QueueAttack(
@@ -121,14 +124,17 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 			c.c4cb(),
 			c.c6cb(),
 		)
-		if c.burstCast+240 > c.Core.F {
-			c.burstCounter++
+		if !c.StatusIsActive(burstKey) {
 			c.punchSrc = true
-			c.burstPunch(c.punchSrc, true)
-		} else {
-			c.punchSrc = true
+			c.AddStatus(burstKey, kickHitmark, false)
 			c.burstKick(c.punchSrc)
+
+			return
 		}
+		c.burstCounter++
+		c.punchSrc = true
+		c.burstPunch(c.punchSrc, true)
+
 	}, hitmark)
 	if auto {
 		return action.ActionInfo{
@@ -141,7 +147,7 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          func(action.Action) int { return punchHitmarks[c.burstCounter] },
 		AnimationLength: punchHitmarks[c.burstCounter],
-		CanQueueAfter:   punchHitmarks[c.burstCounter], // earliest cancel
+		CanQueueAfter:   punchHitmarks[c.burstCounter],
 		State:           action.BurstState,
 	}
 }
@@ -159,14 +165,12 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 		Mult:       burstKickAtk[c.TalentLvlBurst()],
 		FlatDmg:    (c.c1var[0] + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
-	if remainingFieldDur > 0 {
-		c.QueueCharTask(func() { //place field
-			c.addField(remainingFieldDur)
-		}, kickHitmark)
-	}
 
 	c.Core.Tasks.Add(func() {
-		if !c.StatusIsActive(burstKey) || src != c.punchSrc { //prevents duplicates
+		if src != c.punchSrc { //prevents duplicates
+			return
+		}
+		if c.Core.Player.Active() != c.Index {
 			return
 		}
 		c.Core.QueueAttack(
@@ -176,6 +180,9 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 			0,
 			c.c4cb(),
 		)
+		if remainingFieldDur > 0 {
+			c.addField(remainingFieldDur)
+		}
 	}, kickHitmark)
 
 	return action.ActionInfo{

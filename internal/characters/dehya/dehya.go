@@ -92,8 +92,13 @@ func (c *char) onExitField() {
 	}, "dehya-exit")
 }
 
+var burstIsJumpCancelled = false
+
 func (c *char) Jump(p map[string]int) action.ActionInfo {
-	c.DeleteStatus(burstKey)
+	if c.StatusIsActive(burstKey) {
+		burstIsJumpCancelled = true
+		c.DeleteStatus(burstKey)
+	}
 	if remainingFieldDur > 0 { //place field
 		c.QueueCharTask(func() {
 			c.addField(remainingFieldDur)

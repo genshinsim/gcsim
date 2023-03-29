@@ -123,7 +123,7 @@ func (c *char) skillHook() {
 			c.skillAttackInfo,
 			c.skillSnapshot,
 			combat.NewCircleHitOnTarget(trg, nil, 4.5),
-			1,
+			10,
 		)
 
 		c.Core.QueueParticle("dehya", 1, attributes.Pyro, c.ParticleDelay)
@@ -204,13 +204,16 @@ func (c *char) addField(dur int) {
 		CanBeDefenseHalted: false,
 	}
 	//places field
-	c.AddStatus(dehyaFieldKey, dur, false)
-	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
-		Write("Duration Remaining ", dur).
-		Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
-		Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
+	c.Core.Tasks.Add(func() {
+		c.AddStatus(dehyaFieldKey, dur, false)
+		c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
+			Write("Duration Remaining ", dur).
+			Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
+			Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
 
-	// snapshot for ticks
-	c.skillAttackInfo = ai
-	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
+		// snapshot for ticks
+		c.skillAttackInfo = ai
+		c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
+	}, 1) //Add 1 delay to avoid initial hits to triggering it
+
 }
