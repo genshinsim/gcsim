@@ -25,11 +25,11 @@ func init() {
 	burstFrames = frames.InitAbilSlice(102) // Q -> E/D/J
 	burstFrames[action.ActionSwap] = 102    // Q -> Swap
 
-	kickFrames = frames.InitAbilSlice(72)           // Q -> Dash/Walk
-	kickFrames[action.ActionAttack] = 75            // Q -> N1
-	kickFrames[action.ActionSkill] = 71             // Q -> E
-	kickFrames[action.ActionJump] = 73              // Q -> J
-	kickFrames[action.ActionSwap] = kickHitmark + 1 //Q -> Swap
+	kickFrames = frames.InitAbilSlice(72)       // Q -> Dash/Walk
+	kickFrames[action.ActionAttack] = 75        // Q -> N1
+	kickFrames[action.ActionSkill] = 71         // Q -> E
+	kickFrames[action.ActionJump] = 73          // Q -> J
+	kickFrames[action.ActionSwap] = kickHitmark //Q -> Swap
 
 }
 
