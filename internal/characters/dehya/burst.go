@@ -188,7 +188,7 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(kickFrames),
 		AnimationLength: kickFrames[action.ActionAttack],
-		CanQueueAfter:   kickFrames[action.ActionAttack], // earliest cancel
+		CanQueueAfter:   kickFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }
