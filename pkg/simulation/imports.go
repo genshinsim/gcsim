@@ -192,6 +192,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/ferrousshadow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/forestregalia"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/lithic"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/mailedflower"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/nagamasa"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/oldmercspal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/pines"

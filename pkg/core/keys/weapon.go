@@ -103,6 +103,7 @@ var weaponNames = []string{
 	"lostprayertothesacredwinds",
 	"luxurioussealord",
 	"magicguide",
+	"mailedflower",
 	"makhairaaquamarine",
 	"mappamare",
 	"memoryofdust",
@@ -259,6 +260,7 @@ const (
 	LostPrayerToTheSacredWinds
 	LuxuriousSeaLord
 	MagicGuide
+	MailedFlower
 	MakhairaAquamarine
 	MappaMare
 	MemoryOfDust

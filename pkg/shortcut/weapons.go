@@ -126,6 +126,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"aquamarine":                    keys.MakhairaAquamarine,
 	"mappamare":                     keys.MappaMare,
 	"mappa":                         keys.MappaMare,
+	"mailedflower":                  keys.MailedFlower,
+	"mailed":                        keys.MailedFlower,
 	"memoryofdust":                  keys.MemoryOfDust,
 	"messenger":                     keys.Messenger,
 	"missivewindspear":              keys.MissiveWindspear,
