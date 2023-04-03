@@ -57,7 +57,7 @@ func (c *char) a4() {
 			ai,
 			c.ozSnapshot.Snapshot,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.5),
-			3)
+			5)
 		return false
 	}
 
