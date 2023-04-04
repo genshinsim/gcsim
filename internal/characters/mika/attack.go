@@ -21,9 +21,9 @@ var (
 	// same between polearm and burst attacks so just use these arrays for both
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.04}}
 	attackDefHalt         = [][]bool{{false}, {true}, {false}, {true, true}, {true}}
-	attackHitboxes        = [][]float64{{1.8, 2.8}, {2.5}, {1.8, 4}, {2.8}, {3}}
-	attackOffsets         = [][][]float64{{{0, -0.2}}, {{0, 0.5}}, {{0, -1.2}}, {{-0.5, 0.7}, {0.3, 0.7}}, {{0, 0}}}
-	attackFanAngles       = []float64{360, 270, 360, 360, 360}
+	attackHitboxes        = [][][]float64{{{1.8, 2.5}}, {{1.6}}, {{2.5, 2.5}}, {{4}, {4}}, {{1.5, 5}}}
+	attackOffsets         = []float64{0, 0.2, 0.5, -0.3, 1.0}
+	attackFanAngles       = []float64{360, 360, 360, 45, 360}
 )
 
 func init() {
@@ -62,19 +62,21 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		ai.Mult = mult[c.TalentLvlAttack()]
-		ap := combat.NewCircleHitOnTargetFanAngle(
+		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
-			attackHitboxes[c.NormalCounter][0],
-			attackFanAngles[c.NormalCounter],
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][i][0],
+			attackHitboxes[c.NormalCounter][i][1],
 		)
-		if c.NormalCounter == 0 || c.NormalCounter == 2 {
-			ap = combat.NewBoxHitOnTarget(
+		if c.NormalCounter == 1 {
+			ap = combat.NewCircleHitOnTargetFanAngle(
 				c.Core.Combat.Player(),
-				geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
-				attackHitboxes[c.NormalCounter][0],
-				attackHitboxes[c.NormalCounter][1],
+				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][i][0],
+				attackFanAngles[c.NormalCounter],
 			)
+		} else if c.NormalCounter == 2 || c.NormalCounter == 3 {
+			ai.StrikeType = attacks.StrikeTypeSpear
 		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(ai, ap, 0, 0)

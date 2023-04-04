@@ -65,6 +65,10 @@ func (c *char) a4() {
 
 		atk := args[1].(*combat.AttackEvent)
 		char := c.Core.Player.ByIndex(atk.Info.ActorIndex)
+		if char.Index != c.Core.Player.Active() {
+			return false
+		}
+
 		if !char.StatModIsActive(skillBuffKey) || !c.StatusIsActive(healKey) {
 			return false
 		}

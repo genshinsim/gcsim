@@ -88,7 +88,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.2}, 4, 8),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 2.5, 10),
 		skillPressHitmark,
 		skillPressHitmark,
 		c.makeParticleCB(),
@@ -96,17 +96,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		c.c2(),
 	)
 
-	c.QueueCharTask(func() {
-		c.SetTag(a1Stacks, 0)
-		c.skillBuff()
-
-		if c.Base.Ascension >= 1 {
-			c.a1()
-		}
-		if c.Base.Ascension >= 4 {
-			c.a4Stack = false
-		}
-	}, skillPressCDStart+1)
+	c.QueueCharTask(c.applyBuffs, skillPressCDStart+1)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillPressCDStart)
 
 	return action.ActionInfo{
@@ -140,17 +130,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		c.c2(),
 	)
 
-	c.QueueCharTask(func() {
-		c.SetTag(a1Stacks, 0)
-		c.skillBuff()
-
-		if c.Base.Ascension >= 1 {
-			c.a1()
-		}
-		if c.Base.Ascension >= 4 {
-			c.a4Stack = false
-		}
-	}, skillHoldCDStart+1)
+	c.QueueCharTask(c.applyBuffs, skillHoldCDStart+1)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
 
 	return action.ActionInfo{
@@ -198,15 +178,12 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 			Mult:       skillExplode[c.TalentLvlSkill()],
 		}
 
-		// TODO: radius? enemies should be sorted by distance?
-		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), func(t combat.Enemy) bool {
-			return a.Target.Key() != t.Key()
-		})
-		for i := 0; i < 3; i++ {
-			if i == len(enemies) {
-				break
-			}
-
+		enemies := c.Core.Combat.RandomEnemiesWithinArea(
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10),
+			func(t combat.Enemy) bool { return a.Target.Key() != t.Key() },
+			3,
+		)
+		for i := 0; i < len(enemies); i++ {
 			var a1CB combat.AttackCBFunc
 			if c.Base.Ascension >= 1 {
 				done := false
@@ -230,6 +207,18 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 				a1CB,
 			)
 		}
+	}
+}
+
+func (c *char) applyBuffs() {
+	c.SetTag(a1Stacks, 0)
+	c.skillBuff()
+
+	if c.Base.Ascension >= 1 {
+		c.a1()
+	}
+	if c.Base.Ascension >= 4 {
+		c.a4Stack = false
 	}
 }
 
