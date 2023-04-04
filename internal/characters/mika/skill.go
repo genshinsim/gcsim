@@ -12,40 +12,37 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-// based on shenhe frames
-// TODO: update frames, hitlags & hitboxes
 var skillPressFrames []int
 var skillHoldFrames []int
 
 const (
-	skillPressCDStart    = 2
-	skillPressHitmark    = 4
-	skillHoldCDStart     = 31
-	skillHoldHitmark     = 33
-	rimestarShardHitmark = 30
+	skillPressCDStart = 16
+	skillPressHitmark = 17
+	skillPressTravel  = 1
+
+	skillHoldCDStart    = 11
+	skillHoldHitmark    = 12
+	skillHoldTravel     = 3
+	rimestarShardTravel = 46
 
 	skillBuffKey = "soulwind"
 )
 
 func init() {
 	// skill (press) -> x
-	skillPressFrames = frames.InitAbilSlice(38) // walk
-	skillPressFrames[action.ActionAttack] = 27
-	skillPressFrames[action.ActionSkill] = 27
-	skillPressFrames[action.ActionBurst] = 27
-	skillPressFrames[action.ActionDash] = 21
-	skillPressFrames[action.ActionJump] = 21
-	skillPressFrames[action.ActionSwap] = 27
+	skillPressFrames = frames.InitAbilSlice(39) // E -> N1/Q
+	skillPressFrames[action.ActionDash] = 34
+	skillPressFrames[action.ActionJump] = 35
+	skillPressFrames[action.ActionWalk] = 19
+	skillPressFrames[action.ActionSwap] = 37
 
 	// skill (hold) -> x
-	// TODO: skill (hold) -> skill (hold) is 52 frames.
-	skillHoldFrames = frames.InitAbilSlice(78) // walk
-	skillHoldFrames[action.ActionAttack] = 45
-	skillHoldFrames[action.ActionSkill] = 45 // assume skill (press)
-	skillHoldFrames[action.ActionBurst] = 45
-	skillHoldFrames[action.ActionDash] = 38
-	skillHoldFrames[action.ActionJump] = 39
-	skillHoldFrames[action.ActionSwap] = 44
+	skillHoldFrames = frames.InitAbilSlice(46) // E -> Swap
+	skillHoldFrames[action.ActionAttack] = 38
+	skillHoldFrames[action.ActionBurst] = 37
+	skillHoldFrames[action.ActionDash] = 30
+	skillHoldFrames[action.ActionJump] = 30
+	skillHoldFrames[action.ActionWalk] = 30
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -90,13 +87,13 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 2.5, 10),
 		skillPressHitmark,
-		skillPressHitmark,
+		skillPressHitmark+skillPressTravel,
 		c.makeParticleCB(),
 		a1CB,
 		c.c2(),
 	)
 
-	c.QueueCharTask(c.applyBuffs, skillPressCDStart+1)
+	c.QueueCharTask(c.applyBuffs, skillPressCDStart)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillPressCDStart)
 
 	return action.ActionInfo{
@@ -124,7 +121,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()),
 		skillHoldHitmark,
-		skillHoldHitmark,
+		skillHoldHitmark+skillHoldTravel,
 		c.makeParticleCB(),
 		c.makeRimestarShardsCB(),
 		c.c2(),
@@ -202,8 +199,8 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewSingleTargetHit(enemies[i].Key()),
-				rimestarShardHitmark,
-				rimestarShardHitmark,
+				0,
+				rimestarShardTravel,
 				a1CB,
 			)
 		}

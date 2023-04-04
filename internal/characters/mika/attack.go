@@ -13,12 +13,9 @@ import (
 
 const normalHitNum = 5
 
-// based on raiden frames
-// TODO: update frames, hitlags & hitboxes
 var (
-	attackFrames   [][]int
-	attackHitmarks = [][]int{{14}, {9}, {14}, {14, 27}, {34}}
-	// same between polearm and burst attacks so just use these arrays for both
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{20}, {14}, {16}, {15, 24}, {30}}
 	attackHitlagHaltFrame = [][]float64{{0.02}, {0.02}, {0.02}, {0, 0}, {0.04}}
 	attackDefHalt         = [][]bool{{false}, {true}, {false}, {true, true}, {true}}
 	attackHitboxes        = [][][]float64{{{1.8, 2.5}}, {{1.6}}, {{2.5, 2.5}}, {{4}, {4}}, {{1.5, 5}}}
@@ -30,19 +27,24 @@ func init() {
 	// NA cancels (polearm)
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 24)
-	attackFrames[0][action.ActionAttack] = 18
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 35) // N1 -> Walk
+	attackFrames[0][action.ActionAttack] = 22
+	attackFrames[0][action.ActionCharge] = 28
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 26)
-	attackFrames[1][action.ActionAttack] = 13
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 28) // N2 -> Walk
+	attackFrames[1][action.ActionAttack] = 19
+	attackFrames[1][action.ActionCharge] = 19
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 36)
-	attackFrames[2][action.ActionAttack] = 26
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 41) // N3 -> Walk
+	attackFrames[2][action.ActionAttack] = 34
+	attackFrames[2][action.ActionCharge] = 39
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 57)
-	attackFrames[3][action.ActionAttack] = 41
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 48) // N4 -> Walk
+	attackFrames[3][action.ActionAttack] = 32
+	attackFrames[3][action.ActionCharge] = 40
 
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 50)
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 71) // N5 -> N1
+	attackFrames[4][action.ActionWalk] = 63
 	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
@@ -62,20 +64,21 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		ai.Mult = mult[c.TalentLvlAttack()]
-		ap := combat.NewBoxHitOnTarget(
+		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][i][0],
-			attackHitboxes[c.NormalCounter][i][1],
+			attackFanAngles[c.NormalCounter],
 		)
-		if c.NormalCounter == 1 {
-			ap = combat.NewCircleHitOnTargetFanAngle(
+		if c.NormalCounter != 1 {
+			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
 				geometry.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][i][0],
-				attackFanAngles[c.NormalCounter],
+				attackHitboxes[c.NormalCounter][i][1],
 			)
-		} else if c.NormalCounter == 2 || c.NormalCounter == 3 {
+		}
+		if c.NormalCounter == 2 || c.NormalCounter == 3 {
 			ai.StrikeType = attacks.StrikeTypeSpear
 		}
 		c.QueueCharTask(func() {

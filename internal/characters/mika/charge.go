@@ -8,18 +8,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-// based on raiden frames
-// TODO: update frames, hitlags & hitboxes
 var chargeFrames []int
 
-const chargeHitmark = 22
+const chargeHitmark = 26
 
 func init() {
 	// charge -> x
-	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
-	chargeFrames[action.ActionDash] = chargeHitmark
-	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 36
+	chargeFrames = frames.InitAbilSlice(66) // CA -> Walk
+	chargeFrames[action.ActionAttack] = 63
+	chargeFrames[action.ActionSkill] = 62
+	chargeFrames[action.ActionBurst] = 62
+	chargeFrames[action.ActionDash] = 20
+	chargeFrames[action.ActionJump] = 20
+	chargeFrames[action.ActionSwap] = 61
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {

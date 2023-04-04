@@ -10,24 +10,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-// based on sayu frames
-// TODO: update frames & hitlags
 var burstFrames []int
 
 const (
-	burstHitmark = 12
-	healKey      = "eagleplume"
-	healIcdKey   = "eagleplume-icd"
+	initialHeal = 51 // depends on ping
+	healKey     = "eagleplume"
+	healIcdKey  = "eagleplume-icd"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(65) // Q -> N1/E/J
-	burstFrames[action.ActionDash] = 64    // Q -> D
-	burstFrames[action.ActionSwap] = 64    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(61) // Q -> N1/Dash/Walk
+	burstFrames[action.ActionSkill] = 60
+	burstFrames[action.ActionJump] = 60
+	burstFrames[action.ActionSwap] = 59
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	// first heal
+	// initial heal
 	c.QueueCharTask(func() {
 		heal := burstHealFirstF[c.TalentLvlBurst()] + burstHealFirstP[c.TalentLvlBurst()]*c.MaxHP()
 		c.Core.Player.Heal(player.HealInfo{
@@ -43,10 +42,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		c.AddStatus(healKey, 15*60, true)
 		c.DeleteStatus(healIcdKey)
-	}, burstHitmark)
+	}, initialHeal)
 
 	c.SetCD(action.ActionBurst, 18*60)
-	c.ConsumeEnergy(7)
+	c.ConsumeEnergy(6)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
