@@ -171,6 +171,11 @@ export const characterKeyToICharacter: { [key: string]: ICharacter } = {
     element: 'dendro',
     weapon_class: 'polearm',
   },
+  mika: {
+    key: 'mika',
+    element: 'cryo',
+    weapon_type: 'polearm',
+  }
 };
 
 export const items: ICharacter[] = Object.keys(characterKeyToICharacter).map(
