@@ -192,3 +192,14 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 		State:           action.BurstState,
 	}
 }
+
+func (c *char) UseBurstAction() *action.ActionInfo {
+	var out action.ActionInfo
+	c.punchSrc = false
+	if c.burstCast+240 > c.Core.F && c.StatusIsActive(burstKey) {
+		out = c.burstPunch(c.punchSrc, false)
+	} else if c.StatusIsActive(burstKey) {
+		out = c.burstKick(c.punchSrc)
+	}
+	return &out
+}

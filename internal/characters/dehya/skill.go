@@ -39,36 +39,33 @@ const (
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	c.punchSrc = false
-	if c.burstCast+240 > c.Core.F && c.StatusIsActive(burstKey) {
-		return c.burstPunch(c.punchSrc, false)
-	} else if c.StatusIsActive(burstKey) {
-		return c.burstKick(c.punchSrc)
+	burstAction := c.UseBurstAction()
+	if burstAction != nil {
+		return *burstAction
 	}
-	if c.nextIsRecast {
-		c.recastBefore = true
-		c.nextIsRecast = false
+	c.hasSkillRecast = false
+	if c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
+		c.hasSkillRecast = true
 		return c.skillRecast()
 	}
+	c.hasSkillRecast = false
 	// calculate sanctum duration
 	dur := 720
 	if c.Base.Cons >= 2 {
 		dur = 960
 	}
 
-	c.recastBefore = false
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Molten Inferno",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt, //TODO ???
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
 		FlatDmg:            c.c1var[1] * c.MaxHP(),
-		HitlagHaltFrames:   0.0 * 60,
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: false,
 	}
@@ -87,7 +84,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, skillHitmark+1)
 
 	c.AddStatus(skillICDKey, skillHitmark+1, false)
-	c.SetCDWithDelay(action.ActionSkill, 1200, 18)
+	c.SetCDWithDelay(action.ActionSkill, 20*60, 18)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -133,8 +130,6 @@ func (c *char) skillHook() {
 }
 
 func (c *char) skillRecast() action.ActionInfo {
-	c.recastBefore = true
-
 	dur := c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F //dur gets extended on field recast by a low margin, apparently
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -177,7 +172,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	// place field back down
 	c.Core.Tasks.Add(func() { //place field
 		c.addField(dur)
-	}, skillRecastHitmark)
+	}, skillRecastHitmark+1)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
@@ -204,16 +199,14 @@ func (c *char) addField(dur int) {
 		CanBeDefenseHalted: false,
 	}
 	//places field
-	c.Core.Tasks.Add(func() {
-		c.AddStatus(dehyaFieldKey, dur, false)
-		c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
-			Write("Duration Remaining ", dur).
-			Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
-			Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
+	c.AddStatus(dehyaFieldKey, dur, false)
+	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
+		Write("Duration Remaining ", dur).
+		Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
+		Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
 
-		// snapshot for ticks
-		c.skillAttackInfo = ai
-		c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
-	}, 1) //Add 1 delay to avoid initial hits to triggering it
+	// snapshot for ticks
+	c.skillAttackInfo = ai
+	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
 
 }

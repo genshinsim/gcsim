@@ -31,12 +31,11 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	c.punchSrc = false
-	if c.burstCast+240 > c.Core.F && c.StatusIsActive(burstKey) {
-		return c.burstPunch(c.punchSrc, false)
-	} else if c.StatusIsActive(burstKey) {
-		return c.burstKick(c.punchSrc)
+	burstAction := c.UseBurstAction()
+	if burstAction != nil {
+		return *burstAction
 	}
+	c.hasSkillRecast = false
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
