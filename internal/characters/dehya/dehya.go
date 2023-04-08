@@ -14,8 +14,7 @@ import (
 type char struct {
 	*tmpl.Character
 	// tracking skill information
-	recastBefore    bool
-	nextIsRecast    bool
+	hasSkillRecast  bool
 	skillArea       combat.AttackPattern
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
@@ -64,8 +63,7 @@ func (c *char) Init() error {
 }
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
 	// check if it is possible to use next skill
-	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.recastBefore {
-		c.nextIsRecast = true
+	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
 		return true, action.NoFailure
 	}
 	if a == action.ActionSkill && c.StatusIsActive(burstKey) {
@@ -79,15 +77,17 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Acti
 
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.StatusIsActive(burstKey) {
-			c.a1()
-			c.DeleteStatus(burstKey)
-			if remainingFieldDur > 0 { //place field
-				c.QueueCharTask(func() {
-					c.addField(remainingFieldDur)
-				}, kickHitmark)
-			}
+		if !c.StatusIsActive(burstKey) {
+			return false
 		}
+		c.a1()
+		c.DeleteStatus(burstKey)
+		if remainingFieldDur > 0 { //place field
+			c.QueueCharTask(func() {
+				c.addField(remainingFieldDur)
+			}, kickHitmark)
+		}
+
 		return false
 	}, "dehya-exit")
 }
@@ -95,10 +95,13 @@ func (c *char) onExitField() {
 var burstIsJumpCancelled = false
 
 func (c *char) Jump(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
-		burstIsJumpCancelled = true
-		c.DeleteStatus(burstKey)
+	if !c.StatusIsActive(burstKey) {
+		return c.Character.Jump(p)
 	}
+
+	burstIsJumpCancelled = true
+	c.DeleteStatus(burstKey)
+
 	if remainingFieldDur > 0 { //place field
 		c.QueueCharTask(func() {
 			c.addField(remainingFieldDur)
