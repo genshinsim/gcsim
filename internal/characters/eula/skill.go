@@ -179,14 +179,14 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	if v > 0 {
 		done := false
 		shredCB = func(a combat.AttackCB) {
-			if done {
-				return
-			}
+			
 			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
 				return
 			}
-			done = true
+			if e.Type() != targets.TargettableEnemy {
+				return
+			}
 			e.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("eula-icewhirl-shred-cryo", 7*v*60),
 				Ele:   attributes.Cryo,
@@ -197,6 +197,10 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				Ele:   attributes.Physical,
 				Value: -resRed[lvl],
 			})
+			if done {
+				return
+			}
+			done = true
 		}
 	}
 
