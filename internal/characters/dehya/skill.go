@@ -123,7 +123,7 @@ func (c *char) skillHook() {
 			10,
 		)
 
-		c.Core.QueueParticle("dehya", 1, attributes.Pyro, c.ParticleDelay)
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
 
 		return false
 	}, "dehya-skill")
