@@ -177,14 +177,9 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	//shred
 	var shredCB combat.AttackCBFunc
 	if v > 0 {
-		done := false
 		shredCB = func(a combat.AttackCB) {
-			
 			e, ok := a.Target.(*enemy.Enemy)
 			if !ok {
-				return
-			}
-			if e.Type() != targets.TargettableEnemy {
 				return
 			}
 			e.AddResistMod(combat.ResistMod{
@@ -197,10 +192,6 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 				Ele:   attributes.Physical,
 				Value: -resRed[lvl],
 			})
-			if done {
-				return
-			}
-			done = true
 		}
 	}
 
