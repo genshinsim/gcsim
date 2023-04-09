@@ -43,7 +43,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if burstAction != nil {
 		return *burstAction
 	}
-	c.hasSkillRecast = false
 	if c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
 		c.hasSkillRecast = true
 		return c.skillRecast()
