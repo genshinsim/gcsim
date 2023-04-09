@@ -1,6 +1,7 @@
 import { Callout, Card, Elevation, H3, Icon } from '@blueprintjs/core';
 import { Link } from 'wouter';
 import { Trans, useTranslation } from 'react-i18next';
+import { AnnouncementBanner } from '~src/Components/Banners';
 
 interface DashCardProps {
   children: React.ReactNode;
@@ -42,19 +43,7 @@ export function Dash() {
   useTranslation();
   return (
     <main className="w-full flex flex-col items-center flex-grow ">
-      <span>
-        <Callout intent="success" className=" max-w-[600px] mt-4">
-          Thank you for your patience. The core rewrite is now complete. Hitlag
-          has been implemented along with a ton of config syntax improvements.
-          <br />
-          <div className="mt-2 font-bold">
-            Please check out the migration guide here:{' '}
-            <a href="https://docs.gcsim.app/migration" target="_blank">
-              Migration Guide
-            </a>
-          </div>
-        </Callout>
-      </span>
+        <span><AnnouncementBanner /></span>
       <div className="flex flex-row flex-initial flex-wrap w-full lg:w-[60rem] mt-4">
         <DashCard href="/simulator">
           <span className="font-bold text-xl">

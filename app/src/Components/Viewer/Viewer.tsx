@@ -30,6 +30,7 @@ import {
   SimplePreset,
   VerbosePreset,
 } from "./debugOptions";
+import { EarlyReleaseBanner } from "../Banners";
 
 type ViewProps = {
   classes?: string;
@@ -126,6 +127,7 @@ function ViewOnly(props: ViewProps) {
     <div
       className={props.classes + " p-4 rounded-lg bg-gray-800 flex flex-col"}
     >
+      <EarlyReleaseBanner data={props.data} />
       <div className="flex flex-row  bg-gray-800 ">
         <Tabs
           selectedTabId={tabID}
