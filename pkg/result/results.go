@@ -32,6 +32,7 @@ type Summary struct {
 	ReactionsTriggered    map[string]agg.IntStat     `json:"reactions_triggered"`
 	ElementUptime         []map[string]agg.IntStat   `json:"ele_uptime"`
 	RequiredER            []float64                  `json:"required_er"`
+	IncompleteChars       []string                   `json:"incomplete_chars"`
 
 	Duration agg.FloatStat `json:"sim_duration"`
 	//final result
@@ -61,6 +62,10 @@ type Summary struct {
 func (r *Summary) Map(cfg *ast.ActionList, result *agg.Result) {
 	for _, v := range cfg.Characters {
 		r.CharNames = append(r.CharNames, v.Base.Key.String())
+
+		if !IsCharacterComplete(v.Base.Key) {
+			r.IncompleteChars = append(r.IncompleteChars, v.Base.Key.String())
+		}
 	}
 
 	// metadata agg
