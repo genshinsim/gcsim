@@ -64,18 +64,22 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		ai.Mult = mult[c.TalentLvlAttack()]
-		ap := combat.NewCircleHitOnTargetFanAngle(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][i][0],
-			attackFanAngles[c.NormalCounter],
-		)
-		if c.NormalCounter != 1 {
+
+		var ap combat.AttackPattern
+		switch c.NormalCounter {
+		case 0, 2, 4:
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
 				geometry.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
+			)
+		case 1, 3:
+			ap = combat.NewCircleHitOnTargetFanAngle(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][i][0],
+				attackFanAngles[c.NormalCounter],
 			)
 		}
 		if c.NormalCounter == 2 || c.NormalCounter == 3 {
