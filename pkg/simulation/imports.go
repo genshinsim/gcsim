@@ -64,6 +64,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/chongyun"
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/cyno"
+	_ "github.com/genshinsim/gcsim/internal/characters/dehya"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
 	_ "github.com/genshinsim/gcsim/internal/characters/dori"
