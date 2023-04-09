@@ -1,6 +1,4 @@
-import { Button, FormGroup, Switch } from "@blueprintjs/core";
-import { Character } from "~/src/types";
-import { StatRow } from "./CharacterEditStatRow";
+import { StatRow } from './CharacterEditStatRow';
 
 import {
   IconAnemo,
@@ -18,11 +16,11 @@ import {
   IconHydro,
   IconPhysical,
   IconPyro,
-} from "~src/Components/Icons";
-import { RootState, useAppDispatch, useAppSelector } from "~src/store";
-import { simActions } from "~src/Pages/Sim";
-import { StatToIndexMap } from "~src/util";
-import { useTranslation } from "react-i18next";
+} from '~src/Components/Icons';
+import { RootState, useAppDispatch, useAppSelector } from '~src/store';
+import { simActions } from '~src/Pages/Sim';
+import { StatToIndexMap } from '~src/util';
+import { useTranslation } from 'react-i18next';
 
 export type subDisplayLine = {
   stat?: string;
@@ -39,57 +37,57 @@ type StatRowsProp = {
 };
 
 function StatRows(props: StatRowsProp) {
-  let { t } = useTranslation()
+  let { t } = useTranslation();
 
   let subs: subDisplayLine[] = [
     {
-      stat: "HP",
-      stat_: "HPP",
-      label: t("characteredit.hp_hp"),
+      stat: 'HP',
+      stat_: 'HPP',
+      label: t('characteredit.hp_hp'),
       val_: 0,
       val: 0,
       icon: <IconHP className="fill-gray-100" />,
     },
     {
-      stat: "ATK",
-      stat_: "ATKP",
-      label: t("characteredit.atk_atk"),
+      stat: 'ATK',
+      stat_: 'ATKP',
+      label: t('characteredit.atk_atk'),
       val: 0,
       val_: 0,
       icon: <IconAtk className="fill-gray-100" />,
     },
     {
-      stat: "DEF",
-      stat_: "DEFP",
-      label: t("characteredit.def_def"),
+      stat: 'DEF',
+      stat_: 'DEFP',
+      label: t('characteredit.def_def'),
       val_: 0,
       val: 0,
       icon: <IconDef className="fill-gray-100" />,
     },
     {
-      stat: "EM",
-      label: t("characteredit.em"),
+      stat: 'EM',
+      label: t('characteredit.em'),
       val_: 0,
       val: 0,
       icon: <IconEM className="fill-gray-100" />,
     },
     {
-      stat_: "ER",
-      label: t("characteredit.er"),
+      stat_: 'ER',
+      label: t('characteredit.er'),
       val_: 0,
       val: 0,
       icon: <IconER className="fill-gray-100" />,
     },
     {
-      stat_: "CR",
-      label: t("characteredit.cr"),
+      stat_: 'CR',
+      label: t('characteredit.cr'),
       val_: 0,
       val: 0,
       icon: <IconCR className="fill-gray-100" />,
     },
     {
-      stat_: "CD",
-      label: t("characteredit.cd"),
+      stat_: 'CD',
+      label: t('characteredit.cd'),
       val_: 0,
       val: 0,
       icon: <IconCD className="fill-gray-100" />,
@@ -98,57 +96,57 @@ function StatRows(props: StatRowsProp) {
 
   let eleSubs: subDisplayLine[] = [
     {
-      stat_: "Heal",
-      label: t("characteredit.heal"),
+      stat_: 'Heal',
+      label: t('characteredit.heal'),
       val_: 0,
       val: 0,
       icon: <IconHeal className="fill-gray-100" />,
     },
     {
-      stat_: "PyroP",
-      label: t("characteredit.pyro"),
+      stat_: 'PyroP',
+      label: t('characteredit.pyro'),
       val_: 0,
       val: 0,
       icon: <IconPyro className="fill-gray-100" />,
     },
     {
-      stat_: "HydroP",
-      label: t("characteredit.hydro"),
+      stat_: 'HydroP',
+      label: t('characteredit.hydro'),
       val_: 0,
       val: 0,
       icon: <IconHydro className="fill-gray-100" />,
     },
     {
-      stat_: "CryoP",
-      label: t("characteredit.cryo"),
+      stat_: 'CryoP',
+      label: t('characteredit.cryo'),
       val_: 0,
       val: 0,
       icon: <IconCryo className="fill-gray-100" />,
     },
     {
-      stat_: "ElectroP",
-      label: t("characteredit.electro"),
+      stat_: 'ElectroP',
+      label: t('characteredit.electro'),
       val_: 0,
       val: 0,
       icon: <IconElectro className="fill-gray-100" />,
     },
     {
-      stat_: "AnemoP",
-      label: t("characteredit.anemo"),
+      stat_: 'AnemoP',
+      label: t('characteredit.anemo'),
       val_: 0,
       val: 0,
       icon: <IconAnemo className="fill-gray-100" />,
     },
     {
-      stat_: "GeoP",
-      label: t("characteredit.geo"),
+      stat_: 'GeoP',
+      label: t('characteredit.geo'),
       val_: 0,
       val: 0,
       icon: <IconGeo className="fill-gray-100" />,
     },
     {
-      stat_: "PhyP",
-      label: t("characteredit.phy"),
+      stat_: 'PhyP',
+      label: t('characteredit.phy'),
       val_: 0,
       val: 0,
       icon: <IconPhysical className="fill-gray-100" />,

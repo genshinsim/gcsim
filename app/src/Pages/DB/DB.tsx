@@ -17,12 +17,7 @@ import { Popover2, Tooltip2 } from '@blueprintjs/popover2';
 import axios from 'axios';
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import {
-  CharacterSelect,
-  ICharacter,
-  isTraveler,
-} from '~src/Components/Character';
-import { Viewport } from '~src/Components/Viewport';
+import { ICharacter, isTraveler } from '~src/Components/Character';
 import { IWeapon, WeaponSelect } from '~src/Components/Weapon';
 import { useAppDispatch } from '~src/store';
 import { DBCharInfo, DBItem } from '~src/types';
@@ -368,7 +363,6 @@ export function DB() {
   if (loading) {
     return (
       <div className="m-2 text-center text-lg pt-2">
-        <Spinner />
         <Trans>db.loading</Trans>
       </div>
     );
@@ -517,11 +511,7 @@ export function DB() {
       <div className="p-2 grow ">
         <DBView db={n} setCfg={setCfg} />
       </div>
-      <CharacterSelect
-        onClose={() => setOpenAddChar(false)}
-        onSelect={addCharFilter}
-        isOpen={openAddChar}
-      />
+
       <WeaponSelect
         isOpen={openAddWeap}
         onClose={() => setOpenAddWeap(false)}
