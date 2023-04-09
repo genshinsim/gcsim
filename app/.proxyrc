@@ -1,5 +1,7 @@
 {
   "/api": {
-    "target": "http://localhost:3030"
+    "target": "https://gcsim.app",
+    "changeOrigin": true,
+    "autoRewrite": true
   }
 }
