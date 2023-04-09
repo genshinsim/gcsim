@@ -15,6 +15,7 @@ var kickFrames []int
 var remainingFieldDur int
 
 const burstKey = "dehya-burst"
+const kickKey = "dehya-burst-kick"
 const burstDoT1Hitmark = 105
 const kickHitmark = 46 //6 hits minimum
 var punchSlowHitmark = 43
@@ -62,9 +63,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, 240, false)
 		c.burstCast = c.Core.F
-		c.punchSrc = true
+		c.burstHitSrc = 0
 		c.burstCounter = 0
-		c.burstPunch(c.punchSrc, true)
+		c.burstPunch(c.burstHitSrc, true)
 	}, burstDoT1Hitmark)
 
 	c.Core.QueueAttack(
@@ -87,7 +88,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
+func (c *char) burstPunch(src int, auto bool) action.ActionInfo {
 	hitmark := punchSlowHitmark
 	if !auto {
 		hitmark = punchHitmarks[c.burstCounter]
@@ -107,13 +108,13 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 	}
 
 	c.Core.Tasks.Add(func() {
-		if c.punchSrc != src {
+		if c.burstHitSrc != src {
 			return
 		}
 		if c.Core.Player.Active() != c.Index {
 			return
 		}
-		if burstIsJumpCancelled {
+		if burstIsJumpCancelled { //prevent punches if you jump cancel burst
 			return
 		}
 		c.Core.QueueAttack(
@@ -125,15 +126,15 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 			c.c6cb(),
 		)
 		if !c.StatusIsActive(burstKey) {
-			c.punchSrc = true
-			c.AddStatus(burstKey, kickHitmark, false)
-			c.burstKick(c.punchSrc)
+			c.burstHitSrc++
+			c.AddStatus(kickKey, kickHitmark, false)
+			c.burstKick(c.burstHitSrc)
 
 			return
 		}
 		c.burstCounter++
-		c.punchSrc = true
-		c.burstPunch(c.punchSrc, true)
+		c.burstHitSrc++
+		c.burstPunch(c.burstHitSrc, true)
 
 	}, hitmark)
 	if auto {
@@ -152,7 +153,7 @@ func (c *char) burstPunch(src bool, auto bool) action.ActionInfo {
 	}
 }
 
-func (c *char) burstKick(src bool) action.ActionInfo {
+func (c *char) burstKick(src int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Incineration Drive",
@@ -167,7 +168,7 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 	}
 
 	c.Core.Tasks.Add(func() {
-		if src != c.punchSrc { //prevents duplicates
+		if src != c.burstHitSrc { //prevents duplicates
 			return
 		}
 		if c.Core.Player.Active() != c.Index {
@@ -195,12 +196,13 @@ func (c *char) burstKick(src bool) action.ActionInfo {
 
 func (c *char) UseBurstAction() *action.ActionInfo {
 	var out action.ActionInfo
-	c.punchSrc = false
-	if c.burstCast+240 > c.Core.F && c.StatusIsActive(burstKey) {
-		out = c.burstPunch(c.punchSrc, false)
+	c.burstHitSrc++
+	if c.StatusIsActive(kickKey) {
+		out = c.burstKick(c.burstHitSrc)
 		return &out
-	} else if c.StatusIsActive(burstKey) {
-		out = c.burstKick(c.punchSrc)
+	}
+	if c.StatusIsActive(burstKey) {
+		out = c.burstPunch(c.burstHitSrc, false)
 		return &out
 	}
 	return nil
