@@ -230,27 +230,27 @@
     "weapon_class": "polearm"
   },
   "razor": {
-    "key": "razor",
+    "rarity": 4,
     "element": "electro",
     "weapon_class": "claymore"
   },
   "rosaria": {
-    "key": "rosaria",
+    "rarity": 4,
     "element": "cryo",
     "weapon_class": "polearm"
   },
   "sara": {
-    "key": "sara",
+    "rarity": 4,
     "element": "electro",
     "weapon_class": "bow"
   },
   "sayu": {
-    "key": "sayu",
+    "rarity": 4,
     "element": "anemo",
     "weapon_class": "claymore"
   },
   "shenhe": {
-    "key": "shenhe",
+    "rarity": 5,
     "element": "cryo",
     "weapon_class": "polearm"
   },
@@ -260,17 +260,17 @@
     "weapon_class": "catalyst"
   },
   "tartaglia": {
-    "key": "tartaglia",
+    "rarity": 4,
     "element": "hydro",
     "weapon_class": "bow"
   },
   "thoma": {
-    "key": "thoma",
+    "rarity": 4,
     "element": "pyro",
     "weapon_class": "polearm"
   },
   "tighnari": {
-    "key": "tighnari",
+    "rarity": 4,
     "element": "dendro",
     "weapon_class": "bow"
   },
@@ -295,7 +295,7 @@
     "weapon_class": "sword"
   },
   "venti": {
-    "key": "venti",
+    "rarity": 5,
     "element": "anemo",
     "weapon_class": "bow"
   },
@@ -305,68 +305,67 @@
     "rarity": 5
   },
   "xiangling": {
-    "key": "xiangling",
+    "rarity": 4,
     "element": "pyro",
     "weapon_class": "polearm"
   },
   "xiao": {
-    "key": "xiao",
+    "rarity": 5,
     "element": "anemo",
     "weapon_class": "polearm"
   },
   "xingqiu": {
-    "key": "xingqiu",
+    "rarity": 4,
     "element": "hydro",
     "weapon_class": "sword"
   },
   "xinyan": {
-    "key": "xinyan",
+    "rarity": 4,
     "element": "pyro",
     "weapon_class": "claymore"
   },
   "yaemiko": {
-    "key": "yaemiko",
+    "rarity": 5,
     "element": "electro",
     "weapon_class": "catalyst"
   },
   "yanfei": {
-    "key": "yanfei",
+    "rarity": 4,
     "element": "pyro",
     "weapon_class": "catalyst"
   },
   "yaoyao": {
-    "key": "yaoyao",
+    "rarity": 4,
     "element": "dendro",
-    "weapon_class": "polearm",
-    "rarity": 4
+    "weapon_class": "polearm"
   },
   "yelan": {
-    "key": "yelan",
+    "rarity": 4,
     "element": "hydro",
     "weapon_class": "bow"
   },
   "yoimiya": {
-    "key": "yoimiya",
+    "rarity": 5,
     "element": "pyro",
     "weapon_class": "bow"
   },
   "yunjin": {
-    "key": "yunjin",
+    "rarity": 4,
     "element": "geo",
     "weapon_class": "polearm"
   },
   "zhongli": {
-    "key": "zhongli",
+    "rarity": 5,
     "element": "geo",
     "weapon_class": "polearm"
   },
   "dehya": {
-    "key": "dehya",
+    "rarity": 5,
     "element": "pyro",
     "weapon_class": "claymore"
   },
   "mika": {
-    "key": "mika",
+    "rarity": 4,
     "element": "cryo",
     "weapon_class": "polearm"
   }
