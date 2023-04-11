@@ -140,6 +140,7 @@ export const weapons: IWeapon[] = [
   'staffofthescarletsands',
   'lightoffoliarincision',
   'keyofkhajnisut',
+  'beaconofthereedsea',
 ];
 
 export type IWeapon = string;

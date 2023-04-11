@@ -24,6 +24,11 @@
     "element": "geo",
     "weapon_class": "sword"
   },
+  "alhaitham": {
+    "element": "dendro",
+    "weapon_class": "sword",
+    "rarity": 5
+  },
   "aloy": {
     "rarity": 5,
     "element": "cryo",
@@ -199,31 +204,89 @@
     "element": "geo",
     "weapon_class": "sword"
   },
-
-  "alhaitham": {
-    "element": "dendro",
-    "weapon_class": "sword",
-    "rarity": 5
+  "mona": {
+    "key": "mona",
+    "element": "hydro",
+    "weapon_class": "catalyst"
   },
-  "wanderer": {
-    "element": "anemo",
-    "weapon_class": "catalyst",
-    "rarity": 5
+  "ningguang": {
+    "key": "ningguang",
+    "element": "geo",
+    "weapon_class": "catalyst"
   },
-  "yaoyao": {
-    "key": "yaoyao",
-    "element": "dendro",
-    "weapon_class": "polearm",
-    "rarity": 4
+  "noelle": {
+    "key": "noelle",
+    "element": "geo",
+    "weapon_class": "claymore"
   },
-  "travelerelectro": {
-    "rarity": 5,
-    "element": "electro",
+  "qiqi": {
+    "key": "qiqi",
+    "element": "cryo",
     "weapon_class": "sword"
+  },
+  "raiden": {
+    "key": "raiden",
+    "element": "electro",
+    "weapon_class": "polearm"
+  },
+  "razor": {
+    "key": "razor",
+    "element": "electro",
+    "weapon_class": "claymore"
+  },
+  "rosaria": {
+    "key": "rosaria",
+    "element": "cryo",
+    "weapon_class": "polearm"
+  },
+  "sara": {
+    "key": "sara",
+    "element": "electro",
+    "weapon_class": "bow"
+  },
+  "sayu": {
+    "key": "sayu",
+    "element": "anemo",
+    "weapon_class": "claymore"
+  },
+  "shenhe": {
+    "key": "shenhe",
+    "element": "cryo",
+    "weapon_class": "polearm"
+  },
+  "sucrose": {
+    "rarity": 4,
+    "element": "anemo",
+    "weapon_class": "catalyst"
+  },
+  "tartaglia": {
+    "key": "tartaglia",
+    "element": "hydro",
+    "weapon_class": "bow"
+  },
+  "thoma": {
+    "key": "thoma",
+    "element": "pyro",
+    "weapon_class": "polearm"
+  },
+  "tighnari": {
+    "key": "tighnari",
+    "element": "dendro",
+    "weapon_class": "bow"
   },
   "traveleranemo": {
     "rarity": 5,
     "element": "anemo",
+    "weapon_class": "sword"
+  },
+  "travelerdendro": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "sword"
+  },
+  "travelerelectro": {
+    "rarity": 5,
+    "element": "electro",
     "weapon_class": "sword"
   },
   "travelergeo": {
@@ -231,9 +294,80 @@
     "element": "geo",
     "weapon_class": "sword"
   },
-  "travelerdendro": {
-    "rarity": 5,
-    "element": "dendro",
+  "venti": {
+    "key": "venti",
+    "element": "anemo",
+    "weapon_class": "bow"
+  },
+  "wanderer": {
+    "element": "anemo",
+    "weapon_class": "catalyst",
+    "rarity": 5
+  },
+  "xiangling": {
+    "key": "xiangling",
+    "element": "pyro",
+    "weapon_class": "polearm"
+  },
+  "xiao": {
+    "key": "xiao",
+    "element": "anemo",
+    "weapon_class": "polearm"
+  },
+  "xingqiu": {
+    "key": "xingqiu",
+    "element": "hydro",
     "weapon_class": "sword"
+  },
+  "xinyan": {
+    "key": "xinyan",
+    "element": "pyro",
+    "weapon_class": "claymore"
+  },
+  "yaemiko": {
+    "key": "yaemiko",
+    "element": "electro",
+    "weapon_class": "catalyst"
+  },
+  "yanfei": {
+    "key": "yanfei",
+    "element": "pyro",
+    "weapon_class": "catalyst"
+  },
+  "yaoyao": {
+    "key": "yaoyao",
+    "element": "dendro",
+    "weapon_class": "polearm",
+    "rarity": 4
+  },
+  "yelan": {
+    "key": "yelan",
+    "element": "hydro",
+    "weapon_class": "bow"
+  },
+  "yoimiya": {
+    "key": "yoimiya",
+    "element": "pyro",
+    "weapon_class": "bow"
+  },
+  "yunjin": {
+    "key": "yunjin",
+    "element": "geo",
+    "weapon_class": "polearm"
+  },
+  "zhongli": {
+    "key": "zhongli",
+    "element": "geo",
+    "weapon_class": "polearm"
+  },
+  "dehya": {
+    "key": "dehya",
+    "element": "pyro",
+    "weapon_class": "claymore"
+  },
+  "mika": {
+    "key": "mika",
+    "element": "cryo",
+    "weapon_class": "polearm"
   }
 }
