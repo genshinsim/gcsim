@@ -135,19 +135,19 @@ type WeaponExcel struct {
 	// DestroyReturnMaterial      []int32         `json:"destroyReturnMaterial"`
 	// DestroyReturnMaterialCount []int32         `json:"destroyReturnMaterialCount"`
 	ID              int32 `json:"id"`
-	NameTextMapHash int32 `json:"nameTextMapHash"`
+	NameTextMapHash int64 `json:"nameTextMapHash"`
 	// DescTextMapHash            int32         `json:"descTextMapHash"`
 	Icon     string `json:"icon"`
 	ItemType string `json:"itemType"`
 	// Weight                     int32           `json:"weight"`
-	Rank int32 `json:"rank"`
+	// Rank int32 `json:"rank"`
 	// GadgetID                   int32           `json:"gadgetId"`
 }
 
 type WeaponCurve struct {
 }
 
-type WeaponPromoteConfig struct {
+type WeaponPromote struct {
 	WeaponPromoteID int32 `json:"weaponPromoteId"`
 	// CostItems       []struct {
 	// } `json:"costItems"`

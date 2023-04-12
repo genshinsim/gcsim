@@ -44,19 +44,21 @@ message AvatarSkillsData {
 
 message WeaponData {
   int32 id = 1 [ json_name = "id" ];
-  QualityType rarity = 2 [ json_name = "rarity" ];
+  int32 rarity = 2 [ json_name = "rarity" ]; //for whatever reason weapon rarity is a number
   WeaponClass weapon_class = 3 [ json_name = "weapon_class" ];
   string image_name = 4 [ json_name = "image_name" ];
   WeaponStatsData base_stats = 5 [ json_name = "base_stats" ];
 }
 
 message WeaponStatsData {
-  double base_atk = 1 [ json_name = "base_atk" ];
-  double base_specialized = 2 [ json_name = "base_specialized" ];
-  AvatarCurveType atk_curve = 3 [ json_name = "atk_curve" ];
-  AvatarCurveType specialized_curve = 4 [ json_name = "specialized_curve" ];
-  StatType specialized = 5 [ json_name = "specialized" ];
+  repeated WeaponProp base_props = 1 [ json_name = "base_props"];
   repeated PromotionData promo_data = 6 [ json_name = "promo_data" ];
+}
+
+message WeaponProp {
+  StatType prop_type = 1 [ json_name = "prop_type" ];
+  double initial_value = 2 [ json_name = "initial_value" ];
+  WeaponCurveType curve = 3 [json_name = "curve"];
 }
 
 message ArtifactData { int32 id = 1 [ json_name = "id" ]; }
