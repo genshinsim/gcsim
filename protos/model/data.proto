@@ -5,13 +5,11 @@ option go_package = "github.com/genshinsim/gcsim/pkg/model";
 import "protos/model/enums.proto";
 
 message AvatarDataMap {
-  map<int64, AvatarData> data = 1 [ json_name = "data" ];
+  map<string, AvatarData> data = 1 [ json_name = "data" ];
 }
 
-message AvatarKeyMap { map<string, int64> data = 1 [ json_name = "data" ]; }
-
 message AvatarData {
-  int64 id = 1 [ json_name = "id" ];
+  int32 id = 1 [ json_name = "id" ];
   string key = 2 [ json_name = "key" ];
   QualityType rarity = 3 [ json_name = "rarity" ];
   BodyType body = 4 [ json_name = "body" ];
@@ -37,15 +35,15 @@ message AvatarStatsData {
 }
 
 message AvatarSkillsData {
-  int64 skill = 1 [ json_name = "skill" ];
-  int64 burst = 2 [ json_name = "burst" ];
-  int64 attack = 3 [ json_name = "attack" ];
+  int32 skill = 1 [ json_name = "skill" ];
+  int32 burst = 2 [ json_name = "burst" ];
+  int32 attack = 3 [ json_name = "attack" ];
   double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
 }
 
 message WeaponData {
-  int64 id = 1 [ json_name = "id" ];
-  int64 rarity = 2 [ json_name = "rarity" ];
+  int32 id = 1 [ json_name = "id" ];
+  QualityType rarity = 2 [ json_name = "rarity" ];
   WeaponClass weapon_class = 3 [ json_name = "weapon_class" ];
   string image_name = 4 [ json_name = "image_name" ];
   WeaponStatsData base_stats = 5 [ json_name = "base_stats" ];
@@ -60,10 +58,10 @@ message WeaponStatsData {
   repeated PromotionData promo_data = 6 [ json_name = "promo_data" ];
 }
 
-message ArtifactData { int64 id = 1 [ json_name = "id" ]; }
+message ArtifactData { int32 id = 1 [ json_name = "id" ]; }
 
 message PromotionData {
-  int64 max_level = 1 [ json_name = "max_level" ];
+  int32 max_level = 1 [ json_name = "max_level" ];
   repeated PromotionAddProp add_props = 2 [ json_name = "add_props" ];
 }
 

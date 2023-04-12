@@ -18,11 +18,11 @@ Avatar data is found in AvatarExcelConfigData.json
 **/
 
 type DataSource struct {
-	avatarExcel map[int64]dm.AvatarExcel
-	skillDepot  map[int64]dm.AvatarSkillDepot
-	skillExcel  map[int64]dm.AvatarSkillExcel
-	fetterInfo  map[int64]dm.AvatarFetterInfo
-	promoteData map[int64][]dm.AvatarPromote
+	avatarExcel map[int32]dm.AvatarExcel
+	skillDepot  map[int32]dm.AvatarSkillDepot
+	skillExcel  map[int32]dm.AvatarSkillExcel
+	fetterInfo  map[int32]dm.AvatarFetterInfo
+	promoteData map[int32][]dm.AvatarPromote
 }
 
 func NewDataSource(root string) (*DataSource, error) {
@@ -52,17 +52,17 @@ func NewDataSource(root string) (*DataSource, error) {
 	return a, nil
 }
 
-func (a *DataSource) GetAvatarData(id int64) (*model.AvatarData, error) {
+func (a *DataSource) GetAvatarData(id int32) (*model.AvatarData, error) {
 	return a.parseChar(id)
 }
 
-func (a *DataSource) parseChar(id int64) (*model.AvatarData, error) {
+func (a *DataSource) parseChar(id int32) (*model.AvatarData, error) {
 	var err error
 	c := &model.AvatarData{
 		SkillDetails: &model.AvatarSkillsData{},
 		Stats:        &model.AvatarStatsData{},
 	}
-	c.Id = int64(id)
+	c.Id = int32(id)
 	err = a.parseBodyType(c, err)
 	err = a.parseRarity(c, err)
 	err = a.parseCharAssociation(c, err)

@@ -35,13 +35,13 @@ func load(path string, res any) error {
 	return nil
 }
 
-func loadAvatarExcel(path string) (map[int64]dm.AvatarExcel, error) {
+func loadAvatarExcel(path string) (map[int32]dm.AvatarExcel, error) {
 	var res []dm.AvatarExcel
 	err := load(path, &res)
 	if err != nil {
 		return nil, err
 	}
-	data := make(map[int64]dm.AvatarExcel)
+	data := make(map[int32]dm.AvatarExcel)
 	for _, v := range res {
 		//mhy can break this...
 		if _, ok := data[v.ID]; ok {
@@ -52,13 +52,13 @@ func loadAvatarExcel(path string) (map[int64]dm.AvatarExcel, error) {
 	return data, nil
 }
 
-func loadAvatarSkillDepot(path string) (map[int64]dm.AvatarSkillDepot, error) {
+func loadAvatarSkillDepot(path string) (map[int32]dm.AvatarSkillDepot, error) {
 	var res []dm.AvatarSkillDepot
 	err := load(path, &res)
 	if err != nil {
 		return nil, err
 	}
-	data := make(map[int64]dm.AvatarSkillDepot)
+	data := make(map[int32]dm.AvatarSkillDepot)
 	for _, v := range res {
 		//mhy can break this...
 		if _, ok := data[v.ID]; ok {
@@ -69,13 +69,13 @@ func loadAvatarSkillDepot(path string) (map[int64]dm.AvatarSkillDepot, error) {
 	return data, nil
 }
 
-func loadAvatarSkillExcel(path string) (map[int64]dm.AvatarSkillExcel, error) {
+func loadAvatarSkillExcel(path string) (map[int32]dm.AvatarSkillExcel, error) {
 	var res []dm.AvatarSkillExcel
 	err := load(path, &res)
 	if err != nil {
 		return nil, err
 	}
-	data := make(map[int64]dm.AvatarSkillExcel)
+	data := make(map[int32]dm.AvatarSkillExcel)
 	for _, v := range res {
 		//mhy can break this...
 		if _, ok := data[v.ID]; ok {
@@ -86,13 +86,13 @@ func loadAvatarSkillExcel(path string) (map[int64]dm.AvatarSkillExcel, error) {
 	return data, nil
 }
 
-func loadAvatarFetterInfo(path string) (map[int64]dm.AvatarFetterInfo, error) {
+func loadAvatarFetterInfo(path string) (map[int32]dm.AvatarFetterInfo, error) {
 	var res []dm.AvatarFetterInfo
 	err := load(path, &res)
 	if err != nil {
 		return nil, err
 	}
-	data := make(map[int64]dm.AvatarFetterInfo)
+	data := make(map[int32]dm.AvatarFetterInfo)
 	for _, v := range res {
 		//mhy can break this...
 		if _, ok := data[v.AvatarId]; ok {
@@ -103,13 +103,13 @@ func loadAvatarFetterInfo(path string) (map[int64]dm.AvatarFetterInfo, error) {
 	return data, nil
 }
 
-func loadAvatarPromoteData(path string) (map[int64][]dm.AvatarPromote, error) {
+func loadAvatarPromoteData(path string) (map[int32][]dm.AvatarPromote, error) {
 	var res []dm.AvatarPromote
 	err := load(path, &res)
 	if err != nil {
 		return nil, err
 	}
-	data := make(map[int64][]dm.AvatarPromote)
+	data := make(map[int32][]dm.AvatarPromote)
 	for _, v := range res {
 		data[v.AvatarPromoteID] = append(data[v.AvatarPromoteID], v)
 	}

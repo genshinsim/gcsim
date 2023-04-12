@@ -15,7 +15,7 @@ func TestParseCharacter(t *testing.T) {
 	}
 
 	//needs to be typed so the comparison works
-	const id int64 = 10000002 //ayaka
+	const id int32 = 10000002 //ayaka
 
 	d, err := a.parseChar(id)
 	if err != nil {
@@ -33,9 +33,9 @@ func TestParseCharacter(t *testing.T) {
 	expect(t, "element", model.Element_Ice, d.Element)
 	expect(t, "weapon class", model.WeaponClass_WEAPON_SWORD_ONE_HAND, d.WeaponClass)
 	expect(t, "icon", string("UI_AvatarIcon_Ayaka"), d.IconName)
-	expect(t, "burst id", int64(10019), d.GetSkillDetails().GetBurst()) //ayaka burst is 10019
-	expect(t, "attack id", int64(10024), d.GetSkillDetails().GetAttack())
-	expect(t, "skill id", int64(10018), d.GetSkillDetails().GetSkill())
+	expect(t, "burst id", int32(10019), d.GetSkillDetails().GetBurst()) //ayaka burst is 10019
+	expect(t, "attack id", int32(10024), d.GetSkillDetails().GetAttack())
+	expect(t, "skill id", int32(10018), d.GetSkillDetails().GetSkill())
 	expectTol(t, "burst energy cost", float64(80), d.GetSkillDetails().GetBurstEnergyCost(), 0.000000001)
 
 	//stat block

@@ -9,8 +9,8 @@ import (
 
 type Config struct {
 	PackageName   string   `yaml:"package_name,omitempty"`
-	GenshinID     int64    `yaml:"genshin_id,omitempty"`
-	TravelerSubID int64    `yaml:"traveler_sub_id,omitempty"`
+	GenshinID     int32    `yaml:"genshin_id,omitempty"`
+	TravelerSubID int32    `yaml:"traveler_sub_id,omitempty"`
 	Key           string   `yaml:"key,omitempty"`
 	Shortcuts     []string `yaml:"shortcuts,omitempty"`
 
@@ -22,7 +22,7 @@ type Generator struct {
 	GeneratorConfig
 	src   *avatar.DataSource
 	chars []Config
-	data  map[int64]*model.AvatarData
+	data  map[int32]*model.AvatarData
 }
 
 type GeneratorConfig struct {
@@ -33,7 +33,7 @@ type GeneratorConfig struct {
 func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	g := &Generator{
 		GeneratorConfig: cfg,
-		data:            make(map[int64]*model.AvatarData),
+		data:            make(map[int32]*model.AvatarData),
 	}
 
 	src, err := avatar.NewDataSource(g.Excels)
