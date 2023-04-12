@@ -205,27 +205,37 @@
     "weapon_class": "sword"
   },
   "mona": {
-    "key": "mona",
+    "rarity": "5",
     "element": "hydro",
     "weapon_class": "catalyst"
   },
   "ningguang": {
-    "key": "ningguang",
+    "rarity": "4",
     "element": "geo",
     "weapon_class": "catalyst"
   },
+  "nilou": {
+    "rarity": "5",
+    "element": "hydro",
+    "weapon_class": "sword"
+  },
+  "nahida": {
+   "rarity": "5",
+    "element": "dendro",
+    "weapon_class": "catalyst"
+  },
   "noelle": {
-    "key": "noelle",
+    "rarity": "4",
     "element": "geo",
     "weapon_class": "claymore"
   },
   "qiqi": {
-    "key": "qiqi",
+    "rarity": "5",
     "element": "cryo",
     "weapon_class": "sword"
   },
   "raiden": {
-    "key": "raiden",
+    "rarity": "5",
     "element": "electro",
     "weapon_class": "polearm"
   },
