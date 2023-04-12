@@ -15,7 +15,7 @@ func TestParseCharacter(t *testing.T) {
 	}
 
 	//needs to be typed so the comparison works
-	const id int32 = 10000002 //ayaka
+	var id int32 = 10000002 //ayaka
 
 	d, err := a.parseChar(id, 0)
 	if err != nil {
@@ -60,6 +60,30 @@ func TestParseCharacter(t *testing.T) {
 			expectTol(t, fmt.Sprintf("promo data idx %v, value (idx %v)", i, j), x.Value, got.Value, 0.00001)
 		}
 	}
+
+	//make sure traveler is picking up correct skills
+	id = 10000007 //lumine
+
+	d, err = a.parseChar(id, 707)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if d == nil {
+		t.Fatalf("result from parse cannot be nil")
+	}
+
+	expect(t, "id", id, d.Id)
+	expect(t, "quality", model.QualityType_QUALITY_ORANGE, d.Rarity)
+	expect(t, "body type", model.BodyType_BODY_GIRL, d.Body)
+	expect(t, "region", model.ZoneType_ASSOC_TYPE_MAINACTOR, d.Region)
+	expect(t, "element", model.Element_Electric, d.Element)
+	expect(t, "weapon class", model.WeaponClass_WEAPON_SWORD_ONE_HAND, d.WeaponClass)
+	expect(t, "icon", string("UI_AvatarIcon_PlayerGirl"), d.IconName)
+	expect(t, "burst id", int32(10605), d.GetSkillDetails().GetBurst())
+	expect(t, "attack id", int32(100556), d.GetSkillDetails().GetAttack())
+	expect(t, "skill id", int32(10602), d.GetSkillDetails().GetSkill())
+	expectTol(t, "burst energy cost", float64(80), d.GetSkillDetails().GetBurstEnergyCost(), 0.000000001)
 
 }
 
