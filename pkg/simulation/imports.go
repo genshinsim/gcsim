@@ -13,7 +13,7 @@ import (
 	// _ "github.com/genshinsim/gcsim/pkg/stats/status"
 	// _ "github.com/genshinsim/gcsim/pkg/stats/swap"
 
-	//artifacts
+	// artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/berserker"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/blizzard"
@@ -38,6 +38,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/martialartist"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/noblesse"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/nymphsdream"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/oceanhuedclam"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"
@@ -50,7 +51,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/viridescent"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/wanderer"
 
-	//char
+	// char
 	_ "github.com/genshinsim/gcsim/internal/characters/albedo"
 	_ "github.com/genshinsim/gcsim/internal/characters/alhaitham"
 	_ "github.com/genshinsim/gcsim/internal/characters/aloy"
@@ -120,7 +121,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
 
-	//weapons
+	// weapons
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/amos"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/aqua"

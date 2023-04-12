@@ -57,6 +57,7 @@ var setNames = []string{
 	"maidenbeloved",
 	"martialartist",
 	"noblesseoblige",
+	"nymphsdream",
 	"oceanhuedclam",
 	"paleflame",
 	"prayersfordestiny",
@@ -104,6 +105,7 @@ const (
 	MaidenBeloved
 	MartialArtist
 	NoblesseOblige
+	NymphsDream
 	OceanHuedClam
 	PaleFlame
 	PrayersForDestiny
