@@ -3,6 +3,7 @@ package avatar
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/dm"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -52,11 +53,11 @@ func NewDataSource(root string) (*DataSource, error) {
 	return a, nil
 }
 
-func (a *DataSource) GetAvatarData(id int32) (*model.AvatarData, error) {
-	return a.parseChar(id)
+func (a *DataSource) GetAvatarData(id, sub int32) (*model.AvatarData, error) {
+	return a.parseChar(id, sub)
 }
 
-func (a *DataSource) parseChar(id int32) (*model.AvatarData, error) {
+func (a *DataSource) parseChar(id, sub int32) (*model.AvatarData, error) {
 	var err error
 	_, ok := a.avatarExcel[id]
 	if !ok {
@@ -67,6 +68,7 @@ func (a *DataSource) parseChar(id int32) (*model.AvatarData, error) {
 		Stats:        &model.AvatarStatsData{},
 	}
 	c.Id = id
+	c.SubId = sub
 	err = a.parseBodyType(c, err)
 	err = a.parseRarity(c, err)
 	err = a.parseCharAssociation(c, err)
@@ -122,7 +124,9 @@ func (a *DataSource) parseCharAssociation(c *model.AvatarData, err error) error 
 	}
 	c.Region = model.ZoneType(model.ZoneType_value[fd.AvatarAssocType])
 	if c.Region == model.ZoneType_INVALID_ZONE_TYPE {
-		return multierr.Append(err, fmt.Errorf("invalid region for char id %v: %v", c.Id, fd.AvatarAssocType))
+		//region does not have to be valid; just warn here
+		//traveler for example does not have a region
+		log.Printf("WARNING: invalid region for char id %v: %v\n", c.Id, fd.AvatarAssocType)
 	}
 	return err
 }
@@ -151,15 +155,20 @@ func (a *DataSource) parseIconName(c *model.AvatarData, err error) error {
 func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 	//steps:
 	// 1. find skill depot id
+	// 1a. if character has sub_id, use that for skill depot id instead
 	// 2. energySkill gives the burst id
 	// 3. the rest gives attack and talent + any extra skills (such as ayaka dash)
 	ad, ok := a.avatarExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in excel data", c.Id))
 	}
-	sd, ok := a.skillDepot[ad.SkillDepotID]
+	sid := ad.SkillDepotID
+	if c.SubId != 0 {
+		sid = c.SubId
+	}
+	sd, ok := a.skillDepot[sid]
 	if !ok {
-		return multierr.Append(err, fmt.Errorf("skill with id %v not found in skill depot data", c.Id))
+		return multierr.Append(err, fmt.Errorf("skill with id %v not found in skill depot data", sid))
 	}
 	se, ok := a.skillExcel[sd.EnergySkill]
 	if !ok {

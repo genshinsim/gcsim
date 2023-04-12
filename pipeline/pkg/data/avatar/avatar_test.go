@@ -17,7 +17,7 @@ func TestParseCharacter(t *testing.T) {
 	//needs to be typed so the comparison works
 	const id int32 = 10000002 //ayaka
 
-	d, err := a.parseChar(id)
+	d, err := a.parseChar(id, 0)
 	if err != nil {
 		t.Fatal(err)
 	}

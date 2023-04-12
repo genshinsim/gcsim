@@ -10,15 +10,16 @@ message AvatarDataMap {
 
 message AvatarData {
   int32 id = 1 [ json_name = "id" ];
-  string key = 2 [ json_name = "key" ];
-  QualityType rarity = 3 [ json_name = "rarity" ];
-  BodyType body = 4 [ json_name = "body" ];
-  ZoneType region = 5 [ json_name = "region" ];
-  Element element = 6 [ json_name = "element" ];
-  WeaponClass weapon_class = 7 [ json_name = "weapon_class" ];
-  string icon_name = 8 [ json_name = "icon_name" ];
-  AvatarStatsData stats = 9 [ json_name = "stats" ];
-  AvatarSkillsData skill_details = 10 [ json_name = "skill_details" ];
+  int32 sub_id = 2 [json_name = "sub_id"];
+  string key = 3 [ json_name = "key" ];
+  QualityType rarity = 4 [ json_name = "rarity" ];
+  BodyType body = 5 [ json_name = "body" ];
+  ZoneType region = 6 [ json_name = "region" ];
+  Element element = 7 [ json_name = "element" ];
+  WeaponClass weapon_class = 8 [ json_name = "weapon_class" ];
+  string icon_name = 9 [ json_name = "icon_name" ];
+  AvatarStatsData stats = 10 [ json_name = "stats" ];
+  AvatarSkillsData skill_details = 11 [ json_name = "skill_details" ];
 }
 
 message AvatarStatsData {

@@ -22,7 +22,7 @@ func (g *Generator) writeCharDataJSON(path string) error {
 	for _, v := range g.data {
 		//hide promodata from ui json; not needed
 		x := proto.Clone(v).(*model.AvatarData)
-		x.Stats.PromoData = nil
+		x.Stats = nil
 		data[v.Key] = x
 	}
 	m := &model.AvatarDataMap{
