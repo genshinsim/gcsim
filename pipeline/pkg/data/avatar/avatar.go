@@ -58,11 +58,15 @@ func (a *DataSource) GetAvatarData(id int32) (*model.AvatarData, error) {
 
 func (a *DataSource) parseChar(id int32) (*model.AvatarData, error) {
 	var err error
+	_, ok := a.avatarExcel[id]
+	if !ok {
+		return nil, fmt.Errorf("char with id %v not found", id)
+	}
 	c := &model.AvatarData{
 		SkillDetails: &model.AvatarSkillsData{},
 		Stats:        &model.AvatarStatsData{},
 	}
-	c.Id = int32(id)
+	c.Id = id
 	err = a.parseBodyType(c, err)
 	err = a.parseRarity(c, err)
 	err = a.parseCharAssociation(c, err)
@@ -118,7 +122,7 @@ func (a *DataSource) parseCharAssociation(c *model.AvatarData, err error) error 
 	}
 	c.Region = model.ZoneType(model.ZoneType_value[fd.AvatarAssocType])
 	if c.Region == model.ZoneType_INVALID_ZONE_TYPE {
-		return multierr.Append(err, errors.New("invalid region"))
+		return multierr.Append(err, fmt.Errorf("invalid region for char id %v: %v", c.Id, fd.AvatarAssocType))
 	}
 	return err
 }

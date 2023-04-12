@@ -2,6 +2,7 @@ package character
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/avatar"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -59,10 +60,12 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		}
 		char, err := src.GetAvatarData(v.GenshinID)
 		if err != nil {
-			return nil, err
+			log.Printf("Error loading %v data: %v; skipping\n", v.Key, err)
+			continue
 		}
 		char.Key = v.Key
 		g.data[v.GenshinID] = char
+		log.Printf("%v loaded ok\n", v.Key)
 	}
 
 	return g, nil

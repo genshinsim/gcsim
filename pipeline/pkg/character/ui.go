@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 func (g *Generator) DumpUIJSON(path string) error {
@@ -19,7 +20,10 @@ func (g *Generator) DumpUIJSON(path string) error {
 func (g *Generator) writeCharDataJSON(path string) error {
 	data := make(map[string]*model.AvatarData)
 	for _, v := range g.data {
-		data[v.Key] = v
+		//hide promodata from ui json; not needed
+		x := proto.Clone(v).(*model.AvatarData)
+		x.Stats.PromoData = nil
+		data[v.Key] = x
 	}
 	m := &model.AvatarDataMap{
 		Data: data,
