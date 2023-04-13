@@ -9,15 +9,8 @@ import (
 )
 
 func TestParseCharConfigs(t *testing.T) {
-	err := os.RemoveAll("./test")
-	if err != nil {
-		t.Fatal(err)
-	}
 	//write 2 config yaml to file, read it back
-	err = os.Mkdir("./test", 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	dir := t.TempDir()
 	r := []Config{
 		{
 			PackageName: "a",
@@ -27,7 +20,7 @@ func TestParseCharConfigs(t *testing.T) {
 		},
 	}
 	for _, v := range r {
-		err := os.Mkdir("./test/"+v.PackageName, 0755)
+		err := os.Mkdir(dir+"/"+v.PackageName, 0755)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -35,13 +28,13 @@ func TestParseCharConfigs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = os.WriteFile(fmt.Sprintf("./test/%v/config.yml", v.PackageName), data, 0644)
+		err = os.WriteFile(fmt.Sprintf("%v/%v/config.yml", dir, v.PackageName), data, 0644)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	cfgs, err := ParseWeaponConfig("./test")
+	cfgs, err := ParseWeaponConfig(dir)
 	if err != nil {
 		t.Errorf("error encountered parsing config: %v", err)
 		t.FailNow()
