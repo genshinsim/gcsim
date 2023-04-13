@@ -3,6 +3,7 @@ package model;
 option go_package="github.com/genshinsim/gcsim/pkg/model";
 
 import "protos/model/result.proto";
+import "protos/model/enums.proto";
 import "protos/model/sim.proto";
 import "google/protobuf/struct.proto";
 
@@ -19,14 +20,14 @@ message DBEntry {
     
 
     //indexing data
-    model.DescriptiveStats total_damage = 9 [json_name="total_damage"];
+    DescriptiveStats total_damage = 9 [json_name="total_damage"];
     repeated string char_names = 10 [json_name="char_names"];
     int32 target_count = 11 [json_name="target_count"];
     double mean_dps_per_target = 12 [json_name="mean_dps_per_target"];
 
     //detailed results
     repeated model.Character team = 13 [json_name="team"];
-    map<string, model.DescriptiveStats> dps_by_target = 14 [json_name="dps_by_target"];
+    map<string, DescriptiveStats> dps_by_target = 14 [json_name="dps_by_target"];
 
     //other stuff
     string description = 15 [json_name="description"];
@@ -62,14 +63,3 @@ message ComputeWork {
     int32 iterations = 4 [json_name="iterations"];
 }
 
-enum ComputeWorkSource {
-    InvalidWork = 0;
-    DBWork = 1;
-    SubmissionWork = 2;
-}
-
-enum DBTag {
-    DB_TAG_INVALID = 0;
-    DB_TAG_GCSIM = 1;
-    DB_TAG_TESTING = 2;
-}

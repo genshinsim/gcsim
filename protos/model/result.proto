@@ -3,6 +3,7 @@ package model;
 option go_package="github.com/genshinsim/gcsim/pkg/model";
 
 import "protos/model/sim.proto";
+import "protos/model/enums.proto";
 
 // IMPORTANT NOTE:
 // By default all proto3 fields have "no presence". If the value is equal to the default value

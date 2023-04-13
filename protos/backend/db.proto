@@ -4,6 +4,7 @@ option go_package="github.com/genshinsim/gcsim/backend/pkg/services/db";
 
 import "protos/model/db.proto";
 import "protos/model/result.proto";
+import "protos/model/enums.proto";
 
 service DBStore {
     //generic get for pulling from approved db
