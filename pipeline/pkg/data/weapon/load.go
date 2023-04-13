@@ -8,11 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/dm"
 )
 
-// const Weapons = require('../GenshinData/ExcelBinOutput/WeaponExcelConfigData.json');
-// const EquipAffix = require('../GenshinData/ExcelBinOutput/EquipAffixExcelConfigData.json');
-// const WeaponCurve = require('../GenshinData/ExcelBinOutput/WeaponCurveExcelConfigData.json');
-// const WeaponPromote = require('../GenshinData/ExcelBinOutput/WeaponPromoteExcelConfigData.json');
-
 // file names
 const (
 	WeaponExcelConfigData        = `WeaponExcelConfigData.json`
@@ -40,7 +35,7 @@ func loadWeaponExcel(path string) (map[int32]dm.WeaponExcel, error) {
 	}
 	data := make(map[int32]dm.WeaponExcel)
 	for _, v := range res {
-		//mhy can break this...
+		//sanity check in case mhy allows for duplicated ids in future
 		if _, ok := data[v.ID]; ok {
 			return nil, fmt.Errorf("unexpected duplicated id: %v", v.ID)
 		}
