@@ -42,17 +42,22 @@ message AvatarSkillsData {
   double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
 }
 
+message WeaponDataMap {
+  map<string, WeaponData> data = 1 [ json_name = "data" ];
+}
+
 message WeaponData {
   int32 id = 1 [ json_name = "id" ];
-  int32 rarity = 2 [ json_name = "rarity" ]; //for whatever reason weapon rarity is a number
-  WeaponClass weapon_class = 3 [ json_name = "weapon_class" ];
-  string image_name = 4 [ json_name = "image_name" ];
-  WeaponStatsData base_stats = 5 [ json_name = "base_stats" ];
+  string key = 2 [json_name = "key"];
+  int32 rarity = 3 [ json_name = "rarity" ]; //for whatever reason weapon rarity is a number
+  WeaponClass weapon_class = 4 [ json_name = "weapon_class" ];
+  string image_name = 5 [ json_name = "image_name" ];
+  WeaponStatsData base_stats = 6 [ json_name = "base_stats" ];
 }
 
 message WeaponStatsData {
   repeated WeaponProp base_props = 1 [ json_name = "base_props"];
-  repeated PromotionData promo_data = 6 [ json_name = "promo_data" ];
+  repeated PromotionData promo_data = 2 [ json_name = "promo_data" ];
 }
 
 message WeaponProp {

@@ -5,11 +5,13 @@ import (
 	"log"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/character"
+	"github.com/genshinsim/gcsim/pipeline/pkg/weapon"
 )
 
 type config struct {
 	//input data
 	charPath  string
+	weapPath  string
 	excelPath string
 
 	//output paths
@@ -19,6 +21,7 @@ type config struct {
 func main() {
 	var cfg config
 	flag.StringVar(&cfg.charPath, "char", "./internal/characters", "folder to look for character files")
+	flag.StringVar(&cfg.weapPath, "weap", "./internal/weapons", "folder to look for character files")
 	flag.StringVar(&cfg.excelPath, "excels", "./pipeline/data/ExcelBinOutput", "folder to look for excel data dump")
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
 	flag.Parse()
@@ -39,4 +42,18 @@ func main() {
 		panic(err)
 	}
 
+	log.Println("running pipeline for weapons...")
+	gw, err := weapon.NewGenerator(weapon.GeneratorConfig{
+		Root:   cfg.weapPath,
+		Excels: cfg.excelPath,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate character data for ui...")
+	err = gw.DumpUIJSON(cfg.uiOut)
+	if err != nil {
+		panic(err)
+	}
 }
