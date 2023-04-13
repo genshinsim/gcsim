@@ -3,6 +3,477 @@ import Long = require("long");
 /** Namespace model. */
 export namespace model {
 
+    /** Properties of an AvatarDataMap. */
+    interface IAvatarDataMap {
+
+        /** AvatarDataMap data */
+        data?: ({ [k: string]: model.IAvatarData }|null);
+    }
+
+    /** Represents an AvatarDataMap. */
+    class AvatarDataMap implements IAvatarDataMap {
+
+        /**
+         * Constructs a new AvatarDataMap.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarDataMap);
+
+        /** AvatarDataMap data. */
+        public data: { [k: string]: model.IAvatarData };
+
+        /**
+         * Gets the default type url for AvatarDataMap
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an AvatarData. */
+    interface IAvatarData {
+
+        /** AvatarData id */
+        id?: (number|null);
+
+        /** AvatarData sub_id */
+        sub_id?: (number|null);
+
+        /** AvatarData key */
+        key?: (string|null);
+
+        /** AvatarData rarity */
+        rarity?: (model.QualityType|null);
+
+        /** AvatarData body */
+        body?: (model.BodyType|null);
+
+        /** AvatarData region */
+        region?: (model.ZoneType|null);
+
+        /** AvatarData element */
+        element?: (model.Element|null);
+
+        /** AvatarData weapon_class */
+        weapon_class?: (model.WeaponClass|null);
+
+        /** AvatarData icon_name */
+        icon_name?: (string|null);
+
+        /** AvatarData stats */
+        stats?: (model.IAvatarStatsData|null);
+
+        /** AvatarData skill_details */
+        skill_details?: (model.IAvatarSkillsData|null);
+    }
+
+    /** Represents an AvatarData. */
+    class AvatarData implements IAvatarData {
+
+        /**
+         * Constructs a new AvatarData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarData);
+
+        /** AvatarData id. */
+        public id: number;
+
+        /** AvatarData sub_id. */
+        public sub_id: number;
+
+        /** AvatarData key. */
+        public key: string;
+
+        /** AvatarData rarity. */
+        public rarity: model.QualityType;
+
+        /** AvatarData body. */
+        public body: model.BodyType;
+
+        /** AvatarData region. */
+        public region: model.ZoneType;
+
+        /** AvatarData element. */
+        public element: model.Element;
+
+        /** AvatarData weapon_class. */
+        public weapon_class: model.WeaponClass;
+
+        /** AvatarData icon_name. */
+        public icon_name: string;
+
+        /** AvatarData stats. */
+        public stats?: (model.IAvatarStatsData|null);
+
+        /** AvatarData skill_details. */
+        public skill_details?: (model.IAvatarSkillsData|null);
+
+        /**
+         * Gets the default type url for AvatarData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an AvatarStatsData. */
+    interface IAvatarStatsData {
+
+        /** AvatarStatsData base_hp */
+        base_hp?: (number|null);
+
+        /** AvatarStatsData base_atk */
+        base_atk?: (number|null);
+
+        /** AvatarStatsData base_def */
+        base_def?: (number|null);
+
+        /** AvatarStatsData hp_curve */
+        hp_curve?: (model.AvatarCurveType|null);
+
+        /** AvatarStatsData atk_curve */
+        atk_curve?: (model.AvatarCurveType|null);
+
+        /** AvatarStatsData def_cruve */
+        def_cruve?: (model.AvatarCurveType|null);
+
+        /** AvatarStatsData promo_data */
+        promo_data?: (model.IPromotionData[]|null);
+    }
+
+    /** Represents an AvatarStatsData. */
+    class AvatarStatsData implements IAvatarStatsData {
+
+        /**
+         * Constructs a new AvatarStatsData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarStatsData);
+
+        /** AvatarStatsData base_hp. */
+        public base_hp: number;
+
+        /** AvatarStatsData base_atk. */
+        public base_atk: number;
+
+        /** AvatarStatsData base_def. */
+        public base_def: number;
+
+        /** AvatarStatsData hp_curve. */
+        public hp_curve: model.AvatarCurveType;
+
+        /** AvatarStatsData atk_curve. */
+        public atk_curve: model.AvatarCurveType;
+
+        /** AvatarStatsData def_cruve. */
+        public def_cruve: model.AvatarCurveType;
+
+        /** AvatarStatsData promo_data. */
+        public promo_data: model.IPromotionData[];
+
+        /**
+         * Gets the default type url for AvatarStatsData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an AvatarSkillsData. */
+    interface IAvatarSkillsData {
+
+        /** AvatarSkillsData skill */
+        skill?: (number|null);
+
+        /** AvatarSkillsData burst */
+        burst?: (number|null);
+
+        /** AvatarSkillsData attack */
+        attack?: (number|null);
+
+        /** AvatarSkillsData burst_energy_cost */
+        burst_energy_cost?: (number|null);
+    }
+
+    /** Represents an AvatarSkillsData. */
+    class AvatarSkillsData implements IAvatarSkillsData {
+
+        /**
+         * Constructs a new AvatarSkillsData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarSkillsData);
+
+        /** AvatarSkillsData skill. */
+        public skill: number;
+
+        /** AvatarSkillsData burst. */
+        public burst: number;
+
+        /** AvatarSkillsData attack. */
+        public attack: number;
+
+        /** AvatarSkillsData burst_energy_cost. */
+        public burst_energy_cost: number;
+
+        /**
+         * Gets the default type url for AvatarSkillsData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a WeaponDataMap. */
+    interface IWeaponDataMap {
+
+        /** WeaponDataMap data */
+        data?: ({ [k: string]: model.IWeaponData }|null);
+    }
+
+    /** Represents a WeaponDataMap. */
+    class WeaponDataMap implements IWeaponDataMap {
+
+        /**
+         * Constructs a new WeaponDataMap.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IWeaponDataMap);
+
+        /** WeaponDataMap data. */
+        public data: { [k: string]: model.IWeaponData };
+
+        /**
+         * Gets the default type url for WeaponDataMap
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a WeaponData. */
+    interface IWeaponData {
+
+        /** WeaponData id */
+        id?: (number|null);
+
+        /** WeaponData key */
+        key?: (string|null);
+
+        /** WeaponData rarity */
+        rarity?: (number|null);
+
+        /** WeaponData weapon_class */
+        weapon_class?: (model.WeaponClass|null);
+
+        /** WeaponData image_name */
+        image_name?: (string|null);
+
+        /** WeaponData base_stats */
+        base_stats?: (model.IWeaponStatsData|null);
+    }
+
+    /** Represents a WeaponData. */
+    class WeaponData implements IWeaponData {
+
+        /**
+         * Constructs a new WeaponData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IWeaponData);
+
+        /** WeaponData id. */
+        public id: number;
+
+        /** WeaponData key. */
+        public key: string;
+
+        /** WeaponData rarity. */
+        public rarity: number;
+
+        /** WeaponData weapon_class. */
+        public weapon_class: model.WeaponClass;
+
+        /** WeaponData image_name. */
+        public image_name: string;
+
+        /** WeaponData base_stats. */
+        public base_stats?: (model.IWeaponStatsData|null);
+
+        /**
+         * Gets the default type url for WeaponData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a WeaponStatsData. */
+    interface IWeaponStatsData {
+
+        /** WeaponStatsData base_props */
+        base_props?: (model.IWeaponProp[]|null);
+
+        /** WeaponStatsData promo_data */
+        promo_data?: (model.IPromotionData[]|null);
+    }
+
+    /** Represents a WeaponStatsData. */
+    class WeaponStatsData implements IWeaponStatsData {
+
+        /**
+         * Constructs a new WeaponStatsData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IWeaponStatsData);
+
+        /** WeaponStatsData base_props. */
+        public base_props: model.IWeaponProp[];
+
+        /** WeaponStatsData promo_data. */
+        public promo_data: model.IPromotionData[];
+
+        /**
+         * Gets the default type url for WeaponStatsData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a WeaponProp. */
+    interface IWeaponProp {
+
+        /** WeaponProp prop_type */
+        prop_type?: (model.StatType|null);
+
+        /** WeaponProp initial_value */
+        initial_value?: (number|null);
+
+        /** WeaponProp curve */
+        curve?: (model.WeaponCurveType|null);
+    }
+
+    /** Represents a WeaponProp. */
+    class WeaponProp implements IWeaponProp {
+
+        /**
+         * Constructs a new WeaponProp.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IWeaponProp);
+
+        /** WeaponProp prop_type. */
+        public prop_type: model.StatType;
+
+        /** WeaponProp initial_value. */
+        public initial_value: number;
+
+        /** WeaponProp curve. */
+        public curve: model.WeaponCurveType;
+
+        /**
+         * Gets the default type url for WeaponProp
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an ArtifactData. */
+    interface IArtifactData {
+
+        /** ArtifactData id */
+        id?: (number|null);
+    }
+
+    /** Represents an ArtifactData. */
+    class ArtifactData implements IArtifactData {
+
+        /**
+         * Constructs a new ArtifactData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IArtifactData);
+
+        /** ArtifactData id. */
+        public id: number;
+
+        /**
+         * Gets the default type url for ArtifactData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a PromotionData. */
+    interface IPromotionData {
+
+        /** PromotionData max_level */
+        max_level?: (number|null);
+
+        /** PromotionData add_props */
+        add_props?: (model.IPromotionAddProp[]|null);
+    }
+
+    /** Represents a PromotionData. */
+    class PromotionData implements IPromotionData {
+
+        /**
+         * Constructs a new PromotionData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IPromotionData);
+
+        /** PromotionData max_level. */
+        public max_level: number;
+
+        /** PromotionData add_props. */
+        public add_props: model.IPromotionAddProp[];
+
+        /**
+         * Gets the default type url for PromotionData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a PromotionAddProp. */
+    interface IPromotionAddProp {
+
+        /** PromotionAddProp prop_type */
+        prop_type?: (model.StatType|null);
+
+        /** PromotionAddProp value */
+        value?: (number|null);
+    }
+
+    /** Represents a PromotionAddProp. */
+    class PromotionAddProp implements IPromotionAddProp {
+
+        /**
+         * Constructs a new PromotionAddProp.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IPromotionAddProp);
+
+        /** PromotionAddProp prop_type. */
+        public prop_type: model.StatType;
+
+        /** PromotionAddProp value. */
+        public value: number;
+
+        /**
+         * Gets the default type url for PromotionAddProp
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a DBEntry. */
     interface IDBEntry {
 
@@ -304,6 +775,134 @@ export namespace model {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** AvatarCurveType enum. */
+    enum AvatarCurveType {
+        INVALID_AVATAR_CURVE = 0,
+        GROW_CURVE_HP_S4 = 1,
+        GROW_CURVE_ATTACK_S4 = 2,
+        GROW_CURVE_HP_S5 = 3,
+        GROW_CURVE_ATTACK_S5 = 4
+    }
+
+    /** QualityType enum. */
+    enum QualityType {
+        INVALID_QUALITY_TYPE = 0,
+        QUALITY_ORANGE_SP = 6,
+        QUALITY_ORANGE = 5,
+        QUALITY_PURPLE = 4
+    }
+
+    /** WeaponCurveType enum. */
+    enum WeaponCurveType {
+        INVALID_WEAPON_CURVE = 0,
+        GROW_CURVE_ATTACK_101 = 1,
+        GROW_CURVE_ATTACK_102 = 2,
+        GROW_CURVE_ATTACK_103 = 3,
+        GROW_CURVE_ATTACK_104 = 4,
+        GROW_CURVE_ATTACK_105 = 5,
+        GROW_CURVE_CRITICAL_101 = 6,
+        GROW_CURVE_ATTACK_201 = 7,
+        GROW_CURVE_ATTACK_202 = 8,
+        GROW_CURVE_ATTACK_203 = 9,
+        GROW_CURVE_ATTACK_204 = 10,
+        GROW_CURVE_ATTACK_205 = 11,
+        GROW_CURVE_CRITICAL_201 = 12,
+        GROW_CURVE_ATTACK_301 = 13,
+        GROW_CURVE_ATTACK_302 = 14,
+        GROW_CURVE_ATTACK_303 = 15,
+        GROW_CURVE_ATTACK_304 = 16,
+        GROW_CURVE_ATTACK_305 = 17,
+        GROW_CURVE_CRITICAL_301 = 18
+    }
+
+    /** WeaponClass enum. */
+    enum WeaponClass {
+        INVALID_WEAPON_CLASS = 0,
+        WEAPON_SWORD_ONE_HAND = 1,
+        WEAPON_CLAYMORE = 2,
+        WEAPON_POLE = 3,
+        WEAPON_BOW = 4,
+        WEAPON_CATALYST = 5
+    }
+
+    /** BodyType enum. */
+    enum BodyType {
+        INVALID_BODY_TYPE = 0,
+        BODY_UNKNOWN = 1,
+        BODY_BOY = 2,
+        BODY_GIRL = 3,
+        BODY_MALE = 4,
+        BODY_LADY = 5,
+        BODY_LOLI = 6
+    }
+
+    /** ZoneType enum. */
+    enum ZoneType {
+        INVALID_ZONE_TYPE = 0,
+        ASSOC_TYPE_UNKNOWN = 1,
+        ASSOC_TYPE_MONDSTADT = 2,
+        ASSOC_TYPE_LIYUE = 3,
+        ASSOC_TYPE_INAZUMA = 4,
+        ASSOC_TYPE_SUMERU = 5,
+        ASSOC_TYPE_FATUI = 6,
+        ASSOC_TYPE_RANGER = 7,
+        ASSOC_TYPE_MAINACTOR = 8
+    }
+
+    /** Element enum. */
+    enum Element {
+        INVALID_ELEMENT = 0,
+        Electric = 1,
+        Fire = 2,
+        Ice = 3,
+        Water = 4,
+        Grass = 5,
+        ELEMENT_QUICKEN = 6,
+        ELEMENT_FROZEN = 7,
+        Wind = 8,
+        Rock = 9,
+        ELEMENT_NONE = 10,
+        ELEMENT_PHYSICAL = 11,
+        ELEMENT_UNKNOWN = 12
+    }
+
+    /** StatType enum. */
+    enum StatType {
+        INVALID_STAT_TYPE = 0,
+        FIGHT_PROP_DEFENSE_PERCENT = 1,
+        FIGHT_PROP_DEFENSE = 2,
+        FIGHT_PROP_HP = 3,
+        FIGHT_PROP_HP_PERCENT = 4,
+        FIGHT_PROP_ATTACK = 5,
+        FIGHT_PROP_ATTACK_PERCENT = 6,
+        FIGHT_PROP_CHARGE_EFFICIENCY = 7,
+        FIGHT_PROP_ELEMENT_MASTERY = 8,
+        FIGHT_PROP_CRITICAL = 9,
+        FIGHT_PROP_CRITICAL_HURT = 10,
+        FIGHT_PROP_HEAL = 11,
+        FIGHT_PROP_FIRE_ADD_HURT = 12,
+        FIGHT_PROP_WATER_ADD_HURT = 13,
+        FIGHT_PROP_GRASS_ADD_HURT = 14,
+        FIGHT_PROP_ELEC_ADD_HURT = 15,
+        FIGHT_PROP_WIND_ADD_HURT = 16,
+        FIGHT_PROP_ICE_ADD_HURT = 17,
+        FIGHT_PROP_ROCK_ADD_HURT = 18,
+        FIGHT_PROP_PHYSICAL_ADD_HURT = 19,
+        FIGHT_PROP_SHIELD_COST_MINUS_RATIO_ADD_HURT = 20,
+        FIGHT_PROP_HEALED_ADD = 21,
+        FIGHT_PROP_BASE_HP = 22,
+        FIGHT_PROP_BASE_ATTACK = 23,
+        FIGHT_PROP_BASE_DEFENSE = 24,
+        FIGHT_PROP_MAX_HP = 25
+    }
+
+    /** SimMode enum. */
+    enum SimMode {
+        INVALID_SIM_MODE = 0,
+        DURATION_MODE = 1,
+        TTK_MODE = 2
     }
 
     /** ComputeWorkSource enum. */
@@ -1620,300 +2219,6 @@ export namespace model {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of an AvatarData. */
-    interface IAvatarData {
-
-        /** AvatarData rarity */
-        rarity?: (number|Long|null);
-
-        /** AvatarData body */
-        body?: (model.BodyType|null);
-
-        /** AvatarData region */
-        region?: (model.ZoneType|null);
-
-        /** AvatarData element */
-        element?: (model.Element|null);
-
-        /** AvatarData weapon_class */
-        weapon_class?: (model.WeaponClass|null);
-
-        /** AvatarData image_name */
-        image_name?: (string|null);
-
-        /** AvatarData base_stats */
-        base_stats?: (model.IAvatarStatsData|null);
-    }
-
-    /** Represents an AvatarData. */
-    class AvatarData implements IAvatarData {
-
-        /**
-         * Constructs a new AvatarData.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: model.IAvatarData);
-
-        /** AvatarData rarity. */
-        public rarity: (number|Long);
-
-        /** AvatarData body. */
-        public body: model.BodyType;
-
-        /** AvatarData region. */
-        public region: model.ZoneType;
-
-        /** AvatarData element. */
-        public element: model.Element;
-
-        /** AvatarData weapon_class. */
-        public weapon_class: model.WeaponClass;
-
-        /** AvatarData image_name. */
-        public image_name: string;
-
-        /** AvatarData base_stats. */
-        public base_stats?: (model.IAvatarStatsData|null);
-
-        /**
-         * Gets the default type url for AvatarData
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of an AvatarStatsData. */
-    interface IAvatarStatsData {
-
-        /** AvatarStatsData base_hp */
-        base_hp?: (number|null);
-
-        /** AvatarStatsData base_atk */
-        base_atk?: (number|null);
-
-        /** AvatarStatsData base_def */
-        base_def?: (number|null);
-
-        /** AvatarStatsData hp_curve */
-        hp_curve?: (model.AvatarCurveType|null);
-
-        /** AvatarStatsData atk_curve */
-        atk_curve?: (model.AvatarCurveType|null);
-
-        /** AvatarStatsData def_cruve */
-        def_cruve?: (model.AvatarCurveType|null);
-
-        /** AvatarStatsData specialized */
-        specialized?: (model.StatType|null);
-
-        /** AvatarStatsData promo_data */
-        promo_data?: (model.IPromotionData[]|null);
-    }
-
-    /** Represents an AvatarStatsData. */
-    class AvatarStatsData implements IAvatarStatsData {
-
-        /**
-         * Constructs a new AvatarStatsData.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: model.IAvatarStatsData);
-
-        /** AvatarStatsData base_hp. */
-        public base_hp: number;
-
-        /** AvatarStatsData base_atk. */
-        public base_atk: number;
-
-        /** AvatarStatsData base_def. */
-        public base_def: number;
-
-        /** AvatarStatsData hp_curve. */
-        public hp_curve: model.AvatarCurveType;
-
-        /** AvatarStatsData atk_curve. */
-        public atk_curve: model.AvatarCurveType;
-
-        /** AvatarStatsData def_cruve. */
-        public def_cruve: model.AvatarCurveType;
-
-        /** AvatarStatsData specialized. */
-        public specialized: model.StatType;
-
-        /** AvatarStatsData promo_data. */
-        public promo_data: model.IPromotionData[];
-
-        /**
-         * Gets the default type url for AvatarStatsData
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** Properties of a PromotionData. */
-    interface IPromotionData {
-
-        /** PromotionData max_level */
-        max_level?: (number|Long|null);
-
-        /** PromotionData hp */
-        hp?: (number|null);
-
-        /** PromotionData atk */
-        atk?: (number|null);
-
-        /** PromotionData def */
-        def?: (number|null);
-
-        /** PromotionData special */
-        special?: (number|null);
-    }
-
-    /** Represents a PromotionData. */
-    class PromotionData implements IPromotionData {
-
-        /**
-         * Constructs a new PromotionData.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: model.IPromotionData);
-
-        /** PromotionData max_level. */
-        public max_level: (number|Long);
-
-        /** PromotionData hp. */
-        public hp: number;
-
-        /** PromotionData atk. */
-        public atk: number;
-
-        /** PromotionData def. */
-        public def: number;
-
-        /** PromotionData special. */
-        public special: number;
-
-        /**
-         * Gets the default type url for PromotionData
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
-    /** AvatarCurveType enum. */
-    enum AvatarCurveType {
-        GROW_CURVE_HP_S4 = 0,
-        GROW_CURVE_ATTACK_S4 = 1,
-        GROW_CURVE_HP_S5 = 2,
-        GROW_CURVE_ATTACK_S5 = 3
-    }
-
-    /** WeaponCurveType enum. */
-    enum WeaponCurveType {
-        GROW_CURVE_ATTACK_101 = 0,
-        GROW_CURVE_ATTACK_102 = 1,
-        GROW_CURVE_ATTACK_103 = 2,
-        GROW_CURVE_ATTACK_104 = 3,
-        GROW_CURVE_ATTACK_105 = 4,
-        GROW_CURVE_CRITICAL_101 = 5,
-        GROW_CURVE_ATTACK_201 = 6,
-        GROW_CURVE_ATTACK_202 = 7,
-        GROW_CURVE_ATTACK_203 = 8,
-        GROW_CURVE_ATTACK_204 = 9,
-        GROW_CURVE_ATTACK_205 = 10,
-        GROW_CURVE_CRITICAL_201 = 11,
-        GROW_CURVE_ATTACK_301 = 12,
-        GROW_CURVE_ATTACK_302 = 13,
-        GROW_CURVE_ATTACK_303 = 14,
-        GROW_CURVE_ATTACK_304 = 15,
-        GROW_CURVE_ATTACK_305 = 16,
-        GROW_CURVE_CRITICAL_301 = 17
-    }
-
-    /** WeaponClass enum. */
-    enum WeaponClass {
-        WEAPON_SWORD_ONE_HAND = 0,
-        WEAPON_CLAYMORE = 1,
-        WEAPON_POLE = 2,
-        WEAPON_BOW = 3,
-        WEAPON_CATALYST = 4
-    }
-
-    /** BodyType enum. */
-    enum BodyType {
-        BODY_UNKNOWN = 0,
-        BODY_BOY = 1,
-        BODY_GIRL = 2,
-        BODY_MALE = 3,
-        BODY_LADY = 4,
-        BODY_LOLI = 5
-    }
-
-    /** ZoneType enum. */
-    enum ZoneType {
-        ASSOC_TYPE_UNKNOWN = 0,
-        ASSOC_TYPE_MONDSTADT = 1,
-        ASSOC_TYPE_LIYUE = 2,
-        ASSOC_TYPE_INAZUMA = 3,
-        ASSOC_TYPE_SUMERU = 4,
-        ASSOC_TYPE_FATUI = 5
-    }
-
-    /** Element enum. */
-    enum Element {
-        Electric = 0,
-        Fire = 1,
-        Ice = 2,
-        Water = 3,
-        Grass = 4,
-        ELEMENT_QUICKEN = 5,
-        ELEMENT_FROZEN = 6,
-        Wind = 7,
-        Rock = 8,
-        ELEMENT_NONE = 9,
-        ELEMENT_PHYSICAL = 10,
-        ELEMENT_UNKNOWN = 11
-    }
-
-    /** StatType enum. */
-    enum StatType {
-        UNSPECIFIED = 0,
-        FIGHT_PROP_DEFENSE_PERCENT = 1,
-        FIGHT_PROP_DEFENSE = 2,
-        FIGHT_PROP_HP = 3,
-        FIGHT_PROP_HP_PERCENT = 4,
-        FIGHT_PROP_ATTACK = 5,
-        FIGHT_PROP_ATTACK_PERCENT = 6,
-        FIGHT_PROP_CHARGE_EFFICIENCY = 7,
-        FIGHT_PROP_ELEMENT_MASTERY = 8,
-        FIGHT_PROP_CRITICAL = 9,
-        FIGHT_PROP_CRITICAL_HURT = 10,
-        FIGHT_PROP_HEAL = 11,
-        FIGHT_PROP_FIRE_ADD_HURT = 12,
-        FIGHT_PROP_WATER_ADD_HURT = 13,
-        FIGHT_PROP_GRASS_ADD_HURT = 14,
-        FIGHT_PROP_ELEC_ADD_HURT = 15,
-        FIGHT_PROP_WIND_ADD_HURT = 16,
-        FIGHT_PROP_ICE_ADD_HURT = 17,
-        FIGHT_PROP_ROCK_ADD_HURT = 18,
-        FIGHT_PROP_PHYSICAL_ADD_HURT = 19,
-        FIGHT_PROP_SHIELD_COST_MINUS_RATIO_ADD_HURT = 20,
-        FIGHT_PROP_HEALED_ADD = 21,
-        FIGHT_PROP_BASE_HP = 22,
-        FIGHT_PROP_BASE_ATTACK = 23,
-        FIGHT_PROP_BASE_DEFENSE = 24,
-        FIGHT_PROP_MAX_HP = 25
-    }
-
-    /** SimMode enum. */
-    enum SimMode {
-        DURATION_MODE = 0,
-        TTK_MODE = 1
     }
 }
 
