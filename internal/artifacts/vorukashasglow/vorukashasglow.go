@@ -48,18 +48,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		counter := 0
+		permStacks := param["stacks"]
+		if permStacks > 5 {
+			permStacks = 5
+		}
 		mStack := make([]float64, attributes.EndStatType)
 		mStack[attributes.DmgP] = 0.08
-		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-			di := args[0].(player.DrainInfo)
-			if di.Amount <= 0 {
-				return false
-			}
-			if di.ActorIndex != char.Index {
-				return false
-			}
+		addStackMod := func(idx int, duration int) {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag(fmt.Sprintf("dew-4pc-%v-stack", counter+1), 300),
+				Base: modifier.NewBaseWithHitlag(fmt.Sprintf("dew-4pc-%v-stack", idx+1), duration),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagElementalArt,
@@ -71,6 +68,21 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					}
 				},
 			})
+		}
+		for i := 0; i < permStacks; i++ {
+			addStackMod(i, -1)
+		}
+		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+			di := args[0].(player.DrainInfo)
+			if di.Amount <= 0 {
+				return false
+			}
+			if di.ActorIndex != char.Index {
+				return false
+			}
+			if counter >= permStacks {
+				addStackMod(counter, 300)
+			}
 			counter = (counter + 1) % 5
 			return false
 		}, fmt.Sprintf("dew-4pc-%v", char.Base.Key.String()))
