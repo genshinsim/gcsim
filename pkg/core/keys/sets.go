@@ -43,7 +43,7 @@ var setNames = []string{
 	"deepwoodmemories",
 	"defenderswill",
 	"desertpavilionchronicle",
-	"vorukashasglow",
+	"vourukashasglow",
 	"echoesofanoffering",
 	"emblemofseveredfate",
 	"flowerofparadiselost",
@@ -92,7 +92,7 @@ const (
 	DeepwoodMemories
 	DefendersWill
 	DesertPavilionChronicle
-	VorukashasGlow
+	VourukashasGlow
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
 	FlowerOfParadiseLost

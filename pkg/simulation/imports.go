@@ -24,7 +24,6 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/deepwood"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/defenderswill"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/desertpavilionchronicle"
-	_ "github.com/genshinsim/gcsim/internal/artifacts/vorukashasglow"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/echoes"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/emblem"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/exile"
@@ -50,6 +49,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thundersoother"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/vermillion"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/viridescent"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/vourukashasglow"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/wanderer"
 
 	// char

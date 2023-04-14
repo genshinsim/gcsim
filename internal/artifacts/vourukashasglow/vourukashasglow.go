@@ -1,4 +1,4 @@
-package vorukashasglow
+package vourukashasglow
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	core.RegisterSetFunc(keys.VorukashasGlow, NewSet)
+	core.RegisterSetFunc(keys.VourukashasGlow, NewSet)
 }
 
 type Set struct {
