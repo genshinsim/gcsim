@@ -1,4 +1,4 @@
-package vorukashasglow
+package vourukashasglow
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	core.RegisterSetFunc(keys.VorukashasGlow, NewSet)
+	core.RegisterSetFunc(keys.VourukashasGlow, NewSet)
 }
 
 type Set struct {
@@ -38,7 +38,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.HPP] = 0.20
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("dew-2pc", -1),
+			Base:         modifier.NewBase("vg-2pc", -1),
 			AffectedStat: attributes.HPP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -56,7 +56,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		mStack[attributes.DmgP] = 0.08
 		addStackMod := func(idx int, duration int) {
 			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBaseWithHitlag(fmt.Sprintf("dew-4pc-%v-stack", idx+1), duration),
+				Base: modifier.NewBaseWithHitlag(fmt.Sprintf("vg-4pc-%v-stack", idx+1), duration),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagElementalArt,
@@ -85,12 +85,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 			counter = (counter + 1) % 5
 			return false
-		}, fmt.Sprintf("dew-4pc-%v", char.Base.Key.String()))
+		}, fmt.Sprintf("vg-4pc-%v", char.Base.Key.String()))
 
 		mBase := make([]float64, attributes.EndStatType)
 		mBase[attributes.DmgP] = 0.1
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("dew-4pc", -1),
+			Base: modifier.NewBase("vg-4pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				switch atk.Info.AttackTag {
 				case attacks.AttackTagElementalArt,

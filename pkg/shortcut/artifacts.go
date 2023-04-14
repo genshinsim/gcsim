@@ -28,7 +28,7 @@ var SetNameToKey = map[string]keys.Set{
 	"desertpavilionchronicle": keys.DesertPavilionChronicle,
 	"desertpavilion":          keys.DesertPavilionChronicle,
 	"dpc":                     keys.DesertPavilionChronicle,
-	"vorukashasglow":          keys.VorukashasGlow,
+	"vourukashasglow":         keys.VourukashasGlow,
 	"echoesofanoffering":      keys.EchoesOfAnOffering,
 	"echoes":                  keys.EchoesOfAnOffering,
 	"emblemofseveredfate":     keys.EmblemOfSeveredFate,
