@@ -97,6 +97,9 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 // add to freeze durability and return amount of durability consumed
 func (r *Reactable) triggerFreeze(a, b reactions.Durability) reactions.Durability {
 	d := min(a, b)
+	if r.ResistFrozen {
+		return d
+	}
 	//trigger freeze should only addDurability and should not touch decay rate
 	r.attachOverlap(ModifierFrozen, 2*d, ZeroDur)
 	return d
