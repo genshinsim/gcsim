@@ -52,11 +52,11 @@ func parseTarget(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-				v, err := itemNumberToInt(item)
+				v, err := itemNumberToFloat64(item)
 				if err != nil {
 					return nil, err
 				}
-				r.ResistFrozen = v != 0
+				r.ResistFrozen = v
 			default:
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}

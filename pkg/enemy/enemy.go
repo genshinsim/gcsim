@@ -21,7 +21,7 @@ type EnemyProfile struct {
 	ParticleDropThreshold float64                        `json:"-"` // drop particle every x dmg dealt
 	ParticleDropCount     float64                        `json:"-"`
 	ParticleElement       attributes.Element             `json:"-"`
-	ResistFrozen          bool                           `json:"-"`
+	ResistFrozen          float64                        `json:"-"`
 }
 
 func (e *EnemyProfile) Clone() EnemyProfile {
