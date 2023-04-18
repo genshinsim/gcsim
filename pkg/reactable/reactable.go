@@ -112,7 +112,7 @@ type Reactable struct {
 	burningSnapshot combat.Snapshot
 	burningTickSrc  int
 	// freeze specific
-	ResistFrozen float64
+	FreezeResist float64
 }
 
 type Enemy interface {
