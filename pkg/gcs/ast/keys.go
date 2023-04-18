@@ -99,4 +99,5 @@ var actionKeys = map[string]action.Action{
 	"jump":        action.ActionJump,
 	"walk":        action.ActionWalk,
 	"swap":        action.ActionSwap,
+	"delay":       action.ActionDelay,
 }

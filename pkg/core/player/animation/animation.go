@@ -40,8 +40,8 @@ func New(f *int, debug bool, log glog.Logger, events event.Eventter, tasks task.
 	return h
 }
 
-//IsAnimationLocked returns true if the next action can be executed on the
-//current frame; false otherwise
+//IsAnimationLocked returns false if the next action can be executed on the
+//current frame; true otherwise
 func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	if h.aniEvt == nil {
 		return false

@@ -114,7 +114,22 @@ func (s *Simulation) queueAndExec() error {
 					Write("f", s.queue.Param["f"])
 				s.queue = nil
 				return nil
+			} else if s.queue.Action == action.ActionDelay {
+				//wipe the action here, set skip
+				s.delayFor = s.queue.Param["f"]
+				s.queue = nil
+				return nil
 			} else {
+				if s.delayFor > 0 {
+					if !s.C.Player.IsAnimationLocked(s.queue.Action) {
+						s.C.Log.NewEvent("executed delay", glog.LogActionEvent, s.C.Player.Active()).
+							Write("f", s.queue.Param["f"])
+						s.skip = s.delayFor // Start waiting
+						s.skip--            // This frame counts as a frame that was waited so we subtract one
+						s.delayFor = 0
+					}
+					return nil
+				}
 				err := s.C.Player.Exec(s.queue.Action, s.queue.Char, s.queue.Param)
 				switch err {
 				case player.ErrActionNotReady:

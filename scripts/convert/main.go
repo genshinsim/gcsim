@@ -510,6 +510,7 @@ var pkgNameReplace = map[string][2]string{
 	"core.ActionSwap":                {"action", "ActionSwap"},
 	"core.ActionWalk":                {"action", "ActionWalk"},
 	"core.ActionWait":                {"action", "ActionWait"},
+	"core.ActionDelay":               {"action", "ActionDelay"},
 	"core.EndActionType":             {"action", "EndActionType"},
 	"core.ActionSkillHoldFramesOnly": {"action", "ActionSkillHoldFramesOnly"},
 	//logs

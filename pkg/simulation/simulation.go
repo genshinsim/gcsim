@@ -23,6 +23,7 @@ type Simulation struct {
 	noMoreActions bool
 	collectors    []stats.StatsCollector
 
+	delayFor int
 	//track previous action, when it was used at, and the earliest
 	//useable frame for all other chained actions
 }
