@@ -47,6 +47,16 @@ func parseTarget(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 				r.Pos.R = amt
+			case "freeze_resist":
+				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
+				if err != nil {
+					return nil, err
+				}
+				v, err := itemNumberToFloat64(item)
+				if err != nil {
+					return nil, err
+				}
+				r.FreezeResist = v
 			default:
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}
