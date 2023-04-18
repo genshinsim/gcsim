@@ -114,8 +114,10 @@ func (c *char) eyeOnDamage() {
 		if !c.Core.Player.ByIndex(ae.Info.ActorIndex).StatusIsActive(skillKey) {
 			return false
 		}
-		//ignore EC and hydro swirl damage
-		if ae.Info.AttackTag == attacks.AttackTagECDamage || ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
+		// ignore EC, hydro swirl, and burning damage
+		// this clause is here since these damage types are sourced to the target rather than character
+		if ae.Info.AttackTag == attacks.AttackTagECDamage || ae.Info.AttackTag == attacks.AttackTagBurningDamage ||
+			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
 			return false
 		}
 		//ignore self dmg
