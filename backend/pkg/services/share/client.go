@@ -32,10 +32,6 @@ func NewClient(cfg ClientCfg, cust ...func(*Client) error) (*Client, error) {
 }
 
 func (c *Client) Create(ctx context.Context, data *model.SimulationResult, expiresAt uint64, submitter string) (string, error) {
-	if expiresAt < 0 {
-		expiresAt = 0
-	}
-
 	resp, err := c.srvClient.Create(ctx, &CreateRequest{
 		Result:    data,
 		ExpiresAt: expiresAt,
@@ -64,7 +60,13 @@ func (c *Client) SetTTL(ctx context.Context, id string) error {
 }
 
 func (c *Client) Delete(ctx context.Context, id string) error {
-	return fmt.Errorf("not implemented")
+	_, err := c.srvClient.Delete(ctx, &DeleteRequest{
+		Id: id,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *Client) Random(ctx context.Context) (string, error) {

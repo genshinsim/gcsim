@@ -1,11 +1,10 @@
-package mock
+package share
 
 import (
 	"context"
 	"math/rand"
 	"time"
 
-	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"github.com/jaevor/go-nanoid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -24,16 +23,16 @@ func init() {
 	}
 }
 
-// Server is a mock server for purpose of testing share RPC end points
-type Server struct {
+// mockServer is a mock server for purpose of testing share RPC end points
+type mockServer struct {
 	Log  *zap.SugaredLogger
 	Rand *rand.Rand
-	data map[string]*share.ShareEntry
+	data map[string]*ShareEntry
 }
 
-func NewServer(cust ...func(*Server) error) (*Server, error) {
-	s := &Server{
-		data: make(map[string]*share.ShareEntry),
+func newMock(cust ...func(*mockServer) error) (*mockServer, error) {
+	s := &mockServer{
+		data: make(map[string]*ShareEntry),
 	}
 	s.Rand = rand.New(rand.NewSource(time.Now().Unix()))
 
@@ -58,7 +57,7 @@ func NewServer(cust ...func(*Server) error) (*Server, error) {
 	return s, nil
 }
 
-func (s *Server) Create(ctx context.Context, e *share.ShareEntry) (string, error) {
+func (s *mockServer) Create(ctx context.Context, e *ShareEntry) (string, error) {
 	key := generateID()
 	if _, ok := s.data[key]; ok {
 		return "", status.Error(codes.Internal, "error creating nanoid")
@@ -67,16 +66,16 @@ func (s *Server) Create(ctx context.Context, e *share.ShareEntry) (string, error
 	return key, nil
 }
 
-func (s *Server) Read(ctx context.Context, key string) (*share.ShareEntry, error) {
+func (s *mockServer) Read(ctx context.Context, key string) (*ShareEntry, error) {
 	val, ok := s.data[key]
 	if !ok {
 		return nil, status.Error(codes.NotFound, "key not found")
 	}
 	n := proto.Clone(val)
-	return n.(*share.ShareEntry), nil
+	return n.(*ShareEntry), nil
 }
 
-func (s *Server) Update(ctx context.Context, entry *share.ShareEntry) (string, error) {
+func (s *mockServer) Update(ctx context.Context, entry *ShareEntry) (string, error) {
 	key := entry.GetId()
 	_, ok := s.data[key]
 	if !ok {
@@ -86,7 +85,7 @@ func (s *Server) Update(ctx context.Context, entry *share.ShareEntry) (string, e
 	return key, nil
 }
 
-func (s *Server) SetTTL(ctx context.Context, key string, until uint64) (string, error) {
+func (s *mockServer) SetTTL(ctx context.Context, key string, until uint64) (string, error) {
 	_, ok := s.data[key]
 	if !ok {
 		return "", status.Error(codes.NotFound, "key not found")
@@ -94,7 +93,7 @@ func (s *Server) SetTTL(ctx context.Context, key string, until uint64) (string, 
 	return key, nil
 }
 
-func (s *Server) Delete(ctx context.Context, key string) error {
+func (s *mockServer) Delete(ctx context.Context, key string) error {
 	_, ok := s.data[key]
 	if !ok {
 		return status.Error(codes.NotFound, "key not found")
@@ -103,7 +102,7 @@ func (s *Server) Delete(ctx context.Context, key string) error {
 	return nil
 }
 
-func (s *Server) Random(context.Context) (string, error) {
+func (s *mockServer) Random(context.Context) (string, error) {
 	max := len(s.data)
 	if max == 0 {
 		return "", status.Error(codes.NotFound, "not found")
