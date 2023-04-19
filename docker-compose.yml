@@ -124,6 +124,20 @@ services:
     restart: unless-stopped
     depends_on:
       - queue
+  # discord bot
+  managerchan:
+    container_name: managerchan
+    build:
+      context: .
+      dockerfile: ./backend/cmd/managerchan/Dockerfile
+    environment:
+      - SHARE_STORE_URL=share:3000
+      - DB_STORE_URL=db:3000
+      - SUBMISSION_STORE_URL=submission:3000
+      - MQTT_URL=mqtt:1883
+      - MQTT_USERNAME=mosquitto
+      - MQTT_PASSWORD=password
+      - DISCORD_BOT_TOKEN
   # mongo server for db
   mongo:
     container_name: mongo
