@@ -92,6 +92,46 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 	return &number{}, nil
 }
 
+func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
+	//wait(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for wait, expected 1 got %v", len(c.Args))
+	}
+
+	//should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("wait argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	var f int = int(n.ival)
+	if n.isFloat {
+		f = int(n.fval)
+	}
+
+	if f <= 0 {
+		//do nothing if less or equal to 0
+		return &number{}, nil
+	}
+
+	e.Work <- &ast.ActionStmt{
+		Action: action.ActionDelay,
+		Param:  map[string]int{"f": f},
+	}
+	//block until sim is done with the action; unless we're done
+	_, ok = <-e.Next
+	if !ok {
+		return nil, ErrTerminated // no more work, shutting down
+	}
+
+	return &number{}, nil
+}
+
 func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 	//set_player_pos(x, y)
 	if len(c.Args) != 2 {

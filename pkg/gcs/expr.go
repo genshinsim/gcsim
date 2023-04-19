@@ -71,6 +71,9 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	case "wait":
 		//execute wait command
 		return e.wait(c, env)
+	case "delay_":
+		//execute delay command
+		return e.delay(c, env)
 	case "set_target_pos":
 		return e.setTargetPos(c, env)
 	case "set_player_pos":
