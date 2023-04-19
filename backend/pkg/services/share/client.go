@@ -3,6 +3,7 @@ package share
 import (
 	context "context"
 	"fmt"
+	"time"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	grpc "google.golang.org/grpc"
@@ -10,8 +11,7 @@ import (
 )
 
 type ClientCfg struct {
-	Addr                string
-	DefaultTTLInSeconds uint64
+	Addr string
 }
 
 type Client struct {
@@ -32,20 +32,21 @@ func NewClient(cfg ClientCfg, cust ...func(*Client) error) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) Create(ctx context.Context, data *model.SimulationResult) (string, error) {
-	//TODO: check ctx for perma settings
+func (c *Client) Create(ctx context.Context, data *model.SimulationResult, ttl uint64, submitter string) (string, uint64, error) {
+	var expiry uint64
+	if ttl > 0 {
+		expiry = uint64(time.Now().Unix()) + ttl
+	}
+
 	resp, err := c.srvClient.Create(ctx, &CreateRequest{
-		Result: data,
+		Result:    data,
+		ExpiresAt: expiry,
+		Submitter: submitter,
 	})
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
-	return resp.GetId(), nil
-}
-
-func (c *Client) CreatePerm(ctx context.Context, data *model.SimulationResult) (string, error) {
-	//TODO: handle ttl properly
-	return c.Create(ctx, data)
+	return resp.GetId(), expiry, nil
 }
 
 func (c *Client) Replace(ctx context.Context, id string, data *model.SimulationResult) error {

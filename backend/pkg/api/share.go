@@ -27,7 +27,7 @@ type ShareReader interface {
 }
 
 type ShareWriter interface {
-	Create(ctx context.Context, data *model.SimulationResult) (string, error)
+	Create(context.Context, *model.SimulationResult, uint64, string) (string, uint64, error)
 }
 
 var ErrKeyNotFound = errors.New("key does not exist")
@@ -73,7 +73,9 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			return
 		}
 
-		id, err := s.cfg.ShareStore.Create(context.WithValue(r.Context(), TTLContextKey, DefaultTLL), res)
+		user := r.Context().Value(UserContextKey).(string)
+
+		id, _, err := s.cfg.ShareStore.Create(r.Context(), res, DefaultTLL, user)
 
 		if err != nil {
 			s.Log.Errorw("unexpected error saving result", "err", err)
