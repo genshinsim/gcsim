@@ -3,7 +3,6 @@ package share
 import (
 	context "context"
 	"fmt"
-	"time"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	grpc "google.golang.org/grpc"
@@ -32,21 +31,20 @@ func NewClient(cfg ClientCfg, cust ...func(*Client) error) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) Create(ctx context.Context, data *model.SimulationResult, ttl uint64, submitter string) (string, uint64, error) {
-	var expiry uint64
-	if ttl > 0 {
-		expiry = uint64(time.Now().Unix()) + ttl
+func (c *Client) Create(ctx context.Context, data *model.SimulationResult, expiresAt uint64, submitter string) (string, error) {
+	if expiresAt < 0 {
+		expiresAt = 0
 	}
 
 	resp, err := c.srvClient.Create(ctx, &CreateRequest{
 		Result:    data,
-		ExpiresAt: expiry,
+		ExpiresAt: expiresAt,
 		Submitter: submitter,
 	})
 	if err != nil {
-		return "", 0, err
+		return "", err
 	}
-	return resp.GetId(), expiry, nil
+	return resp.GetId(), nil
 }
 
 func (c *Client) Replace(ctx context.Context, id string, data *model.SimulationResult) error {

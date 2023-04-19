@@ -33,7 +33,7 @@ type DBStore interface {
 }
 
 type ShareStore interface {
-	Create(context.Context, *model.SimulationResult, uint64, string) (string, uint64, error)
+	Create(context.Context, *model.SimulationResult, uint64, string) (string, error)
 }
 
 type Config struct {
@@ -128,7 +128,7 @@ func (s *Server) CompletePending(ctx context.Context, req *CompletePendingReques
 	if data == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request payload")
 	}
-	key, _, err := s.Config.ShareStore.Create(ctx, data, 0, sub.GetSubmitter())
+	key, err := s.Config.ShareStore.Create(ctx, data, 0, sub.GetSubmitter())
 	if err != nil {
 		return nil, err
 	}
