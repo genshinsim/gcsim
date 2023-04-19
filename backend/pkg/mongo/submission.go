@@ -41,13 +41,16 @@ func (s *Server) GetSubmission(ctx context.Context, id string) (*model.Submissio
 func (s *Server) CreateSubmission(ctx context.Context, entry *model.Submission) (string, error) {
 	s.Log.Infow("create submission request", "entry", entry.String())
 
+	id := generateID()
+	entry.Id = id
+
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 
 	res, err := col.InsertOne(ctx, entry)
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
-			s.Log.Infow("create submission failed - duplicated id", "id", entry.GetId(), "err", err)
-			return "", status.Error(codes.InvalidArgument, "duplicated id")
+			s.Log.Infow("create submission failed - unexpected duplicated id", "id", entry.GetId(), "err", err)
+			return "", status.Error(codes.Internal, "unexpected duplicated id")
 		}
 		s.Log.Infow("create submission failed - unexpected error", "id", entry.GetId(), "err", err)
 		return "", status.Error(codes.Internal, "internal server error")

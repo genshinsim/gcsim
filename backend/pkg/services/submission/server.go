@@ -80,7 +80,6 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitResponse, error) {
 	s.Log.Infow("new submission received", "req", req.String())
 	sub := &model.Submission{
-		Id:          generateID(),
 		Config:      req.GetConfig(),
 		Submitter:   req.GetSubmitter(),
 		Description: req.GetDescription(),

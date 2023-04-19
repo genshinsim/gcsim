@@ -5,10 +5,22 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/jaevor/go-nanoid"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
+
+var generateID func() string
+
+func init() {
+	var err error
+	// dictionary from https://github.com/CyberAP/nanoid-dictionary#nolookalikessafe
+	generateID, err = nanoid.CustomASCII("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz", 12)
+	if err != nil {
+		panic(err)
+	}
+}
 
 type Config struct {
 	URL                  string
