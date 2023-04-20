@@ -5,7 +5,7 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/hex"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -52,7 +52,7 @@ func TestGetComputeKeyCheck(t *testing.T) {
 	s.Router.ServeHTTP(w, req)
 	res := w.Result()
 	defer res.Body.Close()
-	_, err := ioutil.ReadAll(res.Body)
+	_, err := io.ReadAll(res.Body)
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
 	}
@@ -90,7 +90,7 @@ func TestGetComputeWork(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
 	}
-	data, err := ioutil.ReadAll(zr)
+	data, err := io.ReadAll(zr)
 	if err != nil {
 		t.Errorf("expected error to be nil got %v", err)
 	}
