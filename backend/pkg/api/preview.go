@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
 	"google.golang.org/grpc/codes"
@@ -49,7 +50,7 @@ func (s *Server) GetPreviewByDBID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := chi.URLParam(r, "db-key")
 
-		e, err := s.cfg.DBStore.GetOne(r.Context(), key)
+		resp, err := s.dbClient.GetOne(r.Context(), &db.GetOneRequest{Id: key})
 		if err != nil {
 			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
 				http.Error(w, "not found", http.StatusNotFound)
@@ -60,6 +61,6 @@ func (s *Server) GetPreviewByDBID() http.HandlerFunc {
 			return
 		}
 
-		s.sendPreview(w, r, e.GetShareKey())
+		s.sendPreview(w, r, resp.GetData().GetShareKey())
 	}
 }

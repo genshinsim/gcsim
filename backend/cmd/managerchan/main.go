@@ -8,9 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/discord"
 	"github.com/genshinsim/gcsim/backend/pkg/discord/backend"
-	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
-	"github.com/genshinsim/gcsim/backend/pkg/services/submission"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -27,7 +25,7 @@ func main() {
 	store, err := backend.New(backend.Config{
 		LinkValidationRegex: regexp.MustCompile(`https:\/\/\S+.app\/\S+\/(\S+)$`),
 		ShareStore:          makeShareStore(),
-		SubmissionStore:     makeSubStore(),
+		DBgRPCAddr:          os.Getenv("DB_STORE_URL"),
 	}, func(s *backend.Store) error {
 		s.Log = sugar
 		return nil
@@ -63,22 +61,4 @@ func makeShareStore() api.ShareStore {
 		panic(err)
 	}
 	return shareStore
-}
-
-func makeDBStore() api.DBStore {
-	store, err := db.NewClient(db.ClientCfg{
-		Addr: os.Getenv("DB_STORE_URL"),
-	})
-	if err != nil {
-		panic(err)
-	}
-	return store
-}
-
-func makeSubStore() api.SubmissionStore {
-	store, err := submission.NewClient(os.Getenv("SUBMISSION_STORE_URL"))
-	if err != nil {
-		panic(err)
-	}
-	return store
 }

@@ -34,7 +34,7 @@ type Character struct {
 	Talents       *CharacterTalents `protobuf:"bytes,7,opt,name=talents,proto3" json:"talents,omitempty" bson:"talents,omitempty"`
 	Sets          map[string]int32  `protobuf:"bytes,8,rep,name=sets,proto3" json:"sets,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3" bson:"sets,omitempty"`
 	Stats         []float64         `protobuf:"fixed64,9,rep,packed,name=stats,proto3" json:"stats,omitempty" bson:"stats,omitempty"`
-	SnapshotStats []float64         `protobuf:"fixed64,10,rep,packed,name=snapshot_stats,json=snapshot,proto3" json:"snapshot_stats,omitempty" bson:"snapshot,omitempty"` //the following are some optional meta information that's used by the UI mostly
+	SnapshotStats []float64         `protobuf:"fixed64,10,rep,packed,name=snapshot_stats,json=snapshot,proto3" json:"snapshot_stats,omitempty" bson:"snapshot,omitempty"`
 }
 
 func (x *Character) Reset() {

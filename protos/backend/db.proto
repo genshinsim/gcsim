@@ -2,29 +2,94 @@ syntax = "proto3";
 package db;
 option go_package="github.com/genshinsim/gcsim/backend/pkg/services/db";
 
-import "protos/model/db.proto";
 import "protos/model/result.proto";
+import "protos/model/sim.proto";
 import "protos/model/enums.proto";
+import "google/protobuf/struct.proto";
 
 service DBStore {
     //generic get for pulling from approved db
     rpc Get (GetRequest) returns (GetResponse) {}
-    rpc GetUnfiltered (GetUnfilteredRequest) returns (GetUnfilteredResponse) {}
+    rpc GetAll (GetAllRequest) returns (GetAllResponse) {}
     rpc GetOne (GetOneRequest) returns (GetOneResponse) {}
-    rpc Update (UpdateRequest) returns (UpdateResponse) {}
-    rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
 
     //tagging
     rpc ApproveTag(ApproveTagRequest) returns (ApproveTagResponse) {}
     rpc RejectTag(RejectTagRequest) returns (RejectTagResponse) {}
+
+    //submissions
+    rpc Submit (SubmitRequest) returns (SubmitResponse) {} 
+    rpc DeletePending (DeletePendingRequest) returns (DeletePendingResponse) {}
+
+    //work related
+    rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
+    rpc CompleteWork (CompleteWorkRequest) returns (CompleteWorkResponse) {}
+    rpc RejectWork (RejectWorkRequest) returns (RejectWorkResponse) {}
+}
+
+message Entry {
+    //basic info
+    string id = 1 [json_name="_id"];
+    uint64 create_date = 2 [json_name="create_date"];
+
+    //key fields
+    string config = 3 [json_name="config"];
+    string description = 4 [json_name="description"];
+    string submitter = 5 [json_name="submitter"];
+    
+    //db tagging data
+    repeated model.DBTag accepted_tags = 6 [json_name="accepted_tags"];
+    repeated model.DBTag rejected_tags = 7 [json_name="rejected_tags"];
+    bool is_db_valid = 8 [json_name="is_db_valid"];
+    // string upgrade_failed = 20
+
+    //these fields are updated on every rerun
+    string share_key = 9 [json_name="share_key"];
+    uint64 last_update = 10 [json_name="last_update"];
+    string hash = 11 [json_name="hash"];
+    EntrySummary summary = 12 [json_name="summary"];
+
+}
+
+message EntrySummary {
+    model.DescriptiveStats sim_duration = 1 [json_name="sim_duration"];
+    model.SimMode mode = 2 [json_name="mode"];
+    
+    //indexing data
+    model.DescriptiveStats total_damage = 3 [json_name="total_damage"];
+    repeated string char_names = 4 [json_name="char_names"];
+    int32 target_count = 5 [json_name="target_count"];
+    double mean_dps_per_target = 6 [json_name="mean_dps_per_target"];
+
+    //detailed results
+    repeated model.Character team = 7 [json_name="team"];
+    map<string, model.DescriptiveStats> dps_by_target = 8 [json_name="dps_by_target"];
+}
+
+message Entries {
+    repeated Entry data = 1 [json_name="data"];
+}
+
+message QueryOpt {
+    google.protobuf.Struct query = 1 [json_name="query"];
+    google.protobuf.Struct sort = 2 [json_name="sort"];
+    google.protobuf.Struct project = 3 [json_name="project"];
+    int64 skip = 4 [json_name="skip"];
+    int64 limit = 5 [json_name="limit"];
+}
+
+message ComputeWork {
+    string id = 1 [json_name="_id"];
+    string config = 2 [json_name="config"];
+    int32 iterations = 3 [json_name="iterations"];
 }
 
 message GetRequest {
-    model.DBQueryOpt query = 1;
+    QueryOpt query = 1;
 }
 
 message GetResponse {
-    model.DBEntries data = 1;
+    Entries data = 1;
 }
 
 message GetOneRequest {
@@ -32,41 +97,18 @@ message GetOneRequest {
 }
 
 message GetOneResponse {
-    model.DBEntry data = 1;
+    Entry data = 1;
 }
 
-message GetUnfilteredRequest {
-    model.DBQueryOpt query = 1;
+message GetAllRequest {
+    QueryOpt query = 1;
 }
 
-message GetUnfilteredResponse {
-    model.DBEntries data = 1;
+message GetAllResponse {
+    Entries data = 1;
 }
 
-message UpdateRequest {
-   string id = 1 [json_name="_id"];
-   model.SimulationResult result = 2; 
-}
-
-message UpdateResponse {
-    string id = 1 [json_name="id"];
-}
-
-
-message GetWorkRequest {}
-
-message GetWorkResponse {
-    repeated model.ComputeWork data = 1 [json_name="data"];
-}
-
-message CompleteWorkRequest {
-    string id = 1;
-    model.SimulationResult result = 2 [json_name="result"];
-}
-
-message CompleteWorkResponse {
-    string id = 1 [json_name="id"];
-}
+//tagging related
 
 message ApproveTagRequest {
     string id = 1 [json_name="id"];
@@ -84,4 +126,50 @@ message RejectTagRequest {
 
 message RejectTagResponse {
     string id = 1 [json_name="id"];
+}
+
+//submission related
+
+message SubmitRequest {
+    string config = 1;
+    string submitter = 2; //submitter discord id 
+    string description = 3;
+}
+
+message SubmitResponse {
+    string id = 1 [json_name="_id"];
+}
+
+message DeletePendingRequest {
+    string id = 1 [json_name="_id"];
+}
+
+message DeletePendingResponse {
+    string id = 1 [json_name="_id"];
+}
+
+//work stuff
+
+message GetWorkRequest {}
+
+message GetWorkResponse {
+    repeated ComputeWork data = 1 [json_name="data"];
+}
+
+message RejectWorkRequest {
+    string id = 1;
+    string reason = 2;
+    string hash = 3;
+}
+
+message RejectWorkResponse {
+}
+
+message CompleteWorkRequest {
+    string id = 1 [json_name="_id"];
+    model.SimulationResult result = 2; 
+}
+
+message CompleteWorkResponse {
+    string id = 1 [json_name="_id"];
 }

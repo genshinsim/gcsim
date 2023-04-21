@@ -2,9 +2,8 @@ package backend
 
 import (
 	"context"
-	"log"
 
-	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -15,29 +14,32 @@ func (s *Store) Submit(link, desc, sender string) (string, error) {
 	// - add opt for regex to check viewer link (make sure it's coming from right link)
 	// - grab config data from viewer link: we only need the id from this and can just
 	//   talk to the share grpc directly
+	s.Log.Infow("submission received", "link", link, "sender", sender, "desc", desc)
 
 	id, err := s.validateLink(link)
 	if err != nil {
+		s.Log.Infow("submission link validation failed", "err", err)
 		return "", err
 	}
 
 	res, _, err := s.ShareStore.Read(context.TODO(), id)
 	if err != nil {
+		s.Log.Infow("submission getting share failed", "err", err)
 		return "", err
 	}
 
-	subId, err := s.SubmissionStore.Submit(context.TODO(), &model.Submission{
+	resp, err := s.DBClient.Submit(context.TODO(), &db.SubmitRequest{
 		Config:      res.Config,
 		Description: desc,
 		Submitter:   sender,
 	})
 	if err != nil {
+		s.Log.Infow("submission req failed", "err", err)
 		return "", err
 	}
+	s.Log.Infow("submission req completed", "resp", resp.String())
 
-	log.Println(res.Config)
-
-	return subId, nil
+	return resp.GetId(), nil
 }
 
 func (s *Store) validateLink(link string) (string, error) {

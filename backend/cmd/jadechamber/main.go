@@ -10,11 +10,8 @@ import (
 	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
-	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/backend/pkg/services/preview"
-	"github.com/genshinsim/gcsim/backend/pkg/services/queue"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
-	"github.com/genshinsim/gcsim/backend/pkg/services/submission"
 	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -34,16 +31,15 @@ func main() {
 		panic(err)
 	}
 	sugar := logger.Sugar()
-	sugar.Debugw("logger initiated")
+	sugar.Debugw("jadechamber started", "sha1ver", sha1ver)
 
 	keys := getKeys()
 
 	s, err := api.New(api.Config{
-		ShareStore:      makeShareStore(),
-		UserStore:       makeUserStore(sugar),
-		DBStore:         makeDBStore(),
-		SubmissionStore: makeSubStore(),
-		PreviewStore:    makePreviewStore(),
+		ShareStore:   makeShareStore(),
+		UserStore:    makeUserStore(sugar),
+		DBAddr:       os.Getenv("DB_STORE_URL"),
+		PreviewStore: makePreviewStore(),
 		Discord: api.DiscordConfig{
 			RedirectURL:  os.Getenv("REDIRECT_URL"),
 			ClientID:     os.Getenv("DISCORD_ID"),
@@ -56,9 +52,6 @@ func main() {
 			MQTTPass: os.Getenv("MQTT_PASSWORD"),
 			MQTTHost: os.Getenv("MQTT_URL"),
 		},
-		QueueService:  makeQueueService(),
-		CurrentHash:   sha1ver,
-		ComputeAPIKey: os.Getenv("COMPUTE_API_KEY"),
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil
@@ -93,14 +86,6 @@ func makeShareStore() api.ShareStore {
 	return shareStore
 }
 
-func makeQueueService() api.QueueService {
-	store, err := queue.NewClient(os.Getenv("QUEUE_SERVICE_URL"))
-	if err != nil {
-		panic(err)
-	}
-	return store
-}
-
 func makeUserStore(sugar *zap.SugaredLogger) api.UserStore {
 	store, err := user.New(user.Config{
 		DBPath: os.Getenv("USER_DATA_PATH"),
@@ -113,24 +98,6 @@ func makeUserStore(sugar *zap.SugaredLogger) api.UserStore {
 		panic(err)
 	}
 
-	return store
-}
-
-func makeDBStore() api.DBStore {
-	store, err := db.NewClient(db.ClientCfg{
-		Addr: os.Getenv("DB_STORE_URL"),
-	})
-	if err != nil {
-		panic(err)
-	}
-	return store
-}
-
-func makeSubStore() api.SubmissionStore {
-	store, err := submission.NewClient(os.Getenv("SUBMISSION_STORE_URL"))
-	if err != nil {
-		panic(err)
-	}
 	return store
 }
 

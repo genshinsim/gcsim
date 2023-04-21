@@ -82,7 +82,7 @@ const App = ({ }) => {
       <style>
         {css}
       </style>
-      <div id="cards" className={ready ? "grid grid-cols-4" : "grid grid-cols-4 disabled"}>
+      <div id="card" className={ready ? "grid grid-cols-4" : "grid grid-cols-4 disabled"}>
         {cards}
       </div>
       <div>{`DPS: ${parsed.statistics.dps.mean}`}</div>

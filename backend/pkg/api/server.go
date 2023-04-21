@@ -6,10 +6,13 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Server struct {
@@ -17,6 +20,7 @@ type Server struct {
 	Log        *zap.SugaredLogger
 	mqttClient mqtt.Client
 	cfg        Config
+	dbClient   db.DBStoreClient
 }
 
 type DiscordConfig struct {
@@ -36,19 +40,12 @@ type Config struct {
 	ShareStore        ShareStore
 	UserStore         UserStore
 	Discord           DiscordConfig
-	DBStore           DBStore
-	SubmissionStore   SubmissionStore
+	DBAddr            string
 	PreviewStore      PreviewStore
 	RoleCheck         RoleChecker
 	AESDecryptionKeys map[string][]byte
 	//mqtt for notification purposes
 	MQTTConfig MQTTConfig
-	//queue service for getting work etc
-	QueueService QueueService
-	//hash for verifying compute submissions
-	//TODO: this logic really should not be embedded into the api gateway....
-	CurrentHash   string
-	ComputeAPIKey string
 }
 
 type APIContextKey string
@@ -96,12 +93,13 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	if s.cfg.UserStore == nil {
 		return nil, fmt.Errorf("no user store provided")
 	}
-	if s.cfg.DBStore == nil {
-		return nil, fmt.Errorf("no db store provided")
+
+	//connect to db
+	conn, err := grpc.Dial(cfg.DBAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, err
 	}
-	if s.cfg.QueueService == nil {
-		return nil, fmt.Errorf("no queue service provided")
-	}
+	s.dbClient = db.NewDBStoreClient(conn)
 
 	//connect to mqtt
 	opts := mqttOpts(cfg)
@@ -169,19 +167,6 @@ func (s *Server) routes() {
 
 		r.Route("/db", func(r chi.Router) {
 			r.Get("/", s.getDB())
-			r.Post("/submit", s.submitEntry())
-
-			r.Route("/compute", func(r chi.Router) {
-				r.Use(s.computeAPIKeyCheck)
-				r.Get("/work", s.getWork())
-				r.Post("/work", s.computeCallback())
-			})
-
-			r.Route("/tag/{tag-key}", func(r chi.Router) {
-				r.Use(s.tagRoleCheck)
-				r.Post("/approve/{db-key}", s.approveTag())
-				r.Post("/reject/{db-key}", s.rejectTag())
-			})
 		})
 	})
 
