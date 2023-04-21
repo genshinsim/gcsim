@@ -49,8 +49,9 @@ func main() {
 	}
 
 	server, err := db.NewServer(db.Config{
-		DBStore:    dbStore,
-		ShareStore: shareStore,
+		DBStore:      dbStore,
+		ShareStore:   shareStore,
+		ExpectedHash: sha1ver,
 	})
 
 	if err != nil {

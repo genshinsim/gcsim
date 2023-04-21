@@ -32,7 +32,7 @@ func (s *Server) CompleteWork(ctx context.Context, req *CompleteWorkRequest) (*C
 	}
 
 	if res.GetSimVersion() != s.ExpectedHash {
-		return nil, status.Error(codes.PermissionDenied, "incorrect hash")
+		return nil, status.Error(codes.PermissionDenied, "incorrect hash, expecting "+s.ExpectedHash)
 	}
 
 	entry, err := s.DBStore.GetById(ctx, req.GetId())
@@ -77,7 +77,7 @@ func (s *Server) RejectWork(ctx context.Context, req *RejectWorkRequest) (*Rejec
 	// 3. otherwise notify only
 	//TODO: should mark somehow in future
 	if req.GetHash() != s.ExpectedHash {
-		return nil, status.Error(codes.PermissionDenied, "incorrect hash")
+		return nil, status.Error(codes.PermissionDenied, "incorrect hash, expecting "+s.ExpectedHash)
 	}
 
 	entry, err := s.DBStore.GetById(ctx, req.GetId())
