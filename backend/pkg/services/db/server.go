@@ -21,6 +21,7 @@ type DBService interface {
 	GetById(ctx context.Context, id string) (*Entry, error)
 	GetAll(ctx context.Context, query *QueryOpt) ([]*Entry, error)
 	GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag, query *QueryOpt) ([]*Entry, error)
+	GetBySubmitter(context.Context, string, *QueryOpt) ([]*Entry, error)
 	Delete(context.Context, string) error
 }
 

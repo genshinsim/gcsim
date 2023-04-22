@@ -66,6 +66,23 @@ func (s *Server) GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag, o
 	return results, nil
 }
 
+func (s *Server) GetBySubmitter(ctx context.Context, submitter string, opt *db.QueryOpt) ([]*db.Entry, error) {
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	opts := findOptFromQueryOpt(opt)
+	results, err := s.get(
+		ctx,
+		col,
+		bson.M{
+			"submitter": submitter,
+		},
+		opts,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
 func findOptFromQueryOpt(q *db.QueryOpt) *options.FindOptions {
 	opt := options.Find()
 	opt.Projection = q.GetProject().AsMap()

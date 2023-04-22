@@ -52,3 +52,15 @@ func (s *Server) GetPending(ctx context.Context, req *GetPendingRequest) (*GetPe
 	}, err
 
 }
+
+func (s *Server) GetBySubmitter(ctx context.Context, req *GetBySubmitterRequest) (*GetBySubmitterResponse, error) {
+	res, err := s.DBStore.GetBySubmitter(ctx, req.GetSubmitter(), req.GetQuery())
+	if err != nil {
+		return nil, err
+	}
+	return &GetBySubmitterResponse{
+		Data: &Entries{
+			Data: res,
+		},
+	}, err
+}

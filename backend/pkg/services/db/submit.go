@@ -31,8 +31,14 @@ func (s *Server) DeletePending(ctx context.Context, req *DeletePendingRequest) (
 	if err != nil {
 		return nil, err
 	}
-	if e.Summary != nil {
-		return nil, status.Error(codes.NotFound, "submission no longer pending")
+	//submitter must match sender
+	if req.GetSender() != e.Submitter {
+		return nil, status.Error(codes.PermissionDenied, "delete failed; this submission is not owned by you")
+	}
+
+	//can only delete if it's not dbvalid
+	if e.IsDbValid {
+		return nil, status.Error(codes.PermissionDenied, "submission already added to db; cannot be deleted")
 	}
 
 	err = s.DBStore.Delete(ctx, e.Id)

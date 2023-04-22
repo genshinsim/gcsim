@@ -33,6 +33,8 @@ func (b *Bot) routes() error {
 	b.AddFunc("approve", b.cmdApprove)
 	b.AddFunc("reject", b.cmdReject)
 	b.AddFunc("randsim", b.cmdRandom)
+	b.AddFunc("mine", b.cmdListUserSubs)
+	b.AddFunc("delete", b.cmdUserDelete)
 
 	return nil
 }

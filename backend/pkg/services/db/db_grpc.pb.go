@@ -19,17 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DBStore_Get_FullMethodName           = "/db.DBStore/Get"
-	DBStore_GetAll_FullMethodName        = "/db.DBStore/GetAll"
-	DBStore_GetOne_FullMethodName        = "/db.DBStore/GetOne"
-	DBStore_GetPending_FullMethodName    = "/db.DBStore/GetPending"
-	DBStore_ApproveTag_FullMethodName    = "/db.DBStore/ApproveTag"
-	DBStore_RejectTag_FullMethodName     = "/db.DBStore/RejectTag"
-	DBStore_Submit_FullMethodName        = "/db.DBStore/Submit"
-	DBStore_DeletePending_FullMethodName = "/db.DBStore/DeletePending"
-	DBStore_GetWork_FullMethodName       = "/db.DBStore/GetWork"
-	DBStore_CompleteWork_FullMethodName  = "/db.DBStore/CompleteWork"
-	DBStore_RejectWork_FullMethodName    = "/db.DBStore/RejectWork"
+	DBStore_Get_FullMethodName            = "/db.DBStore/Get"
+	DBStore_GetAll_FullMethodName         = "/db.DBStore/GetAll"
+	DBStore_GetOne_FullMethodName         = "/db.DBStore/GetOne"
+	DBStore_GetPending_FullMethodName     = "/db.DBStore/GetPending"
+	DBStore_GetBySubmitter_FullMethodName = "/db.DBStore/GetBySubmitter"
+	DBStore_ApproveTag_FullMethodName     = "/db.DBStore/ApproveTag"
+	DBStore_RejectTag_FullMethodName      = "/db.DBStore/RejectTag"
+	DBStore_Submit_FullMethodName         = "/db.DBStore/Submit"
+	DBStore_DeletePending_FullMethodName  = "/db.DBStore/DeletePending"
+	DBStore_GetWork_FullMethodName        = "/db.DBStore/GetWork"
+	DBStore_CompleteWork_FullMethodName   = "/db.DBStore/CompleteWork"
+	DBStore_RejectWork_FullMethodName     = "/db.DBStore/RejectWork"
 )
 
 // DBStoreClient is the client API for DBStore service.
@@ -41,6 +42,7 @@ type DBStoreClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	GetOne(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error)
 	GetPending(ctx context.Context, in *GetPendingRequest, opts ...grpc.CallOption) (*GetPendingResponse, error)
+	GetBySubmitter(ctx context.Context, in *GetBySubmitterRequest, opts ...grpc.CallOption) (*GetBySubmitterResponse, error)
 	// tagging
 	ApproveTag(ctx context.Context, in *ApproveTagRequest, opts ...grpc.CallOption) (*ApproveTagResponse, error)
 	RejectTag(ctx context.Context, in *RejectTagRequest, opts ...grpc.CallOption) (*RejectTagResponse, error)
@@ -91,6 +93,15 @@ func (c *dBStoreClient) GetOne(ctx context.Context, in *GetOneRequest, opts ...g
 func (c *dBStoreClient) GetPending(ctx context.Context, in *GetPendingRequest, opts ...grpc.CallOption) (*GetPendingResponse, error) {
 	out := new(GetPendingResponse)
 	err := c.cc.Invoke(ctx, DBStore_GetPending_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBStoreClient) GetBySubmitter(ctx context.Context, in *GetBySubmitterRequest, opts ...grpc.CallOption) (*GetBySubmitterResponse, error) {
+	out := new(GetBySubmitterResponse)
+	err := c.cc.Invoke(ctx, DBStore_GetBySubmitter_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,6 +180,7 @@ type DBStoreServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error)
 	GetPending(context.Context, *GetPendingRequest) (*GetPendingResponse, error)
+	GetBySubmitter(context.Context, *GetBySubmitterRequest) (*GetBySubmitterResponse, error)
 	// tagging
 	ApproveTag(context.Context, *ApproveTagRequest) (*ApproveTagResponse, error)
 	RejectTag(context.Context, *RejectTagRequest) (*RejectTagResponse, error)
@@ -197,6 +209,9 @@ func (UnimplementedDBStoreServer) GetOne(context.Context, *GetOneRequest) (*GetO
 }
 func (UnimplementedDBStoreServer) GetPending(context.Context, *GetPendingRequest) (*GetPendingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPending not implemented")
+}
+func (UnimplementedDBStoreServer) GetBySubmitter(context.Context, *GetBySubmitterRequest) (*GetBySubmitterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBySubmitter not implemented")
 }
 func (UnimplementedDBStoreServer) ApproveTag(context.Context, *ApproveTagRequest) (*ApproveTagResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveTag not implemented")
@@ -300,6 +315,24 @@ func _DBStore_GetPending_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBStoreServer).GetPending(ctx, req.(*GetPendingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_GetBySubmitter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBySubmitterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).GetBySubmitter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_GetBySubmitter_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).GetBySubmitter(ctx, req.(*GetBySubmitterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -452,6 +485,10 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPending",
 			Handler:    _DBStore_GetPending_Handler,
+		},
+		{
+			MethodName: "GetBySubmitter",
+			Handler:    _DBStore_GetBySubmitter_Handler,
 		},
 		{
 			MethodName: "ApproveTag",
