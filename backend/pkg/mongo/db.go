@@ -3,182 +3,122 @@ package mongo
 import (
 	"context"
 
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-type paginate struct {
-	limit int64
-	page  int64
-}
-
-func newPaginate(limit, page int64) *paginate {
-	return &paginate{
-		limit: int64(limit),
-		page:  int64(page),
-	}
-}
-
-func (p *paginate) opts() *options.FindOptions {
-	l := p.limit
-	skip := p.page*p.limit - p.limit
-	fOpt := options.FindOptions{Limit: &l, Skip: &skip}
-
-	return &fOpt
-}
-
-func (s *Server) parseLimit(opt *model.DBQueryOpt) int64 {
-	limit := opt.GetLimit()
-	if limit < 0 {
-		return 0
-	}
-	if limit > s.maxPageLimit {
-		return s.maxPageLimit
-	}
-	return limit
-}
-
-func (s *Server) Get(ctx context.Context, opt *model.DBQueryOpt) ([]*model.DBEntry, error) {
-	s.Log.Infow("mongodb: get request", "query", opt)
-
-	col := s.client.Database(s.cfg.Database).Collection(s.cfg.QueryView)
-	return s.get(ctx, col, opt)
-}
-
-func (s *Server) GetUnfiltered(ctx context.Context, opt *model.DBQueryOpt) ([]*model.DBEntry, error) {
-	s.Log.Infow("mongodb: get unfiltered request", "query", opt)
+func (s *Server) GetAll(ctx context.Context, opt *db.QueryOpt) ([]*db.Entry, error) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-	return s.get(ctx, col, opt)
-}
-
-func (s *Server) get(ctx context.Context, col *mongo.Collection, opt *model.DBQueryOpt) ([]*model.DBEntry, error) {
-	cursor, err := col.Find(ctx, opt.GetQuery().AsMap(), newPaginate(s.parseLimit(opt), opt.GetSkip()).opts())
+	opts := findOptFromQueryOpt(opt)
+	results, err := s.get(ctx, col, opt.GetQuery().AsMap(), opts)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, status.Error(codes.NotFound, "no records found")
-		}
-		return nil, status.Error(codes.Internal, "unexpected server error")
+		return nil, err
 	}
-
-	var res []model.DBEntry
-
-	if err = cursor.All(ctx, &res); err != nil {
-		return nil, status.Error(codes.Internal, "unexpected server error")
-	}
-
-	if len(res) == 0 {
-		s.Log.Infow("mongodb: get request done; no results")
-		return nil, nil
-	}
-
-	var result []*model.DBEntry
-
-	for i := 0; i < len(res); i++ {
-		r := &res[i]
-		cursor.Decode(r)
-		result = append(result, r)
-	}
-
-	s.Log.Infow("mongodb: get request done", "count", len(result))
-
-	return result, nil
+	return results, nil
 }
 
-func (s *Server) GetOne(ctx context.Context, id string) (*model.DBEntry, error) {
-	s.Log.Infow("get db entry request", "id", id)
+func (s *Server) Get(ctx context.Context, opt *db.QueryOpt) ([]*db.Entry, error) {
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.ValidView)
+	opts := findOptFromQueryOpt(opt)
+	results, err := s.get(ctx, col, opt.GetQuery().AsMap(), opts)
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
+}
 
+func (s *Server) GetById(ctx context.Context, id string) (*db.Entry, error) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	res, err := s.getOne(ctx, col, bson.M{"_id": id})
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
 
-	res := col.FindOne(
+func (s *Server) GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag) ([]*db.Entry, error) {
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	results, err := s.get(
 		ctx,
+		col,
 		bson.M{
-			"_id":       id,
-			"share_key": bson.D{{Key: "$exists", Value: true}},
-		},
-	)
-
-	if res.Err() == mongo.ErrNoDocuments {
-		s.Log.Infow("db entry not found", "id", "id")
-		return nil, status.Error(codes.NotFound, "db entry not found")
-	}
-
-	var x model.DBEntry
-
-	err := res.Decode(&x)
-	if err != nil {
-		return nil, status.Error(codes.Internal, "unexpected server error")
-	}
-
-	return &x, nil
-}
-
-func (s *Server) Replace(ctx context.Context, entry *model.DBEntry) (string, error) {
-	key := entry.GetId()
-	s.Log.Infow("mongodb: replace request", "key", key)
-
-	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-
-	res, err := col.ReplaceOne(ctx, bson.D{{Key: "_id", Value: key}}, entry)
-	if err != nil {
-		s.Log.Infow("replace request failed - unexpected", "key", key, "err", err)
-		return "", status.Error(codes.Internal, "unexpected server error")
-	}
-
-	if res.MatchedCount == 0 {
-		s.Log.Infow("replace request failed - no document found", "key", key)
-		return "", status.Error(codes.NotFound, "document not found")
-	}
-
-	s.Log.Infow("mongodb: replace successful", "key", key)
-
-	return key, nil
-}
-
-func (s *Server) GetDBWork(ctx context.Context) ([]*model.DBEntry, error) {
-	s.Log.Infow("mongodb: get db work request", "current_hash", s.cfg.CurrentHash)
-	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-	cursor, err := col.Find(
-		ctx,
-		bson.M{
-			"hash": bson.M{
-				"$ne": s.cfg.CurrentHash,
+			"summary": bson.D{
+				{
+					Key:   "$exists",
+					Value: true,
+				},
 			},
-			"share_key": bson.M{
-				"$exists": true,
+			"accepted_tags": bson.M{
+				"$nin": bson.A{tag},
+			},
+			"rejected_tags": bson.M{
+				"$nin": bson.A{tag},
 			},
 		},
 	)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, status.Error(codes.NotFound, "no records found")
-		}
-		return nil, status.Error(codes.Internal, "unexpected server error")
+		return nil, err
+	}
+	return results, nil
+}
+
+func findOptFromQueryOpt(q *db.QueryOpt) *options.FindOptions {
+	opt := options.Find()
+	opt.Projection = q.GetProject().AsMap()
+	opt.Sort = q.GetSort().AsMap()
+	opt.Limit = &q.Limit
+	opt.Skip = &q.Skip
+	return opt
+}
+
+func (s *Server) GetWork(ctx context.Context) ([]*db.ComputeWork, error) {
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	results, err := s.aggregate(
+		ctx,
+		col,
+		bson.A{
+			bson.D{
+				{
+					Key: "$match",
+					Value: bson.D{
+						{
+							Key: "hash",
+							Value: bson.D{
+								{
+									Key:   "$ne",
+									Value: s.cfg.CurrentHash,
+								},
+							},
+						},
+					},
+				},
+			},
+			bson.D{
+				{
+					Key: "$sample",
+					Value: bson.D{
+						{
+							Key:   "size",
+							Value: s.cfg.BatchSize,
+						},
+					},
+				},
+			},
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var next []*db.ComputeWork
+	for _, v := range results {
+		next = append(next, &db.ComputeWork{
+			Id:         v.Id,
+			Config:     v.Config,
+			Iterations: int32(s.cfg.Iterations),
+		})
 	}
 
-	var res []model.DBEntry
-
-	if err = cursor.All(ctx, &res); err != nil {
-		return nil, status.Error(codes.Internal, "unexpected server error")
-	}
-
-	if len(res) == 0 {
-		s.Log.Infow("mongodb: get db work done; no results")
-		return nil, status.Error(codes.NotFound, "no records found")
-	}
-
-	var result []*model.DBEntry
-
-	for i := 0; i < len(res); i++ {
-		r := &res[i]
-		cursor.Decode(r)
-		result = append(result, r)
-	}
-
-	s.Log.Infow("mongodb: get db work done", "count", len(result))
-
-	return result, nil
+	return next, nil
 }

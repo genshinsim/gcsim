@@ -10,8 +10,7 @@ import (
 )
 
 type ClientCfg struct {
-	Addr                string
-	DefaultTTLInSeconds uint64
+	Addr string
 }
 
 type Client struct {
@@ -32,20 +31,16 @@ func NewClient(cfg ClientCfg, cust ...func(*Client) error) (*Client, error) {
 	return c, nil
 }
 
-func (c *Client) Create(ctx context.Context, data *model.SimulationResult) (string, error) {
-	//TODO: check ctx for perma settings
+func (c *Client) Create(ctx context.Context, data *model.SimulationResult, expiresAt uint64, submitter string) (string, error) {
 	resp, err := c.srvClient.Create(ctx, &CreateRequest{
-		Result: data,
+		Result:    data,
+		ExpiresAt: expiresAt,
+		Submitter: submitter,
 	})
 	if err != nil {
 		return "", err
 	}
 	return resp.GetId(), nil
-}
-
-func (c *Client) CreatePerm(ctx context.Context, data *model.SimulationResult) (string, error) {
-	//TODO: handle ttl properly
-	return c.Create(ctx, data)
 }
 
 func (c *Client) Replace(ctx context.Context, id string, data *model.SimulationResult) error {
@@ -65,11 +60,21 @@ func (c *Client) SetTTL(ctx context.Context, id string) error {
 }
 
 func (c *Client) Delete(ctx context.Context, id string) error {
-	return fmt.Errorf("not implemented")
+	_, err := c.srvClient.Delete(ctx, &DeleteRequest{
+		Id: id,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *Client) Random(ctx context.Context) (string, error) {
-	return "", fmt.Errorf("not implemented")
+	resp, err := c.srvClient.Random(ctx, &RandomRequest{})
+	if err != nil {
+		return "", err
+	}
+	return resp.GetId(), nil
 }
 
 func (c *Client) Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error) {

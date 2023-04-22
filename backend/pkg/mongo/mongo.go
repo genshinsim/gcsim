@@ -5,20 +5,37 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/jaevor/go-nanoid"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 )
 
+var generateID func() string
+
+func init() {
+	var err error
+	// dictionary from https://github.com/CyberAP/nanoid-dictionary#nolookalikessafe
+	generateID, err = nanoid.CustomASCII("6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz", 12)
+	if err != nil {
+		panic(err)
+	}
+}
+
 type Config struct {
-	URL                  string
-	Database             string
-	Collection           string
-	SubmissionCollection string
-	QueryView            string
-	Username             string
-	Password             string
-	CurrentHash          string
+	URL      string
+	Database string
+	//collections
+	Collection string
+	ValidView  string
+	SubView    string
+	//auth
+	Username string
+	Password string
+	//compute
+	CurrentHash string
+	BatchSize   int
+	Iterations  int
 }
 
 type Server struct {
@@ -73,6 +90,14 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	if err != nil {
 		s.Log.Errorw("mongodb ping failed", "err", err)
 		return nil, err
+	}
+
+	//default sanity check
+	if s.cfg.BatchSize == 0 {
+		s.cfg.BatchSize = 5
+	}
+	if s.cfg.Iterations == 0 {
+		s.cfg.Iterations = 1000
 	}
 
 	s.Log.Info("mongodb connected sucessfully")

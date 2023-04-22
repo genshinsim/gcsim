@@ -12,12 +12,11 @@ RUN go mod download
 COPY backend /gcsim/backend
 COPY pkg /gcsim/pkg
 
-WORKDIR /gcsim/backend/cmd/submission
-RUN go build -o /submission
+WORKDIR /gcsim/backend/cmd/managerchan
+RUN go build -o /managerchan
 
-# the rest
 FROM alpine:3.16.3 as backend
 WORKDIR /
-COPY --from=build /submission /submission
+COPY --from=build /managerchan /managerchan
 RUN ls
-ENTRYPOINT ["/submission"]
+ENTRYPOINT ["/managerchan"]

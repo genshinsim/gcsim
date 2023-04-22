@@ -7,7 +7,9 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
 	"google.golang.org/grpc/codes"
@@ -15,19 +17,11 @@ import (
 )
 
 type ShareStore interface {
-	ShareReader
-	ShareWriter
+	Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error)
+	Create(context.Context, *model.SimulationResult, uint64, string) (string, error)
 	SetTTL(ctx context.Context, id string) error
 	Delete(ctx context.Context, id string) error
 	Random(ctx context.Context) (string, error)
-}
-
-type ShareReader interface {
-	Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error)
-}
-
-type ShareWriter interface {
-	Create(ctx context.Context, data *model.SimulationResult) (string, error)
 }
 
 var ErrKeyNotFound = errors.New("key does not exist")
@@ -73,7 +67,14 @@ func (s *Server) CreateShare() http.HandlerFunc {
 			return
 		}
 
-		id, err := s.cfg.ShareStore.Create(context.WithValue(r.Context(), TTLContextKey, DefaultTLL), res)
+		user := ""
+		userCtx := r.Context().Value(UserContextKey)
+		if userCtx != nil {
+			user = userCtx.(string)
+		}
+
+		expiresAt := uint64(time.Now().Unix() + DefaultTLL)
+		id, err := s.cfg.ShareStore.Create(r.Context(), res, expiresAt, user)
 
 		if err != nil {
 			s.Log.Errorw("unexpected error saving result", "err", err)
@@ -121,7 +122,7 @@ func (s *Server) GetShareByDBID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := chi.URLParam(r, "db-key")
 
-		e, err := s.cfg.DBStore.GetOne(r.Context(), key)
+		resp, err := s.dbClient.GetOne(r.Context(), &db.GetOneRequest{Id: key})
 		if err != nil {
 			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
 				http.Error(w, "not found", http.StatusNotFound)
@@ -131,7 +132,7 @@ func (s *Server) GetShareByDBID() http.HandlerFunc {
 			s.Log.Errorw("unexpected error getting share", "err", err)
 			return
 		}
-		s.sendShare(w, r, e.GetShareKey())
+		s.sendShare(w, r, resp.GetData().GetShareKey())
 	}
 }
 
