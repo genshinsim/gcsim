@@ -1,4 +1,5 @@
 import Editor from "react-simple-code-editor";
+import "@fontsource/fira-mono";
 
 //@ts-ignore
 import { highlight, languages } from "prismjs/components/prism-core";
@@ -38,7 +39,7 @@ export function ActionList(props: Props) {
         insertSpaces
         padding={10}
         style={{
-          fontFamily: '"Fira code", "Fira Mono", monospace',
+          fontFamily: '"Fira Mono", monospace',
           fontSize: 14,
           backgroundColor: "rgb(45 45 45)",
         }}

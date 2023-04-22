@@ -151,7 +151,7 @@ func (s *Server) Update(ctx context.Context, entry *share.ShareEntry) (string, e
 }
 
 func (s *Server) SetTTL(ctx context.Context, key string, until uint64) (string, error) {
-	return "not implemented", nil
+	return "not implemented", status.Error(codes.Unimplemented, "set ttl not implemented")
 }
 
 func (s *Server) Delete(ctx context.Context, key string) error {
