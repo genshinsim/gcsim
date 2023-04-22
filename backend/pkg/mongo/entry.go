@@ -71,6 +71,8 @@ func (s *Server) get(
 	opts ...*options.FindOptions,
 ) ([]*db.Entry, error) {
 
+	s.Log.Infow("db get request", "filter", filter, "opts", opts)
+
 	cursor, err := col.Find(ctx, filter, opts...)
 	if err != nil {
 		s.Log.Infow("error querying", "err", err)

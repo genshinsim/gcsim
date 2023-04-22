@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
@@ -29,7 +30,7 @@ func TestGetWork(t *testing.T) {
 }
 
 func TestGetAllEntriesWithoutTag(t *testing.T) {
-	res, err := s.GetAllEntriesWithoutTag(context.Background(), model.DBTag_DB_TAG_GCSIM)
+	res, err := s.GetAllEntriesWithoutTag(context.Background(), model.DBTag_DB_TAG_GCSIM, &db.QueryOpt{})
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

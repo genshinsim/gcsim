@@ -34,8 +34,6 @@ func (s *Server) getDB() http.HandlerFunc {
 			}
 		}
 
-		s.Log.Infow("db query - query string parsed ok", "query_string", o.Query)
-
 		query, err := structpb.NewStruct(o.Query)
 		if err != nil {
 			s.Log.Warnw("error querying db - could not convert query to structpb", "err", err)
@@ -61,6 +59,8 @@ func (s *Server) getDB() http.HandlerFunc {
 			Skip:    o.Skip,
 			Limit:   o.Limit,
 		}
+
+		s.Log.Infow("forwarding request to db", "opt", opt.String())
 
 		res, err := s.dbClient.Get(r.Context(), &db.GetRequest{Query: opt})
 		if err != nil {

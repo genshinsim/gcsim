@@ -20,7 +20,7 @@ type DBService interface {
 	Get(ctx context.Context, query *QueryOpt) ([]*Entry, error)
 	GetById(ctx context.Context, id string) (*Entry, error)
 	GetAll(ctx context.Context, query *QueryOpt) ([]*Entry, error)
-	GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag) ([]*Entry, error)
+	GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag, query *QueryOpt) ([]*Entry, error)
 	Delete(context.Context, string) error
 }
 

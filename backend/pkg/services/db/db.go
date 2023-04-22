@@ -41,7 +41,7 @@ func (s *Server) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllRespons
 }
 
 func (s *Server) GetPending(ctx context.Context, req *GetPendingRequest) (*GetPendingResponse, error) {
-	res, err := s.DBStore.GetAllEntriesWithoutTag(ctx, req.GetTag())
+	res, err := s.DBStore.GetAllEntriesWithoutTag(ctx, req.GetTag(), req.GetQuery())
 	if err != nil {
 		return nil, err
 	}

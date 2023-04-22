@@ -17,6 +17,14 @@ func init() {
 		api.CreateCommandData{
 			Name:        "list",
 			Description: "list pending sims",
+			Options: []discord.CommandOption{
+				&discord.NumberOption{
+					OptionName:  "page",
+					Description: "page number to list, min 1",
+					Required:    true,
+					Min:         option.NewFloat(1),
+				},
+			},
 		},
 		api.CreateCommandData{
 			Name:        "randsim",
@@ -53,7 +61,13 @@ var channelMapping = map[string]model.DBTag{
 }
 
 func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
-	b.Log.Infow("list request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
+	var opts struct {
+		Page float64 `discord:"page"`
+	}
+	if err := data.Options.Unmarshal(&opts); err != nil {
+		return errorResponse(err)
+	}
+	b.Log.Infow("list request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID, "page", opts.Page)
 
 	tag, ok := channelMapping[data.Event.ChannelID.String()]
 	if !ok {
@@ -64,7 +78,7 @@ func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.Inter
 
 	b.Log.Infow("list request for tag", "tag", tag)
 
-	entries, err := b.Backend.GetPending(tag)
+	entries, err := b.Backend.GetPending(tag, int(opts.Page))
 	if err != nil {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString(fmt.Sprintf("Oops we encountered an error: %v", err)),
@@ -74,12 +88,17 @@ func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.Inter
 	b.Log.Infow("entries received", "len", len(entries))
 
 	if len(entries) == 0 {
+		if opts.Page <= 1 {
+			return &api.InteractionResponseData{
+				Content: option.NewNullableString("No more pending entries!"),
+			}
+		}
 		return &api.InteractionResponseData{
-			Content: option.NewNullableString("No pending entries to approve!"),
+			Content: option.NewNullableString(fmt.Sprintf("No entries found for page %v!", int(opts.Page))),
 		}
 	}
 
-	embeds := listEmbed(entries)
+	embeds := listEmbed(entries, int(opts.Page))
 
 	return &api.InteractionResponseData{
 		AllowedMentions: &api.AllowedMentions{
@@ -91,28 +110,10 @@ func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.Inter
 	}
 }
 
-func listEmbed(entries []*db.Entry) []discord.Embed {
-
-	//each embed can hold 25 entries
-	count := 0
-	page := 1
-	maxPages := len(entries) / 25
-	if maxPages*25 < len(entries) {
-		maxPages++
-	}
-
+func listEmbed(entries []*db.Entry, page int) []discord.Embed {
 	var result []discord.Embed
 	row := discord.NewEmbed()
 	for _, v := range entries {
-		//every time count reaches 25 we want to append last and create
-		//a new embed
-		if count == 25 {
-			row.Title = fmt.Sprintf("Pending submissions (page %v of %v)", page, maxPages)
-			result = append(result, *row)
-			row = discord.NewEmbed()
-			count = 0
-			page++
-		}
 		name := fmt.Sprintf("%v: %v", v.Id, v.Description)
 		if len(name) > 254 {
 			name = name[:254]
@@ -122,11 +123,9 @@ func listEmbed(entries []*db.Entry) []discord.Embed {
 			Name:  name,
 			Value: desc,
 		})
-
-		count++
 	}
 
-	row.Title = fmt.Sprintf("Pending submissions (page %v of %v)", page, maxPages)
+	row.Title = fmt.Sprintf("Pending submissions (page %v)", page)
 	result = append(result, *row)
 
 	return result

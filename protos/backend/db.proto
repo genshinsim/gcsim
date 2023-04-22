@@ -103,6 +103,7 @@ message GetOneResponse {
 
 message GetPendingRequest {
     model.DBTag tag = 1;
+    QueryOpt query = 2;
 }
 
 message GetPendingResponse {

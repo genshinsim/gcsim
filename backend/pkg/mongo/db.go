@@ -38,8 +38,9 @@ func (s *Server) GetById(ctx context.Context, id string) (*db.Entry, error) {
 	return res, nil
 }
 
-func (s *Server) GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag) ([]*db.Entry, error) {
+func (s *Server) GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag, opt *db.QueryOpt) ([]*db.Entry, error) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	opts := findOptFromQueryOpt(opt)
 	results, err := s.get(
 		ctx,
 		col,
@@ -57,6 +58,7 @@ func (s *Server) GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag) (
 				"$nin": bson.A{tag},
 			},
 		},
+		opts,
 	)
 	if err != nil {
 		return nil, err
@@ -68,6 +70,12 @@ func findOptFromQueryOpt(q *db.QueryOpt) *options.FindOptions {
 	opt := options.Find()
 	opt.Projection = q.GetProject().AsMap()
 	opt.Sort = q.GetSort().AsMap()
+	if q.Limit < 0 {
+		q.Limit = 0
+	}
+	if q.Skip < 0 {
+		q.Skip = 0
+	}
 	opt.Limit = &q.Limit
 	opt.Skip = &q.Skip
 	return opt

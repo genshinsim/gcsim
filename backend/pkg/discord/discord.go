@@ -17,7 +17,7 @@ import (
 
 type Backend interface {
 	Submit(link, desc, sender string) (string, error)
-	GetPending(model.DBTag) ([]*db.Entry, error)
+	GetPending(model.DBTag, int) ([]*db.Entry, error)
 	Approve(id string, tag model.DBTag) error
 	Reject(id string, tag model.DBTag) error
 	GetRandomSim() string
