@@ -1,9 +1,6 @@
 import { model } from "@gcsim/types";
 import DBEntryActions from "./DBEntryViewComponents/DBEntryActions";
-import {
-  DBEntryMobilePortrait,
-  DBEntryPortrait,
-} from "./DBEntryViewComponents/DBEntryPortrait";
+import { DBEntryPortrait } from "./DBEntryViewComponents/DBEntryPortrait";
 import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 function useTranslation() {
@@ -30,9 +27,6 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
             })}
         </div>
         <div className="flex flex-col grow ">
-          {/* <div className="capitalize text-lg font-semibold ">
-          {dbEntry?.char_names?.toString().replaceAll(",", ", ")}
-        </div> */}
           <div className="max-w-2xl">
             <div className="flex flex-col ">
               <DBEntryTags tags={dbEntry.accepted_tags} />
@@ -48,7 +42,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
         <div className="grid grid-cols-2 grid-row-2  ">
           {team &&
             team.map((char, index) => {
-              return <DBEntryMobilePortrait {...char} key={index.toString()} />;
+              return <DBEntryPortrait {...char} key={index.toString()} />;
             })}
         </div>
         <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />

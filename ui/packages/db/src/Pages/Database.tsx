@@ -7,8 +7,8 @@ import {
   FilterContext,
   FilterDispatchContext,
   filterReducer,
-  FilterState,
   initialCharFilter,
+  ItemFilterState,
 } from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
 import { mockData } from "../SharedComponents/mockData";
@@ -17,24 +17,26 @@ import Sorter from "../SharedComponents/Sorter";
 export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, {
     charFilter: initialCharFilter,
+    charIncludeCount: 0,
   });
 
   const [data, setData] = useState<model.IDBEntries["data"]>([]);
 
   useEffect(() => {
     //https://simimpact.app/api
-    const url = `api/db?q=${encodeURIComponent(
-      JSON.stringify(filter.charFilter)
-    )}`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        // setData(data.data);
-        setData(mockData);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    // const url = `https://localhost:3000/api/db?q=${encodeURIComponent(
+    //   JSON.stringify(filter.charFilter)
+    // )}`;
+    // fetch(url)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     // setData(data.data);
+    //     setData(mockData);
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
+    setData(mockData);
   }, [filter.charFilter]);
 
   return (
@@ -61,9 +63,9 @@ function craftQuery({ charFilter }: CharFilter): unknown {
   const includedChars: string[] = [];
   const excludedChars: string[] = [];
   for (const [charName, filterState] of Object.entries(charFilter)) {
-    if (filterState === FilterState.include) {
+    if (filterState === ItemFilterState.include) {
       includedChars.push(charName);
-    } else if (filterState === FilterState.exclude) {
+    } else if (filterState === ItemFilterState.exclude) {
       excludedChars.push(charName);
     }
   }

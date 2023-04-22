@@ -3,10 +3,12 @@ import { useContext, useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import { charNames } from "../PipelineExtract/CharacterNames";
 import {
+  CharFilterState,
   FilterContext,
   FilterDispatchContext,
-  FilterState,
+  ItemFilterState,
 } from "./FilterComponents/Filter.utils";
+import { FilterPortrait } from "./FilterComponents/FilterPotrait";
 
 const useTranslation = (key: string) => key;
 
@@ -14,6 +16,14 @@ export function Filter() {
   const t = useTranslation;
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const filter = useContext(FilterContext);
+  const includedCharacterFilters: CharFilterState[] = Object.keys(
+    filter.charFilter
+  )
+    .filter((key) => filter.charFilter[key].state === ItemFilterState.include)
+    .map((key) => filter.charFilter[key]);
+
   return (
     <div>
       <button
@@ -23,6 +33,7 @@ export function Filter() {
         <FaFilter size={24} className="opacity-80" />
         {/* <div className="text-xl pb-1 ">{t("Filter")}</div> */}
       </button>
+
       <Drawer
         isOpen={isOpen}
         canEscapeKeyClose={true}
@@ -34,7 +45,17 @@ export function Filter() {
         position={Position.LEFT}
         size={DrawerSize.SMALL}
       >
-        <CharacterFilter />
+        <div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden">
+          <div className="flex flex-row gap-1">
+            {includedCharacterFilters.map((charFilter) => (
+              <FilterPortrait
+                key={charFilter.charName}
+                charName={charFilter.charName}
+              />
+            ))}
+          </div>
+          <CharacterFilter />
+        </div>
       </Drawer>
     </div>
   );
@@ -51,7 +72,7 @@ function CharacterFilter() {
   const t = useTranslation;
 
   return (
-    <div className="w-full overflow-y-auto overflow-x-hidden no-scrollbar">
+    <div className="w-full  overflow-x-hidden no-scrollbar">
       <button
         className=" bp4-button bp4-intent-primary pl-5 pr-3 w-full "
         onClick={() => setCharIsOpen(!charIsOpen)}
@@ -60,7 +81,7 @@ function CharacterFilter() {
         <div className="">{charIsOpen ? "-" : "+"}</div>
       </button>
       <Collapse isOpen={charIsOpen}>
-        <div className="grid grid-cols-3 gap-1 mt-1 ">
+        <div className="grid grid-cols-3 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
           {charNames.map((charName) => (
             <FilterButton key={charName} charName={charName} />
           ))}
@@ -81,11 +102,10 @@ function FilterButton({ charName }: { charName: string }) {
       type: "handleChar",
       char: charName,
     });
-    console.log(filter);
   };
 
   switch (filter.charFilter[charName].state) {
-    case FilterState.include:
+    case ItemFilterState.include:
       return (
         <button
           className={"bp4-button bp4-intent-success"}
@@ -94,7 +114,7 @@ function FilterButton({ charName }: { charName: string }) {
           {`+ ` + displayCharName}
         </button>
       );
-    case FilterState.exclude:
+    case ItemFilterState.exclude:
       return (
         <button
           className={"bp4-button bp4-intent-danger"}
@@ -103,11 +123,11 @@ function FilterButton({ charName }: { charName: string }) {
           {`- ` + displayCharName}
         </button>
       );
-    case FilterState.none:
+    case ItemFilterState.none:
     default:
       return (
         <button className={"bp4-button"} onClick={handleClick}>
-          {displayCharName + `${filter.charFilter[charName].state}`}
+          {displayCharName}
         </button>
       );
   }

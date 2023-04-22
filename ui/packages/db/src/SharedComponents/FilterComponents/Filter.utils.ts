@@ -1,11 +1,15 @@
 import { createContext } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames";
 
-export enum FilterState {
+export enum ItemFilterState {
   "none",
   "include",
   "exclude",
 }
+
+// setName: number of pieces
+// e.g. { "gladiatorsfinale": 2, "thundersoother": 4 }
+export type ArtifactSetFilter = Record<string, number>;
 
 export interface CharFilter {
   //character name
@@ -14,32 +18,33 @@ export interface CharFilter {
 
 export type CharFilterState =
   | {
-      state: FilterState.include;
-      weapon: string;
-      set: {
-        //set name
-        [key: string]: number;
-      };
+      charName: string;
+      state: ItemFilterState.include;
+      weapon?: string;
+      sets?: ArtifactSetFilter;
     }
   | {
-      state: FilterState.none;
+      state: ItemFilterState.none;
+      charName: string;
     }
   | {
-      state: FilterState.exclude;
+      state: ItemFilterState.exclude;
+      charName: string;
     };
 
 export const FilterDispatchContext = createContext<
   React.Dispatch<FilterReducerAction>
 >(null as unknown as React.Dispatch<FilterReducerAction>);
 
-export const initialCharFilter = charNames.reduce((acc, char) => {
-  acc[char] = { state: FilterState.none };
+export const initialCharFilter = charNames.reduce((acc, charName) => {
+  acc[charName] = { state: ItemFilterState.none, charName };
   return acc;
 }, {} as CharFilter);
 
 export const FilterContext = createContext<{
   charFilter: CharFilter;
-}>({ charFilter: initialCharFilter });
+  charIncludeCount: number;
+}>({ charFilter: initialCharFilter, charIncludeCount: 0 });
 
 export interface FilterReducerAction {
   type:
@@ -55,33 +60,45 @@ export interface FilterReducerAction {
 export function filterReducer(
   filter: {
     charFilter: CharFilter;
+    charIncludeCount: number;
   },
   action: FilterReducerAction
-): { charFilter: CharFilter } {
-  console.log(action);
-  console.log("real", filter);
+): { charFilter: CharFilter; charIncludeCount: number } {
   switch (action.type) {
     case "handleChar": {
-      let newFilterState;
+      let newFilterState: ItemFilterState;
+      let newCharIncludeCount = filter.charIncludeCount ?? 0;
       switch (filter.charFilter[action.char].state) {
-        case FilterState.none:
-          newFilterState = FilterState.include;
+        case ItemFilterState.none:
+          //if more than 4 characters are included, do not include the new character
+          if (filter.charIncludeCount >= 4)
+            newFilterState = ItemFilterState.exclude;
+          else {
+            newFilterState = ItemFilterState.include;
+            newCharIncludeCount++;
+          }
+
           break;
-        case FilterState.include:
-          newFilterState = FilterState.exclude;
+        case ItemFilterState.include:
+          newFilterState = ItemFilterState.exclude;
+          newCharIncludeCount--;
           break;
-        case FilterState.exclude:
-          newFilterState = FilterState.none;
+        case ItemFilterState.exclude:
+          newFilterState = ItemFilterState.none;
           break;
       }
+      console.log(newCharIncludeCount);
+
       return {
         ...filter,
         charFilter: {
           ...filter.charFilter,
           [action.char]: {
             state: newFilterState,
+            charName: action.char,
           },
         },
+        charIncludeCount: newCharIncludeCount,
       };
     }
     case "includeWeapon": {
