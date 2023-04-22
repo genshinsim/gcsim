@@ -141,5 +141,11 @@ func (s *Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteRespons
 	return &DeleteResponse{}, nil
 }
 func (s *Server) Random(ctx context.Context, req *RandomRequest) (*RandomResponse, error) {
-	return &RandomResponse{}, nil
+	id, err := s.cfg.Store.Random(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &RandomResponse{
+		Id: id,
+	}, nil
 }

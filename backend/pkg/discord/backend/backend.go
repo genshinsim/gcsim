@@ -14,6 +14,7 @@ import (
 
 type ShareReader interface {
 	Read(context.Context, string) (*model.SimulationResult, uint64, error)
+	Random(context.Context) (string, error)
 }
 
 type DBStore interface {

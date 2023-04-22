@@ -178,21 +178,37 @@ func (s *Server) Random(ctx context.Context) (string, error) {
 	s.Log.Infow("get random share request")
 
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-	c, err := col.Aggregate(ctx, bson.D{{Key: "$sample", Value: bson.D{{Key: "size", Value: 1}}}})
+	c, err := col.Aggregate(
+		ctx,
+		bson.A{
+			bson.M{
+				"$sample": bson.M{
+					"size": 1,
+				},
+			},
+		},
+	)
 
 	if err != nil {
+		s.Log.Infow("unexpected error grabbing sim", "err", err)
 		return "", status.Error(codes.Internal, "unexpected server error")
 	}
 
-	res := &share.ShareEntry{}
+	var result []*share.ShareEntry
 
-	err = c.Decode(res)
-
-	if err != nil {
-		return "", status.Error(codes.Internal, "unexpected server error")
+	for c.Next(ctx) {
+		var r share.ShareEntry
+		if err := c.Decode(&r); err != nil {
+			s.Log.Infow("error reading cursor", "err", err)
+			return "'", status.Error(codes.Internal, "unexpected server error")
+		}
+		result = append(result, &r)
 	}
 
-	s.Log.Infow("get random share request done", "key", res.GetId())
+	if len(result) == 0 {
+		s.Log.Infow("mongodb: get request done; no results")
+		return "", nil
+	}
 
-	return res.GetId(), nil
+	return result[0].Id, nil
 }

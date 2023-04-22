@@ -12,10 +12,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type SubBackend interface {
-	Submit(link, desc, sender string) (string, error)
-}
-
 func init() {
 	commands = append(commands, api.CreateCommandData{
 		Name:        "submit",

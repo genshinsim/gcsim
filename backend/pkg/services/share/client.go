@@ -70,7 +70,11 @@ func (c *Client) Delete(ctx context.Context, id string) error {
 }
 
 func (c *Client) Random(ctx context.Context) (string, error) {
-	return "", fmt.Errorf("not implemented")
+	resp, err := c.srvClient.Random(ctx, &RandomRequest{})
+	if err != nil {
+		return "", err
+	}
+	return resp.GetId(), nil
 }
 
 func (c *Client) Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error) {

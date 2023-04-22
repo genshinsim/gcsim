@@ -12,6 +12,7 @@ service DBStore {
     rpc Get (GetRequest) returns (GetResponse) {}
     rpc GetAll (GetAllRequest) returns (GetAllResponse) {}
     rpc GetOne (GetOneRequest) returns (GetOneResponse) {}
+    rpc GetPending (GetPendingRequest) returns (GetPendingResponse) {}
 
     //tagging
     rpc ApproveTag(ApproveTagRequest) returns (ApproveTagResponse) {}
@@ -98,6 +99,14 @@ message GetOneRequest {
 
 message GetOneResponse {
     Entry data = 1;
+}
+
+message GetPendingRequest {
+    model.DBTag tag = 1;
+}
+
+message GetPendingResponse {
+    Entries data = 1;
 }
 
 message GetAllRequest {

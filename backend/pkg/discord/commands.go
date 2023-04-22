@@ -29,6 +29,10 @@ func (b *Bot) routes() error {
 	b.Use(cmdroute.Deferrable(b.s, cmdroute.DeferOpts{}))
 	b.AddFunc("echo", b.cmdEcho)
 	b.AddFunc("submit", b.cmdSubmit)
+	b.AddFunc("list", b.cmdList)
+	b.AddFunc("approve", b.cmdApprove)
+	b.AddFunc("reject", b.cmdReject)
+	b.AddFunc("randsim", b.cmdRandom)
 
 	return nil
 }

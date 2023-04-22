@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -35,6 +36,32 @@ func (s *Server) GetById(ctx context.Context, id string) (*db.Entry, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+func (s *Server) GetAllEntriesWithoutTag(ctx context.Context, tag model.DBTag) ([]*db.Entry, error) {
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	results, err := s.get(
+		ctx,
+		col,
+		bson.M{
+			"summary": bson.D{
+				{
+					Key:   "$exists",
+					Value: true,
+				},
+			},
+			"accepted_tags": bson.M{
+				"$nin": bson.A{tag},
+			},
+			"rejected_tags": bson.M{
+				"$nin": bson.A{tag},
+			},
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
 }
 
 func findOptFromQueryOpt(q *db.QueryOpt) *options.FindOptions {

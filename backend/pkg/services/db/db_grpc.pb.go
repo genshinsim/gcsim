@@ -22,6 +22,7 @@ const (
 	DBStore_Get_FullMethodName           = "/db.DBStore/Get"
 	DBStore_GetAll_FullMethodName        = "/db.DBStore/GetAll"
 	DBStore_GetOne_FullMethodName        = "/db.DBStore/GetOne"
+	DBStore_GetPending_FullMethodName    = "/db.DBStore/GetPending"
 	DBStore_ApproveTag_FullMethodName    = "/db.DBStore/ApproveTag"
 	DBStore_RejectTag_FullMethodName     = "/db.DBStore/RejectTag"
 	DBStore_Submit_FullMethodName        = "/db.DBStore/Submit"
@@ -39,6 +40,7 @@ type DBStoreClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	GetOne(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error)
+	GetPending(ctx context.Context, in *GetPendingRequest, opts ...grpc.CallOption) (*GetPendingResponse, error)
 	// tagging
 	ApproveTag(ctx context.Context, in *ApproveTagRequest, opts ...grpc.CallOption) (*ApproveTagResponse, error)
 	RejectTag(ctx context.Context, in *RejectTagRequest, opts ...grpc.CallOption) (*RejectTagResponse, error)
@@ -80,6 +82,15 @@ func (c *dBStoreClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...g
 func (c *dBStoreClient) GetOne(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error) {
 	out := new(GetOneResponse)
 	err := c.cc.Invoke(ctx, DBStore_GetOne_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBStoreClient) GetPending(ctx context.Context, in *GetPendingRequest, opts ...grpc.CallOption) (*GetPendingResponse, error) {
+	out := new(GetPendingResponse)
+	err := c.cc.Invoke(ctx, DBStore_GetPending_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -157,6 +168,7 @@ type DBStoreServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error)
+	GetPending(context.Context, *GetPendingRequest) (*GetPendingResponse, error)
 	// tagging
 	ApproveTag(context.Context, *ApproveTagRequest) (*ApproveTagResponse, error)
 	RejectTag(context.Context, *RejectTagRequest) (*RejectTagResponse, error)
@@ -182,6 +194,9 @@ func (UnimplementedDBStoreServer) GetAll(context.Context, *GetAllRequest) (*GetA
 }
 func (UnimplementedDBStoreServer) GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOne not implemented")
+}
+func (UnimplementedDBStoreServer) GetPending(context.Context, *GetPendingRequest) (*GetPendingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPending not implemented")
 }
 func (UnimplementedDBStoreServer) ApproveTag(context.Context, *ApproveTagRequest) (*ApproveTagResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveTag not implemented")
@@ -267,6 +282,24 @@ func _DBStore_GetOne_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBStoreServer).GetOne(ctx, req.(*GetOneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_GetPending_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPendingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).GetPending(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_GetPending_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).GetPending(ctx, req.(*GetPendingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -415,6 +448,10 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOne",
 			Handler:    _DBStore_GetOne_Handler,
+		},
+		{
+			MethodName: "GetPending",
+			Handler:    _DBStore_GetPending_Handler,
 		},
 		{
 			MethodName: "ApproveTag",

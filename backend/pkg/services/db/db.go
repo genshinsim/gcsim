@@ -27,7 +27,7 @@ func (s *Server) GetOne(ctx context.Context, req *GetOneRequest) (*GetOneRespons
 	}, nil
 }
 
-func (s *Server) GetUnfiltered(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error) {
+func (s *Server) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error) {
 	res, err := s.DBStore.GetAll(ctx, req.GetQuery())
 	if err != nil {
 		return nil, err
@@ -38,4 +38,17 @@ func (s *Server) GetUnfiltered(ctx context.Context, req *GetAllRequest) (*GetAll
 			Data: res,
 		},
 	}, nil
+}
+
+func (s *Server) GetPending(ctx context.Context, req *GetPendingRequest) (*GetPendingResponse, error) {
+	res, err := s.DBStore.GetAllEntriesWithoutTag(ctx, req.GetTag())
+	if err != nil {
+		return nil, err
+	}
+	return &GetPendingResponse{
+		Data: &Entries{
+			Data: res,
+		},
+	}, err
+
 }

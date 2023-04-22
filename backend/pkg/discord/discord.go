@@ -10,11 +10,17 @@ import (
 	"github.com/diamondburned/arikawa/v3/api/cmdroute"
 	"github.com/diamondburned/arikawa/v3/gateway"
 	"github.com/diamondburned/arikawa/v3/state"
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
 )
 
 type Backend interface {
-	SubBackend
+	Submit(link, desc, sender string) (string, error)
+	GetPending(model.DBTag) ([]*db.Entry, error)
+	Approve(id string, tag model.DBTag) error
+	Reject(id string, tag model.DBTag) error
+	GetRandomSim() string
 }
 
 type Config struct {
