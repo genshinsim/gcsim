@@ -13,6 +13,7 @@ service DBStore {
     rpc GetAll (GetAllRequest) returns (GetAllResponse) {}
     rpc GetOne (GetOneRequest) returns (GetOneResponse) {}
     rpc GetPending (GetPendingRequest) returns (GetPendingResponse) {}
+    rpc GetBySubmitter (GetBySubmitterRequest) returns (GetBySubmitterResponse) {}
 
     //tagging
     rpc ApproveTag(ApproveTagRequest) returns (ApproveTagResponse) {}
@@ -110,6 +111,15 @@ message GetPendingResponse {
     Entries data = 1;
 }
 
+message GetBySubmitterRequest {
+    string submitter = 1;
+    QueryOpt query = 2; 
+}
+
+message GetBySubmitterResponse {
+    Entries data = 1;
+}
+
 message GetAllRequest {
     QueryOpt query = 1;
 }
@@ -152,6 +162,7 @@ message SubmitResponse {
 
 message DeletePendingRequest {
     string id = 1 [json_name="_id"];
+    string sender = 2 [json_name="sender"];
 }
 
 message DeletePendingResponse {

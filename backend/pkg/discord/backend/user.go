@@ -17,8 +17,8 @@ func (s *Store) GetBySubmitter(id string, page int) ([]*db.Entry, error) {
 	}
 	var err error
 	opt := &db.QueryOpt{
-		Skip:  int64(page-1) * 10,
-		Limit: 10,
+		Skip:  int64(page-1) * 5,
+		Limit: 5,
 	}
 	opt.Sort, err = structpb.NewStruct(sort)
 	if err != nil {
