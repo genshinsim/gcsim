@@ -1,9 +1,22 @@
 import { model } from "@gcsim/types";
+import kuki from "images/kuki.png";
+import nahida from "images/nahida.png";
 import { Long } from "protobufjs";
-import kuki from "./images/kuki.png";
-import nahida from "./images/nahida.png";
 
-export function DBEntryPortrait({
+export function DBEntryPortrait(char: model.ICharacter) {
+  return (
+    <>
+      <div className="hidden lg:flex">
+        <DBEntryDesktopPortrait {...char} />
+      </div>
+      <div className="lg:hidden block">
+        <DBEntryMobilePortrait {...char} />
+      </div>
+    </>
+  );
+}
+
+function DBEntryDesktopPortrait({
   name,
   sets,
   weapon,
@@ -11,8 +24,8 @@ export function DBEntryPortrait({
 }: model.ICharacter) {
   if (!name) {
     return (
-      <div className="bg-slate-700 p-2 w-20 flex flex-row justify-center">
-        <img src={nahida} className=" object-contain opacity-50" />
+      <div className="bg-slate-700 p-2 w-20 flex flex-row  h-fit justify-center">
+        <img src={nahida} className=" object-contain opacity-50 " />
       </div>
     );
   }
@@ -40,12 +53,7 @@ export function DBEntryPortrait({
   );
 }
 
-export function DBEntryMobilePortrait({
-  name,
-  sets,
-  weapon,
-  cons,
-}: model.ICharacter) {
+function DBEntryMobilePortrait({ name, sets, weapon, cons }: model.ICharacter) {
   if (!name) {
     return (
       <div className="bg-slate-700 p-2  max-h-20 flex flex-row justify-center">
