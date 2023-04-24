@@ -90,6 +90,9 @@ func findOptFromQueryOpt(q *db.QueryOpt) *options.FindOptions {
 	if q.Limit < 0 {
 		q.Limit = 0
 	}
+	if q.Limit > 100 {
+		q.Limit = 100
+	}
 	if q.Skip < 0 {
 		q.Skip = 0
 	}
