@@ -45,7 +45,8 @@ export default ({ exec, data, redirect, mode, commit, setResult, setError }: Pro
   }
 
   // only show hash mismatch on share links to reduce noise (for now)
-  if (mismatch == MismatchType.CommitMismatch && !location.pathname.startsWith("/viewer/share")) {
+  if (mismatch == MismatchType.CommitMismatch
+      && !location.pathname.startsWith("/sh/") && !location.pathname.startsWith("/db/")) {
     return null;
   }
 
