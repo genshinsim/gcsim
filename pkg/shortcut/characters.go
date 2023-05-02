@@ -149,5 +149,4 @@ var CharNameToKey = map[string]keys.Char{
 	"yaoyao":                  keys.Yaoyao,
 	"mika":                    keys.Mika,
 	"kaveh":                   keys.Kaveh,
->>>>>>> 987ced81 (add kaveh package)
 }
