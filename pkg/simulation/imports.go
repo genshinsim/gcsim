@@ -81,6 +81,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/itto"
 	_ "github.com/genshinsim/gcsim/internal/characters/jean"
 	_ "github.com/genshinsim/gcsim/internal/characters/kaeya"
+	_ "github.com/genshinsim/gcsim/internal/characters/kaveh"
 	_ "github.com/genshinsim/gcsim/internal/characters/kazuha"
 	_ "github.com/genshinsim/gcsim/internal/characters/keqing"
 	_ "github.com/genshinsim/gcsim/internal/characters/klee"
