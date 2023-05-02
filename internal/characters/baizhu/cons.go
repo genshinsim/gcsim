@@ -19,8 +19,7 @@ func (c *char) c1() {
 }
 
 // When your own active character hits a nearby opponent with their attacks, Baizhu will unleash a Gossamer Sprite: Splice.
-// Gossamer Sprite: Splice will initiate 1 attack before returning, dealing 300% of Baizhu's ATK as Dendro DMG and healing for
-// 20% of Universal Diagnosis's Gossamer Sprite's normal healing.
+// Gossamer Sprite: Splice will initiate 1 attack before returning, dealing 250% of Baizhu's ATK as Dendro DMG and healing for 20% of Universal Diagnosis's Gossamer Sprite's normal healing.
 // DMG dealt this way is considered Elemental Skill DMG.
 // This effect can be triggered once every 5s.
 func (c *char) c2() {
@@ -43,7 +42,7 @@ func (c *char) c2() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
-			Mult:       3,
+			Mult:       2.5,
 		}
 		c.c6done = false
 		var c6cb combat.AttackCBFunc
