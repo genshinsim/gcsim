@@ -122,6 +122,7 @@ const (
 	Dehya
 	Yaoyao
 	Mika
+	Kaveh
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -209,6 +210,7 @@ var charNames = []string{
 	"dehya",
 	"yaoyao",
 	"mika",
+	"kaveh",
 	"test_char_do_not_use",
 }
 
@@ -295,6 +297,7 @@ var charPrettyName = []string{
 	"Dehya",
 	"Yaoyao",
 	"Mika",
+	"Kaveh",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -377,5 +380,6 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Dehya:            attributes.Pyro,
 	Yaoyao:           attributes.Dendro,
 	Mika:             attributes.Cryo,
+	Kaveh:            attributes.Dendro,
 	TestCharDoNotUse: attributes.Geo,
 }
