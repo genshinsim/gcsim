@@ -96,7 +96,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
 		}
-		c.Core.QueueAttackEvent(&atk, 10) //TODO: Modify delay
+		c.Core.QueueAttackEvent(&atk, 60) //TODO: Modify delay
 
 	}
 }
