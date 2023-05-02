@@ -53,9 +53,6 @@ func (c *char) c4() {
 
 func (c *char) c6() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		if c.a4Stacks >= 4 {
-			return false
-		}
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {
 			return false
@@ -95,5 +92,5 @@ func (c *char) c6() {
 		c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, skillHitmark)
 
 		return false
-	}, "kaveh-a4")
+	}, "kaveh-c6")
 }
