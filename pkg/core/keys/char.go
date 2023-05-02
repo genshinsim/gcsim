@@ -119,6 +119,7 @@ const (
 	Layla
 	Faruzan
 	Wanderer
+	Baizhu
 	Dehya
 	Yaoyao
 	Mika
@@ -207,6 +208,7 @@ var charNames = []string{
 	"layla",
 	"faruzan",
 	"wanderer",
+	"baizhu",
 	"dehya",
 	"yaoyao",
 	"mika",
@@ -294,6 +296,7 @@ var charPrettyName = []string{
 	"Layla",
 	"Faruzan",
 	"Wanderer",
+	"Baizhu",
 	"Dehya",
 	"Yaoyao",
 	"Mika",
@@ -377,6 +380,7 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Layla:            attributes.Cryo,
 	Faruzan:          attributes.Anemo,
 	Wanderer:         attributes.Anemo,
+	Baizhu:           attributes.Dendro,
 	Dehya:            attributes.Pyro,
 	Yaoyao:           attributes.Dendro,
 	Mika:             attributes.Cryo,
