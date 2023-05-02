@@ -84,8 +84,8 @@ func (c *char) summonSpiritvein() {
 	// TODO: Hitbox and strike timing
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4.5, 8),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5),
 		0,
-		11,
+		10,
 	)
 }
