@@ -88,7 +88,9 @@ const names = [
   "alhaitham",
   "yaoyao",
   "mika",
-  "dehya"
+  "dehya",
+  "baizhu",
+  "kaveh"
 ];
 
 const travelers = [

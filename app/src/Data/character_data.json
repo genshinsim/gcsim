@@ -154,6 +154,11 @@
     "element": "cryo",
     "weapon_class": "sword"
   },
+  "kaveh": {
+    "rarity": 4,
+    "element": "dendro",
+    "weapon_class": "claymore"
+  }, 
   "kazuha": {
     "rarity": 5,
     "element": "anemo",
