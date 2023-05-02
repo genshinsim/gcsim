@@ -78,7 +78,7 @@ func (c *char) summonSpiritvein() {
 		Mult:       burstAtk[c.TalentLvlBurst()],
 	}
 	if c.Base.Cons >= 6 {
-		ai.FlatDmg = c.MaxHP() * 0.06
+		ai.FlatDmg = c.MaxHP() * 0.08
 	}
 
 	// TODO: Hitbox and strike timing

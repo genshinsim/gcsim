@@ -91,7 +91,7 @@ func (c *char) c4() {
 
 }
 
-// Increases the DMG dealt by Healing Holism's Spiritveins by 6% of Baizhu's Max HP.
+// Increases the DMG dealt by Holistic Revivification's Spiritveins by 8% of Baizhu's Max HP.
 // Additionally, when Gossamer Sprite or Gossamer Sprite: Splice hit opponents, there is a 100% chance of generating one of Healing Holism's
 // Seamless Shields. This effect can only be triggered once by a Gossamer Sprite or Gossamer Sprite: Splice.
 func (c *char) c6(a combat.AttackCB) {
