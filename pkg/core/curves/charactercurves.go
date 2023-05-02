@@ -1702,7 +1702,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 		Rarity:      4,
 		Body:        profile.BodyMale,
 		Element:     attributes.Dendro,
-		Region:      profile.ZoneInazuma,
+		Region:      profile.ZoneSumeru,
 		WeaponType:  weapon.WeaponClassClaymore,
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
