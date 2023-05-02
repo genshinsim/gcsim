@@ -22,7 +22,7 @@ func (c *char) c1() {
 // Gossamer Sprite: Splice will initiate 1 attack before returning, dealing 300% of Baizhu's ATK as Dendro DMG and healing for
 // 20% of Universal Diagnosis's Gossamer Sprite's normal healing.
 // DMG dealt this way is considered Elemental Skill DMG.
-// This effect can be triggered once every 6s.
+// This effect can be triggered once every 5s.
 func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
@@ -70,7 +70,7 @@ func (c *char) c2() {
 
 		}, 22) //TODO: change delay
 
-		c.AddStatus(c2ICDKey, 60*6, false) // 6s
+		c.AddStatus(c2ICDKey, 60*5, false) // 5s
 		return false
 	}, "baizhu-c2")
 }

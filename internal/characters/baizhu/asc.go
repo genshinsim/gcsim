@@ -46,6 +46,12 @@ func (c *char) a1() {
 	})
 
 }
+
+// Characters who are healed by Seamless Shields will gain the Year of Verdant Favor effect:
+// Each 1,000 Max HP that Baizhu possesses that does not exceed 50,000 will increase the Burning, Bloom, Hyperbloom, and Burgeon reaction
+// DMG dealt by these characters by 2%, while the Aggravate and Spread reaction DMG dealt by these characters will be increased by 0.8%.
+//
+//	This effect lasts 6s.
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
