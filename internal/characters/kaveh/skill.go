@@ -36,7 +36,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.5) // TODO: correct skill hitbox
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 	c.Core.QueueAttack(ai, ap, 0, skillHitmark, c.particleCB)
 	c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, skillHitmark)
 

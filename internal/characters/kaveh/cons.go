@@ -77,7 +77,7 @@ func (c *char) c6() {
 		c.AddStatus(c6ICDKey, 180, false)
 
 		ai := combat.AttackInfo{
-			Abil:       "Idyllic Ideal (C6)",
+			Abil:       "Pairidaeza's Dreams (C6)",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagNone,
 			ICDTag:     attacks.ICDTagNormalAttack,
@@ -87,7 +87,7 @@ func (c *char) c6() {
 			Durability: 25,
 			Mult:       0.618,
 		}
-		ap := combat.NewCircleHitOnTarget(t, nil, 4.5) // TODO: correct skill hitbox
+		ap := combat.NewCircleHitOnTarget(t, nil, 4)
 		c.Core.QueueAttack(ai, ap, 0, skillHitmark)
 		c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, skillHitmark)
 
