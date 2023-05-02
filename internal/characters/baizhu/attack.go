@@ -16,8 +16,8 @@ const normalHitNum = 4
 var (
 	attackFrames   [][]int
 	attackHitmarks = [][]int{{12}, {13}, {21, 26}, {13}}
-	attackHitboxes = [][]float64{{2, 3}, {2, 3}, {2.2}, {2, 3}}
-	attackOffsets  = []float64{-0.2, -0.2, 1.1, -0.2}
+	attackHitboxes = [][]float64{{2, 3}, {2, 3}, {2.4, 3.0}, {3.2, 3.0}}
+	attackOffsets  = []float64{-0.2, -0.2, -0.2, -0.2}
 )
 
 func init() {
@@ -54,19 +54,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Mult:         mult[c.TalentLvlAttack()],
 			HitlagFactor: 0.01,
 		}
-		ap := combat.NewCircleHitOnTarget( //TODO:Hitboxes
+
+		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
+			attackHitboxes[c.NormalCounter][1],
 		)
-		if c.NormalCounter == 0 || c.NormalCounter == 1 || c.NormalCounter == 3 {
-			ap = combat.NewBoxHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
-				attackHitboxes[c.NormalCounter][0],
-				attackHitboxes[c.NormalCounter][1],
-			)
-		}
 		// multihit on N4 only has hitlag on last hit so no need for char queue here
 		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
