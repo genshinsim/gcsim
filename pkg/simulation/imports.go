@@ -13,7 +13,7 @@ import (
 	// _ "github.com/genshinsim/gcsim/pkg/stats/status"
 	// _ "github.com/genshinsim/gcsim/pkg/stats/swap"
 
-	//artifacts
+	// artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/berserker"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/blizzard"
@@ -38,6 +38,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/maiden"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/martialartist"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/noblesse"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/nymphsdream"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/oceanhuedclam"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"
@@ -48,9 +49,10 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/thundersoother"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/vermillion"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/viridescent"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/vourukashasglow"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/wanderer"
 
-	//char
+	// char
 	_ "github.com/genshinsim/gcsim/internal/characters/albedo"
 	_ "github.com/genshinsim/gcsim/internal/characters/alhaitham"
 	_ "github.com/genshinsim/gcsim/internal/characters/aloy"
@@ -65,6 +67,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/chongyun"
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
 	_ "github.com/genshinsim/gcsim/internal/characters/cyno"
+	_ "github.com/genshinsim/gcsim/internal/characters/dehya"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
 	_ "github.com/genshinsim/gcsim/internal/characters/dori"
@@ -85,6 +88,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/kuki"
 	_ "github.com/genshinsim/gcsim/internal/characters/layla"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
+	_ "github.com/genshinsim/gcsim/internal/characters/mika"
 	_ "github.com/genshinsim/gcsim/internal/characters/mona"
 	_ "github.com/genshinsim/gcsim/internal/characters/nahida"
 	_ "github.com/genshinsim/gcsim/internal/characters/nilou"
@@ -113,12 +117,13 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/xinyan"
 	_ "github.com/genshinsim/gcsim/internal/characters/yaemiko"
 	_ "github.com/genshinsim/gcsim/internal/characters/yanfei"
+	_ "github.com/genshinsim/gcsim/internal/characters/yaoyao"
 	_ "github.com/genshinsim/gcsim/internal/characters/yelan"
 	_ "github.com/genshinsim/gcsim/internal/characters/yoimiya"
 	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
 
-	//weapons
+	// weapons
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/amos"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/aqua"
@@ -183,6 +188,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/akuoumaru"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/aquamarine"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/beacon"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bell"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/bloodtainted"
@@ -191,6 +197,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/ferrousshadow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/forestregalia"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/lithic"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/mailedflower"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/nagamasa"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/oldmercspal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/pines"

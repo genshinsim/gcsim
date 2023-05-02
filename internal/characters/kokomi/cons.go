@@ -53,6 +53,9 @@ func (c *char) makeC4CB() combat.AttackCBFunc {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
+		if c.Core.Status.Duration("kokomiburst") == 0 {
+			return
+		}
 		if c.StatusIsActive(c4ICDKey) {
 			return
 		}

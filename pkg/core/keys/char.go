@@ -120,6 +120,9 @@ const (
 	Faruzan
 	Wanderer
 	Baizhu
+	Dehya
+	Yaoyao
+	Mika
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -205,6 +208,9 @@ var charNames = []string{
 	"faruzan",
 	"wanderer",
 	"baizhu",
+	"dehya",
+	"yaoyao",
+	"mika",
 	"test_char_do_not_use",
 }
 
@@ -289,6 +295,9 @@ var charPrettyName = []string{
 	"Faruzan",
 	"Wanderer",
 	"Baizhu",
+	"Dehya",
+	"Yaoyao",
+	"Mika",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -369,5 +378,8 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Faruzan:          attributes.Anemo,
 	Wanderer:         attributes.Anemo,
 	Baizhu:           attributes.Dendro,
+	Dehya:            attributes.Pyro,
+	Yaoyao:           attributes.Dendro,
+	Mika:             attributes.Cryo,
 	TestCharDoNotUse: attributes.Geo,
 }

@@ -27,6 +27,7 @@ export interface SimResults {
   num_targets: number;
   //character details
   char_details: CharDetail[];
+  incomplete_chars?: string[];
 }
 
 export interface CharDetail {

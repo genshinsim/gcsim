@@ -203,6 +203,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@fontsource/fira-mono@^4.5.10":
+  version "4.5.10"
+  resolved "https://registry.yarnpkg.com/@fontsource/fira-mono/-/fira-mono-4.5.10.tgz#443be4b2b4fc6e685b88431fcfdaf8d5f5639bbf"
+  integrity sha512-bxUnRP8xptGRo8YXeY073DSpfK74XpSb0ZyRNpHV9WvLnJ7TwPOjZll8hTMin7zLC6iOp59pDZ8EQDj1gzgAQQ==
+
 "@humanwhocodes/config-array@^0.11.6":
   version "0.11.7"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.7.tgz#38aec044c6c828f6ed51d5d7ae3d9b9faf6dbb0f"
@@ -2484,10 +2489,10 @@ fuzzysort@^1.1.4:
   resolved "https://registry.yarnpkg.com/fuzzysort/-/fuzzysort-1.9.0.tgz#d36d27949eae22340bb6f7ba30ea6751b92a181c"
   integrity sha512-MOxCT0qLTwLqmEwc7UtU045RKef7mc8Qz8eR4r2bLNEq9dy/c3ZKMEFp6IEst69otkQdFZ4FfgH2dmZD+ddX1g==
 
-genshin-db@^4.3.5:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.3.5.tgz#7c664944bcd72c623f7582ffe35a4efbd253c7f9"
-  integrity sha512-EjabM/fxFs+TQ2exsDfRmnMab4dLYUJzSoRZsJ2Jee1ajVUnyNAbpDvPAIuQwIXZXEXmSB6U0xLnKMZlsyX05g==
+genshin-db@*:
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/genshin-db/-/genshin-db-4.3.6.tgz#7eba5f2769357e3ee19815a3effea70a7a61a112"
+  integrity sha512-Zym0yhIlSkOdhIfl4CLe+HiyPehMsium9bWfZr2gq7sOVL9KAJrR0MtsrrxAj1PFfnzS6S44YOPyf/eeQKoPhA==
   dependencies:
     fuzzysort "^1.1.4"
     pako "^2.0.4"
@@ -3709,7 +3714,7 @@ prettier@^2.7.1:
 
 "prismjs@https://github.com/srliao/prism.git":
   version "1.28.0"
-  resolved "https://github.com/srliao/prism.git#9e6c72811c7c89e0e7f988f605d41e728e9e2fb0"
+  resolved "https://github.com/srliao/prism.git#80e05c84083179bfdbc839f293525f358e7e305e"
 
 process@^0.11.10:
   version "0.11.10"

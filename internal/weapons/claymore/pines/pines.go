@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	stacks := 0
 	buffDuration := 12 * 60
 	const icdKey = "songofbrokenpines-icd"
-	icd := int(0.2 * 60)
+	icd := int(0.3 * 60)
 	const cdKey = "songofbrokenpines-cooldown"
 	cd := 20 * 60
 
