@@ -59,7 +59,7 @@ func (c *char) a4() {
 	c.Core.Player.ActiveChar().AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("baizhu-a4", 6*60),
 		Amount: func(ai combat.AttackInfo) (float64, bool) {
-			limitHP := c.MaxHP() / 1000 //TODO:Is this an integer div or a float one in game?
+			limitHP := c.MaxHP() / 1000.0
 			if limitHP > 50 {
 				limitHP = 50
 			}
