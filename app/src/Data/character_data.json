@@ -49,6 +49,11 @@
     "element": "hydro",
     "weapon_class": "sword"
   },
+  "baizhu": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "catalyst"
+  },
   "barbara": {
     "rarity": 4,
     "element": "hydro",

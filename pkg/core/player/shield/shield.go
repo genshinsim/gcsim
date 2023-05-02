@@ -22,6 +22,7 @@ const (
 	ShieldThomaSkill
 	ShieldCandaceSkill
 	ShieldLaylaSkill
+	ShieldBaizhuBurst
 	EndShieldType
 )
 
