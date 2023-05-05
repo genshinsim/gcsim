@@ -70,6 +70,7 @@ func (c *char) a4() {
 			case attacks.AttackTagBloom:
 			case attacks.AttackTagHyperbloom:
 			case attacks.AttackTagBurgeon:
+			case attacks.AttackTagBurningDamage:
 			default:
 				return 0, false
 			}
