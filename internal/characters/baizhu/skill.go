@@ -108,8 +108,12 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.50 {
+		count = 4
+	}
 	c.AddStatus(particleICDKey, 2*60, true)
-	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Dendro, c.ParticleDelay)
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, c.ParticleDelay)
 }
 
 func (c *char) skillHealing() {
