@@ -3,12 +3,10 @@ import { useContext, useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import { charNames } from "../PipelineExtract/CharacterNames";
 import {
-  CharFilterState,
   FilterContext,
   FilterDispatchContext,
   ItemFilterState,
 } from "./FilterComponents/Filter.utils";
-import { FilterPortrait } from "./FilterComponents/FilterPotrait";
 
 const useTranslation = (key: string) => key;
 
@@ -17,12 +15,12 @@ export function Filter() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const filter = useContext(FilterContext);
-  const includedCharacterFilters: CharFilterState[] = Object.keys(
-    filter.charFilter
-  )
-    .filter((key) => filter.charFilter[key].state === ItemFilterState.include)
-    .map((key) => filter.charFilter[key]);
+  // const filter = useContext(FilterContext);
+  // const includedCharacterFilters: CharFilterState[] = Object.keys(
+  //   filter.charFilter
+  // )
+  //   .filter((key) => filter.charFilter[key].state === ItemFilterState.include)
+  //   .map((key) => filter.charFilter[key]);
 
   return (
     <div>
@@ -46,14 +44,14 @@ export function Filter() {
         size={DrawerSize.SMALL}
       >
         <div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden">
-          <div className="flex flex-row gap-1">
+          {/* <div className="flex flex-row gap-1">
             {includedCharacterFilters.map((charFilter) => (
               <FilterPortrait
                 key={charFilter.charName}
                 charName={charFilter.charName}
               />
             ))}
-          </div>
+          </div> */}
           <CharacterFilter />
         </div>
       </Drawer>

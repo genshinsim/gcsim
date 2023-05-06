@@ -24,26 +24,28 @@ export function Database() {
 
   const querydb = (query: DbQuery) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
-      .then((resp) => {
-        if (resp.data) {
-          console.log("output: ", resp.data);
-          setData(resp.data.data);
-          resp.data.data.forEach((e) => {
-            console.log(e.hash);
-          });
-        } else {
-          console.log("no result: ", resp.data);
+      .then(
+        (resp: {
+          data: {
+            data: db.IEntry[];
+          };
+        }) => {
+          if (resp.data) {
+            // console.log("output: ", resp.data);
+            setData(resp.data.data);
+          } else {
+            console.log("no data: ", resp.data);
+          }
         }
-      })
+      )
       .catch((err) => {
         console.log("error: ", err);
       });
   };
 
   useEffect(() => {
-    // setData(mockData);
     const query = craftQuery(filter);
-    console.log("input", query);
+    // console.log("input", query);
     querydb(query);
   }, [filter]);
 

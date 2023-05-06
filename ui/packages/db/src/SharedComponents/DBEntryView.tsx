@@ -2,7 +2,6 @@ import { db, model } from "@gcsim/types";
 import { Long } from "protobufjs";
 import DBEntryActions from "./DBEntryViewComponents/DBEntryActions";
 import { DBEntryPortrait } from "./DBEntryViewComponents/DBEntryPortrait";
-import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 function useTranslation() {
   return (text: string) => text;
@@ -31,11 +30,14 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
         <div className="flex flex-col grow ">
           <div className="max-w-2xl">
             <div className="flex flex-col ">
-              <DBEntryTags tags={dbEntry.accepted_tags} />
+              {/* <DBEntryTags tags={dbEntry.accepted_tags} /> */}
               <span className="  overflow-hidden">{dbEntry?.description}</span>
             </div>
 
-            <DBEntryDetails {...dbEntry} run_date={dbEntry.last_update} />
+            <DBEntryDetails
+              {...dbEntry.summary}
+              run_date={dbEntry.last_update}
+            />
           </div>
         </div>
         <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />
@@ -70,6 +72,7 @@ NonNullable<db.IEntry["summary"]> & {
   if (run_date && typeof run_date === "number") {
     date = new Date(run_date).toLocaleDateString();
   }
+  console.log(target_count);
   return (
     <table className="bp4-html-table  ">
       <thead>
