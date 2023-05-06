@@ -63,8 +63,8 @@ func (c *char) c2() {
 				Caller:  c.Index,
 				Target:  c.Core.Player.Active(),
 				Message: "Baizhu's C2: Healing",
-				Src:     skillHealPP[c.TalentLvlBurst()] * c.MaxHP() * 0.2,
-				Bonus:   skillHealFlat[c.TalentLvlBurst()] * 0.2,
+				Src:     (skillHealPP[c.TalentLvlBurst()]*c.MaxHP() + skillHealFlat[c.TalentLvlBurst()]) * 0.2,
+				Bonus:   c.Stat(attributes.Heal),
 			})
 
 		}, 22) //TODO: change delay
