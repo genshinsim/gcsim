@@ -35,7 +35,8 @@ func (c *char) addDetectorStack() {
 // Soulwind state and all its Detector stacks will be cleared.
 func (c *char) a1() {
 	m := make([]float64, attributes.EndStatType)
-	for _, char := range c.Core.Player.Chars() {
+	for i, char := range c.Core.Player.Chars() {
+		idx := i
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a1Buff, -1),
 			AffectedStat: attributes.PhyP,
@@ -45,7 +46,7 @@ func (c *char) a1() {
 					return nil, false
 				}
 				m[attributes.PhyP] = 0.1 * float64(c.Tag(a1Stacks))
-				return m, true
+				return m, c.Core.Player.Active() == idx
 			},
 		})
 	}
