@@ -61,7 +61,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitboxes[c.NormalCounter][0],
 			attackHitboxes[c.NormalCounter][1],
 		)
-		// multihit on N4 only has hitlag on last hit so no need for char queue here
 		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
 
