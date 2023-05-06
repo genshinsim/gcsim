@@ -58,8 +58,8 @@ func (c *char) summonSeamlessShieldHealing() {
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
 		Message: "Seamless Shield Healing",
-		Src:     burstHealPP[c.TalentLvlBurst()] * c.MaxHP(),
-		Bonus:   burstHealFlat[c.TalentLvlBurst()],
+		Src:     burstHealPP[c.TalentLvlBurst()]*c.MaxHP() + burstHealFlat[c.TalentLvlBurst()],
+		Bonus:   c.Stat(attributes.Heal),
 	})
 	c.a4()
 
@@ -81,7 +81,7 @@ func (c *char) summonSpiritvein() {
 		ai.FlatDmg = c.MaxHP() * 0.08
 	}
 
-	// TODO: Hitbox and strike timing
+	// TODO: strike timing
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5),

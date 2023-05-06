@@ -6,6 +6,7 @@ import (
 )
 
 func (c *char) removeShield() {
+	c.summonSeamlessShieldHealing()
 	c.summonSpiritvein()
 }
 

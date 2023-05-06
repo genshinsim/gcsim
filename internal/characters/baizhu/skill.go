@@ -12,8 +12,6 @@ import (
 
 var skillFrames []int
 
-const particleICDKey = "baizhu-particle-icd"
-
 func init() {
 	skillFrames = frames.InitAbilSlice(51)
 	skillFrames[action.ActionAttack] = 51
@@ -31,8 +29,6 @@ const (
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	c.c6done = false
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Universal Diagnosis",
@@ -54,12 +50,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//trigger a chain of attacks starting at the first target
 	atk := *c.skillAtk
 	atk.SourceFrame = c.Core.F
-	atk.Pattern = combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key())
+	atk.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.6)
 	cb := c.chain(c.Core.F, 1)
 	if cb != nil {
-		atk.Callbacks = append(atk.Callbacks, c.particleCB, cb)
+		atk.Callbacks = append(atk.Callbacks, c.makeParticleCB(), cb)
 		if c.Base.Cons >= 6 {
-			atk.Callbacks = append(atk.Callbacks, c.c6)
+			atk.Callbacks = append(atk.Callbacks, c.makeC6CB())
 		}
 	}
 	c.Core.QueueAttackEvent(&atk, skillFirstHitmark)
@@ -81,7 +77,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 	}
 	return func(a combat.AttackCB) {
 		//on hit figure out the next target
-		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t combat.Enemy) bool {
+		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 10), func(t combat.Enemy) bool {
 			return a.Target.Key() != t.Key()
 		})
 		if next == nil {
@@ -91,7 +87,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		//queue an attack vs next target
 		atk := *c.skillAtk
 		atk.SourceFrame = src
-		atk.Pattern = combat.NewSingleTargetHit(next.Key())
+		atk.Pattern = combat.NewCircleHitOnTarget(next, nil, 0.6)
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
@@ -101,29 +97,33 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
-		return
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+
+		count := 3.0
+		if c.Core.Rand.Float64() < 0.50 {
+			count = 4
+		}
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, c.ParticleDelay)
 	}
-	if c.StatusIsActive(particleICDKey) {
-		return
-	}
-	count := 3.0
-	if c.Core.Rand.Float64() < 0.50 {
-		count = 4
-	}
-	c.AddStatus(particleICDKey, 2*60, true)
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, c.ParticleDelay)
 }
 
 func (c *char) skillHealing() {
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
-			Target:  c.Core.Player.Active(),
+			Target:  -1,
 			Message: "Universal Diagnosis Healing",
-			Src:     skillHealPP[c.TalentLvlBurst()] * c.MaxHP(),
-			Bonus:   skillHealFlat[c.TalentLvlBurst()],
+			Src:     skillHealPP[c.TalentLvlBurst()]*c.MaxHP() + skillHealFlat[c.TalentLvlBurst()],
+			Bonus:   c.Stat(attributes.Heal),
 		})
 
 	}, 22) //TODO: change delay

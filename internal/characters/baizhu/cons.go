@@ -37,8 +37,8 @@ func (c *char) c2() {
 			ActorIndex: c.Index,
 			Abil:       "Gossamer Sprite: Splice. (Baizhu's C2)",
 			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupBaizhuC2,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
@@ -47,11 +47,11 @@ func (c *char) c2() {
 		c.c6done = false
 		var c6cb combat.AttackCBFunc
 		if c.Base.Cons >= 6 {
-			c6cb = c.c6
+			c6cb = c.makeC6CB()
 		}
-		c.Core.QueueAttack( //TODO: information about delay and hitbox
+		c.Core.QueueAttack( //TODO: information about delay
 			ai,
-			combat.NewSingleTargetHit(t.Key()),
+			combat.NewCircleHitOnTarget(t, nil, 0.6),
 			0,
 			11,
 			c6cb,
@@ -63,8 +63,8 @@ func (c *char) c2() {
 				Caller:  c.Index,
 				Target:  c.Core.Player.Active(),
 				Message: "Baizhu's C2: Healing",
-				Src:     skillHealPP[c.TalentLvlBurst()] * c.MaxHP() * 0.2,
-				Bonus:   skillHealFlat[c.TalentLvlBurst()] * 0.2,
+				Src:     (skillHealPP[c.TalentLvlBurst()]*c.MaxHP() + skillHealFlat[c.TalentLvlBurst()]) * 0.2,
+				Bonus:   c.Stat(attributes.Heal),
 			})
 
 		}, 22) //TODO: change delay
@@ -93,11 +93,13 @@ func (c *char) c4() {
 // Increases the DMG dealt by Holistic Revivification's Spiritveins by 8% of Baizhu's Max HP.
 // Additionally, when Gossamer Sprite or Gossamer Sprite: Splice hit opponents, there is a 100% chance of generating one of Healing Holism's
 // Seamless Shields. This effect can only be triggered once by a Gossamer Sprite or Gossamer Sprite: Splice.
-func (c *char) c6(a combat.AttackCB) {
-	if c.c6done { //TODO: This won't matter since it is assumed single target atm, but it can change in the future, making this chunk of code obsolete
-		return
+func (c *char) makeC6CB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if done {
+			return
+		}
+		done = true
+		c.summonSeamlessShield()
 	}
-	c.c6done = true
-	c.summonSeamlessShield()
-
 }
