@@ -26,6 +26,7 @@ func init() {
 const (
 	skillFirstHitmark = 13
 	skillTickInterval = 48
+	skillReturnTravel = 51
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -127,5 +128,5 @@ func (c *char) skillHealing() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
-	}, 51)
+	}, skillReturnTravel)
 }
