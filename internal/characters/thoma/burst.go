@@ -97,7 +97,6 @@ func (c *char) summonFieryCollapse() {
 		c.genShield("Thoma Burst", shieldamt, true)
 		done = true
 	}
-	// TODO: moving hitbox
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4.5, 8),

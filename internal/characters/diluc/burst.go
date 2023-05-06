@@ -25,46 +25,7 @@ func init() {
 
 const burstBuffKey = "diluc-q"
 
-func (c *char) phoenixDMG(ai combat.AttackInfo, dot int, explode int) func() {
-	return func() {
-		// DoT does damage every .2 seconds for 7 hits? so every 12 frames
-		// DoT does max 7 hits + explosion, roughly every 13 frame? blows up at 210 frames
-		// DoT
-		for i := 0; i < dot; i++ {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -5}, 16, 8),
-				0,
-				i*12,
-			)
-		}
-		// Explosion
-		if explode > 0 {
-			ai.Abil = "Dawn (Explode)"
-			ai.Mult = burstExplode[c.TalentLvlBurst()]
-			c.Core.QueueAttack(
-				ai,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -6}, 16, 10),
-				0,
-				98,
-			)
-		}
-	}
-}
-
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	dot, ok := p["dot"]
-	if !ok {
-		dot = 2 //number of dot hits
-	}
-	if dot > 7 {
-		dot = 7
-	}
-	explode, ok := p["explode"]
-	if !ok {
-		explode = 0 //if explode hits
-	}
-
 	// A4:
 	// The Pyro Infusion provided by Dawn lasts for 4s longer.
 	duration := 480
@@ -122,9 +83,32 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ai.HitlagHaltFrames = 0
 		ai.CanBeDefenseHalted = false
 
-		// TODO: also consider making this actually sort of move (like aoe wise)
-		// queue DoT and Explosion DMG
-		c.QueueCharTask(c.phoenixDMG(ai, dot, explode), 12)
+		// DoT and explosion dmg
+		// - gadget spawns at Y: 1m and lives for ~1.7s until it explodes
+		// - moves at 14 m/s with dmg happening every 0.2s, so it moves at 2.8m per attack
+		// - 1.7s / (0.2 s/attack) ~= 8 attacks total before explosion
+		initialPos := c.Core.Combat.Player().Pos()
+		initialDirection := c.Core.Combat.Player().Direction()
+		for i := 0; i < 8; i++ {
+			nextPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: 1 + 2.8*float64(i)}, initialDirection)
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHit(c.Core.Combat.Player(), nextPos, geometry.Point{Y: -5}, 16, 8),
+				0,
+				(i+1)*12,
+			)
+		}
+
+		ai.Abil = "Dawn (Explode)"
+		ai.Mult = burstExplode[c.TalentLvlBurst()]
+		// 1m + 14 m/s * 1.7s
+		finalPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: 1 + 14*1.7}, initialDirection)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHit(c.Core.Combat.Player(), finalPos, geometry.Point{Y: -6}, 16, 10),
+			0,
+			1.7*60,
+		)
 	}, burstHitmark)
 
 	c.ConsumeEnergy(21)
