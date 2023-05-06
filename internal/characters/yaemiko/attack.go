@@ -51,7 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	// TODO: does it snapshot?
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4, 8),
+		combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2, 8),
 		0,
 		attackHitmarks[c.NormalCounter]+travel,
 	)
