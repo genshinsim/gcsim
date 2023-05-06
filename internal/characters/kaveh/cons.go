@@ -92,7 +92,7 @@ func (c *char) c6() {
 		ap := combat.NewCircleHitOnTarget(t, nil, 4)
 		// delay is an estimate
 		c.Core.QueueAttack(ai, ap, 0, 0.3*60)
-		c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, 0.3*60)
+		c.QueueCharTask(func() { c.ruptureDendroCores(ap) }, 0.3*60)
 
 		return false
 	}, "kaveh-c6")
