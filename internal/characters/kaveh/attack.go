@@ -14,10 +14,10 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{24, 24, 26, 49}
-	attackHitlagHaltFrame = []float64{.1, .09, .09, .12}
-	attackHitboxes        = [][]float64{{2}, {2, 3}, {2}, {2, 3}}
-	attackOffsets         = []float64{0.5, -1, 0.5, -0.5}
-	attackFanAngles       = []float64{300, 360, 300, 360}
+	attackHitlagHaltFrame = []float64{.1, .09, .09, .1}
+	attackHitboxes        = [][]float64{{2.2, 2.2, 2.3, 2.3}, {3.1, 3.1, 3.2, 3.1}}
+	attackOffsets         = []float64{0.5, 0.5, 0.5, 2.5}
+	attackFanAngles       = []float64{260, 260, 240, 360}
 )
 
 func init() {
@@ -43,20 +43,18 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
+
+	// check burst status for hitbox
+	attackIndex := 0
+	if c.StatModIsActive(burstKey) {
+		attackIndex = 1
+	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
 		geometry.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[c.NormalCounter][0],
+		attackHitboxes[attackIndex][c.NormalCounter],
 		attackFanAngles[c.NormalCounter],
 	)
-	if c.NormalCounter == 1 || c.NormalCounter == 3 {
-		ap = combat.NewBoxHitOnTarget(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][0],
-			attackHitboxes[c.NormalCounter][1],
-		)
-	}
 
 	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 

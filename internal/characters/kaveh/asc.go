@@ -30,7 +30,7 @@ func (c *char) a1() {
 		if c.StatusIsActive(a1ICDKey) {
 			return false
 		}
-		c.AddStatus(a1ICDKey, 30, false)
+		c.AddStatus(a1ICDKey, 30, true)
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
@@ -78,7 +78,7 @@ func (c *char) a4AddStacksHandler() {
 			return false
 		}
 
-		c.AddStatus(a4ICDKey, 6, false)
+		c.AddStatus(a4ICDKey, 6, true)
 		c.a4Stacks++
 		return false
 	}, "kaveh-a4")

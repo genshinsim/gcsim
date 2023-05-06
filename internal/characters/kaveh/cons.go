@@ -77,19 +77,22 @@ func (c *char) c6() {
 		c.AddStatus(c6ICDKey, 180, false)
 
 		ai := combat.AttackInfo{
-			Abil:       "Pairidaeza's Dreams (C6)",
-			ActorIndex: c.Index,
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNormalAttack,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Dendro,
-			Durability: 25,
-			Mult:       0.618,
+			Abil:             "Pairidaeza's Dreams (C6)",
+			ActorIndex:       c.Index,
+			AttackTag:        attacks.AttackTagNone,
+			ICDTag:           attacks.ICDTagNone,
+			ICDGroup:         attacks.ICDGroupDefault,
+			StrikeType:       attacks.StrikeTypeDefault,
+			Element:          attributes.Dendro,
+			Durability:       25,
+			Mult:             0.618,
+			HitlagFactor:     0.01,
+			HitlagHaltFrames: 0.09 * 60,
 		}
 		ap := combat.NewCircleHitOnTarget(t, nil, 4)
-		c.Core.QueueAttack(ai, ap, 0, skillHitmark)
-		c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, skillHitmark)
+		// delay is an estimate
+		c.Core.QueueAttack(ai, ap, 0, 0.3*60)
+		c.QueueCharTask(func() { c.ruptureDendroCores(ap) }, 0.3*60)
 
 		return false
 	}, "kaveh-c6")
