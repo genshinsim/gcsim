@@ -118,7 +118,7 @@ func (c *char) skillHealing() {
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
-			Target:  c.Core.Player.Active(),
+			Target:  -1,
 			Message: "Universal Diagnosis Healing",
 			Src:     skillHealPP[c.TalentLvlBurst()] * c.MaxHP(),
 			Bonus:   skillHealFlat[c.TalentLvlBurst()],
