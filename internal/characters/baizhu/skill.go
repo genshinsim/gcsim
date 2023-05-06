@@ -13,19 +13,19 @@ import (
 var skillFrames []int
 
 func init() {
-	skillFrames = frames.InitAbilSlice(51)
-	skillFrames[action.ActionAttack] = 51
-	skillFrames[action.ActionCharge] = 51
-	skillFrames[action.ActionSkill] = 51
-	skillFrames[action.ActionBurst] = 51
-	skillFrames[action.ActionDash] = 51
-	skillFrames[action.ActionJump] = 51
-	skillFrames[action.ActionSwap] = 51
-
+	skillFrames = frames.InitAbilSlice(49) // E -> N1
+	skillFrames[action.ActionCharge] = 48
+	skillFrames[action.ActionSkill] = 40
+	skillFrames[action.ActionBurst] = 30
+	skillFrames[action.ActionDash] = 29
+	skillFrames[action.ActionJump] = 29
+	skillFrames[action.ActionWalk] = 47
+	skillFrames[action.ActionSwap] = 28
 }
 
 const (
-	skillFirstHitmark = 40 //TODO:Freims
+	skillFirstHitmark = 13
+	skillTickInterval = 48
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -77,12 +77,14 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 	}
 	return func(a combat.AttackCB) {
 		//on hit figure out the next target
-		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 10), func(t combat.Enemy) bool {
-			return a.Target.Key() != t.Key()
-		})
+		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 10), nil)
 		if next == nil {
 			c.skillHealing()
 			return
+		}
+		delay := skillTickInterval
+		if next.Key() == a.Target.Key() {
+			delay += 6 // add some delay for travel
 		}
 		//queue an attack vs next target
 		atk := *c.skillAtk
@@ -92,8 +94,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
 		}
-		c.Core.QueueAttackEvent(&atk, 60) //TODO: Modify delay
-
+		c.Core.QueueAttackEvent(&atk, delay)
 	}
 }
 
@@ -126,6 +127,5 @@ func (c *char) skillHealing() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
-	}, 22) //TODO: change delay
-
+	}, 51)
 }
