@@ -170,7 +170,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		idleConnectionsClosed := make(chan struct{})
 		serve(idleConnectionsClosed, resultServeFile+".gz", hash, sampleServeFile+".gz", opt.keepserving)
 
-		url := "https://gcsim.app/viewer/local"
+		url := "https://gcsim.app/local"
 		if !opt.nobrowser {
 			err := open(url)
 			if err != nil {

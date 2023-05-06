@@ -61,7 +61,7 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 }
 
 func (s *Server) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
-	s.Log.Infow("share create request", "expiryStartDate", req.GetExpiresAt())
+	s.Log.Infow("share create request", "expire_at", req.GetExpiresAt())
 
 	if req.GetResult() == nil {
 		s.Log.Infow("create request with nil result")
@@ -141,5 +141,11 @@ func (s *Server) Delete(ctx context.Context, req *DeleteRequest) (*DeleteRespons
 	return &DeleteResponse{}, nil
 }
 func (s *Server) Random(ctx context.Context, req *RandomRequest) (*RandomResponse, error) {
-	return &RandomResponse{}, nil
+	id, err := s.cfg.Store.Random(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &RandomResponse{
+		Id: id,
+	}, nil
 }

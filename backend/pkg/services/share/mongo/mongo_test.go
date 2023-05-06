@@ -189,3 +189,24 @@ func TestDelete(t *testing.T) {
 		t.Fatalf("expecting not found error, got %v", st.Code())
 	}
 }
+
+func TestRandom(t *testing.T) {
+	share := &share.ShareEntry{
+		Result: &model.SimulationResult{
+			Config: "blah",
+		},
+		Submitter: "tester",
+	}
+
+	_, err := s.Create(context.TODO(), share)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	id, err := s.Random(context.TODO())
+	if err != nil {
+		t.Error(err)
+	}
+
+	log.Println(id)
+}

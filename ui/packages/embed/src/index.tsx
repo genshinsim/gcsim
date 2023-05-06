@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
+import "@blueprintjs/core/lib/css/blueprint.css";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
@@ -17,6 +18,7 @@ if (import.meta.env.DEV) {
     build_date: "2022-11-16T14:35:06Z",
     modified: false,
     initial_character: "rosaria",
+    key_type: "dev",
     character_details: [
       {
         name: "zhongli",
@@ -298,4 +300,9 @@ if (import.meta.env.DEV) {
   });
 }
 
-export const parsed: any = JSON.parse(data);
+interface HasErr{ 
+  err: string
+}
+
+//TODO(kyle): parsed should be typed model.ISimulationResult | HasErr
+export const parsed: any | HasErr = JSON.parse(data);

@@ -27,7 +27,8 @@ func main() {
 		URL:         os.Getenv("MONGODB_URL"),
 		Database:    os.Getenv("MONGODB_DATABASE"),
 		Collection:  os.Getenv("MONGODB_COLLECTION"),
-		QueryView:   os.Getenv("MONGODB_QUERY_VIEW"),
+		ValidView:   os.Getenv("MONGODB_QUERY_VIEW"),
+		SubView:     os.Getenv("MONGODB_SUB_VIEW"),
 		Username:    os.Getenv("MONGODB_USERNAME"),
 		Password:    os.Getenv("MONOGDB_PASSWORD"),
 		CurrentHash: sha1ver,
@@ -48,8 +49,9 @@ func main() {
 	}
 
 	server, err := db.NewServer(db.Config{
-		DBStore:    dbStore,
-		ShareStore: shareStore,
+		DBStore:      dbStore,
+		ShareStore:   shareStore,
+		ExpectedHash: sha1ver,
 	})
 
 	if err != nil {

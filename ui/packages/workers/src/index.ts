@@ -24,8 +24,8 @@ router.get("/api/preview/:key", handlePreview);
 router.get("/api/preview/db/:key", handlePreview);
 
 // rewrite doc head
-router.get("/viewer/share/:key", handleInjectHead);
-router.get("/viewer/db/:key", handleInjectHeadDB);
+router.get("/sh/:key", handleInjectHead);
+router.get("/db/:key", handleInjectHeadDB);
 
 router.get("/api/assets/*", handleAssets);
 router.get("/api/wasm/*", handleWasm);

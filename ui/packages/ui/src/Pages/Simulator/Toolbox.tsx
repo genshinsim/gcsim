@@ -63,7 +63,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 
   const run = () => {
     dispatch(runSim(exec(), cfg));
-    history.push("/viewer/web");
+    history.push("/web");
   };
 
   const toggleBuilder = () => {

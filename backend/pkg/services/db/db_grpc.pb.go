@@ -19,13 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DBStore_Get_FullMethodName           = "/db.DBStore/Get"
-	DBStore_GetUnfiltered_FullMethodName = "/db.DBStore/GetUnfiltered"
-	DBStore_GetOne_FullMethodName        = "/db.DBStore/GetOne"
-	DBStore_Update_FullMethodName        = "/db.DBStore/Update"
-	DBStore_GetWork_FullMethodName       = "/db.DBStore/GetWork"
-	DBStore_ApproveTag_FullMethodName    = "/db.DBStore/ApproveTag"
-	DBStore_RejectTag_FullMethodName     = "/db.DBStore/RejectTag"
+	DBStore_Get_FullMethodName            = "/db.DBStore/Get"
+	DBStore_GetAll_FullMethodName         = "/db.DBStore/GetAll"
+	DBStore_GetOne_FullMethodName         = "/db.DBStore/GetOne"
+	DBStore_GetPending_FullMethodName     = "/db.DBStore/GetPending"
+	DBStore_GetBySubmitter_FullMethodName = "/db.DBStore/GetBySubmitter"
+	DBStore_ApproveTag_FullMethodName     = "/db.DBStore/ApproveTag"
+	DBStore_RejectTag_FullMethodName      = "/db.DBStore/RejectTag"
+	DBStore_Submit_FullMethodName         = "/db.DBStore/Submit"
+	DBStore_DeletePending_FullMethodName  = "/db.DBStore/DeletePending"
+	DBStore_GetWork_FullMethodName        = "/db.DBStore/GetWork"
+	DBStore_CompleteWork_FullMethodName   = "/db.DBStore/CompleteWork"
+	DBStore_RejectWork_FullMethodName     = "/db.DBStore/RejectWork"
 )
 
 // DBStoreClient is the client API for DBStore service.
@@ -34,13 +39,20 @@ const (
 type DBStoreClient interface {
 	// generic get for pulling from approved db
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
-	GetUnfiltered(ctx context.Context, in *GetUnfilteredRequest, opts ...grpc.CallOption) (*GetUnfilteredResponse, error)
+	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	GetOne(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error)
-	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
-	GetWork(ctx context.Context, in *GetWorkRequest, opts ...grpc.CallOption) (*GetWorkResponse, error)
+	GetPending(ctx context.Context, in *GetPendingRequest, opts ...grpc.CallOption) (*GetPendingResponse, error)
+	GetBySubmitter(ctx context.Context, in *GetBySubmitterRequest, opts ...grpc.CallOption) (*GetBySubmitterResponse, error)
 	// tagging
 	ApproveTag(ctx context.Context, in *ApproveTagRequest, opts ...grpc.CallOption) (*ApproveTagResponse, error)
 	RejectTag(ctx context.Context, in *RejectTagRequest, opts ...grpc.CallOption) (*RejectTagResponse, error)
+	// submissions
+	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error)
+	DeletePending(ctx context.Context, in *DeletePendingRequest, opts ...grpc.CallOption) (*DeletePendingResponse, error)
+	// work related
+	GetWork(ctx context.Context, in *GetWorkRequest, opts ...grpc.CallOption) (*GetWorkResponse, error)
+	CompleteWork(ctx context.Context, in *CompleteWorkRequest, opts ...grpc.CallOption) (*CompleteWorkResponse, error)
+	RejectWork(ctx context.Context, in *RejectWorkRequest, opts ...grpc.CallOption) (*RejectWorkResponse, error)
 }
 
 type dBStoreClient struct {
@@ -60,9 +72,9 @@ func (c *dBStoreClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *dBStoreClient) GetUnfiltered(ctx context.Context, in *GetUnfilteredRequest, opts ...grpc.CallOption) (*GetUnfilteredResponse, error) {
-	out := new(GetUnfilteredResponse)
-	err := c.cc.Invoke(ctx, DBStore_GetUnfiltered_FullMethodName, in, out, opts...)
+func (c *dBStoreClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error) {
+	out := new(GetAllResponse)
+	err := c.cc.Invoke(ctx, DBStore_GetAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,18 +90,18 @@ func (c *dBStoreClient) GetOne(ctx context.Context, in *GetOneRequest, opts ...g
 	return out, nil
 }
 
-func (c *dBStoreClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
-	out := new(UpdateResponse)
-	err := c.cc.Invoke(ctx, DBStore_Update_FullMethodName, in, out, opts...)
+func (c *dBStoreClient) GetPending(ctx context.Context, in *GetPendingRequest, opts ...grpc.CallOption) (*GetPendingResponse, error) {
+	out := new(GetPendingResponse)
+	err := c.cc.Invoke(ctx, DBStore_GetPending_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dBStoreClient) GetWork(ctx context.Context, in *GetWorkRequest, opts ...grpc.CallOption) (*GetWorkResponse, error) {
-	out := new(GetWorkResponse)
-	err := c.cc.Invoke(ctx, DBStore_GetWork_FullMethodName, in, out, opts...)
+func (c *dBStoreClient) GetBySubmitter(ctx context.Context, in *GetBySubmitterRequest, opts ...grpc.CallOption) (*GetBySubmitterResponse, error) {
+	out := new(GetBySubmitterResponse)
+	err := c.cc.Invoke(ctx, DBStore_GetBySubmitter_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,19 +126,71 @@ func (c *dBStoreClient) RejectTag(ctx context.Context, in *RejectTagRequest, opt
 	return out, nil
 }
 
+func (c *dBStoreClient) Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error) {
+	out := new(SubmitResponse)
+	err := c.cc.Invoke(ctx, DBStore_Submit_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBStoreClient) DeletePending(ctx context.Context, in *DeletePendingRequest, opts ...grpc.CallOption) (*DeletePendingResponse, error) {
+	out := new(DeletePendingResponse)
+	err := c.cc.Invoke(ctx, DBStore_DeletePending_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBStoreClient) GetWork(ctx context.Context, in *GetWorkRequest, opts ...grpc.CallOption) (*GetWorkResponse, error) {
+	out := new(GetWorkResponse)
+	err := c.cc.Invoke(ctx, DBStore_GetWork_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBStoreClient) CompleteWork(ctx context.Context, in *CompleteWorkRequest, opts ...grpc.CallOption) (*CompleteWorkResponse, error) {
+	out := new(CompleteWorkResponse)
+	err := c.cc.Invoke(ctx, DBStore_CompleteWork_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dBStoreClient) RejectWork(ctx context.Context, in *RejectWorkRequest, opts ...grpc.CallOption) (*RejectWorkResponse, error) {
+	out := new(RejectWorkResponse)
+	err := c.cc.Invoke(ctx, DBStore_RejectWork_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBStoreServer is the server API for DBStore service.
 // All implementations must embed UnimplementedDBStoreServer
 // for forward compatibility
 type DBStoreServer interface {
 	// generic get for pulling from approved db
 	Get(context.Context, *GetRequest) (*GetResponse, error)
-	GetUnfiltered(context.Context, *GetUnfilteredRequest) (*GetUnfilteredResponse, error)
+	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error)
-	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
-	GetWork(context.Context, *GetWorkRequest) (*GetWorkResponse, error)
+	GetPending(context.Context, *GetPendingRequest) (*GetPendingResponse, error)
+	GetBySubmitter(context.Context, *GetBySubmitterRequest) (*GetBySubmitterResponse, error)
 	// tagging
 	ApproveTag(context.Context, *ApproveTagRequest) (*ApproveTagResponse, error)
 	RejectTag(context.Context, *RejectTagRequest) (*RejectTagResponse, error)
+	// submissions
+	Submit(context.Context, *SubmitRequest) (*SubmitResponse, error)
+	DeletePending(context.Context, *DeletePendingRequest) (*DeletePendingResponse, error)
+	// work related
+	GetWork(context.Context, *GetWorkRequest) (*GetWorkResponse, error)
+	CompleteWork(context.Context, *CompleteWorkRequest) (*CompleteWorkResponse, error)
+	RejectWork(context.Context, *RejectWorkRequest) (*RejectWorkResponse, error)
 	mustEmbedUnimplementedDBStoreServer()
 }
 
@@ -137,23 +201,38 @@ type UnimplementedDBStoreServer struct {
 func (UnimplementedDBStoreServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedDBStoreServer) GetUnfiltered(context.Context, *GetUnfilteredRequest) (*GetUnfilteredResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUnfiltered not implemented")
+func (UnimplementedDBStoreServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedDBStoreServer) GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOne not implemented")
 }
-func (UnimplementedDBStoreServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+func (UnimplementedDBStoreServer) GetPending(context.Context, *GetPendingRequest) (*GetPendingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPending not implemented")
 }
-func (UnimplementedDBStoreServer) GetWork(context.Context, *GetWorkRequest) (*GetWorkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetWork not implemented")
+func (UnimplementedDBStoreServer) GetBySubmitter(context.Context, *GetBySubmitterRequest) (*GetBySubmitterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBySubmitter not implemented")
 }
 func (UnimplementedDBStoreServer) ApproveTag(context.Context, *ApproveTagRequest) (*ApproveTagResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveTag not implemented")
 }
 func (UnimplementedDBStoreServer) RejectTag(context.Context, *RejectTagRequest) (*RejectTagResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RejectTag not implemented")
+}
+func (UnimplementedDBStoreServer) Submit(context.Context, *SubmitRequest) (*SubmitResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Submit not implemented")
+}
+func (UnimplementedDBStoreServer) DeletePending(context.Context, *DeletePendingRequest) (*DeletePendingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePending not implemented")
+}
+func (UnimplementedDBStoreServer) GetWork(context.Context, *GetWorkRequest) (*GetWorkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWork not implemented")
+}
+func (UnimplementedDBStoreServer) CompleteWork(context.Context, *CompleteWorkRequest) (*CompleteWorkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompleteWork not implemented")
+}
+func (UnimplementedDBStoreServer) RejectWork(context.Context, *RejectWorkRequest) (*RejectWorkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RejectWork not implemented")
 }
 func (UnimplementedDBStoreServer) mustEmbedUnimplementedDBStoreServer() {}
 
@@ -186,20 +265,20 @@ func _DBStore_Get_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DBStore_GetUnfiltered_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUnfilteredRequest)
+func _DBStore_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DBStoreServer).GetUnfiltered(ctx, in)
+		return srv.(DBStoreServer).GetAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DBStore_GetUnfiltered_FullMethodName,
+		FullMethod: DBStore_GetAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBStoreServer).GetUnfiltered(ctx, req.(*GetUnfilteredRequest))
+		return srv.(DBStoreServer).GetAll(ctx, req.(*GetAllRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -222,38 +301,38 @@ func _DBStore_GetOne_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DBStore_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRequest)
+func _DBStore_GetPending_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPendingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DBStoreServer).Update(ctx, in)
+		return srv.(DBStoreServer).GetPending(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DBStore_Update_FullMethodName,
+		FullMethod: DBStore_GetPending_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBStoreServer).Update(ctx, req.(*UpdateRequest))
+		return srv.(DBStoreServer).GetPending(ctx, req.(*GetPendingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DBStore_GetWork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetWorkRequest)
+func _DBStore_GetBySubmitter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBySubmitterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DBStoreServer).GetWork(ctx, in)
+		return srv.(DBStoreServer).GetBySubmitter(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DBStore_GetWork_FullMethodName,
+		FullMethod: DBStore_GetBySubmitter_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DBStoreServer).GetWork(ctx, req.(*GetWorkRequest))
+		return srv.(DBStoreServer).GetBySubmitter(ctx, req.(*GetBySubmitterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -294,6 +373,96 @@ func _DBStore_RejectTag_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBStore_Submit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmitRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).Submit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_Submit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).Submit(ctx, req.(*SubmitRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_DeletePending_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePendingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).DeletePending(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_DeletePending_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).DeletePending(ctx, req.(*DeletePendingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_GetWork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWorkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).GetWork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_GetWork_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).GetWork(ctx, req.(*GetWorkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_CompleteWork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompleteWorkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).CompleteWork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_CompleteWork_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).CompleteWork(ctx, req.(*CompleteWorkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_RejectWork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RejectWorkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).RejectWork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_RejectWork_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).RejectWork(ctx, req.(*RejectWorkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBStore_ServiceDesc is the grpc.ServiceDesc for DBStore service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -306,20 +475,20 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DBStore_Get_Handler,
 		},
 		{
-			MethodName: "GetUnfiltered",
-			Handler:    _DBStore_GetUnfiltered_Handler,
+			MethodName: "GetAll",
+			Handler:    _DBStore_GetAll_Handler,
 		},
 		{
 			MethodName: "GetOne",
 			Handler:    _DBStore_GetOne_Handler,
 		},
 		{
-			MethodName: "Update",
-			Handler:    _DBStore_Update_Handler,
+			MethodName: "GetPending",
+			Handler:    _DBStore_GetPending_Handler,
 		},
 		{
-			MethodName: "GetWork",
-			Handler:    _DBStore_GetWork_Handler,
+			MethodName: "GetBySubmitter",
+			Handler:    _DBStore_GetBySubmitter_Handler,
 		},
 		{
 			MethodName: "ApproveTag",
@@ -328,6 +497,26 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RejectTag",
 			Handler:    _DBStore_RejectTag_Handler,
+		},
+		{
+			MethodName: "Submit",
+			Handler:    _DBStore_Submit_Handler,
+		},
+		{
+			MethodName: "DeletePending",
+			Handler:    _DBStore_DeletePending_Handler,
+		},
+		{
+			MethodName: "GetWork",
+			Handler:    _DBStore_GetWork_Handler,
+		},
+		{
+			MethodName: "CompleteWork",
+			Handler:    _DBStore_CompleteWork_Handler,
+		},
+		{
+			MethodName: "RejectWork",
+			Handler:    _DBStore_RejectWork_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11,6 +11,7 @@ import (
 	"path"
 	"regexp"
 	"sync"
+	"time"
 
 	"github.com/chromedp/chromedp"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -99,6 +100,11 @@ func (s *Store) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) 
 		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}
 	s.data.Store(key, data)
+	go func() {
+		time.Sleep(60 * time.Second)
+		s.Log.Infow("purging stale result store", "id", key)
+		s.data.Delete(key)
+	}()
 
 	snap, err := s.generateSnapshot(key)
 	if err != nil {
@@ -174,7 +180,7 @@ func (s *Store) handleServeHTML() http.HandlerFunc {
 			s.tmpl.Execute(w, out)
 		}()
 
-		d, ok := s.data.LoadAndDelete(key)
+		d, ok := s.data.Load(key)
 		if !ok {
 			out.Data = `{"err":"unexpected error getting result; key not found"}`
 			return

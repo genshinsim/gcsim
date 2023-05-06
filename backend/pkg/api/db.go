@@ -2,24 +2,15 @@ package api
 
 import (
 	"compress/gzip"
-	"context"
 	"encoding/json"
 	"net/http"
 
-	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/go-chi/chi"
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
 )
-
-type DBStore interface {
-	Get(context.Context, *model.DBQueryOpt) (*model.DBEntries, error)
-	GetOne(ctx context.Context, id string) (*model.DBEntry, error)
-	Update(ctx context.Context, id string, result *model.SimulationResult) error
-	ApproveTag(context.Context, string, model.DBTag) error
-	RejectTag(context.Context, string, model.DBTag) error
-}
 
 type dbGetOpt struct {
 	Query   map[string]interface{} `json:"query"`
@@ -31,9 +22,9 @@ type dbGetOpt struct {
 
 func (s *Server) getDB() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		s.Log.Infow("db query request received")
 		var o dbGetOpt
 		queryStr := r.URL.Query().Get("q")
+		s.Log.Infow("db query request received", "q", queryStr)
 		if queryStr != "" {
 			err := json.Unmarshal([]byte(queryStr), &o)
 			if err != nil {
@@ -42,8 +33,6 @@ func (s *Server) getDB() http.HandlerFunc {
 				return
 			}
 		}
-
-		s.Log.Infow("db query - query string parsed ok", "query_string", o.Query)
 
 		query, err := structpb.NewStruct(o.Query)
 		if err != nil {
@@ -63,7 +52,7 @@ func (s *Server) getDB() http.HandlerFunc {
 			http.Error(w, "bad request", http.StatusBadRequest)
 			return
 		}
-		opt := &model.DBQueryOpt{
+		opt := &db.QueryOpt{
 			Query:   query,
 			Sort:    sort,
 			Project: project,
@@ -71,7 +60,9 @@ func (s *Server) getDB() http.HandlerFunc {
 			Limit:   o.Limit,
 		}
 
-		res, err := s.cfg.DBStore.Get(r.Context(), opt)
+		s.Log.Infow("forwarding request to db", "opt", opt.String())
+
+		res, err := s.dbClient.Get(r.Context(), &db.GetRequest{Query: opt})
 		if err != nil {
 			s.Log.Warnw("error querying db", "err", err)
 			if st, ok := status.FromError(err); ok {
@@ -84,11 +75,10 @@ func (s *Server) getDB() http.HandlerFunc {
 				}
 				return
 			}
-
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
-		data, err := res.MarshalJson()
+		data, err := protojson.Marshal(res.GetData())
 		if err != nil {
 			s.Log.Warnw("error query db - cannot marshal result", "err", err)
 			http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -108,39 +98,5 @@ func (s *Server) getDB() http.HandlerFunc {
 		writer.Write(data)
 		// w.Write(data)
 
-	}
-}
-
-func (s *Server) approveTag() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		tag := r.Context().Value(DBTagContextKey).(model.DBTag)
-		key := chi.URLParam(r, "db-key")
-		err := s.cfg.DBStore.ApproveTag(r.Context(), key, tag)
-		if err != nil {
-			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
-				http.Error(w, "id not found", http.StatusNotFound)
-				return
-			}
-			http.Error(w, "internal server error", http.StatusNotFound)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-	}
-}
-
-func (s *Server) rejectTag() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		tag := r.Context().Value(DBTagContextKey).(model.DBTag)
-		key := chi.URLParam(r, "db-key")
-		err := s.cfg.DBStore.RejectTag(r.Context(), key, tag)
-		if err != nil {
-			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
-				http.Error(w, "id not found", http.StatusNotFound)
-				return
-			}
-			http.Error(w, "internal server error", http.StatusNotFound)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
 	}
 }

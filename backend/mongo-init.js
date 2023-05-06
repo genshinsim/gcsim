@@ -11,3 +11,9 @@ db.createView(
     "data",
     [ { $match: { is_db_valid: true } }]
 )
+
+db.createView(
+    "gcsimsubs",
+    "data",
+    [ { $match: { summary: {$exists: false} } }]
+)

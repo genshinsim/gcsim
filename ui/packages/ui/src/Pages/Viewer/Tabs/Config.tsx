@@ -53,7 +53,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
               onClick={() => {
                 dispatch(runSim(config.exec(), config.cfg ?? ""));
                 resetTab();
-                history.push("/viewer/web");
+                history.push("/web");
               }} />
         </div>
         <Error error={config.error} cfg={config.cfg} />

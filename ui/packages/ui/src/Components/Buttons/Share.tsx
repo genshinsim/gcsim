@@ -38,7 +38,7 @@ export default ({ running, copyToast, data, hash, className, shareState }: Share
         headers: { "X-GCSIM-SHARE-AUTH": hash ?? "" },
       })
       .then((resp) => {
-        setShareLink(link(resp.data));
+        setShareLink(link("sh", resp.data));
       }).catch((err) => {
         console.log(err);
       });
@@ -109,13 +109,15 @@ const DialogBody = ({shareLink, copy}: DialogProps) => {
   );
 };
 
-function link(id: string): string {
-  return window.location.protocol + "//" + window.location.host + "/viewer/share/" + id;
+function link(route: string, id: string): string {
+  return `${window.location.protocol}//${window.location.host}/${route}/${id}`;
 }
 
 function extractFromLocation(location: string) {
-  if (!location.startsWith("/viewer/share/")) {
-    return null;
+  if (location.startsWith("/sh/")) {
+    return link("sh", location.substring(location.lastIndexOf("/") + 1));
+  } else if (location.startsWith("/db/")) {
+    return link("db", location.substring(location.lastIndexOf("/") + 1));
   }
-  return link(location.substring(location.lastIndexOf("/") + 1));
+  return null;
 }

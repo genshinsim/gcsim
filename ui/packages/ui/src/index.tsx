@@ -18,6 +18,7 @@ import {
   ShareViewer,
   LocalSample,
   UploadSample,
+  DBViewer,
 } from "./Pages";
 import "./Translation/i18n";
 
@@ -101,6 +102,12 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function movedOffViewer(location: any, prevLocation: any, prefix: string): boolean {
+  return prevLocation.current.pathname.startsWith(prefix)
+      && !location.pathname.startsWith(prefix);
+}
+
 const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
   const { t } = useTranslation();
   const content = useRef<HTMLDivElement>(null);
@@ -117,12 +124,17 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
     return () => unlisten();
   }, [history]);
 
-  // cancel the run every time we navigate away from the viewer page
+  // cancel the run every time we navigate away from the web viewer page
   const prevLocation = useRef(location);
   useEffect(() => {
-    if (prevLocation.current != location
-        && prevLocation.current.pathname.startsWith("/viewer/")
-        && !location.pathname.startsWith("/viewer/")
+    if (
+        prevLocation.current != location
+        && (
+          movedOffViewer(location, prevLocation, "/web")
+          || movedOffViewer(location, prevLocation, "/local")
+          || movedOffViewer(location, prevLocation, "/sh/")
+          || movedOffViewer(location, prevLocation, "/db/")
+        )
         && exec().running()) {
       exec().cancel();
     }
@@ -148,19 +160,31 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 
           
           {/* Viewer Routes */}
-          <Route path="/viewer/web">
+          <Route path="/web">
             <Helmet><title>gcsim - viewer</title></Helmet>
             <WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
-          <Route path="/viewer/local">
+          <Route path="/local">
             <Helmet><title>gcsim - local viewer</title></Helmet>
             <LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
           </Route>
-          <Route path="/viewer/share/:id">
+          <Route path="/sh/:id">
             {({ match }) => {
-              document.title = "gcsim - " + match?.params.id;
+              document.title = "gcsim sh - " + match?.params.id;
               return (
                 <ShareViewer
+                    exec={exec}
+                    id={match?.params.id}
+                    gitCommit={gitCommit}
+                    mode={mode} />
+              );
+            }}
+          </Route>
+          <Route path="/db/:id">
+            {({ match }) => {
+              document.title = "gcsim db - " + match?.params.id;
+              return (
+                <DBViewer
                     exec={exec}
                     id={match?.params.id}
                     gitCommit={gitCommit}
@@ -180,11 +204,17 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
           </Route>
 
           {/* Redirects */}
+          <Route path={["/v3/viewer/share/:id", "/viewer/share/:id", "/s/:id"]}>
+            {({ match }) => <Redirect to={"/sh/" + match?.params.id} />}
+          </Route>
+          <Route path={"/viewer/web"}>
+            <Redirect to="/web" />
+          </Route>
+          <Route path={"/viewer/local"}>
+            <Redirect to="/local" />
+          </Route>
           <Route path={["/simple", "/advanced", "/viewer"]}>
             <Redirect to="/simulator" />
-          </Route>
-          <Route path="/v3/viewer/share/:id">
-            {({ match }) => <Redirect to={"/viewer/share/" + match?.params.id} />}
           </Route>
 
           {/* DB & Account */}

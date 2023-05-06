@@ -1,111 +1,120 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"errors"
 	"flag"
-	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"runtime/debug"
 	"time"
 
+	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulator"
-	"github.com/joho/godotenv"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-var (
-	sha1ver  string
-	shareKey string
-)
-
-type opts struct {
-	version bool
-	max     int
-	apikey  string
-}
-
-func init() {
-	info, _ := debug.ReadBuildInfo()
-	for _, bs := range info.Settings {
-		if bs.Key == "vcs.revision" {
-			sha1ver = bs.Value
-		}
-	}
+type client struct {
+	addr         string
+	hash         string
+	max          int
+	workerCount  int
+	timeoutInMin int
+	dbConn       db.DBStoreClient
 }
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	var opt opts
-	flag.BoolVar(&opt.version, "version", false, "compute cli version")
-	flag.IntVar(&opt.max, "max", -1, "max number of entries to compute")
-	flag.StringVar(&opt.apikey, "key", "", "api key to used for authentication purposes")
-
-	flag.Parse()
-
-	if opt.version {
-		fmt.Println(sha1ver)
-		return
-	}
-
-	if shareKey == "" {
-		shareKey = os.Getenv("GCSIM_SHARE_KEY")
-	}
-
-	if opt.apikey == "" {
-		opt.apikey = os.Getenv("COMPUTE_API_KEY")
-	}
-
-	log.Println("compute version: " + sha1ver)
-	// return
-	//steps:
-	// 1. ask backend server for compute work to do
-	// 2. run sim
-	// 3. post result to callback url
-	log.Printf("start looking for work...")
-	count := 0
-	for opt.max == -1 || count < opt.max {
-		err := processWork(opt.apikey)
-		switch err {
-		case nil:
-		case errNoMoreWork:
-			log.Println("no more work; all done!")
-			return
-		case errSimFailed:
-			continue
-		default:
-			log.Fatalf("compute failed with err: %v", err)
-
+	var c client
+	info, _ := debug.ReadBuildInfo()
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			c.hash = bs.Value
 		}
-		count++
 	}
-	log.Println("all done")
+	flag.IntVar(&c.max, "max", -1, "max number of entries to compute")
+	flag.IntVar(&c.workerCount, "w", 10, "number of workers to use")
+	flag.IntVar(&c.timeoutInMin, "timeout", 2, "time out in minutes to run each sim for")
+	flag.Parse()
+	//compute steps
+	// 1. ask server for work
+	// 2. compute work
+	// 3. ask again for more work
+	c.addr = os.Getenv("DB_RPC_ADDR")
+
+	if c.addr == "" {
+		log.Fatal("Invalid address for rpc service")
+	}
+
+	log.Printf("starting compute run, hash: %v, addr %v", c.hash, c.addr)
+	err := c.run()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
-var errNoMoreWork = errors.New("no more work")
-
-var errSimFailed = errors.New("sim failed")
-
-func processWork(key string) error {
-	var w work
-	start := time.Now()
-	w, err := getWork(key)
+func (c *client) run() error {
+	conn, err := grpc.Dial(c.addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("error getting work: %v", err)
+		return err
 	}
-	//blank key means no more work
-	if w.Id == "" {
-		return errNoMoreWork
+	c.dbConn = db.NewDBStoreClient(conn)
+	for {
+		work, err := c.getWork()
+		if err != nil {
+			return err
+		}
+		if len(work) == 0 {
+			log.Println("all done")
+			return nil
+		}
+		err = c.processBatch(work)
+		if err != nil {
+			//this is only if we have unexpected error like rpc failed?
+			return err
+		}
+		//stop if we're done up to max
+		if c.max == 0 {
+			return nil
+		}
 	}
+}
+
+func (c *client) getWork() ([]*db.ComputeWork, error) {
+	resp, err := c.dbConn.GetWork(context.Background(), &db.GetWorkRequest{})
+	if err != nil {
+		return nil, err
+	}
+	return resp.GetData(), nil
+}
+
+// return number of work item completed
+func (c *client) processBatch(w []*db.ComputeWork) error {
+	for _, v := range w {
+		res, err := c.processWork(v)
+		if err != nil {
+			err = c.postError(v, err.Error())
+		} else {
+			err = c.postResult(v, res)
+		}
+		if err != nil {
+			return err
+		}
+
+		//don't do too much work
+		if c.max != -1 {
+			c.max--
+			if c.max == 0 {
+				return nil
+			}
+		}
+	}
+	return nil
+}
+
+func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error) {
+	start := time.Now()
 	//compute work??
 	log.Printf("got work %v; starting compute", w.Id)
 	// compute result
@@ -113,82 +122,38 @@ func processWork(key string) error {
 	if err != nil {
 		log.Printf("could not parse config for id %v: %v\n", w.Id, err)
 		//TODO: we should post something here??
-		return errSimFailed
+		return nil, err
 	}
-	simcfg.Settings.Iterations = w.Iterations
+	simcfg.Settings.Iterations = int(w.Iterations)
 	simcfg.Settings.NumberOfWorkers = 30
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.timeoutInMin)*time.Minute)
 	defer cancel()
 
 	result, err := simulator.RunWithConfig(w.Config, simcfg, simulator.Options{}, time.Now(), ctx)
 	if err != nil {
 		log.Printf("error running sim %v: %v\n", w.Id, err)
-		return errSimFailed
+		return nil, err
 	}
-
-	t := model.ComputeWorkSource_name[int32(w.Source)]
-
-	err = postResult(result, key, w.Id, t)
-	if err != nil {
-		log.Printf("error posting result: %v\n", err)
-		return err
-	}
-
 	elapsed := time.Since(start)
 	log.Printf("Work %v took %s", w.Id, elapsed)
-	return nil
+
+	return result, nil
 }
 
-func postResult(result *model.SimulationResult, key, id, t string) error {
-	hash, _ := result.Sign(shareKey)
-	data, _ := result.MarshalJson()
-	req, err := http.NewRequest("POST", "https://simimpact.app/api/db/compute/work", bytes.NewReader(data))
-	if err != nil {
-		return err
-	}
-	req.Header.Add("X-GCSIM-COMPUTE-API-KEY", key)
-	req.Header.Add("X-GCSIM-SIGNED-HASH", hash)
-	req.Header.Add("X-GCSIM-COMPUTE-SRC", t)
-	req.Header.Add("X-GCSIM-COMPUTE-ID", id)
-	_, err = http.DefaultClient.Do(req)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (c *client) postError(w *db.ComputeWork, reason string) error {
+	_, err := c.dbConn.RejectWork(context.Background(), &db.RejectWorkRequest{
+		Id:     w.Id,
+		Reason: reason,
+		Hash:   c.hash,
+	})
+	return err
 }
 
-func getJson(url, key string, target interface{}) error {
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Add("X-GCSIM-COMPUTE-API-KEY", key)
-	r, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer r.Body.Close()
-
-	return json.NewDecoder(r.Body).Decode(target)
-}
-
-type work struct {
-	Id         string `json:"_id"`
-	Config     string `json:"config"`
-	Source     int    `json:"source"`
-	Iterations int    `json:"iterations"`
-}
-
-func getWork(key string) (work, error) {
-	const url = `https://simimpact.app/api/db/compute/work`
-	var w work
-	err := getJson(url, key, &w)
-	if err != nil {
-		return work{}, err
-	}
-
-	return w, nil
+func (c *client) postResult(w *db.ComputeWork, res *model.SimulationResult) error {
+	_, err := c.dbConn.CompleteWork(context.Background(), &db.CompleteWorkRequest{
+		Id:     w.Id,
+		Result: res,
+	})
+	return err
 }

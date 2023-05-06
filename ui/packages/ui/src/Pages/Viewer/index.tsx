@@ -5,7 +5,6 @@ import { RootState, useAppDispatch, useAppSelector } from "../../Stores/store";
 import UpgradeDialog from "./UpgradeDialog";
 import Viewer from "./Viewer";
 import { viewerActions } from "../../Stores/viewerSlice";
-import { validate as uuidValidate } from "uuid";
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { SimResults } from "@gcsim/types";
 
@@ -27,7 +26,16 @@ type ViewerProps = {
 export const ShareViewer = (props: ViewerProps) => (
   <FromUrl
       exec={props.exec}
-      url={processUrl(props.id)}
+      url={"/api/share/" + props.id}
+      redirect="/"
+      mode={props.mode}
+      gitCommit={props.gitCommit} />
+);
+
+export const DBViewer = (props: ViewerProps) => (
+  <FromUrl
+      exec={props.exec}
+      url={"/api/share/db/" + props.id}
       redirect="/"
       mode={props.mode}
       gitCommit={props.gitCommit} />
@@ -49,17 +57,6 @@ export const WebViewer = (props: ViewerProps) => (
       mode={props.mode}
       gitCommit={props.gitCommit} />
 );
-
-function processUrl(id?: string): string {
-  if (id == null) {
-    throw "share is missing id (should never happen)";
-  }
-
-  if (uuidValidate(id)) {
-    return "/api/legacy-share/" + id;
-  }
-  return "/api/share/" + id;
-}
 
 function useRunningState(exec: ExecutorSupplier<Executor>): boolean {
   const [isRunning, setRunning] = useState(true);
