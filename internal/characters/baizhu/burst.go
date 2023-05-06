@@ -12,7 +12,15 @@ import (
 
 var burstFrames []int
 
-const burstStartFrame = 114
+const (
+	burstFirstShield  = 81
+	burstFirstRefresh = 142
+	burstRefreshRate  = 146
+	burstShieldExpiry = 152
+	// subject to change
+	burstTickRelease = 21
+	burstTickTravel  = 8
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(115)
@@ -20,19 +28,25 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	for i := 0; i <= 14*60; i += 150 { //Every 2.5s, 14s duration
-		c.QueueCharTask(func() {
+	// no heal on first shield
+	c.Core.Tasks.Add(func() {
+		c.summonSeamlessShield()
+	}, burstFirstShield)
+
+	// refresh shield 5 times
+	for i := 0; i <= 4; i += 1 {
+		c.Core.Tasks.Add(func() {
 			c.summonSeamlessShield()
 			c.summonSeamlessShieldHealing()
-
-		}, i+burstStartFrame)
+		}, burstFirstShield+burstFirstRefresh+burstRefreshRate*i)
 	}
-	if c.Base.Cons >= 4 { //TODO: Need a delay for this buff to trigger?
+
+	if c.Base.Cons >= 4 {
 		c.c4()
 	}
 
 	c.SetCD(action.ActionBurst, 20*60)
-	c.ConsumeEnergy(3) //TODO:Exact timing
+	c.ConsumeEnergy(5)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -49,11 +63,11 @@ func (c *char) summonSeamlessShield() {
 	if exist != nil {
 		c.summonSpiritvein()
 	}
-	c.Core.Player.Shields.Add(c.newShield(shieldamt, 151))
+	c.Core.Player.Shields.Add(c.newShield(shieldamt, burstShieldExpiry))
 }
 
 func (c *char) summonSeamlessShieldHealing() {
-	//Seamless Shield Healing
+	// Seamless Shield Healing
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
@@ -62,7 +76,6 @@ func (c *char) summonSeamlessShieldHealing() {
 		Bonus:   c.Stat(attributes.Heal),
 	})
 	c.a4()
-
 }
 
 func (c *char) summonSpiritvein() {
@@ -85,7 +98,7 @@ func (c *char) summonSpiritvein() {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5),
-		0,
-		10,
+		burstTickRelease,
+		burstTickRelease+burstTickTravel,
 	)
 }
