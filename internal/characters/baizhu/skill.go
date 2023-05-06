@@ -60,7 +60,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttackEvent(&atk, skillFirstHitmark)
 
-	c.SetCDWithDelay(action.ActionSkill, 10*60, 1) //TODO:Delay on CD?
+	c.SetCDWithDelay(action.ActionSkill, 10*60, 23)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -84,7 +84,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		}
 		delay := skillTickInterval
 		if next.Key() == a.Target.Key() {
-			delay += 6 // add some delay for travel
+			delay += 6 // add some delay in case it's a different target
 		}
 		//queue an attack vs next target
 		atk := *c.skillAtk
