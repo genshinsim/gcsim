@@ -93,10 +93,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
-		State:               action.NormalAttackState,
-		FramePausedOnHitlag: c.FramePausedOnHitlag,
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		State:           action.NormalAttackState,
 	}
 }
