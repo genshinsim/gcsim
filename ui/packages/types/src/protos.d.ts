@@ -1,5 +1,1463 @@
 import * as $protobuf from "protobufjs";
 import Long = require("long");
+/** Namespace db. */
+export namespace db {
+
+    /** Properties of an Entry. */
+    interface IEntry {
+
+        /** Entry id */
+        id?: (string|null);
+
+        /** Entry create_date */
+        create_date?: (number|Long|null);
+
+        /** Entry config */
+        config?: (string|null);
+
+        /** Entry description */
+        description?: (string|null);
+
+        /** Entry submitter */
+        submitter?: (string|null);
+
+        /** Entry accepted_tags */
+        accepted_tags?: (model.DBTag[]|null);
+
+        /** Entry rejected_tags */
+        rejected_tags?: (model.DBTag[]|null);
+
+        /** Entry is_db_valid */
+        is_db_valid?: (boolean|null);
+
+        /** Entry share_key */
+        share_key?: (string|null);
+
+        /** Entry last_update */
+        last_update?: (number|Long|null);
+
+        /** Entry hash */
+        hash?: (string|null);
+
+        /** Entry summary */
+        summary?: (db.IEntrySummary|null);
+    }
+
+    /** Represents an Entry. */
+    class Entry implements IEntry {
+
+        /**
+         * Constructs a new Entry.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IEntry);
+
+        /** Entry id. */
+        public id: string;
+
+        /** Entry create_date. */
+        public create_date: (number|Long);
+
+        /** Entry config. */
+        public config: string;
+
+        /** Entry description. */
+        public description: string;
+
+        /** Entry submitter. */
+        public submitter: string;
+
+        /** Entry accepted_tags. */
+        public accepted_tags: model.DBTag[];
+
+        /** Entry rejected_tags. */
+        public rejected_tags: model.DBTag[];
+
+        /** Entry is_db_valid. */
+        public is_db_valid: boolean;
+
+        /** Entry share_key. */
+        public share_key: string;
+
+        /** Entry last_update. */
+        public last_update: (number|Long);
+
+        /** Entry hash. */
+        public hash: string;
+
+        /** Entry summary. */
+        public summary?: (db.IEntrySummary|null);
+
+        /**
+         * Gets the default type url for Entry
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an EntrySummary. */
+    interface IEntrySummary {
+
+        /** EntrySummary sim_duration */
+        sim_duration?: (model.IDescriptiveStats|null);
+
+        /** EntrySummary mode */
+        mode?: (model.SimMode|null);
+
+        /** EntrySummary total_damage */
+        total_damage?: (model.IDescriptiveStats|null);
+
+        /** EntrySummary char_names */
+        char_names?: (string[]|null);
+
+        /** EntrySummary target_count */
+        target_count?: (number|null);
+
+        /** EntrySummary mean_dps_per_target */
+        mean_dps_per_target?: (number|null);
+
+        /** EntrySummary team */
+        team?: (model.ICharacter[]|null);
+
+        /** EntrySummary dps_by_target */
+        dps_by_target?: ({ [k: string]: model.IDescriptiveStats }|null);
+    }
+
+    /** Represents an EntrySummary. */
+    class EntrySummary implements IEntrySummary {
+
+        /**
+         * Constructs a new EntrySummary.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IEntrySummary);
+
+        /** EntrySummary sim_duration. */
+        public sim_duration?: (model.IDescriptiveStats|null);
+
+        /** EntrySummary mode. */
+        public mode: model.SimMode;
+
+        /** EntrySummary total_damage. */
+        public total_damage?: (model.IDescriptiveStats|null);
+
+        /** EntrySummary char_names. */
+        public char_names: string[];
+
+        /** EntrySummary target_count. */
+        public target_count: number;
+
+        /** EntrySummary mean_dps_per_target. */
+        public mean_dps_per_target: number;
+
+        /** EntrySummary team. */
+        public team: model.ICharacter[];
+
+        /** EntrySummary dps_by_target. */
+        public dps_by_target: { [k: string]: model.IDescriptiveStats };
+
+        /**
+         * Gets the default type url for EntrySummary
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an Entries. */
+    interface IEntries {
+
+        /** Entries data */
+        data?: (db.IEntry[]|null);
+    }
+
+    /** Represents an Entries. */
+    class Entries implements IEntries {
+
+        /**
+         * Constructs a new Entries.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IEntries);
+
+        /** Entries data. */
+        public data: db.IEntry[];
+
+        /**
+         * Gets the default type url for Entries
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a QueryOpt. */
+    interface IQueryOpt {
+
+        /** QueryOpt query */
+        query?: (google.protobuf.IStruct|null);
+
+        /** QueryOpt sort */
+        sort?: (google.protobuf.IStruct|null);
+
+        /** QueryOpt project */
+        project?: (google.protobuf.IStruct|null);
+
+        /** QueryOpt skip */
+        skip?: (number|Long|null);
+
+        /** QueryOpt limit */
+        limit?: (number|Long|null);
+    }
+
+    /** Represents a QueryOpt. */
+    class QueryOpt implements IQueryOpt {
+
+        /**
+         * Constructs a new QueryOpt.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IQueryOpt);
+
+        /** QueryOpt query. */
+        public query?: (google.protobuf.IStruct|null);
+
+        /** QueryOpt sort. */
+        public sort?: (google.protobuf.IStruct|null);
+
+        /** QueryOpt project. */
+        public project?: (google.protobuf.IStruct|null);
+
+        /** QueryOpt skip. */
+        public skip: (number|Long);
+
+        /** QueryOpt limit. */
+        public limit: (number|Long);
+
+        /**
+         * Gets the default type url for QueryOpt
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ComputeWork. */
+    interface IComputeWork {
+
+        /** ComputeWork id */
+        id?: (string|null);
+
+        /** ComputeWork config */
+        config?: (string|null);
+
+        /** ComputeWork iterations */
+        iterations?: (number|null);
+    }
+
+    /** Represents a ComputeWork. */
+    class ComputeWork implements IComputeWork {
+
+        /**
+         * Constructs a new ComputeWork.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IComputeWork);
+
+        /** ComputeWork id. */
+        public id: string;
+
+        /** ComputeWork config. */
+        public config: string;
+
+        /** ComputeWork iterations. */
+        public iterations: number;
+
+        /**
+         * Gets the default type url for ComputeWork
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetRequest. */
+    interface IGetRequest {
+
+        /** GetRequest query */
+        query?: (db.IQueryOpt|null);
+    }
+
+    /** Represents a GetRequest. */
+    class GetRequest implements IGetRequest {
+
+        /**
+         * Constructs a new GetRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetRequest);
+
+        /** GetRequest query. */
+        public query?: (db.IQueryOpt|null);
+
+        /**
+         * Gets the default type url for GetRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetResponse. */
+    interface IGetResponse {
+
+        /** GetResponse data */
+        data?: (db.IEntries|null);
+    }
+
+    /** Represents a GetResponse. */
+    class GetResponse implements IGetResponse {
+
+        /**
+         * Constructs a new GetResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetResponse);
+
+        /** GetResponse data. */
+        public data?: (db.IEntries|null);
+
+        /**
+         * Gets the default type url for GetResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetOneRequest. */
+    interface IGetOneRequest {
+
+        /** GetOneRequest id */
+        id?: (string|null);
+    }
+
+    /** Represents a GetOneRequest. */
+    class GetOneRequest implements IGetOneRequest {
+
+        /**
+         * Constructs a new GetOneRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetOneRequest);
+
+        /** GetOneRequest id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for GetOneRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetOneResponse. */
+    interface IGetOneResponse {
+
+        /** GetOneResponse data */
+        data?: (db.IEntry|null);
+    }
+
+    /** Represents a GetOneResponse. */
+    class GetOneResponse implements IGetOneResponse {
+
+        /**
+         * Constructs a new GetOneResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetOneResponse);
+
+        /** GetOneResponse data. */
+        public data?: (db.IEntry|null);
+
+        /**
+         * Gets the default type url for GetOneResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetPendingRequest. */
+    interface IGetPendingRequest {
+
+        /** GetPendingRequest tag */
+        tag?: (model.DBTag|null);
+
+        /** GetPendingRequest query */
+        query?: (db.IQueryOpt|null);
+    }
+
+    /** Represents a GetPendingRequest. */
+    class GetPendingRequest implements IGetPendingRequest {
+
+        /**
+         * Constructs a new GetPendingRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetPendingRequest);
+
+        /** GetPendingRequest tag. */
+        public tag: model.DBTag;
+
+        /** GetPendingRequest query. */
+        public query?: (db.IQueryOpt|null);
+
+        /**
+         * Gets the default type url for GetPendingRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetPendingResponse. */
+    interface IGetPendingResponse {
+
+        /** GetPendingResponse data */
+        data?: (db.IEntries|null);
+    }
+
+    /** Represents a GetPendingResponse. */
+    class GetPendingResponse implements IGetPendingResponse {
+
+        /**
+         * Constructs a new GetPendingResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetPendingResponse);
+
+        /** GetPendingResponse data. */
+        public data?: (db.IEntries|null);
+
+        /**
+         * Gets the default type url for GetPendingResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetBySubmitterRequest. */
+    interface IGetBySubmitterRequest {
+
+        /** GetBySubmitterRequest submitter */
+        submitter?: (string|null);
+
+        /** GetBySubmitterRequest query */
+        query?: (db.IQueryOpt|null);
+    }
+
+    /** Represents a GetBySubmitterRequest. */
+    class GetBySubmitterRequest implements IGetBySubmitterRequest {
+
+        /**
+         * Constructs a new GetBySubmitterRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetBySubmitterRequest);
+
+        /** GetBySubmitterRequest submitter. */
+        public submitter: string;
+
+        /** GetBySubmitterRequest query. */
+        public query?: (db.IQueryOpt|null);
+
+        /**
+         * Gets the default type url for GetBySubmitterRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetBySubmitterResponse. */
+    interface IGetBySubmitterResponse {
+
+        /** GetBySubmitterResponse data */
+        data?: (db.IEntries|null);
+    }
+
+    /** Represents a GetBySubmitterResponse. */
+    class GetBySubmitterResponse implements IGetBySubmitterResponse {
+
+        /**
+         * Constructs a new GetBySubmitterResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetBySubmitterResponse);
+
+        /** GetBySubmitterResponse data. */
+        public data?: (db.IEntries|null);
+
+        /**
+         * Gets the default type url for GetBySubmitterResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetAllRequest. */
+    interface IGetAllRequest {
+
+        /** GetAllRequest query */
+        query?: (db.IQueryOpt|null);
+    }
+
+    /** Represents a GetAllRequest. */
+    class GetAllRequest implements IGetAllRequest {
+
+        /**
+         * Constructs a new GetAllRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetAllRequest);
+
+        /** GetAllRequest query. */
+        public query?: (db.IQueryOpt|null);
+
+        /**
+         * Gets the default type url for GetAllRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetAllResponse. */
+    interface IGetAllResponse {
+
+        /** GetAllResponse data */
+        data?: (db.IEntries|null);
+    }
+
+    /** Represents a GetAllResponse. */
+    class GetAllResponse implements IGetAllResponse {
+
+        /**
+         * Constructs a new GetAllResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetAllResponse);
+
+        /** GetAllResponse data. */
+        public data?: (db.IEntries|null);
+
+        /**
+         * Gets the default type url for GetAllResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an ApproveTagRequest. */
+    interface IApproveTagRequest {
+
+        /** ApproveTagRequest id */
+        id?: (string|null);
+
+        /** ApproveTagRequest tag */
+        tag?: (model.DBTag|null);
+    }
+
+    /** Represents an ApproveTagRequest. */
+    class ApproveTagRequest implements IApproveTagRequest {
+
+        /**
+         * Constructs a new ApproveTagRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IApproveTagRequest);
+
+        /** ApproveTagRequest id. */
+        public id: string;
+
+        /** ApproveTagRequest tag. */
+        public tag: model.DBTag;
+
+        /**
+         * Gets the default type url for ApproveTagRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an ApproveTagResponse. */
+    interface IApproveTagResponse {
+
+        /** ApproveTagResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents an ApproveTagResponse. */
+    class ApproveTagResponse implements IApproveTagResponse {
+
+        /**
+         * Constructs a new ApproveTagResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IApproveTagResponse);
+
+        /** ApproveTagResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for ApproveTagResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a RejectTagRequest. */
+    interface IRejectTagRequest {
+
+        /** RejectTagRequest id */
+        id?: (string|null);
+
+        /** RejectTagRequest tag */
+        tag?: (model.DBTag|null);
+    }
+
+    /** Represents a RejectTagRequest. */
+    class RejectTagRequest implements IRejectTagRequest {
+
+        /**
+         * Constructs a new RejectTagRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IRejectTagRequest);
+
+        /** RejectTagRequest id. */
+        public id: string;
+
+        /** RejectTagRequest tag. */
+        public tag: model.DBTag;
+
+        /**
+         * Gets the default type url for RejectTagRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a RejectTagResponse. */
+    interface IRejectTagResponse {
+
+        /** RejectTagResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a RejectTagResponse. */
+    class RejectTagResponse implements IRejectTagResponse {
+
+        /**
+         * Constructs a new RejectTagResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IRejectTagResponse);
+
+        /** RejectTagResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for RejectTagResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SubmitRequest. */
+    interface ISubmitRequest {
+
+        /** SubmitRequest config */
+        config?: (string|null);
+
+        /** SubmitRequest submitter */
+        submitter?: (string|null);
+
+        /** SubmitRequest description */
+        description?: (string|null);
+    }
+
+    /** Represents a SubmitRequest. */
+    class SubmitRequest implements ISubmitRequest {
+
+        /**
+         * Constructs a new SubmitRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.ISubmitRequest);
+
+        /** SubmitRequest config. */
+        public config: string;
+
+        /** SubmitRequest submitter. */
+        public submitter: string;
+
+        /** SubmitRequest description. */
+        public description: string;
+
+        /**
+         * Gets the default type url for SubmitRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SubmitResponse. */
+    interface ISubmitResponse {
+
+        /** SubmitResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a SubmitResponse. */
+    class SubmitResponse implements ISubmitResponse {
+
+        /**
+         * Constructs a new SubmitResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.ISubmitResponse);
+
+        /** SubmitResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for SubmitResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a DeletePendingRequest. */
+    interface IDeletePendingRequest {
+
+        /** DeletePendingRequest id */
+        id?: (string|null);
+
+        /** DeletePendingRequest sender */
+        sender?: (string|null);
+    }
+
+    /** Represents a DeletePendingRequest. */
+    class DeletePendingRequest implements IDeletePendingRequest {
+
+        /**
+         * Constructs a new DeletePendingRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IDeletePendingRequest);
+
+        /** DeletePendingRequest id. */
+        public id: string;
+
+        /** DeletePendingRequest sender. */
+        public sender: string;
+
+        /**
+         * Gets the default type url for DeletePendingRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a DeletePendingResponse. */
+    interface IDeletePendingResponse {
+
+        /** DeletePendingResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a DeletePendingResponse. */
+    class DeletePendingResponse implements IDeletePendingResponse {
+
+        /**
+         * Constructs a new DeletePendingResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IDeletePendingResponse);
+
+        /** DeletePendingResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for DeletePendingResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetWorkRequest. */
+    interface IGetWorkRequest {
+    }
+
+    /** Represents a GetWorkRequest. */
+    class GetWorkRequest implements IGetWorkRequest {
+
+        /**
+         * Constructs a new GetWorkRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetWorkRequest);
+
+        /**
+         * Gets the default type url for GetWorkRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetWorkResponse. */
+    interface IGetWorkResponse {
+
+        /** GetWorkResponse data */
+        data?: (db.IComputeWork[]|null);
+    }
+
+    /** Represents a GetWorkResponse. */
+    class GetWorkResponse implements IGetWorkResponse {
+
+        /**
+         * Constructs a new GetWorkResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IGetWorkResponse);
+
+        /** GetWorkResponse data. */
+        public data: db.IComputeWork[];
+
+        /**
+         * Gets the default type url for GetWorkResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a RejectWorkRequest. */
+    interface IRejectWorkRequest {
+
+        /** RejectWorkRequest id */
+        id?: (string|null);
+
+        /** RejectWorkRequest reason */
+        reason?: (string|null);
+
+        /** RejectWorkRequest hash */
+        hash?: (string|null);
+    }
+
+    /** Represents a RejectWorkRequest. */
+    class RejectWorkRequest implements IRejectWorkRequest {
+
+        /**
+         * Constructs a new RejectWorkRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IRejectWorkRequest);
+
+        /** RejectWorkRequest id. */
+        public id: string;
+
+        /** RejectWorkRequest reason. */
+        public reason: string;
+
+        /** RejectWorkRequest hash. */
+        public hash: string;
+
+        /**
+         * Gets the default type url for RejectWorkRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a RejectWorkResponse. */
+    interface IRejectWorkResponse {
+    }
+
+    /** Represents a RejectWorkResponse. */
+    class RejectWorkResponse implements IRejectWorkResponse {
+
+        /**
+         * Constructs a new RejectWorkResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IRejectWorkResponse);
+
+        /**
+         * Gets the default type url for RejectWorkResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a CompleteWorkRequest. */
+    interface ICompleteWorkRequest {
+
+        /** CompleteWorkRequest id */
+        id?: (string|null);
+
+        /** CompleteWorkRequest result */
+        result?: (model.ISimulationResult|null);
+    }
+
+    /** Represents a CompleteWorkRequest. */
+    class CompleteWorkRequest implements ICompleteWorkRequest {
+
+        /**
+         * Constructs a new CompleteWorkRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.ICompleteWorkRequest);
+
+        /** CompleteWorkRequest id. */
+        public id: string;
+
+        /** CompleteWorkRequest result. */
+        public result?: (model.ISimulationResult|null);
+
+        /**
+         * Gets the default type url for CompleteWorkRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a CompleteWorkResponse. */
+    interface ICompleteWorkResponse {
+
+        /** CompleteWorkResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a CompleteWorkResponse. */
+    class CompleteWorkResponse implements ICompleteWorkResponse {
+
+        /**
+         * Constructs a new CompleteWorkResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.ICompleteWorkResponse);
+
+        /** CompleteWorkResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for CompleteWorkResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+}
+
+/** Namespace preview. */
+export namespace preview {
+
+    /** Properties of a GetRequest. */
+    interface IGetRequest {
+
+        /** GetRequest id */
+        id?: (string|null);
+
+        /** GetRequest data */
+        data?: (model.ISimulationResult|null);
+    }
+
+    /** Represents a GetRequest. */
+    class GetRequest implements IGetRequest {
+
+        /**
+         * Constructs a new GetRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: preview.IGetRequest);
+
+        /** GetRequest id. */
+        public id: string;
+
+        /** GetRequest data. */
+        public data?: (model.ISimulationResult|null);
+
+        /**
+         * Gets the default type url for GetRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a GetResponse. */
+    interface IGetResponse {
+
+        /** GetResponse data */
+        data?: (Uint8Array|null);
+    }
+
+    /** Represents a GetResponse. */
+    class GetResponse implements IGetResponse {
+
+        /**
+         * Constructs a new GetResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: preview.IGetResponse);
+
+        /** GetResponse data. */
+        public data: Uint8Array;
+
+        /**
+         * Gets the default type url for GetResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+}
+
+/** Namespace share. */
+export namespace share {
+
+    /** Properties of a ShareEntry. */
+    interface IShareEntry {
+
+        /** ShareEntry id */
+        id?: (string|null);
+
+        /** ShareEntry result */
+        result?: (model.ISimulationResult|null);
+
+        /** ShareEntry expires_at */
+        expires_at?: (number|Long|null);
+
+        /** ShareEntry submitter */
+        submitter?: (string|null);
+    }
+
+    /** Represents a ShareEntry. */
+    class ShareEntry implements IShareEntry {
+
+        /**
+         * Constructs a new ShareEntry.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IShareEntry);
+
+        /** ShareEntry id. */
+        public id: string;
+
+        /** ShareEntry result. */
+        public result?: (model.ISimulationResult|null);
+
+        /** ShareEntry expires_at. */
+        public expires_at: (number|Long);
+
+        /** ShareEntry submitter. */
+        public submitter: string;
+
+        /**
+         * Gets the default type url for ShareEntry
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a CreateRequest. */
+    interface ICreateRequest {
+
+        /** CreateRequest result */
+        result?: (model.ISimulationResult|null);
+
+        /** CreateRequest expires_at */
+        expires_at?: (number|Long|null);
+
+        /** CreateRequest submitter */
+        submitter?: (string|null);
+    }
+
+    /** Represents a CreateRequest. */
+    class CreateRequest implements ICreateRequest {
+
+        /**
+         * Constructs a new CreateRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.ICreateRequest);
+
+        /** CreateRequest result. */
+        public result?: (model.ISimulationResult|null);
+
+        /** CreateRequest expires_at. */
+        public expires_at: (number|Long);
+
+        /** CreateRequest submitter. */
+        public submitter: string;
+
+        /**
+         * Gets the default type url for CreateRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a CreateResponse. */
+    interface ICreateResponse {
+
+        /** CreateResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a CreateResponse. */
+    class CreateResponse implements ICreateResponse {
+
+        /**
+         * Constructs a new CreateResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.ICreateResponse);
+
+        /** CreateResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for CreateResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ReadRequest. */
+    interface IReadRequest {
+
+        /** ReadRequest id */
+        id?: (string|null);
+    }
+
+    /** Represents a ReadRequest. */
+    class ReadRequest implements IReadRequest {
+
+        /**
+         * Constructs a new ReadRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IReadRequest);
+
+        /** ReadRequest id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for ReadRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ReadResponse. */
+    interface IReadResponse {
+
+        /** ReadResponse id */
+        id?: (string|null);
+
+        /** ReadResponse result */
+        result?: (model.ISimulationResult|null);
+
+        /** ReadResponse expires_at */
+        expires_at?: (number|Long|null);
+    }
+
+    /** Represents a ReadResponse. */
+    class ReadResponse implements IReadResponse {
+
+        /**
+         * Constructs a new ReadResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IReadResponse);
+
+        /** ReadResponse id. */
+        public id: string;
+
+        /** ReadResponse result. */
+        public result?: (model.ISimulationResult|null);
+
+        /** ReadResponse expires_at. */
+        public expires_at: (number|Long);
+
+        /**
+         * Gets the default type url for ReadResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an UpdateRequest. */
+    interface IUpdateRequest {
+
+        /** UpdateRequest id */
+        id?: (string|null);
+
+        /** UpdateRequest result */
+        result?: (model.ISimulationResult|null);
+
+        /** UpdateRequest expires_at */
+        expires_at?: (number|Long|null);
+
+        /** UpdateRequest submitter */
+        submitter?: (string|null);
+    }
+
+    /** Represents an UpdateRequest. */
+    class UpdateRequest implements IUpdateRequest {
+
+        /**
+         * Constructs a new UpdateRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IUpdateRequest);
+
+        /** UpdateRequest id. */
+        public id: string;
+
+        /** UpdateRequest result. */
+        public result?: (model.ISimulationResult|null);
+
+        /** UpdateRequest expires_at. */
+        public expires_at: (number|Long);
+
+        /** UpdateRequest submitter. */
+        public submitter: string;
+
+        /**
+         * Gets the default type url for UpdateRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an UpdateResponse. */
+    interface IUpdateResponse {
+
+        /** UpdateResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents an UpdateResponse. */
+    class UpdateResponse implements IUpdateResponse {
+
+        /**
+         * Constructs a new UpdateResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IUpdateResponse);
+
+        /** UpdateResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for UpdateResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SetTTLRequest. */
+    interface ISetTTLRequest {
+
+        /** SetTTLRequest id */
+        id?: (string|null);
+
+        /** SetTTLRequest expires_at */
+        expires_at?: (number|Long|null);
+    }
+
+    /** Represents a SetTTLRequest. */
+    class SetTTLRequest implements ISetTTLRequest {
+
+        /**
+         * Constructs a new SetTTLRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.ISetTTLRequest);
+
+        /** SetTTLRequest id. */
+        public id: string;
+
+        /** SetTTLRequest expires_at. */
+        public expires_at: (number|Long);
+
+        /**
+         * Gets the default type url for SetTTLRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SetTTLResponse. */
+    interface ISetTTLResponse {
+
+        /** SetTTLResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a SetTTLResponse. */
+    class SetTTLResponse implements ISetTTLResponse {
+
+        /**
+         * Constructs a new SetTTLResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.ISetTTLResponse);
+
+        /** SetTTLResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for SetTTLResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a DeleteRequest. */
+    interface IDeleteRequest {
+
+        /** DeleteRequest id */
+        id?: (string|null);
+    }
+
+    /** Represents a DeleteRequest. */
+    class DeleteRequest implements IDeleteRequest {
+
+        /**
+         * Constructs a new DeleteRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IDeleteRequest);
+
+        /** DeleteRequest id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for DeleteRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a DeleteResponse. */
+    interface IDeleteResponse {
+
+        /** DeleteResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a DeleteResponse. */
+    class DeleteResponse implements IDeleteResponse {
+
+        /**
+         * Constructs a new DeleteResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IDeleteResponse);
+
+        /** DeleteResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for DeleteResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a RandomRequest. */
+    interface IRandomRequest {
+    }
+
+    /** Represents a RandomRequest. */
+    class RandomRequest implements IRandomRequest {
+
+        /**
+         * Constructs a new RandomRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IRandomRequest);
+
+        /**
+         * Gets the default type url for RandomRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a RandomResponse. */
+    interface IRandomResponse {
+
+        /** RandomResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a RandomResponse. */
+    class RandomResponse implements IRandomResponse {
+
+        /**
+         * Constructs a new RandomResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: share.IRandomResponse);
+
+        /** RandomResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for RandomResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+}
+
 /** Namespace model. */
 export namespace model {
 
