@@ -49,15 +49,16 @@ func (c *char) c2() {
 		if c.Base.Cons >= 6 {
 			c6cb = c.makeC6CB()
 		}
-		c.Core.QueueAttack( //TODO: information about delay
+		// TODO: accurate C2 hitmark and return travel values
+		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(t, nil, 0.6),
 			0,
-			11,
+			skillFirstHitmark, // reuse skill for now
 			c6cb,
 		)
 
-		//C2 healing
+		// C2 healing
 		c.Core.Tasks.Add(func() {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
@@ -67,7 +68,7 @@ func (c *char) c2() {
 				Bonus:   c.Stat(attributes.Heal),
 			})
 
-		}, 22) //TODO: change delay
+		}, skillReturnTravel) // reuse skill for now
 
 		c.AddStatus(c2ICDKey, 60*5, false) // 5s
 		return false

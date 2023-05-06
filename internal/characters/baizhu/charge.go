@@ -10,15 +10,17 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 65
+const chargeHitmark = 59
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(55)
-	chargeFrames[action.ActionDash] = 55
-	chargeFrames[action.ActionJump] = 55
-	chargeFrames[action.ActionWalk] = 55
-	chargeFrames[action.ActionSwap] = 55
-
+	chargeFrames = frames.InitAbilSlice(75) // CA -> Walk
+	chargeFrames[action.ActionAttack] = 70
+	chargeFrames[action.ActionCharge] = 70
+	chargeFrames[action.ActionSkill] = 69
+	chargeFrames[action.ActionBurst] = 70
+	chargeFrames[action.ActionDash] = 53
+	chargeFrames[action.ActionJump] = 53
+	chargeFrames[action.ActionSwap] = 68
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
@@ -37,7 +39,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	windup := 0
 	switch c.Core.Player.CurrentState() {
 	case action.NormalAttackState:
-		windup = 10
+		windup = 14
 	}
 
 	c.Core.QueueAttack(
