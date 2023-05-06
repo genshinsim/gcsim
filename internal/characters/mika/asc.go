@@ -17,11 +17,11 @@ const (
 func (c *char) addDetectorStack() {
 	stacks := c.Tag(a1Stacks)
 
-	if stacks < c.maxDeterctorStacks {
+	if stacks < c.maxDetectorStacks {
 		stacks++
 		c.Core.Log.NewEvent("add detector stack", glog.LogCharacterEvent, c.Index).
 			Write("stacks", stacks).
-			Write("maxstacks", c.maxDeterctorStacks)
+			Write("maxstacks", c.maxDetectorStacks)
 	}
 	c.SetTag(a1Stacks, stacks)
 }

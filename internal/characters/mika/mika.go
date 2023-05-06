@@ -15,10 +15,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	maxDeterctorStacks int
-	healIcd            int
-	a4Stack            bool
-	c4Count            int
+	maxDetectorStacks int
+	healIcd           int
+	a4Stack           bool
+	c4Count           int
 
 	skillbuff []float64
 	c6buff    []float64
@@ -39,13 +39,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.maxDeterctorStacks = 3
+	c.maxDetectorStacks = 3
 	c.healIcd = 2.5 * 60
 
 	c.onBurstHeal()
 	if c.Base.Ascension >= 4 {
 		c.a4()
-		c.maxDeterctorStacks++
+		c.maxDetectorStacks++
 	}
 
 	// The Soulwind state of Starfrost Swirl can decrease the healing interval between instances caused by Skyfeather Song's Eagleplume state.
@@ -59,7 +59,7 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 6 {
 		c.c6buff = make([]float64, attributes.EndStatType)
 		c.c6buff[attributes.CD] = 0.6
-		c.maxDeterctorStacks++
+		c.maxDetectorStacks++
 	}
 
 	return nil
