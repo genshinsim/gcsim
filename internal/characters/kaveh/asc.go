@@ -78,7 +78,7 @@ func (c *char) a4AddStacksHandler() {
 			return false
 		}
 
-		c.AddStatus(a4ICDKey, 6, false)
+		c.AddStatus(a4ICDKey, 6, true)
 		c.a4Stacks++
 		return false
 	}, "kaveh-a4")
