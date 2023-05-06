@@ -43,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// starts at recorded hitmark and +1.65m in target direction
 	// moves at 11m/s, one attack every 0.15s (9f), so it moves at 11 * 0.15 = 1.65m per attack
 	// gets gated by special damage sequence (once every 0.5s)
-	initialPos := c.Core.Combat.PrimaryTarget().Pos()
+	initialPos := c.Core.Combat.Player().Pos()
 	initialDirection := c.Core.Combat.Player().Direction()
 	for i := 0; i < 5; i++ {
 		nextPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: 1.65 * float64(i+1)}, initialDirection)
