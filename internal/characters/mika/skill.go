@@ -210,9 +210,6 @@ func (c *char) applyBuffs() {
 	c.SetTag(a1Stacks, 0)
 	c.skillBuff()
 
-	if c.Base.Ascension >= 1 {
-		c.a1()
-	}
 	if c.Base.Ascension >= 4 {
 		c.a4Stack = false
 	}

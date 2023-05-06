@@ -48,7 +48,6 @@ func (c *char) a1() {
 				return m, true
 			},
 		})
-
 	}
 }
 
