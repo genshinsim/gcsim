@@ -41,7 +41,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.c4Count = 5
 		}
 		c.AddStatus(healKey, 15*60, false)
-		c.DeleteStatus(healIcdKey)
 	}, initialHeal)
 
 	c.SetCD(action.ActionBurst, 18*60)
@@ -65,13 +64,16 @@ func (c *char) onBurstHeal() {
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
-		if c.StatusIsActive(healIcdKey) {
+		active := c.Core.Player.ByIndex(atk.Info.ActorIndex)
+		if active.StatusIsActive(healIcdKey) {
 			return false
 		}
+		active.AddStatus(healIcdKey, c.healIcd, true)
 
 		heal := burstHealF[c.TalentLvlBurst()] + burstHealP[c.TalentLvlBurst()]*c.MaxHP()
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
+			Target:  active.Index,
 			Message: "Eagleplume",
 			Src:     heal,
 			Bonus:   c.Stat(attributes.Heal),
@@ -83,8 +85,6 @@ func (c *char) onBurstHeal() {
 			c.AddEnergy("mika-c4", 3)
 			c.c4Count--
 		}
-
-		c.AddStatus(healIcdKey, c.healIcd, true)
 
 		return false
 	}, "mika-eagleplume")
