@@ -28,7 +28,7 @@ func init() {
 	attackFrames = make([][]int, normalHitNum)
 
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 35) // N1 -> Walk
-	attackFrames[0][action.ActionAttack] = 22
+	attackFrames[0][action.ActionAttack] = 23
 	attackFrames[0][action.ActionCharge] = 28
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 28) // N2 -> Walk
