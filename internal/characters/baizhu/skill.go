@@ -12,8 +12,6 @@ import (
 
 var skillFrames []int
 
-const particleICDKey = "baizhu-particle-icd"
-
 func init() {
 	skillFrames = frames.InitAbilSlice(51)
 	skillFrames[action.ActionAttack] = 51
@@ -55,7 +53,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	atk.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.6)
 	cb := c.chain(c.Core.F, 1)
 	if cb != nil {
-		atk.Callbacks = append(atk.Callbacks, c.particleCB, cb)
+		atk.Callbacks = append(atk.Callbacks, c.makeParticleCB(), cb)
 		if c.Base.Cons >= 6 {
 			atk.Callbacks = append(atk.Callbacks, c.makeC6CB())
 		}
@@ -99,19 +97,23 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
-		return
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+
+		count := 3.0
+		if c.Core.Rand.Float64() < 0.50 {
+			count = 4
+		}
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, c.ParticleDelay)
 	}
-	if c.StatusIsActive(particleICDKey) {
-		return
-	}
-	count := 3.0
-	if c.Core.Rand.Float64() < 0.50 {
-		count = 4
-	}
-	c.AddStatus(particleICDKey, 2*60, true)
-	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Dendro, c.ParticleDelay)
 }
 
 func (c *char) skillHealing() {
