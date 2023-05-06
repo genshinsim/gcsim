@@ -30,7 +30,7 @@ func (c *char) a1() {
 		if c.StatusIsActive(a1ICDKey) {
 			return false
 		}
-		c.AddStatus(a1ICDKey, 30, false)
+		c.AddStatus(a1ICDKey, 30, true)
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
