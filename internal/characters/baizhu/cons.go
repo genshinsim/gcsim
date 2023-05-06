@@ -47,7 +47,7 @@ func (c *char) c2() {
 		c.c6done = false
 		var c6cb combat.AttackCBFunc
 		if c.Base.Cons >= 6 {
-			c6cb = c.c6
+			c6cb = c.makeC6CB()
 		}
 		c.Core.QueueAttack( //TODO: information about delay and hitbox
 			ai,
@@ -93,11 +93,13 @@ func (c *char) c4() {
 // Increases the DMG dealt by Holistic Revivification's Spiritveins by 8% of Baizhu's Max HP.
 // Additionally, when Gossamer Sprite or Gossamer Sprite: Splice hit opponents, there is a 100% chance of generating one of Healing Holism's
 // Seamless Shields. This effect can only be triggered once by a Gossamer Sprite or Gossamer Sprite: Splice.
-func (c *char) c6(a combat.AttackCB) {
-	if c.c6done { //TODO: This won't matter since it is assumed single target atm, but it can change in the future, making this chunk of code obsolete
-		return
+func (c *char) makeC6CB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if done {
+			return
+		}
+		done = true
+		c.summonSeamlessShield()
 	}
-	c.c6done = true
-	c.summonSeamlessShield()
-
 }

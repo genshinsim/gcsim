@@ -31,8 +31,6 @@ const (
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	c.c6done = false
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Universal Diagnosis",
@@ -59,7 +57,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if cb != nil {
 		atk.Callbacks = append(atk.Callbacks, c.particleCB, cb)
 		if c.Base.Cons >= 6 {
-			atk.Callbacks = append(atk.Callbacks, c.c6)
+			atk.Callbacks = append(atk.Callbacks, c.makeC6CB())
 		}
 	}
 	c.Core.QueueAttackEvent(&atk, skillFirstHitmark)
