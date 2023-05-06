@@ -49,9 +49,9 @@ func (c *char) c2() {
 		if c.Base.Cons >= 6 {
 			c6cb = c.makeC6CB()
 		}
-		c.Core.QueueAttack( //TODO: information about delay and hitbox
+		c.Core.QueueAttack( //TODO: information about delay
 			ai,
-			combat.NewSingleTargetHit(t.Key()),
+			combat.NewCircleHitOnTarget(t, nil, 0.6),
 			0,
 			11,
 			c6cb,
