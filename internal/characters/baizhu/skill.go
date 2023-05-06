@@ -84,8 +84,8 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 			return
 		}
 		delay := skillTickInterval
-		if next.Key() == a.Target.Key() {
-			delay += 6 // add some delay in case it's a different target
+		if next.Key() != a.Target.Key() {
+			delay += 6 // add some (estimated) delay in case it's a different target
 		}
 		//queue an attack vs next target
 		atk := *c.skillAtk
