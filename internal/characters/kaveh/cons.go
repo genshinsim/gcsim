@@ -80,7 +80,7 @@ func (c *char) c6() {
 			Abil:       "Pairidaeza's Dreams (C6)",
 			ActorIndex: c.Index,
 			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNormalAttack,
+			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
