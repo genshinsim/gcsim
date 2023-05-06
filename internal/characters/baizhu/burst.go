@@ -94,7 +94,6 @@ func (c *char) summonSpiritvein() {
 		ai.FlatDmg = c.MaxHP() * 0.08
 	}
 
-	// TODO: strike timing
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5),
