@@ -1,8 +1,8 @@
 import { Spinner } from "@blueprintjs/core";
-import { model } from "@gcsim/types";
+import { db } from "@gcsim/types";
 import DBEntryView from "./DBEntryView";
 
-export function ListView({ data }: { data: model.IDBEntries["data"] }) {
+export function ListView({ data }: { data: db.IEntry[] }) {
   if (!data) {
     return (
       <div>

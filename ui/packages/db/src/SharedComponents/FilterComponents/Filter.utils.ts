@@ -87,7 +87,6 @@ export function filterReducer(
           newFilterState = ItemFilterState.none;
           break;
       }
-      console.log(newCharIncludeCount);
 
       return {
         ...filter,

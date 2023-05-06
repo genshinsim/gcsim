@@ -1,5 +1,6 @@
 import { Spinner } from "@blueprintjs/core";
-import { model } from "@gcsim/types";
+import { db } from "@gcsim/types";
+import axios from "axios";
 import { useEffect, useReducer, useState } from "react";
 import { Filter } from "../SharedComponents/Filter";
 import {
@@ -11,7 +12,6 @@ import {
   ItemFilterState,
 } from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
-import { mockData } from "../SharedComponents/mockData";
 import Sorter from "../SharedComponents/Sorter";
 
 export function Database() {
@@ -20,24 +20,32 @@ export function Database() {
     charIncludeCount: 0,
   });
 
-  const [data, setData] = useState<model.IDBEntries["data"]>([]);
+  const [data, setData] = useState<db.IEntry[]>([]);
+
+  const querydb = (query: DbQuery) => {
+    axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
+      .then((resp) => {
+        if (resp.data) {
+          console.log("output: ", resp.data);
+          setData(resp.data.data);
+          resp.data.data.forEach((e) => {
+            console.log(e.hash);
+          });
+        } else {
+          console.log("no result: ", resp.data);
+        }
+      })
+      .catch((err) => {
+        console.log("error: ", err);
+      });
+  };
 
   useEffect(() => {
-    //https://simimpact.app/api
-    // const url = `https://localhost:3000/api/db?q=${encodeURIComponent(
-    //   JSON.stringify(filter.charFilter)
-    // )}`;
-    // fetch(url)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     // setData(data.data);
-    //     setData(mockData);
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
-    setData(mockData);
-  }, [filter.charFilter]);
+    // setData(mockData);
+    const query = craftQuery(filter);
+    console.log("input", query);
+    querydb(query);
+  }, [filter]);
 
   return (
     <FilterContext.Provider value={filter}>
@@ -57,20 +65,37 @@ export function Database() {
   );
 }
 
-function craftQuery({ charFilter }: CharFilter): unknown {
-  const query: Record<string, unknown> = {};
+function craftQuery({ charFilter }: { charFilter: CharFilter }): DbQuery {
+  const query: DbQuery["query"] = {};
   // sort all characters into included and excluded from the filter
   const includedChars: string[] = [];
   const excludedChars: string[] = [];
-  for (const [charName, filterState] of Object.entries(charFilter)) {
-    if (filterState === ItemFilterState.include) {
+  for (const [charName, charState] of Object.entries(charFilter)) {
+    if (charState.state === ItemFilterState.include) {
       includedChars.push(charName);
-    } else if (filterState === ItemFilterState.exclude) {
+    } else if (charState.state === ItemFilterState.exclude) {
       excludedChars.push(charName);
     }
   }
-  if (includedChars.length > 0 || excludedChars.length > 0) {
-    query.char_names = { $all: includedChars, $nin: excludedChars };
+  if (includedChars.length > 0) {
+    query["summary.char_names"] = {};
+    query["summary.char_names"]["$all"] = includedChars;
   }
-  return query;
+  if (excludedChars.length > 0) {
+    query["summary.char_names"] = query["summary.char_names"] ?? {};
+    query["summary.char_names"]["$nin"] = excludedChars;
+  }
+  return { query, limit: 9 };
+}
+
+interface DbQuery {
+  query: {
+    "summary.char_names"?: {
+      $all?: string[];
+      $nin?: string[];
+    };
+  };
+  limit?: number;
+  sort?: unknown;
+  skip?: number;
 }

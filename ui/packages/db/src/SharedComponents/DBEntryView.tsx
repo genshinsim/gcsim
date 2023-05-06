@@ -1,4 +1,5 @@
-import { model } from "@gcsim/types";
+import { db, model } from "@gcsim/types";
+import { Long } from "protobufjs";
 import DBEntryActions from "./DBEntryViewComponents/DBEntryActions";
 import { DBEntryPortrait } from "./DBEntryViewComponents/DBEntryPortrait";
 import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
@@ -8,15 +9,16 @@ function useTranslation() {
 }
 
 //displays one database entry
-export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
+export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
   // const t = useTranslation();
-  const team = dbEntry.team ?? [];
+  const team = dbEntry.summary?.team ?? [];
   if (team.length < 4) {
     const diff = 4 - team.length;
     for (let i = 0; i < diff; i++) {
       team.push({} as model.ICharacter);
     }
   }
+
   return (
     <>
       <div className="hidden lg:flex  flex-row bg-slate-800  p-4 gap-4 w-full max-w-7xl">
@@ -33,7 +35,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
               <span className="  overflow-hidden">{dbEntry?.description}</span>
             </div>
 
-            <DBEntryDetails {...dbEntry} />
+            <DBEntryDetails {...dbEntry} run_date={dbEntry.last_update} />
           </div>
         </div>
         <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />
@@ -54,14 +56,20 @@ export default function DBEntryView({ dbEntry }: { dbEntry: model.IDBEntry }) {
 function DBEntryDetails({
   target_count,
   mean_dps_per_target,
-  run_date,
   mode,
   sim_duration,
   total_damage,
+  run_date,
 }: // total_damage,
 // description,
-model.IDBEntry) {
+NonNullable<db.IEntry["summary"]> & {
+  run_date?: number | Long | null;
+}) {
   const t = useTranslation();
+  let date = "Unknown";
+  if (run_date && typeof run_date === "number") {
+    date = new Date(run_date).toLocaleDateString();
+  }
   return (
     <table className="bp4-html-table  ">
       <thead>
@@ -83,7 +91,7 @@ model.IDBEntry) {
           <td className="">
             {sim_duration?.mean?.toPrecision(3) ?? t("Unknown")}s
           </td>
-          <td className="">{run_date?.toString() ?? t("Unknown")}</td>
+          <td className="">{date}</td>
         </tr>
       </tbody>
     </table>
