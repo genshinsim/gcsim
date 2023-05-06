@@ -52,7 +52,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	//trigger a chain of attacks starting at the first target
 	atk := *c.skillAtk
 	atk.SourceFrame = c.Core.F
-	atk.Pattern = combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key())
+	atk.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.6)
 	cb := c.chain(c.Core.F, 1)
 	if cb != nil {
 		atk.Callbacks = append(atk.Callbacks, c.particleCB, cb)
@@ -79,7 +79,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 	}
 	return func(a combat.AttackCB) {
 		//on hit figure out the next target
-		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t combat.Enemy) bool {
+		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 10), func(t combat.Enemy) bool {
 			return a.Target.Key() != t.Key()
 		})
 		if next == nil {
@@ -89,7 +89,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		//queue an attack vs next target
 		atk := *c.skillAtk
 		atk.SourceFrame = src
-		atk.Pattern = combat.NewSingleTargetHit(next.Key())
+		atk.Pattern = combat.NewCircleHitOnTarget(next, nil, 0.6)
 		cb := c.chain(src, count+1)
 		if cb != nil {
 			atk.Callbacks = append(atk.Callbacks, cb)
