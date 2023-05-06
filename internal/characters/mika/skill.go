@@ -65,7 +65,6 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Mult:               skillPress[c.TalentLvlSkill()],
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
-		IsDeployable:       true,
 	}
 
 	var a1CB combat.AttackCBFunc
