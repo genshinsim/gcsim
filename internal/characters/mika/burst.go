@@ -40,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if c.Base.Cons >= 4 {
 			c.c4Count = 5
 		}
-		c.AddStatus(healKey, 15*60, true)
+		c.AddStatus(healKey, 15*60, false)
 		c.DeleteStatus(healIcdKey)
 	}, initialHeal)
 
