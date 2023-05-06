@@ -14,7 +14,7 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{24, 24, 26, 49}
-	attackHitlagHaltFrame = []float64{.1, .09, .09, .12}
+	attackHitlagHaltFrame = []float64{.1, .09, .09, .1}
 	attackHitboxes        = [][]float64{{2}, {2, 3}, {2}, {2, 3}}
 	attackOffsets         = []float64{0.5, -1, 0.5, -0.5}
 	attackFanAngles       = []float64{300, 360, 300, 360}
