@@ -24,7 +24,8 @@ func (c *char) a1() {
 		Base:         modifier.NewBase("baizhu-a1-heal-bonus", -1),
 		AffectedStat: attributes.Heal,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Player.ActiveChar().HPCurrent/c.Core.Player.ActiveChar().MaxHP() < 0.5 {
+			active := c.Core.Player.ActiveChar()
+			if active.HPCurrent/active.MaxHP() < 0.5 {
 				return mHeal, true
 			}
 			return nil, false
@@ -38,7 +39,8 @@ func (c *char) a1() {
 		Base:         modifier.NewBase("baizhu-a1-dendro-dmg", -1),
 		AffectedStat: attributes.DendroP,
 		Amount: func() ([]float64, bool) {
-			if c.Core.Player.ActiveChar().HPCurrent/c.Core.Player.ActiveChar().MaxHP() >= 0.5 {
+			active := c.Core.Player.ActiveChar()
+			if active.HPCurrent/active.MaxHP() >= 0.5 {
 				return mDendroP, true
 			}
 			return nil, false
