@@ -17,6 +17,7 @@ export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, {
     charFilter: initialCharFilter,
     charIncludeCount: 0,
+    pageNumber: 1,
   });
 
   const [data, setData] = useState<db.IEntry[]>([]);
@@ -86,7 +87,7 @@ function craftQuery({ charFilter }: { charFilter: CharFilter }): DbQuery {
     query["summary.char_names"] = query["summary.char_names"] ?? {};
     query["summary.char_names"]["$nin"] = excludedChars;
   }
-  return { query, limit: 20 };
+  return { query, limit: 10 };
 }
 
 interface DbQuery {

@@ -1,6 +1,23 @@
 import { createContext } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames";
 
+export interface FilterState {
+  charFilter: CharFilter;
+  charIncludeCount: number;
+  pageNumber: number;
+}
+
+export const initialCharFilter = charNames.reduce((acc, charName) => {
+  acc[charName] = { state: ItemFilterState.none, charName };
+  return acc;
+}, {} as CharFilter);
+
+export const FilterContext = createContext<FilterState>({
+  charFilter: initialCharFilter,
+  charIncludeCount: 0,
+  pageNumber: 1,
+});
+
 export enum ItemFilterState {
   "none",
   "include",
@@ -36,16 +53,6 @@ export const FilterDispatchContext = createContext<
   React.Dispatch<FilterReducerAction>
 >(null as unknown as React.Dispatch<FilterReducerAction>);
 
-export const initialCharFilter = charNames.reduce((acc, charName) => {
-  acc[charName] = { state: ItemFilterState.none, charName };
-  return acc;
-}, {} as CharFilter);
-
-export const FilterContext = createContext<{
-  charFilter: CharFilter;
-  charIncludeCount: number;
-}>({ charFilter: initialCharFilter, charIncludeCount: 0 });
-
 export interface FilterReducerAction {
   type:
     | "handleChar"
@@ -58,12 +65,9 @@ export interface FilterReducerAction {
   set?: string;
 }
 export function filterReducer(
-  filter: {
-    charFilter: CharFilter;
-    charIncludeCount: number;
-  },
+  filter: FilterState,
   action: FilterReducerAction
-): { charFilter: CharFilter; charIncludeCount: number } {
+): FilterState {
   switch (action.type) {
     case "handleChar": {
       let newFilterState: ItemFilterState;
