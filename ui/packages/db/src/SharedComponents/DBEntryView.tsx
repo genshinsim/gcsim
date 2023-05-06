@@ -72,7 +72,6 @@ NonNullable<db.IEntry["summary"]> & {
   if (run_date && typeof run_date === "number") {
     date = new Date(run_date).toLocaleDateString();
   }
-  console.log(target_count);
   return (
     <table className="bp4-html-table  ">
       <thead>
