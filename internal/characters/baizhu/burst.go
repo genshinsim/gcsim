@@ -58,8 +58,8 @@ func (c *char) summonSeamlessShieldHealing() {
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
 		Message: "Seamless Shield Healing",
-		Src:     burstHealPP[c.TalentLvlBurst()] * c.MaxHP(),
-		Bonus:   burstHealFlat[c.TalentLvlBurst()],
+		Src:     burstHealPP[c.TalentLvlBurst()]*c.MaxHP() + burstHealFlat[c.TalentLvlBurst()],
+		Bonus:   c.Stat(attributes.Heal),
 	})
 	c.a4()
 

@@ -120,8 +120,8 @@ func (c *char) skillHealing() {
 			Caller:  c.Index,
 			Target:  -1,
 			Message: "Universal Diagnosis Healing",
-			Src:     skillHealPP[c.TalentLvlBurst()] * c.MaxHP(),
-			Bonus:   skillHealFlat[c.TalentLvlBurst()],
+			Src:     skillHealPP[c.TalentLvlBurst()]*c.MaxHP() + skillHealFlat[c.TalentLvlBurst()],
+			Bonus:   c.Stat(attributes.Heal),
 		})
 
 	}, 22) //TODO: change delay
