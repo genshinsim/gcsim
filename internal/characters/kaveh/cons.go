@@ -77,15 +77,17 @@ func (c *char) c6() {
 		c.AddStatus(c6ICDKey, 180, false)
 
 		ai := combat.AttackInfo{
-			Abil:       "Pairidaeza's Dreams (C6)",
-			ActorIndex: c.Index,
-			AttackTag:  attacks.AttackTagNone,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Dendro,
-			Durability: 25,
-			Mult:       0.618,
+			Abil:             "Pairidaeza's Dreams (C6)",
+			ActorIndex:       c.Index,
+			AttackTag:        attacks.AttackTagNone,
+			ICDTag:           attacks.ICDTagNone,
+			ICDGroup:         attacks.ICDGroupDefault,
+			StrikeType:       attacks.StrikeTypeDefault,
+			Element:          attributes.Dendro,
+			Durability:       25,
+			Mult:             0.618,
+			HitlagFactor:     0.01,
+			HitlagHaltFrames: 0.09 * 60,
 		}
 		ap := combat.NewCircleHitOnTarget(t, nil, 4)
 		// delay is an estimate
