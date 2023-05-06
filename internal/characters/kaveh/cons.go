@@ -88,8 +88,9 @@ func (c *char) c6() {
 			Mult:       0.618,
 		}
 		ap := combat.NewCircleHitOnTarget(t, nil, 4)
-		c.Core.QueueAttack(ai, ap, 0, skillHitmark)
-		c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, skillHitmark)
+		// delay is an estimate
+		c.Core.QueueAttack(ai, ap, 0, 0.3*60)
+		c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, 0.3*60)
 
 		return false
 	}, "kaveh-c6")
