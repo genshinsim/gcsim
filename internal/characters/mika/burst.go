@@ -50,13 +50,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }
 
 func (c *char) onBurstHeal() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		if !c.StatusIsActive(healKey) {
 			return false
 		}
@@ -72,7 +72,6 @@ func (c *char) onBurstHeal() {
 		heal := burstHealF[c.TalentLvlBurst()] + burstHealP[c.TalentLvlBurst()]*c.MaxHP()
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
-			Target:  -1,
 			Message: "Eagleplume",
 			Src:     heal,
 			Bonus:   c.Stat(attributes.Heal),
