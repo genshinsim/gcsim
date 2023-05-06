@@ -12,7 +12,6 @@ import {
   ItemFilterState,
 } from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
-import Sorter from "../SharedComponents/Sorter";
 
 export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, {
@@ -58,7 +57,7 @@ export function Database() {
             <div className="text-base  md:text-2xl">{`Showing ${
               data?.length ?? 0
             } Simulations `}</div>
-            <Sorter />
+            {/* <Sorter /> */}
           </div>
           {data ? <ListView data={data} /> : <Spinner />}
         </div>
@@ -87,7 +86,7 @@ function craftQuery({ charFilter }: { charFilter: CharFilter }): DbQuery {
     query["summary.char_names"] = query["summary.char_names"] ?? {};
     query["summary.char_names"]["$nin"] = excludedChars;
   }
-  return { query, limit: 9 };
+  return { query, limit: 20 };
 }
 
 interface DbQuery {
