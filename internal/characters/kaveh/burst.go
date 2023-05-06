@@ -14,14 +14,19 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark     = 24
+	burstHitmark     = 36
 	burstDuration    = 720
 	burstKey         = "kaveh-q"
 	burstDmgBonusKey = "kaveh-q-dmg-bonus"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(42)
+	burstFrames = frames.InitAbilSlice(49)
+	burstFrames[action.ActionAttack] = 48
+	burstFrames[action.ActionDash] = 44
+	burstFrames[action.ActionJump] = 44
+	burstFrames[action.ActionWalk] = 48
+	burstFrames[action.ActionSwap] = 42
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -41,6 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 	c.SetCD(action.ActionBurst, 1200)
+	c.ConsumeEnergy(3)
 
 	c.Core.Tasks.Add(func() {
 		c.ruptureDendroCores(ap)

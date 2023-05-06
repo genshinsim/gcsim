@@ -75,6 +75,7 @@ func init() {
 	percentDelay5[keys.Yunjin] = 12
 
 	percentDelay5[keys.Beidou] = 22
+	percentDelay5[keys.Kaveh] = 25
 	percentDelay5[keys.Chongyun] = 18
 	percentDelay5[keys.Dori] = 29
 	percentDelay5[keys.Itto] = 27
@@ -145,6 +146,10 @@ func Get5PercentN0Delay(activeChar *character.CharWrapper) int {
 
 func Get0PercentN0Delay(activeChar *character.CharWrapper) int {
 	// TODO: Collect data for this
+	switch activeChar.Base.Key {
+	case keys.Kaveh:
+		return 23
+	}
 	return 0
 }
 

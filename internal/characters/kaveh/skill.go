@@ -13,14 +13,18 @@ import (
 var skillFrames []int
 
 const (
-	skillHitmark   = 32
+	skillHitmark   = 35
 	particleICDKey = "kaveh-particle-icd"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(46)
-	skillFrames[action.ActionDash] = 32
-	skillFrames[action.ActionJump] = 32
+	skillFrames = frames.InitAbilSlice(52)
+	skillFrames[action.ActionAttack] = 45
+	skillFrames[action.ActionSkill] = 45
+	skillFrames[action.ActionBurst] = 45
+	skillFrames[action.ActionDash] = 34
+	skillFrames[action.ActionJump] = 34
+	skillFrames[action.ActionSwap] = 44
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -38,13 +42,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 	c.Core.QueueAttack(ai, ap, 0, skillHitmark, c.particleCB)
-	c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, skillHitmark)
+	c.Core.Tasks.Add(func() { c.ruptureDendroCores(ap) }, skillHitmark+3)
 
 	if c.Base.Cons >= 1 {
-		c.c1()
+		c.Core.Tasks.Add(c.c1, 33)
 	}
 
-	c.SetCD(action.ActionSkill, 360)
+	c.SetCDWithDelay(action.ActionSkill, 360, 33)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
