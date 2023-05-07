@@ -10,9 +10,9 @@ OVERLAP = 0.16
 assets_folder = "images"
 if os.environ["ASSETS_PATH"] != "":
     assets_folder = os.path.abspath(os.environ["ASSETS_PATH"])
-
-print(f"Loading images from {assets_folder}")
-
+print(f"Loading images from {assets_folder=}")
+genshin_font = ImageFont.truetype(
+    os.path.join(assets_folder, "fonts/genshin_font.ttf"), 120)
 
 def get_data() -> dict:
     return json.load(sys.stdin)
@@ -27,6 +27,9 @@ def open_image(fp):
             print(e)
             return Image.new("RGBA", (256, 256))
 data = get_data()
+incomplete_chars = []
+if "incomplete_chars" in data.keys():
+    incomplete_chars.extend(data["incomplete_chars"])
 chars = data["char_details"]
 # print(chars[0])
 names = [chars[x]["name"] for x in range(len(chars))]
@@ -38,7 +41,22 @@ imgs = []
 new_image_width = 900
 new_image_height = 422
 for name in names:
-    imgs.append(open_image(os.path.join(assets_folder, f"avatar/{name}.png")))
+    char_img = open_image(os.path.join(assets_folder, f"avatar/{name}.png"))
+    char_img = char_img.resize((256,256),Image.Resampling.BICUBIC)
+    if name in incomplete_chars:
+        text_img = Image.new("RGBA", (256,256), (0, 0, 0, 0))
+        text = ImageDraw.Draw(text_img)
+        text.text((256/2,256/2), "WIP", font=genshin_font, fill=(0,0,0), anchor="mm")
+        text_img = text_img.rotate(60, resample=Image.Resampling.BILINEAR, expand=False, center=(256/2+20,256/2))
+        shadow = Image.new("RGBA", text_img.size, (255, 255, 255, 255))
+        alpha = text_img.split()[-1]
+        shadow.putalpha(alpha)
+        shadow = shadow.filter(ImageFilter.MaxFilter(7))
+        shadow = shadow.filter(ImageFilter.GaussianBlur(1))
+        shadow.alpha_composite(text_img)
+        char_img.alpha_composite(shadow)
+
+    imgs.append(char_img)
     char_image_shapes.append((256, 256))
 
 base_img = Image.new("RGBA", (new_image_width, new_image_height))
