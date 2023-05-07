@@ -63,6 +63,7 @@ const (
 	ICDGroupDiluc
 	ICDGroupPoleExtraAttack
 	ICDGroupXiaoDash
+	ICDGroupYaeCharged
 	ICDGroupYelanBreakthrough
 	ICDGroupYelanBurst
 	ICDGroupColleiBurst
@@ -81,6 +82,7 @@ const (
 	ICDGroupAlhaithamExtraAttack //CA
 	ICDGroupYaoyaoRadishSkill
 	ICDGroupYaoyaoRadishBurst
+	ICDGroupBaizhuC2
 	ICDGroupLength
 )
 
@@ -92,6 +94,7 @@ var ICDGroupResetTimer = []int{
 	300, //diluc
 	30,  //pole extra
 	6,   //xiao dash
+	30,  //yae charged
 	18,  //yelan pew pew
 	120, //yelan burst
 	180, //collei burst
@@ -110,6 +113,7 @@ var ICDGroupResetTimer = []int{
 	120, //alhaitham CA
 	150, //yaoyao radish skill
 	90,  //yaoyao radish burst
+	240, //baizhu c2
 }
 
 var ICDGroupEleApplicationSequence = [][]float64{
@@ -126,6 +130,8 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	//pole extra
 	{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0},
 	//xiao dash
+	{1, 0, 0, 0, 0, 0, 0},
+	//yae charged
 	{1, 0, 0, 0, 0, 0, 0},
 	//yelan pew pew
 	{1, 0, 0, 0},
@@ -156,7 +162,6 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	//wanderer a4
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//alhaitham projection
-
 	{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
 	//alhaitham CA
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -164,6 +169,8 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	{1, 0, 0, 0, 0, 0},
 	//yaoyao radish burst
 	{1, 0, 0, 0, 0, 0},
+	//baizhu c2
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 }
 
 var ICDGroupDamageSequence = [][]float64{
@@ -180,6 +187,8 @@ var ICDGroupDamageSequence = [][]float64{
 	//pole extra
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	//xiao
+	{1, 0, 0, 0, 0, 0, 0},
+	//yae charged
 	{1, 0, 0, 0, 0, 0, 0},
 	//yelan pew pew
 	{1, 0, 0, 0},
@@ -219,4 +228,6 @@ var ICDGroupDamageSequence = [][]float64{
 	{1, 1, 1, 1, 1, 1},
 	//yaoyao radish burst
 	{1, 1, 1, 1, 1, 1},
+	//baizhu c2
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 }

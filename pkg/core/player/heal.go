@@ -48,8 +48,9 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 
 	h.Log.NewEvent(info.Message, glog.LogHealEvent, index).
 		Write("previous", prevhp).
-		Write("amount", hp).
+		Write("base amount", hp).
 		Write("bonus", bonus).
+		Write("final amount", heal).
 		Write("current", c.HPCurrent).
 		Write("max_hp", c.MaxHP())
 

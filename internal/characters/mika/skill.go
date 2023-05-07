@@ -65,7 +65,6 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		Mult:               skillPress[c.TalentLvlSkill()],
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
-		IsDeployable:       true,
 	}
 
 	var a1CB combat.AttackCBFunc
@@ -99,7 +98,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillPressFrames[action.ActionWalk], // earliest cancel
 		State:           action.SkillState,
 	}
 }
@@ -109,7 +108,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Rimestar Flare",
 		AttackTag:  attacks.AttackTagElementalArtHold,
-		ICDTag:     attacks.ICDTagNone,
+		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Cryo,
@@ -167,7 +166,7 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 			ActorIndex: c.Index,
 			Abil:       "Rimestar Shard",
 			AttackTag:  attacks.AttackTagElementalArtHold,
-			ICDTag:     attacks.ICDTagNone,
+			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Cryo,
@@ -211,9 +210,6 @@ func (c *char) applyBuffs() {
 	c.SetTag(a1Stacks, 0)
 	c.skillBuff()
 
-	if c.Base.Ascension >= 1 {
-		c.a1()
-	}
 	if c.Base.Ascension >= 4 {
 		c.a4Stack = false
 	}

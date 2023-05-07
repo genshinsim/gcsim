@@ -133,11 +133,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackEvent(c.a4Snap, 0)
 		}, 665)
 	}
-
-	c.Core.Status.Add("chongyunfield", 600)
+	c.QueueCharTask(func() {
+		c.Core.Status.Add("chongyunfield", 600)
+	}, skillHitmark)
 
 	//TODO: delay between when frost field start ticking?
-	for i := skillHitmark - 1; i <= 600; i += 60 {
+	for i := 0; i <= 600 ; i += 60 {
 		c.Core.Tasks.Add(func() {
 			if src != c.fieldSrc {
 				return
@@ -147,7 +148,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			}
 			active := c.Core.Player.ActiveChar()
 			c.infuse(active)
-		}, i)
+		}, i+skillHitmark)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 900, 34)

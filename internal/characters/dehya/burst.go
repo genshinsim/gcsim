@@ -19,7 +19,7 @@ const kickKey = "dehya-burst-kick"
 const burstDoT1Hitmark = 105
 const kickHitmark = 46 //6 hits minimum
 var punchSlowHitmark = 43
-var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27}
+var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27,27,27}
 
 func init() {
 	//TODO:Deprecate bursty frames in favor of a constant?
