@@ -9,6 +9,7 @@ import {
 } from "@blueprintjs/core";
 import { useTranslation } from "react-i18next";
 import { FaDiscord } from "react-icons/fa";
+import { IoIosDocument } from "react-icons/io";
 import logo from "./logo.png";
 import { useAppSelector } from "../Stores/store";
 import { Link } from "react-router-dom";
@@ -27,6 +28,16 @@ export default ({}) => {
         target="_blank">
       <span className="hidden min-[798px]:block">
         {t<string>("nav.teams_db")}
+      </span>
+    </AnchorButton>,
+    <AnchorButton
+        key="doc"
+        className={Classes.MINIMAL}
+        icon={<IoIosDocument size="24px" color="#abb3bf"  />}
+        href="https://docs.gcsim.app"
+        target="_blank">
+      <span className="hidden min-[798px]:block">
+        Docs
       </span>
     </AnchorButton>,
     <AnchorButton

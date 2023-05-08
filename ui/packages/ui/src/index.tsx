@@ -9,7 +9,6 @@ import { appActions } from "./Stores/appSlice";
 import { Footer, Nav } from "./Sectioning";
 import { Helmet } from "react-helmet";
 import {
-  Dash,
   Simulator,
   PageUserAccount,
   DiscordCallback,
@@ -146,14 +145,14 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
       <Nav />
       <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
         <Switch>
-          {/* Landing Page */}
+          {/* Landing Page
           <Route exact path="/">
             <Helmet><title>gcsim - simulation impact</title></Helmet>
             <Dash />
-          </Route>
+          </Route> */}
 
           {/* Simulator */}
-          <Route path="/simulator">
+          <Route path={["/", "/simulator"]}>
             <Helmet><title>gcsim - simulator</title></Helmet>
             <Simulator exec={exec} />
           </Route>
