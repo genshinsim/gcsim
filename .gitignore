@@ -29,3 +29,4 @@ cmd/gcsim/gcsim
 **/protos_gen
 keys.json
 /app/*
+cmd/gcsim/run_optimizer_full.bat

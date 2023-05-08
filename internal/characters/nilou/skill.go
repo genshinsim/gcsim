@@ -237,7 +237,12 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 			swordDanceHitboxes[s][1],
 		)
 	}
-	c.Core.QueueAttack(ai, ap, swordDanceHitMarks[s]+travel, swordDanceHitMarks[s]+travel, c.c4cb(), c.pirouetteParticleCB)
+
+	var particleCB func(combat.AttackCB)
+	if c.StatusIsActive(pirouetteStatus) {
+		particleCB = c.pirouetteParticleCB
+	}
+	c.Core.QueueAttack(ai, ap, swordDanceHitMarks[s]+travel, swordDanceHitMarks[s]+travel, c.c4cb(), particleCB)
 
 	defer c.AdvanceSkillIndex()
 
@@ -279,7 +284,12 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 			whirlingStepsHitboxes[s][1],
 		)
 	}
-	c.Core.QueueAttack(ai, ap, whirlingStepsHitMarks[s], whirlingStepsHitMarks[s], c.c4cb(), c.pirouetteParticleCB)
+
+	var particleCB func(combat.AttackCB)
+	if c.StatusIsActive(pirouetteStatus) {
+		particleCB = c.pirouetteParticleCB
+	}
+	c.Core.QueueAttack(ai, ap, whirlingStepsHitMarks[s], whirlingStepsHitMarks[s], c.c4cb(), particleCB)
 
 	defer c.AdvanceSkillIndex()
 

@@ -43,6 +43,7 @@ var setNames = []string{
 	"deepwoodmemories",
 	"defenderswill",
 	"desertpavilionchronicle",
+	"vourukashasglow",
 	"echoesofanoffering",
 	"emblemofseveredfate",
 	"flowerofparadiselost",
@@ -57,6 +58,7 @@ var setNames = []string{
 	"maidenbeloved",
 	"martialartist",
 	"noblesseoblige",
+	"nymphsdream",
 	"oceanhuedclam",
 	"paleflame",
 	"prayersfordestiny",
@@ -90,6 +92,7 @@ const (
 	DeepwoodMemories
 	DefendersWill
 	DesertPavilionChronicle
+	VourukashasGlow
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
 	FlowerOfParadiseLost
@@ -104,6 +107,7 @@ const (
 	MaidenBeloved
 	MartialArtist
 	NoblesseOblige
+	NymphsDream
 	OceanHuedClam
 	PaleFlame
 	PrayersForDestiny

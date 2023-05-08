@@ -55,7 +55,7 @@ export function OmniSelect(props: Props) {
   );
 }
 
-export const OmniSelectRenderer: ItemRenderer<Item> = (
+const OmniSelectRenderer: ItemRenderer<Item> = (
   item: Item,
   { handleClick, modifiers, query }
 ) => {

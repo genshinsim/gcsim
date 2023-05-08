@@ -41,6 +41,7 @@ var weaponNames = []string{
 	"aquasimulacra",
 	"aquilafavonia",
 	"athousandfloatingdreams",
+	"beaconofthereedsea",
 	"beginnersprotector",
 	"blackcliffagate",
 	"blackclifflongsword",
@@ -102,6 +103,7 @@ var weaponNames = []string{
 	"lostprayertothesacredwinds",
 	"luxurioussealord",
 	"magicguide",
+	"mailedflower",
 	"makhairaaquamarine",
 	"mappamare",
 	"memoryofdust",
@@ -196,6 +198,7 @@ const (
 	AquaSimulacra
 	AquilaFavonia
 	AThousandFloatingDreams
+	BeaconOfTheReedSea
 	BeginnersProtector
 	BlackcliffAgate
 	BlackcliffLongsword
@@ -257,6 +260,7 @@ const (
 	LostPrayerToTheSacredWinds
 	LuxuriousSeaLord
 	MagicGuide
+	MailedFlower
 	MakhairaAquamarine
 	MappaMare
 	MemoryOfDust

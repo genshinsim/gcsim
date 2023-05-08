@@ -111,6 +111,8 @@ type Reactable struct {
 	burningAtk      combat.AttackInfo
 	burningSnapshot combat.Snapshot
 	burningTickSrc  int
+	// freeze specific
+	FreezeResist float64
 }
 
 type Enemy interface {
@@ -379,7 +381,7 @@ func (r *Reactable) Tick() {
 	if r.Durability[ModifierFrozen] > ZeroDur {
 		//ramp up decay rate first
 		r.DecayRate[ModifierFrozen] += frzDelta
-		r.Durability[ModifierFrozen] -= r.DecayRate[ModifierFrozen]
+		r.Durability[ModifierFrozen] -= r.DecayRate[ModifierFrozen] / reactions.Durability(1.0 - r.FreezeResist)
 
 		r.checkFreeze()
 	} else if r.DecayRate[ModifierFrozen] > frzDecayCap { //otherwise ramp down decay rate

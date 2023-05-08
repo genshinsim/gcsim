@@ -24,6 +24,11 @@
     "element": "geo",
     "weapon_class": "sword"
   },
+  "alhaitham": {
+    "element": "dendro",
+    "weapon_class": "sword",
+    "rarity": 5
+  },
   "aloy": {
     "rarity": 5,
     "element": "cryo",
@@ -43,6 +48,11 @@
     "rarity": 5,
     "element": "hydro",
     "weapon_class": "sword"
+  },
+  "baizhu": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "catalyst"
   },
   "barbara": {
     "rarity": 4,
@@ -144,6 +154,11 @@
     "element": "cryo",
     "weapon_class": "sword"
   },
+  "kaveh": {
+    "rarity": 4,
+    "element": "dendro",
+    "weapon_class": "claymore"
+  }, 
   "kazuha": {
     "rarity": 5,
     "element": "anemo",
@@ -200,37 +215,37 @@
     "weapon_class": "sword"
   },
   "mona": {
-    "rarity": 5,
+    "rarity": "5",
     "element": "hydro",
     "weapon_class": "catalyst"
-  },
-  "nahida": {
-    "rarity": 5,
-    "element": "dendro",
-    "weapon_class": "catalyst"
-  },
-  "nilou": {
-    "rarity": 5,
-    "element": "hydro",
-    "weapon_class": "sword"
   },
   "ningguang": {
-    "rarity": 4,
+    "rarity": "4",
     "element": "geo",
     "weapon_class": "catalyst"
   },
+  "nilou": {
+    "rarity": "5",
+    "element": "hydro",
+    "weapon_class": "sword"
+  },
+  "nahida": {
+   "rarity": "5",
+    "element": "dendro",
+    "weapon_class": "catalyst"
+  },
   "noelle": {
-    "rarity": 4,
+    "rarity": "4",
     "element": "geo",
     "weapon_class": "claymore"
   },
   "qiqi": {
-    "rarity": 5,
+    "rarity": "5",
     "element": "cryo",
     "weapon_class": "sword"
   },
   "raiden": {
-    "rarity": 5,
+    "rarity": "5",
     "element": "electro",
     "weapon_class": "polearm"
   },
@@ -265,7 +280,7 @@
     "weapon_class": "catalyst"
   },
   "tartaglia": {
-    "rarity": 5,
+    "rarity": 4,
     "element": "hydro",
     "weapon_class": "bow"
   },
@@ -275,9 +290,29 @@
     "weapon_class": "polearm"
   },
   "tighnari": {
-    "rarity": 5,
+    "rarity": 4,
     "element": "dendro",
     "weapon_class": "bow"
+  },
+  "traveleranemo": {
+    "rarity": 5,
+    "element": "anemo",
+    "weapon_class": "sword"
+  },
+  "travelerdendro": {
+    "rarity": 5,
+    "element": "dendro",
+    "weapon_class": "sword"
+  },
+  "travelerelectro": {
+    "rarity": 5,
+    "element": "electro",
+    "weapon_class": "sword"
+  },
+  "travelergeo": {
+    "rarity": 5,
+    "element": "geo",
+    "weapon_class": "sword"
   },
   "venti": {
     "rarity": 5,
@@ -285,9 +320,9 @@
     "weapon_class": "bow"
   },
   "wanderer": {
-    "rarity": 5,
     "element": "anemo",
-    "weapon_class": "catalyst"
+    "weapon_class": "catalyst",
+    "rarity": 5
   },
   "xiangling": {
     "rarity": 4,
@@ -319,8 +354,13 @@
     "element": "pyro",
     "weapon_class": "catalyst"
   },
+  "yaoyao": {
+    "rarity": 4,
+    "element": "dendro",
+    "weapon_class": "polearm"
+  },
   "yelan": {
-    "rarity": 5,
+    "rarity": 4,
     "element": "hydro",
     "weapon_class": "bow"
   },
@@ -339,24 +379,14 @@
     "element": "geo",
     "weapon_class": "polearm"
   },
-  "travelerelectro": {
+  "dehya": {
     "rarity": 5,
-    "element": "electro",
-    "weapon_class": "sword"
+    "element": "pyro",
+    "weapon_class": "claymore"
   },
-  "traveleranemo": {
-    "rarity": 5,
-    "element": "anemo",
-    "weapon_class": "sword"
-  },
-  "travelergeo": {
-    "rarity": 5,
-    "element": "geo",
-    "weapon_class": "sword"
-  },
-  "travelerdendro": {
-    "rarity": 5,
-    "element": "dendro",
-    "weapon_class": "sword"
+  "mika": {
+    "rarity": 4,
+    "element": "cryo",
+    "weapon_class": "polearm"
   }
 }
