@@ -8,18 +8,20 @@ const MAX_JITTER = 50;
 export function useRefresh<T>(
     getter: (data: SimResults | null) => T,
     rate: number,
-    data: SimResults | null): T {
+    data: SimResults | null): T | null {
   const refreshFunc = useRef(throttle(
       getter, rate + Math.random() * MAX_JITTER, { leading: false, trailing: true }));
   const [last, setLast] = useState<T | null>(null);
+  const [cache, setCache] = useState(false);
 
   if (data == null) {
     return getter(data);
   }
 
-  if (last == null) {
+  if (!cache) {
     const next = getter(data);
     setLast(next);
+    setCache(true);
     return next;
   }
 
