@@ -152,7 +152,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
           </Route> */}
 
           {/* Simulator */}
-          <Route path={["/", "/simulator"]}>
+          <Route exact path={["/", "/simulator"]}>
             <Helmet><title>gcsim - simulator</title></Helmet>
             <Simulator exec={exec} />
           </Route>
