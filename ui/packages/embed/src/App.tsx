@@ -2,11 +2,11 @@ import React from "react";
 import { parsed } from ".";
 import AvatarCard from "./AvatarCard";
 import Details from "./Details";
+import { ErrorBoundary } from "react-error-boundary";
 
 
 
-
-const App = ({}) => {
+const App = ({ }) => {
   const [loaded, setLoaded] = React.useState(0);
   const [ready, setReady] = React.useState(false);
 
@@ -27,15 +27,17 @@ const App = ({}) => {
   ));
 
   return (
-    <div className="bp4-dark flex flex-col align-middle justify-center h-full">
-      <div
-        id="card"
-        className={ready ? "grid grid-cols-4 m-2" : "grid grid-cols-4 disabled"}
-      >
-        {cards}
+    <ErrorBoundary fallback={<div id="card">Something went wrong</div>}>
+      <div className="bp4-dark flex flex-col align-middle justify-center h-full">
+        <div
+          id="card"
+          className={ready ? "grid grid-cols-4 m-2" : "grid grid-cols-4 disabled"}
+        >
+          {cards}
+        </div>
+        <Details data={parsed} />
       </div>
-      <Details data={parsed} />
-    </div>
+    </ErrorBoundary>
   );
 };
 

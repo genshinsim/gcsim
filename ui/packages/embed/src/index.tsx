@@ -28,7 +28,7 @@ if (import.meta.env.DEV) {
         cons: 0,
         weapon: { name: "favoniuslance", refine: 3, level: 90, max_level: 90 },
         talents: { attack: 9, skill: 9, burst: 9 },
-        sets: { archaicpetra: 2, noblesseoblige:2 },
+        sets: { archaicpetra: 2, noblesseoblige: 2 },
         stats: [
           0, 0.124, 39.36, 5287.88, 0.0992, 344.08, 0.6644, 0.1102, 39.64,
           0.642, 0.7944, 0, 0, 0, 0, 0, 0, 0.466, 0, 0, 0, 0,
@@ -300,7 +300,7 @@ if (import.meta.env.DEV) {
   });
 }
 
-interface HasErr{ 
+interface HasErr {
   err: string
 }
 
