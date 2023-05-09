@@ -61,7 +61,7 @@ message SimulationResult {
   // --- optional metadata fields below ---
   SimMode mode = 13 [json_name="mode"];
   string key_type = 14 [json_name="key_type"];
-  int64 created_date = 15 [json_name="ttl"]; //if set to -1 then should result in perm
+  int64 created_date = 15 [json_name="created_date"]; //if set to -1 then should result in perm
 }
 
 message SimulationStatistics {

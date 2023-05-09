@@ -32,7 +32,7 @@ const (
 )
 
 func main() {
-	err := mongoConnect("mongodb://localhost:2700")
+	err := mongoConnect("mongodb://192.168.100.102:2700")
 	if err != nil {
 		panic(err)
 	}
@@ -96,6 +96,11 @@ func run(ctx context.Context) error {
 			log.Println("query ok")
 
 			if len(data) == 0 {
+				log.Println("no more data!")
+				return nil
+			}
+
+			if len(data) == 1 && data[0].Key == last.Key {
 				log.Println("no more data!")
 				return nil
 			}
