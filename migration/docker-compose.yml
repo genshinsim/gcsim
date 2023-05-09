@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  # mongo server for db
+  migrate-mongo:
+    container_name: migrate-mongo
+    image: mongo
+    restart: always
+    ports:
+      - 2700:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root-password
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./data/mongo:/data/db:rw
+  # dev stuff
+  migrate-mongo-express:
+    container_name: migrate-mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - 2701:8081
+    links:
+      - migrate-mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root-password
+      ME_CONFIG_MONGODB_URL: mongodb://root:root-password@migrate-mongo:27017/
