@@ -205,6 +205,6 @@ func (b *Bot) cmdRandom(ctx context.Context, data cmdroute.CommandData) *api.Int
 	}
 
 	return &api.InteractionResponseData{
-		Content: option.NewNullableString(fmt.Sprintf("Here you go: https://simimpact.app/viewer/share/%v", id)),
+		Content: option.NewNullableString(fmt.Sprintf("Here you go: https://simimpact.app/sh/%v", id)),
 	}
 }

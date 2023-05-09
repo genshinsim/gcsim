@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"math/rand"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"github.com/jaevor/go-nanoid"
@@ -175,40 +176,35 @@ func (s *Server) Delete(ctx context.Context, key string) error {
 }
 
 func (s *Server) Random(ctx context.Context) (string, error) {
-	s.Log.Infow("get random share request")
+	s.Log.Infow("get random share request", "db", s.cfg.Database, "col", s.cfg.Collection)
 
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-	c, err := col.Aggregate(
-		ctx,
-		bson.A{
-			bson.M{
-				"$sample": bson.M{
-					"size": 1,
-				},
-			},
-		},
-	)
 
+	opts := options.Count().SetHint("_id_")
+	count, err := col.CountDocuments(ctx, bson.D{}, opts)
+	if err != nil {
+		s.Log.Infow("unexpected error counting db size", "err", err)
+		return "", status.Error(codes.Internal, "unexpected server error")
+	}
+	skip := rand.Int63n(count)
+
+	res := col.FindOne(ctx, bson.M{}, &options.FindOneOptions{Skip: &skip})
+	err = res.Err()
+	if err == mongo.ErrNoDocuments {
+		s.Log.Infow("mongodb: get request done; no results")
+		return "", nil
+	}
 	if err != nil {
 		s.Log.Infow("unexpected error grabbing sim", "err", err)
 		return "", status.Error(codes.Internal, "unexpected server error")
 	}
 
-	var result []*share.ShareEntry
-
-	for c.Next(ctx) {
-		var r share.ShareEntry
-		if err := c.Decode(&r); err != nil {
-			s.Log.Infow("error reading cursor", "err", err)
-			return "'", status.Error(codes.Internal, "unexpected server error")
-		}
-		result = append(result, &r)
+	sh := &share.ShareEntry{}
+	err = res.Decode(sh)
+	if err != nil {
+		s.Log.Infow("unexpected error decoding sim", "err", err)
+		return "", status.Error(codes.Internal, "unexpected server error")
 	}
 
-	if len(result) == 0 {
-		s.Log.Infow("mongodb: get request done; no results")
-		return "", nil
-	}
-
-	return result[0].Id, nil
+	return sh.Id, nil
 }
