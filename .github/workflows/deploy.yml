@@ -42,3 +42,5 @@ jobs:
           rcloneConfig: ${{ secrets.CF_RCLONE }}
           branch: ${{ steps.extract_branch.outputs.branch }}
           shareKey: ${{ secrets.AES_KEY }}
+      - name: deploy-backend
+        uses: ./.github/actions/deploy-backend
