@@ -9,8 +9,10 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
   let half = false;
   let sets: string[] = [];
 
-  for (const [key, value] of Object.entries(c.sets)) {
-    sets.push(key);
+  if ("sets" in c) {
+    for (const [key, value] of Object.entries(c.sets)) {
+      sets.push(key);
+    }
   }
 
   if (sets.length == 1 && c.sets[sets[0]] == 2) {
