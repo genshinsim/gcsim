@@ -61,7 +61,7 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
             x="3"
             y="3"
           />
-          {<ArtifactsIcon sets={sets} half={half} />}
+          { sets.length > 0 ? <ArtifactsIcon sets={sets} half={half} /> : null}
         </svg>
       </div>
     </div>
