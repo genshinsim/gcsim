@@ -42,5 +42,16 @@ jobs:
           rcloneConfig: ${{ secrets.CF_RCLONE }}
           branch: ${{ steps.extract_branch.outputs.branch }}
           shareKey: ${{ secrets.AES_KEY }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: deploy-backend
-        uses: ./.github/actions/deploy-backend
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.GCSIMVPS_HOST }}
+          username: ${{ secrets.GCSIMVPS_USERNAME }}
+          key: ${{ secrets.GCSIMVPS_KEY }}
+          passphrase: ${{ secrets.GCSIMVPS_PASSPHRASE }} 
+          port: ${{ secrets.GCSIMVPS_PORT }}
+          script: whoami 
