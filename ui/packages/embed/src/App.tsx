@@ -5,6 +5,14 @@ import Details from "./Details";
 import { ErrorBoundary } from "react-error-boundary";
 
 
+function fallbackRender({ error  }) {
+  return (
+    <div id="card" role="alert">
+      <p>Something went wrong:</p>
+      <pre style={{ color: "red" }}>{error.message}</pre>
+    </div>
+  );
+}
 
 const App = ({ }) => {
   const [loaded, setLoaded] = React.useState(0);
@@ -27,7 +35,7 @@ const App = ({ }) => {
   ));
 
   return (
-    <ErrorBoundary fallback={<div id="card">Something went wrong</div>}>
+    <ErrorBoundary fallbackRender={fallbackRender}>
       <div className="bp4-dark flex flex-col align-middle justify-center h-full">
         <div
           id="card"
