@@ -94,6 +94,7 @@ export const FakeCard = ({ className }: { className: string }) => (
         sets: {}
       }}
       showDetails={false}
+      viewerMode
       stats={[]}
       statsRows={0}
       isSkeleton={true}

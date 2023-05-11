@@ -206,9 +206,13 @@ export function CharacterCard({
             charBG(char.element)
           }
         >
-          <div className={true ? "absolute top-1 right-1" : "hidden"}>
-            <Button icon="cross" intent="danger" small onClick={handleDelete} className={viewerMode ? "hidden" : ""} />
-            <Button icon={showDetails ? "caret-up" : "caret-down"} small onClick={handleToggleDetail} className={viewerMode ? "" : "hidden"}></Button>
+          <div className="absolute top-1 right-1">
+            {
+              viewerMode ?
+              <Button icon={showDetails ? "caret-up" : "caret-down"} small onClick={handleToggleDetail} />
+              :
+              <Button icon="cross" intent="danger" small onClick={handleDelete} />
+            }
           </div>
           <div className="character-header"></div>
           <div className={"character-name font-medium m-4 capitalize " + skeleton}>
