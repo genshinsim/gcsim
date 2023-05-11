@@ -1,5 +1,5 @@
 import { Position, Toaster } from "@blueprintjs/core";
-import axios, { HttpStatusCode } from "axios";
+import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../Management.context";
 function useTranslation() {
@@ -95,7 +95,7 @@ function ApproveDBEntryButton({
         disabled={dbEntryId === undefined || dbEntryId === null}
         onClick={() => {
           axios.post(`/api/approve/${dbEntryId}`).then((res) => {
-            if (res.status === HttpStatusCode.Ok) {
+            if (res.status === 200) {
               AppToaster.show({ message: "Approved" });
             }
           });

@@ -7,6 +7,12 @@ export interface FilterState {
   pageNumber: number;
 }
 
+export enum ItemFilterState {
+  "none",
+  "include",
+  "exclude",
+}
+
 export const initialCharFilter = charNames.reduce((acc, charName) => {
   acc[charName] = { state: ItemFilterState.none, charName };
   return acc;
@@ -17,12 +23,6 @@ export const FilterContext = createContext<FilterState>({
   charIncludeCount: 0,
   pageNumber: 1,
 });
-
-export enum ItemFilterState {
-  "none",
-  "include",
-  "exclude",
-}
 
 // setName: number of pieces
 // e.g. { "gladiatorsfinale": 2, "thundersoother": 4 }
