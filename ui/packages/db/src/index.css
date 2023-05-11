@@ -18,6 +18,65 @@
   }
 }
 
+@layer utilities {
+
+  .artifact-top-left {
+    top: 0;
+    position: absolute;
+    left: 0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+  .artifact-top-right-gap {
+    top: 0;
+    position: absolute;
+    left: 0;
+    clip-path: polygon(2% 0, 100% 0, 100% 98%);
+  }
+  .artifact-bottom-right {
+    top: 0;
+    left: 0;
+      clip-path: polygon(100% 100%, 0 100%, 100% 0);
+  }
+  .artifact-bottom-left-gap {
+    top: 0;
+    left: 0;
+      clip-path: polygon(98% 100%, 0 100%, 0 2%);
+  }
+  .artifact-left{
+    top: 0;
+    left: 0;
+    position: absolute;
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100% );
+  }
+  .artifact-left-gap{
+    top: 0;
+    left: 0;
+    position: absolute;
+      clip-path: polygon(0 0, 49% 0, 49% 100%, 0 100% );
+  }
+  .artifact-right{
+    top: 0;
+    left: 0;
+      clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100% );
+  }
+  .artifact-right-gap{
+    top: 0;
+    left: 0;
+      clip-path: polygon(51% 0, 100% 0, 100% 100%, 51% 100% );
+  }
+
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+}
+
+}
+
 body {
   /* background-color: #293742; */
   background-color: #1C2127;

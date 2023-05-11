@@ -12,20 +12,20 @@ import logo from "./logo.png";
 export default function Nav() {
   const { t, i18n } = useTranslation();
 
-  //   const PageNavs = [
-  //     <NavLink
-  //       key="leaderboard"
-  //       href="/leaderboard"
-  //       icon="timeline-bar-chart"
-  //       text={t("nav.leaderboard")}
-  //     />,
-  //     <NavLink
-  //       key="database"
-  //       href="/database"
-  //       icon="database"
-  //       text={t("nav.database")}
-  //     />,
-  //   ];
+  const PageNavs = [
+    <NavLink
+      key="database"
+      href="/database"
+      icon="database"
+      text={t("nav.database")}
+    />,
+    <NavLink
+      key="management"
+      href="/management"
+      icon="clipboard"
+      text={t("nav.management")}
+    />,
+  ];
 
   return (
     <Navbar>
@@ -43,10 +43,10 @@ export default function Nav() {
         </Navbar.Group>
         <Navbar.Group
           align={Alignment.LEFT}
-          className="!hidden min-[550px]:!flex !items-stretch"
+          className=" min-[550px]:!flex !items-stretch"
         >
           <Navbar.Divider className="self-center" />
-          {/* {PageNavs} */}
+          {PageNavs}
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT}>
           {/* <Link href="/account">
