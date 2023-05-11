@@ -23,8 +23,6 @@ export const Builder = (props: Props) => {
         char={c}
         stats={teamStats.stats[c.name]}
         statsRows={teamStats.maxRows}
-        showDelete
-        showEdit
         toggleEdit={props.handleEdit(index)}
         handleDelete={props.handleRemove(index)}
         className="basis-full sm:basis-1/2 hd:basis-1/4 pt-2 pr-2 pb-2"

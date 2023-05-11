@@ -28,8 +28,6 @@ export function CharacterCardView(props: Props) {
         char={c}
         stats={teamStats.stats[c.name]}
         statsRows={teamStats.maxRows}
-        showDelete
-        showEdit
         handleDelete={() => console.log("deleting " + c.name)}
         toggleEdit={props.handleEdit(index)}
         className="basis-full md:basis-1/2 wide:basis-1/4 pt-2 pr-2 pb-2"

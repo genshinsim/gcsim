@@ -24,6 +24,7 @@ import { Character } from "@gcsim/types";
 import { CharStatBlock } from "../../Pages/Simulator/Components/character";
 import classNames from "classnames";
 import placeholder from "../Images/default.png";
+import React from "react";
 
 type Props = {
   char: Character;
@@ -31,11 +32,11 @@ type Props = {
   statsRows: number;
   className?: string;
   showDetails?: boolean;
-  showDelete?: boolean;
-  showEdit?: boolean;
+  viewerMode? : boolean; //hide the delete and edit button; add toggle for showing stats
   isSkeleton?: boolean;
   handleDelete?: () => void;
   toggleEdit?: () => void;
+  handleToggleDetail?: () => void;
 };
 
 function statKeyToIcon(key: string): JSX.Element {
@@ -101,12 +102,12 @@ export function CharacterCard({
   char,
   stats,
   statsRows,
-  showDelete = false,
   showDetails = true,
-  showEdit = false,
+  viewerMode = false,
   isSkeleton,
   toggleEdit,
   handleDelete,
+  handleToggleDetail,
   className = "",
 }: Props) {
   const { t } = useTranslation();
@@ -205,14 +206,15 @@ export function CharacterCard({
             charBG(char.element)
           }
         >
-          <div className={showDelete ? "absolute top-1 right-1" : "hidden"}>
-            <Button icon="cross" intent="danger" small onClick={handleDelete} />
+          <div className={true ? "absolute top-1 right-1" : "hidden"}>
+            <Button icon="cross" intent="danger" small onClick={handleDelete} className={viewerMode ? "hidden" : ""} />
+            <Button icon={showDetails ? "caret-up" : "caret-down"} small onClick={handleToggleDetail} className={viewerMode ? "" : "hidden"}></Button>
           </div>
           <div className="character-header"></div>
           <div className={"character-name font-medium m-4 capitalize " + skeleton}>
             <>
               <Trans>character.c_pre</Trans>
-              {char.cons}
+              {char.cons ? char.cons : 0}
               <Trans>character.c_post</Trans>{" "}
               {t(
                 `game:character_names.${TransformTravelerKeyToName(char.name)}`
@@ -248,7 +250,7 @@ export function CharacterCard({
         <WeaponCard weapon={char.weapon} isSkeleton={isSkeleton} />
 
         {showDetails ? (
-          <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
+            <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
             <span className="font-bold">
               <Trans>character.artifact_stats</Trans>
             </span>
@@ -258,15 +260,20 @@ export function CharacterCard({
               </table>
             </div>
           </div>
-        ) : null}
+        ) :  null
+        }
 
+        {
+          viewerMode ?
+          null
+          :
         <div
-          className={
-            showEdit ? "ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4" : "hidden"
-          }
+          className="ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4" 
         >
           <Button icon="edit" onClick={toggleEdit} />
         </div>
+        }
+
         <div className="" />
       </div>
     </div>

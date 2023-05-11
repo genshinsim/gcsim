@@ -1,7 +1,8 @@
 import { Character } from "@gcsim/types";
 import classNames from "classnames";
-import { memo } from "react";
+import React, { memo } from "react";
 import { CharacterCard } from "../../../../Components/Cards";
+import { ConsolidateCharStats } from "../../../Simulator/Components/character";
 
 type Props = {
   characters?: Character[];
@@ -30,6 +31,7 @@ export function characterCardsClassNames(num: number): string {
 
 const CharacterCards = ({ characters }: Props) => {
   const cardClass = characterCardsClassNames(characters?.length ?? 4);
+  const [showDetails, setShowDetails] = React.useState(false);
 
   if (characters == null) {
     return (
@@ -42,15 +44,25 @@ const CharacterCards = ({ characters }: Props) => {
     );
   }
 
+  const handleToggleDetail = () => {
+    setShowDetails(!showDetails)
+  }
+
+  const statBlock = ConsolidateCharStats(characters)
+
+  console.log(characters)
+
   return (
     <>
     {characters.map((c) => (
       <CharacterCard
         key={c.name}
         char={c}
-        showDetails={false}
-        stats={[]}
-        statsRows={0}
+        showDetails={showDetails}
+        handleToggleDetail={handleToggleDetail}
+        viewerMode
+        stats={statBlock.stats[c.name] ? statBlock.stats[c.name] : []}
+        statsRows={statBlock.maxRows ? statBlock.maxRows : 0}
         className={cardClass} />
     ))}
     </>
