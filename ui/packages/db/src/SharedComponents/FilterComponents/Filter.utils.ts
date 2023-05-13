@@ -5,6 +5,7 @@ export interface FilterState {
   charFilter: CharFilter;
   charIncludeCount: number;
   pageNumber: number;
+  entriesPerPage: number;
 }
 
 export enum ItemFilterState {
@@ -22,6 +23,7 @@ export const FilterContext = createContext<FilterState>({
   charFilter: initialCharFilter,
   charIncludeCount: 0,
   pageNumber: 1,
+  entriesPerPage: 10,
 });
 
 // setName: number of pieces
@@ -50,10 +52,14 @@ export type CharFilterState =
     };
 
 export const FilterDispatchContext = createContext<
-  React.Dispatch<FilterReducerAction>
->(null as unknown as React.Dispatch<FilterReducerAction>);
+  React.Dispatch<CharFilterReducerAction | PageFilterReducerAction>
+>(
+  null as unknown as React.Dispatch<
+    CharFilterReducerAction | PageFilterReducerAction
+  >
+);
 
-export interface FilterReducerAction {
+export interface CharFilterReducerAction {
   type:
     | "handleChar"
     | "includeWeapon"
@@ -64,9 +70,14 @@ export interface FilterReducerAction {
   weapon?: string;
   set?: string;
 }
+
+export interface PageFilterReducerAction {
+  type: "incrementPage" | "decrementPage" | "setPage";
+  pageNumber?: number;
+}
 export function filterReducer(
   filter: FilterState,
-  action: FilterReducerAction
+  action: CharFilterReducerAction | PageFilterReducerAction
 ): FilterState {
   switch (action.type) {
     case "handleChar": {
@@ -158,9 +169,28 @@ export function filterReducer(
         },
       };
     }
+    case "incrementPage": {
+      return {
+        ...filter,
+        pageNumber: filter.pageNumber + 1,
+      };
+    }
+    case "decrementPage": {
+      if (filter.pageNumber === 1) return filter;
+      return {
+        ...filter,
+        pageNumber: filter.pageNumber - 1,
+      };
+    }
+    case "setPage": {
+      return {
+        ...filter,
+        pageNumber: action.pageNumber ?? 1,
+      };
+    }
 
     default: {
-      throw Error("Unknown action: " + action.type);
+      throw Error("Unknown action: " + action);
     }
   }
 }

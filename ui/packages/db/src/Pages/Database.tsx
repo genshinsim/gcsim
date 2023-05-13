@@ -2,12 +2,13 @@ import { Spinner } from "@blueprintjs/core";
 import { db } from "@gcsim/types";
 import axios from "axios";
 import { useEffect, useReducer, useState } from "react";
+import { PaginationButtons } from "SharedComponents/Pagination";
 import { Filter } from "../SharedComponents/Filter";
 import {
-  CharFilter,
   FilterContext,
   FilterDispatchContext,
   filterReducer,
+  FilterState,
   initialCharFilter,
   ItemFilterState,
 } from "../SharedComponents/FilterComponents/Filter.utils";
@@ -18,26 +19,21 @@ export function Database() {
     charFilter: initialCharFilter,
     charIncludeCount: 0,
     pageNumber: 1,
+    entriesPerPage: 10,
   });
 
   const [data, setData] = useState<db.IEntry[]>([]);
 
   const querydb = (query: DbQuery) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
-      .then(
-        (resp: {
-          data: {
-            data: db.IEntry[];
-          };
-        }) => {
-          if (resp.data) {
-            // console.log("output: ", resp.data);
-            setData(resp.data.data);
-          } else {
-            console.log("no data: ", resp.data);
-          }
+      .then((resp: { data: db.IEntries }) => {
+        if (resp.data && resp.data.data) {
+          // console.log("output: ", resp.data);
+          setData(resp.data.data);
+        } else {
+          console.log("no data: ", resp.data);
         }
-      )
+      })
       .catch((err) => {
         console.log("error: ", err);
       });
@@ -45,7 +41,6 @@ export function Database() {
 
   useEffect(() => {
     const query = craftQuery(filter);
-    // console.log("input", query);
     querydb(query);
   }, [filter]);
 
@@ -61,13 +56,18 @@ export function Database() {
             {/* <Sorter /> */}
           </div>
           {data ? <ListView data={data} /> : <Spinner />}
+          <PaginationButtons />
         </div>
       </FilterDispatchContext.Provider>
     </FilterContext.Provider>
   );
 }
 
-function craftQuery({ charFilter }: { charFilter: CharFilter }): DbQuery {
+function craftQuery({
+  charFilter,
+  pageNumber,
+  entriesPerPage,
+}: FilterState): DbQuery {
   const query: DbQuery["query"] = {};
   // sort all characters into included and excluded from the filter
   const includedChars: string[] = [];
@@ -87,7 +87,11 @@ function craftQuery({ charFilter }: { charFilter: CharFilter }): DbQuery {
     query["summary.char_names"] = query["summary.char_names"] ?? {};
     query["summary.char_names"]["$nin"] = excludedChars;
   }
-  return { query, limit: 10 };
+  return {
+    query,
+    limit: entriesPerPage,
+    skip: (pageNumber - 1) * entriesPerPage,
+  };
 }
 
 interface DbQuery {
