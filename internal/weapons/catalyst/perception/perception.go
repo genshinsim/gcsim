@@ -27,7 +27,7 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-const bounceKey = "eye-of-preception-bounce"
+const bounceKey = "eye-of-perception-bounce"
 
 func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) func(a combat.AttackCB) {
 	if count == 4 {
@@ -35,23 +35,26 @@ func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) fun
 	}
 	done := false
 	return func(a combat.AttackCB) {
+		// check target is an enemey
+		t, ok := a.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
 		// shouldn't proc more than one chain if multiple enemies are hit
 		if done {
 			return
 		}
 		done = true
 
-		//check target is an enemey
-		t, ok := a.Target.(*enemy.Enemy)
-		if !ok {
-			return
-		}
-		t.AddStatus(bounceKey, 36, true)
-
-		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(t, nil, 8), nil)
-		if enemy != nil {
-			cb := w.chain(count+1, c, char)
-			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
+		next := c.Combat.ClosestEnemyWithinArea(
+			combat.NewCircleHitOnTarget(t, nil, 8),
+			func(e combat.Enemy) bool {
+				return !e.StatusIsActive(bounceKey)
+			},
+		)
+		if next != nil {
+			next.AddStatus(bounceKey, 36, true)
+			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(next, nil, 0.6), 10, w.chain(count+1, c, char))
 		}
 	}
 }
@@ -88,13 +91,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.AddStatus(icdKey, cd, true)
-
-		cb := w.chain(0, c, char)
 		w.snap = char.Snapshot(&w.ai)
 
-		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8), nil)
+		enemy := c.Combat.ClosestEnemyWithinArea(
+			combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8),
+			func(e combat.Enemy) bool {
+				return !e.StatusIsActive(bounceKey)
+			},
+		)
 		if enemy != nil {
-			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, cb)
+			enemy.AddStatus(bounceKey, 36, true)
+			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, w.chain(0, c, char))
 		}
 
 		return false
