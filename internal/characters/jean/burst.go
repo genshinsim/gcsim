@@ -128,7 +128,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}
 		}, i)
 	}
-
+	c.ConsumeEnergy(41)
 	c.SetCDWithDelay(action.ActionBurst, 1200, 38)
 	// A4
 	c.Core.Tasks.Add(func() {
