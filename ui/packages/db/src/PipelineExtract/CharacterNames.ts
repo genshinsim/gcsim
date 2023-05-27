@@ -1,5 +1,5 @@
 /*
-
+    copied from genshin wiki
     Aether
     Albedo
     Albedo
@@ -82,6 +82,7 @@ K
     Kamisato Ayato
     Keqing
     Keqing
+    Kirara
     Klee
     Klee
     Kujou Sara
@@ -210,7 +211,7 @@ export const charNames = [
   "alhaitham",
   "aloy",
   "amber",
-  "aratakiitto",
+  "itto", // arataki itto
   "barbara",
   "beidou",
   "bennett",
@@ -228,14 +229,15 @@ export const charNames = [
   "gorou",
   "hutao",
   "jean",
-  "kaedeharakazuha",
+  "kazuha", // kaedehara kazuha
   "kaeya",
-  "kamisatoayaka",
-  "kamisatoayato",
+  "ayaka", // kamisato ayaka
+  "ayato", // kamisato ayato
   "keqing",
+  "kirara",
   "klee",
-  "kujousara",
-  "kukishinobu",
+  "sara", // kujou sara
+  "kuki", // kuki shinobu
   "layla",
   "lisa",
   "mona",
@@ -247,15 +249,15 @@ export const charNames = [
   "raiden",
   "razor",
   "rosaria",
-  "sangonomiyakokomi",
+  "kokomi", // sangonomiya kokomi
   "sayu",
   "shenhe",
-  "shikanoinheizou",
+  "heizou", // shikanoin heizou
   "sucrose",
   "tartaglia",
   "thoma",
   "tighnari",
-  "traveler",
+  "lumine", // traveler
   "venti",
   "wanderer",
   "xiangling",
