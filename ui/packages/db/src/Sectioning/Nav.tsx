@@ -19,12 +19,12 @@ export default function Nav() {
       icon="database"
       text={t("nav.database")}
     />,
-    <NavLink
-      key="management"
-      href="/management"
-      icon="clipboard"
-      text={t("nav.management")}
-    />,
+    // <NavLink
+    //   key="management"
+    //   href="/management"
+    //   icon="clipboard"
+    //   text={t("nav.management")}
+    // />,
   ];
 
   return (
