@@ -1,5 +1,6 @@
 import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
 import { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaFilter } from "react-icons/fa";
 import { charNames } from "../PipelineExtract/CharacterNames";
 import useDebounce from "./debounce";
@@ -9,10 +10,10 @@ import {
   ItemFilterState,
 } from "./FilterComponents/Filter.utils";
 
-const useTranslation = (key: string) => key;
-
 export function Filter() {
-  const t = useTranslation;
+  // https://github.com/i18next/next-i18next/issues/1795
+  const { t: translation } = useTranslation();
+  const t = (s: string) => translation<string>(s);
 
   const dispatch = useContext(FilterDispatchContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +91,8 @@ export function Filter() {
 }
 
 function ClearFilterButton() {
-  const t = useTranslation;
+  const { t: translation } = useTranslation();
+  const t = (s: string) => translation<string>(s);
   const dispatch = useContext(FilterDispatchContext);
   return (
     <button
@@ -110,7 +112,8 @@ function ClearFilterButton() {
 
 function CharacterFilter() {
   const [charIsOpen, setCharIsOpen] = useState(false);
-  const t = useTranslation;
+  const { t: translation } = useTranslation();
+  const t = (s: string) => translation<string>(s);
   const sortedCharNames = charNames.sort((a, b) => {
     if (t(a) < t(b)) {
       return -1;
@@ -183,8 +186,11 @@ function CharFilterButton({ charName }: { charName: string }) {
 }
 
 function CharFilterButtonChild({ charName }: { charName: string }) {
-  const t = useTranslation;
-  const displayCharName = t(charName);
+  const { t: translation } = useTranslation();
+  const t = (s: string) => translation<string>(s);
+  const displayCharName = t("game:character_names." + charName);
+
+  console.log(t("game:character_names.amber"));
 
   return (
     <div className="flex flex-col truncate">
