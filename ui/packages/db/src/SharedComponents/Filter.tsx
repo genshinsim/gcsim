@@ -190,8 +190,6 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
   const t = (s: string) => translation<string>(s);
   const displayCharName = t("game:character_names." + charName);
 
-  console.log(t("game:character_names.amber"));
-
   return (
     <div className="flex flex-col truncate">
       <img
