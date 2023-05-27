@@ -2,6 +2,7 @@ import { Spinner } from "@blueprintjs/core";
 import { db } from "@gcsim/types";
 import axios from "axios";
 import { useEffect, useReducer, useState } from "react";
+import { newMockData } from "SharedComponents/mockData";
 import { PaginationButtons } from "SharedComponents/Pagination";
 import { Filter } from "../SharedComponents/Filter";
 import {
@@ -9,18 +10,13 @@ import {
   FilterDispatchContext,
   filterReducer,
   FilterState,
-  initialCharFilter,
+  initialFilter,
   ItemFilterState,
 } from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
 
 export function Database() {
-  const [filter, dispatch] = useReducer(filterReducer, {
-    charFilter: initialCharFilter,
-    charIncludeCount: 0,
-    pageNumber: 1,
-    entriesPerPage: 10,
-  });
+  const [filter, dispatch] = useReducer(filterReducer, initialFilter);
 
   const [data, setData] = useState<db.IEntry[]>([]);
 
@@ -31,7 +27,8 @@ export function Database() {
           // console.log("output: ", resp.data);
           setData(resp.data.data);
         } else {
-          console.log("no data: ", resp.data);
+          console.log("no data, using mockdata");
+          setData(newMockData);
         }
       })
       .catch((err) => {
@@ -67,11 +64,14 @@ function craftQuery({
   charFilter,
   pageNumber,
   entriesPerPage,
+  customFilter,
 }: FilterState): DbQuery {
   const query: DbQuery["query"] = {};
   // sort all characters into included and excluded from the filter
   const includedChars: string[] = [];
   const excludedChars: string[] = [];
+  const limit = entriesPerPage;
+  const skip = (pageNumber - 1) * entriesPerPage;
   for (const [charName, charState] of Object.entries(charFilter)) {
     if (charState.state === ItemFilterState.include) {
       includedChars.push(charName);
@@ -79,6 +79,22 @@ function craftQuery({
       excludedChars.push(charName);
     }
   }
+
+  if (customFilter) {
+    let parsedFilter;
+    try {
+      parsedFilter = JSON.parse(`{${customFilter}}`);
+    } catch (e) {
+      console.log("invalid custom filter", e, customFilter);
+    }
+
+    return {
+      query: parsedFilter,
+      limit,
+      skip,
+    };
+  }
+
   if (includedChars.length > 0) {
     query["summary.char_names"] = {};
     query["summary.char_names"]["$all"] = includedChars;
@@ -89,8 +105,8 @@ function craftQuery({
   }
   return {
     query,
-    limit: entriesPerPage,
-    skip: (pageNumber - 1) * entriesPerPage,
+    limit,
+    skip,
   };
 }
 

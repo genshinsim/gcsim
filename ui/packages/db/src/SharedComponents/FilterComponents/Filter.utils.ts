@@ -6,6 +6,7 @@ export interface FilterState {
   charIncludeCount: number;
   pageNumber: number;
   entriesPerPage: number;
+  customFilter: string;
 }
 
 export enum ItemFilterState {
@@ -19,12 +20,15 @@ export const initialCharFilter = charNames.reduce((acc, charName) => {
   return acc;
 }, {} as CharFilter);
 
-export const FilterContext = createContext<FilterState>({
+export const initialFilter = {
   charFilter: initialCharFilter,
   charIncludeCount: 0,
   pageNumber: 1,
   entriesPerPage: 10,
-});
+  customFilter: "",
+};
+
+export const FilterContext = createContext<FilterState>(initialFilter);
 
 // setName: number of pieces
 // e.g. { "gladiatorsfinale": 2, "thundersoother": 4 }
@@ -52,14 +56,25 @@ export type CharFilterState =
     };
 
 export const FilterDispatchContext = createContext<
-  React.Dispatch<CharFilterReducerAction | PageFilterReducerAction>
->(
-  null as unknown as React.Dispatch<
-    CharFilterReducerAction | PageFilterReducerAction
-  >
-);
+  React.Dispatch<FilterActions>
+>(null as unknown as React.Dispatch<FilterActions>);
 
-export interface CharFilterReducerAction {
+export type FilterActions =
+  | CharFilterReducerAction
+  | PageFilterReducerAction
+  | GeneralFilterAction
+  | CustomFilterAction;
+
+interface GeneralFilterAction {
+  type: "clearFilter";
+}
+
+interface CustomFilterAction {
+  type: "setCustomFilter";
+  customFilter: string;
+}
+
+interface CharFilterReducerAction {
   type:
     | "handleChar"
     | "includeWeapon"
@@ -71,13 +86,13 @@ export interface CharFilterReducerAction {
   set?: string;
 }
 
-export interface PageFilterReducerAction {
+interface PageFilterReducerAction {
   type: "incrementPage" | "decrementPage" | "setPage";
   pageNumber?: number;
 }
 export function filterReducer(
   filter: FilterState,
-  action: CharFilterReducerAction | PageFilterReducerAction
+  action: FilterActions
 ): FilterState {
   switch (action.type) {
     case "handleChar": {
@@ -186,6 +201,20 @@ export function filterReducer(
       return {
         ...filter,
         pageNumber: action.pageNumber ?? 1,
+      };
+    }
+    case "clearFilter": {
+      return {
+        ...filter,
+        charFilter: initialCharFilter,
+        charIncludeCount: 0,
+      };
+    }
+    case "setCustomFilter": {
+      console.log("setCustomFilter", action.customFilter);
+      return {
+        ...filter,
+        customFilter: action.customFilter,
       };
     }
 
