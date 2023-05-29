@@ -36,6 +36,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	energy := 4 + float64(r)*0.5
 	dmgMul := 0.001 + float64(r)*0.002
 	dmgCap := 0.04 + float64(r)*0.08
+	stat := attributes.EleToDmgP(char.Base.Element)
 
 	const buffKey = "jadefall-buff"
 	buffDuration := 3 * 60
@@ -54,7 +55,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		m := make([]float64, attributes.EndStatType)
-		stat := attributes.EleToDmgP(char.Base.Element)
 		m[stat] = finalDmg
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(buffKey, buffDuration),
