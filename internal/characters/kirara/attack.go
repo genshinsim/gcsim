@@ -13,7 +13,7 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{13}, {18}, {17, 22}, {39}}
+	attackHitmarks        = [][]int{{13}, {18}, {17, 39}, {39}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.01, 0.05}, {0.06}}
 	attackHitboxes        = [][]float64{{2}, {1.8, 3.8}, {2}, {2.1}}
 	attackOffsets         = [][]float64{{0.6}, {-0.3}, {0.4, 0.9}, {1}}
@@ -25,12 +25,12 @@ func init() {
 	// NA cancels
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 34) // N1 -> Walk
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 33) // N1 -> Walk
 	attackFrames[0][action.ActionAttack] = 20
 	attackFrames[0][action.ActionCharge] = 24
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 35) // N2 -> Walk
-	attackFrames[1][action.ActionAttack] = 29
+	attackFrames[1][action.ActionAttack] = 28
 	attackFrames[1][action.ActionCharge] = 28
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 61) // N3 -> Walk
@@ -45,27 +45,26 @@ func init() {
 func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
-			ActorIndex:       c.Index,
-			Abil:             fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:        attacks.AttackTagNormal,
-			ICDTag:           attacks.ICDTagNormalAttack,
-			ICDGroup:         attacks.ICDGroupDefault,
-			StrikeType:       attacks.StrikeTypeSlash,
-			Element:          attributes.Physical,
-			Durability:       25,
-			Mult:             mult[c.TalentLvlAttack()],
-			HitlagFactor:     0.01,
-			HitlagHaltFrames: attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			ActorIndex:         c.Index,
+			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
+			Element:            attributes.Physical,
+			Durability:         25,
+			Mult:               mult[c.TalentLvlAttack()],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: true,
 		}
-		ap := combat.NewCircleHit(
-			c.Core.Combat.Player(),
+		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackHitboxes[c.NormalCounter][0],
 		)
-		if c.NormalCounter == 2 {
-			ap = combat.NewBoxHit(
-				c.Core.Combat.Player(),
+		if c.NormalCounter == 1 {
+			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
 				geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
 				attackHitboxes[c.NormalCounter][0],

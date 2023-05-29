@@ -41,7 +41,7 @@ func init() {
 	skillPressFrames[action.ActionSwap] = 33
 
 	// Short Hold E
-	skillShortHoldFrames = frames.InitAbilSlice(78) // Short Hold E -> Walk
+	skillShortHoldFrames = frames.InitAbilSlice(79) // Short Hold E -> Walk
 	skillShortHoldFrames[action.ActionAttack] = 72
 	skillShortHoldFrames[action.ActionSkill] = 75
 	skillShortHoldFrames[action.ActionBurst] = 74
@@ -133,7 +133,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionDash],
+		CanQueueAfter:   skillPressFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}
 }
@@ -232,29 +232,28 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 		c.c6()
 	}
 
-	cd := int(8*60 + float64(duration)/30*12)
+	cd := 8*60 + duration/30*12
 	c.QueueCharTask(c.generateSkillShield, 14)
 	c.SetCDWithDelay(action.ActionSkill, cd, (skillHoldCDStart-600)+duration)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return skillHoldFrames[next] - 600 + duration },
 		AnimationLength: skillHoldFrames[action.InvalidAction] - 600 + duration,
-		CanQueueAfter:   skillHoldFrames[action.ActionSwap] - 600 + duration, // earliest cancel
+		CanQueueAfter:   skillHoldFrames[action.ActionAttack] - 600 + duration, // earliest cancel
 		State:           action.SkillState,
 	}
 }
 
 func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
-		ActorIndex:   c.Index,
-		Abil:         "Urgent Neko Parcel",
-		AttackTag:    attacks.AttackTagElementalArtHold,
-		ICDTag:       attacks.ICDTagElementalArt,
-		ICDGroup:     attacks.ICDGroupDefault,
-		StrikeType:   attacks.StrikeTypeDefault,
-		Element:      attributes.Dendro,
-		Durability:   25,
-		IsDeployable: true,
+		ActorIndex: c.Index,
+		Abil:       "Urgent Neko Parcel",
+		AttackTag:  attacks.AttackTagElementalArtHold,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Dendro,
+		Durability: 25,
 	}
 	snap := c.Snapshot(&ai)
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player

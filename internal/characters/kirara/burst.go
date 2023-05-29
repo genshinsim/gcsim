@@ -13,12 +13,17 @@ var (
 	burstFrames []int
 
 	boxHitmark  = 38
-	mineHitmark = 240
+	mineHitmark = 180
 	mineExpired = "kirara-cardamoms-expired"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(33 * 2)
+	burstFrames = frames.InitAbilSlice(58) // Q -> Walk
+	burstFrames[action.ActionAttack] = 57
+	burstFrames[action.ActionSkill] = 57
+	burstFrames[action.ActionDash] = 52
+	burstFrames[action.ActionJump] = 52
+	burstFrames[action.ActionSwap] = 57
 }
 
 // Has one parameter, "hits" determines the number of cardamoms that hit the enemy
@@ -71,11 +76,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.minePattern = combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2)
 
 	// box
+	player := c.Core.Combat.Player()
+	boxPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
 	c.QueueCharTask(func() {
 		c.AddStatus(mineExpired, 12*60, true)
-		player := c.Core.Combat.Player()
-		boxPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
-		c.Core.QueueAttackWithSnap(boxAi, c.mineSnap, combat.NewCircleHitOnTarget(boxPos, nil, 4), 0)
+		c.Core.QueueAttackWithSnap(boxAi, c.mineSnap, combat.NewCircleHitOnTarget(boxPos, nil, 6), 0)
 	}, boxHitmark)
 
 	// mine hits
@@ -95,7 +100,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.QueueAttackWithSnap(mineAi, c.mineSnap, c.minePattern, i*9*2)
 		}
 		c.cardamoms = 0
-	}, boxHitmark+12*60)
+	}, 80+12*60)
 
 	if c.Base.Cons >= 6 {
 		c.c6()
