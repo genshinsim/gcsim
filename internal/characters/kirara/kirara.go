@@ -46,9 +46,14 @@ func (c *char) Init() error {
 	}
 	if c.Base.Cons >= 6 {
 		c.c6Buff = make([]float64, attributes.EndStatType)
-		for i := attributes.PyroP; i <= attributes.DendroP; i++ {
-			c.c6Buff[i] = 0.12
-		}
+		c.c6Buff[attributes.PyroP] = 0.12
+		c.c6Buff[attributes.HydroP] = 0.12
+		c.c6Buff[attributes.CryoP] = 0.12
+		c.c6Buff[attributes.ElectroP] = 0.12
+		c.c6Buff[attributes.AnemoP] = 0.12
+		c.c6Buff[attributes.GeoP] = 0.12
+		c.c6Buff[attributes.PhyP] = 0.12
+		c.c6Buff[attributes.DendroP] = 0.12
 	}
 
 	return nil

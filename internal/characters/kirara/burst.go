@@ -6,14 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// based on klee frames
-// TODO: update frames
 var (
 	burstFrames []int
 
-	boxHitmark  = 19 * 2
+	boxHitmark  = 38
 	mineHitmark = 240
 	mineExpired = "kirara-cardamoms-expired"
 )
@@ -30,7 +29,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -47,7 +46,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.cardamoms += bonus
 	}
 
-	// TODO: gadgets?
 	minehits, ok := p["hits"]
 	if !ok {
 		minehits = 2
@@ -60,7 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Abil:               "Cat Grass Cardamom Explosion",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,
-		ICDGroup:           attacks.ICDGroupDefault, // TODO: Mine??
+		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Dendro,
 		Durability:         25,
@@ -75,7 +73,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// box
 	c.QueueCharTask(func() {
 		c.AddStatus(mineExpired, 12*60, true)
-		c.Core.QueueAttackWithSnap(boxAi, c.mineSnap, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4), 0)
+		player := c.Core.Combat.Player()
+		boxPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
+		c.Core.QueueAttackWithSnap(boxAi, c.mineSnap, combat.NewCircleHitOnTarget(boxPos, nil, 4), 0)
 	}, boxHitmark)
 
 	// mine hits

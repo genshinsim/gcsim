@@ -18,7 +18,7 @@ const (
 // Packaging will create 1 Shield of Safe Transport for Kirara. The shields that are created this way will have 20% of the DMG absorption that
 // the Shield of Safe Transport produced by Meow-teor Kick would have. If Kirara is already protected by a Shield of Safe Transport created by
 // Meow-teor Kick, its DMG absorption will stack with these shields and its duration will reset.
-func (c *char) a1(a combat.AttackCB) {
+func (c *char) a1StackGain(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
@@ -29,10 +29,12 @@ func (c *char) a1(a combat.AttackCB) {
 		return
 	}
 	c.a1Stacks++
-
-	shieldamt := c.shieldHP() * 0.2
-	c.genShield("Shield of Safe Transport", shieldamt)
 	c.AddStatus(a1IcdStatus, 0.5*60, true)
+}
+
+func (c *char) a1() {
+	shieldamt := c.shieldHP() * 0.2 * float64(c.a1Stacks)
+	c.genShield("Shield of Safe Transport", shieldamt)
 }
 
 // Every 1,000 Max HP Kirara possesses will increase the DMG dealt by Meow-teor Kick by 0.4%, and the DMG dealt by Secret Art: Surprise Dispatch by 0.3%.

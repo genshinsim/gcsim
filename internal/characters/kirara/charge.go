@@ -11,43 +11,46 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// based on keqing frames
-// TODO: update frames
 var (
 	chargeFrames   []int
-	chargeHitmarks = []int{12, 34, 36}
-	chargeRadius   = []float64{1.5, 2.2, 2.3}
-	chargeOffsets  = []float64{1.5, 1.5, 1.8}
+	chargeHitmarks = []int{20, 27, 37}
+	chargeOffsets  = []float64{1, 1, 1.5}
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(48)
-	chargeFrames[action.ActionSkill] = 47
-	chargeFrames[action.ActionBurst] = 47
-	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
-	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames = frames.InitAbilSlice(52) // C -> Walk
+	chargeFrames[action.ActionAttack] = 43
+	chargeFrames[action.ActionSkill] = 43
+	chargeFrames[action.ActionBurst] = 43
+	chargeFrames[action.ActionDash] = 38
+	chargeFrames[action.ActionJump] = 38
+	chargeFrames[action.ActionSwap] = 37
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNormalAttack,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
-	}
 	for i, mult := range charge {
-		ai.Mult = mult[c.TalentLvlAttack()]
-		ai.Abil = fmt.Sprintf("Charge %v", i)
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       fmt.Sprintf("Charge %v", i),
+			AttackTag:  attacks.AttackTagExtra,
+			ICDTag:     attacks.ICDTagNormalAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeSlash,
+			Element:    attributes.Physical,
+			Durability: 25,
+			Mult:       mult[c.TalentLvlAttack()],
+		}
+		if i == 2 {
+			ai.HitlagFactor = 0.01
+			ai.HitlagHaltFrames = 0.1 * 60
+			ai.CanBeDefenseHalted = true
+		}
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
 				geometry.Point{Y: chargeOffsets[i]},
-				chargeRadius[i],
+				2.8,
 			),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
