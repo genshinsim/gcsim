@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -61,14 +62,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
-			return false
-		}
 		addBuff()
 		return false
 	}, fmt.Sprintf("jadefall-onburst-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
-		if c.Player.Active() != char.Index {
+		shd := args[0].(shield.Shield)
+		if shd.ShieldOwner() != char.Index {
 			return false
 		}
 		addBuff()
