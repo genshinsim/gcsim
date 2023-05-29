@@ -36,6 +36,7 @@ func (c *char) removeShield() {
 func (c *char) newShield(base float64, dur int) *shd {
 	n := &shd{}
 	n.Tmpl = &shield.Tmpl{}
+	n.Tmpl.ActorIndex = c.Index
 	n.Tmpl.Src = c.Core.F
 	n.Tmpl.ShieldType = shield.ShieldLaylaSkill
 	n.Tmpl.Ele = attributes.Cryo

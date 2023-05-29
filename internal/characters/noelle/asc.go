@@ -45,6 +45,7 @@ func (c *char) a1() {
 		//add shield
 		x := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 		c.Core.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: c.Index,
 			Src:        c.Core.F,
 			ShieldType: shield.ShieldNoelleA1,
 			Name:       "Noelle A1",

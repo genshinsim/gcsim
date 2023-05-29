@@ -99,6 +99,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
+		ActorIndex: c.Index,
 		Src:        c.Core.F,
 		Name:       "Candace Skill",
 		ShieldType: shield.ShieldCandaceSkill,

@@ -44,6 +44,7 @@ func (c *char) c4() {
 		return
 	}
 	c.Core.Player.Shields.Add(&shield.Tmpl{
+		ActorIndex: c.Index,
 		Src:        c.Core.F,
 		ShieldType: shield.ShieldYanfeiC4,
 		Name:       "Yanfei C4",
