@@ -74,6 +74,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 1 {
 		//create a shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: c.Index,
 			Src:        c.Core.F,
 			ShieldType: shield.ShieldBeidouThunderShield,
 			Name:       "Beidou C1",

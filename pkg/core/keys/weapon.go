@@ -91,6 +91,7 @@ var weaponNames = []string{
 	"ibispiercer",
 	"ironpoint",
 	"ironsting",
+	"jadefallssplendor",
 	"kagotsurubeisshin",
 	"kagurasverity",
 	"katsuragikirinagamasa",
@@ -249,6 +250,7 @@ const (
 	IbisPiercer
 	IronPoint
 	IronSting
+	JadefallsSplendor
 	KagotsurubeIsshin
 	KagurasVerity
 	KatsuragikiriNagamasa

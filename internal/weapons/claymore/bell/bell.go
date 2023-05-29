@@ -51,6 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatus(icdKey, 2700, true)
 
 		c.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: char.Index,
 			Src:        c.F,
 			ShieldType: shield.ShieldBell,
 			Name:       "Bell",
