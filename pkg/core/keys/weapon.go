@@ -88,6 +88,7 @@ var weaponNames = []string{
 	"harbingerofdawn",
 	"huntersbow",
 	"hunterspath",
+	"ibispiercer",
 	"ironpoint",
 	"ironsting",
 	"kagotsurubeisshin",
@@ -245,6 +246,7 @@ const (
 	HarbingerOfDawn
 	HuntersBow
 	HuntersPath
+	IbisPiercer
 	IronPoint
 	IronSting
 	KagotsurubeIsshin
