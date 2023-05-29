@@ -102,6 +102,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"lightoffoliarincision":         keys.LightOfFoliarIncision,
 	"ironpoint":                     keys.IronPoint,
 	"ironsting":                     keys.IronSting,
+	"jadefallsspendlor":             keys.JadefallsSplendor,
+	"jadefall":                      keys.JadefallsSplendor,
 	"kagotsurubeisshin":             keys.KagotsurubeIsshin,
 	"isshin":                        keys.KagotsurubeIsshin,
 	"kagurasverity":                 keys.KagurasVerity,

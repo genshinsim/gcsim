@@ -90,6 +90,7 @@ var weaponNames = []string{
 	"hunterspath",
 	"ironpoint",
 	"ironsting",
+	"jadefallssplendor",
 	"kagotsurubeisshin",
 	"kagurasverity",
 	"katsuragikirinagamasa",
@@ -247,6 +248,7 @@ const (
 	HuntersPath
 	IronPoint
 	IronSting
+	JadefallsSplendor
 	KagotsurubeIsshin
 	KagurasVerity
 	KatsuragikiriNagamasa
