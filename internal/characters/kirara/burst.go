@@ -80,11 +80,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// mine hits
 	c.QueueCharTask(func() {
+		for i := 0; i < minehits; i++ {
+			c.Core.QueueAttackWithSnap(mineAi, c.mineSnap, c.minePattern, 0)
+		}
 		c.cardamoms -= minehits
 		if c.cardamoms < 0 {
 			c.cardamoms = 0
 		}
-		c.Core.QueueAttackWithSnap(mineAi, c.mineSnap, c.minePattern, 0)
 	}, mineHitmark)
 
 	// mine expires
@@ -100,7 +102,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)
-	c.ConsumeEnergy(12)
+	c.ConsumeEnergy(7)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
