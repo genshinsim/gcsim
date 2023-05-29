@@ -19,7 +19,7 @@ export const AnnouncementBanner = ({}) => {
     </a>
   );
 
-  const title = t("game:character_names.baizhu") + " and " + t("game:character_names.kaveh") + " now available!"
+  const title = t("game:character_names.kirara") + " now available!"
 
   return (
     <Callout intent="success" title={title} className="mt-4">

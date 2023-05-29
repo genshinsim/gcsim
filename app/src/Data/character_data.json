@@ -158,6 +158,11 @@
     "rarity": 4,
     "element": "dendro",
     "weapon_class": "claymore"
+  },
+  "kirara": {
+    "rarity": 4,
+    "element": "dendro",
+    "weapon_class": "sword"
   }, 
   "kazuha": {
     "rarity": 5,
