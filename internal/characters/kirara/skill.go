@@ -254,6 +254,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
+		Mult:       catDmg[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
