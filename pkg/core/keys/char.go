@@ -78,6 +78,7 @@ const (
 	Ayaka
 	Ayato
 	Keqing
+	Kirara
 	Klee
 	Sara
 	Lisa
@@ -167,6 +168,7 @@ var charNames = []string{
 	"ayaka",
 	"ayato",
 	"keqing",
+	"kirara",
 	"klee",
 	"sara",
 	"lisa",
@@ -255,6 +257,7 @@ var charPrettyName = []string{
 	"Ayaka",
 	"Ayato",
 	"Keqing",
+	"Kirara",
 	"Klee",
 	"Sara",
 	"Lisa",
@@ -339,6 +342,7 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Ayaka:            attributes.Cryo,
 	Ayato:            attributes.Hydro,
 	Keqing:           attributes.Electro,
+	Kirara:           attributes.Dendro,
 	Klee:             attributes.Pyro,
 	Sara:             attributes.Electro,
 	Lisa:             attributes.Electro,

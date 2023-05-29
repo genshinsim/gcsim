@@ -84,6 +84,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/kaveh"
 	_ "github.com/genshinsim/gcsim/internal/characters/kazuha"
 	_ "github.com/genshinsim/gcsim/internal/characters/keqing"
+	_ "github.com/genshinsim/gcsim/internal/characters/kirara"
 	_ "github.com/genshinsim/gcsim/internal/characters/klee"
 	_ "github.com/genshinsim/gcsim/internal/characters/kokomi"
 	_ "github.com/genshinsim/gcsim/internal/characters/kuki"

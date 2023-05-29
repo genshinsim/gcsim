@@ -23,6 +23,7 @@ const (
 	ShieldCandaceSkill
 	ShieldLaylaSkill
 	ShieldBaizhuBurst
+	ShieldKiraraSkill
 	EndShieldType
 )
 
