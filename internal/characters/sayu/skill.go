@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 var (
@@ -322,7 +323,11 @@ func (c *char) absorbCheck(src, count, max int) func() {
 
 func (c *char) rollAbsorb() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*combat.AttackEvent)
+		if !ok {
+			return false
+		}
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
@@ -350,7 +355,7 @@ func (c *char) rollAbsorb() {
 				Durability: 25,
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), 1, 1)
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1)
 		case attacks.AttackTagElementalArtHold:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
@@ -366,7 +371,7 @@ func (c *char) rollAbsorb() {
 			}
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3),
+				combat.NewSingleTargetHit(e.Key()),
 				1,
 				1,
 			)
