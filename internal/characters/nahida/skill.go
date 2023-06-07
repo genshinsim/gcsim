@@ -90,12 +90,13 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
 	// earliest hold can be let go is roughly 16.5. max is set to 317 so that
 	// it aligns with max cd at 330
-	if hold > 317 {
-		hold = 317
+	if hold > 300 {
+		hold = 300
 	}
-	if hold < 17 {
-		hold = 17
+	if hold < 1 {
+		hold = 1
 	}
+
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -113,7 +114,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
 		0, // TODO: snapshot timing
-		hold+3,
+		hold+3+16,
 		c.skillMarkTargets,
 	)
 
