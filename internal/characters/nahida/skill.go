@@ -88,8 +88,8 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
-	// earliest hold can be let go is roughly 16.5. max is set to 317 so that
-	// it aligns with max cd at 330
+	// earliest hold can be let go is roughly 16.5, max is 317
+	// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
 	if hold > 300 {
 		hold = 300
 	}
