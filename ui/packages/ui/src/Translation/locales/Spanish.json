@@ -92,7 +92,24 @@
         "show_in_viewer": "Mostrar en el Visor",
         "total_dps": "DPS total: ",
         "type_to_search": "Escriba para buscar...",
-        "weapon": "Arma"
+        "weapon": "Arma",
+        "showing" : "Mostrando",
+        "simulations": "Simulaciones",
+        "simMode": "Modo de simulación",
+        "targetCount":"Número de objetivos",
+        "dpsPerTarget": "DPS por objetivo",
+        "avgTotalDmg": "Daño total promedio",
+        "avgSimTime": "Tiempo promedio de simulación",
+        "runDate":"Fecha de ejecución",
+        "timeToKill":"Tiempo para matar",
+        "duration": "Duración",
+        "unknown": "Desconocido",
+        "openInViewer" : "Abrir en el visor",
+        "filter": "Filtro",
+        "customFilter": "Filtro personalizado",
+        "characters": "Personajes",
+        "clear": "Limpiar",
+        "approve": "Aprobar"
     },
     "footer": {
         "gcsim_is_not": "gcsim no está afiliado con mihoyo. Genshin Impact, el contenido del juego y sus materiales son marcas registradas y derechos de autor de miHoYo."

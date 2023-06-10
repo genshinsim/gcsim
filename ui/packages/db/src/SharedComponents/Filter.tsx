@@ -53,7 +53,7 @@ export function Filter() {
             className="flex flex-row justify-between
           "
           >
-            <div className="text-xl pb-1 ">{t("Filter")}</div>
+            <div className="text-xl pb-1 ">{t("db.filter")}</div>
             <ClearFilterButton />
           </div>
         }
@@ -72,7 +72,7 @@ export function Filter() {
           </div> */}
           <input
             className="bp4-input bp4-icon bp4-icon-filter"
-            placeholder={t("Custom Filter")}
+            placeholder={t("db.customFilter")}
             type="text"
             dir="auto"
             onChange={(e) => {
@@ -99,7 +99,7 @@ function ClearFilterButton() {
       className="bp4-button bp4-intent-danger bp4-small  "
       onClick={() => dispatch({ type: "clearFilter" })}
     >
-      {t("Clear")}
+      {t("db.clear")}
     </button>
   );
 }
@@ -130,7 +130,7 @@ function CharacterFilter() {
         className=" bp4-button bp4-intent-primary pr-3 w-full flex-row flex justify-between items-center "
         onClick={() => setCharIsOpen(!charIsOpen)}
       >
-        <div className=" grow">{t("Characters")}</div>
+        <div className=" grow">{t("db.characters")}</div>
 
         <div className="">{charIsOpen ? "-" : "+"}</div>
       </button>

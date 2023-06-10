@@ -92,7 +92,24 @@
         "show_in_viewer": "在视图中展示",
         "total_dps": "总DPS：",
         "type_to_search": "搜索…",
-        "weapon": "武器"
+        "weapon": "武器",
+        "showing" : "显示",
+        "simulations": "模拟",
+        "simMode": "模拟模式",
+        "targetCount":"目标数",
+        "dpsPerTarget": "每个目标的DPS",
+        "avgTotalDmg": "平均总伤害",
+        "avgSimTime": "平均模拟时间",
+        "runDate": "运行日期",
+        "ttk": "死亡时间",
+        "duration": "持续时间",
+        "unknown": "未知",
+        "openInViewer" : "在视图中打开",
+        "filter": "过滤",
+        "customFilter": "自定义过滤器",
+        "characters": "角色",
+        "clear": "清除",
+        "approve": "批准"
     },
     "footer": {
         "gcsim_is_not": "gcsim不是官方工具，原神的游戏内容和素材的商标和版权归米哈游所有。本网站的国际化汉化支持来自：古月浪子。"

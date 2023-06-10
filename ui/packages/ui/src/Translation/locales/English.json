@@ -92,7 +92,25 @@
         "show_in_viewer": "Show in Viewer",
         "total_dps": "Total DPS: ",
         "type_to_search": "Type to search...",
-        "weapon": "Weapon"
+        "weapon": "Weapon",
+        "showing" : "Showing",
+        "simulations": "simulations",
+        "simMode": "Sim Mode",
+        "targetCount": "Target Count",
+        "dpsPerTarget": "DPS per Target",
+        "avgTotalDmg": "Avg Total Dmg",
+        "avgSimTime": "Avg Sim Time",
+        "runDate": "Run Date",
+        "ttk": "Time to Kill",
+        "duration": "Duration",
+        "unknown": "Unknown",
+        "openInViewer" : "Open in Viewer",
+        "filter": "Filter",
+        "customFilter": "Custom Filter",
+        "characters": "Characters",
+        "clear": "Clear",
+        "approve": "Approve"
+
     },
     "elements": {
         "none": "None",

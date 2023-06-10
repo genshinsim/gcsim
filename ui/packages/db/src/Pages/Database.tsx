@@ -2,6 +2,7 @@ import { Spinner } from "@blueprintjs/core";
 import { db } from "@gcsim/types";
 import axios from "axios";
 import { useEffect, useReducer, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { newMockData } from "SharedComponents/mockData";
 import { PaginationButtons } from "SharedComponents/Pagination";
 import { Filter } from "../SharedComponents/Filter";
@@ -19,12 +20,11 @@ export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, initialFilter);
 
   const [data, setData] = useState<db.IEntry[]>([]);
-
+  const { t } = useTranslation();
   const querydb = (query: DbQuery) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
       .then((resp: { data: db.IEntries }) => {
         if (resp.data && resp.data.data) {
-          // console.log("output: ", resp.data);
           setData(resp.data.data);
         } else {
           console.log("no data, using mockdata");
@@ -47,9 +47,9 @@ export function Database() {
         <div className="flex flex-col  gap-4 m-8 my-4 ">
           <div className="flex flex-row justify-between items-center">
             <Filter />
-            <div className="text-base  md:text-2xl">{`Showing ${
+            <div className="text-base  md:text-2xl">{`${t("db.showing")} ${
               data?.length ?? 0
-            } Simulations `}</div>
+            } ${t("db.simulations")} `}</div>
             {/* <Sorter /> */}
           </div>
           {data ? <ListView data={data} /> : <Spinner />}

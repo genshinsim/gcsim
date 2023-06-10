@@ -14,12 +14,7 @@ export default function Nav() {
   const { t, i18n } = useTranslation();
 
   const PageNavs = [
-    <NavLink
-      key="database"
-      href="/database"
-      icon="database"
-      text={t("nav.database")}
-    />,
+    <NavLink key="database" href="/database" icon="database" text="" />,
     // <NavLink
     //   key="management"
     //   href="/management"

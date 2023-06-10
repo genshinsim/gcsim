@@ -92,7 +92,24 @@
         "show_in_viewer": "閲覧モードに読み込み",
         "total_dps": "合計DPS: ",
         "type_to_search": "ここに入力して検索...",
-        "weapon": "武器"
+        "weapon": "武器",
+        "showing" : "表示中",
+        "simulations": "シミュレーション",
+        "simMode": "シミュレーションモード",
+        "targetCount":"ターゲット数",
+        "dpsPerTarget": "ターゲット1体あたりのDPS",
+        "avgTotalDmg": "平均総ダメージ",
+        "avgSimTime": "平均シミュレーション時間",
+        "runDate":"実行日時",
+        "ttk":"撃破時間",
+        "duration": "時間",
+        "unknown": "不明",
+        "openInViewer": "閲覧モードで開く",
+        "filter":"フィルター",
+        "customFilter": "カスタムフィルター",
+        "characters": "キャラクター",
+        "clear": "クリア",
+        "approve": "承認"
     },
     "footer": {
         "gcsim_is_not": "このウェブサイトは個人的な計算を目的としており、gcsim, miHoYoとは関係ありません。原神のゲームコンテンツや素材の商標および著作権はmiHoYoに帰属します。 日本語翻訳作成: からしな_（Karashina#8663）"
