@@ -1,13 +1,13 @@
-import LanguageDetector from "i18next-browser-languagedetector";
 import i18n from "i18next";
-import English from "./locales/English.json";
-import Chinese from "./locales/Chinese.json";
-import German from "./locales/German.json";
-import Japanese from "./locales/Japanese.json";
-import Spanish from "./locales/Spanish.json";
-import Russian from "./locales/Russian.json";
-import IngameNames from "./locales/IngameNames.json";
+import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
+import Chinese from "./locales/Chinese.json";
+import English from "./locales/English.json";
+import German from "./locales/German.json";
+import IngameNames from "./locales/IngameNames.json";
+import Japanese from "./locales/Japanese.json";
+import Russian from "./locales/Russian.json";
+import Spanish from "./locales/Spanish.json";
 
 const resources = {
   en: {
@@ -46,5 +46,5 @@ i18n
     debug: false,
     interpolation: {
       escapeValue: false,
-    }
+    },
   });

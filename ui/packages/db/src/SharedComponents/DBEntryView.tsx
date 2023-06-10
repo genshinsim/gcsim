@@ -1,11 +1,8 @@
 import { db, model } from "@gcsim/types";
 import { Long } from "protobufjs";
+import { ReactI18NextChild, useTranslation } from "react-i18next";
 import DBEntryActions from "./DBEntryViewComponents/DBEntryActions";
 import { DBEntryPortrait } from "./DBEntryViewComponents/DBEntryPortrait";
-
-function useTranslation() {
-  return (text: string) => text;
-}
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
@@ -67,8 +64,10 @@ function DBEntryDetails({
 NonNullable<db.IEntry["summary"]> & {
   run_date?: number | Long | null;
 }) {
-  const t = useTranslation();
-  let date = "Unknown";
+  const { t: translate } = useTranslation();
+
+  const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
+  let date = t("db.unknown");
   if (run_date && typeof run_date === "number") {
     date = new Date(run_date).toLocaleDateString();
   }
@@ -76,22 +75,26 @@ NonNullable<db.IEntry["summary"]> & {
     <table className="bp4-html-table  ">
       <thead>
         <tr className="">
-          <th className="">{t("Sim Mode")}</th>
-          <th className="">{t("Target Count")}</th>
-          <th className="">{t("DPS per Target")}</th>
-          <th className="">{t("AVG Total Damage")}</th>
-          <th className="">{t("AVG Sim Time")}</th>
-          <th className="">{t("Run Date")}</th>
+          <th className="">
+            <div>{t("db.simMode") as ReactI18NextChild}</div>
+          </th>
+          <th className="">{t("db.targetCount")}</th>
+          <th className="">{t("db.dpsPerTarget")}</th>
+          <th className="">{t("db.avgTotalDmg")}</th>
+          <th className="">{t("db.avgSimTime")}</th>
+          <th className="">{t("db.runDate")}</th>
         </tr>
       </thead>
       <tbody>
         <tr className=" text-xs ">
-          <td className="">{mode ? t("Time to kill") : t(" Duration")}</td>
+          <td className="">{mode ? t("db.ttk") : t("db.duration")}</td>
           <td className="">{target_count}</td>
           <td className="">{mean_dps_per_target?.toPrecision(8)}</td>
           <td className="">{total_damage?.mean?.toPrecision(8)}</td>
           <td className="">
-            {sim_duration?.mean?.toPrecision(3) ?? t("Unknown")}s
+            {sim_duration?.mean
+              ? `${sim_duration.mean.toPrecision(3)}s`
+              : t("db.unknown")}
           </td>
           <td className="">{date}</td>
         </tr>

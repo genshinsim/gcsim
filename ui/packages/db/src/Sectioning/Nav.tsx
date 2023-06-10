@@ -1,6 +1,7 @@
 import {
   Alignment,
   AnchorButton,
+  HTMLSelect,
   IconName,
   MaybeElement,
   Navbar,
@@ -13,18 +14,13 @@ export default function Nav() {
   const { t, i18n } = useTranslation();
 
   const PageNavs = [
-    <NavLink
-      key="database"
-      href="/database"
-      icon="database"
-      text={t("nav.database")}
-    />,
-    <NavLink
-      key="management"
-      href="/management"
-      icon="clipboard"
-      text={t("nav.management")}
-    />,
+    <NavLink key="database" href="/database" icon="database" text="" />,
+    // <NavLink
+    //   key="management"
+    //   href="/management"
+    //   icon="clipboard"
+    //   text={t("nav.management")}
+    // />,
   ];
 
   return (
@@ -52,8 +48,7 @@ export default function Nav() {
           {/* <Link href="/account">
               <Button minimal={true} icon="user" text="Guest" />
             </Link> */}
-          {/* <HTMLSelect
-            className="ml-2"
+          <HTMLSelect
             value={i18n.resolvedLanguage}
             onChange={(e) => i18n.changeLanguage(e.target.value)}
           >
@@ -63,7 +58,7 @@ export default function Nav() {
             <option value="ja">{t<string>("nav.japanese")}</option>
             <option value="es">{t<string>("nav.spanish")}</option>
             <option value="ru">{t<string>("nav.russian")}</option>
-          </HTMLSelect> */}
+          </HTMLSelect>
         </Navbar.Group>
       </div>
     </Navbar>

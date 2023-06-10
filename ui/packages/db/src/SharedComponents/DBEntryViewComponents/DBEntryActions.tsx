@@ -1,10 +1,9 @@
 import { Position, Toaster } from "@blueprintjs/core";
 import axios from "axios";
 import { useContext } from "react";
+import { ReactI18NextChild, useTranslation } from "react-i18next";
 import { AuthContext } from "../Management.context";
-function useTranslation() {
-  return (text: string) => text;
-}
+
 export default function DBEntryActions({
   id,
   simulation_key,
@@ -12,7 +11,10 @@ export default function DBEntryActions({
   id: string | undefined | null;
   simulation_key: string | undefined | null;
 }) {
-  const t = useTranslation();
+  const { t: translate } = useTranslation();
+
+  const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
+
   const isAdmin = useContext(AuthContext).isAdmin;
 
   if (isAdmin) {
@@ -26,7 +28,9 @@ export default function DBEntryActions({
           className="bp4-button    bp4-intent-primary"
           rel="noreferrer"
         >
-          <div className="md:flex hidden">{t("Open in Viewer")}</div>
+          <div className="md:flex hidden">
+            {t("db.openInViewer") as ReactI18NextChild}
+          </div>
           <div className="flex md:hidden">
             {
               <svg
@@ -54,10 +58,10 @@ export default function DBEntryActions({
       <a
         href={`https://gcsim.app/v3/viewer/share/${simulation_key}`}
         target="_blank"
-        className="bp4-button    bp4-intent-primary"
+        className="bp4-button    bp4-intent-primary "
         rel="noreferrer"
       >
-        <div className="md:flex hidden">{t("Open in Viewer")}</div>
+        <div className="md:block hidden m-0">{t("db.openInViewer")}</div>
         <div className="flex md:hidden">
           {
             <svg
@@ -86,8 +90,6 @@ function ApproveDBEntryButton({
 }: {
   dbEntryId: string | undefined | null;
 }) {
-  const t = useTranslation();
-
   return (
     <>
       <button
@@ -101,7 +103,7 @@ function ApproveDBEntryButton({
           });
         }}
       >
-        <div className="md:flex hidden">{t("Approve")}</div>
+        <div className="md:flex hidden">{"Approve"}</div>
         <div className="md:hidden flex">
           {
             <svg

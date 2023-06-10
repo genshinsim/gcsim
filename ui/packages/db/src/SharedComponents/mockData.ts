@@ -1,6 +1,6 @@
-import { model } from "@gcsim/types";
+import { db } from "@gcsim/types";
 
-export const mockData: model.IDBEntries["data"] = [
+export const oldMockData = [
   {
     _id: "RbfWgqwCGNPJ",
     share_key: "ftFT8C8fCdwc",
@@ -217,13 +217,7 @@ export const mockData: model.IDBEntries["data"] = [
     description: "Noelle Mono-geo without both prestacked husk and spine",
     submitter: "gcsim#0000",
   },
-  {
-    _id: "tnBmBnwjTPdq",
-    config:
-      'options swap_delay=12 debug=true iteration=1000 workers=30;\n\nyoimiya char lvl=90/90 cons=0 talent=9,9,9;\nyoimiya add weapon="slingshot" refine=5 lvl=90/90;\nyoimiya add set="shimenawasreminiscence" count=4;\nyoimiya add stats hp=4780 atk=311 atk%=0.466 pyro%=0.466 cd=0.622;\nyoimiya add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.3972 cd=0.662 ;\n\nbennett char lvl=90/90 cons=6 talent=9,9,9;\nbennett add weapon="alleyflash" refine=1 lvl=90/90;\nbennett add set="noblesseoblige" count=4;\nbennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ; #main\nbennett add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.4408 em=39.64 cr=0.2648 cd=0.662;\n\nxiangling char lvl=90/90 cons=6 talent=9,9,9;\nxiangling add weapon="thecatch" refine=5 lvl=90/90;\nxiangling add set="emblemofseveredfate" count=4;\nxiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311 ; #main\nxiangling add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.2204 em=39.64 cr=0.331 cd=0.7944 ;\n\nzhongli char lvl=90/90 cons=0 talent=9,9,9;\nzhongli add weapon="favoniuslance" refine=3 lvl=90/90;\nzhongli add set="archaicpetra" count=4;\nzhongli add stats hp=4780 atk=311 hp%=0.466 geo%=0.466 cr=0.311; #main\nzhongli add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.2204 em=39.64 cr=0.331 cd=0.7944;\n\ntarget lvl=100 resist=0.1 hp=100000000;\nenergy every interval=480,720 amount=1;\n\nactive yoimiya;\nfor let x = 0; x < 3; x = x + 1 {\n  yoimiya burst;\n  zhongli burst, skill[hold=1], dash;\n  bennett burst, skill;\n  xiangling burst, skill;\n  yoimiya skill, attack:5, dash, attack:5, dash, attack:5, dash, attack:3;\n\n  bennett skill;\n  xiangling attack:3;\n  zhongli attack:2, skill[hold=1], dash;\n  bennett burst, skill;\n  xiangling burst, skill;\n  yoimiya skill,attack:5, dash ,attack:5, dash,attack:5, dash, attack:2;\n  bennett skill;\n}\n',
-    submitter: "gcsim#0000",
-    description: "mono yoimiya (xiangling zhongli variant)",
-  },
+
   {
     _id: "qhnhwGkzKfH8",
     share_key: "wWqdLMdCKqC8",
@@ -341,13 +335,7 @@ export const mockData: model.IDBEntries["data"] = [
     description: "layla ganyu shenhe kazuha monocryo, improved rot a bit",
     submitter: "gcsim#0000",
   },
-  {
-    _id: "bwzF6bbJzwpc",
-    config:
-      'options swap_delay=12 iteration=1000 ;\n\nhutao char lvl=90/90 cons=0 talent=9,9,9 start_hp=1;\nhutao add weapon="dragonsbane" refine=3 lvl=90/90;\nhutao add set="shimenawasreminiscence" count=4;\nhutao add stats hp=4780 atk=311 em=187 cr=0.311 pyro%=0.466 ; #main\nhutao add stats def%=0.124 def=39.36 hp=507.88 hp%=0.1984 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.331 cd=0.7944;\n\nxingqiu char lvl=90/90 cons=6 talent=9,9,9;\nxingqiu add weapon="favoniussword" refine=3 lvl=90/90;\nxingqiu add set="emblemofseveredfate" count=4;\nxingqiu add stats hp=4780 atk=311 atk%=0.466 cr=0.311 hydro%=0.466 ; #main\nxingqiu add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.2204 em=39.64 cr=0.331 cd=0.662;\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\nzhongli char lvl=90/90 cons=0 talent=9,9,9;\nzhongli add weapon="favoniuslance" lvl=90/90 refine=3;\nzhongli add set="tenacityofthemillelith" count=4;\nzhongli add stats hp=4780 atk=311 hp%=0.466 geo%=0.466 cr=0.311;\nzhongli add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;\n\nfischl char lvl=90/90 cons=6 talent=9,9,9;\nfischl add weapon="stringless" lvl=90/90 refine=3;\nfischl add set="thunderingfury" count=2;\nfischl add set="gladiatorsfinale" count=2;\nfischl add stats hp=4780 atk=311 atk%=.466 electro%=0.466 cr=0.311;\nfischl add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\ntarget lvl=100 resist=0.1 hp=100000000;\nenergy every interval=480,720 amount=1;\nlet t = 0;\n#--------------------------------------------\n\nactive zhongli;\nfor let x = 6; x; x = x - 1 {\nt = f();\nzhongli skill[hold=1];\nxingqiu burst, attack;\nif .fischl.burst.ready {\n  fischl attack:2, burst; }\nelse {\n  fischl attack:2, skill; }\nxingqiu attack, skill, dash, attack:2;\nhutao attack, skill,\n    attack:2, charge, jump,\n    attack:2, charge, jump,\n    attack:2, charge, jump,\n    attack:2, charge, jump,\n    attack:2, charge, jump,\n    attack:2, charge, jump,\n    attack:2, charge, jump,\n    attack:2, charge, jump,\n    attack;\nif .hutao.burst.ready {\n  hutao burst; }\nelse { \n  xingqiu attack:2; }\nwhile f() - t < 20.4*60 {\n  zhongli attack; }\nwhile f() - t < 21.17*60 {\n  wait (1); }\nprint ("done");\n}',
-    submitter: "gcsim#0000",
-    description: "hutao overvape, n2cj, hutao burst every other rotation,",
-  },
+
   {
     _id: "bKCg8gqfgF9w",
     share_key: "njnMckp9wn7f",
@@ -884,4 +872,21 @@ export const mockData: model.IDBEntries["data"] = [
     description: "Ganyu Monocryo with Layla 20s",
     submitter: "gcsim#0000",
   },
-] as unknown as model.IDBEntries["data"];
+] as const;
+
+//convert oldMockData to newMockData of type db.Entries["data"]
+
+export const newMockData: db.Entries["data"] = oldMockData.map((entry) => {
+  const { char_names, team, ...rest } = entry;
+
+  const newTeam = team.map((char) => {
+    const { snapshot, ...rest } = char;
+    return { ...rest };
+  });
+  return {
+    char_names,
+    team: newTeam,
+    ...rest,
+    accepted_tags: [0, 1],
+  };
+});
