@@ -25,4 +25,6 @@ runs:
     uses: AnimMouse/setup-rclone@v1 
     env:
       RCLONE_CONF: ${{ inputs.rcloneConfig }}
-  - run: rclone sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress 
+  - name: sync
+    shell: bash
+    run: rclone sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress 
