@@ -22,7 +22,7 @@ runs:
       GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
 
   - name: Upload to R2
-    uses: wei/rclone@v1
+    uses: andreiio/rclone-action@v1
     env:
       RCLONE_CONF: ${{ inputs.rcloneConfig }}
     with:
