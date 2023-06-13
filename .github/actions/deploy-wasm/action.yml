@@ -23,13 +23,9 @@ runs:
 
   - name: Upload to R2
     uses: AnimMouse/setup-rclone@v1 
-    env:
-      RCLONE_CONF: ${{ inputs.rcloneConfig }}
-  - name: write rclone config
-    env:
-      RCLONE_CONF: ${{ inputs.rcloneConfig }} 
-    shell: bash
-    run: echo "$RCLONE_CONF" >> /rclone.conf
+    with:
+      rclone_config: ${{ inputs.rcloneConfig }}
+      disable_base64: true
   - name: sync
     shell: bash
-    run: rclone sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress --config="/rclone.conf" 
+    run: rclone sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress 
