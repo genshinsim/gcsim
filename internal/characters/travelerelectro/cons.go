@@ -19,7 +19,7 @@ func (c *char) c2(t combat.Target) combat.AttackCBFunc {
 			return
 		}
 		e.AddResistMod(combat.ResistMod{
-			Base:  modifier.NewBase("travelerelectro-c2", 480),
+			Base:  modifier.NewBaseWithHitlag("travelerelectro-c2", 480),
 			Ele:   attributes.Electro,
 			Value: -0.15,
 		})
