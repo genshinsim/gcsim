@@ -47,11 +47,6 @@ type Enemy interface {
 	StatusExpiry(key string) int
 }
 
-type enemyTuple struct {
-	enemy Enemy
-	dist  float64
-}
-
 func (h *Handler) Enemy(i int) Target {
 	if i < 0 || i > len(h.enemies) {
 		return nil
