@@ -190,7 +190,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 	//c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
 		active.AddCooldownMod(character.CooldownMod{
-			Base: modifier.NewBase("chongyun-c2", 126),
+			Base: modifier.NewBaseWithHitlag("chongyun-c2", 126),
 			Amount: func(a action.Action) float64 {
 				if a == action.ActionSkill || a == action.ActionBurst {
 					return -0.15
