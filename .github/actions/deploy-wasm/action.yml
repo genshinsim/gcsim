@@ -22,8 +22,7 @@ runs:
       GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
 
   - name: Upload to R2
-    uses: andreiio/rclone-action@v1
+    uses: AnimMouse/setup-rclone@v1 
     env:
       RCLONE_CONF: ${{ inputs.rcloneConfig }}
-    with:
-      args: sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress
+  - run: rclone sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress 
