@@ -60,7 +60,7 @@ func (c *char) c4() {
 		erMod := make([]float64, attributes.EndStatType)
 		erMod[attributes.ER] = 0.3
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("dori-c4-er-bonus", 48),
+			Base:         modifier.NewBaseWithHitlag("dori-c4-er-bonus", 48),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return erMod, true

@@ -19,7 +19,7 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.Heal] = 0.25
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("kaveh-c1", 180),
+		Base:         modifier.NewBaseWithHitlag("kaveh-c1", 180),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			return m, true

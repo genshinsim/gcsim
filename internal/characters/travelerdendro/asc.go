@@ -41,7 +41,7 @@ func (c *char) a1Buff(delay int) {
 		m[attributes.EM] = float64(6 * c.burstOverflowingLotuslight)
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(a1Key, 60),
+			Base:         modifier.NewBaseWithHitlag(a1Key, 60),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true

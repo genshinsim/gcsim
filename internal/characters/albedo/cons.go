@@ -36,7 +36,7 @@ func (c *char) c4(lastConstruct int) func() {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.DmgP] = 0.3
 			active.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("albedo-c4", 60), // 1s
+				Base: modifier.NewBaseWithHitlag("albedo-c4", 60), // 1s
 				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != attacks.AttackTagPlunge {
 						return nil, false
