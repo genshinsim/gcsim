@@ -15,7 +15,7 @@ const (
 	BurstCD
 	InsufficientEnergy
 	InsufficientStamina
-	CharacterDesceased // TODO: need chars to die first
+	CharacterDeceased // TODO: need chars to die first
 	DashCD
 )
 
@@ -26,7 +26,7 @@ var failureString = [...]string{
 	"burst_cd",
 	"insufficient_energy",
 	"insufficient_stamina",
-	"character_desceased",
+	"character_deceased",
 	"dash_cd",
 }
 
