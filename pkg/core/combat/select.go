@@ -34,6 +34,9 @@ func gadgetsWithinAreaFiltered(a AttackPattern, filter func(t Gadget) bool, orig
 	var gadgets []Gadget
 	hasFilter := filter != nil
 	for _, v := range originalGadgets {
+		if v == nil {
+			continue
+		}
 		if hasFilter && !filter(v) {
 			continue
 		}
@@ -185,6 +188,9 @@ func gadgetsWithinAreaSorted(a AttackPattern, filter func(t Gadget) bool, skipAt
 
 	hasFilter := filter != nil
 	for _, v := range originalGadgets {
+		if v == nil {
+			continue
+		}
 		if hasFilter && !filter(v) {
 			continue
 		}
