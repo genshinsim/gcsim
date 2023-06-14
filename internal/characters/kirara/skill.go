@@ -249,7 +249,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 		ActorIndex: c.Index,
 		Abil:       "Urgent Neko Parcel",
 		AttackTag:  attacks.AttackTagElementalArtHold,
-		ICDTag:     attacks.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArtHold,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
