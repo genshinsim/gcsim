@@ -8,6 +8,6 @@ runs:
   using: composite
   steps:
   - name: build binary
-    working-directory: ./backend/cmd/$${{ inputs.cmd }}
+    working-directory: ./backend/cmd/${{ inputs.cmd }}
     shell: bash
-    run: "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../../artifacts/$${{ inputs.cmd }}"
+    run: "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../../artifacts/${{ inputs.cmd }}"
