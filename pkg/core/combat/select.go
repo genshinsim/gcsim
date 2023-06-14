@@ -139,7 +139,7 @@ func (c *Handler) RandomGadgetsWithinArea(a AttackPattern, filter func(t Gadget)
 	return result
 }
 
-// closest enemies
+// closest targets
 
 type enemyTuple struct {
 	enemy Enemy
