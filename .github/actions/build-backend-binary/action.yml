@@ -5,6 +5,7 @@ inputs:
     required: true
     description: "cmd to build"
 runs:
+  using: composite
   steps:
   - name: build binary
     working-directory: ./backend/cmd/$${{ inputs.cmd }}
