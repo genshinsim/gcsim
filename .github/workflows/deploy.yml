@@ -91,4 +91,4 @@ jobs:
           key: ${{ secrets.GCSIMVPS_KEY }}
           passphrase: ${{ secrets.GCSIMVPS_PASSPHRASE }} 
           port: ${{ secrets.GCSIMVPS_PORT }}
-          script: whoami 
+          script: /root/deploy/deploy-latest.sh 
