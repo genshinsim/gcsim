@@ -56,7 +56,7 @@ func (c *char) a4() {
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if atk.Info.AttackTag != attacks.AttackTagElementalArt {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
 		if c.StatusIsActive(a4ICDKey) {
