@@ -54,6 +54,35 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "^1.19.3"     
+      - name: build db
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: db
+      - name: build api gateway
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: jadechamber
+      - name: build discord bot 
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: managerchan
+      - name: build share store
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: share
+      - name: build preview generator 
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: preview
+      - name: upload final
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-artifacts
+          path: ./backend/artifacts
       - name: deploy-backend
         uses: appleboy/ssh-action@v0.1.10
         with:

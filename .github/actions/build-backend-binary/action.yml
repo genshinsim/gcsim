@@ -1,0 +1,12 @@
+name: "build backend binary"
+descripition: "build backend binary; assume go has already been setup"
+inputs:
+  cmd:
+    required: true
+    description: "cmd to build"
+runs:
+  steps:
+  - name: build binary
+    working-directory: ./backend/cmd/$${{ inputs.cmd }}
+    shell: bash
+    run: "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../../artifacts/$${{ inputs.cmd }}"
