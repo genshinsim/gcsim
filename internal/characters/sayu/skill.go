@@ -342,7 +342,8 @@ func (c *char) rollAbsorb() {
 		}
 
 		switch atk.Info.AttackTag {
-		case attacks.AttackTagElementalArt:
+		// DoT always has ElementalArtHold tag
+		case attacks.AttackTagElementalArtHold:
 			// DoT Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
@@ -356,7 +357,8 @@ func (c *char) rollAbsorb() {
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
 			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1)
-		case attacks.AttackTagElementalArtHold:
+		// Kick always has ElementalArt tag
+		case attacks.AttackTagElementalArt:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
