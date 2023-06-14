@@ -18,7 +18,8 @@ const (
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42) // E -> N1/Q
-	skillFrames[action.ActionCharge] = 28  // since we assumme that Ushi always hits for a stack, we can just use E -> CA1/CAF
+	skillFrames[action.ActionCharge] = 28  // since we assume that Ushi always hits for a stack, we can just use E -> CA1/CAF
+	skillFrames[action.ActionSkill] = 28   // E -> E
 	skillFrames[action.ActionDash] = 28    // E -> D
 	skillFrames[action.ActionJump] = 28    // E -> J
 	skillFrames[action.ActionSwap] = 41    // E -> Swap
