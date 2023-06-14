@@ -117,7 +117,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Hold)",
-		AttackTag:  attacks.AttackTagElementalArtHold,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
