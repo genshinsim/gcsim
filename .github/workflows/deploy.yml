@@ -83,12 +83,13 @@ jobs:
         with:
           name: backend-artifacts
           path: ./backend/docker
-      - name: deploy-backend
-        uses: appleboy/ssh-action@v0.1.10
+      - name: Trigger Workflow
+        uses: actions/github-script@v6
         with:
-          host: ${{ secrets.GCSIMVPS_HOST }}
-          username: ${{ secrets.GCSIMVPS_USERNAME }}
-          key: ${{ secrets.GCSIMVPS_KEY }}
-          passphrase: ${{ secrets.GCSIMVPS_PASSPHRASE }} 
-          port: ${{ secrets.GCSIMVPS_PORT }}
-          script: /root/deploy/deploy-latest.sh 
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy-backend.yml',
+              ref: '${{ steps.extract_branch.outputs.branch }}',
+            })

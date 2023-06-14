@@ -1,0 +1,17 @@
+name: deployment build
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy-backend
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.GCSIMVPS_HOST }}
+          username: ${{ secrets.GCSIMVPS_USERNAME }}
+          key: ${{ secrets.GCSIMVPS_KEY }}
+          passphrase: ${{ secrets.GCSIMVPS_PASSPHRASE }} 
+          port: ${{ secrets.GCSIMVPS_PORT }}
+          script: /root/deploy/deploy-latest.sh 
