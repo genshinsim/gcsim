@@ -26,8 +26,6 @@ func (c *char) c2() {
 				return nil, false
 			}
 			m[attributes.DmgP] = c.c2Bonus
-			//reset bonus back to 0
-			c.c2Bonus = 0
 			return m, true
 		},
 	})
