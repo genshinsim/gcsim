@@ -22,7 +22,7 @@ func init() {
 	chargeFrames = make([][]int, EndSlashType)
 
 	// ActionCharge frames are different per each slash
-	// the frames for CA1/CA2 -> CAF are handled in ActionInfo.Frames
+	// the frames for CA0/CA1/CA2 -> CAF, CA0 -> CA1 are handled in ActionInfo.Frames
 
 	// CA0 -> x
 	chargeFrames[SaichiSlash] = frames.InitAbilSlice(131) // NA frames
@@ -50,7 +50,7 @@ func init() {
 	chargeFrames[RightSlash][action.ActionSwap] = chargeHitmarks[RightSlash]
 
 	// CAF -> x
-	chargeFrames[FinalSlash] = frames.InitAbilSlice(110) // NA/CA0 frames
+	chargeFrames[FinalSlash] = frames.InitAbilSlice(109) // NA/CA0 frames
 	chargeFrames[FinalSlash][action.ActionSkill] = 76
 	chargeFrames[FinalSlash][action.ActionBurst] = 76
 	chargeFrames[FinalSlash][action.ActionDash] = chargeHitmarks[FinalSlash]
@@ -82,17 +82,6 @@ func (s SlashType) String() string {
 
 func (s SlashType) Next(stacks int, c6Proc bool) SlashType {
 	switch s {
-	// idle -> charge (based on stacks)
-	case InvalidSlash:
-		if stacks == 1 && !c6Proc {
-			return FinalSlash
-		} else if stacks == 1 && c6Proc {
-			return LeftSlash
-		} else if stacks > 1 {
-			return LeftSlash
-		}
-		return SaichiSlash
-
 	// loops CA1/CA2 until stacks=1
 	case LeftSlash:
 		if stacks == 1 && !c6Proc {
@@ -105,10 +94,15 @@ func (s SlashType) Next(stacks int, c6Proc bool) SlashType {
 		}
 		return LeftSlash
 
-	// CA0/CAF -> x
-	case SaichiSlash, FinalSlash:
-		fallthrough
+	// idle/CA0/CAF -> charge (based on stacks)
 	default:
+		if stacks == 1 && !c6Proc {
+			return FinalSlash
+		} else if stacks == 1 && c6Proc {
+			return LeftSlash
+		} else if stacks > 1 {
+			return LeftSlash
+		}
 		return SaichiSlash
 	}
 }
@@ -139,14 +133,24 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 			if prevSlash == FinalSlash {
 				return 14
 			}
-		// CA2 -> CA1
+		// CA0/CA2/CAF -> CA1
 		case LeftSlash:
-			if prevSlash == RightSlash {
+			switch curSlash {
+			// CA0/CAF -> CA1
+			case SaichiSlash, FinalSlash:
+				return 17
+			// CA2 -> CA1
+			case RightSlash:
 				return 28
 			}
-		// CA1/CA2 -> CAF
+		// CA0/CA1/CA2/CAF -> CAF
 		case FinalSlash:
-			if prevSlash == LeftSlash || prevSlash == RightSlash {
+			switch curSlash {
+			// CA0/CAF -> CAF
+			case SaichiSlash, FinalSlash:
+				return 17
+			// CA1/CA2 -> CAF
+			case LeftSlash, RightSlash:
 				return 25
 			}
 		}
@@ -154,10 +158,10 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 	// skill -> x
 	case action.SkillState:
 		switch curSlash {
-		// E->CA0
+		// E -> CA0
 		case SaichiSlash:
 			return 14
-		// E->CA1/CAF
+		// E -> CA1/CAF
 		case LeftSlash, FinalSlash:
 			return 17
 		}
@@ -248,15 +252,27 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			f := chargeFrames[curSlash][next]
-			// handle CA1/CA2 -> CAF frames
-			if next == action.ActionCharge && nextSlash == FinalSlash {
-				switch curSlash {
-				case LeftSlash: // CA1 -> CAF
-					f = 60
-				case RightSlash: // CA2 -> CAF
-					f = 32
+
+			if next == action.ActionCharge {
+				switch nextSlash {
+				// handle CA0/CA1/CA2 -> CAF frames
+				case FinalSlash:
+					switch curSlash {
+					case SaichiSlash: // CA0 -> CAF
+						f = 131
+					case LeftSlash: // CA1 -> CAF
+						f = 60
+					case RightSlash: // CA2 -> CAF
+						f = 32
+					}
+				// handle CA0 -> CA1 frames
+				case LeftSlash:
+					if curSlash == SaichiSlash {
+						f = 131
+					}
 				}
 			}
+
 			return frames.AtkSpdAdjust(f-windup, c.Stat(attributes.AtkSpd))
 		},
 		AnimationLength: chargeFrames[curSlash][action.InvalidAction] - windup,
