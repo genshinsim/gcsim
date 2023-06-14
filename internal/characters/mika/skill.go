@@ -108,7 +108,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Rimestar Flare",
 		AttackTag:  attacks.AttackTagElementalArtHold,
-		ICDTag:     attacks.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArtHold,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Cryo,
