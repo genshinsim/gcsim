@@ -16,6 +16,18 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
+      # grab latest sha
+      - name: Setup Environment (PR)  
+        if: ${{ github.event_name == 'pull_request' }}  
+        shell: bash  
+        run: |  
+          echo "LAST_COMMIT_SHA=${{ github.event.pull_request.head.sha }}" >> ${GITHUB_ENV}  
+      - name: Setup Environment (Push)  
+        if: ${{ github.event_name == 'push' }}  
+        shell: bash  
+        run: |  
+          echo "LAST_COMMIT_SHA=${GITHUB_SHA}" >> ${GITHUB_ENV}
+
       # setup + test go and yarn
       - uses: actions/checkout@v3
       - name: go-setup-and-test
@@ -76,7 +88,9 @@ jobs:
       - name: save hash to file
         working-directory: ./backend/docker
         shell: bash
-        run: echo $GITHUB_SHA >> hash.txt
+        run: |
+          echo "${LAST_COMMIT_SHA}" >> hash.txt
+          ls -la
       # upload artifacts
       - name: upload final
         uses: actions/upload-artifact@v3
