@@ -72,20 +72,14 @@ jobs:
         uses: ./.github/actions/build-backend-binary
         with:
           cmd: preview
+      # add a file with the hash
+      - name: save hash to file
+        working-directory: ./backend/docker
+        shell: bash
+        run: echo $GITHUB_SHA >> hash.txt
+      # upload artifacts
       - name: upload final
         uses: actions/upload-artifact@v3
         with:
           name: backend-artifacts
           path: ./backend/docker
-      
-      # trigger back end rebuild
-      - name: trigger backend deploy workflow
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'deploy-backend.yml',
-              ref: '${{ steps.extract_branch.outputs.branch }}',
-            })
