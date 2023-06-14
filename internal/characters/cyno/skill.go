@@ -113,7 +113,8 @@ func (c *char) skillB() action.ActionInfo {
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
 		ai.FlatDmg = c.a4Bolt()
-		ai.ICDTag = attacks.ICDTagCynoBolt
+		ai.AttackTag = attacks.AttackTagElementalArtHold
+		ai.ICDTag = attacks.ICDTagElementalArt
 		ai.ICDGroup = attacks.ICDGroupCynoBolt
 		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.HitlagFactor = 0
