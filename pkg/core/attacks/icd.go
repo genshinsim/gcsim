@@ -7,6 +7,7 @@ const (
 	ICDTagNormalAttack
 	ICDTagExtraAttack
 	ICDTagElementalArt
+	ICDTagElementalArtHold
 	ICDTagElementalArtAnemo
 	ICDTagElementalArtPyro
 	ICDTagElementalArtHydro
