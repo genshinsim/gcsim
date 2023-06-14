@@ -1,4 +1,4 @@
-FROM alpine:3.16.3 as backend
+FROM chromedp/headless-shell:latest 
 WORKDIR /
 COPY binary/preview /preview
 RUN ls -la
