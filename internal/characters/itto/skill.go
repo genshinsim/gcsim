@@ -47,6 +47,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		travel = 4
 	}
 
+	// TODO: refactor this if enemy doing attacks is ever implemented
+	ushihit, ok := p["ushihit"]
+	if !ok {
+		ushihit = 0
+	}
+	if ushihit < 0 {
+		ushihit = 0
+	}
+	if ushihit > 3 {
+		ushihit = 3
+	}
+
 	//deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
@@ -74,12 +86,25 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			return
 		}
 		done = true
+
 		// spawn ushi. on-field for 6s
 		c.Core.Constructs.New(c.newUshi(6*60, ushiDir, ushiPos), true)
+
+		// add stacks via param
+		// random stack gain with 2s stack gain icd
+		if ushihit > 0 {
+			startLimit := 6 - 2*(ushihit-1)
+			nextPossibleGain := 0
+			for i := 0; i < ushihit; i++ {
+				gain := c.Core.Rand.Intn((startLimit+2*i)*60-nextPossibleGain) + nextPossibleGain
+				c.Core.Tasks.Add(func() { c.addStrStack("ushi-hit", 1) }, gain)
+				nextPossibleGain = gain + 2*60
+			}
+		}
 	}
 
 	// Assume that Ushi always hits for a stack
-	c.Core.Tasks.Add(func() { c.addStrStack("ushi-hit", 1) }, skillRelease+travel)
+	c.Core.Tasks.Add(func() { c.addStrStack("ushi-dmg", 1) }, skillRelease+travel)
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
