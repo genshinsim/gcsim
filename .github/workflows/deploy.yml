@@ -82,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: backend-artifacts
-          path: ./backend/artifacts
+          path: ./backend/docker
       - name: deploy-backend
         uses: appleboy/ssh-action@v0.1.10
         with:

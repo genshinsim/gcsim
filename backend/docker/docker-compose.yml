@@ -16,16 +16,16 @@ services:
   mqtt:
     build:
       context: .
-      dockerfile: ./backend/mosquitto/Dockerfile 
+      dockerfile: ./mqtt.Dockerfile 
     environment:
       - MOSQUITTO_USERNAME=mosquitto
       - MOSQUITTO_PASSWORD=password
     container_name: mqtt
     restart: unless-stopped
     volumes:
-      - ./backend/mosquitto/config:/mosquitto/config:ro
-      - ./backend/mosquitto/data:/mosquitto/data
-      - ./backend/mosquitto/log:/mosquitto/log
+      - ./mosquitto/config:/mosquitto/config:ro
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
     ports:
       - 1883:1883
   # generating embed for discord etc
@@ -33,7 +33,7 @@ services:
     container_name: preview
     build:
       context: .
-      dockerfile: ./backend/docker/preview.Dockerfile
+      dockerfile: ./preview.Dockerfile
     volumes:
       - ~/assets/assets:/assets
     environment:
@@ -45,7 +45,7 @@ services:
     container_name: share
     build:
       context: .
-      dockerfile: ./backend/docker/share.Dockerfile
+      dockerfile: ./share.Dockerfile
     restart: unless-stopped
     environment:
       - MONGODB_URL=mongodb://mongo:27017
@@ -57,7 +57,7 @@ services:
     container_name: db
     build:
       context: .
-      dockerfile: ./backend/docker/db.Dockerfile
+      dockerfile: ./db.Dockerfile
     environment:
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DATABASE=gcsim-database
@@ -77,7 +77,7 @@ services:
     container_name: jadechamber
     build:
       context: .
-      dockerfile: ./backend/docker/jadechamber.Dockerfile
+      dockerfile: ./jadechamber.Dockerfile
     volumes:
       - ~/data:/data
       - ./keys.json:/keys.json
@@ -103,7 +103,7 @@ services:
     container_name: managerchan
     build:
       context: .
-      dockerfile: ./backend/docker/managerchan.Dockerfile
+      dockerfile: ./managerchan.Dockerfile
     environment:
       - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
@@ -123,7 +123,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root-password
     volumes:
-      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - ~/data/mongo:/data/db:rw
   # dev stuff
   mongo-express:
