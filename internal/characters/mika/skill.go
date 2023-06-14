@@ -165,10 +165,10 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Rimestar Shard",
-			AttackTag:  attacks.AttackTagElementalArtHold,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeSlash,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       skillExplode[c.TalentLvlSkill()],
