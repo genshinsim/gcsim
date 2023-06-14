@@ -135,7 +135,7 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 			}
 		// CA0/CA2/CAF -> CA1
 		case LeftSlash:
-			switch curSlash {
+			switch prevSlash {
 			// CA0/CAF -> CA1
 			case SaichiSlash, FinalSlash:
 				return 17
@@ -145,7 +145,7 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 			}
 		// CA0/CA1/CA2/CAF -> CAF
 		case FinalSlash:
-			switch curSlash {
+			switch prevSlash {
 			// CA0/CAF -> CAF
 			case SaichiSlash, FinalSlash:
 				return 17
