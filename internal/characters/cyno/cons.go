@@ -159,7 +159,7 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		ai := combat.AttackInfo{
 			ActorIndex:   c.Index,
 			Abil:         "Raiment: Just Scales (C6)",
-			AttackTag:    attacks.AttackTagElementalArt,
+			AttackTag:    attacks.AttackTagElementalArtHold,
 			ICDTag:       attacks.ICDTagElementalArt,
 			ICDGroup:     attacks.ICDGroupDefault,
 			StrikeType:   attacks.StrikeTypeSlash,
