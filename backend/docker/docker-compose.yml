@@ -14,6 +14,7 @@ services:
   #     - jadechamber
   #   restart: unless-stopped
   mqtt:
+    container_name: mqtt
     build:
       context: .
       dockerfile: ./mqtt.Dockerfile 
