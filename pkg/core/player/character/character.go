@@ -144,12 +144,6 @@ func New(
 	if c.Talents.Burst < 1 || c.Talents.Burst > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
 	}
-	//setup base hp
-	if p.Base.StartHP > -1 {
-		c.HPCurrent = p.Base.StartHP
-	} else {
-		c.HPCurrent = -1 //to be cleared up in init
-	}
 
 	return c, nil
 }

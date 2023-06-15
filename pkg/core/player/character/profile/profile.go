@@ -66,7 +66,6 @@ type CharacterBase struct {
 	Atk       float64            `json:"base_atk"`
 	Def       float64            `json:"base_def"`
 	Cons      int                `json:"cons"`
-	StartHP   float64            `json:"start_hp"`
 }
 
 type TalentProfile struct {
