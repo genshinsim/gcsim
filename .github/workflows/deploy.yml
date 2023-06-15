@@ -84,6 +84,10 @@ jobs:
         uses: ./.github/actions/build-backend-binary
         with:
           cmd: preview
+      - name: build compute binary 
+        uses: ./.github/actions/build-compute-binary
+        with:
+          cmd: compute
       # add a file with the hash
       - name: save hash to file
         working-directory: ./backend/docker
@@ -92,8 +96,13 @@ jobs:
           echo "${LAST_COMMIT_SHA}" >> hash.txt
           ls -la
       # upload artifacts
-      - name: upload final
+      - name: upload db artifacts
         uses: actions/upload-artifact@v3
         with:
           name: backend-artifacts
           path: ./backend/docker
+      - name: upload compute artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: compute-artifacts
+          path: ./backend/cmd/compute/compute
