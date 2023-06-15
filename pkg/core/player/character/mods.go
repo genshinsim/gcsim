@@ -178,7 +178,8 @@ func (c *CharWrapper) extendMod(key string, ext int) bool {
 		return false //nothing to extend is not active
 	}
 	//other wise add to expiry
-	c.mods[m].Extend(ext)
+	mod := c.mods[m]
+	mod.Extend(mod.Key(), c.log, c.Index, ext)
 	return true
 }
 

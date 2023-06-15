@@ -12,7 +12,7 @@ type Mod interface {
 	Event() glog.Event
 	SetEvent(glog.Event)
 	AffectedByHitlag() bool
-	Extend(int)
+	Extend(string, glog.Logger, int, int)
 }
 
 type Base struct {
@@ -29,12 +29,16 @@ func (t *Base) Expiry() int             { return t.ModExpiry + t.extension }
 func (t *Base) Event() glog.Event       { return t.event }
 func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
 func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
-func (t *Base) Extend(amt int) {
+func (t *Base) Extend(key string, logger glog.Logger, index int, amt int) {
 	t.extension += amt
 	if t.extension < 0 {
 		t.extension = 0
 	}
 	t.event.SetEnded(t.Expiry())
+	logger.NewEvent("mod extended", glog.LogStatusEvent, -1).
+		Write("key", key).
+		Write("amt", amt).
+		Write("expiry", t.Expiry())
 }
 func (t *Base) SetExpiry(f int) {
 	if t.Dur == -1 {
