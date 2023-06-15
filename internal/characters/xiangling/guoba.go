@@ -106,6 +106,8 @@ func (p *panda) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	default:
 		return 0, false
 	}
+	// both sucrose E and faruzan E are 50 durability against gadgets
+	atk.Info.Durability = 50
 
 	// cheat a bit, set the durability just enough to match incoming sucrose/faruzan E gauge
 	oldDur := p.Durability[reactable.ModifierPyro]
