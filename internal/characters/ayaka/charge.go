@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var chargeFrames []int
@@ -33,20 +34,46 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:       ca[c.TalentLvlAttack()],
 	}
 
-	for i := 0; i < 3; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				nil,
-				1,
-			),
-			chargeHitmarks[i],
-			chargeHitmarks[i],
-			c.c1,
-			c.c6,
-		)
+	// spawn up to 5 attacks
+	// priority: enemy > gadget
+	chargeCount := 5
+	chargeArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
+	charge := func(pos geometry.Point, i int) {
+		for j := 0; j < 3; j++ {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHitOnTarget(
+					pos,
+					nil,
+					1,
+				),
+				chargeHitmarks[j],
+				chargeHitmarks[j],
+				c.c1,
+				c.c6,
+			)
+		}
+	}
+
+	// target up to 5 enemies
+	enemies := c.Core.Combat.EnemiesWithinArea(chargeArea, nil)
+	enemyCount := len(enemies)
+	for i := 0; i < chargeCount; i++ {
+		if i < enemyCount {
+			charge(enemies[i].Pos(), i)
+		}
+	}
+	chargeCount -= enemyCount
+
+	// if less than 5 enemies were targeted, then check for gadgets
+	if chargeCount > 0 {
+		gadgets := c.Core.Combat.GadgetsWithinArea(chargeArea, nil)
+		gadgetCount := len(gadgets)
+		for i := 0; i < chargeCount; i++ {
+			if i < gadgetCount {
+				charge(gadgets[i].Pos(), i)
+			}
+		}
 	}
 
 	return action.ActionInfo{
