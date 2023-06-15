@@ -157,17 +157,17 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 			)
 		}
 
-		var pos geometry.Point
 		// try to target an enemy first
 		enemy := c.Core.Combat.RandomEnemyWithinArea(totem.kitsuneArea, nil)
 		if enemy != nil {
-			pos = enemy.Pos()
+			tick(enemy.Pos())
 		} else {
 			// target gadget if no enemy was targeted
 			gadget := c.Core.Combat.RandomGadgetWithinArea(totem.kitsuneArea, nil)
-			pos = gadget.Pos()
+			if gadget != nil {
+				tick(gadget.Pos())
+			}
 		}
-		tick(pos)
 
 		// tick per ~2.9s seconds
 		c.Core.Tasks.Add(c.kitsuneTick(totem), 176)
