@@ -12,6 +12,7 @@ type DBStore interface {
 	DBService
 	TaggingService
 	ComputeService
+	AdminService
 }
 
 type DBService interface {
@@ -32,6 +33,10 @@ type TaggingService interface {
 
 type ComputeService interface {
 	GetWork(context.Context) ([]*ComputeWork, error)
+}
+
+type AdminService interface {
+	ReplaceConfig(ctx context.Context, id string, config string) error
 }
 
 type ShareStore interface {

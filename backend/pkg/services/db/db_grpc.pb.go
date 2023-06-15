@@ -31,6 +31,7 @@ const (
 	DBStore_GetWork_FullMethodName        = "/db.DBStore/GetWork"
 	DBStore_CompleteWork_FullMethodName   = "/db.DBStore/CompleteWork"
 	DBStore_RejectWork_FullMethodName     = "/db.DBStore/RejectWork"
+	DBStore_ReplaceConfig_FullMethodName  = "/db.DBStore/ReplaceConfig"
 )
 
 // DBStoreClient is the client API for DBStore service.
@@ -53,6 +54,8 @@ type DBStoreClient interface {
 	GetWork(ctx context.Context, in *GetWorkRequest, opts ...grpc.CallOption) (*GetWorkResponse, error)
 	CompleteWork(ctx context.Context, in *CompleteWorkRequest, opts ...grpc.CallOption) (*CompleteWorkResponse, error)
 	RejectWork(ctx context.Context, in *RejectWorkRequest, opts ...grpc.CallOption) (*RejectWorkResponse, error)
+	// super-admin endpoint
+	ReplaceConfig(ctx context.Context, in *ReplaceConfigRequest, opts ...grpc.CallOption) (*ReplaceConfigResponse, error)
 }
 
 type dBStoreClient struct {
@@ -171,6 +174,15 @@ func (c *dBStoreClient) RejectWork(ctx context.Context, in *RejectWorkRequest, o
 	return out, nil
 }
 
+func (c *dBStoreClient) ReplaceConfig(ctx context.Context, in *ReplaceConfigRequest, opts ...grpc.CallOption) (*ReplaceConfigResponse, error) {
+	out := new(ReplaceConfigResponse)
+	err := c.cc.Invoke(ctx, DBStore_ReplaceConfig_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBStoreServer is the server API for DBStore service.
 // All implementations must embed UnimplementedDBStoreServer
 // for forward compatibility
@@ -191,6 +203,8 @@ type DBStoreServer interface {
 	GetWork(context.Context, *GetWorkRequest) (*GetWorkResponse, error)
 	CompleteWork(context.Context, *CompleteWorkRequest) (*CompleteWorkResponse, error)
 	RejectWork(context.Context, *RejectWorkRequest) (*RejectWorkResponse, error)
+	// super-admin endpoint
+	ReplaceConfig(context.Context, *ReplaceConfigRequest) (*ReplaceConfigResponse, error)
 	mustEmbedUnimplementedDBStoreServer()
 }
 
@@ -233,6 +247,9 @@ func (UnimplementedDBStoreServer) CompleteWork(context.Context, *CompleteWorkReq
 }
 func (UnimplementedDBStoreServer) RejectWork(context.Context, *RejectWorkRequest) (*RejectWorkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RejectWork not implemented")
+}
+func (UnimplementedDBStoreServer) ReplaceConfig(context.Context, *ReplaceConfigRequest) (*ReplaceConfigResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReplaceConfig not implemented")
 }
 func (UnimplementedDBStoreServer) mustEmbedUnimplementedDBStoreServer() {}
 
@@ -463,6 +480,24 @@ func _DBStore_RejectWork_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBStore_ReplaceConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReplaceConfigRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).ReplaceConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_ReplaceConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).ReplaceConfig(ctx, req.(*ReplaceConfigRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBStore_ServiceDesc is the grpc.ServiceDesc for DBStore service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -517,6 +552,10 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RejectWork",
 			Handler:    _DBStore_RejectWork_Handler,
+		},
+		{
+			MethodName: "ReplaceConfig",
+			Handler:    _DBStore_ReplaceConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

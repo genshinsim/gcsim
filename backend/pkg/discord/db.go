@@ -52,13 +52,32 @@ func init() {
 				},
 			},
 		},
+		api.CreateCommandData{
+			Name:        "replace",
+			Description: "replace sim config (admin only)",
+			Options: []discord.CommandOption{
+				&discord.StringOption{
+					OptionName:  "id",
+					Description: "id of the entry",
+					Required:    true,
+				},
+				&discord.StringOption{
+					OptionName:  "link",
+					Description: "viewer link of new config",
+					Required:    true,
+				},
+			},
+		},
 	)
 }
 
 // TODO: this should be in the models or in a json somewhere
 var channelMapping = map[string]model.DBTag{
 	"1080228340427927593": model.DBTag_DB_TAG_GCSIM,
+	"1118916799153582170": model.DBTag_DB_TAG_TESTING,
 }
+
+const dbSuperAdminChan = "1118952347381547038"
 
 func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	var opts struct {
@@ -206,5 +225,33 @@ func (b *Bot) cmdRandom(ctx context.Context, data cmdroute.CommandData) *api.Int
 
 	return &api.InteractionResponseData{
 		Content: option.NewNullableString(fmt.Sprintf("Here you go: https://simimpact.app/sh/%v", id)),
+	}
+}
+
+func (b *Bot) cmdReplaceConfig(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
+	b.Log.Infow("replace config request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
+
+	if data.Event.ChannelID.String() != dbSuperAdminChan {
+		return &api.InteractionResponseData{
+			Content: option.NewNullableString("Oops you don't have permission to do this"),
+		}
+	}
+
+	var opts struct {
+		Link string `discord:"link"`
+		Id   string `discord:"id"`
+	}
+	if err := data.Options.Unmarshal(&opts); err != nil {
+		return errorResponse(err)
+	}
+	b.Log.Infow("replace options", "opts", opts)
+
+	err := b.Backend.ReplaceConfig(opts.Id, opts.Link)
+	if err != nil {
+		return errorResponse(err)
+	}
+
+	return &api.InteractionResponseData{
+		Content: option.NewNullableString(fmt.Sprintf("DB entry with id %v has been updated", opts.Id)),
 	}
 }

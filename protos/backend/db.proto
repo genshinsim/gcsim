@@ -27,6 +27,9 @@ service DBStore {
     rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
     rpc CompleteWork (CompleteWorkRequest) returns (CompleteWorkResponse) {}
     rpc RejectWork (RejectWorkRequest) returns (RejectWorkResponse) {}
+
+    //super-admin endpoint
+    rpc ReplaceConfig (ReplaceConfigRequest) returns (ReplaceConfigResponse) {}
 }
 
 message Entry {
@@ -192,5 +195,14 @@ message CompleteWorkRequest {
 }
 
 message CompleteWorkResponse {
+    string id = 1 [json_name="_id"];
+}
+
+message ReplaceConfigRequest {
+    string id = 1 [json_name="_id"];
+    string config = 2 [json_name="config"];
+}
+
+message ReplaceConfigResponse {
     string id = 1 [json_name="_id"];
 }
