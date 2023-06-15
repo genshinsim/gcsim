@@ -105,4 +105,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: compute-artifacts
-          path: ./backend/cmd/compute/compute
+          path: |
+            ./backend/cmd/compute/compute
+            ./backend/docker/hash.txt
