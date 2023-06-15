@@ -28,7 +28,8 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 	//check resist mods
 	for i, v := range e.mods {
 		if v.AffectedByHitlag() && v.Expiry() != -1 && v.Expiry() > e.Core.F {
-			e.mods[i].Extend(ext)
+			mod := e.mods[i]
+			mod.Extend(mod.Key(), e.Core.Log, -1, ext)
 			if e.Core.Flags.LogDebug {
 				logs = append(logs, fmt.Sprintf("%v: %v", v.Key(), v.Expiry()))
 			}
