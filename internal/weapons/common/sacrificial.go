@@ -47,7 +47,7 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {

@@ -118,6 +118,7 @@ func (c *char) burstHook() {
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		case attacks.AttackTagElementalArt:
+		case attacks.AttackTagElementalArtHold:
 		case attacks.AttackTagElementalBurst:
 		default:
 			return false

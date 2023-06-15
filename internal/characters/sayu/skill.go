@@ -100,7 +100,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fuufuu Windwheel (DoT Press)",
-		AttackTag:  attacks.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagElementalArtAnemo,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
@@ -177,7 +177,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
-		AttackTag:        attacks.AttackTagElementalArtHold,
+		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
@@ -237,7 +237,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
-		AttackTag:        attacks.AttackTagElementalArtHold,
+		AttackTag:        attacks.AttackTagElementalArt,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
@@ -272,7 +272,7 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Windwheel (DoT Hold)",
-		AttackTag:        attacks.AttackTagElementalArt,
+		AttackTag:        attacks.AttackTagElementalArtHold,
 		ICDTag:           attacks.ICDTagElementalArtAnemo,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
@@ -342,7 +342,8 @@ func (c *char) rollAbsorb() {
 		}
 
 		switch atk.Info.AttackTag {
-		case attacks.AttackTagElementalArt:
+		// DoT always has ElementalArtHold tag
+		case attacks.AttackTagElementalArtHold:
 			// DoT Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
@@ -356,7 +357,8 @@ func (c *char) rollAbsorb() {
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
 			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1)
-		case attacks.AttackTagElementalArtHold:
+		// Kick always has ElementalArt tag
+		case attacks.AttackTagElementalArt:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,

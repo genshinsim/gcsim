@@ -107,7 +107,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	aiCut := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Palm Vortex Initial Cutting (Hold)",
-		AttackTag:  attacks.AttackTagElementalArt,
+		AttackTag:  attacks.AttackTagElementalArtHold,
 		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
