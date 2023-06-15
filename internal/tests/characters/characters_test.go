@@ -58,7 +58,6 @@ func defProfile(key keys.Char) profile.CharacterProfile {
 	p.Sets = make(map[keys.Set]int)
 	p.SetParams = make(map[keys.Set]map[string]int)
 	p.Weapon.Params = make(map[string]int)
-	p.Base.StartHP = -1
 	p.Base.Element = keys.CharKeyToEle[key]
 	p.Weapon.Key = keys.DullBlade
 
