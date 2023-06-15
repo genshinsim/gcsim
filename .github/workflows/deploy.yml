@@ -101,10 +101,15 @@ jobs:
         with:
           name: backend-artifacts
           path: ./backend/docker
+      # organize compute artifacts
+      - name: organize compute artifacts
+        shell: bash
+        run: |
+          mkdir -p ./computebin
+          cp ./backend/docker/hash.txt ./computebin/hash.txt
+          cp ./backend/cmd/compute/compute ./computebin/compute
       - name: upload compute artifacts
         uses: actions/upload-artifact@v3
         with:
           name: compute-artifacts
-          path: |
-            ./backend/cmd/compute/compute
-            ./backend/docker/hash.txt
+          path: ./computebin 
