@@ -37,15 +37,27 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Mult:       guobaTick[c.TalentLvlSkill()],
 	}
 
+	// delay in frames from guoba expiry until the a4 chili pepper is picked up
+	a4Delay, ok := p["a4_delay"]
+	if !ok {
+		a4Delay = 0
+	}
+	if a4Delay < 0 {
+		a4Delay = 0
+	}
+	if a4Delay > 10*60 {
+		a4Delay = 10 * 60
+	}
+
 	// guoba spawns at cd frame
 	c.Core.Status.Add("xianglingguoba", 500+13)
 
 	// lasts 7.3 seconds, shoots every 100 frames
-	// delay := 126 // first tick at 126
-	// snap := c.Snapshot(&ai)
 	guoba := c.newGuoba(ai)
 	c.Core.Tasks.Add(func() {
 		c.Core.Combat.AddGadget(guoba)
+		// queue up a4 relative to guoba expiry
+		c.a4(guoba.Duration + a4Delay)
 	}, 13)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
