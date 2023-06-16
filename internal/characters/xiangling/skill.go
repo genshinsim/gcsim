@@ -50,11 +50,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	// guoba spawns at cd frame
-	c.Core.Status.Add("xianglingguoba", 500+13)
-
 	// lasts 7.3 seconds, shoots every 100 frames
-	guoba := c.newGuoba(ai)
 	c.Core.Tasks.Add(func() {
+		guoba := c.newGuoba(ai)
+		c.AddStatus("xianglingguoba", guoba.Duration, false)
 		c.Core.Combat.AddGadget(guoba)
 		// queue up a4 relative to guoba expiry
 		c.a4(guoba.Duration + a4Delay)
