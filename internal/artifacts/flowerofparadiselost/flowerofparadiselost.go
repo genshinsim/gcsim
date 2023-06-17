@@ -66,11 +66,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				default:
 					return 0, false
 				}
-
-				if !char.StatusIsActive(buffKey) {
-					s.stacks = 0
-				}
-				return 0.4 * (1 + float64(s.stacks)*0.25), false
+				return 0.4, false
 			},
 		})
 
@@ -87,14 +83,27 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if !char.StatusIsActive(buffKey) {
 				s.stacks = 0
 			}
-			s.stacks++
-			if s.stacks > 4 {
-				s.stacks = 4
+			if s.stacks < 4 {
+				s.stacks++
 			}
 
 			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index).
 				Write("stacks", s.stacks)
-			char.AddStatus(buffKey, 10*60, true)
+
+			char.AddReactBonusMod(character.ReactBonusMod{
+				Base: modifier.NewBaseWithHitlag(buffKey, 10*60),
+				Amount: func(ai combat.AttackInfo) (float64, bool) {
+					switch ai.AttackTag {
+					case attacks.AttackTagBloom:
+					case attacks.AttackTagHyperbloom:
+					case attacks.AttackTagBurgeon:
+					default:
+						return 0, false
+					}
+					return 0.4 * float64(s.stacks) * 0.25, false
+				},
+			})
+
 			return false
 		}
 

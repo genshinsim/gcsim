@@ -36,7 +36,16 @@ func init() {
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		c.a1CDReset()
-		c.AddStatus(burstBuffKey, 15*60, true)
+		// atk spd
+		val := make([]float64, attributes.EndStatType)
+		val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() ([]float64, bool) {
+				return val, true
+			},
+		})
 	}, burstHitmark)
 
 	ai := combat.AttackInfo{
@@ -68,21 +77,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstHitmark,
 		State:           action.BurstState,
 	}
-}
-
-func (c *char) speedBurst() {
-	val := make([]float64, attributes.EndStatType)
-	val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("speed-burst", -1),
-		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
-			if !c.StatusIsActive(burstBuffKey) {
-				return nil, false
-			}
-			return val, true
-		},
-	})
 }
 
 func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {

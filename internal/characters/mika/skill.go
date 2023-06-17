@@ -25,7 +25,8 @@ const (
 	skillHoldTravel     = 3
 	rimestarShardTravel = 46
 
-	skillBuffKey = "soulwind"
+	skillBuffKey      = "soulwind"
+	skillBuffDuration = 12 * 60
 )
 
 func init() {
@@ -218,12 +219,16 @@ func (c *char) applyBuffs() {
 func (c *char) skillBuff() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(skillBuffKey, 12*60),
+			Base:         modifier.NewBaseWithHitlag(skillBuffKey, skillBuffDuration),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return c.skillbuff, true
 			},
 		})
+
+		if c.Base.Ascension >= 1 {
+			c.a1(char)
+		}
 
 		if c.Base.Cons >= 6 {
 			c.c6(char)
