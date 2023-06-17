@@ -1,10 +1,9 @@
 package heizou
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -50,25 +49,19 @@ func (c *char) c4(i int) {
 
 // Each Declension stack will increase the CRIT Rate of the Heartstopper Strike unleashed by 4%.
 // When Heizou possesses Conviction, this Heartstopper Strike's CRIT DMG is increased by 32%.
-func (c *char) c6() {
-	val := make([]float64, attributes.EndStatType)
+func (c *char) c6() (float64, float64) {
+	cr := 0.04 * float64(c.decStack)
 
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("heizou-c6", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
-			}
-			if c.decStack == 0 {
-				return nil, false
-			}
-			val[attributes.CR] = 0.04 * float64(c.decStack)
-			if c.decStack == 4 {
-				val[attributes.CD] = 0.32
-			} else {
-				val[attributes.CD] = 0
-			}
-			return val, true
-		},
-	})
+	cd := 0.0
+	if c.decStack == 4 {
+		cd = 0.32
+	}
+
+	if cr > 0 {
+		c.Core.Log.NewEvent("heizou-c6 adding stats", glog.LogCharacterEvent, c.Index).
+			Write("cr", cr).
+			Write("cd", cd)
+	}
+
+	return cr, cd
 }
