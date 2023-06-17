@@ -22,7 +22,6 @@ const (
 	OnMelt               //target, AttackEvent
 	OnVaporize           //target, AttackEvent
 	OnFrozen             //target, AttackEvent
-	OnShatter            //target, AttackEvent
 	OnElectroCharged     //target, AttackEvent
 	OnSwirlHydro         //target, AttackEvent
 	OnSwirlCryo          //target, AttackEvent
@@ -39,6 +38,7 @@ const (
 	OnHyperbloom         //target, AttackEvent
 	OnBurgeon            //target, AttackEvent
 	OnBurning            //target, AttackEvent
+	OnShatter            //target, AttackEvent; at the end to simplify all reaction event subs since it's normally not considered as an elemental reaction
 	ReactionEventEndDelim
 	OnDendroCore //Gadget
 	//other stuff
