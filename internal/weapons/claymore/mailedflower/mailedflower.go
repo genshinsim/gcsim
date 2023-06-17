@@ -68,6 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	}
 
 	c.Events.Subscribe(event.OnEnemyDamage, fDamage, "mailedflower-skill-"+char.Base.Key.String())
+	// considers shatter as an elemental reaction
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, fReact, "mailedflower-"+char.Base.Key.String())
 	}

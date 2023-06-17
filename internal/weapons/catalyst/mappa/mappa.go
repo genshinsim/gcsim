@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}
 
-	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.ReactionEventEndDelim; i++ {
+	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.OnShatter; i++ {
 		c.Events.Subscribe(i, addStack, "mappa"+char.Base.Key.String())
 	}
 

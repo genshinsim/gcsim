@@ -46,6 +46,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	//skill hooks
 	c.Core.Events.Subscribe(event.OnEnemyDamage, c.triKarmaOnBloomDamage, "nahida-tri-karma")
+	//considers shatter as an elemental reaction
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Core.Events.Subscribe(i, c.triKarmaOnReaction(i), fmt.Sprintf("nahida-tri-karma-on-%v", i))
 	}
