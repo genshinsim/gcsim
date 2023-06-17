@@ -14,18 +14,19 @@ services:
   #     - jadechamber
   #   restart: unless-stopped
   mqtt:
+    container_name: mqtt
     build:
       context: .
-      dockerfile: ./backend/mosquitto/Dockerfile 
+      dockerfile: ./mqtt.Dockerfile 
     environment:
       - MOSQUITTO_USERNAME=mosquitto
       - MOSQUITTO_PASSWORD=password
     container_name: mqtt
     restart: unless-stopped
     volumes:
-      - ./backend/mosquitto/config:/mosquitto/config:ro
-      - ./backend/mosquitto/data:/mosquitto/data
-      - ./backend/mosquitto/log:/mosquitto/log
+      - ./mosquitto/config:/mosquitto/config:ro
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
     ports:
       - 1883:1883
   # generating embed for discord etc
@@ -33,7 +34,7 @@ services:
     container_name: preview
     build:
       context: .
-      dockerfile: ./backend/cmd/preview/Dockerfile
+      dockerfile: ./preview.Dockerfile
     volumes:
       - ~/assets/assets:/assets
     environment:
@@ -45,7 +46,7 @@ services:
     container_name: share
     build:
       context: .
-      dockerfile: ./backend/cmd/share/Dockerfile
+      dockerfile: ./share.Dockerfile
     restart: unless-stopped
     environment:
       - MONGODB_URL=mongodb://mongo:27017
@@ -57,7 +58,7 @@ services:
     container_name: db
     build:
       context: .
-      dockerfile: ./backend/cmd/db/Dockerfile
+      dockerfile: ./db.Dockerfile
     environment:
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DATABASE=gcsim-database
@@ -77,7 +78,7 @@ services:
     container_name: jadechamber
     build:
       context: .
-      dockerfile: ./backend/cmd/jadechamber/Dockerfile
+      dockerfile: ./jadechamber.Dockerfile
     volumes:
       - ~/data:/data
       - ./keys.json:/keys.json
@@ -89,7 +90,6 @@ services:
       - REDIRECT_URL
       - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
-      - SUBMISSION_STORE_URL=submission:3000
       - PREVIEW_STORE_URL=preview:3000
       - SHARE_KEY_FILE=/keys.json
       - MQTT_URL=mqtt:1883
@@ -103,11 +103,10 @@ services:
     container_name: managerchan
     build:
       context: .
-      dockerfile: ./backend/cmd/managerchan/Dockerfile
+      dockerfile: ./managerchan.Dockerfile
     environment:
       - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
-      - SUBMISSION_STORE_URL=submission:3000
       - MQTT_URL=mqtt:1883
       - MQTT_USERNAME=mosquitto
       - MQTT_PASSWORD=password
@@ -117,13 +116,13 @@ services:
     container_name: mongo
     image: mongo
     restart: always
-    # ports:
-    #   - 27017:27017
+    ports:
+      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root-password
     volumes:
-      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - ~/data/mongo:/data/db:rw
   # dev stuff
   mongo-express:

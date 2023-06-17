@@ -25,6 +25,7 @@
     "build:wasm": "yarn workspace @gcsim/executors build:wasm:web",
     "build:web": "yarn workspace @gcsim/web build",
     "build:embed": "yarn workspace @gcsim/embed build",
+    "build:db": "yarn workspace @gcsim/db build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
     "gen": "yarn workspace @gcsim/types gen:ts"

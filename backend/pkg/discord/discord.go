@@ -21,8 +21,9 @@ type Backend interface {
 	Approve(id string, tag model.DBTag) error
 	Reject(id string, tag model.DBTag) error
 	GetBySubmitter(id string, page int) ([]*db.Entry, error)
-	DeletePending(id, sender string) error 
+	DeletePending(id, sender string) error
 	GetRandomSim() string
+	ReplaceConfig(id, link string) error
 }
 
 type Config struct {

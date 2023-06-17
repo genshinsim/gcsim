@@ -977,6 +977,66 @@ export namespace db {
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
+
+    /** Properties of a ReplaceConfigRequest. */
+    interface IReplaceConfigRequest {
+
+        /** ReplaceConfigRequest id */
+        id?: (string|null);
+
+        /** ReplaceConfigRequest config */
+        config?: (string|null);
+    }
+
+    /** Represents a ReplaceConfigRequest. */
+    class ReplaceConfigRequest implements IReplaceConfigRequest {
+
+        /**
+         * Constructs a new ReplaceConfigRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IReplaceConfigRequest);
+
+        /** ReplaceConfigRequest id. */
+        public id: string;
+
+        /** ReplaceConfigRequest config. */
+        public config: string;
+
+        /**
+         * Gets the default type url for ReplaceConfigRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ReplaceConfigResponse. */
+    interface IReplaceConfigResponse {
+
+        /** ReplaceConfigResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a ReplaceConfigResponse. */
+    class ReplaceConfigResponse implements IReplaceConfigResponse {
+
+        /**
+         * Constructs a new ReplaceConfigResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IReplaceConfigResponse);
+
+        /** ReplaceConfigResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for ReplaceConfigResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
 }
 
 /** Namespace preview. */

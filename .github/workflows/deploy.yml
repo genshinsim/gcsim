@@ -16,6 +16,18 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
+      # grab latest sha
+      - name: Setup Environment (PR)  
+        if: ${{ github.event_name == 'pull_request' }}  
+        shell: bash  
+        run: |  
+          echo "LAST_COMMIT_SHA=${{ github.event.pull_request.head.sha }}" >> ${GITHUB_ENV}  
+      - name: Setup Environment (Push)  
+        if: ${{ github.event_name == 'push' }}  
+        shell: bash  
+        run: |  
+          echo "LAST_COMMIT_SHA=${GITHUB_SHA}" >> ${GITHUB_ENV}
+
       # setup + test go and yarn
       - uses: actions/checkout@v3
       - name: go-setup-and-test
@@ -36,22 +48,68 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.extract_branch.outputs.branch == 'mainline' && 'main' || steps.extract_branch.outputs.branch }}
+      - name: deploy-db
+        uses: ./.github/actions/deploy-db
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          # name needs to be "main" if on mainline
+          branch: ${{ steps.extract_branch.outputs.branch == 'mainline' && 'main' || steps.extract_branch.outputs.branch }}
       - name: deploy-wasm
         uses: ./.github/actions/deploy-wasm
         with:
           rcloneConfig: ${{ secrets.CF_RCLONE }}
           branch: ${{ steps.extract_branch.outputs.branch }}
           shareKey: ${{ secrets.AES_KEY }}
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: deploy-backend
-        uses: appleboy/ssh-action@v0.1.10
+      
+      # build backend artifacts
+      - name: build db
+        uses: ./.github/actions/build-backend-binary
         with:
-          host: ${{ secrets.GCSIMVPS_HOST }}
-          username: ${{ secrets.GCSIMVPS_USERNAME }}
-          key: ${{ secrets.GCSIMVPS_KEY }}
-          passphrase: ${{ secrets.GCSIMVPS_PASSPHRASE }} 
-          port: ${{ secrets.GCSIMVPS_PORT }}
-          script: whoami 
+          cmd: db
+      - name: build api gateway
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: jadechamber
+      - name: build discord bot 
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: managerchan
+      - name: build share store
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: share
+      - name: build preview generator 
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: preview
+      - name: build compute binary 
+        uses: ./.github/actions/build-compute-binary
+        with:
+          cmd: compute
+      # add a file with the hash
+      - name: save hash to file
+        working-directory: ./backend/docker
+        shell: bash
+        run: |
+          echo "${LAST_COMMIT_SHA}" >> hash.txt
+          ls -la
+      # upload artifacts
+      - name: upload db artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-artifacts
+          path: ./backend/docker
+      # organize compute artifacts
+      - name: organize compute artifacts
+        shell: bash
+        run: |
+          mkdir -p ./computebin
+          cp ./backend/docker/hash.txt ./computebin/hash.txt
+          cp ./backend/cmd/compute/compute ./computebin/compute
+      - name: upload compute artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: compute-artifacts
+          path: ./computebin 

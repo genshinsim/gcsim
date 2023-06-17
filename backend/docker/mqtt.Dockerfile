@@ -1,6 +1,7 @@
 FROM eclipse-mosquitto:latest
 
-COPY backend/mosquitto/docker-entrypoint.sh /
+COPY mosquitto/docker-entrypoint.sh /
+RUN chmod +x docker-entrypoint.sh 
 
 ENTRYPOINT ["sh", "docker-entrypoint.sh"]
 

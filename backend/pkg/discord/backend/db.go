@@ -63,3 +63,33 @@ func (s *Store) GetRandomSim() string {
 	}
 	return id
 }
+
+func (s *Store) ReplaceConfig(id string, link string) error {
+	s.Log.Infow("replace config request received", "id", id, "link", link)
+
+	linkid, err := s.validateLink(link)
+	if err != nil {
+		s.Log.Infow("replace config link validation failed", "err", err)
+		return err
+	}
+
+	res, _, err := s.ShareStore.Read(context.TODO(), linkid)
+	if err != nil {
+		s.Log.Infow("replace config getting share failed", "err", err)
+		return err
+	}
+
+	resp, err := s.DBClient.ReplaceConfig(context.TODO(), &db.ReplaceConfigRequest{
+		Id:     id,
+		Config: res.Config,
+	})
+
+	if err != nil {
+		s.Log.Infow("replace config failed", "err", err)
+		return err
+	}
+
+	s.Log.Infow("replace config completed", "resp", resp.String())
+
+	return nil
+}
