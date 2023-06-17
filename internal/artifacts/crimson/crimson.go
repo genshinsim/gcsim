@@ -21,7 +21,6 @@ func init() {
 
 type Set struct {
 	stacks int
-	key    string
 	Index  int
 }
 
@@ -33,7 +32,6 @@ const cw4pc = "cw-4pc"
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.stacks = 0
-	s.key = fmt.Sprintf("%v-cw-4pc", char.Base.Key.String())
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -74,7 +72,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				Write("current stacks", s.stacks)
 			char.AddStatus(cw4pc, 10*60, true)
 			return false
-		}, s.key)
+		}, fmt.Sprintf("%v-cw-4pc", char.Base.Key.String()))
 
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("crimson-4pc", -1),
