@@ -148,7 +148,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -259,7 +259,7 @@ func TestPyroDendroCoexist(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -314,7 +314,7 @@ func TestDendroDecayTry1(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -365,7 +365,7 @@ func TestDendroDecayTry2(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -423,7 +423,7 @@ func TestQuickenBurningDecay(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0

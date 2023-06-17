@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			for _, char := range c.Player.Chars() {
 				// Attack buff snapshots so it needs to be in a separate mod
 				char.AddStatMod(character.StatMod{
-					Base: modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
+					Base:         modifier.NewBaseWithHitlag(common.MillennialKey, buffDuration),
 					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
 						return sharedVal, true
@@ -106,7 +106,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}
 
-	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
 		c.Events.Subscribe(i, stackFunc, "freedom-"+char.Base.Key.String())
 	}
 

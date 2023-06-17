@@ -104,7 +104,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}
 
-		for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
+		for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
 			c.Events.Subscribe(i, add, fmt.Sprintf("gd-4pc-%v", char.Base.Key.String()))
 		}
 	}
