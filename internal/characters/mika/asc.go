@@ -33,23 +33,16 @@ func (c *char) addDetectorStack() {
 //
 // The Soulwind state can have a maximum of 3 Detector stacks, and if Starfrost Swirl is cast again during this duration, the pre-existing
 // Soulwind state and all its Detector stacks will be cleared.
-func (c *char) a1() {
+func (c *char) a1(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
-	for i, char := range c.Core.Player.Chars() {
-		idx := i
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(a1Buff, -1),
-			AffectedStat: attributes.PhyP,
-			Amount: func() ([]float64, bool) {
-				if !char.StatusIsActive(skillBuffKey) {
-					c.SetTag(a1Stacks, 0)
-					return nil, false
-				}
-				m[attributes.PhyP] = 0.1 * float64(c.Tag(a1Stacks))
-				return m, c.Core.Player.Active() == idx
-			},
-		})
-	}
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(a1Buff, skillBuffDuration),
+		AffectedStat: attributes.PhyP,
+		Amount: func() ([]float64, bool) {
+			m[attributes.PhyP] = 0.1 * float64(c.Tag(a1Stacks))
+			return m, c.Core.Player.Active() == char.Index
+		},
+	})
 }
 
 // When an active character affected by both Skyfeather Song's Eagleplume and Starfrost Swirl's Soulwind at once scores a CRIT Hit with their

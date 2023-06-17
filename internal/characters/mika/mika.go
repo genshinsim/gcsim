@@ -43,9 +43,6 @@ func (c *char) Init() error {
 	c.healIcd = 2.5 * 60
 
 	c.onBurstHeal()
-	if c.Base.Ascension >= 1 {
-		c.a1()
-	}
 	if c.Base.Ascension >= 4 {
 		c.a4()
 		c.maxDetectorStacks++
