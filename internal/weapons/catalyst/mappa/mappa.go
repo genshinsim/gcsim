@@ -17,7 +17,8 @@ func init() {
 }
 
 type Weapon struct {
-	Index int
+	stacks int
+	Index  int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -27,9 +28,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w := &Weapon{}
 	r := p.Refine
 
-	stacks := 0
-	const stackKey = "mappa-mare-stacks"
-	stackDuration := 600 // 10s * 60
+	dmg := 0.06 + float64(r)*0.02
+
+	const buffKey = "mappa-mare"
+	buffDuration := 600 // 10s * 60
 
 	addStack := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -40,46 +42,39 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		if !char.StatusIsActive(stackKey) {
-			stacks = 1
-			char.AddStatus(stackKey, stackDuration, true)
-			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index).
-				Write("stacks", stacks).
-				Write("expiry (without hitlag)", c.F+stackDuration)
-		} else if stacks < 2 {
-			stacks++
-			char.AddStatus(stackKey, stackDuration, true)
-			c.Log.NewEvent("mappa proc'd", glog.LogWeaponEvent, char.Index).
-				Write("stacks", stacks).
-				Write("expiry (without hitlag)", c.F+stackDuration)
+		if !char.StatusIsActive(buffKey) {
+			w.stacks = 0
 		}
+		if w.stacks < 2 {
+			w.stacks++
+		}
+
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.PyroP] = dmg * float64(w.stacks)
+		m[attributes.HydroP] = dmg * float64(w.stacks)
+		m[attributes.CryoP] = dmg * float64(w.stacks)
+		m[attributes.ElectroP] = dmg * float64(w.stacks)
+		m[attributes.AnemoP] = dmg * float64(w.stacks)
+		m[attributes.GeoP] = dmg * float64(w.stacks)
+		m[attributes.DendroP] = dmg * float64(w.stacks)
+
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(buffKey, buffDuration),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+
+		c.Log.NewEvent("mappa-mare adding stack", glog.LogWeaponEvent, char.Index).
+			Write("stacks", w.stacks)
+
 		return false
 	}
 
 	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.OnShatter; i++ {
-		c.Events.Subscribe(i, addStack, "mappa"+char.Base.Key.String())
+		c.Events.Subscribe(i, addStack, "mappa-mare-"+char.Base.Key.String())
 	}
-
-	dmg := 0.06 + float64(r)*0.02
-	m := make([]float64, attributes.EndStatType)
-	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("mappa", -1),
-		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			if !char.StatusIsActive(stackKey) {
-				return nil, false
-			}
-
-			m[attributes.PyroP] = dmg * float64(stacks)
-			m[attributes.HydroP] = dmg * float64(stacks)
-			m[attributes.CryoP] = dmg * float64(stacks)
-			m[attributes.ElectroP] = dmg * float64(stacks)
-			m[attributes.AnemoP] = dmg * float64(stacks)
-			m[attributes.GeoP] = dmg * float64(stacks)
-			m[attributes.DendroP] = dmg * float64(stacks)
-			return m, true
-		},
-	})
 
 	return w, nil
 }
