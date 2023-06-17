@@ -43,7 +43,6 @@ func (c *char) Init() error {
 	c.energySigil()
 
 	// burst
-	c.speedBurst()
 	c.onSwapClearBurst()
 
 	c.a4()
