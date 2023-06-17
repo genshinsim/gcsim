@@ -1,7 +1,6 @@
 package shenhe
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -28,22 +27,21 @@ func (c *char) c2(active *character.CharWrapper, dur int) {
 // - When Shenhe uses Spring Spirit Summoning, she will consume all stacks of Skyfrost Mantra, increasing the DMG of that Spring Spirit Summoning by 5% for each stack consumed.
 //
 // - Max 50 stacks. Stacks last for 60s.
-func (c *char) c4Init() {
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("shenhe-c4-dmg", -1),
-		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-				return nil, false
-			}
-			if !c.StatusIsActive(c4BuffKey) {
-				c.c4count = 0
-				return nil, false
-			}
-			c.c4bonus[attributes.DmgP] = 0.05 * float64(c.c4count)
-			c.c4count = 0
-			return c.c4bonus, true
-		},
-	})
+func (c *char) c4() float64 {
+	if c.Base.Cons < 4 {
+		return 0
+	}
+	if !c.StatusIsActive(c4BuffKey) {
+		c.c4count = 0
+		return 0
+	}
+	dmgBonus := 0.05 * float64(c.c4count)
+	c.Core.Log.NewEvent("shenhe-c4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
+		Write("stacks", c.c4count).
+		Write("dmg_bonus", dmgBonus)
+	c.c4count = 0
+	c.DeleteStatus(c4BuffKey)
+	return dmgBonus
 }
 
 // C4 stacks are gained after the damage has been dealt and not before
@@ -59,16 +57,4 @@ func (c *char) c4CB(a combat.AttackCB) {
 			Write("stacks", c.c4count)
 	}
 	c.AddStatus(c4BuffKey, 3600, true) // 60 s
-}
-
-func (c *char) makeC4ResetCB() combat.AttackCBFunc {
-	if c.Base.Cons < 4 {
-		return nil
-	}
-	return func(a combat.AttackCB) {
-		if c.Core.Player.Active() != c.Index {
-			return
-		}
-		c.DeleteStatus(c4BuffKey)
-	}
 }
