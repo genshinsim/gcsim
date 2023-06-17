@@ -45,12 +45,10 @@ const CharacterCards = ({ characters }: Props) => {
   }
 
   const handleToggleDetail = () => {
-    setShowDetails(!showDetails)
-  }
+    setShowDetails(!showDetails);
+  };
 
-  const statBlock = ConsolidateCharStats(characters)
-
-  console.log(characters)
+  const statBlock = ConsolidateCharStats(characters);
 
   return (
     <>

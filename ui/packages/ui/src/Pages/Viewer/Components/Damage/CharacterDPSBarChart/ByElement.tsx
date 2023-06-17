@@ -1,4 +1,4 @@
-import { ElementDPS } from "@gcsim/types";
+import { ElementDPS, ElementStats } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { useMemo } from "react";
@@ -8,10 +8,10 @@ type Props = {
   width: number;
   height: number;
   names?: string[];
-  dps?: ElementDPS[];
+  dps?: ElementStats[];
 }
 
-export const ByElementLegend = ({ dps }: { dps?: ElementDPS[] }) => {
+export const ByElementLegend = ({ dps }: { dps?: ElementStats[] }) => {
   const keys = useMemo(() => {
     if (dps == null) {
       return [];
@@ -19,7 +19,7 @@ export const ByElementLegend = ({ dps }: { dps?: ElementDPS[] }) => {
 
     const elements = new Set<string>();
     for (let i = 0; i < dps.length; i++) {
-      for (const key in dps[i]) {
+      for (const key in dps[i].elements) {
         elements.add(key);
       }
     }
@@ -38,6 +38,8 @@ export const ByElementLegend = ({ dps }: { dps?: ElementDPS[] }) => {
 
 export const ByElementChart = ({ width, height, names, dps }: Props) => {
   const { data, keys, xMax } = useData(dps, names);
+  console.log(data);
+  console.log(keys);
 
   if (dps == null || names == null || keys.length == 0) {
     return <NoData />;
@@ -86,7 +88,7 @@ type ChartData = {
   xMax: number;
 }
 
-function useData(dps?: ElementDPS[], names?: string[]): ChartData {
+function useData(dps?: ElementStats[], names?: string[]): ChartData {
   return useMemo(() => {
     if (dps == null || names == null) {
       return { data: [], keys: [], xMax: 0 };
@@ -97,7 +99,11 @@ function useData(dps?: ElementDPS[], names?: string[]): ChartData {
 
     let maxDPS = 0;
     for (let i = 0; i < dps.length; i++) {
-      const char = dps[i];
+      const char = dps[i].elements;
+      if (char == null) {
+        continue;
+      }
+
       let maxTotal = 0;
       let total = 0;
       for (const key in char) {

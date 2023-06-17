@@ -1,5 +1,5 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
-import { ElementDPS, FloatStat, SimResults, TargetDPS } from "@gcsim/types";
+import { ElementStats, FloatStat, SimResults, TargetStats } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useState } from "react";
 import { CardTitle, NoData, useRefreshWithTimer } from "../../Util";
@@ -8,9 +8,9 @@ import { ByElementChart, ByElementLegend } from "./ByElement";
 import { ByTargetChart, ByTargetLegend } from "./ByTarget";
 
 type GraphData = {
-  byElement?: ElementDPS[];
+  byElement?: ElementStats[];
   byCharacter?: FloatStat[];
-  byTarget?: TargetDPS[];
+  byTarget?: TargetStats[];
 }
 
 type Props = {

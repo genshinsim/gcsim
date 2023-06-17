@@ -1,4 +1,4 @@
-import { TargetDPS } from "@gcsim/types";
+import { TargetStats } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { useMemo } from "react";
@@ -8,10 +8,10 @@ type Props = {
   width: number;
   height: number;
   names?: string[];
-  dps?: TargetDPS[];
+  dps?: TargetStats[];
 }
 
-export const ByTargetLegend = ({ dps }: { dps?: TargetDPS[] }) => {
+export const ByTargetLegend = ({ dps }: { dps?: TargetStats[] }) => {
   const keys = useMemo(() => {
     if (dps == null) {
       return [];
@@ -19,7 +19,7 @@ export const ByTargetLegend = ({ dps }: { dps?: TargetDPS[] }) => {
 
     const targets = new Set<string>();
     for (let i = 0; i < dps.length; i++) {
-      for (const key in dps[i]) {
+      for (const key in dps[i].targets) {
         targets.add(key);
       }
     }
@@ -75,7 +75,7 @@ export const ByTargetChart = ({ width, height, names, dps }: Props) => {
 
 type TargetData = {
   name: string;
-  data: TargetDPS;
+  data: TargetStats;
   total: number;
 }
 
@@ -85,7 +85,7 @@ type ChartData = {
   xMax: number;
 }
 
-function useData(dps?: TargetDPS[], names?: string[]): ChartData {
+function useData(dps?: TargetStats[], names?: string[]): ChartData {
   return useMemo(() => {
     if (dps == null || names == null) {
       return { data: [], keys: [], xMax: 0 };
@@ -96,7 +96,11 @@ function useData(dps?: TargetDPS[], names?: string[]): ChartData {
 
     let maxDPS = 0;
     for (let i = 0; i < dps.length; i++) {
-      const char = dps[i];
+      const char = dps[i].targets;
+      if (char == null) {
+        continue;
+      }
+
       let maxTotal = 0;
       let total = 0;
       for (const key in char) {
