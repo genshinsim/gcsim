@@ -247,7 +247,6 @@ export function filterReducer(
       };
     }
     case "setCustomFilter": {
-      console.log("setCustomFilter", action.customFilter);
       return {
         ...filter,
         customFilter: action.customFilter,

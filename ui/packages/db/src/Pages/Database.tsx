@@ -143,7 +143,7 @@ function CharacterQuickSelect() {
   const translateCharName = (charName: string) =>
     t("game:character_names." + charName);
   return (
-    <div>
+    <div className="grow max-w-xl">
       <MultiSelect2
         items={charNames}
         itemRenderer={(charName, itemProps) => {
@@ -219,7 +219,7 @@ function CharacterQuickSelect() {
             });
           },
         }}
-      />
+      ></MultiSelect2>
     </div>
   );
 }
