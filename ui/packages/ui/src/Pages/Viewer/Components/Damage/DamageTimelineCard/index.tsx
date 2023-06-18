@@ -1,12 +1,12 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
-import { FloatStat, SimResults } from "@gcsim/types";
+import { CharacterBucketStats, SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useState } from "react";
 import { CardTitle, NoData, useRefreshWithTimer } from "../../Util";
 import { CumulativeGraph, CumulativeLegend } from "./CumulativeContribution";
 
 type GraphData = {
-  cumu?: FloatStat[][];
+  cumu?: CharacterBucketStats;
 }
 
 type Props = {

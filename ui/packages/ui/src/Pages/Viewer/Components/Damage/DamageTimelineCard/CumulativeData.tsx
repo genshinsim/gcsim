@@ -1,4 +1,4 @@
-import { FloatStat } from "@gcsim/types";
+import { CharacterBucketStats, FloatStat } from "@gcsim/types";
 import { range, unzip } from "lodash-es";
 import { useMemo } from "react";
 
@@ -13,15 +13,18 @@ type ChartData = {
   duration: number;
 }
 
-export function useData(input?: FloatStat[][], bucketSize?: number, names?: string[]): ChartData {
+export function useData(input?: CharacterBucketStats, names?: string[]): ChartData {
   return useMemo(() => {
-    if (!input || !bucketSize || !names) {
+    if (!input?.characters || input.bucket_size == null || !names) {
       return { data: [], keys: [], duration: 1 };
     }
 
-    const data: CumulativePoint[] = unzip(input).map((v, i) => {
+    const bucket_size = input.bucket_size;
+    const points = input.characters.map(x => x.buckets);
+
+    const data: CumulativePoint[] = unzip(points).map((v, i) => {
       return {
-        x: (i * bucketSize) / 60,
+        x: (i * bucket_size) / 60,
         y: v
       };
     });
@@ -34,7 +37,7 @@ export function useData(input?: FloatStat[][], bucketSize?: number, names?: stri
       };
     }
     
-    const duration = Math.floor(((data.length-1) * bucketSize) / 60);
+    const duration = Math.floor(((data.length-1) * bucket_size) / 60);
     if (duration < data[data.length-1].x) {
       data.pop();
     }
@@ -44,5 +47,5 @@ export function useData(input?: FloatStat[][], bucketSize?: number, names?: stri
       keys: range(names.length),
       duration: duration,
     };
-  }, [input, bucketSize, names]);
+  }, [input, names]);
 }
