@@ -1,7 +1,7 @@
-import { Spinner } from "@blueprintjs/core";
+import { MenuItem, Spinner } from "@blueprintjs/core";
 import { db } from "@gcsim/types";
 import axios from "axios";
-import { useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { newMockData } from "SharedComponents/mockData";
 import { PaginationButtons } from "SharedComponents/Pagination";
@@ -130,27 +130,52 @@ function CharacterQuickSelect() {
   //dispatch
   const dispatch = useContext(FilterDispatchContext);
   const filter = useContext(FilterContext);
+  const { t } = useTranslation();
 
-  const includedChars = Object.entries(filter.charFilter).map(
-    ([charName, charState]) => {
+  const includedChars = Object.entries(filter.charFilter)
+    .map(([charName, charState]) => {
       if (charState.state === ItemFilterState.include) {
         return charName;
       }
-    }
-  );
+    })
+    .filter((charName) => charName) as string[];
 
+  const translateCharName = (charName: string) =>
+    t("game:character_names." + charName);
   return (
     <div>
       <MultiSelect2
         items={charNames}
-        itemRenderer={(item, { handleClick }) => {
+        itemRenderer={(charName, itemProps) => {
           return (
-            <div className="hover:opacity-50" onClick={handleClick}>
-              {item}
-            </div>
+            <MenuItem
+              key={charName}
+              text={translateCharName(charName)}
+              icon={
+                <img
+                  src={`/api/assets/avatar/${charName}.png`}
+                  className="w-6 h-6"
+                />
+              }
+              onClick={() => {
+                dispatch({
+                  type: "includeChar",
+                  char: charName,
+                });
+              }}
+              active={itemProps.modifiers.active}
+            />
           );
         }}
-        tagRenderer={(item) => item}
+        tagRenderer={(charName) => (
+          <div className="flex flex-row gap-1">
+            <img
+              className="w-4 h-4"
+              src={`/api/assets/avatar/${charName}.png`}
+            />
+            {translateCharName(charName)}
+          </div>
+        )}
         onItemSelect={(charName) => {
           if (!charName) {
             return;
@@ -162,12 +187,28 @@ function CharacterQuickSelect() {
         }}
         itemListPredicate={(query, items) => {
           return items.filter((item) => {
-            return item?.includes(query);
+            return translateCharName(item).includes(query);
           });
         }}
         selectedItems={includedChars}
+        onClear={() => {
+          dispatch({
+            type: "clearFilter",
+          });
+        }}
+        onRemove={(charName) => {
+          dispatch({
+            type: "handleChar",
+            char: charName,
+          });
+        }}
         resetOnSelect
         openOnKeyDown
+        tagInputProps={{
+          tagProps: {
+            minimal: true,
+          },
+        }}
       />
     </div>
   );
