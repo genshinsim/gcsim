@@ -92,14 +92,16 @@ func userSubEmbeds(entries []*db.Entry, page int, sender discord.UserID) []disco
 			title = title[:254]
 		}
 		status := "UNKNOWN"
-		link := fmt.Sprintf("https://simimpact.app/viewer/share/%v", v.ShareKey)
+		link := "Unknown submission; No link"
 		switch {
 		case v.Summary == nil:
 			status = "Pending Compute"
 			link = "No link available yet"
 		case !v.IsDbValid:
+			link = fmt.Sprintf("https://simimpact.app/sh/%v", v.ShareKey)
 			status = "Pending Review"
 		case v.IsDbValid:
+			link = fmt.Sprintf("https://simimpact.app/db/%v", v.Id)
 			status = "Added"
 		}
 
