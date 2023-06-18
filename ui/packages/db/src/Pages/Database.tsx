@@ -168,7 +168,7 @@ function CharacterQuickSelect() {
           );
         }}
         tagRenderer={(charName) => (
-          <div className="flex flex-row gap-1">
+          <div className="flex flex-row gap-1" key={charName}>
             <img
               className="w-4 h-4"
               src={`/api/assets/avatar/${charName}.png`}
@@ -187,7 +187,9 @@ function CharacterQuickSelect() {
         }}
         itemListPredicate={(query, items) => {
           return items.filter((item) => {
-            return translateCharName(item).includes(query);
+            return translateCharName(item)
+              .toLocaleLowerCase()
+              .includes(query.toLocaleLowerCase());
           });
         }}
         selectedItems={includedChars}
@@ -198,7 +200,7 @@ function CharacterQuickSelect() {
         }}
         onRemove={(charName) => {
           dispatch({
-            type: "handleChar",
+            type: "includeChar",
             char: charName,
           });
         }}
@@ -207,6 +209,14 @@ function CharacterQuickSelect() {
         tagInputProps={{
           tagProps: {
             minimal: true,
+          },
+          onRemove: (value) => {
+            if (!value) return;
+            if (!value["key"]) return;
+            dispatch({
+              type: "removeChar",
+              char: value["key"],
+            });
           },
         }}
       />
