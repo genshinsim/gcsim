@@ -1,7 +1,7 @@
-import { Spinner } from "@blueprintjs/core";
+import { MenuItem, Spinner } from "@blueprintjs/core";
 import { db } from "@gcsim/types";
 import axios from "axios";
-import { useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { newMockData } from "SharedComponents/mockData";
 import { PaginationButtons } from "SharedComponents/Pagination";
@@ -15,6 +15,8 @@ import {
   ItemFilterState,
 } from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
+import { MultiSelect2 } from "@blueprintjs/select";
+import { charNames } from "PipelineExtract/CharacterNames";
 
 export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, initialFilter);
@@ -44,9 +46,11 @@ export function Database() {
   return (
     <FilterContext.Provider value={filter}>
       <FilterDispatchContext.Provider value={dispatch}>
-        <div className="flex flex-col  gap-4 m-8 my-4 ">
-          <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-col  gap-4 m-8 my-4 items-center">
+          <div className="flex flex-row justify-between items-center w-full max-w-7xl ">
             <Filter />
+            <CharacterQuickSelect />
+
             <div className="text-base  md:text-2xl">{`${t("db.showing")} ${
               data?.length ?? 0
             } ${t("db.simulations")} `}</div>
@@ -120,4 +124,102 @@ interface DbQuery {
   limit?: number;
   sort?: unknown;
   skip?: number;
+}
+
+function CharacterQuickSelect() {
+  //dispatch
+  const dispatch = useContext(FilterDispatchContext);
+  const filter = useContext(FilterContext);
+  const { t } = useTranslation();
+
+  const includedChars = Object.entries(filter.charFilter)
+    .map(([charName, charState]) => {
+      if (charState.state === ItemFilterState.include) {
+        return charName;
+      }
+    })
+    .filter((charName) => charName) as string[];
+
+  const translateCharName = (charName: string) =>
+    t("game:character_names." + charName);
+  return (
+    <div className="grow max-w-xl">
+      <MultiSelect2
+        items={charNames}
+        itemRenderer={(charName, itemProps) => {
+          return (
+            <MenuItem
+              key={charName}
+              text={translateCharName(charName)}
+              icon={
+                <img
+                  src={`/api/assets/avatar/${charName}.png`}
+                  className="w-6 h-6"
+                />
+              }
+              onClick={() => {
+                dispatch({
+                  type: "includeChar",
+                  char: charName,
+                });
+              }}
+              active={itemProps.modifiers.active}
+            />
+          );
+        }}
+        tagRenderer={(charName) => (
+          <div className="flex flex-row gap-1" key={charName}>
+            <img
+              className="w-4 h-4"
+              src={`/api/assets/avatar/${charName}.png`}
+            />
+            {translateCharName(charName)}
+          </div>
+        )}
+        onItemSelect={(charName) => {
+          if (!charName) {
+            return;
+          }
+          dispatch({
+            type: "handleChar",
+            char: charName,
+          });
+        }}
+        itemListPredicate={(query, items) => {
+          return items.filter((item) => {
+            return translateCharName(item)
+              .toLocaleLowerCase()
+              .includes(query.toLocaleLowerCase());
+          });
+        }}
+        selectedItems={includedChars}
+        onClear={() => {
+          dispatch({
+            type: "clearFilter",
+          });
+        }}
+        onRemove={(charName) => {
+          dispatch({
+            type: "includeChar",
+            char: charName,
+          });
+        }}
+        resetOnSelect
+        openOnKeyDown
+        tagInputProps={{
+          tagProps: {
+            minimal: true,
+          },
+          onRemove: (value) => {
+            if (!value) return;
+            if (!value["key"]) return;
+            dispatch({
+              type: "removeChar",
+              char: value["key"],
+            });
+          },
+        }}
+      ></MultiSelect2>
+    </div>
+  );
 }

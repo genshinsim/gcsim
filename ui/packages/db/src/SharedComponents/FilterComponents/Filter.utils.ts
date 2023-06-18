@@ -77,6 +77,8 @@ interface CustomFilterAction {
 interface CharFilterReducerAction {
   type:
     | "handleChar"
+    | "removeChar"
+    | "includeChar"
     | "includeWeapon"
     | "nullWeapon"
     | "includeSet"
@@ -124,6 +126,40 @@ export function filterReducer(
           ...filter.charFilter,
           [action.char]: {
             state: newFilterState,
+            charName: action.char,
+          },
+        },
+        charIncludeCount: newCharIncludeCount,
+      };
+    }
+
+    case "removeChar": {
+      let newCharIncludeCount = filter.charIncludeCount ?? 0;
+      if (filter.charFilter[action.char].state === ItemFilterState.include)
+        newCharIncludeCount--;
+      return {
+        ...filter,
+        charFilter: {
+          ...filter.charFilter,
+          [action.char]: {
+            state: ItemFilterState.none,
+            charName: action.char,
+          },
+        },
+        charIncludeCount: newCharIncludeCount,
+      };
+    }
+
+    case "includeChar": {
+      let newCharIncludeCount = filter.charIncludeCount ?? 0;
+      if (filter.charFilter[action.char].state !== ItemFilterState.include)
+        newCharIncludeCount++;
+      return {
+        ...filter,
+        charFilter: {
+          ...filter.charFilter,
+          [action.char]: {
+            state: ItemFilterState.include,
             charName: action.char,
           },
         },
@@ -211,7 +247,6 @@ export function filterReducer(
       };
     }
     case "setCustomFilter": {
-      console.log("setCustomFilter", action.customFilter);
       return {
         ...filter,
         customFilter: action.customFilter,

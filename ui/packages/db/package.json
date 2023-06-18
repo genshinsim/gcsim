@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^4.11.4",
+    "@blueprintjs/select": "4.8.4",
     "@gcsim/executors": "workspace:^",
     "@gcsim/types": "workspace:^",
     "@gcsim/ui": "workspace:^",
