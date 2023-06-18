@@ -23,7 +23,8 @@ type CardProps = {
 const CardTemplate = ({
     title, color, value, label, auxStats, tooltip, hashLink }: CardProps) => {
   const history = useHistory();
-  const interactable = hashLink != null;
+  // const interactable = hashLink != null;
+  const interactable = false;
   const click = () => {
     history.replace({ hash: hashLink });
   };
