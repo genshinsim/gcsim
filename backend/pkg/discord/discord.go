@@ -27,8 +27,9 @@ type Backend interface {
 }
 
 type Config struct {
-	Token   string
-	Backend Backend
+	Token      string
+	Backend    Backend
+	TagMapping map[string]model.DBTag
 }
 
 type Bot struct {

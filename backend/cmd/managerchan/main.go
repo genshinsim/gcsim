@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/backend/pkg/discord"
 	"github.com/genshinsim/gcsim/backend/pkg/discord/backend"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -37,6 +38,11 @@ func main() {
 	b, err := discord.New(discord.Config{
 		Token:   os.Getenv("DISCORD_BOT_TOKEN"),
 		Backend: store,
+		//TODO: consider moving this mapping to models maybe?
+		TagMapping: map[string]model.DBTag{
+			"1080228340427927593": model.DBTag_DB_TAG_GCSIM,
+			"1118916799153582170": model.DBTag_DB_TAG_TESTING,
+		},
 	}, func(b *discord.Bot) error {
 		b.Log = sugar
 		return nil

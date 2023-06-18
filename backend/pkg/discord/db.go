@@ -9,7 +9,6 @@ import (
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
@@ -71,12 +70,6 @@ func init() {
 	)
 }
 
-// TODO: this should be in the models or in a json somewhere
-var channelMapping = map[string]model.DBTag{
-	"1080228340427927593": model.DBTag_DB_TAG_GCSIM,
-	"1118916799153582170": model.DBTag_DB_TAG_TESTING,
-}
-
 const dbSuperAdminChan = "1118952347381547038"
 
 func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
@@ -88,7 +81,7 @@ func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.Inter
 	}
 	b.Log.Infow("list request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID, "page", opts.Page)
 
-	tag, ok := channelMapping[data.Event.ChannelID.String()]
+	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
 	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),
@@ -153,7 +146,7 @@ func listEmbed(entries []*db.Entry, page int) []discord.Embed {
 func (b *Bot) cmdApprove(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	b.Log.Infow("approve request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
 
-	tag, ok := channelMapping[data.Event.ChannelID.String()]
+	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
 	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),
@@ -184,7 +177,7 @@ func (b *Bot) cmdApprove(ctx context.Context, data cmdroute.CommandData) *api.In
 func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	b.Log.Infow("reject request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
 
-	tag, ok := channelMapping[data.Event.ChannelID.String()]
+	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
 	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),
