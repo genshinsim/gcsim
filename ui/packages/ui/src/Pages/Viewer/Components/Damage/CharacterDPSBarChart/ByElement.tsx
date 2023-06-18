@@ -38,8 +38,6 @@ export const ByElementLegend = ({ dps }: { dps?: ElementStats[] }) => {
 
 export const ByElementChart = ({ width, height, names, dps }: Props) => {
   const { data, keys, xMax } = useData(dps, names);
-  console.log(data);
-  console.log(keys);
 
   if (dps == null || names == null || keys.length == 0) {
     return <NoData />;

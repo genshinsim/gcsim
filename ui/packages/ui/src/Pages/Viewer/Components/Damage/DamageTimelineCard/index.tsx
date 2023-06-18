@@ -1,12 +1,14 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
-import { CharacterBucketStats, SimResults } from "@gcsim/types";
+import { BucketStats, CharacterBucketStats, SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useState } from "react";
-import { CardTitle, NoData, useRefreshWithTimer } from "../../Util";
+import { CardTitle, useRefreshWithTimer } from "../../Util";
 import { CumulativeGraph, CumulativeLegend } from "./CumulativeContribution";
+import { DamageOverTimeGraph, DamageOverTimeLegend } from "./DamageOverTime";
 
 type GraphData = {
   cumu?: CharacterBucketStats;
+  dps?: BucketStats;
 }
 
 type Props = {
@@ -16,18 +18,19 @@ type Props = {
 }
 
 export default ({ data, running, names }: Props) => {
-  const [graph, setGraph] = useState("cumu");
-  const [stats, timer] = useRefreshWithTimer(d => {
+  const [graph, setGraph] = useState("total");
+  const [stats] = useRefreshWithTimer(d => {
     return {
       cumu: d?.statistics?.cumu_damage_contrib,
+      dps: d?.statistics?.damage_buckets,
     };
-  }, 5000, data, running);
+  }, 250, data, running);
 
   return (
     <Card className="flex flex-col col-span-full h-[450px]">
       <div className="flex flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
-          <CardTitle title="Damage Timeline" tooltip="x" timer={timer} />
+          <CardTitle title="Damage Timeline" tooltip="x" />
           <Options graph={graph} setGraph={setGraph} />
         </div>
         <div className="flex flex-grow justify-center items-center">
@@ -76,7 +79,16 @@ const Graph = memo((props: GraphProps) => {
       </ParentSize>
     );
   } else if (props.graph === "total") {
-    return <NoData />;
+    return (
+      <ParentSize>
+        {({ width, height }) => (
+          <DamageOverTimeGraph
+              width={width}
+              height={height}
+              input={props.data.dps} />
+        )}
+      </ParentSize>
+    );
   }
   return null;
 });
@@ -86,7 +98,7 @@ const Legend = memo(({ names, graph }: { names?: string[], graph: string }) => {
   if (graph === "cumu") {
     return <CumulativeLegend names={names} />;
   } else if (graph === "total") {
-    return null;
+    return <DamageOverTimeLegend />;
   }
   return null;
 });

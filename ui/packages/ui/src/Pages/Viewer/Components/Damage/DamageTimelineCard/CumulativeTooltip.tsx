@@ -189,7 +189,7 @@ export const RenderTooltip = (props: TooltipProps) => {
   return (
     <TooltipWithBounds
         style={{ position: "absolute" }}
-        offsetLeft={props.margin.left + 10}
+        offsetLeft={props.margin.left + 50}
         left={left}
         top={top}>
       <Popover2

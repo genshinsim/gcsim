@@ -59,6 +59,7 @@ export interface Statistics {
   dps_by_element?: ElementStats[];
   dps_by_target?: TargetStats[];
 
+  damage_buckets?: BucketStats;
   cumu_damage_contrib?: CharacterBucketStats;
 
   shields?: Shields;
@@ -122,6 +123,11 @@ export interface CharacterBucketStats {
 
 export interface CharacterBuckets {
   buckets: FloatStat[];
+}
+
+export interface BucketStats {
+  bucket_size?: number;
+  buckets?: FloatStat[];
 }
 
 export interface FloatStat {

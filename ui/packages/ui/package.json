@@ -24,6 +24,7 @@
     "@visx/shape": "^3.0.0",
     "@visx/stats": "^3.0.0",
     "@visx/text": "^3.0.0",
+    "@visx/threshold": "^3.0.0",
     "@visx/tooltip": "^3.0.0",
     "axios": "^1.2.1",
     "classnames": "^2.3.2",
