@@ -776,6 +776,7 @@ __metadata:
     "@visx/shape": ^3.0.0
     "@visx/stats": ^3.0.0
     "@visx/text": ^3.0.0
+    "@visx/threshold": ^3.0.0
     "@visx/tooltip": ^3.0.0
     axios: ^1.2.1
     classnames: ^2.3.2
@@ -3140,6 +3141,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@visx/clip-path@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@visx/clip-path@npm:3.0.0"
+  dependencies:
+    "@types/react": "*"
+    prop-types: ^15.5.10
+  peerDependencies:
+    react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: bb6478347c0d345f3108e2eec0c6d10371282da8326c0d5d701f461e7c1f857c8ab743a45079e3ba346006c3009ed019700785bbd71e8a981f1d8fb57ffd72fd
+  languageName: node
+  linkType: hard
+
 "@visx/curve@npm:3.0.0, @visx/curve@npm:^3.0.0":
   version: 3.0.0
   resolution: "@visx/curve@npm:3.0.0"
@@ -3307,6 +3320,21 @@ __metadata:
   peerDependencies:
     react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
   checksum: a8456fceb785db17487103ee3c2c5acb5988f0ec883735ecaf60fa734d8876c0d72eab6862dc8e272cf87644694bc21aff5c9cb9eccf4e948bd0899926513efd
+  languageName: node
+  linkType: hard
+
+"@visx/threshold@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@visx/threshold@npm:3.0.0"
+  dependencies:
+    "@types/react": "*"
+    "@visx/clip-path": 3.0.0
+    "@visx/shape": 3.0.0
+    classnames: ^2.3.1
+    prop-types: ^15.5.10
+  peerDependencies:
+    react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: 2f61fe6b793171ea79b6f1a53a25008859fcf6349e34ce914dac7067b30a1df5968171f094125ae013d82f5fd224f5ab827ad3d5c0ec2080e0b7376a5070cc60
   languageName: node
   linkType: hard
 

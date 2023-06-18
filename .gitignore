@@ -30,3 +30,5 @@ cmd/gcsim/gcsim
 keys.json
 /app/*
 cmd/gcsim/run_optimizer_full.bat
+backend/cmd/compute/compute
+backend/docker/hash.txt

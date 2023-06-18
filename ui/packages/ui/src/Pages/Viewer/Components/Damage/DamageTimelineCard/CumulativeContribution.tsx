@@ -1,4 +1,4 @@
-import { FloatStat } from "@gcsim/types";
+import { CharacterBucketStats } from "@gcsim/types";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";
@@ -15,8 +15,7 @@ type Props = {
   width: number;
   height: number;
   names?: string[];
-  input?: FloatStat[][];
-  bucketSize?: number;
+  input?: CharacterBucketStats;
   margin?: { left: number, right: number, top: number, bottom: number };
 }
 
@@ -68,20 +67,20 @@ export const CumulativeGraph = (
       height,
       names,
       input,
-      bucketSize = 30,
       margin = defaultMargin
     }: Props) => {
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
   const numXTicks = xMax < 475 ? 5 : 20;
   const numYTicks = 10;
+  const bucketSize = input?.bucket_size ?? 30;
 
   const { i18n } = useTranslation();
-  const { data, keys } = useData(input, bucketSize, names);
+  const { data, keys, duration } = useData(input, names);
 
   const xScale = scaleLinear<number>({
     range: [0, xMax],
-    domain: [0, Math.floor(((data.length-1) * bucketSize) / 60)],
+    domain: [0, duration],
   });
 
   const yScale = scaleLinear<number>({

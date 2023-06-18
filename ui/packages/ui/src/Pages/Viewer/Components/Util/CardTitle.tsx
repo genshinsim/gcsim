@@ -27,7 +27,8 @@ type TitleProps = {
 }
 
 const TitleWithTooltip = ({ title, tooltip }: TitleProps) => {
-  const helpIcon = tooltip == null ? null : <Icon icon="help" color={Colors.GRAY1} />;
+  // const helpIcon = tooltip == null ? null : <Icon icon="help" color={Colors.GRAY1} />;
+  const helpIcon = null;
   const out = (
     <div className="flex flex-row text-lg text-gray-400 items-center gap-2 outline-0">
       {title}
@@ -35,13 +36,13 @@ const TitleWithTooltip = ({ title, tooltip }: TitleProps) => {
     </div>
   );
 
-  if (tooltip != null) {
-    return (
-      <div onClick={(e) => e.stopPropagation()} className="cursor-pointer">
-        <Tooltip2 content={tooltip}>{out}</Tooltip2>
-      </div>
-    );
-  }
+  // if (tooltip != null) {
+  //   return (
+  //     <div onClick={(e) => e.stopPropagation()} className="cursor-pointer">
+  //       <Tooltip2 content={tooltip}>{out}</Tooltip2>
+  //     </div>
+  //   );
+  // }
   return out;
 };
 

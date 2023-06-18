@@ -20,11 +20,11 @@ export default (props: Props) => {
     <div className="w-full 2xl:mx-auto 2xl:container px-2">
       <Overview {...props} />
       <Damage {...props} />
-      <Energy {...props} />
+      {/* <Energy {...props} />
       <Reactions {...props} />
       <Healing {...props} />
       <Shields {...props} />
-      <SimDetails {...props} />
+      <SimDetails {...props} /> */}
     </div>
   );
 };
@@ -49,9 +49,9 @@ const Damage = ({ data, running, names }: Props) => (
 
     <CharacterDPSBarChart data={data} running={running} names={names} />
 
-    <Card className="flex col-span-full h-64 min-h-full">
+    {/* <Card className="flex col-span-full h-64 min-h-full">
       Damage breakdown table(s)
-    </Card>
+    </Card> */}
   </Group>
 );
 
