@@ -1,7 +1,7 @@
 import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaSearch } from "react-icons/fa";
 import { charNames } from "../PipelineExtract/CharacterNames";
 import useDebounce from "./debounce";
 import {
@@ -77,10 +77,6 @@ export function Filter() {
             dir="auto"
             onChange={(e) => {
               setValue(e.target.value);
-              // dispatch({
-              //   type: "setCustomFilter",
-              //   customFilter: e.target.value,
-              // });
             }}
           />
           <CharacterFilter />
@@ -123,11 +119,12 @@ function CharacterFilter() {
     }
     return 0;
   });
+  const [charSearch, setCharSearch] = useState<string>("");
 
   return (
     <div className="w-full  overflow-x-hidden no-scrollbar">
       <button
-        className=" bp4-button bp4-intent-primary pr-3 w-full flex-row flex justify-between items-center "
+        className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
         onClick={() => setCharIsOpen(!charIsOpen)}
       >
         <div className=" grow">{t("db.characters")}</div>
@@ -135,10 +132,32 @@ function CharacterFilter() {
         <div className="">{charIsOpen ? "-" : "+"}</div>
       </button>
       <Collapse isOpen={charIsOpen}>
-        <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
-          {sortedCharNames.map((charName) => (
-            <CharFilterButton key={charName} charName={charName} />
-          ))}
+        <div className="flex flex-col mt-2 bg-gray-800 p-1">
+          <label
+            htmlFor="email"
+            className="relative text-gray-400 focus-within:text-gray-600 flex flex-row"
+          >
+            <FaSearch className="pointer-events-none w-4 h-4 absolute top-2 transform   right-2 " />
+
+            <input
+              className="bp4-input bp4-icon bp4-icon-filter grow"
+              type="text"
+              dir="auto"
+              onChange={(e) => {
+                setCharSearch(e.target.value);
+              }}
+            />
+          </label>
+
+          <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
+            {sortedCharNames
+              .filter((charName) => {
+                return charName.includes(charSearch);
+              })
+              .map((charName) => (
+                <CharFilterButton key={charName} charName={charName} />
+              ))}
+          </div>
         </div>
       </Collapse>
     </div>

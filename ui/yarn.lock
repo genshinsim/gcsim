@@ -415,7 +415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^4.8.4":
+"@blueprintjs/select@npm:4.8.4, @blueprintjs/select@npm:^4.8.4":
   version: 4.8.4
   resolution: "@blueprintjs/select@npm:4.8.4"
   dependencies:
@@ -684,6 +684,7 @@ __metadata:
   resolution: "@gcsim/db@workspace:packages/db"
   dependencies:
     "@blueprintjs/core": ^4.11.4
+    "@blueprintjs/select": 4.8.4
     "@gcsim/executors": "workspace:^"
     "@gcsim/types": "workspace:^"
     "@gcsim/ui": "workspace:^"
