@@ -36,7 +36,7 @@ export function Filter() {
   return (
     <div>
       <button
-        className="flex flex-row gap-2 bp4-button justify-center items-center p-3 bp4-intent-primary "
+        className="flex flex-row gap-2 bp4-button justify-center items-center p-3 bp4-intent-primary h-12 w-12"
         onClick={() => setIsOpen(!isOpen)}
       >
         <FaFilter size={24} className="opacity-80" />
@@ -209,11 +209,11 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
   const displayCharName = t("game:character_names." + charName);
 
   return (
-    <div className="flex flex-col truncate">
+    <div className="flex flex-col truncate gap-1">
       <img
         alt={displayCharName}
         src={`/api/assets/avatar/${charName}.png`}
-        className="truncate"
+        className="truncate h-16 object-contain"
       />
       <div className="text-center">{displayCharName}</div>
     </div>
