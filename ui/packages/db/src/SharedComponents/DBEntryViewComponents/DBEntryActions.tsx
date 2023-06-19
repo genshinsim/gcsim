@@ -54,14 +54,13 @@ export default function DBEntryActions({
     );
   }
   return (
-    <div className="flex flex-col justify-center">
       <a
         href={`https://simimpact.app/v3/viewer/share/${share_key}`}
         target="_blank"
-        className="bp4-button    bp4-intent-primary "
+        className="bp4-button    bp4-intent-primary w-full"
         rel="noreferrer"
       >
-        <div className="md:block hidden m-0">{t("db.openInViewer")}</div>
+        <div className="m-0">{t("db.openInViewer")}</div>
         {/* <div className="flex md:hidden">
           {
             <svg
@@ -81,7 +80,6 @@ export default function DBEntryActions({
           }
         </div> */}
       </a>
-    </div>
   );
 }
 

@@ -47,11 +47,11 @@ export function Database() {
     <FilterContext.Provider value={filter}>
       <FilterDispatchContext.Provider value={dispatch}>
         <div className="flex flex-col  gap-4 m-8 my-4 items-center">
-          <div className="flex flex-row justify-between items-center w-full max-w-7xl ">
+          <div className="flex flex-row justify-between items-center w-full max-w-7xl gap-4">
             <Filter />
             <CharacterQuickSelect />
 
-            <div className="text-base  md:text-2xl">{`${t("db.showing")} ${
+            <div className="text-base  hidden md:block md:text-2xl">{`${t("db.showing")} ${
               data?.length ?? 0
             } ${t("db.simulations")} `}</div>
             {/* <Sorter /> */}
@@ -205,6 +205,7 @@ function CharacterQuickSelect() {
           });
         }}
         resetOnSelect
+        resetOnQuery
         openOnKeyDown
         tagInputProps={{
           tagProps: {

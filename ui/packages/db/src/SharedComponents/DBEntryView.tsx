@@ -39,8 +39,8 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
         </div>
         <DBEntryActions share_key={dbEntry.share_key} id={dbEntry.id} />
       </div>
-      <div className="lg:hidden flex flex-row bg-slate-700 max-w-xs pr-2 gap-2  ">
-        <div className="grid grid-cols-2 grid-row-2  ">
+      <div className="lg:hidden flex flex-col items-center  bg-slate-700 max-w-xs p-5 border  gap-4 ">
+        <div className="grid grid-cols-2 grid-row-2  gap-4">
           {team &&
             team.map((char, index) => {
               return <DBEntryPortrait {...char} key={index.toString()} />;
