@@ -37,7 +37,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
             />
           </div>
         </div>
-        <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />
+        <DBEntryActions share_key={dbEntry.share_key} id={dbEntry.id} />
       </div>
       <div className="lg:hidden flex flex-row bg-slate-700 max-w-xs pr-2 gap-2  ">
         <div className="grid grid-cols-2 grid-row-2  ">
@@ -46,7 +46,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
               return <DBEntryPortrait {...char} key={index.toString()} />;
             })}
         </div>
-        <DBEntryActions simulation_key={dbEntry.id} id={dbEntry.id} />
+        <DBEntryActions share_key={dbEntry.share_key} id={dbEntry.id} />
       </div>
     </>
   );
