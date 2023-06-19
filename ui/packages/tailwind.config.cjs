@@ -63,7 +63,15 @@ module.exports = {
           300: Colors.LIGHT_GRAY3,
           400: Colors.LIGHT_GRAY4,
           500: Colors.LIGHT_GRAY5,
-        }
+        },
+
+        "anemo": "#61DBBB",
+        "geo": "#F8BA4E",
+        "electro": "#B25DCD",
+        "hydro": "#2F63D4",
+        "pyro": "#BF2818",
+        "cryo": "#77A2E6",
+        "dendro": "#A5C83B",
       },
     },
   },

@@ -2203,6 +2203,9 @@ export namespace model {
         /** SimulationResult target_details */
         target_details?: (model.IEnemy[]|null);
 
+        /** SimulationResult player_position */
+        player_position?: (model.ICoord|null);
+
         /** SimulationResult statistics */
         statistics?: (model.ISimulationStatistics|null);
 
@@ -2257,6 +2260,9 @@ export namespace model {
 
         /** SimulationResult target_details. */
         public target_details: model.IEnemy[];
+
+        /** SimulationResult player_position. */
+        public player_position?: (model.ICoord|null);
 
         /** SimulationResult statistics. */
         public statistics?: (model.ISimulationStatistics|null);

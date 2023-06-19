@@ -6,6 +6,7 @@ import { DistributionCard, RollupCards, TargetInfo, TeamHeader } from "../Compon
 import { CharacterDPSBarChart, CharacterDPSCard, DamageTimelineCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
 import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
+import Metadata from "../Components/Overview/Metadata";
 
 type Props = {
   data: SimResults | null;
@@ -33,6 +34,7 @@ export default (props: Props) => {
 const SingleGroup = ({ data, running, names }: Props) => (
   <Group>
     <TeamHeader characters={data?.character_details} />
+    <Metadata data={data} />
     <RollupCards data={data} />
     <TargetInfo data={data} />
     <DistributionCard data={data} />
@@ -50,6 +52,7 @@ const SingleGroup = ({ data, running, names }: Props) => (
 const Overview = ({ data }: Props) => (
   <Group>
     <TeamHeader characters={data?.character_details} />
+    <Metadata data={data} />
     <RollupCards data={data} />
     <TargetInfo data={data} />
     <DistributionCard data={data} />
@@ -191,7 +194,7 @@ const Group = ({ children, className }: GroupProps) => {
   const cls = classNames(
       className,
       "grid overflow-hidden",
-      "grid-cols-1 sm:grid-cols-6",
+      "grid-cols-2 sm:grid-cols-6",
       "gap-y-2", "sm:gap-2");
 
   return (

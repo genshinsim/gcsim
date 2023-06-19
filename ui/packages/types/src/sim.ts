@@ -7,7 +7,9 @@ export interface SimResults {
   
   initial_character?: string;
   character_details?: Character[];
+  target_details?: Enemy[];
   simulator_settings?: Settings;
+  player_position?: Coord;
 
   config_file?: string;
   sample_seed?: string;
@@ -153,6 +155,22 @@ export interface Character {
   snapshot: number[];
   sets: Set;
   date_added?: string;
+}
+
+export interface Enemy {
+  level?: number;
+  hp?: number;
+  resist?: { [key: string]: number };
+  position?: Coord;
+  particle_drop_threshold?: number;
+  particle_drop_count?: number;
+  particle_element?: number;
+}
+
+export interface Coord {
+  x: number;
+  y: number;
+  r: number;
 }
 
 export interface Talent {
