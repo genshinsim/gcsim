@@ -1,5 +1,7 @@
 import { createContext } from "react";
 import { charNames } from "../../PipelineExtract/CharacterNames";
+import { useTranslation } from "react-i18next";
+
 
 export interface FilterState {
   charFilter: CharFilter;
@@ -24,7 +26,7 @@ export const initialFilter = {
   charFilter: initialCharFilter,
   charIncludeCount: 0,
   pageNumber: 1,
-  entriesPerPage: 10,
+  entriesPerPage: 25,
   customFilter: "",
 };
 
@@ -258,3 +260,11 @@ export function filterReducer(
     }
   }
 }
+
+export const filterCharNames = (query: string, translatedCharNames: string[]) => {
+    return  translatedCharNames.filter(
+        (charName) => {
+            return (charName).toLocaleLowerCase().includes(query.toLocaleLowerCase())
+        }
+    )
+} 

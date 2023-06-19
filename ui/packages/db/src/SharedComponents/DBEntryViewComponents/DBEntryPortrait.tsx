@@ -91,7 +91,7 @@ function PortraitWeaponComponent({
   weapon: model.IWeapon | undefined | null;
 }) {
   if (!weapon || !weapon.name) {
-    return <div className="h-16 w-16">No weapon</div>;
+    return <div className="h-16 w-16">?</div>;
   }
   return (
     <div className="bg-slate-700 relative">

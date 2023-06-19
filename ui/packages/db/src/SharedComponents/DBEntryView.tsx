@@ -1,12 +1,14 @@
 import { db, model } from "@gcsim/types";
 import { Long } from "protobufjs";
 import { ReactI18NextChild, useTranslation } from "react-i18next";
-import DBEntryActions from "./DBEntryViewComponents/DBEntryActions";
 import { DBEntryPortrait } from "./DBEntryViewComponents/DBEntryPortrait";
+import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
-  // const t = useTranslation();
+  const {t:translate} = useTranslation();
+  const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
+
   const team = dbEntry.summary?.team ?? [];
   if (team.length < 4) {
     const diff = 4 - team.length;
@@ -27,8 +29,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
         <div className="flex flex-col grow ">
           <div className="max-w-2xl">
             <div className="flex flex-col ">
-              {/* <DBEntryTags tags={dbEntry.accepted_tags} /> */}
-              <span className="  overflow-hidden">{dbEntry?.description}</span>
+              <DBEntryTags tags={dbEntry.accepted_tags} />
             </div>
 
             <DBEntryDetails
@@ -37,8 +38,20 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
             />
           </div>
         </div>
-        <DBEntryActions share_key={dbEntry.share_key} id={dbEntry.id} />
+        <div className="flex flex-col justify-center ">
+
+        <a
+        href={`https://simimpact.app/v3/viewer/share/${dbEntry.share_key}`}
+        target="_blank"
+        className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
+        rel="noreferrer"
+        >
+        <div className="m-0">{t("db.openInViewer")}</div>
+      </a>
+          </div>
+        
       </div>
+
       <div className="lg:hidden flex flex-col items-center  bg-slate-700 max-w-xs p-5 border  gap-4 ">
         <div className="grid grid-cols-2 grid-row-2  gap-4">
           {team &&
@@ -46,7 +59,15 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
               return <DBEntryPortrait {...char} key={index.toString()} />;
             })}
         </div>
-        <DBEntryActions share_key={dbEntry.share_key} id={dbEntry.id} />
+
+        <a
+        href={`https://simimpact.app/v3/viewer/share/${dbEntry.share_key}`}
+        target="_blank"
+        className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
+        rel="noreferrer"
+        >
+            <div className="m-0">{t("db.openInViewer")}</div>
+      </a>
       </div>
     </>
   );
@@ -68,8 +89,8 @@ NonNullable<db.IEntry["summary"]> & {
 
   const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
   let date = t("db.unknown");
-  if (run_date && typeof run_date === "number") {
-    date = new Date(run_date).toLocaleDateString();
+  if (run_date) {
+    date = new Date((run_date as number )* 1000).toLocaleDateString();
   }
   return (
     <table className="bp4-html-table  ">
@@ -89,8 +110,8 @@ NonNullable<db.IEntry["summary"]> & {
         <tr className=" text-xs ">
           <td className="">{mode ? t("db.ttk") : t("db.duration")}</td>
           <td className="">{target_count}</td>
-          <td className="">{mean_dps_per_target?.toPrecision(8)}</td>
-          <td className="">{total_damage?.mean?.toPrecision(8)}</td>
+          <td className="">{prettyPrintNumberStr(mean_dps_per_target?.toFixed(2)?? "")}</td>
+          <td className="">{prettyPrintNumberStr(total_damage?.mean?.toFixed(1)?? "") }</td>
           <td className="">
             {sim_duration?.mean
               ? `${sim_duration.mean.toPrecision(3)}s`
@@ -101,4 +122,9 @@ NonNullable<db.IEntry["summary"]> & {
       </tbody>
     </table>
   );
+}
+
+
+function prettyPrintNumberStr(num: string): string {
+    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

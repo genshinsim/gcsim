@@ -8,6 +8,7 @@ import {
   FilterContext,
   FilterDispatchContext,
   ItemFilterState,
+  filterCharNames,
 } from "./FilterComponents/Filter.utils";
 
 export function Filter() {
@@ -39,7 +40,6 @@ export function Filter() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <FaFilter size={24} className="opacity-80" />
-        {/* <div className="text-xl pb-1 ">{t("Filter")}</div> */}
       </button>
 
       <Drawer
@@ -100,12 +100,6 @@ function ClearFilterButton() {
   );
 }
 
-// function FilterDrawer(charFilter: Record<string, FilterState>) {
-//   return (
-//     <div className="w-full overflow-y-auto overflow-x-hidden no-scrollbar"></div>
-//   );
-// }
-
 function CharacterFilter() {
   const [charIsOpen, setCharIsOpen] = useState(false);
   const { t: translation } = useTranslation();
@@ -120,6 +114,10 @@ function CharacterFilter() {
     return 0;
   });
   const [charSearch, setCharSearch] = useState<string>("");
+
+  const translateCharName = (charName: string) =>
+    t("game:character_names." + charName);
+  
 
   return (
     <div className="w-full  overflow-x-hidden no-scrollbar">
@@ -151,9 +149,10 @@ function CharacterFilter() {
 
           <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
             {sortedCharNames
-              .filter((charName) => {
-                return charName.includes(charSearch);
-              })
+              .filter(
+                (charName) => translateCharName(charName)
+              .toLocaleLowerCase()
+              .includes(charSearch.toLocaleLowerCase()))
               .map((charName) => (
                 <CharFilterButton key={charName} charName={charName} />
               ))}

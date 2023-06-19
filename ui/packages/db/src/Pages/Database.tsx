@@ -3,10 +3,10 @@ import { db } from "@gcsim/types";
 import axios from "axios";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { newMockData } from "SharedComponents/mockData";
 import { PaginationButtons } from "SharedComponents/Pagination";
 import { Filter } from "../SharedComponents/Filter";
 import {
+	filterCharNames,
   FilterContext,
   FilterDispatchContext,
   filterReducer,
@@ -17,21 +17,25 @@ import {
 import { ListView } from "../SharedComponents/ListView";
 import { MultiSelect2 } from "@blueprintjs/select";
 import { charNames } from "PipelineExtract/CharacterNames";
+import eula from "images/eula.png";
+
 
 export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, initialFilter);
-
   const [data, setData] = useState<db.IEntry[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  
   const { t } = useTranslation();
   const querydb = (query: DbQuery) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
       .then((resp: { data: db.IEntries }) => {
         if (resp.data && resp.data.data) {
           setData(resp.data.data);
-        } else {
-          console.log("no data, using mockdata");
-          setData(newMockData);
+        } 
+        else {
+            setData([]);
         }
+				setIsLoading(false);
       })
       .catch((err) => {
         console.log("error: ", err);
@@ -39,9 +43,14 @@ export function Database() {
   };
 
   useEffect(() => {
+
     const query = craftQuery(filter);
     querydb(query);
   }, [filter]);
+
+  if(isLoading || !data ) return <div className="h-screen flex flex-col justify-center items-center">
+      <Spinner  />
+    </div>;
 
   return (
     <FilterContext.Provider value={filter}>
@@ -56,7 +65,13 @@ export function Database() {
             } ${t("db.simulations")} `}</div>
             {/* <Sorter /> */}
           </div>
-          {data ? <ListView data={data} /> : <Spinner />}
+          {
+            data.length === 0 ?
+             <div className="6 flex flex-col justify-center items-center h-screen">
+                <img src={eula} className=" object-contain opacity-50 w-32 h-32" />
+            </div>
+            : <ListView data={data} />
+          }
           <PaginationButtons />
         </div>
       </FilterDispatchContext.Provider>
@@ -198,6 +213,7 @@ function CharacterQuickSelect() {
             type: "clearFilter",
           });
         }}
+
         onRemove={(charName) => {
           dispatch({
             type: "includeChar",
