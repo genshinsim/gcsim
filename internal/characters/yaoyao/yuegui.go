@@ -131,7 +131,7 @@ func (yg *yuegui) makeParticleCB() combat.AttackCBFunc {
 
 func (yg *yuegui) throw() {
 	yg.Gadget.ThinkInterval = 60
-	currHPPerc := yg.Core.Player.ActiveChar().HPCurrent / yg.Core.Player.ActiveChar().MaxHP()
+	currHPPerc := yg.Core.Player.ActiveChar().CurrentHPRatio()
 	enemy := yg.Core.Combat.RandomEnemyWithinArea(yg.aoe, nil)
 
 	var target geometry.Point

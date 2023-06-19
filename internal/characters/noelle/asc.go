@@ -31,7 +31,7 @@ func (c *char) a1() {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
-		if active.HPCurrent/active.MaxHP() >= 0.3 {
+		if active.CurrentHPRatio() >= 0.3 {
 			return false
 		}
 		c.AddStatus(a1IcdKey, 3600, false)

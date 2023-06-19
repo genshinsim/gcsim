@@ -76,10 +76,12 @@ type CharWrapper struct {
 	}
 
 	//current status
-	ParticleDelay int // character custom particle delay
-	Energy        float64
-	EnergyMax     float64
-	HPCurrent     float64
+	ParticleDelay  int // character custom particle delay
+	Energy         float64
+	EnergyMax      float64
+	currentHPRatio float64
+	// needed so that start hp is not influenced by hp mods added during team initialization
+	StartHP int
 
 	//normal attack counter
 	NormalHitNum  int //how many hits in a normal combo
@@ -172,15 +174,32 @@ func (c *CharWrapper) RemoveTag(key string) {
 	delete(c.Tags, key)
 }
 
-func (c *CharWrapper) ModifyHP(amt float64) {
-	c.HPCurrent += amt
-	if c.HPCurrent < 0 {
-		c.HPCurrent = -1
+func (c *CharWrapper) clampHPRatio() {
+	if c.currentHPRatio > 1 {
+		c.currentHPRatio = 1
+	} else if c.currentHPRatio < 0 {
+		c.currentHPRatio = 0
 	}
-	maxhp := c.MaxHP()
-	if c.HPCurrent > maxhp {
-		c.HPCurrent = maxhp
-	}
+}
+
+func (c *CharWrapper) SetHPByAmount(amt float64) {
+	c.currentHPRatio = amt / c.MaxHP()
+	c.clampHPRatio()
+}
+
+func (c *CharWrapper) SetHPByRatio(r float64) {
+	c.currentHPRatio = r
+	c.clampHPRatio()
+}
+
+func (c *CharWrapper) ModifyHPByAmount(amt float64) {
+	newHP := c.CurrentHP() + amt
+	c.SetHPByAmount(newHP)
+}
+
+func (c *CharWrapper) ModifyHPByRatio(r float64) {
+	newHPRatio := c.currentHPRatio + r
+	c.SetHPByRatio(newHPRatio)
 }
 
 func (c *CharWrapper) TalentLvlAttack() int {

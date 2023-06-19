@@ -99,7 +99,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 		for i, char := range core.Player.Chars() {
 			out.charEnergy[i] = maxUpdate(out.charEnergy[i], bucket, char.Energy)
-			out.charHealth[i] = avgUpdate(out.charHealth[i], bucket, char.HPCurrent)
+			out.charHealth[i] = avgUpdate(out.charHealth[i], bucket, char.CurrentHP())
 		}
 
 		for i, t := range core.Combat.Enemies() {
@@ -158,7 +158,7 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 
 	for c := 0; c < len(core.Player.Chars()); c++ {
 		for i := 0; i < fill; i++ {
-			b.charHealth[c] = avgUpdate(b.charHealth[c], bucket, core.Player.Chars()[c].HPCurrent)
+			b.charHealth[c] = avgUpdate(b.charHealth[c], bucket, core.Player.Chars()[c].CurrentHP())
 		}
 
 		result.Characters[c].ActiveTime = b.activeTime[c]

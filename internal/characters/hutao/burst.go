@@ -21,7 +21,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	low := (c.HPCurrent / c.MaxHP()) <= 0.5
+	low := c.CurrentHPRatio() <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
 	if low {

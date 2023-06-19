@@ -32,7 +32,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base:         modifier.NewBase("harbinger", -1),
 		AffectedStat: attributes.CR,
 		Amount: func() ([]float64, bool) {
-			return m, char.HPCurrent/char.MaxHP() >= 0.9
+			return m, char.CurrentHPRatio() >= 0.9
 		},
 	})
 	return w, nil

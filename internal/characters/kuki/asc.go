@@ -17,7 +17,7 @@ func (c *char) a1() {
 		Base:         modifier.NewBase("kuki-a1", -1),
 		AffectedStat: attributes.Heal,
 		Amount: func() ([]float64, bool) {
-			if c.HPCurrent/c.MaxHP() <= 0.5 {
+			if c.CurrentHPRatio() <= 0.5 {
 				return m, true
 			}
 			return nil, false

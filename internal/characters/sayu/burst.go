@@ -81,7 +81,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				char := c.Core.Player.ActiveChar()
 				hasC1 := c.Base.Cons >= 1
 				// C1 ignores HP limit
-				needHeal := c.Core.Combat.Player().IsWithinArea(burstArea) && (char.HPCurrent/char.MaxHP() <= 0.7 || hasC1)
+				needHeal := c.Core.Combat.Player().IsWithinArea(burstArea) && (char.CurrentHPRatio() <= 0.7 || hasC1)
 
 				// check for enemy
 				enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)

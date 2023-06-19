@@ -41,16 +41,16 @@ func (c *char) checkc6(check1HP bool) {
 		return
 	}
 	// check if hp less than 25%
-	if c.HPCurrent/c.MaxHP() > .25 {
+	if c.CurrentHPRatio() > 0.25 {
 		return
 	}
 	// check if hp is less than 2 for the 2s check
-	if check1HP && c.HPCurrent >= 2 {
+	if check1HP && c.CurrentHP() >= 2 {
 		return
 	}
 	// if dead, revive back to 1 hp
-	if c.HPCurrent <= -1 {
-		c.HPCurrent = 1
+	if c.CurrentHPRatio() <= 0 {
+		c.SetHPByAmount(1)
 	}
 
 	//increase crit rate to 100%

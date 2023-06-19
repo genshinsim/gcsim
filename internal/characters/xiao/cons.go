@@ -38,7 +38,7 @@ func (c *char) c4() {
 		Base:         modifier.NewBase("xiao-c4", -1),
 		AffectedStat: attributes.DEFP,
 		Amount: func() ([]float64, bool) {
-			if c.HPCurrent/c.MaxHP() <= 0.5 {
+			if c.CurrentHPRatio() <= 0.5 {
 				return m, true
 			}
 			return nil, false

@@ -119,6 +119,14 @@ func (h *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
 	return val
 }
 
+func (c *CharWrapper) CurrentHPRatio() float64 {
+	return c.currentHPRatio
+}
+
+func (c *CharWrapper) CurrentHP() float64 {
+	return c.currentHPRatio * c.MaxHP()
+}
+
 func (c *CharWrapper) MaxHP() float64 {
 	hpp := c.BaseStats[attributes.HPP]
 	hp := c.BaseStats[attributes.HP]

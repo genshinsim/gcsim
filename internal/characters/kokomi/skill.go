@@ -115,7 +115,7 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 		// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
 		if c.Base.Cons >= 2 {
 			active := c.Core.Player.ActiveChar()
-			if active.HPCurrent/active.MaxHP() <= .5 {
+			if active.CurrentHPRatio() <= 0.5 {
 				bonus := 0.045 * maxhp
 				src += bonus
 				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
