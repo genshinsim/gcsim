@@ -18,8 +18,9 @@ export default (props: Props) => {
 
   return (
     <div className="w-full 2xl:mx-auto 2xl:container px-2">
-      <Overview {...props} />
-      <Damage {...props} />
+      <SingleGroup {...props} />
+      {/* <Overview {...props} />
+      <Damage {...props} /> */}
       {/* <Energy {...props} />
       <Reactions {...props} />
       <Healing {...props} />
@@ -28,6 +29,23 @@ export default (props: Props) => {
     </div>
   );
 };
+
+const SingleGroup = ({ data, running, names }: Props) => (
+  <Group>
+    <TeamHeader characters={data?.character_details} />
+    <RollupCards data={data} />
+    <TargetInfo data={data} />
+    <DistributionCard data={data} />
+
+    <DamageTimelineCard data={data} running={running} names={names} />
+
+    <CharacterDPSCard data={data} running={running} names={names} />
+    <ElementDPSCard data={data} running={running} />
+    <TargetDPSCard data={data} running={running} />
+
+    <CharacterDPSBarChart data={data} running={running} names={names} />
+  </Group>
+);
 
 const Overview = ({ data }: Props) => (
   <Group>
