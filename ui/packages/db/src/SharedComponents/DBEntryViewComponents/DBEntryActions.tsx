@@ -6,10 +6,10 @@ import { AuthContext } from "../Management.context";
 
 export default function DBEntryActions({
   id,
-  simulation_key,
+  share_key,
 }: {
   id: string | undefined | null;
-  simulation_key: string | undefined | null;
+  share_key: string | undefined | null;
 }) {
   const { t: translate } = useTranslation();
 
@@ -23,7 +23,7 @@ export default function DBEntryActions({
         <ApproveDBEntryButton dbEntryId={id} />
 
         <a
-          href={`https://gcsim.app/v3/viewer/share/${simulation_key}`}
+          href={`https://simimpact.app/v3/viewer/share/${share_key}`}
           target="_blank"
           className="bp4-button    bp4-intent-primary"
           rel="noreferrer"
@@ -54,15 +54,14 @@ export default function DBEntryActions({
     );
   }
   return (
-    <div className="flex flex-col justify-center">
       <a
-        href={`https://gcsim.app/v3/viewer/share/${simulation_key}`}
+        href={`https://simimpact.app/v3/viewer/share/${share_key}`}
         target="_blank"
-        className="bp4-button    bp4-intent-primary "
+        className="bp4-button    bp4-intent-primary w-full"
         rel="noreferrer"
       >
-        <div className="md:block hidden m-0">{t("db.openInViewer")}</div>
-        <div className="flex md:hidden">
+        <div className="m-0">{t("db.openInViewer")}</div>
+        {/* <div className="flex md:hidden">
           {
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -79,9 +78,8 @@ export default function DBEntryActions({
               />
             </svg>
           }
-        </div>
+        </div> */}
       </a>
-    </div>
   );
 }
 
