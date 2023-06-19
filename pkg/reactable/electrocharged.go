@@ -28,16 +28,20 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 		if r.Durability[ModifierElectro] < ZeroDur {
 			return false
 		}
-		//add to hydro durability
+		//add to hydro durability (can't add if the atk already reacted)
 		//TODO: this shouldn't happen here
-		r.attachOrRefillNormalEle(ModifierHydro, a.Info.Durability)
+		if !a.Reacted {
+			r.attachOrRefillNormalEle(ModifierHydro, a.Info.Durability)
+		}
 	case attributes.Electro:
 		//if there's no existing hydro or electro then do nothing
 		if r.Durability[ModifierHydro] < ZeroDur {
 			return false
 		}
-		//add to electro durability
-		r.attachOrRefillNormalEle(ModifierElectro, a.Info.Durability)
+		//add to electro durability (can't add if the atk already reacted)
+		if !a.Reacted {
+			r.attachOrRefillNormalEle(ModifierElectro, a.Info.Durability)
+		}
 	default:
 		return false
 	}
