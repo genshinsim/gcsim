@@ -3,6 +3,7 @@ package cyno
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -16,7 +17,6 @@ type char struct {
 	*tmpl.Character
 	burstExtension int
 	burstSrc       int
-	lastSkillCast  int
 	c2Stacks       int
 	c4Counter      int
 	c6Stacks       int
@@ -73,4 +73,34 @@ func (c *char) NextNormalCounter() int {
 		return c.normalBCounter + 1
 	}
 	return c.NormalCounter + 1
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+	if a != action.ActionSkill {
+		return c.Character.ActionReady(a, p)
+	}
+	if c.StatusIsActive(BurstKey) {
+		if c.AvailableCDCharge[action.ActionLowPlunge] <= 0 {
+			return false, action.SkillCD
+		}
+		return true, action.NoFailure
+	}
+	if c.AvailableCDCharge[action.ActionSkill] <= 0 {
+		return false, action.SkillCD
+	}
+	return true, action.NoFailure
+}
+
+func (c *char) ReduceActionCooldown(a action.Action, v int) {
+	c.Character.ReduceActionCooldown(a, v)
+	if a == action.ActionSkill {
+		c.Character.ReduceActionCooldown(action.ActionLowPlunge, v)
+	}
+}
+
+func (c *char) ResetActionCooldown(a action.Action) {
+	c.Character.ResetActionCooldown(a)
+	if a == action.ActionSkill {
+		c.Character.ResetActionCooldown(action.ActionLowPlunge)
+	}
 }
