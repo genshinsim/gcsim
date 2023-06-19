@@ -29,10 +29,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
 
-	if !c.StatusIsActive(BurstKey) {
-		c.ReduceActionCooldown(action.ActionSkill, 270)
-	}
-
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 100
 	c.AddStatMod(character.StatMod{
@@ -100,11 +96,6 @@ func (c *char) onBurstExpiry(burstSrc int) {
 	}
 	if c.StatusIsActive(BurstKey) {
 		return
-	}
-	cd := skillCD - (c.Core.F - c.lastSkillCast)
-	if cd > 0 {
-		c.ResetActionCooldown(action.ActionSkill)
-		c.SetCD(action.ActionSkill, cd)
 	}
 	c.burstSrc = -1 // make sure we don't call other burst fns
 }
