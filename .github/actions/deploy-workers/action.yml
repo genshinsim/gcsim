@@ -1,0 +1,15 @@
+name: "Deploy CF Workers"
+description: "builds and deploys the gcsim workers to cloudflare. Assumes yarn setup has already ran"
+inputs:
+  apiToken:
+    required: true
+    description: cloudflare api token
+
+runs:
+  using: composite
+  steps:
+  - name: Publish to Cloudflare Pages
+    uses: cloudflare/wrangler-action@2.0.0
+    with:
+      apiToken: ${{ inputs.apiToken }}
+      workingDirectory: './ui/packages/workers'

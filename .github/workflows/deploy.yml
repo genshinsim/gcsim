@@ -36,6 +36,10 @@ jobs:
         uses: ./.github/actions/yarn-setup-and-test
 
       # deploy
+      - name: deploy-workers
+        uses: ./.github/actions/deploy-workers
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
       - name: deploy-binary
         uses: ./.github/actions/deploy-binary
         with:
