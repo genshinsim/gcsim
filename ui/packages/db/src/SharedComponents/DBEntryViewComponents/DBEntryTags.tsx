@@ -25,17 +25,7 @@ export default function DBEntryTags({
           tag
           }
         </div>
-      ))}
-      {tags?.map((tag) => (
-        <div
-          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 mt-1 whitespace-nowrap "
-          key={tag}
-        >
-           
-           {tag}
-        </div>
-      ))}
-     
+      ))}     
     </div>
   );
 }
