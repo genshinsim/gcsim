@@ -6,6 +6,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type DBStore interface {
@@ -36,7 +38,7 @@ type ComputeService interface {
 }
 
 type AdminService interface {
-	ReplaceConfig(ctx context.Context, id string, config string) error
+	ReplaceConfig(ctx context.Context, id string, config string) (string, error)
 }
 
 type ShareStore interface {
@@ -44,9 +46,14 @@ type ShareStore interface {
 	Replace(context.Context, string, *model.SimulationResult) error
 }
 
+type NotifyService interface {
+	Notify(topic string, msg interface{}) error
+}
+
 type Config struct {
 	DBStore           DBStore
 	ShareStore        ShareStore
+	NotifyService     NotifyService
 	DefaultIterations int
 	ExpectedHash      string
 }
@@ -84,4 +91,28 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s.Log.Info("db server started")
 
 	return s, nil
+}
+
+const (
+	TopicReplace                 string = "db/entry/replace"
+	TopicSubmissionDelete        string = "db/submission/delete"
+	TopicComputeCompleted        string = "db/compute/complete"
+	TopicSubmissionComputeFailed string = "db/compute/submission/failed"
+	TopicDBComputeFailed         string = "db/compute/db/failed"
+)
+
+func (s *Server) notify(topic string, msg protoreflect.ProtoMessage) {
+	if s.NotifyService == nil {
+		s.Log.Info("no notification service attached; dropping msg")
+		return
+	}
+	m, err := protojson.Marshal(msg)
+	if err != nil {
+		s.Log.Warnw("protojson marshal failed with err", "err", err)
+	}
+	//msg should be marshalled to some sort of string
+	err = s.NotifyService.Notify(topic, string(m))
+	if err != nil {
+		s.Log.Warnw("notify failed with err", "err", err)
+	}
 }

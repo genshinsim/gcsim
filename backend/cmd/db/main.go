@@ -7,6 +7,7 @@ import (
 	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/backend/pkg/mongo"
+	"github.com/genshinsim/gcsim/backend/pkg/notify"
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"google.golang.org/grpc"
@@ -48,10 +49,16 @@ func main() {
 		panic(err)
 	}
 
+	n, err := notify.New("db-notifier")
+	if err != nil {
+		panic(err)
+	}
+
 	server, err := db.NewServer(db.Config{
-		DBStore:      dbStore,
-		ShareStore:   shareStore,
-		ExpectedHash: sha1ver,
+		DBStore:       dbStore,
+		ShareStore:    shareStore,
+		ExpectedHash:  sha1ver,
+		NotifyService: n,
 	})
 
 	if err != nil {

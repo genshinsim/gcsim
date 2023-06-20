@@ -2134,6 +2134,162 @@ export namespace model {
         DB_TAG_TESTING = 2
     }
 
+    /** Properties of a ComputeFailedEvent. */
+    interface IComputeFailedEvent {
+
+        /** ComputeFailedEvent db_id */
+        db_id?: (string|null);
+
+        /** ComputeFailedEvent config */
+        config?: (string|null);
+
+        /** ComputeFailedEvent submitter */
+        submitter?: (string|null);
+
+        /** ComputeFailedEvent reason */
+        reason?: (string|null);
+    }
+
+    /** Represents a ComputeFailedEvent. */
+    class ComputeFailedEvent implements IComputeFailedEvent {
+
+        /**
+         * Constructs a new ComputeFailedEvent.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IComputeFailedEvent);
+
+        /** ComputeFailedEvent db_id. */
+        public db_id: string;
+
+        /** ComputeFailedEvent config. */
+        public config: string;
+
+        /** ComputeFailedEvent submitter. */
+        public submitter: string;
+
+        /** ComputeFailedEvent reason. */
+        public reason: string;
+
+        /**
+         * Gets the default type url for ComputeFailedEvent
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ComputeCompletedEvent. */
+    interface IComputeCompletedEvent {
+
+        /** ComputeCompletedEvent db_id */
+        db_id?: (string|null);
+
+        /** ComputeCompletedEvent share_id */
+        share_id?: (string|null);
+    }
+
+    /** Represents a ComputeCompletedEvent. */
+    class ComputeCompletedEvent implements IComputeCompletedEvent {
+
+        /**
+         * Constructs a new ComputeCompletedEvent.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IComputeCompletedEvent);
+
+        /** ComputeCompletedEvent db_id. */
+        public db_id: string;
+
+        /** ComputeCompletedEvent share_id. */
+        public share_id: string;
+
+        /**
+         * Gets the default type url for ComputeCompletedEvent
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SubmissionDeleteEvent. */
+    interface ISubmissionDeleteEvent {
+
+        /** SubmissionDeleteEvent db_id */
+        db_id?: (string|null);
+
+        /** SubmissionDeleteEvent config */
+        config?: (string|null);
+
+        /** SubmissionDeleteEvent submitter */
+        submitter?: (string|null);
+    }
+
+    /** Represents a SubmissionDeleteEvent. */
+    class SubmissionDeleteEvent implements ISubmissionDeleteEvent {
+
+        /**
+         * Constructs a new SubmissionDeleteEvent.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ISubmissionDeleteEvent);
+
+        /** SubmissionDeleteEvent db_id. */
+        public db_id: string;
+
+        /** SubmissionDeleteEvent config. */
+        public config: string;
+
+        /** SubmissionDeleteEvent submitter. */
+        public submitter: string;
+
+        /**
+         * Gets the default type url for SubmissionDeleteEvent
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an EntryReplaceEvent. */
+    interface IEntryReplaceEvent {
+
+        /** EntryReplaceEvent db_id */
+        db_id?: (string|null);
+
+        /** EntryReplaceEvent config */
+        config?: (string|null);
+
+        /** EntryReplaceEvent old_config */
+        old_config?: (string|null);
+    }
+
+    /** Represents an EntryReplaceEvent. */
+    class EntryReplaceEvent implements IEntryReplaceEvent {
+
+        /**
+         * Constructs a new EntryReplaceEvent.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IEntryReplaceEvent);
+
+        /** EntryReplaceEvent db_id. */
+        public db_id: string;
+
+        /** EntryReplaceEvent config. */
+        public config: string;
+
+        /** EntryReplaceEvent old_config. */
+        public old_config: string;
+
+        /**
+         * Gets the default type url for EntryReplaceEvent
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a Version. */
     interface IVersion {
 

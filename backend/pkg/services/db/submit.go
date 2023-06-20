@@ -3,6 +3,7 @@ package db
 import (
 	context "context"
 
+	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -45,6 +46,12 @@ func (s *Server) DeletePending(ctx context.Context, req *DeletePendingRequest) (
 	if err != nil {
 		return nil, err
 	}
+
+	s.notify(TopicSubmissionDelete, &model.SubmissionDeleteEvent{
+		DbId:      req.GetId(),
+		Config:    e.Config,
+		Submitter: e.Submitter,
+	})
 
 	return &DeletePendingResponse{Id: e.Id}, nil
 }

@@ -65,6 +65,12 @@ func (s *Server) CompleteWork(ctx context.Context, req *CompleteWorkRequest) (*C
 	if err != nil {
 		return nil, err
 	}
+
+	s.notify(TopicComputeCompleted, &model.ComputeCompletedEvent{
+		DbId:    entry.Id,
+		ShareId: entry.ShareKey,
+	})
+
 	return &CompleteWorkResponse{
 		Id: entry.Id,
 	}, nil
@@ -90,9 +96,25 @@ func (s *Server) RejectWork(ctx context.Context, req *RejectWorkRequest) (*Rejec
 		if err != nil {
 			return nil, err
 		}
-		//TODO: notify here
+		s.notify(
+			TopicSubmissionComputeFailed,
+			&model.ComputeFailedEvent{
+				DbId:      entry.Id,
+				Config:    entry.Config,
+				Submitter: entry.Submitter,
+				Reason:    req.GetReason(),
+			},
+		)
 	} else {
-		//TODO: different notify here
+		s.notify(
+			TopicSubmissionComputeFailed,
+			&model.ComputeFailedEvent{
+				DbId:      entry.Id,
+				Config:    entry.Config,
+				Submitter: entry.Submitter,
+				Reason:    req.GetReason(),
+			},
+		)
 	}
 
 	return &RejectWorkResponse{}, nil

@@ -101,7 +101,7 @@ func findOptFromQueryOpt(q *db.QueryOpt) *options.FindOptions {
 	return opt
 }
 
-func (s *Server) ReplaceConfig(ctx context.Context, id, config string) error {
+func (s *Server) ReplaceConfig(ctx context.Context, id, config string) (string, error) {
 	s.Log.Infow("replace config request", "id", id, "config", config)
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	e, err := s.getOne(
@@ -113,16 +113,17 @@ func (s *Server) ReplaceConfig(ctx context.Context, id, config string) error {
 	)
 	if err != nil {
 		s.Log.Infow("error getting existing entry", "err", err)
-		return err
+		return "", err
 	}
+	old := e.Config
 	e.Config = config
 	e.Hash = "should-recompute"
 	err = s.Replace(ctx, e)
 	if err != nil {
 		s.Log.Infow("error replacing entry", "err", err)
-		return err
+		return "", err
 	}
-	return nil
+	return old, nil
 }
 
 func (s *Server) GetWork(ctx context.Context) ([]*db.ComputeWork, error) {

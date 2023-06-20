@@ -68,6 +68,10 @@ services:
       - MONGODB_USERNAME=root
       - MONOGDB_PASSWORD=root-password
       - SHARE_STORE_URL=share:3000
+      # mqtt env for notification service
+      - MQTT_URL=mqtt:1883
+      - MQTT_USERNAME=mosquitto
+      - MQTT_PASSWORD=password
     # ports are exposed in order to access the grpc directly via localhost during dev
     ports:
       - 8082:3000
@@ -92,6 +96,7 @@ services:
       - DB_STORE_URL=db:3000
       - PREVIEW_STORE_URL=preview:3000
       - SHARE_KEY_FILE=/keys.json
+      # mqtt env for notification service
       - MQTT_URL=mqtt:1883
       - MQTT_USERNAME=mosquitto
       - MQTT_PASSWORD=password
@@ -107,10 +112,22 @@ services:
     environment:
       - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
+      - DISCORD_BOT_TOKEN
+  notification:
+    container_name: notification
+    build:
+      context: .
+      dockerfile: ./notification.Dockerfile
+    environment:
       - MQTT_URL=mqtt:1883
       - MQTT_USERNAME=mosquitto
       - MQTT_PASSWORD=password
-      - DISCORD_BOT_TOKEN
+      - NOTIFY_INFO_ID
+      - NOTIFY_INFO_TOKEN
+      - NOTIFY_CRITICAL_ID
+      - NOTIFY_CRITICAL_TOKEN
+    depends_on:
+      - mqtt
   # mongo server for db
   mongo:
     container_name: mongo
