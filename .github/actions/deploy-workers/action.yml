@@ -4,6 +4,9 @@ inputs:
   apiToken:
     required: true
     description: cloudflare api token
+  accountId:
+    required: true
+    description: cloudflare account id
 
 runs:
   using: composite
@@ -12,4 +15,5 @@ runs:
     uses: cloudflare/wrangler-action@2.0.0
     with:
       apiToken: ${{ inputs.apiToken }}
+      accountId: ${{ inputs.accountId }}
       workingDirectory: './ui/packages/workers'
