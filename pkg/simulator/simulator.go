@@ -212,6 +212,11 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.Si
 		SampleSeed:       strconv.FormatUint(uint64(CryptoRandSeed()), 10),
 		InitialCharacter: simcfg.InitialChar.String(),
 		TargetDetails:    make([]*model.Enemy, len(simcfg.Targets)),
+		PlayerPosition: &model.Coord{
+			X: simcfg.PlayerPos.X,
+			Y: simcfg.PlayerPos.Y,
+			R: simcfg.PlayerPos.R,
+		},
 	}
 
 	for i, target := range simcfg.Targets {

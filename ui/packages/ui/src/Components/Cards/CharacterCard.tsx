@@ -7,6 +7,7 @@ import {
   IconCR,
   IconCryo,
   IconDef,
+  IconDendro,
   IconElectro,
   IconEM,
   IconER,
@@ -72,7 +73,7 @@ function statKeyToIcon(key: string): JSX.Element {
     case "heal":
       return <IconHeal />;
     case "dendro":
-      return <IconHydro />; // TODO: fix dendro icon
+      return <IconDendro />;
     default:
       return <span />;
   }

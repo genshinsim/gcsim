@@ -25,8 +25,7 @@ export default function DBEntryTags({
           tag
           }
         </div>
-      ))}
-
+      ))}     
     </div>
   );
 }

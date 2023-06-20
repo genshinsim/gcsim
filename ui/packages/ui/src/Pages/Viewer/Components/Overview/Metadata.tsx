@@ -8,9 +8,7 @@ type Props = {
 
 export default ({}: Props) => {
   return (
-    <Card className="flex flex-col col-span-3 h-24 min-h-full">
-      <CardTitle title="Target Information" tooltip="x" />
-      <NoData />
+    <Card className="flex flex-col col-span-full h-12 min-h-full">
     </Card>
   );
 };
