@@ -20,7 +20,7 @@ type client struct {
 	hash         string
 	max          int
 	workerCount  int
-	timeoutInMin int
+	timeoutInSec int
 	dbConn       db.DBStoreClient
 }
 
@@ -34,7 +34,7 @@ func main() {
 	}
 	flag.IntVar(&c.max, "max", -1, "max number of entries to compute")
 	flag.IntVar(&c.workerCount, "w", 10, "number of workers to use")
-	flag.IntVar(&c.timeoutInMin, "timeout", 2, "time out in minutes to run each sim for")
+	flag.IntVar(&c.timeoutInSec, "timeout", 30, "time out in seconds to run each sim for")
 	flag.Parse()
 	//compute steps
 	// 1. ask server for work
@@ -127,7 +127,7 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 	simcfg.Settings.Iterations = int(w.Iterations)
 	simcfg.Settings.NumberOfWorkers = 30
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.timeoutInMin)*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.timeoutInSec)*time.Second)
 	defer cancel()
 
 	result, err := simulator.RunWithConfig(w.Config, simcfg, simulator.Options{}, time.Now(), ctx)
