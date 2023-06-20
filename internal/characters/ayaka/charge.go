@@ -37,44 +37,71 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	// spawn up to 5 attacks
 	// priority: enemy > gadget
 	chargeCount := 5
-	chargeArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
-	charge := func(pos geometry.Point, i int) {
+	checkDelay := chargeHitmarks[0] - 1 // TODO: exact delay unknown
+	singleCharge := func(pos geometry.Point, hitmark int) {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(
+				pos,
+				nil,
+				1,
+			),
+			hitmark,
+			hitmark,
+			c.c1,
+			c.c6,
+		)
+	}
+
+	charge := func(target combat.Target) {
 		for j := 0; j < 3; j++ {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHitOnTarget(
-					pos,
-					nil,
-					1,
-				),
-				chargeHitmarks[j],
-				chargeHitmarks[j],
-				c.c1,
-				c.c6,
-			)
+			// queue up ca hits because target could move
+			c.Core.Tasks.Add(func() {
+				singleCharge(target.Pos(), 0)
+			}, chargeHitmarks[j]-checkDelay)
 		}
 	}
 
-	// target up to 5 enemies
-	enemies := c.Core.Combat.EnemiesWithinArea(chargeArea, nil)
-	enemyCount := len(enemies)
-	for i := 0; i < chargeCount; i++ {
-		if i < enemyCount {
-			charge(enemies[i].Pos(), i)
-		}
-	}
-	chargeCount -= enemyCount
+	c.Core.Tasks.Add(func() {
+		// look for enemies around the player
+		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), nil)
 
-	// if less than 5 enemies were targeted, then check for gadgets
-	if chargeCount > 0 {
-		gadgets := c.Core.Combat.GadgetsWithinArea(chargeArea, nil)
-		gadgetCount := len(gadgets)
+		// don't do anything if there are no enemies in range
+		if enemies == nil {
+			return
+		}
+
+		// check for enemies around the enemy found
+		anchorEnemy := enemies[0]
+		chargeArea := combat.NewCircleHitOnTarget(anchorEnemy, nil, 4)
+		enemies = c.Core.Combat.EnemiesWithinArea(chargeArea, func(t combat.Enemy) bool {
+			return t.Key() != anchorEnemy.Key() // don't want to target the same enemy twice
+		})
+		enemyCount := len(enemies)
+
+		// spawn attacks on enemies
+		charge(anchorEnemy)
+		chargeCount -= 1
 		for i := 0; i < chargeCount; i++ {
-			if i < gadgetCount {
-				charge(gadgets[i].Pos(), i)
+			if i < enemyCount {
+				charge(enemies[i])
 			}
 		}
-	}
+		chargeCount -= enemyCount
+
+		// queue up following ca hits
+
+		// if less than 5 enemies were targeted, then check for gadgets
+		if chargeCount > 0 {
+			gadgets := c.Core.Combat.GadgetsWithinArea(chargeArea, nil)
+			gadgetCount := len(gadgets)
+			for i := 0; i < chargeCount; i++ {
+				if i < gadgetCount {
+					charge(gadgets[i])
+				}
+			}
+		}
+	}, checkDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
