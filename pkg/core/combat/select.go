@@ -37,6 +37,10 @@ func gadgetsWithinAreaFiltered(a AttackPattern, filter func(t Gadget) bool, orig
 		if v == nil {
 			continue
 		}
+		// check if gadget is enemy camp, abilities don't target allied gadgets
+		if !(v.GadgetTyp() > StartGadgetTypEnemy && v.GadgetTyp() < EndGadgetTypEnemy) {
+			continue
+		}
 		if hasFilter && !filter(v) {
 			continue
 		}
@@ -189,6 +193,10 @@ func gadgetsWithinAreaSorted(a AttackPattern, filter func(t Gadget) bool, skipAt
 	hasFilter := filter != nil
 	for _, v := range originalGadgets {
 		if v == nil {
+			continue
+		}
+		// check if gadget is enemy camp, abilities don't target allied gadgets
+		if !(v.GadgetTyp() > StartGadgetTypEnemy && v.GadgetTyp() < EndGadgetTypEnemy) {
 			continue
 		}
 		if hasFilter && !filter(v) {
