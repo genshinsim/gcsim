@@ -84,14 +84,14 @@ jobs:
         uses: ./.github/actions/build-backend-binary
         with:
           cmd: preview
+      - name: build notification binary 
+        uses: ./.github/actions/build-backend-binary
+        with:
+          cmd: notification
       - name: build compute binary 
         uses: ./.github/actions/build-compute-binary
         with:
           cmd: compute
-      - name: build notification binary 
-        uses: ./.github/actions/build-compute-binary
-        with:
-          cmd: notification
       # add a file with the hash
       - name: save hash to file
         working-directory: ./backend/docker
