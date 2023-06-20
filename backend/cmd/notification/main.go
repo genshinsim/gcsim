@@ -129,7 +129,7 @@ func (s *service) onSubmissionComputeFailed(topic string, payload []byte) {
 		log.Println("error marshalling event:", err)
 		return
 	}
-	s.info(fmt.Sprintf("Compute for submission with id %v has failed (%v); entry has been deleted", m.DbId, m.Reason))
+	s.critical(fmt.Sprintf("Compute for submission with id %v has failed (%v); entry has been deleted", m.DbId, m.Reason))
 }
 
 func (s *service) onDBComputeFailed(topic string, payload []byte) {
