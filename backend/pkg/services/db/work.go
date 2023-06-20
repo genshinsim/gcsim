@@ -19,6 +19,17 @@ func (s *Server) GetWork(ctx context.Context, req *GetWorkRequest) (*GetWorkResp
 	}, nil
 }
 
+func (s *Server) WorkStatus(ctx context.Context, req *WorkStatusRequest) (*WorkStatusResponse, error) {
+	todo, total, err := s.DBStore.GetWorkStatus(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &WorkStatusResponse{
+		TodoCount:  int32(todo),
+		TotalCount: int32(total),
+	}, nil
+}
+
 func (s *Server) CompleteWork(ctx context.Context, req *CompleteWorkRequest) (*CompleteWorkResponse, error) {
 	//steps:
 	// 1. check hash matches

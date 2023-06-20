@@ -35,6 +35,7 @@ type TaggingService interface {
 
 type ComputeService interface {
 	GetWork(context.Context) ([]*ComputeWork, error)
+	GetWorkStatus(context.Context) (int64, int64, error)
 }
 
 type AdminService interface {

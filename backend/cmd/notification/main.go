@@ -75,10 +75,6 @@ func (s *service) sub() error {
 	if err != nil {
 		return err
 	}
-	err = s.c.Subscribe(db.TopicComputeCompleted, s.onComputeCompleted)
-	if err != nil {
-		return err
-	}
 	err = s.c.Subscribe(db.TopicSubmissionComputeFailed, s.onSubmissionComputeFailed)
 	if err != nil {
 		return err
@@ -110,16 +106,6 @@ func (s *service) onSubmissionDeleted(topic string, payload []byte) {
 		return
 	}
 	s.info(fmt.Sprintf("Submission %v has been deleted by original submitter", m.DbId))
-}
-
-func (s *service) onComputeCompleted(topic string, payload []byte) {
-	m := &model.ComputeCompletedEvent{}
-	err := protojson.Unmarshal(payload, m)
-	if err != nil {
-		log.Println("error marshalling event:", err)
-		return
-	}
-	s.info(fmt.Sprintf("Compute for DB %v has been completed with share key %v. Link: https://gcsim.app/db/%v", m.DbId, m.ShareId, m.DbId))
 }
 
 func (s *service) onSubmissionComputeFailed(topic string, payload []byte) {

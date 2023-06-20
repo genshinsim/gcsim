@@ -23,7 +23,13 @@ type Backend interface {
 	GetBySubmitter(id string, page int) ([]*db.Entry, error)
 	DeletePending(id, sender string) error
 	GetRandomSim() string
+	GetDBStatus() (*model.DBStatus, error)
 	ReplaceConfig(id, link string) error
+}
+
+type DBStatus struct {
+	ComputeTodoCount int32
+	DBTotalCount     int32
 }
 
 type Config struct {

@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (s *Server) GetAll(ctx context.Context, opt *db.QueryOpt) ([]*db.Entry, error) {
@@ -174,4 +176,34 @@ func (s *Server) GetWork(ctx context.Context) ([]*db.ComputeWork, error) {
 	}
 
 	return next, nil
+}
+
+func (s *Server) GetWorkStatus(ctx context.Context) (int64, int64, error) {
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	todo, err := col.CountDocuments(
+		ctx,
+		bson.D{
+			{
+				Key: "hash",
+				Value: bson.D{
+					{
+						Key:   "$ne",
+						Value: s.cfg.CurrentHash,
+					},
+				},
+			},
+		},
+	)
+	if err != nil {
+		s.Log.Infow("error getting count", "err", err)
+		return 0, 0, status.Error(codes.Internal, "unexpected server error")
+	}
+
+	total, err := col.CountDocuments(ctx, bson.D{})
+	if err != nil {
+		s.Log.Infow("error getting count", "err", err)
+		return 0, 0, status.Error(codes.Internal, "unexpected server error")
+	}
+
+	return todo, total, nil
 }

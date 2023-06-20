@@ -64,6 +64,18 @@ func (s *Store) GetRandomSim() string {
 	return id
 }
 
+func (s *Store) GetDBStatus() (*model.DBStatus, error) {
+	resp, err := s.DBClient.WorkStatus(context.TODO(), &db.WorkStatusRequest{})
+	if err != nil {
+		s.Log.Infow("error getting work status", "err", err)
+		return nil, err
+	}
+	return &model.DBStatus{
+		DbTotalCount: resp.GetTotalCount(),
+		ComputeCount: resp.GetTodoCount(),
+	}, nil
+}
+
 func (s *Store) ReplaceConfig(id string, link string) error {
 	s.Log.Infow("replace config request received", "id", id, "link", link)
 

@@ -978,6 +978,60 @@ export namespace db {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a WorkStatusRequest. */
+    interface IWorkStatusRequest {
+    }
+
+    /** Represents a WorkStatusRequest. */
+    class WorkStatusRequest implements IWorkStatusRequest {
+
+        /**
+         * Constructs a new WorkStatusRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IWorkStatusRequest);
+
+        /**
+         * Gets the default type url for WorkStatusRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a WorkStatusResponse. */
+    interface IWorkStatusResponse {
+
+        /** WorkStatusResponse todo_count */
+        todo_count?: (number|null);
+
+        /** WorkStatusResponse total_count */
+        total_count?: (number|null);
+    }
+
+    /** Represents a WorkStatusResponse. */
+    class WorkStatusResponse implements IWorkStatusResponse {
+
+        /**
+         * Constructs a new WorkStatusResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IWorkStatusResponse);
+
+        /** WorkStatusResponse todo_count. */
+        public todo_count: number;
+
+        /** WorkStatusResponse total_count. */
+        public total_count: number;
+
+        /**
+         * Gets the default type url for WorkStatusResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a ReplaceConfigRequest. */
     interface IReplaceConfigRequest {
 
@@ -1986,6 +2040,39 @@ export namespace model {
 
         /**
          * Gets the default type url for PromotionAddProp
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a DBStatus. */
+    interface IDBStatus {
+
+        /** DBStatus db_total_count */
+        db_total_count?: (number|null);
+
+        /** DBStatus compute_count */
+        compute_count?: (number|null);
+    }
+
+    /** Represents a DBStatus. */
+    class DBStatus implements IDBStatus {
+
+        /**
+         * Constructs a new DBStatus.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IDBStatus);
+
+        /** DBStatus db_total_count. */
+        public db_total_count: number;
+
+        /** DBStatus compute_count. */
+        public compute_count: number;
+
+        /**
+         * Gets the default type url for DBStatus
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

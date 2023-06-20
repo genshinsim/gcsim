@@ -27,6 +27,7 @@ service DBStore {
     rpc GetWork (GetWorkRequest) returns (GetWorkResponse) {}
     rpc CompleteWork (CompleteWorkRequest) returns (CompleteWorkResponse) {}
     rpc RejectWork (RejectWorkRequest) returns (RejectWorkResponse) {}
+    rpc WorkStatus (WorkStatusRequest) returns (WorkStatusResponse) {}
 
     //super-admin endpoint
     rpc ReplaceConfig (ReplaceConfigRequest) returns (ReplaceConfigResponse) {}
@@ -197,6 +198,15 @@ message CompleteWorkRequest {
 message CompleteWorkResponse {
     string id = 1 [json_name="_id"];
 }
+
+message WorkStatusRequest {}
+
+message WorkStatusResponse {
+    int32 todo_count = 1 [json_name="todo_count"];
+    int32 total_count = 2 [json_name="total_count"];
+}
+
+//admin stuff
 
 message ReplaceConfigRequest {
     string id = 1 [json_name="_id"];

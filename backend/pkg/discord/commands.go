@@ -36,6 +36,7 @@ func (b *Bot) routes() error {
 	b.AddFunc("mine", b.cmdListUserSubs)
 	b.AddFunc("delete", b.cmdUserDelete)
 	b.AddFunc("replace", b.cmdReplaceConfig)
+	b.AddFunc("dbstatus", b.cmdDBStatus)
 
 	return nil
 }

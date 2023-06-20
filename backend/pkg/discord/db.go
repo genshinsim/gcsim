@@ -14,6 +14,10 @@ import (
 func init() {
 	commands = append(commands,
 		api.CreateCommandData{
+			Name:        "dbstatus",
+			Description: "return current db status",
+		},
+		api.CreateCommandData{
 			Name:        "list",
 			Description: "list pending sims",
 			Options: []discord.CommandOption{
@@ -218,6 +222,21 @@ func (b *Bot) cmdRandom(ctx context.Context, data cmdroute.CommandData) *api.Int
 
 	return &api.InteractionResponseData{
 		Content: option.NewNullableString(fmt.Sprintf("Here you go: https://simimpact.app/sh/%v", id)),
+	}
+}
+
+func (b *Bot) cmdDBStatus(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
+	b.Log.Infow("db status request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
+
+	s, err := b.Backend.GetDBStatus()
+	if err != nil {
+		return &api.InteractionResponseData{
+			Content: option.NewNullableString("Sorry! I encountered an error"),
+		}
+	}
+
+	return &api.InteractionResponseData{
+		Content: option.NewNullableString(fmt.Sprintf("There are a total of %v entries in the database, including unapproved entries. %v is pending simulation run.", s.DbTotalCount, s.ComputeCount)),
 	}
 }
 
