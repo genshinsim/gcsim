@@ -16,6 +16,10 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
       team.push({} as model.ICharacter);
     }
   }
+  let link = `https://simimpact.app/sh/${dbEntry.share_key}` 
+  if ("_id" in dbEntry) {
+    link = `https://simimpact.app/db/${dbEntry["_id"]}`
+  }
 
   return (
     <>
@@ -41,7 +45,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
         <div className="flex flex-col justify-center ">
 
         <a
-        href={`https://simimpact.app/v3/viewer/share/${dbEntry.share_key}`}
+        href={link}
         target="_blank"
         className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
         rel="noreferrer"
@@ -61,7 +65,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
         </div>
 
         <a
-        href={`https://simimpact.app/v3/viewer/share/${dbEntry.share_key}`}
+        href={link}
         target="_blank"
         className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
         rel="noreferrer"

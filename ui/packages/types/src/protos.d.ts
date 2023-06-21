@@ -2218,7 +2218,10 @@ export namespace model {
     enum DBTag {
         DB_TAG_INVALID = 0,
         DB_TAG_GCSIM = 1,
-        DB_TAG_TESTING = 2
+        DB_TAG_TESTING = 2,
+        DB_TAG_KQM_GUIDE = 3,
+        DB_TAG_GEO_SIMPS = 4,
+        DB_TAG_ITTO_SIMPS = 5
     }
 
     /** Properties of a ComputeFailedEvent. */

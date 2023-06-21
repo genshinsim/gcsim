@@ -42,6 +42,9 @@ func main() {
 		TagMapping: map[string]model.DBTag{
 			"1080228340427927593": model.DBTag_DB_TAG_GCSIM,
 			"1118916799153582170": model.DBTag_DB_TAG_TESTING,
+			"1120875165346177024": model.DBTag_DB_TAG_KQM_GUIDE,
+			"1120878673952788500": model.DBTag_DB_TAG_GEO_SIMPS,
+			"1120878739786571866": model.DBTag_DB_TAG_ITTO_SIMPS,
 		},
 	}, func(b *discord.Bot) error {
 		b.Log = sugar
