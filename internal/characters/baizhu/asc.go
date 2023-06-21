@@ -25,7 +25,7 @@ func (c *char) a1() {
 		AffectedStat: attributes.Heal,
 		Amount: func() ([]float64, bool) {
 			active := c.Core.Player.ActiveChar()
-			if active.HPCurrent/active.MaxHP() < 0.5 {
+			if active.CurrentHPRatio() < 0.5 {
 				return mHeal, true
 			}
 			return nil, false
@@ -40,7 +40,7 @@ func (c *char) a1() {
 		AffectedStat: attributes.DendroP,
 		Amount: func() ([]float64, bool) {
 			active := c.Core.Player.ActiveChar()
-			if active.HPCurrent/active.MaxHP() >= 0.5 {
+			if active.CurrentHPRatio() >= 0.5 {
 				return mDendroP, true
 			}
 			return nil, false

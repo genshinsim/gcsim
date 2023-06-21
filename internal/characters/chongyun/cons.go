@@ -53,7 +53,7 @@ func (c *char) c6() {
 				if !ok {
 					return nil, false
 				}
-				if x.HP()/x.MaxHP() < c.HPCurrent/c.MaxHP() {
+				if x.HP()/x.MaxHP() < c.CurrentHPRatio() {
 					return m, true
 				}
 				return nil, false

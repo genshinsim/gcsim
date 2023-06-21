@@ -40,8 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				return nil, false
 			}
 			// don't apply buff if above hp threshold
-			maxhp := char.MaxHP()
-			if char.HPCurrent > hp_check*maxhp {
+			if char.CurrentHPRatio() > hp_check {
 				return nil, false
 			}
 			return m, true

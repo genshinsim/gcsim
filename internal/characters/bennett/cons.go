@@ -14,7 +14,7 @@ func (c *char) c2() {
 		Base:         modifier.NewBase("bennett-c2", -1),
 		AffectedStat: attributes.ER,
 		Amount: func() ([]float64, bool) {
-			return m, c.HPCurrent/c.MaxHP() < 0.7
+			return m, c.CurrentHPRatio() < 0.7
 		},
 	})
 }

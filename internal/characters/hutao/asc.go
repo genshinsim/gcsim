@@ -46,7 +46,7 @@ func (c *char) a4() {
 		Base:         modifier.NewBase("hutao-a4", -1),
 		AffectedStat: attributes.PyroP,
 		Amount: func() ([]float64, bool) {
-			if c.HPCurrent/c.MaxHP() <= 0.5 {
+			if c.CurrentHPRatio() <= 0.5 {
 				return c.a4buff, true
 			}
 			return nil, false

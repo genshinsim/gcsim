@@ -30,7 +30,7 @@ func (c *char) c6() {
 			}
 			//add 200EM to active char
 			active := c.Core.Player.ActiveChar()
-			if active.HPCurrent/active.MaxHP() > 0.5 {
+			if active.CurrentHPRatio() > 0.5 {
 				active.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("diona-c6", 120),
 					AffectedStat: attributes.EM,

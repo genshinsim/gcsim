@@ -151,7 +151,7 @@ func (c *char) burstHook() {
 	if c.Core.Flags.DamageMode {
 		//add check for if yoimiya dies
 		c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(_ ...interface{}) bool {
-			if c.HPCurrent <= 0 {
+			if c.CurrentHPRatio() <= 0 {
 				// remove Aurous Blaze from target
 				for _, x := range c.Core.Combat.Enemies() {
 					trg := x.(*enemy.Enemy)

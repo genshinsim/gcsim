@@ -75,12 +75,12 @@ func (c *char) c6() {
 			return false
 		}
 		//check if hp less than 25%
-		if c.HPCurrent/c.MaxHP() > .25 {
+		if c.CurrentHPRatio() > 0.25 {
 			return false
 		}
 		//if dead, revive back to 1 hp
-		if c.HPCurrent <= -1 {
-			c.HPCurrent = 1
+		if c.CurrentHPRatio() <= 0 {
+			c.SetHPByAmount(1)
 		}
 		c.AddStatus(c6IcdKey, 3600, false) // 60s * 60
 

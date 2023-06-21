@@ -44,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Amount: func() ([]float64, bool) {
 			maxhp := char.MaxHP()
 			per := atkp
-			if char.HPCurrent <= 0.5*maxhp {
+			if char.CurrentHPRatio() <= 0.5 {
 				per += lowhp
 			}
 			mATK[attributes.ATK] = per * maxhp

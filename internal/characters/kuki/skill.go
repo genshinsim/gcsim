@@ -30,11 +30,13 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// only drain HP when above 20% HP
-	if c.HPCurrent/c.MaxHP() > hpDrainThreshold {
-		hpdrain := 0.3 * c.HPCurrent
+	if c.CurrentHPRatio() > hpDrainThreshold {
+		currentHP := c.CurrentHP()
+		maxHP := c.MaxHP()
+		hpdrain := 0.3 * currentHP
 		// The HP consumption from using this skill can only bring her to 20% HP.
-		if (c.HPCurrent-hpdrain)/c.MaxHP() <= hpDrainThreshold {
-			hpdrain = c.HPCurrent - hpDrainThreshold*c.MaxHP()
+		if (currentHP-hpdrain)/maxHP <= hpDrainThreshold {
+			hpdrain = currentHP - hpDrainThreshold*maxHP
 		}
 		c.Core.Player.Drain(player.DrainInfo{
 			ActorIndex: c.Index,

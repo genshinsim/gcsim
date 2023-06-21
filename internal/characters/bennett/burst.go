@@ -101,7 +101,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 
 		active := c.Core.Player.ActiveChar()
 		//heal if under 70%
-		if active.HPCurrent/active.MaxHP() < .7 {
+		if active.CurrentHPRatio() < 0.7 {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  active.Index,
@@ -117,7 +117,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 			threshold = 0
 		}
 		// Activate attack buff
-		if active.HPCurrent/active.MaxHP() > threshold {
+		if active.CurrentHPRatio() > threshold {
 			// add weapon infusion
 			if c.Base.Cons >= 6 {
 				switch active.Weapon.Class {

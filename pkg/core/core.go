@@ -175,10 +175,10 @@ func (c *Core) AddChar(p profile.CharacterProfile) (int, error) {
 	}
 	index := c.Player.AddChar(char)
 
-	// set the hp
-	char.HPCurrent = -1
+	// get starting hp
+	char.StartHP = -1
 	if hp, ok := p.Params["start_hp"]; ok {
-		char.HPCurrent = float64(hp)
+		char.StartHP = hp
 	}
 
 	// set the energy
