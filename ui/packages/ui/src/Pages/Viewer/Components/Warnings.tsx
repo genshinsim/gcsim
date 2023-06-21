@@ -19,7 +19,7 @@ export default (props: WarningProps) => {
   ];
 
   return (
-    <div className="flex flex-col gap-2 pt-4 empty:pt-0 mx-auto max-w-2xl w-full">
+    <div className="flex flex-col gap-2 pt-4 empty:pt-0 w-full px-2 2xl:mx-auto 2xl:container">
       {warnings}
     </div>
   );
