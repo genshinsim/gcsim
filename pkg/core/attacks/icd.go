@@ -84,6 +84,7 @@ const (
 	ICDGroupYaoyaoRadishSkill
 	ICDGroupYaoyaoRadishBurst
 	ICDGroupBaizhuC2
+	ICDGroupAyakaExtraAttack
 	ICDGroupLength
 )
 
@@ -120,6 +121,7 @@ func init() {
 	ICDGroupResetTimer[ICDGroupYaoyaoRadishSkill] = 150
 	ICDGroupResetTimer[ICDGroupYaoyaoRadishBurst] = 90
 	ICDGroupResetTimer[ICDGroupBaizhuC2] = 240
+	ICDGroupResetTimer[ICDGroupAyakaExtraAttack] = 30
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
 	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
@@ -149,6 +151,7 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupYaoyaoRadishSkill] = []float64{1, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupYaoyaoRadishBurst] = []float64{1, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupBaizhuC2] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupAyakaExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -180,4 +183,5 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupYaoyaoRadishSkill] = []float64{1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupYaoyaoRadishBurst] = []float64{1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupBaizhuC2] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupAyakaExtraAttack] = []float64{1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 }

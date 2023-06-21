@@ -10,9 +10,11 @@ type GadgetTyp int
 
 const (
 	GadgetTypUnknown GadgetTyp = iota
+	StartGadgetTypEnemy
 	GadgetTypDendroCore
-	GadgetTypGuoba
 	GadgetTypLeaLotus
+	EndGadgetTypEnemy
+	GadgetTypGuoba
 	GadgetTypYueguiThrowing
 	GadgetTypYueguiJumping
 	GadgetTypTest
