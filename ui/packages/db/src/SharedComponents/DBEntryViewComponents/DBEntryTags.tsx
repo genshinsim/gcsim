@@ -1,6 +1,5 @@
 import { model } from "@gcsim/types";
-import { useState } from "react";
-import { dbTag } from "./tag";
+import  * as tagDisplayName from "../../tags.json";
 
 export default function DBEntryTags({
   tags,
@@ -14,18 +13,25 @@ export default function DBEntryTags({
         "flex flex-row h-full overflow-hidden max-w-xl"
       }
     >
-      {tags?.map((tag) => (
-        <div
-          className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 mt-1 whitespace-nowrap "
-          key={tag}
-        >
-          {
-            // https://www.typescriptlang.org/docs/handbook/enums.html search d.ts
-            // model.DBTag[tag]
-          tag
-          }
-        </div>
-      ))}     
-    </div>
+      {tags?.map((tag) => {
+        //@ts-ignore
+        if (tag.valueOf() == "DB_TAG_GCSIM" || tag == "DB_TAG_INVALID") {
+          return null 
+        }
+        return (
+          <div
+            className="bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 mt-1 whitespace-nowrap "
+            key={tag}
+          >
+            {
+              // https://www.typescriptlang.org/docs/handbook/enums.html search d.ts
+              // model.DBTag[tag]
+              tagDisplayName[tag].display_name
+            }
+          </div>
+        )
+      }
+      )}
+    </div >
   );
 }
