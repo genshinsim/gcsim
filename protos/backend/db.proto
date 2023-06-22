@@ -18,6 +18,7 @@ service DBStore {
     //tagging
     rpc ApproveTag(ApproveTagRequest) returns (ApproveTagResponse) {}
     rpc RejectTag(RejectTagRequest) returns (RejectTagResponse) {}
+    rpc RejectTagAllUnapproved(RejectTagAllUnapprovedRequest) returns (RejectTagAllUnapprovedResponse) {}
 
     //submissions
     rpc Submit (SubmitRequest) returns (SubmitResponse) {} 
@@ -150,6 +151,14 @@ message RejectTagRequest {
 
 message RejectTagResponse {
     string id = 1 [json_name="id"];
+}
+
+message RejectTagAllUnapprovedRequest {
+    model.DBTag tag = 1 [json_name="tag"];
+}
+
+message RejectTagAllUnapprovedResponse {
+    int64 count = 1 [json_name="count"];
 }
 
 //submission related

@@ -39,3 +39,15 @@ func (s *Server) RejectTag(ctx context.Context, req *RejectTagRequest) (*RejectT
 
 	return &RejectTagResponse{Id: req.GetId()}, nil
 }
+
+func (s *Server) RejectTagAllUnapproved(ctx context.Context, req *RejectTagAllUnapprovedRequest) (*RejectTagAllUnapprovedResponse, error) {
+	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
+		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
+	}
+	count, err := s.DBStore.RejectTagAllUnapproved(ctx, req.GetTag())
+	if err != nil {
+		return nil, err
+	}
+
+	return &RejectTagAllUnapprovedResponse{Count: count}, nil
+}

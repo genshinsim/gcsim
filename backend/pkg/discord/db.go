@@ -56,6 +56,10 @@ func init() {
 			},
 		},
 		api.CreateCommandData{
+			Name:        "rejectall",
+			Description: "reject all unapproved sim",
+		},
+		api.CreateCommandData{
 			Name:        "replace",
 			Description: "replace sim config (admin only)",
 			Options: []discord.CommandOption{
@@ -206,6 +210,30 @@ func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.Int
 
 	return &api.InteractionResponseData{
 		Content: option.NewNullableString(fmt.Sprintf("%v rejected!", opts.Id)),
+	}
+}
+
+func (b *Bot) cmdRejectAll(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
+	b.Log.Infow("reject all request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
+
+	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
+	if !ok {
+		return &api.InteractionResponseData{
+			Content: option.NewNullableString("Oops you don't have permission to do this"),
+		}
+	}
+
+	b.Log.Infow("reject all request for tag", "tag", tag)
+
+	count, err := b.Backend.RejectAll(tag)
+	if err != nil {
+		return &api.InteractionResponseData{
+			Content: option.NewNullableString(fmt.Sprintf("Reject failed due to error: %v", err)),
+		}
+	}
+
+	return &api.InteractionResponseData{
+		Content: option.NewNullableString(fmt.Sprintf("%v entries rejected!", count)),
 	}
 }
 

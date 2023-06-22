@@ -55,6 +55,16 @@ func (s *Store) Reject(id string, tag model.DBTag) error {
 	return nil
 }
 
+func (s *Store) RejectAll(tag model.DBTag) (int64, error) {
+	res, err := s.DBClient.RejectTagAllUnapproved(context.TODO(), &db.RejectTagAllUnapprovedRequest{
+		Tag: tag,
+	})
+	if err != nil {
+		return 0, err
+	}
+	return res.GetCount(), nil
+}
+
 func (s *Store) GetRandomSim() string {
 	id, err := s.ShareStore.Random(context.TODO())
 	if err != nil {

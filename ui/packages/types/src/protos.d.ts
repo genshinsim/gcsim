@@ -684,6 +684,60 @@ export namespace db {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of a RejectTagAllUnapprovedRequest. */
+    interface IRejectTagAllUnapprovedRequest {
+
+        /** RejectTagAllUnapprovedRequest tag */
+        tag?: (model.DBTag|null);
+    }
+
+    /** Represents a RejectTagAllUnapprovedRequest. */
+    class RejectTagAllUnapprovedRequest implements IRejectTagAllUnapprovedRequest {
+
+        /**
+         * Constructs a new RejectTagAllUnapprovedRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IRejectTagAllUnapprovedRequest);
+
+        /** RejectTagAllUnapprovedRequest tag. */
+        public tag: model.DBTag;
+
+        /**
+         * Gets the default type url for RejectTagAllUnapprovedRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a RejectTagAllUnapprovedResponse. */
+    interface IRejectTagAllUnapprovedResponse {
+
+        /** RejectTagAllUnapprovedResponse count */
+        count?: (number|Long|null);
+    }
+
+    /** Represents a RejectTagAllUnapprovedResponse. */
+    class RejectTagAllUnapprovedResponse implements IRejectTagAllUnapprovedResponse {
+
+        /**
+         * Constructs a new RejectTagAllUnapprovedResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IRejectTagAllUnapprovedResponse);
+
+        /** RejectTagAllUnapprovedResponse count. */
+        public count: (number|Long);
+
+        /**
+         * Gets the default type url for RejectTagAllUnapprovedResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of a SubmitRequest. */
     interface ISubmitRequest {
 

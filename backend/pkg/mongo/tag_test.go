@@ -2,6 +2,9 @@ package mongo
 
 import (
 	"context"
+	"fmt"
+	"math/rand"
+	"strings"
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -133,5 +136,65 @@ func TestRejectTag(t *testing.T) {
 	//there's still one more tag to remove
 	if res.IsDbValid {
 		t.Error("result should not be db valid")
+	}
+}
+
+func TestRejectAllUnapprovedTag(t *testing.T) {
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+
+	//insert new entries so not to pollute other tests
+	e := makeEntry("reject_all_unapproved", "poop", true, true)
+	e.AcceptedTags = append(e.AcceptedTags, model.DBTag_DB_TAG_TESTING)
+	_, err := col.InsertOne(context.Background(), e)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	total := rand.Intn(25)
+	//add a bunch of random entries
+	for i := 0; i < total; i++ {
+		e := makeEntry(fmt.Sprintf("reject_all_unapproved_%v", i), "poop", true, false)
+		_, err := col.InsertOne(context.Background(), e)
+		if err != nil {
+			t.Error(err)
+			t.FailNow()
+		}
+	}
+
+	_, err = s.RejectTagAllUnapproved(context.Background(), model.DBTag_DB_TAG_TESTING)
+	if err != nil {
+		t.Error(err)
+	}
+
+	//we should have total of reject_all_unapproved with testing as rejected tag
+	results, err := s.get(context.Background(), col, bson.D{})
+	if err != nil {
+		t.Error(err)
+	}
+	rejectCount := 0
+	acceptCount := 0
+	for _, v := range results {
+		//we only care about reject_all_unapproved
+		if strings.HasPrefix(v.Id, "reject_all_unapproved") {
+			for _, x := range v.RejectedTags {
+				if x == model.DBTag_DB_TAG_TESTING {
+					rejectCount++
+				}
+			}
+			for _, x := range v.AcceptedTags {
+				if x == model.DBTag_DB_TAG_TESTING {
+					acceptCount++
+				}
+			}
+		}
+	}
+
+	if acceptCount != 1 {
+		t.Errorf("expecting %v accepted, got %v", 1, acceptCount)
+	}
+
+	if rejectCount != total {
+		t.Errorf("expecting %v rejected, got %v", total, rejectCount)
 	}
 }

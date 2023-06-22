@@ -105,3 +105,37 @@ func (s *Server) RejectTag(ctx context.Context, id string, tag model.DBTag) erro
 
 	return nil
 }
+
+func (s *Server) RejectTagAllUnapproved(ctx context.Context, tag model.DBTag) (int64, error) {
+	s.Log.Infow("reject all unapproved tag request", "tag", tag)
+	//reject all unapproved will
+	//  1. find all without accepted tag
+	//  2. $addToSet for rejected
+	//  3. set is_db_valid to false IF accepted array count is 0
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+
+	res, err := col.UpdateMany(
+		ctx,
+		bson.M{
+			"accepted_tags": bson.D{
+				{
+					Key: "$nin",
+					Value: bson.A{
+						tag,
+					},
+				},
+			},
+		},
+		bson.M{
+			"$addToSet": bson.M{
+				"rejected_tags": tag,
+			},
+		},
+	)
+	if err != nil {
+		s.Log.Infow("reject all unapproved tag request failed - unexpected error remove from accepted tag", "err", err)
+		return 0, status.Error(codes.Internal, "unexpected server error")
+	}
+
+	return res.ModifiedCount, nil
+}

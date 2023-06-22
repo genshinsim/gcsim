@@ -19,20 +19,21 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	DBStore_Get_FullMethodName            = "/db.DBStore/Get"
-	DBStore_GetAll_FullMethodName         = "/db.DBStore/GetAll"
-	DBStore_GetOne_FullMethodName         = "/db.DBStore/GetOne"
-	DBStore_GetPending_FullMethodName     = "/db.DBStore/GetPending"
-	DBStore_GetBySubmitter_FullMethodName = "/db.DBStore/GetBySubmitter"
-	DBStore_ApproveTag_FullMethodName     = "/db.DBStore/ApproveTag"
-	DBStore_RejectTag_FullMethodName      = "/db.DBStore/RejectTag"
-	DBStore_Submit_FullMethodName         = "/db.DBStore/Submit"
-	DBStore_DeletePending_FullMethodName  = "/db.DBStore/DeletePending"
-	DBStore_GetWork_FullMethodName        = "/db.DBStore/GetWork"
-	DBStore_CompleteWork_FullMethodName   = "/db.DBStore/CompleteWork"
-	DBStore_RejectWork_FullMethodName     = "/db.DBStore/RejectWork"
-	DBStore_WorkStatus_FullMethodName     = "/db.DBStore/WorkStatus"
-	DBStore_ReplaceConfig_FullMethodName  = "/db.DBStore/ReplaceConfig"
+	DBStore_Get_FullMethodName                    = "/db.DBStore/Get"
+	DBStore_GetAll_FullMethodName                 = "/db.DBStore/GetAll"
+	DBStore_GetOne_FullMethodName                 = "/db.DBStore/GetOne"
+	DBStore_GetPending_FullMethodName             = "/db.DBStore/GetPending"
+	DBStore_GetBySubmitter_FullMethodName         = "/db.DBStore/GetBySubmitter"
+	DBStore_ApproveTag_FullMethodName             = "/db.DBStore/ApproveTag"
+	DBStore_RejectTag_FullMethodName              = "/db.DBStore/RejectTag"
+	DBStore_RejectTagAllUnapproved_FullMethodName = "/db.DBStore/RejectTagAllUnapproved"
+	DBStore_Submit_FullMethodName                 = "/db.DBStore/Submit"
+	DBStore_DeletePending_FullMethodName          = "/db.DBStore/DeletePending"
+	DBStore_GetWork_FullMethodName                = "/db.DBStore/GetWork"
+	DBStore_CompleteWork_FullMethodName           = "/db.DBStore/CompleteWork"
+	DBStore_RejectWork_FullMethodName             = "/db.DBStore/RejectWork"
+	DBStore_WorkStatus_FullMethodName             = "/db.DBStore/WorkStatus"
+	DBStore_ReplaceConfig_FullMethodName          = "/db.DBStore/ReplaceConfig"
 )
 
 // DBStoreClient is the client API for DBStore service.
@@ -48,6 +49,7 @@ type DBStoreClient interface {
 	// tagging
 	ApproveTag(ctx context.Context, in *ApproveTagRequest, opts ...grpc.CallOption) (*ApproveTagResponse, error)
 	RejectTag(ctx context.Context, in *RejectTagRequest, opts ...grpc.CallOption) (*RejectTagResponse, error)
+	RejectTagAllUnapproved(ctx context.Context, in *RejectTagAllUnapprovedRequest, opts ...grpc.CallOption) (*RejectTagAllUnapprovedResponse, error)
 	// submissions
 	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error)
 	DeletePending(ctx context.Context, in *DeletePendingRequest, opts ...grpc.CallOption) (*DeletePendingResponse, error)
@@ -131,6 +133,15 @@ func (c *dBStoreClient) RejectTag(ctx context.Context, in *RejectTagRequest, opt
 	return out, nil
 }
 
+func (c *dBStoreClient) RejectTagAllUnapproved(ctx context.Context, in *RejectTagAllUnapprovedRequest, opts ...grpc.CallOption) (*RejectTagAllUnapprovedResponse, error) {
+	out := new(RejectTagAllUnapprovedResponse)
+	err := c.cc.Invoke(ctx, DBStore_RejectTagAllUnapproved_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *dBStoreClient) Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error) {
 	out := new(SubmitResponse)
 	err := c.cc.Invoke(ctx, DBStore_Submit_FullMethodName, in, out, opts...)
@@ -207,6 +218,7 @@ type DBStoreServer interface {
 	// tagging
 	ApproveTag(context.Context, *ApproveTagRequest) (*ApproveTagResponse, error)
 	RejectTag(context.Context, *RejectTagRequest) (*RejectTagResponse, error)
+	RejectTagAllUnapproved(context.Context, *RejectTagAllUnapprovedRequest) (*RejectTagAllUnapprovedResponse, error)
 	// submissions
 	Submit(context.Context, *SubmitRequest) (*SubmitResponse, error)
 	DeletePending(context.Context, *DeletePendingRequest) (*DeletePendingResponse, error)
@@ -244,6 +256,9 @@ func (UnimplementedDBStoreServer) ApproveTag(context.Context, *ApproveTagRequest
 }
 func (UnimplementedDBStoreServer) RejectTag(context.Context, *RejectTagRequest) (*RejectTagResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RejectTag not implemented")
+}
+func (UnimplementedDBStoreServer) RejectTagAllUnapproved(context.Context, *RejectTagAllUnapprovedRequest) (*RejectTagAllUnapprovedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RejectTagAllUnapproved not implemented")
 }
 func (UnimplementedDBStoreServer) Submit(context.Context, *SubmitRequest) (*SubmitResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Submit not implemented")
@@ -401,6 +416,24 @@ func _DBStore_RejectTag_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DBStoreServer).RejectTag(ctx, req.(*RejectTagRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DBStore_RejectTagAllUnapproved_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RejectTagAllUnapprovedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).RejectTagAllUnapproved(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_RejectTagAllUnapproved_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).RejectTagAllUnapproved(ctx, req.(*RejectTagAllUnapprovedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -565,6 +598,10 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RejectTag",
 			Handler:    _DBStore_RejectTag_Handler,
+		},
+		{
+			MethodName: "RejectTagAllUnapproved",
+			Handler:    _DBStore_RejectTagAllUnapproved_Handler,
 		},
 		{
 			MethodName: "Submit",

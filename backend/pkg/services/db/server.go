@@ -31,6 +31,7 @@ type DBService interface {
 type TaggingService interface {
 	ApproveTag(ctx context.Context, id string, tag model.DBTag) error
 	RejectTag(ctx context.Context, id string, tag model.DBTag) error
+	RejectTagAllUnapproved(ctx context.Context, tag model.DBTag) (int64, error)
 }
 
 type ComputeService interface {
