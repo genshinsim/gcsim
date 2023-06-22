@@ -33,6 +33,16 @@ func (s *Store) GetPending(tag model.DBTag, page int) ([]*db.Entry, error) {
 	return resp.GetData().GetData(), nil
 }
 
+func (s *Store) GetDBEntry(id string) (*db.Entry, error) {
+	res, err := s.DBClient.GetOne(context.TODO(), &db.GetOneRequest{
+		Id: id,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return res.GetData(), nil
+}
+
 func (s *Store) Approve(id string, tag model.DBTag) error {
 	_, err := s.DBClient.ApproveTag(context.TODO(), &db.ApproveTagRequest{
 		Id:  id,

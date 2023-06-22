@@ -25,6 +25,7 @@ type Backend interface {
 	DeletePending(id, sender string) error
 	GetRandomSim() string
 	GetDBStatus() (*model.DBStatus, error)
+	GetDBEntry(id string) (*db.Entry, error)
 	ReplaceConfig(id, link string) error
 }
 
