@@ -1,12 +1,14 @@
 import { MenuItem, Spinner } from "@blueprintjs/core";
+import { MultiSelect2 } from "@blueprintjs/select";
 import { db } from "@gcsim/types";
 import axios from "axios";
+import eula from "images/eula.png";
+import { charNames } from "PipelineExtract/CharacterNames";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PaginationButtons } from "SharedComponents/Pagination";
 import { Filter } from "../SharedComponents/Filter";
 import {
-	filterCharNames,
   FilterContext,
   FilterDispatchContext,
   filterReducer,
@@ -15,27 +17,22 @@ import {
   ItemFilterState,
 } from "../SharedComponents/FilterComponents/Filter.utils";
 import { ListView } from "../SharedComponents/ListView";
-import { MultiSelect2 } from "@blueprintjs/select";
-import { charNames } from "PipelineExtract/CharacterNames";
-import eula from "images/eula.png";
-
 
 export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, initialFilter);
   const [data, setData] = useState<db.IEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+
   const { t } = useTranslation();
   const querydb = (query: DbQuery) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
       .then((resp: { data: db.IEntries }) => {
         if (resp.data && resp.data.data) {
           setData(resp.data.data);
-        } 
-        else {
-            setData([]);
+        } else {
+          setData([]);
         }
-				setIsLoading(false);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log("error: ", err);
@@ -43,14 +40,16 @@ export function Database() {
   };
 
   useEffect(() => {
-
     const query = craftQuery(filter);
     querydb(query);
   }, [filter]);
 
-  if(isLoading || !data ) return <div className="h-screen flex flex-col justify-center items-center">
-      <Spinner  />
-    </div>;
+  if (isLoading || !data)
+    return (
+      <div className="h-screen flex flex-col justify-center items-center">
+        <Spinner />
+      </div>
+    );
 
   return (
     <FilterContext.Provider value={filter}>
@@ -60,18 +59,21 @@ export function Database() {
             <Filter />
             <CharacterQuickSelect />
 
-            <div className="text-base  hidden md:block md:text-2xl">{`${t("db.showing")} ${
-              data?.length ?? 0
-            } ${t("db.simulations")} `}</div>
+            <div className="text-base  hidden md:block md:text-2xl">{`${t(
+              "db.showing"
+            )} ${data?.length ?? 0} ${t("db.simulations")} `}</div>
             {/* <Sorter /> */}
           </div>
-          {
-            data.length === 0 ?
-             <div className="6 flex flex-col justify-center items-center h-screen">
-                <img src={eula} className=" object-contain opacity-50 w-32 h-32" />
+          {data.length === 0 ? (
+            <div className="6 flex flex-col justify-center items-center h-screen">
+              <img
+                src={eula}
+                className=" object-contain opacity-50 w-32 h-32"
+              />
             </div>
-            : <ListView data={data} />
-          }
+          ) : (
+            <ListView data={data} />
+          )}
           <PaginationButtons />
         </div>
       </FilterDispatchContext.Provider>
@@ -213,7 +215,6 @@ function CharacterQuickSelect() {
             type: "clearFilter",
           });
         }}
-
         onRemove={(charName) => {
           dispatch({
             type: "includeChar",
