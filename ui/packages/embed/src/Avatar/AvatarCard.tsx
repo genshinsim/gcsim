@@ -40,7 +40,7 @@ const AvatarCard = ({ c }: CardProps) => {
   }
 
   return (
-    <div className="flex flex-col w-full bg-bp4-dark-gray-400 shadow border border-gray-600">
+    <div className="flex flex-col w-full bg-bp4-dark-gray-400 shadow border border-gray-600 rounded-sm">
       <div className={`relative w-full pt-2 z-0 ${charBG(c.element)}`}>
         <div
             className="absolute top-0 left-0 right-0 bottom-0 !bg-cover !bg-center mix-blend-luminosity z-1 "
@@ -99,7 +99,7 @@ const AvatarCard = ({ c }: CardProps) => {
 
         <Card className={
           "absolute left-[-1px] top-[-1px] flex flex-col gap-0 px-1 py-0 rounded-none " +
-          "font-bold font-mono text-base "
+          "font-bold font-mono text-base rounded-tl-sm rounded-br-lg "
         }>
           <div className="flex flex-row gap-1 min-h-fit">
             <span className="text-geo">{`C${c.cons ?? 0}`}</span>
@@ -109,7 +109,7 @@ const AvatarCard = ({ c }: CardProps) => {
 
         <Card className={
           "absolute right-[-1px] top-[-1px] flex flex-col gap-0 px-1 py-0 rounded-none " +
-          "font-mono text-base "
+          "font-mono text-base rounded-tr-sm rounded-bl-lg "
         }>
           <div className="flex flex-row gap-1 min-h-fit items-center">
             <span className="text-xs text-gray-400">lvl</span>
