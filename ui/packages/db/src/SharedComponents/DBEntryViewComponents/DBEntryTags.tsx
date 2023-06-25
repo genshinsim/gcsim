@@ -21,11 +21,12 @@ export default function DBEntryTags({
             setLocation(`/tag/${tag}`);
           }}
         >
-          {
-            // https://www.typescriptlang.org/docs/handbook/enums.html search d.ts
-            // model.DBTag[tag]
-            t(`db.${tag}`)
-          }
+          {(tag as unknown as string) === "DB_TAG_KQM_GUIDE"
+            ? // https://www.typescriptlang.org/docs/handbook/enums.html search d.ts
+              // model.DBTag[tag]
+
+              t(`db.${tag}`)
+            : tag}
         </div>
       ))}
     </div>
