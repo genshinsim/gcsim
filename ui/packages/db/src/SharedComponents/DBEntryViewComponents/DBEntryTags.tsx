@@ -24,7 +24,7 @@ export default function DBEntryTags({
           {
             // https://www.typescriptlang.org/docs/handbook/enums.html search d.ts
             // model.DBTag[tag]
-            t(`${tag}`)
+            t(`db.${tag}`)
           }
         </div>
       ))}
