@@ -28,7 +28,7 @@ export const PositionGraph = ({
   const numYTicks = 10;
   const { data, max, centerX, centerY } = useData(enemies, player);
   const size = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom);
-  const gridSize = Math.max(Math.ceil(2 * max + 1), 10) / size;
+  const gridSize = Math.max(Math.round(2 * max + 1), 1) / size;
   const marginLeft = (width - size) / 2;
   const domain = (size * gridSize) / 2;
 
@@ -93,7 +93,8 @@ export const PositionGraph = ({
               axisLineClassName="stroke-2"
           />
           {data.map((e, i) => {
-            const opacity = tooltip.tooltipData?.index == i ? 0.75 : 0.25;
+            const opacity = (tooltip.tooltipData?.index == i && !tooltip.tooltipData.player)
+                ? 0.75 : 0.25;
             return (
               <Circle
                 key={`enemy-${i}`}
