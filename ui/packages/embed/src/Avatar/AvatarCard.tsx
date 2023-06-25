@@ -4,23 +4,21 @@ import ArtifactsIcon from "./ArtifactsIcon";
 
 type Props = {
   chars?: Character[];
-  handleLoaded: () => void;
 };
 
-export const Avatars = ({ chars, handleLoaded }: Props) => {
+export const Avatars = ({ chars }: Props) => {
   return (
     <Card className="flex flex-row p-2 max-w-fit">
-      {chars?.map((c) => <AvatarCard key={c.name} c={c} handleLoaded={handleLoaded} />)}
+      {chars?.map((c) => <AvatarCard key={c.name} c={c} />)}
     </Card>
   );
 };
 
 type CardProps = {
   c: Character;
-  handleLoaded: () => void;
 };
 
-const AvatarCard = ({ c, handleLoaded }: CardProps) => {
+const AvatarCard = ({ c }: CardProps) => {
   const sets: string[] = [];
   let half = false;
 
@@ -40,7 +38,6 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
         className="object-contain h-24"
         key={c.name}
         src={`/api/assets/avatar/${c.name}.png`}
-        onLoad={handleLoaded}
       />
       <Card className={
         "absolute left-0 top-0 flex flex-row gap-1 px-1 py-0 rounded-lg " +
