@@ -1,16 +1,31 @@
+import { Card } from "@blueprintjs/core";
+import { Character } from "@gcsim/types";
 import ArtifactsIcon from "./ArtifactsIcon";
 
+type Props = {
+  chars?: Character[];
+  handleLoaded: () => void;
+};
+
+export const Avatars = ({ chars, handleLoaded }: Props) => {
+  return (
+    <Card className="flex flex-row p-2 max-w-fit">
+      {chars?.map((c) => <AvatarCard key={c.name} c={c} handleLoaded={handleLoaded} />)}
+    </Card>
+  );
+};
+
 type CardProps = {
-  c: any; //TODO(kyle): This should be typed model.ICharacter
+  c: Character;
   handleLoaded: () => void;
 };
 
 const AvatarCard = ({ c, handleLoaded }: CardProps) => {
+  const sets: string[] = [];
   let half = false;
-  let sets: string[] = [];
 
   if ("sets" in c) {
-    for (const [key, value] of Object.entries(c.sets)) {
+    for (const [key,] of Object.entries(c.sets)) {
       sets.push(key);
     }
   }
@@ -20,16 +35,22 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
   }
 
   return (
-    <div className="card">
-      <div className="char">
-        <img
-          key={c.name}
-          src={`/api/assets/avatar/${c.name}.png`}
-          onLoad={handleLoaded}
-        />
-      </div>
+    <div className="relative w-24">
+      <img
+        className="object-contain h-24"
+        key={c.name}
+        src={`/api/assets/avatar/${c.name}.png`}
+        onLoad={handleLoaded}
+      />
+      <Card className={
+        "absolute left-0 top-0 flex flex-row gap-1 px-1 py-0 rounded-lg " +
+        "font-bold font-mono text-base "
+      }>
+        <span className="text-geo">{`C${c.cons}`}</span>
+        <span className="text-electro">{`R${c.weapon.refine}`}</span>
+      </Card>
       <div className="equip">
-        <svg key={c.weapon.name} width="91" height="95">
+        <svg key={c.weapon.name} width="62" height="65">
           <filter id="outlinew">
             <feMorphology
               in="SourceAlpha"
@@ -37,7 +58,7 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
               operator="dilate"
               radius="1"
             />
-            <feFlood flood-color="white" />
+            <feFlood floodColor="white" />
             <feComposite in2="expanded" operator="in" />
             <feComposite in="SourceGraphic" />
           </filter>
@@ -48,7 +69,7 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
               operator="dilate"
               radius="1.5"
             />
-            <feFlood flood-color="black" />
+            <feFlood floodColor="black" />
             <feComposite in2="expanded" operator="in" />
             <feGaussianBlur stdDeviation="1" />
             <feComposite in="SourceGraphic" />
@@ -56,8 +77,8 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
           <image
             filter="url(#outlinew) url(#outlineb)"
             href={`/api/assets/weapons/${c.weapon.name}.png`}
-            height="85"
-            width="85"
+            height="58"
+            width="58"
             x="3"
             y="3"
           />
@@ -67,5 +88,3 @@ const AvatarCard = ({ c, handleLoaded }: CardProps) => {
     </div>
   );
 };
-
-export default AvatarCard;

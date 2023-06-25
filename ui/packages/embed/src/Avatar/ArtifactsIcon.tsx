@@ -10,10 +10,10 @@ const ArtifactsIcon = ({
       key={0}
       filter="url(#outlinew)"
       href={`/api/assets/artifacts/${sets[0]}_flower.png`}
-      height="43"
-      width={sets.length > 1 || half ? "20.5" : "43"}
-      x="30"
-      y="52"
+      height="35"
+      width={sets.length > 1 || half ? "17.5" : "35"}
+      x="20"
+      y="33"
       preserveAspectRatio={
         sets.length > 1 || half ? "xMinYMid slice" : undefined
       }
@@ -25,10 +25,10 @@ const ArtifactsIcon = ({
         key={1}
         filter="url(#outlinew)"
         href={`/api/assets/artifacts/${sets[1]}_flower.png`}
-        height="43"
-        width="20.5"
-        x="52.5"
-        y="52"
+        height="35"
+        width="17.5"
+        x="37.5"
+        y="33"
         preserveAspectRatio="xMaxYMid slice"
       ></image>
     );

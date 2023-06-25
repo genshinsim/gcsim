@@ -8,13 +8,9 @@ body {
   background-color: #1c2127;
 }
 
-.card {
-  position: relative;
-  height: 140px;
-}
 .equip {
   position: absolute;
-  bottom: -5px;
-  right: -7px;
-  width: 91px;
+  bottom: -3px;
+  right: -6px;
+  width: 62px;
 }
