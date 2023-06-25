@@ -12,8 +12,8 @@ const ArtifactsIcon = ({
       href={`/api/assets/artifacts/${sets[0]}_flower.png`}
       height="35"
       width={sets.length > 1 || half ? "17.5" : "35"}
-      x="20"
-      y="33"
+      x="0"
+      y="0"
       preserveAspectRatio={
         sets.length > 1 || half ? "xMinYMid slice" : undefined
       }
@@ -27,8 +27,8 @@ const ArtifactsIcon = ({
         href={`/api/assets/artifacts/${sets[1]}_flower.png`}
         height="35"
         width="17.5"
-        x="37.5"
-        y="33"
+        x="17.5"
+        y="0"
         preserveAspectRatio="xMaxYMid slice"
       ></image>
     );
