@@ -4,6 +4,7 @@ import App from "./App";
 
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "./index.css";
+import "@gcsim/ui/src/Translation/i18n";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

@@ -71,7 +71,7 @@ type CharacterData = {
   pct: number;
 }
 
-function useData(dps?: FloatStat[], names?: string[]): { data: CharacterData[], total: number } {
+export function useData(dps?: FloatStat[], names?: string[]): { data: CharacterData[], total: number } {
   const total = useMemo(() => {
     if (dps == null) {
       return 0;

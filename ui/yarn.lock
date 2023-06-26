@@ -714,11 +714,28 @@ __metadata:
   dependencies:
     "@blueprintjs/core": ^4.11.4
     "@gcsim/types": "workspace:^"
+    "@gcsim/ui": "workspace:^"
+    "@visx/annotation": ^3.0.0
+    "@visx/axis": ^3.0.0
+    "@visx/curve": ^3.0.0
+    "@visx/event": ^3.0.0
+    "@visx/gradient": ^3.0.0
+    "@visx/grid": ^3.0.0
+    "@visx/group": ^3.0.0
+    "@visx/legend": ^3.0.0
+    "@visx/responsive": ^3.0.0
+    "@visx/scale": ^3.0.0
+    "@visx/shape": ^3.0.0
+    "@visx/stats": ^3.0.0
+    "@visx/text": ^3.0.0
+    "@visx/threshold": ^3.0.0
+    "@visx/tooltip": ^3.0.0
     "@vitejs/plugin-react": ^3.1.0
     axios: ^1.2.1
     react: ^18.2.0
     react-dom: ^18.2.0
     react-error-boundary: ^4.0.4
+    react-i18next: ^12.0.0
     rollup-plugin-visualizer: ^5.8.3
     vite: ^4.1.1
     vite-tsconfig-paths: ^4.0.5
@@ -3184,6 +3201,18 @@ __metadata:
     "@types/react": "*"
     "@visx/point": 3.0.0
   checksum: cd1605dc0fdfb2113948d6a01982a4ff62786b05bfcd766201ce0877a4dd8d4ce74dcdd8db73f894ef36880b621a46b412a037188d029a9dbccf0a78122b1560
+  languageName: node
+  linkType: hard
+
+"@visx/gradient@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@visx/gradient@npm:3.0.0"
+  dependencies:
+    "@types/react": "*"
+    prop-types: ^15.5.7
+  peerDependencies:
+    react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+  checksum: 471b4a4e1ec329e26cedb5aeef627b7c6393b54d85f76fa2707ec4f2b75a67007c5d9e4c9ffbdf58d37853228c21e285780466ab958b22dbba41f209c5212182
   languageName: node
   linkType: hard
 
@@ -9907,7 +9936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.10, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.10, prop-types@npm:^15.5.7, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:

@@ -1,5 +1,6 @@
 import { Card } from "@blueprintjs/core";
 import { Character } from "@gcsim/types";
+import { DataColors } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
 import ArtifactsIcon from "./ArtifactsIcon";
 import placeholder from "./default.png";
 import overlay from "./overlay.jpg";
@@ -9,23 +10,19 @@ type Props = {
 };
 
 export const Avatars = ({ chars }: Props) => {
-  // return (
-  //   <>
-  //     {chars?.map((c) => <AvatarCard key={c.name} c={c} />)}
-  //   </>
-  // );
   return (
     <div className="flex flex-row grow gap-2 justify-between">
-      {chars?.map((c) => <AvatarCard key={c.name} c={c} />)}
+      {chars?.map((c, i) => <AvatarCard key={c.name} c={c} i={i} />)}
     </div>
   );
 };
 
 type CardProps = {
   c: Character;
+  i: number;
 };
 
-const AvatarCard = ({ c }: CardProps) => {
+const AvatarCard = ({ c, i }: CardProps) => {
   const sets: string[] = [];
   let half = false;
 
@@ -88,7 +85,6 @@ const AvatarCard = ({ c }: CardProps) => {
               x="0"
               y="3"
             />
-            {/* { sets.length > 0 ? <ArtifactsIcon sets={sets} half={half} /> : null} */}
           </svg>
         </div>
         <div className="absolute bottom-0 left-0">
@@ -113,7 +109,9 @@ const AvatarCard = ({ c }: CardProps) => {
         }>
           <div className="flex flex-row gap-1 min-h-fit items-center">
             <span className="text-xs text-gray-400">lvl</span>
-            <span className="font-bold">{c.level}</span>
+            <span className={`font-bold`} style={{ color: DataColors.qualitative5(i) }}>
+              {c.level}
+            </span>
           </div>
         </Card>
       </div>
