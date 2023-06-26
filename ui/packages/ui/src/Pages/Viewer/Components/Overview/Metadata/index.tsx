@@ -17,9 +17,9 @@ type Props = {
 
 export default ({ data }: Props) => {
   return (
-    <Card className="flex flex-row flex-wrap col-span-full p-2 gap-2 justify-center">
+    <Card className="flex flex-row flex-wrap col-span-full !p-2 gap-2 justify-center">
       <DevBuild signKey={data?.key_type} />
-      {/* <Dirty modified={data?.modified} /> */}
+      <Dirty modified={data?.modified} />
       <WarningItem warnings={data?.statistics?.warnings} />
       <Standard standard={data?.standard} />
       <Iterations itr={data?.statistics?.iterations} />

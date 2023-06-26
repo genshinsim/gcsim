@@ -15,14 +15,14 @@ type Props = {
 export const Metadata = ({ data }: Props) => {
   if (data.schema_version == null) {
     return (
-      <Card className="flex flex-row flex-wrap p-2 gap-2 justify-center">
+      <Card className="flex flex-row flex-wrap !p-2 gap-2 justify-center">
         <Item value="legacy sim" intent="danger" bright />
       </Card>
     );
   }
 
   return (
-    <Card className="flex flex-row flex-wrap p-2 gap-2 justify-center">
+    <Card className="flex flex-row flex-wrap !p-2 gap-2 justify-center">
       <Error signKey={data.key_type} modified={data.modified} />
       <WarningItem warnings={data?.statistics?.warnings} />
       <Standard standard={data?.standard} />
