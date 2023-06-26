@@ -7,12 +7,13 @@ import overlay from "./overlay.jpg";
 
 type Props = {
   chars?: Character[];
+  handleLoaded: () => void;
 };
 
-export const Avatars = ({ chars }: Props) => {
+export const Avatars = ({ chars, handleLoaded }: Props) => {
   return (
     <div className="flex flex-row grow gap-2 justify-between">
-      {chars?.map((c, i) => <AvatarCard key={c.name} c={c} i={i} />)}
+      {chars?.map((c, i) => <AvatarCard key={c.name} c={c} i={i} handleLoaded={handleLoaded} />)}
     </div>
   );
 };
@@ -20,9 +21,10 @@ export const Avatars = ({ chars }: Props) => {
 type CardProps = {
   c: Character;
   i: number;
+  handleLoaded: () => void;
 };
 
-const AvatarCard = ({ c, i }: CardProps) => {
+const AvatarCard = ({ c, i, handleLoaded }: CardProps) => {
   const sets: string[] = [];
   let half = false;
 
@@ -49,7 +51,11 @@ const AvatarCard = ({ c, i }: CardProps) => {
             className="relative object-contain h-24"
             key={c.name}
             src={`/api/assets/avatar/${c.name}.png`}
-            onError={(e) => (e.target as HTMLImageElement).src = placeholder}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = placeholder;
+              handleLoaded();
+            }}
+            onLoad={handleLoaded}
           />
         </div>
         <div className="equip">
