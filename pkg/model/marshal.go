@@ -13,7 +13,8 @@ func marshalOptions() protojson.MarshalOptions {
 }
 func unmarshalOptions() protojson.UnmarshalOptions {
 	return protojson.UnmarshalOptions{
-		AllowPartial: true,
+		AllowPartial:   true,
+		DiscardUnknown: true,
 	}
 }
 

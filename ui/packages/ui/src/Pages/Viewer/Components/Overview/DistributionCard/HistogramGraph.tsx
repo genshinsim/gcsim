@@ -161,7 +161,7 @@ const Graph = ({
   );
 };
 
-function useScales(data: SummaryStat | undefined, xMax: number, yMax: number) {
+export function useScales(data: SummaryStat | undefined, xMax: number, yMax: number) {
   const xScale = useMemo(() => scaleBand<number>({
     range: [0, xMax],
     domain: range(data?.histogram?.length ?? 1),

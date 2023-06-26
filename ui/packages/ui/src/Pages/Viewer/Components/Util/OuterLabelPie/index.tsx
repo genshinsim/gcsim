@@ -13,8 +13,8 @@ type Props<Datum> = {
   pieValue: (d: Datum) => number;
   color: (d: Datum) => string;
   labelColor?: (d: Datum) => string;
-  labelText: (d: Datum) => string;
-  labelValue: (d: Datum) => string;
+  labelText?: (d: Datum) => string;
+  labelValue?: (d: Datum) => string;
 
   tooltipContent?: (d: Datum) => string | JSX.Element;
 
@@ -22,6 +22,8 @@ type Props<Datum> = {
   labelRadius?: number;
   outline?: string;
   tail?: number;
+  margin?: number;
+  outlineWidth?: number;
 }
 
 export default <Datum,>(
@@ -38,11 +40,12 @@ export default <Datum,>(
       pieRadius = 0.65,
       labelRadius = 0.8,
       outline = "#FFF",
-      tail = 15
+      tail = 15,
+      margin = 150,
+      outlineWidth = 1,
     }: Props<Datum>) => {
   const tooltip = useTooltip<TooltipData>();
   const tooltipHandles = useTooltipHandles(tooltip.showTooltip, tooltip.hideTooltip);
-  const margin = 150;
 
   const radius = Math.min(width - margin, height) / 2;
   return (
@@ -50,24 +53,26 @@ export default <Datum,>(
       <svg width={width} height={height}>
         <Group left={width / 2} top={height / 2}>
           {/* label arcs */}
-          <Pie
-              data={data}
-              pieValue={pieValue}
-              innerRadius={radius * labelRadius}
-              outerRadius={radius * labelRadius}>
-            {(pie) => (
-              <OuterLabels
-                  arcs={pie.arcs}
-                  labelRadius={radius * labelRadius}
-                  pieRadius={radius * pieRadius}
-                  labelColor={labelColor}
-                  labelText={labelText}
-                  labelValue={labelValue}
-                  mouseHover={tooltipHandles.mouseHover}
-                  mouseLeave={tooltipHandles.mouseLeave}
-                  tail={tail} />
-            )}
-          </Pie>
+          {labelText != null && labelValue != null &&
+            <Pie
+                data={data}
+                pieValue={pieValue}
+                innerRadius={radius * labelRadius}
+                outerRadius={radius * labelRadius}>
+              {(pie) => (
+                <OuterLabels
+                    arcs={pie.arcs}
+                    labelRadius={radius * labelRadius}
+                    pieRadius={radius * pieRadius}
+                    labelColor={labelColor}
+                    labelText={labelText}
+                    labelValue={labelValue}
+                    mouseHover={tooltipHandles.mouseHover}
+                    mouseLeave={tooltipHandles.mouseLeave}
+                    tail={tail} />
+              )}
+            </Pie>
+          }
 
           {/* tooltip hover arcs */}
           <Pie
@@ -105,7 +110,7 @@ export default <Datum,>(
                       d={pie.path(arc) ?? ""}
                       fill={color(arc.data)}
                       stroke={outline}
-                      strokeWidth={1}
+                      strokeWidth={outlineWidth}
                       onMouseMove={(e) => tooltipHandles.mouseHover(e, index)}
                       onMouseLeave={() => tooltipHandles.mouseLeave()}
                   />

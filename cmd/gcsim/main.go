@@ -140,6 +140,14 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		}
 		hash, _ = res.Sign(shareKey)
 		fmt.Println(res.PrettyPrint())
+
+		if simopt.ResultSaveToPath != "" {
+			err = res.Save(simopt.ResultSaveToPath, simopt.GZIPResult)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}
 	}
 
 	if opt.sample != "" {

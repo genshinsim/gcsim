@@ -26,21 +26,20 @@ export const PositionGraph = ({
     }: Props) => {
   const numXTicks = 10;
   const numYTicks = 10;
-  const { data } = useData(enemies);
+  const { data, max, centerX, centerY } = useData(enemies, player);
   const size = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom);
-  const gridSize = 10 / size;
+  const gridSize = Math.max(Math.round(2 * max + 1), 1) / size;
   const marginLeft = (width - size) / 2;
+  const domain = (size * gridSize) / 2;
 
   const xScale = scaleLinear<number>({
     range: [0, size],
-    domain: [(-size* gridSize) / 2, (size * gridSize) / 2],
-    nice: true,
+    domain: [centerX - domain, centerX + domain],
   });
 
   const yScale = scaleLinear<number>({
-    range: [size, 0],
-    domain: [(-size * gridSize) / 2, (size * gridSize) / 2],
-    nice: true,
+    range: [size, 0], 
+    domain: [centerY - domain, centerY + domain],
   });
 
   const sizeScale = (size: number) => size / gridSize;
@@ -94,7 +93,8 @@ export const PositionGraph = ({
               axisLineClassName="stroke-2"
           />
           {data.map((e, i) => {
-            const opacity = tooltip.tooltipData?.index == i ? 0.75 : 0.25;
+            const opacity = (tooltip.tooltipData?.index == i && !tooltip.tooltipData.player)
+                ? 0.75 : 0.25;
             return (
               <Circle
                 key={`enemy-${i}`}
@@ -158,28 +158,34 @@ type Position = {
 type PositionData = {
   data: Position[];
   max: number;
+  centerX: number;
+  centerY: number;
 }
 
-function useData(enemies?: Enemy[]): PositionData {
+function useData(enemies?: Enemy[], player?: Coord): PositionData {
   return useMemo(() => {
-    if (enemies == null) {
-      return { data: [], max: 0 };
+    if (enemies == null || player == null) {
+      return { data: [], max: 0, centerX: 0, centerY: 0 };
     }
+
+    const playerX = player.x ?? 0;
+    const playerY = player.y ?? 0;
 
     let max = 0;
     const data: Position[] = enemies.map((e) => {
       const x = e.position?.x ?? 0;
       const y = e.position?.y ?? 0;
       const r = e.position?.r ?? 1;
-      const edgeX = Math.abs(x) + r;
-      const edgeY = Math.abs(y) + r; 
-      max = Math.max(max, edgeX, edgeY);
+      const dist = Math.sqrt(Math.pow(playerX - x, 2) + Math.pow(playerY - y, 2));
+      max = Math.max(max, dist + r);
       return { x: x, y: y, r: r};
     });
 
     return {
       data: data,
       max: max,
+      centerX: playerX,
+      centerY: playerY,
     };
-  }, [enemies]);
+  }, [enemies, player]);
 }
