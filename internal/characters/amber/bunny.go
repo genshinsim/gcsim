@@ -21,7 +21,6 @@ type Bunny struct {
 	*reactable.Reactable
 	ae   *combat.AttackEvent
 	char *char
-	src  int
 }
 
 func (b *Bunny) AuraContains(e ...attributes.Element) bool {
@@ -56,7 +55,7 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 					Write("applied_ele", atk.Info.Element.String()).
 					Write("dur", applied).
 					Write("abil", atk.Info.Abil).
-					Write("target", b.Key()).
+					Write("target", "Bunny").
 					Write("existing", existing).
 					Write("after", b.Reactable.ActiveAuraString())
 
@@ -97,7 +96,7 @@ func (s *Bunny) attachEle(atk *combat.AttackEvent) {
 			Write("applied_ele", atk.Info.Element.String()).
 			Write("dur", applied).
 			Write("abil", atk.Info.Abil).
-			Write("target", s.Key()).
+			Write("target", "Bunny").
 			Write("existing", existing).
 			Write("after", s.Reactable.ActiveAuraString())
 
@@ -125,10 +124,10 @@ func (r *Bunny) React(a *combat.AttackEvent) {
 	}
 }
 
-func (s *Bunny) Tick() {
+func (b *Bunny) Tick() {
 	//this is needed since gadget tick
-	s.Reactable.Tick()
-	s.Gadget.Tick()
+	b.Gadget.Tick()
+	b.Reactable.Tick()
 }
 
 func (c *char) makeBunny() *Bunny {
@@ -149,7 +148,7 @@ func (c *char) makeBunny() *Bunny {
 	b.Reactable.Init(b, c.Core)
 
 	// duration is 8.2s
-	b.Duration = 492
+	b.Gadget.Duration = 492
 
 	b.char = c
 
@@ -173,13 +172,17 @@ func (c *char) makeBunny() *Bunny {
 	}
 	b.ae.Callbacks = append(b.ae.Callbacks, c.makeParticleCB())
 	c.bunnies = append(c.bunnies, b)
-	b.Gadget.OnKill = b.OnKill
+	b.Gadget.OnKill = b.explode
+	b.Gadget.OnExpiry = b.explode
+	c.Core.Combat.AddGadget(b)
 	return b
 }
 
-func (b *Bunny) OnKill() {
+func (b *Bunny) explode() {
 	// Explode
-	b.explode()
+	b.char.Core.Log.NewEvent("amber exploding bunny", glog.LogCharacterEvent, b.char.Index).
+		Write("src", b.Gadget.Src())
+	b.char.Core.QueueAttackEvent(b.ae, 1)
 
 	// remove self from list of bunnies
 	for i := 0; i < len(b.char.bunnies); i++ {
@@ -201,12 +204,6 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 		done = true
 		c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Pyro, c.ParticleDelay)
 	}
-}
-
-func (b *Bunny) explode() {
-	b.char.Core.Log.NewEvent("amber exploding bunny", glog.LogCharacterEvent, b.char.Index).
-		Write("src", b.src)
-	b.char.Core.QueueAttackEvent(b.ae, 1)
 }
 
 func (c *char) manualExplode() {
