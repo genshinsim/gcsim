@@ -121,3 +121,6 @@ jobs:
         with:
           name: compute-artifacts
           path: ./computebin 
+      - name: git
+        run: |
+          git status 
