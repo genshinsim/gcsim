@@ -3,13 +3,17 @@ export interface SimResults {
   sim_version?: string;
   version?: string; // legacy only
   build_date?: string;
+  mode?: number;
   modified?: boolean;
+  key_type?: string;
+  standard?: string;
   
   initial_character?: string;
   character_details?: Character[];
   target_details?: Enemy[];
   simulator_settings?: Settings;
   player_position?: Coord;
+  energy_settings?: EnergySettings;
 
   config_file?: string;
   sample_seed?: string;
@@ -141,6 +145,18 @@ export interface FloatStat {
 
 export interface Settings {
   iterations?: number;
+  delays?: Delays;
+}
+
+export interface EnergySettings {
+  active?: boolean;
+  amount?: number;
+  start?: number;
+  end?: number;
+}
+
+export interface Delays {
+  swap?: number;
 }
 
 export interface Character {

@@ -68,7 +68,7 @@ type ElementData = {
   pct: number;
 }
 
-function useData(dps?: ElementDPS): { data: ElementData[], total: number } {
+export function useData(dps?: ElementDPS): { data: ElementData[], total: number } {
   const total = useMemo(() => {
     if (dps == null) {
       return 0;

@@ -1,0 +1,20 @@
+{
+    "DB_TAG_INVALID": {
+        "display_name": "invalid"
+    },
+    "DB_TAG_GCSIM": {
+        "display_name": ""
+    },
+    "DB_TAG_TESTING": {
+        "display_name": "Internal Test"
+    },
+    "DB_TAG_KQM_GUIDE": {
+        "display_name": "KQM"
+    },
+    "DB_TAG_GEO_SIMPS": {
+        "display_name": "Geo"
+    },
+    "DB_TAG_ITTO_SIMPS": {
+        "display_name": "Itto Simps"
+    }
+}

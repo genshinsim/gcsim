@@ -135,6 +135,7 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 		log.Printf("error running sim %v: %v\n", w.Id, err)
 		return nil, err
 	}
+	result.KeyType = "prod" 
 	elapsed := time.Since(start)
 	log.Printf("Work %v took %s", w.Id, elapsed)
 

@@ -27,11 +27,15 @@ const images = [
   albedo,
 ];
 
+type Props = {
+  className?: string;
+}
+
 // TODO: translation
-const NoData = ({}) => {
+const NoData = ({className = "h-24"}: Props) => {
   return (
     <NonIdealState
-        icon={<Icon />}
+        icon={<NoDataIcon className={className} />}
         title="Data not found"
         layout="horizontal" />
   );
@@ -39,10 +43,10 @@ const NoData = ({}) => {
 
 let availableImages = [...images];
 
-const Icon = ({}) => {
+export const NoDataIcon = ({ className }: Props) => {
   const img = useRef<string | undefined>(image());
   return (
-    <img src={img.current} className="h-24" />
+    <img src={img.current} className={className} />
   );
 };
 

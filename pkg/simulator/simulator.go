@@ -156,14 +156,6 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 	}
 	result.Statistics = stats
 
-	//TODO: clean up this code
-	if opts.ResultSaveToPath != "" {
-		err = result.Save(opts.ResultSaveToPath, opts.GZIPResult)
-		if err != nil {
-			return result, err
-		}
-	}
-
 	return result, nil
 }
 
@@ -182,6 +174,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.Si
 		SimVersion:    &sha1ver,
 		BuildDate:     buildTime,
 		Modified:      &modified,
+		KeyType:       "NONE",
 		SimulatorSettings: &model.SimulatorSettings{
 			Duration:        simcfg.Settings.Duration,
 			DamageMode:      simcfg.Settings.DamageMode,

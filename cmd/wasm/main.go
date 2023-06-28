@@ -184,6 +184,11 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 		return marshal(err)
 	}
 
+	// test signing (which will also add the sign key to the data)
+	if _, err := result.Sign(shareKey); err != nil {
+		return marshal(err)
+	}
+
 	// // store the result for reuse
 	cachedResult = result
 

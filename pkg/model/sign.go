@@ -38,6 +38,7 @@ func (s *SimulationResult) Sign(key string) (string, error) {
 		return "", err
 	}
 
+	s.KeyType = id
 	hash, err := s.hash()
 	if err != nil {
 		return "", err

@@ -1,30 +1,34 @@
 import { Card } from "@blueprintjs/core";
-import { SimResults } from "@gcsim/types";
+import { Coord, Enemy } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
+import { memo } from "react";
 import { CardTitle, NoData } from "../../Util";
 import { EnemyCard } from "./EnemyCard";
 import { PositionGraph } from "./PositionGraph";
 
 type Props = {
-  data: SimResults | null;
+  enemies?: Enemy[];
+  player?: Coord;
 };
 
-export default ({ data }: Props) => (
+const TargetInfo = (props: Props) => (
   <Card className="flex flex-col col-span-3">
     <CardTitle title="Target Information" tooltip="x" />
-    <CardData data={data} />
+    <CardData {...props} />
   </Card>
 );
 
-const CardData = ({ data }: Props) => {
-  if (data?.target_details == null || data.target_details.length == 0) {
+export default memo(TargetInfo);
+
+const CardData = ({ enemies, player }: Props) => {
+  if (enemies == null || enemies.length == 0) {
     return <NoData />;
   }
 
   return (
     <div className="flex flex-row gap-2 pt-2 justify-start h-64">
       <div className="flex flex-col gap-2 grow basis-2/3 overflow-y-scroll h-full min-w-[250px]">
-        {data.target_details.map((enemy, i) => (
+        {enemies.map((enemy, i) => (
           <EnemyCard key={`enemy-${i}`} id={i} enemy={enemy} />
         ))}
       </div>
@@ -37,8 +41,8 @@ const CardData = ({ data }: Props) => {
             <PositionGraph
                 width={width}
                 height={height}
-                enemies={data?.target_details}
-                player={data?.player_position}
+                enemies={enemies}
+                player={player}
             />
           )}
         </ParentSize>
