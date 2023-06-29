@@ -45,18 +45,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
-		Abil:               "Stellar Restoration",
-		ActorIndex:         c.Index,
-		AttackTag:          attacks.AttackTagElementalArt,
-		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeDefault,
-		Element:            attributes.Electro,
-		Durability:         25,
-		Mult:               skill[c.TalentLvlSkill()],
-		HitlagHaltFrames:   0.09 * 60,
-		HitlagFactor:       0.01,
-		CanBeDefenseHalted: false,
+		Abil:       "Stellar Restoration",
+		ActorIndex: c.Index,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Electro,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(
@@ -130,15 +127,17 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	}
 
 	ai := combat.AttackInfo{
-		Abil:       "Stellar Restoration (Slashing)",
-		ActorIndex: c.Index,
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Electro,
-		Durability: 50,
-		Mult:       skillPress[c.TalentLvlSkill()],
+		Abil:             "Stellar Restoration (Slashing)",
+		ActorIndex:       c.Index,
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagElementalArt,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeSlash,
+		Element:          attributes.Electro,
+		Durability:       50,
+		Mult:             skillPress[c.TalentLvlSkill()],
+		HitlagHaltFrames: 0.09 * 60,
+		HitlagFactor:     0.01,
 	}
 
 	c.Core.QueueAttack(
