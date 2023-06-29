@@ -20,6 +20,14 @@ type dbGetOpt struct {
 	Limit   int64                  `json:"limit"`
 }
 
+func marshalOptions() protojson.MarshalOptions {
+	return protojson.MarshalOptions{
+		AllowPartial:    true,
+		UseEnumNumbers:  true, // TODO: prob better if we set to false?
+		EmitUnpopulated: false,
+	}
+}
+
 func (s *Server) getDB() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var o dbGetOpt
@@ -78,7 +86,7 @@ func (s *Server) getDB() http.HandlerFunc {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
-		data, err := protojson.Marshal(res.GetData())
+		data, err := marshalOptions().Marshal(res.GetData())
 		if err != nil {
 			s.Log.Warnw("error query db - cannot marshal result", "err", err)
 			http.Error(w, "internal server error", http.StatusInternalServerError)
