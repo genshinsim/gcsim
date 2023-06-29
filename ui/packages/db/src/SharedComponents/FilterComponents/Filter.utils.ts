@@ -7,7 +7,7 @@ export interface FilterState {
   pageNumber: number;
   entriesPerPage: number;
   customFilter: string;
-  tags: string[];
+  tags: number[];
 }
 
 export enum ItemFilterState {

@@ -23,17 +23,22 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
 
   return (
     <>
-      <div className="hidden lg:flex  flex-row bg-slate-800  p-4 gap-4 w-full max-w-7xl">
+      <div className="hidden lg:flex  flex-row bg-slate-800  p-4 gap-4 w-full max-w-7xl h-36">
         <div className="flex gap-2 flex-row min-w-fit ">
           {team &&
             team.map((char, index) => {
               return <DBEntryPortrait {...char} key={index.toString()} />;
             })}
         </div>
-        <div className="flex flex-col grow ">
-          <div className="max-w-2xl">
+        <div className="flex flex-col grow  h-full">
+          <div className="max-w-2xl ">
             <div className="flex flex-col ">
               <DBEntryTags tags={dbEntry.accepted_tags} />
+              {!visibleTagCount(dbEntry.accepted_tags ?? []) && (
+                <div className=" p-1 overflow-ellipsis max-h-7 opacity-50">
+                  {dbEntry.description}
+                </div>
+              )}
             </div>
 
             <DBEntryDetails
@@ -132,4 +137,9 @@ NonNullable<db.IEntry["summary"]> & {
 
 function prettyPrintNumberStr(num: string): string {
   return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function visibleTagCount(tags: model.DBTag[]): number {
+  // 1 is the gcsim tag
+  return tags.filter((tag) => tag !== 1).length;
 }

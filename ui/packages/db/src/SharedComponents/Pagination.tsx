@@ -18,6 +18,7 @@ export function PaginationButtons() {
           className="bp4-button bp4-large"
           onClick={() => {
             dispatch({ type: "decrementPage" });
+            scrollToTop();
           }}
         >
           <FaChevronLeft />
@@ -52,7 +53,7 @@ export function PaginationButtons() {
 }
 
 function scrollToTop() {
-  const isBrowser = () => typeof window !== 'undefined'; 
+  const isBrowser = () => typeof window !== "undefined";
   if (!isBrowser()) return;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }

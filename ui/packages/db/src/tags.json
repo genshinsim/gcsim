@@ -1,20 +1,21 @@
 {
-    "DB_TAG_INVALID": {
-        "display_name": "invalid"
+    "0": {
+        "display_name": "Invalid"
     },
-    "DB_TAG_GCSIM": {
-        "display_name": ""
+    "1": {
+        "display_name": "GCsim"
     },
-    "DB_TAG_TESTING": {
+    "2": {
         "display_name": "Internal Test"
     },
-    "DB_TAG_KQM_GUIDE": {
-        "display_name": "KQM"
+    "3": {
+        "display_name": "KQM Guide",
+        "blurb": "Sims for the KQM guide."
     },
-    "DB_TAG_GEO_SIMPS": {
+    "4": {
         "display_name": "Geo"
     },
-    "DB_TAG_ITTO_SIMPS": {
+    "5": {
         "display_name": "Itto Simps"
     }
 }

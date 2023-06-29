@@ -17,7 +17,7 @@ import { craftQuery, DbQuery } from "SharedHooks/databaseQuery";
 export default function TagDatabase({ tag }: { tag: string }) {
   const [filter, dispatch] = useReducer(filterReducer, {
     ...initialFilter,
-    tags: [tag],
+    tags: [parseInt(tag)],
   });
 
   const [data, setData] = useState<db.IEntry[]>([]);
