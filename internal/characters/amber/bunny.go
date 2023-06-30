@@ -39,6 +39,8 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 
 	b.ShatterCheck(atk)
 
+	//TODO: Check if sucrose E or faruzan E on Bunny is 25 dur or 50 dur
+
 	if atk.Info.Durability > 0 {
 		atk.Info.Durability *= reactions.Durability(b.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
