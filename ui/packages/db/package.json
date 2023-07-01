@@ -5,9 +5,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "yarn run build && vite preview --host",
-    "git:pull": "git fetch upstream && git checkout origin/feature-stats-rework && git merge upstream/feature-stats-rework && git checkout db-ui && git pull origin feature-stats-rework"
-
+    "preview": "yarn run build && vite preview --host"
   },
   "dependencies": {
     "@blueprintjs/core": "^4.11.4",
