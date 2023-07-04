@@ -19,6 +19,7 @@ type buffer struct {
 	stamina calc.StreamStats
 	swap    calc.StreamStats
 	skill   calc.StreamStats
+	dash    calc.StreamStats
 }
 
 func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
@@ -27,12 +28,13 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 		stamina: calc.StreamStats{},
 		swap:    calc.StreamStats{},
 		skill:   calc.StreamStats{},
+		dash:    calc.StreamStats{},
 	}
 	return &out, nil
 }
 
 func (b *buffer) Add(result stats.Result) {
-	var energy, stamina, swap, skill float64
+	var energy, stamina, swap, skill, dash float64
 
 	for _, c := range result.Characters {
 		for _, fail := range c.FailedActions {
@@ -45,6 +47,8 @@ func (b *buffer) Add(result stats.Result) {
 				swap += float64(fail.End-fail.Start) / 60
 			case action.SkillCD.String():
 				skill += float64(fail.End-fail.Start) / 60
+			case action.DashCD.String():
+				dash += float64(fail.End-fail.Start) / 60
 			}
 		}
 	}
@@ -53,6 +57,7 @@ func (b *buffer) Add(result stats.Result) {
 	b.stamina.Add(stamina)
 	b.swap.Add(swap)
 	b.skill.Add(skill)
+	b.dash.Add(dash)
 	b.overlap = b.overlap || result.TargetOverlap
 }
 
@@ -63,5 +68,6 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		InsufficientStamina: b.stamina.Mean() >= 1.0,
 		SwapCd:              b.swap.Mean() >= 1.0,
 		SkillCd:             b.skill.Mean() >= 1.0,
+		DashCd:              b.dash.Mean() >= 1.0,
 	}
 }

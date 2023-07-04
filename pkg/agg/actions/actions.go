@@ -22,6 +22,7 @@ type charFailures struct {
 	stamina *calc.StreamStats
 	swap    *calc.StreamStats
 	skill   *calc.StreamStats
+	dash    *calc.StreamStats
 }
 
 func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
@@ -35,6 +36,7 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 			stamina: &calc.StreamStats{},
 			swap:    &calc.StreamStats{},
 			skill:   &calc.StreamStats{},
+			dash:    &calc.StreamStats{},
 		}
 	}
 
@@ -43,7 +45,7 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 
 func (b *buffer) Add(result stats.Result) {
 	for i, c := range result.Characters {
-		var energy, stamina, swap, skill float64
+		var energy, stamina, swap, skill, dash float64
 
 		for _, fail := range c.FailedActions {
 			switch fail.Reason {
@@ -55,6 +57,8 @@ func (b *buffer) Add(result stats.Result) {
 				swap += float64(fail.End-fail.Start) / 60
 			case action.SkillCD.String():
 				skill += float64(fail.End-fail.Start) / 60
+			case action.DashCD.String():
+				dash += float64(fail.End-fail.Start) / 60
 			}
 		}
 
@@ -62,6 +66,7 @@ func (b *buffer) Add(result stats.Result) {
 		b.failures[i].stamina.Add(stamina)
 		b.failures[i].swap.Add(swap)
 		b.failures[i].skill.Add(skill)
+		b.failures[i].dash.Add(dash)
 	}
 }
 
@@ -73,6 +78,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 			InsufficientStamina: agg.ToDescriptiveStats(c.stamina),
 			SwapCd:              agg.ToDescriptiveStats(c.swap),
 			SkillCd:             agg.ToDescriptiveStats(c.skill),
+			DashCd:              agg.ToDescriptiveStats(c.dash),
 		}
 	}
 }

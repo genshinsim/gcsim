@@ -16,6 +16,7 @@ export default (props: WarningProps) => {
     <CooldownWarning key="cd" {...props} />,
     <StaminaWarning key="stamina" {...props} />,
     <SwapWarning key="swap" {...props} />,
+    <DashWarning key="dash" {...props} />
   ];
 
   return (
@@ -131,6 +132,29 @@ const StaminaWarning = ({ data }: WarningProps) => {
           title="insufficient stamina duration"
           data={data}
           stat={(fa) => fa.insufficient_stamina} />
+    </DismissibleCallout>
+  );
+};
+
+const DashWarning = ({ data }: WarningProps) => {
+  const [show, setShow] = useState(true);
+  const visible = show && (data?.statistics?.warnings?.dash_cd ?? false);
+
+  return (
+    <DismissibleCallout
+        title="Unable to Use Character Dash (Dash on CD)"
+        intent={Intent.WARNING}
+        show={visible}
+        onDismiss={() => setShow(false)}>
+      <p>
+        An abnormal amount of iterations failed to execute a dash because the dash was on cooldown.
+        Consider updating the config to better account for dash cooldowns, as no actions are
+        performed during failures.
+      </p>
+      <FailedActionDetails
+          title="dash cd failure duration"
+          data={data}
+          stat={(fa) => fa.dash_cd} />
     </DismissibleCallout>
   );
 };

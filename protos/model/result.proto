@@ -154,6 +154,7 @@ message Warnings {
   bool insufficient_stamina = 3 [json_name="insufficient_stamina"];
   bool swap_cd = 4 [json_name="swap_cd"];
   bool skill_cd = 5 [json_name="skill_cd"];
+  bool dash_cd = 6 [json_name="dash_cd"];
 }
 
 message FailedActions {
@@ -161,6 +162,7 @@ message FailedActions {
   DescriptiveStats insufficient_stamina = 2 [json_name="insufficient_stamina"];
   DescriptiveStats swap_cd = 3 [json_name="swap_cd"];
   DescriptiveStats skill_cd = 4 [json_name="skill_cd"];
+  DescriptiveStats dash_cd = 5 [json_name="dash_cd"];
 }
 
 message ShieldInfo {

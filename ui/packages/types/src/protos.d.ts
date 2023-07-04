@@ -3093,6 +3093,9 @@ export namespace model {
 
         /** Warnings skill_cd */
         skill_cd?: (boolean|null);
+
+        /** Warnings dash_cd */
+        dash_cd?: (boolean|null);
     }
 
     /** Represents a Warnings. */
@@ -3119,6 +3122,9 @@ export namespace model {
         /** Warnings skill_cd. */
         public skill_cd: boolean;
 
+        /** Warnings dash_cd. */
+        public dash_cd: boolean;
+
         /**
          * Gets the default type url for Warnings
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
@@ -3141,6 +3147,9 @@ export namespace model {
 
         /** FailedActions skill_cd */
         skill_cd?: (model.IDescriptiveStats|null);
+
+        /** FailedActions dash_cd */
+        dash_cd?: (model.IDescriptiveStats|null);
     }
 
     /** Represents a FailedActions. */
@@ -3163,6 +3172,9 @@ export namespace model {
 
         /** FailedActions skill_cd. */
         public skill_cd?: (model.IDescriptiveStats|null);
+
+        /** FailedActions dash_cd. */
+        public dash_cd?: (model.IDescriptiveStats|null);
 
         /**
          * Gets the default type url for FailedActions
