@@ -5,8 +5,11 @@ import (
 )
 
 func (c *char) Dash(p map[string]int) action.ActionInfo {
-	// chaining dashes resets savedNormalCounter
-	if c.Core.Player.CurrentState() == action.DashState {
+	// anything but NA/E -> E should reset savedNormalCounter
+	switch c.Core.Player.LastAction.Type {
+	case action.ActionAttack:
+	case action.ActionSkill:
+	default:
 		c.savedNormalCounter = 0
 	}
 
