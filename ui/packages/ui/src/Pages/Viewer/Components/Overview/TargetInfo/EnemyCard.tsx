@@ -50,7 +50,7 @@ const InfoItem = ({ name, value }: { name: string, value?: number }) => {
   }
 
   return (
-    <div className="flex flex-row items-start gap-1 text-xs">
+    <div className="flex flex-row gap-1 text-xs items-center">
       <div className="text-gray-400">{name}</div>
       <div className="font-black text-current text-sm text-bp4-light-gray-500">
         {value?.toLocaleString(i18n.language)}
@@ -88,7 +88,7 @@ const Resistance = ({ type, num }: { type: string, num?: number }) => {
 };
 
 const Icon = ({ type }: { type: string }) => {
-  const size = "w-[16px]";
+  const size = "w-[16px] h-[16px] min-w-[16px] min-h-[16px]";
   switch (type) {
     case "electro":
       return <IconElectro className={`${size} text-electro`} />;
