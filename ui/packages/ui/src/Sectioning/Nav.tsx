@@ -79,7 +79,6 @@ export default ({}) => {
               onChange={(e) => i18n.changeLanguage(e.target.value)}>
             <option value="en">{t<string>("nav.english")}</option>
             <option value="zh">{t<string>("nav.chinese")}</option>
-            <option value="de">{t<string>("nav.german")}</option>
             <option value="ja">{t<string>("nav.japanese")}</option>
             <option value="es">{t<string>("nav.spanish")}</option>
             <option value="ru">{t<string>("nav.russian")}</option>

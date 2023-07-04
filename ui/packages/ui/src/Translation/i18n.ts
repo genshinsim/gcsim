@@ -3,7 +3,6 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import Chinese from "./locales/Chinese.json";
 import English from "./locales/English.json";
-import German from "./locales/German.json";
 import IngameNames from "./locales/IngameNames.json";
 import Japanese from "./locales/Japanese.json";
 import Russian from "./locales/Russian.json";
@@ -17,10 +16,6 @@ const resources = {
   zh: {
     translation: Chinese,
     game: IngameNames.Chinese,
-  },
-  de: {
-    translation: German,
-    game: IngameNames.German,
   },
   ja: {
     translation: Japanese,
