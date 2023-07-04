@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { charNames } from "../../PipelineExtract/CharacterNames";
+import charData from "../../Data/char_data.generated.json"
 
 export interface FilterState {
   charFilter: CharFilter;
@@ -15,6 +15,10 @@ export enum ItemFilterState {
   "include",
   "exclude",
 }
+
+export const charNames = Object.keys(charData.data).map(k => {
+  return k
+})
 
 export const initialCharFilter = charNames.reduce((acc, charName) => {
   acc[charName] = { state: ItemFilterState.none, charName };

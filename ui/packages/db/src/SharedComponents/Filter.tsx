@@ -2,12 +2,12 @@ import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaFilter, FaSearch } from "react-icons/fa";
-import { charNames } from "../PipelineExtract/CharacterNames";
 import useDebounce from "../SharedHooks/debounce";
 import {
   FilterContext,
   FilterDispatchContext,
   ItemFilterState,
+  charNames,
 } from "./FilterComponents/Filter.utils";
 
 export function Filter() {

@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func (g *Generator) DumpUIJSON(path string) error {
+func (g *Generator) DumpJSON(path string) error {
 	//delete existing
 	err := g.writeCharDataJSON(path + "/char_data.generated.json")
 	if err != nil {

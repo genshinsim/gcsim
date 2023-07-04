@@ -16,6 +16,7 @@ type config struct {
 
 	//output paths
 	uiOut string
+	dbOut string
 }
 
 func main() {
@@ -24,6 +25,7 @@ func main() {
 	flag.StringVar(&cfg.weapPath, "weap", "./internal/weapons", "folder to look for character files")
 	flag.StringVar(&cfg.excelPath, "excels", "./pipeline/data/ExcelBinOutput", "folder to look for excel data dump")
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
+	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
 	flag.Parse()
 
 	//generate character data
@@ -37,7 +39,13 @@ func main() {
 	}
 
 	log.Println("generate character data for ui...")
-	err = g.DumpUIJSON(cfg.uiOut)
+	err = g.DumpJSON(cfg.uiOut)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate character data for db...")
+	err = g.DumpJSON(cfg.dbOut)
 	if err != nil {
 		panic(err)
 	}
