@@ -35,9 +35,12 @@ func init() {
 // - Ushi will flee when its HP reaches 0 or its duration ends. It will grant Arataki Itto 1 stack of Superlative Superstrength when it leaves.
 // Ushi is considered a Geo Construct. Arataki Itto can only deploy 1 Ushi on the field at any one time.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	// using a skill after a dash resets savedNormalCounter
+	// anything but NA/E -> E should reset savedNormalCounter
 	// can't use CurrentState here since AnimationLength of Dash is the same as Dash -> Skill, so it switches to Idle instead of staying DashState
-	if c.Core.Player.LastAction.Type == action.ActionDash {
+	switch c.Core.Player.LastAction.Type {
+	case action.ActionAttack:
+	case action.ActionSkill:
+	default:
 		c.savedNormalCounter = 0
 	}
 
