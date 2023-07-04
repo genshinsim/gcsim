@@ -92,6 +92,7 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
       .get(url, { timeout: 30000 })
       .then((resp) => {
         setData(resp.data);
+        console.log(resp.data);
         setHash(resp.headers["x-gcsim-share-auth"] ?? null);
       })
       .catch((e) => {

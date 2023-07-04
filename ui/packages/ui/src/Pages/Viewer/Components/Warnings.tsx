@@ -11,6 +11,7 @@ type WarningProps = {
 // TODO: translation
 export default (props: WarningProps) => {
   const warnings = [
+    <IncompleteCharWarning key="incomplete" {...props} />,
     <PositionOverlapWarning key="target" {...props} />,
     <EnergyWarning key="energy" {...props} />,
     <CooldownWarning key="cd" {...props} />,
@@ -23,6 +24,41 @@ export default (props: WarningProps) => {
     <div className="flex flex-col gap-2 pt-4 empty:pt-0 w-full px-2 2xl:mx-auto 2xl:container">
       {warnings}
     </div>
+  );
+};
+
+const IncompleteCharWarning = ({ data }: WarningProps) => {  
+  const [show, setShow] = useState(true);
+  const incomplete = data?.incomplete_characters;
+  const visible = show && (incomplete != null && incomplete.length > 0);
+  
+  const link = (
+    <a href="https://discord.gg/m7jvjdxx7q" target="_blank" rel="noreferrer">
+      gcsim discord!
+    </a>
+  );
+
+  return (
+    <DismissibleCallout
+        title="Incomplete Characters Used"
+        intent={Intent.WARNING}
+        show={visible}
+        onDismiss={() => setShow(false)}>
+      <p>
+        This simulation contains early release characters! These characters are fully implemented,
+        but may not have optimal frame data aligned with in-game animations. We are actively
+        collecting data to improve their implementation. If you wish to help,
+        please reach out in the {link}
+      </p>
+      <div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
+        <span className="font-bold">incomplete characters</span>
+        <ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-3 justify-start">
+          {data?.incomplete_characters?.map(c => (
+            <div key={c} className="list-item">{c}</div>
+          ))}
+        </ul>
+      </div>
+    </DismissibleCallout>
   );
 };
 

@@ -14,6 +14,7 @@ export interface SimResults {
   simulator_settings?: Settings;
   player_position?: Coord;
   energy_settings?: EnergySettings;
+  incomplete_characters?: string[];
 
   config_file?: string;
   sample_seed?: string;

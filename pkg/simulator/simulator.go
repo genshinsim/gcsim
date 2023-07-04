@@ -18,6 +18,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/stats"
 	"github.com/genshinsim/gcsim/pkg/worker"
 )
@@ -161,7 +162,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 
 // Note: this generation should be iteration independent (iterations do not change output)
 func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.SimulationResult, error) {
-	result := &model.SimulationResult{
+	out := &model.SimulationResult{
 		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
 		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES
 		// SemVer spec
@@ -218,7 +219,7 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.Si
 			resist[k.String()] = v
 		}
 
-		result.TargetDetails[i] = &model.Enemy{
+		out.TargetDetails[i] = &model.Enemy{
 			Level:  int32(target.Level),
 			HP:     target.HP,
 			Resist: resist,
@@ -234,15 +235,22 @@ func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.Si
 	}
 
 	if simcfg.Settings.DamageMode {
-		result.Mode = model.SimMode_TTK_MODE
+		out.Mode = model.SimMode_TTK_MODE
 	}
 
 	charDetails, err := GenerateCharacterDetails(simcfg)
 	if err != nil {
-		return result, err
+		return out, err
 	}
-	result.CharacterDetails = charDetails
-	return result, nil
+	out.CharacterDetails = charDetails
+
+	for _, v := range simcfg.Characters {
+		if !result.IsCharacterComplete(v.Base.Key) {
+			out.IncompleteCharacters = append(out.IncompleteCharacters, v.Base.Key.String())
+		}
+	}
+
+	return out, nil
 }
 
 // cryptoRandSeed generates a random seed using crypo rand
