@@ -33,7 +33,6 @@ const SendTo = ({ config }: { config?: string }) => {
   return (
     <>
       <Button
-        className="!hidden sm:!flex"
         icon={<Icon icon="send-to" className="!mr-0" />}
         onClick={() => setOpen(true)}
         disabled={config == null}
