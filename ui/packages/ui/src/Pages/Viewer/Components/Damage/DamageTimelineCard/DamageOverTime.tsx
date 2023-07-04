@@ -12,7 +12,7 @@ import { useData } from "./DamageOverTimeData";
 import { useTooltip } from "@visx/tooltip";
 import { useRef } from "react";
 
-const defaultMargin = { top: 10, left: 80, right: 20, bottom: 40 };
+const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
 
 type Props = {
   width: number;
@@ -235,6 +235,7 @@ export const DamageOverTimeGraph = (
               tickFormat={s => s.toLocaleString(
                 i18n.language, { notation: 'compact', maximumSignificantDigits: 3 })}
               numTicks={numYTicks}
+              labelOffset={65}
               label="Damage Over Time"
           />
           <GraphAxisBottom

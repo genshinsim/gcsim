@@ -9,7 +9,7 @@ import { useTooltip } from "@visx/tooltip";
 import { HoverLine, RenderTooltip, TooltipData, useTooltipHandles } from "./CumulativeTooltip";
 import { useData } from "./CumulativeData";
 
-const defaultMargin = { top: 10, left: 80, right: 20, bottom: 40 };
+const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
 
 type Props = {
   width: number;
@@ -150,6 +150,7 @@ export const CumulativeGraph = (
               axisLineClassName="stroke-2"
               tickFormat={s => s.toLocaleString(i18n.language, { style: "percent" })}
               numTicks={numYTicks}
+              labelOffset={65}
               label="% Damage Contribution"
           />
           <GraphAxisBottom
