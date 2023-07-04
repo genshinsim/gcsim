@@ -21,41 +21,32 @@ func init() {
 
 type Set struct {
 	stacks int
-	key    string
 	Index  int
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
 
-const cw4pc = "cw-4pc"
+const cw4pc = "crimson-4pc-stacks"
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 	s.stacks = 0
-	s.key = fmt.Sprintf("%v-cw-4pc", char.Base.Key.String())
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
+		m[attributes.PyroP] = 0.15
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("crimson-2pc", -1),
 			AffectedStat: attributes.PyroP,
 			Amount: func() ([]float64, bool) {
-				if !char.StatusIsActive(cw4pc) {
-					s.stacks = 0
-				}
-				mult := 0.5*float64(s.stacks) + 1
-				m[attributes.PyroP] = 0.15 * mult
-				if mult > 1 {
-					c.Log.NewEvent("crimson witch 4pc", glog.LogArtifactEvent, char.Index).Write("mult", mult)
-				}
-
 				return m, true
 			},
 		})
 	}
 
 	if count >= 4 {
+		mStacks := make([]float64, attributes.EndStatType)
 		// post snap shot to increase stacks
 		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 			if c.Player.Active() != char.Index {
@@ -72,9 +63,18 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			c.Log.NewEvent("crimson witch 4pc adding stack", glog.LogArtifactEvent, char.Index).
 				Write("current stacks", s.stacks)
-			char.AddStatus(cw4pc, 10*60, true)
+
+			mStacks[attributes.PyroP] = 0.15 * 0.5 * float64(s.stacks)
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag(cw4pc, 10*60),
+				AffectedStat: attributes.PyroP,
+				Amount: func() ([]float64, bool) {
+					return mStacks, true
+				},
+			})
+
 			return false
-		}, s.key)
+		}, fmt.Sprintf("%v-cw-4pc", char.Base.Key.String()))
 
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("crimson-4pc", -1),

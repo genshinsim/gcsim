@@ -58,7 +58,7 @@ func (t *Handler) Add(key string, dur int) {
 	t.status[key] = a
 }
 
-func (t *Handler) Extend(key string, dur int) {
+func (t *Handler) Extend(key string, amt int) {
 	a, ok := t.status[key]
 
 	//do nothing if status doesn't exist
@@ -66,11 +66,12 @@ func (t *Handler) Extend(key string, dur int) {
 		return
 	}
 
-	a.expiry += dur
+	a.expiry += amt
 	a.evt.SetEnded(a.expiry)
 	t.status[key] = a
-	t.log.NewEvent("status refreshed", glog.LogStatusEvent, -1).
+	t.log.NewEvent("status extended", glog.LogStatusEvent, -1).
 		Write("key", key).
+		Write("amt", amt).
 		Write("expiry", a.expiry)
 
 }

@@ -43,8 +43,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("berserker-4pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				maxhp := char.MaxHP()
-				if char.HPCurrent > 0.70*maxhp {
+				if char.CurrentHPRatio() > 0.7 {
 					return nil, false
 				}
 				return m, true

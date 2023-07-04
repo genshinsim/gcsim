@@ -31,7 +31,7 @@ func (c *char) c2() func(combat.AttackCB) {
 // Additionally, active characters affected by Soulwind will deal 60% more Physical CRIT DMG.
 func (c *char) c6(char *character.CharWrapper) {
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("mika-c6", 12*60),
+		Base: modifier.NewBaseWithHitlag("mika-c6", skillBuffDuration),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			if c.Core.Player.Active() != char.Index {
 				return nil, false

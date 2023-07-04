@@ -72,19 +72,22 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
-			nil,
-			0.8,
-		),
-		skillPressHitmark,
-		skillPressHitmark,
-		c.makePressParticleCB(),
-		c.makeC4ResetCB(),
-	)
+	c.Core.Tasks.Add(func() {
+		snap := c.Snapshot(&ai)
+		snap.Stats[attributes.DmgP] += c.c4()
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.8,
+			),
+			0,
+			c.makePressParticleCB(),
+		)
+	}, skillPressHitmark)
 
 	if c.Base.Ascension >= 4 {
 		c.Core.Tasks.Add(c.skillPressBuff, skillPressCDStart+1)
@@ -117,7 +120,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Hold)",
-		AttackTag:  attacks.AttackTagElementalArtHold,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
@@ -126,14 +129,17 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 4),
-		skillHoldHitmark,
-		skillHoldHitmark,
-		c.holdParticleCB,
-		c.makeC4ResetCB(),
-	)
+	c.Core.Tasks.Add(func() {
+		snap := c.Snapshot(&ai)
+		snap.Stats[attributes.DmgP] += c.c4()
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 4),
+			0,
+			c.holdParticleCB,
+		)
+	}, skillHoldHitmark)
 
 	if c.Base.Ascension >= 4 {
 		c.Core.Tasks.Add(c.skillHoldBuff, skillHoldCDStart+1)

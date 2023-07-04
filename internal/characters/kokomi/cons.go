@@ -71,7 +71,7 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HydroP] = .4
 	for _, char := range c.Core.Player.Chars() {
-		if char.HPCurrent/char.MaxHP() < .8 {
+		if char.CurrentHPRatio() < 0.8 {
 			continue
 		}
 		c.AddStatMod(character.StatMod{

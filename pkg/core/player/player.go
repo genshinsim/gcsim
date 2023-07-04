@@ -261,12 +261,15 @@ func (h *Handler) InitializeTeam() error {
 		for k := range h.chars[i].Equip.Sets {
 			h.chars[i].Equip.Sets[k].Init()
 		}
-		//set each char's starting hp
-		if h.chars[i].HPCurrent == -1 {
-			h.chars[i].HPCurrent = h.chars[i].MaxHP()
+		//set each char's starting hp ratio
+		if h.chars[i].StartHP <= 0 {
+			h.chars[i].SetHPByRatio(1)
+		} else {
+			h.chars[i].SetHPByAmount(float64(h.chars[i].StartHP))
 		}
 		h.Log.NewEvent("starting hp set", glog.LogCharacterEvent, i).
-			Write("hp", h.chars[i].HPCurrent)
+			Write("starting_hp_ratio", h.chars[i].CurrentHPRatio()).
+			Write("starting_hp", h.chars[i].CurrentHP())
 	}
 	return nil
 }

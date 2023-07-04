@@ -61,6 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if counter > 0 {
 		//add shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: c.Index,
 			Src:        c.Core.F,
 			ShieldType: shield.ShieldBeidouThunderShield,
 			Name:       "Beidou Skill",

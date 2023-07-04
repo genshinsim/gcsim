@@ -17,6 +17,9 @@ const (
 
 var (
 	skillCD       = 450
+	skillBCD      = 180
+	skillCDDelay  = 17
+	skillBCDDelay = 26
 	skillHitmark  = 21
 	skillBHitmark = 28
 	skillFrames   []int
@@ -66,8 +69,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.makeParticleCB(false),
 	)
 
-	c.lastSkillCast = c.Core.F + 17
-	c.SetCDWithDelay(action.ActionSkill, skillCD, 17)
+	c.Core.Tasks.Add(c.triggerSkillCD, skillCDDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -113,7 +115,8 @@ func (c *char) skillB() action.ActionInfo {
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
 		ai.FlatDmg = c.a4Bolt()
-		ai.ICDTag = attacks.ICDTagCynoBolt
+		ai.AttackTag = attacks.AttackTagElementalArtHold
+		ai.ICDTag = attacks.ICDTagElementalArt
 		ai.ICDGroup = attacks.ICDGroupCynoBolt
 		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.HitlagFactor = 0
@@ -143,8 +146,7 @@ func (c *char) skillB() action.ActionInfo {
 
 	c.tryBurstPPSlide(skillBHitmark)
 
-	c.lastSkillCast = c.Core.F + 26
-	c.SetCDWithDelay(action.ActionSkill, 180, 26)
+	c.Core.Tasks.Add(c.triggerSkillCD, skillBCDDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillBFrames),
@@ -152,6 +154,12 @@ func (c *char) skillB() action.ActionInfo {
 		CanQueueAfter:   skillBFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) triggerSkillCD() {
+	c.ResetActionCooldown(action.ActionSkill)
+	c.SetCD(action.ActionSkill, skillCD)
+	c.SetCD(action.ActionLowPlunge, skillBCD)
 }
 
 func (c *char) makeParticleCB(burst bool) combat.AttackCBFunc {

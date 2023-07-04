@@ -74,7 +74,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if c.Base.Ascension >= 4 && c.Core.Combat.Player().IsWithinArea(burstArea) {
 				active := c.Core.Player.ActiveChar()
 				active.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("ganyu-field", 60),
+					Base:         modifier.NewBaseWithHitlag("ganyu-field", 60),
 					AffectedStat: attributes.CryoP,
 					Amount: func() ([]float64, bool) {
 						return m, true

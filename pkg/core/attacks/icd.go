@@ -7,6 +7,7 @@ const (
 	ICDTagNormalAttack
 	ICDTagExtraAttack
 	ICDTagElementalArt
+	ICDTagElementalArtHold
 	ICDTagElementalArtAnemo
 	ICDTagElementalArtPyro
 	ICDTagElementalArtHydro
@@ -83,151 +84,104 @@ const (
 	ICDGroupYaoyaoRadishSkill
 	ICDGroupYaoyaoRadishBurst
 	ICDGroupBaizhuC2
+	ICDGroupAyakaExtraAttack
 	ICDGroupLength
 )
 
-var ICDGroupResetTimer = []int{
-	150, //default
-	60,  //amber
-	60,  //venti
-	300, //fischl
-	300, //diluc
-	30,  //pole extra
-	6,   //xiao dash
-	30,  //yae charged
-	18,  //yelan pew pew
-	120, //yelan burst
-	180, //collei burst
-	150, //tighnari
-	150, //cyno skill bolts
-	180, //dori burst
-	114, //nilou
-	30,  //reaction a
-	30,  //reaciton b
-	120, //burning
-	60,  //nahida skill
-	180, //layla
-	120, //wanderer c6
-	60,  //wanderer a4
-	720, //alhaitham projection
-	120, //alhaitham CA
-	150, //yaoyao radish skill
-	90,  //yaoyao radish burst
-	240, //baizhu c2
-}
+var ICDGroupResetTimer []int
+var ICDGroupEleApplicationSequence [][]float64
+var ICDGroupDamageSequence [][]float64
 
-var ICDGroupEleApplicationSequence = [][]float64{
-	//default tag
-	{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0},
-	//amber tag
-	{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0},
-	//venti tag
-	{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0},
-	//fischl
-	{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0},
-	//diluc
-	{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-	//pole extra
-	{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0},
-	//xiao dash
-	{1, 0, 0, 0, 0, 0, 0},
-	//yae charged
-	{1, 0, 0, 0, 0, 0, 0},
-	//yelan pew pew
-	{1, 0, 0, 0},
-	//yelan burst
-	{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0},
-	//collei burst
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//tighnari
-	{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0},
-	//cyno skill bolt
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//dori burst
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//nilou
-	{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0},
-	//reaction a
-	{1, 1},
-	//reaction b
-	{1, 1},
-	//burning
-	{1, 0, 0, 0, 0, 0, 0, 0},
-	//nahida skill
-	{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//layla
-	{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-	//wanderer c6
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//wanderer a4
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//alhaitham projection
-	{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-	//alhaitham CA
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//yaoyao radish skill
-	{1, 0, 0, 0, 0, 0},
-	//yaoyao radish burst
-	{1, 0, 0, 0, 0, 0},
-	//baizhu c2
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-}
+func init() {
+	ICDGroupResetTimer = make([]int, ICDGroupLength)
+	ICDGroupResetTimer[ICDGroupDefault] = 150
+	ICDGroupResetTimer[ICDGroupAmber] = 60
+	ICDGroupResetTimer[ICDGroupVenti] = 60
+	ICDGroupResetTimer[ICDGroupFischl] = 300
+	ICDGroupResetTimer[ICDGroupDiluc] = 300
+	ICDGroupResetTimer[ICDGroupPoleExtraAttack] = 30
+	ICDGroupResetTimer[ICDGroupXiaoDash] = 6
+	ICDGroupResetTimer[ICDGroupYaeCharged] = 30
+	ICDGroupResetTimer[ICDGroupYelanBreakthrough] = 18
+	ICDGroupResetTimer[ICDGroupYelanBurst] = 120
+	ICDGroupResetTimer[ICDGroupColleiBurst] = 180
+	ICDGroupResetTimer[ICDGroupTighnari] = 150
+	ICDGroupResetTimer[ICDGroupCynoBolt] = 150
+	ICDGroupResetTimer[ICDGroupDoriBurst] = 180
+	ICDGroupResetTimer[ICDGroupNilou] = 114
+	ICDGroupResetTimer[ICDGroupReactionA] = 30
+	ICDGroupResetTimer[ICDGroupReactionB] = 30
+	ICDGroupResetTimer[ICDGroupBurning] = 120
+	ICDGroupResetTimer[ICDGroupNahidaSkill] = 60
+	ICDGroupResetTimer[ICDGroupLayla] = 180
+	ICDGroupResetTimer[ICDGroupWandererC6] = 120
+	ICDGroupResetTimer[ICDGroupWandererA4] = 60
+	ICDGroupResetTimer[ICDGroupAlhaithamProjectionAttack] = 720
+	ICDGroupResetTimer[ICDGroupAlhaithamExtraAttack] = 120
+	ICDGroupResetTimer[ICDGroupYaoyaoRadishSkill] = 150
+	ICDGroupResetTimer[ICDGroupYaoyaoRadishBurst] = 90
+	ICDGroupResetTimer[ICDGroupBaizhuC2] = 240
+	ICDGroupResetTimer[ICDGroupAyakaExtraAttack] = 30
 
-var ICDGroupDamageSequence = [][]float64{
-	//default
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//amber
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//venti
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//fischl
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//diluc
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//pole extra
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//xiao
-	{1, 0, 0, 0, 0, 0, 0},
-	//yae charged
-	{1, 0, 0, 0, 0, 0, 0},
-	//yelan pew pew
-	{1, 0, 0, 0},
-	//yelan burst
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//collei burst
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//tighnari
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//cyno skill bolt
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//dori burst
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//nilou
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//ele A
-	{1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-	//ele B
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	//burning
+	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
+	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupAmber] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupVenti] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupFischl] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupDiluc] = []float64{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupPoleExtraAttack] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupXiaoDash] = []float64{1, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupYaeCharged] = []float64{1, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupYelanBreakthrough] = []float64{1, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupYelanBurst] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupColleiBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupTighnari] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupCynoBolt] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupDoriBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupNilou] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupReactionA] = []float64{1, 1}
+	ICDGroupEleApplicationSequence[ICDGroupReactionB] = []float64{1, 1}
+	ICDGroupEleApplicationSequence[ICDGroupBurning] = []float64{1, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupNahidaSkill] = []float64{1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupLayla] = []float64{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupWandererC6] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupWandererA4] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupAlhaithamProjectionAttack] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
+	ICDGroupEleApplicationSequence[ICDGroupAlhaithamExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupYaoyaoRadishSkill] = []float64{1, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupYaoyaoRadishBurst] = []float64{1, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupBaizhuC2] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupAyakaExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
+	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupAmber] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupVenti] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupFischl] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupDiluc] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupPoleExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupXiaoDash] = []float64{1, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupYaeCharged] = []float64{1, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupYelanBreakthrough] = []float64{1, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupYelanBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupColleiBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupTighnari] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupCynoBolt] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupDoriBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupNilou] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupReactionA] = []float64{1, 1, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupReactionB] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	//actual data: {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0}
 	//however there seems to be no limit to the amount of burning dmg a target can take
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//nahida-skill
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//layla
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//wanderer c6
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//wanderer a4
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//alhaitham-projection
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//alhaitham-CA
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//yaoyao radish skill
-	{1, 1, 1, 1, 1, 1},
-	//yaoyao radish burst
-	{1, 1, 1, 1, 1, 1},
-	//baizhu c2
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	ICDGroupDamageSequence[ICDGroupBurning] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupNahidaSkill] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupLayla] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupWandererC6] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupWandererA4] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupAlhaithamProjectionAttack] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupAlhaithamExtraAttack] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupYaoyaoRadishSkill] = []float64{1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupYaoyaoRadishBurst] = []float64{1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupBaizhuC2] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupAyakaExtraAttack] = []float64{1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 }

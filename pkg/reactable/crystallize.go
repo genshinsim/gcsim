@@ -62,7 +62,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 		Abil:       string(rt),
 	}
 	snap := char.Snapshot(&ai)
-	shd := NewCrystallizeShield(ele, r.core.F, snap.CharLvl, snap.Stats[attributes.EM], r.core.F+900)
+	shd := NewCrystallizeShield(char.Index, ele, r.core.F, snap.CharLvl, snap.Stats[attributes.EM], r.core.F+900)
 	r.core.Player.Shields.Add(shd)
 	//reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
@@ -81,7 +81,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	return true
 }
 
-func NewCrystallizeShield(typ attributes.Element, src int, lvl int, em float64, expiry int) *CrystallizeShield {
+func NewCrystallizeShield(index int, typ attributes.Element, src int, lvl int, em float64, expiry int) *CrystallizeShield {
 	s := &CrystallizeShield{}
 	s.Tmpl = &shield.Tmpl{}
 
@@ -93,6 +93,7 @@ func NewCrystallizeShield(typ attributes.Element, src int, lvl int, em float64, 
 		lvl = 0
 	}
 
+	s.Tmpl.ActorIndex = index
 	s.Tmpl.Ele = typ
 	s.Tmpl.ShieldType = shield.ShieldCrystallize
 	s.Tmpl.Name = "Crystallize " + typ.String()

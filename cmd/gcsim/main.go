@@ -24,20 +24,21 @@ var (
 )
 
 type opts struct {
-	config       string
-	out          string //file result name
-	sample       string //file sample name
-	gz           bool
-	serve        bool
-	nobrowser    bool
-	norun        bool
-	keepserving  bool
-	substatOptim bool
-	verbose      bool
-	options      string
-	debugMinMax  bool
-	cpuprofile   string
-	memprofile   string
+	config           string
+	out              string //file result name
+	sample           string //file sample name
+	gz               bool
+	serve            bool
+	nobrowser        bool
+	norun            bool
+	keepserving      bool
+	substatOptim     bool
+	substatOptimFull bool
+	verbose          bool
+	options          string
+	debugMinMax      bool
+	cpuprofile       string
+	memprofile       string
 }
 
 const resultServeFile = "serve_data.json"
@@ -58,7 +59,9 @@ func main() {
 	flag.BoolVar(&opt.norun, "nr", false, "disable running the simulation (useful if you only want to generate a sample")
 	flag.BoolVar(&opt.nobrowser, "nb", false, "disable opening default browser")
 	flag.BoolVar(&opt.keepserving, "ks", false, "keep serving same results without terminating web server")
-	flag.BoolVar(&opt.substatOptim, "substatOptim", false, "optimize substats according to KQM standards. Set the out flag to output config with optimal substats inserted to a given file path")
+	flag.BoolVar(&opt.debugMinMax, "debugMinMax", false, "Output debug log for the min-DPS and max-DPS runs in addition to a random run.")
+	flag.BoolVar(&opt.substatOptim, "substatOptim", false, "Optimize substats according to KQM standards. Set the out flag to output config with optimal substats inserted to a given file path. Alternatively use the substatOptimFull flag to avoid a second config file and second invocation of the sim.")
+	flag.BoolVar(&opt.substatOptimFull, "substatOptimFull", false, "Optimize substats according to KQM standards, overwrite the given config with the optimized version and then run the sim on it. Set the out flag and gz flag to save the viewer file. substatOptim flag takes precedence over this flag, so do not use them together.")
 	flag.BoolVar(&opt.verbose, "v", false, "Verbose output log (currently only for substat optimization)")
 	flag.StringVar(&opt.options, "options", "", `Additional options for substat optimization mode. Currently supports the following flags, set in a semi-colon delimited list (e.g. -options="total_liquid_substats=15;indiv_liquid_cap=8"):
 - total_liquid_substats (default = 20): Total liquid substats available to be assigned across all substats
@@ -126,6 +129,15 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		// Ideally once documentation is standardized, can move options to a config file, and verbose can also be moved into options or something
 		optimization.RunSubstatOptim(simopt, opt.verbose, opt.options)
 		return
+	}
+
+	if opt.substatOptimFull {
+		// set output path to input config file so it gets overwritten during substat optimizer run
+		simopt.ResultSaveToPath = simopt.ConfigPath
+		// run substat optimizer on given config and output optimized config to the same location
+		optimization.RunSubstatOptim(simopt, opt.verbose, opt.options)
+		// set output path back to given out flag for sim results
+		simopt.ResultSaveToPath = opt.out
 	}
 
 	// TODO: should perform the config parsing here and then share the parsed results between run & sample

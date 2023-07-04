@@ -189,7 +189,7 @@ func SetupResonance(s *core.Core) {
 					atk := args[1].(*combat.AttackEvent)
 					if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
 						t.AddResistMod(combat.ResistMod{
-							Base:  modifier.NewBase("geo-res", 15*60),
+							Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
 							Ele:   attributes.Geo,
 							Value: -0.2,
 						})

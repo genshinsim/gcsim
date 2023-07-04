@@ -23,10 +23,12 @@ const (
 	ShieldCandaceSkill
 	ShieldLaylaSkill
 	ShieldBaizhuBurst
+	ShieldKiraraSkill
 	EndShieldType
 )
 
 type Shield interface {
+	ShieldOwner() int
 	Key() int
 	Type() ShieldType
 	ShieldStrength(ele attributes.Element, bonus float64) float64

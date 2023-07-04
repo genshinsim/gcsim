@@ -24,9 +24,9 @@ var (
 )
 
 const (
-	skillSigilDurationKey = "razor-sigil-duration"
-	pressParticleICDKey   = "razor-press-particle-icd"
-	holdParticleICDKey    = "razor-hold-particle-icd"
+	skillSigilKey       = "razor-sigil"
+	pressParticleICDKey = "razor-press-particle-icd"
+	holdParticleICDKey  = "razor-hold-particle-icd"
 )
 
 func init() {
@@ -147,7 +147,7 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Claw and Thunder (Hold)",
-		AttackTag:  attacks.AttackTagElementalArtHold,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
@@ -201,19 +201,29 @@ func (c *char) addSigil(done bool) combat.AttackCBFunc {
 			return
 		}
 		done = true
-		if !c.StatusIsActive(skillSigilDurationKey) {
+		if !c.StatusIsActive(skillSigilKey) {
 			c.sigils = 0
 		}
 
 		if c.sigils < 3 {
 			c.sigils++
 		}
-		c.AddStatus(skillSigilDurationKey, 1080, true) //18 seconds
+
+		// add sigil er buff
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ER] = float64(c.sigils) * 0.2
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(skillSigilKey, 18*60),
+			AffectedStat: attributes.ER,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }
 
 func (c *char) clearSigil() {
-	if !c.StatusIsActive(skillSigilDurationKey) {
+	if !c.StatusIsActive(skillSigilKey) {
 		c.sigils = 0
 		return
 	}
@@ -221,20 +231,6 @@ func (c *char) clearSigil() {
 	if c.sigils > 0 {
 		c.AddEnergy("razor", float64(c.sigils)*5)
 		c.sigils = 0
-		c.DeleteStatus(skillSigilDurationKey)
+		c.DeleteStatus(skillSigilKey)
 	}
-}
-
-func (c *char) energySigil() {
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("er-sigil", -1),
-		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
-			if c.StatusIsActive(skillSigilDurationKey) {
-				c.skillSigilBonus[attributes.ER] = float64(c.sigils) * 0.2
-				return c.skillSigilBonus, true
-			}
-			return nil, false
-		},
-	})
 }

@@ -34,7 +34,6 @@ func (p *Parser) newChar(key keys.Char) {
 	r.Sets = make(map[keys.Set]int)
 	r.SetParams = make(map[keys.Set]map[string]int)
 	r.Weapon.Params = make(map[string]int)
-	r.Base.StartHP = -1
 	r.Base.Element = keys.CharKeyToEle[key]
 	p.chars[key] = &r
 	p.charOrder = append(p.charOrder, key)
@@ -81,11 +80,6 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			c.Talents.Burst, err = itemNumberToInt(x)
 			if err != nil {
 				return nil, err
-			}
-		case keywordStartHP:
-			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
-			if err == nil {
-				c.Base.StartHP, err = itemNumberToFloat64(x)
 			}
 		case ItemPlus: //optional flags
 			n = p.next()

@@ -31,7 +31,7 @@ func (c *char) a1() {
 			return false
 		}
 		active := c.Core.Player.ActiveChar()
-		if active.HPCurrent/active.MaxHP() >= 0.3 {
+		if active.CurrentHPRatio() >= 0.3 {
 			return false
 		}
 		c.AddStatus(a1IcdKey, 3600, false)
@@ -45,6 +45,7 @@ func (c *char) a1() {
 		//add shield
 		x := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 		c.Core.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: c.Index,
 			Src:        c.Core.F,
 			ShieldType: shield.ShieldNoelleA1,
 			Name:       "Noelle A1",

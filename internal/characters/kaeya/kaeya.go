@@ -36,7 +36,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	// make sure to use the same key everywhere so that these passives don't stack
 	c.Core.Player.AddStamPercentMod("utility-dash", -1, func(a action.Action) (float64, bool) {
-		if a == action.ActionDash && c.HPCurrent > 0 {
+		if a == action.ActionDash && c.CurrentHPRatio() > 0 {
 			return -0.2, false
 		}
 		return 0, false

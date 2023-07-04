@@ -97,7 +97,6 @@ const (
 	keywordRefine            // refine
 	keywordCons              // cons
 	keywordTalent            // talent
-	keywordStartHP           // start_hp
 	keywordCount             // count
 	keywordParams            // params
 	keywordLabel             // label

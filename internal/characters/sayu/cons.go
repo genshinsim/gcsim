@@ -22,12 +22,10 @@ func (c *char) c2() {
 			if atk.Info.ActorIndex != c.Index {
 				return nil, false
 			}
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
 			m[attributes.DmgP] = c.c2Bonus
-			//reset bonus back to 0
-			c.c2Bonus = 0
 			return m, true
 		},
 	})

@@ -55,7 +55,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.Core.Player.Drain(player.DrainInfo{
 		ActorIndex: c.Index,
 		Abil:       "Paramita Papilio",
-		Amount:     .30 * c.HPCurrent,
+		Amount:     0.30 * c.CurrentHP(),
 	})
 
 	//trigger 0 damage attack; matters because this breaks freeze

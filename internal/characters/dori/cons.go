@@ -47,7 +47,7 @@ func (c *char) c2(travel int) {
 // ·When their Energy is less than 50%, they gain 30% Energy Recharge.
 func (c *char) c4() {
 	active := c.Core.Player.ActiveChar()
-	if active.HPCurrent/active.MaxHP() < 0.5 {
+	if active.CurrentHPRatio() < 0.5 {
 		active.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBaseWithHitlag("dori-c4-healbonus", 48),
 			Amount: func() (float64, bool) {
@@ -60,7 +60,7 @@ func (c *char) c4() {
 		erMod := make([]float64, attributes.EndStatType)
 		erMod[attributes.ER] = 0.3
 		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("dori-c4-er-bonus", 48),
+			Base:         modifier.NewBaseWithHitlag("dori-c4-er-bonus", 48),
 			AffectedStat: attributes.ER,
 			Amount: func() ([]float64, bool) {
 				return erMod, true

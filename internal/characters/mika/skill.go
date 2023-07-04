@@ -25,7 +25,8 @@ const (
 	skillHoldTravel     = 3
 	rimestarShardTravel = 46
 
-	skillBuffKey = "soulwind"
+	skillBuffKey      = "soulwind"
+	skillBuffDuration = 12 * 60
 )
 
 func init() {
@@ -107,10 +108,10 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rimestar Flare",
-		AttackTag:  attacks.AttackTagElementalArtHold,
+		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
@@ -165,10 +166,10 @@ func (c *char) makeRimestarShardsCB() func(combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Rimestar Shard",
-			AttackTag:  attacks.AttackTagElementalArtHold,
+			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeSlash,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       skillExplode[c.TalentLvlSkill()],
@@ -218,12 +219,16 @@ func (c *char) applyBuffs() {
 func (c *char) skillBuff() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(skillBuffKey, 12*60),
+			Base:         modifier.NewBaseWithHitlag(skillBuffKey, skillBuffDuration),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return c.skillbuff, true
 			},
 		})
+
+		if c.Base.Ascension >= 1 {
+			c.a1(char)
+		}
 
 		if c.Base.Cons >= 6 {
 			c.c6(char)

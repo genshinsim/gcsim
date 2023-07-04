@@ -97,10 +97,14 @@ func (c *char) skillRelease(p map[string]int, delay int) action.ActionInfo {
 			c.a4()
 		}
 
-		c.Core.QueueAttack(
+		snap := c.Snapshot(&ai)
+		c6CR, c6CD := c.c6()
+		snap.Stats[attributes.CR] += c6CR
+		snap.Stats[attributes.CD] += c6CD
+		c.Core.QueueAttackWithSnap(
 			ai,
+			snap,
 			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: offset}, width, height),
-			hitDelay,
 			hitDelay,
 			skillCB,
 			c.particleCB,

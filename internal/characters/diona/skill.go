@@ -117,6 +117,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 				shd.Expires = shd.Expires + pawDur[c.TalentLvlSkill()]
 			} else {
 				shd = &shield.Tmpl{
+					ActorIndex: c.Index,
 					Src:        c.Core.F,
 					ShieldType: shield.ShieldDionaSkill,
 					Name:       "Diona Skill",

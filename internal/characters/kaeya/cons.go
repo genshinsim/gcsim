@@ -86,9 +86,10 @@ func (c *char) c4() {
 			return false
 		}
 		maxhp := c.MaxHP()
-		if c.HPCurrent/maxhp < .2 {
+		if c.CurrentHPRatio() < 0.2 {
 			c.c4icd = c.Core.F + 3600
 			c.Core.Player.Shields.Add(&shield.Tmpl{
+				ActorIndex: c.Index,
 				Src:        c.Core.F,
 				ShieldType: shield.ShieldKaeyaC4,
 				Name:       "Kaeya C4",

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -77,11 +78,33 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return
 			}
 
-			// at c4 and above:
-			// https://library.keqingmains.com/evidence/characters/electro/lisa#c4-plasma-eruption
-			enemies := c.Core.Combat.RandomEnemiesWithinArea(burstArea, nil, 3)
+			// at C4 and above:
+			// - https://library.keqingmains.com/evidence/characters/electro/lisa#c4-plasma-eruption
+			// - spawn up to 3 attacks based on enemy + gadget count
+			// - priority: enemy > gadget
+			discharge := func(pos geometry.Point) {
+				c.Core.QueueAttackWithSnap(
+					ai,
+					snap,
+					combat.NewCircleHitOnTarget(pos, nil, 1),
+					0,
+					c.makeA4CB(),
+				)
+			}
 			dischargeCount := 0
-			switch len(enemies) {
+			dischargeLimit := 3
+
+			enemies := c.Core.Combat.RandomEnemiesWithinArea(burstArea, nil, dischargeLimit)
+			enemyCount := len(enemies)
+
+			var gadgets []combat.Gadget
+			if enemyCount < dischargeLimit {
+				gadgets = c.Core.Combat.RandomGadgetsWithinArea(burstArea, nil, dischargeLimit-enemyCount)
+			}
+			gadgetCount := len(gadgets)
+
+			totalEntities := enemyCount + gadgetCount
+			switch totalEntities {
 			case 0:
 			case 1:
 				dischargeCount = 1
@@ -117,15 +140,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if dischargeCount == 0 {
 				return
 			}
-			for i, v := range enemies {
-				if i < dischargeCount {
-					c.Core.QueueAttackWithSnap(
-						ai,
-						snap,
-						combat.NewCircleHitOnTarget(v, nil, 1),
-						0,
-						c.makeA4CB(),
-					)
+
+			// target up to 3 enemies
+			for i := 0; i < dischargeCount; i++ {
+				if i < enemyCount {
+					discharge(enemies[i].Pos())
+				}
+			}
+			dischargeCount -= enemyCount
+
+			// if less than 3 enemies were targeted, then check for gadgets
+			for i := 0; i < dischargeCount; i++ {
+				if i < gadgetCount {
+					discharge(gadgets[i].Pos())
 				}
 			}
 		}, progress)
