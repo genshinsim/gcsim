@@ -55,6 +55,7 @@ message SimulationResult {
   repeated Character character_details = 10 [json_name="character_details"];
   repeated Enemy target_details = 11 [json_name="target_details"];
   Coord player_position = 16 [json_name="player_position"];
+  repeated string incomplete_characters = 17 [json_name="incomplete_characters"];
 
   // All data that changes per iteration goes here
   SimulationStatistics statistics = 12 [json_name="statistics"];

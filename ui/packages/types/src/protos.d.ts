@@ -2506,6 +2506,9 @@ export namespace model {
         /** SimulationResult player_position */
         player_position?: (model.ICoord|null);
 
+        /** SimulationResult incomplete_characters */
+        incomplete_characters?: (string[]|null);
+
         /** SimulationResult statistics */
         statistics?: (model.ISimulationStatistics|null);
 
@@ -2563,6 +2566,9 @@ export namespace model {
 
         /** SimulationResult player_position. */
         public player_position?: (model.ICoord|null);
+
+        /** SimulationResult incomplete_characters. */
+        public incomplete_characters: string[];
 
         /** SimulationResult statistics. */
         public statistics?: (model.ISimulationStatistics|null);

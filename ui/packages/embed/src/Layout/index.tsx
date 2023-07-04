@@ -24,7 +24,11 @@ const Layout = ({ data }: Props) => {
 
   return (
     <div id="card" className={`bp4-dark flex flex-col gap-2 p-1 h-screen ${disabled}`}>
-      <Avatars chars={data.character_details} handleLoaded={handleLoaded} />
+      <Avatars
+        chars={data.character_details}
+        invalid={data.incomplete_characters}
+        handleLoaded={handleLoaded}
+      />
       <Metadata data={data} />
       <Graphs data={data} />
     </div>

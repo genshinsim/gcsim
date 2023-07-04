@@ -1,4 +1,4 @@
-import { Card } from "@blueprintjs/core";
+import { Card, Tag } from "@blueprintjs/core";
 import { Character } from "@gcsim/types";
 import { DataColors } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
 import ArtifactsIcon from "./ArtifactsIcon";
@@ -7,13 +7,23 @@ import overlay from "./overlay.jpg";
 
 type Props = {
   chars?: Character[];
+  invalid?: string[];
   handleLoaded: () => void;
 };
 
-export const Avatars = ({ chars, handleLoaded }: Props) => {
+export const Avatars = ({ chars, invalid, handleLoaded }: Props) => {
   return (
     <div className="flex flex-row grow gap-2 justify-between">
-      {chars?.map((c, i) => <AvatarCard key={c.name} c={c} i={i} handleLoaded={handleLoaded} />)}
+      {chars?.map((c, i) => {
+        return (
+          <AvatarCard
+              key={c.name}
+              c={c}
+              i={i}
+              invalid={invalid != null && invalid?.includes(c.name)}
+              handleLoaded={handleLoaded} />
+        );
+      })}
     </div>
   );
 };
@@ -21,10 +31,11 @@ export const Avatars = ({ chars, handleLoaded }: Props) => {
 type CardProps = {
   c: Character;
   i: number;
+  invalid: boolean;
   handleLoaded: () => void;
 };
 
-const AvatarCard = ({ c, i, handleLoaded }: CardProps) => {
+const AvatarCard = ({ c, i, invalid, handleLoaded }: CardProps) => {
   const sets: string[] = [];
   let half = false;
 
@@ -120,6 +131,16 @@ const AvatarCard = ({ c, i, handleLoaded }: CardProps) => {
             </span>
           </div>
         </Card>
+
+      {invalid &&
+        <div className="absolute left-0 top-1/3 w-full">
+          <Tag large={true} intent="danger" fill>
+            <div className="flex flex-row items-center justify-center gap-2 font-mono select-none">
+              <div className="font-bold text-sm uppercase">In Progress</div>
+            </div>
+          </Tag>
+        </div>
+      }
       </div>
     </div>
   );
