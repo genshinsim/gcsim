@@ -24,7 +24,7 @@ export default ({}) => {
         key="db"
         className={Classes.MINIMAL}
         icon="database"
-        href="https://db.gcsim.app"
+        href="https://simpact.com/"
         target="_blank">
       <span className="hidden min-[798px]:block">
         {t<string>("nav.teams_db")}
