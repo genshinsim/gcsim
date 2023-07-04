@@ -1,5 +1,5 @@
 name: "build backend binary"
-descripition: "build backend binary; assume go has already been setup"
+description: "build backend binary; assume go has already been setup"
 inputs:
   cmd:
     required: true
