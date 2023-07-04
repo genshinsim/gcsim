@@ -109,7 +109,8 @@
         "customFilter": "Custom Filter",
         "characters": "Characters",
         "clear": "Clear",
-        "approve": "Approve"
+        "approve": "Approve",
+        "DB_TAG_KQM_GUIDE": "KQM Guide"
 
     },
     "elements": {

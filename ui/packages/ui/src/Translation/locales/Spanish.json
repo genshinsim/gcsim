@@ -109,7 +109,8 @@
         "customFilter": "Filtro personalizado",
         "characters": "Personajes",
         "clear": "Limpiar",
-        "approve": "Aprobar"
+        "approve": "Aprobar",
+        "DB_TAG_KQM_GUIDE": "KQM Guide"
     },
     "footer": {
         "gcsim_is_not": "gcsim no está afiliado con mihoyo. Genshin Impact, el contenido del juego y sus materiales son marcas registradas y derechos de autor de miHoYo."

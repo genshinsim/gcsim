@@ -130,7 +130,9 @@
     "customFilter": "Пользовательский фильтр",
     "characters": "Персонажи",
     "clear": "Очистить",
-    "approve": "Подтвердить"
+    "approve": "Подтвердить",
+    "DB_TAG_KQM_GUIDE": "KQM Guide"
+
   },
   "elements": {
     "none": "Пусто",

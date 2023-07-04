@@ -3,12 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaFilter, FaSearch } from "react-icons/fa";
 import { charNames } from "../PipelineExtract/CharacterNames";
-import useDebounce from "./debounce";
+import useDebounce from "../SharedHooks/debounce";
 import {
   FilterContext,
   FilterDispatchContext,
   ItemFilterState,
-  filterCharNames,
 } from "./FilterComponents/Filter.utils";
 
 export function Filter() {
@@ -117,7 +116,6 @@ function CharacterFilter() {
 
   const translateCharName = (charName: string) =>
     t("game:character_names." + charName);
-  
 
   return (
     <div className="w-full  overflow-x-hidden no-scrollbar">
@@ -149,10 +147,11 @@ function CharacterFilter() {
 
           <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
             {sortedCharNames
-              .filter(
-                (charName) => translateCharName(charName)
-              .toLocaleLowerCase()
-              .includes(charSearch.toLocaleLowerCase()))
+              .filter((charName) =>
+                translateCharName(charName)
+                  .toLocaleLowerCase()
+                  .includes(charSearch.toLocaleLowerCase())
+              )
               .map((charName) => (
                 <CharFilterButton key={charName} charName={charName} />
               ))}

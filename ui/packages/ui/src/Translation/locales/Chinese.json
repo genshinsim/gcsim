@@ -109,7 +109,9 @@
         "customFilter": "自定义过滤器",
         "characters": "角色",
         "clear": "清除",
-        "approve": "批准"
+        "approve": "批准",
+        "DB_TAG_KQM_GUIDE": "KQM Guide"
+
     },
     "footer": {
         "gcsim_is_not": "gcsim不是官方工具，原神的游戏内容和素材的商标和版权归米哈游所有。本网站的国际化汉化支持来自：古月浪子。"

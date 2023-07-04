@@ -109,7 +109,9 @@
         "customFilter": "カスタムフィルター",
         "characters": "キャラクター",
         "clear": "クリア",
-        "approve": "承認"
+        "approve": "承認",
+        "DB_TAG_KQM_GUIDE": "KQM Guide"
+
     },
     "footer": {
         "gcsim_is_not": "このウェブサイトは個人的な計算を目的としており、gcsim, miHoYoとは関係ありません。原神のゲームコンテンツや素材の商標および著作権はmiHoYoに帰属します。 日本語翻訳作成: からしな_（Karashina#8663）"

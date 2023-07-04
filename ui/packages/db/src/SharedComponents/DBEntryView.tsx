@@ -6,7 +6,7 @@ import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
-  const {t:translate} = useTranslation();
+  const { t: translate } = useTranslation();
   const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
 
   const team = dbEntry.summary?.team ?? [];
@@ -16,24 +16,29 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
       team.push({} as model.ICharacter);
     }
   }
-  let link = `https://simimpact.app/sh/${dbEntry.share_key}` 
+  let link = `https://simimpact.app/sh/${dbEntry.share_key}`;
   if ("_id" in dbEntry) {
-    link = `https://simimpact.app/db/${dbEntry["_id"]}`
+    link = `https://simimpact.app/db/${dbEntry["_id"]}`;
   }
 
   return (
     <>
-      <div className="hidden lg:flex  flex-row bg-slate-800  p-4 gap-4 w-full max-w-7xl">
+      <div className="hidden lg:flex  flex-row bg-slate-800  p-4 gap-4 w-full max-w-7xl h-36">
         <div className="flex gap-2 flex-row min-w-fit ">
           {team &&
             team.map((char, index) => {
               return <DBEntryPortrait {...char} key={index.toString()} />;
             })}
         </div>
-        <div className="flex flex-col grow ">
-          <div className="max-w-2xl">
+        <div className="flex flex-col grow  h-full">
+          <div className="max-w-2xl ">
             <div className="flex flex-col ">
               <DBEntryTags tags={dbEntry.accepted_tags} />
+              {!visibleTagCount(dbEntry.accepted_tags ?? []) && (
+                <div className=" p-1 overflow-ellipsis max-h-7 opacity-50">
+                  {dbEntry.description}
+                </div>
+              )}
             </div>
 
             <DBEntryDetails
@@ -43,17 +48,15 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
           </div>
         </div>
         <div className="flex flex-col justify-center ">
-
-        <a
-        href={link}
-        target="_blank"
-        className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
-        rel="noreferrer"
-        >
-        <div className="m-0">{t("db.openInViewer")}</div>
-      </a>
-          </div>
-        
+          <a
+            href={link}
+            target="_blank"
+            className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
+            rel="noreferrer"
+          >
+            <div className="m-0">{t("db.openInViewer")}</div>
+          </a>
+        </div>
       </div>
 
       <div className="lg:hidden flex flex-col items-center  bg-slate-700 max-w-xs p-5 border  gap-4 ">
@@ -65,13 +68,13 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
         </div>
 
         <a
-        href={link}
-        target="_blank"
-        className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
-        rel="noreferrer"
+          href={link}
+          target="_blank"
+          className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
+          rel="noreferrer"
         >
-            <div className="m-0">{t("db.openInViewer")}</div>
-      </a>
+          <div className="m-0">{t("db.openInViewer")}</div>
+        </a>
       </div>
     </>
   );
@@ -94,7 +97,7 @@ NonNullable<db.IEntry["summary"]> & {
   const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
   let date = t("db.unknown");
   if (run_date) {
-    date = new Date((run_date as number )* 1000).toLocaleDateString();
+    date = new Date((run_date as number) * 1000).toLocaleDateString();
   }
   return (
     <table className="bp4-html-table  ">
@@ -114,8 +117,12 @@ NonNullable<db.IEntry["summary"]> & {
         <tr className=" text-xs ">
           <td className="">{mode ? t("db.ttk") : t("db.duration")}</td>
           <td className="">{target_count}</td>
-          <td className="">{prettyPrintNumberStr(mean_dps_per_target?.toFixed(2)?? "")}</td>
-          <td className="">{prettyPrintNumberStr(total_damage?.mean?.toFixed(1)?? "") }</td>
+          <td className="">
+            {prettyPrintNumberStr(mean_dps_per_target?.toFixed(2) ?? "")}
+          </td>
+          <td className="">
+            {prettyPrintNumberStr(total_damage?.mean?.toFixed(1) ?? "")}
+          </td>
           <td className="">
             {sim_duration?.mean
               ? `${sim_duration.mean.toPrecision(3)}s`
@@ -128,7 +135,11 @@ NonNullable<db.IEntry["summary"]> & {
   );
 }
 
-
 function prettyPrintNumberStr(num: string): string {
-    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function visibleTagCount(tags: model.DBTag[]): number {
+  // 1 is the gcsim tag
+  return tags.filter((tag) => tag !== 1).length;
 }

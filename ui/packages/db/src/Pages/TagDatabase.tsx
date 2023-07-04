@@ -4,21 +4,24 @@ import axios from "axios";
 import eula from "images/eula.png";
 import { useEffect, useReducer, useState } from "react";
 import { ActionBar } from "SharedComponents/ActionBar";
-import { PaginationButtons } from "SharedComponents/Pagination";
-import { craftQuery, DbQuery } from "SharedHooks/databaseQuery";
 import {
   FilterContext,
   FilterDispatchContext,
   filterReducer,
   initialFilter,
-} from "../SharedComponents/FilterComponents/Filter.utils";
-import { ListView } from "../SharedComponents/ListView";
+} from "SharedComponents/FilterComponents/Filter.utils";
+import { ListView } from "SharedComponents/ListView";
+import { PaginationButtons } from "SharedComponents/Pagination";
+import { craftQuery, DbQuery } from "SharedHooks/databaseQuery";
 
-export function Database() {
-  const [filter, dispatch] = useReducer(filterReducer, initialFilter);
+export default function TagDatabase({ tag }: { tag: string }) {
+  const [filter, dispatch] = useReducer(filterReducer, {
+    ...initialFilter,
+    tags: [parseInt(tag)],
+  });
+
   const [data, setData] = useState<db.IEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
   const querydb = (query: DbQuery) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
       .then((resp: { data: db.IEntries }) => {

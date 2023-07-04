@@ -109,7 +109,9 @@
         "customFilter": "Benutzerdefinierter Filter",
         "characters": "Figuren",
         "clear": "Zurücksetzen",
-        "approve": "Genehmigen"
+        "approve": "Genehmigen",
+        "DB_TAG_KQM_GUIDE": "KQM Guide"
+
     },
     "elements": {
         "none": "Elementlos",
