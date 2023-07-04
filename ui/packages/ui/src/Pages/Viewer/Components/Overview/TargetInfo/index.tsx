@@ -26,14 +26,14 @@ const CardData = ({ enemies, player }: Props) => {
   }
 
   return (
-    <div className="flex flex-row gap-2 pt-2 justify-start h-64">
+    <div className="flex flex-col-reverse lg:flex-row gap-2 pt-2 h-64">
       <div className="flex flex-col gap-2 grow basis-2/3 overflow-y-scroll h-full min-w-[250px]">
         {enemies.map((enemy, i) => (
           <EnemyCard key={`enemy-${i}`} id={i} enemy={enemy} />
         ))}
       </div>
-      <div className="lg:flex flex-col grow w-[236px] min-h-[100px] hidden">
-        <div className="flex flex-row justify-center text-gray-400 font-mono">
+      <div className="flex flex-col grow w-[236px] min-h-[100px] lg:self-auto self-center">
+        <div className="lg:flex flex-row justify-center text-gray-400 font-mono hidden">
           Target Positions
         </div>
         <ParentSize>
