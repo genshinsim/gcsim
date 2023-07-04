@@ -2,7 +2,7 @@ go 1.18
 
 use (
 	./
-	./app
 	./db
 	./services
+	./pipeline
 )

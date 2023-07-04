@@ -1,6 +1,7 @@
 package simulator
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/binary"
 	"errors"
@@ -9,11 +10,14 @@ import (
 	"log"
 	"path"
 	"regexp"
+	"runtime/debug"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/stats"
 	"github.com/genshinsim/gcsim/pkg/worker"
@@ -24,45 +28,80 @@ type Options struct {
 	ResultSaveToPath string // file name (excluding ext) to save the result file; if "" then nothing is saved to file
 	GZIPResult       bool   // should the result file be gzipped; only if ResultSaveToPath is not ""
 	ConfigPath       string // path to the config file to read
-	Version          string
-	BuildDate        string
-	DebugMinMax      bool // whether to additional include debug logs for min/max-DPS runs
 }
 
-var start time.Time
+var (
+	sha1ver   string
+	buildTime string
+	modified  bool
+)
 
-// Run will run the simulation given number of times
-func Run(opts Options) (result.Summary, error) {
-	start = time.Now()
-
-	cfg, err := ReadConfig(opts.ConfigPath)
-	if err != nil {
-		return result.Summary{}, err
+func init() {
+	info, _ := debug.ReadBuildInfo()
+	for _, bs := range info.Settings {
+		if bs.Key == "vcs.revision" {
+			sha1ver = bs.Value
+		}
+		if bs.Key == "vcs.time" {
+			buildTime = bs.Value
+		}
+		if bs.Key == "vcs.modified" {
+			bv, _ := strconv.ParseBool(bs.Value)
+			modified = bv
+		}
 	}
+}
+
+func Version() string {
+	return sha1ver
+}
+
+func Parse(cfg string) (*ast.ActionList, error) {
 	parser := ast.New(cfg)
 	simcfg, err := parser.Parse()
 	if err != nil {
-		return result.Summary{}, err
+		return &ast.ActionList{}, err
 	}
+
 	//check other errors as well
 	if len(simcfg.Errors) != 0 {
 		fmt.Println("The config has the following errors: ")
 		for _, v := range simcfg.Errors {
 			fmt.Printf("\t%v\n", v)
 		}
-		return result.Summary{}, errors.New("sim has errors")
+		return &ast.ActionList{}, errors.New("sim has errors")
 	}
-	return RunWithConfig(cfg, simcfg, opts)
+
+	return simcfg, nil
+}
+
+// Run will run the simulation given number of times
+func Run(opts Options, ctx context.Context) (*model.SimulationResult, error) {
+	start := time.Now()
+
+	cfg, err := ReadConfig(opts.ConfigPath)
+	if err != nil {
+		return &model.SimulationResult{}, err
+	}
+
+	simcfg, err := Parse(cfg)
+	if err != nil {
+		return &model.SimulationResult{}, err
+	}
+
+	return RunWithConfig(cfg, simcfg, opts, start, ctx)
 }
 
 // Runs the simulation with a given parsed config
-func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Summary, error) {
+// TODO: cfg string should be in the action list instead
+// TODO: need to add a context here to avoid infinite looping
+func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.Time, ctx context.Context) (*model.SimulationResult, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
 		a, err := aggregator(simcfg)
 		if err != nil {
-			return result.Summary{}, err
+			return &model.SimulationResult{}, err
 		}
 		aggregators = append(aggregators, a)
 	}
@@ -95,82 +134,123 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options) (result.Sum
 		select {
 		case result := <-respCh:
 			for _, a := range aggregators {
-				a.Add(result, count)
+				a.Add(result)
 			}
 			count += 1
 		case err := <-errCh:
 			//error encountered
-			return result.Summary{}, err
+			return &model.SimulationResult{}, err
+		case <-ctx.Done():
+			return &model.SimulationResult{}, ctx.Err()
 		}
 	}
 
-	// generate final agg results
-	stats := &agg.Result{}
-	for _, a := range aggregators {
-		a.Flush(stats)
-	}
-
-	result, err := GenerateResult(cfg, simcfg, stats, opts)
+	result, err := GenerateResult(cfg, simcfg, opts)
 	if err != nil {
 		return result, err
 	}
 
-	//TODO: clean up this code
-	if opts.ResultSaveToPath != "" {
-		err = result.Save(opts.ResultSaveToPath, opts.GZIPResult)
-		if err != nil {
-			return result, err
-		}
+	// generate final agg results
+	stats := &model.SimulationStatistics{}
+	for _, a := range aggregators {
+		a.Flush(stats)
 	}
+	result.Statistics = stats
 
 	return result, nil
 }
 
-func GenerateResult(cfg string, simcfg *ast.ActionList, stats *agg.Result, opts Options) (result.Summary, error) {
-	result := result.Summary{
-		V2:            true,
-		Version:       opts.Version,
-		BuildDate:     opts.BuildDate,
-		IsDamageMode:  simcfg.Settings.DamageMode,
-		ActiveChar:    simcfg.InitialChar.String(),
-		Iterations:    simcfg.Settings.Iterations,
-		Runtime:       float64(time.Since(start).Nanoseconds()),
-		NumTargets:    len(simcfg.Targets),
-		TargetDetails: simcfg.Targets,
-		Config:        cfg,
+// Note: this generation should be iteration independent (iterations do not change output)
+func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.SimulationResult, error) {
+	out := &model.SimulationResult{
+		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
+		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES
+		// SemVer spec
+		//    Major: increase & reset minor to zero if new schema is backwards incompatible
+		//        Ex - changed the location of a critical column (the config file), major refactor
+		//    Minor: increase if new schema is backwards compatible with previous
+		//        Ex - added new data for new graph on UI. UI still functional if this data is missing
+		// Increasing the version will result in the UI flagging all old sims as outdated
+		SchemaVersion: &model.Version{Major: "4", Minor: "0"}, // MAKE SURE UI VERSION IS IN SYNC
+		SimVersion:    &sha1ver,
+		BuildDate:     buildTime,
+		Modified:      &modified,
+		KeyType:       "NONE",
+		SimulatorSettings: &model.SimulatorSettings{
+			Duration:        simcfg.Settings.Duration,
+			DamageMode:      simcfg.Settings.DamageMode,
+			EnableHitlag:    simcfg.Settings.EnableHitlag,
+			DefHalt:         simcfg.Settings.DefHalt,
+			NumberOfWorkers: uint32(simcfg.Settings.NumberOfWorkers),
+			Iterations:      uint32(simcfg.Settings.Iterations),
+			Delays: &model.Delays{
+				Skill:  int32(simcfg.Settings.Delays.Skill),
+				Burst:  int32(simcfg.Settings.Delays.Burst),
+				Attack: int32(simcfg.Settings.Delays.Attack),
+				Charge: int32(simcfg.Settings.Delays.Charge),
+				Aim:    int32(simcfg.Settings.Delays.Aim),
+				Dash:   int32(simcfg.Settings.Delays.Dash),
+				Jump:   int32(simcfg.Settings.Delays.Jump),
+				Swap:   int32(simcfg.Settings.Delays.Swap),
+			},
+		},
+		EnergySettings: &model.EnergySettings{
+			Active:         simcfg.Energy.Active,
+			Once:           simcfg.Energy.Once,
+			Start:          int32(simcfg.Energy.Start),
+			End:            int32(simcfg.Energy.End),
+			Amount:         int32(simcfg.Energy.Amount),
+			LastEnergyDrop: int32(simcfg.Energy.LastEnergyDrop),
+		},
+		Config:           cfg,
+		SampleSeed:       strconv.FormatUint(uint64(CryptoRandSeed()), 10),
+		InitialCharacter: simcfg.InitialChar.String(),
+		TargetDetails:    make([]*model.Enemy, len(simcfg.Targets)),
+		PlayerPosition: &model.Coord{
+			X: simcfg.PlayerPos.X,
+			Y: simcfg.PlayerPos.Y,
+			R: simcfg.PlayerPos.R,
+		},
 	}
-	result.Map(simcfg, stats)
-	result.Text = result.PrettyPrint()
+
+	for i, target := range simcfg.Targets {
+		resist := make(map[string]float64)
+		for k, v := range target.Resist {
+			resist[k.String()] = v
+		}
+
+		out.TargetDetails[i] = &model.Enemy{
+			Level:  int32(target.Level),
+			HP:     target.HP,
+			Resist: resist,
+			Pos: &model.Coord{
+				X: target.Pos.X,
+				Y: target.Pos.Y,
+				R: target.Pos.R,
+			},
+			ParticleDropThreshold: target.ParticleDropThreshold,
+			ParticleDropCount:     target.ParticleDropCount,
+			ParticleElement:       target.ParticleElement.String(),
+		}
+	}
+
+	if simcfg.Settings.DamageMode {
+		out.Mode = model.SimMode_TTK_MODE
+	}
 
 	charDetails, err := GenerateCharacterDetails(simcfg)
 	if err != nil {
-		return result, err
+		return out, err
 	}
-	result.CharDetails = charDetails
+	out.CharacterDetails = charDetails
 
-	//run one debug
-	//debug call will clone before running
-	debugOut, err := GenerateDebugLogWithSeed(simcfg, CryptoRandSeed())
-	if err != nil {
-		return result, err
-	}
-	result.Debug = debugOut
-
-	// Include debug logs for min/max-DPS runs if requested.
-	if opts.DebugMinMax {
-		minDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MinSeed))
-		if err != nil {
-			return result, err
+	for _, v := range simcfg.Characters {
+		if !result.IsCharacterComplete(v.Base.Key) {
+			out.IncompleteCharacters = append(out.IncompleteCharacters, v.Base.Key.String())
 		}
-		result.DebugMinDPSRun = minDPSDebugOut
-
-		maxDPSDebugOut, err := GenerateDebugLogWithSeed(simcfg, int64(result.MaxSeed))
-		if err != nil {
-			return result, err
-		}
-		result.DebugMaxDPSRun = maxDPSDebugOut
 	}
-	return result, nil
+
+	return out, nil
 }
 
 // cryptoRandSeed generates a random seed using crypo rand

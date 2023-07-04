@@ -103,7 +103,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		adjustedFrames = skillCanceledFrames
 	}
 
-	canQueueAfter := math.MaxInt32
+	canQueueAfter := math.MaxInt
 	for _, f := range adjustedFrames {
 		if f < canQueueAfter {
 			canQueueAfter = f

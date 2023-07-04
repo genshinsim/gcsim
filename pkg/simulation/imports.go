@@ -2,16 +2,15 @@ package simulation
 
 import (
 	// stats collectors
-	_ "github.com/genshinsim/gcsim/pkg/stats/legacy"
-	// TODO: re-enable as part of full stats refactor
-	// _ "github.com/genshinsim/gcsim/pkg/stats/action"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/damage"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/energy"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/heal"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/reaction"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/shield"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/status"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/swap"
+	_ "github.com/genshinsim/gcsim/pkg/stats/action"
+	_ "github.com/genshinsim/gcsim/pkg/stats/damage"
+	_ "github.com/genshinsim/gcsim/pkg/stats/energy"
+	_ "github.com/genshinsim/gcsim/pkg/stats/heal"
+	_ "github.com/genshinsim/gcsim/pkg/stats/position"
+	_ "github.com/genshinsim/gcsim/pkg/stats/reaction"
+	_ "github.com/genshinsim/gcsim/pkg/stats/shield"
+	_ "github.com/genshinsim/gcsim/pkg/stats/status"
+	_ "github.com/genshinsim/gcsim/pkg/stats/swap"
 
 	// artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"

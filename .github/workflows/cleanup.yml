@@ -1,0 +1,15 @@
+name: wasm branch cleanup
+on:
+  workflow_dispatch:
+  delete:
+
+jobs:
+  clean:
+    if: github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wei/rclone@v1
+        env:
+          RCLONE_CONF: ${{ secrets.CF_RCLONE }}
+        with:
+          args: delete r2rclone:wasm/${{ github.event.ref }}

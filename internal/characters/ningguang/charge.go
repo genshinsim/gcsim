@@ -146,7 +146,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 	c.jadeCount = 0
 
-	canQueueAfter := math.MaxInt32
+	canQueueAfter := math.MaxInt
 	for _, f := range chargeFrames[chargeType] {
 		if f < canQueueAfter {
 			canQueueAfter = f

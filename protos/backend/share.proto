@@ -1,0 +1,76 @@
+syntax = "proto3";
+package share;
+option go_package="github.com/genshinsim/gcsim/backend/pkg/services/share";
+
+import "protos/model/result.proto";
+
+service ShareStore {
+    rpc Create (CreateRequest) returns (CreateResponse) {}
+    rpc Read (ReadRequest) returns (ReadResponse) {}
+    rpc Update (UpdateRequest) returns (UpdateResponse) {}
+    rpc SetTTL (SetTTLRequest) returns (SetTTLResponse) {}
+    rpc Delete (DeleteRequest) returns (DeleteResponse) {}
+    rpc Random (RandomRequest) returns (RandomResponse) {}
+}
+
+message ShareEntry {
+    string id = 1 [json_name="_id"];
+    model.SimulationResult result = 2 [json_name="result"];
+    uint64 expires_at = 3 [json_name="expires_at"];
+    string submitter = 4 [json_name="submitter"];
+}
+
+message CreateRequest {
+    model.SimulationResult result = 1;
+    uint64 expires_at = 2 [json_name="expires_at"];
+    string submitter = 3;
+}
+
+message CreateResponse {
+    string id = 1;
+}
+
+message ReadRequest {
+    string id = 1;
+}
+
+message ReadResponse {
+    string id = 1;
+    model.SimulationResult result = 2;
+    uint64 expires_at = 3 [json_name="expires_at"];
+}
+
+message UpdateRequest {
+    string id = 1;
+    model.SimulationResult result = 2;
+    uint64 expires_at = 3 [json_name="expires_at"];
+    string submitter = 4;
+}
+
+message UpdateResponse {
+    string id = 1;
+}
+
+message SetTTLRequest {
+    string id = 1;
+    uint64 expires_at = 3 [json_name="expires_at"];
+}
+
+message SetTTLResponse {
+    string id = 1;
+}
+
+message DeleteRequest {
+    string id = 1;
+}
+
+message DeleteResponse {
+    string id = 1;
+    //TODO: add deleted data to response in future
+}
+
+message RandomRequest {}
+
+message RandomResponse {
+    string id = 1;
+}

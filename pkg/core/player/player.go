@@ -61,14 +61,14 @@ type Handler struct {
 }
 
 type Delays struct {
-	Skill  int
-	Burst  int
-	Attack int
-	Charge int
-	Aim    int
-	Dash   int
-	Jump   int
-	Swap   int
+	Skill  int `json:"skill"`
+	Burst  int `json:"burst"`
+	Attack int `json:"attack"`
+	Charge int `json:"charge"`
+	Aim    int `json:"aim"`
+	Dash   int `json:"dash"`
+	Jump   int `json:"jump"`
+	Swap   int `json:"swap"`
 }
 
 type Opt struct {

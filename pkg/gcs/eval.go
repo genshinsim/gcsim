@@ -56,31 +56,40 @@ func (e *Env) v(s string) (*number, error) {
 	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
-//Run will execute the provided AST. Any genshin specific actions will be passed
-//back to the
-func (e *Eval) Run() Obj {
+// Run will execute the provided AST. Any genshin specific actions will be passed
+// back to the
+func (e *Eval) Run() {
 	if e.Log == nil {
 		e.Log = log.New(ioutil.Discard, "", log.LstdFlags)
 	}
 	//this should run until it hits an Action
 	//it will then pass the action on a resp channel
 	//it will then wait for Next before running again
-	global := NewEnv(nil)
+	err := e.runWithRecover()
 
-	//start running once we get signal to go
-	<-e.Next
 	defer close(e.Work)
-	Obj, err := e.evalNode(e.AST, global)
 	switch err {
 	case nil:
-		return Obj
 	case ErrTerminated:
 		//do nothing here really since we're just out of work per main thread
-		return &null{}
 	default:
 		e.Err <- err
-		return &null{}
 	}
+}
+
+func (e *Eval) runWithRecover() (err error) {
+	defer func() {
+		// recover from panic if one occured. Set err to nil otherwise.
+		if recover() != nil {
+			err = errors.New("parser panic occured")
+		}
+	}()
+	global := NewEnv(nil)
+	//start running once we get signal to go
+	<-e.Next
+	_, err = e.evalNode(e.AST, global)
+
+	return
 }
 
 var ErrTerminated = errors.New("eval terminated")
@@ -101,7 +110,7 @@ const (
 	// typTerminate
 )
 
-//various Obj types
+// various Obj types
 type (
 	null   struct{}
 	number struct {

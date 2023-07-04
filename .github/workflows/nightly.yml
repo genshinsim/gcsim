@@ -10,22 +10,11 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-      - name: Setup go
-        uses: actions/setup-go@v2
+      - uses: actions/checkout@v3
+      - name: go-setup-and-test
+        uses: ./.github/actions/go-setup-and-test
+      - name: deploy-binary
+        uses: ./.github/actions/deploy-binary
         with:
-          go-version: ^1.17.7
-      - run: |
-          # make file runnable, might not be necessary
-          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
-          # run the script
-          "${GITHUB_WORKSPACE}/scripts/build.sh"
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: true
-          automatic_release_tag: nightly
-          files: |
-            LICENSE
-            gcsim.exe
+          shareKey: ${{ secrets.AES_KEY }}
