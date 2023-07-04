@@ -102,6 +102,7 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 
 	// c2 has a fanAngle -> there's an intersection if A && (B || C)
 	// https://www.baeldung.com/cs/circle-line-segment-collision-detection
+	// (note: no need for maxDist since we also count segment completely inside of circle as an intersection)
 	// B: check if c1 intersects any of c2's segments, if yes we can exit early
 	// (it's necessary to check for this because c1 can collide with c2's fanAngle area
 	// even if c1's circle center isn't in c2's fanAngle range)
@@ -120,11 +121,10 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 		oqDist := o.Distance(q)
 
 		minDist := math.Min(opDist, oqDist)
-		maxDist := math.Max(opDist, oqDist)
 		if op.Dot(qp) > 0 && oq.Dot(pq) > 0 {
 			minDist = math.Abs(op.Cross(oq)) / c2.r
 		}
-		if minDist <= c1.r && maxDist >= c1.r {
+		if minDist <= c1.r {
 			return true
 		}
 	}
