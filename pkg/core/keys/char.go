@@ -162,7 +162,7 @@ var charNames = []string{
 	"ganyu",
 	"hutao",
 	"jean",
-	"loser",
+	"kazuha",
 	"kaeya",
 	"ayaka",
 	"ayato",
