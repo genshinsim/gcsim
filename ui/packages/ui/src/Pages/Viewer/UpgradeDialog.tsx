@@ -55,15 +55,18 @@ export default ({ exec, data, redirect, mode, commit, setResult, setError }: Pro
     return null;
   }
 
+  const minor = mismatch == MismatchType.CommitMismatch
+      || mismatch == MismatchType.MinorVersionMismatch;
+
   return (
     <Dialog
         isOpen={isOpen}
         title="Results Outdated"
         icon="outdated"
         usePortal={false}
-        canEscapeKeyClose={false}
-        canOutsideClickClose={false}
-        isCloseButtonShown={mismatch == MismatchType.MinorVersionMismatch}
+        canEscapeKeyClose={minor}
+        canOutsideClickClose={minor}
+        isCloseButtonShown={minor}
         onClose={() => setOpen(false)}>
       <div className={Classes.DIALOG_BODY}>
         <DialogBody mismatch={mismatch} data={data} latestCommit={commit} />
