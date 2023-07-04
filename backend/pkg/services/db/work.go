@@ -118,7 +118,7 @@ func (s *Server) RejectWork(ctx context.Context, req *RejectWorkRequest) (*Rejec
 		)
 	} else {
 		s.notify(
-			TopicSubmissionComputeFailed,
+			TopicDBComputeFailed,
 			&model.ComputeFailedEvent{
 				DbId:      entry.Id,
 				Config:    entry.Config,
