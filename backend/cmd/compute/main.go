@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"log"
 	"os"
@@ -135,7 +136,13 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 		log.Printf("error running sim %v: %v\n", w.Id, err)
 		return nil, err
 	}
-	result.KeyType = "prod" 
+
+	if len(result.IncompleteCharacters) > 0 {
+		log.Printf("sim has incomplete characters, will not save %v\n", w.Id)
+		return nil, errors.New("incomplete characters in sim")
+	}
+
+	result.KeyType = "prod"
 	elapsed := time.Since(start)
 	log.Printf("Work %v took %s", w.Id, elapsed)
 
