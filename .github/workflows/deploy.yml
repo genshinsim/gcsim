@@ -38,11 +38,7 @@ jobs:
         uses: ./.github/actions/deploy-workers
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-      # - name: deploy-binary
-      #   uses: ./.github/actions/deploy-binary
-      #   with:
-      #     shareKey: ${{ secrets.AES_KEY }}
-      #     tag: ${{ github.ref }}
+
       - name: deploy-ui
         uses: ./.github/actions/deploy-ui
         with:
@@ -122,4 +118,20 @@ jobs:
           path: ./computebin 
       - name: git
         run: |
-          git status 
+          git status
+
+      - name: Build Binary
+        run: |
+          # make file runnable, might not be necessary
+          chmod +x "${GITHUB_WORKSPACE}/scripts/build.sh"
+          # run the script
+          "${GITHUB_WORKSPACE}/scripts/build.sh"
+        env:
+          GCSIM_SHARE_KEY: ${{ secrets.AES_KEY }}
+
+      - name: Release Binary
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            LICENSE
+            gcsim.exe
