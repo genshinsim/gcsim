@@ -8,6 +8,9 @@ inputs:
     required: false
     description: "Set true to deploy nightly builds"
     default: "false"
+  tags:
+    required: true
+    description: "tag"
 runs:
   using: composite
   steps:
@@ -26,7 +29,7 @@ runs:
     if: inputs.prerelease == 'true' || startsWith(github.ref, 'refs/tags/')
     with:
       prerelease: ${{ inputs.prerelease == 'true' }}
-      # tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref || 'nightly' }}
+      tag_name: ${{ inputs.tag }}
       files: |
         LICENSE
         gcsim.exe

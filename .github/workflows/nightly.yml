@@ -17,4 +17,5 @@ jobs:
         uses: ./.github/actions/deploy-binary
         with:
           prerelease: true
+          tag: 'nightly'
           shareKey: ${{ secrets.AES_KEY }}

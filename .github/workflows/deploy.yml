@@ -42,6 +42,7 @@ jobs:
         uses: ./.github/actions/deploy-binary
         with:
           shareKey: ${{ secrets.AES_KEY }}
+          tag: ${{ github.ref }}
       - name: deploy-ui
         uses: ./.github/actions/deploy-ui
         with:
