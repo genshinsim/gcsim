@@ -101,10 +101,22 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const viewerPaths = [
+  "/web",
+  "/local",
+  "/sh/",
+  "/db/"
+];
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function movedOffViewer(location: any, prevLocation: any, prefix: string): boolean {
-  return prevLocation.current.pathname.startsWith(prefix)
-      && !location.pathname.startsWith(prefix);
+function movedOffViewer(location: any, prevLocation: any): boolean {
+  let prevWasViewer = false;
+  let destIsViewer = false;
+  for (let i = 0; i < viewerPaths.length; i++) {
+    prevWasViewer = prevWasViewer || prevLocation.current.pathname.startsWith(viewerPaths[i]);
+    destIsViewer = destIsViewer || location.pathname.startsWith(viewerPaths[i]);
+  }
+  return prevWasViewer && !destIsViewer;
 }
 
 const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
@@ -128,12 +140,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
   useEffect(() => {
     if (
         prevLocation.current != location
-        && (
-          movedOffViewer(location, prevLocation, "/web")
-          || movedOffViewer(location, prevLocation, "/local")
-          || movedOffViewer(location, prevLocation, "/sh/")
-          || movedOffViewer(location, prevLocation, "/db/")
-        )
+        && movedOffViewer(location, prevLocation)
         && exec().running()) {
       exec().cancel();
     }
