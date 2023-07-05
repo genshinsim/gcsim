@@ -97,7 +97,7 @@ NonNullable<db.IEntry["summary"]> & {
   const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
   let date = t("db.unknown");
   if (run_date) {
-    date = new Date((run_date as number) * 1000).toLocaleDateString();
+    date = new Date((run_date as number) * 1000).toDateString().replace(/^\S+\s/,'');
   }
   return (
     <table className="bp4-html-table  ">
