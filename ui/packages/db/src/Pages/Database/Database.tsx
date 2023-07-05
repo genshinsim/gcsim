@@ -11,22 +11,40 @@ import {
   FilterDispatchContext,
   filterReducer,
   initialFilter,
-} from "../SharedComponents/FilterComponents/Filter.utils";
-import { ListView } from "../SharedComponents/ListView";
+} from "../../SharedComponents/FilterComponents/Filter.utils";
+import { DBView } from "./DBVIew";
 
 export function Database() {
   const [filter, dispatch] = useReducer(filterReducer, initialFilter);
   const [data, setData] = useState<db.IEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasMore, setHasMore] = useState<boolean>(true)
+  const [page, setPage] = useState<number>(1)
 
-  const querydb = (query: DbQuery) => {
+  const appendData = (next: db.IEntry[]) => {
+    // let d = [ ...data,...next.filter(e => {
+    //   return false
+    // })]
+    setData([...data, ...next])
+  }
+
+  const querydb = (query: DbQuery, nextPage: number, append: boolean) => {
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`)
       .then((resp: { data: db.IEntries }) => {
         if (resp.data && resp.data.data) {
-          setData(resp.data.data);
+          setPage(nextPage)
+          setHasMore(true)
+          if (append) {
+            appendData(resp.data.data)
+          } else {
+            setData(resp.data.data)
+          }
           console.log("data: ", resp.data.data);
         } else {
-          setData([]);
+          setHasMore(false)
+          if (!append) {
+            setData([]);
+          }
         }
         setIsLoading(false);
       })
@@ -36,9 +54,15 @@ export function Database() {
   };
 
   useEffect(() => {
-    const query = craftQuery(filter);
-    querydb(query);
+    const query = craftQuery(filter, 1, 25);
+    querydb(query, 1, false);
   }, [filter]);
+
+  const fetchData = () => {
+    const nextPage = page + 1
+    const query = craftQuery(filter, nextPage, 25);
+    querydb(query, nextPage, true)
+  }
 
   if (isLoading || !data)
     return (
@@ -50,20 +74,11 @@ export function Database() {
   return (
     <FilterContext.Provider value={filter}>
       <FilterDispatchContext.Provider value={dispatch}>
-        <div className="flex flex-col  gap-4 m-8 my-4 items-center">
-          <ActionBar simCount={data.length} />
-          {data.length === 0 ? (
-            <div className="6 flex flex-col justify-center items-center h-screen">
-              <img
-                src={eula}
-                className=" object-contain opacity-50 w-32 h-32"
-              />
-            </div>
-          ) : (
-            <ListView data={data} />
-          )}
-          <PaginationButtons />
-        </div>
+        <DBView
+          data={data}
+          fetchData={fetchData}
+          hasMore={hasMore}
+        />
       </FilterDispatchContext.Provider>
     </FilterContext.Provider>
   );
