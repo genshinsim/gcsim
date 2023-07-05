@@ -1,7 +1,7 @@
-// import { Request } from "itty-router";
+import { IRequest } from "itty-router";
 import pako from "pako";
 
-export async function handleLegacy(request: Request): Promise<Response> {
+export async function handleLegacy(request: IRequest): Promise<Response> {
   let { params } = request;
   if (!params || !params.key) {
     return new Response(null, {

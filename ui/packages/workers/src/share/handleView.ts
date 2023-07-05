@@ -1,7 +1,7 @@
-// import { Request } from "itty-router";
+import { IRequest } from "itty-router";
 
 export async function handleView(
-  request: Request,
+  request: IRequest,
   event: FetchEvent
 ): Promise<Response> {
   let { params } = request;

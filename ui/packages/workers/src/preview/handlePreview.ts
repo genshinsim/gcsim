@@ -1,5 +1,7 @@
+import { IRequest } from "itty-router";
+
 export async function handlePreview(
-  request: Request,
+  request: IRequest,
   event: FetchEvent
 ): Promise<Response> {
   //get last bit of url and change if valid uuid

@@ -1,6 +1,7 @@
+import { IRequest } from "itty-router";
 import { validator } from "./validation";
 
-export async function handleShare(request: Request): Promise<Response> {
+export async function handleShare(request: IRequest): Promise<Response> {
   let content: any;
   console.log("share request received! processing data");
   try {

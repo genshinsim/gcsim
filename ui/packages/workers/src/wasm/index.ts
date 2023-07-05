@@ -1,5 +1,7 @@
+import { IRequest } from "itty-router";
+
 export async function handleWasm(
-  request: Request,
+  request: IRequest,
   event: FetchEvent
 ): Promise<Response> {
   const cacheUrl = new URL(request.url);
