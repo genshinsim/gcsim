@@ -4,8 +4,6 @@ import charData from "../../Data/char_data.generated.json"
 export interface FilterState {
   charFilter: CharFilter;
   charIncludeCount: number;
-  pageNumber: number;
-  entriesPerPage: number;
   customFilter: string;
   tags: number[];
 }
@@ -28,8 +26,6 @@ export const initialCharFilter = charNames.reduce((acc, charName) => {
 export const initialFilter: FilterState = {
   charFilter: initialCharFilter,
   charIncludeCount: 0,
-  pageNumber: 1,
-  entriesPerPage: 25,
   customFilter: "",
   tags: [],
 };
@@ -67,7 +63,6 @@ export const FilterDispatchContext = createContext<
 
 export type FilterActions =
   | CharFilterReducerAction
-  | PageFilterReducerAction
   | GeneralFilterAction
   | CustomFilterAction;
 
@@ -94,10 +89,6 @@ interface CharFilterReducerAction {
   set?: string;
 }
 
-interface PageFilterReducerAction {
-  type: "incrementPage" | "decrementPage" | "setPage";
-  pageNumber?: number;
-}
 export function filterReducer(
   filter: FilterState,
   action: FilterActions
@@ -224,25 +215,6 @@ export function filterReducer(
           ...filter[action.char],
           set: newSet,
         },
-      };
-    }
-    case "incrementPage": {
-      return {
-        ...filter,
-        pageNumber: filter.pageNumber + 1,
-      };
-    }
-    case "decrementPage": {
-      if (filter.pageNumber === 1) return filter;
-      return {
-        ...filter,
-        pageNumber: filter.pageNumber - 1,
-      };
-    }
-    case "setPage": {
-      return {
-        ...filter,
-        pageNumber: action.pageNumber ?? 1,
       };
     }
     case "clearFilter": {

@@ -3,20 +3,14 @@ import {
   ItemFilterState,
 } from "SharedComponents/FilterComponents/Filter.utils";
 
-export function craftQuery({
-  charFilter,
-  pageNumber,
-  entriesPerPage,
-  customFilter,
-  tags,
-}: FilterState): DbQuery {
+export function craftQuery(filter: FilterState, pageNumber: number, entriesPerPage: number): DbQuery {
   const query: DbQuery["query"] = {};
   // sort all characters into included and excluded from the filter
   const includedChars: string[] = [];
   const excludedChars: string[] = [];
   const limit = entriesPerPage;
   const skip = (pageNumber - 1) * entriesPerPage;
-  for (const [charName, charState] of Object.entries(charFilter)) {
+  for (const [charName, charState] of Object.entries(filter.charFilter)) {
     if (charState.state === ItemFilterState.include) {
       includedChars.push(charName);
     } else if (charState.state === ItemFilterState.exclude) {
@@ -24,12 +18,12 @@ export function craftQuery({
     }
   }
 
-  if (customFilter) {
+  if (filter.customFilter) {
     let parsedFilter;
     try {
-      parsedFilter = JSON.parse(`{${customFilter}}`);
+      parsedFilter = JSON.parse(`{${filter.customFilter}}`);
     } catch (e) {
-      console.log("invalid custom filter", e, customFilter);
+      console.log("invalid custom filter", e, filter.customFilter);
     }
 
     return {
@@ -47,9 +41,9 @@ export function craftQuery({
     query["summary.char_names"] = query["summary.char_names"] ?? {};
     query["summary.char_names"]["$nin"] = excludedChars;
   }
-  if (tags.length > 0) {
+  if (filter.tags.length > 0) {
     query["accepted_tags"] = {
-      $in: tags,
+      $in: filter.tags,
     };
   }
   return {
@@ -66,10 +60,10 @@ export interface DbQuery {
       $nin?: string[];
     };
     accepted_tags?: {
-      $in?: string[];
+      $in?: number[];
     };
   };
-  limit?: number;
+  limit: number;
   sort?: unknown;
   skip?: number;
 }
