@@ -12,7 +12,7 @@ let exec: WasmExecutor | undefined;
 function wasmLocation() {
   if (import.meta.env.PROD) {
     return "/api/wasm/"
-        + import.meta.env.VITE_GIT_BRANCH + "/"
+        + import.meta.env.VITE_BRANCH + "/"
         + import.meta.env.VITE_GIT_COMMIT_HASH + "/"
         + "main.wasm";
   }

@@ -21,6 +21,8 @@ runs:
     working-directory: ./ui
     shell: bash
     run: yarn build:web
+    env:
+      VITE_BRANCH: ${{ inputs.branch }}
 
   - name: List UI dist
     working-directory: ./ui/packages/web/dist
