@@ -34,7 +34,7 @@ export const DBView = (props: Props) => {
                 <b>Yay! You have seen it all.</b>
               </p>
               <p className="text-center">
-                Didn't find what you're looking for? Make your own submisson on our discord
+                Didn't find what you're looking for? Create and submit your own on our discord 
               </p>
             </>
           }
