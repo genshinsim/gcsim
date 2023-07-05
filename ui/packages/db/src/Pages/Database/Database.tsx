@@ -9,12 +9,17 @@ import { craftQuery, DbQuery } from "SharedHooks/databaseQuery";
 import {
   FilterContext,
   FilterDispatchContext,
+  FilterState,
   filterReducer,
-  initialFilter,
+  initialFilter as defaultFilter,
 } from "../../SharedComponents/FilterComponents/Filter.utils";
 import { DBView } from "./DBVIew";
 
-export function Database() {
+type Props = {
+  initialFilter? : FilterState
+}
+
+export const Database= ({ initialFilter = defaultFilter } : Props) => {
   const [filter, dispatch] = useReducer(filterReducer, initialFilter);
   const [data, setData] = useState<db.IEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
