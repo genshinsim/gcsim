@@ -63,7 +63,7 @@ export interface DbQuery {
       $in?: number[];
     };
   };
-  limit?: number;
+  limit: number;
   sort?: unknown;
   skip?: number;
 }

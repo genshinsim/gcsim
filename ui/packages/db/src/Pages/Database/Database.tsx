@@ -39,6 +39,12 @@ export function Database() {
           } else {
             setData(resp.data.data)
           }
+          //check count; if we got less than limit then there's no more data... 
+          //TODO: this is bugged if there are exactly limit number of entries...
+          //TODO: really server should tell us if there's more data
+          if (resp.data.data.length < query.limit) {
+            setHasMore(false)
+          }
           console.log("data: ", resp.data.data);
         } else {
           setHasMore(false)
