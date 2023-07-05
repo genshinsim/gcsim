@@ -1,0 +1,6 @@
+{
+  "albedo": [
+    "Burst does not generate randomly and instead rely on a param to specify number of hits.",
+    "Burst ticks missing precise frame count"
+  ]
+}

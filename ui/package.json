@@ -19,6 +19,7 @@
     "start:web": "yarn workspace @gcsim/web dev",
     "start:embed": "yarn workspace @gcsim/embed dev",
     "start:db": "yarn gen && yarn workspace @gcsim/db dev",
+    "start:docs": "yarn workspace @gcsim/docs start",
     "preview": "yarn run preview:web",
     "preview:web": "yarn workspace @gcsim/web preview",
     "preview:embed": "yarn workspace @gcsim/embed preview",
@@ -27,6 +28,7 @@
     "build:web": "yarn workspace @gcsim/web build",
     "build:embed": "yarn workspace @gcsim/embed build",
     "build:db": "yarn workspace @gcsim/db build",
+    "build:docs": "yarn workspace @gcsim/docs build",
     "deploy:workers": "yarn workspace @gcsim/workers deploy",
     "start:workers": "yarn workspace @gcsim/workers start",
     "gen": "yarn workspace @gcsim/types gen:ts"

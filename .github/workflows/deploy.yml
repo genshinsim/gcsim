@@ -54,6 +54,14 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
+      - name: deploy-docs
+        uses: ./.github/actions/deploy-docs
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          # name needs to be "main" if on mainline
+          branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
       
       - name: deploy-wasm
         uses: ./.github/actions/deploy-wasm
