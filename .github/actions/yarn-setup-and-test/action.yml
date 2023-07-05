@@ -3,23 +3,24 @@ description: "runs yarn setup and any desired yarn lint and test commands (no bu
 runs:
   using: composite
   steps:
-  - name: Install
-    working-directory: ./ui
-    shell: bash
-    run: yarn install
-
-  # TODO: Enable the following steps for better ui code
-  # - name: Detect Dependency Version Mismatches
-  #   working-directory: ./ui
-  #   shell: bash
-  #   run: yarn list-mismatches
-
-  # - name: Detect Circular Dependencies
-  #   working-directory: ./ui
-  #   shell: bash
-  #   run: yarn circular
-
-  # - name: Lint
-  #   working-directory: ./ui
-  #   shell: bash
-  #   run: yarn lint
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 20
+        cache: yarn
+        cache-dependency-path: "**/yarn.lock"
+    - name: Install
+      working-directory: ./ui
+      shell: bash
+      run: yarn install --immutable
+    # - name: Lint
+    #   working-directory: ./ui
+    #   shell: bash
+    #   run: yarn lint-ci
+    # - name: Detect Dependency Version Mismatches
+    #   working-directory: ./ui
+    #   shell: bash
+    #   run: yarn list-mismatches
+    # - name: Detect Circular Dependencies
+    #   working-directory: ./ui
+    #   shell: bash
+    #   run: yarn circular
