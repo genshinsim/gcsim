@@ -13,7 +13,7 @@ export default function App() {
         <Route path="/database">
           <Database />
         </Route>
-        <Route path="/tag/:tag">{({ tag }) => <TagDatabase tag={tag} />}</Route>
+        {/* <Route path="/tag/:tag">{({ tag }) => <TagDatabase tag={tag} />}</Route> */}
 
         {/* <Route path="/management">
           <Management />
