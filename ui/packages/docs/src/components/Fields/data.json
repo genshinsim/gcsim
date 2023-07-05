@@ -1,0 +1,37 @@
+{
+  "albedo": [
+    {
+      "fields": [
+        ".albedo.skill",
+        ".albedo.elevator"
+      ],
+      "desc": "Evaluates to 1 if skill is currently active"
+    },
+    {
+      "fields": [
+        ".albedo.c2stacks"
+      ],
+      "desc": "Current number of C2 stacks"
+    },
+    {
+      "fields": [
+        ".mods.<character>.albedo-a4"
+      ],
+      "desc": "Whether or not Albedo A4 buff is active on the specified character"
+    }
+  ],
+  "fischl": [
+    {
+      "fields": [
+        ".fischl.oz"
+      ],
+      "desc": "Remaining frames Oz is active for. 0 if not active."
+    },
+    {
+      "fields": [
+        ".fischl.oz-source"
+      ],
+      "desc": "The source frame Oz is spawned on"
+    }
+  ]
+}
