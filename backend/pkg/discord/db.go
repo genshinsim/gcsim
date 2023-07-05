@@ -150,7 +150,7 @@ func listEmbed(entries []*db.Entry, page int) []discord.Embed {
 		if len(name) > 254 {
 			name = name[:254]
 		}
-		desc := fmt.Sprintf("<@%v>: https://simimpact.app/viewer/share/%v", v.Submitter, v.ShareKey)
+		desc := fmt.Sprintf("<@%v>: https://gcsim.app/sh/%v", v.Submitter, v.ShareKey)
 		row.Fields = append(row.Fields, discord.EmbedField{
 			Name:  name,
 			Value: desc,
@@ -261,7 +261,7 @@ func (b *Bot) cmdRandom(ctx context.Context, data cmdroute.CommandData) *api.Int
 	}
 
 	return &api.InteractionResponseData{
-		Content: option.NewNullableString(fmt.Sprintf("Here you go: https://simimpact.app/sh/%v", id)),
+		Content: option.NewNullableString(fmt.Sprintf("Here you go: https://gcsim.app/sh/%v", id)),
 	}
 }
 
@@ -311,10 +311,10 @@ func (b *Bot) cmdEntryStatus(ctx context.Context, data cmdroute.CommandData) *ap
 				status = "Pending Compute"
 				link = "No link available yet"
 			case !v.IsDbValid:
-				link = fmt.Sprintf("https://simimpact.app/sh/%v", v.ShareKey)
+				link = fmt.Sprintf("https://gcsim.app/sh/%v", v.ShareKey)
 				status = "Pending Review"
 			case v.IsDbValid:
-				link = fmt.Sprintf("https://simimpact.app/db/%v", v.Id)
+				link = fmt.Sprintf("https://gcsim.app/db/%v", v.Id)
 				status = "Added"
 			}
 

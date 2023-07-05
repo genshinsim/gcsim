@@ -16,9 +16,9 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
       team.push({} as model.ICharacter);
     }
   }
-  let link = `https://simimpact.app/sh/${dbEntry.share_key}`;
+  let link = `https://gcsim.app/sh/${dbEntry.share_key}`;
   if ("_id" in dbEntry) {
-    link = `https://simimpact.app/db/${dbEntry["_id"]}`;
+    link = `https://gcsim.app/db/${dbEntry["_id"]}`;
   }
 
   return (

@@ -98,10 +98,10 @@ func userSubEmbeds(entries []*db.Entry, page int, sender discord.UserID) []disco
 			status = "Pending Compute"
 			link = "No link available yet"
 		case !v.IsDbValid:
-			link = fmt.Sprintf("https://simimpact.app/sh/%v", v.ShareKey)
+			link = fmt.Sprintf("https://gcsim.app/sh/%v", v.ShareKey)
 			status = "Pending Review"
 		case v.IsDbValid:
-			link = fmt.Sprintf("https://simimpact.app/db/%v", v.Id)
+			link = fmt.Sprintf("https://gcsim.app/db/%v", v.Id)
 			status = "Added"
 		}
 

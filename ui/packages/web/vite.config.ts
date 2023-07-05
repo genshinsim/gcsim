@@ -36,7 +36,7 @@ export default ({ }: ConfigEnv) => {
     server: {
       proxy: {
         "/api": {
-          target: "https://simimpact.app",
+          target: "https://gcsim.app",
           changeOrigin: true
         },
         "/hastebin/post": {

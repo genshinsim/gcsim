@@ -23,7 +23,7 @@ export default function DBEntryActions({
         <ApproveDBEntryButton dbEntryId={id} />
 
         <a
-          href={`https://simimpact.app/v3/viewer/share/${share_key}`}
+          href={`https://gcsim.app/v3/viewer/share/${share_key}`}
           target="_blank"
           className="bp4-button    bp4-intent-primary"
           rel="noreferrer"
@@ -55,7 +55,7 @@ export default function DBEntryActions({
   }
   return (
       <a
-        href={`https://simimpact.app/v3/viewer/share/${share_key}`}
+        href={`https://gcsim.app/v3/viewer/share/${share_key}`}
         target="_blank"
         className="bp4-button    bp4-intent-primary w-full"
         rel="noreferrer"

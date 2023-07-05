@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://simimpact.app",
+        target: "https://gcsim.app",
         changeOrigin: true,
       },
     },

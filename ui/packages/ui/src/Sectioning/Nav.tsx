@@ -24,7 +24,7 @@ export default ({}) => {
         key="db"
         className={Classes.MINIMAL}
         icon="database"
-        href="https://simpact.com/"
+        href="https://simpact.app/"
         target="_blank">
       <span className="hidden min-[798px]:block">
         {t<string>("nav.teams_db")}
