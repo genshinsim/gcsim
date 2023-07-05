@@ -9,10 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Extract Branch Name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
+      - name: Get branch names
+        id: branch-name
+        uses: tj-actions/branch-names@v7
 
       # grab latest sha
       - name: Setup Environment (PR)  
@@ -46,7 +45,7 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
-          branch: ${{ steps.extract_branch.outputs.branch == 'mainline' && 'main' || steps.extract_branch.outputs.branch }}
+          branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
       - name: deploy-db
         uses: ./.github/actions/deploy-db
         with:
@@ -54,12 +53,13 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
-          branch: ${{ steps.extract_branch.outputs.branch == 'mainline' && 'main' || steps.extract_branch.outputs.branch }}
+          branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
+      
       - name: deploy-wasm
         uses: ./.github/actions/deploy-wasm
         with:
           rcloneConfig: ${{ secrets.CF_RCLONE }}
-          branch: ${{ steps.extract_branch.outputs.branch }}
+          branch: ${{ steps.branch-name.outputs.base_ref_branch }}
           shareKey: ${{ secrets.AES_KEY }}
       
       # build backend artifacts
