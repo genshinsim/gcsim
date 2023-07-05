@@ -38,11 +38,11 @@ jobs:
         uses: ./.github/actions/deploy-workers
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-      - name: deploy-binary
-        uses: ./.github/actions/deploy-binary
-        with:
-          shareKey: ${{ secrets.AES_KEY }}
-          tag: ${{ github.ref }}
+      # - name: deploy-binary
+      #   uses: ./.github/actions/deploy-binary
+      #   with:
+      #     shareKey: ${{ secrets.AES_KEY }}
+      #     tag: ${{ github.ref }}
       - name: deploy-ui
         uses: ./.github/actions/deploy-ui
         with:
