@@ -182,7 +182,8 @@ function SamplerUI({ sample, data, team, searchable, settings, setSettings }: Sa
     const total = Object.keys(searchable).length;
     for (let index = lastSearchIndex; index < total; index++) {
       for (const msg of searchable[index]) {
-        if (msg.indexOf(val) > -1) {
+        const lowerMsg = msg.toLowerCase()
+        if (lowerMsg.indexOf(val.toLowerCase()) > -1) {
           console.log(index, lastSearchIndex);
           lastSearchIndex = index + 1;
           rowVirtualizer.scrollToIndex(index, { align: "start" });
