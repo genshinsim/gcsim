@@ -62,13 +62,14 @@ type CharWrapper struct {
 	tasks  task.Tasker
 
 	//base characteristics
-	Base     profile.CharacterBase
-	Weapon   weapon.WeaponProfile
-	Talents  profile.TalentProfile
-	CharZone profile.ZoneType
-	CharBody profile.BodyType
-	SkillCon int
-	BurstCon int
+	Base      profile.CharacterBase
+	Weapon    weapon.WeaponProfile
+	Talents   profile.TalentProfile
+	CharZone  profile.ZoneType
+	CharBody  profile.BodyType
+	NormalCon int
+	SkillCon  int
+	BurstCon  int
 
 	Equip struct {
 		Weapon weapon.Weapon
@@ -133,9 +134,12 @@ func New(
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]artifact.Set)
-	//default cons
-	c.SkillCon = 3
-	c.BurstCon = 5
+
+	//set to -1 by default and let each char specify normal/skill/burst cons
+	c.NormalCon = -1
+	c.SkillCon = -1
+	c.BurstCon = -1
+
 	//check talents
 	if c.Talents.Attack < 1 || c.Talents.Attack > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: attack - %v", c.Talents.Attack)
@@ -203,22 +207,28 @@ func (c *CharWrapper) ModifyHPByRatio(r float64) {
 }
 
 func (c *CharWrapper) TalentLvlAttack() int {
+	add := -1
 	if c.Tags[keys.ChildePassive] > 0 {
-		return c.Talents.Attack
+		add++
 	}
-	return c.Talents.Attack - 1
+	if c.NormalCon > 0 && c.Base.Cons >= c.NormalCon {
+		add += 3
+	}
+	return c.Talents.Attack + add
 }
 func (c *CharWrapper) TalentLvlSkill() int {
-	if c.Base.Cons >= c.SkillCon {
-		return c.Talents.Skill + 2
+	add := -1
+	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
+		add += 3
 	}
-	return c.Talents.Skill - 1
+	return c.Talents.Skill + add
 }
 func (c *CharWrapper) TalentLvlBurst() int {
-	if c.Base.Cons >= c.BurstCon {
-		return c.Talents.Burst + 2
+	add := -1
+	if c.BurstCon > 0 && c.Base.Cons >= c.BurstCon {
+		add += 3
 	}
-	return c.Talents.Burst - 1
+	return c.Talents.Burst + add
 }
 
 type Particle struct {
