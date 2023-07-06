@@ -131,7 +131,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 func (c *char) gorouBurstHealField(src int) func() {
 	return func() {
 		//do nothing if this has been overwritten
-		if c.qFieldHealSrc != src {
+		if c.qFieldSrc != src {
 			return
 		}
 		//do nothing if field expired
