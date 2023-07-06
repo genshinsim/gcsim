@@ -20,22 +20,23 @@ func serve(
 	keepAlive bool) {
 
 	server := &http.Server{Addr: address}
+	done := make(chan bool)
 
 	http.HandleFunc("/data", func(resp http.ResponseWriter, req *http.Request) {
 		success := handleResults(resp, req, resultPath, hash)
 		if success && !keepAlive {
-			shutdown()
+			done <- true
 		}
 	})
 
 	http.HandleFunc("/sample", func(resp http.ResponseWriter, req *http.Request) {
 		success := handleSample(resp, req, samplePath)
 		if success && !keepAlive {
-			shutdown()
+			done <- true
 		}
 	})
 
-	go interruptShutdown(server, connectionsClosed)
+	go interruptShutdown(server, done, connectionsClosed)
 	go func() {
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
 			log.Fatalf("HTTP server ListenAndSever Error: %v", err)
@@ -121,24 +122,17 @@ func optionsResponse(resp http.ResponseWriter) {
 	resp.WriteHeader(http.StatusNoContent)
 }
 
-func interruptShutdown(server *http.Server, connectionsClosed chan struct{}) {
+func interruptShutdown(server *http.Server, done chan bool, connectionsClosed chan struct{}) {
 	sigint := make(chan os.Signal, 1)
 	signal.Notify(sigint, os.Interrupt)
-	<-sigint
+
+	select {
+	case <-done:
+	case <-sigint:
+	}
 
 	if err := server.Shutdown(context.Background()); err != nil {
 		log.Printf("HTTP server Shutdown Error: %v", err)
 	}
 	close(connectionsClosed)
-}
-
-func shutdown() {
-	p, err := os.FindProcess(os.Getpid())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := p.Signal(os.Interrupt); err != nil {
-		log.Fatal(err)
-	}
 }
