@@ -3,6 +3,7 @@ package freminet
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -15,6 +16,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	skillStacks int
+	persID      int
 	c4Stacks    int
 	c6Stacks    int
 }
@@ -35,10 +37,19 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.onExitField()
+
 	c.a4()
 
 	c.c1()
 	c.c4c6()
 
 	return nil
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+	if a == action.ActionSkill && c.StatusIsActive(persTimeKey) {
+		return true, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
 }

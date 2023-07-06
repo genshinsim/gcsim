@@ -8,7 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -20,7 +22,7 @@ const (
 	skillPressureHitmark = 36
 	particleICDKey       = "freminet-particle-icd"
 	persTimeKey          = "freminet-pers-time"
-	pressureBaseName     = "Pressuraized Floe: Shattering Pressure"
+	pressureBaseName     = "Pressurized Floe: Shattering Pressure"
 )
 
 func init() {
@@ -33,11 +35,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.skillStacks = 0
 
 		c.AddStatus(persTimeKey, 600, true)
+		c.persID = c.Core.F
 
 		// TODO: Freminet; Update Info
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
-			Abil:               "Pressuraized Floe: Upward Thrust",
+			Abil:               "Pressurized Floe: Upward Thrust",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagElementalArt,
 			ICDGroup:           attacks.ICDGroupDefault,
@@ -64,7 +67,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		// TODO: Freminet; Update Info
 		aiSpiritbreath := combat.AttackInfo{
 			ActorIndex:         c.Index,
-			Abil:               "Pressuraized Floe: Spiritbreath Thorn",
+			Abil:               "Pressurized Floe: Spiritbreath Thorn",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagElementalArt,
 			ICDGroup:           attacks.ICDGroupDefault,
@@ -77,9 +80,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: false,
 		}
 
+		currentID := c.Core.F
+
 		// TODO: Freminet; Confirm Delay?!
 		c.Core.Tasks.Add(func() {
-			c.Core.QueueAttack(aiSpiritbreath, combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5), 0, 0)
+			if c.StatusIsActive(persTimeKey) && currentID == c.persID {
+				c.Core.QueueAttack(aiSpiritbreath, combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5), 0, 0)
+			}
 		}, 9*60)
 
 		// TODO: Freminet; Check when CD starts (if it even starts when initially using skill)
@@ -243,10 +250,20 @@ func (c *char) persTimeCB() func(combat.AttackCB) {
 				c.skillStacks++
 			}
 		} else {
+			c.Core.Log.NewEvent("freminet skill detonation triggered", glog.LogCharacterEvent, c.Index)
 			c.detonateSkill()
 		}
 
 		done = true
 	}
 
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+		if c.StatusIsActive(persTimeKey) {
+			c.detonateSkill()
+		}
+		return false
+	}, "freminet-exit")
 }
