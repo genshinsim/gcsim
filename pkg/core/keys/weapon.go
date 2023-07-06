@@ -173,6 +173,7 @@ var weaponNames = []string{
 	"thewidsith",
 	"thrillingtalesofdragonslayers",
 	"thunderingpulse",
+	"tidalshadow",
 	"toukaboushigure",
 	"travelershandysword",
 	"tulaytullahsremembrance",
@@ -332,6 +333,7 @@ const (
 	TheWidsith
 	ThrillingTalesOfDragonSlayers
 	ThunderingPulse
+	TidalShadow
 	ToukabouShigure
 	TravelersHandySword
 	TulaytullahsRemembrance
