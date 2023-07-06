@@ -206,7 +206,24 @@ func (c *CharWrapper) ModifyHPByRatio(r float64) {
 	c.SetHPByRatio(newHPRatio)
 }
 
+func (c *CharWrapper) consCheck() {
+	consUnset := 0
+	if c.NormalCon < 0 {
+		consUnset++
+	}
+	if c.SkillCon < 0 {
+		consUnset++
+	}
+	if c.BurstCon < 0 {
+		consUnset++
+	}
+	if consUnset != 1 {
+		panic(fmt.Sprintf("cons not set properly for %v, please set two out of three values:\nNormalCon: %v\nSkillCon: %v\nBurstCon: %v", c.Base.Key.String(), c.NormalCon, c.SkillCon, c.BurstCon))
+	}
+}
+
 func (c *CharWrapper) TalentLvlAttack() int {
+	c.consCheck()
 	add := -1
 	if c.Tags[keys.ChildePassive] > 0 {
 		add++
@@ -217,6 +234,7 @@ func (c *CharWrapper) TalentLvlAttack() int {
 	return c.Talents.Attack + add
 }
 func (c *CharWrapper) TalentLvlSkill() int {
+	c.consCheck()
 	add := -1
 	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
 		add += 3
@@ -224,6 +242,7 @@ func (c *CharWrapper) TalentLvlSkill() int {
 	return c.Talents.Skill + add
 }
 func (c *CharWrapper) TalentLvlBurst() int {
+	c.consCheck()
 	add := -1
 	if c.BurstCon > 0 && c.Base.Cons >= c.BurstCon {
 		add += 3
