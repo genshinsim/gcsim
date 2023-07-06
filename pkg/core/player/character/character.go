@@ -231,6 +231,9 @@ func (c *CharWrapper) TalentLvlAttack() int {
 	if c.NormalCon > 0 && c.Base.Cons >= c.NormalCon {
 		add += 3
 	}
+	if add >= 4 {
+		add = 4
+	}
 	return c.Talents.Attack + add
 }
 func (c *CharWrapper) TalentLvlSkill() int {
@@ -239,6 +242,9 @@ func (c *CharWrapper) TalentLvlSkill() int {
 	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
 		add += 3
 	}
+	if add >= 4 {
+		add = 4
+	}
 	return c.Talents.Skill + add
 }
 func (c *CharWrapper) TalentLvlBurst() int {
@@ -246,6 +252,9 @@ func (c *CharWrapper) TalentLvlBurst() int {
 	add := -1
 	if c.BurstCon > 0 && c.Base.Cons >= c.BurstCon {
 		add += 3
+	}
+	if add >= 4 {
+		add = 4
 	}
 	return c.Talents.Burst + add
 }
