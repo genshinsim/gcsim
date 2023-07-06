@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
 	github.com/chromedp/chromedp v0.8.7
+	github.com/containrrr/shoutrrr v0.7.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dgraph-io/badger/v3 v3.2103.5
 	github.com/diamondburned/arikawa/v3 v3.2.0
@@ -12,7 +13,6 @@ require (
 	github.com/go-chi/chi v1.5.4
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jaevor/go-nanoid v1.3.0
-	github.com/joho/godotenv v1.5.1
 	github.com/mailru/easyjson v0.7.7
 	github.com/ory/dockertest/v3 v3.9.1
 	github.com/tinylib/msgp v1.1.7
@@ -34,7 +34,6 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20230109101555-6b041c6303cc // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/containerd/continuity v0.3.0 // indirect
-	github.com/containrrr/shoutrrr v0.7.1 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/docker/cli v20.10.14+incompatible // indirect
 	github.com/docker/docker v20.10.7+incompatible // indirect
