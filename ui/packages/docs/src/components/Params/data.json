@@ -1,11 +1,4 @@
 {
-  "albedo": [
-    {
-      "ability": "burst",
-      "param": "bloom",
-      "desc": "number of bloom hits. default 2"
-    }
-  ],
   "aloy": [
     {
       "ability": "aim",
