@@ -556,7 +556,21 @@
       "desc": "number of resonance hits. default 3"
     }
   ],
-  "": [
-    {}
+  "travelerelectro": [
+    {
+      "ability": "skill",
+      "param": "hits",
+      "desc": "Number of times Thunder Shadow hits. Default 1, maximum 3."
+    },
+    {
+      "ability": "skill",
+      "param": "max_amulets",
+      "desc": "Customize limit for number of Abudance Amulets generated. Default limit is 2/3 if C0/C1+, maximum is capped by the default limits."
+    },
+    {
+      "ability": "skill",
+      "param": "amulet_delay",
+      "desc": "Delay until Abundance Amulets are picked up by the active character. Default 107 frames, minimum 107 frames."
+    }
   ]
 }
