@@ -272,14 +272,9 @@
   ],
   "lisa": [
     {
-      "ability": "charge",
-      "param": "hits",
-      "desc": "number of targets hit by charge attack. default 1"
-    },
-    {
       "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill tap. 1 for hold"
+      "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
   "mona": [
