@@ -470,7 +470,7 @@
     {
       "ability": "attack",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     }
   ],
   "yelan": [
