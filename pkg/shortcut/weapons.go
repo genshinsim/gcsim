@@ -257,6 +257,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"ttds":                          keys.ThrillingTalesOfDragonSlayers,
 	"thunderingpulse":               keys.ThunderingPulse,
 	"tpulse":                        keys.ThunderingPulse,
+	"tidalshadow":                   keys.TidalShadow,
 	"toukaboushigure":               keys.ToukabouShigure,
 	"shigure":                       keys.ToukabouShigure,
 	"umbrella":                      keys.ToukabouShigure,

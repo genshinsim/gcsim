@@ -215,6 +215,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/skyward"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/spine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/starsilver"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/tidalshadow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/unforged"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/waster"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/whiteblind"
