@@ -81,7 +81,7 @@
     {
       "ability": "skill",
       "param": "counter",
-      "desc": "number of counter hits. default 0. 2 for perfect counter. does not affect frames"
+      "desc": "Number of counter hits. Default 0. 2 for perfect counter. Does not affect frames."
     }
   ],
   "bennett": [
