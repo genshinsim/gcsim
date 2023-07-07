@@ -372,13 +372,13 @@
   "sayu": [
     {
       "ability": "skill",
-      "param": "hold",
-      "desc": "duration in frames for hold skill. default 0, max 600"
+      "param": "short_hold",
+      "desc": "0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold."
     },
     {
       "ability": "skill",
-      "param": "short_hold",
-      "desc": "if 1 perform minimum length hold skill. default 0"
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 600 for Hold. The number determines the E duration in frames."
     }
   ],
   "shenhe": [
