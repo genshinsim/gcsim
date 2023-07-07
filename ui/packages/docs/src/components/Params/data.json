@@ -88,12 +88,12 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill tap. 1 for short hold, 2 for long hold"
+      "desc": "0 for Tap (default), 1 for Hold Lv. 1, 2 for Hold Lv. 2."
     },
     {
       "ability": "skill",
       "param": "hold_c4",
-      "desc": "if 1 trigger c4 passive. default 0"
+      "desc": "If 1, trigger C4. Default 0."
     }
   ],
   "diluc": [
