@@ -200,6 +200,23 @@
       "desc": "number of targets to simulate burst hitting for healing purposes. actual number of target in sim ignored"
     }
   ],
+  "itto": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 4 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "ushihit",
+      "desc": "Number of stacks gained via Ushi getting hit. Max 3 stacks. Stacks are gained at random points during Ushi uptime while respecting 2s stack gain cooldown. Default 0."
+    },
+    {
+      "ability": "burst",
+      "param": "prestack",
+      "desc": "Whether to grant a stack from performing N1 right before Q. 0 for no prestack, 1 for prestack. Default 0."
+    }
+  ],
   "jean": [
     {
       "ability": "burst",
