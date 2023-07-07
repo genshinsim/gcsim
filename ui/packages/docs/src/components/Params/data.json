@@ -193,13 +193,6 @@
       "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
     }
   ],
-  "hutao": [
-    {
-      "ability": "burst",
-      "param": "targets",
-      "desc": "number of targets to simulate burst hitting for healing purposes. actual number of target in sim ignored"
-    }
-  ],
   "jean": [
     {
       "ability": "burst",

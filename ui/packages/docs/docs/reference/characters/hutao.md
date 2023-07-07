@@ -1,5 +1,5 @@
 ---
-title: Hutao
+title: Hu Tao
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
