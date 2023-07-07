@@ -130,6 +130,18 @@
       "desc": "projectile travel time. default 10 frames "
     }
   ],
+  "dori": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time for both the Troubleshooter Shot and After-Sales Service Rounds from when the Troubleshooter Shot hits. Default 10 frames."
+    },
+    {
+      "ability": "burst",
+      "param": "c2_travel",
+      "desc": "Projectile travel time for Jinni Toop. Default 10 frames."
+    }
+  ],
   "eula": [
     {
       "ability": "skill",

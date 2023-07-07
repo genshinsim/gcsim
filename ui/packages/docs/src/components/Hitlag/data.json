@@ -404,6 +404,24 @@
       }
     ]
   },
+  "dori": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0.08,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "eula": {
     "normal": [
       {
