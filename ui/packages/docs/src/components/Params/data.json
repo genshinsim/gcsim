@@ -475,19 +475,24 @@
   ],
   "yelan": [
     {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
       "ability": "skill",
       "param": "marked",
-      "desc": "number of targets to mark. default 1"
+      "desc": "Number of enemies to mark with the Lifeline. Default 1."
     }
   ],
   "yoimiya": [
