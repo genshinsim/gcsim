@@ -158,6 +158,7 @@ var weaponNames = []string{
 	"snowtombedstarsilver",
 	"solarpearl",
 	"songofbrokenpines",
+	"songofstillness",
 	"staffofhoma",
 	"staffofthescarletsands",
 	"summitshaper",
@@ -317,6 +318,7 @@ const (
 	SnowTombedStarsilver
 	SolarPearl
 	SongOfBrokenPines
+	SongOfStillness
 	StaffOfHoma
 	StaffOfTheScarletSands
 	SummitShaper

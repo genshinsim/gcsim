@@ -223,6 +223,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"songofbrokenpines":             keys.SongOfBrokenPines,
 	"pines":                         keys.SongOfBrokenPines,
 	"sobp":                          keys.SongOfBrokenPines,
+	"songofstillness":               keys.SongOfStillness,
 	"staffofhoma":                   keys.StaffOfHoma,
 	"homa":                          keys.StaffOfHoma,
 	"staffofthescarletsands":        keys.StaffOfTheScarletSands,
