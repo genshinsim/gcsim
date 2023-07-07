@@ -7,6 +7,7 @@ import { CharacterDPSBarChart, CharacterDPSCard, DamageTimelineCard, ElementDPSC
 import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
 import Metadata from "../Components/Overview/Metadata";
+import { SourceDPSCard } from "../Components/Damage/SourceDPSBarChart";
 
 type Props = {
   data: SimResults | null;
@@ -46,6 +47,8 @@ const SingleGroup = ({ data, running, names }: Props) => (
     <TargetDPSCard data={data} running={running} />
 
     <CharacterDPSBarChart data={data} running={running} names={names} />
+
+    <SourceDPSCard data={data} running={running} names={names} />
   </Group>
 );
 
