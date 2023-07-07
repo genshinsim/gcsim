@@ -67,14 +67,9 @@
   ],
   "ayato": [
     {
-      "ability": "burst",
-      "param": "radius",
-      "desc": "radius of the targets. default 1m"
-    },
-    {
       "ability": "skill",
       "param": "illusion_delay",
-      "desc": "illusion explosion delay in frames. default 35"
+      "desc": "Illusion explosion delay in frames. Default 35 frames."
     }
   ],
   "beidou": [

@@ -687,14 +687,14 @@
   "ayato": {
     "cons": [
       {
-        "ability": "C6-Hit1",
+        "ability": "C6-Hit-1",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
       },
       {
-        "ability": "C6-Hit2",
+        "ability": "C6-Hit-2",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
