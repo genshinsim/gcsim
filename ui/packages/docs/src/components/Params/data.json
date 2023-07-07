@@ -434,24 +434,14 @@
   ],
   "xiao": [
     {
-      "ability": "high_plunge",
-      "param": "collision",
-      "desc": "does collision dmg on plunge apply; default 0 (no)"
-    },
-    {
-      "ability": "high_plunge",
-      "param": "plunge_hits",
-      "desc": "determine how many plunge falling hits you do on the way down. default 0"
-    },
-    {
       "ability": "low_plunge",
       "param": "collision",
-      "desc": "does collision dmg on plunge apply; default 0 (no)"
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     },
     {
-      "ability": "low_plunge",
-      "param": "plunge_hits",
-      "desc": "determine how many plunge falling hits you do on the way down. default 0"
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "xingqiu": [
