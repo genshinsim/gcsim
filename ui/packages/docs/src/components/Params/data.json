@@ -233,7 +233,7 @@
     {
       "ability": "skill",
       "param": "c1",
-      "desc": "number of hits for c1 (since explosion caused at both start and end). default 1"
+      "desc": "Number of hits for C1. Default 1 hit, maximum 2 hits."
     }
   ],
   "klee": [
