@@ -96,18 +96,6 @@
       "desc": "if 1 trigger c4 passive. default 0"
     }
   ],
-  "diluc": [
-    {
-      "ability": "burst",
-      "param": "dot",
-      "desc": "number of dot ticks. default 2"
-    },
-    {
-      "ability": "burst",
-      "param": "explode",
-      "desc": "if explode from burst hits. default 0 (no hit)"
-    }
-  ],
   "diona": [
     {
       "ability": "aim",
