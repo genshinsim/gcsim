@@ -293,32 +293,32 @@
     {
       "ability": "attack",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
-    },
-    {
-      "ability": "burst",
-      "param": "jade",
-      "desc": "number of jade hits from burst. default 6"
-    },
-    {
-      "ability": "burst",
-      "param": "screen",
-      "desc": "number of jade hits from screen snapshot. default 6"
-    },
-    {
-      "ability": "burst",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "charge",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "skill",
       "param": "noscreen",
-      "desc": "if 1 destroy the screen on cast. default 0"
+      "desc": "If 1, destroy the Jade Screen on cast. Default 0."
+    },
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 0 frames."
+    },
+    {
+      "ability": "burst",
+      "param": "jade",
+      "desc": "Number of Jade attacks from burst. Default 6."
+    },
+    {
+      "ability": "burst",
+      "param": "screen",
+      "desc": "Number of Jade attacks from Jade Screen snapshot. Default 6."
     }
   ],
   "noelle": [
