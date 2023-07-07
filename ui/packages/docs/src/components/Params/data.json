@@ -282,6 +282,13 @@
       "desc": "default 0 for skill tap. 1 for hold"
     }
   ],
+  "mika": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
   "mona": [
     {
       "ability": "skill",
