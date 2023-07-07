@@ -20,6 +20,14 @@
       "desc": "Whether or not Albedo A4 buff is active on the specified character"
     }
   ],
+  "faruzan": [
+    {
+      "fields": [
+        ".faruzan.hurricane-count"
+      ],
+      "desc": "Current number of Hurricane Arrows that Faruzan can fire off."
+    }
+  ],
   "fischl": [
     {
       "fields": [
