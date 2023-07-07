@@ -134,7 +134,7 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill tap. 1 for hold"
+      "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
   "fischl": [
