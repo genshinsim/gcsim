@@ -20,6 +20,14 @@
       "desc": "Whether or not Albedo A4 buff is active on the specified character"
     }
   ],
+  "aloy": [
+    {
+      "fields": [
+        ".aloy.coil"
+      ],
+      "desc": "Current number of coil stacks."
+    }
+  ],
   "fischl": [
     {
       "fields": [
