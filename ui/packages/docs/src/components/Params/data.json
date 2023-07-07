@@ -520,18 +520,13 @@
   "yunjin": [
     {
       "ability": "skill",
-      "param": "a1",
-      "desc": "set this to 1 for A1 skill effect using skill press frame count (i.e., the minimum frames possible)"
-    },
-    {
-      "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill press, 1 for first charge level, and 2 for second charge level, using the appropriate frame counts."
+      "desc": "0 for Tap (default), 1 for Hold Lv. 1, 2 for Hold Lv. 2."
     },
     {
       "ability": "skill",
       "param": "perfect",
-      "desc": "if 1 perform perfect counter, default 0"
+      "desc": "If 1, perform perfect counter (Hold Lv. 2 frames). Default 0."
     }
   ],
   "zhongli": [
