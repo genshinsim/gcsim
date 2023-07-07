@@ -236,6 +236,23 @@
       "desc": "number of hits for c1 (since explosion caused at both start and end). default 1"
     }
   ],
+  "kirara": [
+    {
+      "ability": "skill",
+      "param": "short_hold",
+      "desc": "0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold."
+    },
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 600 for Hold. The number determines the E duration in frames."
+    },
+    {
+      "ability": "burst",
+      "param": "hits",
+      "desc": "Number of mines that hit. Default 2 hits."
+    }
+  ],
   "klee": [
     {
       "ability": "attack",
