@@ -347,6 +347,77 @@
       }
     ]
   },
+  "candace": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-Hold",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-Wave",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-C6",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "chongyun": {
     "normal": [
       {
