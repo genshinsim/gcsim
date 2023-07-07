@@ -492,29 +492,29 @@
   ],
   "yoimiya": [
     {
-      "ability": "aim",
-      "param": "kindling",
-      "desc": "number of kindling hits between 0-3. default 0"
-    },
-    {
-      "ability": "aim",
-      "param": "kindling_travel",
-      "desc": "kindling travel time. default 30"
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "ability": "aim",
+      "param": "kindling",
+      "desc": "Number of Kindling Arrow hits, Default 0, minimum 0, maximum 3."
+    },
+    {
+      "ability": "aim",
+      "param": "kindling_travel",
+      "desc": "Kindling Arrow travel time. Default 30 frames."
     }
   ],
   "yunjin": [
