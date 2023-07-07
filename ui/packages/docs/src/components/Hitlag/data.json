@@ -38,6 +38,54 @@
       }
     ]
   },
+  "alhaitham": {
+    "normal": [
+      {
+        "ability": "E-N1",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N2",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N3-2",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-N5",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ], 
+    "skill": [
+      {
+        "ability": "E-Tap-Initial",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-Hold-Initial",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "aloy": {
     "skill": [
       {
