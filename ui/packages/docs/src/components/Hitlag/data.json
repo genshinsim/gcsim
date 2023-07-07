@@ -1317,6 +1317,48 @@
   "tartaglia": {
     "normal": [
       {
+        "ability": "N1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N5",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N6",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
         "ability": "E-N1",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
