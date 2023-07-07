@@ -156,34 +156,24 @@
   ],
   "ganyu": [
     {
-      "ability": "aim",
+      "ability": "attack",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
-    },
-    {
-      "ability": "burst",
-      "param": "radius",
-      "desc": "radius of the targets. default 1m"
-    },
-    {
-      "ability": "skill",
+      "ability": "aim",
       "param": "bloom",
-      "desc": "bloom delay from projectile landing default 20 frames"
+      "desc": "Projectile travel time for Bloom from when the Frostflake Arrow hits. Default 24 frames."
     }
   ],
   "gorou": [
