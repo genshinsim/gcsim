@@ -432,6 +432,18 @@
       "desc": "default 0 for skill tap. 1 for hold"
     }
   ],
+  "wanderer": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 5 frames."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
   "xiao": [
     {
       "ability": "high_plunge",

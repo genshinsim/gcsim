@@ -33,5 +33,13 @@
       ],
       "desc": "The source frame Oz is spawned on"
     }
+  ],
+  "wanderer": [
+    {
+      "fields": [
+        ".wanderer.skydweller-points"
+      ],
+      "desc": "Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state."
+    }
   ]
 }
