@@ -339,7 +339,7 @@
     {
       "ability": "skill",
       "param": "nobehind",
-      "desc": "default 0. 1 for striking behind for A2 purposes"
+      "desc": "Default 0. 1 for disabling striking behind for A1 purposes."
     }
   ],
   "sara": [
