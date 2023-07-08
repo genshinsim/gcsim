@@ -65,6 +65,7 @@ export interface Statistics {
   element_dps?: ElementDPS;
   dps_by_element?: ElementStats[];
   dps_by_target?: TargetStats[];
+  source_dps?: SourceDPS[];
 
   damage_buckets?: BucketStats;
   cumu_damage_contrib?: CharacterBucketStats;
@@ -114,6 +115,14 @@ export interface ElementStats {
 }
 
 export interface ElementDPS {
+  [key: string]: FloatStat;
+}
+
+export interface SourceDPS {
+  sources?: SourceStats;
+}
+
+export interface SourceStats {
   [key: string]: FloatStat;
 }
 

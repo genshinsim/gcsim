@@ -73,7 +73,7 @@ export default <Datum,Key extends StackKey>(
     <div className="relative">
       <svg width={width} height={height}>
         <Group left={margin.left} top={margin.top}>
-          <GraphAxisLeft hideAxisLine hideTicks scale={yScale} />
+          <GraphAxisLeft hideAxisLine hideTicks scale={yScale} numTicks={10000} />
           <GraphAxisBottom
               hideTicks
               hideAxisLine

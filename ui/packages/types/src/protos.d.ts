@@ -2659,6 +2659,9 @@ export namespace model {
         /** SimulationStatistics breakdown_by_target_dps */
         breakdown_by_target_dps?: (model.ITargetStats[]|null);
 
+        /** SimulationStatistics source_dps */
+        source_dps?: (model.ISourceStats[]|null);
+
         /** SimulationStatistics damage_buckets */
         damage_buckets?: (model.IBucketStats|null);
 
@@ -2737,6 +2740,9 @@ export namespace model {
 
         /** SimulationStatistics breakdown_by_target_dps. */
         public breakdown_by_target_dps: model.ITargetStats[];
+
+        /** SimulationStatistics source_dps. */
+        public source_dps: model.ISourceStats[];
 
         /** SimulationStatistics damage_buckets. */
         public damage_buckets?: (model.IBucketStats|null);
@@ -2983,6 +2989,33 @@ export namespace model {
 
         /**
          * Gets the default type url for TargetStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SourceStats. */
+    interface ISourceStats {
+
+        /** SourceStats sources */
+        sources?: ({ [k: string]: model.IDescriptiveStats }|null);
+    }
+
+    /** Represents a SourceStats. */
+    class SourceStats implements ISourceStats {
+
+        /**
+         * Constructs a new SourceStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ISourceStats);
+
+        /** SourceStats sources. */
+        public sources: { [k: string]: model.IDescriptiveStats };
+
+        /**
+         * Gets the default type url for SourceStats
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
