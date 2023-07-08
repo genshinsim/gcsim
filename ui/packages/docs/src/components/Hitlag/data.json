@@ -340,6 +340,54 @@
       }
     ]
   },
+  "dehya": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.10,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0.08,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Ranging",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-Field",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      }
+    ]
+  },
   "diluc": {
     "normal": [
       {
@@ -652,6 +700,47 @@
       }
     ]
   },
+  "kaveh": {
+    "cons": [
+      {
+        "ability": "C6",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      }
+    ],
+    "normal": [
+      {
+        "ability": "Q-N1",
+        "hitHaltTime": 0.10,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-N2",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-N3",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-N4",
+        "hitHaltTime": 0.10,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
   "ayaka": {
     "normal": [
       {
@@ -687,14 +776,14 @@
   "ayato": {
     "cons": [
       {
-        "ability": "C6-Hit1",
+        "ability": "C6-Hit-1",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
       },
       {
-        "ability": "C6-Hit2",
+        "ability": "C6-Hit-2",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
@@ -794,6 +883,88 @@
       }
     ]
   },
+  "kirara": {
+    "cons": [
+      {
+        "ability": "C4",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-1",
+        "hitHaltTime": 0.01,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-2",
+        "hitHaltTime": 0.05,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ], 
+    "charge": [
+      {
+        "ability": "CA-3",
+        "hitHaltTime": 0.10,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap-Kick",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "E-Hold-Kick",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Mine",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ]
+  },
   "klee": {
     "skill": [
       {
@@ -865,6 +1036,61 @@
       {
         "ability": "CA-2",
         "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
+  "mika": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "N4-1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4-2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N5",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Arrow",
+        "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
@@ -1316,6 +1542,48 @@
   },
   "tartaglia": {
     "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N5",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
+      {
+        "ability": "N6",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": false,
+        "deployable": true
+      },
       {
         "ability": "E-N1",
         "hitHaltTime": 0.03,
@@ -1819,6 +2087,81 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      }
+    ]
+  },
+  "yaoyao": {
+    "asc": [
+      {
+        "ability": "A1-Radish",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
+    "cons": [
+      {
+        "ability": "C6-Radish",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3-2",
+        "hitHaltTime": 0.01,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Radish",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "hitHaltTime": 0.02,
+        "hitHaltTimeScale": 0.05,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "Q-Radish",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0,
+        "canBeDefenseHalt": true,
+        "deployable": true
       }
     ]
   },
