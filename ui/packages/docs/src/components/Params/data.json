@@ -538,22 +538,12 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill tap. 1 for hold"
+      "desc": "0 for Tap (default), 1 for Hold."
     },
     {
       "ability": "skill",
       "param": "hold_nostele",
-      "desc": "default 0. if 1 no stele will be created (i.e. shield only). hold will take precedence over this"
-    },
-    {
-      "ability": "skill",
-      "param": "max",
-      "desc": "max number times resonance can hit (simulate maybe out of range of a construct)"
-    },
-    {
-      "ability": "skill",
-      "param": "res_count",
-      "desc": "number of resonance hits. default 3"
+      "desc": "If 1, no Stone Stele will be created (i.e. shield only) and Hold will be performed. Default 0."
     }
   ],
   "": [
