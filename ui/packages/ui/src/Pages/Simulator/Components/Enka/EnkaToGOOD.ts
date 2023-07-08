@@ -19,8 +19,12 @@ import {
   GenshinItemWeapon,
   ReliquaryEquipType,
 } from './EnkaTypes';
+
 const characterMapV2 = Object.values(CharDataGen.data).reduce(
-  (acc, val) => (acc[val.id] = val),
+  (acc, val) => {
+    acc[val.id] = val;
+    return acc;
+  },
   {} as {
     [id: number]: {
       id: number;
@@ -42,7 +46,10 @@ const characterMapV2 = Object.values(CharDataGen.data).reduce(
 );
 
 const weaponMapV2 = Object.values(WeaponDataGen.data).reduce(
-  (acc, val) => (acc[val.id] = val),
+  (acc, val) => {
+    acc[val.id] = val;
+    return acc;
+  },
   {} as {
     [id: number]: {
       id: number;
@@ -70,7 +77,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
       const character: GOODCharacter = {
         key: characterData.key,
         level: parseInt(propMap['4001'].val) ?? 1,
-        ascension: parseInt(propMap['1002'].val) ?? 0, //dont know if is 0 indexed
+        ascension: parseInt(propMap['1002'].val) ?? 1,
         constellation: talentIdList?.length ?? 0,
         talent: getCharacterTalentV2(
           characterData.skill_details,
@@ -130,6 +137,9 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
   };
 }
 
+interface IENTextMap {
+  [key: string]: string;
+}
 const textMap: IENTextMap = TextMap.en;
 
 function determineWeaponRefinement(affixMap?: { [key: number]: number }) {
@@ -252,8 +262,4 @@ function getGOODSubstatsFromReliquarySubstats(
     });
   }
   return GOODSubstats;
-}
-
-interface IENTextMap {
-  [key: string]: string;
 }
