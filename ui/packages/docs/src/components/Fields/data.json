@@ -83,5 +83,35 @@
       ],
       "desc": "Returns whether C6 will proc for the upcoming CA."
     }
+  ],
+  "ningguang": [
+    {
+      "fields": [
+        ".ningguang.prevAttack"
+      ],
+      "desc": "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
+    },
+    {
+      "fields": [
+        ".ningguang.jadeCount"
+      ],
+      "desc": "Number of Star Jades."
+    }
+  ],
+  "yanfei": [
+    {
+      "fields": [
+        ".yanfei.seal-count"
+      ],
+      "desc": "Number of Scarlet Seals."
+    }
+  ],
+  "yelan": [
+    {
+      "fields": [
+        ".yelan.breakthrough"
+      ],
+      "desc": "Whether Yelan is in the Breakthrough state or not."
+    }
   ]
 }
