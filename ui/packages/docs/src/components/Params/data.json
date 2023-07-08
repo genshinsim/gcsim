@@ -432,6 +432,13 @@
       "desc": "default 0 for skill tap. 1 for hold"
     }
   ],
+  "xiangling": [
+    {
+      "ability": "skill",
+      "param": "a4_delay",
+      "desc": "Number of frames until the active character picks up the Chili Pepper (A4) relative to Guoba Expiry. Default 0, minimum 0, maximum 600."
+    }
+  ],
   "xiao": [
     {
       "ability": "low_plunge",
