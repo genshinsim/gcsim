@@ -204,17 +204,17 @@
     {
       "ability": "burst",
       "param": "enter",
-      "desc": "number of times enemy enters field. default 0"
+      "desc": "Number of times enemies enter or leave the field. Default 0 times."
     },
     {
       "ability": "burst",
       "param": "enter_delay",
-      "desc": "time between enter hits. default 600 / enter"
+      "desc": "Time between enter/leave hits. Default 600 / enter (frames)."
     },
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "hold duration for Jean skill. default 0. require > 60 to trigger C1"
+      "desc": "0 for Tap (default), value between 1 and 300 for Hold. Triggering C1 requires hold >= 60."
     }
   ],
   "kazuha": [
