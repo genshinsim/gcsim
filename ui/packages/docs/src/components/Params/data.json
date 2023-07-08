@@ -386,6 +386,13 @@
       "desc": "Projectile travel time. Default 10 frames."
     }
   ],
+  "layla": [
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Projectile travel time for Starlight Slugs. Default 22 frames."
+    }
+  ],
   "lisa": [
     {
       "ability": "skill",
