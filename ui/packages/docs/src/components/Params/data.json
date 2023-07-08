@@ -1,4 +1,23 @@
 {
+  "albedo": [
+    {
+      "ability": "burst",
+      "param": "bloom",
+      "desc": "number of bloom hits. default 2"
+    }
+  ],
+  "alhaitham": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    },
+    {
+      "ability": "low_plunge",
+      "param": "short",
+      "desc": "0 for normal low plunge (default), 1 for short low plunge. The short version is 20 frames shorter."
+    }
+  ],
   "aloy": [
     {
       "ability": "attack",

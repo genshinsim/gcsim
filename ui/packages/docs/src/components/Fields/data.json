@@ -19,6 +19,14 @@
       "desc": "Whether or not Albedo A4 buff is active on the specified character"
     }
   ],
+  "alhaitham": [
+    {
+      "fields": [
+        ".alhaitham.mirrors"
+      ],
+      "desc": "Current number of Mirrors that Alhaitham has."
+    }
+  ],
   "faruzan": [
     {
       "fields": [
