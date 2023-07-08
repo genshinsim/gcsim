@@ -27,6 +27,14 @@
       "desc": "Current number of Mirrors that Alhaitham has."
     }
   ],
+  "faruzan": [
+    {
+      "fields": [
+        ".faruzan.hurricane-count"
+      ],
+      "desc": "Current number of Hurricane Arrows that Faruzan can fire off."
+    }
+  ],
   "aloy": [
     {
       "fields": [
