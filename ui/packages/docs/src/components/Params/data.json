@@ -364,6 +364,13 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "nahida": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 300 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (16)."
+    }
+  ],
   "ningguang": [
     {
       "ability": "attack",
