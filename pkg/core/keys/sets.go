@@ -80,6 +80,9 @@ var setNames = []string{
 	"wandererstroupe",
 }
 
+//export setNames
+var SetNames = setNames
+
 const (
 	NoSet Set = iota
 	Adventurer

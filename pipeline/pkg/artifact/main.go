@@ -2,16 +2,18 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 func main() {
-	files, err := ioutil.ReadDir("../../../internal/artifacts")
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
+
+	for _, set := range keys.SetNames {
+		fmt.Println(set)
 	}
-	for _, file := range files {
-		fmt.Println(file.Name())
-	}
+}
+
+func writeSetNameJSON(outputPath string) error {
+	//delete existing
+
 }
