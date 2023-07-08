@@ -344,29 +344,19 @@
   ],
   "sara": [
     {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
-    },
-    {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
-    },
-    {
-      "ability": "skill",
-      "param": "waveAttackProcs",
-      "desc": "used to determine which waves proc the attack buff. same format as wave_cluster_hits"
-    },
-    {
-      "ability": "skill",
-      "param": "wave_cluster_hits",
-      "desc": "use numbers in each slot to control the # of hits. So for center hit, then 3 hits from each wave, set wave_cluster_hits=33331"
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     }
   ],
   "sayu": [
