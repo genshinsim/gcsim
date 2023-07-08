@@ -2,7 +2,6 @@
   "albedo": [
     {
       "fields": [
-        ".albedo.skill",
         ".albedo.elevator"
       ],
       "desc": "Evaluates to 1 if skill is currently active"
