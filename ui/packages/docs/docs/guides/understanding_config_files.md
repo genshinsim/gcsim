@@ -3,6 +3,10 @@ title: Understanding Config Files
 sidebar_position: 1
 ---
 
+:::info
+For more information, visit the [config file page under references](/reference/config).
+:::
+
 The gcsim config file contains all the information necessary for the simulator to run a simulation. The config file can be roughly broken down into the following parts:
 
 - simulator options
@@ -11,7 +15,7 @@ The gcsim config file contains all the information necessary for the simulator t
 - gcsim script (gcsl)
 
 :::note
-There is no requirement that these parts needs to appear in the above order in a config file (or even stay together for that matter). 
+There is no requirement that these parts need to appear in the above order in a config file (or even stay together for that matter). 
 
 The simulator will read each line sequentialy and interpret their meaning without regards to where they are in the file. So you can very well have the script at the top and everything else at the bottom if you wish.
 :::
@@ -20,7 +24,7 @@ Let's break them down part by part.
 
 ## Simulator Options
 
-Simulator options sets some global settings for gcsim to run. This includes things such as how long to run each simulation for, the number of iterations, and other global settings. For full list, see [references here](/reference/config)
+Simulator options set some global settings for gcsim to run. This includes things such as how long to run each simulation for, the number of iterations, and other global settings.
 
 At the very minimum, your config should have `iteration` and `duration` set. this tells the simulator how long to run each simulation for and how many simulations to run. This can be done by adding the following line to the config file:
 
@@ -53,7 +57,7 @@ $$
 :::
 
 :::note
-You may also see older sims with options such as `debug=true` or `mode=sl`. These correspond to older simulator options that no longer apply in the current version and is ignored by gcsim parser.
+You may also see older sims with options such as `debug=true` or `mode=sl`. These correspond to older simulator options that no longer apply in the current version and are ignored by the gcsim parser.
 :::
 
 ## Character Settings
@@ -113,12 +117,12 @@ bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311;
 bennett add stats hp=717 hp%=0.058 atk=121 atk%=0.635 def=102 em=42 er=0.156 cr=0.128 cd=0.265 ; 
 ```
 
-There are no limit on how many lines of `add stats` you can have for each character. You can have as many as you like. The above example splits the stats between main stats from the artifacts and a total of the sub stats. You'll see this format commonly among theorycrafters that use theoritical artifact stats in their simulations.
+There is no limit on how many lines of `add stats` you can have for each character. You can have as many as you like. The above example splits the stats between main stats from the artifacts and a total of the sub stats. You'll see this format commonly among theorycrafters that use theoritical artifact stats in their simulations.
 
 :::important
 You only need to add artifact stats (i.e the numbers that shows up on each artifact including main stat and sub stats) to each character. Do not add any character/weapon base stats or any other bonuses such as set bonuses. Those are calculated automatically.
 
-Unfortunately, you cannot use the Attack from the artifact summary page because it does not break down stats between ATK% and flat ATK. You must add the Attack stats individually from each artifact.
+Unfortunately, you cannot use the attack from the artifact summary page because it does not break down stats between ATK% and flat ATK. You must add the Attack stats individually from each artifact.
 :::
 
 :::tip
@@ -155,7 +159,7 @@ noelle add weapon="serpentspine" lvl=90/90 refine=5 +params=[stacks=5]
 
 This would allow Serpent Spine to start with 5 stacks. For details, see [reference section](/reference) under each character/weapon/artifact.
 
-### Examples
+### Example
 
 Following is an example of a team of 4 characters:
 
@@ -164,7 +168,7 @@ Following is an example of a team of 4 characters:
 bennett char lvl=90/90 cons=6 talent=9,9,9; 
 bennett add weapon="thealleyflash" refine=1 lvl=90/90;
 bennett add set="crimsonwitchofflames" count=4;
-bennett add stats hp=4780 atk=311 em=187 pyro%=0.466 cr=0.311 ; #main
+bennett add stats hp=4780 atk=311 em=187 pyro%=0.466 cr=0.311; # main
 bennett add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;
 
 xiangling char lvl=90/90 cons=6 talent=9,9,9; 
@@ -172,20 +176,20 @@ xiangling add weapon="thecatch" refine=5 lvl=90/90;
 #xiangling add weapon="deathmatch" refine=1 lvl=90/90;
 #xiangling add weapon="dragonsbane" refine=3 lvl=90/90;
 xiangling add set="emblemofseveredfate" count=4;
-xiangling add stats hp=4780 atk=311 em=187 pyro%=0.466 cr=0.311 ; #main
+xiangling add stats hp=4780 atk=311 em=187 pyro%=0.466 cr=0.311; # main
 xiangling add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=79.28 cr=0.331 cd=0.7944;
 
 yelan char lvl=90/90 cons=0 talent=9,9,9; 
 yelan add weapon="favoniuswarbow" refine=3 lvl=90/90;
 yelan add set="noblesseoblige" count=4;
-yelan add stats hp=4780 atk=311 hp%=0.466 hydro%=0.466 cr=0.311; #main
-yelan add stats def=39.36 def%=0.124 hp=507.88 hp%=0.1984 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.331 cd=0.7944 ;																															
+yelan add stats hp=4780 atk=311 hp%=0.466 hydro%=0.466 cr=0.311; # main
+yelan add stats def=39.36 def%=0.124 hp=507.88 hp%=0.1984 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.331 cd=0.7944;																															
 
 xingqiu char lvl=90/90 cons=6 talent=9,9,9; 
 #xingqiu add weapon="amenomakageuchi" refine=5 lvl=90/90;
 xingqiu add weapon="harbingerofdawn" refine=5 lvl=90/90;
 xingqiu add set="emblemofseveredfate" count=4;
-xingqiu add stats hp=4780 atk=311 atk%=0.466 hydro%=0.466 cr=0.311; #main
+xingqiu add stats hp=4780 atk=311 atk%=0.466 hydro%=0.466 cr=0.311; # main
 xingqiu add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;
 ```
 
@@ -198,12 +202,12 @@ xiangling add weapon="thecatch" refine=5 lvl=90/90;
 #xiangling add weapon="dragonsbane" refine=3 lvl=90/90;
 ```
 
-You can make use of this to quickly switch between different weapons to test out their effect on the overall team dps
+You can make use of this to quickly switch between different weapons to test out their effect on the overall team dps.
 :::
 
 ## Target/Enemy Setting
 
-Every configuration must have at least one `target` (or enemy) set. Otherwise the simulator will not run. Targets can be added as follows:
+Every configuration must have at least one `target` (enemy) set. Otherwise the simulator will not run. Targets can be added as follows:
 
 ```
 target lvl=100 resist=0.1;
@@ -219,7 +223,7 @@ target lvl=100 resist=0.1 pos=1,0;
 ```
 
 :::important
-Make sure to specify the position of the target when simulating multiple targets, otherwise they will all stack on top of each other at (0, 0), causing certain abilities with very small AoEs (e.g. Yae and Xingqiu) to hit multiple targets when that's not realistically going to happen.
+Make sure to specify the position of the target when simulating multiple targets, otherwise they will all stack on top of each other at (0, 0), causing certain abilities with very small AoEs (e.g. Xingqiu Rainswords) to hit multiple targets when that's not realistically going to happen.
 :::
 
 ## Starting Character
@@ -235,7 +239,7 @@ This setting must be present in every config. This should only be set once and t
 :::note
 Repeating `active <char>` multiple times or setting `active <char>` to different characters throughout the script will not cause the simulator to execute swaps. If multiple `active <char>;` lines are present, the simulator will simply use the last one to determine who is the starting character.
 
-To execute a swap manually, see [here](#swaps)
+To execute a swap manually, see [here](#swaps).
 :::
 
 ## Energy setting
