@@ -1,9 +1,9 @@
 ---
-slug: /migration
-sidebar_position: 2
+title: Migrate from v0 to v1
+sidebar_position: 5
 ---
 
-# Rewrite Migration Guide
+# Migrate from v0 to v1 (Rewrite)
 
 ## TL;DR
 
