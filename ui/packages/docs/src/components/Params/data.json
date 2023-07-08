@@ -8,34 +8,34 @@
   ],
   "aloy": [
     {
-      "ability": "aim",
-      "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
-    },
-    {
       "ability": "attack",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames"
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
       "ability": "skill",
-      "param": "bomblet_coil_stacks",
-      "desc": "default 2"
+      "param": "travel",
+      "desc": "Projectile travel time. Default 5 frames."
     },
     {
       "ability": "skill",
       "param": "bomblets",
-      "desc": "default 2"
+      "desc": "Number of Chillwater Bomblets to spawn. Default 2 bomblets."
     },
     {
       "ability": "skill",
-      "param": "delay",
-      "desc": "determines when bombs start exploding after projectile hits. default 0"
-    },
-    {
-      "ability": "skill",
-      "param": "travel",
-      "desc": "projectile travel time. default 5"
+      "param": "bomb_delay",
+      "desc": "Determines when Chillwater Bomblets start exploding after projectile hits. Default 0 frames."
     }
   ],
   "amber": [
