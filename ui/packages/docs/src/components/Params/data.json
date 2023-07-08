@@ -265,9 +265,9 @@
   ],
   "kokomi": [
     {
-      "ability": "skill",
+      "ability": "attack",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     }
   ],
   "lisa": [
@@ -412,148 +412,159 @@
   ],
   "venti": [
     {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
-    },
-    {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill tap. 1 for hold"
+      "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
+  "xiangling": [
+    {
+      "ability": "skill",
+      "param": "a4_delay",
+      "desc": "Number of frames until the active character picks up the Chili Pepper (A4) relative to Guoba Expiry. Default 0, minimum 0, maximum 600."
     }
   ],
   "xiao": [
     {
-      "ability": "high_plunge",
-      "param": "collision",
-      "desc": "does collision dmg on plunge apply; default 0 (no)"
-    },
-    {
-      "ability": "high_plunge",
-      "param": "plunge_hits",
-      "desc": "determine how many plunge falling hits you do on the way down. default 0"
-    },
-    {
       "ability": "low_plunge",
       "param": "collision",
-      "desc": "does collision dmg on plunge apply; default 0 (no)"
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     },
     {
-      "ability": "low_plunge",
-      "param": "plunge_hits",
-      "desc": "determine how many plunge falling hits you do on the way down. default 0"
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
   "xingqiu": [
     {
-      "ability": "burst",
-      "param": "orbital",
-      "desc": "whether or not orbital is in contact with target (resulting in hydro app). default 0"
-    },
-    {
       "ability": "skill",
       "param": "orbital",
-      "desc": "whether or not orbital is in contact with target (resulting in hydro app). default 0"
+      "desc": "0 to disable orbitals from Skill. Default 1 (orbitals enabled)."
+    },
+    {
+      "ability": "burst",
+      "param": "orbital",
+      "desc": "0 to disable orbitals from Burst. Default 1 (orbitals enabled)."
+    }
+  ],
+  "yaemiko": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
     }
   ],
   "yanfei": [
     {
       "ability": "attack",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     }
   ],
   "yelan": [
     {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
       "ability": "skill",
       "param": "marked",
-      "desc": "number of targets to mark. default 1"
+      "desc": "Number of enemies to mark with the Lifeline. Default 1."
     }
   ],
   "yoimiya": [
     {
-      "ability": "aim",
-      "param": "kindling",
-      "desc": "number of kindling hits between 0-3. default 0"
-    },
-    {
-      "ability": "aim",
-      "param": "kindling_travel",
-      "desc": "kindling travel time. default 30"
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "ability": "aim",
+      "param": "kindling",
+      "desc": "Number of Kindling Arrow hits, Default 0, minimum 0, maximum 3."
+    },
+    {
+      "ability": "aim",
+      "param": "kindling_travel",
+      "desc": "Kindling Arrow travel time. Default 30 frames."
     }
   ],
   "yunjin": [
     {
       "ability": "skill",
-      "param": "a1",
-      "desc": "set this to 1 for A1 skill effect using skill press frame count (i.e., the minimum frames possible)"
-    },
-    {
-      "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill press, 1 for first charge level, and 2 for second charge level, using the appropriate frame counts."
+      "desc": "0 for Tap (default), 1 for Hold Lv. 1, 2 for Hold Lv. 2."
     },
     {
       "ability": "skill",
       "param": "perfect",
-      "desc": "if 1 perform perfect counter, default 0"
+      "desc": "If 1, perform perfect counter (Hold Lv. 2 frames). Default 0."
     }
   ],
   "zhongli": [
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "default 0 for skill tap. 1 for hold"
+      "desc": "0 for Tap (default), 1 for Hold."
     },
     {
       "ability": "skill",
       "param": "hold_nostele",
-      "desc": "default 0. if 1 no stele will be created (i.e. shield only). hold will take precedence over this"
-    },
+      "desc": "If 1, no Stone Stele will be created (i.e. shield only) and Hold will be performed. Default 0."
+    }
+  ],
+  "travelergeo": [
     {
       "ability": "skill",
-      "param": "max",
-      "desc": "max number times resonance can hit (simulate maybe out of range of a construct)"
+      "param": "short_hold",
+      "desc": "0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold."
     },
     {
-      "ability": "skill",
-      "param": "res_count",
-      "desc": "number of resonance hits. default 3"
+      "ability": "burst",
+      "param": "hits",
+      "desc": "Number of shockwave attacks to perform. Default 4."
+    },
+    {
+      "ability": "burst",
+      "param": "construct_limit",
+      "desc": "Number of Stone Walls to spawn. Default 4. Using a value < 4 starts not spawning Stone Walls starting from top left going counterclockwise."
     }
   ],
   "travelerelectro": [
