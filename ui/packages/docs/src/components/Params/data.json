@@ -240,27 +240,27 @@
     {
       "ability": "attack",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "charge",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames"
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "skill",
       "param": "bounce",
-      "desc": "number of bounce hits that lands. default 1"
+      "desc": "Number of bounce hits. Default 1 hit."
     },
     {
       "ability": "skill",
       "param": "mine",
-      "desc": "number of mines that hits. default 2"
+      "desc": "Number of mines hits. Default 2 hits."
     },
     {
       "ability": "skill",
       "param": "release",
-      "desc": " \"if 0 cancel skill cast (4cw"
+      "desc": "0 for Skill cancel (relevant for 4pc Crimson Witch stacks), 1 for Skill (default)."
     }
   ],
   "kokomi": [
