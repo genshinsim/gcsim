@@ -234,6 +234,13 @@
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     }
   ],
+  "heizou": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "Hold until max stacks. Default 0 (false), non-zero value for true."
+    }
+  ],
   "hutao": [
     {
       "ability": "burst",
