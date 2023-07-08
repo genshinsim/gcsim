@@ -550,7 +550,21 @@
       "desc": "If 1, no Stone Stele will be created (i.e. shield only) and Hold will be performed. Default 0."
     }
   ],
-  "": [
-    {}
+  "travelergeo": [
+    {
+      "ability": "skill",
+      "param": "short_hold",
+      "desc": "0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold."
+    },
+    {
+      "ability": "burst",
+      "param": "hits",
+      "desc": "Number of shockwave attacks to perform. Default 4."
+    },
+    {
+      "ability": "burst",
+      "param": "construct_limit",
+      "desc": "Number of Stone Walls to spawn. Default 4. Using a value < 4 starts not spawning Stone Walls starting from top left going counterclockwise."
+    }
   ]
 }
