@@ -17,9 +17,9 @@ import (
 func (s *Simulation) Run() (res stats.Result, err error) {
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
-		if recover() != nil {
+		if r := recover(); r != nil {
 			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
-			err = errors.New("simulation panic occured")
+			err = errors.New(fmt.Sprintf("simulation panic occured: %v", r))
 		}
 	}()
 	//run sim for 90s if no duration set
