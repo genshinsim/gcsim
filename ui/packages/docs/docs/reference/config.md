@@ -24,6 +24,15 @@ options iteration=1000 duration=90 swap_delay=14;
 | `workers` | Number of workers to use. Only valid when using cli, ignored in web. | 20 |
 | `swap_delay` | Number of frames it takes to swap characters. | 1 |
 
+### Set energy generation
+
+Example: 
+```
+energy every interval=480,720 amount=1;
+```
+
+This means that gcsim will generate 1 clear elemental particle every 480 to 720 frames randomly.
+
 ### Perform character, weapon, artifact setup
 
 Character data can be roughly broken into 4 parts:
