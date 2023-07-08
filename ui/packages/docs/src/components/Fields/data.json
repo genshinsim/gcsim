@@ -33,5 +33,13 @@
       ],
       "desc": "The source frame Oz is spawned on"
     }
+  ],
+  "yelan": [
+    {
+      "fields": [
+        ".yelan.breakthrough"
+      ],
+      "desc": "Whether Yelan is in the Breakthrough state or not."
+    }
   ]
 }
