@@ -40,29 +40,29 @@
   ],
   "amber": [
     {
-      "ability": "aim",
-      "param": "bunny",
-      "desc": "shoot the bunny (for C2+ only). default 0 (false). no damage if 1 (true)"
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames "
+      "ability": "aim",
+      "param": "bunny",
+      "desc": "Shoot the first bunny (for C2+ only). Default 0 (false). Arrow does no damage if 1 (true)."
     },
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "frames to hold bunny for (for throwing). default 0"
+      "desc": "Frames to hold bunny for (for throwing). Default 0 frames."
     }
   ],
   "ayaka": [
