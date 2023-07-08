@@ -1,6 +1,6 @@
 ---
-title: Building a Simulation - Tutorial
-sidebar_position: 4
+title: Building a Simulation from Scratch 
+sidebar_position: 1
 ---
 
 This will be a basic tutorial on how to build your own simulation from scratch. The team we'll be simulating is the ever popular Raiden/Xiangling/Xingqiu/Bennett team. Feel free to follow along with your own stats.
