@@ -1,15 +1,14 @@
+import CharDataGen from '@ui/Data/char_data.generated.json';
+import WeaponDataGen from '@ui/Data/weapon_data.generated.json';
 import TextMap from './GenshinData/EnkaTextMapEN.json';
-import CharacterMap from './GenshinData/EnkaCharacterMap.json';
 
 import {
   GOODArtifact,
   GOODArtifactSetKey,
   GOODCharacter,
-  GOODCharacterKey,
   GOODSlotKey,
   GOODStatKey,
   GOODWeapon,
-  GOODWeaponKey,
   IGOOD,
   ISubstat,
 } from '../GOOD/GOODTypes';
@@ -20,6 +19,40 @@ import {
   GenshinItemWeapon,
   ReliquaryEquipType,
 } from './EnkaTypes';
+const characterMapV2 = Object.values(CharDataGen.data).reduce(
+  (acc, val) => (acc[val.id] = val),
+  {} as {
+    [id: number]: {
+      id: number;
+      key: string;
+      rarity: string;
+      body: string;
+      region: string;
+      element: string;
+      weapon_class: string;
+      icon_name: string;
+      skill_details: {
+        skill: number;
+        burst: number;
+        attack: number;
+        burst_energy_cost: number;
+      };
+    };
+  }
+);
+
+const weaponMapV2 = Object.values(WeaponDataGen.data).reduce(
+  (acc, val) => (acc[val.id] = val),
+  {} as {
+    [id: number]: {
+      id: number;
+      key: string;
+      rarity: number;
+      weapon_class: string;
+      image_name: string;
+    };
+  }
+);
 
 export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
   const characters: GOODCharacter[] = [];
@@ -28,22 +61,36 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
 
   enkaData.avatarInfoList.forEach(
     ({ avatarId, propMap, talentIdList, skillLevelMap, equipList }) => {
+      const characterData = characterMapV2[avatarId];
+      if (!characterData || !characterData.key) {
+        console.log('Missing/Unimplemented character', avatarId);
+        return;
+      }
+
       const character: GOODCharacter = {
-        key: getGOODKeyFromAvatarId(avatarId),
-        level: parseInt(propMap['4001'].val),
-        ascension: parseInt(propMap['1002'].val),
-        constellation: talentIdList?.length || 0,
-        talent: determineCharacterTalent(avatarId, skillLevelMap),
+        key: characterData.key,
+        level: parseInt(propMap['4001'].val) ?? 1,
+        ascension: parseInt(propMap['1002'].val) ?? 0, //dont know if is 0 indexed
+        constellation: talentIdList?.length ?? 0,
+        talent: getCharacterTalentV2(
+          characterData.skill_details,
+          skillLevelMap
+        ),
       };
       characters.push(character);
 
       equipList.forEach((equip) => {
         if (equip.flat.itemType == 'ITEM_WEAPON') {
-          const { flat, weapon: enkaWeapon } = equip as GenshinItemWeapon;
+          const { weapon: enkaWeapon, itemId } = equip as GenshinItemWeapon;
+          const weaponData = weaponMapV2[itemId];
+          if (!weaponData || !weaponData.key) {
+            // goodtosrl handles no weapon characters
+            return;
+          }
           const weapon: GOODWeapon = {
-            key: getGOODKeyFromWeaponNameTextMapHash(flat.nameTextMapHash),
+            key: weaponData.key,
             level: enkaWeapon.level,
-            ascension: enkaWeapon.promoteLevel ? enkaWeapon.promoteLevel : 0,
+            ascension: enkaWeapon.promoteLevel ?? 0,
             refinement: determineWeaponRefinement(enkaWeapon.affixMap),
             location: character.key,
             lock: false,
@@ -83,7 +130,6 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
   };
 }
 
-const characterMap: ICharacterMap = CharacterMap;
 const textMap: IENTextMap = TextMap.en;
 
 function determineWeaponRefinement(affixMap?: { [key: number]: number }) {
@@ -94,29 +140,30 @@ function determineWeaponRefinement(affixMap?: { [key: number]: number }) {
     : 1;
 }
 
-function determineCharacterTalent(
-  avatarId: number,
+function getCharacterTalentV2(
+  skill_details: {
+    skill: number;
+    burst: number;
+    attack: number;
+  },
   skillLevelMap: { [key: number]: number }
 ) {
-  const { SkillOrder } = characterMap[avatarId];
   return {
-    auto: skillLevelMap[SkillOrder[0]],
-    skill: skillLevelMap[SkillOrder[1]],
-    burst: skillLevelMap[SkillOrder[2]],
+    auto: skillLevelMap[skill_details.attack],
+    skill: skillLevelMap[skill_details.skill],
+    burst: skillLevelMap[skill_details.burst],
   };
 }
 
 function textToGOODKey(string: string) {
   function toTitleCase(str: string) {
     return str.replace(/-/g, ' ').replace(/\w\S*/g, function (txt: string) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
     });
   }
-  return toTitleCase(string || '').replace(/[^A-Za-z]/g, '') as
-    | GOODCharacterKey
-    | GOODWeaponKey
-    | GOODArtifactSetKey;
+  return toTitleCase(string || '').replace(/[^A-Za-z]/g, '');
 }
+
 function reliquaryTypeToGOODKey(
   reliquaryType: ReliquaryEquipType
 ): GOODSlotKey {
@@ -179,18 +226,6 @@ function fightPropToGOODKey(fightProp: FightProp): GOODStatKey {
   }
 }
 
-function getGOODKeyFromAvatarId(avatarId: number): GOODCharacterKey {
-  return textToGOODKey(
-    textMap[characterMap[avatarId].NameTextMapHash.toString()]
-  ) as GOODCharacterKey;
-}
-
-function getGOODKeyFromWeaponNameTextMapHash(
-  weaponNameTextMapHash: string
-): GOODWeaponKey {
-  return textToGOODKey(textMap[weaponNameTextMapHash]) as GOODWeaponKey;
-}
-
 function getGOODKeyFromReliquaryNameTextMapHash(
   reliquaryNameTextMapHash: string
 ): GOODArtifactSetKey {
@@ -217,24 +252,6 @@ function getGOODSubstatsFromReliquarySubstats(
     });
   }
   return GOODSubstats;
-}
-
-interface ICharacterMap {
-  [key: number]: {
-    Element: string;
-    Consts: string[];
-    SkillOrder: number[];
-    Skills: {
-      [key: string]: string;
-    };
-    //useless
-    ProudMap: {
-      [key: string]: number;
-    };
-    NameTextMapHash: number;
-    SideIconName: string;
-    QualityType: string;
-  };
 }
 
 interface IENTextMap {
