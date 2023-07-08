@@ -265,12 +265,6 @@
       "count_credit": "Kolibri#7675",
       "vid": "https://youtu.be/56yh-6WqN-I",
       "count": "https://docs.google.com/spreadsheets/d/1uS_n16mlfdfzjBiVG3w6TmR9H7YqSSFOoyox_9bn-Kk/edit?usp=sharing"
-    },
-    {
-      "vid_credit": "Kolibri#7675",
-      "count_credit": "Kolibri#7675",
-      "vid": "https://youtu.be/KRWBSbMakKc",
-      "count": "https://docs.google.com/spreadsheets/d/1uS_n16mlfdfzjBiVG3w6TmR9H7YqSSFOoyox_9bn-Kk/edit?usp=sharing"
     }
   ],
   "raiden": [
@@ -308,9 +302,15 @@
   "shenhe": [
     {
       "vid_credit": "Kolibri#7675 (special thanks to Xreejan#1180)",
-      "count_credit": "",
+      "count_credit": "Shizuka#7791",
       "vid": "https://youtu.be/27cpC8A_elw",
-      "count": ""
+      "count": "https://docs.google.com/spreadsheets/d/1CeCbNYTXozBDeeRerGJFLWwsKrKz3K3-PydNSBATx8E/edit?usp=sharing"
+    },
+    {
+      "vid_credit": "Shizuka#7791",
+      "count_credit": "Shizuka#7791",
+      "vid": "https://youtu.be/lcDQi_9YBzA",
+      "count": "https://docs.google.com/spreadsheets/d/1CeCbNYTXozBDeeRerGJFLWwsKrKz3K3-PydNSBATx8E/edit?usp=sharing"
     }
   ],
   "sucrose": [
@@ -330,13 +330,13 @@
   "tartaglia": [
     {
       "vid_credit": "Kolibri#7675",
-      "count_credit": "Kurt#5846 and Kolibri#7675",
+      "count_credit": "Kolibri#7675",
       "vid": "https://youtu.be/FSE7NhQSbHE",
       "count": "https://docs.google.com/spreadsheets/d/1TDAItxWT_p76Z84EMpk2oIAN2etTWR0DiubllnWBnbc/edit?usp=sharing"
     },
     {
       "vid_credit": "Kolibri#7675",
-      "count_credit": "Kurt#5846 and Kolibri#7675",
+      "count_credit": "Kolibri#7675",
       "vid": "https://youtu.be/rpVDDq-F5ZM",
       "count": "https://docs.google.com/spreadsheets/d/1TDAItxWT_p76Z84EMpk2oIAN2etTWR0DiubllnWBnbc/edit?usp=sharing"
     }
@@ -355,12 +355,6 @@
       "count_credit": "Kurt#5846",
       "vid": "https://youtu.be/ibZji4bP7Gs",
       "count": "https://docs.google.com/spreadsheets/d/1tWMpn1M34w0rCutUQ5cem28fIVoFVp7YjOXtIm2Rvow/edit?usp=sharing"
-    },
-    {
-      "vid_credit": "Kolibri#7675",
-      "count_credit": "Kurt#5846",
-      "vid": "https://youtu.be/5sqz-tgKuJM",
-      "count": "https://docs.google.com/spreadsheets/d/1tWMpn1M34w0rCutUQ5cem28fIVoFVp7YjOXtIm2Rvow/edit?usp=sharing"
     }
   ],
   "xiao": [
@@ -368,12 +362,6 @@
       "vid_credit": "Kolibri#7675",
       "count_credit": "Kolibri#7675",
       "vid": "https://youtu.be/oadNODbooZQ",
-      "count": "https://docs.google.com/spreadsheets/d/1WHJy9UjCQY0AO32yluJMhX_ecGO1KGb6SjbOZt9VJDg/edit?usp=sharing"
-    },
-    {
-      "vid_credit": "Kolibri#7675",
-      "count_credit": "Kolibri#7675",
-      "vid": "https://youtu.be/f3C-cbZhh6A",
       "count": "https://docs.google.com/spreadsheets/d/1WHJy9UjCQY0AO32yluJMhX_ecGO1KGb6SjbOZt9VJDg/edit?usp=sharing"
     }
   ],
@@ -412,12 +400,6 @@
       "vid_credit": "Kolibri#7675",
       "count_credit": "Kolibri#7675",
       "vid": "https://youtu.be/dIlxs5zi1e0",
-      "count": "https://docs.google.com/spreadsheets/d/1rDQZ8TJd6JAzD3C6pg_JZrgkYr-LIp36mmXE8XVMj4s/edit?usp=sharing"
-    },
-    {
-      "vid_credit": "Kolibri#7675",
-      "count_credit": "Kolibri#7675",
-      "vid": "https://youtu.be/vs4M7_vMbKY",
       "count": "https://docs.google.com/spreadsheets/d/1rDQZ8TJd6JAzD3C6pg_JZrgkYr-LIp36mmXE8XVMj4s/edit?usp=sharing"
     }
   ],

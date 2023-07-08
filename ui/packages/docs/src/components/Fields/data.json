@@ -47,5 +47,21 @@
       ],
       "desc": "Number of Star Jades."
     }
+  ],
+  "yanfei": [
+    {
+      "fields": [
+        ".yanfei.seal-count"
+      ],
+      "desc": "Number of Scarlet Seals."
+    }
+  ],
+  "yelan": [
+    {
+      "fields": [
+        ".yelan.breakthrough"
+      ],
+      "desc": "Whether Yelan is in the Breakthrough state or not."
+    }
   ]
 }
