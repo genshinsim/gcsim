@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"github.com/genshinsim/gcsim/pipeline/pkg/artifact"
 	"github.com/genshinsim/gcsim/pipeline/pkg/character"
 	"github.com/genshinsim/gcsim/pipeline/pkg/weapon"
 )
@@ -59,8 +60,14 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("generate character data for ui...")
+	log.Println("generate weapon data for ui...")
 	err = gw.DumpUIJSON(cfg.uiOut)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("generate artifact data for ui...")
+	err = artifact.DumpUIJSON(cfg.uiOut)
 	if err != nil {
 		panic(err)
 	}
