@@ -142,5 +142,13 @@
       ],
       "desc": "Whether Yelan is in the Breakthrough state or not."
     }
+  ],
+  "wanderer": [
+    {
+      "fields": [
+        ".wanderer.skydweller-points"
+      ],
+      "desc": "Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state."
+    }
   ]
 }
