@@ -65,6 +65,13 @@
       "desc": "frames to hold bunny for (for throwing). default 0"
     }
   ],
+  "ayaka": [
+    {
+      "ability": "dash",
+      "param": "f",
+      "desc": "Number of frames to add to minimum dash length. Default 0 frames."
+    }
+  ],
   "ayato": [
     {
       "ability": "skill",
