@@ -466,6 +466,13 @@
       "desc": "whether or not orbital is in contact with target (resulting in hydro app). default 0"
     }
   ],
+  "yaemiko": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    }
+  ],
   "yanfei": [
     {
       "ability": "attack",
