@@ -132,6 +132,7 @@ var weaponNames = []string{
 	"ravenbow",
 	"recurvebow",
 	"redhornstonethresher",
+	"rightfulreward",
 	"royalbow",
 	"royalgreatsword",
 	"royalgrimoire",
@@ -293,6 +294,7 @@ const (
 	RavenBow
 	RecurveBow
 	RedhornStonethresher
+	RightfulReward
 	RoyalBow
 	RoyalGreatsword
 	RoyalGrimoire
