@@ -1,5 +1,5 @@
 ---
-title: Yunjin
+title: Yun Jin
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";

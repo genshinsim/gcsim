@@ -41,5 +41,13 @@
       ],
       "desc": "Number of Scarlet Seals."
     }
+  ],
+  "yelan": [
+    {
+      "fields": [
+        ".yelan.breakthrough"
+      ],
+      "desc": "Whether Yelan is in the Breakthrough state or not."
+    }
   ]
 }
