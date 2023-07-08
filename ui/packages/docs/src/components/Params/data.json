@@ -407,6 +407,13 @@
       "desc": "0 for Tap (default), value between 1 and 300 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (16)."
     }
   ],
+  "nilou": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time for Luminous Illusion. Default 0 frames."
+    }
+  ],
   "ningguang": [
     {
       "ability": "attack",
