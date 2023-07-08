@@ -34,6 +34,14 @@
       "desc": "The source frame Oz is spawned on"
     }
   ],
+  "yanfei": [
+    {
+      "fields": [
+        ".yanfei.seal-count"
+      ],
+      "desc": "Number of Scarlet Seals."
+    }
+  ],
   "yelan": [
     {
       "fields": [
