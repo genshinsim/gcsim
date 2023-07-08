@@ -494,6 +494,43 @@
       "desc": "Hit weakspot for Charge Attack in Melee mode. Default 0 (false), 1 for true."
     }
   ],
+  "tighnari": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    },
+    {
+      "ability": "aim",
+      "param": "level",
+      "desc": "0 for Charge Level 1 (default), 1 for Charge Level 2. If his E state is active, then level is 1 by default."
+    },
+    {
+      "ability": "aim",
+      "param": "wreath",
+      "desc": "Projectile travel time for Clusterbloom Arrows from when the Wreath Arrow hits. Only available if level is 1. Default 35 frames."
+    },
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 5 frames."
+    },
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 0 frames."
+    }
+  ],
   "venti": [
     {
       "ability": "attack",
