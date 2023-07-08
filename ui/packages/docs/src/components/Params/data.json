@@ -390,24 +390,24 @@
   ],
   "tartaglia": [
     {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
       "ability": "aim",
       "param": "travel",
-      "desc": "projectile travel time. default 10 frames (range mode only)"
+      "desc": "Projectile travel time. Default 10 frames."
     },
     {
       "ability": "aim",
       "param": "weakspot",
-      "desc": "Hit weakspot with aimed shot. default 0 (false), 1 for true "
-    },
-    {
-      "ability": "attack",
-      "param": "travel",
-      "desc": "projectile travel time. default 10 frames (range mode only)"
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     },
     {
       "ability": "charge",
       "param": "hitWeakPoint",
-      "desc": "hit weak point for charge attack in melee mode. default 0 (false)"
+      "desc": "Hit weakspot for Charge Attack in Melee mode. Default 0 (false), 1 for true."
     }
   ],
   "venti": [
