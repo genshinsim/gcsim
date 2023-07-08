@@ -30,8 +30,22 @@ Example:
 ```
 energy every interval=480,720 amount=1;
 ```
-
 This means that gcsim will generate 1 clear elemental particle every 480 to 720 frames randomly.
+
+:::note
+If you multiple `energy every` lines are added, then the values specified by the final one will be used.
+:::
+
+:::info
+Generating energy only at a specific frame for one time can also be specified. 
+Multiple `energy once` lines can be added to spawn particles at different points in time.
+
+Example:
+```
+energy once interval=300 amount=1;
+```
+This drops 1 clear elemental particle once at frame 300.
+:::
 
 ### Perform character, weapon, artifact setup
 
@@ -84,23 +98,25 @@ If you set this to a negative number or a really large number, behaviour is unde
 
 Example:
 ```
-target lvl=88 resist=0.1 pos=0,0;
+target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_threshold=200 particle_drop_count=2;
 ```
+
+| name | description | default |
+| --- | --- | --- |
+| `lvl` | Level of the enemy. | 0 |
+| `resist` | Resistance to all types of elemental damage. Percentage represented as a decimal value. | 0 |
+| `pyro`/`hydro`/`anemo`/`electro`/`dendro`/`cryo`/`geo`/`frozen`/`quicken`/`physical` | Resistance to the specified elemental damage. Percentage represented as a decimal value. | 0 |
+| `pos` | Position of the enemy as (x,y). | (0,0) |
+| `freeze_resist` | How much freeze resistance the enemy has. `0` means no freeze resistance, `1` means immune to being frozen. The reaction still happens though. | 0 |
+| `hp` | HP of the enemy. If this is set, duration in the sim options will be ignored and the sim will run until all enemies have died. If `hp` is set for at least one enemy, then it has to be set for all enemies. | - |
+| `particle_threshold` | Only available if the `hp` is set. Determines after how much damage the enemy drops clear elemental particles. | - |
+| `particle_drop_count` | Only available if the `hp` is set. Number of clear elemental particles to drop at `particle_threshold`. | - |
 
 :::danger
 All configs must have at least one enemy specified. Otherwise you will get an error. 
 :::
 
 :::info
-You can also specify each resist separately:
-```
-target lvl=88 pyro=0.1 dendro=0.1 hydro=0.1 electro=0.1 geo=0.1 anemo=0.1 physical=0.1 cryo=0.1 dendro=0.1 pos=0,0;
-```
-:::
-
-:::info
-Target starting position can be specified with `pos=x,y`. 
-Note that if no position is provided, the target will default to (0, 0). 
 If you have multiple targets, make sure to set their starting position properly. 
 Otherwise you may get unintended behaviour such as otherwise single target abilities hitting multiple targets.
 :::
