@@ -75,6 +75,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
       }
 
       const character: GOODCharacter = {
+        //this is already in srl key but goodtosrl is idempotent so its fine
         key: characterData.key,
         level: parseInt(propMap['4001'].val) ?? 1,
         ascension: parseInt(propMap['1002'].val) ?? 1,
