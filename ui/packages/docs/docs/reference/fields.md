@@ -1,6 +1,6 @@
 ---
-sidebar_position: 3
 title: Fields
+sidebar_position: 2
 ---
 
 Fields have the following structure:

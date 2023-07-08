@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
 title: System Functions
+sidebar_position: 3
 ---
 
 The following system functions are available:
