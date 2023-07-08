@@ -110,6 +110,23 @@
       "desc": "If 1, trigger C4. Default 0."
     }
   ],
+  "collei": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    }
+  ],
   "diona": [
     {
       "ability": "attack",
