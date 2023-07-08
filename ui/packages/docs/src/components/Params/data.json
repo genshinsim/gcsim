@@ -456,14 +456,14 @@
   ],
   "xingqiu": [
     {
-      "ability": "burst",
-      "param": "orbital",
-      "desc": "whether or not orbital is in contact with target (resulting in hydro app). default 0"
-    },
-    {
       "ability": "skill",
       "param": "orbital",
-      "desc": "whether or not orbital is in contact with target (resulting in hydro app). default 0"
+      "desc": "0 to disable orbitals from Skill. Default 1 (orbitals enabled)."
+    },
+    {
+      "ability": "burst",
+      "param": "orbital",
+      "desc": "0 to disable orbitals from Burst. Default 1 (orbitals enabled)."
     }
   ],
   "yaemiko": [
