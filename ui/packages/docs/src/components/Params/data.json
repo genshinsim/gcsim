@@ -385,7 +385,7 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "0 for press (default), 1 for hold"
+      "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
   "tartaglia": [
