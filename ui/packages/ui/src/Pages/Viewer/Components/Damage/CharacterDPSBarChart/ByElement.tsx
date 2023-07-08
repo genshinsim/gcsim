@@ -59,7 +59,6 @@ export const ByElementChart = ({ width, height, names, dps }: Props) => {
           return 0;
         }}
         stat={(d, k) => d.data[k]}
-        bottomLabel="DPS"
         barColor={DataColors.element}
         hoverColor={DataColors.elementLabel}
         tooltipContent={(d, k) => (

@@ -41,7 +41,7 @@ async function createConfig() {
           docs: {
             routeBasePath: "/",
             sidebarPath: require.resolve('./sidebars.js'),
-            editUrl: "https://github.com/genshinsim/gcsimdocs/blob/main/",
+            editUrl: "https://github.com/genshinsim/gcsim/blob/main/ui/packages/docs",
             remarkPlugins: [math],
             rehypePlugins: [katex],
           },

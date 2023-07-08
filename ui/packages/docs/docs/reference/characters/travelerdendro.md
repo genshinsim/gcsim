@@ -1,5 +1,5 @@
 ---
-title: Hu Tao
+title: Traveler Dendro
 ---
 
 import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
@@ -10,20 +10,20 @@ import IssuesTable from "@site/src/components/Issues/IssuesTable";
 
 ## Frames
 
-<FramesTable character="hutao" />
+<FramesTable character="travelerdendro" />
 
 ## Hitlag Data
 
-<HitlagTable character="hutao" />
+<HitlagTable character="travelerdendro" />
 
 ## Known issues
 
-<IssuesTable character="hutao" />
+<IssuesTable character="travelerdendro" />
 
 ## Params
 
-<ParamsTable character="hutao" />
+<ParamsTable character="travelerdendro" />
 
 ## Fields
 
-<FieldsTable character="hutao" />
+<FieldsTable character="travelerdendro" />

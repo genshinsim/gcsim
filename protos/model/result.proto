@@ -93,6 +93,7 @@ message SimulationStatistics {
   repeated DescriptiveStats character_dps = 18 [json_name="character_dps"];
   repeated ElementStats breakdown_by_element_dps = 19 [json_name="dps_by_element"];
   repeated TargetStats breakdown_by_target_dps = 20 [json_name="dps_by_target"];
+  repeated SourceStats source_dps = 24 [json_name="source_dps"];
 
   BucketStats damage_buckets = 21 [json_name="damage_buckets"];
   CharacterBucketStats cumulative_damage_contribution = 22 [json_name="cumu_damage_contrib"];
@@ -132,6 +133,10 @@ message ElementStats {
 
 message TargetStats {
   map<int32, DescriptiveStats> targets = 1 [json_name="targets"];
+}
+
+message SourceStats {
+  map<string, DescriptiveStats> sources = 1 [json_name="sources"];
 }
 
 message BucketStats {
