@@ -283,7 +283,7 @@ raiden attack:5, jump;
 raiden attack:5, jump;
 ```
 
-This represents a very basic rotation that started with Raiden as the active character. Raiden will use her skill, followed by Xingqiu skill, burst, etc...
+This represents a very basic rotation that started with Raiden as the active character. Raiden will use her skill, followed by Xingqiu skill, burst, etc.
 
 :::tip
 We used the short form `raiden attack:5, jump;` in the above example. This is simply a shortcut for `raiden attack, attack, attack, attack, attack, jump`.
@@ -296,7 +296,7 @@ Commands written in gcsl are executed sequentially in the order they appear in t
 :::important
 When attempting to execute a character's ability and that ability is not ready (due to cooldown, energy, or stamina), the simulator will wait on that line and keep trying to execute that action until it has succeeded before moving onto the next action.
 
-For example, if you were to do `xingqiu burst` and Xingqiu does not have energy, the simulator will keep trying to use burst (and failing) until Xingqiu finally has enough energy to use burst. In situations where Xingqiu does not have enough energy and there are no additional energy coming in the form of particles, this can cause the simulation to stall for the remaining duration.
+For example, if you were to do `xingqiu burst` and Xingqiu does not have energy, the simulator will keep trying to use burst (and failing) until Xingqiu finally has enough energy to use burst. In situations where Xingqiu does not have enough energy and there is no additional energy coming in the form of particles, this can cause the simulation to stall for the remaining duration.
 :::
 
 
@@ -311,16 +311,19 @@ raiden skill;
 xingqiu skill, burst;
 ```
 
-After executing `raiden skill`, the simulator will recognize that the next action to be executed requires us to be on Xingqiu but Raiden is currently active. It will then automatically insert a swap action before executing `xingqiu skill`;
+After executing `raiden skill`, the simulator will recognize that the next action to be executed requires us to be on Xingqiu but Raiden is currently active. It will then automatically insert a swap action before executing `xingqiu skill`.
 
 You can however manually force swaps with `<char> swap`. Here the `<char>` should represent the character you want to swap to.
 
 ### Repeating a rotation
 
-A common usage is to repeat certain actions (or a rotation) multiple times throughout the duration of a simulation. One way to do this is to simply copy and paste the same block of actions (a rotation) the number of times you wish to repeat the rotation.
+A common usage is to repeat certain actions (or a rotation) multiple times throughout the duration of a simulation. 
 
+#### Naive approach
+One way to do this is to simply copy and paste the same block of actions (a rotation) the number of times you wish to repeat the rotation.
+
+#### While loop
 Another way is to wrap the entire block in a while loop:
-
 ```
 while 1 {
     raiden skill;
@@ -334,6 +337,29 @@ while 1 {
 }
 ```
 
+This will execute the block until gcsim stops running. 
+
+:::info
+See the [config page in the reference section](/reference/config) for information on when gcsim stops running.
+:::
+
+#### For loop
+The entire block can also be wrapped in a for loop to repeat it a specific number of times:
+```
+for let i = 0; i < 5; i = i + 1 {
+    raiden skill;
+    xingqiu skill, burst;
+    bennett skill, burst;
+    xiangling burst, skill;
+    raiden burst;
+    raiden attack:5, jump;
+    raiden attack:5, jump;
+    raiden attack:5, jump;
+}
+```
+
+This loop will execute the block 5 times.
+
 ### Advanced
 
 gcsl features most of the basic functionality any scripting language has, including:
@@ -345,4 +371,6 @@ gcsl features most of the basic functionality any scripting language has, includ
 - loops
 - conditional statements
 
-For more details, check out the [references section](/reference/config#gcsl).
+:::info
+For more details, check out the [config page in the reference section](/reference/config#gcsl).
+:::

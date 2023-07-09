@@ -246,7 +246,31 @@ if <condition> {
 }
 ```
 
-`<condition>` can be any expression that evalutes into a number. `condition` is considered false if it evaluates to 0 and true otherwise.
+- `<condition>` can be any expression that evalutes into a number. 
+- `<condition>` is considered false if it evaluates to 0 and true otherwise.
+
+### `switch` statement
+
+`switch` statement takes the following format:
+
+```
+switch <expr> {
+    case <expr>:
+        //do action here
+    case <expr>:
+        //do action here
+        fallthrough;
+    case <expr>:
+        //will continue from above
+    default:
+        //default case
+}
+```
+
+- A case is executed if the switch expression equals the case expression. 
+- There is no `break;` at the end of each case. By default, once a case finishes evaluating, the switch statement will exit. 
+- The exception to this is if a fallthrough is present. This will cause the case immediately below the current case to be executed as well.
+- The `default` case is executed if none of the cases equals the switch expression. If no `default` is present, the switch will simply exit.
 
 ### `while` statement
 
@@ -258,9 +282,9 @@ while <condition> {
 }
 ```
 
-`<condition>` can be any expression that evalutes into a number. `condition` is considered false if it evaluates to 0 and true otherwise.
-
-`while` will repeat the block for as long as condition evalutes true.
+- `<condition>` can be any expression that evalutes into a number. 
+- `<condition>` is considered false if it evaluates to 0 and true otherwise.
+- `while` will repeat the block for as long as `<condition>` evalutes true.
 
 :::caution Infinite loops
 
@@ -307,24 +331,64 @@ In this example the `xiangling attack;` can never be reached, causing the script
 
 :::
 
-### `switch` statement
+### `for` statement
 
-`switch` statement takes the following format:
+`for` statement takes the following format:
 
 ```
-switch <expr> {
-    case <expr>:
-        //do action here
-    case <expr>:
-        //do action here
-        fallthrough;
-    case <expr>:
-        //will continue from above
-    default:
-        //default case
+for <init>; <condition>; <post> { 
+    
 }
 ```
 
-A case is executed if the switch expression equals the case expression. There is no `break;` at the end of each case. By default, once a case finishes evaluating, the switch statement will exit. The exception to this is if a fallthrough is present. This will cause the case immediately below the current case to be executed as well.
+- `<init>` must be a variable initialization.
+- `<condition>` can be any expression that evalutes into a number. 
+- `<condition>` is considered false if it evaluates to 0 and true otherwise.
+- `<post>` must be a variable assignment without a `;`.
+- `for` will repeat the block for as long as `<condition>` evalutes true.
 
-The `default` case is executed if none of the cases equals the switch expression. If no `default` is present, the switch will simply exit.
+:::info
+Example:
+```
+for let i = 0; i < 5; i = i + 1 {
+    xiangling attack;
+}
+```
+This will execute `xiangling attack;` 5 times.
+:::
+
+### `break` statement
+
+`break` immediately exits the innermost enclosing `while` loop, `for` loop or `switch` statement. 
+
+:::info
+Example:
+```
+let i = 0;
+while 1 {
+    if i == 1 {
+        break;
+    }
+    xiangling attack;
+    i = i + 1;
+}
+```
+This will execute `xiangling attack;` one time, because in the second iteration it will execute the `break;` statement and thus exit the `while` loop.
+:::
+
+### `continue` statement
+
+`continue` skips to the next iteration of a `while` or `for` loop.
+
+:::info
+Example:
+```
+for let i = 0; i < 5; i = i + 1 {
+    if i == 0 {
+        continue;
+    }
+    xiangling attack;
+}
+```
+This will skip the very first iteration of the `for` loop and execute `xiangling attack;` 4 times.
+:::
