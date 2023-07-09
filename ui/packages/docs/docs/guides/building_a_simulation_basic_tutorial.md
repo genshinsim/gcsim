@@ -344,22 +344,6 @@ Your view may look different than ours above, depending on the options you have 
 
 This view is now a lot less cluttered and shows only the actions that were executed. The action executed should look familiar as it matches the rotation we had inputted.
 
-### Looking for problems in rotation
-
-TODO: add category for action not ready??
-
-
-## Batterying 101
-
-### 
-
-## Dealing with random procs
-
-sacrificial sword??
-
-## Debug view tips and tricks
-
-
-
-
-
+:::info
+This tutorial ends here for now. If you have any suggestions for what should be included/changed here, then feel free to talk to us on Discord (see top right).
+:::
