@@ -5,136 +5,176 @@ sidebar_position: 4
 
 ## Introduction
 
-Substat optimizer mode is a currently **experimental** feature that attempts to optimize your artifact substats given an action list and a few key inputs. This can be useful if:
+Substat optimizer mode is a currently **experimental** feature that attempts to optimize your artifact substats given an action list and a few key inputs. 
+This can be useful if:
 
-1. You are doing theorycrafting work and want to align your calculations to a given set of standards
-2. You do not have your artifacts available from another source such as Genshin Optimizer and would like to generate some results with reasonable artifact presets
+1. You are doing theorycrafting work and want to align your calculations to a given set of standards.
+2. You do not have your artifacts available from another source such as Genshin Optimizer and would like to generate some results with reasonable artifact presets.
 
-Currently in practice, we have found the substat optimizer module to be roughly on par or slightly exceeding hand optimizing, and it generates results that yield team DPS within 1-5% of using a sheet to optimize substats instead. If you encounter any teams that yield unexpected results, please feel free to reach out to us on our Discord.
+Currently in practice, we have found the substat optimizer module to be roughly on par or slightly exceeding hand optimizing, and it generates results that yield team DPS within 1-5% of using a sheet to optimize substats instead. 
+If you encounter any teams that yield unexpected results, please feel free to reach out to us on our Discord (see top right).
 
-Note that by default the substat optimizer will assign substats that adhere to the KQM Standard. If you would like to use different assumptions, please see Additional Options.
+Note that by default the substat optimizer will assign substats that adhere to the KQM Standard. 
+If you would like to use different assumptions, please see [Additional Options](#additional-options).
+
+:::info
+Due to difficulties in porting this into the website and performance reasons, the substat optimizer is only available via command line. 
+:::
+
+## Setup
+
+Before using the optimizer, you will first need to setup your config and save it as file. 
+
+:::info
+Please refer to the [introductory guide](/guides/building_a_simulation_basic_tutorial) and the [reference section](/reference) for more information.
+:::
+
+:::danger
+In order for the substat optimizer to work, you will need to split up the character's `add stats` lines into main stats and substats. 
+This is especially relevant when adding stats via Enka Import or the Character Builder.
+
+Example:
+```
+albedo add stats def%=0.831 def=39.36 hp=5287.88 hp%=0.0992 atk=344.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.642 cd=0.7944 geo%=0.466;
+```
+
+This needs to be converted into a main stat and substat line like this that specifies the stats for flower, feather, sands, goblet and circlet:
+```
+albedo add stats hp=4780 atk=311 def%=0.518 geo%=0.466 cr=0.311; # main
+albedo add stats hp%=0.0992 hp=507.88 atk%=0.0992 atk=33.08 def%=0.248 def=39.36 em=39.64 cr=0.331 cd=0.7944 er=0.1102; # subs
+```
+
+You can also leave out the substat line and let the substat optimizer generate it.
+:::
+
+You will also need to either:
+- download the latest desktop version of the sim (`gcsim.exe`, Windows only) from [here](https://github.com/genshinsim/gcsim/releases/latest)
+- use the [source code](https://github.com/genshinsim/gcsim) in order to build a gcsim version suitable for your operating system
+
+The following descriptions assume:
+- Windows as the operating system
+- `gcsim.exe` and config file are in the same folder
+- the config file is named `test.txt` (This is just an example, you can name the config however you want to.)
+- the desired .gz viewer file name is `test` (Again, this can be customized.)
 
 ## Usage
 
-Due to difficulties in porting this into the website and performance reasons, the substat optimizer must be operated from the command line. Below we provide a brief guide on basic usage.
-
-Before using the optimizer, you will first need to setup your team in the UI. You will need to set up all elements for a team, so you will need:
-
-1. A team of characters, which each have listed:
-   - Level, Constellation, Talent
-   - Weapon with level and refine
-   - Artifact sets with main stats
-   - A valid action list
-2. If you have an existing configuration with substats already inserted, you do not have to remove them. The substat optimizer will automatically ignore those substat lines.
-3. If you are used to sheet calcs, note that this substat optimizer also optimizes ER substats, so there is technically no need to use an ER calculator. With that being said, note that this substat optimizer may produce very unexpected results for some configurations (calc mode configs especially), if you are completely unable to meet ER requirements for a given rotation.
-   - An example that we have seen in practice is that the optimizer may sometimes return that 0 ER substats is the "most optimal" if you can't burst off of cooldown.
-4. As with most other things when using the sim, do not blindly trust the results and make sure to look at the summary stats and debug to make sure that the team is performing as you would expect.
-
-Once you have this all set up, then you will want to copy out your full action list, and save it into a file.
-
-Next, you will need to download the latest desktop version of the sim, which you can find [here](https://github.com/genshinsim/gcsim/releases/latest).
-
-### TL;DR Just Give Me Something That Works
-
-Below is a short Windows batch script. Copy the text into a file called `run_optimizer_full.bat` placed somewhere on your system (preferably outside of the "Program Files" folder due to Windows permissions).
-
 ```
-set argument="%2"
-
-set filename=%~1
-set output=%filename:txt=json%
-
-"gcsim.exe" -c="%cd%/config/%filename%" -substatOptim=true -out="%cd%/optimized_config/%filename%" %argument% || exit /b %errorlevel%
-
-"gcsim.exe" -c="%cd%/optimized_config/%filename%" -out="%cd%/viewer_gz/%output%" -gz="true" %argument%
+./gcsim.exe -c="<path to your config file>" -substatOptimFull -gz -out="<path for the output .gz viewer file>" <any other arguments go here, for example: -options>
 ```
 
-Next, place the `gcsim.exe` file that you downloaded from the release page in the same folder with the batch file that you created earlier.
-
-Create three subfolders named "config", "optimized_config", and "viewer_gz", and place the config that you saved into the "config" folder.
-
-Finally, open up a Powershell window at the location, which you can do by holding shift and right clicking in the empty space in the folder. This is what my final folder setup looks like:
-
-![](gcsim_powershell.PNG)
-
-In the Powershell window, you can run the following command:
-
-```
-.\run_optimizer_full.bat "[[NAME OF CONFIG]]"
-```
-
+:::info
 Example:
 
+Open a Powershell window in the folder where `gcsim.exe` and your `test.txt` are located by holding Shift, right clicking in the empty space of the folder and left clicking `Open PowerShell window here`:
+
+![](substat_powershell.png)
+
+In the Powershell window, you can run the following command:
 ```
-.\run_optimizer_full.bat "raiden_hyper.txt"
-```
-
-This will output a configuration with optimized substats into the "optimized_config" folder, and a viewer_gz file using the optimized substats in the "viewer_gz" folder, which you can upload to the [online viewer](https://gcsim.app/viewer). If you want some details about what the optimizer is doing, you can scroll back in the cmd log, where you should see something like this output:
-
-```
-PS C:\HOME\Misc Programs\gsim\test_optim> .\run_substat_optimizer_full.bat "hu_tao_geo.txt"
-
-C:\HOME\Misc Programs\gsim\test_optim>set argument=""
-
-C:\HOME\Misc Programs\gsim\test_optim>set filename=hu_tao_geo.txt
-
-C:\HOME\Misc Programs\gsim\test_optim>set output=hu_tao_geo.json
-
-C:\HOME\Misc Programs\gsim\test_optim>"gcsim-x86_64-pc-windows-msvc.exe.lnk" -c="C:\HOME\Misc Programs\gsim\test_optim/config/hu_tao_geo.txt" -substatOptim=true -out="C:\HOME\Misc Programs\gsim\test_optim/optimized_config/hu_tao_geo.txt" ""   || exit /b 0
-2022-01-25T08:49:15.286-0500    WARN    Warning: Config found to have existing substat information. Ignoring...
-2022-01-25T08:49:15.287-0500    INFO    Starting ER Optimization...
-2022-01-25T08:49:24.319-0500    INFO    Optimized ER Liquid Substats by character:
-2022-01-25T08:49:24.319-0500    INFO    albedo: 0.2204, hutao: 0, xingqiu: 0, zhongli: 0,
-2022-01-25T08:49:24.319-0500    INFO    Calculating optimal substat distribution...
-2022-01-25T08:49:24.683-0500    INFO    albedo
-2022-01-25T08:49:26.158-0500    INFO    Final Liquid Substat Counts: er: 4 cr: 7 cd: 9
-2022-01-25T08:49:26.158-0500    INFO    hutao
-2022-01-25T08:49:28.081-0500    INFO    Final Liquid Substat Counts: hp%: 2 cr: 8 cd: 10
-2022-01-25T08:49:28.081-0500    INFO    xingqiu
-2022-01-25T08:49:29.577-0500    INFO    Final Liquid Substat Counts: atk%: 2 cr: 8 cd: 10
-2022-01-25T08:49:29.577-0500    INFO    zhongli
-2022-01-25T08:49:31.134-0500    INFO    Low damage contribution from substats - adding some points to ER instead
-2022-01-25T08:49:31.134-0500    INFO    Final Liquid Substat Counts: atk%: 8 er: 4 cr: 8
-2022-01-25T08:49:31.134-0500    INFO    Final config substat strings:
-albedo add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.3306 em=39.64 cr=0.2979 cd=0.7282;
-hutao add stats def%=0.124 def=39.36 hp=507.88 hp%=0.1984 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.331 cd=0.7944;
-xingqiu add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;
-zhongli add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.496 er=0.3306 em=39.64 cr=0.331 cd=0.1324;
-2022-01-25T08:49:31.138-0500    INFO    Saved to the following location: C:\HOME\Misc Programs\gsim\test_optim/optimized_config/hu_tao_geo.txt
+./gcsim.exe -c="test.txt" -substatOptimFull -gz out="test"
 ```
 
-### Details on Rolling Your Own Solution
+This will: 
+- overwrite the content of the config file `test.txt` to include optimized substat lines for every character
+- run gcsim on the config file 
+- generate a .gz viewer file called `test.gz` in the same folder that can be uploaded to the gcsim website (Alternatively you can replace `-gz -out=test` with `-s` to open a local browser window with the viewer file already inserted instead.)
 
-The assumption in this section is that you know how to navigate around the command line some and want to perhaps change the provided batch file to customize it for your own needs. We will go through just a few relevant details:
-
-First here are a few key points about the arguments to the optimizer run command (copied below):
-
+If you want some details about what the optimizer is doing you can look at the output generated by the command. 
+You should see something like this output:
 ```
-gcsim.exe -c="[[PATH TO SAVED CONFIG HERE]]" -substatOptim=true -out="[[PATH TO DESIRED OUTPUT CONFIG HERE]]" [[ANY OTHER ARGUMENTS HERE]]
+2023-07-09T15:37:13.288+0200    WARN    Warning: Config found to have existing substat information Ignoring...                                                                
+2023-07-09T15:37:13.289+0200    INFO    Starting ER Optimization...                                  
+2023-07-09T15:37:22.439+0200    INFO    Raiden found in team comp - running secondary optimization routine...                                                     
+2023-07-09T15:37:22.439+0200    INFO    Optimized ER Liquid Substats by character:
+2023-07-09T15:37:22.440+0200    INFO    yelan: 0.4408, xingqiu: 0.4408, raiden: 0.551, nahida: 0.3306,
+2023-07-09T15:37:33.749+0200    INFO    Calculating optimal substat distribution... 
+2023-07-09T15:37:33.749+0200    INFO    yelan    
+2023-07-09T15:37:33.749+0200    INFO    Final Liquid Substat Counts:
+2023-07-09T15:37:33.749+0200    INFO    er: 8 cr: 5 cd: 7               
+2023-07-09T15:37:33.749+0200    INFO    xingqiu                                        
+2023-07-09T15:37:33.749+0200    INFO    Final Liquid Substat Counts:                   
+2023-07-09T15:37:33.749+0200    INFO    er: 8 cr: 5 cd: 7                          
+2023-07-09T15:37:33.749+0200    INFO    raiden                                         
+2023-07-09T15:37:33.749+0200    INFO    Final Liquid Substat Counts:                 
+2023-07-09T15:37:33.749+0200    INFO    er: 10 em: 4 cr: 4 cd: 2 
+2023-07-09T15:37:33.749+0200    INFO    nahida          
+2023-07-09T15:37:33.749+0200    INFO    Low damage contribution from substats - adding some points to ER instead                          
+2023-07-09T15:37:33.749+0200    INFO    Final Liquid Substat Counts:     
+2023-07-09T15:37:33.749+0200    INFO    er: 6 cr: 8 cd: 6
+2023-07-09T15:37:33.749+0200    INFO    Final config substat strings:
+yelan add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.551 em=39.64 cr=0.2317 cd=0.5958;               
+xingqiu add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.551 em=39.64 cr=0.2317 cd=0.5958;                       
+raiden add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.6612 em=118.92 cr=0.1986 cd=0.2648;
+nahida add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.4408 em=39.64 cr=0.331 cd=0.5296;                   
+2023-07-09T15:37:33.759+0200    INFO    Saved to the following location: test.txt   
+Average duration of 91.43 seconds (min: 91.35 max: 95.48 std: 0.35)                            
+Average 6556758.08 damage over 91.43 seconds, resulting in 71713 dps (min: 64840.34 max: 73727.29 std: 973.83)                         
+Simulation completed 1000 iterations           
 ```
 
-1. The `-out` flag is a convenience measure which outputs a new copy of the configuration file at the specified location without any of the existing substat lines, and has the final optimized substat lines instead.
-2. Some configurations will require additional arguments - you can view a full set of flags with `gcsim.exe -help`, but the most common one that you may need to add is `-calc` if you are using a calc mode configuration.
+If no `test.gz` was saved in your folder, then you need to start Powershell as Administrator in the folder. 
+This can be done by clicking on the blue `File` menu on the top left inside the folder and navigating to `Open Windows Powershell` > `Open Windows Powershell as administrator`.
+::: 
 
-After you run the above command, the routine will need to run for a while before returning an output. On my somewhat beefy machine it takes around 15-30 seconds depending on the configuration, but note that it will likely use a high amount of CPU over that period. If you want it to run a bit more slowly and use fewer CPU cores, then you can change the "workers" number in the `options` line at the top of the config directly, like so:
 
-```
-options iteration=500 duration=24 mode=sl workers=4;
-```
+:::tip
+Do not blindly trust the results and make sure to look at the summary stats and Sample tab to make sure that the team is performing as you would expect.
+:::
+
+:::tip
+You do not have to remove existing substat `add stats` lines from your config.
+The substat optimizer will automatically ignore and replace those lines.
+:::
+
+:::tip
+The substat optimizer does not take very long to run (depending on the machine), but it will likely use a high amount of CPU during that time.
+If you want to run it a bit more slowly and use fewer CPU cores, then you can change the `workers` number in the `options` line of the config. 
+See the [config page in the reference section](/reference/config) for more information.
+:::
+
+:::tip
+If you wish to rerun an optimized config after tweaking some of the substats in the config, simply run the command with the `-substatOptimFull` flag removed.
+:::
+
+:::info
+The substat optimizer optimizes all stats for the characters which also includes ER requirements, so there is no need to use an ER calculator.
+It usually generates conservative ER requirements that are higher than what an ER calculator sheet might suggest.
+
+This is due to gcsim:
+- having much more detailed energy mechanics than what can reasonably be modelled in an ER calculator
+- modelling the actual particle rng (example: Fischl Oz) by running the config for many times
+:::
+
+:::caution
+In practice, the optimizer may sometimes return that 0 ER substatsis the "most optimal" if you cannot burst off cooldown.
+It may also add a bigger amount of ER subs to characters which have very low damage contribution.
+:::
 
 ### Additional Options
 
-By default the optimizer will return KQM Standard optimized substats, but if you are interested in doing something different then you can set some semi-colon additional options in the `-options` flag, which are:
+By default, the substat optimizer will return KQM Standard optimized substats.
+If you are interested in doing something different, then you can set some semi-colon additional options in the `-options` flag of the command, which are:
 
-1. `total_liquid_substats` (default = 20): Total liquid substats available to be assigned across all substats
-2. `indiv_liquid_cap` (default = 10): Total liquid substats that can be assigned to a single substat
-3. `fixed_substats_count` (default = 2): Amount of fixed substats that are assigned to all substats
-4. `sim_iter` (default = 350): RECOMMENDED TO NOT TOUCH. Number of iterations used when optimizing. Only change (increase) this if you are working with a team with extremely high standard deviation (>25% of mean)
-5. `tol_mean` (default = 0.015): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS mean used in ER optimization
-6. `tol_sd` (default = 0.33): RECOMMENDED TO NOT TOUCH. Tolerance of changes in DPS SD used in ER optimization
+| option | description | default |
+| --- | --- | --- |
+| `total_liquid_substats` | Total liquid substats available to be assigned across all substats. | 20 |
+| `indiv_liquid_cap` | Total liquid substats that can be assigned to a single substat. | 10 |  
+| `fixed_substats_count` | Amount of fixed substats that are assigned to all substats. | 2 |
 
-An example if you wanted to modify the batch command would look something like this:
+:::caution
+It is recommended that these options are not touched, but they are still customizable:
 
+| option | description | default |
+| --- | --- | --- |
+| `sim_iter` | Number of iterations used when optimizing. Only change (increase) this if you are working with a team with extremely high standard deviation (>25% of mean). | 350 | 
+| `tol_mean` | Tolerance of changes in DPS mean used in ER optimization. | 0.015 |
+| `tol_sd` | Tolerance of changes in DPS SD used in ER optimization. | 0.33 |
+:::
+
+:::info
+Here's an example command:
 ```
-gcsim-x86_64-pc-windows-msvc.exe -c="[[PATH TO SAVED CONFIG HERE]]" -substatOptim=true -out="[[PATH TO DESIRED OUTPUT CONFIG HERE]]" "-options=total_liquid_substats=10;fixed_substats_count=4"
+./gcsim.exe -c="test.txt" -substatOptimFull -gz out="test" -options=total_liquid_substats=10;fixed_substats_count=4
 ```
+:::
