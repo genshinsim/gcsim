@@ -17,12 +17,12 @@ options iteration=1000 duration=90 swap_delay=14;
 
 | name | description | default |
 | --- | --- | --- |
-| `defhalt` | Whether to enable `canBeDefenseHalt` for hitlag. See the [hitlag page](/mechanics/hitlag) for more details. | true |
-| `hitlag` | Whether hitlag should be enabled. See the [hitlag page](/mechanics/hitlag) for more details. | true |
-| `duration` | Number of iterations to run gcsim for. | 1000 |
-| `iteration` | Duration to run gcsim for (in seconds). Fractional duration is allowed, for example: 11.5. In this case, gcsim will run until the duration has passed or there are no more actions to perform. This option is ignored if any `target` has `hp` specified. In that case, gcsim will run until all enemies are dead. | 90 |
-| `workers` | Number of workers to use. Only valid when using cli, ignored in web. | 20 |
+| `iteration`| Number of iterations to run gcsim for. | 1000 |
+| `duration` | Duration to run gcsim for (in seconds). Fractional duration is allowed, for example: 11.5. In this case, gcsim will run until the duration has passed or there are no more actions to perform. This option is ignored if any `target` has `hp` specified. In that case, gcsim will run until all enemies are dead. | 90 |
 | `swap_delay` | Number of frames it takes to swap characters. | 1 |
+| `workers` | Number of workers to use. Only valid when using cli, ignored in web. | 20 |
+| `hitlag` | Whether hitlag should be enabled. See the [hitlag page](/mechanics/hitlag) for more details. | true |
+| `defhalt` | Whether to enable `canBeDefenseHalt` for hitlag. See the [hitlag page](/mechanics/hitlag) for more details. | true |
 
 ### Set energy generation
 
