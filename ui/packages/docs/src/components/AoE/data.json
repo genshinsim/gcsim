@@ -3389,8 +3389,9 @@
       {
         "ability": "C4",
         "shape": "Circle",
-        "center": "PrimaryTarget",
-        "radius": 2
+        "center": "GlobalValue",
+        "radius": 2,
+        "notes": "Spawns on target that C4 proc'd on."
       }
     ],
     "normal": [
