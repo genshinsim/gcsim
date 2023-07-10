@@ -8,6 +8,7 @@ import ParamsTable from "@site/src/components/Params/ParamsTable";
 import FramesTable from "@site/src/components/Frames/FramesTable";
 import IssuesTable from "@site/src/components/Issues/IssuesTable";
 import AoETable from "@site/src/components/AoE/AoETable";
+import NamesList from "@site/src/components/Names/NamesList";
 
 ## Frames
 
@@ -24,6 +25,10 @@ import AoETable from "@site/src/components/AoE/AoETable";
 ## Known issues
 
 <IssuesTable character="noelle" />
+
+## Names
+
+<NamesList character="noelle" />
 
 ## Params
 
