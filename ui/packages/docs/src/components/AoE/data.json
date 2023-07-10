@@ -190,14 +190,16 @@
         "shape": "Circle",
         "center": "Player",
         "offsetY": -0.1,
-        "radius": 5.5
+        "radius": 5.5,
+        "fanAngle": 180
       },
       {
         "ability": "E-2-Mirror-2",
         "shape": "Circle",
         "center": "Player",
         "offsetY": -0.1,
-        "radius": 5.5
+        "radius": 5.5,
+        "fanAngle": 180
       },
       {
         "ability": "E-3-Mirror-1",
