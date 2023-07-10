@@ -2929,7 +2929,6 @@
         "ability": "Q-C2-Bloom",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "offsetY": 0.3,
         "radius": 3
       }
     ],
@@ -3027,6 +3026,7 @@
         "ability": "Q-ElementalBurst-Cutting",
         "shape": "Circle",
         "center": "PrimaryTarget",
+        "offsetY": 0.3,
         "radius": 3
       },
       {
