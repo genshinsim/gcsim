@@ -1,37 +1,42 @@
 ---
-sidebar_position: 3
 title: Fields
+sidebar_position: 2
 ---
 
 Fields have the following structure:
 
 ```
-.field1.field2.field3
+.field1.field2.field3.field4
 ```
 
 All fields evaluate to a number.
 
-The following are available fields.
+## Available Fields
 
 :::tip
-
-Most of the specific tags can be located in their respective character/weapon/artifact page. For example, if you are looking for the tag for Lisa's A4 (defense shred), look in Lisa's character page.
-
+Most of the specific tags can be located in their respective character/weapon/artifact page. 
+For example, if you are looking for the tag for Lisa's A4 (defense shred), then look in Lisa's character page.
 :::
 
 <!-- prettier-ignore -->
 | field1 | field2 | field3 | field4 | description |
 | --- | --- | --- | --- | --- |
-| `energy` | `character` | - | - | character's current energy |
-| `cd`| `character` | `skill` `burst`|- | cooldown remaining on skill/burst in frames |
-| `stam`| - | - | - |player's current stamina |
-| `status` | see each character | - | - |these are character specialized statuses, usually used to keep track of buffs |
-| `tags` | `character` | see each character - | - | these are character specialized tags as defined by each character|
-| `debuff` | `res` or `def` | `t1` or `t2` etc...| `tag` | Evaluates to the remaining duration of a specified default `tag`. See the relevant character/weapon/artifact page for acceptable `tag` |
-| `element` |  `t1` or `t2` etc... | `pryo` `hydro` `cryo` `electro` `frozen` `ec`| - | `1` if the specified element exists, `0` otherwise|
-| `ready`| `character` | `skill` `burst`| - | shorthand to check both cooldown and energy is ready |
-| `mods` | `character` | `tag` | - | Evaluate to remaining duration of stat mods active on the specified character. See individual character page for acceptable `tag` |
-| `infusion` | `character` | `tag` | - | Evaluate to remaining duration of infusion on the specified character. See individual character page for acceptable `tag` |
-| `construct` | `duration` or `count` | `tag` | - | Evalues to the duration or count of the specified `tag`. See individual character page for acceptable `tag` |
-| `normal` | `character` | - | - | Evalutes to the next normal attack number in a combo for the specified character |
-| `character` | `tag` | - | - | These are character specific fields. See individual character page for details |
+| `debuff` | `res`/`def` | `t1`/`t2`/`t3`/... | res/def modifier name | Evaluates to the remaining duration of the specified res/def modifier on the specified target. See the relevant character/weapon/artifact page for acceptable modifier names. |
+| `element` |  `t1`/`t2`/`t3`/... | `pyro`/`hydro`/`anemo`/`electro`/`dendro`/`cryo`/`geo`/`frozen`/`quicken` | - | `1` if the specified element exists on specified target, `0` otherwise. |
+| `status` | core status name | - | - | Evaluates to the remaining duration of the specified core status. See the relevant character/weapon/artifact page for acceptable status names. |
+| `stam` | - | - | - | Evaluates to the player's remaining stamina. |
+| `construct` | `duration`/`count` | construct name | - | Evaluates to the duration/count of the specified construct. See individual character page for acceptable construct names. |
+| `gadgets` | `dendrocore` | `count` | - | Evaluates to the current number of Dendro Cores. |
+| `keys` | `char`/`weapon`/`artifact` | char/weapon/artifact name | - | Evaluates to the key for the specified char/weapon/artifact name. See the relevant character/weapon/artifact page for acceptable names. |
+| `state` | - | - | - | Evaluates to the current state of the player. | 
+| character name | `cons` | - | - | Evaluates to the character's constellation count. |
+| character name | `energy` | - | - | Evaluates to the character's current energy. |
+| character name | `energymax` | - | - | Evaluates to the character's maximum energy. |
+| character name | `normal` | - | - | Evaluates to the character's next normal counter. Example: If the character is at N1, then the next normal counter is `1` (N2). |
+| character name | `onfield` | - | - | `1` if the character is on the field, `0` otherwise. |
+| character name | `weapon` | - | - | Evaluates to the character's weapon. Use `.keys.weapon.<weapon name>` for comparison purposes.
+| character name | `mods`/`status` | mod/status name | - | Evaluates to the remaining duration of the mod/status on the character. See the relevant character page for acceptable mod/status names. | 
+| character name | `infusion` | infusion name | - | Evaluates to the remaining duration of the weapon infusion on the character. See the relevant character page for acceptable infusion names. |
+| character name | `tags` | tag name | - | Evaluates to the value of the tag on the character. See the relevant character page for acceptable tag names. |
+| character name | `stats` | `def%`/`def`/`hp`/`hp%`/`atk`/`atk%`/`er`/`em`/`cr`/`cd`/`heal`/`pyro%`/`hydro%`/`cryo%`/`electro%`/`anemo%`/`geo%`/`dendro%`/`phys%`/`atkspd%`/`dmg%` | - | Evaluates to the value of the stat on the character. | 
+| character name | `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | `cd`/`charge`/`ready` | - | Evaluates to the following things for the specified action of the character: remaining cooldown / remaining charges (example: Sucrose Skill) / `1` if the action is ready, `0` otherwise. |

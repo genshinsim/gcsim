@@ -1,11 +1,4 @@
 {
-  "albedo": [
-    {
-      "ability": "burst",
-      "param": "bloom",
-      "desc": "number of bloom hits. default 2"
-    }
-  ],
   "alhaitham": [
     {
       "ability": "skill",
@@ -108,6 +101,35 @@
       "ability": "skill",
       "param": "hold_c4",
       "desc": "If 1, trigger C4. Default 0."
+    }
+  ],
+  "candace": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    },
+    {
+      "ability": "skill",
+      "param": "perfect",
+      "desc": "0 for no A1 (default), non-zero value for A1. This sets hold to 1."
+    }
+  ],
+  "collei": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     }
   ],
   "diona": [
@@ -234,6 +256,13 @@
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
     }
   ],
+  "heizou": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "Hold until max stacks. Default 0 (false), non-zero value for true."
+    }
+  ],
   "hutao": [
     {
       "ability": "burst",
@@ -350,6 +379,13 @@
       "desc": "Projectile travel time. Default 10 frames."
     }
   ],
+  "layla": [
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Projectile travel time for Starlight Slugs. Default 22 frames."
+    }
+  ],
   "lisa": [
     {
       "ability": "skill",
@@ -381,6 +417,13 @@
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), value between 1 and 300 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (16)."
+    }
+  ],
+  "nilou": [
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time for Luminous Illusion. Default 0 frames."
     }
   ],
   "ningguang": [
