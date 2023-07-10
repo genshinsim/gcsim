@@ -2531,6 +2531,7 @@
         "ability": "N6",
         "shape": "Circle",
         "center": "Player",
+        "offsetX": -0.2,
         "offsetY": 1.1,
         "radius": 2.3
       },
@@ -2585,6 +2586,7 @@
         "ability": "E-N6",
         "shape": "Circle",
         "center": "Player",
+        "offsetX": -0.2,
         "offsetY": 1.1,
         "radius": 2.8
       }
