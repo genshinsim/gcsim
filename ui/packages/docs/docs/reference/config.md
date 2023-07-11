@@ -33,7 +33,7 @@ energy every interval=480,720 amount=1;
 This means that gcsim will generate 1 clear elemental particle every 480 to 720 frames randomly.
 
 :::note
-If you multiple `energy every` lines are added, then the values specified by the final one will be used.
+If multiple `energy every` lines are added, then the values specified by the final one will be used.
 :::
 
 :::info
