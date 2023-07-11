@@ -2,7 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import data from "./data.json";
+import character_data from "./character_data.json";
+import weapon_data from "./weapon_data.json";
+import artifact_data from "./artifact_data.json";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -69,30 +71,51 @@ const abilLabels = [
   "Skill",
   "Burst",
   "Ascension",
-  "Cons",
+  "Cons"
 ];
 
-export default function AoETable({ character }) {
-  if (!(character in data)) {
-    return <div>No AoE data for character</div>;
+export default function AoETable({ item_key, data_src }) {
+  let data = character_data;
+  let useAbils = true;
+  switch (data_src) {
+    case "weapon":
+      data = weapon_data;
+      useAbils = false;
+      break;
+    case "artifact":
+      data = artifact_data;
+      useAbils = false;
+      break;
   }
-  const char = data[character];
+  if (!data) {
+    return <div>No AoE data</div>;
+  }
+  if (!(item_key in data)) {
+    return <div>No AoE data for {data_src}</div>;
+  }
+  const item = data[item_key];
   let tabs = [];
   let count = 0;
+  if (!useAbils) {
+    if (item.length === 0) {
+      return <div>No AoE data for {data_src}</div>;
+    }
+    return <AbilAoE data={item} />;
+  } 
   abils.forEach((a, i) => {
-    //skip if no data for this tab
-    if (!(a in char)) {
+    // skip if no data for this tab
+    if (!(a in item)) {
       return;
     }
     count++;
     tabs.push(
       <TabItem value={a} label={abilLabels[i]} key={a}>
-        <AbilAoE data={char[a]} />
+        <AbilAoE data={item[a]} />
       </TabItem>
     );
   });
   if (count == 0) {
-    return <div>No AoE data for character</div>;
+    return <div>No AoE data for {data_src}</div>;
   }
   return <Tabs>{tabs}</Tabs>;
 }
