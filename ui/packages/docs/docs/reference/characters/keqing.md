@@ -12,28 +12,28 @@ import NamesList from "@site/src/components/Names/NamesList";
 
 ## Frames
 
-<FramesTable character="keqing" />
+<FramesTable item_key="keqing" />
 
 ## Hitlag Data
 
-<HitlagTable character="keqing" />
+<HitlagTable item_key="keqing" />
 
 ## AoE Data
 
-<AoETable character="keqing" />
+<AoETable item_key="keqing" />
 
 ## Known issues
 
-<IssuesTable character="keqing" />
+<IssuesTable item_key="keqing" />
 
 ## Names
 
-<NamesList character="keqing" />
+<NamesList item_key="keqing" />
 
 ## Params
 
-<ParamsTable character="keqing" />
+<ParamsTable item_key="keqing" />
 
 ## Fields
 
-<FieldsTable character="keqing" />
+<FieldsTable item_key="keqing" />

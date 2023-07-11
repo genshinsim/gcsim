@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import data from "./data.json";
+import character_data from "./character_data.json";
+import weapon_data from "./weapon_data.json";
+import artifact_data from "./artifact_data.json";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -19,13 +21,22 @@ const TH = styled.th`
   padding: 0.5rem;
 `;
 
-export default function ParamsTable({ character }) {
-  if (!(character in data)) {
-    return <div>Character does not have any ability params</div>;
+export default function ParamsTable({ item_key, data_src }) {
+  let data = character_data;
+  switch (data_src) {
+    case "weapon":
+      data = weapon_data;
+      break;
+    case "artifact":
+      data = artifact_data;
+      break;
   }
-  const rows = data[character].map((e) => {
+  if (!(item_key in data) || data[item_key].length === 0) {
+    return <div>Does not have any ability params</div>;
+  }
+  const rows = data[item_key].map((e) => {
     return (
-      <tr key={character}>
+      <tr key={item_key}>
         <TD>
           <code>{e.ability}</code>
         </TD>

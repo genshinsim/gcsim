@@ -12,28 +12,28 @@ import NamesList from "@site/src/components/Names/NamesList";
 
 ## Frames
 
-<FramesTable character="travelerdendro" />
+<FramesTable item_key="travelerdendro" />
 
 ## Hitlag Data
 
-<HitlagTable character="travelerdendro" />
+<HitlagTable item_key="travelerdendro" />
 
 ## AoE Data
 
-<AoETable character="travelerdendro" />
+<AoETable item_key="travelerdendro" />
 
 ## Known issues
 
-<IssuesTable character="travelerdendro" />
+<IssuesTable item_key="travelerdendro" />
 
 ## Names
 
-<NamesList character="travelerdendro" />
+<NamesList item_key="travelerdendro" />
 
 ## Params
 
-<ParamsTable character="travelerdendro" />
+<ParamsTable item_key="travelerdendro" />
 
 ## Fields
 
-<FieldsTable character="travelerdendro" />
+<FieldsTable item_key="travelerdendro" />

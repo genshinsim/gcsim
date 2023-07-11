@@ -1,0 +1,107 @@
+{
+  "alleyhunter": [
+    {
+      "ability": "Alley Hunter",
+      "param": "stacks",
+      "desc": "Number of stacks to gain at the beginning. Default 0, maximum 10."
+    }
+  ],
+  "beaconofthereedsea": [
+    {
+      "ability": "Beacon of the Reed Sea",
+      "param": "damaged",
+      "desc": "0 for damaged passive never triggered (default), 1 for triggered every time skill passive is triggered."
+    }
+  ],
+  "forestregalia": [
+    {
+      "ability": "Forest Regalia",
+      "param": "pickup_delay",
+      "desc": "Number of frames until the Leaf is picked up by the active character after every proc."
+    }
+  ],
+  "lostprayertothesacredwinds": [
+    {
+      "ability": "Lost Prayer to the Sacred Winds",
+      "param": "stacks",
+      "desc": "Number of stacks to gain at the beginning. Default 0, maximum 4."
+    }
+  ],
+  "moonpiercer": [
+    {
+      "ability": "Moonpiercer",
+      "param": "pickup_delay",
+      "desc": "Number of frames until the Leaf is picked up by the active character after every proc."
+    }
+  ],
+  "predator": [
+    {
+      "ability": "Predator",
+      "param": "passive",
+      "desc": "0 for passive disabled, 1 for enabled (default)."
+    }
+  ],
+  "sacrificialbow": [
+    {
+      "ability": "Sacrifical Bow",
+      "param": "force",
+      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
+    }
+  ],
+  "sacrificialfragments": [
+    {
+      "ability": "Sacrifical Fragments",
+      "param": "force",
+      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
+    }
+  ],
+  "sacrificialgreatsword": [
+    {
+      "ability": "Sacrifical Greatsword",
+      "param": "force",
+      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
+    }
+  ],
+  "sacrificialsword": [
+    {
+      "ability": "Sacrifical Sword",
+      "param": "force",
+      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
+    }
+  ],
+  "sapwoodblade": [
+    {
+      "ability": "Sapwood Blade",
+      "param": "pickup_delay",
+      "desc": "Number of frames until the Leaf is picked up by the active character after every proc."
+    }
+  ],
+  "serpentspine": [
+    {
+      "ability": "Serpent Spine",
+      "param": "stacks",
+      "desc": "Number of stacks to gain at the beginning. Default 0, maximum 5."
+    }
+  ],
+  "skywardatlas": [
+    {
+      "ability": "Skyward Atlas",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    }
+  ],
+  "swordofdescension": [
+    {
+      "ability": "Sword of Descension",
+      "param": "passive",
+      "desc": "0 for passive disabled, 1 for enabled (default)."
+    }
+  ],
+  "thealleyflash": [
+    {
+      "ability": "The Alley Flash",
+      "param": "lambda",
+      "desc": "Lambda for Poisson distribution to periodically turn off the weapon passive."
+    }
+  ]
+}
