@@ -17,6 +17,7 @@ var (
 	attackHitlagHaltFrame = []float64{.03, .03, .06, .06, .1}
 	attackRadius          = []float64{1.5, 2.2, 2.8, 1.6, 1.6}
 	attackOffsets         = []float64{1.5, -0.5, -1, 0.6, 0.6}
+	attackFanAngles       = []float64{360, 150, 30, 360, 360}
 )
 
 const normalHitNum = 5
@@ -58,10 +59,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(
+		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackRadius[c.NormalCounter],
+			attackFanAngles[c.NormalCounter],
 		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],

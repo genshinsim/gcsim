@@ -190,14 +190,16 @@
         "shape": "Circle",
         "center": "Player",
         "offsetY": -0.1,
-        "radius": 5.5
+        "radius": 5.5,
+        "fanAngle": 180
       },
       {
         "ability": "E-2-Mirror-2",
         "shape": "Circle",
         "center": "Player",
         "offsetY": -0.1,
-        "radius": 5.5
+        "radius": 5.5,
+        "fanAngle": 180
       },
       {
         "ability": "E-3-Mirror-1",
@@ -2529,6 +2531,7 @@
         "ability": "N6",
         "shape": "Circle",
         "center": "Player",
+        "offsetX": -0.2,
         "offsetY": 1.1,
         "radius": 2.3
       },
@@ -2583,6 +2586,7 @@
         "ability": "E-N6",
         "shape": "Circle",
         "center": "Player",
+        "offsetX": -0.2,
         "offsetY": 1.1,
         "radius": 2.8
       }
@@ -2632,14 +2636,16 @@
         "shape": "Circle",
         "center": "Player",
         "offsetY": -0.5,
-        "radius": 2.2
+        "radius": 2.2,
+        "fanAngle": 150
       },
       {
         "ability": "N3",
         "shape": "Circle",
         "center": "Player",
         "offsetY": -1,
-        "radius": 2.8
+        "radius": 2.8,
+        "fanAngle": 30
       },
       {
         "ability": "N4",
@@ -2923,7 +2929,6 @@
         "ability": "Q-C2-Bloom",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "offsetY": 0.3,
         "radius": 3
       }
     ],
@@ -3021,6 +3026,7 @@
         "ability": "Q-ElementalBurst-Cutting",
         "shape": "Circle",
         "center": "PrimaryTarget",
+        "offsetY": 0.3,
         "radius": 3
       },
       {
@@ -3383,8 +3389,9 @@
       {
         "ability": "C4",
         "shape": "Circle",
-        "center": "PrimaryTarget",
-        "radius": 2
+        "center": "GlobalValue",
+        "radius": 2,
+        "notes": "Spawns on target that C4 proc'd on."
       }
     ],
     "normal": [

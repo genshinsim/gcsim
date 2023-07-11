@@ -17,7 +17,7 @@ var (
 	attackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
 	attackHitboxes        = [][][]float64{{{1.8}}, {{1.5, 3}}, {{2}}, {{1.8}}, {{1.8}, {2, 3}}, {{2.3}}}
-	attackOffsets         = [][]float64{{0.8}, {-0.1}, {1.1}, {2.4}, {0.5, 0.3}, {1.1}}
+	attackOffsets         = [][][]float64{{{0, 0.8}}, {{0, -0.1}}, {{0, 1.1}}, {{0, 2.4}}, {{0, 0.5}, {0, 0.3}}, {{-0.2, 1.1}}}
 	attackFanAngles       = []float64{150, 360, 300, 360, 320, 360}
 
 	ppAttackFrames          [][]int
@@ -25,7 +25,7 @@ var (
 	ppAttackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.01}, {0.02}, {0.02, 0.02}, {0.04}}
 	ppAttackDefHalt         = [][]bool{{true}, {true}, {true}, {true}, {false, true}, {true}}
 	ppAttackHitboxes        = [][][]float64{{{2.3}}, {{1.9, 3}}, {{2.6}}, {{2.2}}, {{2.3}, {2.2, 3.2}}, {{2.8}}}
-	ppAttackOffsets         = [][]float64{{0.8}, {-0.1}, {1.1}, {2.4}, {0.5, 0.3}, {1.1}}
+	ppAttackOffsets         = [][][]float64{{{0, 0.8}}, {{0, -0.1}}, {{0, 1.1}}, {{0, 2.4}}, {{0, 0.5}, {0, 0.3}}, {{-0.2, 1.1}}}
 	ppAttackFanAngles       = []float64{180, 360, 300, 360, 320, 360}
 )
 
@@ -98,14 +98,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 			attackHitboxes[c.NormalCounter][i][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 1 || (c.NormalCounter == 4 && i == 1) {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
+				geometry.Point{Y: attackOffsets[c.NormalCounter][i][1]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)
@@ -147,14 +147,14 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: ppAttackOffsets[c.NormalCounter][i]},
+			geometry.Point{X: ppAttackOffsets[c.NormalCounter][i][0], Y: ppAttackOffsets[c.NormalCounter][i][1]},
 			ppAttackHitboxes[c.NormalCounter][i][0],
 			ppAttackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 1 || (c.NormalCounter == 4 && i == 1) {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: ppAttackOffsets[c.NormalCounter][i]},
+				geometry.Point{Y: ppAttackOffsets[c.NormalCounter][i][1]},
 				ppAttackHitboxes[c.NormalCounter][i][0],
 				ppAttackHitboxes[c.NormalCounter][i][1],
 			)
