@@ -106,7 +106,7 @@ target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_thr
 | `lvl` | Level of the enemy. | 0 |
 | `resist` | Resistance to all types of elemental damage. Percentage represented as a decimal value. | 0 |
 | `pyro`/`hydro`/`anemo`/`electro`/`dendro`/`cryo`/`geo`/`physical` | Resistance to the specified elemental damage. Percentage represented as a decimal value. | 0 |
-| `pos` | Position of the enemy as (x,y). | (0,0) |
+| `pos` | Position of the enemy as x,y. | 0,0 |
 | `freeze_resist` | How much freeze resistance the enemy has. `0` means no freeze resistance, `1` means immune to being frozen. The reaction still happens though. | 0 |
 | `hp` | HP of the enemy. If this is set, duration in the sim options will be ignored and the sim will run until all enemies have died. If `hp` is set for at least one enemy, then it has to be set for all enemies. | - |
 | `particle_threshold` | Only available if the `hp` is set. Determines after how much damage the enemy drops clear elemental particles. Example: If the enemy has 500 HP and this is set to 200, then the enemy will drop particles at 300 and 100 HP. | - |
