@@ -260,6 +260,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/festering"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/filletblade"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/finaleofthedeep"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/flute"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/foliar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/freedom"

@@ -150,5 +150,5 @@ func (c *CharWrapper) MaxHP() float64 {
 			}
 		}
 	}
-	return c.Base.HP*(1+hpp) + hp
+	return (c.Base.HP*(1+hpp) + hp)
 }
