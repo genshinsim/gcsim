@@ -81,7 +81,7 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 3,
-        "notes": "Each blossom targets a separate enemy if possible, otherwise it randomly spawns in the E detection area."
+        "notes": "Each blossom targets a separate enemy within the E detection area if possible, otherwise it randomly spawns in the E detection area."
       },
       {
         "ability": "Q-Start",
