@@ -240,6 +240,22 @@
         "deployable": false
       }
     ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
     "skill": [
       {
         "ability": "E-Base",
@@ -474,6 +490,22 @@
         "deployable": false
       }
     ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
     "skill": [
       {
         "ability": "E-Skill",
@@ -662,6 +694,22 @@
         "deployable": false
       }
     ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
     "skill": [
       {
         "ability": "E-Ranging",
@@ -708,6 +756,22 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
       }
     ],
     "skill": [
@@ -777,6 +841,22 @@
         "canBeDefenseHalt": true,
         "deployable": false
       }
+    ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
     ]
   },
   "eula": {
@@ -815,6 +895,22 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
       }
     ],
     "skill": [
@@ -1230,6 +1326,22 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
       }
     ]
   },
@@ -1749,6 +1861,22 @@
         "deployable": false
       }
     ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
     "skill": [
       {
         "ability": "E-Skill",
@@ -1932,6 +2060,22 @@
         "deployable": false
       }
     ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ],
     "skill": [
       {
         "ability": "E-Tap",
@@ -2051,6 +2195,22 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
       }
     ],
     "skill": [
@@ -2722,6 +2882,22 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-Spinning",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      },
+      {
+        "ability": "CA-Final",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
       }
     ],
     "skill": [
