@@ -1,5 +1,5 @@
 ---
-title: Substat Optimizer
+title: Optimizing Artifact Substats
 sidebar_position: 4
 ---
 
