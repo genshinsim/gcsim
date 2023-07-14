@@ -147,7 +147,7 @@ This is due to gcsim:
 :::
 
 :::caution
-In practice, the optimizer may sometimes return that 0 ER substatsis the "most optimal" if you cannot burst off cooldown.
+In practice, the optimizer may sometimes return that 0 ER substats is the "most optimal" if you cannot burst off cooldown.
 It may also add a bigger amount of ER subs to characters which have very low damage contribution.
 :::
 
