@@ -2475,77 +2475,73 @@
       }
     ]
   },
-  "aether": {
+  "traveleranemo": {
     "normal": [
       {
-        "ability": "N1",
+        "ability": "Aether-N1",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N2",
+        "ability": "Aether-N2",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N3",
+        "ability": "Aether-N3",
         "hitHaltTime": 0.06,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N4",
+        "ability": "Aether-N4",
         "hitHaltTime": 0.09,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N5",
+        "ability": "Aether-N5",
         "hitHaltTime": 0.12,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
-      }
-    ]
-  },
-  "lumine": {
-    "normal": [
+      },
       {
-        "ability": "N1",
+        "ability": "Lumine-N1",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N2",
+        "ability": "Lumine-N2",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N3",
+        "ability": "Lumine-N3",
         "hitHaltTime": 0.06,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N4",
+        "ability": "Lumine-N4",
         "hitHaltTime": 0.06,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N5",
+        "ability": "Lumine-N5",
         "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
@@ -2553,18 +2549,79 @@
       }
     ]
   },
-  "traveleranemo": {
-    "": [
+  "travelergeo": {
+    "normal": [
       {
-        "ability": "",
-        "hitHaltTime": null,
-        "hitHaltTimeScale": null,
-        "canBeDefenseHalt": false,
+        "ability": "Aether-N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N4",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N5",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N4",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N5",
+        "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
         "deployable": false
       }
-    ]
-  },
-  "travelergeo": {
+    ],
     "skill": [
       {
         "ability": "E-Skill",
@@ -2581,6 +2638,154 @@
         "hitHaltTimeScale": 0.05,
         "canBeDefenseHalt": true,
         "deployable": true
+      }
+    ]
+  },
+  "travelerelectro": {
+    "normal": [
+      {
+        "ability": "Aether-N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N4",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N5",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N4",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N5",
+        "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ]
+  },
+  "travelerdendro": {
+    "normal": [
+      {
+        "ability": "Aether-N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N4",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Aether-N5",
+        "hitHaltTime": 0.12,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N1",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N2",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N4",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Lumine-N5",
+        "hitHaltTime": 0.1,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
       }
     ]
   },
