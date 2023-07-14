@@ -1,6 +1,6 @@
 ---
 title: Importing From Existing Sim
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 You can import the config from any shared viewer link by clicking on the Send to Simulator button located to the top right. 

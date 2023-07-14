@@ -1,7 +1,11 @@
 ---
 title: Optimizing Artifact Substats
-sidebar_position: 4
+sidebar_position: 5
 ---
+
+:::info
+If you want to use personalized artifact stats, then please check out [this guide](/guides/importing_characters).
+:::
 
 ## Introduction
 
