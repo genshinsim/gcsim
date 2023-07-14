@@ -70,6 +70,8 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 	//otherwise calculate decay based on specified f (in frames)
 	p.Durability[mod] = dur
 	p.DecayRate[mod] = dur / reactions.Durability(f)
+
+	p.Core.Combat.Events.Emit(event.OnSelfInfusion, ele, dur, f)
 }
 
 func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
