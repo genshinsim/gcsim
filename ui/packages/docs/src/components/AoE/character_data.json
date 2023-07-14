@@ -2369,7 +2369,7 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 2.5,
-        "notes": "At every tick: If there are enemies that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 1.45s. Otherwise, it will spawn randomly between 0.5m and 9.5m from the Q center."
+        "notes": "At every tick: If there are enemies within the Q detection area that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 1.45s. Otherwise, it will spawn randomly between 0.5m and 9.5m from the Q center."
       }
     ]
   },
