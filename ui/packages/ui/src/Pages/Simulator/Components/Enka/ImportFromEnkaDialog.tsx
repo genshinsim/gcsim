@@ -64,10 +64,11 @@ export function ImportFromEnkaDialog(props: Props) {
     >
       <div className={Classes.DIALOG_BODY}>
         <p>
-          {`Ensure your UID has no problems on `}
-          <a href="https://enka.shinshin.moe/" target="_blank" rel="noreferrer">
+          Ensure your UID has no problems on{" "} 
+          <a href="https://enka.network/" target="_blank" rel="noreferrer">
             Enka
           </a>
+          .
         </p>
         <Callout intent="warning" title="Warning">
           Importing will replace any existing GOOD/Enka import you already have. This action cannot
