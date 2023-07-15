@@ -81,7 +81,7 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 3,
-        "notes": "Each blossom targets a separate enemy if possible, otherwise it randomly spawns in the E detection area."
+        "notes": "Each blossom targets a separate enemy within the E detection area if possible, otherwise it randomly spawns in the E detection area."
       },
       {
         "ability": "Q-Start",
@@ -2369,7 +2369,7 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 2.5,
-        "notes": "At every tick: If there are enemies that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 1.45s. Otherwise, it will spawn randomly between 0.5m and 9.5m from the Q center."
+        "notes": "At every tick: If there are enemies within the Q detection area that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 1.45s. Otherwise, it will spawn randomly between 0.5m and 9.5m from the Q center."
       }
     ]
   },
@@ -3146,7 +3146,7 @@
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 2.5,
-        "notes": "At every tick: If there are enemies that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 1.45s. Otherwise, it will spawn randomly between 1.5m and 9.5m from the Q center."
+        "notes": "Q has a detection area of 10m around the position of Player when Q was used. At every tick: If there are enemies within the Q detection area that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 1.45s. Otherwise, it will spawn randomly between 1.5m and 9.5m from the Q center."
       }
     ]
   },
