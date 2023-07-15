@@ -5,7 +5,10 @@ sidebar_position: 1
 
 This will be a basic tutorial on how to build your own simulation from scratch. 
 The team we'll be simulating is the ever popular Raiden/Xiangling/Xingqiu/Bennett team. 
-Feel free to follow along with your own stats.
+
+:::tip
+Feel free to follow along with your own stats! Check out [this guide](/guides/importing_characters) to learn how.
+:::
 
 :::note
 This tutorial is mainly targetted at users that wish to use their own stats to build a simulation. 

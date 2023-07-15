@@ -1,7 +1,11 @@
 ---
-title: Substat Optimizer
-sidebar_position: 4
+title: Optimizing Artifact Substats
+sidebar_position: 5
 ---
+
+:::info
+If you want to use personalized artifact stats, then please check out [this guide](/guides/importing_characters).
+:::
 
 ## Introduction
 
@@ -147,7 +151,7 @@ This is due to gcsim:
 :::
 
 :::caution
-In practice, the optimizer may sometimes return that 0 ER substatsis the "most optimal" if you cannot burst off cooldown.
+In practice, the optimizer may sometimes return that 0 ER substats is the "most optimal" if you cannot burst off cooldown.
 It may also add a bigger amount of ER subs to characters which have very low damage contribution.
 :::
 

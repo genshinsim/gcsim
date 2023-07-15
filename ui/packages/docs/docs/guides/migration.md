@@ -1,6 +1,6 @@
 ---
-title: Migrate from v0 to v1
-sidebar_position: 5
+title: Migrating from v0 to v1
+sidebar_position: 6
 ---
 
 # Migrate from v0 to v1 (Rewrite)
