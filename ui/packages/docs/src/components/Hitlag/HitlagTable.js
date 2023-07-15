@@ -52,10 +52,11 @@ function AbilHitlag({ data }) {
   );
 }
 
-const abils = ["normal", "charge", "skill", "burst", "asc", "cons"];
+const abils = ["normal", "charge", "aim", "skill", "burst", "asc", "cons"];
 const abilLabels = [
   "Normal",
   "Charge Attack",
+  "Aimed Shot",
   "Skill",
   "Burst",
   "Ascension",
