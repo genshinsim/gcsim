@@ -15,10 +15,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	sigils  int
-	a4Bonus []float64
-	c1bonus []float64
-	c2bonus []float64
+	sigils     int
+	a4Bonus    []float64
+	c1bonus    []float64
+	c2bonus    []float64
+	elementSrc int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {

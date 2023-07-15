@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -46,6 +47,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				return val, true
 			},
 		})
+
+		c.elementSrc = c.Core.F
+		c.QueueCharTask(c.applyElement(c.elementSrc), 60)
 	}, burstHitmark)
 
 	ai := combat.AttackInfo{
@@ -129,4 +133,22 @@ func (c *char) onSwapClearBurst() {
 		}
 		return false
 	}, "razor-burst-clear")
+}
+
+func (c *char) applyElement(src int) func() {
+	return func() {
+		if src != c.elementSrc {
+			return
+		}
+		if !c.StatusIsActive(burstBuffKey) {
+			return
+		}
+
+		player, ok := c.Core.Combat.Player().(*avatar.Player)
+		if !ok {
+			panic("target 0 should be Player but is not!!")
+		}
+		player.ApplySelfInfusion(attributes.Electro, 25, 60) // TODO: find actual duration
+		c.QueueCharTask(c.applyElement(src), 60)
+	}
 }
