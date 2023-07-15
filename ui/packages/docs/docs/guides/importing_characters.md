@@ -113,7 +113,7 @@ Make sure the desired characters in GO have the correct character level/talent l
 This will overwrite any existing imports for your characters.
 :::
 
-## Add Your Own Characters to A Config
+## Add Your Own Characters To A Config
 
 0. Import your characters via [Enka](#enkanetwork-enka) or [GO](#genshin-optimizer-go).
 1. Go the [`Simulator` page on gcsim](https://gcsim.app/simulator). 
