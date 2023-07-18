@@ -1,4 +1,4 @@
-package travelerdendro
+package dendro
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"

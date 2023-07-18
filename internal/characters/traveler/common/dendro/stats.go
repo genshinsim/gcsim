@@ -1,4 +1,4 @@
-package travelerdendro
+package dendro
 
 var (
 	attack = [][]float64{

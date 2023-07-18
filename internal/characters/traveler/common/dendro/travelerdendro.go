@@ -1,19 +1,13 @@
-package travelerdendro
+package dendro
 
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.AetherDendro, NewChar(0))
-	core.RegisterCharFunc(keys.LumineDendro, NewChar(1))
-}
 
 type char struct {
 	*tmpl.Character
