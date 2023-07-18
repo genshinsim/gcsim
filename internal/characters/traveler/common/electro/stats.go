@@ -1,4 +1,4 @@
-package travelerelectro
+package electro
 
 var (
 	attack = [][]float64{

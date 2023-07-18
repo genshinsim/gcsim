@@ -1,4 +1,4 @@
-package travelerelectro
+package electro
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"

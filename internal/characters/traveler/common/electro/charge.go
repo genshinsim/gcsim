@@ -1,4 +1,4 @@
-﻿package travelerelectro
+﻿package electro
 
 import (
 	"fmt"
