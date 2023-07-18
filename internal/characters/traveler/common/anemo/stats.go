@@ -1,4 +1,4 @@
-package traveleranemo
+package anemo
 
 var (
 	attack = [][]float64{

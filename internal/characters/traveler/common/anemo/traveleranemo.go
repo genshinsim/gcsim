@@ -1,4 +1,4 @@
-package traveleranemo
+package anemo
 
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
@@ -6,15 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.AetherAnemo, NewChar(0))
-	core.RegisterCharFunc(keys.LumineAnemo, NewChar(1))
-}
 
 type char struct {
 	*tmpl.Character

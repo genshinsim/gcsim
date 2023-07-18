@@ -1,4 +1,4 @@
-package traveleranemo
+package anemo
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
