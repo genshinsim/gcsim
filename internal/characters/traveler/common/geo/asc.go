@@ -1,4 +1,4 @@
-package travelergeo
+package geo
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
