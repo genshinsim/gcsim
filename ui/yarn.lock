@@ -11345,6 +11345,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fuzzysort@npm:^1.1.4":
+  version: 1.9.0
+  resolution: "fuzzysort@npm:1.9.0"
+  checksum: bfc32a83d03d3bfcb92c1b3abe3302e9fe8045059fa1ce3a01482d1e2b96c2c836c361a2090447ce85443af62d204a53584d4706832bef893ef60ee3900985a1
+  languageName: node
+  linkType: hard
+
 "gauge@npm:^4.0.3":
   version: 4.0.4
   resolution: "gauge@npm:4.0.4"
@@ -11380,6 +11387,7 @@ __metadata:
     eslint-plugin-react: ^7.31.10
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-workspaces: ^0.7.0
+    genshin-db: ^4.3.11
     lerna: ^6.0.1
     madge: ^6.0.0
     postcss: ^8.4.18
@@ -11392,6 +11400,16 @@ __metadata:
     watch: ^1.0.2
   languageName: unknown
   linkType: soft
+
+"genshin-db@npm:^4.3.11":
+  version: 4.3.11
+  resolution: "genshin-db@npm:4.3.11"
+  dependencies:
+    fuzzysort: ^1.1.4
+    pako: ^2.0.4
+  checksum: 591f2c00349f60032054490d6b871f5a77592fb93d2be8328ee73ba3a4cd7ac1a086520e1f009e2d23972780a2fc5f44dec38b77773ec22cc961a3d88f1fd7b9
+  languageName: node
+  linkType: hard
 
 "gensync@npm:^1.0.0-beta.1, gensync@npm:^1.0.0-beta.2":
   version: 1.0.0-beta.2
@@ -15458,7 +15476,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pako@npm:^2.1.0":
+"pako@npm:^2.0.4, pako@npm:^2.1.0":
   version: 2.1.0
   resolution: "pako@npm:2.1.0"
   checksum: 71666548644c9a4d056bcaba849ca6fd7242c6cf1af0646d3346f3079a1c7f4a66ffec6f7369ee0dc88f61926c10d6ab05da3e1fca44b83551839e89edd75a3e
