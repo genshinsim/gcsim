@@ -2039,6 +2039,9 @@ export namespace model {
 
         /** ArtifactData id */
         id?: (number|null);
+
+        /** ArtifactData text_map_id */
+        text_map_id?: (string|null);
     }
 
     /** Represents an ArtifactData. */
@@ -2052,6 +2055,9 @@ export namespace model {
 
         /** ArtifactData id. */
         public id: number;
+
+        /** ArtifactData text_map_id. */
+        public text_map_id: string;
 
         /**
          * Gets the default type url for ArtifactData
