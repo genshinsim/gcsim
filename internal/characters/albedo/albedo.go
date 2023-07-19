@@ -19,6 +19,7 @@ type char struct {
 	bloomSnapshot combat.Snapshot
 	// tracking skill information
 	skillActive     bool
+	skillArea       combat.AttackPattern
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
 	// c2 tracking
@@ -31,6 +32,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.EnergyMax = 40
 	c.NormalHitNum = normalHitNum
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	w.Character = &c
 

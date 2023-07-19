@@ -19,7 +19,6 @@ type char struct {
 	skillBuff []float64
 	burstBuff []float64
 	c2buff    []float64
-	c4bonus   []float64
 	c4count   int
 }
 
@@ -56,9 +55,5 @@ func (c *char) Init() error {
 		c.c2buff[attributes.CD] = 0.15
 	}
 
-	if c.Base.Cons >= 4 {
-		c.c4bonus = make([]float64, attributes.EndStatType)
-		c.c4()
-	}
 	return nil
 }

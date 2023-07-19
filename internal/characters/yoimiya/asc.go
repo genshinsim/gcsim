@@ -3,49 +3,48 @@ package yoimiya
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1Key = "yoimiyaa1"
+const a1Key = "yoimiya-a1"
 
 // During Niwabi Fire-Dance, shots from Yoimiya's Normal Attack will increase
 // her Pyro DMG Bonus by 2% on hit. This effect lasts for 3s and can have a
 // maximum of 10 stacks.
-func (c *char) a1() {
-	// TODO: change this to add mod on each hit instead
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("yoimiya-a1", -1),
-		AffectedStat: attributes.PyroP,
-		Amount: func() ([]float64, bool) {
-			if c.StatusIsActive(a1Key) {
-				c.a1bonus[attributes.PyroP] = float64(c.a1stack) * 0.02
-				return c.a1bonus, true
-			}
-			c.a1stack = 0
-			return nil, false
-		},
-	})
-
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != c.Index {
-			return false
+func (c *char) makeA1CB() combat.AttackCBFunc {
+	if c.Base.Ascension < 1 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.Core.Player.Active() != c.Index {
+			return
 		}
 		if !c.StatusIsActive(skillKey) {
-			return false
+			return
 		}
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
+
+		if !c.StatusIsActive(a1Key) {
+			c.a1Stacks = 0
 		}
-		// here we can add stacks up to 10
-		if c.a1stack < 10 {
-			c.a1stack++
+		if c.a1Stacks < 10 {
+			c.a1Stacks++
 		}
-		c.AddStatus(a1Key, 180, true)
-		return false
-	}, "yoimiya-a1")
+
+		m := make([]float64, attributes.EndStatType)
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(a1Key, 3*60),
+			AffectedStat: attributes.PyroP,
+			Amount: func() ([]float64, bool) {
+				m[attributes.PyroP] = float64(c.a1Stacks) * 0.02
+				return m, true
+			},
+		})
+	}
 }
 
 // Using Ryuukin Saxifrage causes nearby party members (not including Yoimiya)
@@ -54,7 +53,7 @@ func (c *char) a1() {
 // possesses when using Ryuukin Saxifrage. Each stack increases this ATK Bonus
 // by 1%.
 func (c *char) a4() {
-	c.a4bonus[attributes.ATKP] = 0.1 + float64(c.a1stack)*0.01
+	c.a4Bonus[attributes.ATKP] = 0.1 + float64(c.a1Stacks)*0.01
 	for _, x := range c.Core.Player.Chars() {
 		if x.Index == c.Index {
 			continue
@@ -63,7 +62,7 @@ func (c *char) a4() {
 			Base:         modifier.NewBaseWithHitlag("yoimiya-a4", 900),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
-				return c.a4bonus, true
+				return c.a4Bonus, true
 			},
 		})
 	}

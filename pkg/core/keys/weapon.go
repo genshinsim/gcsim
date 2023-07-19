@@ -41,6 +41,7 @@ var weaponNames = []string{
 	"aquasimulacra",
 	"aquilafavonia",
 	"athousandfloatingdreams",
+	"beaconofthereedsea",
 	"beginnersprotector",
 	"blackcliffagate",
 	"blackclifflongsword",
@@ -87,20 +88,24 @@ var weaponNames = []string{
 	"harbingerofdawn",
 	"huntersbow",
 	"hunterspath",
+	"ibispiercer",
 	"ironpoint",
 	"ironsting",
+	"jadefallssplendor",
 	"kagotsurubeisshin",
 	"kagurasverity",
 	"katsuragikirinagamasa",
 	"keyofkhajnisut",
 	"kingssquire",
 	"kitaincrossspear",
+	"lightoffoliarincision",
 	"lionsroar",
 	"lithicblade",
 	"lithicspear",
 	"lostprayertothesacredwinds",
 	"luxurioussealord",
 	"magicguide",
+	"mailedflower",
 	"makhairaaquamarine",
 	"mappamare",
 	"memoryofdust",
@@ -195,6 +200,7 @@ const (
 	AquaSimulacra
 	AquilaFavonia
 	AThousandFloatingDreams
+	BeaconOfTheReedSea
 	BeginnersProtector
 	BlackcliffAgate
 	BlackcliffLongsword
@@ -241,20 +247,24 @@ const (
 	HarbingerOfDawn
 	HuntersBow
 	HuntersPath
+	IbisPiercer
 	IronPoint
 	IronSting
+	JadefallsSplendor
 	KagotsurubeIsshin
 	KagurasVerity
 	KatsuragikiriNagamasa
 	KeyOfKhajNisut
 	KingsSquire
 	KitainCrossSpear
+	LightOfFoliarIncision
 	LionsRoar
 	LithicBlade
 	LithicSpear
 	LostPrayerToTheSacredWinds
 	LuxuriousSeaLord
 	MagicGuide
+	MailedFlower
 	MakhairaAquamarine
 	MappaMare
 	MemoryOfDust

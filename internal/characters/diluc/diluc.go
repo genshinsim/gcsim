@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -17,12 +18,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	eCounter int
-	a4buff   []float64
-	c2buff   []float64
-	c2stack  int
-	c4buff   []float64
+	eCounter           int
+	a4buff             []float64
+	c2buff             []float64
+	c2stack            int
+	c4buff             []float64
 	savedNormalCounter int
+	c6Count            int
 }
 
 const eWindowKey = "diluc-e-window"
@@ -33,6 +35,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.EnergyMax = 40
 	c.NormalHitNum = normalHitNum
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	c.eCounter = 0
 
@@ -74,9 +78,9 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	if c.StatusIsActive(burstBuffKey) {
 		//infusion to attacks only
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagPlunge:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}

@@ -3,9 +3,11 @@ package beidou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -14,7 +16,10 @@ var (
 	skillRadius       = []float64{6, 7, 8}
 )
 
-const skillHitmark = 23
+const (
+	skillHitmark   = 23
+	particleICDKey = "beidou-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(45)
@@ -34,10 +39,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Tidecaller (E)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Electro,
 		Durability:         50,
 		Mult:               skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),
@@ -50,14 +55,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius[counter]),
 		skillHitmark,
 		skillHitmark,
+		c.makeParticleCB(counter),
 	)
-
-	//2 if no hit, 3 if 1 hit, 4 if perfect
-	c.Core.QueueParticle("beidou", 2+float64(counter), attributes.Electro, skillHitmark+c.ParticleDelay)
 
 	if counter > 0 {
 		//add shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: c.Index,
 			Src:        c.Core.F,
 			ShieldType: shield.ShieldBeidouThunderShield,
 			Name:       "Beidou Skill",
@@ -74,5 +78,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB(counter int) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.4*60, true)
+
+		// 2 if no hit, 3 if 1 hit, 4 if perfect
+		c.Core.QueueParticle(c.Base.Key.String(), 2+float64(counter), attributes.Electro, c.ParticleDelay)
 	}
 }

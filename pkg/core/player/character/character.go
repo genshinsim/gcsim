@@ -62,13 +62,14 @@ type CharWrapper struct {
 	tasks  task.Tasker
 
 	//base characteristics
-	Base     profile.CharacterBase
-	Weapon   weapon.WeaponProfile
-	Talents  profile.TalentProfile
-	CharZone profile.ZoneType
-	CharBody profile.BodyType
-	SkillCon int
-	BurstCon int
+	Base      profile.CharacterBase
+	Weapon    weapon.WeaponProfile
+	Talents   profile.TalentProfile
+	CharZone  profile.ZoneType
+	CharBody  profile.BodyType
+	NormalCon int
+	SkillCon  int
+	BurstCon  int
 
 	Equip struct {
 		Weapon weapon.Weapon
@@ -76,10 +77,12 @@ type CharWrapper struct {
 	}
 
 	//current status
-	ParticleDelay int // character custom particle delay
-	Energy        float64
-	EnergyMax     float64
-	HPCurrent     float64
+	ParticleDelay  int // character custom particle delay
+	Energy         float64
+	EnergyMax      float64
+	currentHPRatio float64
+	// needed so that start hp is not influenced by hp mods added during team initialization
+	StartHP int
 
 	//normal attack counter
 	NormalHitNum  int //how many hits in a normal combo
@@ -92,9 +95,13 @@ type CharWrapper struct {
 	//mods
 	mods []modifier.Mod
 
+	//dash cd: keeps track of remaining cd frames for off-field chars
+	RemainingDashCD int
+	DashLockout     bool
+
 	//hitlag stuff
-	timePassed   float64 //how many frames have passed since start of sim
-	frozenFrames float64 //how many frames are we still frozen for
+	timePassed   int //how many frames have passed since start of sim
+	frozenFrames int //how many frames are we still frozen for
 	queue        []queue.Task
 }
 
@@ -127,9 +134,12 @@ func New(
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]artifact.Set)
-	//default cons
-	c.SkillCon = 3
-	c.BurstCon = 5
+
+	//set to -1 by default and let each char specify normal/skill/burst cons
+	c.NormalCon = -1
+	c.SkillCon = -1
+	c.BurstCon = -1
+
 	//check talents
 	if c.Talents.Attack < 1 || c.Talents.Attack > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: attack - %v", c.Talents.Attack)
@@ -139,12 +149,6 @@ func New(
 	}
 	if c.Talents.Burst < 1 || c.Talents.Burst > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: burst - %v", c.Talents.Burst)
-	}
-	//setup base hp
-	if p.Base.StartHP > -1 {
-		c.HPCurrent = p.Base.StartHP
-	} else {
-		c.HPCurrent = -1 //to be cleared up in init
 	}
 
 	return c, nil
@@ -174,34 +178,85 @@ func (c *CharWrapper) RemoveTag(key string) {
 	delete(c.Tags, key)
 }
 
-func (c *CharWrapper) ModifyHP(amt float64) {
-	c.HPCurrent += amt
-	if c.HPCurrent < 0 {
-		c.HPCurrent = -1
+func (c *CharWrapper) clampHPRatio() {
+	if c.currentHPRatio > 1 {
+		c.currentHPRatio = 1
+	} else if c.currentHPRatio < 0 {
+		c.currentHPRatio = 0
 	}
-	maxhp := c.MaxHP()
-	if c.HPCurrent > maxhp {
-		c.HPCurrent = maxhp
+}
+
+func (c *CharWrapper) SetHPByAmount(amt float64) {
+	c.currentHPRatio = amt / c.MaxHP()
+	c.clampHPRatio()
+}
+
+func (c *CharWrapper) SetHPByRatio(r float64) {
+	c.currentHPRatio = r
+	c.clampHPRatio()
+}
+
+func (c *CharWrapper) ModifyHPByAmount(amt float64) {
+	newHP := c.CurrentHP() + amt
+	c.SetHPByAmount(newHP)
+}
+
+func (c *CharWrapper) ModifyHPByRatio(r float64) {
+	newHPRatio := c.currentHPRatio + r
+	c.SetHPByRatio(newHPRatio)
+}
+
+func (c *CharWrapper) consCheck() {
+	consUnset := 0
+	if c.NormalCon < 0 {
+		consUnset++
+	}
+	if c.SkillCon < 0 {
+		consUnset++
+	}
+	if c.BurstCon < 0 {
+		consUnset++
+	}
+	if consUnset != 1 {
+		panic(fmt.Sprintf("cons not set properly for %v, please set two out of three values:\nNormalCon: %v\nSkillCon: %v\nBurstCon: %v", c.Base.Key.String(), c.NormalCon, c.SkillCon, c.BurstCon))
 	}
 }
 
 func (c *CharWrapper) TalentLvlAttack() int {
+	c.consCheck()
+	add := -1
 	if c.Tags[keys.ChildePassive] > 0 {
-		return c.Talents.Attack
+		add++
 	}
-	return c.Talents.Attack - 1
+	if c.NormalCon > 0 && c.Base.Cons >= c.NormalCon {
+		add += 3
+	}
+	if add >= 4 {
+		add = 4
+	}
+	return c.Talents.Attack + add
 }
 func (c *CharWrapper) TalentLvlSkill() int {
-	if c.Base.Cons >= c.SkillCon {
-		return c.Talents.Skill + 2
+	c.consCheck()
+	add := -1
+	if c.SkillCon > 0 && c.Base.Cons >= c.SkillCon {
+		add += 3
 	}
-	return c.Talents.Skill - 1
+	if add >= 4 {
+		add = 4
+	}
+	return c.Talents.Skill + add
 }
 func (c *CharWrapper) TalentLvlBurst() int {
-	if c.Base.Cons >= c.BurstCon {
-		return c.Talents.Burst + 2
+	c.consCheck()
+	add := -1
+	if c.BurstCon > 0 && c.Base.Cons >= c.BurstCon {
+		add += 3
 	}
-	return c.Talents.Burst - 1
+	if add >= 4 {
+		add = 4
+	}
+	return c.Talents.Burst + add
 }
 
 type Particle struct {

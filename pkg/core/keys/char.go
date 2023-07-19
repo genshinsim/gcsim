@@ -78,6 +78,7 @@ const (
 	Ayaka
 	Ayato
 	Keqing
+	Kirara
 	Klee
 	Sara
 	Lisa
@@ -115,8 +116,15 @@ const (
 	Candace
 	Nilou
 	Nahida
+	Alhaitham
 	Layla
 	Faruzan
+	Wanderer
+	Baizhu
+	Dehya
+	Yaoyao
+	Mika
+	Kaveh
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -160,6 +168,7 @@ var charNames = []string{
 	"ayaka",
 	"ayato",
 	"keqing",
+	"kirara",
 	"klee",
 	"sara",
 	"lisa",
@@ -197,8 +206,15 @@ var charNames = []string{
 	"candace",
 	"nilou",
 	"nahida",
+	"alhaitham",
 	"layla",
 	"faruzan",
+	"wanderer",
+	"baizhu",
+	"dehya",
+	"yaoyao",
+	"mika",
+	"kaveh",
 	"test_char_do_not_use",
 }
 
@@ -241,6 +257,7 @@ var charPrettyName = []string{
 	"Ayaka",
 	"Ayato",
 	"Keqing",
+	"Kirara",
 	"Klee",
 	"Sara",
 	"Lisa",
@@ -278,8 +295,15 @@ var charPrettyName = []string{
 	"Candace",
 	"Nilou",
 	"Nahida",
+	"Alhaitham",
 	"Layla",
 	"Faruzan",
+	"Wanderer",
+	"Baizhu",
+	"Dehya",
+	"Yaoyao",
+	"Mika",
+	"Kaveh",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -318,6 +342,7 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Ayaka:            attributes.Cryo,
 	Ayato:            attributes.Hydro,
 	Keqing:           attributes.Electro,
+	Kirara:           attributes.Dendro,
 	Klee:             attributes.Pyro,
 	Sara:             attributes.Electro,
 	Lisa:             attributes.Electro,
@@ -355,7 +380,14 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Candace:          attributes.Hydro,
 	Nilou:            attributes.Hydro,
 	Nahida:           attributes.Dendro,
+	Alhaitham:        attributes.Dendro,
 	Layla:            attributes.Cryo,
 	Faruzan:          attributes.Anemo,
+	Wanderer:         attributes.Anemo,
+	Baizhu:           attributes.Dendro,
+	Dehya:            attributes.Pyro,
+	Yaoyao:           attributes.Dendro,
+	Mika:             attributes.Cryo,
+	Kaveh:            attributes.Dendro,
 	TestCharDoNotUse: attributes.Geo,
 }

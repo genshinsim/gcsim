@@ -13,7 +13,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-func (s *Simulation) Run() (stats.Result, error) {
+func (s *Simulation) Run() (res stats.Result, err error) {
+	defer func() {
+		// recover from panic if one occured. Set err to nil otherwise.
+		if r := recover(); r != nil {
+			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
+			err = errors.New(fmt.Sprintf("simulation panic occured: %v", r))
+		}
+	}()
 	//run sim for 90s if no duration set
 	if s.cfg.Settings.Duration == 0 {
 		// fmt.Println("no duration set, running for 90s")
@@ -22,7 +29,6 @@ func (s *Simulation) Run() (stats.Result, error) {
 	//duration
 	f := int(s.cfg.Settings.Duration * 60)
 	stop := false
-	var err error
 
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
 
@@ -44,7 +50,9 @@ func (s *Simulation) Run() (stats.Result, error) {
 		err = s.AdvanceFrame()
 		if err != nil {
 			log.Println(err)
-			return stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}, err
+			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
+			return
+			// return stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}, err
 		}
 
 		if s.C.Combat.DamageMode {
@@ -63,8 +71,8 @@ func (s *Simulation) Run() (stats.Result, error) {
 		}
 	}
 
-	duration := s.C.F + 1
-	result := stats.Result{
+	duration := s.C.F
+	res = stats.Result{
 		Seed:        uint64(s.C.Seed),
 		Duration:    duration,
 		TotalDamage: s.C.Combat.TotalDamage,
@@ -74,13 +82,14 @@ func (s *Simulation) Run() (stats.Result, error) {
 	}
 
 	for i, v := range s.cfg.Characters {
-		result.Characters[i].Name = v.Base.Key.String()
+		res.Characters[i].Name = v.Base.Key.String()
 	}
 
 	for _, collector := range s.collectors {
-		collector.Flush(s.C, &result)
+		collector.Flush(s.C, &res)
 	}
-	return result, nil
+
+	return
 }
 
 func (s *Simulation) AdvanceFrame() error {

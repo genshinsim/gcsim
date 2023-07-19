@@ -1,14 +1,22 @@
 package combat
 
-import "math"
+import (
+	"math"
+
+	"github.com/genshinsim/gcsim/pkg/core/targets"
+)
 
 type GadgetTyp int
 
 const (
 	GadgetTypUnknown GadgetTyp = iota
+	StartGadgetTypEnemy
 	GadgetTypDendroCore
-	GadgetTypGuoba
 	GadgetTypLeaLotus
+	EndGadgetTypEnemy
+	GadgetTypGuoba
+	GadgetTypYueguiThrowing
+	GadgetTypYueguiJumping
 	GadgetTypTest
 	EndGadgetTyp
 )
@@ -20,6 +28,8 @@ func init() {
 	gadgetLimits[GadgetTypDendroCore] = 5
 	gadgetLimits[GadgetTypTest] = 2
 	gadgetLimits[GadgetTypLeaLotus] = 1
+	gadgetLimits[GadgetTypYueguiThrowing] = 2
+	gadgetLimits[GadgetTypYueguiJumping] = 3
 }
 
 type Gadget interface {
@@ -28,7 +38,7 @@ type Gadget interface {
 	GadgetTyp() GadgetTyp
 }
 
-func (h *Handler) RemoveGadget(key TargetKey) {
+func (h *Handler) RemoveGadget(key targets.TargetKey) {
 	h.ReplaceGadget(key, nil)
 }
 
@@ -36,7 +46,7 @@ func (h *Handler) AddGadget(t Gadget) {
 	//check for hard coded limit
 	if gadgetLimits[t.GadgetTyp()] > 0 {
 		//should kill oldest one if > limit
-		f := math.MaxInt64
+		f := math.MaxInt
 		oldest := -1
 		count := 0
 		for i, v := range h.gadgets {
@@ -57,7 +67,7 @@ func (h *Handler) AddGadget(t Gadget) {
 	t.SetKey(h.nextkey())
 }
 
-func (h *Handler) ReplaceGadget(key TargetKey, t Gadget) {
+func (h *Handler) ReplaceGadget(key targets.TargetKey, t Gadget) {
 	//do nothing if not found
 	for i, v := range h.gadgets {
 		if v != nil && v.Key() == key {

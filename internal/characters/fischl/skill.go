@@ -5,9 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -19,6 +22,7 @@ const (
 	skillOzSpawn     = 32
 	skillRecastCD    = 92 // 2f CD delay
 	skillRecastCDKey = "fischl-skill-recast-cd"
+	particleICDKey   = "fischl-particle-icd"
 )
 
 func init() {
@@ -42,10 +46,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Oz (Summon)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupFischl,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupFischl,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       birdSum[c.TalentLvlSkill()],
@@ -59,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// hitmark is 5 frames after oz spawns
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), combat.Point{Y: 1.5}, radius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, radius),
 		skillOzSpawn,
 		skillOzSpawn+5,
 	)
@@ -82,6 +86,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.1*60, true)
+	if c.Core.Rand.Float64() < .67 {
+		// TODO: this delay used to be 120
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
 	}
 }
 
@@ -118,27 +136,25 @@ func (c *char) queueOz(src string, ozSpawn int) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Oz (%v)", src),
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupFischl,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupFischl,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       birdAtk[c.TalentLvlSkill()],
 		}
+		player := c.Core.Combat.Player()
+		c.ozPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 1.5}, player.Direction())
+
 		snap := c.Snapshot(&ai)
 		c.ozSnapshot = combat.AttackEvent{
-			Info:     ai,
-			Snapshot: snap,
-			Pattern: combat.NewBoxHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: -0.5},
-				0.1,
-				1,
-			),
+			Info:        ai,
+			Snapshot:    snap,
 			SourceFrame: c.Core.F,
 		}
+		c.ozSnapshot.Callbacks = append(c.ozSnapshot.Callbacks, c.particleCB)
+
 		c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)
 		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
 			Write("source", src).
@@ -164,13 +180,14 @@ func (c *char) ozTick(src int) func() {
 			Write("src", src)
 		// trigger damage
 		ae := c.ozSnapshot
+		ae.Pattern = combat.NewBoxHit(
+			c.ozPos,
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		)
 		c.Core.QueueAttackEvent(&ae, c.ozTravel)
-		// check for orb
-		// Particle check is 67% for particle, from datamine
-		// TODO: this delay used to be 120
-		if c.Core.Rand.Float64() < .67 {
-			c.Core.QueueParticle("fischl", 1, attributes.Electro, c.ParticleDelay)
-		}
 
 		// queue up next hit only if next hit oz is still active
 		if c.Core.F+60 <= c.ozActiveUntil {

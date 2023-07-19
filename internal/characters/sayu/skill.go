@@ -3,25 +3,36 @@ package sayu
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-var skillPressFrames []int
-var skillShortHoldFrames []int
-var skillHoldFrames []int
+var (
+	skillPressFrames     []int
+	skillShortHoldFrames []int
+	skillHoldFrames      []int
+)
 
-const skillPressDoTHitmark = 7 // 1 DoT tick
-const skillPressCDStart = 14
-const skillPressKickHitmark = 25
+const (
+	skillPressDoTHitmark  = 7 // 1 DoT tick
+	skillPressCDStart     = 14
+	skillPressKickHitmark = 25
 
-const skillShortHoldCDStart = 30
-const skillShortHoldKickHitmark = 48
+	skillShortHoldCDStart     = 30
+	skillShortHoldKickHitmark = 48
 
-const skillHoldCDStart = 648
-const skillHoldKickHitmark = 667
+	skillHoldCDStart     = 648
+	skillHoldKickHitmark = 667
+
+	kickParticleICDKey = "sayu-kick-particle-icd"
+	rollParticleICDKey = "sayu-roll-particle-icd"
+)
 
 func init() {
 	// Tap E
@@ -60,6 +71,28 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillPress(p)
 }
 
+func (c *char) kickParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(kickParticleICDKey) {
+		return
+	}
+	c.AddStatus(kickParticleICDKey, 0.5*60, true)
+	c.Core.QueueParticle("sayu-kick", 2, attributes.Anemo, c.ParticleDelay)
+}
+
+func (c *char) rollParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(rollParticleICDKey) {
+		return
+	}
+	c.AddStatus(rollParticleICDKey, 3*60, true)
+	c.Core.QueueParticle("sayu-roll", 1, attributes.Anemo, c.ParticleDelay)
+}
+
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	c.c2Bonus = 0.033
 
@@ -67,10 +100,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fuufuu Windwheel (DoT Press)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArtAnemo,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArtHold,
+		ICDTag:     attacks.ICDTagElementalArtAnemo,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
@@ -87,10 +120,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Press)",
-		AttackTag:        combat.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeDefault,
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		Mult:             skillPressEnd[c.TalentLvlSkill()],
@@ -101,11 +134,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 2.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.5),
 		skillPressKickHitmark,
+		c.kickParticleCB,
 	)
-
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillPressKickHitmark+c.ParticleDelay)
 
 	c.SetCDWithDelay(action.ActionSkill, 6*60, skillPressCDStart)
 
@@ -122,7 +154,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	c.c2Bonus = .0
 
 	c.eAbsorb = attributes.NoElement
-	c.eAbsorbTag = combat.ICDTagNone
+	c.eAbsorbTag = attacks.ICDTagNone
 	c.absorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2)
 
 	// 1 DoT Tick
@@ -140,16 +172,15 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 				Write("dmg bonus%", c.c2Bonus)
 		}
 	}, 18)
-	c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+c.ParticleDelay)
 
 	// Fuufuu Whirlwind Kick Hold DMG
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
-		AttackTag:        combat.AttackTagElementalArtHold,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeDefault,
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		Mult:             skillHoldEnd[c.TalentLvlSkill()],
@@ -160,11 +191,10 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3),
 		skillShortHoldKickHitmark,
+		c.kickParticleCB,
 	)
-
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, skillShortHoldKickHitmark+c.ParticleDelay)
 
 	// 6.2s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 372, skillShortHoldCDStart)
@@ -182,7 +212,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	c.c2Bonus = .0
 
 	c.eAbsorb = attributes.NoElement
-	c.eAbsorbTag = combat.ICDTagNone
+	c.eAbsorbTag = attacks.ICDTagNone
 	c.absorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2)
 
 	// ticks
@@ -201,20 +231,16 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 					Write("dmg bonus%", c.c2Bonus)
 			}
 		}, 18+i)
-
-		if i%180 == 0 { // 3s
-			c.Core.QueueParticle("sayu-skill-hold", 1, attributes.Anemo, 18+i+c.ParticleDelay)
-		}
 	}
 
 	// Fuufuu Whirlwind Kick Hold DMG
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Whirlwind (Kick Hold)",
-		AttackTag:        combat.AttackTagElementalArtHold,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeDefault,
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		Mult:             skillHoldEnd[c.TalentLvlSkill()],
@@ -225,11 +251,10 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3),
 		(skillHoldKickHitmark-600)+duration,
+		c.kickParticleCB,
 	)
-
-	c.Core.QueueParticle("sayu-skill", 2, attributes.Anemo, (skillHoldKickHitmark-600)+duration+c.ParticleDelay)
 
 	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
 	c.SetCDWithDelay(action.ActionSkill, int(6*60+float64(duration)*0.5), (skillHoldCDStart-600)+duration+2)
@@ -247,10 +272,10 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Fuufuu Windwheel (DoT Hold)",
-		AttackTag:        combat.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagElementalArtAnemo,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeDefault,
+		AttackTag:        attacks.AttackTagElementalArtHold,
+		ICDTag:           attacks.ICDTagElementalArtAnemo,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		Mult:             skillPress[c.TalentLvlSkill()],
@@ -259,13 +284,14 @@ func (c *char) createSkillHoldSnapshot() *combat.AttackEvent {
 		IsDeployable:     true,
 	}
 	snap := c.Snapshot(&ai)
-
 	// pattern shouldn't snapshot on attack event creation because the skill follows the player
-	return (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
+	ae.Callbacks = append(ae.Callbacks, c.rollParticleCB)
+	return &ae
 }
 
 func (c *char) absorbCheck(src, count, max int) func() {
@@ -278,13 +304,13 @@ func (c *char) absorbCheck(src, count, max int) func() {
 		if c.eAbsorb != attributes.NoElement {
 			switch c.eAbsorb {
 			case attributes.Pyro:
-				c.eAbsorbTag = combat.ICDTagElementalArtPyro
+				c.eAbsorbTag = attacks.ICDTagElementalArtPyro
 			case attributes.Hydro:
-				c.eAbsorbTag = combat.ICDTagElementalArtHydro
+				c.eAbsorbTag = attacks.ICDTagElementalArtHydro
 			case attributes.Electro:
-				c.eAbsorbTag = combat.ICDTagElementalArtElectro
+				c.eAbsorbTag = attacks.ICDTagElementalArtElectro
 			case attributes.Cryo:
-				c.eAbsorbTag = combat.ICDTagElementalArtCryo
+				c.eAbsorbTag = attacks.ICDTagElementalArtCryo
 			}
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
 				"sayu absorbed ", c.eAbsorb.String(),
@@ -297,11 +323,15 @@ func (c *char) absorbCheck(src, count, max int) func() {
 
 func (c *char) rollAbsorb() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+		e, ok := args[0].(*enemy.Enemy)
 		atk := args[1].(*combat.AttackEvent)
+		if !ok {
+			return false
+		}
 		if atk.Info.ActorIndex != c.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
 		if atk.Info.Element != attributes.Anemo || c.eAbsorb == attributes.NoElement {
@@ -312,36 +342,38 @@ func (c *char) rollAbsorb() {
 		}
 
 		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt:
+		// DoT always has ElementalArtHold tag
+		case attacks.AttackTagElementalArtHold:
 			// DoT Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Windwheel Elemental (Elemental DoT Hold)",
-				AttackTag:  combat.AttackTagElementalArtHold,
+				AttackTag:  attacks.AttackTagElementalArtHold,
 				ICDTag:     c.eAbsorbTag,
-				ICDGroup:   combat.ICDGroupDefault,
-				StrikeType: combat.StrikeTypeDefault,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
 				Element:    c.eAbsorb,
 				Durability: 25,
 				Mult:       skillAbsorb[c.TalentLvlSkill()],
 			}
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), 1, 1)
-		case combat.AttackTagElementalArtHold:
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1)
+		// Kick always has ElementalArt tag
+		case attacks.AttackTagElementalArt:
 			// Kick Elemental DMG
 			ai := combat.AttackInfo{
 				ActorIndex: c.Index,
 				Abil:       "Fuufuu Whirlwind Elemental (Elemental Kick Hold)",
-				AttackTag:  combat.AttackTagElementalArt,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				StrikeType: combat.StrikeTypeDefault,
+				AttackTag:  attacks.AttackTagElementalArt,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
 				Element:    c.eAbsorb,
 				Durability: 25,
 				Mult:       skillAbsorbEnd[c.TalentLvlSkill()],
 			}
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.5}, 3),
+				combat.NewSingleTargetHit(e.Key()),
 				1,
 				1,
 			)

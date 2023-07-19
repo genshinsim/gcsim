@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -45,10 +47,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
@@ -58,7 +60,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: attackOffsets[c.NormalCounter][i]},
+			geometry.Point{Y: attackOffsets[c.NormalCounter][i]},
 			attackRadius[c.NormalCounter],
 		)
 		c.QueueCharTask(func() {
@@ -69,10 +71,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
-		State:               action.NormalAttackState,
-		FramePausedOnHitlag: c.FramePausedOnHitlag,
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		State:           action.NormalAttackState,
 	}
 }

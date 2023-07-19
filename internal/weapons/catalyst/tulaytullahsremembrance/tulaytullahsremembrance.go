@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -50,7 +51,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	mAtkSpd := make([]float64, attributes.EndStatType)
 	mAtkSpd[attributes.AtkSpd] = 0.075 + float64(r)*0.025
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(atkSpdKey, 15*60),
+		Base:         modifier.NewBaseWithHitlag(atkSpdKey, -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
 			if c.Player.CurrentState() != action.NormalAttackState {
@@ -79,7 +80,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 14*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal {
+				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
 				mDmg[attributes.DmgP] = incDmg * float64(w.stacks)
@@ -95,7 +96,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagNormal {
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {

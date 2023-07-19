@@ -1,4 +1,4 @@
-//Package player contains player related tracking and functionalities:
+// Package player contains player related tracking and functionalities:
 // - tracking characters on the team
 // - handling animations state
 // - handling normal attack state
@@ -7,6 +7,8 @@
 package player
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -45,6 +47,10 @@ type Handler struct {
 	//swap
 	SwapCD int
 
+	// dash: dash fails iff lockout && on CD
+	DashCDExpirationFrame int
+	DashLockout           bool
+
 	//last action
 	LastAction struct {
 		UsedAt int
@@ -55,14 +61,14 @@ type Handler struct {
 }
 
 type Delays struct {
-	Skill  int
-	Burst  int
-	Attack int
-	Charge int
-	Aim    int
-	Dash   int
-	Jump   int
-	Swap   int
+	Skill  int `json:"skill"`
+	Burst  int `json:"burst"`
+	Attack int `json:"attack"`
+	Charge int `json:"charge"`
+	Aim    int `json:"aim"`
+	Dash   int `json:"dash"`
+	Jump   int `json:"jump"`
+	Swap   int `json:"swap"`
 }
 
 type Opt struct {
@@ -93,11 +99,36 @@ func (h *Handler) swap(to keys.Char) func() {
 	return func() {
 		prev := h.active
 		h.active = h.charPos[to]
-		h.Log.NewEvent("executed swap", glog.LogActionEvent, h.active).
-			Write("action", "swap").
-			Write("target", to.String())
+
+		// still have remaining frames left on dash CD, save in char for when they go on-field again
+		if h.DashCDExpirationFrame > *h.F {
+			h.chars[prev].RemainingDashCD = h.DashCDExpirationFrame - *h.F
+			h.chars[prev].DashLockout = h.DashLockout
+		}
+
+		// set the new DashCDExpirationFrame and reset character remaining back to 0
+		h.DashCDExpirationFrame = *h.F + h.chars[h.active].RemainingDashCD
+		h.DashLockout = h.chars[h.active].DashLockout
+		h.chars[h.active].RemainingDashCD = 0
+
 		h.SwapCD = SwapCDFrames
 		h.ResetAllNormalCounter()
+
+		evt := h.Log.NewEvent("executed swap", glog.LogActionEvent, h.active).
+			Write("action", "swap").
+			Write("target", to.String())
+
+		if h.chars[prev].RemainingDashCD > 0 {
+			evt.Write("prev_dash_cd", h.chars[prev].RemainingDashCD).
+				Write("prev_dash_lockout", h.chars[prev].DashLockout)
+		}
+
+		if h.DashCDExpirationFrame > *h.F {
+			evt.Write("target_dash_cd", h.DashCDExpirationFrame-*h.F).
+				Write("target_dash_expiry_frame", h.DashCDExpirationFrame).
+				Write("target_dash_lockout", h.DashLockout)
+		}
+
 		h.Events.Emit(event.OnCharacterSwap, prev, h.active)
 	}
 }
@@ -185,14 +216,33 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	if char != h.active {
 		return
 	}
+
 	h.chars[char].ApplyHitlag(factor, dur)
+
 	//also extend infusion
 	//TODO: this is a really awkward place to apply this
 	h.ExtendInfusion(char, factor, dur)
+
+	// extend the dash cd by the hitlag extension amount
+	if h.DashCDExpirationFrame > *h.F {
+		ext := int(math.Ceil(dur * (1 - factor)))
+		h.DashCDExpirationFrame += ext
+
+		var evt glog.Event
+		if h.DashLockout {
+			evt = h.Log.NewEvent("dash cd hitlag extended", glog.LogHitlagEvent, char)
+		} else {
+			evt = h.Log.NewEvent("dash lockout evaluation hitlag extended", glog.LogHitlagEvent, char)
+		}
+		evt.Write("extension", ext).
+			Write("expiry", h.DashCDExpirationFrame-*h.F).
+			Write("expiry_frame", h.DashCDExpirationFrame).
+			Write("lockout", h.DashLockout)
+	}
 }
 
-//InitializeTeam will set up resonance event hooks and calculate
-//all character base stats
+// InitializeTeam will set up resonance event hooks and calculate
+// all character base stats
 func (h *Handler) InitializeTeam() error {
 	var err error
 	for _, c := range h.chars {
@@ -211,12 +261,15 @@ func (h *Handler) InitializeTeam() error {
 		for k := range h.chars[i].Equip.Sets {
 			h.chars[i].Equip.Sets[k].Init()
 		}
-		//set each char's starting hp
-		if h.chars[i].HPCurrent == -1 {
-			h.chars[i].HPCurrent = h.chars[i].MaxHP()
+		//set each char's starting hp ratio
+		if h.chars[i].StartHP <= 0 {
+			h.chars[i].SetHPByRatio(1)
+		} else {
+			h.chars[i].SetHPByAmount(float64(h.chars[i].StartHP))
 		}
 		h.Log.NewEvent("starting hp set", glog.LogCharacterEvent, i).
-			Write("hp", h.chars[i].HPCurrent)
+			Write("starting_hp_ratio", h.chars[i].CurrentHPRatio()).
+			Write("starting_hp", h.chars[i].CurrentHP())
 	}
 	return nil
 }

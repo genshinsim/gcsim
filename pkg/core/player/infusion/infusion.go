@@ -1,15 +1,15 @@
 package infusion
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 type WeaponInfusion struct {
 	Key             string
 	Ele             attributes.Element
-	Tags            []combat.AttackTag
+	Tags            []attacks.AttackTag
 	Expiry          float64
 	CanBeOverridden bool
 }
@@ -39,7 +39,7 @@ func (i *InfusionHandler) ExtendInfusion(char int, factor, dur float64) {
 	i.infusion[char].Expiry += dur * (1 - factor)
 }
 
-func (i *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...combat.AttackTag) {
+func (i *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...attacks.AttackTag) {
 	if !i.infusion[char].CanBeOverridden && i.infusion[char].Expiry > float64(*i.f) {
 		return
 	}
@@ -67,7 +67,7 @@ func (i *InfusionHandler) WeaponInfuseIsActive(char int, key string) bool {
 	return true
 }
 
-func (i *InfusionHandler) Infused(char int, a combat.AttackTag) attributes.Element {
+func (i *InfusionHandler) Infused(char int, a attacks.AttackTag) attributes.Element {
 	if i.infusion[char].Key != "" {
 		ok := false
 		for _, v := range i.infusion[char].Tags {

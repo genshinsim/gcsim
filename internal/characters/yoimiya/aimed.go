@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames [][]int
@@ -64,10 +66,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aimed Shot",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Pyro,
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
@@ -77,22 +79,24 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
+	c2CB := c.makeC2CB()
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			combat.Point{Y: -0.5},
+			geometry.Point{Y: -0.5},
 			0.1,
 			1,
 		),
 		aimedHitmarks[kindling],
 		aimedHitmarks[kindling]+travel,
+		c2CB,
 	)
 
 	// Kindling Arrows
 	if kindling > 0 {
-		ai.ICDTag = combat.ICDTagExtraAttack
+		ai.ICDTag = attacks.ICDTagExtraAttack
 		ai.Mult = aimExtra[c.TalentLvlAttack()]
 
 		// TODO:
@@ -119,6 +123,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 				),
 				aimedHitmarks[kindling],
 				aimedHitmarks[kindling]+kindling_travel,
+				c2CB,
 			)
 		}
 	}

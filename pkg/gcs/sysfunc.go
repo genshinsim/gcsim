@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -191,7 +191,7 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		y = float64(n.ival)
 	}
 
-	e.Core.Combat.SetPlayerPos(combat.Point{X: x, Y: y})
+	e.Core.Combat.SetPlayerPos(geometry.Point{X: x, Y: y})
 	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return bton(true), nil
@@ -328,7 +328,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("index for set_default_target is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
 	}
 
-	e.Core.Combat.SetEnemyPos(idx-1, combat.Point{X: x, Y: y})
+	e.Core.Combat.SetEnemyPos(idx-1, geometry.Point{X: x, Y: y})
 	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return &null{}, nil

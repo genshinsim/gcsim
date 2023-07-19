@@ -4,62 +4,38 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-type CharacterDetail struct {
-	Name          string         `json:"name"`
-	Element       string         `json:"element"`
-	Level         int            `json:"level"`
-	MaxLevel      int            `json:"max_level"`
-	Cons          int            `json:"cons"`
-	Weapon        WeaponDetail   `json:"weapon"`
-	Talents       TalentDetail   `json:"talents"`
-	Sets          map[string]int `json:"sets"`
-	Stats         []float64      `json:"stats"`
-	SnapshotStats []float64      `json:"snapshot"`
-}
-
-type WeaponDetail struct {
-	Name     string `json:"name"`
-	Refine   int    `json:"refine"`
-	Level    int    `json:"level"`
-	MaxLevel int    `json:"max_level"`
-}
-
-type TalentDetail struct {
-	Attack int `json:"attack"`
-	Skill  int `json:"skill"`
-	Burst  int `json:"burst"`
-}
-
-func (sim *Simulation) CharacterDetails() []CharacterDetail {
-	out := make([]CharacterDetail, len(sim.C.Player.Chars()))
+func (sim *Simulation) CharacterDetails() []*model.Character {
+	out := make([]*model.Character, len(sim.C.Player.Chars()))
 
 	for i, v := range sim.cfg.Characters {
-		m := make(map[string]int)
+		m := make(map[string]int32)
 		for k, v := range v.Sets {
-			m[k.String()] = v
+			m[k.String()] = int32(v)
 		}
 
-		char := CharacterDetail{
+		char := &model.Character{
 			Name:     v.Base.Key.String(),
 			Element:  v.Base.Element.String(),
-			Level:    v.Base.Level,
-			MaxLevel: v.Base.MaxLevel,
-			Cons:     v.Base.Cons,
-			Weapon: WeaponDetail{
+			Level:    int32(v.Base.Level),
+			MaxLevel: int32(v.Base.MaxLevel),
+			Cons:     int32(v.Base.Cons),
+			Weapon: &model.Weapon{
 				Name:     v.Weapon.Key.String(),
-				Refine:   v.Weapon.Refine,
-				Level:    v.Weapon.Level,
-				MaxLevel: v.Weapon.MaxLevel,
+				Refine:   int32(v.Weapon.Refine),
+				Level:    int32(v.Weapon.Level),
+				MaxLevel: int32(v.Weapon.MaxLevel),
 			},
-			Talents: TalentDetail{
-				Attack: v.Talents.Attack,
-				Skill:  v.Talents.Skill,
-				Burst:  v.Talents.Burst,
+			Talents: &model.CharacterTalents{
+				Attack: int32(v.Talents.Attack),
+				Skill:  int32(v.Talents.Skill),
+				Burst:  int32(v.Talents.Burst),
 			},
 			Sets:  m,
 			Stats: v.Stats,
@@ -71,7 +47,7 @@ func (sim *Simulation) CharacterDetails() []CharacterDetail {
 	for i, c := range sim.C.Player.Chars() {
 		snap := c.Snapshot(&combat.AttackInfo{
 			Abil:      "stats-check",
-			AttackTag: combat.AttackTagNone,
+			AttackTag: attacks.AttackTagNone,
 		})
 		//convert all atk%, def% and hp% into flat amounts by tacking on base
 		snap.Stats[attributes.HP] += c.Base.HP * (1 + snap.Stats[attributes.HPP])

@@ -4,21 +4,31 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
+
+// 30 = .5s
+const BUCKET_SIZE int = 30
 
 func init() {
 	stats.Register(NewStat)
 }
 
 type buffer struct {
-	events [][]stats.DamageEvent
+	events  [][]stats.DamageEvent
+	buckets []float64
+	cumu    [][]float64
 }
 
 func NewStat(core *core.Core) (stats.StatsCollector, error) {
 	out := buffer{
-		events: make([][]stats.DamageEvent, len(core.Player.Chars())),
+		events:  make([][]stats.DamageEvent, len(core.Player.Chars())),
+		buckets: make([]float64, 0),
+		cumu:    make([][]float64, 0),
 	}
+	out.cumu = append(out.cumu, make([]float64, len(core.Player.Chars())))
 
 	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		target := args[0].(combat.Target)
@@ -28,9 +38,23 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 		// TODO: validate if this is still true?
 		// No need to pull damage stats for non-enemies
-		if target.Type() != combat.TargettableEnemy {
+		if target.Type() != targets.TargettableEnemy {
 			return false
 		}
+
+		bucket := int(core.F / BUCKET_SIZE)
+		last := out.cumu[len(out.cumu)-1]
+		for bucket >= len(out.cumu) {
+			newBucket := make([]float64, len(core.Player.Chars()))
+			copy(newBucket, last)
+			out.cumu = append(out.cumu, newBucket)
+		}
+		out.cumu[bucket][attack.Info.ActorIndex] += damage
+
+		for bucket >= len(out.buckets) {
+			out.buckets = append(out.buckets, float64(0))
+		}
+		out.buckets[bucket] += damage
 
 		// TODO: ActionId population
 		// TODO: Modifiers population
@@ -55,9 +79,9 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 		if attack.Info.Catalyzed {
 			switch attack.Info.CatalyzedType {
-			case combat.Aggravate:
+			case reactions.Aggravate:
 				event.ReactionModifier = stats.Aggravate
-			case combat.Spread:
+			case reactions.Spread:
 				event.ReactionModifier = stats.Spread
 			}
 		}
@@ -70,7 +94,22 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 }
 
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
+	result.DamageBuckets = b.buckets
 	for c := 0; c < len(b.events); c++ {
 		result.Characters[c].DamageEvents = b.events[c]
+		result.Characters[c].DamageCumulativeContrib = make([]float64, len(b.buckets))
+	}
+
+	for i := 0; i < len(b.cumu); i++ {
+		var total float64
+		for _, v := range b.cumu[i] {
+			total += v
+		}
+
+		if total > 0 {
+			for c, v := range b.cumu[i] {
+				result.Characters[c].DamageCumulativeContrib[i] = v / total
+			}
+		}
 	}
 }

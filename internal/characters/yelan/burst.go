@@ -3,9 +3,10 @@ package yelan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -26,10 +27,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Depth-Clarion Dice",
-		AttackTag:        combat.AttackTagElementalBurst,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypePierce,
+		AttackTag:        attacks.AttackTagElementalBurst,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypePierce,
 		Element:          attributes.Hydro,
 		Durability:       50,
 		Mult:             0,
@@ -44,17 +45,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//Initial hit
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{X: -1.5, Y: -1.7}, 6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -1.5, Y: -1.7}, 6),
 		burstHitmark,
 		burstHitmark,
 	)
 
 	//TODO: check if we need to add f to this
 	c.Core.Tasks.Add(func() {
-		c.Core.Status.Add(burstStatus, 15*60)
+		c.AddStatus(burstKey, 15*60, false)
 		c.a4() //TODO: does this call need to be delayed?
 	}, burstHitmark)
-
 	if c.Base.Cons >= 6 { //C6 passive, lasts 20 seconds
 		c.Core.Status.Add(c6Status, 20*60)
 		c.c6count = 0
@@ -73,43 +73,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) exquisiteThrowSkillProc() {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Exquisite Throw",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagYelanBurst,
-		ICDGroup:   combat.ICDGroupYelanBurst,
-		StrikeType: combat.StrikeTypePierce,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		Mult:       0,
-		FlatDmg:    burstDice[c.TalentLvlBurst()] * c.MaxHP(),
-	}
-	for i := 0; i < 3; i++ {
-		//TODO: probably snapshots before hitmark
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				nil,
-				0.5,
-			),
-			burstDiceHitmarks[i],
-			burstDiceHitmarks[i],
-		)
-	}
-}
-
 func (c *char) summonExquisiteThrow() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Exquisite Throw",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagYelanBurst,
-		ICDGroup:   combat.ICDGroupYelanBurst,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagYelanBurst,
+		ICDGroup:   attacks.ICDGroupYelanBurst,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,
@@ -145,65 +116,5 @@ func (c *char) summonExquisiteThrow() {
 			burstDiceHitmarks[3],
 			burstDiceHitmarks[3],
 		)
-	}
-
-	c.burstDiceICD = c.Core.F + 60
-}
-
-func (c *char) burstStateHook() {
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
-		//check if buff is up
-		if c.Core.Status.Duration(burstStatus) <= 0 {
-			return false
-		}
-		next := args[1].(action.AnimationState)
-		//ignore if not normal
-		if next != action.NormalAttackState {
-			return false
-		}
-		//ignore if on ICD
-		if c.burstDiceICD > c.Core.F {
-			return false
-		}
-		//this should start a new ticker if not on ICD and state is correct
-		c.summonExquisiteThrow()
-		c.Core.Log.NewEvent("yelan burst on state change", glog.LogCharacterEvent, c.Index).
-			Write("state", next).
-			Write("icd", c.burstDiceICD)
-		c.burstTickSrc = c.Core.F
-		c.Core.Tasks.Add(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
-
-		return false
-	}, "yelan-burst-animation-check")
-}
-
-func (c *char) burstTickerFunc(src int) func() {
-	return func() {
-		//check if buff is up
-		if c.Core.Status.Duration(burstStatus) <= 0 {
-			return
-		}
-		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("yelan burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("new src", c.burstTickSrc)
-			return
-		}
-		//stop if we are no longer in normal animation state
-		state := c.Core.Player.CurrentState()
-		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("yelan burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("state", state)
-			return
-		}
-		c.Core.Log.NewEvent("yelan burst triggered from ticker", glog.LogCharacterEvent, c.Index).
-			Write("src", src).
-			Write("state", state).
-			Write("icd", c.burstDiceICD)
-		//we can trigger a wave here b/c we're in normal state still and src is still the same
-		c.summonExquisiteThrow()
-		//in theory this should not hit an icd?
-		c.Core.Tasks.Add(c.burstTickerFunc(src), 60) //check every 1sec
 	}
 }

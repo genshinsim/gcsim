@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -48,6 +49,7 @@ type (
 
 	StatMod struct {
 		AffectedStat attributes.Stat
+		Extra        bool
 		Amount       StatModFunc
 		modifier.Base
 	}
@@ -166,7 +168,7 @@ func (c *CharWrapper) StatusDuration(key string) int { return c.getModDuration(k
 
 // Extend.
 
-//extendMod returns true if mod is active and is extended
+// extendMod returns true if mod is active and is extended
 func (c *CharWrapper) extendMod(key string, ext int) bool {
 	m, active := modifier.FindCheckExpiry(&c.mods, key, *c.f)
 	if m == -1 {
@@ -176,7 +178,8 @@ func (c *CharWrapper) extendMod(key string, ext int) bool {
 		return false //nothing to extend is not active
 	}
 	//other wise add to expiry
-	c.mods[m].Extend(float64(ext))
+	mod := c.mods[m]
+	mod.Extend(mod.Key(), c.log, c.Index, ext)
 	return true
 }
 
@@ -186,7 +189,7 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 
 func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
 	//skip if this is reaction damage
-	if a.Info.AttackTag >= combat.AttackTagNoneStat {
+	if a.Info.AttackTag >= attacks.AttackTagNoneStat {
 		return nil
 	}
 
@@ -317,8 +320,8 @@ func (c *CharWrapper) HealBonus() (amt float64) {
 	return amt
 }
 
-//TODO: consider merging this with just attack mods? reaction bonus should
-//maybe just be it's own stat instead of being a separate mod really
+// TODO: consider merging this with just attack mods? reaction bonus should
+// maybe just be it's own stat instead of being a separate mod really
 func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) (amt float64) {
 	n := 0
 	for _, v := range c.mods {

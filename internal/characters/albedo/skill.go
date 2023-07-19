@@ -3,10 +3,13 @@ package albedo
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -22,34 +25,36 @@ func init() {
 }
 
 const (
-	skillICDKey = "albedo-skill-icd"
+	skillICDKey    = "albedo-skill-icd"
+	particleICDKey = "albedo-particle-icd"
 )
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Abiogenesis: Solar Isotoma",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	// TODO: damage frame
 	c.bloomSnapshot = c.Snapshot(&ai)
+
+	player := c.Core.Combat.Player()
+	skillDir := player.Direction()
 	// assuming tap e for hitbox offset
-	c.Core.QueueAttackWithSnap(
-		ai,
-		c.bloomSnapshot,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 5),
-		skillHitmark,
-	)
+	skillPos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, player.Direction())
+	c.skillArea = combat.NewCircleHitOnTarget(skillPos, nil, 10)
+
+	c.Core.QueueAttackWithSnap(ai, c.bloomSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
 	// snapshot for ticks
 	ai.Abil = "Abiogenesis: Solar Isotoma (Tick)"
-	ai.ICDTag = combat.ICDTagElementalArt
+	ai.ICDTag = attacks.ICDTagElementalArt
 	ai.Mult = skillTick[c.TalentLvlSkill()]
 	ai.UseDef = true
 	c.skillAttackInfo = ai
@@ -58,7 +63,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// create a construct
 	// Construct is not fully formed until after the hit lands (exact timing unknown)
 	c.Core.Tasks.Add(func() {
-		c.Core.Constructs.New(c.newConstruct(1800), true)
+		c.Core.Constructs.New(c.newConstruct(1800, skillDir, skillPos), true)
 		c.lastConstruct = c.Core.F
 		c.skillActive = true
 		// Reset ICD after construct is created
@@ -82,6 +87,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+	if c.Core.Rand.Float64() < 0.67 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Geo, c.ParticleDelay)
+	}
+}
+
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
@@ -100,6 +118,10 @@ func (c *char) skillHook() {
 		if dmg == 0 {
 			return false
 		}
+		// don't proc if target hit is outside of the skill area
+		if !trg.IsWithinArea(c.skillArea) {
+			return false
+		}
 
 		// this ICD is most likely tied to the construct, so it's not hitlag extendable
 		c.AddStatus(skillICDKey, 120, false) // proc every 2s
@@ -109,12 +131,8 @@ func (c *char) skillHook() {
 			c.skillSnapshot,
 			combat.NewCircleHitOnTarget(trg, nil, 3.4),
 			1,
+			c.particleCB,
 		)
-
-		// 67% chance to generate 1 geo orb
-		if c.Core.Rand.Float64() < 0.67 {
-			c.Core.QueueParticle("albedo", 1, attributes.Geo, c.ParticleDelay)
-		}
 
 		// c1: skill tick regen 1.2 energy
 		if c.Base.Cons >= 1 {

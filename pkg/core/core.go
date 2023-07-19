@@ -175,11 +175,17 @@ func (c *Core) AddChar(p profile.CharacterProfile) (int, error) {
 	}
 	index := c.Player.AddChar(char)
 
+	// get starting hp
+	char.StartHP = -1
+	if hp, ok := p.Params["start_hp"]; ok {
+		char.StartHP = hp
+	}
+
 	// set the energy
 	char.Energy = char.EnergyMax
 	if e, ok := p.Params["start_energy"]; ok {
 		char.Energy = float64(e)
-		//some sanity check in case user decide to set energy = 10000000
+		// some sanity check in case user decide to set energy = 10000000
 		if char.Energy > char.EnergyMax {
 			char.Energy = char.EnergyMax
 		}

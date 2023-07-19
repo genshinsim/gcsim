@@ -3,8 +3,10 @@ package xinyan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -23,30 +25,32 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Riff Revolution",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Physical,
 		Durability:         100,
 		Mult:               burstDmg[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 	}
+	c1CB := c.makeC1CB()
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		burstInitialHitmark,
 		burstInitialHitmark,
+		c1CB,
 	)
 
 	// 7 hits
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Riff Revolution (DoT)",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurstPyro,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurstPyro,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               burstDot[c.TalentLvlBurst()],
@@ -54,16 +58,23 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// 1st DoT
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4), 0, 0)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+			0,
+			0,
+			c1CB,
+		)
 		ai.CanBeDefenseHalted = false // only the first DoT has hitlag
 		// 2nd DoT onwards
 		c.QueueCharTask(func() {
 			for i := 0; i < 6; i++ {
 				c.Core.QueueAttack(
 					ai,
-					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 4),
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
 					i*17,
 					i*17,
+					c1CB,
 				)
 			}
 		}, 17)

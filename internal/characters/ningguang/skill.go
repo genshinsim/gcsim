@@ -3,13 +3,19 @@ package ningguang
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 17
+const (
+	skillHitmark   = 17
+	particleICDKey = "ningguang-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(62)
@@ -23,10 +29,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Jade Screen",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -36,13 +42,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		IsDeployable:       true,
 	}
 
+	player := c.Core.Combat.Player()
+	screenDir := player.Direction()
+	screenPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
+
 	c.Core.Tasks.Add(func() {
 		c.skillSnapshot = c.Snapshot(&ai)
 		c.Core.QueueAttackWithSnap(
 			ai,
 			c.skillSnapshot,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 5),
+			combat.NewCircleHitOnTarget(screenPos, nil, 5),
 			0,
+			c.particleCB,
 		)
 	}, skillHitmark)
 
@@ -50,7 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionSkill, 720)
 
 	//create a construct
-	c.Core.Constructs.New(c.newScreen(1800), true) //30 seconds
+	c.Core.Constructs.New(c.newScreen(1800, screenDir, screenPos), true) //30 seconds
 
 	c.lastScreen = c.Core.F
 
@@ -61,20 +72,26 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, 1)
 	}
 
-	if !c.StatusIsActive(skillParticleICDKey) {
-		//3 balls, 33% chance of a fourth
-		var count float64 = 3
-		if c.Core.Rand.Float64() < .33 {
-			count = 4
-		}
-		c.Core.QueueParticle("ningguang", count, attributes.Geo, skillHitmark+c.ParticleDelay)
-		c.AddStatus(skillParticleICDKey, 360, true)
-	}
-
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 6*60, true)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < .33 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
 }

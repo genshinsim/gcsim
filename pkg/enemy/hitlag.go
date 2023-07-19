@@ -10,7 +10,7 @@ import (
 
 func (e *Enemy) ApplyHitlag(factor, dur float64) {
 	//TODO: extend all hitlag affected buff expiry by dur * (1 - factor) i think
-	ext := dur * (1 - factor)
+	ext := int(math.Ceil(dur * (1 - factor)))
 	e.frozenFrames += ext
 
 	var logs []string
@@ -28,7 +28,8 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 	//check resist mods
 	for i, v := range e.mods {
 		if v.AffectedByHitlag() && v.Expiry() != -1 && v.Expiry() > e.Core.F {
-			e.mods[i].Extend(ext)
+			mod := e.mods[i]
+			mod.Extend(mod.Key(), e.Core.Log, -1, ext)
 			if e.Core.Flags.LogDebug {
 				logs = append(logs, fmt.Sprintf("%v: %v", v.Key(), v.Expiry()))
 			}
@@ -41,7 +42,7 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 }
 
 func (e *Enemy) QueueEnemyTask(f func(), delay int) {
-	queue.Add(&e.queue, f, e.timePassed+float64(delay))
+	queue.Add(&e.queue, f, e.timePassed+delay)
 }
 
 func (e *Enemy) Tick() {
@@ -50,8 +51,8 @@ func (e *Enemy) Tick() {
 		return
 	}
 	//decrement frozen time first
-	e.frozenFrames -= 1.0
-	left := 0.0
+	e.frozenFrames -= 1
+	left := 0
 	if e.frozenFrames < 0 {
 		left = -e.frozenFrames
 		e.frozenFrames = 0

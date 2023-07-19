@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -22,7 +23,7 @@ func TestBurningTicks(t *testing.T) {
 	count := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
+		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 		}
 		return false
@@ -94,7 +95,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 	countByActor := []int{0, 0}
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.AttackTag == combat.AttackTagBurningDamage {
+		if ae.Info.AttackTag == attacks.AttackTagBurningDamage {
 			count++
 			countByActor[ae.Info.ActorIndex]++
 		}
@@ -147,7 +148,7 @@ func TestBurningQuickenFuel(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -258,7 +259,7 @@ func TestPyroDendroCoexist(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -313,7 +314,7 @@ func TestDendroDecayTry1(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -364,7 +365,7 @@ func TestDendroDecayTry2(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0
@@ -422,7 +423,7 @@ func TestQuickenBurningDecay(t *testing.T) {
 			return false
 		}
 	}
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Events.Subscribe(i, cb(i), fmt.Sprintf("event-%v", i))
 	}
 	i := 0

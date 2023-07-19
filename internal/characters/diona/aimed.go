@@ -3,8 +3,10 @@ package diona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames []int
@@ -33,10 +35,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim (Charged)",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagExtraAttack,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagExtraAttack,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Cryo,
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
@@ -49,8 +51,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 
 	var a action.ActionInfo
 
-	// TODO: assumes that Diona is always inside Q radius
-	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 {
+	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 && c.Core.Combat.Player().IsWithinArea(c.burstBuffArea) {
 		a = action.ActionInfo{
 			Frames:          frames.NewAbilFunc(aimedC4Frames),
 			AnimationLength: aimedC4Frames[action.InvalidAction],
@@ -72,7 +73,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			combat.Point{Y: -0.5},
+			geometry.Point{Y: -0.5},
 			0.1,
 			1,
 		),

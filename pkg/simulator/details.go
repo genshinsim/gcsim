@@ -2,10 +2,11 @@ package simulator
 
 import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
 
-func GenerateCharacterDetails(cfg *ast.ActionList) ([]simulation.CharacterDetail, error) {
+func GenerateCharacterDetails(cfg *ast.ActionList) ([]*model.Character, error) {
 	cpy := cfg.Copy()
 
 	c, err := simulation.NewCore(CryptoRandSeed(), false, cpy)

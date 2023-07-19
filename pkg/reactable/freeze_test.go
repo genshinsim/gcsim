@@ -80,7 +80,7 @@ func TestFreezePlusAddFreeze(t *testing.T) {
 	})
 
 	//should have frozen + cryo here
-	if !durApproxEqual(120, trg.Durability[ModifierFrozen], 0.00001) {
-		t.Errorf("expecting 120 frozen attached, got %v", trg.Durability[ModifierFrozen])
+	if !durApproxEqual(80, trg.Durability[ModifierFrozen], 0.00001) {
+		t.Errorf("expecting 80 frozen attached, got %v", trg.Durability[ModifierFrozen])
 	}
 }

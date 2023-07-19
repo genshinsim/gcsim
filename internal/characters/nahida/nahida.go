@@ -18,15 +18,17 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	pyroCount     int
-	electroCount  int
-	hydroCount    int
-	pyroBurstBuff []float64
-	a1Buff        []float64
-	a4Buff        []float64
-	c4Buff        []float64
-	c6Count       int
-	markCount     int
+	triKarmaInterval int
+	burstSrc         int
+	pyroCount        int
+	electroCount     int
+	hydroCount       int
+	pyroBurstBuff    []float64
+	a1Buff           []float64
+	a4Buff           []float64
+	c4Buff           []float64
+	c6Count          int
+	markCount        int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -35,6 +37,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.EnergyMax = 50
 	c.NormalHitNum = normalHitNum
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	w.Character = &c
 
@@ -44,9 +48,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	//skill hooks
 	c.Core.Events.Subscribe(event.OnEnemyDamage, c.triKarmaOnBloomDamage, "nahida-tri-karma")
-	for i := event.ReactionEventStartDelim; i < event.ReactionEventEndDelim; i++ {
+	//considers shatter as an elemental reaction
+	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Core.Events.Subscribe(i, c.triKarmaOnReaction(i), fmt.Sprintf("nahida-tri-karma-on-%v", i))
 	}
+	//skill cooldown
+	c.updateTriKarmaInterval()
+
 	//burst ele counts
 	for _, char := range c.Core.Player.Chars() {
 		switch char.Base.Element {
@@ -83,7 +91,7 @@ func (c *char) Init() error {
 
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4()
-	c.a4tick()
+	c.a4Tick()
 
 	if c.Base.Cons >= 4 {
 		c.c4Buff = make([]float64, attributes.EndStatType)
@@ -92,10 +100,6 @@ func (c *char) Init() error {
 
 	if c.Base.Cons >= 2 {
 		c.c2()
-	}
-
-	if c.Base.Cons >= 6 {
-		c.c6()
 	}
 
 	return nil

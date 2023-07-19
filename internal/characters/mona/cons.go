@@ -4,11 +4,13 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -47,7 +49,7 @@ func (c *char) c1() {
 							return 0, false
 						}
 						// Electro-Charged DMG increases by 15%.
-						if ai.AttackTag == combat.AttackTagECDamage {
+						if ai.AttackTag == attacks.AttackTagECDamage {
 							return 0.15, false
 						}
 						// Vaporize DMG increases by 15%.
@@ -56,7 +58,7 @@ func (c *char) c1() {
 							return 0.15, false
 						}
 						// Hydro Swirl DMG increases by 15%.
-						if ai.AttackTag == combat.AttackTagSwirlHydro {
+						if ai.AttackTag == attacks.AttackTagSwirlHydro {
 							return 0.15, false
 						}
 						return 0, false
@@ -76,7 +78,7 @@ func (c *char) c2(a combat.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.Core.Rand.Float64() > .2 {
@@ -89,10 +91,10 @@ func (c *char) c2(a combat.AttackCB) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -157,7 +159,7 @@ func (c *char) c6(src int) func() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c6Key, 8*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagExtra {
+				if atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false
 				}
 				m[attributes.DmgP] = 0.60 * float64(c.c6Stacks)
@@ -172,26 +174,21 @@ func (c *char) c6(src int) func() {
 	}
 }
 
-func (c *char) c6CAReset() {
-	// handle C6 stack reset if CA used before c6 buff expires
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if c.Core.Player.Active() != c.Index {
-			return false
+func (c *char) makeC6CAResetCB() combat.AttackCBFunc {
+	if c.Base.Cons < 6 || !c.StatusIsActive(c6Key) {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() == targets.TargettableEnemy {
+			return
 		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
+		if !c.StatusIsActive(c6Key) {
+			return
 		}
-		if atk.Info.AttackTag != combat.AttackTagExtra {
-			return false
-		}
-		if c.StatusIsActive(c6Key) {
-			c.c6Stacks = 0
-			c.DeleteStatus(c6Key)
-			c.Core.Log.NewEvent(fmt.Sprintf("%v stacks reset via charge attack", c6Key), glog.LogCharacterEvent, c.Index)
-		}
-		return false
-	}, fmt.Sprintf("%v-reset", c6Key))
+		c.DeleteStatus(c6Key)
+		c.c6Stacks = 0
+		c.Core.Log.NewEvent(fmt.Sprintf("%v stacks reset via charge attack", c6Key), glog.LogCharacterEvent, c.Index)
+	}
 }
 
 func (c *char) c6TimerReset() {

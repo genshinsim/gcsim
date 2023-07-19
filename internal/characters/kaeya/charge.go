@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -27,10 +29,10 @@ func init() {
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -42,7 +44,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{Y: chargeOffsets[i]},
+				geometry.Point{Y: chargeOffsets[i]},
 				2.2,
 			),
 			chargeHitmarks[i],

@@ -2,11 +2,15 @@ package reactable
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -17,7 +21,7 @@ func (r *Reactable) TryBloom(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	var consumed combat.Durability
+	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Hydro:
 		//this part is annoying. bloom will happen if any of the dendro like aura is present
@@ -84,19 +88,19 @@ func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	}, DendroCoreDelay)
 }
 
-func NewDendroCore(c *core.Core, shp combat.Shape, a *combat.AttackEvent) *DendroCore {
+func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *DendroCore {
 	s := &DendroCore{
 		srcFrame: c.F,
 	}
 
-	circ, ok := shp.(*combat.Circle)
+	circ, ok := shp.(*geometry.Circle)
 	if !ok {
 		panic("rectangle target hurtbox is not supported for dendro core spawning")
 	}
 
 	// for simplicity, seeds spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
-	s.Gadget = gadget.New(c, combat.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
+	s.Gadget = gadget.New(c, geometry.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
 	s.Gadget.Duration = 300 // ??
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
@@ -109,9 +113,9 @@ func NewDendroCore(c *core.Core, shp combat.Shape, a *combat.AttackEvent) *Dendr
 		//self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[combat.TargettablePlayer] = false
-		ap.SkipTargets[combat.TargettableEnemy] = true
-		ap.SkipTargets[combat.TargettableGadget] = true
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
 		c.QueueAttackWithSnap(ai, snap, ap, 1)
 	}
 	s.Gadget.OnExpiry = explode
@@ -143,18 +147,18 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// trigger hyperbloom targets the nearest enemy
 		// it can also do damage to player in small aoe
 		ai, snap := NewHyperbloomAttack(char, s)
-		// queue dmg nearest enemy
-		enemies := s.Core.Combat.EnemyByDistance(s.Gadget.Pos(), combat.InvalidTargetKey)
-		if len(enemies) > 0 {
-			ap := combat.NewCircleHitOnTarget(s.Core.Combat.Enemy(enemies[0]), nil, 1)
+		// queue dmg nearest enemy within radius 15
+		enemy := s.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(s.Gadget, nil, 15), nil)
+		if enemy != nil {
+			ap := combat.NewCircleHitOnTarget(enemy, nil, 1)
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 
 			// also queue self damage
 			ai.Abil += " (self damage)"
 			ai.FlatDmg = 0.05 * ai.FlatDmg
-			ap.SkipTargets[combat.TargettablePlayer] = false
-			ap.SkipTargets[combat.TargettableEnemy] = true
-			ap.SkipTargets[combat.TargettableGadget] = true
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 		}
 
@@ -172,9 +176,9 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		// queue self damage
 		ai.Abil += " (self damage)"
 		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[combat.TargettablePlayer] = false
-		ap.SkipTargets[combat.TargettableEnemy] = true
-		ap.SkipTargets[combat.TargettableGadget] = true
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
 		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		s.Gadget.OnKill = nil
@@ -199,11 +203,11 @@ func NewBloomAttack(char *character.CharWrapper, src combat.Target) (combat.Atta
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
-		AttackTag:        combat.AttackTagBloom,
-		ICDTag:           combat.ICDTagBloomDamage,
-		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
-		Abil:             string(combat.Bloom),
+		AttackTag:        attacks.AttackTagBloom,
+		ICDTag:           attacks.ICDTagBloomDamage,
+		ICDGroup:         attacks.ICDGroupReactionA,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Abil:             string(reactions.Bloom),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
@@ -217,11 +221,11 @@ func NewBurgeonAttack(char *character.CharWrapper, src combat.Target) (combat.At
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
-		AttackTag:        combat.AttackTagBurgeon,
-		ICDTag:           combat.ICDTagBurgeonDamage,
-		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
-		Abil:             string(combat.Burgeon),
+		AttackTag:        attacks.AttackTagBurgeon,
+		ICDTag:           attacks.ICDTagBurgeonDamage,
+		ICDGroup:         attacks.ICDGroupReactionA,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Abil:             string(reactions.Burgeon),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
@@ -235,11 +239,11 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 		ActorIndex:       char.Index,
 		DamageSrc:        src.Key(),
 		Element:          attributes.Dendro,
-		AttackTag:        combat.AttackTagHyperbloom,
-		ICDTag:           combat.ICDTagHyperbloomDamage,
-		ICDGroup:         combat.ICDGroupReactionA,
-		StrikeType:       combat.StrikeTypeDefault,
-		Abil:             string(combat.Hyperbloom),
+		AttackTag:        attacks.AttackTagHyperbloom,
+		ICDTag:           attacks.ICDTagHyperbloomDamage,
+		ICDGroup:         attacks.ICDGroupReactionA,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Abil:             string(reactions.Hyperbloom),
 		IgnoreDefPercent: 1,
 	}
 	flatdmg, snap := calcReactionDmg(char, ai, em)
@@ -247,8 +251,8 @@ func NewHyperbloomAttack(char *character.CharWrapper, src combat.Target) (combat
 	return ai, snap
 }
 
-func (s *DendroCore) SetDirection(trg combat.Point) {}
-func (s *DendroCore) SetDirectionToClosestEnemy()   {}
-func (s *DendroCore) CalcTempDirection(trg combat.Point) combat.Point {
-	return combat.DefaultDirection()
+func (s *DendroCore) SetDirection(trg geometry.Point) {}
+func (s *DendroCore) SetDirectionToClosestEnemy()     {}
+func (s *DendroCore) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
 }

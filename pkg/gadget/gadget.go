@@ -6,6 +6,8 @@ package gadget
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
@@ -23,7 +25,7 @@ type Gadget struct {
 	sinceLastThink int
 }
 
-func New(core *core.Core, p combat.Point, r float64, typ combat.GadgetTyp) *Gadget {
+func New(core *core.Core, p geometry.Point, r float64, typ combat.GadgetTyp) *Gadget {
 	g := &Gadget{
 		core:      core,
 		src:       core.F,
@@ -41,9 +43,9 @@ func (g *Gadget) Kill() {
 	g.core.Combat.RemoveGadget(g.Key())
 }
 
-func (g *Gadget) Type() combat.TargettableType { return combat.TargettableGadget }
-func (g *Gadget) Src() int                     { return g.src }
-func (g *Gadget) GadgetTyp() combat.GadgetTyp  { return g.gadgetTyp }
+func (g *Gadget) Type() targets.TargettableType { return targets.TargettableGadget }
+func (g *Gadget) Src() int                      { return g.src }
+func (g *Gadget) GadgetTyp() combat.GadgetTyp   { return g.gadgetTyp }
 
 func (g *Gadget) Tick() {
 	if g.OnThinkInterval != nil && g.ThinkInterval > 0 {

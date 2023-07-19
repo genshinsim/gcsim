@@ -3,6 +3,7 @@ package thoma
 import (
 	"math"
 
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -28,6 +29,7 @@ func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
 	// add shield
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Shields.Add(&shield.Tmpl{
+			ActorIndex: c.Index,
 			Src:        c.Core.F,
 			ShieldType: shield.ShieldThomaSkill,
 			Name:       src,
@@ -43,7 +45,7 @@ func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
 				Base: modifier.NewBaseWithHitlag("thoma-c6", 360),
 				Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 					switch ae.Info.AttackTag {
-					case combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge:
+					case attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge:
 						return c.c6buff, true
 					}
 					return nil, false

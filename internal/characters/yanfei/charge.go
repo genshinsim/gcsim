@@ -3,6 +3,7 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -39,10 +40,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       charge[c.sealCount][c.TalentLvlAttack()],
@@ -60,6 +61,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, radius),
 		chargeHitmark-windup,
 		chargeHitmark-windup,
+		c.makeA4CB(),
 	)
 
 	c.Core.Log.NewEvent("yanfei charge attack consumed seals", glog.LogCharacterEvent, c.Index).
@@ -70,9 +72,6 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.sealCount = 0
 		c.DeleteStatus(sealBuffKey)
 	}, 1)
-
-	// needed for a4 hitlag handling
-	c.a4HitlagApplied = false
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },

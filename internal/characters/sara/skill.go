@@ -3,19 +3,22 @@ package sara
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
 
-// c2 hitmark
-const c2Hitmark = 103
-
-const coverKey = "sara-e-cover"
+const (
+	coverKey       = "sara-e-cover"
+	particleICDKey = "sara-particle-icd"
+	c2Hitmark      = 103
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(52) // E -> D
@@ -41,17 +44,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tengu Juurai: Ambush C2",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       0.3 * skill[c.TalentLvlSkill()],
 		}
-		// TODO: not sure of snapshot? timing
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), 50, c2Hitmark, c.a4)
-		c.attackBuff(c2Hitmark)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+
+		c.Core.QueueAttack(ai, ap, 50, c2Hitmark, c.makeA4CB())
+		c.attackBuff(ap, c2Hitmark)
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 7)
@@ -64,17 +68,29 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-const attackBuffKey = "sarabuff"
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.1*60, false)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Electro, c.ParticleDelay)
+}
 
 // Handles attack boost from Sara's skills
 // Checks for the onfield character at the delay frame, then applies buff to that character
-func (c *char) attackBuff(delay int) {
+func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 	c.Core.Tasks.Add(func() {
-		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
+		// TODO: this should be a 0 dmg attack
+		if collision, _ := c.Core.Combat.Player().AttackWillLand(a); !collision {
+			return
+		}
 
 		active := c.Core.Player.ActiveChar()
-		//TODO: i think this is only there to make conditionals work? prob not needed
-		active.AddStatus(attackBuffKey, 360, true)
+		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
+
 		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
 			Write("char", active.Index).
 			Write("buff", buff).
@@ -85,6 +101,7 @@ func (c *char) attackBuff(delay int) {
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("sara-attack-buff", 360),
 			AffectedStat: attributes.ATK,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},

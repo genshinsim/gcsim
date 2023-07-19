@@ -1,11 +1,51 @@
 package combat
 
 import (
-	"sort"
-
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+type Status struct {
+	modifier.Base
+}
+type ResistMod struct {
+	Ele   attributes.Element
+	Value float64
+	modifier.Base
+}
+
+type DefMod struct {
+	Value float64
+	Dur   int
+	modifier.Base
+}
+
+type Enemy interface {
+	Target
+	// hp related
+	MaxHP() float64
+	HP() float64
+	// hitlag related
+	ApplyHitlag(factor, dur float64)
+	QueueEnemyTask(f func(), delay int)
+	// modifier related
+	// add
+	AddStatus(key string, dur int, hitlag bool)
+	AddResistMod(mod ResistMod)
+	AddDefMod(mod DefMod)
+	// delete
+	DeleteStatus(key string)
+	DeleteResistMod(key string)
+	DeleteDefMod(key string)
+	// active
+	StatusIsActive(key string) bool
+	ResistModIsActive(key string) bool
+	DefModIsActive(key string) bool
+	StatusExpiry(key string) int
+}
 
 func (h *Handler) Enemy(i int) Target {
 	if i < 0 || i > len(h.enemies) {
@@ -14,11 +54,14 @@ func (h *Handler) Enemy(i int) Target {
 	return h.enemies[i]
 }
 
-func (h *Handler) SetEnemyPos(i int, p Point) bool {
+func (h *Handler) SetEnemyPos(i int, p geometry.Point) bool {
 	if i < 0 || i > len(h.enemies)-1 {
 		return false
 	}
+
 	h.enemies[i].SetPos(p)
+	h.Events.Emit(event.OnTargetMoved, h.enemies[i])
+
 	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
 		Write("index", i).
 		Write("x", p.X).
@@ -55,87 +98,4 @@ func (h *Handler) PrimaryTarget() Target {
 		}
 	}
 	panic("default target does not exist?!")
-}
-
-// EnemyByDistance returns an array of indices of the enemies sorted by distance
-func (c *Handler) EnemyByDistance(p Point, excl TargetKey) []int {
-	//we dont actually need to know the exact distance. just find the lowest
-	//of x^2 + y^2 to avoid sqrt
-
-	var tuples []struct {
-		ind  int
-		dist float64
-	}
-
-	for i, v := range c.enemies {
-		if v.Key() == excl {
-			continue
-		}
-		if !v.IsAlive() {
-			continue
-		}
-		vPos := v.Shape().Pos()
-		dist := p.Sub(vPos).MagnitudeSquared()
-		tuples = append(tuples, struct {
-			ind  int
-			dist float64
-		}{ind: i, dist: dist})
-	}
-
-	sort.Slice(tuples, func(i, j int) bool {
-		return tuples[i].dist < tuples[j].dist
-	})
-
-	result := make([]int, 0, len(tuples))
-
-	for _, v := range tuples {
-		result = append(result, v.ind)
-	}
-
-	return result
-}
-
-// EnemiesWithinRadius returns an array of indices of the enemies within radius r
-func (c *Handler) EnemiesWithinRadius(p Point, r float64) []int {
-	result := make([]int, 0, len(c.enemies))
-	for i, v := range c.enemies {
-		vPos := v.Shape().Pos()
-		dist := p.Sub(vPos).MagnitudeSquared()
-		if dist > r*r {
-			continue
-		}
-		if !v.IsAlive() {
-			continue
-		}
-		result = append(result, i)
-	}
-
-	return result
-}
-
-// EnemyExcl returns array of indices of enemies, excluding self
-func (c *Handler) EnemyExcl(self TargetKey) []int {
-	result := make([]int, 0, len(c.enemies))
-
-	for i, e := range c.enemies {
-		if e.Key() == self {
-			continue
-		}
-		if !e.IsAlive() {
-			continue
-		}
-		result = append(result, i)
-	}
-
-	return result
-}
-
-func (c *Handler) RandomEnemyTarget() int {
-
-	count := len(c.enemies)
-	if count == 0 {
-		//this will basically cause that attack to hit nothing
-		return -1
-	}
-	return c.Rand.Intn(count)
 }

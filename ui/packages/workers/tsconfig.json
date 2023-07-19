@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "es2021",
+    "lib": ["es2021"],
+    "module": "es2022",
+    "allowJs": true,
+    "checkJs": false,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["@cloudflare/workers-types"],
+  },
+  "include": ["src"]
+}

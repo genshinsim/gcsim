@@ -6,6 +6,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -93,9 +94,9 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	if c.StatModIsActive(burstBuffKey) {
 		// apply infusion to attacks only
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagPlunge:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}
@@ -141,4 +142,38 @@ func (c *char) addStrStack(src string, inc int) {
 		Write("old_stacks", old).
 		Write("inc", inc).
 		Write("cur_stacks", v)
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "will-c6-proc":
+		return c.c6Proc, nil
+	case "slash-type":
+		if len(fields) < 2 {
+			break
+		}
+		switch fields[1] {
+		case "idle":
+			return int(InvalidSlash), nil
+		case "saichi":
+			return int(SaichiSlash), nil
+		case "left":
+			return int(LeftSlash), nil
+		case "right":
+			return int(RightSlash), nil
+		case "final":
+			return int(FinalSlash), nil
+		}
+	case "slash":
+		if len(fields) < 2 {
+			break
+		}
+		switch fields[1] {
+		case "current":
+			return int(c.slashState), nil
+		case "next":
+			return int(c.slashState.Next(c.Tags[strStackKey], c.c6Proc)), nil
+		}
+	}
+	return c.Character.Condition(fields)
 }

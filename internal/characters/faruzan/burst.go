@@ -3,8 +3,10 @@ package faruzan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -42,10 +44,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "The Wind's Secret Ways (Q)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -53,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 6.3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 6.3),
 		burstHitmark,
 		burstHitmark,
 		applyBurstShredCb,
@@ -72,10 +74,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	player := c.Core.Combat.Player()
 	playerPos := player.Pos()
 	direction := player.Direction()
-	gadgetPositions := []combat.Point{
-		combat.CalcOffsetPoint(playerPos, combat.Point{X: 5.19, Y: 10.5}, direction),
-		combat.CalcOffsetPoint(playerPos, combat.Point{X: -5.19, Y: 10.5}, direction),
-		combat.CalcOffsetPoint(playerPos, combat.Point{Y: 1.5}, direction),
+	gadgetPositions := []geometry.Point{
+		geometry.CalcOffsetPoint(playerPos, geometry.Point{X: 5.19, Y: 10.5}, direction),
+		geometry.CalcOffsetPoint(playerPos, geometry.Point{X: -5.19, Y: 10.5}, direction),
+		geometry.CalcOffsetPoint(playerPos, geometry.Point{Y: 1.5}, direction),
 	}
 	count := 0
 	for i := 137; i <= duration; i += 120 {
@@ -84,23 +86,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			if c.burstSrc != currSrc {
 				return
 			}
-			for id := range c.Core.Combat.EnemiesWithinRadius(gadgetPos, 6) {
-				trg, ok := c.Core.Combat.Enemy(id).(*enemy.Enemy)
-				if !ok {
-					continue
-				}
-				applyBurstShred(trg)
+			enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(gadgetPos, nil, 6), nil)
+			for _, e := range enemies {
+				applyBurstShred(e)
 			}
 		}, 43+i)
 		count += 1
 	}
 
-	field := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 40)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 40)
 	buffFunc := func() {
 		if c.burstSrc != currSrc {
 			return
 		}
-		if !combat.WillCollide(field, c.Core.Combat.Player(), 0) {
+		if !c.Core.Combat.Player().IsWithinArea(burstArea) {
 			return
 		}
 		for _, char := range c.Core.Player.Chars() {
@@ -143,15 +142,15 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 }
 
 func applyBurstShredCb(a combat.AttackCB) {
-	t, ok := a.Target.(*enemy.Enemy)
+	applyBurstShred(a.Target)
+}
+
+func applyBurstShred(trg combat.Target) {
+	t, ok := trg.(*enemy.Enemy)
 	if !ok {
 		return
 	}
-	applyBurstShred(t)
-}
-
-func applyBurstShred(trg *enemy.Enemy) {
-	trg.AddResistMod(enemy.ResistMod{
+	t.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag(burstShredKey, 240),
 		Ele:   attributes.Anemo,
 		Value: -0.3,

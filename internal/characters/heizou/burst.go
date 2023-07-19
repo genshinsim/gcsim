@@ -3,9 +3,11 @@ package heizou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var burstFrames []int
@@ -26,7 +28,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.burstTaggedCount = 0
 	burstCB := func(a combat.AttackCB) {
 		//check if enemy
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		//max 4 tagged
@@ -43,10 +45,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	auraCheck := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris (Aura check)",
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 		Durability: 0,
 		Mult:       0,
@@ -54,16 +56,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// should only hit enemies
 	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6)
-	ap.SkipTargets[combat.TargettableGadget] = true
+	ap.SkipTargets[targets.TargettableGadget] = true
 	c.Core.QueueAttack(auraCheck, ap, burstHitmark, burstHitmark, burstCB)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fudou Style Vacuum Slugger",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -102,10 +104,10 @@ func (c *char) irisDmg(t combat.Target) {
 	aiAbs := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Windmuster Iris",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.NoElement,
 		Durability: 25,
 		Mult:       burstIris[c.TalentLvlBurst()],

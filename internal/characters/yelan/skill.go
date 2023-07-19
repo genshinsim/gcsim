@@ -3,20 +3,25 @@ package yelan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
 
-const skillHitmark = 35
-const skillTargetCountTag = "marked"
-const skillHoldDuration = "hold_length" //not yet implemented
-const skillMarkedTag = "yelan-skill-marked"
+const (
+	skillHitmark        = 35
+	particleICDKey      = "yelan-particle-icd"
+	skillTargetCountTag = "marked"
+	skillHoldDuration   = "hold_length" // not yet implemented
+	skillMarkedTag      = "yelan-skill-marked"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(42)
@@ -36,10 +41,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lingering Lifeline",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       0,
@@ -87,22 +92,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// hold := p["hold"]
 
 	cb := func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
-		//TODO: this used to be 82?
-		c.Core.QueueParticle("yelan", 4, attributes.Hydro, c.ParticleDelay)
 		//check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
-			//TODO: does this thing even time out?
-			c.SetTag(breakthroughStatus, 1)
+			c.breakthrough = true
 			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
 		}
 		//TODO: icd on this??
-		if c.Core.Status.Duration(burstStatus) > 0 {
-			c.exquisiteThrowSkillProc()
-			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index).
-				Write("icd", c.burstDiceICD)
+		if c.StatusIsActive(burstKey) {
+			c.summonExquisiteThrow()
+			c.Core.Log.NewEvent("yelan burst on skill", glog.LogCharacterEvent, c.Index)
 		}
 	}
 
@@ -122,7 +123,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			marked--
 			//queueing attack one frame later
 			//TODO: does hold have different attack size? don't think so?
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, cb)
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, c.particleCB, cb)
 		}
 
 		//activate c4 if relevant
@@ -156,4 +157,15 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Hydro, c.ParticleDelay) // TODO: this used to be 82?
 }

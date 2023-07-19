@@ -56,8 +56,8 @@ func (c *char) checkc6() {
 	//grab the active char
 	char := c.Core.Player.ActiveChar()
 	//if dead, revive back to 1 hp
-	if char.HPCurrent <= -1 {
-		c.HPCurrent = c.MaxHP()
+	if char.CurrentHPRatio() <= 0 {
+		char.SetHPByAmount(1)
 	}
 
 	c.c6icd = c.Core.F + 60*60*15

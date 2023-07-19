@@ -3,14 +3,23 @@ package cyno
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-const skillBName = "Mortuary Rite"
+const (
+	skillBName     = "Mortuary Rite"
+	particleICDKey = "cyno-particle-icd"
+)
 
 var (
 	skillCD       = 450
+	skillBCD      = 180
+	skillCDDelay  = 17
+	skillBCDDelay = 26
 	skillHitmark  = 21
 	skillBHitmark = 28
 	skillFrames   []int
@@ -31,17 +40,17 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.skillB()
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Secret Rite: Chasmic Soulfarer",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -57,11 +66,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		),
 		skillHitmark,
 		skillHitmark,
+		c.makeParticleCB(false),
 	)
 
-	c.Core.QueueParticle("cyno", 3, attributes.Electro, skillHitmark+c.ParticleDelay)
-	c.lastSkillCast = c.Core.F + 17
-	c.SetCDWithDelay(action.ActionSkill, skillCD, 17)
+	c.Core.Tasks.Add(c.triggerSkillCD, skillCDDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -75,10 +83,10 @@ func (c *char) skillB() action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             skillBName,
-		AttackTag:        combat.AttackTagElementalArt,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeBlunt,
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeBlunt,
 		Element:          attributes.Electro,
 		Durability:       25,
 		Mult:             skillB[c.TalentLvlSkill()],
@@ -88,33 +96,29 @@ func (c *char) skillB() action.ActionInfo {
 
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		combat.Point{Y: 1.5},
+		geometry.Point{Y: 1.5},
 		6,
 	)
+	particleCB := c.makeParticleCB(true)
 	if !c.StatusIsActive(a1Key) { // check for endseer buff
-		c.Core.QueueAttack(ai, ap, skillBHitmark, skillBHitmark)
+		c.Core.QueueAttack(ai, ap, skillBHitmark, skillBHitmark, particleCB)
 	} else {
 		// apply the extra damage on skill
 		c.a1Buff()
 		if c.Base.Cons >= 1 && c.StatusIsActive(c1Key) {
 			c.c1()
 		}
-		if c.Base.Cons >= 6 { // constellation 6 giving 4 stacks on judication
-			c.c6Stacks += 4
-			c.AddStatus(c6Key, 480, true) // 8s*60
-			if c.c6Stacks > 8 {
-				c.c6Stacks = 8
-			}
-		}
+		c.c6Init()
 
-		c.Core.QueueAttack(ai, ap, skillBHitmark, skillBHitmark)
+		c.Core.QueueAttack(ai, ap, skillBHitmark, skillBHitmark, particleCB)
 		// Apply the extra hit
 		ai.Abil = "Duststalker Bolt"
 		ai.Mult = 1.0
-		ai.FlatDmg = c.Stat(attributes.EM) * 2.5 // this is the A4
-		ai.ICDTag = combat.ICDTagCynoBolt
-		ai.ICDGroup = combat.ICDGroupCynoBolt
-		ai.StrikeType = combat.StrikeTypeSlash
+		ai.FlatDmg = c.a4Bolt()
+		ai.AttackTag = attacks.AttackTagElementalArtHold
+		ai.ICDTag = attacks.ICDTagElementalArt
+		ai.ICDGroup = attacks.ICDGroupCynoBolt
+		ai.StrikeType = attacks.StrikeTypeSlash
 		ai.HitlagFactor = 0
 		ai.HitlagHaltFrames = 0
 
@@ -130,30 +134,53 @@ func (c *char) skillB() action.ActionInfo {
 				),
 				skillBHitmark,
 				skillBHitmark,
+				particleCB,
 			)
 		}
 
 	}
 	if c.burstExtension < 2 { // burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
-		c.ExtendStatus(burstKey, 240) // 4s*60
+		c.ExtendStatus(BurstKey, 240) // 4s*60
 		c.burstExtension++
 	}
 
 	c.tryBurstPPSlide(skillBHitmark)
 
-	var count float64 = 1 // 33% of generating 2 on furry form
-	if c.Core.Rand.Float64() < .33 {
-		count++
-	}
-	c.Core.QueueParticle("cyno", count, attributes.Electro, skillBHitmark+c.ParticleDelay)
-
-	c.lastSkillCast = c.Core.F + 26
-	c.SetCDWithDelay(action.ActionSkill, 180, 26)
+	c.Core.Tasks.Add(c.triggerSkillCD, skillBCDDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillBFrames),
 		AnimationLength: skillBFrames[action.InvalidAction],
 		CanQueueAfter:   skillBFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) triggerSkillCD() {
+	c.ResetActionCooldown(action.ActionSkill)
+	c.SetCD(action.ActionSkill, skillCD)
+	c.SetCD(action.ActionLowPlunge, skillBCD)
+}
+
+func (c *char) makeParticleCB(burst bool) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.5*60, true)
+
+		var count float64
+		if burst {
+			count = 1
+			if c.Core.Rand.Float64() < 0.33 {
+				count = 2
+			}
+		} else {
+			count = 3
+		}
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Electro, c.ParticleDelay)
 	}
 }

@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -36,6 +37,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	w.Character = &c
 
@@ -88,8 +91,8 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 
 	if c.StatModIsActive(paramitaBuff) {
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}

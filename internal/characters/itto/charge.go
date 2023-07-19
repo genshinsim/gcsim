@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -20,11 +22,10 @@ func init() {
 	chargeFrames = make([][]int, EndSlashType)
 
 	// ActionCharge frames are different per each slash
-	// the frames for CA1/CA2 -> CAF are handled in ActionInfo.Frames
+	// the frames for CA1/CA2 -> CAF, CA0 -> CA0 are handled in ActionInfo.Frames
 
 	// CA0 -> x
-	chargeFrames[SaichiSlash] = frames.InitAbilSlice(131) // NA frames
-	chargeFrames[SaichiSlash][action.ActionCharge] = 500  // CA0 frames. TODO: this action is illegal; need better way to handle it
+	chargeFrames[SaichiSlash] = frames.InitAbilSlice(131) // NA/CA1/CAF frames
 	chargeFrames[SaichiSlash][action.ActionDash] = chargeHitmarks[SaichiSlash]
 	chargeFrames[SaichiSlash][action.ActionJump] = chargeHitmarks[SaichiSlash]
 	chargeFrames[SaichiSlash][action.ActionSwap] = 130
@@ -48,7 +49,7 @@ func init() {
 	chargeFrames[RightSlash][action.ActionSwap] = chargeHitmarks[RightSlash]
 
 	// CAF -> x
-	chargeFrames[FinalSlash] = frames.InitAbilSlice(110) // NA/CA0 frames
+	chargeFrames[FinalSlash] = frames.InitAbilSlice(109) // NA/CA0 frames
 	chargeFrames[FinalSlash][action.ActionSkill] = 76
 	chargeFrames[FinalSlash][action.ActionBurst] = 76
 	chargeFrames[FinalSlash][action.ActionDash] = chargeHitmarks[FinalSlash]
@@ -80,17 +81,6 @@ func (s SlashType) String() string {
 
 func (s SlashType) Next(stacks int, c6Proc bool) SlashType {
 	switch s {
-	// idle -> charge (based on stacks)
-	case InvalidSlash:
-		if stacks == 1 && !c6Proc {
-			return FinalSlash
-		} else if stacks == 1 && c6Proc {
-			return LeftSlash
-		} else if stacks > 1 {
-			return LeftSlash
-		}
-		return SaichiSlash
-
 	// loops CA1/CA2 until stacks=1
 	case LeftSlash:
 		if stacks == 1 && !c6Proc {
@@ -103,10 +93,15 @@ func (s SlashType) Next(stacks int, c6Proc bool) SlashType {
 		}
 		return LeftSlash
 
-	// CA0/CAF -> x
-	case SaichiSlash, FinalSlash:
-		fallthrough
+	// idle/CA0/CAF -> charge (based on stacks)
 	default:
+		if stacks == 1 && !c6Proc {
+			return FinalSlash
+		} else if stacks == 1 && c6Proc {
+			return LeftSlash
+		} else if stacks > 1 {
+			return LeftSlash
+		}
 		return SaichiSlash
 	}
 }
@@ -137,14 +132,24 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 			if prevSlash == FinalSlash {
 				return 14
 			}
-		// CA2 -> CA1
+		// CA0/CA2/CAF -> CA1
 		case LeftSlash:
-			if prevSlash == RightSlash {
+			switch prevSlash {
+			// CA0/CAF -> CA1
+			case SaichiSlash, FinalSlash:
+				return 17
+			// CA2 -> CA1
+			case RightSlash:
 				return 28
 			}
-		// CA1/CA2 -> CAF
+		// CA0/CA1/CA2/CAF -> CAF
 		case FinalSlash:
-			if prevSlash == LeftSlash || prevSlash == RightSlash {
+			switch prevSlash {
+			// CA0/CAF -> CAF
+			case SaichiSlash, FinalSlash:
+				return 17
+			// CA1/CA2 -> CAF
+			case LeftSlash, RightSlash:
 				return 25
 			}
 		}
@@ -152,10 +157,10 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 	// skill -> x
 	case action.SkillState:
 		switch curSlash {
-		// E->CA0
+		// E -> CA0
 		case SaichiSlash:
 			return 14
-		// E->CA1/CAF
+		// E -> CA1/CAF
 		case LeftSlash, FinalSlash:
 			return 17
 		}
@@ -166,10 +171,10 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Physical,
 		Durability:         25,
 		HitlagHaltFrames:   0.10 * 60, // defaults to CA0/CAF hitlag
@@ -215,13 +220,13 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		combat.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+		geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 		chargeHitboxes[burstIndex][c.slashState][0],
 	)
 	if c.slashState == LeftSlash || c.slashState == RightSlash {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+			geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 			chargeHitboxes[burstIndex][c.slashState][0],
 			chargeHitboxes[burstIndex][c.slashState][1],
 		)
@@ -246,15 +251,25 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames: func(next action.Action) int {
 			f := chargeFrames[curSlash][next]
-			// handle CA1/CA2 -> CAF frames
-			if next == action.ActionCharge && nextSlash == FinalSlash {
-				switch curSlash {
-				case LeftSlash: // CA1 -> CAF
-					f = 60
-				case RightSlash: // CA2 -> CAF
-					f = 32
+
+			if next == action.ActionCharge {
+				switch nextSlash {
+				// handle CA1/CA2 -> CAF frames
+				case FinalSlash:
+					switch curSlash {
+					case LeftSlash: // CA1 -> CAF
+						f = 60
+					case RightSlash: // CA2 -> CAF
+						f = 32
+					}
+				// handle CA0 -> CA0 frames
+				case SaichiSlash:
+					if curSlash == SaichiSlash {
+						f = 500
+					}
 				}
 			}
+
 			return frames.AtkSpdAdjust(f-windup, c.Stat(attributes.AtkSpd))
 		},
 		AnimationLength: chargeFrames[curSlash][action.InvalidAction] - windup,

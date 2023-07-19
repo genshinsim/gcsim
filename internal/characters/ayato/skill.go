@@ -3,10 +3,12 @@ package ayato
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -15,7 +17,7 @@ func init() {
 	skillFrames = frames.InitAbilSlice(21)
 }
 
-const skillBuffKey = "soukaikanka"
+const SkillBuffKey = "soukaikanka"
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	delay := p["illusion_delay"]
@@ -29,29 +31,27 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Kamisato Art: Kyouka",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
+
 	ePos := c.Core.Combat.Player()
+	c.a1OnSkill()
 	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(ePos, nil, 3.5), 0, 0)
-		// A1:
-		// set namisen stacks to max
-		c.stacks = c.stacksMax
-		c.Core.Log.NewEvent("ayato a1 set namisen stacks to max", glog.LogCharacterEvent, c.Index).
-			Write("stacks", c.stacks)
+		c.a1OnExplosion()
 	}, delay)
 
-	//start skill buff on cast
-	c.AddStatus(skillBuffKey, 6*60, true)
-	//figure out atk buff
+	// start skill buff on cast
+	c.AddStatus(SkillBuffKey, 6*60, true)
+	// figure out atk buff
 	if c.Base.Cons >= 6 {
-		c.c6ready = true
+		c.c6Ready = true
 	}
 	c.SetCD(action.ActionSkill, 12*60)
 
@@ -63,17 +63,20 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) generateParticles(ac combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 114, true)
-	var count float64 = 1
+	c.AddStatus(particleICDKey, 1.9*60, true)
+
+	count := 1.0
 	if c.Core.Rand.Float64() < 0.5 {
-		count++
+		count = 2
 	}
-	//TODO: this used to be 80 for particle delay
-	c.Core.QueueParticle("ayato", count, attributes.Hydro, c.ParticleDelay)
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay) // TODO: this used to be 80 for particle delay
 }
 
 func (c *char) skillStacks(ac combat.AttackCB) {
@@ -93,7 +96,7 @@ func (c *char) onExitField() {
 		}
 		// clear skill status on field exit
 		c.stacks = 0
-		c.DeleteStatus(skillBuffKey)
+		c.DeleteStatus(SkillBuffKey)
 		// queue up a4
 		c.Core.Tasks.Add(c.a4, 60)
 		return false

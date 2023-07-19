@@ -1,6 +1,7 @@
 package kaeya
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -23,7 +24,7 @@ func (c *char) c1() {
 			if !ok {
 				return nil, false
 			}
-			if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}
 			if !e.AuraContains(attributes.Cryo, attributes.Frozen) {
@@ -85,9 +86,10 @@ func (c *char) c4() {
 			return false
 		}
 		maxhp := c.MaxHP()
-		if c.HPCurrent/maxhp < .2 {
+		if c.CurrentHPRatio() < 0.2 {
 			c.c4icd = c.Core.F + 3600
 			c.Core.Player.Shields.Add(&shield.Tmpl{
+				ActorIndex: c.Index,
 				Src:        c.Core.F,
 				ShieldType: shield.ShieldKaeyaC4,
 				Name:       "Kaeya C4",

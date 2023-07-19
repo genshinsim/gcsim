@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 const normalHitNum = 5
@@ -43,7 +45,7 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.swordAttack(p)
 	}
 
@@ -51,10 +53,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Physical,
 			Durability:         25,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
@@ -64,14 +66,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 			attackHitboxes[c.NormalCounter][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 0 || c.NormalCounter == 2 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				combat.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+				geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)
@@ -84,11 +86,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	defer c.AdvanceNormalIndex()
 
 	return action.ActionInfo{
-		Frames:              frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength:     attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:       attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
-		State:               action.NormalAttackState,
-		FramePausedOnHitlag: c.FramePausedOnHitlag,
+		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		State:           action.NormalAttackState,
 	}
 }
 
@@ -124,10 +125,10 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Musou Isshin %v", c.NormalCounter),
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
@@ -135,7 +136,7 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
 		if c.NormalCounter == 2 {
-			ai.StrikeType = combat.StrikeTypeSpear
+			ai.StrikeType = attacks.StrikeTypeSpear
 		}
 		// Sword hits are dynamic - group snapshots with damage proc
 		ai.Mult = mult[c.TalentLvlBurst()]
@@ -145,7 +146,7 @@ func (c *char) swordAttack(p map[string]int) action.ActionInfo {
 		}
 		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			combat.Point{X: swordOffsets[c.NormalCounter][i][0], Y: swordOffsets[c.NormalCounter][i][1]},
+			geometry.Point{X: swordOffsets[c.NormalCounter][i][0], Y: swordOffsets[c.NormalCounter][i][1]},
 			swordHitboxes[c.NormalCounter][i][0],
 			swordHitboxes[c.NormalCounter][i][1],
 		)

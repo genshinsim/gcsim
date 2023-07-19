@@ -1,10 +1,12 @@
 package nilou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -48,13 +50,13 @@ func (c *char) c2() {
 		}
 
 		if atk.Info.Element == attributes.Hydro {
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-hydro", 10*60),
 				Ele:   attributes.Hydro,
 				Value: -0.35,
 			})
-		} else if atk.Info.AttackTag == combat.AttackTagBloom {
-			t.AddResistMod(enemy.ResistMod{
+		} else if atk.Info.AttackTag == attacks.AttackTagBloom {
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag("nilou-c2-dendro", 10*60),
 				Ele:   attributes.Dendro,
 				Value: -0.35,
@@ -75,7 +77,7 @@ func (c *char) c4() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag("nilou-c4", 8*60),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagElementalBurst {
+			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
 			return m, true
@@ -93,7 +95,7 @@ func (c *char) c4cb() combat.AttackCBFunc {
 
 	done := false
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
@@ -112,6 +114,7 @@ func (c *char) c6() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("nilou-c6-cr", -1),
 		AffectedStat: attributes.CR,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			cr := c.MaxHP() * 0.001 * 0.006
 			if cr > 0.3 {
@@ -126,6 +129,7 @@ func (c *char) c6() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("nilou-c6-cd", -1),
 		AffectedStat: attributes.CD,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			cd := c.MaxHP() * 0.001 * 0.012
 			if cd > 0.6 {
@@ -135,4 +139,6 @@ func (c *char) c6() {
 			return mCD, true
 		},
 	})
+
+	c.QueueCharTask(c.c6, 60)
 }

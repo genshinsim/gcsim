@@ -3,6 +3,7 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -20,7 +21,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	low := (c.HPCurrent / c.MaxHP()) <= 0.5
+	low := c.CurrentHPRatio() <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
 	if low {
@@ -46,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	var bbcb combat.AttackCBFunc
 
-	if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 2 {
+	if c.Base.Cons >= 2 {
 		bbcb = c.applyBB
 	}
 
@@ -54,10 +55,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Soother",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       mult,

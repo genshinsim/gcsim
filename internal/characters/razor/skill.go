@@ -3,23 +3,30 @@ package razor
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var skillPressCDStarts = []int{30, 31}
-var skillHoldCDStarts = []int{52, 52}
+var (
+	skillPressCDStarts = []int{30, 31}
+	skillHoldCDStarts  = []int{52, 52}
 
-var skillPressHitmarks = []int{32, 33}
-var skillHoldHitmarks = []int{55, 55}
+	skillPressHitmarks = []int{32, 33}
+	skillHoldHitmarks  = []int{55, 55}
 
-var skillPressFrames [][]int
-var skillHoldFrames [][]int
+	skillPressFrames [][]int
+	skillHoldFrames  [][]int
+)
 
 const (
-	skillSigilDurationKey = "razor-sigil-duration"
+	skillSigilKey       = "razor-sigil"
+	pressParticleICDKey = "razor-press-particle-icd"
+	holdParticleICDKey  = "razor-hold-particle-icd"
 )
 
 func init() {
@@ -73,10 +80,10 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Claw and Thunder (Press)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               skillPress[c.TalentLvlSkill()],
@@ -85,7 +92,12 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	var c4cb func(a combat.AttackCB)
+	var particleCB combat.AttackCBFunc
+	if !c.StatusIsActive(burstBuffKey) {
+		particleCB = c.pressParticleCB
+	}
+
+	var c4cb combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		c4cb = c.c4cb
 	}
@@ -99,23 +111,18 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{Y: 1},
+			geometry.Point{Y: 1},
 			radius,
 			240,
 		),
 		skillPressHitmarks[burstActive],
 		skillPressHitmarks[burstActive],
+		particleCB,
 		c4cb,
 		c.addSigil(false),
 	)
 
-	cd := 6 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCDWithDelay(action.ActionSkill, int(cd), skillPressCDStarts[burstActive])
-
-	if !c.StatusIsActive(burstBuffKey) {
-		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 3, attributes.Electro, skillPressHitmarks[burstActive]+c.ParticleDelay)
-	}
+	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(6*60), skillPressCDStarts[burstActive])
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames[burstActive]),
@@ -125,34 +132,46 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 	}
 }
 
+func (c *char) pressParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(pressParticleICDKey) {
+		return
+	}
+	c.AddStatus(pressParticleICDKey, 1*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Electro, c.ParticleDelay)
+}
+
 func (c *char) SkillHold(burstActive int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Claw and Thunder (Hold)",
-		AttackTag:  combat.AttackTagElementalArtHold,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
+
+	var particleCB combat.AttackCBFunc
+	if !c.StatusIsActive(burstBuffKey) {
+		particleCB = c.holdParticleCB
+	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
 		skillHoldHitmarks[burstActive],
 		skillHoldHitmarks[burstActive],
+		particleCB,
 	)
 
 	c.Core.Tasks.Add(c.clearSigil, skillHoldHitmarks[burstActive])
 
-	cd := 10 * 0.82 * 60 // A1: Decreases Claw and Thunder's CD by 18%.
-	c.SetCDWithDelay(action.ActionSkill, int(cd), skillHoldCDStarts[burstActive])
-
-	if !c.StatusIsActive(burstBuffKey) {
-		//TODO: this delay used to be 80?
-		c.Core.QueueParticle("razor", 4, attributes.Electro, skillHoldHitmarks[burstActive]+c.ParticleDelay)
-	}
+	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(10*60), skillHoldCDStarts[burstActive])
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillHoldFrames[burstActive]),
@@ -162,28 +181,49 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 	}
 }
 
+func (c *char) holdParticleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(holdParticleICDKey) {
+		return
+	}
+	c.AddStatus(holdParticleICDKey, 1*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Electro, c.ParticleDelay)
+}
+
 func (c *char) addSigil(done bool) combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if done {
 			return
 		}
 		done = true
-		if !c.StatusIsActive(skillSigilDurationKey) {
+		if !c.StatusIsActive(skillSigilKey) {
 			c.sigils = 0
 		}
 
 		if c.sigils < 3 {
 			c.sigils++
 		}
-		c.AddStatus(skillSigilDurationKey, 1080, true) //18 seconds
+
+		// add sigil er buff
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.ER] = float64(c.sigils) * 0.2
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(skillSigilKey, 18*60),
+			AffectedStat: attributes.ER,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
 	}
 }
 
 func (c *char) clearSigil() {
-	if !c.StatusIsActive(skillSigilDurationKey) {
+	if !c.StatusIsActive(skillSigilKey) {
 		c.sigils = 0
 		return
 	}
@@ -191,20 +231,6 @@ func (c *char) clearSigil() {
 	if c.sigils > 0 {
 		c.AddEnergy("razor", float64(c.sigils)*5)
 		c.sigils = 0
-		c.DeleteStatus(skillSigilDurationKey)
+		c.DeleteStatus(skillSigilKey)
 	}
-}
-
-func (c *char) energySigil() {
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("er-sigil", -1),
-		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
-			if c.StatusIsActive(skillSigilDurationKey) {
-				c.skillSigilBonus[attributes.ER] = float64(c.sigils) * 0.2
-				return c.skillSigilBonus, true
-			}
-			return nil, false
-		},
-	})
 }

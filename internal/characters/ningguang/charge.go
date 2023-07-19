@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -88,10 +89,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Charge (%s)", chargeType),
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagExtraAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -119,10 +120,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Charge Gem (%s)", chargeType),
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               jade[c.TalentLvlAttack()],
@@ -145,7 +146,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 	c.jadeCount = 0
 
-	canQueueAfter := math.MaxInt32
+	canQueueAfter := math.MaxInt
 	for _, f := range chargeFrames[chargeType] {
 		if f < canQueueAfter {
 			canQueueAfter = f

@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -46,7 +47,7 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponPr
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {

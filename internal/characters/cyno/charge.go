@@ -3,6 +3,7 @@ package cyno
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -20,17 +21,17 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.chargeB(p)
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupPoleExtraAttack,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
@@ -80,10 +81,10 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Pactsworn Pathclearer Charge",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupPoleExtraAttack,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               chargeB[c.TalentLvlBurst()],

@@ -19,8 +19,8 @@ type char struct {
 	*tmpl.Character
 	qAbsorb             attributes.Element
 	absorbCheckLocation combat.AttackPattern
-	a1buff              []float64
-	a4buff              []float64
+	a1Buff              []float64
+	a4Buff              []float64
 	c4Count             int
 	c6buff              []float64
 }
@@ -31,6 +31,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 	c.EnergyMax = 80
 	c.NormalHitNum = normalHitNum
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	if c.Base.Cons >= 1 {
 		c.SetNumCharges(action.ActionSkill, 2)

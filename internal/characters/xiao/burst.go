@@ -42,7 +42,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				c.Core.Player.Drain(player.DrainInfo{
 					ActorIndex: c.Index,
 					Abil:       "Bane of All Evil",
-					Amount:     burstDrain[c.TalentLvlBurst()] * c.HPCurrent,
+					Amount:     burstDrain[c.TalentLvlBurst()] * c.CurrentHP(),
 				})
 			}
 		}, i)

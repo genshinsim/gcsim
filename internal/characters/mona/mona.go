@@ -19,6 +19,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	a4Stats  []float64
 	c2icd    int
 	c6Src    int
 	c6Stacks int
@@ -49,9 +50,6 @@ func (c *char) Init() error {
 	}
 	if c.Base.Cons >= 4 {
 		c.c4()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6CAReset()
 	}
 	return nil
 }

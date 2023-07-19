@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -20,7 +21,7 @@ func (c *char) c1(ai combat.AttackInfo, travel int) {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				combat.Point{Y: -0.5},
+				geometry.Point{Y: -0.5},
 				0.1,
 				1,
 			),
@@ -43,12 +44,12 @@ func (c *char) c2(a combat.AttackCB) {
 		return
 	}
 
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("venti-c2-anemo", 600),
 		Ele:   attributes.Anemo,
 		Value: -0.12,
 	})
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("venti-c2-phys", 600),
 		Ele:   attributes.Physical,
 		Value: -0.12,
@@ -86,7 +87,7 @@ func (c *char) c6(ele attributes.Element) func(a combat.AttackCB) {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{
+		e.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("venti-c6-"+ele.String(), 600),
 			Ele:   ele,
 			Value: -0.20,

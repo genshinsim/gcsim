@@ -3,8 +3,10 @@ package mona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var dashFrames []int
@@ -30,22 +32,24 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		Abil:       "Dash",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagDash,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagDash,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.1}, 2),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.1}, 2),
 		dashHitmark+f,
 		dashHitmark+f,
 	)
 
 	// A1
-	c.Core.Tasks.Add(c.a1(), 120)
+	if c.Base.Ascension >= 1 {
+		c.Core.Tasks.Add(c.a1, 120)
+	}
 	// C6
 	if c.Base.Cons >= 6 {
 		// reset c6 stacks in case we dash again before using a CA
@@ -56,8 +60,8 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		c.Core.Tasks.Add(c.c6(c.Core.F), 60)
 	}
 
-	// call default implementation to handle stamina
-	c.Character.Dash(p)
+	// handle stamina usage, avoid default dash implementation since dont want CD
+	c.QueueDashStaminaConsumption(p)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return dashFrames[next] + f },

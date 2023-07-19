@@ -15,8 +15,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	fieldSrc int
-	a4Snap   *combat.AttackEvent
+	skillArea combat.AttackPattern
+	fieldSrc  int
+	a4Snap    *combat.AttackEvent
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -37,9 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.onSwapHook()
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
 	if c.Base.Cons >= 6 && c.Core.Combat.DamageMode {
 		c.c6()
 	}

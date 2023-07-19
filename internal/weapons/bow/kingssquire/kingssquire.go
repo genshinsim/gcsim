@@ -4,9 +4,11 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
@@ -39,20 +41,32 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	m[attributes.EM] = 40 + float64(r)*20
 
 	triggerAttack := func() {
-		if char.StatModIsActive(buffKey) {
-			char.DeleteStatMod(buffKey)
-			ai := combat.AttackInfo{
-				ActorIndex: char.Index,
-				Abil:       "King's Squire Proc",
-				AttackTag:  combat.AttackTagWeaponSkill,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
-				StrikeType: combat.StrikeTypeDefault,
-				Element:    attributes.Physical,
-				Mult:       0.8 + float64(r)*0.2,
-			}
-			c.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Combat.PrimaryTarget(), nil, 1.6), 0, 1)
+		if !char.StatModIsActive(buffKey) {
+			return
 		}
+		char.DeleteStatMod(buffKey)
+
+		// determine attack pos
+		player := c.Combat.Player()
+		enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(player, nil, 15), nil)
+		var pos geometry.Point
+		if enemy == nil {
+			pos = player.Pos()
+		} else {
+			pos = enemy.Pos()
+		}
+
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
+			Abil:       "King's Squire Proc",
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Element:    attributes.Physical,
+			Mult:       0.8 + float64(r)*0.2,
+		}
+		c.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, 1.6), 0, 1)
 	}
 
 	f := func(args ...interface{}) bool {

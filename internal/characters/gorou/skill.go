@@ -3,15 +3,21 @@ package gorou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var skillFrames []int
 
-const skillHitmark = 34
+const (
+	skillHitmark   = 34
+	particleICDKey = "gorou-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(47) // E -> N1/Q
@@ -36,26 +42,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Inuzaka All-Round Defense",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
 			Element:    attributes.Geo,
 			Durability: 25,
 			Mult:       skill[c.TalentLvlSkill()],
+			FlatDmg:    c.a4Skill(),
 		}
-
-		// A1 Part 1
-		// Inuzaka All-Round Defense: Skill DMG increased by 156% of DEF
-		snap := c.Snapshot(&ai)
-		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 1.56
-
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 5),
-			0,
-		)
+		c.eFieldArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 8)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.eFieldArea.Shape.Pos(), nil, 5), 0, 0, c.particleCB)
 
 		// E
 		// so it looks like gorou fields works much the same was as bennett field
@@ -75,10 +72,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}, skillHitmark)
 
-	// 2 particles apparently
-	// TODO: particle frames
-	c.Core.QueueParticle("gorou", 2, attributes.Geo, skillHitmark+c.ParticleDelay)
-
 	// 10s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 600, 32)
 
@@ -90,6 +83,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Geo, c.ParticleDelay)
+}
+
 // recursive function for queueing up ticks
 func (c *char) gorouSkillBuffField(src int) func() {
 	return func() {
@@ -98,10 +102,17 @@ func (c *char) gorouSkillBuffField(src int) func() {
 			return
 		}
 		//do nothing if both field expired
-		if c.Core.Status.Duration(generalWarBannerKey) == 0 && c.Core.Status.Duration(generalGloryKey) == 0 {
+		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
+		qActive := c.Core.Status.Duration(generalGloryKey) > 0
+		if !eActive && !qActive {
 			return
 		}
-		//do nothing if expired
+		// do nothing if only e is up and player is outside of the field area
+		// if q is up then the player is always inside of the field area
+		if eActive && !qActive && !c.Core.Combat.Player().IsWithinArea(c.eFieldArea) {
+			return
+		}
+
 		//add buff to active char based on number of geo chars
 		//ok to overwrite existing mod
 		active := c.Core.Player.ActiveChar()

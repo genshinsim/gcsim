@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -26,10 +28,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Yoohoo Art: Mujina Flurry",
-		AttackTag:        combat.AttackTagElementalBurst,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
-		StrikeType:       combat.StrikeTypeDefault,
+		AttackTag:        attacks.AttackTagElementalBurst,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		Mult:             burst[c.TalentLvlBurst()],
@@ -37,10 +39,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 10)
 	c.Core.QueueAttackWithSnap(
 		ai,
 		snap,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 1.5}, 4.5),
+		combat.NewCircleHitOnTarget(burstArea.Shape.Pos(), nil, 4.5),
 		burstHitmark,
 	)
 
@@ -73,28 +76,31 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// first tick is at 145
 		for i := 145 - tickTaskDelay; i < 145+540-tickTaskDelay; i += 90 {
 			c.Core.Tasks.Add(func() {
-				active := c.Core.Player.ActiveChar()
-				//this is going to be a bit slow..
-				//TODO: should check in radius 10 around gadget position
-				enemies := c.Core.Combat.EnemyByDistance(combat.Point{X: 0, Y: 0}, combat.InvalidTargetKey)
-				needHeal := len(enemies) == 0 || active.HPCurrent/active.MaxHP() <= .7
-				needAttack := !needHeal
-				if c.Base.Cons >= 1 {
-					needHeal = true
-					needAttack = true
+				// check for player
+				// only check HP of active character
+				char := c.Core.Player.ActiveChar()
+				hasC1 := c.Base.Cons >= 1
+				// C1 ignores HP limit
+				needHeal := c.Core.Combat.Player().IsWithinArea(burstArea) && (char.CurrentHPRatio() <= 0.7 || hasC1)
+
+				// check for enemy
+				enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)
+
+				// determine whether to attack or heal
+				// - C1 makes burst able to attack both an enemy and heal the player at the same time
+				needAttack := enemy != nil && (!needHeal || hasC1)
+				if needAttack {
+					d.Pattern = combat.NewCircleHitOnTarget(enemy, nil, c.qTickRadius)
+					c.Core.QueueAttackEvent(d, 0)
 				}
 				if needHeal {
 					c.Core.Player.Heal(player.HealInfo{
 						Caller:  c.Index,
-						Target:  c.Core.Player.Active(),
+						Target:  char.Index,
 						Message: "Muji-Muji Daruma",
 						Src:     heal,
 						Bonus:   d.Snapshot.Stats[attributes.Heal],
 					})
-				}
-				if needAttack {
-					d.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5) // including A4
-					c.Core.QueueAttackEvent(d, 0)
 				}
 			}, i)
 		}
@@ -116,19 +122,19 @@ func (c *char) createBurstSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Muji-Muji Daruma",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       burstSkill[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-
-	return (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
+	return &ae
 }

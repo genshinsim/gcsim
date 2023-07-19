@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -40,24 +41,24 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		switch atk.Info.AttackTag {
-		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("solar-na-buff", 6*60),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
-					case combat.AttackTagNormal:
+					case attacks.AttackTagNormal:
 						return val, true
 					}
 					return nil, false
 				},
 			})
 
-		case combat.AttackTagNormal:
+		case attacks.AttackTagNormal:
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("solar-skill-burst-buff", 6*60),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					switch atk.Info.AttackTag {
-					case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+					case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
 						return val, true
 					}
 					return nil, false

@@ -3,8 +3,10 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var chargeFrames []int
@@ -20,17 +22,17 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
+	if c.StatusIsActive(BurstKey) {
 		return c.swordCharge(p)
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		HitlagHaltFrames:   0.02 * 60,
@@ -41,7 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 2.8, 4.8),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 2.8, 4.8),
 		chargeHitmark,
 		chargeHitmark,
 	)
@@ -69,10 +71,10 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Musou Isshin (Charge Attack)",
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
@@ -91,7 +93,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: -0.1}, 7.5, 8),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 7.5, 8),
 				0,
 				0,
 				c.burstRestorefunc,

@@ -3,8 +3,11 @@ package faruzan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -43,17 +46,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wind Realm of Nasamjnin (E)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 3}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3}, 3),
 		skillHitmark,
 		skillHitmark,
 	)
@@ -79,31 +82,39 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) pressurizedCollapse(pos combat.Point) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 5.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
+}
+
+func (c *char) pressurizedCollapse(pos geometry.Point) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       VortexAbilName,
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       vortexDmg[c.TalentLvlSkill()],
 	}
-	done := false
-	particleCb := func(a combat.AttackCB) {
-		if done {
-			return
-		}
-		if c.StatusIsActive(particleICDKey) {
-			return
-		}
-		c.Core.QueueParticle("faruzan", 2.0, attributes.Anemo, c.ParticleDelay)
-		c.AddStatus(particleICDKey, 330, true)
-		done = true
-	}
 	snap := c.Snapshot(&ai)
+
+	// A1:
+	// She can apply The Wind's Secret Ways' Perfidious Wind's Bale to opponents
+	// who are hit by the vortex created by Pressurized Collapse.
+	var shredCb combat.AttackCBFunc
+	if c.Base.Ascension >= 1 {
+		shredCb = applyBurstShredCb
+	}
+
 	c.Core.Tasks.Add(func() {
 		c.Core.QueueAttackWithSnap(
 			ai,
@@ -111,7 +122,8 @@ func (c *char) pressurizedCollapse(pos combat.Point) {
 			combat.NewCircleHitOnTarget(pos, nil, 6),
 			0,
 			c.makeC4Callback(),
-			applyBurstShredCb,
-			particleCb)
+			shredCb,
+			c.particleCB,
+		)
 	}, vortexHitmark)
 }

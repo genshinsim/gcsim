@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -35,9 +36,10 @@ func (s *Set) Init() error      { return nil }
 
 // 2pc - Increases Elemental Mastery by 80.
 // 4pc - The equipping character's Bloom, Hyperbloom, and Burgeon reaction DMG are increased by 40%. Additionally, after the equipping
-//       character triggers Bloom, Hyperbloom, or Burgeon, they will gain another 25% bonus to the effect mentioned prior. Each stack
-//       of this lasts 10s. Max 4 stacks simultaneously. This effect can only be triggered once per second. The character who equips
-//       this can still trigger its effects when not on the field.
+//
+//	character triggers Bloom, Hyperbloom, or Burgeon, they will gain another 25% bonus to the effect mentioned prior. Each stack
+//	of this lasts 10s. Max 4 stacks simultaneously. This effect can only be triggered once per second. The character who equips
+//	this can still trigger its effects when not on the field.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
 	s := Set{}
 
@@ -58,17 +60,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			Base: modifier.NewBase("flower-4pc", -1),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
 				switch ai.AttackTag {
-				case combat.AttackTagBloom:
-				case combat.AttackTagHyperbloom:
-				case combat.AttackTagBurgeon:
+				case attacks.AttackTagBloom:
+				case attacks.AttackTagHyperbloom:
+				case attacks.AttackTagBurgeon:
 				default:
 					return 0, false
 				}
-
-				if !char.StatusIsActive(buffKey) {
-					s.stacks = 0
-				}
-				return 0.4 * (1 + float64(s.stacks)*0.25), false
+				return 0.4, false
 			},
 		})
 
@@ -85,14 +83,27 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if !char.StatusIsActive(buffKey) {
 				s.stacks = 0
 			}
-			s.stacks++
-			if s.stacks > 4 {
-				s.stacks = 4
+			if s.stacks < 4 {
+				s.stacks++
 			}
 
 			c.Log.NewEvent("flower of paradise lost 4pc adding stack", glog.LogArtifactEvent, char.Index).
 				Write("stacks", s.stacks)
-			char.AddStatus(buffKey, 10*60, true)
+
+			char.AddReactBonusMod(character.ReactBonusMod{
+				Base: modifier.NewBaseWithHitlag(buffKey, 10*60),
+				Amount: func(ai combat.AttackInfo) (float64, bool) {
+					switch ai.AttackTag {
+					case attacks.AttackTagBloom:
+					case attacks.AttackTagHyperbloom:
+					case attacks.AttackTagBurgeon:
+					default:
+						return 0, false
+					}
+					return 0.4 * float64(s.stacks) * 0.25, false
+				},
+			})
+
 			return false
 		}
 

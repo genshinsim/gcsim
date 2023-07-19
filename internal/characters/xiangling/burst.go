@@ -5,13 +5,14 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
 var (
 	burstFrames   []int
-	burstHitmarks = []int{18, 33, 56} // initial 3 hits
+	burstHitmarks = []int{18, 33, 57} // initial 3 hits
 	burstRadius   = []float64{2.5, 2.5, 3}
 )
 
@@ -25,10 +26,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		initialHit := combat.AttackInfo{
 			Abil:               fmt.Sprintf("Pyronado Hit %v", i+1),
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagElementalBurst,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagElementalBurst,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Pyro,
 			Durability:         25,
 			HitlagHaltFrames:   0.03 * 60,
@@ -50,10 +51,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	burstHit := combat.AttackInfo{
 		Abil:       "Pyronado",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       pyronadoSpin[c.TalentLvlBurst()],
@@ -67,7 +68,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		c.Core.Status.Add("xianglingburst", max)
 		snap := c.Snapshot(&burstHit)
-		for delay := 0; delay <= max; delay += 73 { //first hit on same frame as 3rd initial hit
+		for delay := 0; delay <= max; delay += 73 { //first hit 1f before the 3rd initial hit
 			// TODO: proper hitbox
 			c.Core.Tasks.Add(func() {
 				c.Core.QueueAttackWithSnap(
@@ -78,10 +79,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				)
 			}, delay)
 		}
-		//add an effect starting at frame 55 to end of duration to increase pyro dmg by 15% if c6
+		//add an effect starting at frame 56 to end of duration to increase pyro dmg by 15% if c6
 		if c.Base.Cons >= 6 {
-			//wait 1 frame after Q starts
-			c.Core.Tasks.Add(func() { c.c6(max) }, 1)
+			c.c6(max)
 		}
 	}, a)
 

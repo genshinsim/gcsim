@@ -2,9 +2,11 @@ package ayaka
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -23,7 +25,7 @@ func (c *char) c1(a combat.AttackCB) {
 	if a.AttackEvent.Info.Element != attributes.Cryo {
 		return
 	}
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(c1ICDKey) {
@@ -50,7 +52,7 @@ func (c *char) c4(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	e.AddDefMod(enemy.DefMod{
+	e.AddDefMod(combat.DefMod{
 		Base:  modifier.NewBaseWithHitlag("ayaka-c4", 60*6),
 		Value: -0.3,
 	})
@@ -61,7 +63,7 @@ func (c *char) c6(a combat.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
-	if a.Target.Type() != combat.TargettableEnemy {
+	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
 
@@ -86,7 +88,7 @@ func (c *char) c6AddBuff() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("ayaka-c6", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != combat.AttackTagExtra {
+			if atk.Info.AttackTag != attacks.AttackTagExtra {
 				return nil, false
 			}
 			return m, true

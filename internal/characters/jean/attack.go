@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
@@ -15,6 +17,7 @@ var (
 	attackHitlagHaltFrame = []float64{.03, .03, .06, .06, .1}
 	attackRadius          = []float64{1.5, 2.2, 2.8, 1.6, 1.6}
 	attackOffsets         = []float64{1.5, -0.5, -1, 0.6, 0.6}
+	attackFanAngles       = []float64{360, 150, 30, 360, 360}
 )
 
 const normalHitNum = 5
@@ -43,10 +46,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagNormal,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               auto[c.NormalCounter][c.TalentLvlAttack()],
@@ -56,14 +59,15 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(
+		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			combat.Point{Y: attackOffsets[c.NormalCounter]},
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackRadius[c.NormalCounter],
+			attackFanAngles[c.NormalCounter],
 		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
-		c.a1(),
+		c.makeA1CB(),
 	)
 
 	defer c.AdvanceNormalIndex()

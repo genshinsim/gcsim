@@ -40,9 +40,6 @@ func (c *char) Init() error {
 	c.a4buff[attributes.CR] = 0.15
 	c.a4buff[attributes.ER] = 0.15
 
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
 	if c.Base.Cons >= 4 {
 		c.c4buff = make([]float64, attributes.EndStatType)
 		c.c4buff[attributes.ATKP] = 0.25

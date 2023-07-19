@@ -3,6 +3,7 @@ package ayato
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -20,7 +21,7 @@ type char struct {
 	stacks            int
 	stacksMax         int
 	shunsuikenCounter int
-	c6ready           bool
+	c6Ready           bool
 }
 
 const (
@@ -32,12 +33,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.EnergyMax = 80
-	c.BurstCon = 3
-	c.SkillCon = 5
+	c.BurstCon = 5
+	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
 	c.shunsuikenCounter = 3
-	c.c6ready = false
 
 	c.stacksMax = 4
 	if c.Base.Cons >= 2 {
@@ -50,7 +50,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.a1()
 	c.a4()
 	c.onExitField()
 	if c.Base.Cons >= 1 {
@@ -59,16 +58,13 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
 	return nil
 }
 
 func (c *char) AdvanceNormalIndex() {
 	c.NormalCounter++
 
-	if c.StatusIsActive(skillBuffKey) {
+	if c.StatusIsActive(SkillBuffKey) {
 		if c.NormalCounter == c.shunsuikenCounter {
 			c.NormalCounter = 0
 		}
@@ -84,10 +80,10 @@ func (c *char) AdvanceNormalIndex() {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.StatusIsActive(skillBuffKey) {
+	if c.StatusIsActive(SkillBuffKey) {
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}
@@ -98,7 +94,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).
 			Write("damage_added", flatdmg).
 			Write("stacks", c.stacks).
-			Write("expiry", c.StatusExpiry(skillBuffKey))
+			Write("expiry", c.StatusExpiry(SkillBuffKey))
 	}
 	return ds
 }

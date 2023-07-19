@@ -3,9 +3,11 @@ package yunjin
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -13,6 +15,8 @@ var (
 	skillHitmarks = []int{13, 50, 93}
 	skillCDStarts = []int{11, 48, 90}
 )
+
+const particleICDKey = "yunjin-particle-icd"
 
 func init() {
 	skillFrames = make([][]int, 3)
@@ -57,10 +61,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Opening Flourish Press (E)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               skillDmg[chargeLevel][c.TalentLvlSkill()],
@@ -69,35 +73,42 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	// Particle should spawn after hit
+	var count float64
 	hitDelay := skillHitmarks[animIdx]
 	radius := 4.0
 	switch chargeLevel {
 	case 0:
 		ai.HitlagHaltFrames = 0.06 * 60
-		c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.ParticleDelay+hitDelay)
+		count = 2
 	case 1:
 		// 2 or 3, 1:1 ratio
 		if c.Core.Rand.Float64() < 0.5 {
-			c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.ParticleDelay+hitDelay)
+			count = 2
 		} else {
-			c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.ParticleDelay+hitDelay)
+			count = 3
 		}
 		ai.Abil = "Opening Flourish Level 1 (E)"
 		ai.HitlagHaltFrames = 0.09 * 60
 		radius = 6
 	case 2:
-		c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.ParticleDelay+hitDelay)
+		count = 3
 		ai.Durability = 100
 		ai.Abil = "Opening Flourish Level 2 (E)"
 		ai.HitlagHaltFrames = 0.12 * 60
 		radius = 8
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius), hitDelay, hitDelay)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius),
+		hitDelay,
+		hitDelay,
+		c.makeParticleCB(count),
+	)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
+		ActorIndex: c.Index,
 		Src:        c.Core.F,
 		Name:       "Yun Jin Skill",
 		ShieldType: shield.ShieldYunjinSkill,
@@ -118,5 +129,18 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[animIdx][action.InvalidAction],
 		CanQueueAfter:   skillFrames[animIdx][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.3*60, true)
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
 	}
 }

@@ -3,10 +3,13 @@ package nahida
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -56,10 +59,10 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       skillPress[c.TalentLvlSkill()],
@@ -67,7 +70,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 0.2}, 4.6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.2}, 4.6),
 		0, //TODO: snapshot delay?
 		skillPressHitmark,
 		c.skillMarkTargets,
@@ -85,22 +88,23 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
-	// earliest hold can be let go is roughly 16.5. max is set to 317 so that
-	// it aligns with max cd at 330
-	if hold > 317 {
-		hold = 317
+	// earliest hold can be let go is roughly 16.5, max is 317
+	// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
+	if hold > 300 {
+		hold = 300
 	}
-	if hold < 17 {
-		hold = 17
+	if hold < 1 {
+		hold = 1
 	}
+
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
@@ -110,7 +114,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
 		0, // TODO: snapshot timing
-		hold+3,
+		hold+3+16,
 		c.skillMarkTargets,
 	)
 
@@ -125,11 +129,14 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 }
 
-func (c *char) particlesOnDmg(_ combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	if c.StatusIsActive(triKarmaParticleICD) {
 		return
 	}
-	c.AddStatus(triKarmaParticleICD, 7*60, false)
+	c.AddStatus(triKarmaParticleICD, 7*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 }
 
@@ -146,16 +153,16 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 	}
 }
 
-// TODO: this implementation will only affect the next icd; not sure
-// if it cuts short current as well
-func (c *char) triKarmaInterval() int {
-	if c.electroCount > 0 && c.Core.Status.Duration(burstKey) > 0 {
-		cd := int((2.5 - burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()]) * 60)
-		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
-		return cd
-
+func (c *char) updateTriKarmaInterval() {
+	cd := int(2.5 * 60)
+	if c.electroCount > 0 && c.StatusIsActive(withinBurstKey) {
+		cd -= int(burstTriKarmaCDReduction[c.electroCount-1][c.TalentLvlBurst()] * 60)
 	}
-	return int(2.5 * 60)
+	if cd != c.triKarmaInterval {
+		c.Core.Log.NewEvent("tri-karma cd reduced", glog.LogCharacterEvent, c.Index).Write("cooldown", cd)
+		c.triKarmaInterval = cd
+	}
+	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
 func (c *char) triKarmaOnReaction(rx event.Event) func(args ...interface{}) bool {
@@ -180,9 +187,9 @@ func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
 		return false
 	}
 	switch ae.Info.AttackTag {
-	case combat.AttackTagBloom:
-	case combat.AttackTagHyperbloom:
-	case combat.AttackTagBurgeon:
+	case attacks.AttackTagBloom:
+	case attacks.AttackTagHyperbloom:
+	case attacks.AttackTagBurgeon:
 	default:
 		return false
 	}
@@ -198,7 +205,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 	if !t.StatusIsActive(skillMarkKey) {
 		return
 	}
-	c.AddStatus(skillICDKey, c.triKarmaInterval(), true) //TODO: this is affected by hitlag?
+	c.AddStatus(skillICDKey, c.triKarmaInterval, true) //TODO: this is affected by hitlag?
 	done := false
 	for _, v := range c.Core.Combat.Enemies() {
 		e, ok := v.(*enemy.Enemy)
@@ -210,17 +217,17 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 		}
 		var cb combat.AttackCBFunc
 		if !done {
-			cb = c.particlesOnDmg
+			cb = c.particleCB
 			done = true
 		}
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNahidaSkill,
-			ICDGroup:   combat.ICDGroupNahidaSkill,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNahidaSkill,
+			ICDGroup:   attacks.ICDGroupNahidaSkill,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       triKarmaAtk[c.TalentLvlSkill()],

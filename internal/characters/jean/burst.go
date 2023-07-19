@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -35,10 +36,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dandelion Breeze",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -98,35 +99,36 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.c4()
 		}, burstStart-1)
 	}
+	c.burstArea = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
 	// duration is ~10.6s, first tick starts at frame 100, + 60 each
 	for i := 100; i <= 600+burstStart; i += 60 {
 		c.Core.Tasks.Add(func() {
-			// heal
-			// c.Core.Log.NewEvent("jean q healing", glog.LogCharacterEvent, c.Index, "+heal", hpplus, "atk", atk, "heal amount", healDot)
-			c.Core.Player.Heal(player.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Core.Player.Active(),
-				Message: "Dandelion Field",
-				Src:     healDot,
-				Bonus:   hpplus,
-			})
+			if c.Core.Combat.Player().IsWithinArea(c.burstArea) {
+				// heal
+				c.Core.Player.Heal(player.HealInfo{
+					Caller:  c.Index,
+					Target:  c.Core.Player.Active(),
+					Message: "Dandelion Field",
+					Src:     healDot,
+					Bonus:   hpplus,
+				})
 
-			// self swirl
-			ae := combat.AttackEvent{
-				Info:        selfSwirl,
-				Pattern:     combat.NewSingleTargetHit(0),
-				SourceFrame: c.Core.F,
+				// self swirl
+				ae := combat.AttackEvent{
+					Info:        selfSwirl,
+					Pattern:     combat.NewSingleTargetHit(0),
+					SourceFrame: c.Core.F,
+				}
+				c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)
+				self.ReactWithSelf(&ae)
 			}
-			c.Core.Log.NewEvent("jean self swirling", glog.LogCharacterEvent, c.Index)
-			self.ReactWithSelf(&ae)
-
 			// C4
 			if c.Base.Cons >= 4 {
 				c.c4()
 			}
 		}, i)
 	}
-
+	c.ConsumeEnergy(41)
 	c.SetCDWithDelay(action.ActionBurst, 1200, 38)
 	// A4
 	c.Core.Tasks.Add(func() {

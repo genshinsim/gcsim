@@ -43,14 +43,18 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 	}
 	heal := hp * bonus
 
-	prevhp := c.HPCurrent
-	c.ModifyHP(heal)
+	prevHPRatio := c.CurrentHPRatio()
+	prevHP := c.CurrentHP()
+	c.ModifyHPByAmount(heal)
 
 	h.Log.NewEvent(info.Message, glog.LogHealEvent, index).
-		Write("previous", prevhp).
-		Write("amount", hp).
+		Write("previous_hp_ratio", prevHPRatio).
+		Write("previous_hp", prevHP).
+		Write("base amount", hp).
 		Write("bonus", bonus).
-		Write("current", c.HPCurrent).
+		Write("final amount", heal).
+		Write("current_hp_ratio", c.CurrentHPRatio()).
+		Write("current_hp", c.CurrentHP()).
 		Write("max_hp", c.MaxHP())
 
 	h.Events.Emit(event.OnHeal, info, index, heal)
@@ -66,13 +70,16 @@ type DrainInfo struct {
 func (h *Handler) Drain(di DrainInfo) {
 	c := h.chars[di.ActorIndex]
 
-	prevhp := c.HPCurrent
-	c.ModifyHP(-di.Amount)
+	prevHPRatio := c.CurrentHPRatio()
+	prevHP := c.CurrentHP()
+	c.ModifyHPByAmount(-di.Amount)
 
 	h.Log.NewEvent(di.Abil, glog.LogHurtEvent, di.ActorIndex).
-		Write("previous", prevhp).
+		Write("previous_hp_ratio", prevHPRatio).
+		Write("previous_hp", prevHP).
 		Write("amount", di.Amount).
-		Write("current", c.HPCurrent).
+		Write("current_hp_ratio", c.CurrentHPRatio()).
+		Write("current_hp", c.CurrentHP()).
 		Write("max_hp", c.MaxHP())
 	h.Events.Emit(event.OnPlayerHPDrain, di)
 }

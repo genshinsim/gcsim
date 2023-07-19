@@ -4,7 +4,7 @@ package simulation
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -50,7 +50,7 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 	}
 	s.C = c
 
-	err = SetupTargetsInCore(c, combat.Point{X: cfg.PlayerPos.X, Y: cfg.PlayerPos.Y}, cfg.PlayerPos.R, cfg.Targets)
+	err = SetupTargetsInCore(c, geometry.Point{X: cfg.PlayerPos.X, Y: cfg.PlayerPos.Y}, cfg.PlayerPos.R, cfg.Targets)
 	if err != nil {
 		return nil, err
 	}

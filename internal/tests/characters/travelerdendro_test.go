@@ -4,12 +4,15 @@ import (
 	"log"
 	"testing"
 
-	"github.com/genshinsim/gcsim/internal/characters/travelerdendro"
+	"github.com/genshinsim/gcsim/internal/characters/traveler/common/dendro"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/aether"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -52,7 +55,7 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 
 	//check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
-	gr, ok := g.(*travelerdendro.LeaLotus)
+	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
 		t.Errorf("expecting gadget to be lea lotus. failed")
 		t.FailNow()
@@ -63,8 +66,8 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -134,7 +137,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 
 	//check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
-	gr, ok := g.(*travelerdendro.LeaLotus)
+	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
 		t.Errorf("expecting gadget to be lea lotus. failed")
 		t.FailNow()
@@ -145,8 +148,8 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -261,8 +264,8 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	}
 
 	//pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(combat.Point{}, nil, 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{

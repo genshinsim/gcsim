@@ -1,12 +1,12 @@
 package layla
 
 import (
-	"sort"
-
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
@@ -36,6 +36,7 @@ func (c *char) removeShield() {
 func (c *char) newShield(base float64, dur int) *shd {
 	n := &shd{}
 	n.Tmpl = &shield.Tmpl{}
+	n.Tmpl.ActorIndex = c.Index
 	n.Tmpl.Src = c.Core.F
 	n.Tmpl.ShieldType = shield.ShieldLaylaSkill
 	n.Tmpl.Ele = attributes.Cryo
@@ -79,11 +80,11 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 	if stars == 4 && c.Tag(shootingStars) == 0 {
 		c.SetTag(shootingStars, 1)
 		c.shootStarSrc = c.Core.F
-		c.Core.Tasks.Add(c.shootStars(c.shootStarSrc, -1), 0.1*60)
+		c.Core.Tasks.Add(c.shootStars(c.shootStarSrc, nil, c.makeParticleCB()), 0.1*60)
 	}
 }
 
-func (c *char) shootStars(src int, last int) func() {
+func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCBFunc) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return
@@ -93,24 +94,20 @@ func (c *char) shootStars(src int, last int) func() {
 		}
 
 		// find near target
-		nearTarget := -1
-		trgs := c.Core.Combat.EnemiesWithinRadius(c.Core.Combat.Player().Pos(), 10)
-		if len(trgs) > 0 {
-			sort.Slice(trgs, func(i, j int) bool { return i < j })
-			nearTarget = trgs[0]
-		}
+		enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
+		enemyNotFound := enemy == nil
 
-		if last == -1 {
+		if last == nil {
 			// if not found
-			if nearTarget == -1 {
-				c.Core.Tasks.Add(c.shootStars(src, -1), 0.1*60)
+			if enemyNotFound {
+				c.Core.Tasks.Add(c.shootStars(src, nil, particleCB), 0.1*60)
 				return
 			}
-			c.Core.Tasks.Add(c.shootStars(src, nearTarget), 0.5*60)
+			c.Core.Tasks.Add(c.shootStars(src, enemy, particleCB), 0.5*60)
 			return
 		}
-		if nearTarget == -1 {
-			nearTarget = last
+		if enemyNotFound {
+			enemy = last
 		}
 
 		stars := c.Tag(nightStars)
@@ -123,31 +120,22 @@ func (c *char) shootStars(src int, last int) func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Shooting Star",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupLayla,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupLayla,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
 			Mult:       starDmg[c.TalentLvlSkill()],
-			FlatDmg:    0.015 * c.MaxHP(), // A4
+			FlatDmg:    c.a4(),
 		}
 
 		done := false
-		cb := func(_ combat.AttackCB) {
+		c2CB := func(_ combat.AttackCB) {
 			if done {
 				return
 			}
 			done = true
-
-			if !c.StatusIsActive(skillEnergy) {
-				var count float64 = 1
-				if c.Core.Rand.Float64() < 0.33 {
-					count = 2
-				}
-				c.Core.QueueParticle("layla", count, attributes.Cryo, c.ParticleDelay)
-				c.AddStatus(skillEnergy, 3.5*60, true)
-			}
 			if c.Base.Cons >= 2 {
 				c.AddEnergy("layla-c2", 1)
 			}
@@ -155,27 +143,48 @@ func (c *char) shootStars(src int, last int) func() {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.Enemy(nearTarget),
-				nil,
-				0.8,
-			),
+			combat.NewCircleHit(c.Core.Combat.Player(), enemy, nil, 0.8),
 			0,
 			starsTravel[len(starsTravel)-stars],
-			cb,
+			c2CB,
+			particleCB,
 		)
 
 		stars--
 		c.SetTag(nightStars, stars)
 		if stars != 0 {
-			c.Core.Tasks.Add(c.shootStars(src, nearTarget), 0.45*60)
+			c.Core.Tasks.Add(c.shootStars(src, enemy, particleCB), 0.45*60)
 			return
 		}
 
 		c.RemoveTag(shootingStars)
 		c.starTickSrc = c.Core.F
-		c.tickNightStar(c.starTickSrc, false)
+		c.tickNightStar(c.starTickSrc, false)()
+	}
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	var particleICDKey string
+	if c.particleCBSwitch {
+		particleICDKey = particleICD2Key
+	} else {
+		particleICDKey = particleICD1Key
+	}
+	c.particleCBSwitch = !c.particleCBSwitch
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 3.5*60, false)
+
+		count := 1.0
+		if c.Core.Rand.Float64() < 0.33 {
+			count = 2
+		}
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 	}
 }
 

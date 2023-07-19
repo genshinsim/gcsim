@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -50,10 +51,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return 0, false
 				}
 				switch ai.AttackTag {
-				case combat.AttackTagSwirlCryo:
-				case combat.AttackTagSwirlElectro:
-				case combat.AttackTagSwirlHydro:
-				case combat.AttackTagSwirlPyro:
+				case attacks.AttackTagSwirlCryo:
+				case attacks.AttackTagSwirlElectro:
+				case attacks.AttackTagSwirlHydro:
+				case attacks.AttackTagSwirlPyro:
 				default:
 					return 0, false
 				}
@@ -77,7 +78,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				t.AddResistMod(enemy.ResistMod{
+				t.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag(key, 10*60),
 					Ele:   ele,
 					Value: -0.4,
@@ -113,15 +114,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			ele := atk.Info.Element
 			key := "vv" + ele.String()
 			switch atk.Info.AttackTag {
-			case combat.AttackTagSwirlCryo:
-			case combat.AttackTagSwirlElectro:
-			case combat.AttackTagSwirlHydro:
-			case combat.AttackTagSwirlPyro:
+			case attacks.AttackTagSwirlCryo:
+			case attacks.AttackTagSwirlElectro:
+			case attacks.AttackTagSwirlHydro:
+			case attacks.AttackTagSwirlPyro:
 			default:
 				return false
 			}
 
-			t.AddResistMod(enemy.ResistMod{
+			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag(key, 10*60),
 				Ele:   ele,
 				Value: -0.4,

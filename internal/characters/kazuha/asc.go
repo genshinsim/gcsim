@@ -10,17 +10,37 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-//Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
-//Elemental DMG Bonus to the element absorbed by Swirl for every point of Elemental Mastery
-//he has for 8s. Bonuses for different elements obtained through this method can co-exist.
+// If Chihayaburu comes into contact with Hydro/Pyro/Cryo/Electro when cast, this Chihayaburu will absorb that element and if Plunging Attack: Midare Ranzan is used before the effect expires, it will deal an additional 200% ATK of the absorbed elemental type as DMG. This will be considered Plunging Attack DMG.
+// Elemental Absorption may only occur once per use of Chihayaburu.
 //
-//this ignores any EM he gets from Sucrose A4, which is: When Astable Anemohypostasis Creation
-//- 6308 or Forbidden Creation - Isomer 75 / Type II hits an opponent, increases all party
-//members' (excluding Sucrose) Elemental Mastery by an amount equal to 20% of Sucrose's
-//Elemental Mastery for 8s.
-//
-//he still benefits from sucrose em but just cannot share it
+// - checks for ascension level in skill.go to avoid queuing this up only to fail the ascension level check
+func (c *char) absorbCheckA1(src, count, max int) func() {
+	return func() {
+		if count == max {
+			return
+		}
+		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+
+		if c.a1Absorb != attributes.NoElement {
+			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+				"kazuha a1 absorbed ", c.a1Absorb.String(),
+			)
+			return
+		}
+		//otherwise queue up
+		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, max), 6)
+	}
+}
+
+// Upon triggering a Swirl reaction, Kaedehara Kazuha will grant all party members a 0.04%
+// Elemental DMG Bonus to the element absorbed by Swirl for every point of Elemental Mastery
+// he has for 8s. Bonuses for different elements obtained through this method can co-exist.
+// TODO: - this should ignore any EM he gets from Sucrose A4 (he still benefits from sucrose em but just cannot share it)
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+
 	m := make([]float64, attributes.EndStatType)
 
 	swirlfunc := func(ele attributes.Stat, key string) func(args ...interface{}) bool {
@@ -41,12 +61,13 @@ func (c *char) a4() {
 			icd = c.Core.F + 1
 
 			//recalc em
-			dmg := 0.0004 * c.Stat(attributes.EM)
+			dmg := 0.0004 * c.NonExtraStat(attributes.EM)
 
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("kazuha-a4-"+key, 60*8),
 					AffectedStat: attributes.NoStat,
+					Extra:        true,
 					Amount: func() ([]float64, bool) {
 						m[attributes.CryoP] = 0
 						m[attributes.ElectroP] = 0
@@ -69,22 +90,4 @@ func (c *char) a4() {
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.ElectroP, "electro"), "kazuha-a4-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.HydroP, "hydro"), "kazuha-a4-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.PyroP, "pyro"), "kazuha-a4-pyro")
-}
-
-func (c *char) absorbCheckA1(src, count, max int) func() {
-	return func() {
-		if count == max {
-			return
-		}
-		c.a1Absorb = c.Core.Combat.AbsorbCheck(c.a1AbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
-
-		if c.a1Absorb != attributes.NoElement {
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-				"kazuha a1 absorbed ", c.a1Absorb.String(),
-			)
-			return
-		}
-		//otherwise queue up
-		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, max), 6)
-	}
 }

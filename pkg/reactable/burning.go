@@ -1,9 +1,11 @@
 ﻿package reactable
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
@@ -60,7 +62,7 @@ func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
 	return false
 }
 
-func (r *Reactable) attachBurningFuel(dur combat.Durability, mult combat.Durability) {
+func (r *Reactable) attachBurningFuel(dur reactions.Durability, mult reactions.Durability) {
 	//burning fuel always overwrites
 	r.Durability[ModifierBurningFuel] = mult * dur
 	decayRate := mult * dur / (6*dur + 420)
@@ -74,11 +76,11 @@ func (r *Reactable) calcBurningDmg(a *combat.AttackEvent) {
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
-		Abil:             string(combat.Burning),
-		AttackTag:        combat.AttackTagBurningDamage,
-		ICDTag:           combat.ICDTagBurningDamage,
-		ICDGroup:         combat.ICDGroupBurning,
-		StrikeType:       combat.StrikeTypeDefault,
+		Abil:             string(reactions.Burning),
+		AttackTag:        attacks.AttackTagBurningDamage,
+		ICDTag:           attacks.ICDTagBurningDamage,
+		ICDGroup:         attacks.ICDGroupBurning,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Pyro,
 		Durability:       25,
 		IgnoreDefPercent: 1,

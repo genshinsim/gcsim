@@ -3,10 +3,11 @@ package shenhe
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,17 +34,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Divine Maiden's Deliverance (Initial)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 8)
+	burstPos := burstArea.Shape.Pos()
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 8, 120),
+		combat.NewCircleHitOnTargetFanAngle(burstPos, nil, 8, 120),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -60,15 +63,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Divine Maiden's Deliverance (DoT)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       burstdot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), combat.Point{Y: 2}, 7)
+	ap := combat.NewCircleHitOnTarget(burstPos, nil, 7)
 
 	// DoT snapshot before A1
 	c.Core.Tasks.Add(func() {
@@ -81,41 +84,40 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstStart)
 
-	// assumes player/target is inside shenhe burst
+	buffDuration := 36 // 0.6s
 	for i := burstStart; i < burstStart+burstDuration; i += 18 {
 		c.Core.Tasks.Add(func() {
-			buffDuration := 38
-			active := c.Core.Player.ActiveChar()
-
-			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
-				AffectedStat: attributes.CryoP,
-				Amount: func() ([]float64, bool) {
-					return c.burstBuff, true
-				},
-			})
-			if c.Base.Cons >= 2 {
-				c.c2(active, buffDuration)
-			}
-
-			for _, t := range c.Core.Combat.Enemies() {
-				// skip non-enemy targets
-				e, ok := t.(*enemy.Enemy)
-				if !ok {
-					continue
+			// A1 & C2 buff tick
+			if c.Core.Combat.Player().IsWithinArea(burstArea) {
+				active := c.Core.Player.ActiveChar()
+				// A1:
+				// An active character within the field created by Divine Maiden's Deliverance gains 15% Cryo DMG Bonus.
+				if c.Base.Ascension >= 1 {
+					active.AddStatMod(character.StatMod{
+						Base:         modifier.NewBaseWithHitlag("shenhe-a1", buffDuration),
+						AffectedStat: attributes.CryoP,
+						Amount: func() ([]float64, bool) {
+							return c.burstBuff, true
+						},
+					})
 				}
-				e.AddResistMod(enemy.ResistMod{
+				if c.Base.Cons >= 2 {
+					c.c2(active, buffDuration)
+				}
+			}
+			// Q debuff tick
+			for _, e := range c.Core.Combat.EnemiesWithinArea(burstArea, nil) {
+				e.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-cryo", buffDuration),
 					Ele:   attributes.Cryo,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})
-				e.AddResistMod(enemy.ResistMod{
+				e.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("shenhe-burst-shred-phys", buffDuration),
 					Ele:   attributes.Physical,
 					Value: -burstrespp[c.TalentLvlBurst()],
 				})
 			}
-
 		}, i)
 	}
 	c.SetCD(action.ActionBurst, 20*60)
