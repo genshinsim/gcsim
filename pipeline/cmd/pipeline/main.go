@@ -78,7 +78,7 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("generate weapon data for ui...")
+	log.Println("generate artifacts data for ui...")
 	err = ga.DumpJSON(cfg.uiOut)
 	if err != nil {
 		panic(err)
