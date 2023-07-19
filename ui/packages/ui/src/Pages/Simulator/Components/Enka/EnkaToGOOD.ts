@@ -22,11 +22,12 @@ import {
 
 const characterMapV2 = Object.values(CharDataGen.data).reduce(
   (acc, val) => {
-    acc[val.id] = val;
+    const id_str = `${val.id}${"sub_id" in val ? "-" + val["sub_id"] : ""}`
+    acc[id_str] = val;
     return acc;
   },
   {} as {
-    [id: number]: {
+    [id_str: string]: {
       id: number;
       key: string;
       rarity: string;
@@ -61,6 +62,19 @@ const weaponMapV2 = Object.values(WeaponDataGen.data).reduce(
   }
 );
 
+const travelerSkillIdToEleMap : {
+  skill_id: number,
+  sub_id: number,
+}[] = Object.values(CharDataGen.data)
+.filter( e => e.key.includes("aether"))
+.map(e => {
+  return {
+  skill_id: e.skill_details.skill,
+  sub_id: e["sub_id"],
+  }
+})
+
+
 export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
   const characters: GOODCharacter[] = [];
   const artifacts: GOODArtifact[] = [];
@@ -68,7 +82,21 @@ export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
 
   enkaData.avatarInfoList.forEach(
     ({ avatarId, propMap, talentIdList, skillLevelMap, equipList }) => {
-      const characterData = characterMapV2[avatarId];
+      console.log("importing: ", avatarId)
+      let converted_id = avatarId.toString()
+      //if traveler, then we need to find the subid
+      if (avatarId === 10000007) {
+        let index = travelerSkillIdToEleMap.findIndex(e => {
+          return e.skill_id in skillLevelMap
+        })
+        if (index === -1) {
+          console.log("Could not find matching element for traveler, with avatarId", avatarId)
+          return
+        }
+        converted_id = converted_id + "-" + travelerSkillIdToEleMap[index].sub_id
+
+      }
+      const characterData = characterMapV2[converted_id];
       if (!characterData || !characterData.key) {
         console.log('Missing/Unimplemented character', avatarId);
         return;
