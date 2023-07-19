@@ -47,6 +47,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		if _, ok := textIdCheck[v.TextMapId]; ok {
 			return nil, fmt.Errorf("duplicated text map id %v found; second instance at %v", v.TextMapId, v.RelativePath)
 		}
+		textIdCheck[v.TextMapId] = true
 		g.data[v.Key] = &model.ArtifactData{
 			TextMapId: v.TextMapId,
 		}
