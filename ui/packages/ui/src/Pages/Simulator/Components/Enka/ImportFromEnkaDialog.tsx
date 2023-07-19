@@ -27,6 +27,7 @@ const lsKey = "Enka-UID";
 
 export function ImportFromEnkaDialog(props: Props) {
   const [message, setMessage] = React.useState<string>("");
+  const [errors, setErrors] = React.useState<string[]>([]);
   const [uid, setUid] = React.useState<string>("");
   const dispatch = useAppDispatch();
 
@@ -35,6 +36,7 @@ export function ImportFromEnkaDialog(props: Props) {
     if (uid && validateUid(uid)) {
       try {
         const GOODchars = await FetchCharsFromEnka(uid);
+        setErrors(GOODchars.errors ? GOODchars.errors : [])
         console.log(GOODchars);
         const chars = parseFromGOOD(JSON.stringify(GOODchars));
 
@@ -84,9 +86,21 @@ export function ImportFromEnkaDialog(props: Props) {
         />
 
         {message === "success" ? (
+          <>
           <Callout intent="success" className="mt-2 p-2">
             Data retrieved successfully
           </Callout>
+          {
+            errors.length > 0 ?
+            <Callout intent="warning" className="mt-2 p-2">
+              Encountered the following issue(s) importing data:
+              {errors.map((e,i) => {
+                return <div key={i} className="ml-2">{e}</div>
+              })}
+            </Callout>
+            : null
+          }
+          </>
         ) : (
           <div>
             {message && (

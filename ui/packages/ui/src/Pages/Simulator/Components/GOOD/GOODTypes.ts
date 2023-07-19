@@ -6,6 +6,7 @@ export interface IGOOD {
   artifacts?: GOODArtifact[];
   weapons?: GOODWeapon[];
   materials?: Record<string, unknown>;
+  errors?: string[]
 }
 export interface GOODArtifact {
   setKey: GOODArtifactSetKey; //e.g. "GladiatorsFinale"
