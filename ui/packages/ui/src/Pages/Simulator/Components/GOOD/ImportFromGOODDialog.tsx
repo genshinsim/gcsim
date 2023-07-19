@@ -58,9 +58,10 @@ export function ImportFromGOODDialog(props: Props) {
         <p>
           Paste import data in GOOD format in the textbox below. (If you are coming from Genshin
           Optimizer, you can export your database in GOOD format{" "}
-          <a href="https://frzyc.github.io/genshin-optimizer/#/database" target="_blank" rel="noreferrer">
+          <a href="https://frzyc.github.io/genshin-optimizer/#/setting" target="_blank" rel="noreferrer">
             here
           </a>
+          .
         </p>
         <Callout intent="warning" title="Warning">
           Importing will replace any existing GOOD import you already have. This action cannot be

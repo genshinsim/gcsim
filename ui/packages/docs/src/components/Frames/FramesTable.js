@@ -2,7 +2,7 @@ import React from "react";
 import ReactPlayer from "react-player";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import data from "./data.json";
+import character_data from "./character_data.json";
 
 function Vid({ vid }) {
   return (
@@ -36,11 +36,11 @@ function MultiVids({ vids }) {
   return <Tabs>{tabs}</Tabs>;
 }
 
-export default function FramesTable({ character }) {
-  if (!(character in data)) {
+export default function FramesTable({ item_key }) {
+  if (!(item_key in character_data)) {
     return <div>Character does not have any frames video</div>;
   }
-  const char = data[character];
+  const char = character_data[item_key];
   if (char.length === 0) {
     return <div>Character does not have any frames video</div>;
   }

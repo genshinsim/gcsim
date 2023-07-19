@@ -1,0 +1,16 @@
+{
+  "vourukashasglow": [
+    {
+      "ability": "Vourukasha's Glow",
+      "param": "stacks",
+      "desc": "Number of stacks for the 4pc affect to gain permanently, because Player taking dmg is not implemented yet. Default 0, maximum 5."
+    }
+  ],
+  "huskofopulentdreams": [
+    {
+      "ability": "Husk of Opulent Dreams",
+      "param": "stacks",
+      "desc": "Number of stacks for the 4pc affect to gain at the beginning. Default 0, maximum 4."
+    }
+  ]
+}

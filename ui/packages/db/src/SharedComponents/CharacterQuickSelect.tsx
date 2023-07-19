@@ -1,9 +1,8 @@
 import { MenuItem } from "@blueprintjs/core";
 import { MultiSelect2 } from "@blueprintjs/select";
-import { charNames } from "PipelineExtract/CharacterNames";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { FilterDispatchContext, FilterContext, ItemFilterState } from "./FilterComponents/Filter.utils";
+import { FilterDispatchContext, FilterContext, ItemFilterState, charNames } from "./FilterComponents/Filter.utils";
 
 export function CharacterQuickSelect() {
     //dispatch

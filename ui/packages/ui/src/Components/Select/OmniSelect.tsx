@@ -1,7 +1,7 @@
 import React from "react";
 import { ItemPredicate, ItemRenderer, Omnibar } from "@blueprintjs/select";
 import { MenuItem } from "@blueprintjs/core";
-import { CharMap, TransformTravelerKeyToName, TravelerCheck } from "../../Data";
+import { CharMap } from "../../Data";
 import i18n from "i18next";
 
 export interface Item {
@@ -113,13 +113,9 @@ function highlightText(text: string, query: string) {
 export function GenerateDefaultCharacters(): Item[] {
   return Object.keys(CharMap).map((k) => {
     const ele = i18n.t(`elements.${CharMap[k].element}`);
-    let extra = "";
-    if (TravelerCheck(k)) {
-      extra = ` (${ele})`;
-    }
     return {
       key: k,
-      text: i18n.t("game:character_names." + TransformTravelerKeyToName(k)) + extra,
+      text: i18n.t("game:character_names." + k),
       label: i18n.t(`elements.${CharMap[k].element}`),
     };
   });

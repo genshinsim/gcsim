@@ -36,7 +36,6 @@ type opts struct {
 	substatOptimFull bool
 	verbose          bool
 	options          string
-	debugMinMax      bool
 	cpuprofile       string
 	memprofile       string
 }
@@ -59,7 +58,6 @@ func main() {
 	flag.BoolVar(&opt.norun, "nr", false, "disable running the simulation (useful if you only want to generate a sample")
 	flag.BoolVar(&opt.nobrowser, "nb", false, "disable opening default browser")
 	flag.BoolVar(&opt.keepserving, "ks", false, "keep serving same results without terminating web server")
-	flag.BoolVar(&opt.debugMinMax, "debugMinMax", false, "Output debug log for the min-DPS and max-DPS runs in addition to a random run.")
 	flag.BoolVar(&opt.substatOptim, "substatOptim", false, "Optimize substats according to KQM standards. Set the out flag to output config with optimal substats inserted to a given file path. Alternatively use the substatOptimFull flag to avoid a second config file and second invocation of the sim.")
 	flag.BoolVar(&opt.substatOptimFull, "substatOptimFull", false, "Optimize substats according to KQM standards, overwrite the given config with the optimized version and then run the sim on it. Set the out flag and gz flag to save the viewer file. substatOptim flag takes precedence over this flag, so do not use them together.")
 	flag.BoolVar(&opt.verbose, "v", false, "Verbose output log (currently only for substat optimization)")

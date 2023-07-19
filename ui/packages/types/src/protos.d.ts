@@ -2007,6 +2007,33 @@ export namespace model {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of an ArtifactDataMap. */
+    interface IArtifactDataMap {
+
+        /** ArtifactDataMap data */
+        data?: ({ [k: string]: model.IArtifactData }|null);
+    }
+
+    /** Represents an ArtifactDataMap. */
+    class ArtifactDataMap implements IArtifactDataMap {
+
+        /**
+         * Constructs a new ArtifactDataMap.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IArtifactDataMap);
+
+        /** ArtifactDataMap data. */
+        public data: { [k: string]: model.IArtifactData };
+
+        /**
+         * Gets the default type url for ArtifactDataMap
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of an ArtifactData. */
     interface IArtifactData {
 

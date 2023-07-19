@@ -20,7 +20,6 @@ import {
 } from "../Icons";
 import { WeaponCard } from "./WeaponCard";
 import { Trans, useTranslation } from "react-i18next";
-import { TransformTravelerKeyToName } from "../../Data";
 import { Character } from "@gcsim/types";
 import { CharStatBlock } from "../../Pages/Simulator/Components/character";
 import classNames from "classnames";
@@ -222,7 +221,7 @@ export function CharacterCard({
               {char.cons ? char.cons : 0}
               <Trans>character.c_post</Trans>{" "}
               {t(
-                `game:character_names.${TransformTravelerKeyToName(char.name)}`
+                `game:character_names.${char.name}`
               )}{" "}
             </>
           </div>
@@ -242,10 +241,10 @@ export function CharacterCard({
             {isSkeleton ? null : <img
               src={
                 "https://gcsim.app/api/assets/avatar/" +
-                TransformTravelerKeyToName(char.name) +
+                char.name +
                 ".png"
               }
-              alt={TransformTravelerKeyToName(char.name)}
+              alt={char.name}
               className="ml-auto h-32"
               onError={(e) => (e.target as HTMLImageElement).src = placeholder}
             />}
