@@ -47,9 +47,7 @@ export function protoWeapTypeToDisplayString(w: string): string {
   }
 }
 
-export const valid_weapons: string[] = Object.keys(weaponPipelineData.data).map(
-  (k) => k
-);
+export const valid_weapons: string[] = Object.keys(weaponPipelineData.data)
 
 let charData: CharDataMap = {};
 

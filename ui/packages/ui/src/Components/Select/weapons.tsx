@@ -4,7 +4,7 @@ import { IWeapon } from "@gcsim/types";
 import i18n from "i18next";
 import { valid_weapons } from "../../Data";
 
-export const weapons: IWeapon[] = valid_weapons.map(e => e)
+export const weapons: IWeapon[] = valid_weapons
 
 export const renderWeapon: ItemRenderer<IWeapon> = (weapon, { handleClick, modifiers, query }) => {
   if (!modifiers.matchesPredicate) {
