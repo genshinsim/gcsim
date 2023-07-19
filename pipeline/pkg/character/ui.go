@@ -28,12 +28,9 @@ func (g *Generator) writeCharDataJSON(path string) error {
 	m := &model.AvatarDataMap{
 		Data: data,
 	}
-	d, err := protojson.Marshal(m)
-	if err != nil {
-		return err
-	}
+	s := protojson.Format(m)
 	os.Remove(path)
-	err = os.WriteFile(path, d, 0644)
+	err := os.WriteFile(path, []byte(s), 0644)
 	if err != nil {
 		return err
 	}
