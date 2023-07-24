@@ -52,7 +52,9 @@ func Eval(s string, log *log.Logger) {
 
 	result := eval.Run()
 
-	fmt.Print("Program result: ")
+	if eval.Err() != nil {
+		fmt.Printf("Program finished with err: %v", eval.Err())
+	}
 	fmt.Println(result.Inspect())
 }
 
@@ -93,6 +95,9 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 		}
 		result := eval.Run()
 
+		if eval.Err() != nil {
+			fmt.Printf("Program finished with err: %v", eval.Err())
+		}
 		fmt.Println(result.Inspect())
 	}
 }

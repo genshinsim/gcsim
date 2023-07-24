@@ -68,6 +68,10 @@ func (e *Eval) NextAction() (*action.ActionEval, error) {
 	return next, nil
 }
 
+func (e *Eval) Err() error {
+	return e.err
+}
+
 func NewEvaluator(ast ast.Node, c *core.Core) (Evaluator, error) {
 	e := &Eval{
 		AST:  ast,
