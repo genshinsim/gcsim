@@ -3,7 +3,7 @@ package gcs
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"strconv"
 
@@ -19,8 +19,7 @@ type Eval struct {
 	Work chan *action.ActionEval //send work to this chan
 	Log  *log.Logger
 
-	done bool  // set to true when Run finishes
-	err  error // set to non-nil by the first error encountered
+	err error // set to non-nil by the first error encountered
 }
 
 type Evaluator interface {
@@ -96,7 +95,7 @@ func (e *Eval) Run() Obj {
 	//make sure to close work since we are the only sender
 	defer close(e.Work)
 	if e.Log == nil {
-		e.Log = log.New(ioutil.Discard, "", log.LstdFlags)
+		e.Log = log.New(io.Discard, "", log.LstdFlags)
 	}
 	//this should run until it hits an Action
 	//it will then pass the action on a resp channel
