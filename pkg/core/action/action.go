@@ -33,6 +33,12 @@ type ActionEval struct {
 	Param  map[string]int
 }
 
+// Evaluator provides method for getting next action
+type Evaluator interface {
+	Continue()
+	NextAction() (*ActionEval, error)
+}
+
 type queuedAction struct {
 	f     func()
 	delay float64

@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -17,7 +16,7 @@ type Simulation struct {
 	//action list stuff
 	cfg           *ast.ActionList
 	queue         *action.ActionEval
-	eval          gcs.Evaluator
+	eval          action.Evaluator
 	noMoreActions bool
 	collectors    []stats.StatsCollector
 

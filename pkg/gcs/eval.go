@@ -22,11 +22,6 @@ type Eval struct {
 	err error // set to non-nil by the first error encountered
 }
 
-type Evaluator interface {
-	Continue()
-	NextAction() (*action.ActionEval, error)
-}
-
 type Env struct {
 	parent *Env
 	varMap map[string]*Obj
@@ -71,7 +66,7 @@ func (e *Eval) Err() error {
 	return e.err
 }
 
-func NewEvaluator(ast ast.Node, c *core.Core) (Evaluator, error) {
+func NewEvaluator(ast ast.Node, c *core.Core) (action.Evaluator, error) {
 	e := &Eval{
 		AST:  ast,
 		Core: c,
