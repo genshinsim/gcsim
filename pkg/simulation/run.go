@@ -33,18 +33,10 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
 
 	//setup ast
-	s.nextAction = make(chan *action.ActionEval)
-	s.continueEval = make(chan bool)
-	s.evalErr = make(chan error)
-	s.queuer = gcs.Eval{
-		AST:  s.cfg.Program,
-		Next: s.continueEval,
-		Work: s.nextAction,
-		Core: s.C,
-		Err:  s.evalErr,
+	s.eval, err = gcs.NewEvaluator(s.cfg.Program, s.C)
+	if err != nil {
+		return
 	}
-	go s.queuer.Run()
-	defer close(s.continueEval)
 
 	for !stop {
 		err = s.AdvanceFrame()
@@ -180,17 +172,15 @@ var ErrNoMoreActions = errors.New("no more actions left")
 
 func (s *Simulation) tryQueueNext() error {
 	//tell eval to keep going
-	s.continueEval <- true
-	//eval will either give an action (or keep executing) or error out
-	var ok bool
-	select {
-	case s.queue, ok = <-s.nextAction:
-		//wait for next action
-		if !ok {
-			return ErrNoMoreActions
-		}
-		return nil
-	case err := <-s.evalErr:
+	s.eval.Continue()
+	//eval will return nil if no more action, or error
+	next, err := s.eval.NextAction()
+	if err != nil {
 		return err
 	}
+	if next == nil {
+		return ErrNoMoreActions
+	}
+	s.queue = next
+	return nil
 }

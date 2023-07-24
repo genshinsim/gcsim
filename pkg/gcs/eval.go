@@ -15,10 +15,17 @@ import (
 type Eval struct {
 	Core *core.Core
 	AST  ast.Node
-	Next chan bool
-	Work chan *action.ActionEval
+	Next chan bool               //wait on this before continuing
+	Work chan *action.ActionEval //send work to this chan
 	Log  *log.Logger
-	Err  chan error
+
+	done bool  // set to true when Run finishes
+	err  error // set to non-nil by the first error encountered
+}
+
+type Evaluator interface {
+	Continue()
+	NextAction() (*action.ActionEval, error)
 }
 
 type Env struct {
@@ -44,9 +51,46 @@ func (e *Env) v(s string) (*Obj, error) {
 	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
-// Run will execute the provided AST. Any genshin specific actions will be passed
-// back to the
-func (e *Eval) Run() {
+// Continue asks eval to continue executing the AST
+func (e *Eval) Continue() {
+	e.Next <- true
+}
+
+// NextAction asks eval to return the next action
+func (e *Eval) NextAction() (*action.ActionEval, error) {
+	if e.err != nil {
+		return nil, e.err
+	}
+	next, ok := <-e.Work
+	if !ok {
+		return nil, nil
+	}
+	return next, nil
+}
+
+func NewEvaluator(ast ast.Node, c *core.Core) (Evaluator, error) {
+	e := &Eval{
+		AST:  ast,
+		Core: c,
+		Next: make(chan bool),
+		Work: make(chan *action.ActionEval),
+	}
+	go e.Run()
+	return e, nil
+}
+
+// Run will execute the provided AST. Any genshin specific actions will be available
+// via NextAction()
+func (e *Eval) Run() Obj {
+	//this shouldn't be necessary i think
+	defer func() {
+		// recover from panic if one occured. Set err to nil otherwise.
+		if err := recover(); err != nil {
+			e.err = fmt.Errorf("panic occured: %v", err)
+		}
+	}()
+	//make sure to close work since we are the only sender
+	defer close(e.Work)
 	if e.Log == nil {
 		e.Log = log.New(ioutil.Discard, "", log.LstdFlags)
 	}
@@ -55,31 +99,15 @@ func (e *Eval) Run() {
 	//it will then wait for Next before running again
 	global := NewEnv(nil)
 	e.initSysFuncs(global)
-	err := e.runWithRecover()
 
-	defer close(e.Work)
-	switch err {
-	case nil:
-	case ErrTerminated:
-		//do nothing here really since we're just out of work per main thread
-	default:
-		e.Err <- err
-	}
-}
-
-func (e *Eval) runWithRecover() (err error) {
-	defer func() {
-		// recover from panic if one occured. Set err to nil otherwise.
-		if recover() != nil {
-			err = errors.New("parser panic occured")
-		}
-	}()
-	global := NewEnv(nil)
-	//start running once we get signal to go
+	//start running once we get the signal to go
 	<-e.Next
-	_, err = e.evalNode(e.AST, global)
-
-	return
+	res, err := e.evalNode(e.AST, global)
+	if err != nil && err != ErrTerminated {
+		//ignore ErrTerminate since it's not really an error
+		e.err = err
+	}
+	return res
 }
 
 var ErrTerminated = errors.New("eval terminated")

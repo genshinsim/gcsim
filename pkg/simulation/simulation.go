@@ -17,10 +17,7 @@ type Simulation struct {
 	//action list stuff
 	cfg           *ast.ActionList
 	queue         *action.ActionEval
-	nextAction    chan *action.ActionEval
-	continueEval  chan bool
-	evalErr       chan error
-	queuer        gcs.Eval
+	eval          gcs.Evaluator
 	noMoreActions bool
 	collectors    []stats.StatsCollector
 
