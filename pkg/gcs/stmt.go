@@ -38,6 +38,7 @@ func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) (Obj, error) {
 	// and evalNode
 	// blocks should create a new environment
 	scope := NewEnv(env)
+	var last Obj
 	for _, n := range b.List {
 		v, err := e.evalNode(n, scope)
 		if err != nil {
@@ -52,8 +53,9 @@ func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) (Obj, error) {
 			// prob need to add some sort of context to env
 			return v, nil
 		}
+		last = v
 	}
-	return &null{}, nil
+	return last, nil
 }
 
 func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {

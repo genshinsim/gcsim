@@ -129,6 +129,17 @@ const (
 	// typTerminate
 )
 
+var typStrings = []string{
+	"null",
+	"num",
+	"str",
+	"fn",
+	"bif",
+	"map",
+	"ret",
+	"ctr",
+}
+
 // various Obj types
 type (
 	null   struct{}

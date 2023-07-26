@@ -154,6 +154,10 @@ func (e *Eval) typeval(c *ast.CallExpr, env *Env) (Obj, error) {
 		str = t.Inspect()
 	}
 
+	if e.Core == nil {
+		fmt.Println(str)
+	}
+
 	return &strval{str}, nil
 }
 
