@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, delay int) {
@@ -29,12 +29,12 @@ func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, de
 }
 
 func (c *Core) SetupOnNormalHitEnergy() {
-	var current [MaxTeamSize][weapon.EndWeaponClass]float64
+	var current [MaxTeamSize][info.EndWeaponClass]float64
 
 	// https://genshin-impact.fandom.com/wiki/Energy#Energy_Generated_by_Normal_Attacks
 	// Base Probability
 	for i := range current {
-		current[i][weapon.WeaponClassSword] = 0.10 // WeaponClassSword
+		current[i][info.WeaponClassSword] = 0.10 // WeaponClassSword
 	}
 	// Probability Increase Per Fail
 	inc := []float64{
@@ -74,7 +74,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		//set icd
 		icd = c.F + 12
 		current[atk.Info.ActorIndex][char.Weapon.Class] = 0
-		if char.Weapon.Class == weapon.WeaponClassSword {
+		if char.Weapon.Class == info.WeaponClassSword {
 			current[atk.Info.ActorIndex][char.Weapon.Class] = 0.10
 		}
 		return false
@@ -86,7 +86,7 @@ func (c *Core) SetupOnNormalHitEnergy() {
 			for j := range current[i] {
 				current[i][j] = 0
 			}
-			current[i][weapon.WeaponClassSword] = 0.10
+			current[i][info.WeaponClassSword] = 0.10
 		}
 		return false
 	}, "random-energy-restore-on-hit-swap")

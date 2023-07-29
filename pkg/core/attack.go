@@ -77,10 +77,10 @@ func (c *Core) QueueAttack(
 
 }
 
-//This code here should probably be handled in player not core
-//since it's a convenience function wrapped around queuedamage
+// This code here should probably be handled in player not core
+// since it's a convenience function wrapped around queuedamage
 //
-//does it make sense for core to have any knowledge of teams? probably not??
+// does it make sense for core to have any knowledge of teams? probably not??
 func (c *Core) generateSnapshot(a *combat.AttackEvent) {
 	a.Snapshot = c.Player.ByIndex(a.Info.ActorIndex).Snapshot(&a.Info)
 }

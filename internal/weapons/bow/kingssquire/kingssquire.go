@@ -1,4 +1,4 @@
-﻿package kingssquire
+package kingssquire
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,7 +30,7 @@ func (w *Weapon) Init() error      { return nil }
 // This effect will be removed when switching characters.
 // When the Teachings of the Forest effect ends or is removed, it will deal 100/120/140/160/180% of ATK as DMG to 1 nearby opponent.
 // The Teachings of the Forest effect can be triggered once every 20s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 

@@ -11,7 +11,7 @@ replace = [
         '}\n'
         'func (w * Weapon) SetIndex(idx int) {w.Index = idx}\n'
         'func (w * Weapon) Init() error      {return nil}\n\n'
-        'func NewWeapon(c * core.Core, char * character.CharWrapper, p weapon.WeaponProfile)(weapon.Weapon, error) {\n'
+        'func NewWeapon(c * core.Core, char * character.CharWrapper, p info.WeaponProfile)(info.Weapon, error) {\n'
         '   w := &Weapon{}\n'
         '   r := p.Refine\n'
     ],

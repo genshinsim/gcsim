@@ -2,8 +2,8 @@ package common
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type NoEffect struct {
@@ -13,6 +13,6 @@ type NoEffect struct {
 func (b *NoEffect) SetIndex(idx int) { b.Index = idx }
 func (b *NoEffect) Init() error      { return nil }
 
-func NewNoEffect(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewNoEffect(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	return &NoEffect{}, nil
 }

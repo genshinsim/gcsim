@@ -8,26 +8,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-//SetCD takes two parameters:
-//	- a action.Action: this is the action type we are triggering the cooldown for
-//  - dur: duration in frames that the cooldown should last for
-//It is assumed that AvailableCDCharges[a] > 0 (otherwise action should not have been allowed)
+// SetCD takes two parameters:
+//   - a action.Action: this is the action type we are triggering the cooldown for
+//   - dur: duration in frames that the cooldown should last for
 //
-//SetCD works by adding the cooldown duration to a queue. This is because when there are
-//multiple charges, the game will first finish recharging the first charge before starting
-//the full cooldown for the second charge.
+// It is assumed that AvailableCDCharges[a] > 0 (otherwise action should not have been allowed)
 //
-//When a cooldown is added to queue for the first time, a queue worker is started. This queue
-//worker will check back at the cooldown specified for the first queued item, and if the queued
-//cooldown did not change, it will increment the number of charges by 1, and reschedule itself
-//to check back for the next item in queue
+// SetCD works by adding the cooldown duration to a queue. This is because when there are
+// multiple charges, the game will first finish recharging the first charge before starting
+// the full cooldown for the second charge.
 //
-//Sometimes, the queued cooldown gets adjusted via ReduceActionCooldown or ResetActionCooldown.
-//When this happens, the initial queued worker will check back at the wrong time. To prevent this,
-//we use cdQueueWorkerStartedAt[a] which tracks the frame the worker started at. So when
-//ReduceActionCooldown or ResetActionCooldown gets called, we start a new worker, updating
-//cdQueueWorkerStartedAt[a] to represent the new worker start frame. This way the old worker can
-//check this value first and then gracefully exit if it no longer matches its starting frame
+// When a cooldown is added to queue for the first time, a queue worker is started. This queue
+// worker will check back at the cooldown specified for the first queued item, and if the queued
+// cooldown did not change, it will increment the number of charges by 1, and reschedule itself
+// to check back for the next item in queue
+//
+// Sometimes, the queued cooldown gets adjusted via ReduceActionCooldown or ResetActionCooldown.
+// When this happens, the initial queued worker will check back at the wrong time. To prevent this,
+// we use cdQueueWorkerStartedAt[a] which tracks the frame the worker started at. So when
+// ReduceActionCooldown or ResetActionCooldown gets called, we start a new worker, updating
+// cdQueueWorkerStartedAt[a] to represent the new worker start frame. This way the old worker can
+// check this value first and then gracefully exit if it no longer matches its starting frame
 func (c *Character) SetCD(a action.Action, dur int) {
 	//setting cd is just adding a cd to the recovery queue
 	//add current action and duration to the queue

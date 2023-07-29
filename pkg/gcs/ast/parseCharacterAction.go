@@ -22,8 +22,8 @@ type actionAPLOpt struct {
 	tryDropIfNotReady bool
 }
 
-//parseAction returns a node contain a character action, or a block of node containing
-//a list of character actions
+// parseAction returns a node contain a character action, or a block of node containing
+// a list of character actions
 func (p *Parser) parseAction() (Stmt, error) {
 	char, err := p.consume(itemCharacterKey)
 	if err != nil {

@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type Sacrificial struct {
@@ -20,7 +20,7 @@ type Sacrificial struct {
 func (b *Sacrificial) SetIndex(idx int) { b.Index = idx }
 func (b *Sacrificial) Init() error      { return nil }
 
-func NewSacrificial(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewSacrificial(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Sacrificial{}
 	r := p.Refine
 

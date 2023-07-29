@@ -11,7 +11,7 @@ type shieldBonusMod struct {
 	Event  glog.Event
 }
 
-//TODO: this probably should be affected by hitlag as well
+// TODO: this probably should be affected by hitlag as well
 func (h *Handler) ShieldBonus() (amt float64) {
 	n := 0
 	for _, mod := range h.shieldBonusMods {

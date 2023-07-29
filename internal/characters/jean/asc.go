@@ -1,4 +1,4 @@
-﻿package jean
+package jean
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"

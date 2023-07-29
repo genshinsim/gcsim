@@ -8,7 +8,7 @@ import (
 
 type TextMap map[int]string
 
-//need avatarIds to simplify textmap
+// need avatarIds to simplify textmap
 func generateAvatarNameMap(textMapIds []int) map[int]string {
 	enTextMapJson, err := fetchJsonFromUrl("https://raw.githubusercontent.com/Dimbreath/GenshinData/master/TextMap/TextMapEN.json")
 	if err != nil {

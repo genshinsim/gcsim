@@ -8,10 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/queue"
@@ -62,18 +60,18 @@ type CharWrapper struct {
 	tasks  task.Tasker
 
 	//base characteristics
-	Base      profile.CharacterBase
-	Weapon    weapon.WeaponProfile
-	Talents   profile.TalentProfile
-	CharZone  profile.ZoneType
-	CharBody  profile.BodyType
+	Base      info.CharacterBase
+	Weapon    info.WeaponProfile
+	Talents   info.TalentProfile
+	CharZone  info.ZoneType
+	CharBody  info.BodyType
 	NormalCon int
 	SkillCon  int
 	BurstCon  int
 
 	Equip struct {
-		Weapon weapon.Weapon
-		Sets   map[keys.Set]artifact.Set
+		Weapon info.Weapon
+		Sets   map[keys.Set]info.Set
 	}
 
 	//current status
@@ -111,7 +109,7 @@ type charTask struct {
 }
 
 func New(
-	p profile.CharacterProfile,
+	p info.CharacterProfile,
 	f *int, //current frame
 	debug bool, //are we running in debug mode
 	log glog.Logger, //logging, can be nil
@@ -133,7 +131,7 @@ func New(
 	}
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
-	c.Equip.Sets = make(map[keys.Set]artifact.Set)
+	c.Equip.Sets = make(map[keys.Set]info.Set)
 
 	//set to -1 by default and let each char specify normal/skill/burst cons
 	c.NormalCon = -1
@@ -158,11 +156,11 @@ func (c *CharWrapper) SetIndex(index int) {
 	c.Index = index
 }
 
-func (c *CharWrapper) SetWeapon(w weapon.Weapon) {
+func (c *CharWrapper) SetWeapon(w info.Weapon) {
 	c.Equip.Weapon = w
 }
 
-func (c *CharWrapper) SetArtifactSet(key keys.Set, set artifact.Set) {
+func (c *CharWrapper) SetArtifactSet(key keys.Set, set info.Set) {
 	c.Equip.Sets[key] = set
 }
 

@@ -11,8 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/target"
@@ -39,7 +39,7 @@ func testCore() *core.Core {
 	c.Combat.SetPlayer(trg)
 
 	//add default character
-	p := profile.CharacterProfile{}
+	p := info.CharacterProfile{}
 	p.Base.Key = keys.TestCharDoNotUse
 	p.Stats = make([]float64, attributes.EndStatType)
 	p.StatsByLabel = make(map[string][]float64)
@@ -53,7 +53,7 @@ func testCore() *core.Core {
 	p.Stats[attributes.EM] = 100
 	p.Base.Level = 90
 	p.Base.MaxLevel = 90
-	p.Talents = profile.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
+	p.Talents = info.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
 
 	i, err := c.AddChar(p)
 	if err != nil {

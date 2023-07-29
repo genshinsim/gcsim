@@ -1,4 +1,4 @@
-﻿package reactable_test
+package reactable_test
 
 import (
 	"log"

@@ -16,9 +16,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/status"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
@@ -44,11 +44,6 @@ type Flags struct {
 	DefHalt      bool //for hitlag
 	EnableHitlag bool //hitlag enabled
 	Custom       map[string]int
-}
-type Coord struct {
-	X float64 `json:"x"`
-	Y float64 `json:"y"`
-	R float64 `json:"r"`
 }
 
 type Reactable interface {
@@ -156,7 +151,7 @@ func (c *Core) Tick() {
 	c.Tasks.Run()
 }
 
-func (c *Core) AddChar(p profile.CharacterProfile) (int, error) {
+func (c *Core) AddChar(p info.CharacterProfile) (int, error) {
 	var err error
 
 	// initialize character

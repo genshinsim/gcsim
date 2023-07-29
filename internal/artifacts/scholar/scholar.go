@@ -6,10 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -27,7 +26,7 @@ func (s *Set) Init() error      { return nil }
 
 // 2-Piece Bonus: Energy Recharge +20%.
 // 4-Piece Bonus: Gaining Elemental Particles or Orbs gives 3 Energy to all party members who have a bow or a catalyst equipped. Can only occur once every 3s.
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{}
 
 	if count >= 2 {
@@ -56,7 +55,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			for _, this := range c.Player.Chars() {
 				// only for bow and catalyst
-				if this.Weapon.Class == weapon.WeaponClassBow || this.Weapon.Class == weapon.WeaponClassCatalyst {
+				if this.Weapon.Class == info.WeaponClassBow || this.Weapon.Class == info.WeaponClassCatalyst {
 					this.AddEnergy("scholar-4pc", 3)
 				}
 			}

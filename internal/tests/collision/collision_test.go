@@ -14,7 +14,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -39,7 +39,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		e := enemy.New(c, info.EnemyProfile{
 			Level:  100,
 			Resist: make(map[attributes.Element]float64),
-			Pos: core.Coord{
+			Pos: info.Coord{
 				X: 0,
 				Y: 0,
 				R: 1,
@@ -50,7 +50,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 	}
 
 	for i := 0; i < 4; i++ {
-		p := profile.CharacterProfile{}
+		p := info.CharacterProfile{}
 		p.Base.Key = keys.TestCharDoNotUse
 		p.Stats = make([]float64, attributes.EndStatType)
 		p.StatsByLabel = make(map[string][]float64)
@@ -64,7 +64,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		p.Stats[attributes.EM] = 100
 		p.Base.Level = 90
 		p.Base.MaxLevel = 90
-		p.Talents = profile.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
+		p.Talents = info.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
 
 		_, err := c.AddChar(p)
 		if err != nil {

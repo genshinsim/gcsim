@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -121,11 +121,11 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 			// add weapon infusion
 			if c.Base.Cons >= 6 {
 				switch active.Weapon.Class {
-				case weapon.WeaponClassClaymore:
+				case info.WeaponClassClaymore:
 					fallthrough
-				case weapon.WeaponClassSpear:
+				case info.WeaponClassSpear:
 					fallthrough
-				case weapon.WeaponClassSword:
+				case info.WeaponClassSword:
 					c.Core.Player.AddWeaponInfuse(
 						active.Index,
 						"bennett-fire-weapon",

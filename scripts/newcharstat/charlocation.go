@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type FetterInfo []struct {
@@ -32,22 +32,22 @@ func getCharLocationMap() map[int]string {
 	return locationMap
 }
 
-func determineCharRegion(location string) (profile.ZoneType, error) {
+func determineCharRegion(location string) (info.ZoneType, error) {
 	switch location {
 	case "ASSOC_TYPE_INAZUMA":
-		return profile.ZoneInazuma, nil
+		return info.ZoneInazuma, nil
 	case "ASSOC_TYPE_LIYUE":
-		return profile.ZoneInazuma, nil
+		return info.ZoneInazuma, nil
 	case "ASSOC_TYPE_MONDSTADT":
-		return profile.ZoneInazuma, nil
+		return info.ZoneInazuma, nil
 	case "ASSOC_TYPE_SUMERU":
-		return profile.ZoneSumeru, nil
+		return info.ZoneSumeru, nil
 	case "ASSOC_TYPE_MAINACTOR", "ASSOC_TYPE_RANGER":
-		return profile.ZoneUnknown, nil
+		return info.ZoneUnknown, nil
 	case "ASSOC_TYPE_FATUI":
-		return profile.ZoneSnezhnaya, nil
+		return info.ZoneSnezhnaya, nil
 	default:
-		return profile.ZoneUnknown, errors.New("unknown location")
+		return info.ZoneUnknown, errors.New("unknown location")
 	}
 
 }

@@ -3,11 +3,9 @@ package core
 import (
 	"sync"
 
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 var (
@@ -17,9 +15,9 @@ var (
 	weaponMap = make(map[keys.Weapon]NewWeaponFunc)
 )
 
-type NewCharacterFunc func(core *Core, char *character.CharWrapper, p profile.CharacterProfile) error
-type NewSetFunc func(core *Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error)
-type NewWeaponFunc func(core *Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error)
+type NewCharacterFunc func(core *Core, char *character.CharWrapper, p info.CharacterProfile) error
+type NewSetFunc func(core *Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error)
+type NewWeaponFunc func(core *Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error)
 
 func RegisterCharFunc(char keys.Char, f NewCharacterFunc) {
 	mu.Lock()

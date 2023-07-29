@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -138,7 +138,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, skillHitmark)
 
 	//TODO: delay between when frost field start ticking?
-	for i := 0; i <= 600 ; i += 60 {
+	for i := 0; i <= 600; i += 60 {
 		c.Core.Tasks.Add(func() {
 			if src != c.fieldSrc {
 				return
@@ -202,7 +202,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 
 	// weapon infuse and A1
 	switch active.Weapon.Class {
-	case weapon.WeaponClassClaymore, weapon.WeaponClassSpear, weapon.WeaponClassSword:
+	case info.WeaponClassClaymore, info.WeaponClassSpear, info.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
 			active.Index,
 			"chongyun-ice-weapon",

@@ -9,8 +9,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/curves"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type BaseStatCurves struct {
@@ -111,37 +110,37 @@ func determineCharName(iconName string) string {
 	return strings.Replace(iconName, "UI_AvatarIcon_", "", 1)
 }
 
-func determineCharBody(bodyType string) (profile.BodyType, error) {
+func determineCharBody(bodyType string) (info.BodyType, error) {
 	switch bodyType {
 	case "BODY_LOLI":
-		return profile.BodyLoli, nil
+		return info.BodyLoli, nil
 	case "BODY_GIRL":
-		return profile.BodyGirl, nil
+		return info.BodyGirl, nil
 	case "BODY_LADY":
-		return profile.BodyLady, nil
+		return info.BodyLady, nil
 	case "BODY_BOY":
-		return profile.BodyBoy, nil
+		return info.BodyBoy, nil
 	case "BODY_MALE":
-		return profile.BodyMale, nil
+		return info.BodyMale, nil
 	default:
-		return profile.BodyBoy, errors.New("unknown bodytype")
+		return info.BodyBoy, errors.New("unknown bodytype")
 	}
 }
 
-func determineCharWeaponType(weaponType string) (weapon.WeaponClass, error) {
+func determineCharWeaponType(weaponType string) (info.WeaponClass, error) {
 	switch weaponType {
 	case "WEAPON_CLAYMORE":
-		return weapon.WeaponClassClaymore, nil
+		return info.WeaponClassClaymore, nil
 	case "WEAPON_BOW":
-		return weapon.WeaponClassBow, nil
+		return info.WeaponClassBow, nil
 	case "WEAPON_SWORD_ONE_HAND":
-		return weapon.WeaponClassSword, nil
+		return info.WeaponClassSword, nil
 	case "WEAPON_CATALYST":
-		return weapon.WeaponClassCatalyst, nil
+		return info.WeaponClassCatalyst, nil
 	case "WEAPON_POLE":
-		return weapon.WeaponClassSpear, nil
+		return info.WeaponClassSpear, nil
 	default:
-		return weapon.WeaponClassSword, errors.New("unknown weapontype")
+		return info.WeaponClassSword, errors.New("unknown weapontype")
 	}
 }
 

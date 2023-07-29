@@ -647,7 +647,7 @@ type (
 	}
 )
 
-//exprNode()
+// exprNode()
 func (*NumberLit) exprNode()  {}
 func (*StringLit) exprNode()  {}
 func (*FuncLit) exprNode()    {}

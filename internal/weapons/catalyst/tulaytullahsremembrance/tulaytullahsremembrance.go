@@ -1,4 +1,4 @@
-﻿package tulaytullahsremembrance
+package tulaytullahsremembrance
 
 import (
 	"fmt"
@@ -10,9 +10,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -41,7 +41,7 @@ func (w *Weapon) Init() error      { return nil }
 // After this character hits an opponent with a Normal Attack during this duration, Normal Attack DMG will be increased by 9.6/12/14.4/16.8/19.2%.
 // This increase can be triggered once every 0.3s. The maximum Normal Attack DMG increase per single duration of the overall effect is 48/60/72/84/96%.
 // The effect will be removed when the wielder leaves the field, and using the Elemental Skill again will reset all DMG buffs.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		core: c,
 	}

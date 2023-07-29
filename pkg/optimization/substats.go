@@ -30,8 +30,9 @@ func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLog
 // 1) User sets team, weapons, artifact sets/main stats, and rotation
 // 2) Given those, for each character, sim picks ER substat value that functionally maximizes DPS Mean/SD,
 // subject to a penalty on high ER values
-//    - Strategy is to just do a dumb grid search over ER substat values for each character
-//    - ER substat values are set in increments of 2 to make the search easier
+//   - Strategy is to just do a dumb grid search over ER substat values for each character
+//   - ER substat values are set in increments of 2 to make the search easier
+//
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
 func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *ast.ActionList) {
 	// Fix iterations at 350 for performance

@@ -1,4 +1,4 @@
-﻿package pocket
+package pocket
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"

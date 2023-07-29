@@ -5,10 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,8 +29,8 @@ func (s *Set) Init() error {
 	}
 
 	switch s.char.Weapon.Class {
-	case weapon.WeaponClassCatalyst:
-	case weapon.WeaponClassBow:
+	case info.WeaponClassCatalyst:
+	case info.WeaponClassBow:
 	default:
 		// don't add this mod if wrong weapon class
 		return nil
@@ -52,7 +51,7 @@ func (s *Set) Init() error {
 	return nil
 }
 
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
 		char:  char,
 		count: count,

@@ -8,12 +8,11 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/curves"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
-//Provides mapping in JSON between gcsim keys and character data such as element, weapon type, etc...
+// Provides mapping in JSON between gcsim keys and character data such as element, weapon type, etc...
 func main() {
 	//we pull the information from the curves pkg
 	//but in reality this should all just be piped from dimbreath's repo instead
@@ -36,9 +35,9 @@ func main() {
 
 		res[key] = curves.CharBase{
 			Rarity:     5,
-			Body:       profile.BodyBoy,
+			Body:       info.BodyBoy,
 			Element:    element,
-			WeaponType: weapon.WeaponClassSword,
+			WeaponType: info.WeaponClassSword,
 		}
 
 		fmt.Println(res[key])
