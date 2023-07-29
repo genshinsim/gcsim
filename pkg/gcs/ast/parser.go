@@ -9,10 +9,10 @@ import (
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 type Parser struct {
@@ -33,7 +33,7 @@ type Parser struct {
 	infixParseFns  map[TokenType]func(Expr) (Expr, error)
 }
 type ActionList struct {
-	Targets     []enemy.EnemyProfile       `json:"targets"`
+	Targets     []info.EnemyProfile        `json:"targets"`
 	PlayerPos   core.Coord                 `json:"player_initial_pos"`
 	Characters  []profile.CharacterProfile `json:"characters"`
 	InitialChar keys.Char                  `json:"initial"`
@@ -79,7 +79,7 @@ func (c *ActionList) Copy() *ActionList {
 
 	r := *c
 
-	r.Targets = make([]enemy.EnemyProfile, len(c.Targets))
+	r.Targets = make([]info.EnemyProfile, len(c.Targets))
 	for i, v := range c.Targets {
 		r.Targets[i] = v.Clone()
 	}

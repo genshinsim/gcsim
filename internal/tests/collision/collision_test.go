@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -35,7 +36,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 	var trgs []*enemy.Enemy
 
 	for i := 0; i < trgCount; i++ {
-		e := enemy.New(c, enemy.EnemyProfile{
+		e := enemy.New(c, info.EnemyProfile{
 			Level:  100,
 			Resist: make(map[attributes.Element]float64),
 			Pos: core.Coord{
