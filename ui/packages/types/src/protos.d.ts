@@ -2709,6 +2709,9 @@ export namespace model {
 
         /** SimulationStatistics total_source_energy */
         total_source_energy?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics source_reactions */
+        source_reactions?: (model.ISourceStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2797,6 +2800,9 @@ export namespace model {
 
         /** SimulationStatistics total_source_energy. */
         public total_source_energy: model.ISourceStats[];
+
+        /** SimulationStatistics source_reactions. */
+        public source_reactions: model.ISourceStats[];
 
         /**
          * Gets the default type url for SimulationStatistics

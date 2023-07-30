@@ -106,6 +106,9 @@ message SimulationStatistics {
 
   // total source energy
   repeated SourceStats total_source_energy = 26 [json_name="total_source_energy"];
+
+  // source reactions
+  repeated SourceStats source_reactions = 27 [json_name="source_reactions"];
 }
 
 message SignedSimulationStatistics {
