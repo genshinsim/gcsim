@@ -290,6 +290,8 @@ type SimulationStatistics struct {
 	FieldTime []*DescriptiveStats `protobuf:"bytes,25,rep,name=field_time,proto3" json:"field_time,omitempty" bson:"field_time,omitempty"`
 	// total source energy
 	TotalSourceEnergy []*SourceStats `protobuf:"bytes,26,rep,name=total_source_energy,proto3" json:"total_source_energy,omitempty" bson:"total_source_energy,omitempty"`
+	// source reactions
+	SourceReactions []*SourceStats `protobuf:"bytes,27,rep,name=source_reactions,proto3" json:"source_reactions,omitempty" bson:"source_reactions,omitempty"`
 }
 
 func (x *SimulationStatistics) Reset() {
@@ -502,6 +504,13 @@ func (x *SimulationStatistics) GetFieldTime() []*DescriptiveStats {
 func (x *SimulationStatistics) GetTotalSourceEnergy() []*SourceStats {
 	if x != nil {
 		return x.TotalSourceEnergy
+	}
+	return nil
+}
+
+func (x *SimulationStatistics) GetSourceReactions() []*SourceStats {
+	if x != nil {
+		return x.SourceReactions
 	}
 	return nil
 }
@@ -1319,7 +1328,7 @@ var file_protos_model_result_proto_rawDesc = []byte{
 	0x61, 0x74, 0x65, 0x64, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x03, 0x52,
 	0x0c, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x42, 0x0e, 0x0a,
 	0x0c, 0x5f, 0x73, 0x69, 0x6d, 0x5f, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x42, 0x0b, 0x0a,
-	0x09, 0x5f, 0x6d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x22, 0xd4, 0x0c, 0x0a, 0x14, 0x53,
+	0x09, 0x5f, 0x6d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x64, 0x22, 0x94, 0x0d, 0x0a, 0x14, 0x53,
 	0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x73, 0x74,
 	0x69, 0x63, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6e, 0x5f, 0x73, 0x65, 0x65, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x69, 0x6e, 0x5f, 0x73, 0x65, 0x65, 0x64, 0x12,
@@ -1405,7 +1414,11 @@ var file_protos_model_result_proto_rawDesc = []byte{
 	0x65, 0x72, 0x67, 0x79, 0x18, 0x1a, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x6d, 0x6f, 0x64,
 	0x65, 0x6c, 0x2e, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x13,
 	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x5f, 0x65, 0x6e, 0x65,
-	0x72, 0x67, 0x79, 0x1a, 0x56, 0x0a, 0x0f, 0x45, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x44, 0x70,
+	0x72, 0x67, 0x79, 0x12, 0x3e, 0x0a, 0x10, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x5f, 0x72, 0x65,
+	0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x1b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e,
+	0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x53, 0x74, 0x61, 0x74,
+	0x73, 0x52, 0x10, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x5f, 0x72, 0x65, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x1a, 0x56, 0x0a, 0x0f, 0x45, 0x6c, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x44, 0x70,
 	0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x2d, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75,
 	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e,
@@ -1625,32 +1638,33 @@ var file_protos_model_result_proto_depIdxs = []int32{
 	17, // 25: model.SimulationStatistics.shields:type_name -> model.SimulationStatistics.ShieldsEntry
 	5,  // 26: model.SimulationStatistics.field_time:type_name -> model.DescriptiveStats
 	8,  // 27: model.SimulationStatistics.total_source_energy:type_name -> model.SourceStats
-	2,  // 28: model.SignedSimulationStatistics.stats:type_name -> model.SimulationStatistics
-	18, // 29: model.ElementStats.elements:type_name -> model.ElementStats.ElementsEntry
-	19, // 30: model.TargetStats.targets:type_name -> model.TargetStats.TargetsEntry
-	20, // 31: model.SourceStats.sources:type_name -> model.SourceStats.SourcesEntry
-	5,  // 32: model.BucketStats.buckets:type_name -> model.DescriptiveStats
-	11, // 33: model.CharacterBucketStats.characters:type_name -> model.CharacterBuckets
-	5,  // 34: model.CharacterBuckets.buckets:type_name -> model.DescriptiveStats
-	5,  // 35: model.FailedActions.insufficient_energy:type_name -> model.DescriptiveStats
-	5,  // 36: model.FailedActions.insufficient_stamina:type_name -> model.DescriptiveStats
-	5,  // 37: model.FailedActions.swap_cd:type_name -> model.DescriptiveStats
-	5,  // 38: model.FailedActions.skill_cd:type_name -> model.DescriptiveStats
-	5,  // 39: model.FailedActions.dash_cd:type_name -> model.DescriptiveStats
-	21, // 40: model.ShieldInfo.hp:type_name -> model.ShieldInfo.HpEntry
-	5,  // 41: model.ShieldInfo.uptime:type_name -> model.DescriptiveStats
-	5,  // 42: model.SimulationStatistics.ElementDpsEntry.value:type_name -> model.DescriptiveStats
-	5,  // 43: model.SimulationStatistics.TargetDpsEntry.value:type_name -> model.DescriptiveStats
-	14, // 44: model.SimulationStatistics.ShieldsEntry.value:type_name -> model.ShieldInfo
-	5,  // 45: model.ElementStats.ElementsEntry.value:type_name -> model.DescriptiveStats
-	5,  // 46: model.TargetStats.TargetsEntry.value:type_name -> model.DescriptiveStats
-	5,  // 47: model.SourceStats.SourcesEntry.value:type_name -> model.DescriptiveStats
-	5,  // 48: model.ShieldInfo.HpEntry.value:type_name -> model.DescriptiveStats
-	49, // [49:49] is the sub-list for method output_type
-	49, // [49:49] is the sub-list for method input_type
-	49, // [49:49] is the sub-list for extension type_name
-	49, // [49:49] is the sub-list for extension extendee
-	0,  // [0:49] is the sub-list for field type_name
+	8,  // 28: model.SimulationStatistics.source_reactions:type_name -> model.SourceStats
+	2,  // 29: model.SignedSimulationStatistics.stats:type_name -> model.SimulationStatistics
+	18, // 30: model.ElementStats.elements:type_name -> model.ElementStats.ElementsEntry
+	19, // 31: model.TargetStats.targets:type_name -> model.TargetStats.TargetsEntry
+	20, // 32: model.SourceStats.sources:type_name -> model.SourceStats.SourcesEntry
+	5,  // 33: model.BucketStats.buckets:type_name -> model.DescriptiveStats
+	11, // 34: model.CharacterBucketStats.characters:type_name -> model.CharacterBuckets
+	5,  // 35: model.CharacterBuckets.buckets:type_name -> model.DescriptiveStats
+	5,  // 36: model.FailedActions.insufficient_energy:type_name -> model.DescriptiveStats
+	5,  // 37: model.FailedActions.insufficient_stamina:type_name -> model.DescriptiveStats
+	5,  // 38: model.FailedActions.swap_cd:type_name -> model.DescriptiveStats
+	5,  // 39: model.FailedActions.skill_cd:type_name -> model.DescriptiveStats
+	5,  // 40: model.FailedActions.dash_cd:type_name -> model.DescriptiveStats
+	21, // 41: model.ShieldInfo.hp:type_name -> model.ShieldInfo.HpEntry
+	5,  // 42: model.ShieldInfo.uptime:type_name -> model.DescriptiveStats
+	5,  // 43: model.SimulationStatistics.ElementDpsEntry.value:type_name -> model.DescriptiveStats
+	5,  // 44: model.SimulationStatistics.TargetDpsEntry.value:type_name -> model.DescriptiveStats
+	14, // 45: model.SimulationStatistics.ShieldsEntry.value:type_name -> model.ShieldInfo
+	5,  // 46: model.ElementStats.ElementsEntry.value:type_name -> model.DescriptiveStats
+	5,  // 47: model.TargetStats.TargetsEntry.value:type_name -> model.DescriptiveStats
+	5,  // 48: model.SourceStats.SourcesEntry.value:type_name -> model.DescriptiveStats
+	5,  // 49: model.ShieldInfo.HpEntry.value:type_name -> model.DescriptiveStats
+	50, // [50:50] is the sub-list for method output_type
+	50, // [50:50] is the sub-list for method input_type
+	50, // [50:50] is the sub-list for extension type_name
+	50, // [50:50] is the sub-list for extension extendee
+	0,  // [0:50] is the sub-list for field type_name
 }
 
 func init() { file_protos_model_result_proto_init() }

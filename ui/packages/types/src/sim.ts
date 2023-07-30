@@ -75,6 +75,8 @@ export interface Statistics {
   field_time?: FloatStat[];
 
   total_source_energy?: SourceStats[];
+
+  source_reactions?: SourceStats[];
 }
 
 export interface SummaryStat {
