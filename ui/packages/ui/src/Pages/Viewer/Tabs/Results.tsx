@@ -8,6 +8,7 @@ import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
 import Metadata from "../Components/Overview/Metadata";
 import { SourceDPSCard } from "../Components/Damage/SourceDPSBarChart";
+import FieldTimeCard from "../Components/Miscellaneous/FieldTimeCard";
 
 type Props = {
   data: SimResults | null;
@@ -49,6 +50,8 @@ const SingleGroup = ({ data, running, names }: Props) => (
     <CharacterDPSBarChart data={data} running={running} names={names} />
 
     <SourceDPSCard data={data} running={running} names={names} />
+    
+    <FieldTimeCard data={data} running={running} names={names} />
   </Group>
 );
 

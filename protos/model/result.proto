@@ -100,6 +100,9 @@ message SimulationStatistics {
 
   // shield
   map<string, ShieldInfo> shields = 23 [json_name="shields"];
+
+  // field time
+  repeated DescriptiveStats field_time = 25 [json_name="field_time"];
 }
 
 message SignedSimulationStatistics {
