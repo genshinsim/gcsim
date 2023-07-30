@@ -71,6 +71,8 @@ export interface Statistics {
   cumu_damage_contrib?: CharacterBucketStats;
 
   shields?: Shields;
+
+  field_time?: FloatStat[];
 }
 
 export interface SummaryStat {

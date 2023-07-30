@@ -2703,6 +2703,9 @@ export namespace model {
 
         /** SimulationStatistics shields */
         shields?: ({ [k: string]: model.IShieldInfo }|null);
+
+        /** SimulationStatistics field_time */
+        field_time?: (model.IDescriptiveStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2785,6 +2788,9 @@ export namespace model {
 
         /** SimulationStatistics shields. */
         public shields: { [k: string]: model.IShieldInfo };
+
+        /** SimulationStatistics field_time. */
+        public field_time: model.IDescriptiveStats[];
 
         /**
          * Gets the default type url for SimulationStatistics
