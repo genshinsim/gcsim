@@ -9,7 +9,7 @@ type Props = {
   width: number;
   height: number;
   names?: string[];
-  dps?: SourceStats[];
+  energy?: SourceStats[];
 }
 
 const margin = { top: 0, left: 300, right: 20, bottom: 40 };
@@ -29,12 +29,12 @@ export const BarChartLegend = ({ names }: { names?: string[] }) => {
   );
 };
 
-const Graph = ({ width, dps, names }: Props) => {
-  const { data, sources, xMax } = useData(dps, names);
+const Graph = ({ width, energy, names }: Props) => {
+  const { data, sources, xMax } = useData(energy, names);
 
   const sourceNames = sources.map(s => s.name);
 
-  if (dps == null || names == null) {
+  if (energy == null || names == null) {
     return <NoData />;
   }
 
@@ -100,19 +100,19 @@ type ChartData = {
   xMax: number;
 }
 
-function useData(dps?: SourceStats[], names?: string[]): ChartData {
+function useData(energy?: SourceStats[], names?: string[]): ChartData {
   return useMemo(() => {
-    if (dps == null || names == null) {
+    if (energy == null || names == null) {
       return { data: [], sources: [], xMax: 0 };
     }
 
     const rows = new Map<string, SourceData[]>();
-    for (let i = 0; i < dps.length; i++) {
+    for (let i = 0; i < energy.length; i++) {
       if (names[i] == "") {
         continue;
       }
 
-      const char = dps[i].sources;
+      const char = energy[i].sources;
       if (char == null) {
         continue;
       }
@@ -128,7 +128,7 @@ function useData(dps?: SourceStats[], names?: string[]): ChartData {
       }
     }
     
-    let maxDPS = 0;
+    let maxEnergy = 0;
     const sources: SourceName[] = [];
     rows.forEach((v, k) => {
       const max: number = v.reduce((a, b) => { 
@@ -140,7 +140,7 @@ function useData(dps?: SourceStats[], names?: string[]): ChartData {
       }, 0);
 
       sources.push({ name: k, mean: mean });
-      maxDPS = Math.max(maxDPS, max);
+      maxEnergy = Math.max(maxEnergy, max);
     });
 
     const data = Array.from(rows.values())
@@ -172,7 +172,7 @@ function useData(dps?: SourceStats[], names?: string[]): ChartData {
     return {
       data: data,
       sources: sources.sort((a, b) => a.mean - b.mean).filter(v => v.mean > 0),
-      xMax: maxDPS
+      xMax: maxEnergy
     };
-  }, [dps, names]);
+  }, [energy, names]);
 }

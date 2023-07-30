@@ -9,6 +9,7 @@ import { FiLink2 } from "react-icons/fi";
 import Metadata from "../Components/Overview/Metadata";
 import { SourceDPSCard } from "../Components/Damage/SourceDPSBarChart";
 import FieldTimeCard from "../Components/Miscellaneous/FieldTimeCard";
+import { TotalSourceEnergyCard } from "../Components/Miscellaneous/TotalSourceEnergyBarChart";
 
 type Props = {
   data: SimResults | null;
@@ -52,6 +53,8 @@ const SingleGroup = ({ data, running, names }: Props) => (
     <SourceDPSCard data={data} running={running} names={names} />
     
     <FieldTimeCard data={data} running={running} names={names} />
+
+    <TotalSourceEnergyCard data={data} running={running} names={names} />
   </Group>
 );
 

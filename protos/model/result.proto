@@ -103,6 +103,9 @@ message SimulationStatistics {
 
   // field time
   repeated DescriptiveStats field_time = 25 [json_name="field_time"];
+
+  // total source energy
+  repeated SourceStats total_source_energy = 26 [json_name="total_source_energy"];
 }
 
 message SignedSimulationStatistics {
