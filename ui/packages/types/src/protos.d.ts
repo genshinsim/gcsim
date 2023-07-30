@@ -2706,6 +2706,9 @@ export namespace model {
 
         /** SimulationStatistics field_time */
         field_time?: (model.IDescriptiveStats[]|null);
+
+        /** SimulationStatistics total_source_energy */
+        total_source_energy?: (model.ISourceStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2791,6 +2794,9 @@ export namespace model {
 
         /** SimulationStatistics field_time. */
         public field_time: model.IDescriptiveStats[];
+
+        /** SimulationStatistics total_source_energy. */
+        public total_source_energy: model.ISourceStats[];
 
         /**
          * Gets the default type url for SimulationStatistics
