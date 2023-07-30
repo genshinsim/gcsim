@@ -11,6 +11,7 @@ import { SourceDPSCard } from "../Components/Damage/SourceDPSBarChart";
 import FieldTimeCard from "../Components/Miscellaneous/FieldTimeCard";
 import { TotalSourceEnergyCard } from "../Components/Miscellaneous/TotalSourceEnergyBarChart";
 import { SourceReactionsCard } from "../Components/Miscellaneous/SourceReactionsBarChart";
+import { CharacterActionsCard } from "../Components/Miscellaneous/CharacterActionsBarChart";
 
 type Props = {
   data: SimResults | null;
@@ -52,6 +53,8 @@ const SingleGroup = ({ data, running, names }: Props) => (
     <CharacterDPSBarChart data={data} running={running} names={names} />
 
     <SourceDPSCard data={data} running={running} names={names} />
+
+    <CharacterActionsCard data={data} running={running} names={names} />
     
     <FieldTimeCard data={data} running={running} names={names} />
 

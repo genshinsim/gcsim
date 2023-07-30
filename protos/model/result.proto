@@ -109,6 +109,9 @@ message SimulationStatistics {
 
   // source reactions
   repeated SourceStats source_reactions = 27 [json_name="source_reactions"];
+
+  // character actions
+  repeated SourceStats character_actions = 28 [json_name="character_actions"];
 }
 
 message SignedSimulationStatistics {
