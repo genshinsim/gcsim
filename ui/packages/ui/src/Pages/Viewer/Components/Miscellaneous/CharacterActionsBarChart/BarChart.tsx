@@ -12,8 +12,6 @@ type Props = {
   actionNames?: string[] | null;
 }
 
-const margin = { top: 0, left: 300, right: 20, bottom: 40 };
-
 export const BarChartLegend = ({ actionNames }: { actionNames?: string[] | null }) => {
   if (actionNames == null) {
     return null;
@@ -54,7 +52,6 @@ const Graph = ({ height, width, actions, names, actionNames }: Props) => {
       stat={(d, k) => d.data[k]}
       barColor={DataColors.action}
       hoverColor={DataColors.actionLabel}
-      margin={margin}
       tooltipContent={(d, k) => (
         <FloatStatTooltipContent
             title={d.name + ": " + k}
