@@ -18,7 +18,7 @@ export const SourceReactionsCard = ({ data, running, names }: Props) => {
   }, 5000, data, running);
 
   return (
-    <Card className="flex flex-col col-span-full min-h-96">
+    <Card className="flex flex-col col-span-3 h-96">
       <div className="flex flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
           <CardTitle title="Reactions Per Source" tooltip="x" timer={timer} />

@@ -112,6 +112,9 @@ message SimulationStatistics {
 
   // character actions
   repeated SourceStats character_actions = 28 [json_name="character_actions"];
+
+  // target aura uptime
+  repeated SourceStats target_aura_uptime = 29 [json_name="target_aura_uptime"];
 }
 
 message SignedSimulationStatistics {
