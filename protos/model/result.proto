@@ -94,6 +94,7 @@ message SimulationStatistics {
   repeated ElementStats breakdown_by_element_dps = 19 [json_name="dps_by_element"];
   repeated TargetStats breakdown_by_target_dps = 20 [json_name="dps_by_target"];
   repeated SourceStats source_dps = 24 [json_name="source_dps"];
+  repeated SourceStats source_damage_instances = 30 [json_name="source_damage_instances"];
 
   BucketStats damage_buckets = 21 [json_name="damage_buckets"];
   CharacterBucketStats cumulative_damage_contribution = 22 [json_name="cumu_damage_contrib"];

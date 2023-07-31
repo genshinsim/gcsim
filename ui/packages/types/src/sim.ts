@@ -66,6 +66,7 @@ export interface Statistics {
   dps_by_element?: ElementStats[];
   dps_by_target?: TargetStats[];
   source_dps?: SourceStats[];
+  source_damage_instances?: SourceStats[];
 
   damage_buckets?: BucketStats;
   cumu_damage_contrib?: CharacterBucketStats;
