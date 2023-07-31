@@ -2695,6 +2695,9 @@ export namespace model {
         /** SimulationStatistics source_dps */
         source_dps?: (model.ISourceStats[]|null);
 
+        /** SimulationStatistics source_damage_instances */
+        source_damage_instances?: (model.ISourceStats[]|null);
+
         /** SimulationStatistics damage_buckets */
         damage_buckets?: (model.IBucketStats|null);
 
@@ -2791,6 +2794,9 @@ export namespace model {
 
         /** SimulationStatistics source_dps. */
         public source_dps: model.ISourceStats[];
+
+        /** SimulationStatistics source_damage_instances. */
+        public source_damage_instances: model.ISourceStats[];
 
         /** SimulationStatistics damage_buckets. */
         public damage_buckets?: (model.IBucketStats|null);
