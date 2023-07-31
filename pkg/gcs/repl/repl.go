@@ -20,7 +20,7 @@ func Eval(s string, log *log.Logger) {
 	go handleSimActions(simActions, done)
 
 	p := ast.New(s)
-	res, err := p.Parse()
+	res, gcsl, err := p.Parse()
 
 	if err != nil {
 		fmt.Println("Error parsing input:")
@@ -36,7 +36,7 @@ func Eval(s string, log *log.Logger) {
 	}
 
 	fmt.Println("Program parsed:")
-	fmt.Println(res.Program.String())
+	fmt.Println(gcsl.String())
 
 	if len(res.Errors) != 0 {
 		//don't run the program if there are errors
@@ -44,7 +44,7 @@ func Eval(s string, log *log.Logger) {
 	}
 	fmt.Println("Running program...:")
 	eval := gcs.Eval{
-		AST:  res.Program,
+		AST:  gcsl,
 		Next: done,
 		Work: simActions,
 		Log:  log,
@@ -74,7 +74,7 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 
 		line := scanner.Text()
 		p := ast.New(line)
-		res, err := p.Parse()
+		_, gcsl, err := p.Parse()
 
 		if err != nil {
 			fmt.Println("Error parsing input:")
@@ -84,11 +84,11 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 
 		if showProgram {
 			fmt.Println("Program parsed:")
-			fmt.Println(res.Program.String())
+			fmt.Println(gcsl.String())
 		}
 
 		eval := gcs.Eval{
-			AST:  res.Program,
+			AST:  gcsl,
 			Next: next,
 			Work: simActions,
 			Log:  log,

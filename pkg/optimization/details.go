@@ -27,7 +27,8 @@ type SubstatOptimizerDetails struct {
 	charWithFavonius       []bool
 	charProfilesERBaseline []info.CharacterProfile
 	charProfilesCopy       []info.CharacterProfile
-	simcfg                 *ast.ActionList
+	simcfg                 *info.ActionList
+	gcsl                   ast.Node
 	simopt                 simulator.Options
 	cfg                    string
 	fixedSubstatCount      int
@@ -51,7 +52,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	stats.simcfg.Characters = stats.charProfilesCopy
 
 	// Get initial DPS value
-	initialResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, time.Now(), context.TODO())
+	initialResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), context.TODO())
 	initialMean := *initialResult.Statistics.DPS.Mean
 
 	opDebug = append(opDebug, "Calculating optimal substat distribution...")
@@ -272,7 +273,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		stats.charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 
 		stats.simcfg.Characters = stats.charProfilesCopy
-		substatEvalResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, time.Now(), context.TODO())
+		substatEvalResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), context.TODO())
 		// opDebug = append(opDebug, fmt.Sprintf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD))
 
 		substatGradients[idxSubstat] = *substatEvalResult.Statistics.DPS.Mean - initialMean
@@ -364,7 +365,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 
-		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.simopt, time.Now(), context.TODO())
+		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), context.TODO())
 
 		if erStack == 0 {
 			initialMean = *result.Statistics.DPS.Mean
@@ -455,7 +456,8 @@ func (stats *SubstatOptimizerDetails) calculateERBaselineHandleFav(i int) {
 func NewSubstatOptimizerDetails(
 	cfg string,
 	simopt simulator.Options,
-	simcfg *ast.ActionList,
+	simcfg *info.ActionList,
+	gcsl ast.Node,
 	indivLiquidCap int,
 	totalLiquidSubstats int,
 	fixedSubstatCount int,
@@ -542,6 +544,7 @@ func NewSubstatOptimizerDetails(
 	// Give all characters max ER to set initial state
 	s.charProfilesERBaseline = make([]info.CharacterProfile, len(simcfg.Characters))
 	s.charProfilesCopy = make([]info.CharacterProfile, len(simcfg.Characters))
+	s.gcsl = gcsl
 
 	return &s
 }

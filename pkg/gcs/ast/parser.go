@@ -1,21 +1,19 @@
 package ast
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"runtime"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 type Parser struct {
-	lex *lexer
-	res *ActionList
+	lex  *lexer
+	res  *info.ActionList
+	prog *BlockStmt
 
 	//other information tracked as we parse
 	chars          map[keys.Char]*info.CharacterProfile
@@ -30,74 +28,6 @@ type Parser struct {
 	prefixParseFns map[TokenType]func() (Expr, error)
 	infixParseFns  map[TokenType]func(Expr) (Expr, error)
 }
-type ActionList struct {
-	Targets     []info.EnemyProfile     `json:"targets"`
-	PlayerPos   info.Coord              `json:"player_initial_pos"`
-	Characters  []info.CharacterProfile `json:"characters"`
-	InitialChar keys.Char               `json:"initial"`
-	Program     *BlockStmt              `json:"-"`
-	Energy      EnergySettings          `json:"energy_settings"`
-	Settings    SimulatorSettings       `json:"settings"`
-	Errors      []error                 `json:"-"` //These represents errors preventing ActionList from being executed
-	ErrorMsgs   []string                `json:"errors"`
-}
-
-type EnergySettings struct {
-	Active         bool `json:"active"`
-	Once           bool `json:"once"` //how often
-	Start          int  `json:"start"`
-	End            int  `json:"end"`
-	Amount         int  `json:"amount"`
-	LastEnergyDrop int  `json:"last_energy_drop"`
-}
-
-type SimulatorSettings struct {
-	Duration     float64 `json:"-"`
-	DamageMode   bool    `json:"damage_mode"`
-	EnableHitlag bool    `json:"enable_hitlag"`
-	DefHalt      bool    `json:"def_halt"` // for hitlag
-	//other stuff
-	NumberOfWorkers int           `json:"-"`          // how many workers to run the simulation
-	Iterations      int           `json:"iterations"` // how many iterations to run
-	Delays          player.Delays `json:"delays"`
-}
-
-type Delays struct {
-	Skill  int `json:"skill"`
-	Burst  int `json:"burst"`
-	Attack int `json:"attack"`
-	Charge int `json:"charge"`
-	Aim    int `json:"aim"`
-	Dash   int `json:"dash"`
-	Jump   int `json:"jump"`
-	Swap   int `json:"swap"`
-}
-
-func (c *ActionList) Copy() *ActionList {
-
-	r := *c
-
-	r.Targets = make([]info.EnemyProfile, len(c.Targets))
-	for i, v := range c.Targets {
-		r.Targets[i] = v.Clone()
-	}
-
-	r.Characters = make([]info.CharacterProfile, len(c.Characters))
-	for i, v := range c.Characters {
-		r.Characters[i] = v.Clone()
-	}
-
-	r.Program = c.Program.CopyBlock()
-	return &r
-}
-
-func (a *ActionList) PrettyPrint() string {
-	prettyJson, err := json.MarshalIndent(a, "", "  ")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	return string(prettyJson)
-}
 
 type parseFn func(*Parser) (parseFn, error)
 
@@ -110,14 +40,13 @@ func New(input string) *Parser {
 		pos:            -1,
 	}
 	p.lex = lex(input)
-	p.res = &ActionList{
-		Program: newBlockStmt(0),
-		Settings: SimulatorSettings{
+	p.res = &info.ActionList{
+		Settings: info.SimulatorSettings{
 			EnableHitlag:    true, // default hitlag enabled
 			DefHalt:         true, //default defhalt to true
 			NumberOfWorkers: 20,   //default 20 workers if none set
 			Iterations:      1000, //default 1000 iterations
-			Delays: player.Delays{
+			Delays: info.Delays{
 				Swap: 1, //default swap timer of 1
 			},
 		},
@@ -125,6 +54,7 @@ func New(input string) *Parser {
 			R: 0.3, //default player radius 0.3, pos 0,0
 		},
 	}
+	p.prog = newBlockStmt(0)
 	//expr functions
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
 	p.prefixParseFns[itemField] = p.parseField

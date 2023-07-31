@@ -3,7 +3,7 @@ package overview
 import (
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -29,7 +29,7 @@ func newSample(itr int) *calc.Sample {
 	}
 }
 
-func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
+func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		duration:    newSample(cfg.Settings.Iterations),
 		dps:         newSample(cfg.Settings.Iterations),

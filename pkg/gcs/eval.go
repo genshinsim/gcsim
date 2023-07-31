@@ -50,6 +50,17 @@ func (e *Eval) Continue() {
 	e.Next <- true
 }
 
+// Tell eval to exit now
+func (e *Eval) Exit() error {
+	select {
+	case <-e.Work:
+		//do nothing with it
+	default:
+	}
+	close(e.Next)
+	return e.err
+}
+
 // NextAction asks eval to return the next action
 func (e *Eval) NextAction() (*action.ActionEval, error) {
 	if e.err != nil {
@@ -60,6 +71,10 @@ func (e *Eval) NextAction() (*action.ActionEval, error) {
 		return nil, nil
 	}
 	return next, nil
+}
+
+func (e *Eval) Start() {
+	e.Run()
 }
 
 func (e *Eval) Err() error {
@@ -73,7 +88,6 @@ func NewEvaluator(ast ast.Node, c *core.Core) (action.Evaluator, error) {
 		Next: make(chan bool),
 		Work: make(chan *action.ActionEval),
 	}
-	go e.Run()
 	return e, nil
 }
 
@@ -99,7 +113,11 @@ func (e *Eval) Run() Obj {
 	e.initSysFuncs(global)
 
 	//start running once we get the signal to go
-	<-e.Next
+	_, ok := <-e.Next
+	if !ok {
+		e.err = ErrTerminated
+		return nil
+	}
 	res, err := e.evalNode(e.AST, global)
 	if err != nil && err != ErrTerminated {
 		//ignore ErrTerminate since it's not really an error

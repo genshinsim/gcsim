@@ -1,6 +1,8 @@
 package worker
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -14,8 +16,9 @@ type Pool struct {
 }
 
 type Job struct {
-	Cfg  *ast.ActionList
-	Seed int64
+	Cfg     *info.ActionList
+	Actions ast.Node
+	Seed    int64
 }
 
 // New creates a new Pool. Jobs can be sent to new pool by sending to p.QueueCh
@@ -46,7 +49,12 @@ func (p *Pool) worker() {
 				p.errCh <- err
 				break
 			}
-			s, err := simulation.New(job.Cfg, c)
+			eval, err := gcs.NewEvaluator(job.Actions, c)
+			if err != nil {
+				p.errCh <- err
+				break
+			}
+			s, err := simulation.New(job.Cfg, eval, c)
 			if err != nil {
 				p.errCh <- err
 				break

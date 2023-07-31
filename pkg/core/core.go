@@ -69,7 +69,7 @@ type CoreOpt struct {
 	EnableHitlag bool
 	DefHalt      bool
 	DamageMode   bool
-	Delays       player.Delays
+	Delays       info.Delays
 }
 
 func New(opt CoreOpt) (*Core, error) {

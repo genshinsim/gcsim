@@ -37,6 +37,8 @@ type ActionEval struct {
 type Evaluator interface {
 	Continue()
 	NextAction() (*ActionEval, error)
+	Exit() error
+	Start()
 }
 
 type queuedAction struct {

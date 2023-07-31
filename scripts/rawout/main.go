@@ -62,7 +62,7 @@ print("Rotation Done");
 
 func main() {
 	p := ast.New(cfg)
-	cfg, err := p.Parse()
+	cfg, gcsl, err := p.Parse()
 	if err != nil {
 		panic(err)
 	}
@@ -84,8 +84,9 @@ func main() {
 		wip := 0
 		for wip < cfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
-				Cfg:  cfg.Copy(),
-				Seed: rand.Int63(),
+				Cfg:     cfg.Copy(),
+				Actions: gcsl.Copy(),
+				Seed:    rand.Int63(),
 			}
 			wip++
 		}

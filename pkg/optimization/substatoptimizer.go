@@ -62,14 +62,14 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	parser := ast.New(clean)
-	simcfg, err := parser.Parse()
+	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	optimizer := NewSubstatOptimizer(optionsMap, sugarLog)
-	optimizer.Run(cfg, simopt, simcfg)
+	optimizer.Run(cfg, simopt, simcfg, gcsl)
 	output := optimizer.PrettyPrint(clean, optimizer.details)
 
 	// Sticks optimized substat string into config and output

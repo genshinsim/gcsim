@@ -13,6 +13,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/animation"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -60,23 +61,12 @@ type Handler struct {
 	}
 }
 
-type Delays struct {
-	Skill  int `json:"skill"`
-	Burst  int `json:"burst"`
-	Attack int `json:"attack"`
-	Charge int `json:"charge"`
-	Aim    int `json:"aim"`
-	Dash   int `json:"dash"`
-	Jump   int `json:"jump"`
-	Swap   int `json:"swap"`
-}
-
 type Opt struct {
 	F            *int
 	Log          glog.Logger
 	Events       event.Eventter
 	Tasks        task.Tasker
-	Delays       Delays
+	Delays       info.Delays
 	Debug        bool
 	EnableHitlag bool
 }

@@ -11,7 +11,7 @@ import (
 
 func TestType(t *testing.T) {
 	p := ast.New("type(1);")
-	res, err := p.Parse()
+	_, gcsl, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func TestType(t *testing.T) {
 	next := make(chan bool)
 	go handleSimActions(simActions, next)
 	eval := Eval{
-		AST:  res.Program,
+		AST:  gcsl,
 		Next: next,
 		Work: simActions,
 		Log:  log.Default(),

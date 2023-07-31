@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
@@ -21,6 +20,8 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 			err = errors.New(fmt.Sprintf("simulation panic occured: %v", r))
 		}
 	}()
+	defer s.eval.Exit()
+	go s.eval.Start()
 	//run sim for 90s if no duration set
 	if s.cfg.Settings.Duration == 0 {
 		// fmt.Println("no duration set, running for 90s")
@@ -31,12 +32,6 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 	stop := false
 
 	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
-
-	//setup ast
-	s.eval, err = gcs.NewEvaluator(s.cfg.Program, s.C)
-	if err != nil {
-		return
-	}
 
 	for !stop {
 		err = s.AdvanceFrame()

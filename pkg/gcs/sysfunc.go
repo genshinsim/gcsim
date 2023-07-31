@@ -551,7 +551,6 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 			return nil, ErrTerminated // no more work, shutting down
 		}
 	}
-
 	e.Work <- &action.ActionEval{
 		Char:   charKey,
 		Action: actionKey,

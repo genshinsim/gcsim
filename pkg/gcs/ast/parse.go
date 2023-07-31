@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
@@ -49,12 +50,12 @@ func (t Token) precedence() precedence {
 }
 
 // Parse returns the ActionList and any error that prevents the ActionList from being parsed
-func (p *Parser) Parse() (*ActionList, error) {
+func (p *Parser) Parse() (*info.ActionList, Node, error) {
 	var err error
 	for state := parseRows; state != nil; {
 		state, err = state(p)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 	}
 
@@ -114,7 +115,7 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.ErrorMsgs = append(p.res.ErrorMsgs, v.Error())
 	}
 
-	return p.res, nil
+	return p.res, p.prog, nil
 }
 
 func parseRows(p *Parser) (parseFn, error) {
@@ -143,7 +144,7 @@ func parseRows(p *Parser) (parseFn, error) {
 		if err != nil {
 			return nil, err
 		}
-		p.res.Program.append(node)
+		p.prog.append(node)
 		return parseRows, nil
 	case keywordActive:
 		p.next()
@@ -171,7 +172,7 @@ func parseRows(p *Parser) (parseFn, error) {
 		return nil, nil
 	default: //default should be look for gcsl
 		node, err := p.parseStatement()
-		p.res.Program.append(node)
+		p.prog.append(node)
 		if err != nil {
 			return nil, err
 		}
