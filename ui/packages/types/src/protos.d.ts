@@ -2712,6 +2712,9 @@ export namespace model {
 
         /** SimulationStatistics source_reactions */
         source_reactions?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics character_actions */
+        character_actions?: (model.ISourceStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2803,6 +2806,9 @@ export namespace model {
 
         /** SimulationStatistics source_reactions. */
         public source_reactions: model.ISourceStats[];
+
+        /** SimulationStatistics character_actions. */
+        public character_actions: model.ISourceStats[];
 
         /**
          * Gets the default type url for SimulationStatistics

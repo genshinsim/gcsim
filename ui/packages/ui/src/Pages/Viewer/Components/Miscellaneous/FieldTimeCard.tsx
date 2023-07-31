@@ -15,7 +15,7 @@ export default ({ data, running, names }: Props) => {
   const [field_time, timer] = useRefreshWithTimer(
       d => d?.statistics?.field_time, 10000, data, running);
   return (
-    <Card className="flex flex-col col-span-full h-72 min-h-full gap-0">
+    <Card className="flex flex-col col-span-3 h-72 min-h-full gap-0">
       <CardTitle title="Field Time Distribution" tooltip="x" timer={timer} />
       <FieldTimePie names={names} field_time={field_time} />
     </Card>

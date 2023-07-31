@@ -77,6 +77,8 @@ export interface Statistics {
   total_source_energy?: SourceStats[];
 
   source_reactions?: SourceStats[];
+
+  character_actions?: SourceStats[];
 }
 
 export interface SummaryStat {
