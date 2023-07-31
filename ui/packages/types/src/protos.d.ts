@@ -2715,6 +2715,9 @@ export namespace model {
 
         /** SimulationStatistics character_actions */
         character_actions?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics target_aura_uptime */
+        target_aura_uptime?: (model.ISourceStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2809,6 +2812,9 @@ export namespace model {
 
         /** SimulationStatistics character_actions. */
         public character_actions: model.ISourceStats[];
+
+        /** SimulationStatistics target_aura_uptime. */
+        public target_aura_uptime: model.ISourceStats[];
 
         /**
          * Gets the default type url for SimulationStatistics

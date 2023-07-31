@@ -79,6 +79,8 @@ export interface Statistics {
   source_reactions?: SourceStats[];
 
   character_actions?: SourceStats[];
+
+  target_aura_uptime?: SourceStats[];
 }
 
 export interface SummaryStat {

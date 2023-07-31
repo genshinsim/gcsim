@@ -12,6 +12,7 @@ import FieldTimeCard from "../Components/Miscellaneous/FieldTimeCard";
 import { TotalSourceEnergyCard } from "../Components/Miscellaneous/TotalSourceEnergyBarChart";
 import { SourceReactionsCard } from "../Components/Miscellaneous/SourceReactionsBarChart";
 import { CharacterActionsCard } from "../Components/Miscellaneous/CharacterActionsBarChart";
+import { TargetAuraUptimeCard } from "../Components/Miscellaneous/TargetAuraUptimeBarChart";
 
 type Props = {
   data: SimResults | null;
@@ -61,6 +62,8 @@ const SingleGroup = ({ data, running, names }: Props) => (
     <TotalSourceEnergyCard data={data} running={running} names={names} />
 
     <SourceReactionsCard data={data} running={running} names={names} />
+
+    <TargetAuraUptimeCard data={data} running={running} />
   </Group>
 );
 

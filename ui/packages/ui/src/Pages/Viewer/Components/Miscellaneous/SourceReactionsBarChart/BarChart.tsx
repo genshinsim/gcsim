@@ -12,8 +12,6 @@ type Props = {
   reactions?: SourceStats[];
 }
 
-const margin = { top: 0, left: 300, right: 20, bottom: 40 };
-
 export const BarChartLegend = ({ names }: { names?: string[] }) => {
   if (names == null) {
     return null;
@@ -29,7 +27,7 @@ export const BarChartLegend = ({ names }: { names?: string[] }) => {
   );
 };
 
-const Graph = ({ width, reactions, names }: Props) => {
+const Graph = ({ width, height, reactions, names }: Props) => {
   const { data, sources, xMax } = useData(reactions, names);
 
   const sourceNames = sources.map(s => s.name);
@@ -41,7 +39,7 @@ const Graph = ({ width, reactions, names }: Props) => {
   return (
     <HorizontalBarStack<Row, number>
       width={width}
-      height={data.length * 40}
+      height={height}
       xDomain={[0, xMax]}
       yDomain={sourceNames}
       y={d => d.source}
@@ -56,7 +54,6 @@ const Graph = ({ width, reactions, names }: Props) => {
       stat={(d, k) => d.data[names[k]].data}
       barColor={k => DataColors.character(k)}
       hoverColor={k => DataColors.characterLabel(k)}
-      margin={margin}
       tooltipContent={(d, k) => (
         <FloatStatTooltipContent
             title={names[k] + ": " + d.source}
