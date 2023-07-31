@@ -58,6 +58,7 @@ export const BarChart = ({
           color={DataColors.reactableModifierLabel(k)}
         />
       )}
+      bottomLabel="% of total duration"
     />
   );
 };

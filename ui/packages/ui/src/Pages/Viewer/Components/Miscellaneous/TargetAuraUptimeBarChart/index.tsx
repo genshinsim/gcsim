@@ -56,7 +56,7 @@ export const TargetAuraUptimeCard = ({ data, running }: Props) => {
       <div className="flex flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
           <CardTitle
-            title="Target Aura Uptime (% of total duration)"
+            title="Target Aura Uptime"
             tooltip="x"
             timer={timer}
           />
