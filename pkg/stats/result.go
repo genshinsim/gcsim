@@ -13,8 +13,8 @@ const (
 	OnField  FieldStatus = "on_field"
 	OffField FieldStatus = "off_field"
 
-	Amp15     ReactionModifier = "amp_1_5"
-	Amp20     ReactionModifier = "amp_2_0"
+	Melt      ReactionModifier = "melt"
+	Vaporize  ReactionModifier = "vaporize"
 	Spread    ReactionModifier = "spread"
 	Aggravate ReactionModifier = "aggravate"
 )

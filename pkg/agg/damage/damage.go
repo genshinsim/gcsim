@@ -105,7 +105,12 @@ func (b *buffer) Add(result stats.Result) {
 			charTargetDPS[ev.Target] += ev.Damage
 			charElementDPS[ev.Element] += ev.Damage
 			charDPS += ev.Damage
-			sourceDPS[ev.Source] += ev.Damage
+			sourceDPSKey := ev.Source
+			reactModifier := string(ev.ReactionModifier)
+			if reactModifier != "" {
+				sourceDPSKey += " (" + reactModifier + ")"
+			}
+			sourceDPS[sourceDPSKey] += ev.Damage
 		}
 
 		b.characterDPS[i].Add(charDPS * time)
