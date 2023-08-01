@@ -27,6 +27,8 @@ export const BarChartLegend = ({ names }: { names?: string[] }) => {
   );
 };
 
+const margin = { top: 0, left: 140, right: 20, bottom: 40 };
+
 const Graph = ({ width, height, reactions, names }: Props) => {
   const { data, sources, xMax } = useData(reactions, names);
 
@@ -54,6 +56,7 @@ const Graph = ({ width, height, reactions, names }: Props) => {
       stat={(d, k) => d.data[names[k]].data}
       barColor={k => DataColors.character(k)}
       hoverColor={k => DataColors.characterLabel(k)}
+      margin={margin}
       tooltipContent={(d, k) => (
         <FloatStatTooltipContent
             title={names[k] + ": " + d.source}
