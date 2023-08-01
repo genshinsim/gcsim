@@ -321,13 +321,6 @@
       "desc": "0 for no Glide Cancel (default), 1 for Glide Cancel. Using high_plunge after Skill with a Glide Cancel is not allowed."
     }
   ],
-  "keqing": [
-    {
-      "ability": "skill",
-      "param": "c1",
-      "desc": "Number of hits for C1. Default 1 hit, maximum 2 hits."
-    }
-  ],
   "kirara": [
     {
       "ability": "skill",
