@@ -82,7 +82,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 
 var skillRecastFrames []int
 
-const skillRecastHitmark = 27
+const skillRecastHitmark = 16
 
 func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	// C1 DMG happens before Recast DMG
