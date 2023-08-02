@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -21,15 +22,6 @@ type Bunny struct {
 	*reactable.Reactable
 	ae   *combat.AttackEvent
 	char *char
-}
-
-func (b *Bunny) AuraContains(e ...attributes.Element) bool {
-	for ele := range e {
-		if b.Reactable.Durability[ele] <= reactable.ZeroDur {
-			return false
-		}
-	}
-	return true
 }
 
 func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
@@ -113,7 +105,8 @@ func (r *Bunny) React(a *combat.AttackEvent) {
 		r.TrySuperconduct(a)
 	case attributes.Pyro:
 		r.TryMelt(a)
-	case attributes.Cryo:
+	// Cryo cannot react because the only allowed aura is Cryo.
+	// case attributes.Cryo:
 	case attributes.Hydro:
 		r.TryFreeze(a)
 	case attributes.Anemo:
@@ -136,21 +129,20 @@ func (c *char) makeBunny() *Bunny {
 
 	b := &Bunny{}
 
-	// TODO: I think it's supposed by default be an offset from the player, and not on the player?
-	// I haven't played amber in years
-	// player := c.Core.Combat.Player()
-	// bunnyPos := geometry.CalcOffsetPoint(
-	// 	player.Pos(),
-	// 	geometry.Point{Y: 1},
-	// 	player.Direction(),
-	// )
-	bunnyPos := c.Core.Combat.Player().Pos()
+	// Bunny is offset 1.3-1.5m in the Y direction for Tap E.
+	// TODO: Implement hold E for different distances
+	// TODO: Implement collision check for moving Baron Bunny off enemies and players
+	player := c.Core.Combat.Player()
+	bunnyPos := geometry.CalcOffsetPoint(
+		player.Pos(),
+		geometry.Point{Y: 1.4},
+		player.Direction(),
+	)
 	b.Gadget = gadget.New(c.Core, bunnyPos, 1, combat.GadgetTypBaronBunny)
 	b.Reactable = &reactable.Reactable{}
 	b.Reactable.Init(b, c.Core)
 
-	// duration is 8.2s
-	b.Gadget.Duration = 492
+	b.Gadget.Duration = 484
 
 	b.char = c
 
@@ -236,10 +228,12 @@ func (c *char) overloadExplode() {
 		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {
 			return false
 		}
-		c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 
 		for _, v := range c.bunnies {
-			v.Kill()
+			if v.IsWithinArea(atk.Pattern) {
+				v.ae.Info.Abil = manualExplosionAbil
+				v.Kill()
+			}
 		}
 
 		return false
