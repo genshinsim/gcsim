@@ -1,0 +1,8 @@
+syntax = "proto3";
+package model;
+option go_package = "github.com/genshinsim/gcsim/pkg/model";
+
+message DBStatus {
+    int32 db_total_count = 1 [json_name="db_total_count"];
+    int32 compute_count = 2 [json_name="compute_count"];
+}

@@ -58,7 +58,10 @@ func (h *Handler) SetEnemyPos(i int, p geometry.Point) bool {
 	if i < 0 || i > len(h.enemies)-1 {
 		return false
 	}
+
 	h.enemies[i].SetPos(p)
+	h.Events.Emit(event.OnTargetMoved, h.enemies[i])
+
 	h.Log.NewEvent("target position changed", glog.LogSimEvent, -1).
 		Write("index", i).
 		Write("x", p.X).

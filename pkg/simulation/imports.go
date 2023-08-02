@@ -2,16 +2,15 @@ package simulation
 
 import (
 	// stats collectors
-	_ "github.com/genshinsim/gcsim/pkg/stats/legacy"
-	// TODO: re-enable as part of full stats refactor
-	// _ "github.com/genshinsim/gcsim/pkg/stats/action"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/damage"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/energy"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/heal"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/reaction"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/shield"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/status"
-	// _ "github.com/genshinsim/gcsim/pkg/stats/swap"
+	_ "github.com/genshinsim/gcsim/pkg/stats/action"
+	_ "github.com/genshinsim/gcsim/pkg/stats/damage"
+	_ "github.com/genshinsim/gcsim/pkg/stats/energy"
+	_ "github.com/genshinsim/gcsim/pkg/stats/heal"
+	_ "github.com/genshinsim/gcsim/pkg/stats/position"
+	_ "github.com/genshinsim/gcsim/pkg/stats/reaction"
+	_ "github.com/genshinsim/gcsim/pkg/stats/shield"
+	_ "github.com/genshinsim/gcsim/pkg/stats/status"
+	_ "github.com/genshinsim/gcsim/pkg/stats/swap"
 
 	// artifacts
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
@@ -107,10 +106,6 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/tartaglia"
 	_ "github.com/genshinsim/gcsim/internal/characters/thoma"
 	_ "github.com/genshinsim/gcsim/internal/characters/tighnari"
-	_ "github.com/genshinsim/gcsim/internal/characters/traveleranemo"
-	_ "github.com/genshinsim/gcsim/internal/characters/travelerdendro"
-	_ "github.com/genshinsim/gcsim/internal/characters/travelerelectro"
-	_ "github.com/genshinsim/gcsim/internal/characters/travelergeo"
 	_ "github.com/genshinsim/gcsim/internal/characters/venti"
 	_ "github.com/genshinsim/gcsim/internal/characters/wanderer"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiangling"
@@ -124,6 +119,16 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/yoimiya"
 	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
+
+	//special cases for traveler
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/electro/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/electro/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/geo/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/geo/lumine"
 
 	// weapons
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"

@@ -1,7 +1,0 @@
-{
-  "/api": {
-    "target": "https://gcsim.app",
-    "changeOrigin": true,
-    "autoRewrite": true
-  }
-}

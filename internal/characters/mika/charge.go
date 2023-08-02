@@ -36,6 +36,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:               charge[c.TalentLvlAttack()],
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	c.Core.QueueAttack(

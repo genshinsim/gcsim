@@ -105,6 +105,8 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 
 	// Necessary, as transitioning into the SwapState is impossible otherwise
 	c.Core.Player.SwapCD = 26
+	// reset skydwellerPoints here
+	c.skydwellerPoints = 0
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return burstFramesE[next] },
@@ -112,7 +114,6 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstFramesE[action.ActionWalk],
 		State:           action.BurstState,
 		OnRemoved: func(next action.AnimationState) {
-			c.skydwellerPoints = 0
 			if next == action.SwapState {
 				c.checkForSkillEnd()
 			}

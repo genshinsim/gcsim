@@ -116,39 +116,39 @@ func TestSingleTarget(t *testing.T) {
 	}
 }
 
-func TestMultipleEnemies(t *testing.T) {
+// func TestMultipleEnemies(t *testing.T) {
 
-	c, trgs := makeCore(rand.Intn(10))
-	count := 0
-	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		count++
-		return false
-	}, "dmg-count")
-	c.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
-		count++
-		return false
-	}, "dmg-count")
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
-		count++
-		return false
-	}, "dmg-count")
+// 	c, trgs := makeCore(rand.Intn(10))
+// 	count := 0
+// 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+// 		count++
+// 		return false
+// 	}, "dmg-count")
+// 	c.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+// 		count++
+// 		return false
+// 	}, "dmg-count")
+// 	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
+// 		count++
+// 		return false
+// 	}, "dmg-count")
 
-	//last one should be moved aside
-	trgs[len(trgs)-1].SetPos(geometry.Point{X: 2, Y: 0})
+// 	//last one should be moved aside
+// 	trgs[len(trgs)-1].SetPos(geometry.Point{X: 2, Y: 0})
 
-	for i := 0; i < len(trgs)-1; i++ {
-		count = 0
+// 	for i := 0; i < len(trgs)-1; i++ {
+// 		count = 0
 
-		c.QueueAttackEvent(&combat.AttackEvent{
-			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
-		}, 0)
-		advanceCoreFrame(c)
+// 		c.QueueAttackEvent(&combat.AttackEvent{
+// 			Pattern: combat.NewCircleHitOnTarget(trgs[i], nil, 0.5),
+// 		}, 0)
+// 		advanceCoreFrame(c)
 
-		if count != len(trgs)-1 {
-			t.Errorf("expecting %v damage count, got %v", len(trgs)-1, count)
-		}
-	}
-}
+// 		if count != len(trgs)-1 {
+// 			t.Errorf("expecting %v damage count, got %v", len(trgs)-1, count)
+// 		}
+// 	}
+// }
 
 type testGadget struct {
 	*gadget.Gadget

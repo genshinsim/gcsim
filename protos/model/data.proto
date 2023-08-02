@@ -1,0 +1,86 @@
+syntax = "proto3";
+package model;
+option go_package = "github.com/genshinsim/gcsim/pkg/model";
+
+import "protos/model/enums.proto";
+
+message AvatarDataMap {
+  map<string, AvatarData> data = 1 [ json_name = "data" ];
+}
+
+message AvatarData {
+  int32 id = 1 [ json_name = "id" ];
+  int32 sub_id = 2 [json_name = "sub_id"];
+  string key = 3 [ json_name = "key" ];
+  QualityType rarity = 4 [ json_name = "rarity" ];
+  BodyType body = 5 [ json_name = "body" ];
+  ZoneType region = 6 [ json_name = "region" ];
+  Element element = 7 [ json_name = "element" ];
+  WeaponClass weapon_class = 8 [ json_name = "weapon_class" ];
+  string icon_name = 9 [ json_name = "icon_name" ];
+  AvatarStatsData stats = 10 [ json_name = "stats" ];
+  AvatarSkillsData skill_details = 11 [ json_name = "skill_details" ];
+}
+
+message AvatarStatsData {
+  // TODO: base stat should be refactor to just an array of stats
+  // there is no requirement that base stat can only be 3 stats; in fact
+  // ER/cr/cd can be considered as base
+  double base_hp = 1 [ json_name = "base_hp" ];
+  double base_atk = 2 [ json_name = "base_atk" ];
+  double base_def = 3 [ json_name = "base_def" ];
+  AvatarCurveType hp_curve = 4 [ json_name = "hp_curve" ];
+  AvatarCurveType atk_curve = 5 [ json_name = "atk_curve" ];
+  AvatarCurveType def_cruve = 6 [ json_name = "def_cruve" ];
+  repeated PromotionData promo_data = 7 [ json_name = "promo_data" ];
+}
+
+message AvatarSkillsData {
+  int32 skill = 1 [ json_name = "skill" ];
+  int32 burst = 2 [ json_name = "burst" ];
+  int32 attack = 3 [ json_name = "attack" ];
+  double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
+}
+
+message WeaponDataMap {
+  map<string, WeaponData> data = 1 [ json_name = "data" ];
+}
+
+message WeaponData {
+  int32 id = 1 [ json_name = "id" ];
+  string key = 2 [json_name = "key"];
+  int32 rarity = 3 [ json_name = "rarity" ]; //for whatever reason weapon rarity is a number
+  WeaponClass weapon_class = 4 [ json_name = "weapon_class" ];
+  string image_name = 5 [ json_name = "image_name" ];
+  WeaponStatsData base_stats = 6 [ json_name = "base_stats" ];
+}
+
+message WeaponStatsData {
+  repeated WeaponProp base_props = 1 [ json_name = "base_props"];
+  repeated PromotionData promo_data = 2 [ json_name = "promo_data" ];
+}
+
+message WeaponProp {
+  StatType prop_type = 1 [ json_name = "prop_type" ];
+  double initial_value = 2 [ json_name = "initial_value" ];
+  WeaponCurveType curve = 3 [json_name = "curve"];
+}
+
+message ArtifactDataMap {
+  map<string, ArtifactData> data = 1 [ json_name = "data" ];
+}
+
+message ArtifactData { 
+  int32 id = 1 [ json_name = "id" ]; 
+  string text_map_id = 2 [ json_name = "text_map_id"];
+}
+
+message PromotionData {
+  int32 max_level = 1 [ json_name = "max_level" ];
+  repeated PromotionAddProp add_props = 2 [ json_name = "add_props" ];
+}
+
+message PromotionAddProp {
+  StatType prop_type = 1 [ json_name = "prop_type" ];
+  double value = 2 [ json_name = "value" ];
+}

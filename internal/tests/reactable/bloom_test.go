@@ -200,7 +200,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 	}
 
 	//find oldest
-	f := math.MaxInt64
+	f := math.MaxInt
 	oldest := -1
 	for i, v := range c.Combat.Gadgets() {
 		if v == nil || v.GadgetTyp() != combat.GadgetTypDendroCore {

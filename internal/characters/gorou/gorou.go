@@ -28,7 +28,6 @@ type char struct {
 	*tmpl.Character
 	eFieldArea     combat.AttackPattern
 	eFieldSrc      int
-	qFieldHealSrc  int
 	qFieldSrc      int
 	gorouBuff      []float64
 	geoCharCount   int

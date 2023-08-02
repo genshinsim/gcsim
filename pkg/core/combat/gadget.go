@@ -47,7 +47,7 @@ func (h *Handler) AddGadget(t Gadget) {
 	//check for hard coded limit
 	if gadgetLimits[t.GadgetTyp()] > 0 {
 		//should kill oldest one if > limit
-		f := math.MaxInt64
+		f := math.MaxInt
 		oldest := -1
 		count := 0
 		for i, v := range h.gadgets {
