@@ -57,7 +57,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				ext = 10
 			}
 		} else {
-			ext = 10 // to maintain prev default behaviour of full extension
+			ext = 0 // c6 extension bug requires specific rotations, otherwise it does not happen so default is 0
 		}
 
 		dur += ext * 60
