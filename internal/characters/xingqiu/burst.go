@@ -53,15 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	dur = dur * 60
 	c.AddStatus(burstKey, dur+33, true) // add 33f for anim
-
-	orbital, ok := p["orbital"]
-	if !ok {
-		orbital = 1
-	}
-
-	if orbital == 1 {
-		c.applyOrbital(dur, burstHitmark)
-	}
+	c.applyOrbital(dur, burstHitmark)
 
 	c.burstCounter = 0
 	c.numSwords = 2

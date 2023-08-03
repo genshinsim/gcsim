@@ -630,18 +630,6 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
-  "xingqiu": [
-    {
-      "ability": "skill",
-      "param": "orbital",
-      "desc": "0 to disable orbitals from Skill. Default 1 (orbitals enabled)."
-    },
-    {
-      "ability": "burst",
-      "param": "orbital",
-      "desc": "0 to disable orbitals from Burst. Default 1 (orbitals enabled)."
-    }
-  ],
   "yaemiko": [
     {
       "ability": "attack",
