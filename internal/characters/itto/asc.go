@@ -44,7 +44,7 @@ func (c *char) a1Update(curSlash SlashType) {
 		c.a1Stacks = 0
 		c.Core.Log.NewEvent("itto-a1 reset atkspd stacks", glog.LogCharacterEvent, c.Index).
 			Write("a1Stacks", c.a1Stacks).
-			Write("slash", curSlash.String())
+			Write("slash", curSlash.String(false))
 	case LeftSlash, RightSlash:
 		// increment a1 stacks if we are doing CA1/CA2
 		// increment stacks for A1, max is 3 stacks
@@ -54,7 +54,7 @@ func (c *char) a1Update(curSlash SlashType) {
 		}
 		c.Core.Log.NewEvent("itto-a1 atkspd stacks increased", glog.LogCharacterEvent, c.Index).
 			Write("a1Stacks", c.a1Stacks).
-			Write("slash", curSlash.String())
+			Write("slash", curSlash.String(false))
 	}
 	// do nothing if we are doing a CAF
 }
