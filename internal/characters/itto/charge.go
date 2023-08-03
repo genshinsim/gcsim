@@ -1,14 +1,13 @@
 package itto
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var (
@@ -75,7 +74,11 @@ var slashName = []string{
 	"Arataki Kesagiri Final Slash",
 }
 
-func (s SlashType) String() string {
+func (s SlashType) String(abil bool) string {
+	// strip Left / Right for abil name purposes
+	if abil && (s == LeftSlash || s == RightSlash) {
+		return "Arataki Kesagiri Combo Slash"
+	}
 	return slashName[s]
 }
 
@@ -190,7 +193,11 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	windup := c.windupFrames(prevSlash, c.slashState)
 
 	// handle hitlag and talent%
-	ai.Abil = fmt.Sprintf("%v (Stacks %v)", c.slashState, stacks)
+	ai.Abil = c.slashState.String(true)
+	c.Core.Log.NewEvent("performing CA", glog.LogCharacterEvent, c.Index).
+		Write("slash", c.slashState.String(false)).
+		Write("stacks", stacks)
+
 	switch c.slashState {
 	case SaichiSlash:
 		ai.Mult = saichiSlash[c.TalentLvlAttack()]
