@@ -47,15 +47,16 @@ func (c *char) c4() {
 
 		// TODO: snapshot? damage delay?
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Steed of Skanda",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Dendro,
-			Durability: 25,
-			Mult:       2,
+			ActorIndex:         c.Index,
+			Abil:               "Steed of Skanda",
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagElementalBurst,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
+			Element:            attributes.Dendro,
+			Durability:         25,
+			Mult:               2,
+			CanBeDefenseHalted: true,
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 2), 0, 0)
 		c.AddStatus(c4IcdStatus, 3.8*60, true)
