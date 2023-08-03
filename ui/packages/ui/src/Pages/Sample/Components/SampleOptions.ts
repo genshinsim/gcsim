@@ -70,6 +70,7 @@ export const VerbosePreset = [
   "weapon",
   "enemy",
   "artifact",
+  "hitlag"
 ];
 
-export const DebugPreset = [...VerbosePreset, "debug", "sim", "hitlag"];
+export const DebugPreset = [...VerbosePreset, "debug", "sim"];
