@@ -13,7 +13,6 @@ var (
 	burstFrames []int
 
 	boxHitmark  = 38
-	mineHitmark = 180
 	mineExpired = "kirara-cardamoms-expired"
 )
 
@@ -54,6 +53,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	minehits, ok := p["hits"]
 	if !ok {
 		minehits = 2
+	}
+	mineHitmark, ok := p["mine_delay"]
+	if !ok {
+		mineHitmark = 180
 	}
 	if minehits > c.cardamoms {
 		minehits = c.cardamoms

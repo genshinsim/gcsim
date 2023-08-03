@@ -336,6 +336,11 @@
       "ability": "burst",
       "param": "hits",
       "desc": "Number of mines that hit. Default 2 hits."
+    },
+    {
+      "ability": "burst",
+      "param": "mine_delay",
+      "desc": "Time until all mines explode. Default 180 frames."
     }
   ],
   "klee": [
@@ -358,6 +363,11 @@
       "ability": "skill",
       "param": "mine",
       "desc": "Number of mines hits. Default 2 hits."
+    },
+    {
+      "ability": "skill",
+      "param": "mine_delay",
+      "desc": "Time until all mines explode. Default 240 frames."
     },
     {
       "ability": "skill",
