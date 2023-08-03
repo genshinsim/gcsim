@@ -22,15 +22,6 @@ type LeaLotus struct {
 	hitboxRadius float64
 }
 
-func (s *LeaLotus) AuraContains(e ...attributes.Element) bool {
-	for ele := range e {
-		if s.Reactable.Durability[ele] <= reactable.ZeroDur {
-			return false
-		}
-	}
-	return true
-}
-
 func (c *char) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
