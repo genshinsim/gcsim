@@ -11,11 +11,13 @@ import (
 )
 
 var skillFrames []int
+var skillRecastFrames []int
 
 const (
-	skillHitmark   = 25
-	stilettoKey    = "keqingstiletto"
-	particleICDKey = "keqing-particle-icd"
+	skillHitmark       = 25
+	skillRecastHitmark = 16
+	stilettoKey        = "keqingstiletto"
+	particleICDKey     = "keqing-particle-icd"
 )
 
 func init() {
@@ -30,8 +32,8 @@ func init() {
 	// skill (recast) -> x
 	skillRecastFrames = frames.InitAbilSlice(43)
 	skillRecastFrames[action.ActionAttack] = 42
-	skillRecastFrames[action.ActionDash] = 15
-	skillRecastFrames[action.ActionJump] = 16
+	skillRecastFrames[action.ActionDash] = skillRecastHitmark
+	skillRecastFrames[action.ActionJump] = skillRecastHitmark
 	skillRecastFrames[action.ActionSwap] = 42
 }
 
@@ -79,10 +81,6 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 		State:           action.SkillState,
 	}
 }
-
-var skillRecastFrames []int
-
-const skillRecastHitmark = 16
 
 func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	// C1 DMG happens before Recast DMG
