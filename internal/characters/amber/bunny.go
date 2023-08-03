@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -214,8 +215,8 @@ func (c *char) manualExplode() {
 
 // explode all bunnies on overload
 func (c *char) overloadExplode() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-
+	c.Core.Events.Subscribe(event.OnOverload, func(args ...interface{}) bool {
+		target := args[0].(*enemy.Enemy)
 		atk := args[1].(*combat.AttackEvent)
 		if len(c.bunnies) == 0 {
 			return false
@@ -225,12 +226,14 @@ func (c *char) overloadExplode() {
 			return false
 		}
 
-		if atk.Info.AttackTag != attacks.AttackTagOverloadDamage {
+		if atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 
 		for _, v := range c.bunnies {
-			if v.IsWithinArea(atk.Pattern) {
+			// OL is a radius 3 hit on the target
+
+			if v.IsWithinArea(combat.NewCircleHitOnTarget(target.Pos(), nil, 3)) {
 				v.ae.Info.Abil = manualExplosionAbil
 				v.Kill()
 			}
