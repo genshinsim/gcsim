@@ -89,40 +89,33 @@ func (c *char) a4() bool {
 	return true
 }
 
-// A1 ascension level check happens once inside of skill.go and on every A1 electro callback creation
-
 // If Hanega: Song of the Wind comes into contact with Hydro/Pyro/Cryo/Electro when it is unleashed,
 // this instance of the Windfavored state will obtain buffs.
 func (c *char) absorbCheckA1() {
-	if len(c.a1ValidBuffs) <= c.a1MaxAbsorb {
-		return
-	}
-
 	a1AbsorbCheckLocation := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
-	absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
-
-	if absorbCheck != attributes.NoElement {
+	a1Proc := false // for C4
+	// max 2 A1 elements from absorb check
+	for i := 0; i < 2; i++ {
+		absorbCheck := c.Core.Combat.AbsorbCheck(a1AbsorbCheckLocation, c.a1ValidBuffs...)
+		if absorbCheck == attributes.NoElement {
+			continue
+		}
+		a1Proc = true
+		c.addA1Buff(absorbCheck)
+		c.deleteFromValidBuffs(absorbCheck)
 		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
 			"wanderer a1 absorbed ", absorbCheck.String(),
 		)
-		c.deleteFromValidBuffs(absorbCheck)
-		c.addA1Buff(absorbCheck)
-		if c.Base.Cons >= 4 && len(c.a1ValidBuffs) == 3 {
-			chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
-			c.addA1Buff(chosenElement)
-			c.deleteFromValidBuffs(chosenElement)
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
-				"wanderer c4 applied a1 ", chosenElement.String(),
-			)
-		}
 	}
-
-	//otherwise queue up
-	delay := 6
-	if c.skydwellerPoints*6 > delay {
-		c.Core.Tasks.Add(c.absorbCheckA1, delay)
+	// add A1 buff from C4 if at least 1 A1 element was absorbed
+	if c.Base.Cons >= 4 && a1Proc {
+		chosenElement := c.a1ValidBuffs[c.Core.Rand.Intn(len(c.a1ValidBuffs))]
+		c.addA1Buff(chosenElement)
+		c.deleteFromValidBuffs(chosenElement)
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index,
+			"wanderer c4 applied a1 ", chosenElement.String(),
+		)
 	}
-
 }
 
 // - Hydro: Kuugoryoku Point cap increases by 20.
