@@ -41,34 +41,6 @@
       "desc": "0 for passive disabled, 1 for enabled (default)."
     }
   ],
-  "sacrificialbow": [
-    {
-      "ability": "Sacrifical Bow",
-      "param": "force",
-      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
-    }
-  ],
-  "sacrificialfragments": [
-    {
-      "ability": "Sacrifical Fragments",
-      "param": "force",
-      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
-    }
-  ],
-  "sacrificialgreatsword": [
-    {
-      "ability": "Sacrifical Greatsword",
-      "param": "force",
-      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
-    }
-  ],
-  "sacrificialsword": [
-    {
-      "ability": "Sacrifical Sword",
-      "param": "force",
-      "desc": "0 for not forcing the passive to trigger (default), 1 for forcing."
-    }
-  ],
   "sapwoodblade": [
     {
       "ability": "Sapwood Blade",
