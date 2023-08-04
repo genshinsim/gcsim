@@ -41,7 +41,7 @@ async function createConfig() {
           docs: {
             routeBasePath: "/",
             sidebarPath: require.resolve('./sidebars.js'),
-            editUrl: "https://github.com/genshinsim/gcsimdocs/blob/main/",
+            editUrl: "https://github.com/genshinsim/gcsim/blob/main/ui/packages/docs",
             remarkPlugins: [math],
             rehypePlugins: [katex],
           },
@@ -92,6 +92,19 @@ async function createConfig() {
           defaultMode: "dark",
           disableSwitch: false,
           respectPrefersColorScheme: false,
+        },
+        algolia: {
+          // The application ID provided by Algolia
+          appId: 'FQ95W3KA6U',
+    
+          // Public API key: it is safe to commit it
+          apiKey: '3d7fffa98beeefe3652e892d29937cf9',
+    
+          indexName: 'gcsim',
+    
+          // Optional: see doc section below
+          contextualSearch: true,
+    
         },
       }),
 

@@ -2007,11 +2007,41 @@ export namespace model {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Properties of an ArtifactDataMap. */
+    interface IArtifactDataMap {
+
+        /** ArtifactDataMap data */
+        data?: ({ [k: string]: model.IArtifactData }|null);
+    }
+
+    /** Represents an ArtifactDataMap. */
+    class ArtifactDataMap implements IArtifactDataMap {
+
+        /**
+         * Constructs a new ArtifactDataMap.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IArtifactDataMap);
+
+        /** ArtifactDataMap data. */
+        public data: { [k: string]: model.IArtifactData };
+
+        /**
+         * Gets the default type url for ArtifactDataMap
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of an ArtifactData. */
     interface IArtifactData {
 
         /** ArtifactData id */
         id?: (number|null);
+
+        /** ArtifactData text_map_id */
+        text_map_id?: (string|null);
     }
 
     /** Represents an ArtifactData. */
@@ -2025,6 +2055,9 @@ export namespace model {
 
         /** ArtifactData id. */
         public id: number;
+
+        /** ArtifactData text_map_id. */
+        public text_map_id: string;
 
         /**
          * Gets the default type url for ArtifactData
@@ -2659,6 +2692,12 @@ export namespace model {
         /** SimulationStatistics breakdown_by_target_dps */
         breakdown_by_target_dps?: (model.ITargetStats[]|null);
 
+        /** SimulationStatistics source_dps */
+        source_dps?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics source_damage_instances */
+        source_damage_instances?: (model.ISourceStats[]|null);
+
         /** SimulationStatistics damage_buckets */
         damage_buckets?: (model.IBucketStats|null);
 
@@ -2667,6 +2706,21 @@ export namespace model {
 
         /** SimulationStatistics shields */
         shields?: ({ [k: string]: model.IShieldInfo }|null);
+
+        /** SimulationStatistics field_time */
+        field_time?: (model.IDescriptiveStats[]|null);
+
+        /** SimulationStatistics total_source_energy */
+        total_source_energy?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics source_reactions */
+        source_reactions?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics character_actions */
+        character_actions?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics target_aura_uptime */
+        target_aura_uptime?: (model.ISourceStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2738,6 +2792,12 @@ export namespace model {
         /** SimulationStatistics breakdown_by_target_dps. */
         public breakdown_by_target_dps: model.ITargetStats[];
 
+        /** SimulationStatistics source_dps. */
+        public source_dps: model.ISourceStats[];
+
+        /** SimulationStatistics source_damage_instances. */
+        public source_damage_instances: model.ISourceStats[];
+
         /** SimulationStatistics damage_buckets. */
         public damage_buckets?: (model.IBucketStats|null);
 
@@ -2746,6 +2806,21 @@ export namespace model {
 
         /** SimulationStatistics shields. */
         public shields: { [k: string]: model.IShieldInfo };
+
+        /** SimulationStatistics field_time. */
+        public field_time: model.IDescriptiveStats[];
+
+        /** SimulationStatistics total_source_energy. */
+        public total_source_energy: model.ISourceStats[];
+
+        /** SimulationStatistics source_reactions. */
+        public source_reactions: model.ISourceStats[];
+
+        /** SimulationStatistics character_actions. */
+        public character_actions: model.ISourceStats[];
+
+        /** SimulationStatistics target_aura_uptime. */
+        public target_aura_uptime: model.ISourceStats[];
 
         /**
          * Gets the default type url for SimulationStatistics
@@ -2983,6 +3058,33 @@ export namespace model {
 
         /**
          * Gets the default type url for TargetStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a SourceStats. */
+    interface ISourceStats {
+
+        /** SourceStats sources */
+        sources?: ({ [k: string]: model.IDescriptiveStats }|null);
+    }
+
+    /** Represents a SourceStats. */
+    class SourceStats implements ISourceStats {
+
+        /**
+         * Constructs a new SourceStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ISourceStats);
+
+        /** SourceStats sources. */
+        public sources: { [k: string]: model.IDescriptiveStats };
+
+        /**
+         * Gets the default type url for SourceStats
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

@@ -7,23 +7,38 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 import ParamsTable from "@site/src/components/Params/ParamsTable";
 import FramesTable from "@site/src/components/Frames/FramesTable";
 import IssuesTable from "@site/src/components/Issues/IssuesTable";
+import AoETable from "@site/src/components/AoE/AoETable";
+import NamesList from "@site/src/components/Names/NamesList";
+import ActionsTable from "@site/src/components/Actions/ActionsTable";
 
 ## Frames
 
-<FramesTable character="fischl" />
+<FramesTable item_key="fischl" />
 
 ## Hitlag Data
 
-<HitlagTable character="fischl" />
+<HitlagTable item_key="fischl" />
+
+## AoE Data
+
+<AoETable item_key="fischl" />
 
 ## Known issues
 
-<IssuesTable character="fischl" />
+<IssuesTable item_key="fischl" />
+
+## Names
+
+<NamesList item_key="fischl" />
+
+## Legal Actions
+
+<ActionsTable item_key="fischl" />
 
 ## Params
 
-<ParamsTable character="fischl" />
+<ParamsTable item_key="fischl" />
 
 ## Fields
 
-<FieldsTable character="fischl" />
+<FieldsTable item_key="fischl" />

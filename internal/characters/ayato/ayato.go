@@ -33,8 +33,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.EnergyMax = 80
-	c.BurstCon = 3
-	c.SkillCon = 5
+	c.BurstCon = 5
+	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
 	c.shunsuikenCounter = 3

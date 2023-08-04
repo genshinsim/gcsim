@@ -12,8 +12,8 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	// account for it starting somewhere around hitmark
-	dur := 300 + skillRecastHitmark
+	// account for it starting a bit after hitmark to cover 5 N1C
+	dur := 300 + 20
 	c.Core.Status.Add("keqinginfuse", dur)
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,

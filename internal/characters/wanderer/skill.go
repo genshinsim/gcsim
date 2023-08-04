@@ -53,7 +53,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), skillHitmark, skillHitmark)
 
-	// Initial A1 Absorption test
+	// A1
 	if c.Base.Ascension >= 1 {
 		c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
 		c.absorbCheckA1()

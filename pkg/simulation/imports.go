@@ -106,10 +106,6 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/tartaglia"
 	_ "github.com/genshinsim/gcsim/internal/characters/thoma"
 	_ "github.com/genshinsim/gcsim/internal/characters/tighnari"
-	_ "github.com/genshinsim/gcsim/internal/characters/traveleranemo"
-	_ "github.com/genshinsim/gcsim/internal/characters/travelerdendro"
-	_ "github.com/genshinsim/gcsim/internal/characters/travelerelectro"
-	_ "github.com/genshinsim/gcsim/internal/characters/travelergeo"
 	_ "github.com/genshinsim/gcsim/internal/characters/venti"
 	_ "github.com/genshinsim/gcsim/internal/characters/wanderer"
 	_ "github.com/genshinsim/gcsim/internal/characters/xiangling"
@@ -123,6 +119,16 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/yoimiya"
 	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
+
+	//special cases for traveler
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/electro/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/electro/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/geo/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/geo/lumine"
 
 	// weapons
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"

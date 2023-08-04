@@ -7,6 +7,12 @@ import { CharacterDPSBarChart, CharacterDPSCard, DamageTimelineCard, ElementDPSC
 import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
 import Metadata from "../Components/Overview/Metadata";
+import { SourceDPSCard } from "../Components/Damage/SourceDPSBarChart";
+import FieldTimeCard from "../Components/Miscellaneous/FieldTimeCard";
+import { TotalSourceEnergyCard } from "../Components/Miscellaneous/TotalSourceEnergyBarChart";
+import { SourceReactionsCard } from "../Components/Miscellaneous/SourceReactionsBarChart";
+import { CharacterActionsCard } from "../Components/Miscellaneous/CharacterActionsBarChart";
+import { TargetAuraUptimeCard } from "../Components/Miscellaneous/TargetAuraUptimeBarChart";
 
 type Props = {
   data: SimResults | null;
@@ -46,6 +52,18 @@ const SingleGroup = ({ data, running, names }: Props) => (
     <TargetDPSCard data={data} running={running} />
 
     <CharacterDPSBarChart data={data} running={running} names={names} />
+
+    <SourceDPSCard data={data} running={running} names={names} />
+
+    <CharacterActionsCard data={data} running={running} names={names} />
+    
+    <FieldTimeCard data={data} running={running} names={names} />
+
+    <TotalSourceEnergyCard data={data} running={running} names={names} />
+
+    <SourceReactionsCard data={data} running={running} names={names} />
+
+    <TargetAuraUptimeCard data={data} running={running} />
   </Group>
 );
 

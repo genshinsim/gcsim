@@ -65,11 +65,23 @@ export interface Statistics {
   element_dps?: ElementDPS;
   dps_by_element?: ElementStats[];
   dps_by_target?: TargetStats[];
+  source_dps?: SourceStats[];
+  source_damage_instances?: SourceStats[];
 
   damage_buckets?: BucketStats;
   cumu_damage_contrib?: CharacterBucketStats;
 
   shields?: Shields;
+
+  field_time?: FloatStat[];
+
+  total_source_energy?: SourceStats[];
+
+  source_reactions?: SourceStats[];
+
+  character_actions?: SourceStats[];
+
+  target_aura_uptime?: SourceStats[];
 }
 
 export interface SummaryStat {
@@ -114,6 +126,14 @@ export interface ElementStats {
 }
 
 export interface ElementDPS {
+  [key: string]: FloatStat;
+}
+
+export interface SourceStats {
+  sources?: SourceStat;
+}
+
+export interface SourceStat {
   [key: string]: FloatStat;
 }
 

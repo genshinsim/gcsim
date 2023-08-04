@@ -22,11 +22,13 @@ func init() {
 // We also have no guarantee that targets will have the same key across iterations. This will solve
 // the problem.
 type buffer struct {
-	elementDPS   map[string]*calc.StreamStats
-	targetDPS    map[int]*calc.StreamStats
-	characterDPS []*calc.StreamStats // i = char
-	dpsByElement []map[string]*calc.StreamStats
-	dpsByTarget  []map[int]*calc.StreamStats
+	elementDPS            map[string]*calc.StreamStats
+	targetDPS             map[int]*calc.StreamStats
+	sourceDPS             []map[string]*calc.StreamStats
+	sourceDamageInstances []map[string]*calc.StreamStats
+	characterDPS          []*calc.StreamStats // i = char
+	dpsByElement          []map[string]*calc.StreamStats
+	dpsByTarget           []map[int]*calc.StreamStats
 
 	damageBuckets     []*calc.StreamStats
 	cumulativeContrib [][]*calc.StreamStats
@@ -34,19 +36,23 @@ type buffer struct {
 
 func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 	out := buffer{
-		elementDPS:        make(map[string]*calc.StreamStats),
-		targetDPS:         make(map[int]*calc.StreamStats),
-		characterDPS:      make([]*calc.StreamStats, len(cfg.Characters)),
-		dpsByElement:      make([]map[string]*calc.StreamStats, len(cfg.Characters)),
-		dpsByTarget:       make([]map[int]*calc.StreamStats, len(cfg.Characters)),
-		cumulativeContrib: make([][]*calc.StreamStats, len(cfg.Characters)),
-		damageBuckets:     make([]*calc.StreamStats, 0),
+		elementDPS:            make(map[string]*calc.StreamStats),
+		targetDPS:             make(map[int]*calc.StreamStats),
+		sourceDPS:             make([]map[string]*calc.StreamStats, len(cfg.Characters)),
+		sourceDamageInstances: make([]map[string]*calc.StreamStats, len(cfg.Characters)),
+		characterDPS:          make([]*calc.StreamStats, len(cfg.Characters)),
+		dpsByElement:          make([]map[string]*calc.StreamStats, len(cfg.Characters)),
+		dpsByTarget:           make([]map[int]*calc.StreamStats, len(cfg.Characters)),
+		cumulativeContrib:     make([][]*calc.StreamStats, len(cfg.Characters)),
+		damageBuckets:         make([]*calc.StreamStats, 0),
 	}
 
 	// start with single entry
 	out.damageBuckets = append(out.damageBuckets, &calc.StreamStats{})
 
 	for i := 0; i < len(cfg.Characters); i++ {
+		out.sourceDPS[i] = make(map[string]*calc.StreamStats)
+		out.sourceDamageInstances[i] = make(map[string]*calc.StreamStats)
 		out.characterDPS[i] = &calc.StreamStats{}
 		out.dpsByElement[i] = make(map[string]*calc.StreamStats)
 		out.dpsByTarget[i] = make(map[int]*calc.StreamStats)
@@ -78,6 +84,8 @@ func (b *buffer) Add(result stats.Result) {
 		var charDPS float64
 		charElementDPS := makeElementMap()
 		charTargetDPS := make(map[int]float64)
+		sourceDPS := make(map[string]float64)
+		sourceDamageInstances := make(map[string]float64)
 
 		b.cumulativeContrib[i] = expandCumu(
 			b.cumulativeContrib[i],
@@ -101,6 +109,13 @@ func (b *buffer) Add(result stats.Result) {
 			charTargetDPS[ev.Target] += ev.Damage
 			charElementDPS[ev.Element] += ev.Damage
 			charDPS += ev.Damage
+			sourceDPSKey := ev.Source
+			reactModifier := string(ev.ReactionModifier)
+			if reactModifier != "" {
+				sourceDPSKey += " (" + reactModifier + ")"
+			}
+			sourceDPS[sourceDPSKey] += ev.Damage
+			sourceDamageInstances[sourceDPSKey] += 1
 		}
 
 		b.characterDPS[i].Add(charDPS * time)
@@ -122,6 +137,20 @@ func (b *buffer) Add(result stats.Result) {
 				b.dpsByTarget[i][k] = &calc.StreamStats{}
 			}
 			b.dpsByTarget[i][k].Add(v * time)
+		}
+
+		for k, v := range sourceDPS {
+			if _, ok := b.sourceDPS[i][k]; !ok {
+				b.sourceDPS[i][k] = &calc.StreamStats{}
+			}
+			b.sourceDPS[i][k].Add(v * time)
+		}
+
+		for k, v := range sourceDamageInstances {
+			if _, ok := b.sourceDamageInstances[i][k]; !ok {
+				b.sourceDamageInstances[i][k] = &calc.StreamStats{}
+			}
+			b.sourceDamageInstances[i][k].Add(v)
 		}
 	}
 
@@ -201,6 +230,30 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		}
 		characterBuckets[i] = &model.CharacterBuckets{
 			Buckets: buckets,
+		}
+	}
+
+	result.SourceDps = make([]*model.SourceStats, len(b.sourceDPS))
+	for i, c := range b.sourceDPS {
+		source := make(map[string]*model.DescriptiveStats)
+		for k, s := range c {
+			source[k] = agg.ToDescriptiveStats(s)
+		}
+
+		result.SourceDps[i] = &model.SourceStats{
+			Sources: source,
+		}
+	}
+
+	result.SourceDamageInstances = make([]*model.SourceStats, len(b.sourceDamageInstances))
+	for i, c := range b.sourceDamageInstances {
+		source := make(map[string]*model.DescriptiveStats)
+		for k, s := range c {
+			source[k] = agg.ToDescriptiveStats(s)
+		}
+
+		result.SourceDamageInstances[i] = &model.SourceStats{
+			Sources: source,
 		}
 	}
 

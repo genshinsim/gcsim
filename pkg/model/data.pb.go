@@ -615,18 +615,66 @@ func (x *WeaponProp) GetCurve() WeaponCurveType {
 	return WeaponCurveType_INVALID_WEAPON_CURVE
 }
 
+type ArtifactDataMap struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data map[string]*ArtifactData `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3" bson:"data,omitempty"`
+}
+
+func (x *ArtifactDataMap) Reset() {
+	*x = ArtifactDataMap{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_protos_model_data_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ArtifactDataMap) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ArtifactDataMap) ProtoMessage() {}
+
+func (x *ArtifactDataMap) ProtoReflect() protoreflect.Message {
+	mi := &file_protos_model_data_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ArtifactDataMap.ProtoReflect.Descriptor instead.
+func (*ArtifactDataMap) Descriptor() ([]byte, []int) {
+	return file_protos_model_data_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ArtifactDataMap) GetData() map[string]*ArtifactData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 type ArtifactData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	Id        int32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id,omitempty"`
+	TextMapId string `protobuf:"bytes,2,opt,name=text_map_id,proto3" json:"text_map_id,omitempty" bson:"text_map_id,omitempty"`
 }
 
 func (x *ArtifactData) Reset() {
 	*x = ArtifactData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[8]
+		mi := &file_protos_model_data_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -639,7 +687,7 @@ func (x *ArtifactData) String() string {
 func (*ArtifactData) ProtoMessage() {}
 
 func (x *ArtifactData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[8]
+	mi := &file_protos_model_data_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -652,7 +700,7 @@ func (x *ArtifactData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ArtifactData.ProtoReflect.Descriptor instead.
 func (*ArtifactData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{8}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ArtifactData) GetId() int32 {
@@ -660,6 +708,13 @@ func (x *ArtifactData) GetId() int32 {
 		return x.Id
 	}
 	return 0
+}
+
+func (x *ArtifactData) GetTextMapId() string {
+	if x != nil {
+		return x.TextMapId
+	}
+	return ""
 }
 
 type PromotionData struct {
@@ -674,7 +729,7 @@ type PromotionData struct {
 func (x *PromotionData) Reset() {
 	*x = PromotionData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[9]
+		mi := &file_protos_model_data_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -687,7 +742,7 @@ func (x *PromotionData) String() string {
 func (*PromotionData) ProtoMessage() {}
 
 func (x *PromotionData) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[9]
+	mi := &file_protos_model_data_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -700,7 +755,7 @@ func (x *PromotionData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PromotionData.ProtoReflect.Descriptor instead.
 func (*PromotionData) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{9}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *PromotionData) GetMaxLevel() int32 {
@@ -729,7 +784,7 @@ type PromotionAddProp struct {
 func (x *PromotionAddProp) Reset() {
 	*x = PromotionAddProp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_protos_model_data_proto_msgTypes[10]
+		mi := &file_protos_model_data_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -742,7 +797,7 @@ func (x *PromotionAddProp) String() string {
 func (*PromotionAddProp) ProtoMessage() {}
 
 func (x *PromotionAddProp) ProtoReflect() protoreflect.Message {
-	mi := &file_protos_model_data_proto_msgTypes[10]
+	mi := &file_protos_model_data_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -755,7 +810,7 @@ func (x *PromotionAddProp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PromotionAddProp.ProtoReflect.Descriptor instead.
 func (*PromotionAddProp) Descriptor() ([]byte, []int) {
-	return file_protos_model_data_proto_rawDescGZIP(), []int{10}
+	return file_protos_model_data_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *PromotionAddProp) GetPropType() StatType {
@@ -882,24 +937,36 @@ var file_protos_model_data_proto_rawDesc = []byte{
 	0x74, 0x69, 0x61, 0x6c, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x2c, 0x0a, 0x05, 0x63, 0x75,
 	0x72, 0x76, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x16, 0x2e, 0x6d, 0x6f, 0x64, 0x65,
 	0x6c, 0x2e, 0x57, 0x65, 0x61, 0x70, 0x6f, 0x6e, 0x43, 0x75, 0x72, 0x76, 0x65, 0x54, 0x79, 0x70,
-	0x65, 0x52, 0x05, 0x63, 0x75, 0x72, 0x76, 0x65, 0x22, 0x1e, 0x0a, 0x0c, 0x41, 0x72, 0x74, 0x69,
-	0x66, 0x61, 0x63, 0x74, 0x44, 0x61, 0x74, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x22, 0x64, 0x0a, 0x0d, 0x50, 0x72, 0x6f, 0x6d,
-	0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x61, 0x12, 0x1c, 0x0a, 0x09, 0x6d, 0x61, 0x78,
-	0x5f, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x6d, 0x61,
-	0x78, 0x5f, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x12, 0x35, 0x0a, 0x09, 0x61, 0x64, 0x64, 0x5f, 0x70,
-	0x72, 0x6f, 0x70, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6d, 0x6f, 0x64,
-	0x65, 0x6c, 0x2e, 0x50, 0x72, 0x6f, 0x6d, 0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x64, 0x64, 0x50,
-	0x72, 0x6f, 0x70, 0x52, 0x09, 0x61, 0x64, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x70, 0x73, 0x22, 0x57,
-	0x0a, 0x10, 0x50, 0x72, 0x6f, 0x6d, 0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x64, 0x64, 0x50, 0x72,
-	0x6f, 0x70, 0x12, 0x2d, 0x0a, 0x09, 0x70, 0x72, 0x6f, 0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x0f, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x53, 0x74,
-	0x61, 0x74, 0x54, 0x79, 0x70, 0x65, 0x52, 0x09, 0x70, 0x72, 0x6f, 0x70, 0x5f, 0x74, 0x79, 0x70,
-	0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01,
-	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x42, 0x27, 0x5a, 0x25, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x65, 0x6e, 0x73, 0x68, 0x69, 0x6e, 0x73, 0x69, 0x6d,
-	0x2f, 0x67, 0x63, 0x73, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x52, 0x05, 0x63, 0x75, 0x72, 0x76, 0x65, 0x22, 0x95, 0x01, 0x0a, 0x0f, 0x41, 0x72, 0x74,
+	0x69, 0x66, 0x61, 0x63, 0x74, 0x44, 0x61, 0x74, 0x61, 0x4d, 0x61, 0x70, 0x12, 0x34, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x6d, 0x6f, 0x64,
+	0x65, 0x6c, 0x2e, 0x41, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x44, 0x61, 0x74, 0x61, 0x4d,
+	0x61, 0x70, 0x2e, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x04, 0x64, 0x61,
+	0x74, 0x61, 0x1a, 0x4c, 0x0a, 0x09, 0x44, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x29, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x13, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x41, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63,
+	0x74, 0x44, 0x61, 0x74, 0x61, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01,
+	0x22, 0x40, 0x0a, 0x0c, 0x41, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x44, 0x61, 0x74, 0x61,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64,
+	0x12, 0x20, 0x0a, 0x0b, 0x74, 0x65, 0x78, 0x74, 0x5f, 0x6d, 0x61, 0x70, 0x5f, 0x69, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x74, 0x65, 0x78, 0x74, 0x5f, 0x6d, 0x61, 0x70, 0x5f,
+	0x69, 0x64, 0x22, 0x64, 0x0a, 0x0d, 0x50, 0x72, 0x6f, 0x6d, 0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x44,
+	0x61, 0x74, 0x61, 0x12, 0x1c, 0x0a, 0x09, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x65, 0x76, 0x65, 0x6c,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x6d, 0x61, 0x78, 0x5f, 0x6c, 0x65, 0x76, 0x65,
+	0x6c, 0x12, 0x35, 0x0a, 0x09, 0x61, 0x64, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x70, 0x73, 0x18, 0x02,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x50, 0x72, 0x6f,
+	0x6d, 0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x64, 0x64, 0x50, 0x72, 0x6f, 0x70, 0x52, 0x09, 0x61,
+	0x64, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x70, 0x73, 0x22, 0x57, 0x0a, 0x10, 0x50, 0x72, 0x6f, 0x6d,
+	0x6f, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x64, 0x64, 0x50, 0x72, 0x6f, 0x70, 0x12, 0x2d, 0x0a, 0x09,
+	0x70, 0x72, 0x6f, 0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x0f, 0x2e, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x54, 0x79, 0x70, 0x65,
+	0x52, 0x09, 0x70, 0x72, 0x6f, 0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x42, 0x27, 0x5a, 0x25, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x67, 0x65, 0x6e, 0x73, 0x68, 0x69, 0x6e, 0x73, 0x69, 0x6d, 0x2f, 0x67, 0x63, 0x73, 0x69, 0x6d,
+	0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -914,7 +981,7 @@ func file_protos_model_data_proto_rawDescGZIP() []byte {
 	return file_protos_model_data_proto_rawDescData
 }
 
-var file_protos_model_data_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_protos_model_data_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_protos_model_data_proto_goTypes = []interface{}{
 	(*AvatarDataMap)(nil),    // 0: model.AvatarDataMap
 	(*AvatarData)(nil),       // 1: model.AvatarData
@@ -924,49 +991,53 @@ var file_protos_model_data_proto_goTypes = []interface{}{
 	(*WeaponData)(nil),       // 5: model.WeaponData
 	(*WeaponStatsData)(nil),  // 6: model.WeaponStatsData
 	(*WeaponProp)(nil),       // 7: model.WeaponProp
-	(*ArtifactData)(nil),     // 8: model.ArtifactData
-	(*PromotionData)(nil),    // 9: model.PromotionData
-	(*PromotionAddProp)(nil), // 10: model.PromotionAddProp
-	nil,                      // 11: model.AvatarDataMap.DataEntry
-	nil,                      // 12: model.WeaponDataMap.DataEntry
-	(QualityType)(0),         // 13: model.QualityType
-	(BodyType)(0),            // 14: model.BodyType
-	(ZoneType)(0),            // 15: model.ZoneType
-	(Element)(0),             // 16: model.Element
-	(WeaponClass)(0),         // 17: model.WeaponClass
-	(AvatarCurveType)(0),     // 18: model.AvatarCurveType
-	(StatType)(0),            // 19: model.StatType
-	(WeaponCurveType)(0),     // 20: model.WeaponCurveType
+	(*ArtifactDataMap)(nil),  // 8: model.ArtifactDataMap
+	(*ArtifactData)(nil),     // 9: model.ArtifactData
+	(*PromotionData)(nil),    // 10: model.PromotionData
+	(*PromotionAddProp)(nil), // 11: model.PromotionAddProp
+	nil,                      // 12: model.AvatarDataMap.DataEntry
+	nil,                      // 13: model.WeaponDataMap.DataEntry
+	nil,                      // 14: model.ArtifactDataMap.DataEntry
+	(QualityType)(0),         // 15: model.QualityType
+	(BodyType)(0),            // 16: model.BodyType
+	(ZoneType)(0),            // 17: model.ZoneType
+	(Element)(0),             // 18: model.Element
+	(WeaponClass)(0),         // 19: model.WeaponClass
+	(AvatarCurveType)(0),     // 20: model.AvatarCurveType
+	(StatType)(0),            // 21: model.StatType
+	(WeaponCurveType)(0),     // 22: model.WeaponCurveType
 }
 var file_protos_model_data_proto_depIdxs = []int32{
-	11, // 0: model.AvatarDataMap.data:type_name -> model.AvatarDataMap.DataEntry
-	13, // 1: model.AvatarData.rarity:type_name -> model.QualityType
-	14, // 2: model.AvatarData.body:type_name -> model.BodyType
-	15, // 3: model.AvatarData.region:type_name -> model.ZoneType
-	16, // 4: model.AvatarData.element:type_name -> model.Element
-	17, // 5: model.AvatarData.weapon_class:type_name -> model.WeaponClass
+	12, // 0: model.AvatarDataMap.data:type_name -> model.AvatarDataMap.DataEntry
+	15, // 1: model.AvatarData.rarity:type_name -> model.QualityType
+	16, // 2: model.AvatarData.body:type_name -> model.BodyType
+	17, // 3: model.AvatarData.region:type_name -> model.ZoneType
+	18, // 4: model.AvatarData.element:type_name -> model.Element
+	19, // 5: model.AvatarData.weapon_class:type_name -> model.WeaponClass
 	2,  // 6: model.AvatarData.stats:type_name -> model.AvatarStatsData
 	3,  // 7: model.AvatarData.skill_details:type_name -> model.AvatarSkillsData
-	18, // 8: model.AvatarStatsData.hp_curve:type_name -> model.AvatarCurveType
-	18, // 9: model.AvatarStatsData.atk_curve:type_name -> model.AvatarCurveType
-	18, // 10: model.AvatarStatsData.def_cruve:type_name -> model.AvatarCurveType
-	9,  // 11: model.AvatarStatsData.promo_data:type_name -> model.PromotionData
-	12, // 12: model.WeaponDataMap.data:type_name -> model.WeaponDataMap.DataEntry
-	17, // 13: model.WeaponData.weapon_class:type_name -> model.WeaponClass
+	20, // 8: model.AvatarStatsData.hp_curve:type_name -> model.AvatarCurveType
+	20, // 9: model.AvatarStatsData.atk_curve:type_name -> model.AvatarCurveType
+	20, // 10: model.AvatarStatsData.def_cruve:type_name -> model.AvatarCurveType
+	10, // 11: model.AvatarStatsData.promo_data:type_name -> model.PromotionData
+	13, // 12: model.WeaponDataMap.data:type_name -> model.WeaponDataMap.DataEntry
+	19, // 13: model.WeaponData.weapon_class:type_name -> model.WeaponClass
 	6,  // 14: model.WeaponData.base_stats:type_name -> model.WeaponStatsData
 	7,  // 15: model.WeaponStatsData.base_props:type_name -> model.WeaponProp
-	9,  // 16: model.WeaponStatsData.promo_data:type_name -> model.PromotionData
-	19, // 17: model.WeaponProp.prop_type:type_name -> model.StatType
-	20, // 18: model.WeaponProp.curve:type_name -> model.WeaponCurveType
-	10, // 19: model.PromotionData.add_props:type_name -> model.PromotionAddProp
-	19, // 20: model.PromotionAddProp.prop_type:type_name -> model.StatType
-	1,  // 21: model.AvatarDataMap.DataEntry.value:type_name -> model.AvatarData
-	5,  // 22: model.WeaponDataMap.DataEntry.value:type_name -> model.WeaponData
-	23, // [23:23] is the sub-list for method output_type
-	23, // [23:23] is the sub-list for method input_type
-	23, // [23:23] is the sub-list for extension type_name
-	23, // [23:23] is the sub-list for extension extendee
-	0,  // [0:23] is the sub-list for field type_name
+	10, // 16: model.WeaponStatsData.promo_data:type_name -> model.PromotionData
+	21, // 17: model.WeaponProp.prop_type:type_name -> model.StatType
+	22, // 18: model.WeaponProp.curve:type_name -> model.WeaponCurveType
+	14, // 19: model.ArtifactDataMap.data:type_name -> model.ArtifactDataMap.DataEntry
+	11, // 20: model.PromotionData.add_props:type_name -> model.PromotionAddProp
+	21, // 21: model.PromotionAddProp.prop_type:type_name -> model.StatType
+	1,  // 22: model.AvatarDataMap.DataEntry.value:type_name -> model.AvatarData
+	5,  // 23: model.WeaponDataMap.DataEntry.value:type_name -> model.WeaponData
+	9,  // 24: model.ArtifactDataMap.DataEntry.value:type_name -> model.ArtifactData
+	25, // [25:25] is the sub-list for method output_type
+	25, // [25:25] is the sub-list for method input_type
+	25, // [25:25] is the sub-list for extension type_name
+	25, // [25:25] is the sub-list for extension extendee
+	0,  // [0:25] is the sub-list for field type_name
 }
 
 func init() { file_protos_model_data_proto_init() }
@@ -1073,7 +1144,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ArtifactData); i {
+			switch v := v.(*ArtifactDataMap); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1085,7 +1156,7 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PromotionData); i {
+			switch v := v.(*ArtifactData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1097,6 +1168,18 @@ func file_protos_model_data_proto_init() {
 			}
 		}
 		file_protos_model_data_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PromotionData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_protos_model_data_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PromotionAddProp); i {
 			case 0:
 				return &v.state
@@ -1115,7 +1198,7 @@ func file_protos_model_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protos_model_data_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

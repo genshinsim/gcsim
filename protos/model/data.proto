@@ -66,7 +66,14 @@ message WeaponProp {
   WeaponCurveType curve = 3 [json_name = "curve"];
 }
 
-message ArtifactData { int32 id = 1 [ json_name = "id" ]; }
+message ArtifactDataMap {
+  map<string, ArtifactData> data = 1 [ json_name = "data" ];
+}
+
+message ArtifactData { 
+  int32 id = 1 [ json_name = "id" ]; 
+  string text_map_id = 2 [ json_name = "text_map_id"];
+}
 
 message PromotionData {
   int32 max_level = 1 [ json_name = "max_level" ];

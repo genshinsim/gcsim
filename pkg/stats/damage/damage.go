@@ -69,11 +69,11 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		}
 
 		if attack.Info.Amped {
-			switch attack.Info.AmpMult {
-			case 1.5:
-				event.ReactionModifier = stats.Amp15
-			case 2:
-				event.ReactionModifier = stats.Amp20
+			switch attack.Info.AmpType {
+			case reactions.Vaporize:
+				event.ReactionModifier = stats.Vaporize
+			case reactions.Melt:
+				event.ReactionModifier = stats.Melt
 			}
 		}
 
