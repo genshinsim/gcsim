@@ -308,6 +308,13 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Sashimi"
     },
+    "fleuvecendreferryman": {
+      "id": 11426,
+      "key": "fleuvecendreferryman",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Machination"
+    },
     "forestregalia": {
       "id": 12417,
       "key": "forestregalia",
