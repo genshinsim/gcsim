@@ -931,6 +931,13 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Mori"
     },
+    "thefirstgreatmagic": {
+      "id": 15512,
+      "key": "thefirstgreatmagic",
+      "rarity": 5,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Pledge"
+    },
     "theflute": {
       "id": 11402,
       "key": "theflute",
