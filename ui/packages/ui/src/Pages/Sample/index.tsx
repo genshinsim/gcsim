@@ -1,5 +1,4 @@
 import { Sample } from "@gcsim/types";
-import { base64ToBytes } from "@gcsim/utils";
 import axios from "axios";
 import classNames from "classnames";
 import Pako from "pako";
@@ -36,9 +35,9 @@ export const UploadSample = ({}) => {
   useEffect(() => {
     const file = acceptedFiles[0];
     if (file != null) {
-      file.text().then((b64) => {
+      file.arrayBuffer().then((b64) => {
         try {
-          setSample(JSON.parse(Pako.inflate(base64ToBytes(b64), { to: "string" })));
+          setSample(JSON.parse(Pako.inflate(b64, { to: "string" })));
         } catch (e) {
           let message = 'Unknown error when parsing sample...';
           if (e instanceof Error) message = e.message;

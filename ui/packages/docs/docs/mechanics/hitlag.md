@@ -1,4 +1,7 @@
-# Hitlag
+---
+title: Hitlag
+sidebar_position: 1
+---
 
 Hitlag describes the freeze frames of a character and/or enemy that occurs when an attack hits said enemy. 
 

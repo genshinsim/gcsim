@@ -8,7 +8,6 @@ import { Sample } from "@gcsim/types";
 import { saveAs } from "file-saver";
 import { AdvancedPreset, AllSampleOptions, DebugPreset, DefaultSampleOptions, SimplePreset, VerbosePreset } from "./SampleOptions";
 import { Options } from "./Options";
-import { bytesToBase64 } from "@gcsim/utils";
 import Pako from "pako";
 
 type buffSetting = {
@@ -233,9 +232,9 @@ function SamplerUI({ sample, data, team, searchable, settings, setSettings }: Sa
               text="Download"
               intent={Intent.SUCCESS}
               onClick={() => {
-                const out = bytesToBase64(Pako.deflate(JSON.stringify(sample)));
+                const out = Pako.deflate(JSON.stringify(sample));
                 const blob = new Blob([out], { type: "application/base64" });
-                saveAs(blob, "sample");
+                saveAs(blob, "sample.gz");
               }} />
         </ButtonGroup>
       </div>

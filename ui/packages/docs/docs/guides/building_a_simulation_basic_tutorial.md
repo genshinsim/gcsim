@@ -5,7 +5,10 @@ sidebar_position: 1
 
 This will be a basic tutorial on how to build your own simulation from scratch. 
 The team we'll be simulating is the ever popular Raiden/Xiangling/Xingqiu/Bennett team. 
-Feel free to follow along with your own stats.
+
+:::tip
+Feel free to follow along with your own stats! Check out [this guide](/guides/importing_characters) to learn how.
+:::
 
 :::note
 This tutorial is mainly targetted at users that wish to use their own stats to build a simulation. 
@@ -340,41 +343,309 @@ Giving this a spin and...
 
 You'll see that the damage completely tanked and the graph looks very flat compared to the original run.
 
-### Other ways to spot energy problem
+### Other ways to spot energy problems
 
 If you recall, when the simulator runs into an action that cannot be executed because it is not ready (due to energy, cooldown, stamina etc.), it will simply stall until it can execute the action, even if it means stalling infinitely.
 
-Because of this, one way to spot if there are energy and/or cooldown related problem is to look at the field time statistics.
+One way to spot energy issues is through the warnings. 
+As you can see from the above screenshot, there is a warning that says "Insufficient Energy". 
+This warning works by detecting how often a character failed to use their burst on average. 
+Note that the detection system is still fairly new and therefore should not be the only indicator to rely upon.
 
 ### Solutions
 
 So how do we fix this? 
-One option is to use artifacts with more ER (most likely you should be running ER sands). 
+One option is to use artifacts with more ER (you should most likely be running ER sands). 
 However, you may not have spare ER sands available. 
 In which case, you'll want to introduce some batterying actions. 
-But before we can talk about how to do that, first we'll need to take a look at the debug view.
+But before we can talk about how to do that, first we'll need to take a look at the Sample view.
 
 ## And to Sample we go
 
-gcsim includes a very comprehensive Sample view to help you see exactly what is going on in a rotation, how damage is calculated, what buffs are being applied, etc. 
+gcsim includes a very comprehensive Sample view to help you see exactly what is going on in a rotation, how damage is calculated, what buffs are being applied and so on. 
 Due to the amount of information, it can be overwhelming at first. 
-However, you'll find that as you get more used to it, the Sample view is where you will be spending most of you time when crafting a rotation.
+However, you'll find that as you get more used to it, the Sample view is where you will be spending most of your time when crafting a rotation.
 
 Start by clicking on the Sample tab located towards the top left of the viewer (right above Raiden in our screenshot above). 
-After that, generate a `Sample Seed` to start.
+After that, we're going to generate a sample by clicking the Generate button. 
+But before that, we're going to change the drop down from `Sample Seed` to `Min Seed`, like so:
+
+![generate min seed](sim_06.png)
+
+The reason for using min seed here instead of sample seed is to make the example more obvious. 
+For your own usage, most of the time you'll be using the `Sample Seed` option.
+
 You'll be taken to a screen that looks something like the following:
-
-![](sim_06.png)
-
-Your view may look different than ours above, depending on the options you have ticked. 
-So start by clicking on the `Settings` button top right, and then clear everything except `action`. 
-Your screen should look like the following:
 
 ![](sim_07.png)
 
-This view is now a lot less cluttered and shows only the actions that were executed.
-The action executed should look familiar as it matches the rotation we had inputted.
+Your view may look different than ours above, depending on the options you have ticked. 
+So start by clicking on the `Settings` button top right, and then clear everything except `action` and `energy`. 
+Your screen should look like the following:
+
+![sample view setup](sim_08.png)
+
+This view is now a lot less cluttered and shows only the actions that were executed and energy generation.
+The actions executed should look familiar as it matches the rotation we had inputted.
+
+### How to read the Sample
+
+#### Sample table row
+
+Each row in the Sample table represents what took place in a single frame. 
+On the left-hand side, you will see each frame number and its value in seconds:
+
+![frames row](sim_09.png)
+
+Here for example, you will see that the first row represents what happened on frame 1, the second row represents what happened on frame 37 and so on.
+
+Notice that the table skips any frames where nothing was logged for the particular options you are filtering for, hence the row jumps from frame 1 to frame 37. 
+This is important to pay attention to particularly for diagnosing rotation issues. 
+Currently, we are only showing `action` and `energy`. 
+If you were to enable more options, you'll see new rows populated.
+
+#### Sample table column
+
+Each column in the Sample table represents a character in your sim, with the first column being a special column representing sim specific events that are not necessarily tied to any specific character. 
+Thus you will always have between 2 to 5 columns.
+
+#### Reading row by row
+
+When starting out, you'll want to read through the sample row by row. 
+As you get more experienced with it, you'll simply be skipping to certain rows you are interested in.
+
+So let's take a look at the first couple of rows and see what is happening there:
+
+![read row by row](sim_10.png)
+
+We see that:
+- Raiden used `skill` on frame 1.
+- Raiden started `swap` to Xingqiu on frame 37.
+- Xingqiu comes on field on frame 41, and uses `skill` on the same frame.
+- Xingqiu uses `burst` on frame 118.
+- The team received particles from Xingqiu's `skill` usage on frame 153.
+- Xingqiu started `swap` to Bennett on frame 158.
+- Bennett comes on field on frame 162, and uses `skill` on the same frame.
+
+Going back to our config:
+
+![config only](sim_11.png)
+
+We see that this is exactly what we told the sim to do. 
+We start with Raiden, use her skill, then use Xingqiu skill and burst, etc...
+
+You'll see that the sim handled when the actions took place for us.
+ We only had to tell the sim which action to use.
+
+:::caution
+It's important to understand that by **default**, gcsim will execute actions as fast as possible aka. frame perfect.
+
+It is possible to delay execution via [waits](/reference/system_functions#wait), but be careful of how waits are handled (read the warning in the documentation carefully). 
+It may not be intuitive.
+:::
+
+And that's really all there is to it when it comes to reading the Sample table. 
+In the next section, we'll cover some more tips and tricks.
+
+### Sample tips and tricks
+
+#### Getting more information
+
+Sometimes just knowing when an action took place is not enough. 
+Sometimes we need to get more information. 
+For every single event in the Sample table, you can click on it to get more details. 
+For example, if we were to click on any of the energy events, we would see the following:
+
+![energy details](sim_12.png)
+
+Here we get a detail log as recorded by gcsim that shows us additional information such as the number of particles, the current ER of the character receiving the particle, the amount of energy being recovered, the amount of energy before receiving the particles, and the amount of energy after receiving the particles.
+
+#### Commonly used log options
+
+The following are some commonly used log options and what they tell you:
+- `damage`: shows when damage took place and the amount of damage
+- `calc`: shows the calculation that goes into each damage instance
 
 :::info
-This tutorial ends here for now. If you have any suggestions for what should be included/changed here, then feel free to talk to us on Discord (see top right).
+This section is incomplete, feel free to contribute to this.
 :::
+
+## Finding our energy problem
+
+Let's backtrack a bit and get back to finding our energy problem. 
+Sticking with the same sample options (i.e. only showing `action` and `energy`), if we scroll down, we'll notice that the log ends abruptly at frame 1483:
+
+![end of log](sim_13.png)
+
+If you recall, we had asked our sim to run for 90s of combat. 
+How come there's nothing happening after 24.72s? 
+Looking at the sample page, we see that the last couple of actions were as follows:
+- Frame 1412: Bennett used `burst`.
+- Frame 1463: Bennett started `swap` to Xiangling.
+- Frame 1467: Xiangling came on field.
+
+Let's take a look at our config again:
+
+![config only](sim_11.png)
+
+We can see that at this point, on frame 1467, Xiangling should be using her burst. 
+Notice that as of frame 1458, Xiangling only has 70 energy, but she needs 80 energy to use her burst. 
+This means she doesn't have enough energy to use her burst.
+
+Unfortunately, with no other source of energy, for the remainder of the simulation from 24.72s onwards to 90s, she never gets enough energy to use her burst. 
+As a result, in this particular iteration, Xiangling is stuck on trying to use her burst every frame but she can't. 
+
+This is what is causing our dps to tank completely. 
+
+## Batterying actions
+
+Now that we see Xiangling is the one that's having energy problem, we'll need to find some way to charge her up. 
+Looking at our config:
+
+![config only](sim_11.png)
+
+The ideal place for this is probably after Raiden's attack string before the entire thing loops again.
+
+:::tip
+Figuring out where and how to change a config is the creative process of coming up with a good rotation. This is something you will build experience for over time.
+:::
+
+So let's try something like this:
+
+```
+active raiden;
+
+while 1 {
+  raiden skill;
+  xingqiu skill, burst;
+  bennett skill, burst;
+  xiangling burst, skill;
+  raiden burst;
+  raiden attack:15;
+  // let's swap to bennett and battery xiangling here
+  bennett skill;
+  xiangling attack;
+}
+```
+
+Rerun the simulation and...
+
+![result after fix?](sim_14.png)
+
+Look at that! Our DPS jumped right up.
+
+:::tip
+Notice that we now have a new warning about swap cd (1s cd on swap). 
+The cause of this is the two new actions we added. 
+The warning is telling us that we are trying to swap to Raiden and Xiangling and in both cases the action is failing due to cd.
+
+If you look at the actions we added, we are asking the sim to swap to Xiangling right after Bennett skill. 
+Bennett skill does not take up enough field time for swap to come off cooldown. 
+Hence resulting in the swap to Xiangling failing.
+
+Similarily, we are asking the sim to swap to Raiden right after using a single Xiangling attack, which again, does not take up enough field time for swap to come off cooldown.
+
+We can resolve this by tweaking the above batterying actions a little, transforming them into something like:
+
+```
+  // let's swap to bennett and battery xiangling here
+  bennett attack, attack, skill;
+  xiangling attack, attack, attack;
+  raiden attack;
+```
+
+This is all part of that creative rotation building process. 
+The thought here is we want to minimize the amount of time a character sits around doing nothing, so we add extra filler actions such as Bennett normals and Xiangling normals while waiting for swap to come off cooldown.
+:::
+
+### Double check Sample
+
+Let us regenerate our `Min Seed` Sample again to see if the enery problem is fixed. 
+You'll notice on frame 1018, we can see the new batterying actions we added:
+
+![new batterying actions](sim_15.png)
+
+However, as we scroll down to the bottom, we see that the events still ended abruptly at frame 1483. 
+What gives? 
+Our dps jumped, so the problem should have been fixed, right?
+
+### Understanding randomness
+
+This actually illustrates a very important point about randomness. 
+The DPS we see on the main page shows the **average** dps across many many trials. 
+
+The sample screen we are looking at represents **a single trial**. 
+In particular, when we picked `Min Seed`, we actually asked for the trial that had the **lowest dps**. 
+Remember that there is randomness in the amount of particles generated. 
+So in the trial with the lowest dps, we actually had really bad luck and Xiangling still didn't have enough energy even after adding in batterying actions.
+
+So let's try and fix this by adding more batterying actions, making our config look like:
+
+```
+active raiden;
+
+while 1 {
+  raiden skill;
+  xingqiu skill, burst;
+  bennett skill, burst;
+  xiangling burst, skill;
+  raiden burst;
+  raiden attack:15;
+  // let's swap to bennett and battery xiangling here
+  bennett skill;
+  xiangling attack;
+  // let's swap to bennett and battery xiangling here
+  bennett skill;
+  xiangling attack;
+}
+```
+
+Rerun this and jump to the `Min Seed` sample and you'll see now that the trial with the lowest dps no longer stalls at frame 1483 and instead continues to the end of 90s.
+
+But this came at a cost:
+
+![more batterying](sim_16.png)
+
+Now, our dps is lower. 
+This is the cost of the extra field time required for the two batterying actions.
+
+### Conditional batterying
+
+:::info
+We are not going into too much detail here, because this is getting more advanced. 
+However, we still want to show that this is more realistic than the above example.
+:::
+
+Above, we showed how we can add batterying actions. 
+However, what we have done above is always batterying. 
+The reality is, most players will check to see if Xiangling's burst is up (i.e. has enough energy) at the end of the rotation, and only battery if she does not have enough energy. 
+
+This can be handled in gcsim with conditionals, like so:
+
+```
+active raiden;
+
+while 1 {
+  raiden skill;
+  xingqiu skill, burst;
+  bennett skill, burst;
+  xiangling burst, skill;
+  raiden burst;
+  raiden attack:15;
+  // let's swap to bennett and battery xiangling here
+  if .xiangling.energy < 70 {
+    bennett skill;
+    xiangling attack;
+  }
+}
+```
+
+With this, the batterying will only occur if Xiangling has less than 70 energy at the end of Raiden's attack string, making our results look slightly better as well:
+
+![after batterying](sim_17.png)
+
+## Concluding remarks
+
+This tutorial ends here for now. 
+Hopefully you found this tutorial useful. 
+If you have any suggestions for what should be included/changed here, then feel free to talk to us on Discord (see top right).

@@ -93,6 +93,19 @@ async function createConfig() {
           disableSwitch: false,
           respectPrefersColorScheme: false,
         },
+        algolia: {
+          // The application ID provided by Algolia
+          appId: 'FQ95W3KA6U',
+    
+          // Public API key: it is safe to commit it
+          apiKey: '3d7fffa98beeefe3652e892d29937cf9',
+    
+          indexName: 'gcsim',
+    
+          // Optional: see doc section below
+          contextualSearch: true,
+    
+        },
       }),
 
     plugins: [

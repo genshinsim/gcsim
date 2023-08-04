@@ -38,6 +38,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 			State:           action.Idle,
 		}
 	}
+	c.DeleteStatus(plungeAvailableKey)
 
 	// Decreasing delay due to casting midair
 	if delay > 0 {
@@ -74,9 +75,6 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeHitmark,
 		State:           action.PlungeAttackState,
-		OnRemoved: func(next action.AnimationState) {
-			c.DeleteStatus(plungeAvailableKey)
-		},
 	}
 }
 

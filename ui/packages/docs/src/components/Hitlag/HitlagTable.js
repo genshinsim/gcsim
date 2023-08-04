@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import data from "./data.json";
+import character_data from "./character_data.json";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -52,22 +52,22 @@ function AbilHitlag({ data }) {
   );
 }
 
-const abils = ["normal", "charge", "skill", "burst", "asc", "cons"];
+const abils = ["normal", "charge", "aim", "skill", "burst", "asc", "cons"];
 const abilLabels = [
   "Normal",
   "Charge Attack",
+  "Aimed Shot",
   "Skill",
   "Burst",
   "Ascension",
   "Cons",
 ];
 
-export default function HitlagTable({ character }) {
-  if (!(character in data)) {
+export default function HitlagTable({ item_key }) {
+  if (!(item_key in character_data)) {
     return <div>No hitlag data for character</div>;
-    // return <div>No hitlag data found for {character}</div>;
   }
-  const char = data[character];
+  const char = character_data[item_key];
   let tabs = [];
   let count = 0;
   abils.forEach((a, i) => {
@@ -75,7 +75,6 @@ export default function HitlagTable({ character }) {
     if (!(a in char)) {
       return;
     }
-    console.log(char[a]);
     count++;
     tabs.push(
       <TabItem value={a} label={abilLabels[i]} key={a}>

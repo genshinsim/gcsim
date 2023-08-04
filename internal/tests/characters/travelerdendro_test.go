@@ -4,7 +4,8 @@ import (
 	"log"
 	"testing"
 
-	"github.com/genshinsim/gcsim/internal/characters/travelerdendro"
+	"github.com/genshinsim/gcsim/internal/characters/traveler/common/dendro"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/aether"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -54,7 +55,7 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 
 	//check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
-	gr, ok := g.(*travelerdendro.LeaLotus)
+	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
 		t.Errorf("expecting gadget to be lea lotus. failed")
 		t.FailNow()
@@ -136,7 +137,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 
 	//check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
-	gr, ok := g.(*travelerdendro.LeaLotus)
+	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
 		t.Errorf("expecting gadget to be lea lotus. failed")
 		t.FailNow()

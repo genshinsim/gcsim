@@ -11,11 +11,13 @@ import (
 )
 
 var skillFrames []int
+var skillRecastFrames []int
 
 const (
-	skillHitmark   = 25
-	stilettoKey    = "keqingstiletto"
-	particleICDKey = "keqing-particle-icd"
+	skillHitmark       = 25
+	skillRecastHitmark = 16
+	stilettoKey        = "keqingstiletto"
+	particleICDKey     = "keqing-particle-icd"
 )
 
 func init() {
@@ -30,8 +32,8 @@ func init() {
 	// skill (recast) -> x
 	skillRecastFrames = frames.InitAbilSlice(43)
 	skillRecastFrames[action.ActionAttack] = 42
-	skillRecastFrames[action.ActionDash] = 15
-	skillRecastFrames[action.ActionJump] = 16
+	skillRecastFrames[action.ActionDash] = skillRecastHitmark
+	skillRecastFrames[action.ActionJump] = skillRecastHitmark
 	skillRecastFrames[action.ActionSwap] = 42
 }
 
@@ -80,21 +82,9 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 	}
 }
 
-var skillRecastFrames []int
-
-const skillRecastHitmark = 27
-
 func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
-		// 2 tick dmg at start to end
-		hits, ok := p["c1"]
-		if !ok {
-			hits = 1 // default 1 hit
-		}
-		if hits > 2 {
-			hits = 2
-		}
 		ai := combat.AttackInfo{
 			Abil:       "Stellar Restoration (C1)",
 			ActorIndex: c.Index,
@@ -106,24 +96,19 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       .5,
 		}
-		// TODO: this should be 1st hit on cast and 2nd at end
-		// First hit centers on primary target
-		if hits >= 1 {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2),
-				skillRecastHitmark,
-				skillRecastHitmark,
-			)
-		}
-		if hits == 2 {
-			c.Core.QueueAttack(
-				ai,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 2),
-				skillRecastHitmark,
-				skillRecastHitmark,
-			)
-		}
+		// 2 dmg instances at start and end
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2),
+			3,
+			3,
+		)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, 2),
+			skillRecastHitmark,
+			skillRecastHitmark,
+		)
 	}
 
 	ai := combat.AttackInfo{

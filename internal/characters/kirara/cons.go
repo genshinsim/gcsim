@@ -43,20 +43,22 @@ func (c *char) c4() {
 		default:
 			return false
 		}
+		t := args[0].(combat.Target)
 
 		// TODO: snapshot? damage delay?
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Steed of Skanda",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Dendro,
-			Durability: 25,
-			Mult:       2,
+			ActorIndex:         c.Index,
+			Abil:               "Steed of Skanda",
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagElementalBurst,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
+			Element:            attributes.Dendro,
+			Durability:         25,
+			Mult:               2,
+			CanBeDefenseHalted: true,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 2), 0, 0)
 		c.AddStatus(c4IcdStatus, 3.8*60, true)
 		return false
 	}, "kirara-c4")
