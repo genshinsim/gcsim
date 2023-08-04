@@ -165,6 +165,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/dodoco"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/emeraldorb"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/favonius"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/flowingpurity"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/frostbearer"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/fruitoffulfillment"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/hakushin"
