@@ -693,6 +693,13 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Itadorimaru"
     },
+    "rightfulreward": {
+      "id": 13425,
+      "key": "rightfulreward",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Vorpal"
+    },
     "royalbow": {
       "id": 15404,
       "key": "royalbow",
