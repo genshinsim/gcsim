@@ -1,0 +1,107 @@
+diff --git a/pkg/core/player/character/character.go b/pkg/core/player/character/character.go
+index 32b9d9d7..f23a8f78 100644
+--- a/pkg/core/player/character/character.go
++++ b/pkg/core/player/character/character.go
+@@ -81,6 +81,7 @@ type CharWrapper struct {
+ 	Energy         float64
+ 	EnergyMax      float64
+ 	currentHPRatio float64
++	currentHPDebt  float64
+ 	// needed so that start hp is not influenced by hp mods added during team initialization
+ 	StartHP int
+ 
+@@ -206,6 +207,32 @@ func (c *CharWrapper) ModifyHPByRatio(r float64) {
+ 	c.SetHPByRatio(newHPRatio)
+ }
+ 
++func (c *CharWrapper) clampHPDebt() {
++	if c.currentHPDebt < 0 {
++		c.currentHPDebt = 0
++	}
++}
++
++func (c *CharWrapper) SetHPDebtByAmount(amt float64) {
++	c.currentHPDebt = amt
++	c.clampHPDebt()
++}
++
++func (c *CharWrapper) SetHPDebtByRatio(r float64) {
++	c.currentHPDebt = r * c.MaxHP()
++	c.clampHPDebt()
++}
++
++func (c *CharWrapper) ModifyHPDebtByAmount(amt float64) {
++	newHPDebt := c.currentHPDebt + amt
++	c.SetHPDebtByAmount(newHPDebt)
++}
++
++func (c *CharWrapper) ModifyHPDebtByRatio(r float64) {
++	newHPDebt := c.currentHPDebt + r*c.MaxHP()
++	c.SetHPDebtByAmount(newHPDebt)
++}
++
+ func (c *CharWrapper) consCheck() {
+ 	consUnset := 0
+ 	if c.NormalCon < 0 {
+diff --git a/pkg/core/player/character/stats.go b/pkg/core/player/character/stats.go
+index 053130f2..9442d613 100644
+--- a/pkg/core/player/character/stats.go
++++ b/pkg/core/player/character/stats.go
+@@ -127,6 +127,10 @@ func (c *CharWrapper) CurrentHP() float64 {
+ 	return c.currentHPRatio * c.MaxHP()
+ }
+ 
++func (c *CharWrapper) CurrentHPDebt() float64 {
++	return c.currentHPDebt
++}
++
+ func (c *CharWrapper) MaxHP() float64 {
+ 	hpp := c.BaseStats[attributes.HPP]
+ 	hp := c.BaseStats[attributes.HP]
+diff --git a/pkg/core/player/heal.go b/pkg/core/player/heal.go
+index d116b177..72360524 100644
+--- a/pkg/core/player/heal.go
++++ b/pkg/core/player/heal.go
+@@ -41,20 +41,40 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
+ 	case HealTypePercent:
+ 		hp = c.MaxHP() * info.Src
+ 	}
+-	heal := hp * bonus
+ 
++	// save previous hp related values for logging
+ 	prevHPRatio := c.CurrentHPRatio()
+ 	prevHP := c.CurrentHP()
++	prevHPDebt := c.CurrentHPDebt()
++
++	// calc original heal amount
++	healAmt := hp * bonus
++
++	// calc actual heal amount considering hp debt
++	// TODO: assumes that healing can occur in the same heal as debt being cleared, could also be that it can only occur starting from next heal
++	// example: hp debt is 10, heal is 11, so char will get healed by 11 - 10 = 1 instead of receiving no healing at all
++	heal := healAmt - c.CurrentHPDebt()
++	if heal < 0 {
++		heal = 0
++	}
++
++	// update hp debt based on original heal amount
++	c.ModifyHPDebtByAmount(-healAmt)
++
++	// perform heal based on actual heal amount
+ 	c.ModifyHPByAmount(heal)
+ 
+ 	h.Log.NewEvent(info.Message, glog.LogHealEvent, index).
+ 		Write("previous_hp_ratio", prevHPRatio).
+ 		Write("previous_hp", prevHP).
++		Write("previous_hp_debt", prevHPDebt).
+ 		Write("base amount", hp).
+ 		Write("bonus", bonus).
+-		Write("final amount", heal).
++		Write("final amount before hp debt", healAmt).
++		Write("final amount after hp debt", heal).
+ 		Write("current_hp_ratio", c.CurrentHPRatio()).
+ 		Write("current_hp", c.CurrentHP()).
++		Write("current_hp_debt", c.CurrentHPDebt()).
+ 		Write("max_hp", c.MaxHP())
+ 
+ 	h.Events.Emit(event.OnHeal, info, index, heal)
