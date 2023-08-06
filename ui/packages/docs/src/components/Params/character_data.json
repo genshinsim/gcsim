@@ -268,13 +268,6 @@
       "desc": "Hold until max stacks. Default 0 (false), non-zero value for true."
     }
   ],
-  "hutao": [
-    {
-      "ability": "burst",
-      "param": "targets",
-      "desc": "number of targets to simulate burst hitting for healing purposes. actual number of target in sim ignored"
-    }
-  ],
   "itto": [
     {
       "ability": "skill",
