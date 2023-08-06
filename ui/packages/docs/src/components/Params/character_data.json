@@ -197,6 +197,11 @@
   ],
   "fischl": [
     {
+      "ability": "-",
+      "param": "oz_travel",
+      "desc": "Projectile travel time for Oz. Default 10 frames. Set via '+params=[oz_travel=...]' in Fischl's 'char' line."
+    },
+    {
       "ability": "attack",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
@@ -645,6 +650,11 @@
     }
   ],
   "yelan": [
+    {
+      "ability": "-",
+      "param": "breakthrough",
+      "desc": "0 for no Breakthrough state at start of sim, 1 for Breakthrough state at start of sim. Set via '+params=[breakthrough=...]' in Yelan's 'char' line."
+    },
     {
       "ability": "attack",
       "param": "travel",
