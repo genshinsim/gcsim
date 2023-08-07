@@ -78,6 +78,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"festeringdesire":               keys.FesteringDesire,
 	"festering":                     keys.FesteringDesire,
 	"filletblade":                   keys.FilletBlade,
+	"finaleofthedeep":               keys.FinaleOfTheDeep,
+	"flowingpurity":                 keys.FlowingPurity,
 	"forestregalia":                 keys.ForestRegalia,
 	"regalia":                       keys.ForestRegalia,
 	"freedomsworn":                  keys.FreedomSworn,

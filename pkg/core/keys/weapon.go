@@ -77,6 +77,8 @@ var weaponNames = []string{
 	"ferrousshadow",
 	"festeringdesire",
 	"filletblade",
+	"finaleofthedeep",
+	"flowingpurity",
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
@@ -239,6 +241,8 @@ const (
 	FerrousShadow
 	FesteringDesire
 	FilletBlade
+	FinaleOfTheDeep
+	FlowingPurity
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
