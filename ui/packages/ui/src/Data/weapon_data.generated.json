@@ -308,6 +308,13 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Sashimi"
     },
+    "flowingpurity": {
+      "id": 14425,
+      "key": "flowingpurity",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Vorpal"
+    },
     "forestregalia": {
       "id": 12417,
       "key": "forestregalia",

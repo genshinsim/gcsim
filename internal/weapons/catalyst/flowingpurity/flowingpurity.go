@@ -39,11 +39,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	duration := 900 //15s * 60
 	icd := 600      //10s * 60
 	m := make([]float64, attributes.EndStatType)
-
-	hp := 0.24
+	bond := make([]float64, attributes.EndStatType)
+	hp := 0.24 //hpdebt_percentage
 	bondPercentage := 0.015 + float64(r)*0.005
-	maxBondDMGP := 0.009 + float64(r)*0.003
-	totalHeal := float64(0)
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if char.StatusIsActive(icdKey) {
@@ -60,37 +58,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				return m, true
 			},
 		})
-		// check for accummulate healing, when enough healing then get the eleDMG buff
-		// absorb healing not implement yet
+		char.SetHPDebtByRatio(hp) //set hpdebt before getting healed
+		debt := char.CurrentHPDebt()
+		if debt >= 6000 {
+			debt = 6000 //debt = maxbondp / bondp
+		}
 		// not sure if after (?) seconds the bond of life gonna clear itself, thus not implement yet
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 			healInfo := args[0].(*player.HealInfo)
 			healAmt := args[2].(float64)
-			maxhp := char.MaxHP() //snapshot maxhp just to be sure
 			if healInfo.Target != -1 && healInfo.Target != char.Index {
 				return false
 			}
-			totalHeal += healAmt
-			if totalHeal >= maxhp*hp {
+			if ((healAmt - char.CurrentHPDebt()) <= 0) || char.CurrentHPDebt() > 0 {
+				char.ModifyHPDebtByAmount(-healAmt) //reduce heal debt, but there is still heal debt
+				return false
+			} else {
+				char.ModifyHPDebtByAmount(-healAmt)
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBase("flowingpurity-bondeledmg-boost", duration),
 					AffectedStat: attributes.NoStat,
 					Amount: func() ([]float64, bool) {
-						bondDMGP := (totalHeal / 1000) * bondPercentage
-						if bondDMGP >= maxBondDMGP {
-							for i := attributes.PyroP; i <= attributes.DendroP; i++ {
-								m[i] = maxBondDMGP + eledmg
-							}
-						} else {
-							for i := attributes.PyroP; i <= attributes.DendroP; i++ {
-								m[i] = bondDMGP + eledmg
-							}
+						bondDMGP := (debt / 1000) * bondPercentage //use hp debt since you only get the buff after clearing bond
+						for i := attributes.PyroP; i <= attributes.DendroP; i++ {
+							bond[i] = bondDMGP
 						}
-						return m, true
+						return bond, true
 					},
 				})
-
-				totalHeal = 0
 			}
 			return false
 		}, fmt.Sprintf("flowingpurity-bondeledmg%v", char.Base.Key.String()))
