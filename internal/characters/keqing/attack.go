@@ -13,7 +13,7 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{11}, {11}, {15}, {12, 22}, {26}}
+	attackHitmarks        = [][]int{{10}, {10}, {14}, {11, 21}, {22}}
 	attackHitlagHaltFrame = [][]float64{{.03}, {.03}, {.06}, {0, .03}, {0}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true}, {false, true}, {false}}
 	attackHitboxes        = [][]float64{{1.5, 2.2}, {1.5}, {1.8}, {1.5}, {0.8}}
@@ -89,10 +89,18 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	act := action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
+
+	if c.NormalCounter == 0 {
+		act.UseNormalizedTime = func(next action.Action) bool {
+			return next == action.ActionCharge
+		}
+	}
+
+	return act
 }
