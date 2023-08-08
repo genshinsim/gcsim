@@ -394,6 +394,18 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "lynette": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 150 for Hold. The number determines the E duration in frames."
+    },
+    {
+      "ability": "burst",
+      "param": "vivid_travel",
+      "desc": "Projectile travel time for Vivid Shots. Default 10 frames."
+    }
+  ],
   "lyney": [
     {
       "ability": "-",

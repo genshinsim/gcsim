@@ -91,6 +91,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/kuki"
 	_ "github.com/genshinsim/gcsim/internal/characters/layla"
 	_ "github.com/genshinsim/gcsim/internal/characters/lisa"
+	_ "github.com/genshinsim/gcsim/internal/characters/lynette"
 	_ "github.com/genshinsim/gcsim/internal/characters/lyney"
 	_ "github.com/genshinsim/gcsim/internal/characters/mika"
 	_ "github.com/genshinsim/gcsim/internal/characters/mona"

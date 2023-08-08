@@ -728,6 +728,21 @@
         "burst_energy_cost": 60
       }
     },
+    "lynette": {
+      "id": 10000083,
+      "key": "lynette",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Linette",
+      "skill_details": {
+        "skill": 10832,
+        "burst": 10835,
+        "attack": 10831,
+        "burst_energy_cost": 70
+      }
+    },
     "lyney": {
       "id": 10000084,
       "key": "lyney",
