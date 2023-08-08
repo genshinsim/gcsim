@@ -18,6 +18,7 @@ const (
 	GadgetTypYueguiThrowing
 	GadgetTypYueguiJumping
 	GadgetTypBaronBunny
+	GadgetTypGrinMalkinHat
 	GadgetTypTest
 	EndGadgetTyp
 )
