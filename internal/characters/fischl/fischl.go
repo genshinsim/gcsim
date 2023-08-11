@@ -18,13 +18,14 @@ func init() {
 type char struct {
 	*tmpl.Character
 	// field use for calculating oz damage
-	ozPos         geometry.Point
-	ozSnapshot    combat.AttackEvent
-	ozSource      int  // keep tracks of source of oz aka resets
-	ozActive      bool // purely used for gscl conditional purposes
-	ozActiveUntil int  // used for oz ticks, a4, c1 and c6
-	ozTickSrc     int  // used for oz recast attacks
-	ozTravel      int
+	ozPos           geometry.Point
+	ozSnapshot      combat.AttackEvent
+	ozSource        int  // keep tracks of source of oz aka resets
+	ozActive        bool // purely used for gscl conditional purposes
+	ozActiveUntil   int  // used for oz ticks, a4, c1 and c6
+	ozTickSrc       int  // used for oz recast attacks
+	ozTravel        int
+	burstOzSpawnSrc int // prevent double oz spawn from burst
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile) error {

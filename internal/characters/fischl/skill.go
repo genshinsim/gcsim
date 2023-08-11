@@ -19,7 +19,10 @@ var (
 )
 
 const (
-	skillOzSpawn     = 32
+	skillOzSpawn     = 18 // same as CD start
+	skillOzHitmark   = 38
+	skillOzFirstTick = 64
+	ozTickInterval   = 59 // assume consistent 59f tick rate
 	skillRecastCD    = 92 // 2f CD delay
 	skillRecastCDKey = "fischl-skill-recast-cd"
 	particleICDKey   = "fischl-particle-icd"
@@ -65,21 +68,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, radius),
 		skillOzSpawn,
-		skillOzSpawn+5,
+		skillOzHitmark,
 	)
 
 	// CD Delay is 18 frames, but things break if Delay > CanQueueAfter
 	// so we add 18 to the duration instead. this probably mess up CDR stuff
-	c.SetCD(action.ActionSkill, 25*60+18) // 18 frames until CD starts
+	c.SetCD(action.ActionSkill, 25*60+skillOzSpawn)
 
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(skillRecastCDKey, skillRecastCD, false)
-	}, 18)
+	}, skillOzSpawn)
 
 	// set oz to active at the start of the action
 	c.ozActive = true
 	// set on field oz to be this one
-	c.queueOz("Skill", skillOzSpawn)
+	c.queueOz("Skill", skillOzSpawn, skillOzFirstTick)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -120,7 +123,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	}
 }
 
-func (c *char) queueOz(src string, ozSpawn int) {
+func (c *char) queueOz(src string, ozSpawn int, firstTick int) {
 	// calculate oz duration
 	dur := 600
 	if c.Base.Cons == 6 {
@@ -155,7 +158,7 @@ func (c *char) queueOz(src string, ozSpawn int) {
 		}
 		c.ozSnapshot.Callbacks = append(c.ozSnapshot.Callbacks, c.particleCB)
 
-		c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)
+		c.Core.Tasks.Add(c.ozTick(c.Core.F), firstTick)
 		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
 			Write("source", src).
 			Write("expected end", c.ozActiveUntil).
@@ -190,8 +193,8 @@ func (c *char) ozTick(src int) func() {
 		c.Core.QueueAttackEvent(&ae, c.ozTravel)
 
 		// queue up next hit only if next hit oz is still active
-		if c.Core.F+60 <= c.ozActiveUntil {
-			c.Core.Tasks.Add(c.ozTick(src), 60)
+		if c.Core.F+ozTickInterval <= c.ozActiveUntil {
+			c.Core.Tasks.Add(c.ozTick(src), ozTickInterval)
 		}
 	}
 }
