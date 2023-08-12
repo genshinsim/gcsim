@@ -98,7 +98,7 @@ If you set this to a negative number or a really large number, behaviour is unde
 
 Example:
 ```
-target lvl=88 resist=0.1 pos=0,0 radius=2 freeze_resist=0.8 hp=9999 particle_threshold=200 particle_drop_count=2;
+target lvl=95 resist=0.1 pos=2.4,0 radius=2 freeze_resist=0.5 hp=795002 particle_threshold=262350 particle_drop_count=3;
 ```
 
 | name | description | default |
