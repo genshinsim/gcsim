@@ -73,8 +73,7 @@ const PositionOverlapWarning = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        {"Target position's overlap in at least one iteration. This may result in inaccurate "
-          + "simulations. Update positions to avoid any overlaps."}
+        {"Target position's overlap in at least on iteration. Confirm if this is intended and update positions to avoid overlaps as necessary. Overlapping positions may result in inaccurate simulations."}
       </p>
     </DismissibleCallout>
   );
@@ -86,17 +85,15 @@ const EnergyWarning = ({ data }: WarningProps) => {
 
   return (
     <DismissibleCallout
-        title="Insufficient Energy"
+        title="Delay in Burst - Potential Energy Deficiency"
         intent={Intent.WARNING}
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        An abnormal amount of iterations failed to execute a burst because the character did not
-        have enough energy. Consider updating the config to better manage energy, as no actions are
-        performed during failures.
+        Some iterations delayed executing one or more bursts due to lack of energy. This causes the active character to idle until enough energy is gained (see <a href="https://docs.gcsim.app/guides/understanding_config_files#gcsim-script-gcsl">here</a>). Consider updating the config if the downtime below is undesired. 
       </p>
       <FailedActionDetails
-          title="insufficient energy duration"
+          title="total burst delay duration per iteration"
           data={data}
           stat={(fa) => fa.insufficient_energy} />
     </DismissibleCallout>
@@ -109,17 +106,15 @@ const SwapWarning = ({ data }: WarningProps) => {
 
   return (
     <DismissibleCallout
-        title="Unable to Swap Characters (Swap on CD)"
+        title="Delay in Swapping - Swap on CD"
         intent={Intent.WARNING}
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        An abnormal amount of iterations failed to execute a swap because swap was on cooldown.
-        Consider updating the config to better account for swap cooldowns, as no actions are
-        performed during failures.
+        Some iterations delayed executing one or more swaps due to its cooldown. This causes the active character to idle until swap is off cooldown. Consider updating the config if the downtime below is undesired.
       </p>
       <FailedActionDetails
-          title="swap cd failure duration"
+          title="total swap delay due to cd per iteration"
           data={data}
           stat={(fa) => fa.swap_cd} />
     </DismissibleCallout>
@@ -132,17 +127,15 @@ const CooldownWarning = ({ data }: WarningProps) => {
 
   return (
     <DismissibleCallout
-        title="Unable to Use Character Skills (Skills on CD)"
+        title="Delay in Skill - Skill on CD"
         intent={Intent.WARNING}
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        An abnormal amount of iterations failed to execute a skill because the skill was on cooldown.
-        Consider updating the config to better account for skill cooldowns, as no actions are
-        performed during failures.
+        Some iterations delayed executing one or more skills due to its cooldown. This causes the active character to idle until their skill is off cooldown. Consider updating the config if the downtime below is undesired.
       </p>
       <FailedActionDetails
-          title="skill cd failure duration"
+          title="total skill delay due to cd per iteration"
           data={data}
           stat={(fa) => fa.skill_cd} />
     </DismissibleCallout>
@@ -155,17 +148,15 @@ const StaminaWarning = ({ data }: WarningProps) => {
 
   return (
     <DismissibleCallout
-        title="Insufficient Stamina"
+        title="Delay in Dash - Insufficient Stamina"
         intent={Intent.WARNING}
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        An abnormal amount of iterations failed to execute an action because the character did not
-        have enough stamina. Consider updating the config to better manage stamina, as no actions
-        are performed during failures.
+        Some iterations delayed executing dash due to insufficient stamina. This causes the active character to idle until enough stamina regnerated. Consider updating the config if the downtime below is undesired.
       </p>
       <FailedActionDetails
-          title="insufficient stamina duration"
+          title="total delay due to insufficient stamina per iteration"
           data={data}
           stat={(fa) => fa.insufficient_stamina} />
     </DismissibleCallout>
@@ -178,17 +169,15 @@ const DashWarning = ({ data }: WarningProps) => {
 
   return (
     <DismissibleCallout
-        title="Unable to Use Character Dash (Dash on CD)"
+        title="Delay in Dash - Dash on CD"
         intent={Intent.WARNING}
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        An abnormal amount of iterations failed to execute a dash because the dash was on cooldown.
-        Consider updating the config to better account for dash cooldowns, as no actions are
-        performed during failures.
+        Some iterations delayed executing dash due to its cooldown. This causes the active character to idle until enough stamina regnerated. Consider updating the config if the downtime below is undesired.
       </p>
       <FailedActionDetails
-          title="dash cd failure duration"
+          title="total dash delay due to cd per iteration"
           data={data}
           stat={(fa) => fa.dash_cd} />
     </DismissibleCallout>
