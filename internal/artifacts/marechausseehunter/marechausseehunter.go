@@ -89,7 +89,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			s.onChangeHP()
 			return false
-		}, fmt.Sprintf("mh-4pc-%v", char.Base.Key.String()))
+		}, fmt.Sprintf("mh-4pc-drain-%v", char.Base.Key.String()))
 
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 			index := args[1].(int)
@@ -106,7 +106,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			s.onChangeHP()
 			return false
-		}, fmt.Sprintf("mh-4pc-%v", char.Base.Key.String()))
+		}, fmt.Sprintf("mh-4pc-heal-%v", char.Base.Key.String()))
 
 		// TODO: OnCharacterHurt?
 	}

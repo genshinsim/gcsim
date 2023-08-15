@@ -68,6 +68,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			prev := args[0].(int)
 			next := args[1].(int)
 			if prev == char.Index {
+				s.lastSwap = -1
 				s.gainBuff()
 			} else if next == char.Index {
 				s.lastSwap = c.F
@@ -100,10 +101,11 @@ func (s *Set) clearBuff(src int) func() {
 		if s.lastSwap != src {
 			return
 		}
-
-		if s.core.Player.Active() == s.char.Index {
-			s.buff[attributes.DmgP] = 0.25
-			s.core.Log.NewEvent("golden troupe 4pc lost", glog.LogArtifactEvent, s.char.Index)
+		if s.core.Player.Active() != s.char.Index {
+			return
 		}
+
+		s.buff[attributes.DmgP] = 0.25
+		s.core.Log.NewEvent("golden troupe 4pc lost", glog.LogArtifactEvent, s.char.Index)
 	}
 }
