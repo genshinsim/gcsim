@@ -73,7 +73,7 @@ const PositionOverlapWarning = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        {"Target position's overlap in at least on iteration. Confirm if this is intended and update positions to avoid overlaps as necessary. Overlapping positions may result in inaccurate simulations."}
+        {"Target position's overlap in at least one iteration. Confirm if this is intended and update positions to avoid overlaps as necessary. Overlapping positions may result in inaccurate simulations."}
       </p>
     </DismissibleCallout>
   );
