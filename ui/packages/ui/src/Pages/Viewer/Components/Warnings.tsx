@@ -148,12 +148,12 @@ const StaminaWarning = ({ data }: WarningProps) => {
 
   return (
     <DismissibleCallout
-        title="Delay in Dash - Insufficient Stamina"
+        title="Delay Due To Insufficient Stamina"
         intent={Intent.WARNING}
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        Some iterations delayed executing dash due to insufficient stamina. This causes the active character to idle until enough stamina regnerated. Consider updating the config if the downtime below is undesired.
+        Some iterations delayed executing one or more stamina-draining actions due to insufficient stamina. This causes the active character to idle until enough stamina is regenerated. Consider updating the config if the downtime below is undesired.
       </p>
       <FailedActionDetails
           title="total delay due to insufficient stamina per iteration"
