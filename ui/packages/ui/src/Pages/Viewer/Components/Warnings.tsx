@@ -174,7 +174,7 @@ const DashWarning = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        Some iterations delayed executing dash due to its cooldown. This causes the active character to idle until enough stamina regnerated. Consider updating the config if the downtime below is undesired.
+        Some iterations delayed executing one or more dashes due to its cooldown. This causes the active character to idle until enough stamina is regenerated. Consider updating the config if the downtime below is undesired.
       </p>
       <FailedActionDetails
           title="total dash delay due to cd per iteration"
