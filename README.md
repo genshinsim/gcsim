@@ -16,7 +16,7 @@ The project is still under development. While the majority of characters, items,
 
 Here are a few ways to help improve the quality of gcsim:
 - Record exhaustive frame counts of new unit actions, methodology detailed [here](https://docs.gcsim.app/mechanics/frames/).
-- Validate gameplay and sim results, ensure the sim can reproduce damage calculation, reactions, and buff uptimes faithfully.
+- Validate gameplay and sim results, ensure the sim can reproduce damage calculations, reactions, and buff uptimes faithfully.
 - Build action lists aka "rotations" for any team composition and submit them to our [Config Database](https://simpact.app/) via [Discord](https://discord.gg/m7jvjdxx7q).
 - Use gcsim for gear, rotation, and team comparisons, while scrutinizing both expected and unexpected results. This is the best way potential issues can be spotted.
 
