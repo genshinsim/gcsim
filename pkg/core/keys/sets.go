@@ -50,12 +50,14 @@ var setNames = []string{
 	"gambler",
 	"gladiatorsfinale",
 	"gildeddreams",
+	"goldentroupe",
 	"heartofdepth",
 	"huskofopulentdreams",
 	"instructor",
 	"lavawalker",
 	"luckydog",
 	"maidenbeloved",
+	"marechausseehunter",
 	"martialartist",
 	"noblesseoblige",
 	"nymphsdream",
@@ -99,12 +101,14 @@ const (
 	Gambler
 	GladiatorsFinale
 	GildedDreams
+	GoldenTroupe
 	HeartOfDepth
 	HuskOfOpulentDreams
 	Instructor
 	Lavawalker
 	LuckyDog
 	MaidenBeloved
+	MarechausseeHunter
 	MartialArtist
 	NoblesseOblige
 	NymphsDream
