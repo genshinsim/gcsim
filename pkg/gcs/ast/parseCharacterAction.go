@@ -7,21 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
-type actionItem struct {
-	typ   Token
-	param map[string]int
-}
-
-type actionAPLOpt struct {
-	onField           bool
-	limit             int
-	timeout           int
-	swapTo            Token //character to swap to
-	swapLock          int
-	try               bool
-	tryDropIfNotReady bool
-}
-
 // parseAction returns a node contain a character action, or a block of node containing
 // a list of character actions
 func (p *Parser) parseAction() (Stmt, error) {
