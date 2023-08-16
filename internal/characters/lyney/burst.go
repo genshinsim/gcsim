@@ -134,7 +134,7 @@ func (c *char) explosiveFirework() {
 	if len(c.hats) == c.maxHatCount {
 		c.hats[0].Kill()
 	}
-	g := c.newGrinMalkinHat(qPos, false) // TODO: double check hp drain on this
+	g := c.newGrinMalkinHat(qPos, false)
 	c.hats = append(c.hats, g)
 	c.Core.Combat.AddGadget(g)
 
