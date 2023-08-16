@@ -22,6 +22,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("randnorm", e.randnorm, env)
 	e.addSysFunc("print", e.print, env)
 	e.addSysFunc("wait", e.wait, env)
+	e.addSysFunc("sleep", e.wait, env)
 	e.addSysFunc("type", e.typeval, env)
 	e.addSysFunc("execute_action", e.executeAction, env)
 

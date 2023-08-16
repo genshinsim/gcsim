@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -78,6 +79,35 @@ func TestForceTerminate(t *testing.T) {
 		if a != nil {
 			t.Errorf("NextAction() should return nil indicating no more action, got %v", a)
 		}
+	}
+}
+
+func TestSleepAsWaitAlias(t *testing.T) {
+	//make sure sleep is evaluated as wait
+	p := ast.New("sleep(1);")
+	_, gcsl, err := p.Parse()
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval, _ := NewEvaluator(gcsl, nil)
+	eval.Log = log.Default()
+	go func() {
+		res, err := eval.Run()
+		fmt.Printf("done with result: %v, err: %v\n", res, err)
+	}()
+	a, err := eval.NextAction()
+	if err != nil {
+		t.Errorf("unexpected error getting next action: %v", err)
+	}
+	if a == nil {
+		t.Error("unexpected next action is nil")
+	}
+	if a.Action != action.ActionWait {
+		t.Errorf("expecting action to be wait, got %v", a.Action.String())
+	}
+	err = eval.Exit()
+	if err != nil {
+		t.Errorf("unexpected error exiting: %v", err)
 	}
 }
 

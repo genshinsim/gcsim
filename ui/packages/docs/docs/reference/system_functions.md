@@ -32,48 +32,53 @@ print("bennett's current energy is: ", .bennett.energy);
 ```
 :::
 
-## wait
+## sleep/wait
+
+:::caution
+The syntax `wait(arg)`, while valid, is deprecated in favour of `sleep(arg)`
+:::
 
 ```
-wait(arg);
+sleep(arg);
+wait(arg); //deprecated, use sleep(arg)
 ```
 
-- `wait` is a special function that will ask gcsim to wait a number of frames. 
-- `wait` will always evaluate to 0.
+- `sleep` is a special function that will ask gcsim to wait a number of frames. 
+- `sleep` will always evaluate to 0.
 
 :::danger
 `arg` must be a number or an expression that evaluates to a number and represents the number of frames the simulator will wait for.
 :::
 
 :::caution
-Due to how gcsim handles actions, the current implementation of `wait` is not intuitive.
+Due to how gcsim handles actions, the current implementation of `sleep` is not intuitive.
 
 Example:
 ```
 keqing attack;  // Keqing N1
-wait(2);        // wait for 2 frames
+sleep(2);       // sleeps for 2 frames
 keqing attack;  // Keqing N2
 ```
 
-Many users would expect that gcsim waits for 2 frames *after* Keqing's N1 action ends. 
-This is not how `wait` works.
-`wait` makes the sim wait for 2 frames *after* Keqing's N1 action has reached its specified `CanQueueAfter` value. 
-The duration of `wait` counts towards the action length.
+Many users would expect that gcsim sleeps for 2 frames *after* Keqing's N1 action ends. 
+This is not how `sleep` works.
+`sleep` makes the sim sleep for 2 frames *after* Keqing's N1 action has reached its specified `CanQueueAfter` value. 
+The duration of `sleep` counts towards the action length.
 
 - expected: 
     - N1 starts
     - N1 ends after 15 frames
-    - gcsim waits for 2 frames 
+    - gcsim sleeps for 2 frames 
     - N2 starts after a total of 15 + 2 = 17 frames
 - reality: 
     - N1 starts
     - N1 `CanQueueAfter` is reached after 11 frames
-    - gcsim waits for 2 frames
+    - gcsim sleeps for 2 frames
     - now there are 15 - (11 + 2) = 2 frames left in the N1 animation
     - N1 continues for 2 more frames until the N1 animation is over
     - N2 starts after a total of 11 + 2 + 2 = 15 frames
 
-To make gcsim wait for 1 frame after Keqing's N1 action ends, the user would have to insert a `wait(5);`.
+To make gcsim sleep for 1 frame after Keqing's N1 action ends, the user would have to insert a `sleep(5);`.
 :::
 
 ## f
