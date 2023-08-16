@@ -398,7 +398,7 @@
     {
       "ability": "-",
       "param": "pyrotechnic_travel",
-      "desc": "Projectile travel time for Pyrotechnic Strike via Grin-Malkin Hat expiry. Default 35 frames. Set via '+params=[pyrotechnic_travel=...]' in Lyney's 'char' line."
+      "desc": "Projectile travel time for Pyrotechnic Strike via Grin-Malkin Hat expiry. Default 19 frames. Set via '+params=[pyrotechnic_travel=...]' in Lyney's 'char' line."
     },
     {
       "ability": "-",
