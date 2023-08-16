@@ -1,52 +1,135 @@
 # Contributing Guidelines
 
-If you would like to contribute code to this project please follow these Pull Request guidelines:
+If you would like to contribute code to this project, please follow these pull request guidelines:
 
-0. (Optional but encouraged) Find at least one maintainer interested in your PR
-1. Fork the project
-2. Create a branch specifically for the feature you are contributing
+0. (Optional but encouraged) Find at least one maintainer interested in your PR.
+1. Fork the project.
+2. Create a branch specifically for the feature you are contributing.
 3. (Optional but encouraged) Rebase your branch as needed. Please see quick reference if you are new to git.
-4. After you are happy with your work, please make sure to submit a Pull Request from the feature branch. You are heavily discouraged from making pull requests from your main branch because we may not be able to get to your PR before you make new changes to your PR.
+4. After you are happy with your work, please make sure to submit a Pull Request from the feature branch. You are heavily discouraged from making pull requests from your main branch, because we may not be able to get to your PR before you make new changes to your PR.
 
+Character PR checklist:
 
-If contributing code for characters, please try to be explicit about what is complete or incomplete.
-A rough guideline for your comment is as follows:
-
-- [ ] Frames
-- [ ] Talents
-- [ ] C0 Normals
-- [ ] C0 Skill
-- [ ] C0 Burst
+- [ ] New character package
+- [ ] Config in character package
+- [ ] Run pipeline with added config
+- [ ] Character key
+- [ ] Shortcuts for character key
+- [ ] Add Character package to imports
+- [ ] Character talent stats
+- [ ] Character curve
+- [ ] Normal Attack
+- [ ] Skill
+- [ ] Burst
 - [ ] A1
 - [ ] A4
-- [ ] Sanity Test Cases
+- [ ] C0
 - [ ] C1
 - [ ] C2
 - [ ] C3
 - [ ] C4
 - [ ] C5
 - [ ] C6
+- [ ] Other necessary talents (custom dash/jump, low/high plunge, ...)
+- [ ] Hitlag
+- [ ] ICD
+- [ ] StrikeType
+- [ ] Hitboxes
+- [ ] Attack durability
+- [ ] Particles
+- [ ] Frames
+- [ ] Update documentation
+
+Weapon PR checklist:
+
+- [ ] New weapon package
+- [ ] Config in weapon package
+- [ ] Run pipeline with added config
+- [ ] Weapon key
+- [ ] Shortcuts for weapon key
+- [ ] Add weapon package to imports
+- [ ] Weapon curve
+- [ ] Weapon passive (might include an attack)
+- [ ] Update documentation
+
+Artifact PR checklist:
+
+- [ ] New artifact package
+- [ ] Config in artifacts package
+- [ ] Run pipeline with added config
+- [ ] Artifact key
+- [ ] Shortcuts for artifact key
+- [ ] Add artifact package to imports
+- [ ] 2pc
+- [ ] 4pc
+- [ ] Update documentation
+
+Please try to be explicit about what is complete or incomplete.
+
+Items may be omitted when irrelevant.
 
 <details><summary>Click to expand copy-paste friendly version</summary>
   
 ```
-- [ ] Frames
-- [ ] Talents
-- [ ] C0 Normals
-- [ ] C0 Skill
-- [ ] C0 Burst
+Character PR checklist:
+
+- [ ] New character package
+- [ ] Config in character package
+- [ ] Run pipeline with added config
+- [ ] Character key
+- [ ] Shortcuts for character key
+- [ ] Add Character package to imports
+- [ ] Character talent stats
+- [ ] Character curve
+- [ ] Normal Attack
+- [ ] Charge Attack / Aimed Shot
+- [ ] Skill
+- [ ] Burst 
 - [ ] A1
 - [ ] A4
-- [ ] Sanity Test Cases
+- [ ] C0
 - [ ] C1
 - [ ] C2
 - [ ] C3
 - [ ] C4
 - [ ] C5
 - [ ] C6
+- [ ] Other necessary talents (custom dash/jump, low/high plunge, ...)
+- [ ] Hitlag
+- [ ] ICD
+- [ ] StrikeType
+- [ ] Hitboxes
+- [ ] Attack durability
+- [ ] Particles
+- [ ] Frames
+- [ ] Update documentation
+
+Weapon PR checklist:
+
+- [ ] New weapon package
+- [ ] Config in weapon package
+- [ ] Run pipeline with added config
+- [ ] Weapon key
+- [ ] Shortcuts for weapon key
+- [ ] Add weapon package to imports
+- [ ] Weapon curve
+- [ ] Weapon passive
+- [ ] Update documentation
+
+Artifact PR checklist:
+
+- [ ] New artifact package
+- [ ] Config in artifacts package
+- [ ] Run pipeline with added config
+- [ ] Artifact key
+- [ ] Shortcuts for artifact key
+- [ ] Add artifact package to imports
+- [ ] 2pc
+- [ ] 4pc
+- [ ] Update documentation
 ```
 </details>
-Items may be omitted when irrelevant as is the case for many ascension passives.
+
 
 # Git/Github Quick Reference Guide
 For those who are new to git/github
@@ -65,5 +148,5 @@ Where new parent is the commitment hash of the newest commit on the main branch 
 # Local Testing/Building
 0. Create a Config file
 1. Navigate to ```./gcsim/cmd/gcsim```
-2. Run ```go build``` to build the executable and then feed your config file in e.g. ```./gcsim.exe -c="config.txt" -out="out.gz" -gz``` OR Run ```go run . -c="config.txt" -out="out.gz" -gz``` 
-3. Upload to the [viewer](https://viewer.gcsim.app) to view the output file to confirm everything is working accordingly, and optionally share the viewer in discord for debugging help.
+2. Run ```go build``` to build the executable and then feed your config file in e.g. ```./gcsim.exe -c config.txt -sample config -gz``` OR run ```go run . --c config.txt -sample config -gz``` 
+3. Upload the generated sample file to the [Sample page](https://gcsim.app/sample/upload) to confirm everything is working accordingly, and optionally share the sample file in discord for debugging help.

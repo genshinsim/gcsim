@@ -16,7 +16,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	burstRadius float64
-	bunnies     []bunny
+	bunnies     []*Bunny
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -29,7 +29,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.SkillCon = 5
 
 	c.burstRadius = 2
-	c.bunnies = make([]bunny, 0, 2)
+	c.bunnies = make([]*Bunny, 0, 2)
 
 	if c.Base.Cons >= 4 {
 		c.SetNumCharges(action.ActionSkill, 2)

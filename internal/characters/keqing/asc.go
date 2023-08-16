@@ -12,9 +12,12 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	// account for it starting somewhere around hitmark
-	dur := 300 + skillRecastHitmark
-	c.Core.Status.Add("keqinginfuse", dur)
+	// starts on E Recast start
+	// should actually be 5.6s
+	// should barely cover EE N1 Q N1 E 2N1C / 5N1C N1
+	// very susceptible to break
+	dur := 5*60 + 20
+	c.AddStatus("keqinginfuse", dur, true)
 	c.Core.Player.AddWeaponInfuse(
 		c.Index,
 		"keqing-a1",

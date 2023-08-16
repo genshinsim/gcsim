@@ -45,7 +45,7 @@ export const AllSampleOptions = [
   "queue",
 ];
 
-export const SimplePreset = ["action", "damage", "energy", "warning"];
+export const SimplePreset = ["action", "damage", "energy", "warning", "user"];
 
 //include cooldowns,
 export const AdvancedPreset = [
@@ -54,8 +54,7 @@ export const AdvancedPreset = [
   "cooldown",
   "element",
   "shield",
-  "construct",
-  "user",
+  "construct"
 ];
 
 export const VerbosePreset = [
@@ -71,6 +70,7 @@ export const VerbosePreset = [
   "weapon",
   "enemy",
   "artifact",
+  "hitlag"
 ];
 
-export const DebugPreset = [...VerbosePreset, "debug", "sim", "hitlag"];
+export const DebugPreset = [...VerbosePreset, "debug", "sim"];

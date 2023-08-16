@@ -14,7 +14,7 @@
     },
     {
       "fields": [
-        ".mods.<character>.albedo-a4"
+        ".<character>.mods.albedo-a4"
       ],
       "desc": "Whether or not Albedo A4 buff is active on the specified character"
     }

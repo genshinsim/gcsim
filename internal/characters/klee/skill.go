@@ -19,8 +19,6 @@ var (
 
 var bounceHitmarks = []int{71, 111, 140}
 
-const mineHitmark = 240
-
 func init() {
 	skillFrames = frames.InitAbilSlice(75)
 	skillFrames[action.ActionAttack] = 66
@@ -42,6 +40,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai   combat.AttackInfo
 		snap combat.Snapshot
 	}
+
 	bounce, ok := p["bounce"]
 	if !ok {
 		bounce = 1
@@ -68,9 +67,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			snap: c.Snapshot(&ai),
 		}
 	}
+
 	minehits, ok := p["mine"]
 	if !ok {
 		minehits = 2
+	}
+	mineHitmark, ok := p["mine_delay"]
+	if !ok {
+		mineHitmark = 240
 	}
 	mineAttacks := make([]attackData, minehits)
 	mineAi := combat.AttackInfo{

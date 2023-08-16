@@ -2039,6 +2039,9 @@ export namespace model {
 
         /** ArtifactData id */
         id?: (number|null);
+
+        /** ArtifactData text_map_id */
+        text_map_id?: (string|null);
     }
 
     /** Represents an ArtifactData. */
@@ -2052,6 +2055,9 @@ export namespace model {
 
         /** ArtifactData id. */
         public id: number;
+
+        /** ArtifactData text_map_id. */
+        public text_map_id: string;
 
         /**
          * Gets the default type url for ArtifactData
@@ -2689,6 +2695,9 @@ export namespace model {
         /** SimulationStatistics source_dps */
         source_dps?: (model.ISourceStats[]|null);
 
+        /** SimulationStatistics source_damage_instances */
+        source_damage_instances?: (model.ISourceStats[]|null);
+
         /** SimulationStatistics damage_buckets */
         damage_buckets?: (model.IBucketStats|null);
 
@@ -2697,6 +2706,21 @@ export namespace model {
 
         /** SimulationStatistics shields */
         shields?: ({ [k: string]: model.IShieldInfo }|null);
+
+        /** SimulationStatistics field_time */
+        field_time?: (model.IDescriptiveStats[]|null);
+
+        /** SimulationStatistics total_source_energy */
+        total_source_energy?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics source_reactions */
+        source_reactions?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics character_actions */
+        character_actions?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics target_aura_uptime */
+        target_aura_uptime?: (model.ISourceStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2771,6 +2795,9 @@ export namespace model {
         /** SimulationStatistics source_dps. */
         public source_dps: model.ISourceStats[];
 
+        /** SimulationStatistics source_damage_instances. */
+        public source_damage_instances: model.ISourceStats[];
+
         /** SimulationStatistics damage_buckets. */
         public damage_buckets?: (model.IBucketStats|null);
 
@@ -2779,6 +2806,21 @@ export namespace model {
 
         /** SimulationStatistics shields. */
         public shields: { [k: string]: model.IShieldInfo };
+
+        /** SimulationStatistics field_time. */
+        public field_time: model.IDescriptiveStats[];
+
+        /** SimulationStatistics total_source_energy. */
+        public total_source_energy: model.ISourceStats[];
+
+        /** SimulationStatistics source_reactions. */
+        public source_reactions: model.ISourceStats[];
+
+        /** SimulationStatistics character_actions. */
+        public character_actions: model.ISourceStats[];
+
+        /** SimulationStatistics target_aura_uptime. */
+        public target_aura_uptime: model.ISourceStats[];
 
         /**
          * Gets the default type url for SimulationStatistics

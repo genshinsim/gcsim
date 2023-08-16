@@ -34,10 +34,6 @@ func NewSacrificial(c *core.Core, char *character.CharWrapper, p info.WeaponProf
 		cd = (19 - (r-4)*3) * 60
 	}
 
-	if p.Params["force"] == 1 {
-		prob = 1
-	}
-
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)

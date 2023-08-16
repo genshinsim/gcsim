@@ -197,6 +197,11 @@
   ],
   "fischl": [
     {
+      "ability": "-",
+      "param": "oz_travel",
+      "desc": "Projectile travel time for Oz. Default 10 frames. Set via '+params=[oz_travel=...]' in Fischl's 'char' line."
+    },
+    {
       "ability": "attack",
       "param": "travel",
       "desc": "Projectile travel time. Default 10 frames."
@@ -263,13 +268,6 @@
       "desc": "Hold until max stacks. Default 0 (false), non-zero value for true."
     }
   ],
-  "hutao": [
-    {
-      "ability": "burst",
-      "param": "targets",
-      "desc": "number of targets to simulate burst hitting for healing purposes. actual number of target in sim ignored"
-    }
-  ],
   "itto": [
     {
       "ability": "skill",
@@ -321,13 +319,6 @@
       "desc": "0 for no Glide Cancel (default), 1 for Glide Cancel. Using high_plunge after Skill with a Glide Cancel is not allowed."
     }
   ],
-  "keqing": [
-    {
-      "ability": "skill",
-      "param": "c1",
-      "desc": "Number of hits for C1. Default 1 hit, maximum 2 hits."
-    }
-  ],
   "kirara": [
     {
       "ability": "skill",
@@ -343,6 +334,11 @@
       "ability": "burst",
       "param": "hits",
       "desc": "Number of mines that hit. Default 2 hits."
+    },
+    {
+      "ability": "burst",
+      "param": "mine_delay",
+      "desc": "Time until all mines explode. Default 180 frames."
     }
   ],
   "klee": [
@@ -365,6 +361,11 @@
       "ability": "skill",
       "param": "mine",
       "desc": "Number of mines hits. Default 2 hits."
+    },
+    {
+      "ability": "skill",
+      "param": "mine_delay",
+      "desc": "Time until all mines explode. Default 240 frames."
     },
     {
       "ability": "skill",
@@ -627,18 +628,6 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
-  "xingqiu": [
-    {
-      "ability": "skill",
-      "param": "orbital",
-      "desc": "0 to disable orbitals from Skill. Default 1 (orbitals enabled)."
-    },
-    {
-      "ability": "burst",
-      "param": "orbital",
-      "desc": "0 to disable orbitals from Burst. Default 1 (orbitals enabled)."
-    }
-  ],
   "yaemiko": [
     {
       "ability": "attack",
@@ -654,6 +643,11 @@
     }
   ],
   "yelan": [
+    {
+      "ability": "-",
+      "param": "breakthrough",
+      "desc": "0 for no Breakthrough state at start of sim, 1 for Breakthrough state at start of sim. Set via '+params=[breakthrough=...]' in Yelan's 'char' line."
+    },
     {
       "ability": "attack",
       "param": "travel",

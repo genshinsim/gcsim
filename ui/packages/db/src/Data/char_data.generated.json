@@ -1,1 +1,1212 @@
-{"data":{"aetheranemo":{"id":10000007,"sub_id":704,"key":"aetheranemo","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Wind","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10067,"burst":10068,"attack":100553,"burst_energy_cost":60}},"aetherdendro":{"id":10000007,"sub_id":708,"key":"aetherdendro","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Grass","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10117,"burst":10118,"attack":100557,"burst_energy_cost":80}},"aetherelectro":{"id":10000007,"sub_id":707,"key":"aetherelectro","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Electric","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10602,"burst":10605,"attack":100556,"burst_energy_cost":80}},"aethergeo":{"id":10000007,"sub_id":706,"key":"aethergeo","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Rock","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10077,"burst":10078,"attack":100555,"burst_energy_cost":60}},"albedo":{"id":10000038,"key":"albedo","rarity":"QUALITY_ORANGE","body":"BODY_BOY","region":"ASSOC_TYPE_MONDSTADT","element":"Rock","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Albedo","skill_details":{"skill":10387,"burst":10388,"attack":10386,"burst_energy_cost":40}},"alhaitham":{"id":10000078,"key":"alhaitham","rarity":"QUALITY_ORANGE","body":"BODY_MALE","region":"ASSOC_TYPE_SUMERU","element":"Grass","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Alhatham","skill_details":{"skill":10782,"burst":10785,"attack":10781,"burst_energy_cost":70}},"aloy":{"id":10000062,"key":"aloy","rarity":"QUALITY_ORANGE_SP","body":"BODY_GIRL","region":"ASSOC_TYPE_RANGER","element":"Ice","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Aloy","skill_details":{"skill":10622,"burst":10625,"attack":10621,"burst_energy_cost":40}},"amber":{"id":10000021,"key":"amber","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_MONDSTADT","element":"Fire","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Ambor","skill_details":{"skill":10032,"burst":10017,"attack":10041,"burst_energy_cost":40}},"ayaka":{"id":10000002,"key":"ayaka","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_INAZUMA","element":"Ice","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Ayaka","skill_details":{"skill":10018,"burst":10019,"attack":10024,"burst_energy_cost":80}},"ayato":{"id":10000066,"key":"ayato","rarity":"QUALITY_ORANGE","body":"BODY_MALE","region":"ASSOC_TYPE_INAZUMA","element":"Water","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Ayato","skill_details":{"skill":10662,"burst":10665,"attack":10661,"burst_energy_cost":80}},"baizhu":{"id":10000082,"key":"baizhu","rarity":"QUALITY_ORANGE","body":"BODY_MALE","region":"ASSOC_TYPE_LIYUE","element":"Grass","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Baizhuer","skill_details":{"skill":10822,"burst":10825,"attack":10821,"burst_energy_cost":80}},"barbara":{"id":10000014,"key":"barbara","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_MONDSTADT","element":"Water","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Barbara","skill_details":{"skill":10071,"burst":10072,"attack":10070,"burst_energy_cost":80}},"beidou":{"id":10000024,"key":"beidou","rarity":"QUALITY_PURPLE","body":"BODY_LADY","region":"ASSOC_TYPE_LIYUE","element":"Electric","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Beidou","skill_details":{"skill":10242,"burst":10245,"attack":10241,"burst_energy_cost":80}},"bennett":{"id":10000032,"key":"bennett","rarity":"QUALITY_PURPLE","body":"BODY_BOY","region":"ASSOC_TYPE_MONDSTADT","element":"Fire","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Bennett","skill_details":{"skill":10322,"burst":10323,"attack":10321,"burst_energy_cost":60}},"candace":{"id":10000072,"key":"candace","rarity":"QUALITY_PURPLE","body":"BODY_LADY","region":"ASSOC_TYPE_SUMERU","element":"Water","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Candace","skill_details":{"skill":10722,"burst":10725,"attack":10721,"burst_energy_cost":60}},"chongyun":{"id":10000036,"key":"chongyun","rarity":"QUALITY_PURPLE","body":"BODY_BOY","region":"ASSOC_TYPE_LIYUE","element":"Ice","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Chongyun","skill_details":{"skill":10402,"burst":10403,"attack":10401,"burst_energy_cost":40}},"collei":{"id":10000067,"key":"collei","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_SUMERU","element":"Grass","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Collei","skill_details":{"skill":10672,"burst":10675,"attack":10671,"burst_energy_cost":60}},"cyno":{"id":10000071,"key":"cyno","rarity":"QUALITY_ORANGE","body":"BODY_BOY","region":"ASSOC_TYPE_SUMERU","element":"Electric","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Cyno","skill_details":{"skill":10712,"burst":10715,"attack":10711,"burst_energy_cost":80}},"dehya":{"id":10000079,"key":"dehya","rarity":"QUALITY_ORANGE","body":"BODY_LADY","region":"ASSOC_TYPE_SUMERU","element":"Fire","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Dehya","skill_details":{"skill":10792,"burst":10795,"attack":10791,"burst_energy_cost":70}},"diluc":{"id":10000016,"key":"diluc","rarity":"QUALITY_ORANGE","body":"BODY_MALE","region":"ASSOC_TYPE_MONDSTADT","element":"Fire","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Diluc","skill_details":{"skill":10161,"burst":10165,"attack":10160,"burst_energy_cost":40}},"diona":{"id":10000039,"key":"diona","rarity":"QUALITY_PURPLE","body":"BODY_LOLI","region":"ASSOC_TYPE_MONDSTADT","element":"Ice","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Diona","skill_details":{"skill":10392,"burst":10395,"attack":10391,"burst_energy_cost":80}},"dori":{"id":10000068,"key":"dori","rarity":"QUALITY_PURPLE","body":"BODY_LOLI","region":"ASSOC_TYPE_SUMERU","element":"Electric","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Dori","skill_details":{"skill":10682,"burst":10685,"attack":10681,"burst_energy_cost":80}},"eula":{"id":10000051,"key":"eula","rarity":"QUALITY_ORANGE","body":"BODY_LADY","region":"ASSOC_TYPE_MONDSTADT","element":"Ice","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Eula","skill_details":{"skill":10512,"burst":10515,"attack":10511,"burst_energy_cost":80}},"faruzan":{"id":10000076,"key":"faruzan","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_SUMERU","element":"Wind","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Faruzan","skill_details":{"skill":10762,"burst":10765,"attack":10761,"burst_energy_cost":80}},"fischl":{"id":10000031,"key":"fischl","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_MONDSTADT","element":"Electric","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Fischl","skill_details":{"skill":10312,"burst":10313,"attack":10311,"burst_energy_cost":60}},"ganyu":{"id":10000037,"key":"ganyu","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_LIYUE","element":"Ice","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Ganyu","skill_details":{"skill":10372,"burst":10373,"attack":10371,"burst_energy_cost":60}},"gorou":{"id":10000055,"key":"gorou","rarity":"QUALITY_PURPLE","body":"BODY_BOY","region":"ASSOC_TYPE_INAZUMA","element":"Rock","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Gorou","skill_details":{"skill":10552,"burst":10555,"attack":10551,"burst_energy_cost":80}},"heizou":{"id":10000059,"key":"heizou","rarity":"QUALITY_PURPLE","body":"BODY_BOY","region":"ASSOC_TYPE_INAZUMA","element":"Wind","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Heizo","skill_details":{"skill":10592,"burst":10595,"attack":10591,"burst_energy_cost":40}},"hutao":{"id":10000046,"key":"hutao","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_LIYUE","element":"Fire","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Hutao","skill_details":{"skill":10462,"burst":10463,"attack":10461,"burst_energy_cost":60}},"itto":{"id":10000057,"key":"itto","rarity":"QUALITY_ORANGE","body":"BODY_MALE","region":"ASSOC_TYPE_INAZUMA","element":"Rock","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Itto","skill_details":{"skill":10572,"burst":10575,"attack":10571,"burst_energy_cost":70}},"jean":{"id":10000003,"key":"jean","rarity":"QUALITY_ORANGE","body":"BODY_LADY","region":"ASSOC_TYPE_MONDSTADT","element":"Wind","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Qin","skill_details":{"skill":10033,"burst":10034,"attack":10031,"burst_energy_cost":80}},"kaeya":{"id":10000015,"key":"kaeya","rarity":"QUALITY_PURPLE","body":"BODY_MALE","region":"ASSOC_TYPE_MONDSTADT","element":"Ice","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Kaeya","skill_details":{"skill":10074,"burst":10075,"attack":10073,"burst_energy_cost":60}},"kaveh":{"id":10000081,"key":"kaveh","rarity":"QUALITY_PURPLE","body":"BODY_MALE","region":"ASSOC_TYPE_SUMERU","element":"Grass","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Kaveh","skill_details":{"skill":10812,"burst":10815,"attack":10811,"burst_energy_cost":80}},"kazuha":{"id":10000047,"key":"kazuha","rarity":"QUALITY_ORANGE","body":"BODY_BOY","region":"ASSOC_TYPE_INAZUMA","element":"Wind","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Kazuha","skill_details":{"skill":10472,"burst":10475,"attack":10471,"burst_energy_cost":60}},"keqing":{"id":10000042,"key":"keqing","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_LIYUE","element":"Electric","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Keqing","skill_details":{"skill":10422,"burst":10425,"attack":10421,"burst_energy_cost":40}},"kirara":{"id":10000061,"key":"kirara","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_INAZUMA","element":"Grass","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Momoka","skill_details":{"skill":10612,"burst":10615,"attack":10611,"burst_energy_cost":60}},"klee":{"id":10000029,"key":"klee","rarity":"QUALITY_ORANGE","body":"BODY_LOLI","region":"ASSOC_TYPE_MONDSTADT","element":"Fire","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Klee","skill_details":{"skill":10292,"burst":10295,"attack":10291,"burst_energy_cost":60}},"kokomi":{"id":10000054,"key":"kokomi","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_INAZUMA","element":"Water","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Kokomi","skill_details":{"skill":10542,"burst":10545,"attack":10541,"burst_energy_cost":70}},"kuki":{"id":10000065,"key":"kuki","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_INAZUMA","element":"Electric","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Shinobu","skill_details":{"skill":10652,"burst":10655,"attack":10651,"burst_energy_cost":60}},"layla":{"id":10000074,"key":"layla","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_SUMERU","element":"Ice","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Layla","skill_details":{"skill":10742,"burst":10745,"attack":10741,"burst_energy_cost":40}},"lisa":{"id":10000006,"key":"lisa","rarity":"QUALITY_PURPLE","body":"BODY_LADY","region":"ASSOC_TYPE_MONDSTADT","element":"Electric","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Lisa","skill_details":{"skill":10061,"burst":10062,"attack":10060,"burst_energy_cost":80}},"lumineanemo":{"id":10000007,"sub_id":704,"key":"lumineanemo","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Wind","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10067,"burst":10068,"attack":100553,"burst_energy_cost":60}},"luminedendro":{"id":10000007,"sub_id":708,"key":"luminedendro","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Grass","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10117,"burst":10118,"attack":100557,"burst_energy_cost":80}},"lumineelectro":{"id":10000007,"sub_id":707,"key":"lumineelectro","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Electric","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10602,"burst":10605,"attack":100556,"burst_energy_cost":80}},"luminegeo":{"id":10000007,"sub_id":706,"key":"luminegeo","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MAINACTOR","element":"Rock","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_PlayerGirl","skill_details":{"skill":10077,"burst":10078,"attack":100555,"burst_energy_cost":60}},"mika":{"id":10000080,"key":"mika","rarity":"QUALITY_PURPLE","body":"BODY_BOY","region":"ASSOC_TYPE_MONDSTADT","element":"Ice","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Mika","skill_details":{"skill":10802,"burst":10805,"attack":10801,"burst_energy_cost":70}},"mona":{"id":10000041,"key":"mona","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_MONDSTADT","element":"Water","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Mona","skill_details":{"skill":10412,"burst":10415,"attack":10411,"burst_energy_cost":60}},"nahida":{"id":10000073,"key":"nahida","rarity":"QUALITY_ORANGE","body":"BODY_LOLI","region":"ASSOC_TYPE_SUMERU","element":"Grass","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Nahida","skill_details":{"skill":10732,"burst":10735,"attack":10731,"burst_energy_cost":50}},"nilou":{"id":10000070,"key":"nilou","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_SUMERU","element":"Water","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Nilou","skill_details":{"skill":10702,"burst":10705,"attack":10701,"burst_energy_cost":70}},"ningguang":{"id":10000027,"key":"ningguang","rarity":"QUALITY_PURPLE","body":"BODY_LADY","region":"ASSOC_TYPE_LIYUE","element":"Rock","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Ningguang","skill_details":{"skill":10272,"burst":10274,"attack":10271,"burst_energy_cost":40}},"noelle":{"id":10000034,"key":"noelle","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_MONDSTADT","element":"Rock","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Noel","skill_details":{"skill":10342,"burst":10343,"attack":10341,"burst_energy_cost":60}},"qiqi":{"id":10000035,"key":"qiqi","rarity":"QUALITY_ORANGE","body":"BODY_LOLI","region":"ASSOC_TYPE_LIYUE","element":"Ice","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Qiqi","skill_details":{"skill":10352,"burst":10353,"attack":10351,"burst_energy_cost":80}},"raiden":{"id":10000052,"key":"raiden","rarity":"QUALITY_ORANGE","body":"BODY_LADY","region":"ASSOC_TYPE_INAZUMA","element":"Electric","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Shougun","skill_details":{"skill":10522,"burst":10525,"attack":10521,"burst_energy_cost":90}},"razor":{"id":10000020,"key":"razor","rarity":"QUALITY_PURPLE","body":"BODY_BOY","region":"ASSOC_TYPE_MONDSTADT","element":"Electric","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Razor","skill_details":{"skill":10202,"burst":10203,"attack":10201,"burst_energy_cost":80}},"rosaria":{"id":10000045,"key":"rosaria","rarity":"QUALITY_PURPLE","body":"BODY_LADY","region":"ASSOC_TYPE_MONDSTADT","element":"Ice","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Rosaria","skill_details":{"skill":10452,"burst":10453,"attack":10451,"burst_energy_cost":60}},"sara":{"id":10000056,"key":"sara","rarity":"QUALITY_PURPLE","body":"BODY_LADY","region":"ASSOC_TYPE_INAZUMA","element":"Electric","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Sara","skill_details":{"skill":10562,"burst":10565,"attack":10561,"burst_energy_cost":80}},"sayu":{"id":10000053,"key":"sayu","rarity":"QUALITY_PURPLE","body":"BODY_LOLI","region":"ASSOC_TYPE_INAZUMA","element":"Wind","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Sayu","skill_details":{"skill":10532,"burst":10535,"attack":10531,"burst_energy_cost":80}},"shenhe":{"id":10000063,"key":"shenhe","rarity":"QUALITY_ORANGE","body":"BODY_LADY","region":"ASSOC_TYPE_LIYUE","element":"Ice","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Shenhe","skill_details":{"skill":10632,"burst":10635,"attack":10631,"burst_energy_cost":80}},"sucrose":{"id":10000043,"key":"sucrose","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_MONDSTADT","element":"Wind","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Sucrose","skill_details":{"skill":10432,"burst":10435,"attack":10431,"burst_energy_cost":80}},"tartaglia":{"id":10000033,"key":"tartaglia","rarity":"QUALITY_ORANGE","body":"BODY_MALE","region":"ASSOC_TYPE_FATUI","element":"Water","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Tartaglia","skill_details":{"skill":10332,"burst":10333,"attack":10331,"burst_energy_cost":60}},"thoma":{"id":10000050,"key":"thoma","rarity":"QUALITY_PURPLE","body":"BODY_MALE","region":"ASSOC_TYPE_INAZUMA","element":"Fire","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Tohma","skill_details":{"skill":10502,"burst":10505,"attack":10501,"burst_energy_cost":80}},"tighnari":{"id":10000069,"key":"tighnari","rarity":"QUALITY_ORANGE","body":"BODY_BOY","region":"ASSOC_TYPE_SUMERU","element":"Grass","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Tighnari","skill_details":{"skill":10692,"burst":10695,"attack":10691,"burst_energy_cost":40}},"venti":{"id":10000022,"key":"venti","rarity":"QUALITY_ORANGE","body":"BODY_BOY","region":"ASSOC_TYPE_MONDSTADT","element":"Wind","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Venti","skill_details":{"skill":10224,"burst":10225,"attack":10221,"burst_energy_cost":60}},"wanderer":{"id":10000075,"key":"wanderer","rarity":"QUALITY_ORANGE","body":"BODY_BOY","region":"ASSOC_TYPE_SUMERU","element":"Wind","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Wanderer","skill_details":{"skill":10752,"burst":10755,"attack":10751,"burst_energy_cost":60}},"xiangling":{"id":10000023,"key":"xiangling","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_LIYUE","element":"Fire","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Xiangling","skill_details":{"skill":10232,"burst":10235,"attack":10231,"burst_energy_cost":80}},"xiao":{"id":10000026,"key":"xiao","rarity":"QUALITY_ORANGE","body":"BODY_BOY","region":"ASSOC_TYPE_LIYUE","element":"Wind","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Xiao","skill_details":{"skill":10262,"burst":10265,"attack":10261,"burst_energy_cost":70}},"xingqiu":{"id":10000025,"key":"xingqiu","rarity":"QUALITY_PURPLE","body":"BODY_BOY","region":"ASSOC_TYPE_LIYUE","element":"Water","weapon_class":"WEAPON_SWORD_ONE_HAND","icon_name":"UI_AvatarIcon_Xingqiu","skill_details":{"skill":10382,"burst":10385,"attack":10381,"burst_energy_cost":80}},"xinyan":{"id":10000044,"key":"xinyan","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_LIYUE","element":"Fire","weapon_class":"WEAPON_CLAYMORE","icon_name":"UI_AvatarIcon_Xinyan","skill_details":{"skill":10442,"burst":10443,"attack":10441,"burst_energy_cost":60}},"yaemiko":{"id":10000058,"key":"yaemiko","rarity":"QUALITY_ORANGE","body":"BODY_LADY","region":"ASSOC_TYPE_INAZUMA","element":"Electric","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Yae","skill_details":{"skill":10582,"burst":10585,"attack":10581,"burst_energy_cost":90}},"yanfei":{"id":10000048,"key":"yanfei","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_LIYUE","element":"Fire","weapon_class":"WEAPON_CATALYST","icon_name":"UI_AvatarIcon_Feiyan","skill_details":{"skill":10482,"burst":10485,"attack":10481,"burst_energy_cost":80}},"yaoyao":{"id":10000077,"key":"yaoyao","rarity":"QUALITY_PURPLE","body":"BODY_LOLI","region":"ASSOC_TYPE_LIYUE","element":"Grass","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Yaoyao","skill_details":{"skill":10772,"burst":10775,"attack":10771,"burst_energy_cost":80}},"yelan":{"id":10000060,"key":"yelan","rarity":"QUALITY_ORANGE","body":"BODY_LADY","region":"ASSOC_TYPE_LIYUE","element":"Water","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Yelan","skill_details":{"skill":10607,"burst":10610,"attack":10606,"burst_energy_cost":70}},"yoimiya":{"id":10000049,"key":"yoimiya","rarity":"QUALITY_ORANGE","body":"BODY_GIRL","region":"ASSOC_TYPE_INAZUMA","element":"Fire","weapon_class":"WEAPON_BOW","icon_name":"UI_AvatarIcon_Yoimiya","skill_details":{"skill":10492,"burst":10495,"attack":10491,"burst_energy_cost":60}},"yunjin":{"id":10000064,"key":"yunjin","rarity":"QUALITY_PURPLE","body":"BODY_GIRL","region":"ASSOC_TYPE_LIYUE","element":"Rock","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Yunjin","skill_details":{"skill":10642,"burst":10643,"attack":10641,"burst_energy_cost":60}},"zhongli":{"id":10000030,"key":"zhongli","rarity":"QUALITY_ORANGE","body":"BODY_MALE","region":"ASSOC_TYPE_LIYUE","element":"Rock","weapon_class":"WEAPON_POLE","icon_name":"UI_AvatarIcon_Zhongli","skill_details":{"skill":10302,"burst":10303,"attack":10301,"burst_energy_cost":40}}}}
+{
+  "data": {
+    "aetheranemo": {
+      "id": 10000007,
+      "sub_id": 704,
+      "key": "aetheranemo",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10067,
+        "burst": 10068,
+        "attack": 100553,
+        "burst_energy_cost": 60
+      }
+    },
+    "aetherdendro": {
+      "id": 10000007,
+      "sub_id": 708,
+      "key": "aetherdendro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Grass",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10117,
+        "burst": 10118,
+        "attack": 100557,
+        "burst_energy_cost": 80
+      }
+    },
+    "aetherelectro": {
+      "id": 10000007,
+      "sub_id": 707,
+      "key": "aetherelectro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Electric",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10602,
+        "burst": 10605,
+        "attack": 100556,
+        "burst_energy_cost": 80
+      }
+    },
+    "aethergeo": {
+      "id": 10000007,
+      "sub_id": 706,
+      "key": "aethergeo",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Rock",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10077,
+        "burst": 10078,
+        "attack": 100555,
+        "burst_energy_cost": 60
+      }
+    },
+    "albedo": {
+      "id": 10000038,
+      "key": "albedo",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Rock",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Albedo",
+      "skill_details": {
+        "skill": 10387,
+        "burst": 10388,
+        "attack": 10386,
+        "burst_energy_cost": 40
+      }
+    },
+    "alhaitham": {
+      "id": 10000078,
+      "key": "alhaitham",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Grass",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Alhatham",
+      "skill_details": {
+        "skill": 10782,
+        "burst": 10785,
+        "attack": 10781,
+        "burst_energy_cost": 70
+      }
+    },
+    "aloy": {
+      "id": 10000062,
+      "key": "aloy",
+      "rarity": "QUALITY_ORANGE_SP",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_RANGER",
+      "element": "Ice",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Aloy",
+      "skill_details": {
+        "skill": 10622,
+        "burst": 10625,
+        "attack": 10621,
+        "burst_energy_cost": 40
+      }
+    },
+    "amber": {
+      "id": 10000021,
+      "key": "amber",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Fire",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Ambor",
+      "skill_details": {
+        "skill": 10032,
+        "burst": 10017,
+        "attack": 10041,
+        "burst_energy_cost": 40
+      }
+    },
+    "ayaka": {
+      "id": 10000002,
+      "key": "ayaka",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Ayaka",
+      "skill_details": {
+        "skill": 10018,
+        "burst": 10019,
+        "attack": 10024,
+        "burst_energy_cost": 80
+      }
+    },
+    "ayato": {
+      "id": 10000066,
+      "key": "ayato",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Ayato",
+      "skill_details": {
+        "skill": 10662,
+        "burst": 10665,
+        "attack": 10661,
+        "burst_energy_cost": 80
+      }
+    },
+    "baizhu": {
+      "id": 10000082,
+      "key": "baizhu",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Baizhuer",
+      "skill_details": {
+        "skill": 10822,
+        "burst": 10825,
+        "attack": 10821,
+        "burst_energy_cost": 80
+      }
+    },
+    "barbara": {
+      "id": 10000014,
+      "key": "barbara",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Water",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Barbara",
+      "skill_details": {
+        "skill": 10071,
+        "burst": 10072,
+        "attack": 10070,
+        "burst_energy_cost": 80
+      }
+    },
+    "beidou": {
+      "id": 10000024,
+      "key": "beidou",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Beidou",
+      "skill_details": {
+        "skill": 10242,
+        "burst": 10245,
+        "attack": 10241,
+        "burst_energy_cost": 80
+      }
+    },
+    "bennett": {
+      "id": 10000032,
+      "key": "bennett",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Fire",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Bennett",
+      "skill_details": {
+        "skill": 10322,
+        "burst": 10323,
+        "attack": 10321,
+        "burst_energy_cost": 60
+      }
+    },
+    "candace": {
+      "id": 10000072,
+      "key": "candace",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Water",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Candace",
+      "skill_details": {
+        "skill": 10722,
+        "burst": 10725,
+        "attack": 10721,
+        "burst_energy_cost": 60
+      }
+    },
+    "chongyun": {
+      "id": 10000036,
+      "key": "chongyun",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Chongyun",
+      "skill_details": {
+        "skill": 10402,
+        "burst": 10403,
+        "attack": 10401,
+        "burst_energy_cost": 40
+      }
+    },
+    "collei": {
+      "id": 10000067,
+      "key": "collei",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Grass",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Collei",
+      "skill_details": {
+        "skill": 10672,
+        "burst": 10675,
+        "attack": 10671,
+        "burst_energy_cost": 60
+      }
+    },
+    "cyno": {
+      "id": 10000071,
+      "key": "cyno",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Cyno",
+      "skill_details": {
+        "skill": 10712,
+        "burst": 10715,
+        "attack": 10711,
+        "burst_energy_cost": 80
+      }
+    },
+    "dehya": {
+      "id": 10000079,
+      "key": "dehya",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Dehya",
+      "skill_details": {
+        "skill": 10792,
+        "burst": 10795,
+        "attack": 10791,
+        "burst_energy_cost": 70
+      }
+    },
+    "diluc": {
+      "id": 10000016,
+      "key": "diluc",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Diluc",
+      "skill_details": {
+        "skill": 10161,
+        "burst": 10165,
+        "attack": 10160,
+        "burst_energy_cost": 40
+      }
+    },
+    "diona": {
+      "id": 10000039,
+      "key": "diona",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Ice",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Diona",
+      "skill_details": {
+        "skill": 10392,
+        "burst": 10395,
+        "attack": 10391,
+        "burst_energy_cost": 80
+      }
+    },
+    "dori": {
+      "id": 10000068,
+      "key": "dori",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Dori",
+      "skill_details": {
+        "skill": 10682,
+        "burst": 10685,
+        "attack": 10681,
+        "burst_energy_cost": 80
+      }
+    },
+    "eula": {
+      "id": 10000051,
+      "key": "eula",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Eula",
+      "skill_details": {
+        "skill": 10512,
+        "burst": 10515,
+        "attack": 10511,
+        "burst_energy_cost": 80
+      }
+    },
+    "faruzan": {
+      "id": 10000076,
+      "key": "faruzan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Wind",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Faruzan",
+      "skill_details": {
+        "skill": 10762,
+        "burst": 10765,
+        "attack": 10761,
+        "burst_energy_cost": 80
+      }
+    },
+    "fischl": {
+      "id": 10000031,
+      "key": "fischl",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Electric",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Fischl",
+      "skill_details": {
+        "skill": 10312,
+        "burst": 10313,
+        "attack": 10311,
+        "burst_energy_cost": 60
+      }
+    },
+    "ganyu": {
+      "id": 10000037,
+      "key": "ganyu",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Ganyu",
+      "skill_details": {
+        "skill": 10372,
+        "burst": 10373,
+        "attack": 10371,
+        "burst_energy_cost": 60
+      }
+    },
+    "gorou": {
+      "id": 10000055,
+      "key": "gorou",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Rock",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Gorou",
+      "skill_details": {
+        "skill": 10552,
+        "burst": 10555,
+        "attack": 10551,
+        "burst_energy_cost": 80
+      }
+    },
+    "heizou": {
+      "id": 10000059,
+      "key": "heizou",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Heizo",
+      "skill_details": {
+        "skill": 10592,
+        "burst": 10595,
+        "attack": 10591,
+        "burst_energy_cost": 40
+      }
+    },
+    "hutao": {
+      "id": 10000046,
+      "key": "hutao",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Fire",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Hutao",
+      "skill_details": {
+        "skill": 10462,
+        "burst": 10463,
+        "attack": 10461,
+        "burst_energy_cost": 60
+      }
+    },
+    "itto": {
+      "id": 10000057,
+      "key": "itto",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Rock",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Itto",
+      "skill_details": {
+        "skill": 10572,
+        "burst": 10575,
+        "attack": 10571,
+        "burst_energy_cost": 70
+      }
+    },
+    "jean": {
+      "id": 10000003,
+      "key": "jean",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Qin",
+      "skill_details": {
+        "skill": 10033,
+        "burst": 10034,
+        "attack": 10031,
+        "burst_energy_cost": 80
+      }
+    },
+    "kaeya": {
+      "id": 10000015,
+      "key": "kaeya",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Kaeya",
+      "skill_details": {
+        "skill": 10074,
+        "burst": 10075,
+        "attack": 10073,
+        "burst_energy_cost": 60
+      }
+    },
+    "kaveh": {
+      "id": 10000081,
+      "key": "kaveh",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Kaveh",
+      "skill_details": {
+        "skill": 10812,
+        "burst": 10815,
+        "attack": 10811,
+        "burst_energy_cost": 80
+      }
+    },
+    "kazuha": {
+      "id": 10000047,
+      "key": "kazuha",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Kazuha",
+      "skill_details": {
+        "skill": 10472,
+        "burst": 10475,
+        "attack": 10471,
+        "burst_energy_cost": 60
+      }
+    },
+    "keqing": {
+      "id": 10000042,
+      "key": "keqing",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Electric",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Keqing",
+      "skill_details": {
+        "skill": 10422,
+        "burst": 10425,
+        "attack": 10421,
+        "burst_energy_cost": 40
+      }
+    },
+    "kirara": {
+      "id": 10000061,
+      "key": "kirara",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Grass",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Momoka",
+      "skill_details": {
+        "skill": 10612,
+        "burst": 10615,
+        "attack": 10611,
+        "burst_energy_cost": 60
+      }
+    },
+    "klee": {
+      "id": 10000029,
+      "key": "klee",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Klee",
+      "skill_details": {
+        "skill": 10292,
+        "burst": 10295,
+        "attack": 10291,
+        "burst_energy_cost": 60
+      }
+    },
+    "kokomi": {
+      "id": 10000054,
+      "key": "kokomi",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Water",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Kokomi",
+      "skill_details": {
+        "skill": 10542,
+        "burst": 10545,
+        "attack": 10541,
+        "burst_energy_cost": 70
+      }
+    },
+    "kuki": {
+      "id": 10000065,
+      "key": "kuki",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Electric",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Shinobu",
+      "skill_details": {
+        "skill": 10652,
+        "burst": 10655,
+        "attack": 10651,
+        "burst_energy_cost": 60
+      }
+    },
+    "layla": {
+      "id": 10000074,
+      "key": "layla",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Layla",
+      "skill_details": {
+        "skill": 10742,
+        "burst": 10745,
+        "attack": 10741,
+        "burst_energy_cost": 40
+      }
+    },
+    "lisa": {
+      "id": 10000006,
+      "key": "lisa",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Lisa",
+      "skill_details": {
+        "skill": 10061,
+        "burst": 10062,
+        "attack": 10060,
+        "burst_energy_cost": 80
+      }
+    },
+    "lumineanemo": {
+      "id": 10000007,
+      "sub_id": 704,
+      "key": "lumineanemo",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10067,
+        "burst": 10068,
+        "attack": 100553,
+        "burst_energy_cost": 60
+      }
+    },
+    "luminedendro": {
+      "id": 10000007,
+      "sub_id": 708,
+      "key": "luminedendro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Grass",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10117,
+        "burst": 10118,
+        "attack": 100557,
+        "burst_energy_cost": 80
+      }
+    },
+    "lumineelectro": {
+      "id": 10000007,
+      "sub_id": 707,
+      "key": "lumineelectro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Electric",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10602,
+        "burst": 10605,
+        "attack": 100556,
+        "burst_energy_cost": 80
+      }
+    },
+    "luminegeo": {
+      "id": 10000007,
+      "sub_id": 706,
+      "key": "luminegeo",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Rock",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10077,
+        "burst": 10078,
+        "attack": 100555,
+        "burst_energy_cost": 60
+      }
+    },
+    "mika": {
+      "id": 10000080,
+      "key": "mika",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Ice",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Mika",
+      "skill_details": {
+        "skill": 10802,
+        "burst": 10805,
+        "attack": 10801,
+        "burst_energy_cost": 70
+      }
+    },
+    "mona": {
+      "id": 10000041,
+      "key": "mona",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Water",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Mona",
+      "skill_details": {
+        "skill": 10412,
+        "burst": 10415,
+        "attack": 10411,
+        "burst_energy_cost": 60
+      }
+    },
+    "nahida": {
+      "id": 10000073,
+      "key": "nahida",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Nahida",
+      "skill_details": {
+        "skill": 10732,
+        "burst": 10735,
+        "attack": 10731,
+        "burst_energy_cost": 50
+      }
+    },
+    "nilou": {
+      "id": 10000070,
+      "key": "nilou",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Nilou",
+      "skill_details": {
+        "skill": 10702,
+        "burst": 10705,
+        "attack": 10701,
+        "burst_energy_cost": 70
+      }
+    },
+    "ningguang": {
+      "id": 10000027,
+      "key": "ningguang",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Rock",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Ningguang",
+      "skill_details": {
+        "skill": 10272,
+        "burst": 10274,
+        "attack": 10271,
+        "burst_energy_cost": 40
+      }
+    },
+    "noelle": {
+      "id": 10000034,
+      "key": "noelle",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Rock",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Noel",
+      "skill_details": {
+        "skill": 10342,
+        "burst": 10343,
+        "attack": 10341,
+        "burst_energy_cost": 60
+      }
+    },
+    "qiqi": {
+      "id": 10000035,
+      "key": "qiqi",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Qiqi",
+      "skill_details": {
+        "skill": 10352,
+        "burst": 10353,
+        "attack": 10351,
+        "burst_energy_cost": 80
+      }
+    },
+    "raiden": {
+      "id": 10000052,
+      "key": "raiden",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Shougun",
+      "skill_details": {
+        "skill": 10522,
+        "burst": 10525,
+        "attack": 10521,
+        "burst_energy_cost": 90
+      }
+    },
+    "razor": {
+      "id": 10000020,
+      "key": "razor",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Razor",
+      "skill_details": {
+        "skill": 10202,
+        "burst": 10203,
+        "attack": 10201,
+        "burst_energy_cost": 80
+      }
+    },
+    "rosaria": {
+      "id": 10000045,
+      "key": "rosaria",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Ice",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Rosaria",
+      "skill_details": {
+        "skill": 10452,
+        "burst": 10453,
+        "attack": 10451,
+        "burst_energy_cost": 60
+      }
+    },
+    "sara": {
+      "id": 10000056,
+      "key": "sara",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Electric",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Sara",
+      "skill_details": {
+        "skill": 10562,
+        "burst": 10565,
+        "attack": 10561,
+        "burst_energy_cost": 80
+      }
+    },
+    "sayu": {
+      "id": 10000053,
+      "key": "sayu",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Sayu",
+      "skill_details": {
+        "skill": 10532,
+        "burst": 10535,
+        "attack": 10531,
+        "burst_energy_cost": 80
+      }
+    },
+    "shenhe": {
+      "id": 10000063,
+      "key": "shenhe",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Shenhe",
+      "skill_details": {
+        "skill": 10632,
+        "burst": 10635,
+        "attack": 10631,
+        "burst_energy_cost": 80
+      }
+    },
+    "sucrose": {
+      "id": 10000043,
+      "key": "sucrose",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Sucrose",
+      "skill_details": {
+        "skill": 10432,
+        "burst": 10435,
+        "attack": 10431,
+        "burst_energy_cost": 80
+      }
+    },
+    "tartaglia": {
+      "id": 10000033,
+      "key": "tartaglia",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_FATUI",
+      "element": "Water",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Tartaglia",
+      "skill_details": {
+        "skill": 10332,
+        "burst": 10333,
+        "attack": 10331,
+        "burst_energy_cost": 60
+      }
+    },
+    "thoma": {
+      "id": 10000050,
+      "key": "thoma",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Fire",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Tohma",
+      "skill_details": {
+        "skill": 10502,
+        "burst": 10505,
+        "attack": 10501,
+        "burst_energy_cost": 80
+      }
+    },
+    "tighnari": {
+      "id": 10000069,
+      "key": "tighnari",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Grass",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Tighnari",
+      "skill_details": {
+        "skill": 10692,
+        "burst": 10695,
+        "attack": 10691,
+        "burst_energy_cost": 40
+      }
+    },
+    "venti": {
+      "id": 10000022,
+      "key": "venti",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Wind",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Venti",
+      "skill_details": {
+        "skill": 10224,
+        "burst": 10225,
+        "attack": 10221,
+        "burst_energy_cost": 60
+      }
+    },
+    "wanderer": {
+      "id": 10000075,
+      "key": "wanderer",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_SUMERU",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Wanderer",
+      "skill_details": {
+        "skill": 10752,
+        "burst": 10755,
+        "attack": 10751,
+        "burst_energy_cost": 60
+      }
+    },
+    "xiangling": {
+      "id": 10000023,
+      "key": "xiangling",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Fire",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Xiangling",
+      "skill_details": {
+        "skill": 10232,
+        "burst": 10235,
+        "attack": 10231,
+        "burst_energy_cost": 80
+      }
+    },
+    "xiao": {
+      "id": 10000026,
+      "key": "xiao",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Wind",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Xiao",
+      "skill_details": {
+        "skill": 10262,
+        "burst": 10265,
+        "attack": 10261,
+        "burst_energy_cost": 70
+      }
+    },
+    "xingqiu": {
+      "id": 10000025,
+      "key": "xingqiu",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Xingqiu",
+      "skill_details": {
+        "skill": 10382,
+        "burst": 10385,
+        "attack": 10381,
+        "burst_energy_cost": 80
+      }
+    },
+    "xinyan": {
+      "id": 10000044,
+      "key": "xinyan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Xinyan",
+      "skill_details": {
+        "skill": 10442,
+        "burst": 10443,
+        "attack": 10441,
+        "burst_energy_cost": 60
+      }
+    },
+    "yaemiko": {
+      "id": 10000058,
+      "key": "yaemiko",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Electric",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Yae",
+      "skill_details": {
+        "skill": 10582,
+        "burst": 10585,
+        "attack": 10581,
+        "burst_energy_cost": 90
+      }
+    },
+    "yanfei": {
+      "id": 10000048,
+      "key": "yanfei",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Feiyan",
+      "skill_details": {
+        "skill": 10482,
+        "burst": 10485,
+        "attack": 10481,
+        "burst_energy_cost": 80
+      }
+    },
+    "yaoyao": {
+      "id": 10000077,
+      "key": "yaoyao",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Grass",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Yaoyao",
+      "skill_details": {
+        "skill": 10772,
+        "burst": 10775,
+        "attack": 10771,
+        "burst_energy_cost": 80
+      }
+    },
+    "yelan": {
+      "id": 10000060,
+      "key": "yelan",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Water",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Yelan",
+      "skill_details": {
+        "skill": 10607,
+        "burst": 10610,
+        "attack": 10606,
+        "burst_energy_cost": 70
+      }
+    },
+    "yoimiya": {
+      "id": 10000049,
+      "key": "yoimiya",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Fire",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Yoimiya",
+      "skill_details": {
+        "skill": 10492,
+        "burst": 10495,
+        "attack": 10491,
+        "burst_energy_cost": 60
+      }
+    },
+    "yunjin": {
+      "id": 10000064,
+      "key": "yunjin",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Rock",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Yunjin",
+      "skill_details": {
+        "skill": 10642,
+        "burst": 10643,
+        "attack": 10641,
+        "burst_energy_cost": 60
+      }
+    },
+    "zhongli": {
+      "id": 10000030,
+      "key": "zhongli",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_LIYUE",
+      "element": "Rock",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Zhongli",
+      "skill_details": {
+        "skill": 10302,
+        "burst": 10303,
+        "attack": 10301,
+        "burst_energy_cost": 40
+      }
+    }
+  }
+}

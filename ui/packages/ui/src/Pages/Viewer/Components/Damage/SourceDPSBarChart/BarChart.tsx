@@ -1,4 +1,4 @@
-import { FloatStat, SourceDPS } from "@gcsim/types";
+import { FloatStat, SourceStats } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { range } from "lodash-es";
@@ -9,7 +9,7 @@ type Props = {
   width: number;
   height: number;
   names?: string[];
-  dps?: SourceDPS[];
+  dps?: SourceStats[];
 }
 
 const margin = { top: 0, left: 300, right: 20, bottom: 40 };
@@ -100,7 +100,7 @@ type ChartData = {
   xMax: number;
 }
 
-function useData(dps?: SourceDPS[], names?: string[]): ChartData {
+function useData(dps?: SourceStats[], names?: string[]): ChartData {
   return useMemo(() => {
     if (dps == null || names == null) {
       return { data: [], sources: [], xMax: 0 };

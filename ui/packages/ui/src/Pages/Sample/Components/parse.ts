@@ -51,6 +51,8 @@ export function eventColor(eve: string): string {
       return "#818CF8";
     case "status":
       return "#902D89";
+    case "cooldown":
+      return "#0D9488"; // tailwind teal-600
     case "action":
       return "#AB5F45";
     case "hitlag":

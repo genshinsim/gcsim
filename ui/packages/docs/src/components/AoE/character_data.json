@@ -3278,13 +3278,13 @@
       {
         "ability": "E-C1-Start",
         "shape": "Circle",
-        "center": "PrimaryTarget",
+        "center": "Player",
         "radius": 2
       },
       {
         "ability": "E-C1-Terminus",
         "shape": "Circle",
-        "center": "Player",
+        "center": "PrimaryTarget",
         "offsetY": 1.5,
         "radius": 2
       }
