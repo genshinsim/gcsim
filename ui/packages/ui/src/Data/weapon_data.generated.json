@@ -56,6 +56,13 @@
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Ayus"
     },
+    "balladofthefjords": {
+      "id": 13424,
+      "key": "balladofthefjords",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Shanty"
+    },
     "beaconofthereedsea": {
       "id": 12511,
       "key": "beaconofthereedsea",
@@ -756,6 +763,13 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Fossil"
     },
+    "sacrificialjade": {
+      "id": 14424,
+      "key": "sacrificialjade",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Yue"
+    },
     "sacrificialsword": {
       "id": 11403,
       "key": "sacrificialsword",
@@ -902,6 +916,13 @@
       "rarity": 4,
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Psalmus"
+    },
+    "talkingstick": {
+      "id": 12424,
+      "key": "talkingstick",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_BeastTamer"
     },
     "thealleyflash": {
       "id": 11410,
@@ -1070,6 +1091,13 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Outlaw"
+    },
+    "wolffang": {
+      "id": 11424,
+      "key": "wolffang",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Boreas"
     },
     "wolfsgravestone": {
       "id": 12502,
