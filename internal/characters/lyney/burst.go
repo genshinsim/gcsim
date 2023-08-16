@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 // 3 * 60 duration
@@ -22,6 +23,7 @@ var burstFrames []int
 const (
 	// TODO: proper frames
 	burstKey         = "lyney-q"
+	burstMarkKey     = "lyney-burst-mark"
 	burstInterval    = 0.15 * 60
 	burstDuration    = 3*60 + 1 // + 1 for final tick
 	burstCD          = 15 * 60
@@ -86,9 +88,12 @@ func (c *char) burstTick() {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), nil)
-	for i := 0; i < len(enemies); i++ {
-		c.Core.QueueAttack(tickAI, combat.NewSingleTargetHit(enemies[i].Key()), 0, 0)
+	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), func(e combat.Enemy) bool {
+		return !e.StatusIsActive(burstMarkKey)
+	})
+	for _, enemy := range enemies {
+		c.Core.QueueAttack(tickAI, combat.NewSingleTargetHit(enemy.Key()), 0, 0)
+		enemy.AddStatus(burstMarkKey, c.StatusDuration(burstKey), true)
 	}
 
 	c.QueueCharTask(c.burstTick, burstInterval)
@@ -99,6 +104,16 @@ func (c *char) explosiveFirework() {
 		return
 	}
 	c.DeleteStatus(burstKey)
+	for _, v := range c.Core.Combat.Enemies() {
+		e, ok := v.(*enemy.Enemy)
+		if !ok {
+			continue
+		}
+		if !e.StatusIsActive(burstMarkKey) {
+			continue
+		}
+		e.DeleteStatus(burstMarkKey)
+	}
 
 	explodeAI := combat.AttackInfo{
 		ActorIndex: c.Index,
