@@ -222,13 +222,13 @@ func (p *Parser) parseStatement() (Node, error) {
 		hasSemi = false
 	case itemIdentifier:
 		p.next()
-		//check if = after
-		if x := p.peek(); x.Typ == itemAssign {
+		// check either if assign or postfix operator after
+		if x := p.peek(); x.Typ == itemAssign || x.Typ == ItemInc || x.Typ == ItemDec {
 			p.backup()
-			node, err = p.parseAssign()
+			node, err = p.parseIdentifier()
 			break
 		}
-		//it's an expr if no assign
+		// other wise it's an expr
 		p.backup()
 		fallthrough
 	default:
@@ -304,6 +304,39 @@ func (p *Parser) parseAssign() (Stmt, error) {
 
 	return stmt, nil
 
+}
+
+// x++ or x--
+func (p *Parser) parseIncDec() (Stmt, error) {
+	ident, err := p.consume(itemIdentifier)
+	if err != nil {
+		//next token not and identifier
+		return nil, fmt.Errorf("ln%v: expecting identifier in assign statement, got %v", ident.line, ident.Val)
+	}
+
+	n := p.next()
+	stmt := &IncDecStmt{
+		Pos:   ident.pos,
+		Ident: ident,
+		Val:   n,
+	}
+	return stmt, nil
+}
+
+func (p *Parser) parseIdentifier() (Stmt, error) {
+	p.next()
+
+	// check type
+	x := p.peek()
+	switch x.Typ {
+	case itemAssign:
+		p.backup()
+		return p.parseAssign()
+	case ItemInc, ItemDec:
+		p.backup()
+		return p.parseIncDec()
+	}
+	return nil, fmt.Errorf("ln%v: expecting operator on identifier, got %v", x.line, x.Val)
 }
 
 func (p *Parser) parseIf() (Stmt, error) {
@@ -484,7 +517,8 @@ func (p *Parser) existVarDecl() bool {
 		return true
 	case itemIdentifier:
 		p.next()
-		b := p.peek().Typ == itemAssign
+		t := p.peek()
+		b := t.Typ == itemAssign || t.Typ == ItemInc || t.Typ == ItemDec
 		p.backup()
 		return b
 	}
@@ -510,7 +544,7 @@ func (p *Parser) parseFor() (Stmt, error) {
 		if n := p.peek(); n.Typ == keywordLet {
 			stmt.Init, err = p.parseLet()
 		} else {
-			stmt.Init, err = p.parseAssign()
+			stmt.Init, err = p.parseIdentifier()
 		}
 		if err != nil {
 			return nil, err
@@ -532,7 +566,7 @@ func (p *Parser) parseFor() (Stmt, error) {
 	if n := p.peek(); n.Typ == itemTerminateLine {
 		p.next() //skip ;
 		if n := p.peek(); n.Typ != itemLeftBrace {
-			stmt.Post, err = p.parseAssign()
+			stmt.Post, err = p.parseIdentifier()
 			if err != nil {
 				return nil, err
 			}
@@ -702,7 +736,7 @@ func (p *Parser) parseCallArgs() ([]Expr, error) {
 
 	if n := p.next(); n.Typ != itemRightParen {
 		p.backup()
-		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.line, n.pos)
+		return nil, fmt.Errorf("ln%v: expecting ) at end of function call, got: %v", n.line, n.Val)
 	}
 
 	return args, nil

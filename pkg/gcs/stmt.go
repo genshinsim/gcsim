@@ -12,6 +12,8 @@ func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
 	switch v := s.(type) {
 	case *ast.BlockStmt:
 		return e.evalBlock(v, env)
+	case *ast.IncDecStmt:
+		return e.evalIncDec(v, env)
 	case *ast.LetStmt:
 		return e.evalLet(v, env)
 	case *ast.FnStmt:
@@ -58,6 +60,27 @@ func (e *Eval) evalBlock(b *ast.BlockStmt, env *Env) (Obj, error) {
 		}
 	}
 	return &null{}, nil
+}
+
+func (e *Eval) evalIncDec(i *ast.IncDecStmt, env *Env) (Obj, error) {
+	val, err := env.v(i.Ident.Val)
+	if err != nil {
+		return nil, err
+	}
+	num := &number{
+		ival: 1,
+		fval: 1,
+	}
+	switch i.Val.Typ {
+	case ast.ItemInc:
+		num = add(val, num)
+	case ast.ItemDec:
+		num = sub(val, num)
+	}
+	val.fval = num.fval
+	val.ival = num.ival
+	val.isFloat = num.isFloat
+	return val, nil
 }
 
 func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {

@@ -182,7 +182,13 @@ func lexText(l *lexer) stateFn {
 		// }
 		// //otherwise it's a plus sign
 		// l.backup()
-		l.emit(ItemPlus)
+		n := l.next()
+		if n == '+' {
+			l.emit(ItemInc)
+		} else {
+			l.backup()
+			l.emit(ItemPlus)
+		}
 	case r == '/':
 		//check if next is another / or not; if / then lexComment
 		n := l.next()
@@ -213,10 +219,13 @@ func lexText(l *lexer) stateFn {
 			l.backup()
 			l.backup()
 			return lexNumber
+		} else if n == '-' {
+			l.emit(ItemDec)
+		} else {
+			//other wise it's a - sign
+			l.backup()
+			l.emit(ItemMinus)
 		}
-		//other wise it's a - sign
-		l.backup()
-		l.emit(ItemMinus)
 	case r == '>':
 		if n := l.next(); n == '=' {
 			l.emit(OpGreaterThanOrEqual)
@@ -347,11 +356,35 @@ Loop:
 	return lexText
 }
 
+func emitIdentifier(l *lexer, word string) {
+	switch {
+	case key[word] > itemKeyword:
+		l.emit(key[word])
+	case word[0] == '.':
+		l.emit(itemField)
+	case word == "true", word == "false":
+		l.emit(itemBool)
+	default:
+		l.emit(checkIdentifier(word))
+	}
+}
+
 // lexIdentifier scans an alphanumeric.
 func lexIdentifier(l *lexer) stateFn {
 Loop:
 	for {
 		switch r := l.next(); {
+		// here's an extra check, because isAlphaNumeric takes '-' and the identifier may be "x--".
+		// TODO: remove r == '+'?
+		case r == '+' || r == '-':
+			n := l.peek()
+			if n == r {
+				l.backup()
+				word := l.input[l.start:l.pos]
+				emitIdentifier(l, word)
+				break Loop
+			}
+			fallthrough
 		case isAlphaNumeric(r):
 			// absorb.
 		default:
@@ -360,16 +393,7 @@ Loop:
 			if !l.atTerminator() {
 				return l.errorf("bad character %#U", r)
 			}
-			switch {
-			case key[word] > itemKeyword:
-				l.emit(key[word])
-			case word[0] == '.':
-				l.emit(itemField)
-			case word == "true", word == "false":
-				l.emit(itemBool)
-			default:
-				l.emit(checkIdentifier(word))
-			}
+			emitIdentifier(l, word)
 			break Loop
 		}
 	}

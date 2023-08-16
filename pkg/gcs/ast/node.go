@@ -56,6 +56,12 @@ type (
 		Val   Expr
 	}
 
+	IncDecStmt struct {
+		Pos
+		Ident Token
+		Val   Token // INC or DEC
+	}
+
 	// LetStmt represents a variable assignment. Number only
 	LetStmt struct {
 		Pos
@@ -135,6 +141,7 @@ const (
 func (*BlockStmt) stmtNode()  {}
 func (*ActionStmt) stmtNode() {}
 func (*AssignStmt) stmtNode() {}
+func (*IncDecStmt) stmtNode() {}
 func (*LetStmt) stmtNode()    {}
 func (*CtrlStmt) stmtNode()   {}
 func (*ReturnStmt) stmtNode() {}
@@ -266,6 +273,38 @@ func (a *AssignStmt) CopyStmt() Stmt {
 
 func (a *AssignStmt) Copy() Node {
 	return a.CopyAssign()
+}
+
+// IncDecStmt.
+
+func (i *IncDecStmt) String() string {
+	var sb strings.Builder
+	i.writeTo(&sb)
+	return sb.String()
+}
+
+func (i *IncDecStmt) writeTo(sb *strings.Builder) {
+	sb.WriteString(i.Ident.String())
+	sb.WriteString(i.Val.String())
+}
+
+func (i *IncDecStmt) CopyIncDec() *IncDecStmt {
+	if i == nil {
+		return i
+	}
+	return &IncDecStmt{
+		Pos:   i.Pos,
+		Ident: i.Ident,
+		Val:   i.Val,
+	}
+}
+
+func (i *IncDecStmt) CopyStmt() Stmt {
+	return i.CopyIncDec()
+}
+
+func (i *IncDecStmt) Copy() Node {
+	return i.CopyIncDec()
 }
 
 // LetStmt.
