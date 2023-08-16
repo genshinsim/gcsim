@@ -49,23 +49,8 @@ func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool) *GrinMalkinH
 	g.hpDrained = hpDrained
 	g.a1CB = g.char.makeA1CB(hpDrained)
 
-	g.OnExpiry = func() {
-		// TODO: snapshot timing
-		c.Core.QueueAttackWithSnap(
-			g.pyrotechnicAI,
-			g.pyrotechnicSnapshot,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
-				nil,
-				1,
-			),
-			c.pyrotechnicTravel,
-			g.a1CB,
-			c.makeC4CB(),
-		)
-		g.updateHats("expiry")
-	}
+	g.OnExpiry = g.skillPyrotechnic("expiry")
+	g.OnKill = g.skillPyrotechnic("kill")
 
 	g.Core.Log.NewEvent("Lyney Grin-Malkin Hat added", glog.LogCharacterEvent, c.Index).Write("src", g.Src()).Write("hp_drained", g.hpDrained)
 
@@ -78,6 +63,26 @@ func (g *GrinMalkinHat) HandleAttack(atk *combat.AttackEvent) float64 {
 	// TODO: gadget taking damage is not implemented
 
 	return 0
+}
+
+func (g *GrinMalkinHat) skillPyrotechnic(reason string) func() {
+	return func() {
+		// TODO: snapshot timing
+		g.Core.QueueAttackWithSnap(
+			g.pyrotechnicAI,
+			g.pyrotechnicSnapshot,
+			combat.NewCircleHit(
+				g.Core.Combat.Player(),
+				g.Core.Combat.PrimaryTarget(),
+				nil,
+				1,
+			),
+			g.char.pyrotechnicTravel,
+			g.a1CB,
+			g.char.makeC4CB(),
+		)
+		g.updateHats(reason)
+	}
 }
 
 func (g *GrinMalkinHat) skillExplode() {

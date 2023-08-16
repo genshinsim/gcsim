@@ -130,11 +130,13 @@ func (c *char) explosiveFirework() {
 	// TODO: proper frames
 	c.Core.QueueAttack(explodeAI, combat.NewCircleHitOnTarget(qPos, nil, 6), 5, 5)
 
-	if len(c.hats) < c.maxHatCount {
-		g := c.newGrinMalkinHat(qPos, false) // TODO: double check hp drain on this
-		c.Core.Combat.AddGadget(g)
-		c.hats = append(c.hats, g)
+	// kill existing hat if reached limit
+	if len(c.hats) == c.maxHatCount {
+		c.hats[0].Kill()
 	}
+	g := c.newGrinMalkinHat(qPos, false) // TODO: double check hp drain on this
+	c.hats = append(c.hats, g)
+	c.Core.Combat.AddGadget(g)
 
 	c.increasePropSurplusStacks(1)
 }

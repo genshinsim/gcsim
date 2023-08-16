@@ -227,13 +227,14 @@ func (c *char) makeGrinMalkinHatCB(hpDrained bool) combat.AttackCBFunc {
 		done = true
 
 		hatIncrease := c.c1HatIncrease()
-		if hatIncrease > c.maxHatCount-len(c.hats) {
-			hatIncrease = c.maxHatCount - len(c.hats)
-		}
 		for i := 0; i < hatIncrease; i++ {
+			// kill existing hat if reached limit
+			if len(c.hats) == c.maxHatCount {
+				c.hats[0].Kill()
+			}
 			g := c.newGrinMalkinHat(a.Target.Pos(), hpDrained)
-			c.Core.Combat.AddGadget(g)
 			c.hats = append(c.hats, g)
+			c.Core.Combat.AddGadget(g)
 		}
 	}
 }
