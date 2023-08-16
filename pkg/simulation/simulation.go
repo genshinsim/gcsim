@@ -15,7 +15,7 @@ type Simulation struct {
 	C    *core.Core
 	//action list stuff
 	cfg           *info.ActionList
-	queue         *action.ActionEval
+	queue         []*action.ActionEval
 	eval          action.Evaluator
 	noMoreActions bool
 	collectors    []stats.StatsCollector

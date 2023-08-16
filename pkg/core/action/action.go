@@ -35,8 +35,7 @@ type ActionEval struct {
 
 // Evaluator provides method for getting next action
 type Evaluator interface {
-	Continue()
-	NextAction() (*ActionEval, error)
+	NextAction() (*ActionEval, error) //NextAction should reuturn the next action, or nil if no actions left
 	Exit() error
 	Start()
 }

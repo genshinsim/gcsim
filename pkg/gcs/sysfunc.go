@@ -114,14 +114,14 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 		return &number{}, nil
 	}
 
-	e.Work <- &action.ActionEval{
+	e.sendWork(&action.ActionEval{
 		Action: action.ActionWait,
 		Param:  map[string]int{"f": f},
-	}
+	})
 	//block until sim is done with the action; unless we're done
-	_, ok = <-e.Next
-	if !ok {
-		return nil, ErrTerminated // no more work, shutting down
+	err = e.waitForNext()
+	if err != nil {
+		return nil, err
 	}
 
 	return &number{}, nil
@@ -540,25 +540,14 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	charKey := keys.Char(char.ival)
 	actionKey := action.Action(ac.ival)
-	if !e.Core.Player.CharIsActive(charKey) && actionKey != action.ActionSwap {
-		// swap
-		e.Work <- &action.ActionEval{
-			Char:   charKey,
-			Action: action.ActionSwap,
-		}
-		_, ok := <-e.Next
-		if !ok {
-			return nil, ErrTerminated // no more work, shutting down
-		}
-	}
-	e.Work <- &action.ActionEval{
+	e.sendWork(&action.ActionEval{
 		Char:   charKey,
 		Action: actionKey,
 		Param:  params,
-	}
-	_, ok := <-e.Next
-	if !ok {
-		return nil, ErrTerminated // no more work, shutting down
+	})
+	err = e.waitForNext()
+	if err != nil {
+		return nil, err
 	}
 
 	return &null{}, nil

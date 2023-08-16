@@ -1,6 +1,7 @@
 package gcs
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -15,16 +16,33 @@ import (
 type Eval struct {
 	Core *core.Core
 	AST  ast.Node
-	Next chan bool               //wait on this before continuing
-	Work chan *action.ActionEval //send work to this chan
 	Log  *log.Logger
 
-	err error // set to non-nil by the first error encountered
+	next chan bool               //wait on this before continuing
+	work chan *action.ActionEval //send work to this chan
+	// set to non-nil by the first error encountered
+	// this is necessary because Run() could have exited already with an err but
+	err error
+
+	// tracking if this eval is done
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 type Env struct {
 	parent *Env
 	varMap map[string]*Obj
+}
+
+func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
+	e := &Eval{
+		AST:  ast,
+		Core: c,
+		next: make(chan bool),
+		work: make(chan *action.ActionEval),
+	}
+	e.ctx, e.cancel = context.WithCancel(context.Background())
+	return e, nil
 }
 
 func NewEnv(parent *Env) *Env {
@@ -45,35 +63,35 @@ func (e *Env) v(s string) (*Obj, error) {
 	return nil, fmt.Errorf("variable %v does not exist", s)
 }
 
-// Continue asks eval to continue executing the AST
-func (e *Eval) Continue() {
-	e.Next <- true
-}
-
 // Tell eval to exit now
 func (e *Eval) Exit() error {
-	select {
-	case <-e.Work:
-		//do nothing with it
-	default:
-	}
-	close(e.Next)
+	e.cancel()
 	return e.err
 }
 
-// NextAction asks eval to return the next action
+// NextAction asks eval to return the next action. Return nil, nil if no more action
 func (e *Eval) NextAction() (*action.ActionEval, error) {
-	if e.err != nil {
-		return nil, e.err
+	done := e.ctx.Done()
+	//continue execution
+	select {
+	case <-done:
+	case e.next <- true:
 	}
-	next, ok := <-e.Work
-	if !ok {
-		return nil, nil
+	//get work back
+	select {
+	case <-done:
+	case next, ok := <-e.work:
+		if !ok {
+			return nil, nil
+		}
+		return next, nil
 	}
-	return next, nil
+	//we should never make it here
+	return nil, nil
 }
 
 func (e *Eval) Start() {
+	//TODO: consider catching panic here
 	e.Run()
 }
 
@@ -81,49 +99,62 @@ func (e *Eval) Err() error {
 	return e.err
 }
 
-func NewEvaluator(ast ast.Node, c *core.Core) (action.Evaluator, error) {
-	e := &Eval{
-		AST:  ast,
-		Core: c,
-		Next: make(chan bool),
-		Work: make(chan *action.ActionEval),
-	}
-	return e, nil
-}
-
 // Run will execute the provided AST. Any genshin specific actions will be available
 // via NextAction()
-func (e *Eval) Run() Obj {
-	//this shouldn't be necessary i think
+func (e *Eval) Run() (res Obj, err error) {
+	defer func() {
+		//this defer ensures that e.err is set correctly; this has to be the first defer
+		//as defers are called last in first out so this needs to be before any panic handling
+		e.err = err
+	}()
+	//TODO: this should hopefully be removed in the future
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
-		if err := recover(); err != nil {
-			e.err = fmt.Errorf("panic occured: %v", err)
+		if pErr := recover(); pErr != nil {
+			err = fmt.Errorf("panic occured: %v", err)
 		}
 	}()
 	//make sure to close work since we are the only sender
-	defer close(e.Work)
+	defer e.Exit()
 	if e.Log == nil {
 		e.Log = log.New(io.Discard, "", log.LstdFlags)
 	}
-	//this should run until it hits an Action
-	//it will then pass the action on a resp channel
-	//it will then wait for Next before running again
+	//make sure ErrTerminate is discarded
+	defer func() {
+		if err == ErrTerminated {
+			err = nil
+		}
+	}()
+
 	global := NewEnv(nil)
 	e.initSysFuncs(global)
 
 	//start running once we get the signal to go
-	_, ok := <-e.Next
+	err = e.waitForNext()
+	if err != nil {
+		return
+	}
+
+	//this should run until it hits an Action
+	//it will then pass the action on a resp channel
+	//it will then wait for Next before running again
+	res, err = e.evalNode(e.AST, global)
+	return
+}
+
+func (e *Eval) waitForNext() error {
+	_, ok := <-e.next
 	if !ok {
-		e.err = ErrTerminated
-		return nil
+		return ErrTerminated // no more work, shutting down
 	}
-	res, err := e.evalNode(e.AST, global)
-	if err != nil && err != ErrTerminated {
-		//ignore ErrTerminate since it's not really an error
-		e.err = err
+	return nil
+}
+
+func (e *Eval) sendWork(w *action.ActionEval) {
+	select {
+	case <-e.ctx.Done():
+	case e.work <- w:
 	}
-	return res
 }
 
 var ErrTerminated = errors.New("eval terminated")

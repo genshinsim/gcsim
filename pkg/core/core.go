@@ -134,7 +134,7 @@ func (c *Core) Init() error {
 	return nil
 }
 
-func (c *Core) Tick() {
+func (c *Core) Tick() error {
 	// things to tick:
 	//	- targets
 	//	- constructs
@@ -145,10 +145,12 @@ func (c *Core) Tick() {
 	//		- stamina
 	//		- swap
 	//	- tasks
+	//TODO: check for errors here?
 	c.Combat.Tick()
 	c.Constructs.Tick()
 	c.Player.Tick()
 	c.Tasks.Run()
+	return nil
 }
 
 func (c *Core) AddChar(p info.CharacterProfile) (int, error) {

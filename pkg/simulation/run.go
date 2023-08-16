@@ -3,67 +3,74 @@ package simulation
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-func (s *Simulation) Run() (res stats.Result, err error) {
-	defer func() {
-		// recover from panic if one occured. Set err to nil otherwise.
-		if r := recover(); r != nil {
-			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
-			err = errors.New(fmt.Sprintf("simulation panic occured: %v", r))
-		}
-	}()
-	defer s.eval.Exit()
-	go s.eval.Start()
-	//run sim for 90s if no duration set
-	if s.cfg.Settings.Duration == 0 {
-		// fmt.Println("no duration set, running for 90s")
-		s.cfg.Settings.Duration = 90
-	}
-	//duration
-	f := int(s.cfg.Settings.Duration * 60)
-	stop := false
+type stateFn func(*Simulation) (stateFn, error)
 
-	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
+func (s *Simulation) resFromCurrentState() stats.Result {
+	return stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
+}
 
-	for !stop {
-		err = s.AdvanceFrame()
+func (s *Simulation) run() (stats.Result, error) {
+	//core loop roughly as follows:
+	//  - initialize:
+	//		- setup
+	//		- advance frame by 1
+	//		- move to queue phase
+	//  - queue phase:
+	//		- ask for next action
+	//		- move to ready check phase
+	//	- ready check phase
+	//		- check if action ready (both animation + player); if not ready advance frame until ready
+	//		- move to execute action phase
+	//	- execute action phase:
+	//		- if action has pre-action wait; advance frame until wait is consumed
+	//		- execute action and empty queue
+	//		- if executed action is no-op, move directly to queue phase
+	//		- else advance frame until CanQueueAfter then move to queue phase
+	//
+	//frame advance will perform the following;
+	//	- increment frame counter by 1
+	//  - execute any ticks
+	//  - check for eneryg procs
+	//  - emit OnTick
+	//  - perform exit check
+	//
+	//exit check checks for:
+	//	- frame limit
+	//  - all enemies dead
+	//  - no more actions left
+
+	//TODO: do we need to catch panic here still? or can it be done outside in the worker
+	var err error
+	for state := initialize; state != nil; {
+		state, err = state(s)
 		if err != nil {
-			log.Println(err)
-			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
-			return
-			// return stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}, err
-		}
-
-		if s.C.Combat.DamageMode {
-			//stop if all targets are reporting dead
-			stop = true
-			for _, t := range s.C.Combat.Enemies() {
-				if t.IsAlive() {
-					stop = false
-					break
-				}
-			}
-			//TODO: this may result in unexpected behaviour? but beats infinite loop when out of actions
-			stop = stop || s.noMoreActions
-		} else {
-			stop = s.C.F == f
+			return s.resFromCurrentState(), err
 		}
 	}
 
-	duration := s.C.F
-	res = stats.Result{
+	err = s.eval.Exit()
+	if err != nil {
+		return s.resFromCurrentState(), err
+	}
+
+	return s.gatherResult(), nil
+}
+
+func (s *Simulation) gatherResult() stats.Result {
+	res := stats.Result{
 		Seed:        uint64(s.C.Seed),
-		Duration:    duration,
+		Duration:    s.C.F,
 		TotalDamage: s.C.Combat.TotalDamage,
-		DPS:         s.C.Combat.TotalDamage * 60 / float64(duration),
+		DPS:         s.C.Combat.TotalDamage * 60 / float64(s.C.F),
 		Characters:  make([]stats.CharacterResult, len(s.C.Player.Chars())),
 		Enemies:     make([]stats.EnemyResult, s.C.Combat.EnemyCount()),
 	}
@@ -76,106 +83,196 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 		collector.Flush(s.C, &res)
 	}
 
-	return
+	return res
 }
 
-func (s *Simulation) AdvanceFrame() error {
-	s.C.F++
-	s.C.Tick()
-	s.handleEnergy()
-	err := s.queueAndExec()
-	if err != nil {
-		return err
+func (s *Simulation) popQueue() int {
+	switch len(s.queue) {
+	case 0:
+	case 1:
+		s.queue = s.queue[:0]
+	default:
+		s.queue = s.queue[1:]
 	}
-	s.C.Events.Emit(event.OnTick)
-	// fmt.Printf("Tick - f = %v\n", s.C.F)
-	return nil
+	return len(s.queue)
 }
 
-func (s *Simulation) queueAndExec() error {
-	//use this to skip some frames as an optimization
-	if s.skip > 0 {
-		s.skip--
-		return nil
+func initialize(s *Simulation) (stateFn, error) {
+	go s.eval.Start()
+	//run sim for 90s if no duration set
+	if s.cfg.Settings.Duration == 0 {
+		// fmt.Println("no duration set, running for 90s")
+		s.cfg.Settings.Duration = 90
 	}
-	//TODO: this for loops is completely unnecessary
-	for {
-		if s.queue != nil {
-			//handle wait separately
-			if s.queue.Action == action.ActionWait {
-				//wipe the action here, set skip
-				s.skip = s.queue.Param["f"]
-				s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active()).
-					Write("f", s.queue.Param["f"])
-				s.queue = nil
-				return nil
-			} else {
-				err := s.C.Player.Exec(s.queue.Action, s.queue.Char, s.queue.Param)
-				switch err {
-				case player.ErrActionNotReady:
-					//action not ready yet, skipping frame
-					//TODO: log something here
-					s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", s.queue.Action), glog.LogSimEvent, s.C.Player.Active())
-					return nil
-				case player.ErrPlayerNotReady:
-					//player still in animation, skipping frame
-					//TODO: log something here
-					return nil
-				case player.ErrActionNoOp:
-					//technically the same as nil
-					s.C.Log.NewEventBuildMsg(glog.LogActionEvent, s.C.Player.Active(), "noop action: ", s.queue.Action.String())
-					s.queue = nil
-				case nil:
-					//exeucted successfully
-					s.queue = nil
-				default:
-					//this should now error out
-					return err
-				}
-			}
-		}
-		//do nothing if no more actions anyways
-		if s.noMoreActions {
-			//TODO: log here?
-			// fmt.Println("no more action")
-			s.C.Log.NewEvent("no more actions", glog.LogSimEvent, -1)
-			return nil
-		}
-		//check if ready to queue first
-		if !s.C.Player.CanQueueNextAction() {
-			// s.C.Log.NewEventBuildMsg(glog.LogActionEvent, -1, "action can't be queued yet")
-			//skip frame if not ready
-			return nil
-		}
-		//check if we can queue an action, if not then skip
-		err := s.tryQueueNext()
-		switch err {
-		case nil:
-			//we have an action, continue execute
-		case ErrNoMoreActions:
-			//make a note no more actions or else <-s.nextAction will block indefinitely
-			s.noMoreActions = true
-			return nil //do nothing, skip frame
-		default:
-			//eval error'd out here
-			return err
-		}
-	}
+	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
+
+	return s.advanceFrames(1, queuePhase)
 }
 
-var ErrNoMoreActions = errors.New("no more actions left")
-
-func (s *Simulation) tryQueueNext() error {
-	//tell eval to keep going
-	s.eval.Continue()
-	//eval will return nil if no more action, or error
+func queuePhase(s *Simulation) (stateFn, error) {
 	next, err := s.eval.NextAction()
 	if err != nil {
-		return err
+		return nil, err
 	}
+	//skip a frame and come back to queue phase if eval does not have any more actions
+	//relying on advance frame to exit if need be
 	if next == nil {
-		return ErrNoMoreActions
+		s.noMoreActions = true
+		//we do the same skip here as if eval doesn't have any more ations
+		return s.advanceFrames(1, queuePhase)
 	}
-	s.queue = next
-	return nil
+	//append swap if called for char is not active
+	//check if NoChar incase this is some special action that does not require a character
+	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
+		s.queue = append(s.queue, &action.ActionEval{
+			Char:   next.Char,
+			Action: action.ActionSwap,
+		})
+	}
+	s.queue = append(s.queue, next)
+	return actionReadyCheckPhase, nil
+}
+
+func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
+	//TODO: this sanity check is probably not necessary
+	if len(s.queue) == 0 {
+		return nil, errors.New("unexpected queue length is 0")
+	}
+	q := s.queue[0]
+
+	//to maintain existing functionality, wait (alias sleep) is always ready and should cause
+	//advanceFrames to be called equal to the param f
+	if q.Action == action.ActionWait {
+		skip := q.Param["f"]
+		if skip == 0 {
+			//TOOD: this is potentially a breaking change?
+			skip = 1
+		}
+		s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active()).
+			Write("f", q.Param["f"])
+		if l := s.popQueue(); l > 0 {
+			//don't go back to queue if there are more actions already queued
+			return s.advanceFrames(skip, actionReadyCheckPhase)
+		}
+		return s.advanceFrames(skip, queuePhase)
+	}
+
+	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
+		//repeat this phase until action is ready
+		switch err {
+		case player.ErrActionNotReady:
+			s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
+			return s.advanceFrames(1, actionReadyCheckPhase)
+		case player.ErrPlayerNotReady:
+			return s.advanceFrames(1, actionReadyCheckPhase)
+		case player.ErrActionNoOp:
+			//TODO: get rid of this no op action
+			//technically the same as nil
+			s.C.Log.NewEventBuildMsg(glog.LogActionEvent, s.C.Player.Active(), "noop action: ", q.Action.String())
+			if l := s.popQueue(); l > 0 {
+				//don't go back to queue if there are more actions already queued
+				return actionReadyCheckPhase(s)
+			}
+			return queuePhase(s)
+		default:
+			return nil, err
+		}
+	}
+
+	return executeActionPhase(s)
+}
+
+func executeActionPhase(s *Simulation) (stateFn, error) {
+	//TODO: this sanity check is probably not necessary
+	if len(s.queue) == 0 {
+		return nil, errors.New("unexpected queue length is 0")
+	}
+	q := s.queue[0]
+	//TODO: add check for pre-action waits
+	err := s.C.Player.Exec(q.Action, q.Char, q.Param)
+	if err != nil {
+		//TODO: this check probably doesn't do anything
+		if err == player.ErrActionNoOp {
+			if l := s.popQueue(); l > 0 {
+				//don't go back to queue if there are more actions already queued
+				return actionReadyCheckPhase(s)
+			}
+			return queuePhase(s)
+		}
+		//this is now unexpected since action should be ready now
+		return nil, err
+	}
+	//TODO: this check here is probably unnecessary
+	if l := s.popQueue(); l > 0 {
+		//don't go back to queue if there are more actions already queued
+		return actionReadyCheckPhase(s)
+	}
+
+	return skipUntilCanQueue(s)
+}
+
+func skipUntilCanQueue(s *Simulation) (stateFn, error) {
+	if !s.C.Player.CanQueueNextAction() {
+		return s.advanceFrames(1, skipUntilCanQueue)
+	}
+	return queuePhase(s)
+}
+
+// nextFrame moves up the frame by 1, performing
+func (s *Simulation) advanceFrames(f int, next stateFn) (stateFn, error) {
+	for i := 0; i < f; i++ {
+		done, err := s.nextFrame()
+		if err != nil {
+			return nil, err
+		}
+		if done {
+			return nil, nil
+		}
+	}
+	return next, nil
+}
+
+func (s *Simulation) nextFrame() (bool, error) {
+	s.C.F++
+	err := s.C.Tick()
+	if err != nil {
+		return false, err
+	}
+	s.handleEnergy()
+	s.C.Events.Emit(event.OnTick)
+	return s.stopCheck(), nil
+}
+
+func (s *Simulation) stopCheck() bool {
+	if s.C.Combat.DamageMode {
+		//stop if no more actions
+		if s.noMoreActions {
+			return true
+		}
+		//stop if all targets are reporting dead
+		allDead := true
+		for _, t := range s.C.Combat.Enemies() {
+			if t.IsAlive() {
+				allDead = false
+				break
+			}
+		}
+		if allDead {
+			return true
+		}
+	}
+	return s.C.F == int(s.cfg.Settings.Duration*60)
+}
+
+func (s *Simulation) Run() (res stats.Result, err error) {
+	defer func() {
+		// recover from panic if one occured. Set err to nil otherwise.
+		if r := recover(); r != nil {
+			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
+			err = fmt.Errorf("simulation panic occured: %v", r)
+		}
+	}()
+	res, err = s.run()
+	return
+
 }
