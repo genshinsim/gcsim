@@ -103,7 +103,9 @@ func (g *GrinMalkinHat) skillExplode() {
 		g.char.makeC4CB(),
 	)
 
+	g.OnKill = nil // prevent additional pyrotechnic attack
 	g.Kill()
+
 	g.updateHats("skill explode")
 }
 
