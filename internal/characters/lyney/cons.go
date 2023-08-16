@@ -28,7 +28,7 @@ func (c *char) c1() {
 
 func (c *char) c1StackIncrease() int {
 	addCount := 1
-	if !c.StatusIsActive(c1ICDKey) {
+	if  c.Base.Cons >= 1 && !c.StatusIsActive(c1ICDKey) {
 		addCount = 2
 	}
 	return addCount
@@ -36,7 +36,7 @@ func (c *char) c1StackIncrease() int {
 
 func (c *char) c1HatIncrease() int {
 	addCount := 1
-	if !c.StatusIsActive(c1ICDKey) {
+	if c.Base.Cons >= 1 && !c.StatusIsActive(c1ICDKey) {
 		addCount = 2
 		c.AddStatus(c1ICDKey, c1ICD, true)
 	}
