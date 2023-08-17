@@ -152,6 +152,15 @@
       "notes": "Spawns on the enemy that the weapon proc'd on."
     }
   ],
+  "scionoftheblazingsun": [
+    {
+      "ability": "Scion of the Blazing Sun",
+      "shape": "Circle",
+      "center": "GlobalValue",
+      "radius": 3.5,
+      "notes": "Spawns on the enemy that the weapon proc'd on."
+    }
+  ],
   "skywardatlas": [
     {
       "ability": "Skyward Atlas Enemy Detection",

@@ -22,6 +22,9 @@
     "thousandfloatingdreams",
     "tfd"
   ],
+  "balladofthefjords": [
+    "ballad"
+  ],
   "beaconofthereedsea": [
     "beacon"
   ],
@@ -96,6 +99,9 @@
     "festering"
   ],
   "filletblade": [],
+  "fleuvecendreferryman": [
+    "fleuve"
+  ],
   "forestregalia": [
     "regalia"
   ],
@@ -251,11 +257,17 @@
   "sacrificialgreatsword": [
     "sacgs"
   ],
+  "sacrificialjade": [
+    "sacjade"
+  ],
   "sacrificialsword": [
     "sacsword"
   ],
   "sapwoodblade": [
     "sapwood"
+  ],
+  "scionoftheblazingsun": [
+    "scion"
   ],
   "seasonedhuntersbow": [
     "seasoned"
@@ -304,6 +316,7 @@
   "swordofdescension": [
     "descension"
   ],
+  "talkingstick": [],
   "thealleyflash": [
     "alleyflash"
   ],
@@ -315,6 +328,10 @@
   ],
   "thecatch": [
     "catch"
+  ],
+  "thefirstgreatmagic": [
+    "firstgreatmagic",
+    "fgm"
   ],
   "theflute": [
     "flute"
@@ -365,6 +382,7 @@
     "ode"
   ],
   "wineandsong": [],
+  "wolffang": [],
   "wolfsgravestone": [
     "gravestone",
     "wgs"

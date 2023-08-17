@@ -49,7 +49,7 @@
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-workspaces": "^0.7.0",
-    "genshin-db": "^4.3.11",
+    "genshin-db": "^4.3.14",
     "lerna": "^6.0.1",
     "madge": "^6.0.0",
     "postcss": "^8.4.18",

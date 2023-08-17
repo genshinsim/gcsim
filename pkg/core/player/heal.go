@@ -41,20 +41,40 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 	case HealTypePercent:
 		hp = c.MaxHP() * info.Src
 	}
-	heal := hp * bonus
 
+	// save previous hp related values for logging
 	prevHPRatio := c.CurrentHPRatio()
 	prevHP := c.CurrentHP()
+	prevHPDebt := c.CurrentHPDebt()
+
+	// calc original heal amount
+	healAmt := hp * bonus
+
+	// calc actual heal amount considering hp debt
+	// TODO: assumes that healing can occur in the same heal as debt being cleared, could also be that it can only occur starting from next heal
+	// example: hp debt is 10, heal is 11, so char will get healed by 11 - 10 = 1 instead of receiving no healing at all
+	heal := healAmt - c.CurrentHPDebt()
+	if heal < 0 {
+		heal = 0
+	}
+
+	// update hp debt based on original heal amount
+	c.ModifyHPDebtByAmount(-healAmt)
+
+	// perform heal based on actual heal amount
 	c.ModifyHPByAmount(heal)
 
 	h.Log.NewEvent(info.Message, glog.LogHealEvent, index).
 		Write("previous_hp_ratio", prevHPRatio).
 		Write("previous_hp", prevHP).
+		Write("previous_hp_debt", prevHPDebt).
 		Write("base amount", hp).
 		Write("bonus", bonus).
-		Write("final amount", heal).
+		Write("final amount before hp debt", healAmt).
+		Write("final amount after hp debt", heal).
 		Write("current_hp_ratio", c.CurrentHPRatio()).
 		Write("current_hp", c.CurrentHP()).
+		Write("current_hp_debt", c.CurrentHPDebt()).
 		Write("max_hp", c.MaxHP())
 
 	h.Events.Emit(event.OnHeal, info, index, heal)

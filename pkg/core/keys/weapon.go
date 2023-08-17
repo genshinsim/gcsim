@@ -41,6 +41,7 @@ var weaponNames = []string{
 	"aquasimulacra",
 	"aquilafavonia",
 	"athousandfloatingdreams",
+	"balladofthefjords",
 	"beaconofthereedsea",
 	"beginnersprotector",
 	"blackcliffagate",
@@ -77,6 +78,7 @@ var weaponNames = []string{
 	"ferrousshadow",
 	"festeringdesire",
 	"filletblade",
+	"fleuvecendreferryman",
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
@@ -141,8 +143,10 @@ var weaponNames = []string{
 	"sacrificialbow",
 	"sacrificialfragments",
 	"sacrificialgreatsword",
+	"sacrificialjade",
 	"sacrificialsword",
 	"sapwoodblade",
+	"scionoftheblazingsun",
 	"seasonedhuntersbow",
 	"serpentspine",
 	"sharpshootersoath",
@@ -162,10 +166,12 @@ var weaponNames = []string{
 	"staffofthescarletsands",
 	"summitshaper",
 	"swordofdescension",
+	"talkingstick",
 	"thealleyflash",
 	"thebell",
 	"theblacksword",
 	"thecatch",
+	"thefirstgreatmagic",
 	"theflute",
 	"thestringless",
 	"theunforged",
@@ -186,6 +192,7 @@ var weaponNames = []string{
 	"whitetassel",
 	"windblumeode",
 	"wineandsong",
+	"wolffang",
 	"wolfsgravestone",
 	"xiphosmoonlight",
 }
@@ -200,6 +207,7 @@ const (
 	AquaSimulacra
 	AquilaFavonia
 	AThousandFloatingDreams
+	BalladOfTheFjords
 	BeaconOfTheReedSea
 	BeginnersProtector
 	BlackcliffAgate
@@ -236,6 +244,7 @@ const (
 	FerrousShadow
 	FesteringDesire
 	FilletBlade
+	FleuveCendreFerryman
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
@@ -300,8 +309,10 @@ const (
 	SacrificialBow
 	SacrificialFragments
 	SacrificialGreatsword
+	SacrificialJade
 	SacrificialSword
 	SapwoodBlade
+	ScionOfTheBlazingSun
 	SeasonedHuntersBow
 	SerpentSpine
 	SharpshootersOath
@@ -321,10 +332,12 @@ const (
 	StaffOfTheScarletSands
 	SummitShaper
 	SwordOfDescension
+	TalkingStick
 	TheAlleyFlash
 	TheBell
 	TheBlackSword
 	TheCatch
+	TheFirstGreatMagic
 	TheFlute
 	TheStringless
 	TheUnforged
@@ -345,6 +358,7 @@ const (
 	WhiteTassel
 	WindblumeOde
 	WineAndSong
+	WolfFang
 	WolfsGravestone
 	XiphosMoonlight
 )

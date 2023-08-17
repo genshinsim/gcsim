@@ -79,6 +79,7 @@ type CharWrapper struct {
 	Energy         float64
 	EnergyMax      float64
 	currentHPRatio float64
+	currentHPDebt  float64
 	// needed so that start hp is not influenced by hp mods added during team initialization
 	StartHP int
 
@@ -202,6 +203,32 @@ func (c *CharWrapper) ModifyHPByAmount(amt float64) {
 func (c *CharWrapper) ModifyHPByRatio(r float64) {
 	newHPRatio := c.currentHPRatio + r
 	c.SetHPByRatio(newHPRatio)
+}
+
+func (c *CharWrapper) clampHPDebt() {
+	if c.currentHPDebt < 0 {
+		c.currentHPDebt = 0
+	}
+}
+
+func (c *CharWrapper) SetHPDebtByAmount(amt float64) {
+	c.currentHPDebt = amt
+	c.clampHPDebt()
+}
+
+func (c *CharWrapper) SetHPDebtByRatio(r float64) {
+	c.currentHPDebt = r * c.MaxHP()
+	c.clampHPDebt()
+}
+
+func (c *CharWrapper) ModifyHPDebtByAmount(amt float64) {
+	newHPDebt := c.currentHPDebt + amt
+	c.SetHPDebtByAmount(newHPDebt)
+}
+
+func (c *CharWrapper) ModifyHPDebtByRatio(r float64) {
+	newHPDebt := c.currentHPDebt + r*c.MaxHP()
+	c.SetHPDebtByAmount(newHPDebt)
 }
 
 func (c *CharWrapper) consCheck() {
