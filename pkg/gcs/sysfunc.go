@@ -111,7 +111,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 		f = int(n.fval)
 	}
 
-	if f <= 0 {
+	if f < 0 {
 		//do nothing if less or equal to 0
 		return &number{}, nil
 	}
@@ -151,7 +151,7 @@ func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 		f = int(n.fval)
 	}
 
-	if f <= 0 {
+	if f < 0 {
 		//do nothing if less or equal to 0
 		return &number{}, nil
 	}

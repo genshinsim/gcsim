@@ -173,12 +173,14 @@ func (s *Simulation) handleWait(q *action.ActionEval) (stateFn, error) {
 	//to maintain existing functionality, wait (alias sleep) is always ready and should cause
 	//advanceFrames to be called equal to the param f
 	skip := q.Param["f"]
+	//log wait(0) differently to make it obvious
 	if skip == 0 {
-		//TOOD: this is potentially a breaking change?
-		skip = 1
+		s.C.Log.NewEvent("executed noop wait(0)", glog.LogActionEvent, s.C.Player.Active()).
+			Write("f", skip)
+	} else {
+		s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active()).
+			Write("f", skip)
 	}
-	s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active()).
-		Write("f", skip)
 	if l := s.popQueue(); l > 0 {
 		//don't go back to queue if there are more actions already queued
 		return s.advanceFrames(skip, actionReadyCheckPhase)
