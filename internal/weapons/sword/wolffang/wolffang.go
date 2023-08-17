@@ -66,7 +66,7 @@ func (w *Weapon) addEvent(name string, tags ...attacks.AttackTag) {
 	m := make([]float64, attributes.EndStatType)
 	icd := name + "-icd"
 
-	w.c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	w.c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != w.char.Index {
 			return false
