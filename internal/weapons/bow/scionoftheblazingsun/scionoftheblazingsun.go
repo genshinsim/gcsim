@@ -15,6 +15,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	icdKey    = "scion-icd"
+	debuffKey = "scion-heartsearer"
+)
+
 func init() {
 	core.RegisterWeaponFunc(keys.ScionOfTheBlazingSun, NewWeapon)
 }
@@ -34,9 +39,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	sunfireMult := 0.45 + float64(r)*0.15
-
-	const icdKey = "scion-icd"
-	const debuffKey = "scion-heartsearer"
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.21 + 0.07*float64(r)
@@ -88,12 +90,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			Durability: 100,
 			Mult:       sunfireMult,
 		}
-		c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3.5), 0, 1)
-
+		c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3.5), 0.25*60, 0.25*60, w.applyDebuff)
 		char.AddStatus(icdKey, 10*60, true)
-		t.AddStatus(debuffKey, 10*60, true)
 
 		return false
 	}, fmt.Sprintf("scion-%v", char.Base.Key.String()))
 	return w, nil
+}
+
+func (w *Weapon) applyDebuff(a combat.AttackCB) {
+	e, ok := a.Target.(*enemy.Enemy)
+	if !ok {
+		return
+	}
+	e.AddStatus(debuffKey, 10*60, true)
 }
