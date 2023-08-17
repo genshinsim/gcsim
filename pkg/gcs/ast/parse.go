@@ -210,7 +210,9 @@ func (p *Parser) parseStatement() (Node, error) {
 		node, err = p.parseSwitch()
 		hasSemi = false
 	case keywordFn:
-		node, err = p.parseFn(true)
+		//this is parsing any function declaration that does not start with let x =
+		//functionally the same as a let stmt
+		node, err = p.parseFnStmt()
 		hasSemi = false
 	case keywordWhile:
 		node, err = p.parseWhile()
@@ -247,33 +249,6 @@ func (p *Parser) parseStatement() (Node, error) {
 		}
 	}
 	return node, nil
-}
-
-// excepting let ident = expr;
-func (p *Parser) parseLet() (Stmt, error) {
-	n := p.next()
-
-	ident, err := p.consume(itemIdentifier)
-	if err != nil {
-		//next token not an identifier
-		return nil, fmt.Errorf("ln%v: expecting identifier after let, got %v", ident.line, ident.Val)
-	}
-
-	a, err := p.consume(itemAssign)
-	if err != nil {
-		//next token not and identifier
-		return nil, fmt.Errorf("ln%v: expecting = after identifier in let statement, got %v", a.line, a.Val)
-	}
-
-	expr, err := p.parseExpr(Lowest)
-
-	stmt := &LetStmt{
-		Pos:   n.pos,
-		Ident: ident,
-		Val:   expr,
-	}
-
-	return stmt, err
 }
 
 // expecting ident = expr
@@ -550,76 +525,6 @@ func (p *Parser) parseFor() (Stmt, error) {
 	return stmt, err
 }
 
-func (p *Parser) parseFn(indent bool) (Stmt, error) {
-	//fn ident(...ident){ block }
-	//consume fn
-	n := p.next()
-	stmt := &FnStmt{
-		Pos: n.pos,
-	}
-
-	var err error
-	if indent {
-		//ident next
-		n, err := p.consume(itemIdentifier)
-		if err != nil {
-			return nil, fmt.Errorf("ln%v: expecting identifier after fn, got %v", n.line, n.Val)
-		}
-		stmt.FunVal = n
-	}
-
-	if l := p.peek(); l.Typ != itemLeftParen {
-		return nil, fmt.Errorf("ln%v: expecting ( after identifier, got %v", l.line, l.Val)
-	}
-
-	stmt.Args, err = p.parseFnArgs()
-	if err != nil {
-		return nil, err
-	}
-	stmt.Body, err = p.parseBlock()
-	if err != nil {
-		return nil, err
-	}
-
-	//check that args are not duplicates
-	chk := make(map[string]bool)
-	for _, v := range stmt.Args {
-		if _, ok := chk[v.Value]; ok {
-			return nil, fmt.Errorf("fn %v contains duplicated param name %v", stmt.FunVal.Val, v.Value)
-		}
-		chk[v.Value] = true
-	}
-
-	return stmt, nil
-}
-
-func (p *Parser) parseFnArgs() ([]*Ident, error) {
-	//consume (
-	var args []*Ident
-	p.next()
-	for n := p.next(); n.Typ != itemRightParen; n = p.next() {
-		a := &Ident{}
-		//expecting ident, comma
-		if n.Typ != itemIdentifier {
-			return nil, fmt.Errorf("ln%v: expecting identifier in param list, got %v", n.line, n.Val)
-		}
-		a.Pos = n.pos
-		a.Value = n.Val
-
-		args = append(args, a)
-
-		//if next token is a comma, then there should be another ident after that
-		//otherwise we have a problem
-		if l := p.peek(); l.Typ == itemComma {
-			p.next() //consume the comma
-			if l = p.peek(); l.Typ != itemIdentifier {
-				return nil, fmt.Errorf("ln%v: expecting another identifier after comma in param list, got %v", n.line, n.Val)
-			}
-		}
-	}
-	return args, nil
-}
-
 func (p *Parser) parseReturn() (Stmt, error) {
 	n := p.next() //return
 	stmt := &ReturnStmt{
@@ -793,21 +698,6 @@ func (p *Parser) parseField() (Expr, error) {
 func (p *Parser) parseString() (Expr, error) {
 	n := p.next()
 	return &StringLit{Pos: n.pos, Value: n.Val}, nil
-}
-
-func (p *Parser) parseFnLit() (Expr, error) {
-	n := p.peek()
-	stmt, err := p.parseFn(false)
-	if err != nil {
-		return nil, err
-	}
-
-	f := stmt.(*FnStmt)
-	return &FuncLit{
-		Pos:  n.pos,
-		Args: f.Args,
-		Body: f.Body,
-	}, nil
 }
 
 func (p *Parser) parseNumber() (Expr, error) {

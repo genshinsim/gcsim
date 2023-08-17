@@ -205,6 +205,7 @@ type (
 	funcval struct {
 		Args []*ast.Ident
 		Body *ast.BlockStmt
+		Env  *Env
 	}
 
 	bfuncval struct {

@@ -14,8 +14,8 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 		return e.evalNumberLit(v, env), nil
 	case *ast.StringLit:
 		return e.evalStringLit(v, env), nil
-	case *ast.FuncLit:
-		return e.evalFuncLit(v, env), nil
+	case *ast.FuncExpr:
+		return e.evalFuncExpr(v, env), nil
 	case *ast.Ident:
 		return e.evalIdent(v, env)
 	case *ast.UnaryExpr:
@@ -48,10 +48,11 @@ func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
 	}
 }
 
-func (e *Eval) evalFuncLit(n *ast.FuncLit, env *Env) Obj {
+func (e *Eval) evalFuncExpr(n *ast.FuncExpr, env *Env) Obj {
 	return &funcval{
-		Args: n.Args,
-		Body: n.Body,
+		Args: n.Func.Args,
+		Body: n.Func.Body,
+		Env:  env,
 	}
 }
 
@@ -86,7 +87,8 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("unmatched number of params for fn %v", c.Fun.String())
 	}
 	//params are just variables assigned to a local env
-	local := NewEnv(env)
+	//created from the function's env
+	local := NewEnv(fn.Env)
 	for i, v := range fn.Args {
 		param, err := e.evalExpr(c.Args[i], env)
 		if err != nil {
@@ -94,7 +96,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 		local.varMap[v.Value] = &param
 	}
-	res, err := e.evalNode(fn.Body, local)
+	res, err := e.evalStmt(fn.Body, local)
 	if err != nil {
 		return nil, err
 	}

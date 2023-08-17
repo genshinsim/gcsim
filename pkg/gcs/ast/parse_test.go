@@ -126,32 +126,6 @@ func TestCfg(t *testing.T) {
 	fmt.Println(prog.String())
 }
 
-const fntest = `
-active bennett;
-fn y(x) {
-    print(x);
-    return x +1;
-}
-
-let z = f(2);
-
-print(z);
-
-print("hi");
-`
-
-func TestFnCall(t *testing.T) {
-	p := New(fntest)
-	_, prog, err := p.Parse()
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-
-	fmt.Println("output:")
-	fmt.Println(prog.String())
-}
-
 const charaction = `
 xingqiu attack[randomparam=2]:4,skill;
 xingqiu burst[orbital=0];
@@ -218,4 +192,15 @@ func TestField(t *testing.T) {
 		t.FailNow()
 	}
 	spew.Config.Dump(prog)
+}
+
+func parseAndPrint(s string, t *testing.T) {
+	p := New(s)
+	_, prog, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	fmt.Println("output:")
+	fmt.Println(prog.String())
 }

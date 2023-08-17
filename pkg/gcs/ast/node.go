@@ -49,6 +49,7 @@ type (
 	LetStmt struct {
 		Pos
 		Ident Token
+		Type  ExprType
 		Val   Expr
 	}
 
@@ -87,12 +88,12 @@ type (
 		Body      *BlockStmt
 	}
 
-	// A FnStmt node represents a function.
+	// A FnStmt node represents a function declared with syntax fn ident(..args) { block }.
+	// Functionally the same as a LetStmt
 	FnStmt struct {
 		Pos
-		FunVal Token
-		Args   []*Ident
-		Body   *BlockStmt
+		Ident Token
+		Func  *FuncLit
 	}
 
 	// WhileStmt represents a while block
@@ -219,6 +220,10 @@ func (l *LetStmt) String() string {
 func (l *LetStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString("let ")
 	sb.WriteString(l.Ident.String())
+	if l.Type != nil {
+		sb.WriteString(" ")
+		l.Type.writeTo(sb)
+	}
 	sb.WriteString(" = ")
 	if l.Val != nil {
 
@@ -233,6 +238,7 @@ func (l *LetStmt) CopyLet() *LetStmt {
 	n := &LetStmt{
 		Pos:   l.Pos,
 		Ident: l.Ident,
+		Type:  l.Type.CopyExprType(),
 	}
 	n.Val = l.Val.CopyExpr()
 	return n
@@ -451,13 +457,9 @@ func (f *FnStmt) CopyFn() Stmt {
 		return nil
 	}
 	n := &FnStmt{
-		Pos:    f.Pos,
-		FunVal: f.FunVal,
-		Body:   f.Body.CopyBlock(),
-		Args:   make([]*Ident, 0, len(f.Args)),
-	}
-	for i := range f.Args {
-		n.Args = append(n.Args, f.Args[i].CopyIdent())
+		Pos:   f.Pos,
+		Ident: f.Ident,
+		Func:  f.Func.copyFuncLit(),
 	}
 
 	return n
@@ -478,16 +480,9 @@ func (f *FnStmt) String() string {
 }
 
 func (f *FnStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString("fn(")
-	for i, v := range f.Args {
-		if i > 0 {
-			sb.WriteString(", ")
-		}
-		v.writeTo(sb)
-	}
-	sb.WriteString(") {\n")
-	f.Body.writeTo(sb)
-	sb.WriteString("}")
+	sb.WriteString("fn ")
+	sb.WriteString(f.Ident.String())
+	f.Func.writeTo(sb)
 }
 
 // WhileStmt.
@@ -602,11 +597,20 @@ type (
 		Value string
 	}
 
+	// FuncExpr is just a wrapper around FuncLit representing an anonymous function declaration
+	// This node should only exists following a let statement
+	// The FuncExpr itself should have null type. The actual FuncLit will have it's own return type
+	FuncExpr struct {
+		Pos  // position of the fn keyword
+		Func *FuncLit
+	}
+
 	// A FuncLit node represents a function literal.
 	FuncLit struct {
-		Pos
-		Args []*Ident
-		Body *BlockStmt
+		Pos       //position of the starting (
+		Signature *FuncType
+		Args      []*Ident
+		Body      *BlockStmt
 	}
 
 	Ident struct {
@@ -650,6 +654,7 @@ type (
 // exprNode()
 func (*NumberLit) exprNode()  {}
 func (*StringLit) exprNode()  {}
+func (*FuncExpr) exprNode()   {}
 func (*FuncLit) exprNode()    {}
 func (*Ident) exprNode()      {}
 func (*Field) exprNode()      {}
@@ -714,19 +719,52 @@ func (n *StringLit) writeTo(sb *strings.Builder) {
 	sb.WriteString(n.Value)
 }
 
+// FuncExpr.
+
+func (f *FuncExpr) CopyExpr() Expr {
+	if f == nil {
+		return nil
+	}
+	n := &FuncExpr{
+		Pos:  f.Pos,
+		Func: f.Func.copyFuncLit(),
+	}
+	return n
+}
+
+func (f *FuncExpr) Copy() Node {
+	return f.CopyExpr()
+}
+
+func (f *FuncExpr) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FuncExpr) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn")
+	f.Func.writeTo(sb)
+}
+
 // FuncLit.
 
 func (f *FuncLit) CopyExpr() Expr {
 	if f == nil {
 		return nil
 	}
+	return f.copyFuncLit()
+}
+
+func (f *FuncLit) copyFuncLit() *FuncLit {
 	n := &FuncLit{
-		Pos:  f.Pos,
-		Args: make([]*Ident, 0, len(f.Args)),
-		Body: f.Body.CopyBlock(),
+		Pos:       f.Pos,
+		Signature: f.Signature.copyFuncType(),
+		Body:      f.Body.CopyBlock(),
 	}
-	for i := range f.Args {
-		n.Args = append(n.Args, f.Args[i].CopyIdent())
+	n.Args = make([]*Ident, 0, len(f.Args))
+	for _, v := range f.Args {
+		n.Args = append(n.Args, v.CopyIdent())
 	}
 	return n
 }
@@ -742,14 +780,23 @@ func (f *FuncLit) String() string {
 }
 
 func (f *FuncLit) writeTo(sb *strings.Builder) {
-	sb.WriteString("fn(")
+	sb.WriteString("(")
 	for i, v := range f.Args {
 		if i > 0 {
 			sb.WriteString(", ")
 		}
-		v.writeTo(sb)
+		sb.WriteString(v.String())
+		if f.Signature.ArgsType[i] != nil {
+			sb.WriteString(" ")
+			f.Signature.ArgsType[i].writeTo(sb)
+		}
 	}
-	sb.WriteString(") {\n")
+	sb.WriteString(")")
+	if f.Signature.ResultType != nil {
+		sb.WriteString(" ")
+		f.Signature.ResultType.writeTo(sb)
+	}
+	sb.WriteString(" {\n")
 	f.Body.writeTo(sb)
 	sb.WriteString("}")
 }
@@ -966,4 +1013,126 @@ func (m *MapExpr) writeTo(sb *strings.Builder) {
 		sb.WriteString(v.String())
 	}
 	sb.WriteString("]")
+}
+
+type ExprType interface {
+	Node
+	exprTypeNode()
+	CopyExprType() ExprType
+}
+
+type (
+	NumberType struct {
+		Pos //position of :, or of the ident if defaulting to NumberType
+	}
+	StringType struct {
+		Pos //position of :
+	}
+	FuncType struct {
+		Pos        //position of opening (
+		ArgsType   []ExprType
+		ResultType ExprType
+	}
+)
+
+// exprTypeNode()
+func (*NumberType) exprTypeNode() {}
+func (*StringType) exprTypeNode() {}
+func (*FuncType) exprTypeNode()   {}
+
+// NumberType.
+func (n *NumberType) CopyExprType() ExprType {
+	if n == nil {
+		return nil
+	}
+	return &NumberType{
+		Pos: n.Pos,
+	}
+}
+
+func (n *NumberType) Copy() Node {
+	return n.CopyExprType()
+}
+
+func (n *NumberType) String() string {
+	var sb strings.Builder
+	n.writeTo(&sb)
+	return sb.String()
+}
+
+func (n *NumberType) writeTo(sb *strings.Builder) {
+	sb.WriteString("number")
+}
+
+// StringType.
+func (s *StringType) CopyExprType() ExprType {
+	if s == nil {
+		return nil
+	}
+	return &StringType{
+		Pos: s.Pos,
+	}
+}
+
+func (s *StringType) Copy() Node {
+	return s.CopyExprType()
+}
+
+func (s *StringType) String() string {
+	var sb strings.Builder
+	s.writeTo(&sb)
+	return sb.String()
+}
+
+func (s *StringType) writeTo(sb *strings.Builder) {
+	sb.WriteString("string")
+}
+
+// FuncType.
+func (f *FuncType) copyFuncType() *FuncType {
+	next := &FuncType{
+		Pos:        f.Pos,
+		ArgsType:   make([]ExprType, 0, len(f.ArgsType)),
+		ResultType: f.ResultType.CopyExprType(),
+	}
+
+	for _, v := range f.ArgsType {
+		next.ArgsType = append(next.ArgsType, v.CopyExprType())
+	}
+
+	return next
+}
+
+func (f *FuncType) CopyExprType() ExprType {
+	if f == nil {
+		return nil
+	}
+	return f.copyFuncType()
+}
+
+func (f *FuncType) Copy() Node {
+	return f.CopyExprType()
+}
+
+func (f *FuncType) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FuncType) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn(")
+	for i, v := range f.ArgsType {
+		if i > 0 {
+			sb.WriteString(", ")
+		}
+		if v != nil {
+			v.writeTo(sb)
+		}
+	}
+	sb.WriteString(")")
+	if f.ResultType != nil {
+		sb.WriteString(" ")
+		f.ResultType.writeTo(sb)
+	}
 }

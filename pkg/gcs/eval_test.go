@@ -101,6 +101,7 @@ func TestSleepAsWaitAlias(t *testing.T) {
 	}
 	if a == nil {
 		t.Error("unexpected next action is nil")
+		t.FailNow()
 	}
 	if a.Action != action.ActionWait {
 		t.Errorf("expecting action to be wait, got %v", a.Action.String())

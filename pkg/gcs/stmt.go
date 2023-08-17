@@ -80,15 +80,16 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
-	_, exist := env.varMap[l.FunVal.Val]
+	//functionally, a FnStmt is just a special type of let statement
+	_, exist := env.varMap[l.Ident.Val]
 	if exist {
-		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.FunVal.Val)
+		return nil, fmt.Errorf("function %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	var res Obj = &funcval{
-		Args: l.Args,
-		Body: l.Body,
+		Args: l.Func.Args,
+		Body: l.Func.Body,
 	}
-	env.varMap[l.FunVal.Val] = &res
+	env.varMap[l.Ident.Val] = &res
 	return &null{}, nil
 }
 
