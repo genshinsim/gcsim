@@ -34,7 +34,7 @@ func (w *Weapon) Init() error {
 
 	em := 90 + 30*float64(w.refine)
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.EM] = float64(count) * em
+	m[attributes.EM] = em
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("balladofthefjords", -1),
 		AffectedStat: attributes.EM,
