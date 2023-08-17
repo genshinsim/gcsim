@@ -127,6 +127,10 @@ func (c *CharWrapper) CurrentHP() float64 {
 	return c.currentHPRatio * c.MaxHP()
 }
 
+func (c *CharWrapper) CurrentHPDebt() float64 {
+	return c.currentHPDebt
+}
+
 func (c *CharWrapper) MaxHP() float64 {
 	hpp := c.BaseStats[attributes.HPP]
 	hp := c.BaseStats[attributes.HP]
