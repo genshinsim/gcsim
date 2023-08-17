@@ -267,9 +267,7 @@ func (s *Simulation) stopCheck() bool {
 				break
 			}
 		}
-		if allDead {
-			return true
-		}
+		return allDead
 	}
 	return s.C.F == int(s.cfg.Settings.Duration*60)
 }
