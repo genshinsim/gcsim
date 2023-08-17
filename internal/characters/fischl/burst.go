@@ -11,11 +11,17 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 18
+const (
+	burstHitmark          = 18
+	burstFullOzSpawn      = 113 // from start of action
+	burstFullOzFirstTick  = 69
+	burstShortOzSpawn     = 1 // after swap occurs
+	burstShortOzFirstTick = 63
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(148)
-	burstFrames[action.ActionDash] = 111
+	burstFrames[action.ActionDash] = 115 // sheet assumed wrong dash frames
 	burstFrames[action.ActionJump] = 115
 	burstFrames[action.ActionSwap] = 24
 }
@@ -74,22 +80,27 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// set oz to active at the start of the action
 	c.ozActive = true
-	// spawn oz at the end of animation
-	// need bool for checking that CanQueueAfter and OnRemoved don't both spawn oz
-	done := false
-	burstOzSpawn := func() {
-		if done {
-			return
-		}
-		c.queueOz("Burst", 0)
-		done = true
-	}
+	c.burstOzSpawnSrc = c.Core.F
+	burstFullOzFunc := c.burstOzSpawn(c.Core.F, 0, burstFullOzFirstTick)
+	burstShortOzFunc := c.burstOzSpawn(c.Core.F, burstShortOzSpawn, burstShortOzFirstTick)
+
+	c.Core.Tasks.Add(burstFullOzFunc, burstFullOzSpawn)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-		OnRemoved:       func(next action.AnimationState) { burstOzSpawn() },
+		OnRemoved:       func(next action.AnimationState) { burstShortOzFunc() },
+	}
+}
+
+func (c *char) burstOzSpawn(src, ozSpawn, firstTick int) func() {
+	return func() {
+		if src != c.burstOzSpawnSrc {
+			return
+		}
+		c.burstOzSpawnSrc = -1
+		c.queueOz("Burst", ozSpawn, firstTick)
 	}
 }

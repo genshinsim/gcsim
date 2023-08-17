@@ -13,7 +13,7 @@ import (
 
 var (
 	chargeFrames   []int
-	chargeHitmarks = []int{22, 24}
+	chargeHitmarks = []int{21, 24}
 	chargeRadius   = []float64{2.2, 2.3}
 	chargeOffsets  = []float64{1.5, 1.8}
 )

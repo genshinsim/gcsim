@@ -293,7 +293,7 @@ This short form will work for any actions, such as `raiden jump:2;` if you wish 
 
 Commands written in gcsl are executed sequentially in the order they appear in the config file. Each line must finish executing before the next can be executed.
 
-:::important
+:::caution
 When attempting to execute a character's ability and that ability is not ready (due to cooldown, energy, or stamina), the simulator will wait on that line and keep trying to execute that action until it has succeeded before moving onto the next action.
 
 For example, if you were to do `xingqiu burst` and Xingqiu does not have energy, the simulator will keep trying to use burst (and failing) until Xingqiu finally has enough energy to use burst. In situations where Xingqiu does not have enough energy and there is no additional energy coming in the form of particles, this can cause the simulation to stall for the remaining duration.

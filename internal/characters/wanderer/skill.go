@@ -103,6 +103,9 @@ func (c *char) skillEndRoutine() int {
 	if c.StatusIsActive(a4Key) {
 		c.DeleteStatus(a4Key)
 	}
+	if c.StatusIsActive(a4Prevent) {
+		c.DeleteStatus(a4Prevent)
+	}
 
 	c.skydwellerPoints = 0
 	c.a4Prob = 0.16

@@ -12,6 +12,7 @@ import (
 
 const (
 	a4Key           = "wanderer-a4"
+	a4Prevent       = "wanderer-a4-prevent"
 	a4IcdKey        = "wanderer-a4-icd"
 	a1ElectroKey    = "wanderer-a1-electro"
 	a1ElectroIcdKey = "wanderer-a1-electro-icd"
@@ -40,7 +41,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 			return
 		}
 
-		c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("wanderer-a4 available", glog.LogCharacterEvent, c.Index).
 			Write("probability", c.a4Prob)
 
 		c.a4Prob = 0.16
@@ -61,7 +62,13 @@ func (c *char) a4() bool {
 	if !c.StatusIsActive(a4Key) {
 		return false
 	}
+	if c.StatusIsActive(a4Prevent) {
+		return false
+	}
 	c.DeleteStatus(a4Key)
+	c.AddStatus(a4Prevent, 20, true) // prevent a4 proccing again for 20f, should be enough to prevent 2 procs in single dash
+
+	c.Core.Log.NewEvent("wanderer-a4 proc'd", glog.LogCharacterEvent, c.Index)
 
 	a4Mult := 0.35
 
