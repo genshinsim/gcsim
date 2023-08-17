@@ -121,6 +121,16 @@ func queuePhase(s *Simulation) (stateFn, error) {
 		//we do the same skip here as if eval doesn't have any more ations
 		return s.advanceFrames(1, queuePhase)
 	}
+	//handle sleep here since it's just a frame skip before requeing next
+	if next.Action == action.ActionWait {
+		return s.handleWait(next)
+	}
+	//if next action is delay, we can just queue up the action after that right now
+	if next.Action == action.ActionDelay {
+		//append here because we can have multiple delay chained
+		s.preActionDelay += next.Param["f"]
+		return queuePhase, nil
+	}
 	//append swap if called for char is not active
 	//check if NoChar incase this is some special action that does not require a character
 	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
@@ -140,23 +150,7 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 	}
 	q := s.queue[0]
 
-	//to maintain existing functionality, wait (alias sleep) is always ready and should cause
-	//advanceFrames to be called equal to the param f
-	if q.Action == action.ActionWait {
-		skip := q.Param["f"]
-		if skip == 0 {
-			//TOOD: this is potentially a breaking change?
-			skip = 1
-		}
-		s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active()).
-			Write("f", q.Param["f"])
-		if l := s.popQueue(); l > 0 {
-			//don't go back to queue if there are more actions already queued
-			return s.advanceFrames(skip, actionReadyCheckPhase)
-		}
-		return s.advanceFrames(skip, queuePhase)
-	}
-
+	//TODO: this loop should be optimized to skip more than 1 frame at a time
 	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
 		//repeat this phase until action is ready
 		switch err {
@@ -166,14 +160,7 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 		case player.ErrPlayerNotReady:
 			return s.advanceFrames(1, actionReadyCheckPhase)
 		case player.ErrActionNoOp:
-			//TODO: get rid of this no op action
-			//technically the same as nil
-			s.C.Log.NewEventBuildMsg(glog.LogActionEvent, s.C.Player.Active(), "noop action: ", q.Action.String())
-			if l := s.popQueue(); l > 0 {
-				//don't go back to queue if there are more actions already queued
-				return actionReadyCheckPhase(s)
-			}
-			return queuePhase(s)
+			//don't do anything here
 		default:
 			return nil, err
 		}
@@ -182,13 +169,36 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 	return executeActionPhase(s)
 }
 
+func (s *Simulation) handleWait(q *action.ActionEval) (stateFn, error) {
+	//to maintain existing functionality, wait (alias sleep) is always ready and should cause
+	//advanceFrames to be called equal to the param f
+	skip := q.Param["f"]
+	if skip == 0 {
+		//TOOD: this is potentially a breaking change?
+		skip = 1
+	}
+	s.C.Log.NewEvent("executed wait", glog.LogActionEvent, s.C.Player.Active()).
+		Write("f", skip)
+	if l := s.popQueue(); l > 0 {
+		//don't go back to queue if there are more actions already queued
+		return s.advanceFrames(skip, actionReadyCheckPhase)
+	}
+	return s.advanceFrames(skip, queuePhase)
+}
+
 func executeActionPhase(s *Simulation) (stateFn, error) {
 	//TODO: this sanity check is probably not necessary
 	if len(s.queue) == 0 {
 		return nil, errors.New("unexpected queue length is 0")
 	}
+	if s.preActionDelay > 0 {
+		delay := s.preActionDelay
+		s.C.Log.NewEvent("executed pre action delay", glog.LogActionEvent, s.C.Player.Active()).
+			Write("f", delay)
+		s.preActionDelay = 0
+		return s.advanceFrames(delay, executeActionPhase)
+	}
 	q := s.queue[0]
-	//TODO: add check for pre-action waits
 	err := s.C.Player.Exec(q.Action, q.Char, q.Param)
 	if err != nil {
 		//TODO: this check probably doesn't do anything

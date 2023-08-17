@@ -68,7 +68,8 @@ func (p *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 		}
 	case action.ActionSwap:
 		if p.active == p.charPos[k] {
-			return ErrActionNoOp
+			//even though noop this action is still ready
+			return nil
 		}
 		if p.SwapCD > 0 {
 			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.SwapCD)

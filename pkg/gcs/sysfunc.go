@@ -23,6 +23,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("print", e.print, env)
 	e.addSysFunc("wait", e.wait, env)
 	e.addSysFunc("sleep", e.wait, env)
+	e.addSysFunc("delay", e.delay, env)
 	e.addSysFunc("type", e.typeval, env)
 	e.addSysFunc("execute_action", e.executeAction, env)
 
@@ -117,6 +118,46 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	e.sendWork(&action.ActionEval{
 		Action: action.ActionWait,
+		Param:  map[string]int{"f": f},
+	})
+	//block until sim is done with the action; unless we're done
+	err = e.waitForNext()
+	if err != nil {
+		return nil, err
+	}
+
+	return &number{}, nil
+}
+
+func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
+	//delay(number goes in here)
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for delay, expected 1 got %v", len(c.Args))
+	}
+
+	//should eval to a number
+	val, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+
+	n, ok := val.(*number)
+	if !ok {
+		return nil, fmt.Errorf("delay argument should evaluate to a number, got %v", val.Inspect())
+	}
+
+	var f int = int(n.ival)
+	if n.isFloat {
+		f = int(n.fval)
+	}
+
+	if f <= 0 {
+		//do nothing if less or equal to 0
+		return &number{}, nil
+	}
+
+	e.sendWork(&action.ActionEval{
+		Action: action.ActionDelay,
 		Param:  map[string]int{"f": f},
 	})
 	//block until sim is done with the action; unless we're done

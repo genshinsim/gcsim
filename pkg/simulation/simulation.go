@@ -11,8 +11,8 @@ import (
 
 type Simulation struct {
 	// f    int
-	skip int
-	C    *core.Core
+	preActionDelay int
+	C              *core.Core
 	//action list stuff
 	cfg           *info.ActionList
 	queue         []*action.ActionEval
