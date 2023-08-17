@@ -784,6 +784,13 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Arakalari"
     },
+    "scionoftheblazingsun": {
+      "id": 15424,
+      "key": "scionoftheblazingsun",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Gurabad"
+    },
     "seasonedhuntersbow": {
       "id": 15201,
       "key": "seasonedhuntersbow",

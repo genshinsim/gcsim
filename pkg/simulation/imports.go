@@ -157,6 +157,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/royal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/rust"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/sacrificial"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/scionoftheblazingsun"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/seasonedhuntersbow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/sharpshooter"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/skyward"

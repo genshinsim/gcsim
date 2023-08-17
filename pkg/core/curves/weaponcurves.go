@@ -4131,7 +4131,6 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
-
 	keys.SeasonedHuntersBow: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
