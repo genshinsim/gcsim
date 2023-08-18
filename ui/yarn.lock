@@ -11387,7 +11387,7 @@ __metadata:
     eslint-plugin-react: ^7.31.10
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-workspaces: ^0.7.0
-    genshin-db: ^4.3.11
+    genshin-db: ^4.3.14
     lerna: ^6.0.1
     madge: ^6.0.0
     postcss: ^8.4.18
@@ -11401,13 +11401,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"genshin-db@npm:^4.3.11":
-  version: 4.3.11
-  resolution: "genshin-db@npm:4.3.11"
+"genshin-db@npm:^4.3.14":
+  version: 4.3.14
+  resolution: "genshin-db@npm:4.3.14"
   dependencies:
     fuzzysort: ^1.1.4
     pako: ^2.0.4
-  checksum: 591f2c00349f60032054490d6b871f5a77592fb93d2be8328ee73ba3a4cd7ac1a086520e1f009e2d23972780a2fc5f44dec38b77773ec22cc961a3d88f1fd7b9
+  checksum: a015e578830149cebe7d2820ba28a0631537de3935d128fc347c63bccb2c86d2cf62480ef2e7a26c89a821d9168d06a8547293ea1a8f348ea21364b3ac47642f
   languageName: node
   linkType: hard
 

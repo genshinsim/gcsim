@@ -93,7 +93,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 			index := args[1].(int)
-			amount := args[2].(int)
+			amount := args[2].(float64)
 			if c.Player.Active() != char.Index {
 				return false
 			}
