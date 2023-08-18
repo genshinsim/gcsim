@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
@@ -30,21 +29,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	r := p.Refine
 
 	refund := 6 + float64(r)*2
-	icd := 600 //60 * 10s
+	icd := 10 * 60
 	const icdKey = "rightfulreward-icd"
 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		healInfo := args[0].(*player.HealInfo)
-		if healInfo.Target != -1 && healInfo.Target != char.Index {
+		index := args[1].(int)
+		if index != char.Index {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		char.AddStatus(icdKey, icd, true) //10s icd
-		char.QueueCharTask(func() {
-			char.AddEnergy("rightfulreward", refund)
-		}, 0)
+		char.AddEnergy("rightfulreward", refund)
 
 		return false
 	}, fmt.Sprintf("rightfulreward-%v", char.Base.Key.String()))

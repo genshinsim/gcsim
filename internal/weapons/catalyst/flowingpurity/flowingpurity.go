@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -24,30 +23,39 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-// When using an Elemental Skill, All Elemental DMG Bonus will be increased by 8% for 15s, and a Bond of Life worth 24% of Max HP will be granted.
-// This effect can be triggered once every 10s.
-// When the Bond of Life is cleared, every 1,000 HP cleared in the process will provide 2% All Elemental DMG Bonus.
-// Up to a maximum of 12% All Elemental DMG can be gained this way. This effect lasts 15s.
-// Bond of Life: Absorbs healing for the character based on its base value, and clears after healing equal to this value is obtained.
+// When using an Elemental Skill, All Elemental DMG Bonus will be increased by 8/10/12/14/16% for 15s,
+// and a Bond of Life worth 24% of Max HP will be granted. This effect can be triggered once every 10s.
+// When the Bond of Life is cleared, every 1,000 HP cleared in the process will provide 2/2.5/3/3.5/4% All Elemental DMG Bonus,
+// up to a maximum of 12/15/18/21/24%. This effect lasts 15s.
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
 	const icdKey = "flowingpurity-icd"
+	const bondKey = "flowingpurity-bond"
 	eledmg := 0.06 + float64(r)*0.02
-	duration := 900 //15s * 60
-	icd := 600      //10s * 60
+	duration := 15 * 60
+	icd := 10 * 60
+
 	m := make([]float64, attributes.EndStatType)
 	bond := make([]float64, attributes.EndStatType)
 	hp := 0.24 //hpdebt_percentage
 	bondPercentage := 0.015 + float64(r)*0.005
+	bondDMGPCap := 0.09 + float64(r)*0.03
 
+	char.SetHPDebtByRatio(hp)
+	debt := char.CurrentHPDebt()
+	bondDMGP := (debt / 1000) * bondPercentage //use hp debt since you only get the buff after clearing bond anyway
+	if bondDMGP > bondDMGPCap {
+		bondDMGP = bondDMGPCap
+	}
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		char.AddStatus(icdKey, icd, true)
+		char.AddStatus(bondKey, -1, true) // not sure if after (?) seconds the bond of life gonna clear itself
 		for i := attributes.PyroP; i <= attributes.DendroP; i++ {
 			m[i] = eledmg
 		}
@@ -58,39 +66,33 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				return m, true
 			},
 		})
-		char.SetHPDebtByRatio(hp) //set hpdebt before getting healed
-		debt := char.CurrentHPDebt()
-		if debt >= 6000 {
-			debt = 6000 //debt = maxbondp / bondp
-		}
-		// not sure if after (?) seconds the bond of life gonna clear itself, thus not implement yet
-		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-			healInfo := args[0].(*player.HealInfo)
-			healAmt := args[2].(float64)
-			if healInfo.Target != -1 && healInfo.Target != char.Index {
-				return false
-			}
-			if ((healAmt - char.CurrentHPDebt()) <= 0) || char.CurrentHPDebt() > 0 {
-				char.ModifyHPDebtByAmount(-healAmt) //reduce heal debt, but there is still heal debt
-				return false
-			} else {
-				char.ModifyHPDebtByAmount(-healAmt)
-				char.AddStatMod(character.StatMod{
-					Base:         modifier.NewBase("flowingpurity-bondeledmg-boost", duration),
-					AffectedStat: attributes.NoStat,
-					Amount: func() ([]float64, bool) {
-						bondDMGP := (debt / 1000) * bondPercentage //use hp debt since you only get the buff after clearing bond
-						for i := attributes.PyroP; i <= attributes.DendroP; i++ {
-							bond[i] = bondDMGP
-						}
-						return bond, true
-					},
-				})
-			}
-			return false
-		}, fmt.Sprintf("flowingpurity-bondeledmg%v", char.Base.Key.String()))
 		return false
 	}, fmt.Sprintf("flowingpurity-eledmg%v", char.Base.Key.String()))
 
+	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+		index := args[1].(int)
+		if index != char.Index {
+			return false
+		}
+		if char.CurrentHPDebt() > 0 {
+			return false
+		}
+		if !char.StatusIsActive(bondKey) {
+			return false
+		}
+		char.DeleteStatus(bondKey)
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("flowingpurity-bond-eledmg-boost", duration),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				for i := attributes.PyroP; i <= attributes.DendroP; i++ {
+					bond[i] = bondDMGP
+				}
+				return bond, true
+			},
+		})
+
+		return false
+	}, fmt.Sprintf("flowingpurity-bondeledmg%v", char.Base.Key.String()))
 	return w, nil
 }

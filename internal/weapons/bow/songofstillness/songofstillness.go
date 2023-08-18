@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -24,24 +23,24 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-// When the wielder is healed, ATK will be increased by 24/30/36/42/48% for 8s.
+// After the wielder is healed, they will deal 16/20/24/28/32% more DMG for 8s.
 // This can be triggered even when the character is not on the field.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
 	dmg := 0.12 + float64(r)*0.04
-	duration := 480 //60 * 8s
+	duration := 8 * 60
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = dmg
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		healInfo := args[0].(*player.HealInfo)
-		if healInfo.Target != -1 && healInfo.Target != char.Index {
+		index := args[1].(int)
+		if index != char.Index {
 			return false
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("songofstillness-dmg-boost", duration),
-			AffectedStat: attributes.NoStat,
+			Base:         modifier.NewBaseWithHitlag("songofstillness-dmg-boost", duration),
+			AffectedStat: attributes.DmgP,
 			Amount: func() ([]float64, bool) {
 				return val, true
 			},

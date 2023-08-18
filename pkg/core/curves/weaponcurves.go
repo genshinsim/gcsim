@@ -1648,10 +1648,10 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		},
 	},
 	keys.FinaleOfTheDeep: {
-		AtkCurve:         GROW_CURVE_ATTACK_201,
+		AtkCurve:         GROW_CURVE_ATTACK_202,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
-		BaseAtk:          42.4010009765625,
-		BaseSpecialized:  0.09000000357627869,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.05999999865889549,
 		Specialized:      attributes.ATKP,
 		PromotionBonus: []PromoData{
 			{
