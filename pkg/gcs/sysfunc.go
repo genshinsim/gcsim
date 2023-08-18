@@ -45,7 +45,10 @@ func (e *Eval) initSysFuncs(env *Env) {
 }
 
 func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, error), env *Env) {
-	var obj Obj = &bfuncval{Body: f}
+	var obj Obj = &bfuncval{
+		Body: f,
+		Env:  NewEnv(env),
+	}
 	env.varMap[name] = &obj
 }
 

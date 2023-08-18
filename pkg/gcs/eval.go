@@ -208,8 +208,11 @@ type (
 		Env  *Env
 	}
 
+	systemFunc func(*ast.CallExpr, *Env) (Obj, error)
+
 	bfuncval struct {
-		Body func(c *ast.CallExpr, env *Env) (Obj, error)
+		Body systemFunc
+		Env  *Env
 	}
 
 	mapval struct {

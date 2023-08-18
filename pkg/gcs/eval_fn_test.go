@@ -210,3 +210,43 @@ func TestStringFunc(t *testing.T) {
 		t.Errorf("expecting result to be hello world, got %v", val.str)
 	}
 }
+
+func TestNestedActions(t *testing.T) {
+	prog := `
+	fn do() {
+		xingqiu attack;
+	}
+	do();
+	`
+	p := ast.New(prog)
+	_, gcsl, err := p.Parse()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println("program:")
+	fmt.Println(gcsl.String())
+	eval, _ := NewEvaluator(gcsl, nil)
+	eval.Log = log.Default()
+	resultChan := make(chan Obj)
+	go func() {
+		res, err := eval.Run()
+		fmt.Printf("done with result: %v, err: %v\n", res, err)
+		resultChan <- res
+	}()
+	for {
+		a, err := eval.NextAction()
+		if a == nil {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	result := <-resultChan
+	if result.Typ() != typNull {
+		t.Errorf("expecting type to return null, got %v", typStrings[result.Typ()])
+	}
+	if eval.Err() != nil {
+		t.Error(eval.Err())
+	}
+}

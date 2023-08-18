@@ -88,6 +88,7 @@ func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 	var res Obj = &funcval{
 		Args: l.Func.Args,
 		Body: l.Func.Body,
+		Env:  NewEnv(env),
 	}
 	env.varMap[l.Ident.Val] = &res
 	return &null{}, nil

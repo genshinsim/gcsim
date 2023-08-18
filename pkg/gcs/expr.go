@@ -52,7 +52,7 @@ func (e *Eval) evalFuncExpr(n *ast.FuncExpr, env *Env) Obj {
 	return &funcval{
 		Args: n.Func.Args,
 		Body: n.Func.Body,
-		Env:  env,
+		Env:  NewEnv(env),
 	}
 }
 
