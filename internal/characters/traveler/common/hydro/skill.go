@@ -123,7 +123,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		hitmark += 15
 	}
 
-	c.QueueCharTask(c.torrentSurge, 15)
+	c.QueueCharTask(c.torrentSurge, hitmark)
 
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.gender][next] + hitmark },
