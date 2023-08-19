@@ -48,5 +48,11 @@ func (c *char) a1PickUp(count int) {
 			Src:     c.MaxHP() * 0.07,
 			Bonus:   c.Stat(attributes.Heal),
 		})
+
+		// Picking up a Sourcewater Droplet will restore 2 Energy to the Traveler.
+		// Requires the Passive Talent "Spotless Waters."
+		if c.Base.Cons >= 1 {
+			c.AddEnergy("hmc-c1", 2)
+		}
 	}
 }
