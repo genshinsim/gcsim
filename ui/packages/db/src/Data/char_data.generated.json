@@ -68,6 +68,23 @@
         "burst_energy_cost": 60
       }
     },
+    "aetherhydro": {
+      "id": 10000007,
+      "sub_id": 704,
+      "key": "aetherhydro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10067,
+        "burst": 10068,
+        "attack": 100553,
+        "burst_energy_cost": 60
+      }
+    },
     "albedo": {
       "id": 10000038,
       "key": "albedo",
@@ -725,6 +742,23 @@
         "skill": 10077,
         "burst": 10078,
         "attack": 100555,
+        "burst_energy_cost": 60
+      }
+    },
+    "luminehydro": {
+      "id": 10000007,
+      "sub_id": 704,
+      "key": "luminehydro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10067,
+        "burst": 10068,
+        "attack": 100553,
         "burst_energy_cost": 60
       }
     },

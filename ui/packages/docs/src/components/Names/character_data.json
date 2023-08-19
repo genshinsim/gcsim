@@ -137,6 +137,12 @@
         "aetherdendro",
         "luminedendro"
     ],
+    "travelerhydro": [
+        "aether-hydro",
+        "lumine-hydro",
+        "aetherhydro",
+        "luminehydro"
+    ],
     "venti": [],
     "wanderer": [
         "scaramouche",
