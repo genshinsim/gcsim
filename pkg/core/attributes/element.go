@@ -9,7 +9,7 @@ import (
 // Element is a string representing an element i.e. HYDRO/PYRO/etc...
 type Element int
 
-// ElementType should be pryo, Hydro, Cryo, Electro, Geo, Anemo and maybe dendro
+// ElementType should be Pyro, Hydro, Cryo, Electro, Geo, Anemo and maybe Dendro
 const (
 	Electro Element = iota
 	Pyro

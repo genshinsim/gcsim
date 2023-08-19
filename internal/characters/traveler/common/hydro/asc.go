@@ -54,5 +54,9 @@ func (c *char) a1PickUp(count int) {
 		if c.Base.Cons >= 1 {
 			c.AddEnergy("hmc-c1", 2)
 		}
+
+		if c.Base.Cons >= 6 {
+			c.c6()
+		}
 	}
 }

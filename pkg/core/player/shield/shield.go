@@ -24,6 +24,7 @@ const (
 	ShieldLaylaSkill
 	ShieldBaizhuBurst
 	ShieldKiraraSkill
+	ShieldTravelerC4
 	EndShieldType
 )
 

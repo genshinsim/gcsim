@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -50,4 +51,25 @@ func (c *char) c4CB(a combat.AttackCB) {
 
 	c.c4()
 	c.AddStatus(c4ICDKey, 2*60, true)
+}
+
+// When the Traveler picks up a Sourcewater Droplet, they will restore HP to a nearby party member with the lowest
+// remaining HP percentage based on 6% of said member's Max HP.
+func (c *char) c6() {
+	lowest := c.Index // TODO: can heal myself?
+	chars := c.Core.Player.Chars()
+	for i, char := range chars {
+		if char.CurrentHPRatio() < chars[i].CurrentHPRatio() {
+			lowest = i
+		}
+	}
+
+	c.Core.Player.Heal(player.HealInfo{
+		Caller:  c.Index,
+		Target:  lowest,
+		Type:    player.HealTypePercent,
+		Message: "Tides of Justice",
+		Src:     0.06,
+		Bonus:   c.Stat(attributes.Heal),
+	})
 }
