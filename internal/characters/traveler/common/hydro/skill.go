@@ -117,6 +117,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 0.3, 1.3), // TODO: or single target hit?
 				1,
 				1,
+				c.a1,
 			)
 			aiHold.FlatDmg = 0
 		}, hitmark-1)

@@ -50,6 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	snap := c.Snapshot(&ai)
 
 	for i := 0; i < 8; i++ {
+		// TODO: movable burst?
 		c.Core.QueueAttackWithSnap(ai, snap, ap, 94+30*i)
 	}
 
