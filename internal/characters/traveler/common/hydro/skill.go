@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -23,6 +24,7 @@ const (
 
 	particleICDKey          = "travelerhydro-particle-icd"
 	spiritbreathThornICDKey = "travelerhydro-spiritbreath-icd"
+	skillLosingHPICDKey     = "travelerhydro-losing-hp-icd"
 )
 
 func init() {
@@ -88,6 +90,8 @@ func (c *char) skillParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) SkillHold(holdTicks int) action.ActionInfo {
+	c.a4Bonus = 0
+
 	aiHold := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
@@ -104,14 +108,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	hitmark := firstTick
 	for i := 0; i < holdTicks; i++ {
 		c.QueueCharTask(func() {
-			if c.CurrentHPRatio() > 0.5 {
-				aiHold.FlatDmg = dewdropBonus[c.TalentLvlSkill()] * c.MaxHP()
-				c.Core.Player.Drain(player.DrainInfo{
-					ActorIndex: c.Index,
-					Abil:       "Suffusion",
-					Amount:     0.04 * c.CurrentHP(),
-				})
-			}
+			c.skillLosingHP(&aiHold)
 			c.Core.QueueAttack(
 				aiHold,
 				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 0.3, 1.3), // TODO: or single target hit?
@@ -166,6 +163,16 @@ func (c *char) torrentSurge() {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
+	// If HP has been consumed via Suffusion while using the Hold Mode Aquacrest Saber, the Torrent Surge at the skill's end
+	// will deal Bonus DMG equal to 45% of the total HP the Traveler has consumed in this skill use via Suffusion.
+	// The maximum DMG Bonus that can be gained this way is 5,000.
+	if c.a4Bonus > 5000 {
+		c.a4Bonus = 5000
+	}
+	if c.Base.Ascension >= 4 {
+		ai.FlatDmg += c.a4Bonus
+	}
+
 	hitbox := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 1.2, 15)
 	c.Core.QueueAttack(ai, hitbox, 0, 1, c.skillParticleCB)
 
@@ -185,4 +192,27 @@ func (c *char) torrentSurge() {
 		c.Core.QueueAttack(ai, hitbox, 0.7*60, 0.7*60, c.skillParticleCB)
 		c.AddStatus(spiritbreathThornICDKey, 9*60, true)
 	}
+}
+
+func (c *char) skillLosingHP(ai *combat.AttackInfo) {
+	if c.StatusIsActive(skillLosingHPICDKey) {
+		return
+	}
+	if c.CurrentHPRatio() <= 0.5 {
+		return
+	}
+	ai.FlatDmg = dewdropBonus[c.TalentLvlSkill()] * c.MaxHP()
+
+	drainHP := 0.04 * c.CurrentHP()
+	c.Core.Player.Drain(player.DrainInfo{
+		ActorIndex: c.Index,
+		Abil:       "Suffusion",
+		Amount:     drainHP,
+	})
+	if c.Base.Ascension >= 4 {
+		c.a4Bonus += drainHP * 0.45
+		c.Core.Log.NewEvent("hmc a4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
+			Write("dmg bonus", c.a4Bonus)
+	}
+	c.AddStatus(skillLosingHPICDKey, 0.9*60, true)
 }

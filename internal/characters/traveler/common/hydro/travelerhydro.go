@@ -10,7 +10,8 @@ import (
 
 type char struct {
 	*tmpl.Character
-	gender int
+	a4Bonus float64
+	gender  int
 }
 
 func NewChar(gender int) core.NewCharacterFunc {
