@@ -65,6 +65,10 @@ func (c *char) SkillPress() action.ActionInfo {
 	c.QueueCharTask(c.torrentSurge, skillPressHitmark-1)
 	c.SetCDWithDelay(action.ActionSkill, 10*60, skillPressCdStart)
 
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames[c.gender]),
 		AnimationLength: skillPressFrames[c.gender][action.InvalidAction],
@@ -104,6 +108,10 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 		Mult:       skillDewdrop[c.TalentLvlSkill()],
 	}
 
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
 	firstTick := 31
 	hitmark := firstTick
 	for i := 0; i < holdTicks; i++ {
@@ -115,6 +123,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				1,
 				1,
 				c.a1,
+				c.c4CB,
 			)
 			aiHold.FlatDmg = 0
 		}, hitmark-1)
