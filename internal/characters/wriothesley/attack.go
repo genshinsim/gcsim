@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 // TODO: heizou based frames
@@ -75,6 +76,14 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			if c.CurrentHPRatio() > 0.5 {
 				ai.Mult *= skill[c.TalentLvlSkill()]
 				callbacks = append(callbacks, c.chillingPenalty)
+			}
+			if c.Base.Cons >= 1 && c.NormalCounter == 4 {
+				callbacks = append(callbacks, func(a combat.AttackCB) {
+					if a.Target.Type() != targets.TargettableEnemy {
+						return
+					}
+					c.a1Add()
+				})
 			}
 		}
 

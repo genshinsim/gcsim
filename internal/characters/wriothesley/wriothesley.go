@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -20,6 +19,7 @@ type char struct {
 	a1HPRatio float64
 	a1Buff    []float64
 	a4Stack   int
+	c1Proc    bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -38,11 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	if c.Base.Ascension >= 1 {
-		c.a1ICD = 0.5 * 60
-		c.a1HPRatio = 0.6
-		c.a1Buff = make([]float64, attributes.EndStatType)
-		c.a1Buff[attributes.DmgP] = 0.3
-
 		c.a1()
 	}
 	if c.Base.Ascension >= 4 {

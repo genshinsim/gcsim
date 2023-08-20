@@ -31,6 +31,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Base.Ascension >= 4 {
 		c.a4Stack = 0
 	}
+	if c.Base.Cons >= 1 {
+		c.c1Proc = false
+	}
 
 	c.AddStatus(skillKey, skillStart+10*60, true) // activate for 10
 	c.SetCDWithDelay(action.ActionSkill, 16*60, 11)

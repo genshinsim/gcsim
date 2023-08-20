@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -20,6 +21,26 @@ const (
 // Stamina, deal 30% increased DMG, and will restore HP for Wriothesley after hitting equal to 30% of his Max HP.
 // You can gain a Gracious Rebuke this way once every 5s.
 func (c *char) a1() {
+	c.a1ICD = 5 * 60
+	c.a1HPRatio = 0.6
+	c.a1Buff = make([]float64, attributes.EndStatType)
+	c.a1Buff[attributes.DmgP] = 0.3
+
+	// The Gracious Rebuke from "There Shall Be a Plea for Justice" shall be converted into:
+	// When Wriothesley's HP is less than 50% or while he is in the Chilling Penalty state caused by Icefang Rush,
+	// when the fifth attack of Repelling Fists hits, it will create a Gracious Rebuke. 1 Gracious Rebuke effect
+	// can be obtained every 2.5s.
+	// Additionally, Rebuke: Vaulting Fist will obtain the following enhancement:
+	// ·DMG dealt will be further increased to 150%.
+	// ·When it hits while Wriothesley is in the Chilling Penalty state, that state's duration is extended by 4s.
+	// 1 such extension can occur per 1 Chilling Penalty duration.
+	// You must first unlock the Passive Talent "There Shall Be a Plea for Justice."
+	if c.Base.Cons >= 1 {
+		c.a1ICD = 2.5 * 60
+		c.a1HPRatio = 0.5
+		c.a1Buff[attributes.DmgP] += 1.5
+	}
+
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(player.DrainInfo)
 		if c.Core.Player.Active() != c.Index { // TODO: works off-field?
@@ -60,6 +81,7 @@ func (c *char) a1Remove(_ combat.AttackCB) {
 	if !c.StatModIsActive(a1Status) {
 		return
 	}
+	c.DeleteStatMod(a1Status)
 
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
@@ -68,7 +90,12 @@ func (c *char) a1Remove(_ combat.AttackCB) {
 		Src:     c.MaxHP() * 0.3,
 		Bonus:   c.Stat(attributes.Heal),
 	})
-	c.DeleteStatMod(a1Status)
+
+	if c.Base.Cons >= 1 && !c.c1Proc {
+		c.ExtendStatus(skillKey, 4*60)
+		c.c1Proc = true
+		c.Core.Log.NewEvent("c1: skill duration is extended", glog.LogCharacterEvent, c.Index)
+	}
 }
 
 // When Wriothesley's current HP increases or decreases, if he is in the Chilling Penalty state conferred by Icefang Rush,
