@@ -30,6 +30,9 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 
 func (s *Set) Init() error {
+	if s.buff == nil { // no 4pc
+		return nil
+	}
 	if s.core.Player.Active() != s.char.Index {
 		s.gainBuff()
 	}
