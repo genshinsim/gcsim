@@ -48,7 +48,13 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 		particleCB = c.particleCB
 	}
-	c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark, particleCB)
+
+	var a1CB combat.AttackCBFunc
+	if c.StatModIsActive(a1Status) {
+		a1CB = c.a1Remove
+	}
+
+	c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark, particleCB, a1CB)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),

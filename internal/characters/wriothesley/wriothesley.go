@@ -36,5 +36,13 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
+	// TOOD: sure? maybe tick every X seconds?
+	if c.Base.Ascension >= 1 && c.CurrentHPRatio() < 0.6 {
+		c.a1Add()
+	}
+	if a == action.ActionCharge && c.StatModIsActive(a1Status) {
+		return 0
+	}
+
 	return c.Character.ActionStam(a, p)
 }
