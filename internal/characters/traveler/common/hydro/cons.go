@@ -59,7 +59,7 @@ func (c *char) c6() {
 	lowest := c.Index // TODO: can heal myself?
 	chars := c.Core.Player.Chars()
 	for i, char := range chars {
-		if char.CurrentHPRatio() < chars[i].CurrentHPRatio() {
+		if char.CurrentHPRatio() < chars[lowest].CurrentHPRatio() {
 			lowest = i
 		}
 	}

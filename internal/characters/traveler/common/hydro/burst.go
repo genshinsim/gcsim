@@ -31,10 +31,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	duration := burstHitmarks[c.gender] + 4*60
-
-	c.Core.Status.Add("hmcburst", duration)
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rising Waters",
@@ -49,11 +45,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0.15)
 	snap := c.Snapshot(&ai)
 
+	duration := burstHitmarks[c.gender] + 4*60
 	burstTicks := 8 // 4s duration * 0.5s tick
 	// The Movement SPD of Rising Waters' bubble will be decreased by 30%, and its duration increased by 3s.
 	if c.Base.Cons >= 2 {
 		burstTicks = 14 // 7s duration * 0.5s tick
+		duration += 3 * 60
 	}
+	c.Core.Status.Add("hmcburst", duration)
 
 	for i := 0; i < burstTicks; i++ {
 		// TODO: movable burst?

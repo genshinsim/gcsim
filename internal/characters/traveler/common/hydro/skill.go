@@ -94,8 +94,6 @@ func (c *char) skillParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) SkillHold(holdTicks int) action.ActionInfo {
-	c.a4Bonus = 0
-
 	aiHold := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
@@ -180,6 +178,7 @@ func (c *char) torrentSurge() {
 	}
 	if c.Base.Ascension >= 4 {
 		ai.FlatDmg += c.a4Bonus
+		c.a4Bonus = 0
 	}
 
 	hitbox := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 1.2, 15)
