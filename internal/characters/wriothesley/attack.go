@@ -17,6 +17,7 @@ var (
 	attackHitmarks        = [][]int{{12}, {13}, {21}, {13, 19}, {31}}
 	attackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.03}, {0, 0.01}, {0.06}}
 	attackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.5, 3}, {2, 3}, {3, 3}}
+	attackHitboxesSkill   = [][]float64{{2.4, 3.4}, {2.4, 3.4}, {2.8, 3.4}, {2.4, 3.4}, {3.4, 3.4}}
 )
 
 const normalHitNum = 5
@@ -65,13 +66,25 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai.HitlagFactor = 0
 		}
 
+		hithoxes := attackHitboxes
+		callbacks := make([]combat.AttackCBFunc, 0)
+		if c.StatusIsActive(skillKey) {
+			hithoxes = attackHitboxesSkill
+			callbacks = append(callbacks, c.particleCB)
+
+			if c.CurrentHPRatio() > 0.5 {
+				ai.Mult *= skill[c.TalentLvlSkill()]
+				callbacks = append(callbacks, c.chillingPenalty)
+			}
+		}
+
 		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: -0.2},
-			attackHitboxes[c.NormalCounter][0],
-			attackHitboxes[c.NormalCounter][1],
+			hithoxes[c.NormalCounter][0],
+			hithoxes[c.NormalCounter][1],
 		)
-		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i], callbacks...)
 	}
 
 	defer c.AdvanceNormalIndex()

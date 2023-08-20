@@ -34,17 +34,22 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Element:            attributes.Cryo,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
-		HitlagFactor:       0.03,
-		HitlagHaltFrames:   0.12 * 60,
+		HitlagFactor:       0.01,
+		HitlagHaltFrames:   0.09 * 60,
 		CanBeDefenseHalted: false,
 	}
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.2}, 2.8, 3.6)
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.80}, 4.00, 5.00),
-		chargeHitmark,
-		chargeHitmark,
-	)
+	var particleCB combat.AttackCBFunc
+	if c.StatusIsActive(skillKey) {
+		ai.HitlagFactor = 0.03
+		ai.HitlagHaltFrames = 0.12 * 60
+		ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.8}, 4, 5)
+
+		particleCB = c.particleCB
+	}
+	c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark, particleCB)
+
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
