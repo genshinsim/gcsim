@@ -14,7 +14,11 @@ var burstFrames []int
 
 var burstHitmarks = []int{50, 59, 67, 76, 85}
 
-const burstSurgingBladeHitmark = 95
+const (
+	burstOusiaHitmark = 95
+
+	burstOusiaICDKey = "wriothesley-ousia-icd"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(79) // Q -> Swap
@@ -42,25 +46,29 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.QueueAttack(ai, ap, hitmark, hitmark)
 	}
 
-	aiOusia := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Surging Blade",
-		AttackTag:          attacks.AttackTagElementalBurst,
-		ICDTag:             attacks.ICDTagNone,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeDefault,
-		Element:            attributes.Cryo,
-		Mult:               burstOusia[c.TalentLvlBurst()],
-		HitlagFactor:       0.01,
-		HitlagHaltFrames:   0.03 * 60,
-		CanBeDefenseHalted: false,
+	if !c.StatusIsActive(burstOusiaICDKey) {
+		aiOusia := combat.AttackInfo{
+			ActorIndex:         c.Index,
+			Abil:               "Surging Blade",
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
+			Element:            attributes.Cryo,
+			Mult:               burstOusia[c.TalentLvlBurst()],
+			HitlagFactor:       0.01,
+			HitlagHaltFrames:   0.03 * 60,
+			CanBeDefenseHalted: false,
+		}
+		c.Core.QueueAttack(
+			aiOusia,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.00}, 7.00, 15.00),
+			burstOusiaHitmark,
+			burstOusiaHitmark,
+		)
+
+		c.AddStatus(burstOusiaICDKey, 10*60, true)
 	}
-	c.Core.QueueAttack(
-		aiOusia,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.00}, 7.00, 15.00),
-		burstSurgingBladeHitmark,
-		burstSurgingBladeHitmark,
-	)
 
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(6)
