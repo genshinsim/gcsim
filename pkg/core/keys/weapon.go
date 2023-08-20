@@ -78,7 +78,9 @@ var weaponNames = []string{
 	"ferrousshadow",
 	"festeringdesire",
 	"filletblade",
+	"finaleofthedeep",
 	"fleuvecendreferryman",
+	"flowingpurity",
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
@@ -134,6 +136,7 @@ var weaponNames = []string{
 	"ravenbow",
 	"recurvebow",
 	"redhornstonethresher",
+	"rightfulreward",
 	"royalbow",
 	"royalgreatsword",
 	"royalgrimoire",
@@ -162,6 +165,7 @@ var weaponNames = []string{
 	"snowtombedstarsilver",
 	"solarpearl",
 	"songofbrokenpines",
+	"songofstillness",
 	"staffofhoma",
 	"staffofthescarletsands",
 	"summitshaper",
@@ -179,6 +183,7 @@ var weaponNames = []string{
 	"thewidsith",
 	"thrillingtalesofdragonslayers",
 	"thunderingpulse",
+	"tidalshadow",
 	"toukaboushigure",
 	"travelershandysword",
 	"tulaytullahsremembrance",
@@ -244,7 +249,9 @@ const (
 	FerrousShadow
 	FesteringDesire
 	FilletBlade
+	FinaleOfTheDeep
 	FleuveCendreFerryman
+	FlowingPurity
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
@@ -300,6 +307,7 @@ const (
 	RavenBow
 	RecurveBow
 	RedhornStonethresher
+	RightfulReward
 	RoyalBow
 	RoyalGreatsword
 	RoyalGrimoire
@@ -328,6 +336,7 @@ const (
 	SnowTombedStarsilver
 	SolarPearl
 	SongOfBrokenPines
+	SongOfStillness
 	StaffOfHoma
 	StaffOfTheScarletSands
 	SummitShaper
@@ -345,6 +354,7 @@ const (
 	TheWidsith
 	ThrillingTalesOfDragonSlayers
 	ThunderingPulse
+	TidalShadow
 	ToukabouShigure
 	TravelersHandySword
 	TulaytullahsRemembrance
