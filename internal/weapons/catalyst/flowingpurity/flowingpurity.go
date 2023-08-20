@@ -60,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			m[i] = eledmg
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("flowingpurity-eledmg-boost", duration),
+			Base:         modifier.NewBaseWithHitlag("flowingpurity-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -82,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		char.DeleteStatus(bondKey)
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("flowingpurity-bond-eledmg-boost", duration),
+			Base:         modifier.NewBaseWithHitlag("flowingpurity-bond-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				for i := attributes.PyroP; i <= attributes.DendroP; i++ {
