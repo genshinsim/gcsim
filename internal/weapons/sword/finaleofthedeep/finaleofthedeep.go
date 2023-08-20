@@ -37,60 +37,61 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	atk := 0.09 + float64(r)*0.03
 	duration := 15 * 60
 	icd := 10 * 60
-	ATKval := make([]float64, attributes.EndStatType)
-	ATKval[attributes.ATKP] = atk
 
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = atk
+	bond := make([]float64, attributes.EndStatType)
 	hp := 0.25
 	bondPercentage := 0.018 + float64(r)*0.006
-	maxBondAtk := 112.5 + float64(r)*37.5
-	fAtkVal := make([]float64, attributes.EndStatType)
-	totalHeal := float64(0)
-
-	maxhp := char.MaxHP()
-	bondAtk := maxhp * hp * bondPercentage
-	if bondAtk >= maxBondAtk {
-		bondAtk = maxBondAtk
-	}
+	bondAtkCap := 112.5 + float64(r)*37.5
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		char.AddStatus(icdKey, icd, true)
-		char.AddStatus(bondKey, -1, true) // not sure if after (?) seconds the bond of life gonna clear itself
+
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-atk-boost", duration),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
-				return ATKval, true
+				return m, true
 			},
 		})
+
+		char.AddStatus(bondKey, -1, true)
+
+		char.SetHPDebtByRatio(hp)
+		debt := char.CurrentHPDebt()
+		bondAtk := (debt / 1000) * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
+		if bondAtk > bondAtkCap {
+			bondAtk = bondAtkCap
+		}
+		bond[attributes.ATK] = bondAtk
+
 		return false
 	}, fmt.Sprintf("finaleofthedeep-atk%v", char.Base.Key.String()))
 
-	// check for accummulate healing, when enough healing then get the ATK buff
-	// not sure if after (?) seconds the bond of life gonna clear itself, thus not implement yet
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-		healAmt := args[2].(float64)
 		index := args[1].(int)
 		if index != char.Index {
+			return false
+		}
+		if char.CurrentHPDebt() > 0 {
 			return false
 		}
 		if !char.StatusIsActive(bondKey) {
 			return false
 		}
-		totalHeal += healAmt
-		if totalHeal >= maxhp*hp {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("finaleofthedeep-bond-flatatk-boost", duration),
-				AffectedStat: attributes.ATK,
-				Amount: func() ([]float64, bool) {
-					fAtkVal[attributes.ATK] = bondAtk
-					return fAtkVal, true
-				},
-			})
-			totalHeal = 0
-		}
+		char.DeleteStatus(bondKey)
+
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("finaleofthedeep-bond-flatatk-boost", duration),
+			AffectedStat: attributes.ATK,
+			Amount: func() ([]float64, bool) {
+				return bond, true
+			},
+		})
 		return false
 	}, fmt.Sprintf("finaleofthedeep-flatatk%v", char.Base.Key.String()))
 	return w, nil
