@@ -19,19 +19,37 @@ const (
 // Normal Attack: Forceful Fists of Frost will be enhanced to become Rebuke: Vaulting Fist. It will not consume
 // Stamina, deal 30% increased DMG, and will restore HP for Wriothesley after hitting equal to 30% of his Max HP.
 // You can gain a Gracious Rebuke this way once every 5s.
+func (c *char) a1() {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if c.Core.Player.Active() != c.Index { // TODO: works off-field?
+			return false
+		}
+		if di.ActorIndex != c.Index {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
+
+		if c.CurrentHPRatio() < c.a1HPRatio {
+			c.a1Add()
+		}
+		return false
+	}, "wriothesley-a1-drain")
+}
+
 func (c *char) a1Add() {
 	if c.StatusIsActive(a1ICDKey) {
 		return
 	}
-	c.AddStatus(a1ICDKey, 5*60, true)
+	c.AddStatus(a1ICDKey, c.a1ICD, true)
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = 0.3
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(a1Status, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if atk.Info.AttackTag == attacks.AttackTagExtra {
-				return m, true
+				return c.a1Buff, true
 			}
 			return nil, false
 		},

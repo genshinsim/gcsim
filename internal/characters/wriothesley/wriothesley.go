@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -15,7 +16,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a4Stack int
+	a1ICD     int
+	a1HPRatio float64
+	a1Buff    []float64
+	a4Stack   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -33,6 +37,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	if c.Base.Ascension >= 1 {
+		c.a1ICD = 0.5 * 60
+		c.a1HPRatio = 0.6
+		c.a1Buff = make([]float64, attributes.EndStatType)
+		c.a1Buff[attributes.DmgP] = 0.3
+
+		c.a1()
+	}
 	if c.Base.Ascension >= 4 {
 		c.a4()
 	}
@@ -41,10 +53,6 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	// TOOD: sure? maybe tick every X seconds?
-	if c.Base.Ascension >= 1 && c.CurrentHPRatio() < 0.6 {
-		c.a1Add()
-	}
 	if a == action.ActionCharge && c.StatModIsActive(a1Status) {
 		return 0
 	}

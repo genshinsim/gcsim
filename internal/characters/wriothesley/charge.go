@@ -42,6 +42,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	var particleCB combat.AttackCBFunc
 	if c.StatusIsActive(skillKey) {
+		ai.Abil = "Rebuke: Vaulting Fist"
 		ai.HitlagFactor = 0.03
 		ai.HitlagHaltFrames = 0.12 * 60
 		ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.8}, 4, 5)
