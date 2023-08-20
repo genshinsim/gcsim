@@ -15,6 +15,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	a4Stack int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
@@ -32,6 +33,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	if c.Base.Ascension >= 4 {
+		c.a4()
+	}
+
 	return nil
 }
 
