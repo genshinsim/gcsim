@@ -39,26 +39,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	icd := 10 * 60
 
 	m := make([]float64, attributes.EndStatType)
+	for i := attributes.PyroP; i <= attributes.DendroP; i++ {
+		m[i] = eledmg
+	}
 	bond := make([]float64, attributes.EndStatType)
-	hp := 0.24 //hpdebt_percentage
+	hp := 0.24
 	bondPercentage := 0.015 + float64(r)*0.005
 	bondDMGPCap := 0.09 + float64(r)*0.03
 
-	char.SetHPDebtByRatio(hp)
-	debt := char.CurrentHPDebt()
-	bondDMGP := (debt / 1000) * bondPercentage //use hp debt since you only get the buff after clearing bond anyway
-	if bondDMGP > bondDMGPCap {
-		bondDMGP = bondDMGPCap
-	}
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		char.AddStatus(icdKey, icd, true)
-		char.AddStatus(bondKey, -1, true) // not sure if after (?) seconds the bond of life gonna clear itself
-		for i := attributes.PyroP; i <= attributes.DendroP; i++ {
-			m[i] = eledmg
-		}
+
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("flowingpurity-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
@@ -66,6 +60,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 				return m, true
 			},
 		})
+
+		char.AddStatus(bondKey, -1, true)
+
+		char.SetHPDebtByRatio(hp)
+		debt := char.CurrentHPDebt()
+		bondDMGP := (debt / 1000) * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
+		if bondDMGP > bondDMGPCap {
+			bondDMGP = bondDMGPCap
+		}
+		for i := attributes.PyroP; i <= attributes.DendroP; i++ {
+			bond[i] = bondDMGP
+		}
+
 		return false
 	}, fmt.Sprintf("flowingpurity-eledmg%v", char.Base.Key.String()))
 
@@ -81,17 +88,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		char.DeleteStatus(bondKey)
+
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("flowingpurity-bond-eledmg-boost", duration),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
-				for i := attributes.PyroP; i <= attributes.DendroP; i++ {
-					bond[i] = bondDMGP
-				}
 				return bond, true
 			},
 		})
-
 		return false
 	}, fmt.Sprintf("flowingpurity-bondeledmg%v", char.Base.Key.String()))
 	return w, nil
