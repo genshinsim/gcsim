@@ -1,121 +1,121 @@
 {
-  "data":  {
-    "archaicpetra":  {
-      "text_map_id":  "2040573235"
+  "data": {
+    "archaicpetra": {
+      "text_map_id": "2040573235"
     },
-    "berserker":  {
-      "text_map_id":  "855894507"
+    "berserker": {
+      "text_map_id": "855894507"
     },
-    "blizzardstrayer":  {
-      "text_map_id":  "933076627"
+    "blizzardstrayer": {
+      "text_map_id": "933076627"
     },
-    "bloodstainedchivalry":  {
-      "text_map_id":  "1541919827"
+    "bloodstainedchivalry": {
+      "text_map_id": "1541919827"
     },
-    "braveheart":  {
-      "text_map_id":  "3535784755"
+    "braveheart": {
+      "text_map_id": "3535784755"
     },
-    "crimsonwitchofflames":  {
-      "text_map_id":  "1524173875"
+    "crimsonwitchofflames": {
+      "text_map_id": "1524173875"
     },
-    "deepwoodmemories":  {
-      "text_map_id":  "1675079283"
+    "deepwoodmemories": {
+      "text_map_id": "1675079283"
     },
-    "defenderswill":  {
-      "text_map_id":  "4082302819"
+    "defenderswill": {
+      "text_map_id": "4082302819"
     },
-    "desertpavilionchronicle":  {
-      "text_map_id":  "2538235187"
+    "desertpavilionchronicle": {
+      "text_map_id": "2538235187"
     },
-    "echoesofanoffering":  {
-      "text_map_id":  "3626268211"
+    "echoesofanoffering": {
+      "text_map_id": "3626268211"
     },
-    "emblemofseveredfate":  {
-      "text_map_id":  "2276480763"
+    "emblemofseveredfate": {
+      "text_map_id": "2276480763"
     },
-    "flowerofparadiselost":  {
-      "text_map_id":  "3094139291"
+    "flowerofparadiselost": {
+      "text_map_id": "3094139291"
     },
-    "gambler":  {
-      "text_map_id":  "1186209435"
+    "gambler": {
+      "text_map_id": "1186209435"
     },
-    "gildeddreams":  {
-      "text_map_id":  "4145306051"
+    "gildeddreams": {
+      "text_map_id": "4145306051"
     },
-    "gladiatorsfinale":  {
-      "text_map_id":  "1212345779"
+    "gladiatorsfinale": {
+      "text_map_id": "1212345779"
     },
-    "goldentroupe":  {
-      "text_map_id":  "2210493321"
+    "goldentroupe": {
+      "text_map_id": "2210493321"
     },
-    "heartofdepth":  {
-      "text_map_id":  "156294403"
+    "heartofdepth": {
+      "text_map_id": "156294403"
     },
-    "huskofopulentdreams":  {
-      "text_map_id":  "2546254811"
+    "huskofopulentdreams": {
+      "text_map_id": "2546254811"
     },
-    "instructor":  {
-      "text_map_id":  "3890292467"
+    "instructor": {
+      "text_map_id": "3890292467"
     },
-    "lavawalker":  {
-      "text_map_id":  "1632377563"
+    "lavawalker": {
+      "text_map_id": "1632377563"
     },
-    "maidenbeloved":  {
-      "text_map_id":  "83115355"
+    "maidenbeloved": {
+      "text_map_id": "83115355"
     },
-    "marechausseehunter":  {
-      "text_map_id":  "2520491569"
+    "marechausseehunter": {
+      "text_map_id": "2520491569"
     },
-    "martialartist":  {
-      "text_map_id":  "2890909531"
+    "martialartist": {
+      "text_map_id": "2890909531"
     },
-    "noblesseoblige":  {
-      "text_map_id":  "1751039235"
+    "noblesseoblige": {
+      "text_map_id": "1751039235"
     },
-    "nymphsdream":  {
-      "text_map_id":  "1925210475"
+    "nymphsdream": {
+      "text_map_id": "1925210475"
     },
-    "oceanhuedclam":  {
-      "text_map_id":  "1756609915"
+    "oceanhuedclam": {
+      "text_map_id": "1756609915"
     },
-    "paleflame":  {
-      "text_map_id":  "862591315"
+    "paleflame": {
+      "text_map_id": "862591315"
     },
-    "resolutionofsojourner":  {
-      "text_map_id":  "2364208851"
+    "resolutionofsojourner": {
+      "text_map_id": "2364208851"
     },
-    "retracingbolide":  {
-      "text_map_id":  "1438974835"
+    "retracingbolide": {
+      "text_map_id": "1438974835"
     },
-    "scholar":  {
-      "text_map_id":  "3618167299"
+    "scholar": {
+      "text_map_id": "3618167299"
     },
-    "shimenawasreminiscence":  {
-      "text_map_id":  "4144069251"
+    "shimenawasreminiscence": {
+      "text_map_id": "4144069251"
     },
-    "tenacityofthemillelith":  {
-      "text_map_id":  "1337666507"
+    "tenacityofthemillelith": {
+      "text_map_id": "1337666507"
     },
-    "theexile":  {
-      "text_map_id":  "2764598579"
+    "theexile": {
+      "text_map_id": "2764598579"
     },
-    "thunderingfury":  {
-      "text_map_id":  "2512309395"
+    "thunderingfury": {
+      "text_map_id": "2512309395"
     },
-    "thundersoother":  {
-      "text_map_id":  "1873342283"
+    "thundersoother": {
+      "text_map_id": "1873342283"
     },
-    "vermillionhereafter":  {
-      "text_map_id":  "1558036915"
+    "vermillionhereafter": {
+      "text_map_id": "1558036915"
     },
-    "viridescentvenerer":  {
-      "text_map_id":  "1562601179"
+    "viridescentvenerer": {
+      "text_map_id": "1562601179"
     },
-    "vourukashasglow":  {
-      "text_map_id":  "235897163"
+    "vourukashasglow": {
+      "text_map_id": "235897163"
     },
-    "wandererstroupe":  {
-      "text_map_id":  "147298547"
+    "wandererstroupe": {
+      "text_map_id": "147298547"
     }
   }
 }
