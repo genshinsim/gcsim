@@ -46,6 +46,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	bondAtkCap := 112.5 + float64(r)*37.5
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
@@ -63,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		char.SetHPDebtByRatio(hp)
 		debt := char.CurrentHPDebt()
-		bondAtk := (debt / 1000) * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
+		bondAtk := debt * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
 		if bondAtk > bondAtkCap {
 			bondAtk = bondAtkCap
 		}
