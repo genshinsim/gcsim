@@ -68,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 		char.SetHPDebtByRatio(hp)
 		debt := char.CurrentHPDebt()
-		bondDMGP := debt * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
+		bondDMGP := (debt / 1000) * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
 		if bondDMGP > bondDMGPCap {
 			bondDMGP = bondDMGPCap
 		}
