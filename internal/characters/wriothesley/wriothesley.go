@@ -18,6 +18,7 @@ type char struct {
 	a1ICD     int
 	a1HPRatio float64
 	a1Buff    []float64
+	a1Heal    float64
 	a4Stack   int
 	c1Proc    bool
 }
@@ -46,6 +47,9 @@ func (c *char) Init() error {
 
 	if c.Base.Cons >= 2 {
 		c.c2()
+	}
+	if c.Base.Cons >= 4 {
+		c.c4()
 	}
 
 	return nil
