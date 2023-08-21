@@ -46,7 +46,10 @@ func (c *char) c4() {
 		if index != c.Index {
 			return false
 		}
-		if amount <= 0 && overheal <= 0 {
+		if amount <= 0 {
+			return false
+		}
+		if overheal <= 0 {
 			return false
 		}
 
