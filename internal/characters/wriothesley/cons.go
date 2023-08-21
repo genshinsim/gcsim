@@ -86,3 +86,26 @@ func (c *char) c4() {
 		return false
 	}, "wriothesley-c4-heal")
 }
+
+// The CRIT Rate of Rebuke: Vaulting Fist will be increased by 10%, and its CRIT DMG by 80%.
+// When released, it will also unleash an icicle that deals 100% of Rebuke: Vaulting Fist's Base
+// DMG. DMG dealt this way is regarded as Charged Attack DMG.
+// You must first unlock the Passive Talent "There Shall Be a Plea for Justice."
+func (c *char) c6() {
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.1
+	m[attributes.CD] = 0.8
+
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("wriothesley-c6", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != attacks.AttackTagExtra { // TODO: or atk.Info.Abil != "Rebuke: Vaulting Fist"?
+				return nil, false
+			}
+			if !c.StatusIsActive(skillKey) {
+				return nil, false
+			}
+			return m, true
+		},
+	})
+}

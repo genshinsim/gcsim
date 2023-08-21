@@ -9,10 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: heizou based frames
+// TODO: heizou based frames & my assumptions
 var chargeFrames []int
 
-const chargeHitmark = 24
+const (
+	chargeHitmark = 24
+
+	c6Hitmark = 34
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(46)
@@ -39,6 +43,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: false,
 	}
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.2}, 2.8, 3.6)
+	snap := c.Snapshot(&ai) // TODO: where's a snapshot?
 
 	var particleCB combat.AttackCBFunc
 	if c.StatusIsActive(skillKey) {
@@ -48,6 +53,29 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.8}, 4, 5)
 
 		particleCB = c.particleCB
+
+		if c.Base.Cons >= 6 {
+			aiC6 := combat.AttackInfo{
+				ActorIndex:         c.Index,
+				Abil:               "Cherish the Innocent",
+				AttackTag:          attacks.AttackTagExtra,
+				ICDTag:             attacks.ICDTagNone,
+				ICDGroup:           attacks.ICDGroupDefault,
+				StrikeType:         attacks.StrikeTypeBlunt,
+				Element:            attributes.Cryo,
+				Durability:         25,
+				Mult:               ai.Mult,
+				HitlagFactor:       0.03,
+				HitlagHaltFrames:   0.12 * 60,
+				CanBeDefenseHalted: false,
+			}
+			c.Core.QueueAttackWithSnap(
+				aiC6,
+				snap,
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.80}, 4.00, 5.00),
+				c6Hitmark,
+			)
+		}
 	}
 
 	var a1CB combat.AttackCBFunc
@@ -55,7 +83,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		a1CB = c.a1Remove
 	}
 
-	c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark, particleCB, a1CB)
+	c.Core.QueueAttackWithSnap(ai, snap, ap, chargeHitmark, particleCB, a1CB)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(chargeFrames),
