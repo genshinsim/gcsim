@@ -207,6 +207,8 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
   const t = (s: string) => translation<string>(s);
   const displayCharName = t("game:character_names." + charName);
 
+  const travelerName = (charName.includes("lumine") || charName.includes("aether") ? displayCharName : "").replace(/.*?\((\S+)\).*?/, "$1")
+
   return (
     <div className="flex flex-col truncate gap-1">
       <img
@@ -214,7 +216,7 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
         src={`/api/assets/avatar/${charName}.png`}
         className="truncate h-16 object-contain"
       />
-      <div className="text-center">{displayCharName}</div>
+      { travelerName != "" ?  <div className="text-center">{travelerName}</div> : <></> }
     </div>
   );
 }
