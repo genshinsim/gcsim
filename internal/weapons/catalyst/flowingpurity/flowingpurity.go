@@ -48,6 +48,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	bondDMGPCap := 0.09 + float64(r)*0.03
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
+		if c.Player.Active() != char.Index {
+			return false
+		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
