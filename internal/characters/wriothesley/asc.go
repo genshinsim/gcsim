@@ -25,6 +25,7 @@ func (c *char) a1() {
 	c.a1HPRatio = 0.6
 	c.a1Buff = make([]float64, attributes.EndStatType)
 	c.a1Buff[attributes.DmgP] = 0.3
+	c.a1Heal = 0.3
 
 	// The Gracious Rebuke from "There Shall Be a Plea for Justice" shall be converted into:
 	// When Wriothesley's HP is less than 50% or while he is in the Chilling Penalty state caused by Icefang Rush,
@@ -39,6 +40,9 @@ func (c *char) a1() {
 		c.a1ICD = 2.5 * 60
 		c.a1HPRatio = 0.5
 		c.a1Buff[attributes.DmgP] += 1.5
+	}
+	if c.Base.Cons >= 4 {
+		c.a1Heal = 0.5
 	}
 
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
@@ -87,7 +91,7 @@ func (c *char) a1Remove(_ combat.AttackCB) {
 		Caller:  c.Index,
 		Target:  c.Index,
 		Message: "There Shall Be a Plea for Justice",
-		Src:     c.MaxHP() * 0.3,
+		Src:     c.MaxHP() * c.a1Heal,
 		Bonus:   c.Stat(attributes.Heal),
 	})
 
