@@ -69,12 +69,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 				HitlagHaltFrames:   0.12 * 60,
 				CanBeDefenseHalted: false,
 			}
-			c.Core.QueueAttackWithSnap(
-				aiC6,
-				snap,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.80}, 4.00, 5.00),
-				c6Hitmark,
-			)
+			c.Core.QueueAttackWithSnap(aiC6, snap, ap, c6Hitmark)
 		}
 	}
 

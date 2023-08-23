@@ -16,7 +16,8 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{12}, {13}, {21}, {13, 19}, {31}}
-	attackHitlagHaltFrame = [][]float64{{0.01}, {0.01}, {0.03}, {0, 0.01}, {0.06}}
+	attackHitlagFactor    = [][]float64{{0}, {0}, {0.01}, {0, 0}, {0.01}}
+	attackHitlagHaltFrame = [][]float64{{0}, {0}, {0.03}, {0, 0}, {0.06}}
 	attackHitboxes        = [][]float64{{2, 3}, {2, 3}, {2.5, 3}, {2, 3}, {3, 3}}
 	attackHitboxesSkill   = [][]float64{{2.4, 3.4}, {2.4, 3.4}, {2.8, 3.4}, {2.4, 3.4}, {3.4, 3.4}}
 )
@@ -59,17 +60,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Element:            attributes.Cryo,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],
-			HitlagFactor:       0.01,
+			HitlagFactor:       attackHitlagFactor[c.NormalCounter][i],
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: true,
 		}
-		if c.NormalCounter == 3 && i == 0 { // N4-1
-			ai.HitlagFactor = 0
-		}
 
+		offset := geometry.Point{Y: -0.2}
 		hithoxes := attackHitboxes
 		callbacks := make([]combat.AttackCBFunc, 0)
 		if c.StatusIsActive(skillKey) {
+			offset = geometry.Point{}
 			hithoxes = attackHitboxesSkill
 			callbacks = append(callbacks, c.particleCB)
 
@@ -89,7 +89,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: -0.2},
+			offset,
 			hithoxes[c.NormalCounter][0],
 			hithoxes[c.NormalCounter][1],
 		)
