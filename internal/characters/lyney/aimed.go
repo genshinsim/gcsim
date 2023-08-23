@@ -124,24 +124,26 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
-	c.Core.Tasks.Add(func() {
+	c.QueueCharTask(func() {
 		hpDrained := c.propSurplus()
 		c.c6(c6Travel)
+		target := c.Core.Combat.PrimaryTarget()
 		c.Core.QueueAttack(
 			propAI,
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
+				target,
 				geometry.Point{Y: -0.5},
 				0.1,
 				1,
 			),
 			0,
 			travel,
-			c.skillAlignedCB,
 			c.makeGrinMalkinHatCB(hpDrained),
 			c.makeC4CB(),
 		)
+		// TODO: proper frames
+		c.QueueCharTask(c.skillAligned(target.Pos()), travel)
 	}, aimedPropRelease)
 
 	return action.ActionInfo{
@@ -185,34 +187,33 @@ func (c *char) increasePropSurplusStacks(increase int) {
 	c.Core.Log.NewEvent("Lyney Prop Surplus stack added", glog.LogCharacterEvent, c.Index).Write("prop_surplus_stacks", c.propSurplusStacks)
 }
 
-func (c *char) skillAlignedCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
-		return
-	}
-	if c.StatusIsActive(skillAlignedICDKey) {
-		return
-	}
-	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
+func (c *char) skillAligned(pos geometry.Point) func() {
+	return func() {
+		if c.StatusIsActive(skillAlignedICDKey) {
+			return
+		}
+		c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
 
-	propAlignedAI := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypePierce,
-		Element:    attributes.Pyro,
-		Durability: 0,
-		Mult:       propAligned[c.TalentLvlAttack()],
+		propAlignedAI := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
+			AttackTag:  attacks.AttackTagExtra,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
+			Element:    attributes.Pyro,
+			Durability: 0,
+			Mult:       propAligned[c.TalentLvlAttack()],
+		}
+		c.Core.QueueAttack(
+			propAlignedAI,
+			combat.NewCircleHitOnTarget(pos, nil, 2),
+			// TODO: proper frames
+			0.7*60,
+			0.7*60,
+			c.makeC4CB(),
+		)
 	}
-	c.Core.QueueAttack(
-		propAlignedAI,
-		combat.NewCircleHitOnTarget(a.Target, nil, 2),
-		// TODO: proper frames
-		0.7*60,
-		0.7*60,
-		c.makeC4CB(),
-	)
 }
 
 func (c *char) makeGrinMalkinHatCB(hpDrained bool) combat.AttackCBFunc {
