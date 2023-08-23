@@ -38,6 +38,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.onExit()
+
 	if c.Base.Ascension >= 1 {
 		c.a1()
 	}

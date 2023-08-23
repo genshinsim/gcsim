@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -66,4 +67,15 @@ func (c *char) chillingPenalty(a combat.AttackCB) {
 		Abil:       "Chilling Penalty",
 		Amount:     0.045 * c.MaxHP(),
 	})
+}
+
+func (c *char) onExit() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
+		next := args[1].(int)
+		if prev == c.Index && next != c.Index {
+			c.DeleteStatus(skillKey)
+		}
+		return false
+	}, "wriothesley-exit")
 }
