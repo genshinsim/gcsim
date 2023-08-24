@@ -46,7 +46,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile)
 	if ok {
 		c.pyrotechnicTravel = pyrotechnicTravel
 	} else {
-		c.pyrotechnicTravel = 19 // TODO: proper frames
+		c.pyrotechnicTravel = 36
 	}
 
 	c.maxHatCount = 1
