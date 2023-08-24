@@ -18,9 +18,8 @@ var (
 )
 
 const (
-	// TODO: proper frames, currently using tighnari
-	aimedRelease     = 86
-	aimedPropRelease = 175
+	aimedRelease     = 72
+	aimedPropRelease = 103
 
 	skillAlignedICDKey = "lyney-aligned-icd"
 	skillAlignedICD    = 6 * 60
@@ -33,12 +32,11 @@ const (
 )
 
 func init() {
-	// TODO: proper frames, currently using tighnari
-	aimedFrames = frames.InitAbilSlice(94)
+	aimedFrames = frames.InitAbilSlice(80)
 	aimedFrames[action.ActionDash] = aimedRelease
 	aimedFrames[action.ActionJump] = aimedRelease
 
-	aimedPropFrames = frames.InitAbilSlice(183)
+	aimedPropFrames = frames.InitAbilSlice(111)
 	aimedPropFrames[action.ActionDash] = aimedPropRelease
 	aimedPropFrames[action.ActionJump] = aimedPropRelease
 }
