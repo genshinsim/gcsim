@@ -15,10 +15,9 @@ import (
 var skillFrames []int
 
 const (
-	// TODO: proper frames, currently using tighnari
-	skillHitmark = 15
+	skillHitmark = 18
 	skillCD      = 15 * 60
-	skillCDStart = 13
+	skillCDStart = 15
 
 	particleICDKey = "lyney-particle-icd"
 	particleICD    = 0.3 * 60
@@ -26,14 +25,14 @@ const (
 )
 
 func init() {
-	// TODO: proper frames, currently using tighnari
-	skillFrames = frames.InitAbilSlice(30)
-	skillFrames[action.ActionAttack] = 20
-	skillFrames[action.ActionAim] = 20
-	skillFrames[action.ActionBurst] = 22
-	skillFrames[action.ActionDash] = 23
-	skillFrames[action.ActionJump] = 23
-	skillFrames[action.ActionSwap] = 21
+	skillFrames = frames.InitAbilSlice(43) // E -> D
+	skillFrames[action.ActionAttack] = 42
+	skillFrames[action.ActionAim] = 42
+	skillFrames[action.ActionSkill] = 42
+	skillFrames[action.ActionBurst] = 42
+	skillFrames[action.ActionJump] = 42
+	skillFrames[action.ActionWalk] = 42
+	skillFrames[action.ActionSwap] = 41
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -73,7 +72,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionAim], // TODO: proper frames, should be earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}
 }
