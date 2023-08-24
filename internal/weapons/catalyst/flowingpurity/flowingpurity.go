@@ -46,6 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	hp := 0.24
 	bondPercentage := 0.015 + float64(r)*0.005
 	bondDMGPCap := 0.09 + float64(r)*0.03
+	debt := 0.0
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
@@ -64,10 +65,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
+		if !char.StatusIsActive(bondKey) {
+			debt = 0
+		}
 		char.AddStatus(bondKey, -1, true)
 
 		char.SetHPDebtByRatio(hp)
-		debt := char.CurrentHPDebt()
+		debt += char.CurrentHPDebt()
 		bondDMGP := (debt / 1000) * bondPercentage // use hp debt since you only get the buff after clearing bond anyway
 		if bondDMGP > bondDMGPCap {
 			bondDMGP = bondDMGPCap
