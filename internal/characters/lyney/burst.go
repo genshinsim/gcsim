@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -55,20 +54,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstFrames[action.ActionSkill], // TODO: proper frames, should be earliest cancel
 		State:           action.BurstState,
 	}
-}
-
-func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		prev := args[0].(int)
-		if prev != c.Index {
-			return false
-		}
-		if !c.StatusIsActive(burstKey) {
-			return false
-		}
-		c.explosiveFirework()
-		return false
-	}, "lyney-exit")
 }
 
 func (c *char) burstTick() {

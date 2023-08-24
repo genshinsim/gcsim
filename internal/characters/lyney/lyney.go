@@ -65,8 +65,6 @@ func (c *char) Init() error {
 
 	c.c2Setup()
 
-	c.onExitField()
-
 	return nil
 }
 
