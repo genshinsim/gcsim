@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -138,9 +137,9 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 			),
 			0,
 			travel,
-			c.makeGrinMalkinHatCB(hpDrained),
 			c.makeC4CB(),
 		)
+		c.QueueCharTask(c.makeGrinMalkinHat(target.Pos(), hpDrained), travel)
 		c.QueueCharTask(c.skillAligned(target.Pos()), travel)
 	}, aimedPropRelease)
 
@@ -213,24 +212,15 @@ func (c *char) skillAligned(pos geometry.Point) func() {
 	}
 }
 
-func (c *char) makeGrinMalkinHatCB(hpDrained bool) combat.AttackCBFunc {
-	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
-			return
-		}
-		if done {
-			return
-		}
-		done = true
-
+func (c *char) makeGrinMalkinHat(pos geometry.Point, hpDrained bool) func() {
+	return func() {
 		hatIncrease := c.c1HatIncrease()
 		for i := 0; i < hatIncrease; i++ {
 			// kill existing hat if reached limit
 			if len(c.hats) == c.maxHatCount {
 				c.hats[0].Kill()
 			}
-			g := c.newGrinMalkinHat(a.Target.Pos(), hpDrained, grinMalkinHatAimedDuration)
+			g := c.newGrinMalkinHat(pos, hpDrained, grinMalkinHatAimedDuration)
 			c.hats = append(c.hats, g)
 			c.Core.Combat.AddGadget(g)
 		}
