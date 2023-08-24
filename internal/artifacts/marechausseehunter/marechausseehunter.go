@@ -2,6 +2,7 @@ package marechausseehunter
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -94,6 +95,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 			index := args[1].(int)
 			amount := args[2].(float64)
+			overheal := args[3].(float64)
 			if c.Player.Active() != char.Index {
 				return false
 			}
@@ -101,6 +103,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 			if amount <= 0 {
+				return false
+			}
+			// do not trigger if at max hp already
+			if math.Abs(amount-overheal) <= 1e-9 {
 				return false
 			}
 
