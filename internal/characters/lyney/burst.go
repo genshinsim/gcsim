@@ -19,7 +19,6 @@ const (
 	burstInterval      = 0.15 * 60
 	burstDuration      = 182
 	burstCD            = 15 * 60
-	burstCDStart       = 0
 	burstEnergyDelay   = 8
 )
 
@@ -41,7 +40,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(c.explosiveFirework, burstDuration)
 	}, burstStart)
 
-	c.SetCDWithDelay(action.ActionBurst, burstCD, burstCDStart)
+	c.SetCD(action.ActionBurst, burstCD)
 	c.ConsumeEnergy(burstEnergyDelay)
 
 	return action.ActionInfo{
