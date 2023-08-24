@@ -9,14 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-// 3 * 60 duration
-// burst, none, default, default, no hitlag
-// every 0.15*60 perform true ST attack with burst
-// at end of duration: explosiveFirework with 6m aoe around player
-// burst ends either via duration or swap
-// 15s cooldown
-// energy drain
-
 var burstFrames []int
 
 const (
