@@ -1,7 +1,6 @@
 package avatar
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -34,16 +33,30 @@ func (p *Player) Type() targets.TargettableType { return targets.TargettablePlay
 
 func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	p.Core.Combat.Events.Emit(event.OnPlayerHit, p, atk)
-
 	var amp string
 	var cata string
 	var dmg float64
 	var crit bool
-	evt := p.Core.Combat.Log.NewEvent(atk.Info.Abil, glog.LogDamageEvent, atk.Info.ActorIndex).
-		Write("target", p.Key()).
+	evt := p.Core.Combat.Log.NewEvent(atk.Info.Abil, glog.LogDamageEvent, atk.Info.ActorIndex)
+
+	// TODO: Implement reactions on player
+
+	dmg, crit = p.calc(atk, evt)
+
+	active := p.Core.Player.Active()
+	dmgLeft := p.Core.Player.Shields.OnDamage(active, dmg, atk.Info.Element)
+	if dmgLeft > 0 {
+		p.Core.Player.Drain(player.DrainInfo{
+			ActorIndex: active,
+			Abil:       atk.Info.Abil,
+			Amount:     dmgLeft,
+		})
+	}
+	evt.Write("target", p.Key()).
 		Write("attack-tag", atk.Info.AttackTag).
 		Write("ele", atk.Info.Element.String()).
-		Write("damage", &dmg).
+		Write("damage", &dmgLeft).
+		Write("damage_before_shield", &dmg).
 		Write("crit", &crit).
 		Write("amp", &amp).
 		Write("cata", &cata).
@@ -57,23 +70,6 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 		}
 		preDmgModDebug := p.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).ApplyAttackMods(atk, p)
 		evt.Write("pre_damage_mods", preDmgModDebug)
-	}
-
-	// TODO: Implement reactions on player
-
-	dmg, crit = p.calc(atk, evt)
-
-	active := p.Core.Player.Active()
-	dmgLeft := p.Core.Player.Shields.OnDamage(active, dmg, atk.Info.Element)
-	if dmgLeft < dmg {
-		p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, fmt.Sprintf("%.0f damage taken by shields", dmg-dmgLeft))
-	}
-	if dmgLeft > 0 {
-		p.Core.Player.Drain(player.DrainInfo{
-			ActorIndex: active,
-			Abil:       atk.Info.Abil,
-			Amount:     dmgLeft,
-		})
 	}
 	return 0
 }
