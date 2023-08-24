@@ -12,7 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillFrames []int
+var (
+	skillFrames      []int
+	skillBurstFrames []int
+)
 
 const (
 	skillHitmark = 18
@@ -34,9 +37,21 @@ func init() {
 	skillFrames[action.ActionJump] = 42
 	skillFrames[action.ActionWalk] = 42
 	skillFrames[action.ActionSwap] = 41
+
+	skillBurstFrames = frames.InitAbilSlice(39) // E (in Q) -> Walk
+	skillBurstFrames[action.ActionAttack] = 14
+	skillBurstFrames[action.ActionAim] = 14
+	skillBurstFrames[action.ActionSkill] = 14
+	skillBurstFrames[action.ActionDash] = 8
+	skillBurstFrames[action.ActionJump] = 7
+	skillBurstFrames[action.ActionSwap] = 28
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
+	if c.StatusIsActive(burstKey) {
+		return c.skillBurst(p)
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bewildering Lights",
@@ -79,6 +94,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionSwap],
 		State:           action.SkillState,
+	}
+}
+
+func (c *char) skillBurst(p map[string]int) action.ActionInfo {
+	c.explosiveFirework()
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(skillBurstFrames),
+		AnimationLength: skillBurstFrames[action.InvalidAction],
+		CanQueueAfter:   skillBurstFrames[action.ActionJump],
+		State:           action.SkillState, // TODO: does this matter?
 	}
 }
 

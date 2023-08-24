@@ -3,6 +3,7 @@ package lyney
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
@@ -67,4 +68,12 @@ func (c *char) Init() error {
 	c.onExitField()
 
 	return nil
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+	// check if it is possible to use E (in Q)
+	if a == action.ActionSkill && c.StatusIsActive(burstKey) {
+		return true, action.NoFailure
+	}
+	return c.Character.ActionReady(a, p)
 }
