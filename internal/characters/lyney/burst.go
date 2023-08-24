@@ -12,30 +12,34 @@ import (
 var burstFrames []int
 
 const (
-	// TODO: proper frames
-	burstKey         = "lyney-q"
-	burstMarkKey     = "lyney-q-mark"
-	burstInterval    = 0.15 * 60
-	burstDuration    = 3*60 + 1 // + 1 for final tick
-	burstCD          = 15 * 60
-	burstCDStart     = 1
-	burstEnergyDelay = 7
+	burstKey           = "lyney-q"
+	burstMarkKey       = "lyney-q-mark"
+	burstStart         = 100
+	burstFirstInterval = 12
+	burstInterval      = 0.15 * 60
+	burstDuration      = 182
+	burstCD            = 15 * 60
+	burstCDStart       = 0
+	burstEnergyDelay   = 8
 )
 
 func init() {
-	// TODO: proper min frames, currently using thoma
-	burstFrames = frames.InitAbilSlice(58)
-	burstFrames[action.ActionAttack] = 57
-	burstFrames[action.ActionSkill] = 56
-	burstFrames[action.ActionDash] = 57
-	burstFrames[action.ActionSwap] = 56
+	burstFrames = frames.InitAbilSlice(321) // Q -> Walk
+	burstFrames[action.ActionAttack] = 297
+	burstFrames[action.ActionAim] = 297
+	burstFrames[action.ActionSkill] = 101
+	burstFrames[action.ActionDash] = 287
+	burstFrames[action.ActionJump] = 285
+	burstFrames[action.ActionSwap] = 283
 }
 
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	c.AddStatus(burstKey, burstDuration, true)
-	c.QueueCharTask(c.burstTick, burstInterval)
-	c.QueueCharTask(c.explosiveFirework, burstDuration)
+	c.QueueCharTask(func() {
+		c.AddStatus(burstKey, burstDuration, true)
+		c.QueueCharTask(c.burstTick, burstFirstInterval)
+		c.QueueCharTask(c.explosiveFirework, burstDuration)
+	}, burstStart)
 
 	c.SetCDWithDelay(action.ActionBurst, burstCD, burstCDStart)
 	c.ConsumeEnergy(burstEnergyDelay)
@@ -43,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSkill], // TODO: proper frames, should be earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSkill],
 		State:           action.BurstState,
 	}
 }
@@ -104,8 +108,7 @@ func (c *char) explosiveFirework() {
 		Mult:       explosiveFirework[c.TalentLvlBurst()],
 	}
 	qPos := c.Core.Combat.Player().Pos()
-	// TODO: proper frames
-	c.Core.QueueAttack(explodeAI, combat.NewCircleHitOnTarget(qPos, nil, 6), 5, 5)
+	c.Core.QueueAttack(explodeAI, combat.NewCircleHitOnTarget(qPos, nil, 6), 6, 6)
 
 	// kill existing hat if reached limit
 	if len(c.hats) == c.maxHatCount {
