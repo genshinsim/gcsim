@@ -14,7 +14,7 @@ var burstFrames []int
 const (
 	// TODO: proper frames
 	burstKey         = "lyney-q"
-	burstMarkKey     = "lyney-burst-mark"
+	burstMarkKey     = "lyney-q-mark"
 	burstInterval    = 0.15 * 60
 	burstDuration    = 3*60 + 1 // + 1 for final tick
 	burstCD          = 15 * 60
