@@ -2414,10 +2414,10 @@ var CharBaseMap = map[keys.Char]CharBase{
 	},
 	keys.Lyney: {
 		Rarity:      5,
-		Body:        profile.BodyBoy,
+		Body:        info.BodyBoy,
 		Element:     attributes.Pyro,
-		Region:      profile.ZoneFontaine,
-		WeaponType:  weapon.WeaponClassBow,
+		Region:      info.ZoneFontaine,
+		WeaponType:  info.WeaponClassBow,
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
