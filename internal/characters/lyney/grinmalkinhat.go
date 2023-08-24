@@ -20,7 +20,7 @@ type GrinMalkinHat struct {
 	a1CB                combat.AttackCBFunc
 }
 
-func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool) *GrinMalkinHat {
+func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool, duration int) *GrinMalkinHat {
 	g := &GrinMalkinHat{}
 
 	g.pos = pos
@@ -29,8 +29,7 @@ func (c *char) newGrinMalkinHat(pos geometry.Point, hpDrained bool) *GrinMalkinH
 	g.Gadget = gadget.New(c.Core, g.pos, 1, combat.GadgetTypGrinMalkinHat)
 	g.char = c
 
-	// TODO: proper frames
-	g.Duration = grinMalkinHatDuration
+	g.Duration = duration
 	g.char.AddStatus(grinMalkinHatKey, g.Duration, false)
 
 	g.pyrotechnicAI = combat.AttackInfo{

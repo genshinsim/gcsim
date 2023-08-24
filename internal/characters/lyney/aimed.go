@@ -24,8 +24,9 @@ const (
 	skillAlignedICDKey = "lyney-aligned-icd"
 	skillAlignedICD    = 6 * 60
 
-	grinMalkinHatKey      = "lyney-grinmalkinhat"
-	grinMalkinHatDuration = 4 * 60
+	grinMalkinHatKey           = "lyney-grinmalkinhat"
+	grinMalkinHatAimedDuration = 238
+	grinMalkinHatBurstDuration = 245
 
 	propSurplusHPDrainThreshold = 0.6
 	propSurplusHPDrainRatio     = 0.2
@@ -229,7 +230,7 @@ func (c *char) makeGrinMalkinHatCB(hpDrained bool) combat.AttackCBFunc {
 			if len(c.hats) == c.maxHatCount {
 				c.hats[0].Kill()
 			}
-			g := c.newGrinMalkinHat(a.Target.Pos(), hpDrained)
+			g := c.newGrinMalkinHat(a.Target.Pos(), hpDrained, grinMalkinHatAimedDuration)
 			c.hats = append(c.hats, g)
 			c.Core.Combat.AddGadget(g)
 		}
