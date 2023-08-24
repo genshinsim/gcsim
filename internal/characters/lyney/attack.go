@@ -12,21 +12,30 @@ import (
 )
 
 var (
-	// TODO: proper frames, currently using tighnari
 	attackFrames   [][]int
-	attackHitmarks = [][]int{{14}, {12}, {13, 25}, {28}}
+	attackReleases = [][]int{{17}, {12}, {20, 29}, {29}}
 )
 
 const normalHitNum = 4
 
 func init() {
-	// TODO: proper frames, currently using tighnari
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 26)
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 23)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 37)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 68)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackReleases[0][0], 32) // N1 -> Walk
+	attackFrames[0][action.ActionAttack] = 22
+	attackFrames[0][action.ActionAim] = 22
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackReleases[1][0], 34) // N2 -> CA
+	attackFrames[1][action.ActionAttack] = 24
+	attackFrames[1][action.ActionWalk] = 31
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackReleases[2][1], 86) // N3 -> Walk
+	attackFrames[2][action.ActionAttack] = 39
+	attackFrames[2][action.ActionAim] = 81
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackReleases[3][0], 66) // N4 -> Walk
+	attackFrames[3][action.ActionAttack] = 59
+	attackFrames[3][action.ActionAim] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
@@ -57,8 +66,8 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				0.1,
 				1,
 			),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i]+travel,
+			attackReleases[c.NormalCounter][i],
+			attackReleases[c.NormalCounter][i]+travel,
 		)
 	}
 
@@ -67,7 +76,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		CanQueueAfter:   attackReleases[c.NormalCounter][len(attackReleases[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
 }
