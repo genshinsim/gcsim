@@ -40,6 +40,8 @@ func Eval(c *core.Core, fields []string) (any, error) {
 		return evalKeys(c, fields)
 	case "state":
 		return int(c.Player.CurrentState()), nil
+	case "action":
+		return evalAction(c, fields)
 	default:
 		// check if it's a char name; if so check char custom eval func
 		name := fields[0]

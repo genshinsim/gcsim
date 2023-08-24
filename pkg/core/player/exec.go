@@ -18,6 +18,68 @@ var ErrActionNotReady = errors.New("action is not ready yet; cannot be executed"
 var ErrPlayerNotReady = errors.New("player still in animation; cannot execute action")
 var ErrActionNoOp = errors.New("action is a noop")
 
+// ReadyCheck returns nil action is ready, else returns error representing why action is not ready
+func (p *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int) error {
+	//check animation state
+	if p.IsAnimationLocked(t) {
+		return ErrPlayerNotReady
+	}
+	char := p.chars[p.active]
+	//check for energy, cd, etc..
+	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
+	//this should deal with Ayaka/Mona's drain vs straight up consumption
+	if ok, reason := char.ActionReady(t, param); !ok {
+		p.Events.Emit(event.OnActionFailed, p.active, t, param, reason)
+		return ErrActionNotReady
+	}
+
+	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
+		req := p.AbilStamCost(char.Index, t, param)
+		return req, p.Stam >= req
+	}
+
+	switch t {
+	case action.ActionCharge: //require special calc for stam
+		amt, ok := stamCheck(t, param)
+		if !ok {
+			p.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
+				Write("have", p.Stam).
+				Write("cost", amt)
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
+			return ErrActionNotReady
+		}
+	case action.ActionDash: //require special calc for stam
+		//dash handles it in the action itself
+		amt, ok := stamCheck(t, param)
+		if !ok {
+			p.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
+				Write("have", p.Stam).
+				Write("cost", amt)
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
+			return ErrActionNotReady
+		}
+
+		// dash is still on cooldown and is locked out, cannot dash again until CD expires
+		if p.DashLockout && p.DashCDExpirationFrame > *p.F {
+			p.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
+				Write("dash_cd_expiration", p.DashCDExpirationFrame-*p.F)
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.DashCD)
+			return ErrActionNotReady
+		}
+	case action.ActionSwap:
+		if p.active == p.charPos[k] {
+			//even though noop this action is still ready
+			return nil
+		}
+		if p.SwapCD > 0 {
+			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.SwapCD)
+			return ErrActionNotReady
+		}
+	}
+
+	return nil
+}
+
 // Exec mirrors the idea of the in game buttons where you can press the button but
 // it may be greyed out. If grey'd out it will return ErrActionNotReady. Otherwise
 // if action was executed successfully then it will return nil

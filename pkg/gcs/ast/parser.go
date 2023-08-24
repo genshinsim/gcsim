@@ -1,26 +1,22 @@
 package ast
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"runtime"
 	"strconv"
 
-	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 type Parser struct {
-	lex *lexer
-	res *ActionList
+	lex  *lexer
+	res  *info.ActionList
+	prog *BlockStmt
 
 	//other information tracked as we parse
-	chars          map[keys.Char]*profile.CharacterProfile
+	chars          map[keys.Char]*info.CharacterProfile
 	charOrder      []keys.Char
 	currentCharKey keys.Char
 
@@ -32,109 +28,44 @@ type Parser struct {
 	prefixParseFns map[TokenType]func() (Expr, error)
 	infixParseFns  map[TokenType]func(Expr) (Expr, error)
 }
-type ActionList struct {
-	Targets     []enemy.EnemyProfile       `json:"targets"`
-	PlayerPos   core.Coord                 `json:"player_initial_pos"`
-	Characters  []profile.CharacterProfile `json:"characters"`
-	InitialChar keys.Char                  `json:"initial"`
-	Program     *BlockStmt                 `json:"-"`
-	Energy      EnergySettings             `json:"energy_settings"`
-	Settings    SimulatorSettings          `json:"settings"`
-	Errors      []error                    `json:"-"` //These represents errors preventing ActionList from being executed
-	ErrorMsgs   []string                   `json:"errors"`
-}
-
-type EnergySettings struct {
-	Active         bool `json:"active"`
-	Once           bool `json:"once"` //how often
-	Start          int  `json:"start"`
-	End            int  `json:"end"`
-	Amount         int  `json:"amount"`
-	LastEnergyDrop int  `json:"last_energy_drop"`
-}
-
-type SimulatorSettings struct {
-	Duration     float64 `json:"-"`
-	DamageMode   bool    `json:"damage_mode"`
-	EnableHitlag bool    `json:"enable_hitlag"`
-	DefHalt      bool    `json:"def_halt"` // for hitlag
-	//other stuff
-	NumberOfWorkers int           `json:"-"`          // how many workers to run the simulation
-	Iterations      int           `json:"iterations"` // how many iterations to run
-	Delays          player.Delays `json:"delays"`
-}
-
-type Delays struct {
-	Skill  int `json:"skill"`
-	Burst  int `json:"burst"`
-	Attack int `json:"attack"`
-	Charge int `json:"charge"`
-	Aim    int `json:"aim"`
-	Dash   int `json:"dash"`
-	Jump   int `json:"jump"`
-	Swap   int `json:"swap"`
-}
-
-func (c *ActionList) Copy() *ActionList {
-
-	r := *c
-
-	r.Targets = make([]enemy.EnemyProfile, len(c.Targets))
-	for i, v := range c.Targets {
-		r.Targets[i] = v.Clone()
-	}
-
-	r.Characters = make([]profile.CharacterProfile, len(c.Characters))
-	for i, v := range c.Characters {
-		r.Characters[i] = v.Clone()
-	}
-
-	r.Program = c.Program.CopyBlock()
-	return &r
-}
-
-func (a *ActionList) PrettyPrint() string {
-	prettyJson, err := json.MarshalIndent(a, "", "  ")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	return string(prettyJson)
-}
 
 type parseFn func(*Parser) (parseFn, error)
 
 func New(input string) *Parser {
 	p := &Parser{
-		chars:          make(map[keys.Char]*profile.CharacterProfile),
+		chars:          make(map[keys.Char]*info.CharacterProfile),
 		prefixParseFns: make(map[TokenType]func() (Expr, error)),
 		infixParseFns:  make(map[TokenType]func(Expr) (Expr, error)),
 		token:          make([]Token, 0, 20),
 		pos:            -1,
 	}
 	p.lex = lex(input)
-	p.res = &ActionList{
-		Program: newBlockStmt(0),
-		Settings: SimulatorSettings{
+	p.res = &info.ActionList{
+		Settings: info.SimulatorSettings{
 			EnableHitlag:    true, // default hitlag enabled
 			DefHalt:         true, //default defhalt to true
 			NumberOfWorkers: 20,   //default 20 workers if none set
 			Iterations:      1000, //default 1000 iterations
-			Delays: player.Delays{
+			Delays: info.Delays{
 				Swap: 1, //default swap timer of 1
 			},
 		},
-		PlayerPos: core.Coord{
+		PlayerPos: info.Coord{
 			R: 0.3, //default player radius 0.3, pos 0,0
 		},
 	}
+	p.prog = newBlockStmt(0)
 	//expr functions
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
 	p.prefixParseFns[itemField] = p.parseField
 	p.prefixParseFns[itemNumber] = p.parseNumber
+	p.prefixParseFns[itemBool] = p.parseBool
 	p.prefixParseFns[itemString] = p.parseString
+	p.prefixParseFns[keywordFn] = p.parseFnExpr
 	p.prefixParseFns[LogicNot] = p.parseUnaryExpr
 	p.prefixParseFns[ItemMinus] = p.parseUnaryExpr
 	p.prefixParseFns[itemLeftParen] = p.parseParen
+	p.prefixParseFns[itemLeftSquareParen] = p.parseMap
 	p.infixParseFns[LogicAnd] = p.parseBinaryExpr
 	p.infixParseFns[LogicOr] = p.parseBinaryExpr
 	p.infixParseFns[ItemPlus] = p.parseBinaryExpr
@@ -148,7 +79,6 @@ func New(input string) *Parser {
 	p.infixParseFns[OpGreaterThan] = p.parseBinaryExpr
 	p.infixParseFns[OpGreaterThanOrEqual] = p.parseBinaryExpr
 	p.infixParseFns[itemLeftParen] = p.parseCall
-
 	return p
 }
 

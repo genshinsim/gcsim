@@ -3,38 +3,13 @@ package ast
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
-type actionItem struct {
-	typ   Token
-	param map[string]int
-}
-
-type actionAPLOpt struct {
-	onField           bool
-	limit             int
-	timeout           int
-	swapTo            Token //character to swap to
-	swapLock          int
-	try               bool
-	tryDropIfNotReady bool
-}
-
-//parseAction returns a node contain a character action, or a block of node containing
-//a list of character actions
+// parseAction returns a node contain a character action, or a block of node containing
+// a list of character actions
 func (p *Parser) parseAction() (Stmt, error) {
-	//actions can be
-	//apl options:
-	//	+if
-	//	+swap_to
-	//	+swap_lock
-	//	+is_onfield
-	//	+label
-	//	+needs
-	//	+limit
-	//	+timeout
-	//	+try
 	char, err := p.consume(itemCharacterKey)
 	if err != nil {
 		//this really shouldn't happen since we already checked
@@ -43,7 +18,7 @@ func (p *Parser) parseAction() (Stmt, error) {
 	charKey := shortcut.CharNameToKey[char.Val]
 
 	//should be multiple action keys next
-	var actions []*ActionStmt
+	var actions []*CallExpr
 	if n := p.peek(); n.Typ != itemActionKey {
 		return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
 	}
@@ -56,16 +31,38 @@ Loop:
 			//stop here
 			break Loop
 		case itemActionKey:
-			a := &ActionStmt{
-				Pos:    char.pos,
-				Char:   charKey,
-				Action: actionKeys[n.Val],
+			actionKey := action.StringToAction(n.Val)
+			expr := &CallExpr{
+				Pos: char.pos,
+				Fun: &Ident{
+					Pos:   n.pos,
+					Value: "execute_action",
+				},
+				Args: make([]Expr, 0),
 			}
+			expr.Args = append(expr.Args,
+				// char
+				&NumberLit{
+					Pos:      char.pos,
+					IntVal:   int64(charKey),
+					FloatVal: float64(charKey),
+				},
+				// action
+				&NumberLit{
+					Pos:      n.pos,
+					IntVal:   int64(actionKey),
+					FloatVal: float64(actionKey),
+				},
+			)
 			//check for param -> then repeat
-			a.Param, err = p.acceptOptionalParamReturnMap()
+			param, err := p.acceptOptionalParamReturnMap()
 			if err != nil {
 				return nil, err
 			}
+			if param != nil {
+				expr.Args = append(expr.Args, param)
+			}
+
 			//optional : and a number
 			count, err := p.acceptOptionalRepeaterReturnCount()
 			if err != nil {
@@ -75,7 +72,7 @@ Loop:
 			for i := 0; i < count; i++ {
 				//TODO: all the repeated action will access the same map
 				//ability implement should avoid modifying the maps
-				actions = append(actions, a)
+				actions = append(actions, expr)
 			}
 
 			n = p.next()
@@ -91,57 +88,44 @@ Loop:
 	//check for optional flags
 
 	//build stmt
-
-	if len(actions) == 1 {
-		return actions[0], nil
-	} else {
-		b := newBlockStmt(char.pos)
-		for _, v := range actions {
-			b.append(v)
-		}
-		return b, nil
+	b := newBlockStmt(char.pos)
+	for _, v := range actions {
+		b.append(v)
 	}
+	return b, nil
 }
 
-func (p *Parser) acceptOptionalParamReturnMap() (map[string]int, error) {
+func (p *Parser) acceptOptionalParamReturnMap() (Expr, error) {
+	//check for params
+	n := p.peek()
+	if n.Typ != itemLeftSquareParen {
+		return nil, nil
+	}
+
+	return p.parseMap()
+}
+
+func (p *Parser) acceptOptionalParamReturnOnlyIntMap() (map[string]int, error) {
 	r := make(map[string]int)
 
-	//check for params
-	n := p.next()
-	if n.Typ != itemLeftSquareParen {
-		p.backup()
+	result, err := p.acceptOptionalParamReturnMap()
+	if err != nil {
+		return nil, err
+	}
+	if result != nil {
 		return r, nil
 	}
 
-	//loop until we hit square paren
-	for {
-		//we're expecting ident = int
-		i, err := p.consume(itemIdentifier)
-		if err != nil {
-			return r, err
-		}
-
-		item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
-		if err != nil {
-			return r, err
-		}
-
-		r[i.Val], err = itemNumberToInt(item)
-		if err != nil {
-			return r, err
-		}
-
-		//if we hit ], return; if we hit , keep going, other wise error
-		n := p.next()
-		switch n.Typ {
-		case itemRightSquareParen:
-			return r, nil
-		case itemComma:
-			//do nothing, keep going
+	for k, v := range result.(*MapExpr).Fields {
+		switch v.(type) {
+		case *NumberLit:
+			// skip
 		default:
-			return r, fmt.Errorf("ln%v: <action param> bad token %v", n.line, n)
+			return nil, fmt.Errorf("expected number in the map, got %v", v.String())
 		}
+		r[k] = int(v.(*NumberLit).IntVal)
 	}
+	return r, nil
 }
 
 func (p *Parser) acceptOptionalRepeaterReturnCount() (int, error) {

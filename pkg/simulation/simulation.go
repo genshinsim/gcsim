@@ -3,23 +3,20 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/gcs"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 type Simulation struct {
 	// f    int
-	skip int
-	C    *core.Core
+	preActionDelay int
+	C              *core.Core
 	//action list stuff
-	cfg           *ast.ActionList
-	queue         *ast.ActionStmt
-	nextAction    chan *ast.ActionStmt
-	continueEval  chan bool
-	evalErr       chan error
-	queuer        gcs.Eval
+	cfg           *info.ActionList
+	queue         []*action.ActionEval
+	eval          action.Evaluator
 	noMoreActions bool
 	collectors    []stats.StatsCollector
 
@@ -38,7 +35,7 @@ Simulation should maintain the following:
 
 **/
 
-func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
+func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg
@@ -80,6 +77,8 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 	if s.C.Combat.Debug {
 		s.CharacterDetails()
 	}
+
+	s.eval = eval
 
 	return s, nil
 }

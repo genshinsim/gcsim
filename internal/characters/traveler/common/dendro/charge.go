@@ -1,4 +1,4 @@
-﻿package dendro
+package dendro
 
 import (
 	"fmt"

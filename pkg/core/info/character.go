@@ -1,42 +1,19 @@
-package profile
+package info
 
 import (
-	"strconv"
-	"strings"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type CharacterProfile struct {
 	Base         CharacterBase               `json:"base"`
-	Weapon       weapon.WeaponProfile        `json:"weapon"`
+	Weapon       WeaponProfile               `json:"weapon"`
 	Talents      TalentProfile               `json:"talents"`
 	Stats        []float64                   `json:"stats"`
 	StatsByLabel map[string][]float64        `json:"stats_by_label"`
 	Sets         Sets                        `json:"sets"`
 	SetParams    map[keys.Set]map[string]int `json:"-"`
 	Params       map[string]int              `json:"-"`
-}
-
-type Sets map[keys.Set]int
-
-func (s Sets) MarshalJSON() ([]byte, error) {
-	//we'll use a custom string builder i guess
-	var sb strings.Builder
-	sb.WriteString("{")
-	for k, v := range s {
-		sb.WriteString(`"`)
-		sb.WriteString(k.String())
-		sb.WriteString(`":"`)
-		sb.WriteString(strconv.Itoa(v))
-		sb.WriteString(`",`)
-	}
-	str := sb.String()
-	str = strings.TrimRight(str, ",")
-	str = str + "}"
-	return []byte(str), nil
 }
 
 func (c *CharacterProfile) Clone() CharacterProfile {
@@ -66,12 +43,6 @@ type CharacterBase struct {
 	Atk       float64            `json:"base_atk"`
 	Def       float64            `json:"base_def"`
 	Cons      int                `json:"cons"`
-}
-
-type TalentProfile struct {
-	Attack int `json:"attack"`
-	Skill  int `json:"skill"`
-	Burst  int `json:"burst"`
 }
 
 type BodyType int

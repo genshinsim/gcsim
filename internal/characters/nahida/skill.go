@@ -97,7 +97,6 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		hold = 1
 	}
 
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Hold)",

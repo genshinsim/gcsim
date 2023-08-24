@@ -1,4 +1,4 @@
-﻿package reactable
+package reactable
 
 import (
 	"testing"

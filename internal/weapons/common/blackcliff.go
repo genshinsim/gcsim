@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -20,7 +20,7 @@ type Blackcliff struct {
 func (b *Blackcliff) SetIndex(idx int) { b.Index = idx }
 func (b *Blackcliff) Init() error      { return nil }
 
-func NewBlackcliff(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewBlackcliff(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 
 	b := &Blackcliff{}
 

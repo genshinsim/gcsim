@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type Favonius struct {
@@ -19,7 +19,7 @@ type Favonius struct {
 func (b *Favonius) SetIndex(idx int) { b.Index = idx }
 func (b *Favonius) Init() error      { return nil }
 
-func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewFavonius(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	b := &Favonius{}
 
 	const icdKey = "favonius-cd"

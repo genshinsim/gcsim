@@ -1,4 +1,4 @@
-﻿package rosaria
+package rosaria
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"

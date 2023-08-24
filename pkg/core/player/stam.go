@@ -49,7 +49,7 @@ func (h *Handler) StamPercentModIsActive(key string) bool {
 	return true
 }
 
-//TODO: not sure if this is affected by hitlag?
+// TODO: not sure if this is affected by hitlag?
 func (h *Handler) AddStamPercentMod(key string, dur int, f StamPercentModFunc) {
 	mod := stamPercentMod{
 		Key:    key,

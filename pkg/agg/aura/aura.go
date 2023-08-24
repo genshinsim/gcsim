@@ -3,7 +3,7 @@ package aura
 import (
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -16,7 +16,7 @@ type buffer struct {
 	auraUptime []map[string]*calc.StreamStats
 }
 
-func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
+func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		auraUptime: make([]map[string]*calc.StreamStats, len(cfg.Targets)),
 	}

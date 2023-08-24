@@ -4,8 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 // ActionStam provides default implementation for stam cost for charge and dash
@@ -18,16 +17,16 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 		//40 per second claymore
 		//50 catalyst
 		switch c.Weapon.Class {
-		case weapon.WeaponClassSword:
+		case info.WeaponClassSword:
 			return 20
-		case weapon.WeaponClassSpear:
+		case info.WeaponClassSpear:
 			return 25
-		case weapon.WeaponClassCatalyst:
+		case info.WeaponClassCatalyst:
 			return 50
-		case weapon.WeaponClassClaymore:
+		case info.WeaponClassClaymore:
 			c.Core.Log.NewEvent("CLAYMORE CHARGE NOT IMPLEMENTED", glog.LogWarnings, c.Index)
 			return 0
-		case weapon.WeaponClassBow:
+		case info.WeaponClassBow:
 			c.Core.Log.NewEvent("BOWS DONT HAVE CHARGE ATTACK; USE AIM", glog.LogWarnings, c.Index)
 			return 0
 		default:
@@ -92,11 +91,11 @@ func (c *Character) QueueDashStaminaConsumption(p map[string]int) {
 
 func (c *Character) DashLength() int {
 	switch c.CharBody {
-	case profile.BodyBoy, profile.BodyLoli:
+	case info.BodyBoy, info.BodyLoli:
 		return 21
-	case profile.BodyMale:
+	case info.BodyMale:
 		return 19
-	case profile.BodyLady:
+	case info.BodyLady:
 		return 22
 	default:
 		return 20
@@ -106,13 +105,13 @@ func (c *Character) DashLength() int {
 func (c *Character) Jump(p map[string]int) action.ActionInfo {
 	var f int = 30
 	switch c.CharBody {
-	case profile.BodyBoy, profile.BodyGirl:
+	case info.BodyBoy, info.BodyGirl:
 		f = 31
-	case profile.BodyMale:
+	case info.BodyMale:
 		f = 28
-	case profile.BodyLady:
+	case info.BodyLady:
 		f = 32
-	case profile.BodyLoli:
+	case info.BodyLoli:
 		f = 29
 	}
 	return action.ActionInfo{

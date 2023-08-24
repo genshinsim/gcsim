@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
@@ -49,12 +50,12 @@ func (t Token) precedence() precedence {
 }
 
 // Parse returns the ActionList and any error that prevents the ActionList from being parsed
-func (p *Parser) Parse() (*ActionList, error) {
+func (p *Parser) Parse() (*info.ActionList, Node, error) {
 	var err error
 	for state := parseRows; state != nil; {
 		state, err = state(p)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 	}
 
@@ -114,7 +115,7 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.ErrorMsgs = append(p.res.ErrorMsgs, v.Error())
 	}
 
-	return p.res, nil
+	return p.res, p.prog, nil
 }
 
 func parseRows(p *Parser) (parseFn, error) {
@@ -143,7 +144,7 @@ func parseRows(p *Parser) (parseFn, error) {
 		if err != nil {
 			return nil, err
 		}
-		p.res.Program.append(node)
+		p.prog.append(node)
 		return parseRows, nil
 	case keywordActive:
 		p.next()
@@ -171,7 +172,7 @@ func parseRows(p *Parser) (parseFn, error) {
 		return nil, nil
 	default: //default should be look for gcsl
 		node, err := p.parseStatement()
-		p.res.Program.append(node)
+		p.prog.append(node)
 		if err != nil {
 			return nil, err
 		}
@@ -209,7 +210,9 @@ func (p *Parser) parseStatement() (Node, error) {
 		node, err = p.parseSwitch()
 		hasSemi = false
 	case keywordFn:
-		node, err = p.parseFn()
+		//this is parsing any function declaration that does not start with let x =
+		//functionally the same as a let stmt
+		node, err = p.parseFnStmt()
 		hasSemi = false
 	case keywordWhile:
 		node, err = p.parseWhile()
@@ -246,33 +249,6 @@ func (p *Parser) parseStatement() (Node, error) {
 		}
 	}
 	return node, nil
-}
-
-func (p *Parser) parseLet() (Stmt, error) {
-	//var ident = expr;
-	n := p.next()
-
-	ident, err := p.consume(itemIdentifier)
-	if err != nil {
-		//next token not an identifier
-		return nil, fmt.Errorf("ln%v: expecting identifier after let, got %v", ident.line, ident.Val)
-	}
-
-	a, err := p.consume(itemAssign)
-	if err != nil {
-		//next token not and identifier
-		return nil, fmt.Errorf("ln%v: expecting = after identifier in let statement, got %v", a.line, a.Val)
-	}
-
-	expr, err := p.parseExpr(Lowest)
-
-	stmt := &LetStmt{
-		Pos:   n.pos,
-		Ident: ident,
-		Val:   expr,
-	}
-
-	return stmt, err
 }
 
 // expecting ident = expr
@@ -549,73 +525,6 @@ func (p *Parser) parseFor() (Stmt, error) {
 	return stmt, err
 }
 
-func (p *Parser) parseFn() (Stmt, error) {
-	//fn ident(...ident){ block }
-	//consume fn
-	n := p.next()
-	stmt := &FnStmt{
-		Pos: n.pos,
-	}
-
-	//ident next
-	n, err := p.consume(itemIdentifier)
-	if err != nil {
-		return nil, fmt.Errorf("ln%v: expecting identifier after fn, got %v", n.line, n.Val)
-	}
-	stmt.FunVal = n
-
-	if l := p.peek(); l.Typ != itemLeftParen {
-		return nil, fmt.Errorf("ln%v: expecting { after identifier, got %v", l.line, l.Val)
-	}
-
-	stmt.Args, err = p.parseFnArgs()
-	if err != nil {
-		return nil, err
-	}
-	stmt.Body, err = p.parseBlock()
-	if err != nil {
-		return nil, err
-	}
-
-	//check that args are not duplicates
-	chk := make(map[string]bool)
-	for _, v := range stmt.Args {
-		if _, ok := chk[v.Value]; ok {
-			return nil, fmt.Errorf("fn %v contains duplicated param name %v", stmt.FunVal.Val, v.Value)
-		}
-		chk[v.Value] = true
-	}
-
-	return stmt, nil
-}
-
-func (p *Parser) parseFnArgs() ([]*Ident, error) {
-	//consume (
-	var args []*Ident
-	p.next()
-	for n := p.next(); n.Typ != itemRightParen; n = p.next() {
-		a := &Ident{}
-		//expecting ident, comma
-		if n.Typ != itemIdentifier {
-			return nil, fmt.Errorf("ln%v: expecting identifier in param list, got %v", n.line, n.Val)
-		}
-		a.Pos = n.pos
-		a.Value = n.Val
-
-		args = append(args, a)
-
-		//if next token is a comma, then there should be another ident after that
-		//otherwise we have a problem
-		if l := p.peek(); l.Typ == itemComma {
-			p.next() //consume the comma
-			if l = p.peek(); l.Typ != itemIdentifier {
-				return nil, fmt.Errorf("ln%v: expecting another identifier after comma in param list, got %v", n.line, n.Val)
-			}
-		}
-	}
-	return args, nil
-}
-
 func (p *Parser) parseReturn() (Stmt, error) {
 	n := p.next() //return
 	stmt := &ReturnStmt{
@@ -645,21 +554,6 @@ func (p *Parser) parseCtrl() (Stmt, error) {
 }
 
 func (p *Parser) parseCall(fun Expr) (Expr, error) {
-	// ident has aready been consumed
-	// switch fun.(type) {
-	// case *Ident:
-	// case *FnExpr:
-	// default:
-	// 	panic("invalid fun expression to function call")
-	// }
-
-	//for our purpose, we do not allow closure or functions returning
-	//anything other than a number; therefore call must start with
-	//a ident
-	if _, ok := fun.(*Ident); !ok {
-		return nil, fmt.Errorf("expecting function calls to start with ident, got %v", fun.String())
-	}
-
 	//expecting (params)
 	n, err := p.consume(itemLeftParen)
 	if err != nil {
@@ -826,6 +720,23 @@ func (p *Parser) parseNumber() (Expr, error) {
 	return num, nil
 }
 
+func (p *Parser) parseBool() (Expr, error) {
+	// bool is a number (true = 1, false = 0)
+	n := p.next()
+	num := &NumberLit{Pos: n.pos}
+	switch n.Val {
+	case "true":
+		num.IntVal = 1
+		num.FloatVal = 1
+	case "false":
+		num.IntVal = 0
+		num.FloatVal = 0
+	default:
+		return nil, fmt.Errorf("ln%v: expecting boolean, got %v", n.line, n.Val)
+	}
+	return num, nil
+}
+
 func (p *Parser) parseUnaryExpr() (Expr, error) {
 	n := p.next()
 	switch n.Typ {
@@ -871,4 +782,49 @@ func (p *Parser) parseParen() (Expr, error) {
 	p.next() // consume the right paren
 
 	return exp, nil
+}
+
+func (p *Parser) parseMap() (Expr, error) {
+	//skip the paren
+	n := p.next()
+	expr := &MapExpr{
+		Pos:    n.pos,
+		Fields: make(map[string]Expr),
+	}
+
+	if p.peek().Typ == itemRightSquareParen { // empty map
+		p.next()
+		return expr, nil
+	}
+
+	//loop until we hit square paren
+	for {
+		//we're expecting ident = int
+		i, err := p.consume(itemIdentifier)
+		if err != nil {
+			return nil, fmt.Errorf("ln%v: expecting identifier in map expression, got %v", i.line, i.Val)
+		}
+
+		a, err := p.consume(itemAssign)
+		if err != nil {
+			return nil, fmt.Errorf("ln%v: expecting = after identifier in map expression, got %v", a.line, a.Val)
+		}
+
+		e, err := p.parseExpr(Lowest)
+		if err != nil {
+			return nil, err
+		}
+		expr.Fields[i.Val] = e
+
+		//if we hit ], return; if we hit , keep going, other wise error
+		n := p.next()
+		switch n.Typ {
+		case itemRightSquareParen:
+			return expr, nil
+		case itemComma:
+			//do nothing, keep going
+		default:
+			return nil, fmt.Errorf("ln%v: <action param> bad token %v", n.line, n)
+		}
+	}
 }

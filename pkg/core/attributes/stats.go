@@ -7,7 +7,7 @@ import (
 
 type Stat int
 
-//stat types
+// stat types
 const (
 	NoStat Stat = iota
 	DEFP

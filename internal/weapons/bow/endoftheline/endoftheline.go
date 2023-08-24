@@ -1,4 +1,4 @@
-﻿package endoftheline
+package endoftheline
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
@@ -30,7 +30,7 @@ func (w *Weapon) Init() error      { return nil }
 // Flowrider will be removed after 15s or after causing 3 instances of AoE DMG.
 // Only 1 instance of AoE DMG can be caused every 2s in this way.
 // Flowrider can be triggered once every 12s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 

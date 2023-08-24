@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
@@ -30,15 +31,24 @@ func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLog
 // 1) User sets team, weapons, artifact sets/main stats, and rotation
 // 2) Given those, for each character, sim picks ER substat value that functionally maximizes DPS Mean/SD,
 // subject to a penalty on high ER values
-//    - Strategy is to just do a dumb grid search over ER substat values for each character
-//    - ER substat values are set in increments of 2 to make the search easier
+//   - Strategy is to just do a dumb grid search over ER substat values for each character
+//   - ER substat values are set in increments of 2 to make the search easier
+//
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
-func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *ast.ActionList) {
+func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
 	// Fix iterations at 350 for performance
 	// TODO: Seems to be a roughly good number at KQM standards
 	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
 
-	o.details = NewSubstatOptimizerDetails(cfg, simopt, simcfg, int(o.optionsMap["indiv_liquid_cap"]), int(o.optionsMap["total_liquid_substats"]), int(o.optionsMap["fixed_substats_count"]))
+	o.details = NewSubstatOptimizerDetails(
+		cfg,
+		simopt,
+		simcfg,
+		gcsl,
+		int(o.optionsMap["indiv_liquid_cap"]),
+		int(o.optionsMap["total_liquid_substats"]),
+		int(o.optionsMap["fixed_substats_count"]),
+	)
 
 	fourStarFound := o.details.setStatLimits()
 	if fourStarFound {

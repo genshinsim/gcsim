@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 // TODO: add a sync.Pool here to save some memory allocs
@@ -22,6 +24,20 @@ type ActionInfo struct {
 	UseNormalizedTime    func(next Action) bool
 	//hidden stuff
 	queued []queuedAction
+}
+
+// ActionEval represents a sim action
+type ActionEval struct {
+	Char   keys.Char
+	Action Action
+	Param  map[string]int
+}
+
+// Evaluator provides method for getting next action
+type Evaluator interface {
+	NextAction() (*ActionEval, error) //NextAction should reuturn the next action, or nil if no actions left
+	Exit() error
+	Start()
 }
 
 type queuedAction struct {
@@ -108,7 +124,8 @@ const (
 	//following action have to implementations
 	ActionSwap
 	ActionWalk
-	ActionWait // character should stand around and wait
+	ActionWait  // character should stand around and wait
+	ActionDelay // delay before executing next action
 	EndActionType
 	//these are only used for frames purposes and that's why it's after end
 	ActionSkillHoldFramesOnly
@@ -128,6 +145,7 @@ var astr = []string{
 	"swap",
 	"walk",
 	"wait",
+	"delay",
 }
 
 func (a Action) String() string {

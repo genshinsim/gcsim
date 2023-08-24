@@ -1,4 +1,4 @@
-package weapon
+package info
 
 import (
 	"encoding/json"
@@ -60,7 +60,6 @@ type WeaponProfile struct {
 	Atk      float64        `json:"base_atk"`
 	Params   map[string]int `json:"-"`
 }
-
 type Weapon interface {
 	SetIndex(int)
 	Init() error

@@ -14,12 +14,8 @@ const Prompt = ">> "
 
 func Eval(s string, log *log.Logger) {
 
-	simActions := make(chan *ast.ActionStmt)
-	done := make(chan bool)
-	go handleSimActions(simActions, done)
-
 	p := ast.New(s)
-	res, err := p.Parse()
+	res, gcsl, err := p.Parse()
 
 	if err != nil {
 		fmt.Println("Error parsing input:")
@@ -35,23 +31,40 @@ func Eval(s string, log *log.Logger) {
 	}
 
 	fmt.Println("Program parsed:")
-	fmt.Println(res.Program.String())
+	fmt.Println(gcsl.String())
 
 	if len(res.Errors) != 0 {
 		//don't run the program if there are errors
 		return
 	}
 	fmt.Println("Running program...:")
-	eval := gcs.Eval{
-		AST:  res.Program,
-		Next: done,
-		Work: simActions,
-		Log:  log,
+	eval, _ := gcs.NewEvaluator(gcsl, nil)
+	eval.Log = log
+	resultChan := make(chan gcs.Obj)
+	errChan := make(chan error)
+	go func() {
+		res, err := eval.Run()
+		// fmt.Printf("done with result: %v, err: %v\n", res, err)
+		resultChan <- res
+		errChan <- err
+	}()
+
+	for {
+		a, err := eval.NextAction()
+		if a == nil {
+			break
+		}
+		if err != nil {
+			fmt.Printf("Program finished with err: %v", err)
+			return
+		}
 	}
 
-	result := eval.Run()
-
-	fmt.Print("Program result: ")
+	result := <-resultChan
+	err = <-errChan
+	if err != nil {
+		fmt.Printf("Program finished with err: %v", err)
+	}
 	fmt.Println(result.Inspect())
 }
 
@@ -59,50 +72,12 @@ func Start(in io.Reader, out io.Writer, log *log.Logger, showProgram bool) {
 	scanner := bufio.NewScanner(in)
 
 	for {
-		simActions := make(chan *ast.ActionStmt)
-		next := make(chan bool)
-		go handleSimActions(simActions, next)
-
 		fmt.Print(Prompt)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
 		}
 
-		line := scanner.Text()
-		p := ast.New(line)
-		res, err := p.Parse()
-
-		if err != nil {
-			fmt.Println("Error parsing input:")
-			fmt.Printf("\t%v\n", err)
-			continue
-		}
-
-		if showProgram {
-			fmt.Println("Program parsed:")
-			fmt.Println(res.Program.String())
-		}
-
-		eval := gcs.Eval{
-			AST:  res.Program,
-			Next: next,
-			Work: simActions,
-			Log:  log,
-		}
-		result := eval.Run()
-
-		fmt.Println(result.Inspect())
-	}
-}
-
-func handleSimActions(in chan *ast.ActionStmt, next chan bool) {
-	for {
-		next <- true
-		x, ok := <-in
-		if !ok {
-			return
-		}
-		fmt.Printf("\tExecuting: %v\n", x.String())
+		Eval(scanner.Text(), log)
 	}
 }

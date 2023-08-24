@@ -131,7 +131,7 @@ var tmpl = `package curves
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
@@ -144,7 +144,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 		Body: profile.Body {{- $value.Body}},
 		Element: attributes. {{- $value.Element}},
 		Region: profile.Zone {{- $value.Region}},
-		WeaponType: weapon.WeaponClass {{- $value.WeaponType}},
+		WeaponType: info.WeaponClass {{- $value.WeaponType}},
 		HPCurve: {{$value.Curve.HP}},
 		AtkCurve: {{$value.Curve.Atk}},
 		DefCurve: {{$value.Curve.Def}},

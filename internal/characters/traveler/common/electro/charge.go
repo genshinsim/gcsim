@@ -1,4 +1,4 @@
-﻿package electro
+package electro
 
 import (
 	"fmt"

@@ -2,17 +2,16 @@ package curves
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 type CharBase struct {
 	Rarity     int                `json:"rarity"`
-	Body       profile.BodyType   `json:"-"`
+	Body       info.BodyType      `json:"-"`
 	Element    attributes.Element `json:"element"`
-	Region     profile.ZoneType   `json:"-"`
-	WeaponType weapon.WeaponClass `json:"weapon_class"`
+	Region     info.ZoneType      `json:"-"`
+	WeaponType info.WeaponClass   `json:"weapon_class"`
 
 	HPCurve        CharStatCurve   `json:"-"`
 	AtkCurve       CharStatCurve   `json:"-"`
@@ -35,10 +34,10 @@ type PromoData struct {
 func init() {
 	CharBaseMap[keys.TestCharDoNotUse] = CharBase{
 		Rarity:      5,
-		Body:        profile.BodyBoy,
+		Body:        info.BodyBoy,
 		Element:     attributes.NoElement,
-		Region:      profile.ZoneUnknown,
-		WeaponType:  weapon.WeaponClassSword,
+		Region:      info.ZoneUnknown,
+		WeaponType:  info.WeaponClassSword,
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,

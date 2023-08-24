@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/result"
@@ -56,11 +57,11 @@ func Version() string {
 	return sha1ver
 }
 
-func Parse(cfg string) (*ast.ActionList, error) {
+func Parse(cfg string) (*info.ActionList, ast.Node, error) {
 	parser := ast.New(cfg)
-	simcfg, err := parser.Parse()
+	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
-		return &ast.ActionList{}, err
+		return &info.ActionList{}, nil, err
 	}
 
 	//check other errors as well
@@ -69,10 +70,10 @@ func Parse(cfg string) (*ast.ActionList, error) {
 		for _, v := range simcfg.Errors {
 			fmt.Printf("\t%v\n", v)
 		}
-		return &ast.ActionList{}, errors.New("sim has errors")
+		return &info.ActionList{}, nil, errors.New("sim has errors")
 	}
 
-	return simcfg, nil
+	return simcfg, gcsl, nil
 }
 
 // Run will run the simulation given number of times
@@ -84,18 +85,18 @@ func Run(opts Options, ctx context.Context) (*model.SimulationResult, error) {
 		return &model.SimulationResult{}, err
 	}
 
-	simcfg, err := Parse(cfg)
+	simcfg, gcsl, err := Parse(cfg)
 	if err != nil {
 		return &model.SimulationResult{}, err
 	}
 
-	return RunWithConfig(cfg, simcfg, opts, start, ctx)
+	return RunWithConfig(cfg, simcfg, gcsl, opts, start, ctx)
 }
 
 // Runs the simulation with a given parsed config
 // TODO: cfg string should be in the action list instead
 // TODO: need to add a context here to avoid infinite looping
-func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.Time, ctx context.Context) (*model.SimulationResult, error) {
+func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time, ctx context.Context) (*model.SimulationResult, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
@@ -119,8 +120,9 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 		wip := 0
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
-				Cfg:  simcfg.Copy(),
-				Seed: CryptoRandSeed(),
+				Cfg:     simcfg.Copy(),
+				Actions: gcsl.Copy(),
+				Seed:    CryptoRandSeed(),
 			}
 			wip++
 		}
@@ -161,7 +163,7 @@ func RunWithConfig(cfg string, simcfg *ast.ActionList, opts Options, start time.
 }
 
 // Note: this generation should be iteration independent (iterations do not change output)
-func GenerateResult(cfg string, simcfg *ast.ActionList, opts Options) (*model.SimulationResult, error) {
+func GenerateResult(cfg string, simcfg *info.ActionList, opts Options) (*model.SimulationResult, error) {
 	out := &model.SimulationResult{
 		// THIS MUST ALWAYS BE IN SYNC WITH THE VIEWER UPGRADE DIALOG IN UI
 		// ONLY CHANGE SCHEMA WHEN THE RESULTS SCHEMA CHANGES. THIS INCLUDES AGG RESULTS CHANGES

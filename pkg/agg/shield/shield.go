@@ -4,7 +4,7 @@ import (
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -32,7 +32,7 @@ type buffer struct {
 	uptime   map[string]*calc.StreamStats
 }
 
-func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
+func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		shieldHP: make(map[string]map[string]*stats.WeightedStreamStats),
 		uptime:   make(map[string]*calc.StreamStats),

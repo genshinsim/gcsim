@@ -1,6 +1,6 @@
-//package animation provides a simple way of tracking the current
-//animation state at any given frame, as well as if the current frame
-//is in animation lock or not
+// package animation provides a simple way of tracking the current
+// animation state at any given frame, as well as if the current frame
+// is in animation lock or not
 package animation
 
 import (
@@ -40,8 +40,8 @@ func New(f *int, debug bool, log glog.Logger, events event.Eventter, tasks task.
 	return h
 }
 
-//IsAnimationLocked returns true if the next action can be executed on the
-//current frame; false otherwise
+// IsAnimationLocked returns true if the next action can be executed on the
+// current frame; false otherwise
 func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	if h.aniEvt == nil {
 		return false
@@ -57,8 +57,8 @@ func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	return !h.aniEvt.CanUse(next)
 }
 
-//CanQueue returns true if we can start looking for the next action to queue
-//on the current frame, false otherwise
+// CanQueue returns true if we can start looking for the next action to queue
+// on the current frame, false otherwise
 func (h *AnimationHandler) CanQueueNextAction() bool {
 	if h.aniEvt == nil {
 		return true

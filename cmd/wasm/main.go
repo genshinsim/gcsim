@@ -7,6 +7,8 @@ import (
 	"syscall/js"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
@@ -21,7 +23,8 @@ var shareKey string
 
 // shared variables
 var cfg string
-var simcfg *ast.ActionList
+var simcfg *info.ActionList
+var gcsl ast.Node
 var buffer []byte
 
 // Aggregator variables
@@ -90,7 +93,7 @@ func validateConfig(this js.Value, args []js.Value) (out interface{}) {
 
 	in := args[0].String()
 
-	cfg, err := simulator.Parse(in)
+	cfg, _, err := simulator.Parse(in)
 	if err != nil {
 		return marshal(err)
 	}
@@ -122,12 +125,17 @@ func simulate(this js.Value, args []js.Value) (out interface{}) {
 	}()
 
 	cpycfg := simcfg.Copy()
+	program := gcsl.Copy()
 	core, err := simulation.NewCore(simulator.CryptoRandSeed(), false, cpycfg)
 	if err != nil {
 		return marshal(err)
 	}
+	eval, err := gcs.NewEvaluator(program, core)
+	if err != nil {
+		return marshal(err)
+	}
 
-	sim, err := simulation.New(cpycfg, core)
+	sim, err := simulation.New(cpycfg, eval, core)
 	if err != nil {
 		return marshal(err)
 	}
@@ -270,7 +278,7 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 
 func initialize(raw string) error {
 	parser := ast.New(raw)
-	out, err := parser.Parse()
+	out, prog, err := parser.Parse()
 	if err != nil {
 		return err
 	}
@@ -281,6 +289,7 @@ func initialize(raw string) error {
 
 	cfg = raw
 	simcfg = out
+	gcsl = prog
 	return nil
 }
 

@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -85,9 +85,9 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 		return
 	}
 	switch char.Weapon.Class {
-	case weapon.WeaponClassClaymore,
-		weapon.WeaponClassSpear,
-		weapon.WeaponClassSword:
+	case info.WeaponClassClaymore,
+		info.WeaponClassSpear,
+		info.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
 			char.Index,
 			"candace-q-infuse",

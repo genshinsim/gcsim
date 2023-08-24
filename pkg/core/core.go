@@ -16,9 +16,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 	"github.com/genshinsim/gcsim/pkg/core/status"
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
@@ -45,11 +45,6 @@ type Flags struct {
 	EnableHitlag bool //hitlag enabled
 	Custom       map[string]int
 }
-type Coord struct {
-	X float64 `json:"x"`
-	Y float64 `json:"y"`
-	R float64 `json:"r"`
-}
 
 type Reactable interface {
 	React(a *combat.AttackEvent)
@@ -74,7 +69,7 @@ type CoreOpt struct {
 	EnableHitlag bool
 	DefHalt      bool
 	DamageMode   bool
-	Delays       player.Delays
+	Delays       info.Delays
 }
 
 func New(opt CoreOpt) (*Core, error) {
@@ -139,7 +134,7 @@ func (c *Core) Init() error {
 	return nil
 }
 
-func (c *Core) Tick() {
+func (c *Core) Tick() error {
 	// things to tick:
 	//	- targets
 	//	- constructs
@@ -150,13 +145,15 @@ func (c *Core) Tick() {
 	//		- stamina
 	//		- swap
 	//	- tasks
+	//TODO: check for errors here?
 	c.Combat.Tick()
 	c.Constructs.Tick()
 	c.Player.Tick()
 	c.Tasks.Run()
+	return nil
 }
 
-func (c *Core) AddChar(p profile.CharacterProfile) (int, error) {
+func (c *Core) AddChar(p info.CharacterProfile) (int, error) {
 	var err error
 
 	// initialize character
