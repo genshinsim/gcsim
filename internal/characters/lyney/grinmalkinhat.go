@@ -93,12 +93,12 @@ func (g *GrinMalkinHat) skillExplode() {
 
 	// needed for amos and slingshot to work correctly
 	g.pyrotechnicSnapshot.SourceFrame = g.Core.F
-	// TODO: snapshot timing and hitmark timing
+	// TODO: snapshot timing
 	g.Core.QueueAttackWithSnap(
 		g.pyrotechnicAI,
 		g.pyrotechnicSnapshot,
 		combat.NewCircleHitOnTarget(g.pos, nil, 3.5),
-		5,
+		skillExplode,
 		g.a1CB,
 		g.char.makeC4CB(),
 	)

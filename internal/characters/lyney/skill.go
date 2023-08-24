@@ -18,6 +18,7 @@ const (
 	skillHitmark = 18
 	skillCD      = 15 * 60
 	skillCDStart = 15
+	skillExplode = 13
 
 	particleICDKey = "lyney-particle-icd"
 	particleICD    = 0.3 * 60
