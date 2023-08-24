@@ -140,7 +140,6 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 			c.makeGrinMalkinHatCB(hpDrained),
 			c.makeC4CB(),
 		)
-		// TODO: proper frames
 		c.QueueCharTask(c.skillAligned(target.Pos()), travel)
 	}, aimedPropRelease)
 
@@ -206,9 +205,8 @@ func (c *char) skillAligned(pos geometry.Point) func() {
 		c.Core.QueueAttack(
 			propAlignedAI,
 			combat.NewCircleHitOnTarget(pos, nil, 2),
-			// TODO: proper frames
-			0.7*60,
-			0.7*60,
+			42,
+			42,
 			c.makeC4CB(),
 		)
 	}
