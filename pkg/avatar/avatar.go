@@ -1,6 +1,7 @@
 package avatar
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -63,13 +64,15 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	dmg, crit = p.calc(atk, evt)
 
 	active := p.Core.Player.Active()
-	shielded := p.Core.Player.Shields.OnDamage(active, dmg, atk.Info.Element)
-	dmg -= shielded
-	if dmg > 0 {
+	dmgLeft := p.Core.Player.Shields.OnDamage(active, dmg, atk.Info.Element)
+	if dmgLeft < dmg {
+		p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, fmt.Sprintf("%.0f damage taken by shields", dmg-dmgLeft))
+	}
+	if dmgLeft > 0 {
 		p.Core.Player.Drain(player.DrainInfo{
-			ActorIndex: atk.Info.ActorIndex,
+			ActorIndex: active,
 			Abil:       atk.Info.Abil,
-			Amount:     dmg,
+			Amount:     dmgLeft,
 		})
 	}
 	return 0

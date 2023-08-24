@@ -85,12 +85,12 @@ func (s *Handler) List() []Shield {
 func (s *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float64 {
 	//find shield bonuses
 	bonus := s.ShieldBonus()
-	max := dmg //max of damage taken
+	min := dmg //min of damage taken
 	n := 0
 	for _, v := range s.shields {
 		taken, ok := v.OnDamage(dmg, ele, bonus)
-		if taken > max {
-			max = taken
+		if taken < min {
+			min = taken
 		}
 		if ok {
 			s.shields[n] = v
@@ -98,7 +98,7 @@ func (s *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float6
 		}
 	}
 	s.shields = s.shields[:n]
-	return max
+	return min
 }
 
 func (s *Handler) Tick() {
