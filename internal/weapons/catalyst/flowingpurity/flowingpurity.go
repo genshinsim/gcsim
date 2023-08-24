@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -28,7 +28,7 @@ func (w *Weapon) Init() error      { return nil }
 // When the Bond of Life is cleared, every 1,000 HP cleared in the process will provide 2/2.5/3/3.5/4% All Elemental DMG Bonus,
 // up to a maximum of 12/15/18/21/24%. This effect lasts 15s.
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
