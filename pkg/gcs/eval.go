@@ -203,9 +203,10 @@ type (
 	}
 
 	funcval struct {
-		Args []*ast.Ident
-		Body *ast.BlockStmt
-		Env  *Env
+		Args      []*ast.Ident
+		Body      *ast.BlockStmt
+		Signature *ast.FuncType
+		Env       *Env
 	}
 
 	systemFunc func(*ast.CallExpr, *Env) (Obj, error)

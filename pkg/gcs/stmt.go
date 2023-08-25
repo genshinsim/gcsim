@@ -86,9 +86,10 @@ func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("function %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	var res Obj = &funcval{
-		Args: l.Func.Args,
-		Body: l.Func.Body,
-		Env:  NewEnv(env),
+		Args:      l.Func.Args,
+		Body:      l.Func.Body,
+		Signature: l.Func.Signature,
+		Env:       NewEnv(env),
 	}
 	env.varMap[l.Ident.Val] = &res
 	return &null{}, nil

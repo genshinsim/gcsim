@@ -50,9 +50,10 @@ func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
 
 func (e *Eval) evalFuncExpr(n *ast.FuncExpr, env *Env) Obj {
 	return &funcval{
-		Args: n.Func.Args,
-		Body: n.Func.Body,
-		Env:  NewEnv(env),
+		Args:      n.Func.Args,
+		Body:      n.Func.Body,
+		Signature: n.Func.Signature,
+		Env:       NewEnv(env),
 	}
 }
 
@@ -96,7 +97,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 		local.varMap[v.Value] = &param
 	}
-	res, err := e.evalStmt(fn.Body, local)
+	res, err := e.evalBlock(fn.Body, local)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +105,17 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 	case *retval:
 		return v.res, nil
 	case *null:
+		if _, ok := fn.Signature.ResultType.(*ast.NumberType); ok {
+			//force return to 0
+			return &number{}, nil
+		}
 		return &null{}, nil
+	case *number:
+		if _, ok := fn.Signature.ResultType.(*ast.NumberType); ok {
+			//force return to 0
+			return v, nil
+		}
+		return nil, fmt.Errorf("fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
 	default:
 		return nil, fmt.Errorf("fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
 	}
