@@ -166,7 +166,7 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 		}
 	}
 
-	return executeActionPhase(s)
+	return executeActionPhase, nil
 }
 
 func (s *Simulation) handleWait(q *action.ActionEval) (stateFn, error) {
@@ -207,9 +207,9 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 		if err == player.ErrActionNoOp {
 			if l := s.popQueue(); l > 0 {
 				//don't go back to queue if there are more actions already queued
-				return actionReadyCheckPhase(s)
+				return actionReadyCheckPhase, nil
 			}
-			return queuePhase(s)
+			return queuePhase, nil
 		}
 		//this is now unexpected since action should be ready now
 		return nil, err
@@ -217,17 +217,17 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 	//TODO: this check here is probably unnecessary
 	if l := s.popQueue(); l > 0 {
 		//don't go back to queue if there are more actions already queued
-		return actionReadyCheckPhase(s)
+		return actionReadyCheckPhase, nil
 	}
 
-	return skipUntilCanQueue(s)
+	return skipUntilCanQueue, nil
 }
 
 func skipUntilCanQueue(s *Simulation) (stateFn, error) {
 	if !s.C.Player.CanQueueNextAction() {
 		return s.advanceFrames(1, skipUntilCanQueue)
 	}
-	return queuePhase(s)
+	return queuePhase, nil
 }
 
 // nextFrame moves up the frame by 1, performing
