@@ -112,7 +112,7 @@ func (p *Parser) acceptOptionalParamReturnOnlyIntMap() (map[string]int, error) {
 	if err != nil {
 		return nil, err
 	}
-	if result != nil {
+	if result == nil {
 		return r, nil
 	}
 
