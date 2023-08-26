@@ -1,7 +1,6 @@
 package gcs
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -24,9 +23,7 @@ type Eval struct {
 	// this is necessary because Run() could have exited already with an err but
 	err error
 
-	// tracking if this eval is done
-	ctx    context.Context
-	cancel context.CancelFunc
+	isTerminated bool
 }
 
 type Env struct {
@@ -41,7 +38,6 @@ func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
 		next: make(chan bool),
 		work: make(chan *action.ActionEval),
 	}
-	e.ctx, e.cancel = context.WithCancel(context.Background())
 	return e, nil
 }
 
@@ -65,29 +61,35 @@ func (e *Env) v(s string) (*Obj, error) {
 
 // Tell eval to exit now
 func (e *Eval) Exit() error {
-	e.cancel()
+	//drain work if any
+	select {
+	case <-e.work:
+	default:
+	}
+	if e.isTerminated {
+		return e.err
+	}
+	//make sure we can't send or continue anymore
+	close(e.next)
+	close(e.work)
+	e.isTerminated = true
 	return e.err
+}
+
+func (e *Eval) Continue() {
+	if e.isTerminated {
+		return
+	}
+	e.next <- true
 }
 
 // NextAction asks eval to return the next action. Return nil, nil if no more action
 func (e *Eval) NextAction() (*action.ActionEval, error) {
-	done := e.ctx.Done()
-	//continue execution
-	select {
-	case <-done:
-	case e.next <- true:
+	next, ok := <-e.work
+	if !ok {
+		return nil, nil
 	}
-	//get work back
-	select {
-	case <-done:
-	case next, ok := <-e.work:
-		if !ok {
-			return nil, nil
-		}
-		return next, nil
-	}
-	//we should never make it here
-	return nil, nil
+	return next, nil
 }
 
 func (e *Eval) Start() {
@@ -111,7 +113,7 @@ func (e *Eval) Run() (res Obj, err error) {
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
 		if pErr := recover(); pErr != nil {
-			err = fmt.Errorf("panic occured: %v", err)
+			err = fmt.Errorf("panic occured: %v", pErr)
 		}
 	}()
 	//make sure to close work since we are the only sender
@@ -151,10 +153,7 @@ func (e *Eval) waitForNext() error {
 }
 
 func (e *Eval) sendWork(w *action.ActionEval) {
-	select {
-	case <-e.ctx.Done():
-	case e.work <- w:
-	}
+	e.work <- w
 }
 
 var ErrTerminated = errors.New("eval terminated")
