@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 func (r *Reactable) TryBurning(a *combat.AttackEvent) bool {
@@ -107,10 +108,23 @@ func (r *Reactable) nextBurningTick(src int, counter int, t Enemy) func() {
 		//so burning is active, which means both auras must still have value > 0, so we can do dmg
 		if counter != 9 {
 			// skip the 9th tick because hyv spaghetti
+			ai := r.burningAtk
+			ap := combat.NewCircleHitOnTarget(r.self, nil, 1)
 			r.core.QueueAttackWithSnap(
-				r.burningAtk,
+				ai,
 				r.burningSnapshot,
-				combat.NewCircleHitOnTarget(r.self, nil, 1),
+				ap,
+				0,
+			)
+			//self damage
+			ai.Abil += " (self damage)"
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			r.core.QueueAttackWithSnap(
+				ai,
+				r.burningSnapshot,
+				ap,
 				0,
 			)
 		}
