@@ -177,7 +177,7 @@ func (c *char) propSurplus() bool {
 		Amount:     hpdrain,
 	})
 
-	c.increasePropSurplusStacks(c.c1StackIncrease())
+	c.increasePropSurplusStacks(1 + c.c1StackIncrease())
 	return true
 }
 
@@ -219,7 +219,7 @@ func (c *char) skillAligned(pos geometry.Point) func() {
 
 func (c *char) makeGrinMalkinHat(pos geometry.Point, hpDrained bool) func() {
 	return func() {
-		hatIncrease := c.c1HatIncrease()
+		hatIncrease := 1 + c.c1HatIncrease()
 		for i := 0; i < hatIncrease; i++ {
 			// kill existing hat if reached limit
 			if len(c.hats) == c.maxHatCount {
