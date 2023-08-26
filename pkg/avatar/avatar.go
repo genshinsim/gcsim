@@ -50,6 +50,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 			ActorIndex: active,
 			Abil:       atk.Info.Abil,
 			Amount:     dmgLeft,
+			External:   true,
 		})
 	}
 	evt.Write("target", p.Key()).
