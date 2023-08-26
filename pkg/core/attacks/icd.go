@@ -50,6 +50,8 @@ const (
 	ICDTagNahidaSkill
 	ICDTagNahidaC6
 	ICDTagWandererA4
+	ICDTagLyneyEndBoom
+	ICDTagLyneyEndBoomEnhanced
 	ICDTagLength
 )
 
@@ -85,6 +87,7 @@ const (
 	ICDGroupYaoyaoRadishBurst
 	ICDGroupBaizhuC2
 	ICDGroupAyakaExtraAttack
+	ICDGroupLyneyExtra
 	ICDGroupLength
 )
 
@@ -122,6 +125,7 @@ func init() {
 	ICDGroupResetTimer[ICDGroupYaoyaoRadishBurst] = 90
 	ICDGroupResetTimer[ICDGroupBaizhuC2] = 240
 	ICDGroupResetTimer[ICDGroupAyakaExtraAttack] = 30
+	ICDGroupResetTimer[ICDGroupLyneyExtra] = 60
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
 	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
@@ -152,6 +156,7 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupYaoyaoRadishBurst] = []float64{1, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupBaizhuC2] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupAyakaExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupLyneyExtra] = []float64{1, 0, 0, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -184,4 +189,5 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupYaoyaoRadishBurst] = []float64{1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupBaizhuC2] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupAyakaExtraAttack] = []float64{1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupDamageSequence[ICDGroupLyneyExtra] = []float64{1, 1, 1, 1, 1, 1}
 }

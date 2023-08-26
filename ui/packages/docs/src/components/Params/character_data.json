@@ -394,6 +394,43 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "lyney": [
+    {
+      "ability": "-",
+      "param": "pyrotechnic_travel",
+      "desc": "Projectile travel time for Pyrotechnic Strike via Grin-Malkin Hat expiry. Default 36 frames. Set via '+params=[pyrotechnic_travel=...]' in Lyney's 'char' line."
+    },
+    {
+      "ability": "-",
+      "param": "c2_stacks",
+      "desc": "Number of C2 stacks to gain at the beginning. Default 0, maximum 3. Set via '+params=[c2_stacks=...]' in Lyney's 'char' line."
+    },
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "level",
+      "desc": "0 for Charge Level 1, 1 for Charge Level 2 (default)."
+    },
+    {
+      "ability": "aim",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "aim",
+      "param": "c6_travel",
+      "desc": "Projectile travel time for C6. Default 10 frames. Only does something if level is 1."
+    },
+    {
+      "ability": "aim",
+      "param": "weakspot",
+      "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
+    }
+  ],
   "mika": [
     {
       "ability": "skill",

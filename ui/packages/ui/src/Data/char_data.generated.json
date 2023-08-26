@@ -728,6 +728,21 @@
         "burst_energy_cost": 60
       }
     },
+    "lyney": {
+      "id": 10000084,
+      "key": "lyney",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "element": "Fire",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Liney",
+      "skill_details": {
+        "skill": 10842,
+        "burst": 10845,
+        "attack": 10841,
+        "burst_energy_cost": 60
+      }
+    },
     "mika": {
       "id": 10000080,
       "key": "mika",

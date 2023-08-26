@@ -3922,6 +3922,153 @@
       }
     ]
   },
+  "lyney": {
+    "cons": [
+      {
+        "ability": "FullAim-Lv2-C6",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1,
+        "notes": "not implemented yet"
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1,
+        "notes": "not implemented yet"
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Lv2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Lv2-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Lv2-Aligned",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2,
+        "notes": "Spawns at the target hit by FullAim-Lv2."
+      },
+      {
+        "ability": "FullAim-Lv2-PyrotechnicStrike",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "FullAim-Lv2-PyrotechnicStrike-Skill",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 3.5,
+        "notes": "Spawns at the position of the Grin-Malkin Hat which is at the FullAim-Lv2-Aligned position."
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Skill",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 5.5,
+        "radius": 5.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Move",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "On every tick: Applies to all enemies within 4m radius of the Player."
+      },
+      {
+        "ability": "Q-ExplosiveFirework",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      } 
+    ]
+  },
   "mika": {
     "normal": [
       {

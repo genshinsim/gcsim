@@ -113,6 +113,7 @@ func init() {
 	percentDelay5[keys.Alhaitham] = 14
 	percentDelay5[keys.Mika] = 10
 	percentDelay5[keys.Kirara] = 13
+	percentDelay5[keys.Lyney] = 12
 
 	// TODO: Uncomment when Wanderer Implementation is done
 	// percentDelay5[keys.Wanderer] = 0
@@ -155,6 +156,8 @@ func Get0PercentN0Delay(activeChar *character.CharWrapper) int {
 		return 23
 	case keys.Kirara:
 		return 6
+	case keys.Lyney:
+		return 5
 	}
 	return 0
 }
