@@ -88,13 +88,34 @@ func (s *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float6
 	min := dmg //min of damage taken
 	n := 0
 	for _, v := range s.shields {
+		pre_hp := v.CurrentHP()
 		taken, ok := v.OnDamage(dmg, ele, bonus)
+		s.log.NewEvent(
+			"shield taking damage",
+			glog.LogShieldEvent,
+			-1,
+		).Write("name", v.Desc()).
+			Write("ele", v.Element()).
+			Write("dmg", dmg).
+			Write("previous_hp", pre_hp).
+			Write("dmg_after_shield", taken).
+			Write("current_hp", v.CurrentHP()).
+			Write("expiry", v.Expiry())
 		if taken < min {
 			min = taken
 		}
 		if ok {
 			s.shields[n] = v
 			n++
+		} else {
+			// shield broken
+			s.log.NewEvent(
+				"shield broken",
+				glog.LogShieldEvent,
+				-1,
+			).Write("name", v.Desc()).
+				Write("ele", v.Element()).
+				Write("expiry", v.Expiry())
 		}
 	}
 	s.shields = s.shields[:n]

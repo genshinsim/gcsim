@@ -55,8 +55,8 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	evt.Write("target", p.Key()).
 		Write("attack-tag", atk.Info.AttackTag).
 		Write("ele", atk.Info.Element.String()).
+		Write("damage_pre_shield", &dmg).
 		Write("damage", &dmgLeft).
-		Write("damage_before_shield", &dmg).
 		Write("crit", &crit).
 		Write("amp", &amp).
 		Write("cata", &cata).
@@ -68,9 +68,13 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 		if atk.Info.ActorIndex < 0 {
 			log.Println(atk)
 		}
-		preDmgModDebug := p.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).ApplyAttackMods(atk, p)
+		preDmgModDebug := p.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).
+			ApplyAttackMods(atk, p)
 		evt.Write("pre_damage_mods", preDmgModDebug)
 	}
+
+	// returns 0 so that the damage done to player doesn't count
+	// towards the sim's TotalDamage and DPS statistic
 	return 0
 }
 func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
@@ -119,8 +123,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	}
 
 	char := t.Core.Player.ActiveChar()
-	// Players don't have resistances right now
-	// res := char.Stat(attributes.DendroRes
+	// TODO: Players don't have resistances right now
 	res := 0.0
 
 	def := char.Base.Def*(1+char.Stat(attributes.DEFP)) + char.Stat(attributes.DEF)
@@ -198,6 +201,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("ele_per", elePer).
 			Write("bonus_dmg", dmgBonus).
 			Write("ignore_def", atk.Info.IgnoreDefPercent).
+			Write("def_adj", 0). // Players don't have DefMods applied
 			Write("target_lvl", char.Base.Level).
 			Write("char_lvl", atk.Snapshot.CharLvl).
 			Write("def_mod", defmod).
