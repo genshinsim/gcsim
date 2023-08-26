@@ -64,7 +64,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if hasC4 {
 			c.c4Gain(generated)
 		}
-	}, 190)
+	}, 184)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
