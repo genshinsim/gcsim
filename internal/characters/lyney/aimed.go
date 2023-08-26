@@ -123,7 +123,7 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 	c.QueueCharTask(func() {
-		hpDrained := c.propSurplus()
+
 		c.c6(c6Travel)
 		target := c.Core.Combat.PrimaryTarget()
 		c.Core.QueueAttack(
@@ -139,6 +139,11 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 			travel,
 			c.makeC4CB(),
 		)
+
+		// hp drain should happen right after prop arrow snapshot to avoid getting the newly gained mh stack on it
+		// https://youtu.be/QblKD2-9WNE?si=xcd4NAl2Wq-46fQI
+		hpDrained := c.propSurplus()
+
 		c.QueueCharTask(c.makeGrinMalkinHat(target.Pos(), hpDrained), travel)
 		c.QueueCharTask(c.skillAligned(target.Pos()), travel)
 	}, aimedPropRelease)
