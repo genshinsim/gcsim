@@ -27,6 +27,8 @@ type opts struct {
 	config           string
 	out              string //file result name
 	sample           string //file sample name
+	sampleMinDps     string //file sample name for the min-DPS run
+	sampleMaxDps     string //file sample name for the max-DPS run
 	gz               bool
 	serve            bool
 	nobrowser        bool
@@ -53,6 +55,8 @@ func main() {
 	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use")
 	flag.StringVar(&opt.out, "out", "", "output result to file? supply file path (otherwise empty string for disabled). default disabled")
 	flag.StringVar(&opt.sample, "sample", "", "create sample result. supply file path (otherwise empty string for disabled). default disabled")
+	flag.StringVar(&opt.sampleMinDps, "sampleMinDps", "", "create sample result for the min-DPS run. supply file path (otherwise empty string for disabled). default disabled")
+	flag.StringVar(&opt.sampleMaxDps, "sampleMaxDps", "", "create sample result for the max-DPS run. supply file path (otherwise empty string for disabled). default disabled")
 	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require out flag")
 	flag.BoolVar(&opt.serve, "s", false, "serve results to viewer (local). default false")
 	flag.BoolVar(&opt.norun, "nr", false, "disable running the simulation (useful if you only want to generate a sample")
@@ -161,26 +165,59 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	}
 
 	if opt.sample != "" {
-		var seed uint64
+		var err error
 		if opt.norun {
-			seed = uint64(simulator.CryptoRandSeed())
+			err = writeSample(
+				uint64(simulator.CryptoRandSeed()),
+				opt.sample,
+				opt.config,
+				opt.gz,
+				simopt,
+			)
 		} else {
-			seed, _ = strconv.ParseUint(res.SampleSeed, 10, 64)
+			err = parseStrSeedAndWriteSample(
+				res.SampleSeed,
+				opt.sample,
+				opt.config,
+				opt.gz,
+				simopt,
+			)
 		}
 
-		cfg, err := simulator.ReadConfig(opt.config)
 		if err != nil {
 			log.Println(err)
 			return
 		}
+	}
 
-		sample, err := simulator.GenerateSampleWithSeed(cfg, seed, simopt)
+	if opt.sampleMinDps != "" {
+		err := parseStrSeedAndWriteSample(
+			res.Statistics.MinSeed,
+			opt.sampleMinDps,
+			opt.config,
+			opt.gz,
+			simopt,
+		)
+
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		sample.Save(opt.sample, opt.gz)
-		fmt.Printf("Generated sample with seed: %v\n", seed)
+	}
+
+	if opt.sampleMaxDps != "" {
+		err := parseStrSeedAndWriteSample(
+			res.Statistics.MaxSeed,
+			opt.sampleMaxDps,
+			opt.config,
+			opt.gz,
+			simopt,
+		)
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 
 	if opt.serve && !opt.norun {
@@ -238,4 +275,31 @@ func openWSL(url string) error {
 	cmd := "powershell.exe"
 	args := []string{"/c", "start", url}
 	return exec.Command(cmd, args...).Start()
+}
+
+func parseStrSeedAndWriteSample(seedStr string, outputPath string, config string, gz bool, simopt simulator.Options) error {
+	seed, err := strconv.ParseUint(seedStr, 10, 64)
+
+	if err != nil {
+		return err
+	}
+
+	return writeSample(seed, outputPath, config, gz, simopt)
+}
+
+
+func writeSample(seed uint64, outputPath string, config string, gz bool, simopt simulator.Options) error {
+	cfg, err := simulator.ReadConfig(config)
+	if err != nil {
+		return err
+	}
+
+	sample, err := simulator.GenerateSampleWithSeed(cfg, seed, simopt)
+	if err != nil {
+		return err
+	}
+	sample.Save(outputPath, gz)
+	fmt.Printf("Generated sample with seed %v to %s\n", seed, outputPath)
+
+	return nil
 }
