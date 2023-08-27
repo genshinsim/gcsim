@@ -16,6 +16,8 @@ The gcsim CLI accepts the following options:
 | `-c` | Which config file to run gcsim on. This option is required. | Path to the config file. | config.txt | 
 | `-out` | Which file to output the results of the gcsim command to. | Output file path. | disabled |
 | `-sample` | Which file to output a sample result to. | Output file path. | disabled |
+| `-sampleMinDps` | Similar to `-sample`, except that we're writing out the min-DPS run as the sample. | Output file path. | disabled |
+| `-sampleMaxDps` | Similar to `-sample`, except that we're writing out the max-DPS run as the sample. | Output file path. | disabled |
 | `-nr` | Whether to disable running the simulation. Useful in combination with `-sample` if a sample result is all that is needed. | - | disabled |
 | `-gz` | Whether to zip up the results. Can be used together with `-out` and `-sample`. | - | disabled |
 | `-s` | Whether to serve the results to the "local" gcsim viewer page using the default web browser. | - | disabled |
