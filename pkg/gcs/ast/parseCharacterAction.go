@@ -59,9 +59,10 @@ Loop:
 			if err != nil {
 				return nil, err
 			}
-			if param != nil {
-				expr.Args = append(expr.Args, param)
+			if param == nil {
+				param = &MapExpr{Pos: n.pos}
 			}
+			expr.Args = append(expr.Args, param)
 
 			//optional : and a number
 			count, err := p.acceptOptionalRepeaterReturnCount()

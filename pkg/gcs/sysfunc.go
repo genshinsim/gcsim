@@ -537,9 +537,9 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
-	//execute_action(char, action[, params])
-	if len(c.Args) != 2 && len(c.Args) != 3 {
-		return nil, fmt.Errorf("invalid number of params for execute_action, expected 2 or 3 got %v", len(c.Args))
+	//execute_action(char, action, params)
+	if len(c.Args) != 3 {
+		return nil, fmt.Errorf("invalid number of params for execute_action, expected 3 got %v", len(c.Args))
 	}
 
 	// char
@@ -563,24 +563,21 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 	ac := val.(*number)
 
 	// params
-	var params map[string]int = nil
-	if len(c.Args) == 3 {
-		val, err = e.evalExpr(c.Args[2], env)
-		if err != nil {
-			return nil, err
-		}
-		if val.Typ() != typMap {
-			return nil, fmt.Errorf("execute_action argument params should evaluate to a map, got %v", val.Inspect())
-		}
+	val, err = e.evalExpr(c.Args[2], env)
+	if err != nil {
+		return nil, err
+	}
+	if val.Typ() != typMap {
+		return nil, fmt.Errorf("execute_action argument params should evaluate to a map, got %v", val.Inspect())
+	}
 
-		p := val.(*mapval)
-		params = make(map[string]int)
-		for k, v := range p.fields {
-			if v.Typ() != typNum {
-				return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
-			}
-			params[k] = int(v.(*number).ival)
+	p := val.(*mapval)
+	params := make(map[string]int)
+	for k, v := range p.fields {
+		if v.Typ() != typNum {
+			return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
 		}
+		params[k] = int(v.(*number).ival)
 	}
 
 	charKey := keys.Char(char.ival)

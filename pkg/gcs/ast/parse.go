@@ -787,16 +787,14 @@ func (p *Parser) parseParen() (Expr, error) {
 func (p *Parser) parseMap() (Expr, error) {
 	//skip the paren
 	n := p.next()
-	expr := &MapExpr{
-		Pos:    n.pos,
-		Fields: make(map[string]Expr),
-	}
+	expr := &MapExpr{Pos: n.pos}
 
 	if p.peek().Typ == itemRightSquareParen { // empty map
 		p.next()
 		return expr, nil
 	}
 
+	expr.Fields = make(map[string]Expr)
 	//loop until we hit square paren
 	for {
 		//we're expecting ident = int
