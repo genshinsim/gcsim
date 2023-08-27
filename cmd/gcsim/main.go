@@ -299,7 +299,7 @@ func writeSample(seed uint64, outputPath string, config string, gz bool, simopt 
 		return err
 	}
 	sample.Save(outputPath, gz)
-	fmt.Printf("Generated sample with seed %v to %s\n", outputPath, seed)
+	fmt.Printf("Generated sample with seed %v to %s\n", seed, outputPath)
 
 	return nil
 }
