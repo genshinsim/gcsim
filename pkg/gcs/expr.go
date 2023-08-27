@@ -216,6 +216,10 @@ func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalMap(m *ast.MapExpr, env *Env) (Obj, error) {
+	if len(m.Fields) == 0 { // empty map
+		return &mapval{}, nil
+	}
+
 	r := &mapval{
 		fields: make(map[string]Obj),
 	}

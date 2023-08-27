@@ -269,13 +269,15 @@ func (n *retval) Typ() ObjTyp { return typRet }
 func (m *mapval) Inspect() string {
 	str := "["
 	done := false
-	for k, v := range m.fields {
-		if done {
-			str += ", "
-		}
-		done = true
+	if m.fields != nil {
+		for k, v := range m.fields {
+			if done {
+				str += ", "
+			}
+			done = true
 
-		str += k + " = " + v.Inspect()
+			str += k + " = " + v.Inspect()
+		}
 	}
 	str += "]"
 	return str
