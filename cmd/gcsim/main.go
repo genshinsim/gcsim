@@ -55,7 +55,7 @@ func main() {
 	flag.StringVar(&opt.config, "c", "config.txt", "which profile to use")
 	flag.StringVar(&opt.out, "out", "", "output result to file? supply file path (otherwise empty string for disabled). default disabled")
 	flag.StringVar(&opt.sample, "sample", "", "create sample result. supply file path (otherwise empty string for disabled). default disabled")
-	flag.StringVar(&opt.sampleMinDps, "sampleMinDps", "", "create sample result for the max-DPS run. supply file path (otherwise empty string for disabled). default disabled")
+	flag.StringVar(&opt.sampleMinDps, "sampleMinDps", "", "create sample result for the min-DPS run. supply file path (otherwise empty string for disabled). default disabled")
 	flag.StringVar(&opt.sampleMaxDps, "sampleMaxDps", "", "create sample result for the max-DPS run. supply file path (otherwise empty string for disabled). default disabled")
 	flag.BoolVar(&opt.gz, "gz", false, "gzip json results; require out flag")
 	flag.BoolVar(&opt.serve, "s", false, "serve results to viewer (local). default false")
