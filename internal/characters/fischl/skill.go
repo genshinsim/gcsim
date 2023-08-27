@@ -131,6 +131,7 @@ func (c *char) queueOz(src string, ozSpawn int, firstTick int) {
 	}
 	spawnFn := func() {
 		// setup variables for tracking oz
+		c.ozActive = true
 		c.ozSource = c.Core.F
 		c.ozTickSrc = c.Core.F
 		c.ozActiveUntil = c.Core.F + dur
