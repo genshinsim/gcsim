@@ -573,13 +573,11 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	p := val.(*mapval)
 	params := make(map[string]int)
-	if p.fields != nil {
-		for k, v := range p.fields {
-			if v.Typ() != typNum {
-				return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
-			}
-			params[k] = int(v.(*number).ival)
+	for k, v := range p.fields {
+		if v.Typ() != typNum {
+			return nil, fmt.Errorf("map params should evaluate to a number, got %v", v.Inspect())
 		}
+		params[k] = int(v.(*number).ival)
 	}
 
 	charKey := keys.Char(char.ival)

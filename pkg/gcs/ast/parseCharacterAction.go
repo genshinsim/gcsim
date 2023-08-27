@@ -60,10 +60,7 @@ Loop:
 				return nil, err
 			}
 			if param == nil {
-				param = &MapExpr{
-					Pos:    n.pos,
-					Fields: make(map[string]Expr),
-				}
+				param = &MapExpr{Pos: n.pos}
 			}
 			expr.Args = append(expr.Args, param)
 
