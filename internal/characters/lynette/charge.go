@@ -13,7 +13,7 @@ import (
 
 var (
 	chargeFrames   []int
-	chargeHitmarks = []int{13, 14}
+	chargeHitmarks = []int{12, 13}
 )
 
 func init() {
