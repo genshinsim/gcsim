@@ -12,9 +12,8 @@ import (
 )
 
 var (
-	attackFrames [][]int
-	// TODO: proper frames, currently using kirara
-	attackHitmarks        = [][]int{{13}, {18}, {17, 39}, {39}}
+	attackFrames          [][]int
+	attackHitmarks        = [][]int{{17}, {13}, {23, 31}, {29}}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0.06, 0}, {0}}
 	attackDefHalt         = [][]bool{{true}, {true}, {true, false}, {false}}
 	attackHitboxes        = [][]float64{{2}, {1.8, 2.8}, {1.5, 2.5}, {2.2, 2.5}}
@@ -27,22 +26,20 @@ func init() {
 	// NA cancels
 	attackFrames = make([][]int, normalHitNum)
 
-	// TODO: proper frames, currently using kirara
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 33) // N1 -> Walk
-	attackFrames[0][action.ActionAttack] = 20
-	attackFrames[0][action.ActionCharge] = 24
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 30) // N1 -> Walk
+	attackFrames[0][action.ActionAttack] = 24
+	attackFrames[0][action.ActionCharge] = 25
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 35) // N2 -> Walk
-	attackFrames[1][action.ActionAttack] = 28
-	attackFrames[1][action.ActionCharge] = 28
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 27) // N2 -> Walk
+	attackFrames[1][action.ActionAttack] = 16
+	attackFrames[1][action.ActionCharge] = 25
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 61) // N3 -> Walk
-	attackFrames[2][action.ActionAttack] = 54
-	attackFrames[2][action.ActionCharge] = 40
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 47) // N3 -> CA/Walk
+	attackFrames[2][action.ActionAttack] = 35
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 63) // N4 -> Walk
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 68) // N4 -> Walk
 	attackFrames[3][action.ActionAttack] = 60
-	attackFrames[3][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	attackFrames[3][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
