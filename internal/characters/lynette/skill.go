@@ -12,22 +12,24 @@ import (
 )
 
 var (
-	skillPressFrames     []int
-	skillShortHoldFrames []int
-	skillHoldFrames      []int
+	skillPressFrames   []int
+	skillHoldEndFrames []int
 )
 
 const (
-	// TODO: proper frames, currently using kirara
 	skillCD = 12 * 60
 
-	skillPressHitmark = 14
-	skillPressCDStart = 14
+	skillPressHitmark        = 28
+	skillPressAlignedHitmark = 58
+	skillPressC6Start        = 17
+	skillPressCDStart        = 26
 
-	skillHoldHitmark = 2.5*60 + 36
-	skillHoldCDStart = 2.5*60 + 14
-
-	skillMaxHoldDuration = 2.5 * 60
+	skillHoldShadowsignStart    = 17
+	skillHoldShadowsignInterval = 0.1 * 60
+	skillHoldEndHitmark         = 16
+	skillHoldEndAlignedHitmark  = 44
+	skillHoldEndC6Start         = 14 - 9 // 9f before cd start
+	skillHoldEndCDStart         = 14
 
 	particleICDKey = "lynette-particle-icd"
 	particleICD    = 0.6 * 60
@@ -39,65 +41,96 @@ const (
 )
 
 func init() {
-	// TODO: proper frames, currently using kirara
 	// Tap E
-	skillPressFrames = frames.InitAbilSlice(38) // E -> Walk
-	skillPressFrames[action.ActionAttack] = 34
-	skillPressFrames[action.ActionSkill] = 34
-	skillPressFrames[action.ActionBurst] = 34
-	skillPressFrames[action.ActionDash] = 35
-	skillPressFrames[action.ActionJump] = 35
-	skillPressFrames[action.ActionSwap] = 33
+	skillPressFrames = frames.InitAbilSlice(58) // E -> Walk
+	skillPressFrames[action.ActionAttack] = 43
+	skillPressFrames[action.ActionSkill] = 44
+	skillPressFrames[action.ActionBurst] = 45
+	skillPressFrames[action.ActionDash] = 44
+	skillPressFrames[action.ActionJump] = 43
+	skillPressFrames[action.ActionSwap] = 42
 
 	// Hold E
-	skillHoldFrames = frames.InitAbilSlice(skillMaxHoldDuration + 68) // Hold E -> Walk
-	skillHoldFrames[action.ActionAttack] = skillMaxHoldDuration + 59
-	skillHoldFrames[action.ActionSkill] = skillMaxHoldDuration + 62
-	skillHoldFrames[action.ActionBurst] = skillMaxHoldDuration + 63
-	skillHoldFrames[action.ActionDash] = skillMaxHoldDuration + 62
-	skillHoldFrames[action.ActionJump] = skillMaxHoldDuration + 63
-	skillHoldFrames[action.ActionSwap] = skillMaxHoldDuration + 63
+	skillHoldEndFrames = frames.InitAbilSlice(41) // Hold E -> Walk
+	skillHoldEndFrames[action.ActionAttack] = 29
+	skillHoldEndFrames[action.ActionSkill] = 29
+	skillHoldEndFrames[action.ActionBurst] = 29
+	skillHoldEndFrames[action.ActionDash] = 29 // assumed
+	skillHoldEndFrames[action.ActionJump] = 29 // assumed
+	skillHoldEndFrames[action.ActionSwap] = 27
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
-	// TODO: remember to make this intuitive
 	if hold > 0 {
-		if hold > skillMaxHoldDuration {
-			hold = skillMaxHoldDuration
+		if hold > 150 {
+			hold = 150
 		}
-		return c.skillHold(p, hold)
+		// min duration in e state: ~35f
+		// max duration in e state: ~184f
+		// -> offset of 34f to 1 <= hold <= 150
+		return c.skillHold(p, hold+34)
 	}
 	return c.skillPress(p)
 }
 
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
-	c.skillAttack(skillPressHitmark, false)
+	// press attack and aligned attack
+	c.QueueCharTask(func() {
+		c.Core.QueueAttack(
+			c.skillAI,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, 1.8, 4.5),
+			0,
+			0,
+			c.particleCB,
+			c.makeSkillHealAndDrainCB(),
+		)
+		c.skillAligned(skillPressAlignedHitmark - skillPressHitmark) // TODO: unsure about when the check for aligned cd happens
+	}, skillPressHitmark)
+
+	c.QueueCharTask(c.c6, skillPressC6Start)
 
 	c.SetCDWithDelay(action.ActionSkill, skillCD, skillPressCDStart)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionSwap], // TODO: proper frames, should be earliest cancel
+		CanQueueAfter:   skillPressFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}
 }
 
 func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
-	// apply shadowsign on cast, then every 0.1s
-	c.shadowsignSrc = c.Core.F
-	c.applyShadowsign(c.Core.F)
+	// shadowsign activation
+	c.QueueCharTask(func() {
+		c.shadowsignSrc = c.Core.F
+		c.applyShadowsign(c.Core.F)
+	}, skillHoldShadowsignStart)
 
-	// queue up task to deal damage to enemy with shadowsign
-	c.QueueCharTask(c.holdAttack, skillHoldHitmark-skillMaxHoldDuration+duration)
+	// shadowsign termination, hold attack and aligned attack
+	c.QueueCharTask(func() {
+		c.clearShadowSign()
+		c.shadowsignSrc = -1 // cancel ticks because skill is over
 
-	c.SetCDWithDelay(action.ActionSkill, skillCD, skillHoldCDStart-skillMaxHoldDuration+duration)
+		c.Core.QueueAttack(
+			c.skillAI,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, 1.8, 5),
+			0,
+			0,
+			c.particleCB,
+			c.makeSkillHealAndDrainCB(),
+		)
+		c.skillAligned(skillHoldEndAlignedHitmark - skillHoldEndHitmark) // TODO: unsure about when the check for aligned cd happens
+	}, duration+skillHoldEndHitmark)
+
+	c.QueueCharTask(c.c6, duration+skillHoldEndC6Start)
+
+	c.SetCDWithDelay(action.ActionSkill, skillCD, duration+skillHoldEndCDStart)
 
 	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return skillHoldFrames[next] - skillMaxHoldDuration + duration },
-		AnimationLength: skillHoldFrames[action.InvalidAction] - skillMaxHoldDuration + duration,
-		CanQueueAfter:   skillHoldFrames[action.ActionAttack] - skillMaxHoldDuration + duration, // TODO: proper frames, should be earliest cancel
+		Frames:          func(next action.Action) int { return duration + skillHoldEndFrames[next] },
+		AnimationLength: duration + skillHoldEndFrames[action.InvalidAction],
+		CanQueueAfter:   duration + skillHoldEndFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}
 }
@@ -115,8 +148,8 @@ func (c *char) applyShadowsign(src int) func() {
 		enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8), nil)
 		enemy.SetTag(skillTag, 1)
 
-		// queue up next shadowsign application in 0.1s
-		c.QueueCharTask(c.applyShadowsign(src), 0.1*60)
+		// queue up next shadowsign application
+		c.QueueCharTask(c.applyShadowsign(src), skillHoldShadowsignInterval)
 	}
 }
 
@@ -127,32 +160,6 @@ func (c *char) clearShadowSign() {
 			e.SetTag(skillTag, 0)
 		}
 	}
-}
-
-func (c *char) holdAttack() {
-	c.clearShadowSign()
-	c.shadowsignSrc = -1 // cancel ticks because skill is over
-
-	c.skillAttack(0, true)
-}
-
-func (c *char) skillAttack(skillHitmark int, hold bool) {
-	h := 4.5
-	if hold {
-		h = 5
-	}
-	c.Core.QueueAttack(
-		c.skillAI,
-		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.5}, 1.8, h),
-		skillHitmark,
-		skillHitmark,
-		c.particleCB,
-		c.makeSkillHealAndDrainCB(),
-	)
-	// TODO: check timing
-	c.QueueCharTask(c.skillAligned, skillHitmark)
-	// TODO: check timing
-	c.QueueCharTask(c.c6, skillHitmark)
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
@@ -166,7 +173,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), particleCount, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) skillAligned() {
+func (c *char) skillAligned(hitmark int) {
 	if c.StatusIsActive(skillAlignedICDKey) {
 		return
 	}
@@ -174,11 +181,9 @@ func (c *char) skillAligned() {
 
 	c.Core.QueueAttack(
 		c.skillAlignedAI,
-		// TODO: check center/offset
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.3}, 1.2, 4.5),
-		// TODO: proper frames
-		0.4*60,
-		0.4*60,
+		hitmark,
+		hitmark,
 	)
 }
 
