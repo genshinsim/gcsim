@@ -403,7 +403,7 @@
     {
       "ability": "burst",
       "param": "vivid_travel",
-      "desc": "Projectile travel time for Vivid Shots. Default 10 frames."
+      "desc": "Projectile travel time for Vivid Shots. Default 15 frames."
     }
   ],
   "lyney": [

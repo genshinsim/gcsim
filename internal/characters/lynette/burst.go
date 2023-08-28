@@ -8,44 +8,45 @@ import (
 var burstFrames []int
 
 const (
-	// TODO: proper frames, currently using sayu
-	burstKey         = "lynette-q"
-	burstHitmark     = 20
-	burstDuration    = 12 * 60
-	burstCD          = 18 * 60
-	burstCDStart     = 12
-	burstEnergyDelay = 2
-	burstSpawn       = 12
+	burstKey           = "lynette-q"
+	burstHitmark       = 18
+	burstDuration      = 754
+	burstCD            = 18 * 60
+	burstEnergyDelay   = 6
+	burstSpawn         = 14
+	burstFirstTick     = 136
+	burstTickInterval  = 59
+	burstVividInterval = 134
 )
 
 func init() {
-	// TODO: proper frames, currently using sayu
-	burstFrames = frames.InitAbilSlice(65) // Q -> N1/E/J
-	burstFrames[action.ActionDash] = 64    // Q -> D
-	burstFrames[action.ActionSwap] = 64    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(56) // Q -> E
+	burstFrames[action.ActionAttack] = 55  // Q -> N1
+	burstFrames[action.ActionDash] = 46    // Q -> D
+	burstFrames[action.ActionJump] = 44    // Q -> J
+	burstFrames[action.ActionWalk] = 50    // Q -> Walk
+	burstFrames[action.ActionSwap] = 43    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 	vividTravel, ok := p["vivid_travel"]
 	if !ok {
-		vividTravel = 10 // TODO: determine good default
+		vividTravel = 15
 	}
 	c.Core.Tasks.Add(func() {
 		c := c.newBogglecatBox(vividTravel)
 		c.Core.Combat.AddGadget(c)
 	}, burstSpawn)
 
-	c.Core.Tasks.Add(func() {
-		c.SetCD(action.ActionBurst, burstCD)
-		c.a1() // same timing as cd start
-	}, burstCDStart)
+	c.SetCD(action.ActionBurst, burstCD)
+	c.a1() // same timing as cd start
 
 	c.ConsumeEnergy(burstEnergyDelay)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // TODO: proper frames, should be earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
 	}
 }

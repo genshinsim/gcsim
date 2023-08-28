@@ -35,42 +35,39 @@ func (c *char) newBogglecatBox(vividTravel int) *BogglecatBox {
 	b.char = c
 	b.vividTravel = vividTravel
 
-	b.Duration = burstDuration // TODO: proper frames
+	b.Duration = burstDuration
 	b.char.AddStatus(burstKey, b.Duration, false)
 
-	c.Core.Tasks.Add(func() {
-		// initial hit
-		initialAI := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Magic Trick: Astonishing Shift",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       burst[c.TalentLvlBurst()],
-		}
-		c.Core.QueueAttack(initialAI, combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1.5}, 4.5), 0, 0)
+	// initial hit
+	initialAI := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Magic Trick: Astonishing Shift",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
+	}
+	c.Core.QueueAttack(initialAI, combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1.5}, 4.5), burstHitmark-burstSpawn, burstHitmark-burstSpawn)
 
-		// bogglecat ticks
-		bogglecatAI := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Bogglecat Box",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Anemo,
-			Durability: 25,
-			Mult:       bogglecat[c.TalentLvlBurst()],
-		}
-		// TODO: double check tick count and interval
-		// queue up ticks
-		for t := 1 * 60; t <= b.Duration; t += 1 * 60 {
-			c.Core.QueueAttack(bogglecatAI, combat.NewCircleHitOnTarget(b.pos, nil, 6), t, t)
-		}
-	}, burstHitmark-burstSpawn)
+	// bogglecat ticks
+	bogglecatAI := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Bogglecat Box",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       bogglecat[c.TalentLvlBurst()],
+	}
+	// queue up ticks
+	for t := burstFirstTick - burstSpawn; t <= b.Duration; t += burstTickInterval {
+		c.Core.QueueAttack(bogglecatAI, combat.NewCircleHitOnTarget(b.pos, nil, 6), t, t)
+	}
 
 	// check for absorb every 0.3s besides absorbing on being hit
 	b.OnThinkInterval = b.absorbCheck
@@ -126,9 +123,7 @@ func (b *BogglecatBox) absorbRoutine(absorbedElement attributes.Element) {
 		Mult:       vivid[b.char.TalentLvlBurst()],
 	}
 	// queue up vivid shots
-	// TODO: proper interval frames
-	interval := int(2.3 * 60)
-	for t := interval; t <= b.Duration; t += interval {
+	for t := burstVividInterval; t <= b.Duration; t += burstVividInterval {
 		b.Core.Tasks.Add(func() {
 			// target random enemy within 15m of burst pos
 			enemy := b.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(b.pos, nil, 15), nil)
