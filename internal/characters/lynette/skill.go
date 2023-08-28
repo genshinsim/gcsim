@@ -55,8 +55,8 @@ func init() {
 	skillHoldEndFrames[action.ActionAttack] = 29
 	skillHoldEndFrames[action.ActionSkill] = 29
 	skillHoldEndFrames[action.ActionBurst] = 29
-	skillHoldEndFrames[action.ActionDash] = 29 // assumed
-	skillHoldEndFrames[action.ActionJump] = 29 // assumed
+	skillHoldEndFrames[action.ActionDash] = 28
+	skillHoldEndFrames[action.ActionJump] = 31
 	skillHoldEndFrames[action.ActionSwap] = 27
 }
 
