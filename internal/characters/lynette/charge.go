@@ -12,20 +12,18 @@ import (
 )
 
 var (
-	chargeFrames []int
-	// TODO: proper frames, currently using kirara
-	chargeHitmarks = []int{20, 27}
+	chargeFrames   []int
+	chargeHitmarks = []int{13, 14}
 )
 
 func init() {
-	// TODO: proper frames, currently using kirara
-	chargeFrames = frames.InitAbilSlice(52) // CA -> Walk
-	chargeFrames[action.ActionAttack] = 43
-	chargeFrames[action.ActionSkill] = 43
-	chargeFrames[action.ActionBurst] = 43
-	chargeFrames[action.ActionDash] = 38
-	chargeFrames[action.ActionJump] = 38
-	chargeFrames[action.ActionSwap] = 37
+	chargeFrames = frames.InitAbilSlice(51) // CA -> Walk
+	chargeFrames[action.ActionAttack] = 42
+	chargeFrames[action.ActionSkill] = 31
+	chargeFrames[action.ActionBurst] = 32
+	chargeFrames[action.ActionDash] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionJump] = chargeHitmarks[len(chargeHitmarks)-1]
+	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
