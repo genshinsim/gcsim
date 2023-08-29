@@ -57,7 +57,14 @@ func (s *Simulation) run() (stats.Result, error) {
 		}
 	}
 
-	err = s.eval.Exit()
+	// err = s.eval.Exit()
+	// if err != nil {
+	// 	fmt.Println("evaluator already closed")
+	// 	return s.resFromCurrentState(), err
+	// }
+	s.eval.Exit()
+
+	err = s.eval.Err()
 	if err != nil {
 		return s.resFromCurrentState(), err
 	}
@@ -110,6 +117,10 @@ func initialize(s *Simulation) (stateFn, error) {
 }
 
 func queuePhase(s *Simulation) (stateFn, error) {
+	if s.noMoreActions {
+		return s.advanceFrames(1, queuePhase)
+	}
+	s.eval.Continue()
 	next, err := s.eval.NextAction()
 	if err != nil {
 		return nil, err

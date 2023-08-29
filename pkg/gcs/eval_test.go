@@ -55,6 +55,7 @@ func TestForceTerminate(t *testing.T) {
 		fmt.Printf("done with result: %v, err: %v\n", res, err)
 	}()
 	for i := 0; i < 4; i++ {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if err != nil {
 			t.Errorf("unexpected error when checking for NextAction(): %v", err)
@@ -70,8 +71,13 @@ func TestForceTerminate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	err = eval.Err()
+	if err != nil {
+		t.Error(err)
+	}
 	//confirm that NextAction now returns nil
 	for i := 0; i < 4; i++ {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if err != nil {
 			t.Errorf("unexpected error when checking for NextAction() should be nil: %v", err)
@@ -110,6 +116,10 @@ func TestSleepAsWaitAlias(t *testing.T) {
 	if err != nil {
 		t.Errorf("unexpected error exiting: %v", err)
 	}
+	err = eval.Err()
+	if err != nil {
+		t.Error(err)
+	}
 }
 
 func TestDoneCheck(t *testing.T) {
@@ -127,6 +137,7 @@ func TestDoneCheck(t *testing.T) {
 	}()
 	count := 0
 	for {
+		eval.Continue()
 		a, err := eval.NextAction()
 		if a == nil {
 			break
