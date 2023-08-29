@@ -25,7 +25,7 @@ func (c *char) makeA1CB(hpDrained bool) combat.AttackCBFunc {
 			return
 		}
 		done = true
-		c.AddEnergy("lynette-a1", 3)
+		c.AddEnergy("lyney-a1", 3)
 	}
 }
 
