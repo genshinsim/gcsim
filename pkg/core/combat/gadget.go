@@ -13,6 +13,7 @@ const (
 	StartGadgetTypEnemy
 	GadgetTypDendroCore
 	GadgetTypLeaLotus
+	GadgetTypBogglecatBox
 	EndGadgetTypEnemy
 	GadgetTypGuoba
 	GadgetTypYueguiThrowing

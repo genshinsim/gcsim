@@ -3922,6 +3922,114 @@
       }
     ]
   },
+  "lynette": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.3,
+        "boxX": 1.8,
+        "boxY": 2.8
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.5,
+        "boxY": 2.5
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.5,
+        "boxY": 2.5
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.2,
+        "boxY": 2.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.8,
+        "radius": 2.2
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.8,
+        "radius": 2.2
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 1.8,
+        "boxY": 4.5
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 1.8,
+        "boxY": 5,
+        "notes": "Spawns at the closest enemy in 8m radius around the player."
+      },
+      {
+        "ability": "E-Aligned",
+        "shape": "Box",
+        "center": "GlobalValue",
+        "offsetY": -0.3,
+        "boxX": 1.2,
+        "boxY": 4.5,
+        "notes": "Spawns on the first enemy hit by E."
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.5,
+        "radius": 4.5,
+        "notes": "Q spawns at Y: 1.8m offset from the player position."
+      },
+      {
+        "ability": "Q-Bogglecat",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 6,
+        "notes": "Spawns on the Q position. Absorbs an element either by getting hit or the absorb check with 0.48m radius around the Q position that happens every 0.3s."
+      },
+      {
+        "ability": "Q-VividShot",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 1,
+        "notes": "Spawns on a random enemy within 15m radius of the Q position."
+      }
+    ]
+  },
   "lyney": {
     "cons": [
       {
