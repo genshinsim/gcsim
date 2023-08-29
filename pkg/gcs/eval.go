@@ -70,9 +70,9 @@ func (e *Eval) Exit() error {
 		return e.err
 	}
 	//make sure we can't send or continue anymore
+	e.isTerminated = true
 	close(e.next)
 	close(e.work)
-	e.isTerminated = true
 	return e.err
 }
 
