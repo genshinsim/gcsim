@@ -24,6 +24,9 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		target := args[0].(combat.Target)
 
 		for _, enemy := range core.Combat.Enemies() {
+			if enemy.Key() == target.Key() {
+				continue
+			}
 			if target.WillCollide(enemy.Shape()) {
 				out.targetOverlap = true
 			}
