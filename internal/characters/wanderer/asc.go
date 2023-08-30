@@ -30,7 +30,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
+		if !c.StatusIsActive(SkillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
 			return
 		}
 

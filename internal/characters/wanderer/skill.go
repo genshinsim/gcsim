@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	skillKey           = "windfavored-state"
+	SkillKey           = "windfavored-state"
 	particleICDKey     = "wanderer-particle-icd"
 	plungeAvailableKey = "wanderer-plunge-available"
 )
@@ -28,7 +28,7 @@ func init() {
 const skillHitmark = 2
 
 func (c *char) skillActivate(p map[string]int) action.ActionInfo {
-	c.AddStatus(skillKey, 20*60, true)
+	c.AddStatus(SkillKey, 20*60, true)
 	c.Core.Player.SwapCD = math.MaxInt16
 
 	// Add 10 seconds worth of skydwellerPoints (1 point = 6 frames)
@@ -89,7 +89,7 @@ func (c *char) skillDeactivate(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) checkForSkillEnd() int {
-	if c.StatusIsActive(skillKey) && c.skydwellerPoints <= 0 {
+	if c.StatusIsActive(SkillKey) && c.skydwellerPoints <= 0 {
 		return c.skillEndRoutine()
 	}
 	return 0
@@ -97,7 +97,7 @@ func (c *char) checkForSkillEnd() int {
 
 func (c *char) skillEndRoutine() int {
 	//print("Starting skill end routine")
-	c.DeleteStatus(skillKey)
+	c.DeleteStatus(SkillKey)
 	c.Core.Player.SwapCD = 26
 
 	if c.StatusIsActive(a4Key) {
@@ -131,14 +131,14 @@ func (c *char) skillEndRoutine() int {
 }
 
 func (c *char) depleteSkydwellerPoints() {
-	if c.StatusIsActive(skillKey) {
+	if c.StatusIsActive(SkillKey) {
 		c.skydwellerPoints -= 1
 		c.Core.Tasks.Add(c.depleteSkydwellerPoints, 6)
 	}
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if !c.StatusIsActive(skillKey) {
+	if !c.StatusIsActive(SkillKey) {
 		return c.skillActivate(p)
 	}
 	return c.skillDeactivate(p)
@@ -149,7 +149,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
-	if !c.StatusIsActive(skillKey) {
+	if !c.StatusIsActive(SkillKey) {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

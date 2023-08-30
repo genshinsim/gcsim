@@ -56,7 +56,7 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 	done := false
 
 	return func(a combat.AttackCB) {
-		if done || !c.StatusIsActive(skillKey) || c.skydwellerPoints <= 0 {
+		if done || !c.StatusIsActive(SkillKey) || c.skydwellerPoints <= 0 {
 			return
 		}
 

@@ -36,7 +36,7 @@ func init() {
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
-	if c.StatusIsActive(skillKey) {
+	if c.StatusIsActive(SkillKey) {
 		// Can only occur if delay == 0, so it can be disregarded
 		return c.WindfavoredChargeAttack(p)
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/characters/ayato"
 	"github.com/genshinsim/gcsim/internal/characters/cyno"
 	"github.com/genshinsim/gcsim/internal/characters/tartaglia"
+	"github.com/genshinsim/gcsim/internal/characters/wanderer"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -115,10 +116,9 @@ func init() {
 	percentDelay5[keys.Kirara] = 13
 	percentDelay5[keys.Lyney] = 12
 
-	// TODO: Uncomment when Wanderer Implementation is done
-	// percentDelay5[keys.Wanderer] = 0
-	// percentDelay5AltForms[keys.Wanderer] = 12
-	// AltFormStatusKeys[keys.Wanderer] = wanderer.SkillKey
+	percentDelay5[keys.Wanderer] = 0
+	percentDelay5AltForms[keys.Wanderer] = 12
+	altFormStatusKeys[keys.Wanderer] = wanderer.SkillKey
 
 	// Technically it's 15 for Left, 5 for Right, and 13 for Twirl
 	percentDelay5[keys.Ningguang] = (15 + 5 + 13) / 3
