@@ -70,6 +70,7 @@ func (c *char) Init() error {
 
 	c.vividCount = 1
 	c.c2()
+	c.c4()
 
 	return nil
 }
