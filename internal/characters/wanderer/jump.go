@@ -20,7 +20,7 @@ func init() {
 func (c *char) Jump(p map[string]int) action.ActionInfo {
 	delay := c.checkForSkillEnd()
 
-	if c.StatusIsActive(skillKey) {
+	if c.StatusIsActive(SkillKey) {
 		return c.WindfavoredJump(p)
 	}
 

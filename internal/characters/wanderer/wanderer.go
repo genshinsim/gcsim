@@ -47,7 +47,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if c.StatusIsActive(skillKey) {
+	if c.StatusIsActive(SkillKey) {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
