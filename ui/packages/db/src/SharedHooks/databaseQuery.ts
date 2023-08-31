@@ -98,10 +98,14 @@ export function craftQuery(
       $in: filter.tags,
     };
   }
+  //force default sort by date for now
   return {
     query,
     limit,
     skip,
+    sort: {
+      create_date: -1,
+    }
   };
 }
 
@@ -113,6 +117,8 @@ export interface DbQuery {
     };
   };
   limit: number;
-  sort?: unknown;
+  sort?: {
+    create_date: number;
+  };
   skip?: number;
 }
