@@ -101,6 +101,7 @@
         "avgTotalDmg": "Avg Total Dmg",
         "avgSimTime": "Avg Sim Time",
         "runDate": "Run Date",
+        "createDate": "Date Added",
         "ttk": "Time to Kill",
         "duration": "Duration",
         "unknown": "Unknown",
