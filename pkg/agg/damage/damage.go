@@ -120,11 +120,15 @@ func (b *buffer) Add(result stats.Result) {
 
 		b.characterDPS[i].Add(charDPS * time)
 		for k, v := range charElementDPS {
+			if _, ok := elementDPS[k]; !ok {
+				elementDPS[k] = 0
+			}
+			elementDPS[k] += v
+
 			if _, ok := b.dpsByElement[i][k]; !ok {
 				b.dpsByElement[i][k] = &calc.StreamStats{}
 			}
 			b.dpsByElement[i][k].Add(v * time)
-			elementDPS[k] += v
 		}
 
 		for k, v := range charTargetDPS {
@@ -172,7 +176,7 @@ func (b *buffer) Add(result stats.Result) {
 func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.ElementDps = make(map[string]*model.DescriptiveStats)
 	for k, v := range b.elementDPS {
-		if v.Min > 0 {
+		if v.Mean() > 0 {
 			result.ElementDps[k] = agg.ToDescriptiveStats(v)
 		}
 	}
@@ -191,7 +195,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, em := range b.dpsByElement {
 		elements := make(map[string]*model.DescriptiveStats)
 		for k, v := range em {
-			if v.Min > 0 {
+			if v.Mean() > 0 {
 				elements[k] = agg.ToDescriptiveStats(v)
 			}
 		}
