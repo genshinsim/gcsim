@@ -36,6 +36,12 @@ module.exports = {
     },
     extend: {
       spacing: { 320: "320px", 280: "280" },
+      minWidth: {
+        wsm: "600px",
+        wmd: "700px",
+        wlg: "950px",
+        wxl: "1100px",
+      },
       colors: {
         "bp-header-color": "#394b59",
         "bp-card-color": "#30404d",

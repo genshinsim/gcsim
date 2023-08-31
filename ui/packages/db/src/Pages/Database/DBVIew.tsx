@@ -13,7 +13,7 @@ type Props = {
 
 export const DBView = (props: Props) => {
   return (
-    <div className="flex flex-col  gap-4 m-8 my-4 items-center">
+    <div className="flex flex-col gap-4 m-8 my-4 items-center">
       <ActionBar simCount={props.data.length} />
       {props.data.length === 0 ? (
         <div className="6 flex flex-col justify-center items-center h-screen">

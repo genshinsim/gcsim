@@ -30,7 +30,7 @@ function DBEntryDesktopPortrait({
     );
   }
   return (
-    <div className="bg-slate-700 p-2 flex flex-row max-h-fit    w-20">
+    <div className="bg-slate-700 p-2 flex flex-row h-32  w-20">
       <div className="grid grid-cols-2 grid-rows-3 ">
         <div className="col-span-2 row-span-2 border-b border-white/25">
           <div className=" relative ">
@@ -62,7 +62,7 @@ function DBEntryMobilePortrait({ name, sets, weapon, cons }: model.ICharacter) {
     );
   }
   return (
-    <div className="bg-slate-700  flex flex-row max-h-fit    w-32">
+    <div className="bg-slate-700  flex flex-row max-h-fit w-32">
       <div className="grid grid-cols-3 grid-rows-2 bg-slate-500/10 gap-[2px]  ">
         <div className="col-span-2 row-span-2 bg-slate-700">
           <div className=" relative ">

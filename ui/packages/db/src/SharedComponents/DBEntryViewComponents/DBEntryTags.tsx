@@ -12,12 +12,12 @@ export default function DBEntryTags({
   const [_, setLocation] = useLocation();
 
   return (
-    <div className={"flex flex-row  overflow-hidden max-w-xl "}>
+    <div className={"flex flex-row overflow-hidden"}>
       {tags
         ?.filter((tag) => tag !== 1)
         .map((tag) => (
           <div
-            className="hover:opacity-50 cursor-pointer bg-slate-700 text-xs font-semibold rounded-full px-2 py-1 mr-2 mt-1 whitespace-nowrap "
+            className="hover:opacity-50 cursor-pointer bg-slate-500 text-xs font-semibold rounded-full px-2 py-1 mr-2 mt-1 whitespace-nowrap "
             key={tag}
             onClick={() => {
               setLocation(`/tag/${tag}`);
