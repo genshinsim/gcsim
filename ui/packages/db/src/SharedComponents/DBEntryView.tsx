@@ -23,7 +23,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
 
   return (
     <>
-      <div className="flex flex-row flex-wrap place-content-center bg-slate-700 max-w-xs sm:min-w-wsm md:min-w-wmd lg:min-w-wlg xl:min-w-wxl sm:max-w-sm md:max-w-2xl lg:max-w-4xl p-5 border sm:border-0 gap-4 sm:gap-1 ">
+      <div className="flex flex-row flex-wrap place-content-center bg-slate-700 lg:bg-slate-800 max-w-xs sm:min-w-wsm md:min-w-wmd lg:min-w-wlg xl:min-w-wxl sm:max-w-sm md:max-w-2xl lg:max-w-4xl p-5 border sm:border-0 gap-4 sm:gap-1 ">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
           {team &&
             team.map((char, index) => {
