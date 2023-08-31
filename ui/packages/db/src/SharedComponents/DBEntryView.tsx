@@ -31,21 +31,18 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
             })}
         </div>
         <div className="flex flex-col grow h-full">
-          <div className="">
-            {visibleTagCount(dbEntry.accepted_tags ?? []) > 0 ? (
-              <DBEntryTags tags={dbEntry.accepted_tags} />
-            ) : (
-              <></>
-            )}
-            <div className="w-fit sm:w-auto">
-              <DBEntryDetails
-                {...dbEntry.summary}
-                create_date={dbEntry.create_date}
-              />
-            </div>
-            <div className="hidden lg:block p-1 overflow-ellipsis max-h-7 opacity-50">
-              {dbEntry.description}
-            </div>
+          {visibleTagCount(dbEntry.accepted_tags ?? []) > 0 ? (
+            <DBEntryTags tags={dbEntry.accepted_tags} />
+          ) : (
+            <></>
+          )}
+          <DBEntryDetails
+            {...dbEntry.summary}
+            create_date={dbEntry.create_date}
+            description={dbEntry.description}
+          />
+          <div className="hidden p-1 max-h-7 opacity-50 lg:block lg:w-0 lg:min-w-full">
+            {dbEntry.description}
           </div>
         </div>
         <div className="flex flex-col justify-center w-full lg:w-fit">
@@ -59,7 +56,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
           </a>
         </div>
         <div className="basis-full text-xs font-bold w-full flex place-content-end">
-            Sim created by: {dbEntry.submitter}
+          Sim created by: {dbEntry.submitter}
         </div>
       </div>
     </>
@@ -72,10 +69,12 @@ function DBEntryDetails({
   mode,
   sim_duration,
   create_date,
+  description,
 }: // total_damage,
 // description,
 NonNullable<db.IEntry["summary"]> & {
   create_date?: number | Long | null;
+  description?: string | null;
 }) {
   const { t: translate } = useTranslation();
 
@@ -85,7 +84,7 @@ NonNullable<db.IEntry["summary"]> & {
     date = new Date((create_date as number) * 1000).toLocaleDateString();
   }
   return (
-    <table className="bp4-html-table  ">
+    <table className="bp4-html-table w-full">
       <thead>
         <tr className="text-xs">
           <th className="priority-5">
