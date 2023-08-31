@@ -61,14 +61,6 @@ export function Filter() {
         size={DrawerSize.SMALL}
       >
         <div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden p-2">
-          {/* <div className="flex flex-row gap-1">
-            {includedCharacterFilters.map((charFilter) => (
-              <FilterPortrait
-                key={charFilter.charName}
-                charName={charFilter.charName}
-              />
-            ))}
-          </div> */}
           <input
             className="bp4-input bp4-icon bp4-icon-filter"
             placeholder={t("db.customFilter")}
