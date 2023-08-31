@@ -64,7 +64,7 @@ func (b *buffer) Add(result stats.Result) {
 func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.Warnings = &model.Warnings{
 		TargetOverlap:       b.overlap,
-		InsufficientEnergy:  b.energy.StdDev() >= 1.0,
+		InsufficientEnergy:  b.energy.Mean() >= 1.0,
 		InsufficientStamina: b.stamina.Mean() >= 1.0,
 		SwapCd:              b.swap.Mean() >= 1.0,
 		SkillCd:             b.skill.Mean() >= 1.0,
