@@ -77,20 +77,29 @@ func (r *Reactable) tryQuickenBloom(a *combat.AttackEvent) {
 
 type DendroCore struct {
 	*gadget.Gadget
-	srcFrame int
+	srcFrame  int
+	CharIndex int
 }
 
 func (r *Reactable) addBloomGadget(a *combat.AttackEvent) {
 	r.core.Tasks.Add(func() {
-		var t combat.Gadget = NewDendroCore(r.core, r.self.Shape(), a)
+		t := NewDendroCore(r.core, r.self.Shape(), a)
 		r.core.Combat.AddGadget(t)
 		r.core.Events.Emit(event.OnDendroCore, t, a)
+		r.core.Log.NewEvent(
+			"dendro core spawned",
+			glog.LogElementEvent,
+			a.Info.ActorIndex,
+		).
+			Write("src", t.Src()).
+			Write("expiry", r.core.F+t.Duration)
 	}, DendroCoreDelay)
 }
 
 func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *DendroCore {
 	s := &DendroCore{
-		srcFrame: c.F,
+		srcFrame:  c.F,
+		CharIndex: a.Info.ActorIndex,
 	}
 
 	circ, ok := shp.(*geometry.Circle)
@@ -105,21 +114,30 @@ func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *Den
 
 	char := s.Core.Player.ByIndex(a.Info.ActorIndex)
 
-	explode := func() {
-		ai, snap := NewBloomAttack(char, s)
-		ap := combat.NewCircleHitOnTarget(s, nil, 5)
-		c.QueueAttackWithSnap(ai, snap, ap, 1)
+	explode := func(reason string) func() {
+		return func() {
+			ai, snap := NewBloomAttack(char, s)
+			ap := combat.NewCircleHitOnTarget(s, nil, 5)
+			c.QueueAttackWithSnap(ai, snap, ap, 1)
 
-		//self damage
-		ai.Abil += " (self damage)"
-		ai.FlatDmg = 0.05 * ai.FlatDmg
-		ap.SkipTargets[targets.TargettablePlayer] = false
-		ap.SkipTargets[targets.TargettableEnemy] = true
-		ap.SkipTargets[targets.TargettableGadget] = true
-		c.QueueAttackWithSnap(ai, snap, ap, 1)
+			//self damage
+			ai.Abil += " (self damage)"
+			ai.FlatDmg = 0.05 * ai.FlatDmg
+			ap.SkipTargets[targets.TargettablePlayer] = false
+			ap.SkipTargets[targets.TargettableEnemy] = true
+			ap.SkipTargets[targets.TargettableGadget] = true
+			c.QueueAttackWithSnap(ai, snap, ap, 1)
+
+			c.Log.NewEvent(
+				"dendro core "+reason,
+				glog.LogElementEvent,
+				char.Index,
+			).
+				Write("src", s.Src())
+		}
 	}
-	s.Gadget.OnExpiry = explode
-	s.Gadget.OnKill = explode
+	s.Gadget.OnExpiry = explode("expired")
+	s.Gadget.OnKill = explode("killed")
 
 	return s
 }
@@ -165,6 +183,13 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
 		s.Core.Events.Emit(event.OnHyperbloom, s, atk)
+		s.Core.Log.NewEvent(
+			"hyperbloom triggered",
+			glog.LogElementEvent,
+			char.Index,
+		).
+			Write("dendro_core_char", s.CharIndex).
+			Write("dendro_core_src", s.Gadget.Src())
 	case attributes.Pyro:
 		// trigger burgeon, aoe dendro damage
 		// self damage
@@ -184,6 +209,13 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		s.Gadget.OnKill = nil
 		s.Gadget.Kill()
 		s.Core.Events.Emit(event.OnBurgeon, s, atk)
+		s.Core.Log.NewEvent(
+			"burgeon triggered",
+			glog.LogElementEvent,
+			char.Index,
+		).
+			Write("dendro_core_char", s.CharIndex).
+			Write("dendro_core_src", s.Gadget.Src())
 	default:
 		return 0, false
 	}
