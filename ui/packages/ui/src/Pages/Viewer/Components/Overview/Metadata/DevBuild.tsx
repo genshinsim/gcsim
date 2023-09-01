@@ -10,7 +10,7 @@ export const DevBuild = ({ signKey }: Props) => {
   }
 
   if (signKey != "dev") {
-    return <Item value="unsigned" intent="danger" bright bold />;
+    return <Item value="unofficial" intent="danger" bright bold />;
   }
   return <Item value="dev build" intent="danger" bright bold />;
 };
