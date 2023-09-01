@@ -17,14 +17,6 @@ async function createConfig() {
     baseUrl: "/",
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
-    scripts: [
-      {
-        src: "https://static.cloudflareinsights.com/beacon.min.js",
-        defer: true,
-        "data-cf-beacon": '{"token": "2f8a17efd29b479f9dc27e09aae7ccb5"}',
-      },
-    ],
-
     // Even if you don't use internalization, you can use this field to set useful
     // metadata like html lang. For example, if your site is Chinese, you may want
     // to replace "en" with "zh-Hans".
