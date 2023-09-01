@@ -113,6 +113,14 @@
       "desc": "Returns whether C6 will proc for the upcoming CA."
     }
   ],
+  "lyney": [
+    {
+      "fields": [
+        ".lyney.propSurplusStacks"
+      ],
+      "desc": "Number of Prop Surplus stacks."
+    }
+  ], 
   "ningguang": [
     {
       "fields": [

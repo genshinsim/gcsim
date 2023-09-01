@@ -75,3 +75,12 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Acti
 	}
 	return c.Character.ActionReady(a, p)
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "propSurplusStacks":
+		return c.propSurplusStacks, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
