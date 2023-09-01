@@ -109,6 +109,7 @@
         "filter": "Filter",
         "customFilter": "Custom Filter",
         "characters": "Characters",
+        "tags": "Tags",
         "clear": "Clear",
         "approve": "Approve",
         "DB_TAG_KQM_GUIDE": "KQM Guide"

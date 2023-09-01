@@ -1,4 +1,4 @@
-import { Collapse, Drawer, DrawerSize, Position } from "@blueprintjs/core";
+import { Button, Collapse, Drawer, DrawerSize, Intent, Position } from "@blueprintjs/core";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaFilter, FaSearch } from "react-icons/fa";
@@ -9,6 +9,7 @@ import {
   ItemFilterState,
   charNames,
 } from "./FilterComponents/Filter.utils";
+import tagData from "@gcsim/db/src/tags.json";
 
 export function Filter() {
   // https://github.com/i18next/next-i18next/issues/1795
@@ -71,6 +72,7 @@ export function Filter() {
             }}
           />
           <CharacterFilter />
+          <TagFilter />
         </div>
       </Drawer>
     </div>
@@ -90,6 +92,68 @@ function ClearFilterButton() {
     </button>
   );
 }
+
+function TagFilter() {
+  const [tagIsOpen, setTagIsOpen] = useState(false);
+  const { t: translation } = useTranslation();
+  const t = (s: string) => translation<string>(s);
+  const sortedTagnames = Object.keys(tagData)
+    .filter(key => { return key !== "0" && key !== "1" })
+    .map(key => {
+      return {
+        key: key,
+        name: tagData[key]["display_name"],
+      }
+    })
+
+  return (
+    <div className="w-full  overflow-x-hidden no-scrollbar">
+      <button
+        className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
+        onClick={() => setTagIsOpen(!tagIsOpen)}
+      >
+        <div className=" grow">{t("db.tags")}</div>
+
+        <div className="">{tagIsOpen ? "-" : "+"}</div>
+      </button>
+      <Collapse isOpen={tagIsOpen}>
+        <div className="flex flex-col mt-2 bg-gray-800 p-1">
+          <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
+            {sortedTagnames
+              .map((t) => (
+                <TagFilterButton key={t.key} name={t.name} tag={t.key} />
+              ))}
+          </div>
+        </div>
+      </Collapse>
+    </div>
+  );
+
+}
+
+function TagFilterButton({ tag, name }: { tag, name: string }) {
+  const filter = useContext(FilterContext);
+  const dispatch = useContext(FilterDispatchContext);
+
+  const handleClick = () => {
+    dispatch({
+      type: "handleTag",
+      tag: tag,
+    });
+  };
+
+  let intent = filter.tagFilter[tag].state === ItemFilterState.include ? Intent.SUCCESS : Intent.NONE
+
+  return (
+    <Button
+      intent={intent}
+      onClick={handleClick}
+    >
+      {name}
+    </Button>
+  );
+}
+
 
 function CharacterFilter() {
   const [charIsOpen, setCharIsOpen] = useState(false);
