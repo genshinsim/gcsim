@@ -1,11 +1,12 @@
 import { createContext } from "react";
 import charData from "../../Data/char_data.generated.json"
+import tagData from "@gcsim/db/src/tags.json";
 
 export interface FilterState {
   charFilter: CharFilter;
+  tagFilter: TagFilter;
   charIncludeCount: number;
   customFilter: string;
-  tags: number[];
 }
 
 export enum ItemFilterState {
@@ -23,11 +24,16 @@ export const initialCharFilter = charNames.reduce((acc, charName) => {
   return acc;
 }, {} as CharFilter);
 
+export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
+  acc[tag] = { state: ItemFilterState.none, tag}
+  return acc
+}, {} as TagFilter)
+
 export const initialFilter: FilterState = {
   charFilter: initialCharFilter,
+  tagFilter: initialTagFilter,
   charIncludeCount: 0,
   customFilter: "",
-  tags: [],
 };
 
 export const FilterContext = createContext<FilterState>(initialFilter);
@@ -57,12 +63,28 @@ export type CharFilterState =
       charName: string;
     };
 
+export interface TagFilter {
+  //tag key (int)
+  [key: string]: TagFilterState
+}
+
+export type TagFilterState =
+  | {
+      tag: string;
+      state: ItemFilterState.include;
+    }
+  | {
+      state: ItemFilterState.none;
+      tag: string;
+    }
+
 export const FilterDispatchContext = createContext<
   React.Dispatch<FilterActions>
 >(null as unknown as React.Dispatch<FilterActions>);
 
 export type FilterActions =
   | CharFilterReducerAction
+  | TagFilterReducerAction
   | GeneralFilterAction
   | CustomFilterAction;
 
@@ -87,6 +109,12 @@ interface CharFilterReducerAction {
   char: string;
   weapon?: string;
   set?: string;
+}
+
+interface TagFilterReducerAction {
+  type:
+    | "handleTag"
+  tag: string;
 }
 
 export function filterReducer(
@@ -228,6 +256,28 @@ export function filterReducer(
       return {
         ...filter,
         customFilter: action.customFilter,
+      };
+    }
+    case "handleTag": {
+      let newFilterState: ItemFilterState;
+      switch (filter.tagFilter[action.tag].state) {
+        case ItemFilterState.none:
+          newFilterState = ItemFilterState.include;
+          break;
+        case ItemFilterState.include:
+          newFilterState = ItemFilterState.none;
+          break;
+      }
+
+      return {
+        ...filter,
+        tagFilter: {
+          ...filter.tagFilter,
+          [action.tag] : {
+            state: newFilterState,
+            tag: action.tag,
+          }
+        }
       };
     }
 

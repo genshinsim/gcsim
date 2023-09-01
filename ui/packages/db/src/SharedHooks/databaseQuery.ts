@@ -9,11 +9,12 @@ export function craftQuery(
   entriesPerPage: number
 ): DbQuery {
   const query: DbQuery["query"] = {};
+  const limit = entriesPerPage;
+  const skip = (pageNumber - 1) * entriesPerPage;
+
   // sort all characters into included and excluded from the filter
   const includedChars: string[] = [];
   const excludedChars: string[] = [];
-  const limit = entriesPerPage;
-  const skip = (pageNumber - 1) * entriesPerPage;
   for (const [charName, charState] of Object.entries(filter.charFilter)) {
     if (charState.state === ItemFilterState.include) {
       includedChars.push(charName);
@@ -93,11 +94,27 @@ export function craftQuery(
       });
     }
   }
-  if (filter.tags.length > 0) {
-    query["accepted_tags"] = {
-      $in: filter.tags,
-    };
+
+  // sort out tags
+  const includedTags: string[] = [];
+  for (const [tag, tagState] of Object.entries(filter.tagFilter)) {
+    if (tagState.state === ItemFilterState.include) {
+      includedTags.push(tag);
+    } 
   }
+
+  if (includedTags.length > 0) {
+    let tags: any[] = [];
+    includedTags.forEach((tag) => {
+      tags.push(parseInt(tag));
+    });
+    if (tags.length > 0) {
+      query["accepted_tags"] = {
+        $in: tags,
+      };
+    }
+  }
+
   //force default sort by date for now
   return {
     query,
