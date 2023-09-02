@@ -67,10 +67,13 @@ func Parse(cfg string) (*info.ActionList, ast.Node, error) {
 	//check other errors as well
 	if len(simcfg.Errors) != 0 {
 		fmt.Println("The config has the following errors: ")
+		errMsgs := ""
 		for _, v := range simcfg.Errors {
-			fmt.Printf("\t%v\n", v)
+			errMsg := fmt.Sprintf("\t%v\n", v)
+			fmt.Println(errMsg)
+			errMsgs += errMsg
 		}
-		return &info.ActionList{}, nil, errors.New("sim has errors")
+		return &info.ActionList{}, nil, errors.New(errMsgs)
 	}
 
 	return simcfg, gcsl, nil

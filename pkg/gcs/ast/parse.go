@@ -81,7 +81,7 @@ func (p *Parser) Parse() (*info.ActionList, Node, error) {
 			count += c
 		}
 		if count > 5 {
-			p.res.Errors = append(p.res.Errors, fmt.Errorf("character %v have more than 5 total set items", v.String()))
+			p.res.Errors = append(p.res.Errors, fmt.Errorf("character %v has more than 5 total set items", v.String()))
 		}
 	}
 
