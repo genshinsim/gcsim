@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -35,19 +34,10 @@ func TestEvalBasicBlockStmt(t *testing.T) {
 		},
 	}
 
-	e := evalFromNode(n)
-	var val Obj
-	var done bool
-	var err error
-	for !done {
-		val, done, err = e.evalNext(nil)
-		if err != nil {
-			t.Error(err)
-		}
-		fmt.Println(val)
-	}
-	if !done {
-		t.Error("expected node to be done, got false")
+	val, err := runEvalReturnResWhenDone(evalFromNode(n))
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 	}
 	v, ok := val.(*number)
 	if !ok {
@@ -86,19 +76,10 @@ func TestEvalBlockWithReturnStmt(t *testing.T) {
 		},
 	}
 
-	e := evalFromNode(n)
-	var val Obj
-	var done bool
-	var err error
-	for !done {
-		val, done, err = e.evalNext(nil)
-		if err != nil {
-			t.Error(err)
-		}
-		fmt.Println(val)
-	}
-	if !done {
-		t.Error("expected node to be done, got false")
+	val, err := runEvalReturnResWhenDone(evalFromNode(n))
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 	}
 	v, ok := val.(*retval)
 	if !ok {

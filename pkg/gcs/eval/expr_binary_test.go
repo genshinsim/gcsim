@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -20,23 +19,10 @@ func TestEvalBasicBinaryExpr(t *testing.T) {
 		},
 	}
 
-	e := evalFromNode(n)
-	if e == nil {
-		t.Error("invalid executor from number")
+	val, err := runEvalReturnResWhenDone(evalFromNode(n))
+	if err != nil {
+		t.Error(err)
 		t.FailNow()
-	}
-	var val Obj
-	var done bool
-	var err error
-	for !done {
-		val, done, err = e.evalNext(nil)
-		if err != nil {
-			t.Error(err)
-		}
-		fmt.Println(val)
-	}
-	if !done {
-		t.Error("expected node to be done, got false")
 	}
 	v, ok := val.(*number)
 	if !ok {
@@ -69,23 +55,10 @@ func TestEvalNestedBinaryExpr(t *testing.T) {
 		},
 	}
 
-	e := evalFromNode(n)
-	if e == nil {
-		t.Error("invalid executor from number")
+	val, err := runEvalReturnResWhenDone(evalFromNode(n))
+	if err != nil {
+		t.Error(err)
 		t.FailNow()
-	}
-	var val Obj
-	var done bool
-	var err error
-	for !done {
-		val, done, err = e.evalNext(nil)
-		if err != nil {
-			t.Error(err)
-		}
-		fmt.Printf("val: %v, done: %v\n", val, done)
-	}
-	if !done {
-		t.Error("expected node to be done, got false")
 	}
 	v, ok := val.(*number)
 	if !ok {
