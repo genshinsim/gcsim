@@ -65,3 +65,34 @@ func TestEvalString(t *testing.T) {
 		t.Errorf("expected result to be %v, got %v", n.Value, v.str)
 	}
 }
+
+func TestEvalFuncExpr(t *testing.T) {
+	n := &ast.FuncExpr{
+		Func: &ast.FuncLit{
+			Signature: nil, //ignoring signature for this test since we're not validating type for this
+			Args: []*ast.Ident{
+				{
+					Value: "a",
+				},
+				{
+					Value: "b",
+				},
+			},
+			Body: &ast.BlockStmt{
+				List: []ast.Node{
+					&ast.NumberLit{IntVal: 1},
+					&ast.NumberLit{IntVal: 1},
+				},
+			},
+		},
+	}
+	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	_, ok := val.(*funcval)
+	if !ok {
+		t.Errorf("res is not a function, got %v", val.Typ())
+	}
+}

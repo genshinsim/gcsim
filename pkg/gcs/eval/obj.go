@@ -121,6 +121,12 @@ func (s *strval) evalNext(*Env) (Obj, bool, error) { return s, true, nil }
 // funcval.
 func (f *funcval) Inspect() string { return "function" }
 func (f *funcval) Typ() ObjTyp     { return typFun }
+func (f *funcval) evalNext(env *Env) (Obj, bool, error) {
+	if f.Env == nil {
+		f.Env = NewEnv(env)
+	}
+	return f, true, nil
+}
 
 // bfuncval.
 func (b *bfuncval) Inspect() string { return "built-in function" }

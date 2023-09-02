@@ -16,7 +16,7 @@ func TestEvalBasicUnaryExpr(t *testing.T) {
 		},
 	}
 
-	val, err := runEvalReturnResWhenDone(evalFromNode(n))
+	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

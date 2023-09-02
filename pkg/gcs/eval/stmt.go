@@ -8,8 +8,11 @@ func evalFromStmt(n ast.Stmt) evalNode {
 		return blockStmtEval(v)
 	case *ast.ReturnStmt:
 		return returnStmtEval(v)
+	case *ast.FnStmt:
+		return fnStmtEval(v)
 	default:
 		return nil
 
 	}
 }
+

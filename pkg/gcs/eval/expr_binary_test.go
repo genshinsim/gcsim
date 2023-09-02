@@ -19,7 +19,7 @@ func TestEvalBasicBinaryExpr(t *testing.T) {
 		},
 	}
 
-	val, err := runEvalReturnResWhenDone(evalFromNode(n))
+	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -55,7 +55,7 @@ func TestEvalNestedBinaryExpr(t *testing.T) {
 		},
 	}
 
-	val, err := runEvalReturnResWhenDone(evalFromNode(n))
+	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

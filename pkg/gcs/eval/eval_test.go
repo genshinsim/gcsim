@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func runEvalReturnResWhenDone(e evalNode) (Obj, error) {
+func runEvalReturnResWhenDone(e evalNode, env *Env) (Obj, error) {
 	if e == nil {
 		return nil, errors.New("invalid root node; no executor found")
 	}
@@ -13,7 +13,7 @@ func runEvalReturnResWhenDone(e evalNode) (Obj, error) {
 	var done bool
 	var err error
 	for !done {
-		val, done, err = e.evalNext(nil)
+		val, done, err = e.evalNext(env)
 		if err != nil {
 			return nil, err
 		}
