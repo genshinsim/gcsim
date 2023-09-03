@@ -1,6 +1,7 @@
 import { db } from "@gcsim/types";
 import eula from "images/eula.png";
 import { ActionBar } from "SharedComponents/ActionBar";
+import { Warning } from "SharedComponents/Warning";
 import { PaginationButtons } from "SharedComponents/Pagination";
 import { ListView } from "../../SharedComponents/ListView";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -15,6 +16,7 @@ export const DBView = (props: Props) => {
   return (
     <div className="flex flex-col gap-4 m-8 my-4 items-center">
       <ActionBar simCount={props.data.length} />
+      <Warning />
       {props.data.length === 0 ? (
         <div className="6 flex flex-col justify-center items-center h-screen">
           <img
