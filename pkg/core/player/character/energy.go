@@ -8,10 +8,20 @@ import (
 
 func (c *CharWrapper) ConsumeEnergy(delay int) {
 	if delay == 0 {
+		c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index).
+			Write("pre_drain", c.Energy).
+			Write("post_drain", 0).
+			Write("source", "burst-energy-drain").
+			Write("max_energy", c.EnergyMax)
 		c.Energy = 0
 		return
 	}
 	c.tasks.Add(func() {
+		c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index).
+			Write("pre_drain", c.Energy).
+			Write("post_drain", 0).
+			Write("source", "burst-energy-drain").
+			Write("max_energy", c.EnergyMax)
 		c.Energy = 0
 	}, delay)
 }
