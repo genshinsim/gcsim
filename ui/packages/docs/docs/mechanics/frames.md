@@ -300,6 +300,10 @@ rm mp4v2-utils_2.0.0~dfsg0-6_amd64.deb
 5. Install `coreutils` via `sudo apt install coreutils`.
 6. Install `bc` via `sudo apt install bc`.
 
+:::info
+If you run into an error like `could not locate package ...`, then you need to run `sudo apt update && sudo apt upgrade`.
+:::
+
 #### Download Helper Scripts
 
 1. Download the helper scripts archive `frames-helper-scripts.gz` from [here](frames-helper-scripts.gz).
@@ -1398,6 +1402,10 @@ Q field appearing frame:
 Q field disappearing frame:
 
 ![](frames_58.png)
+
+#### Xingqiu/Yelan N0
+
+Use the frame that the N1 starts as start frame (see [here](#na)) and the frame that the jump starts as end frame (see [here](#j)).
 
 ## Miscellaneous
 
