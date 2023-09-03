@@ -2,7 +2,7 @@ import tanuki from "images/tanuki.png";
 
 export function Warning() {
   return (
-    <div className="relative bg-slate-900 px-5 sm:px-5 py-0 border border-blue-800 md:min-w-wmd sm:min-w-wsm md:min-w-wmd sm:max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-[900px]">
+    <div className="relative bg-slate-900 px-5 sm:px-5 py-0 border border-blue-800 md:min-w-wmd sm:min-w-wsm md:min-w-wmd sm:max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-[890px]">
       <div className="inline-flex pt-4">
         <img src={tanuki} className="w-15 h-10 mx-0"/>
         <div className="font-semibold px-3 pt-2 text-xl w-50 text-gray-200">Please read!</div>
