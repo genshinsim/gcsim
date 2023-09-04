@@ -45,6 +45,7 @@ func main() {
 			"1120875165346177024": model.DBTag_DB_TAG_KQM_GUIDE,
 			"1120878673952788500": model.DBTag_DB_TAG_GEO_SIMPS,
 			"1120878739786571866": model.DBTag_DB_TAG_ITTO_SIMPS,
+			"1148370191185616948": model.DBTag_DB_TAG_RANDOM_DELAYS,
 		},
 	}, func(b *discord.Bot) error {
 		b.Log = sugar
