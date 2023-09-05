@@ -249,6 +249,7 @@ export function filterReducer(
       return {
         ...filter,
         charFilter: initialCharFilter,
+        tagFilter: initialTagFilter,
         charIncludeCount: 0,
       };
     }
