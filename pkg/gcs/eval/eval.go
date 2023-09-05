@@ -3,6 +3,7 @@ package eval
 import (
 	"errors"
 
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
@@ -12,6 +13,7 @@ type evalNode interface {
 }
 
 type Evaluator struct {
+	Core *core.Core
 	base evalNode
 	env  *Env
 }

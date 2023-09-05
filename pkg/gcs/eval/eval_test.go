@@ -21,3 +21,17 @@ func runEvalReturnResWhenDone(e evalNode, env *Env) (Obj, error) {
 	}
 	return val, nil
 }
+
+func runEvaluatorReturnResWhenDone(e *Evaluator) (Obj, error) {
+	var val Obj
+	var done bool
+	var err error
+	for !done {
+		val, done, err = e.base.evalNext(e.env)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(val)
+	}
+	return val, nil
+}

@@ -19,6 +19,10 @@ func evalFromExpr(n ast.Expr) evalNode {
 	case *ast.FuncExpr:
 		//FuncExpr is only used for anon funcs, followed after a let stmt
 		return funcExprEval(v)
+	case *ast.Ident:
+		return identLitEval(v)
+	case *ast.CallExpr:
+		return callExprEval(v)
 	default:
 		return nil
 

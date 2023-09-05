@@ -67,7 +67,7 @@ type (
 		Env       *Env
 	}
 
-	systemFunc func(*ast.CallExpr, *Env) (Obj, error)
+	systemFunc func(args []Obj, env *Env) (Obj, error)
 
 	bfuncval struct {
 		Body systemFunc

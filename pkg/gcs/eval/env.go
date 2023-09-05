@@ -14,6 +14,10 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
+func (e *Env) put(s string, v *Obj) {
+	e.varMap[s] = v
+}
+
 func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {
