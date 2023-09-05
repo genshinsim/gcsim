@@ -25,15 +25,11 @@ type binaryExprEvalNode struct {
 	stack []evalNode
 }
 
-func (b *binaryExprEvalNode) evalNext(env *Env) (Obj, bool, error) {
-	//if stack is empty then both left and right are done
-	if len(b.stack) == 0 {
-		res, err := b.evalLeftRight()
-		return res, true, err
-	} else {
+func (b *binaryExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
+	//eval stack while none of the results are an action
+	for len(b.stack) > 0 {
 		idx := len(b.stack) - 1
-		//otherwise eval stack
-		res, done, err := b.stack[idx].evalNext(env)
+		res, done, err := b.stack[idx].nextAction(env)
 		if err != nil {
 			return nil, false, err
 		}
@@ -41,8 +37,14 @@ func (b *binaryExprEvalNode) evalNext(env *Env) (Obj, bool, error) {
 			b.stack = b.stack[:idx]
 			b.res = append(b.res, res)
 		}
-		return res, false, nil
+		if res.Typ() == typAction {
+			return res, false, nil //done is false b/c the binary node is not done yet
+		}
 	}
+
+	//once the stack is empty, then we eval left + right
+	res, err := b.evalLeftRight()
+	return res, true, err
 }
 
 func (b *binaryExprEvalNode) evalLeftRight() (Obj, error) {

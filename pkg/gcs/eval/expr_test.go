@@ -15,7 +15,7 @@ func TestEvalNum(t *testing.T) {
 		t.Error("invalid executor from number")
 		t.FailNow()
 	}
-	val, done, err := e.evalNext(nil)
+	val, done, err := e.nextAction(nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,7 +37,7 @@ func BenchmarkEvalNum(b *testing.B) {
 	}
 	for n := 0; n < b.N; n++ {
 		e := evalFromNode(x)
-		e.evalNext(nil)
+		e.nextAction(nil)
 	}
 }
 
@@ -50,7 +50,7 @@ func TestEvalString(t *testing.T) {
 		t.Error("invalid executor from string")
 		t.FailNow()
 	}
-	val, done, err := e.evalNext(nil)
+	val, done, err := e.nextAction(nil)
 	if err != nil {
 		t.Error(err)
 	}

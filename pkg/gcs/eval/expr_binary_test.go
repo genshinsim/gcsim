@@ -67,5 +67,4 @@ func TestEvalNestedBinaryExpr(t *testing.T) {
 	if v.ival != 5 {
 		t.Errorf("expected result to be %v, got %v", 5, v.ival)
 	}
-
 }

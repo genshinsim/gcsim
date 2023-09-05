@@ -9,7 +9,9 @@ import (
 )
 
 type evalNode interface {
-	evalNext(*Env) (Obj, bool, error) //execute next node returning result, if node is done, and any error
+	//execute the node; node should either return next action, or continue execution until the node is
+	//done. done should only be false if Obj is an action; otherwise must be true
+	nextAction(*Env) (Obj, bool, error)
 }
 
 type Evaluator struct {
@@ -36,7 +38,7 @@ func (e *Evaluator) NextAction() (*action.ActionEval, error) {
 		if e.base == nil {
 			return nil, nil
 		}
-		res, done, err := e.base.evalNext(e.env)
+		res, done, err := e.base.nextAction(e.env)
 		if err != nil {
 			return nil, err
 		}

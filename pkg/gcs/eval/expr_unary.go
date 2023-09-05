@@ -11,19 +11,25 @@ type unaryExprEvalNode struct {
 	node evalNode
 }
 
-func (u *unaryExprEvalNode) evalNext(env *Env) (Obj, bool, error) {
+func (u *unaryExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	if u.node == nil {
 		u.node = evalFromExpr(u.root.Right)
 	}
-	res, done, err := u.node.evalNext(env)
+	res, done, err := u.node.nextAction(env)
 	if err != nil {
 		return nil, false, err
 	}
-	//check not done first because once done we'll need to apply the unary
-	//operation; cleaner this way
-	if !done {
-		return res, false, err
+	if done {
+		return u.handleUnaryOperation(res)
 	}
+	//the only time it's not done is if the res is an action
+	if res.Typ() == typAction {
+		return res, false, nil
+	}
+	return nil, false, fmt.Errorf("unexpected error; unary expr does not evaluate to a value: %v", u.root.Right.String())
+}
+
+func (u *unaryExprEvalNode) handleUnaryOperation(res Obj) (Obj, bool, error) {
 	r, ok := res.(*number)
 	if !ok {
 		return nil, false, fmt.Errorf("unary expression does not evaluate to a number, got %v ", res.Inspect())
@@ -41,5 +47,6 @@ func (u *unaryExprEvalNode) evalNext(env *Env) (Obj, bool, error) {
 func unaryExprEval(n *ast.UnaryExpr) evalNode {
 	return &unaryExprEvalNode{
 		root: n,
+		node: evalFromExpr(n.Right),
 	}
 }

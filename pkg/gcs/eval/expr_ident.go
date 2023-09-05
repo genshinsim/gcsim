@@ -12,7 +12,7 @@ type identExprEvalNode struct {
 	root *ast.Ident
 }
 
-func (i *identExprEvalNode) evalNext(env *Env) (Obj, bool, error) {
+func (i *identExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	res, err := env.v(i.root.Value)
 	if err != nil {
 		return nil, false, err

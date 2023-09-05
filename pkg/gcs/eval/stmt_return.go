@@ -7,12 +7,12 @@ type returnStmtEvalNode struct {
 	node evalNode
 }
 
-func (r *returnStmtEvalNode) evalNext(env *Env) (Obj, bool, error) {
+func (r *returnStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	if r.node == nil {
 		r.node = evalFromExpr(r.root.Val)
 	}
 
-	res, done, err := r.node.evalNext(env)
+	res, done, err := r.node.nextAction(env)
 	if err != nil {
 		return nil, false, err
 	}

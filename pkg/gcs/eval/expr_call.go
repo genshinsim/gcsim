@@ -25,34 +25,40 @@ type callExprEvalNode struct {
 	stack []evalNode
 }
 
-func (c *callExprEvalNode) evalNext(env *Env) (Obj, bool, error) {
-	if len(c.stack) == 0 {
-		if c.fn == nil {
-			c.fn = evalFromExpr(c.root.Fun)
-		}
-		//eval the expr that should return our res
-		res, done, err := c.fn.evalNext(env)
+func (c *callExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
+	//eval the args stack while none of the args results contains an action
+	for len(c.stack) > 0 {
+		idx := len(c.stack) - 1
+		res, done, err := c.stack[idx].nextAction(env)
 		if err != nil {
 			return nil, false, err
 		}
 		if done {
-			//handle fn call only when expr is done evaluating
-			return c.handleFnCall(res, env)
+			c.stack = c.stack[:idx]
+			c.args = append(c.args, res)
 		}
-		return res, false, nil
+		if res.Typ() == typAction {
+			return res, false, nil
+		}
 	}
-	idx := len(c.stack) - 1
-	//otherwise eval stack
-	res, done, err := c.stack[idx].evalNext(env)
+	//initialize function if needed
+	if c.fn == nil {
+		c.fn = evalFromExpr(c.root.Fun)
+	}
+	//eval the expr that should return our res
+	res, done, err := c.fn.nextAction(env)
 	if err != nil {
 		return nil, false, err
 	}
 	if done {
-		c.stack = c.stack[:idx]
-		c.args = append(c.args, res)
+		//handle fn call only when expr is done evaluating
+		return c.handleFnCall(res, env)
 	}
-	return res, false, nil
-
+	//the only time it's not done is if the res is an action
+	if res.Typ() == typAction {
+		return res, false, nil
+	}
+	return nil, false, fmt.Errorf("unexpected error; call expr does not evaluate to a function: %v", c.root.String())
 }
 
 func (c *callExprEvalNode) handleFnCall(fn Obj, env *Env) (Obj, bool, error) {

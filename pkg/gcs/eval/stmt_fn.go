@@ -10,7 +10,7 @@ type fnStmtEvalNode struct {
 	root *ast.FnStmt
 }
 
-func (f *fnStmtEvalNode) evalNext(env *Env) (Obj, bool, error) {
+func (f *fnStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	//add ident to env, then create a new fnval
 	_, exist := env.varMap[f.root.Ident.Val]
 	if exist {
