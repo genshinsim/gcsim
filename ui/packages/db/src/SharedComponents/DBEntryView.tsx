@@ -55,8 +55,10 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
             <div className="m-0">{t("db.openInViewer")}</div>
           </a>
         </div>
-        <div className="basis-full text-xs font-bold w-full flex place-content-end">
-          Sim created by: {dbEntry.submitter}
+        <div className="basis-full text-xs font-bold w-full flex place-content-start">
+          {
+            dbEntry.submitter === "migrated" ? "Unknown author" : `Author: ${dbEntry.submitter}`
+          }
         </div>
       </div>
     </>
