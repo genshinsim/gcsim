@@ -2308,7 +2308,8 @@ export namespace model {
         DB_TAG_TESTING = 2,
         DB_TAG_KQM_GUIDE = 3,
         DB_TAG_GEO_SIMPS = 4,
-        DB_TAG_ITTO_SIMPS = 5
+        DB_TAG_ITTO_SIMPS = 5,
+        DB_TAG_RANDOM_DELAYS = 6
     }
 
     /** Properties of a ComputeFailedEvent. */
