@@ -26,7 +26,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.AddStatus(burstKey, 600, true)
 
-	c.SetCD(action.ActionSkill, 0)
+	c.ResetActionCooldown(action.ActionSkill)
 
 	// TODO: Freminet; Update Info
 	ai := combat.AttackInfo{
