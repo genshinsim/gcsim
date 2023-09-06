@@ -1028,6 +1028,10 @@ type (
 	StringType struct {
 		Pos //position of :
 	}
+
+	MapType struct {
+		Pos //position of keyword map
+	}
 	FuncType struct {
 		Pos        //position of opening (
 		ArgsType   []ExprType
@@ -1038,6 +1042,7 @@ type (
 // exprTypeNode()
 func (*NumberType) exprTypeNode() {}
 func (*StringType) exprTypeNode() {}
+func (*MapType) exprTypeNode()    {}
 func (*FuncType) exprTypeNode()   {}
 
 // NumberType.
@@ -1086,6 +1091,30 @@ func (s *StringType) String() string {
 
 func (s *StringType) writeTo(sb *strings.Builder) {
 	sb.WriteString("string")
+}
+
+// MapType.
+func (m *MapType) CopyExprType() ExprType {
+	if m == nil {
+		return nil
+	}
+	return &MapType{
+		Pos: m.Pos,
+	}
+}
+
+func (m *MapType) Copy() Node {
+	return m.CopyExprType()
+}
+
+func (m *MapType) String() string {
+	var sb strings.Builder
+	m.writeTo(&sb)
+	return sb.String()
+}
+
+func (m *MapType) writeTo(sb *strings.Builder) {
+	sb.WriteString("map")
 }
 
 // FuncType.

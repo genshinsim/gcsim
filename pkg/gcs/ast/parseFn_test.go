@@ -60,6 +60,11 @@ func TestFnTyping(t *testing.T) {
 		t,
 	)
 
+	parseAndPrint(
+		`fn z(a number, b number, c map) { print(c); }`,
+		t,
+	)
+
 }
 
 func TestAnonFn(t *testing.T) {
