@@ -42,6 +42,8 @@ func (p *Parser) parseBasicType() (ExprType, error) {
 		return &StringType{Pos: n.pos}, nil
 	case "number":
 		return &NumberType{Pos: n.pos}, nil
+	case "map":
+		return &MapType{Pos: n.pos}, nil
 	default:
 		return nil, fmt.Errorf("ln%v: unexpected basic type parsing type info; got %v", n.line, n.Val)
 	}
