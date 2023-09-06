@@ -12,6 +12,8 @@ func evalFromExpr(n ast.Expr) evalNode {
 		return numberLitEval(v)
 	case *ast.StringLit:
 		return stringLitEval(v)
+	case *ast.MapExpr:
+		return mapExprEval(v)
 	case *ast.BinaryExpr:
 		return binaryExprEval(v)
 	case *ast.UnaryExpr:
