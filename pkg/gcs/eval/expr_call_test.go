@@ -18,12 +18,11 @@ func TestEvalBasicCallExpr(t *testing.T) {
 			},
 		},
 	}
-	eval, err := NewEvaluator(n)
+	eval, err := NewEvaluator(n, nil)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	eval.initSysFuncs(eval.env)
 	val, _, err := eval.base.nextAction(eval.env)
 	if err != nil {
 		t.Error(err)
@@ -50,12 +49,11 @@ func TestEvalFnCall(t *testing.T) {
 	}
 	fmt.Println("program:")
 	fmt.Println(gcsl.String())
-	eval, err := NewEvaluator(gcsl)
+	eval, err := NewEvaluator(gcsl, nil)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	eval.initSysFuncs(eval.env)
 	val, _, err := eval.base.nextAction(eval.env)
 	if err != nil {
 		t.Error(err)

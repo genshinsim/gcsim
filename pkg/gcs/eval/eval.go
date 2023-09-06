@@ -18,12 +18,15 @@ type Evaluator struct {
 	Core *core.Core
 	base evalNode
 	env  *Env
+	err  error
 }
 
-func NewEvaluator(root ast.Node) (*Evaluator, error) {
+func NewEvaluator(root ast.Node, core *core.Core) (*Evaluator, error) {
 	e := &Evaluator{
-		env: NewEnv(nil),
+		Core: core,
+		env:  NewEnv(nil),
 	}
+	e.initSysFuncs(e.env)
 	e.base = evalFromNode(root)
 	if e.base == nil {
 		return nil, errors.New("invalid root node; no executor found")
@@ -34,10 +37,12 @@ func NewEvaluator(root ast.Node) (*Evaluator, error) {
 func (e *Evaluator) NextAction() (*action.ActionEval, error) {
 	//base case: no more action
 	if e.base == nil {
-		return nil, nil
+		return nil, e.err
 	}
 	res, done, err := e.base.nextAction(e.env)
 	if err != nil {
+		e.err = err
+		e.base = nil
 		return nil, err
 	}
 	if done {
@@ -48,6 +53,11 @@ func (e *Evaluator) NextAction() (*action.ActionEval, error) {
 	}
 	return nil, nil
 }
+
+func (e *Evaluator) Continue()   {}
+func (e *Evaluator) Exit() error { return nil }
+func (e *Evaluator) Err() error  { return e.err }
+func (e *Evaluator) Start()      {}
 
 func evalFromNode(n ast.Node) evalNode {
 	switch v := n.(type) {
