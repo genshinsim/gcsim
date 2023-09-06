@@ -33,6 +33,11 @@ func (b *blockStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
 			return res, true, nil
 		}
 	}
+	if res == nil {
+		//this is necessary because if a block contains all actions, then block may get called again even if
+		//nothing is left, resulting in a nil res
+		res = &null{}
+	}
 	return res, true, nil
 }
 
