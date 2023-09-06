@@ -14,8 +14,3 @@ func runEvalReturnResWhenDone(e evalNode, env *Env) (Obj, error) {
 	}
 	return val, nil
 }
-
-func runEvaluatorReturnResWhenDone(e *Evaluator) (Obj, error) {
-	val, _, err := e.base.nextAction(e.env)
-	return val, err
-}

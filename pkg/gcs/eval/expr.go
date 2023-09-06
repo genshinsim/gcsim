@@ -27,7 +27,6 @@ func evalFromExpr(n ast.Expr) evalNode {
 		return callExprEval(v)
 	default:
 		return nil
-
 	}
 }
 

@@ -32,24 +32,21 @@ func NewEvaluator(root ast.Node) (*Evaluator, error) {
 }
 
 func (e *Evaluator) NextAction() (*action.ActionEval, error) {
-	//continue eval until we hit an action
-	for {
-		//base case: no more action
-		if e.base == nil {
-			return nil, nil
-		}
-		res, done, err := e.base.nextAction(e.env)
-		if err != nil {
-			return nil, err
-		}
-		if done {
-			e.base = nil
-		}
-		//we're done
-		if v, ok := res.(*actionval); ok {
-			return v.toActionEval(), nil
-		}
+	//base case: no more action
+	if e.base == nil {
+		return nil, nil
 	}
+	res, done, err := e.base.nextAction(e.env)
+	if err != nil {
+		return nil, err
+	}
+	if done {
+		e.base = nil
+	}
+	if v, ok := res.(*actionval); ok {
+		return v.toActionEval(), nil
+	}
+	return nil, nil
 }
 
 func evalFromNode(n ast.Node) evalNode {

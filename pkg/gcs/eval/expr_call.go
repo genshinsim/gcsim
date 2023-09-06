@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
@@ -19,46 +18,52 @@ func callExprEval(n *ast.CallExpr) evalNode {
 }
 
 type callExprEvalNode struct {
-	root  *ast.CallExpr
-	fn    evalNode
-	args  []Obj
-	stack []evalNode
+	root       *ast.CallExpr
+	fnCallNode evalNode
+	fn         Obj
+	fnBody     evalNode
+	fnEnv      *Env //tracking this here to avoid rebuilding this every time
+	args       []Obj
+	stack      []evalNode
 }
 
 func (c *callExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	//eval the args stack while none of the args results contains an action
 	for len(c.stack) > 0 {
-		idx := len(c.stack) - 1
-		res, done, err := c.stack[idx].nextAction(env)
+		//we need to evaluate left to right
+		res, done, err := c.stack[0].nextAction(env)
 		if err != nil {
 			return nil, false, err
 		}
 		if done {
-			c.stack = c.stack[:idx]
+			c.stack = c.stack[1:]
 			c.args = append(c.args, res)
 		}
 		if res.Typ() == typAction {
 			return res, false, nil
 		}
 	}
-	//initialize function if needed
 	if c.fn == nil {
-		c.fn = evalFromExpr(c.root.Fun)
-	}
-	//eval the expr that should return our res
-	res, done, err := c.fn.nextAction(env)
-	if err != nil {
-		return nil, false, err
-	}
-	if done {
+		//initialize function if needed
+		if c.fnCallNode == nil {
+			c.fnCallNode = evalFromExpr(c.root.Fun)
+		}
+		//eval the expr that should return our res
+		res, done, err := c.fnCallNode.nextAction(env)
+		if err != nil {
+			return nil, false, err
+		}
+		if !done {
+			//the only time it's not done is if the res is an action
+			if res.Typ() == typAction {
+				return res, false, nil
+			}
+			return nil, false, fmt.Errorf("unexpected error; call expr does not evaluate to a function: %v", c.root.String())
+		}
 		//handle fn call only when expr is done evaluating
-		return c.handleFnCall(res, env)
+		c.fn = res
 	}
-	//the only time it's not done is if the res is an action
-	if res.Typ() == typAction {
-		return res, false, nil
-	}
-	return nil, false, fmt.Errorf("unexpected error; call expr does not evaluate to a function: %v", c.root.String())
+	return c.handleFnCall(c.fn, env)
 }
 
 func (c *callExprEvalNode) handleFnCall(fn Obj, env *Env) (Obj, bool, error) {
@@ -81,5 +86,15 @@ func (c *callExprEvalNode) handleSysFnCall(fn *bfuncval, env *Env) (Obj, bool, e
 }
 
 func (c *callExprEvalNode) handleUserFnCall(fn *funcval, env *Env) (Obj, bool, error) {
-	return nil, false, errors.New("not implemented")
+	//functions are just blocks to be evaluated, along with args that are injected into the env
+	if c.fnEnv == nil {
+		c.fnEnv = NewEnv(fn.Env)
+		for i, v := range c.args {
+			c.fnEnv.put(fn.Args[i].Value, &v)
+		}
+	}
+	if c.fnBody == nil {
+		c.fnBody = evalFromStmt(fn.Body)
+	}
+	return c.fnBody.nextAction(c.fnEnv)
 }

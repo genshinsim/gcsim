@@ -3,9 +3,9 @@ package eval
 import "github.com/genshinsim/gcsim/pkg/gcs/ast"
 
 type blockStmtEvalNode struct {
-	root *ast.BlockStmt
-	idx  int
-	env  *Env
+	root  *ast.BlockStmt
+	stack []evalNode
+	env   *Env
 }
 
 func (b *blockStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
@@ -16,14 +16,13 @@ func (b *blockStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	var res Obj
 	var done bool
 	var err error
-	for b.idx < len(b.root.List) {
-		node := evalFromNode(b.root.List[b.idx])
-		res, done, err = node.nextAction(b.env)
+	for len(b.stack) > 0 {
+		res, done, err = b.stack[0].nextAction(b.env)
 		if err != nil {
 			return nil, false, err
 		}
 		if done {
-			b.idx++
+			b.stack = b.stack[1:]
 		}
 		switch res.Typ() {
 		case typAction:
@@ -38,7 +37,11 @@ func (b *blockStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
 }
 
 func blockStmtEval(n *ast.BlockStmt) evalNode {
-	return &blockStmtEvalNode{
+	b := &blockStmtEvalNode{
 		root: n,
 	}
+	for _, v := range n.List {
+		b.stack = append(b.stack, evalFromNode(v))
+	}
+	return b
 }
