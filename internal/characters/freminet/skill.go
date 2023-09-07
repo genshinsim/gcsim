@@ -8,9 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -249,21 +247,9 @@ func (c *char) persTimeCB() func(combat.AttackCB) {
 			} else {
 				c.skillStacks++
 			}
-		} else {
-			c.Core.Log.NewEvent("freminet skill detonation triggered", glog.LogCharacterEvent, c.Index)
-			c.detonateSkill()
 		}
 
 		done = true
 	}
 
-}
-
-func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.StatusIsActive(persTimeKey) {
-			c.detonateSkill()
-		}
-		return false
-	}, "freminet-exit")
 }

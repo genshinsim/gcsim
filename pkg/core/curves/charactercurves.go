@@ -1375,10 +1375,10 @@ var CharBaseMap = map[keys.Char]CharBase{
 	keys.Freminet: {
 		// TODO: Freminet; Implement Character Curve, Copied from Chongyun
 		Rarity:      4,
-		Body:        profile.BodyBoy,
+		Body:        info.BodyBoy,
 		Element:     attributes.Cryo,
-		Region:      profile.ZoneLiyue,
-		WeaponType:  weapon.WeaponClassClaymore,
+		Region:      info.ZoneFontaine,
+		WeaponType:  info.WeaponClassClaymore,
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,

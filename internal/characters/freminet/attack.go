@@ -33,6 +33,11 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
+
+	if c.skillStacks >= 4 {
+		return c.detonateSkill()
+	}
+
 	// TODO: Freminet; Copied from Chongyun
 	ai := combat.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
