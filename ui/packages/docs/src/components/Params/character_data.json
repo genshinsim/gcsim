@@ -237,11 +237,6 @@
       "ability": "aim",
       "param": "weakspot",
       "desc": "Hit weakspot with aimed shot. Default 0 (false), 1 for true."
-    },
-    {
-      "ability": "aim",
-      "param": "bloom",
-      "desc": "Projectile travel time for Bloom from when the Frostflake Arrow hits. Default 24 frames."
     }
   ],
   "gorou": [
