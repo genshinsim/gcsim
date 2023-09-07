@@ -26,10 +26,6 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	if !ok {
 		travel = 10
 	}
-	bloom, ok := p["bloom"]
-	if !ok {
-		bloom = 24
-	}
 	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
@@ -95,7 +91,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			ai,
 			snap,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
-			travel+bloom,
+			travel+18, // bloom always hits 18f after the arrow
 			c1cb,
 		)
 
