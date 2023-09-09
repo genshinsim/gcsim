@@ -135,13 +135,14 @@ function buildCharactersFromGOOD(
         key: key,
       }
   
-      let char = GOODChartoSrlChar(copy, weaponBank[goodkey])
+      //weapon and artifact bank uses Traveler as key ignoring element
+      let char = GOODChartoSrlChar(copy, weaponBank["Traveler"])
       if (char === undefined) {
         console.log(key, "not found")
         //skip char
         return;
       }
-      char = equipArtifacts(char, goodArtifactBank[goodkey])
+      char = equipArtifacts(char, goodArtifactBank["Traveler"])
  
       result.push(char)
     })
