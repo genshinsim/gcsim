@@ -53,6 +53,7 @@ const (
 	OnCharacterHurt    //amount
 	OnHeal             //src char, target character, amount, overheal
 	OnPlayerHPDrain    //DrainInfo
+	OnSelfInfusion     //element, durability, duration
 	//ability use
 	OnActionFailed //ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   //ActiveCharIndex, action.Action, param

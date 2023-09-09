@@ -2,6 +2,7 @@ package beidou
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
+	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -69,6 +70,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			Ele:        attributes.Electro,
 			Expires:    c.Core.F + 900, //15 sec
 		})
+
+		player, ok := c.Core.Combat.Player().(*avatar.Player)
+		if !ok {
+			panic("target 0 should be Player but is not!!")
+		}
+		player.ApplySelfInfusion(attributes.Electro, 25, 0.1*60) // TODO: find actual duration
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 450, 4)
