@@ -60,6 +60,7 @@ export function parseFromGOOD(val: string): IGOODImport {
 
   result.characters = buildCharactersFromGOOD(data.characters, weaponBank, artifactBank);
 
+  console.log(result)
   return result;
 }
 
@@ -98,7 +99,11 @@ function buildCharactersFromGOOD(
   goodArtifactBank: GOODArtifactBank
 ) {
   const result: Character[] = [];
-  goodChars.forEach((goodChar) => {
+  let travelerIdx: { [key in string]: number } = {}
+  goodChars.forEach((goodChar, index) => {
+    if (goodChar.key.startsWith("Traveler")) {
+      travelerIdx[goodChar.key] = index
+    }
     let char = GOODChartoSrlChar(goodChar, weaponBank[goodChar.key]);
 
     if (char === undefined) {
@@ -109,5 +114,40 @@ function buildCharactersFromGOOD(
 
     result.push(char);
   });
+
+  //this code sucks, kids do not do this
+  for (const [goodkey, idx] of Object.entries(travelerIdx)) {
+    console.log("parsing ", goodkey)
+    const g = goodChars[idx]
+    travelers.forEach(ck => {
+      let key = goodkey 
+      key = key.toLowerCase()
+      //split the string between traveler and element; if no element
+      key  = key.replace("traveler", ck) 
+
+      console.log("adding: ", key)
+  
+      let copy: GOODCharacter = {
+        ...g,
+        talent: {
+          ...g.talent
+        },
+        key: key,
+      }
+  
+      let char = GOODChartoSrlChar(copy, weaponBank[goodkey])
+      if (char === undefined) {
+        console.log(key, "not found")
+        //skip char
+        return;
+      }
+      char = equipArtifacts(char, goodArtifactBank[goodkey])
+ 
+      result.push(char)
+    })
+  }
+
   return result;
 }
+
+const travelers : string[] = ["lumine", "aether"]
