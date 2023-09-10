@@ -78,7 +78,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 			di := args[0].(player.DrainInfo)
-			if c.Player.Active() != char.Index {
+			if di.ActorIndex != char.Index {
 				return false
 			}
 			if di.ActorIndex != char.Index {
