@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
@@ -13,6 +14,7 @@ type ActionList struct {
 	Characters  []CharacterProfile `json:"characters"`
 	InitialChar keys.Char          `json:"initial"`
 	Energy      EnergySettings     `json:"energy_settings"`
+	Hurt        HurtSettings       `json:"hurt_settings"`
 	Settings    SimulatorSettings  `json:"settings"`
 	Errors      []error            `json:"-"` //These represents errors preventing ActionList from being executed
 	ErrorMsgs   []string           `json:"errors"`
@@ -25,6 +27,17 @@ type EnergySettings struct {
 	End            int  `json:"end"`
 	Amount         int  `json:"amount"`
 	LastEnergyDrop int  `json:"last_energy_drop"`
+}
+
+type HurtSettings struct {
+	Active   bool               `json:"active"`
+	Once     bool               `json:"once"`
+	Start    int                `json:"start"`
+	End      int                `json:"end"`
+	Min      float64            `json:"min"`
+	Max      float64            `json:"max"`
+	Element  attributes.Element `json:"element"`
+	LastHurt int                `json:"last_hurt"`
 }
 
 type SimulatorSettings struct {

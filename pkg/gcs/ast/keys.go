@@ -41,6 +41,7 @@ var key = map[string]TokenType{
 	"particle_drop_count": keywordParticleDropCount,
 	"resist":              keywordResist,
 	"energy":              keywordEnergy,
+	"hurt":                keywordHurt,
 	//commands
 	//team keywords
 	//flags

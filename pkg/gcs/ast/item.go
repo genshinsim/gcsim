@@ -107,6 +107,7 @@ const (
 	keywordEnergy            // energy
 	keywordParticleThreshold // particle_threshold
 	keywordParticleDropCount // particle_drop_count
+	keywordHurt              // hurt
 
 	// Keywords specific to gcsim appears after this
 	itemKeys
