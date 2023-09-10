@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -35,7 +36,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	stackAtk := .15 + float64(r)*.05
-	damaged := p.Params["damaged"]
 
 	stackDuration := 480 //8s * 60
 	const skillKey = "beacon-of-the-reed-sea-skill"
@@ -55,6 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	mATK := make([]float64, attributes.EndStatType)
+	mATK[attributes.ATKP] = stackAtk
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -64,7 +65,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		mATK[attributes.ATKP] = stackAtk
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(skillKey, stackDuration),
 			AffectedStat: attributes.ATKP,
@@ -72,18 +72,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return mATK, true
 			},
 		})
-		if damaged > 0 {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(damagedKey, stackDuration),
-				AffectedStat: attributes.ATKP,
-				Amount: func() ([]float64, bool) {
-					return mATK, true
-				},
-			})
-		}
 
 		return false
-	}, fmt.Sprintf("beacon-of-the-reed-sea-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("beacon-of-the-reed-sea-enemy-%v", char.Base.Key.String()))
+
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if di.ActorIndex != char.Index {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
+		if !di.External {
+			return false
+		}
+
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(damagedKey, stackDuration),
+			AffectedStat: attributes.ATKP,
+			Amount: func() ([]float64, bool) {
+				return mATK, true
+			},
+		})
+		return false
+	}, fmt.Sprintf("beacon-of-the-reed-sea-player-%v", char.Base.Key.String()))
 
 	return w, nil
 }
