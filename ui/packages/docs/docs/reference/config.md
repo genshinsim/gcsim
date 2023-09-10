@@ -51,7 +51,7 @@ This drops 1 clear elemental particle once at frame 300.
 
 Example: 
 ```
-hurt every interval=480,720 amount=1,300 element=phys;
+hurt every interval=480,720 amount=1,300 element=physical;
 ```
 This means that gcsim will deal between 1 and 300 physical damage to the active character every 480 to 720 frames randomly.
 
@@ -65,7 +65,7 @@ Multiple `hurt once` lines can be added to deal damage at different points in ti
 
 Example:
 ```
-hurt once interval=300 amount=1,300 element=phys;
+hurt once interval=300 amount=1,300 element=physical;
 ```
 This will deal between 1 and 300 physical damage to the active character once at frame 300.
 :::

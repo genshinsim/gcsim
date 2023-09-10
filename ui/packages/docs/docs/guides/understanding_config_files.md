@@ -271,7 +271,7 @@ target lvl=100 resist=0.1 particle_threshold=460000 particle_drop_count=3;
 Optionally, you can add a method of taking damage from the sim.
 
 ```
-hurt every interval=480,720 amount=1,300 element=phys;
+hurt every interval=480,720 amount=1,300 element=physical;
 ```
 
 `interval` tells the sim how often to deal damage. In this case, it deals damage a random number between 8 and 12s after the last time it dealt damage. (480 and 720 frames respectively). `amount` tells it to deal between 1 and 300 damage. `element` tells it which element type the damage is. In this case it is physical damage.

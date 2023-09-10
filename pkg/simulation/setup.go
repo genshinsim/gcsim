@@ -346,7 +346,7 @@ func (s *Simulation) handleEnergy() {
 }
 
 func (s *Simulation) handleHurt() {
-	//hurt once interval=300 amount=1,300 element=phys #once at frame 300 (or nearest)
+	//hurt once interval=300 amount=1,300 element=physical #once at frame 300 (or nearest)
 	if s.cfg.Hurt.Active && s.cfg.Hurt.Once {
 		f := s.cfg.Hurt.Start
 		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
@@ -376,7 +376,7 @@ func (s *Simulation) handleHurt() {
 			Write("amt", amt).
 			Write("hurt_frame", s.C.F+f)
 	}
-	//hurt every interval=480,720 amount=1,300 element=phys #randomly 1 to 300 dmg every 480 to 720 frames
+	//hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
 	if s.cfg.Hurt.Active && s.C.F-s.cfg.Hurt.LastHurt >= s.cfg.Hurt.Start {
 		f := s.C.Rand.Intn(s.cfg.Hurt.End - s.cfg.Hurt.Start)
 		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
