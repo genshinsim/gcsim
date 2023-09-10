@@ -48,10 +48,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		counter := 0
-		permStacks := param["stacks"]
-		if permStacks > 5 {
-			permStacks = 5
-		}
 		mStack := make([]float64, attributes.EndStatType)
 		mStack[attributes.DmgP] = 0.08
 		addStackMod := func(idx int, duration int) {
@@ -69,20 +65,18 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				},
 			})
 		}
-		for i := 0; i < permStacks; i++ {
-			addStackMod(i, -1)
-		}
 		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 			di := args[0].(player.DrainInfo)
-			if di.Amount <= 0 {
-				return false
-			}
 			if di.ActorIndex != char.Index {
 				return false
 			}
-			if counter >= permStacks {
-				addStackMod(counter, 300)
+			if di.Amount <= 0 {
+				return false
 			}
+			if !di.External {
+				return false
+			}
+			addStackMod(counter, 300)
 			counter = (counter + 1) % 5
 			return false
 		}, fmt.Sprintf("vg-4pc-%v", char.Base.Key.String()))

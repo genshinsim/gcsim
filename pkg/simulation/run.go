@@ -262,6 +262,7 @@ func (s *Simulation) nextFrame() (bool, error) {
 		return false, err
 	}
 	s.handleEnergy()
+	s.handleHurt()
 	s.C.Events.Emit(event.OnTick)
 	return s.stopCheck(), nil
 }

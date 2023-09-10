@@ -242,15 +242,15 @@ Repeating `active <char>` multiple times or setting `active <char>` to different
 To execute a swap manually, see [here](#swaps).
 :::
 
-## Energy setting
+## Energy Setting
 
-Optionally, you can add a method of obtaining energy from enemies. The first, and easier way to to simply make energy drop every so often with the below syntax.
+Optionally, you can add a method of obtaining energy from enemies. The first, and easier way is to simply make energy drop every so often with the below syntax.
 
 ```
 energy every interval=480,720 amount=1;
 ```
 
-`interval` tells the sim how often to drop a particle. In this case, it drops a particles a random number between 8 and 12s after the last time it dropped a particle. (480 and 720 frames respectivele) `amount` tells it to drop one clear particle. 
+`interval` tells the sim how often to drop a particle. In this case, it drops a particles a random number between 8 and 12s after the last time it dropped a particle. (480 and 720 frames respectively). `amount` tells it to drop one clear particle. 
 
 The second way to HP based drops. When you declare an enemy, you can also tell it to drop energy after it takes a certain amount of damage. 
 
@@ -265,6 +265,16 @@ For reference, a level 100 Maguu Kenki in Abyss would be
 ```
 target lvl=100 resist=0.1 particle_threshold=460000 particle_drop_count=3;
 ```
+
+## Hurt Setting
+
+Optionally, you can add a method of taking damage from the sim.
+
+```
+hurt every interval=480,720 amount=1,300 element=phys;
+```
+
+`interval` tells the sim how often to deal damage. In this case, it deals damage a random number between 8 and 12s after the last time it dealt damage. (480 and 720 frames respectively). `amount` tells it to deal between 1 and 300 damage. `element` tells it which element type the damage is. In this case it is physical damage.
 
 ## gcsim Script (`gcsl`)
 

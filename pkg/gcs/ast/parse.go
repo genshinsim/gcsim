@@ -165,6 +165,9 @@ func parseRows(p *Parser) (parseFn, error) {
 	case keywordEnergy:
 		p.next()
 		return parseEnergy, nil
+	case keywordHurt:
+		p.next()
+		return parseHurt, nil
 	case keywordOptions:
 		p.next()
 		return parseOptions, nil

@@ -16,6 +16,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -341,5 +342,68 @@ func (s *Simulation) handleEnergy() {
 			Write("cfg", s.cfg.Energy).
 			Write("amt", s.cfg.Energy.Amount).
 			Write("energy_frame", s.C.F+f)
+	}
+}
+
+func (s *Simulation) handleHurt() {
+	//hurt once interval=300 amount=1,300 element=phys #once at frame 300 (or nearest)
+	if s.cfg.Hurt.Active && s.cfg.Hurt.Once {
+		f := s.cfg.Hurt.Start
+		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
+		s.cfg.Hurt.Active = false
+
+		ai := combat.AttackInfo{
+			ActorIndex: s.C.Player.Active(),
+			Abil:       "Hurt",
+			AttackTag:  attacks.AttackTagNone,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Durability: 0,
+			Element:    s.cfg.Hurt.Element,
+			FlatDmg:    amt,
+		}
+		ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
+
+		s.C.QueueAttack(ai, ap, -1, f) // -1 to avoid snapshot
+
+		s.C.Log.NewEventBuildMsg(glog.LogHurtEvent, -1, "hurt queued (once)").
+			Write("last", s.cfg.Hurt.LastHurt).
+			Write("cfg", s.cfg.Hurt).
+			Write("amt", amt).
+			Write("hurt_frame", s.C.F+f)
+	}
+	//hurt every interval=480,720 amount=1,300 element=phys #randomly 1 to 300 dmg every 480 to 720 frames
+	if s.cfg.Hurt.Active && s.C.F-s.cfg.Hurt.LastHurt >= s.cfg.Hurt.Start {
+		f := s.C.Rand.Intn(s.cfg.Hurt.End - s.cfg.Hurt.Start)
+		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
+		s.cfg.Hurt.LastHurt = s.C.F + f
+
+		ai := combat.AttackInfo{
+			ActorIndex: s.C.Player.Active(),
+			Abil:       "Hurt",
+			AttackTag:  attacks.AttackTagNone,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Durability: 0,
+			Element:    s.cfg.Hurt.Element,
+			FlatDmg:    amt,
+		}
+		ap := combat.NewSingleTargetHit(s.C.Combat.Player().Key())
+		ap.SkipTargets[targets.TargettablePlayer] = false
+		ap.SkipTargets[targets.TargettableEnemy] = true
+		ap.SkipTargets[targets.TargettableGadget] = true
+
+		s.C.QueueAttack(ai, ap, -1, f) // -1 to avoid snapshot
+
+		s.C.Log.NewEventBuildMsg(glog.LogHurtEvent, -1, "hurt queued").
+			Write("last", s.cfg.Hurt.LastHurt).
+			Write("cfg", s.cfg.Hurt).
+			Write("amt", amt).
+			Write("hurt_frame", s.C.F+f)
 	}
 }
