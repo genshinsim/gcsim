@@ -61,12 +61,5 @@
       "param": "passive",
       "desc": "0 for passive disabled, 1 for enabled (default)."
     }
-  ],
-  "thealleyflash": [
-    {
-      "ability": "The Alley Flash",
-      "param": "lambda",
-      "desc": "Lambda for Poisson distribution to periodically turn off the weapon passive."
-    }
   ]
 }
