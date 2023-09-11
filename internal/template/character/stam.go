@@ -103,7 +103,7 @@ func (c *Character) DashLength() int {
 }
 
 func (c *Character) Jump(p map[string]int) action.ActionInfo {
-	var f int = 30
+	f := 30
 	switch c.CharBody {
 	case info.BodyBoy, info.BodyGirl:
 		f = 31

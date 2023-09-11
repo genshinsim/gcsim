@@ -5,16 +5,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attributes.Element {
+func (h *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attributes.Element {
 	// check targets for collision first
 	for _, e := range prio {
-		for _, x := range c.enemies {
+		for _, x := range h.enemies {
 			t, ok := x.(TargetWithAura)
 			if !ok {
 				continue
 			}
 			if collision, _ := t.AttackWillLand(p); collision && t.AuraContains(e) {
-				c.Log.NewEvent(
+				h.Log.NewEvent(
 					"infusion check picked up "+e.String(),
 					glog.LogElementEvent,
 					-1,
@@ -24,13 +24,13 @@ func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 				return e
 			}
 		}
-		for _, x := range c.gadgets {
+		for _, x := range h.gadgets {
 			t, ok := x.(TargetWithAura)
 			if !ok {
 				continue
 			}
 			if collision, _ := t.AttackWillLand(p); collision && t.AuraContains(e) {
-				c.Log.NewEvent(
+				h.Log.NewEvent(
 					"infusion check picked up "+e.String(),
 					glog.LogElementEvent,
 					-1,
@@ -40,9 +40,9 @@ func (c *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 				return e
 			}
 		}
-		if t, ok := c.player.(TargetWithAura); ok {
+		if t, ok := h.player.(TargetWithAura); ok {
 			if collision, _ := t.AttackWillLand(p); collision && t.AuraContains(e) {
-				c.Log.NewEvent(
+				h.Log.NewEvent(
 					"infusion check picked up "+e.String(),
 					glog.LogElementEvent,
 					-1,

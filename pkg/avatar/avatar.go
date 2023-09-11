@@ -78,7 +78,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	// towards the sim's TotalDamage and DPS statistic
 	return 0
 }
-func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 
 	var isCrit bool
 
@@ -90,7 +90,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	if st > -1 {
 		elePer = atk.Snapshot.Stats[st]
 		// Generally not needed except for sim issues
-		// t.Core.Log.NewEvent("ele lookup ok",
+		// p.Core.Log.NewEvent("ele lookup ok",
 		// 	glog.LogCalc, atk.Info.ActorIndex,
 		// 	"attack_tag", atk.Info.AttackTag,
 		// 	"ele", atk.Info.Element,
@@ -98,7 +98,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 		// 	"percent", atk.Snapshot.Stats[st],
 		// 	"abil", atk.Info.Abil,
 		// 	"stats", atk.Snapshot.Stats,
-		// 	"target", t.TargetIndex,
+		// 	"target", p.TargetIndex,
 		// )
 	}
 	dmgBonus := elePer + atk.Snapshot.Stats[attributes.DmgP]
@@ -123,7 +123,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 		atk.Snapshot.Stats[attributes.CR] = 1
 	}
 
-	char := t.Core.Player.ActiveChar()
+	char := p.Core.Player.ActiveChar()
 	// TODO: Players don't have resistances right now
 	res := 0.0
 
@@ -147,7 +147,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	precritdmg := damage
 
 	//check if crit
-	if atk.Info.HitWeakPoint || t.Core.Rand.Float64() <= atk.Snapshot.Stats[attributes.CR] {
+	if atk.Info.HitWeakPoint || p.Core.Rand.Float64() <= atk.Snapshot.Stats[attributes.CR] {
 		damage = damage * (1 + atk.Snapshot.Stats[attributes.CD])
 		isCrit = true
 	}
@@ -160,7 +160,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	var reactBonus float64
 	//check melt/vape
 	if atk.Info.Amped {
-		reactBonus = t.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
+		reactBonus = p.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
 		// t.Core.Log.Debugw("debug", "frame", t.Core.F, core.LogPreDamageMod, "char", t.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
 		damage = damage * (atk.Info.AmpMult * (1 + emBonus + reactBonus))
 	}
@@ -168,12 +168,12 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	//reduce damage by damage group
 	x := 1.0
 	if !atk.Info.SourceIsSim {
-		x = t.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
+		x = p.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
 		damage = damage * x
 	}
 
-	if t.Core.Flags.LogDebug {
-		t.Core.Log.NewEvent(
+	if p.Core.Flags.LogDebug {
+		p.Core.Log.NewEvent(
 			atk.Info.Abil,
 			glog.LogCalc,
 			atk.Info.ActorIndex,
@@ -225,7 +225,7 @@ func (t *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("pre_crit_dmg_react", precritdmg*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
-			Write("target", t.Key())
+			Write("target", p.Key())
 
 	}
 

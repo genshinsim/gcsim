@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-func (s *SimulationResult) Sign(key string) (string, error) {
+func (r *SimulationResult) Sign(key string) (string, error) {
 	if key == "" {
 		return "", nil
 	}
@@ -38,8 +38,8 @@ func (s *SimulationResult) Sign(key string) (string, error) {
 		return "", err
 	}
 
-	s.KeyType = id
-	hash, err := s.hash()
+	r.KeyType = id
+	hash, err := r.hash()
 	if err != nil {
 		return "", err
 	}
@@ -62,8 +62,8 @@ func decodeKey(key string) (string, []byte, error) {
 	return id, out, nil
 }
 
-func (s *SimulationResult) hash() ([]byte, error) {
-	data, err := s.MarshalJson()
+func (r *SimulationResult) hash() ([]byte, error) {
+	data, err := r.MarshalJSON()
 	if err != nil {
 		return nil, err
 	}

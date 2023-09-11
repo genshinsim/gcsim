@@ -39,7 +39,7 @@ func removeSubstatLines(cfg string) (string, error) {
 	}
 
 	if errorPrinted {
-		return clean, errors.New("Warning: Config found to have existing substat information. Ignoring...")
+		return clean, errors.New("warning: Config found to have existing substat information. Ignoring")
 	}
 
 	return clean, nil
@@ -51,7 +51,7 @@ func parseOptimizerCfg(additionalOptions string, optionsMap map[string]float64) 
 		if _, ok := optionsMap[val[1]]; ok {
 			optionsMap[val[1]], _ = strconv.ParseFloat(val[2], 64)
 		} else {
-			err := fmt.Errorf("Invalid substat optimization option found: %v: %v", val[1], val[2])
+			err := fmt.Errorf("invalid substat optimization option found: %v: %v", val[1], val[2])
 			return optionsMap, err
 		}
 	}

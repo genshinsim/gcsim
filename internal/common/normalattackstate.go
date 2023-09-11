@@ -268,12 +268,12 @@ func (w *NAHook) checkState() bool {
 			Write("state", state)
 		return false
 	}
-	state_start := w.Core.Player.CurrentStateStart()
-	norm_counter := w.Core.Player.ActiveChar().NormalCounter
-	if (norm_counter == 1) && w.Core.F-state_start < w.DelayFunc(w.Core.Player.ActiveChar()) {
+	stateStart := w.Core.Player.CurrentStateStart()
+	normCounter := w.Core.Player.ActiveChar().NormalCounter
+	if (normCounter == 1) && w.Core.F-stateStart < w.DelayFunc(w.Core.Player.ActiveChar()) {
 		w.Core.Log.NewEvent(fmt.Sprintf("%v not triggered, not enough time since normal state start", w.AbilName), glog.LogCharacterEvent, w.C.Index).
 			Write("current_state", state).
-			Write("state_start", state_start)
+			Write("state_start", stateStart)
 		return false
 	}
 	return true

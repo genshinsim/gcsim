@@ -62,17 +62,17 @@ type Delays struct {
 	Swap   int `json:"swap"`
 }
 
-func (c *ActionList) Copy() *ActionList {
+func (a *ActionList) Copy() *ActionList {
 
-	r := *c
+	r := *a
 
-	r.Targets = make([]EnemyProfile, len(c.Targets))
-	for i, v := range c.Targets {
+	r.Targets = make([]EnemyProfile, len(a.Targets))
+	for i, v := range a.Targets {
 		r.Targets[i] = v.Clone()
 	}
 
-	r.Characters = make([]CharacterProfile, len(c.Characters))
-	for i, v := range c.Characters {
+	r.Characters = make([]CharacterProfile, len(a.Characters))
+	for i, v := range a.Characters {
 		r.Characters[i] = v.Clone()
 	}
 
@@ -80,9 +80,9 @@ func (c *ActionList) Copy() *ActionList {
 }
 
 func (a *ActionList) PrettyPrint() string {
-	prettyJson, err := json.MarshalIndent(a, "", "  ")
+	prettyJSON, err := json.MarshalIndent(a, "", "  ")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	return string(prettyJson)
+	return string(prettyJSON)
 }

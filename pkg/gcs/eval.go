@@ -262,7 +262,7 @@ func (b *bfuncval) Typ() ObjTyp     { return typBif }
 func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
-func (n *retval) Typ() ObjTyp { return typRet }
+func (r *retval) Typ() ObjTyp { return typRet }
 
 // mapval.
 func (m *mapval) Inspect() string {

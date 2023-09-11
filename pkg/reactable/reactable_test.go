@@ -102,32 +102,32 @@ type testTarget struct {
 	last combat.AttackEvent
 }
 
-func (t *testTarget) Type() targets.TargettableType { return t.typ }
+func (target *testTarget) Type() targets.TargettableType { return target.typ }
 
-func (t *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
-	t.Attack(atk, nil)
+func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
+	target.Attack(atk, nil)
 	//delay damage event to end of the frame
-	t.Core.Combat.Tasks.Add(func() {
+	target.Core.Combat.Tasks.Add(func() {
 		//apply the damage
-		t.applyDamage(atk, 1)
-		t.Core.Combat.Events.Emit(event.OnEnemyDamage, t, atk, 1.0, false)
+		target.applyDamage(atk, 1)
+		target.Core.Combat.Events.Emit(event.OnEnemyDamage, target, atk, 1.0, false)
 	}, 0)
 	return 1
 }
 
-func (t *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-	t.last = *atk
-	t.ShatterCheck(atk)
+func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+	target.last = *atk
+	target.ShatterCheck(atk)
 	if atk.Info.Durability > 0 {
 		//don't care about icd
-		t.React(atk)
+		target.React(atk)
 	}
 	return 0, false
 }
 
-func (t *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
+func (target *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
 	if !atk.Reacted {
-		t.Reactable.AttachOrRefill(atk)
+		target.Reactable.AttachOrRefill(atk)
 	}
 }
 

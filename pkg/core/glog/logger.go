@@ -95,7 +95,7 @@ func New(f *int, size int) Logger {
 }
 
 func (c *Ctrl) Dump() ([]byte, error) {
-	var r EventArr = make(EventArr, 0, c.count)
+	r := make(EventArr, 0, c.count)
 	for i := 0; i < c.count; i++ {
 		v, ok := c.events[i]
 		if ok {

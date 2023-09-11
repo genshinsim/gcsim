@@ -71,9 +71,9 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	return stats, debugDetails
 }
 
-func (h *CharWrapper) Stat(s attributes.Stat) float64 {
-	val := h.BaseStats[s]
-	for _, v := range h.mods {
+func (c *CharWrapper) Stat(s attributes.Stat) float64 {
+	val := c.BaseStats[s]
+	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
 		if !ok {
 			continue
@@ -83,7 +83,7 @@ func (h *CharWrapper) Stat(s attributes.Stat) float64 {
 			continue
 		}
 		// check expiry
-		if m.Expiry() > *h.f || m.Expiry() == -1 {
+		if m.Expiry() > *c.f || m.Expiry() == -1 {
 			if amt, ok := m.Amount(); ok {
 				val += amt[s]
 			}
@@ -93,9 +93,9 @@ func (h *CharWrapper) Stat(s attributes.Stat) float64 {
 	return val
 }
 
-func (h *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
-	val := h.BaseStats[s]
-	for _, v := range h.mods {
+func (c *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
+	val := c.BaseStats[s]
+	for _, v := range c.mods {
 		m, ok := v.(*StatMod)
 		if !ok {
 			continue
@@ -109,7 +109,7 @@ func (h *CharWrapper) NonExtraStat(s attributes.Stat) float64 {
 			continue
 		}
 		// check expiry
-		if m.Expiry() > *h.f || m.Expiry() == -1 {
+		if m.Expiry() > *c.f || m.Expiry() == -1 {
 			if amt, ok := m.Amount(); ok {
 				val += amt[s]
 			}

@@ -109,7 +109,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("wait argument should evaluate to a number, got %v", val.Inspect())
 	}
 
-	var f int = int(n.ival)
+	f := int(n.ival)
 	if n.isFloat {
 		f = int(n.fval)
 	}
@@ -149,7 +149,7 @@ func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("delay argument should evaluate to a number, got %v", val.Inspect())
 	}
 
-	var f int = int(n.ival)
+	f := int(n.ival)
 	if n.isFloat {
 		f = int(n.fval)
 	}
@@ -221,7 +221,7 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("set_player_pos argument x coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
-	var x float64 = n.fval
+	x := n.fval
 	if !n.isFloat {
 		x = float64(n.ival)
 	}
@@ -235,7 +235,7 @@ func (e *Eval) setPlayerPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("set_player_pos argument y coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
-	var y float64 = n.fval
+	y := n.fval
 	if !n.isFloat {
 		y = float64(n.ival)
 	}
@@ -280,7 +280,7 @@ func (e *Eval) setParticleDelay(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("set_particle_delay second argument should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
-	var delay int = int(n.ival)
+	delay := int(n.ival)
 	if n.isFloat {
 		delay = int(n.fval)
 	}
@@ -306,7 +306,7 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("set_default_target argument should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
-	var idx int = int(n.ival)
+	idx := int(n.ival)
 	if n.isFloat {
 		idx = int(n.fval)
 	}
@@ -339,7 +339,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("set_target_pos argument target index should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
-	var idx int = int(n.ival)
+	idx := int(n.ival)
 	if n.isFloat {
 		idx = int(n.fval)
 	}
@@ -353,7 +353,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("set_target_pos argument x coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
-	var x float64 = n.fval
+	x := n.fval
 	if !n.isFloat {
 		x = float64(n.ival)
 	}
@@ -367,7 +367,7 @@ func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("set_target_pos argument y coord should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be float
-	var y float64 = n.fval
+	y := n.fval
 	if !n.isFloat {
 		y = float64(n.ival)
 	}
@@ -402,7 +402,7 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("kill_target argument target index should evaluate to a number, got %v", t.Inspect())
 	}
 	//n should be int
-	var idx int = int(n.ival)
+	idx := int(n.ival)
 	if n.isFloat {
 		idx = int(n.fval)
 	}

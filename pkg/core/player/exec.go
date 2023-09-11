@@ -19,60 +19,60 @@ var ErrPlayerNotReady = errors.New("player still in animation; cannot execute ac
 var ErrActionNoOp = errors.New("action is a noop")
 
 // ReadyCheck returns nil action is ready, else returns error representing why action is not ready
-func (p *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int) error {
+func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int) error {
 	//check animation state
-	if p.IsAnimationLocked(t) {
+	if h.IsAnimationLocked(t) {
 		return ErrPlayerNotReady
 	}
-	char := p.chars[p.active]
+	char := h.chars[h.active]
 	//check for energy, cd, etc..
 	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
 	//this should deal with Ayaka/Mona's drain vs straight up consumption
 	if ok, reason := char.ActionReady(t, param); !ok {
-		p.Events.Emit(event.OnActionFailed, p.active, t, param, reason)
+		h.Events.Emit(event.OnActionFailed, h.active, t, param, reason)
 		return ErrActionNotReady
 	}
 
 	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
-		req := p.AbilStamCost(char.Index, t, param)
-		return req, p.Stam >= req
+		req := h.AbilStamCost(char.Index, t, param)
+		return req, h.Stam >= req
 	}
 
 	switch t {
 	case action.ActionCharge: //require special calc for stam
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
-				Write("have", p.Stam).
+			h.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
+				Write("have", h.Stam).
 				Write("cost", amt)
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
 	case action.ActionDash: //require special calc for stam
 		//dash handles it in the action itself
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
-				Write("have", p.Stam).
+			h.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
+				Write("have", h.Stam).
 				Write("cost", amt)
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
 
 		// dash is still on cooldown and is locked out, cannot dash again until CD expires
-		if p.DashLockout && p.DashCDExpirationFrame > *p.F {
-			p.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
-				Write("dash_cd_expiration", p.DashCDExpirationFrame-*p.F)
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.DashCD)
+		if h.DashLockout && h.DashCDExpirationFrame > *h.F {
+			h.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
+				Write("dash_cd_expiration", h.DashCDExpirationFrame-*h.F)
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.DashCD)
 			return ErrActionNotReady
 		}
 	case action.ActionSwap:
-		if p.active == p.charPos[k] {
+		if h.active == h.charPos[k] {
 			//even though noop this action is still ready
 			return nil
 		}
-		if p.SwapCD > 0 {
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.SwapCD)
+		if h.SwapCD > 0 {
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.SwapCD)
 			return ErrActionNotReady
 		}
 	}
@@ -96,113 +96,113 @@ func (p *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 // Note that although wait is not strictly a button in game, it is still a valid action.
 // When wait is executed, it will simply put the player in a lock animation state for
 // the requested number of frames
-func (p *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error {
+func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error {
 	//check animation state
-	if p.IsAnimationLocked(t) {
+	if h.IsAnimationLocked(t) {
 		return ErrPlayerNotReady
 	}
 
-	char := p.chars[p.active]
+	char := h.chars[h.active]
 	//check for energy, cd, etc..
 	//TODO: make sure there is a default check for charge attack/dash stams in char implementation
 	//this should deal with Ayaka/Mona's drain vs straight up consumption
 	if ok, reason := char.ActionReady(t, param); !ok {
-		p.Events.Emit(event.OnActionFailed, p.active, t, param, reason)
+		h.Events.Emit(event.OnActionFailed, h.active, t, param, reason)
 		return ErrActionNotReady
 	}
 
 	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
-		req := p.AbilStamCost(char.Index, t, param)
-		return req, p.Stam >= req
+		req := h.AbilStamCost(char.Index, t, param)
+		return req, h.Stam >= req
 	}
 
 	switch t {
 	case action.ActionCharge: //require special calc for stam
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
-				Write("have", p.Stam).
+			h.Log.NewEvent("insufficient stam: charge attack", glog.LogWarnings, -1).
+				Write("have", h.Stam).
 				Write("cost", amt)
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
 		//use stam
-		p.Stam -= amt
-		p.LastStamUse = *p.F
-		p.Events.Emit(event.OnStamUse, t)
-		p.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
+		h.Stam -= amt
+		h.LastStamUse = *h.F
+		h.Events.Emit(event.OnStamUse, t)
+		h.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash: //require special calc for stam
 		//dash handles it in the action itself
 		amt, ok := stamCheck(t, param)
 		if !ok {
-			p.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
-				Write("have", p.Stam).
+			h.Log.NewEvent("insufficient stam: dash", glog.LogWarnings, -1).
+				Write("have", h.Stam).
 				Write("cost", amt)
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.InsufficientStamina)
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.InsufficientStamina)
 			return ErrActionNotReady
 		}
 
 		// dash is still on cooldown and is locked out, cannot dash again until CD expires
-		if p.DashLockout && p.DashCDExpirationFrame > *p.F {
-			p.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
-				Write("dash_cd_expiration", p.DashCDExpirationFrame-*p.F)
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.DashCD)
+		if h.DashLockout && h.DashCDExpirationFrame > *h.F {
+			h.Log.NewEvent("dash on cooldown", glog.LogWarnings, -1).
+				Write("dash_cd_expiration", h.DashCDExpirationFrame-*h.F)
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.DashCD)
 			return ErrActionNotReady
 		}
 
-		p.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
+		h.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
-		p.useAbility(t, param, char.Jump)
+		h.useAbility(t, param, char.Jump)
 	case action.ActionWalk:
-		p.useAbility(t, param, char.Walk)
+		h.useAbility(t, param, char.Walk)
 	case action.ActionAim:
-		p.useAbility(t, param, char.Aimed)
+		h.useAbility(t, param, char.Aimed)
 	case action.ActionSkill:
-		p.useAbility(t, param, char.Skill)
+		h.useAbility(t, param, char.Skill)
 	case action.ActionBurst:
-		p.useAbility(t, param, char.Burst)
+		h.useAbility(t, param, char.Burst)
 	case action.ActionAttack:
-		p.useAbility(t, param, char.Attack)
+		h.useAbility(t, param, char.Attack)
 	case action.ActionHighPlunge:
 		//TODO: there should be a flag that says airborne and only then can you plunge
-		p.useAbility(t, param, char.HighPlungeAttack)
+		h.useAbility(t, param, char.HighPlungeAttack)
 	case action.ActionLowPlunge:
-		p.useAbility(t, param, char.LowPlungeAttack)
+		h.useAbility(t, param, char.LowPlungeAttack)
 	case action.ActionSwap:
-		if p.active == p.charPos[k] {
+		if h.active == h.charPos[k] {
 			return ErrActionNoOp
 		}
-		if p.SwapCD > 0 {
-			p.Events.Emit(event.OnActionFailed, p.active, t, param, action.SwapCD)
+		if h.SwapCD > 0 {
+			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.SwapCD)
 			return ErrActionNotReady
 		}
 		//otherwise swap at the end of timer
 		//log here that we're starting a swap
-		p.Log.NewEventBuildMsg(glog.LogActionEvent, p.active, "swapping ", p.chars[p.active].Base.Key.String(), " to ", p.chars[p.charPos[k]].Base.Key.String())
+		h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String())
 
 		x := action.ActionInfo{
 			Frames: func(next action.Action) int {
-				return p.Delays.Swap
+				return h.Delays.Swap
 			},
-			AnimationLength: p.Delays.Swap,
-			CanQueueAfter:   p.Delays.Swap,
+			AnimationLength: h.Delays.Swap,
+			CanQueueAfter:   h.Delays.Swap,
 			State:           action.SwapState,
 		}
-		x.QueueAction(p.swap(k), p.Delays.Swap)
+		x.QueueAction(h.swap(k), h.Delays.Swap)
 		x.CacheFrames()
-		p.SetActionUsed(p.active, t, &x)
-		p.LastAction.Type = t
-		p.LastAction.Param = param
-		p.LastAction.Char = p.active
+		h.SetActionUsed(h.active, t, &x)
+		h.LastAction.Type = t
+		h.LastAction.Param = param
+		h.LastAction.Char = h.active
 	default:
 		panic("invalid action reached")
 	}
 
 	if t != action.ActionAttack {
-		p.ResetAllNormalCounter()
+		h.ResetAllNormalCounter()
 	}
 
-	p.Events.Emit(event.OnActionExec, p.active, t, param)
+	h.Events.Emit(event.OnActionExec, h.active, t, param)
 
 	return nil
 }
@@ -218,29 +218,29 @@ var actionToEvent = map[action.Action]event.Event{
 	action.ActionAim:        event.OnAimShoot,
 }
 
-func (p *Handler) useAbility(
+func (h *Handler) useAbility(
 	t action.Action,
 	param map[string]int,
 	f func(p map[string]int) action.ActionInfo,
 ) {
 	state, ok := actionToEvent[t]
 	if ok {
-		p.Events.Emit(state)
+		h.Events.Emit(state)
 	}
 	info := f(param)
 	info.CacheFrames()
-	p.SetActionUsed(p.active, t, &info)
+	h.SetActionUsed(h.active, t, &info)
 	if info.FramePausedOnHitlag == nil {
-		info.FramePausedOnHitlag = p.ActiveChar().FramePausedOnHitlag
+		info.FramePausedOnHitlag = h.ActiveChar().FramePausedOnHitlag
 	}
 
-	p.LastAction.Type = t
-	p.LastAction.Param = param
-	p.LastAction.Char = p.active
+	h.LastAction.Type = t
+	h.LastAction.Param = param
+	h.LastAction.Char = h.active
 
-	p.Log.NewEventBuildMsg(
+	h.Log.NewEventBuildMsg(
 		glog.LogActionEvent,
-		p.active,
+		h.active,
 		"executed ", t.String(),
 	).Write("action", t.String())
 

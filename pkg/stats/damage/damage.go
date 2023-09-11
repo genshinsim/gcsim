@@ -10,7 +10,7 @@ import (
 )
 
 // 30 = .5s
-const BUCKET_SIZE int = 30
+const bucketSize int = 30
 
 func init() {
 	stats.Register(NewStat)
@@ -42,7 +42,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 			return false
 		}
 
-		bucket := int(core.F / BUCKET_SIZE)
+		bucket := int(core.F / bucketSize)
 		last := out.cumu[len(out.cumu)-1]
 		for bucket >= len(out.cumu) {
 			newBucket := make([]float64, len(core.Player.Chars()))

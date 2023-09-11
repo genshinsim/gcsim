@@ -53,11 +53,11 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	short_hold := p["short_hold"]
+	shortHold := p["short_hold"]
 	if p["short_hold"] != 0 {
-		short_hold = 1
+		shortHold = 1
 	}
-	if short_hold == 1 {
+	if shortHold == 1 {
 		return c.skillShortHold(p)
 	}
 

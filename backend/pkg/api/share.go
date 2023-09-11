@@ -60,7 +60,7 @@ func (s *Server) CreateShare() http.HandlerFunc {
 		}
 
 		res := &model.SimulationResult{}
-		err = res.UnmarshalJson(data)
+		err = res.UnmarshalJSON(data)
 		if err != nil {
 			s.Log.Infow("create share request - unmarshall failed", "err", err)
 			http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -99,7 +99,7 @@ func (s *Server) sendShare(w http.ResponseWriter, r *http.Request, key string) {
 		s.Log.Errorw("unexpected error getting share", "err", err)
 		return
 	}
-	d, err := share.MarshalJson()
+	d, err := share.MarshalJSON()
 	if err != nil {
 		s.Log.Errorw("unexpected error marshalling to json", "err", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)

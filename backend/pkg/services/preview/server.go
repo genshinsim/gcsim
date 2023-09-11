@@ -190,7 +190,7 @@ func (s *Store) handleServeHTML() http.HandlerFunc {
 			out.Data = `{"err":"unexpected error getting result; bad data"}`
 			return
 		}
-		data, err := res.MarshalJson()
+		data, err := res.MarshalJSON()
 		if err != nil {
 			out.Data = `{"err":"unexpected error getting result: cannot convert to json"}`
 			return

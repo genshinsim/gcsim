@@ -159,44 +159,44 @@ func (s *LeaLotus) Tick() {
 	s.Gadget.Tick()
 }
 
-func (l *LeaLotus) QueueAttack(delay int) {
-	enemy := l.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(l.Gadget, nil, l.char.burstRadius), nil)
+func (s *LeaLotus) QueueAttack(delay int) {
+	enemy := s.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(s.Gadget, nil, s.char.burstRadius), nil)
 	if enemy == nil {
 		return
 	}
-	l.Core.QueueAttackWithSnap(
-		l.burstAtk.Info,
-		l.burstAtk.Snapshot,
-		combat.NewCircleHitOnTarget(enemy, nil, l.hitboxRadius),
+	s.Core.QueueAttackWithSnap(
+		s.burstAtk.Info,
+		s.burstAtk.Snapshot,
+		combat.NewCircleHitOnTarget(enemy, nil, s.hitboxRadius),
 		delay,
 	)
 }
 
-func (r *LeaLotus) React(a *combat.AttackEvent) {
+func (s *LeaLotus) React(a *combat.AttackEvent) {
 	//only check the ones possible
 	switch a.Info.Element {
 	case attributes.Electro:
-		r.TryAggravate(a)
-		r.TryFrozenSuperconduct(a)
-		r.TrySuperconduct(a)
-		r.TryQuicken(a)
+		s.TryAggravate(a)
+		s.TryFrozenSuperconduct(a)
+		s.TrySuperconduct(a)
+		s.TryQuicken(a)
 	case attributes.Pyro:
-		r.TryMelt(a)
-		r.TryBurning(a)
+		s.TryMelt(a)
+		s.TryBurning(a)
 	case attributes.Cryo:
 	case attributes.Hydro:
-		r.TryFreeze(a)
-		r.TryBloom(a)
+		s.TryFreeze(a)
+		s.TryBloom(a)
 	case attributes.Anemo:
-		r.TrySwirlHydro(a)
-		r.TrySwirlCryo(a)
-		r.TrySwirlFrozen(a)
+		s.TrySwirlHydro(a)
+		s.TrySwirlCryo(a)
+		s.TrySwirlFrozen(a)
 	case attributes.Geo:
-		r.TryCrystallizeCryo(a)
-		r.TryCrystallizeFrozen(a)
+		s.TryCrystallizeCryo(a)
+		s.TryCrystallizeFrozen(a)
 	case attributes.Dendro:
-		r.TrySpread(a)
-		r.TryBloom(a)
+		s.TrySpread(a)
+		s.TryBloom(a)
 	}
 }
 

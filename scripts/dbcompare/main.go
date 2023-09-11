@@ -88,7 +88,7 @@ func getDBEntries() ([]dbEntry, error) {
 		url := fmt.Sprintf("https://simpact.app/api/db?q=%v", url.QueryEscape(string(jsonStr)))
 
 		var d dbData
-		err := getJson(url, &d)
+		err := getJSON(url, &d)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +105,7 @@ func getDBEntries() ([]dbEntry, error) {
 
 var myClient = &http.Client{Timeout: 10 * time.Second}
 
-func getJson(url string, target any) error {
+func getJSON(url string, target any) error {
 	r, err := myClient.Get(url)
 	if err != nil {
 		return err

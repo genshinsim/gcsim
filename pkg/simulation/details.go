@@ -11,10 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func (sim *Simulation) CharacterDetails() []*model.Character {
-	out := make([]*model.Character, len(sim.C.Player.Chars()))
+func (s *Simulation) CharacterDetails() []*model.Character {
+	out := make([]*model.Character, len(s.C.Player.Chars()))
 
-	for i, v := range sim.cfg.Characters {
+	for i, v := range s.cfg.Characters {
 		m := make(map[string]int32)
 		for k, v := range v.Sets {
 			m[k.String()] = int32(v)
@@ -44,7 +44,7 @@ func (sim *Simulation) CharacterDetails() []*model.Character {
 	}
 
 	//grab a snapshot for each char
-	for i, c := range sim.C.Player.Chars() {
+	for i, c := range s.C.Player.Chars() {
 		snap := c.Snapshot(&combat.AttackInfo{
 			Abil:      "stats-check",
 			AttackTag: attacks.AttackTagNone,
@@ -56,8 +56,8 @@ func (sim *Simulation) CharacterDetails() []*model.Character {
 		snap.Stats[attributes.HPP] = 0
 		snap.Stats[attributes.DEFP] = 0
 		snap.Stats[attributes.ATKP] = 0
-		if sim.C.Combat.Debug {
-			evt := sim.C.Log.NewEvent(
+		if s.C.Combat.Debug {
+			evt := s.C.Log.NewEvent(
 				fmt.Sprintf("%v final stats", c.Base.Key.Pretty()),
 				glog.LogCharacterEvent,
 				i,

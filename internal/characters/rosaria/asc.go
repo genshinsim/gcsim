@@ -47,13 +47,13 @@ func (c *char) a4() {
 		return
 	}
 
-	crit_share := 0.15 * c.NonExtraStat(attributes.CR)
-	if crit_share > 0.15 {
-		crit_share = 0.15
+	critShare := 0.15 * c.NonExtraStat(attributes.CR)
+	if critShare > 0.15 {
+		critShare = 0.15
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = crit_share
+	m[attributes.CR] = critShare
 	for i, char := range c.Core.Player.Chars() {
 		// skip Rosaria
 		if i == c.Index {
@@ -70,5 +70,5 @@ func (c *char) a4() {
 	}
 	c.Core.Log.NewEvent("Rosaria A4 activation", glog.LogCharacterEvent, c.Index).
 		Write("ends_on", c.Core.F+600).
-		Write("crit_share", crit_share)
+		Write("crit_share", critShare)
 }

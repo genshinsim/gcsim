@@ -58,12 +58,12 @@ func (c *Character) Charges(a action.Action) int {
 	return c.AvailableCDCharge[a]
 }
 
-func (h *Character) SetCDWithDelay(a action.Action, dur int, delay int) {
+func (c *Character) SetCDWithDelay(a action.Action, dur int, delay int) {
 	if delay == 0 {
-		h.SetCD(a, dur)
+		c.SetCD(a, dur)
 		return
 	}
-	h.Core.Tasks.Add(func() { h.SetCD(a, dur) }, delay)
+	c.Core.Tasks.Add(func() { c.SetCD(a, dur) }, delay)
 }
 
 func (c *Character) Cooldown(a action.Action) int {

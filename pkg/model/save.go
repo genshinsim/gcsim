@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-func (s *SimulationResult) Save(fpath string, gz bool) error {
-	data, err := s.MarshalJson()
+func (r *SimulationResult) Save(fpath string, gz bool) error {
+	data, err := r.MarshalJSON()
 	if err != nil {
 		return err
 	}
@@ -27,7 +27,7 @@ func (s *SimulationResult) Save(fpath string, gz bool) error {
 }
 
 func (s *Sample) Save(fpath string, gz bool) error {
-	data, err := s.MarshalJson()
+	data, err := s.MarshalJSON()
 	if err != nil {
 		return err
 	}

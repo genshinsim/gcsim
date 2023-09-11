@@ -133,12 +133,12 @@ func (c *CharWrapper) modIsActive(key string) bool {
 	_, ok := modifier.FindCheckExpiry(&c.mods, key, *c.f)
 	return ok
 }
-func (e *CharWrapper) StatusIsActive(key string) bool             { return e.modIsActive(key) }
-func (e *CharWrapper) CooldownModIsActive(key string) bool        { return e.modIsActive(key) }
-func (e *CharWrapper) DamageReductionModIsActive(key string) bool { return e.modIsActive(key) }
-func (e *CharWrapper) HealBonusModIsActive(key string) bool       { return e.modIsActive(key) }
-func (e *CharWrapper) ReactBonusModIsActive(key string) bool      { return e.modIsActive(key) }
-func (e *CharWrapper) StatModIsActive(key string) bool            { return e.modIsActive(key) }
+func (c *CharWrapper) StatusIsActive(key string) bool             { return c.modIsActive(key) }
+func (c *CharWrapper) CooldownModIsActive(key string) bool        { return c.modIsActive(key) }
+func (c *CharWrapper) DamageReductionModIsActive(key string) bool { return c.modIsActive(key) }
+func (c *CharWrapper) HealBonusModIsActive(key string) bool       { return c.modIsActive(key) }
+func (c *CharWrapper) ReactBonusModIsActive(key string) bool      { return c.modIsActive(key) }
+func (c *CharWrapper) StatModIsActive(key string) bool            { return c.modIsActive(key) }
 
 // Expiry.
 

@@ -20,7 +20,7 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 { retu
 func (c *Character) ReduceActionCooldown(a action.Action, v int)          {}
 func (c *Character) ResetActionCooldown(a action.Action)                  {}
 func (c *Character) Cooldown(a action.Action) int                         { return 0 }
-func (h *Character) SetCDWithDelay(a action.Action, dur int, delay int)   {}
+func (c *Character) SetCDWithDelay(a action.Action, dur int, delay int)   {}
 func (c *Character) Charges(a action.Action) int                          { return 1 }
 func (c *Character) SetCD(a action.Action, dur int)                       {}
 func (c *Character) Init() error                                          { return nil }
