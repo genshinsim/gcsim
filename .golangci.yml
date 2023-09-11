@@ -10,7 +10,7 @@ linters:
 
     # - errcheck # checking for unchecked errors, these unchecked errors can be critical bugs in some cases
 
-    # - gosimple # specializes in simplifying a code
+    - gosimple # specializes in simplifying a code
     # - govet # reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
     # - ineffassign # detects when assignments to existing variables are not used
     # - staticcheck # is a go vet on steroids, applying a ton of static analysis checks

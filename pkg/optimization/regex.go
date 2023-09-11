@@ -51,7 +51,7 @@ func parseOptimizerCfg(additionalOptions string, optionsMap map[string]float64) 
 		if _, ok := optionsMap[val[1]]; ok {
 			optionsMap[val[1]], _ = strconv.ParseFloat(val[2], 64)
 		} else {
-			err := errors.New(fmt.Sprintf("Invalid substat optimization option found: %v: %v", val[1], val[2]))
+			err := fmt.Errorf("Invalid substat optimization option found: %v: %v", val[1], val[2])
 			return optionsMap, err
 		}
 	}
