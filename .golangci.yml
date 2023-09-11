@@ -18,7 +18,7 @@ linters:
 
     ## style & formatting
     - gofmt # go fmt requirement
-    # - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
+    - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
     # - stylecheck # style check rules defined by staticcheck (minimum go standard style)
     # - gocritic # provides diagnostics that check for bugs, performance and style issues
     # - whitespace # detects leading and trailing whitespace
