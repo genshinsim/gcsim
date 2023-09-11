@@ -23,7 +23,6 @@ internal/characters/replace.txt
 ./cmd/gcsim/*.json
 cmd/gcsim/gcsim
 !release-notes.txt
-\.vscode/
 **/node_modules
 .env
 **/protos_gen
