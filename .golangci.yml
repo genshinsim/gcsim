@@ -1,7 +1,7 @@
 run:
   timeout: 3m
-  skip-dirs:
-    - scripts/*/result # exclude script-generated results such as charstat from linting
+  build-tags:
+    - codeanalysis
 
 linters:
   disable-all: true
