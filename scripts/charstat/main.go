@@ -9,6 +9,9 @@ import (
 	"os"
 	"strings"
 	"text/template"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type base struct {
@@ -78,7 +81,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		v.Body = strings.Title(strings.ToLower(v.Body))
+		v.Body = cases.Title(language.Und, cases.NoLower).String(strings.ToLower(v.Body))
 		// special case for traveler and aloy
 		if v.Region == "" {
 			v.Region = "Unknown"

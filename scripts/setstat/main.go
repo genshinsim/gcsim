@@ -7,6 +7,9 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func main() {
@@ -52,7 +55,7 @@ func readNameMap() map[string]string {
 	for k, v := range m.Names {
 		//strip out any none word characters
 		v = strings.ReplaceAll(v, "'", "")
-		m.Names[k] = re.ReplaceAllString(strings.Title(v), "")
+		m.Names[k] = re.ReplaceAllString(cases.Title(language.Und, cases.NoLower).String(v), "")
 	}
 	return m.Names
 }

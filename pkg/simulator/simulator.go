@@ -6,8 +6,8 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"path"
 	"regexp"
 	"runtime/debug"
@@ -274,7 +274,7 @@ var reImport = regexp.MustCompile(`(?m)^import "(.+)"$`)
 // as well
 func ReadConfig(fpath string) (string, error) {
 
-	src, err := ioutil.ReadFile(fpath)
+	src, err := os.ReadFile(fpath)
 	if err != nil {
 		return "", err
 	}
@@ -288,7 +288,7 @@ func ReadConfig(fpath string) (string, error) {
 		if match != nil {
 			//read import
 			p := path.Join(path.Dir(fpath), match[1])
-			src, err = ioutil.ReadFile(p)
+			src, err = os.ReadFile(p)
 			if err != nil {
 				return "", err
 			}

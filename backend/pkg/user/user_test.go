@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"os"
 	"testing"
+
+	"github.com/genshinsim/gcsim/backend/pkg/api"
 )
 
 func TestUserStoreCRUD(t *testing.T) {
@@ -34,7 +36,7 @@ func TestUserStoreCRUD(t *testing.T) {
 
 	var u User
 
-	data, err := store.Read(testID, context.WithValue(context.TODO(), "user", testID))
+	data, err := store.Read(testID, context.WithValue(context.TODO(), api.UserContextKey, testID))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

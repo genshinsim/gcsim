@@ -10,11 +10,17 @@ import (
 //Debugw
 //Warnw
 
+// https://github.com/dominikh/go-tools/issues/836
+
+//nolint:staticcheck
 type keyVal struct {
 	Key string      `json:"key,nocopy"`
 	Val interface{} `json:"val"`
 }
 
+// https://github.com/dominikh/go-tools/issues/836
+
+//nolint:staticcheck
 //easyjson:json
 type LogEvent struct {
 	Typ      Source                 `json:"event"`
