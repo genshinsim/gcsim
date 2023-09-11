@@ -408,7 +408,6 @@ func (p *Parser) parseCaseBody() (*BlockStmt, error) {
 		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
-				n := p.next()
 				n = p.next()
 				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.line, n.Val)
 			}
@@ -633,7 +632,6 @@ func (p *Parser) parseBlock() (*BlockStmt, error) {
 		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
-				n := p.next()
 				n = p.next()
 				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.line, n.Val)
 			}

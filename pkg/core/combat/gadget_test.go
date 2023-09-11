@@ -164,9 +164,6 @@ func BenchmarkCollisionCheck(b *testing.B) {
 			alive:       true,
 			collideWith: cw,
 			onCollision: func(t Target) {
-				//some dummy operation
-				var x = 0
-				x += 1
 			},
 		}
 		c.AddGadget(v)
