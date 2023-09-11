@@ -17,7 +17,7 @@ linters:
     - typecheck # like the front-end of a Go compiler, parses and type-checks Go code
 
     ## style & formatting
-    # - gofmt # go fmt requirement
+    - gofmt # go fmt requirement
     # - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
     # - stylecheck # style check rules defined by staticcheck (minimum go standard style)
     # - gocritic # provides diagnostics that check for bugs, performance and style issues

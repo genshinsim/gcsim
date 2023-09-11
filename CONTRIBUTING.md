@@ -160,6 +160,10 @@ Install the following:
     - Install the recommended extensions.
 - golangci-lint: If using vscode, should give popup to install
     - Alternative: manual install https://golangci-lint.run/usage/install/#local-installation
+    - Linters that use diffs (for example: gofmt) require [additional setup on Windows](https://github.com/golangci/golangci-lint/issues/307#issuecomment-1001301930) (This assumes you already installed Git for Windows!):
+        - Open PowerShell as Administrator
+        - execute the following command: setx /M PATH "$($env:path);C:\Program Files\git\usr\bin"
+        - Restart VS Code if it is currently open for the changes to take effect.
 
 # Local Testing/Building
 0. Create a Config file

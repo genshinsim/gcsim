@@ -287,7 +287,6 @@ func parseStrSeedAndWriteSample(seedStr string, outputPath string, config string
 	return writeSample(seed, outputPath, config, gz, simopt)
 }
 
-
 func writeSample(seed uint64, outputPath string, config string, gz bool, simopt simulator.Options) error {
 	cfg, err := simulator.ReadConfig(config)
 	if err != nil {
