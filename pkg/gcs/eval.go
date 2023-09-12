@@ -28,7 +28,7 @@ type Eval struct {
 
 type Env struct {
 	parent *Env
-	varMap map[string]Obj
+	varMap map[string]*Obj
 }
 
 func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
@@ -44,11 +44,12 @@ func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
 func NewEnv(parent *Env) *Env {
 	return &Env{
 		parent: parent,
-		varMap: make(map[string]Obj),
+		varMap: make(map[string]*Obj),
 	}
 }
 
-func (e *Env) v(s string) (Obj, error) {
+//nolint:gocritic // non-pointer type for *Obj doesn't make sense
+func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {
 		return v, nil

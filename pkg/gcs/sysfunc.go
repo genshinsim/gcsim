@@ -49,7 +49,7 @@ func (e *Eval) addSysFunc(name string, f func(c *ast.CallExpr, env *Env) (Obj, e
 		Body: f,
 		Env:  NewEnv(env),
 	}
-	env.varMap[name] = obj
+	env.varMap[name] = &obj
 }
 
 func (e *Eval) print(c *ast.CallExpr, env *Env) (Obj, error) {

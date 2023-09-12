@@ -75,7 +75,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	// num := *v //value copying
-	env.varMap[l.Ident.Val] = res
+	env.varMap[l.Ident.Val] = &res
 	return &null{}, nil
 }
 
@@ -91,7 +91,7 @@ func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 		Signature: l.Func.Signature,
 		Env:       NewEnv(env),
 	}
-	env.varMap[l.Ident.Val] = res
+	env.varMap[l.Ident.Val] = &res
 	return &null{}, nil
 }
 
@@ -101,13 +101,13 @@ func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) (Obj, error) {
 		return nil, err
 	}
 	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
-	_, err = env.v(a.Ident.Val)
+	n, err := env.v(a.Ident.Val)
 	if err != nil {
 		return nil, err
 	}
-	n := res
+	*n = res
 
-	return n, nil
+	return *n, nil
 }
 
 func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {

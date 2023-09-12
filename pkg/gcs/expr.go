@@ -63,7 +63,7 @@ func (e *Eval) evalIdent(n *ast.Ident, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return *res, nil
 }
 
 func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
@@ -95,7 +95,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		if err != nil {
 			return nil, err
 		}
-		local.varMap[v.Value] = param
+		local.varMap[v.Value] = &param
 	}
 	res, err := e.evalBlock(fn.Body, local)
 	if err != nil {
