@@ -121,7 +121,7 @@ func NewDendroCore(c *core.Core, shp geometry.Shape, a *combat.AttackEvent) *Den
 			c.QueueAttackWithSnap(ai, snap, ap, 1)
 
 			// self damage
-			ai.Abil += " (self damage)"
+			ai.Abil += reactions.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true
@@ -172,7 +172,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 			s.Core.QueueAttackWithSnap(ai, snap, ap, 60)
 
 			// also queue self damage
-			ai.Abil += " (self damage)"
+			ai.Abil += reactions.SelfDamageSuffix
 			ai.FlatDmg = 0.05 * ai.FlatDmg
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true
@@ -199,7 +199,7 @@ func (s *DendroCore) Attack(atk *combat.AttackEvent, evt glog.Event) (float64, b
 		s.Core.QueueAttackWithSnap(ai, snap, ap, 1)
 
 		// queue self damage
-		ai.Abil += " (self damage)"
+		ai.Abil += reactions.SelfDamageSuffix
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		ap.SkipTargets[targets.TargettablePlayer] = false
 		ap.SkipTargets[targets.TargettableEnemy] = true

@@ -720,10 +720,10 @@ func (p *Parser) parseBool() (Expr, error) {
 	n := p.next()
 	num := &NumberLit{Pos: n.pos}
 	switch n.Val {
-	case "true":
+	case TrueVal:
 		num.IntVal = 1
 		num.FloatVal = 1
-	case "false":
+	case FalseVal:
 		num.IntVal = 0
 		num.FloatVal = 0
 	default:

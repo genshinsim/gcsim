@@ -9,6 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
+const swirlAbil = "swirl-pyro (aoe)"
+
 func TestSwirl50to25(t *testing.T) {
 	fmt.Println("------------------------------\ntesting swirl 50 applied to ~20")
 	c, trg := testCoreWithTrgs(2)
@@ -30,7 +32,7 @@ func TestSwirl50to25(t *testing.T) {
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
 	expected := dur*1.25 + 23.75
 	advanceCoreFrame(c)
-	if trg[1].last.Info.Abil != "swirl-pyro (aoe)" {
+	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 		t.FailNow()
 	}
@@ -61,7 +63,7 @@ func TestSwirl25to25(t *testing.T) {
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
 	expected := reactions.Durability(25)*1.25 + 23.75
 	advanceCoreFrame(c)
-	if trg[1].last.Info.Abil != "swirl-pyro (aoe)" {
+	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
@@ -91,7 +93,7 @@ func TestSwirl25to50(t *testing.T) {
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
 	expected := reactions.Durability(25)*1.25 + 23.75
 	advanceCoreFrame(c)
-	if trg[1].last.Info.Abil != "swirl-pyro (aoe)" {
+	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
@@ -123,7 +125,7 @@ func TestSwirl50to50(t *testing.T) {
 	expected := reactions.Durability(50)*1.25 + 23.75
 
 	advanceCoreFrame(c)
-	if trg[1].last.Info.Abil != "swirl-pyro (aoe)" {
+	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
@@ -151,7 +153,7 @@ func TestSwirl25to10(t *testing.T) {
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
 	expected := dur*1.25 + 23.75
 	advanceCoreFrame(c)
-	if trg[1].last.Info.Abil != "swirl-pyro (aoe)" {
+	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability
@@ -184,7 +186,7 @@ func TestSwirl50to10(t *testing.T) {
 	// i'm expecting an aoe swirl with durability = dur * 1.25 + 23.75
 	expected := dur*1.25 + 23.75
 	advanceCoreFrame(c)
-	if trg[1].last.Info.Abil != "swirl-pyro (aoe)" {
+	if trg[1].last.Info.Abil != swirlAbil {
 		t.Errorf("expecting swirl, got %v", trg[1].last.Info.Abil)
 	}
 	// no durability

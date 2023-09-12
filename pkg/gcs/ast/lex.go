@@ -357,7 +357,7 @@ Loop:
 				l.emit(key[word])
 			case word[0] == '.':
 				l.emit(itemField)
-			case word == "true", word == "false":
+			case word == TrueVal, word == FalseVal:
 				l.emit(itemBool)
 			default:
 				l.emit(checkIdentifier(word))

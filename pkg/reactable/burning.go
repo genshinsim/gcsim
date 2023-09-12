@@ -117,7 +117,7 @@ func (r *Reactable) nextBurningTick(src, counter int, t Enemy) func() {
 				0,
 			)
 			// self damage
-			ai.Abil += " (self damage)"
+			ai.Abil += reactions.SelfDamageSuffix
 			ap.SkipTargets[targets.TargettablePlayer] = false
 			ap.SkipTargets[targets.TargettableEnemy] = true
 			ap.SkipTargets[targets.TargettableGadget] = true

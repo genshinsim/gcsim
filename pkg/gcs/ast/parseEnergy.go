@@ -36,12 +36,12 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "interval":
+			case IntervalVal:
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err == nil {
 					p.res.EnergySettings.Start, err = itemNumberToInt(n)
 				}
-			case "amount":
+			case AmountVal:
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
@@ -76,7 +76,7 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "interval":
+			case IntervalVal:
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
@@ -94,7 +94,7 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-			case "amount":
+			case AmountVal:
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err

@@ -20,10 +20,10 @@ func parseOptions(p *Parser) (parseFn, error) {
 				// every run is going to have a debug from now on so we basically ignore what this flag says
 			case "defhalt":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
-				p.res.Settings.DefHalt = n.Val == "true"
+				p.res.Settings.DefHalt = n.Val == TrueVal
 			case "hitlag":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
-				p.res.Settings.EnableHitlag = n.Val == "true"
+				p.res.Settings.EnableHitlag = n.Val == FalseVal
 			case "iteration":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err == nil {
