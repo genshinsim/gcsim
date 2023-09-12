@@ -292,7 +292,7 @@ func ReadConfig(fpath string) (string, error) {
 				return "", err
 			}
 
-			data.WriteString(string(src))
+			data.Write(src)
 		} else {
 			data.WriteString(row)
 			data.WriteString("\n")
