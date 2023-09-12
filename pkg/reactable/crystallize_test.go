@@ -9,7 +9,6 @@ import (
 )
 
 func TestCrystallizeCryo(t *testing.T) {
-
 	c := testCore()
 	trg := addTargetToCore(c)
 
@@ -49,7 +48,6 @@ func TestCrystallizeCryo(t *testing.T) {
 }
 
 func TestCrystallizePyro(t *testing.T) {
-
 	c := testCore()
 	trg := addTargetToCore(c)
 

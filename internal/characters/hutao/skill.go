@@ -32,7 +32,6 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
 	bonus := ppatk[c.TalentLvlSkill()] * c.MaxHP()
 	max := (c.Base.Atk + c.Weapon.Atk) * 4
 	if bonus > max {

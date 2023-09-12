@@ -110,7 +110,6 @@ func (h *Handler) Tick() {
 		}
 	}
 	h.consNoLimit = h.consNoLimit[:n]
-
 }
 
 func (h *Handler) ConstructsByType(t GeoConstructType) ([]Construct, []Construct) {

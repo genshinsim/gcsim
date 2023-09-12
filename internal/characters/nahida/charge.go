@@ -19,7 +19,6 @@ func init() {
 	chargeFrames[action.ActionJump] = 21
 	chargeFrames[action.ActionWalk] = 69
 	chargeFrames[action.ActionSwap] = 21
-
 }
 
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {

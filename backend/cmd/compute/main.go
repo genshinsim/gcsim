@@ -52,7 +52,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func (c *client) run() error {

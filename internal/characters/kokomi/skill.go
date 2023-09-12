@@ -67,7 +67,6 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // Helper function since this needs to be created both on skill use and burst use
 func (c *char) createSkillSnapshot() *combat.AttackEvent {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bake-Kurage",
@@ -88,12 +87,10 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 	}
 	ae.Callbacks = append(ae.Callbacks, c.particleCB)
 	return &ae
-
 }
 
 // Helper function that handles damage, healing, and particle components of every tick of her E
 func (c *char) skillTick(d *combat.AttackEvent) {
-
 	// check if skill has burst bonus snapshot
 	// snapshot is between 1st and 2nd tick
 	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < c.skillLastUsed+100 {

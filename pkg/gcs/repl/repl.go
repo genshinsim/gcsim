@@ -13,7 +13,6 @@ import (
 const Prompt = ">> "
 
 func Eval(s string, log *log.Logger) {
-
 	p := ast.New(s)
 	res, gcsl, err := p.Parse()
 

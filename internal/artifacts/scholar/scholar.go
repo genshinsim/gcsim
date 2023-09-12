@@ -14,7 +14,6 @@ import (
 
 func init() {
 	core.RegisterSetFunc(keys.Scholar, NewSet)
-
 }
 
 type Set struct {

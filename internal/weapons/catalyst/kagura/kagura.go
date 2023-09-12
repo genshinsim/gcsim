@@ -92,5 +92,4 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, key)
 
 	return w, nil
-
 }

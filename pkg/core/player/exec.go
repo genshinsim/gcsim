@@ -243,5 +243,4 @@ func (h *Handler) useAbility(
 		h.active,
 		"executed ", t.String(),
 	).Write("action", t.String())
-
 }

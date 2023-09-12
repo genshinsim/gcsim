@@ -154,5 +154,4 @@ func TestECHyperbloom(t *testing.T) {
 	if count != 2 {
 		t.Errorf("expected 2 instance of hyperbloom damage, got %v", count)
 	}
-
 }

@@ -63,7 +63,6 @@ func main() {
 
 	log.Println("API gateway starting to listen at port 3000")
 	log.Fatal(http.ListenAndServe(":3000", s.Router))
-
 }
 
 func setHash() {

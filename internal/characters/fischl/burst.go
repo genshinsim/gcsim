@@ -72,7 +72,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				Bonus:   c.Stat(attributes.Heal),
 			})
 		}, burstHitmark) // TODO: should be at end of burst and not hitmark?
-
 	}
 
 	c.ConsumeEnergy(6)

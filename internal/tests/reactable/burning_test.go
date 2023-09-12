@@ -268,7 +268,6 @@ func TestPyroDendroCoexist(t *testing.T) {
 		advanceCoreFrame(c)
 		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
 	}
-
 }
 
 func TestDendroDecayTry1(t *testing.T) {
@@ -326,7 +325,6 @@ func TestDendroDecayTry1(t *testing.T) {
 		advanceCoreFrame(c)
 		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
 	}
-
 }
 
 func TestDendroDecayTry2(t *testing.T) {
@@ -377,7 +375,6 @@ func TestDendroDecayTry2(t *testing.T) {
 		advanceCoreFrame(c)
 		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
 	}
-
 }
 
 func TestQuickenBurningDecay(t *testing.T) {
@@ -435,5 +432,4 @@ func TestQuickenBurningDecay(t *testing.T) {
 		advanceCoreFrame(c)
 		fmt.Printf("%v: %v\n", i, trg[0].ActiveAuraString())
 	}
-
 }

@@ -108,7 +108,6 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 					Write("target", s.Key()).
 					Write("existing", existing).
 					Write("after", s.Reactable.ActiveAuraString())
-
 			}
 		}
 	}
@@ -149,7 +148,6 @@ func (s *LeaLotus) attachEle(atk *combat.AttackEvent) {
 			Write("target", s.Key()).
 			Write("existing", existing).
 			Write("after", s.Reactable.ActiveAuraString())
-
 	}
 }
 

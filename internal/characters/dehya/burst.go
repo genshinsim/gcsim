@@ -31,7 +31,6 @@ func init() {
 	kickFrames[action.ActionSkill] = 71         // Q -> E
 	kickFrames[action.ActionJump] = 73          // Q -> J
 	kickFrames[action.ActionSwap] = kickHitmark // Q -> Swap
-
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -135,7 +134,6 @@ func (c *char) burstPunch(src int, auto bool) action.ActionInfo {
 		c.burstCounter++
 		c.burstHitSrc++
 		c.burstPunch(c.burstHitSrc, true)
-
 	}, hitmark)
 	if auto {
 		return action.ActionInfo{

@@ -109,5 +109,4 @@ func (c *char) c6cb(a combat.AttackCB) {
 		1,
 		sigilcb,
 	)
-
 }

@@ -39,7 +39,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// X number of hits depending on mirrors when casted
 	for i := 0; i < 4+2*c.mirrorCount; i++ {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 7.1}, 6.8), 67, burstHitmark+i*21)
-
 	}
 	c.ConsumeEnergy(6)
 	c.SetCD(action.ActionBurst, 18*60)

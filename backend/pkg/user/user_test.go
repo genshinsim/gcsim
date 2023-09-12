@@ -10,7 +10,6 @@ import (
 )
 
 func TestUserStoreCRUD(t *testing.T) {
-
 	os.RemoveAll("./testdb")
 
 	store, err := New(Config{
@@ -59,5 +58,4 @@ func TestUserStoreCRUD(t *testing.T) {
 	// TEST UPDATE
 
 	// TODO??
-
 }

@@ -77,7 +77,6 @@ func main() {
 }
 
 func download(filepath, url string) error {
-
 	// Get the data
 	resp, err := http.Get(url)
 	if err != nil {

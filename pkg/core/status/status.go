@@ -73,7 +73,6 @@ func (t *Handler) Extend(key string, amt int) {
 		Write("key", key).
 		Write("amt", amt).
 		Write("expiry", a.expiry)
-
 }
 
 func (t *Handler) Delete(key string) {

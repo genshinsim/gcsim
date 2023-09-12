@@ -46,5 +46,4 @@ func main() {
 	// write to file
 	out, _ := json.MarshalIndent(res, "", " ")
 	os.WriteFile("./character_data.json", out, 0o644)
-
 }

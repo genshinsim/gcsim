@@ -36,13 +36,11 @@ func (c *char) c2(generated int) {
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c2-%v-stack", c.c2Counter+1), 480), // 8s
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
-
 				return m, true
 			},
 		})
 		c.c2Counter = (c.c2Counter + 1) % 4 // stacks are independent from each other, this will cycle them
 	}
-
 }
 
 // When Particular Field: Fetters of Phenomena is unleashed, the following effects will become active
@@ -108,7 +106,6 @@ func (c *char) c6(generated int) {
 				Base:         modifier.NewBaseWithHitlag((c6key), 360), // 6s
 				AffectedStat: attributes.CR,
 				Amount: func() ([]float64, bool) {
-
 					return m, true
 				},
 			})

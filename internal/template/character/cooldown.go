@@ -181,7 +181,6 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 		if len(c.cdQueue) > 0 {
 			c.startCooldownQueueWorker(a, true)
 		}
-
 	}
 
 	c.cdCurrentQueueWorker[a] = &worker
@@ -189,5 +188,4 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 
 	// wait for c.cooldownQueue[a][0], then add a stack
 	c.Core.Tasks.Add(worker, c.cdQueue[a][0])
-
 }

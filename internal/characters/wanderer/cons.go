@@ -93,5 +93,4 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 			combat.NewCircleHitOnTarget(trg, nil, 2), 8, 8,
 		)
 	}
-
 }

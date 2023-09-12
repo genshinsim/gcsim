@@ -55,7 +55,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillPress(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
@@ -125,7 +124,6 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   hold - 17 + 30 + skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
-
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
@@ -243,5 +241,4 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 			cb,
 		)
 	}
-
 }

@@ -94,7 +94,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			})
 			return false
 		}, fmt.Sprintf("pf4-%v", char.Base.Key.String()))
-
 	}
 
 	return &s, nil

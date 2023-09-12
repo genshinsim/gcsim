@@ -9,7 +9,6 @@ import (
 )
 
 func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitResponse, error) {
-
 	entry := &Entry{
 		Config:      req.GetConfig(),
 		Description: req.GetDescription(),
@@ -27,7 +26,6 @@ func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitRespons
 }
 
 func (s *Server) DeletePending(ctx context.Context, req *DeletePendingRequest) (*DeletePendingResponse, error) {
-
 	e, err := s.DBStore.GetById(ctx, req.GetId())
 	if err != nil {
 		return nil, err

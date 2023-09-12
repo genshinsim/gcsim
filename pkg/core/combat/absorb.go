@@ -51,7 +51,6 @@ func (h *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 				return e
 			}
 		}
-
 	}
 	return attributes.NoElement
 }

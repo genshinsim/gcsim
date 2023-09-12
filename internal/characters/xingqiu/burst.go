@@ -25,7 +25,6 @@ func init() {
 	burstFrames[action.ActionSkill] = 33
 	burstFrames[action.ActionDash] = 33
 	burstFrames[action.ActionJump] = 33
-
 }
 
 /**

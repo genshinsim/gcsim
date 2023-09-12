@@ -137,7 +137,6 @@ func (c *char) skillB() action.ActionInfo {
 				particleCB,
 			)
 		}
-
 	}
 	if c.burstExtension < 2 { // burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
 		c.ExtendStatus(BurstKey, 240) // 4s*60

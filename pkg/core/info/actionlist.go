@@ -63,7 +63,6 @@ type Delays struct {
 }
 
 func (a *ActionList) Copy() *ActionList {
-
 	r := *a
 
 	r.Targets = make([]EnemyProfile, len(a.Targets))

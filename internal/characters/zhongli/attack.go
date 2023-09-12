@@ -97,5 +97,4 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackEarliestCancel[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
-
 }

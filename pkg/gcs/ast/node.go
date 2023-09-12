@@ -226,7 +226,6 @@ func (l *LetStmt) writeTo(sb *strings.Builder) {
 	}
 	sb.WriteString(" = ")
 	if l.Val != nil {
-
 		l.Val.writeTo(sb)
 	}
 }

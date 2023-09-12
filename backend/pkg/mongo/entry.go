@@ -70,7 +70,6 @@ func (s *Server) get(
 	filter interface{},
 	opts ...*options.FindOptions,
 ) ([]*db.Entry, error) {
-
 	s.Log.Infow("db get request", "filter", filter, "opts", opts)
 
 	cursor, err := col.Find(ctx, filter, opts...)
@@ -140,7 +139,6 @@ func (s *Server) getOne(
 	filter interface{},
 	opts ...*options.FindOneOptions,
 ) (*db.Entry, error) {
-
 	res := col.FindOne(ctx, filter, opts...)
 	err := res.Err()
 	if err != nil {

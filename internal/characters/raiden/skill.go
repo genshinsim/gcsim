@@ -150,5 +150,4 @@ func (c *char) eyeOnDamage() {
 		c.eyeICD = c.Core.F + 54 // 0.9 sec icd
 		return false
 	}, "raiden-eye")
-
 }

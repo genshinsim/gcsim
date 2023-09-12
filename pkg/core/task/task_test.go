@@ -19,7 +19,6 @@ func TestTaskAddTask(t *testing.T) {
 			count++
 			log.Println("hello this is the second task")
 		}, 0)
-
 	}, 0)
 
 	h.Run()
@@ -28,5 +27,4 @@ func TestTaskAddTask(t *testing.T) {
 		log.Printf("expecting count to be 2, got %v\n", count)
 		t.FailNow()
 	}
-
 }

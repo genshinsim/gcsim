@@ -46,7 +46,6 @@ func (c *char) makeKitsune() {
 	}
 	c.kitsunes = append(c.kitsunes, k)
 	c.SetTag(yaeTotemCount, c.sakuraLevelCheck())
-
 }
 
 func (c *char) popAllKitsune() {

@@ -174,5 +174,4 @@ func TestReplace(t *testing.T) {
 	if res.Config != "cool stuff" {
 		t.Error("update failed; config incorrect")
 	}
-
 }

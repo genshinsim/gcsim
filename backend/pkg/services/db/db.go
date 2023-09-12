@@ -50,7 +50,6 @@ func (s *Server) GetPending(ctx context.Context, req *GetPendingRequest) (*GetPe
 			Data: res,
 		},
 	}, err
-
 }
 
 func (s *Server) GetBySubmitter(ctx context.Context, req *GetBySubmitterRequest) (*GetBySubmitterResponse, error) {

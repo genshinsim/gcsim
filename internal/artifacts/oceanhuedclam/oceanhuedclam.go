@@ -131,7 +131,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				c.Log.NewEvent("ohc bubble activated", glog.LogArtifactEvent, char.Index).
 					Write("bubble_pops_at", s.bubbleDurationExpiry).
 					Write("ohc_icd_expiry", bubbleICDExpiry)
-
 			}
 
 			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index).

@@ -115,7 +115,6 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 					Write("target", e.Key()).
 					Write("existing", existing).
 					Write("after", e.Reactable.ActiveAuraString())
-
 			}
 		}
 	}
@@ -196,7 +195,6 @@ func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) {
 				Write("target", e.Key()).
 				Write("existing", existing).
 				Write("after", e.Reactable.ActiveAuraString())
-
 		}
 	}
 }

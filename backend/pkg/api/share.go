@@ -138,7 +138,6 @@ func (s *Server) GetShareByDBID() http.HandlerFunc {
 
 func (s *Server) GetRandomShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		share, err := s.cfg.ShareStore.Random(r.Context())
 		switch err {
 		case nil:
@@ -151,6 +150,5 @@ func (s *Server) GetRandomShare() http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			s.Log.Errorw("unexpected error getting share", "err", err)
 		}
-
 	}
 }

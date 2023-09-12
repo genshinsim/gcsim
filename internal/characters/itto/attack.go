@@ -70,7 +70,6 @@ func (c *char) attackState() IttoAttackState {
 // Max 5 stacks. Triggering this effect will refresh the current duration of any existing stacks.
 // Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill, "Masatsu Zetsugi: Akaushi Burst!"
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
 	// Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill
 	switch c.Core.Player.CurrentState() {
 	case action.DashState, action.SkillState:

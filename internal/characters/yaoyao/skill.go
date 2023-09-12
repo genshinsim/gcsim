@@ -23,7 +23,6 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
 	// yuegui spawns after 48f
 	c.Core.Status.Add("yuegui", 600+yueguiThrowSpawn)
 

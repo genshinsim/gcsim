@@ -12,7 +12,6 @@ func TestFields(t *testing.T) {
 	for n := l.nextItem(); n.Typ != itemEOF; n = l.nextItem() {
 		fmt.Println(n)
 	}
-
 }
 func TestBasicToken(t *testing.T) {
 	input := `

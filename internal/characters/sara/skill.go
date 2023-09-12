@@ -35,7 +35,6 @@ func init() {
 // The ATK Bonuses from different Tengu Juurai will not stack, and their effects and duration will be determined by the last Tengu Juurai to take effect.
 // Also implements C2: Unleashing Tengu Stormcall will leave a Weaker Crowfeather at Kujou Sara's original position that will deal 30% of its original DMG.
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
 	// Snapshot for all of the crowfeathers are taken upon cast
 	c.Core.Status.Add(coverKey, 18*60)
 

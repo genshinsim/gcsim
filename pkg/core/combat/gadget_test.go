@@ -67,7 +67,6 @@ func TestGadgetCollision(t *testing.T) {
 		log.Printf("Expecting %v collisions, got %v\n", gcount*2, count)
 		t.Fail()
 	}
-
 }
 
 func TestGadgetLimits(t *testing.T) {
@@ -127,9 +126,7 @@ func TestGadgetLimits(t *testing.T) {
 
 	if count > 2 {
 		t.Errorf("Expecting max 2 gadgets, got %v", count)
-
 	}
-
 }
 
 func BenchmarkCollisionCheck(b *testing.B) {

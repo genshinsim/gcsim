@@ -215,5 +215,4 @@ func TestBloomOldestDeleted(t *testing.T) {
 	if og.Src() != 3+reactable.DendroCoreDelay {
 		t.Errorf("expecting oldest gadget to be from frame %v, got %v", reactable.DendroCoreDelay+3, og.Src())
 	}
-
 }

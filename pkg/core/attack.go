@@ -74,7 +74,6 @@ func (c *Core) QueueAttack(
 			c.queueDmg(&ae, dmgDelay-snapshotDelay)
 		}, snapshotDelay)
 	}
-
 }
 
 // This code here should probably be handled in player not core

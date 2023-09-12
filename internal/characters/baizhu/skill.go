@@ -127,6 +127,5 @@ func (c *char) skillHealing() {
 			Src:     skillHealPP[c.TalentLvlBurst()]*c.MaxHP() + skillHealFlat[c.TalentLvlBurst()],
 			Bonus:   c.Stat(attributes.Heal),
 		})
-
 	}, skillReturnTravel)
 }

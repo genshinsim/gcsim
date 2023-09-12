@@ -18,7 +18,6 @@ func init() {
 	skillEndFrames[action.ActionDash] = 10
 	skillEndFrames[action.ActionJump] = 10
 	skillEndFrames[action.ActionSwap] = 10
-
 }
 
 const (

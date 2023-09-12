@@ -53,7 +53,6 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 					Write("target", "Bunny").
 					Write("existing", existing).
 					Write("after", b.Reactable.ActiveAuraString())
-
 			}
 		}
 	}
@@ -94,7 +93,6 @@ func (b *Bunny) attachEle(atk *combat.AttackEvent) {
 			Write("target", "Bunny").
 			Write("existing", existing).
 			Write("after", b.Reactable.ActiveAuraString())
-
 	}
 }
 
@@ -127,7 +125,6 @@ func (b *Bunny) Tick() {
 }
 
 func (c *char) makeBunny() *Bunny {
-
 	b := &Bunny{}
 
 	// Bunny is offset 1.3-1.5m in the Y direction for Tap E.
@@ -210,7 +207,6 @@ func (c *char) manualExplode() {
 	// only explode the first bunny
 	c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 	c.bunnies[0].Kill()
-
 }
 
 // explode all bunnies on overload

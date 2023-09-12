@@ -31,7 +31,6 @@ func init() {
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 73) // N3 -> N1
 	attackFrames[2][action.ActionCharge] = 42                             // N3 -> CA
-
 }
 
 // Standard attack function with seal handling

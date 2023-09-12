@@ -18,13 +18,11 @@ func init() {
 	burstFrames[action.ActionSkill] = 71
 	burstFrames[action.ActionJump] = 70
 	burstFrames[action.ActionSwap] = 69
-
 }
 
 const burstHitmark = 34
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	c.burstTaggedCount = 0
 	burstCB := func(a combat.AttackCB) {
 		// check if enemy

@@ -33,7 +33,6 @@ const (
 // ult 365 to 415, 60fps = 120
 // looks like ult charges for 8 seconds
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	c.burstCounter = 0
 	if c.Base.Cons >= 6 {
 		c.burstCounter = 5

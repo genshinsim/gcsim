@@ -147,7 +147,6 @@ func (r *Reactable) checkEC() {
 			Write("target", r.self.Key()).
 			Write("hydro", r.Durability[ModifierHydro]).
 			Write("electro", r.Durability[ModifierElectro])
-
 	}
 }
 

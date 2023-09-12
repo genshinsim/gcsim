@@ -58,7 +58,6 @@ const (
 )
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
-
 	s := &Server{
 		cfg: cfg,
 	}
@@ -146,7 +145,6 @@ func (s *Server) routes() {
 	r.Use(s.tokenCheck)
 
 	r.Route("/api", func(r chi.Router) {
-
 		r.Route("/preview", func(r chi.Router) {
 			r.Get("/{share-key}", s.GetPreview())
 			r.Get("/db/{db-key}", s.GetPreviewByDBID())
@@ -169,7 +167,6 @@ func (s *Server) routes() {
 			r.Get("/", s.getDB())
 		})
 	})
-
 }
 
 func (s *Server) notImplemented() http.HandlerFunc {

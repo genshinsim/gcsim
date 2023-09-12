@@ -145,7 +145,6 @@ func (c *char) burstHook() {
 		}
 
 		return false
-
 	}, "yoimiya-burst-check")
 
 	if c.Core.Flags.DamageMode {

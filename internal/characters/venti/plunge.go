@@ -20,7 +20,6 @@ func init() {
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
-
 	// check if hold skill was used
 	lastAct := c.Core.Player.LastAction
 	if lastAct.Char != c.Index || lastAct.Type != action.ActionSkill || lastAct.Param["hold"] != 0 {

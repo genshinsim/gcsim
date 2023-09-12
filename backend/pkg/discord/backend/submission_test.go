@@ -24,5 +24,4 @@ func TestValidateLink(t *testing.T) {
 	if err == nil {
 		t.Errorf("expecting invalid link error, got nil")
 	}
-
 }

@@ -27,7 +27,6 @@ func init() {
 	burstFramesE[action.ActionDash] = 119
 	burstFramesE[action.ActionJump] = 119
 	burstFramesE[action.ActionWalk] = 117
-
 }
 
 // First Hitmark
@@ -41,7 +40,6 @@ const burstHitmarkDelay = 6
 const burstSnapshotDelay = 55
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -80,7 +78,6 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kyougen: Five Ceremonial Plays (Windfavored)",

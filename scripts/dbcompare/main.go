@@ -42,7 +42,6 @@ func main() {
 		dps, err := runSim(v)
 		fmt.Printf("%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
 	}
-
 }
 
 func runSim(w dbEntry) (float64, error) {

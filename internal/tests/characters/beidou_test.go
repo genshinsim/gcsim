@@ -82,5 +82,4 @@ func TestBeidouBounce(t *testing.T) {
 	if dmgCount[trg[1].Key()] != 2 {
 		t.Errorf("expecting target 1 (key %v) to take 2 hits, got %v", trg[1].Key(), dmgCount[trg[1].Key()])
 	}
-
 }

@@ -46,7 +46,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a4buff[attributes.PyroP] = 0.2
 

@@ -26,7 +26,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(2)
 

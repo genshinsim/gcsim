@@ -207,5 +207,4 @@ func (c *char) addField(dur int) {
 	// snapshot for ticks
 	c.skillAttackInfo = ai
 	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
-
 }

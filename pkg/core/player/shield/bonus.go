@@ -15,7 +15,6 @@ type shieldBonusMod struct {
 func (h *Handler) ShieldBonus() (amt float64) {
 	n := 0
 	for _, mod := range h.shieldBonusMods {
-
 		if mod.Expiry > *h.f || mod.Expiry == -1 {
 			a, done := mod.Amount()
 			amt += a

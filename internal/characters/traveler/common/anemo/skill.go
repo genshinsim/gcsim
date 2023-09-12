@@ -99,7 +99,6 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) SkillHold(holdTicks int) action.ActionInfo {
-
 	c.eAbsorb = attributes.NoElement
 	c.eICDTag = attacks.ICDTagNone
 	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3)
@@ -131,7 +130,6 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	firstTick := 31
 	hitmark := firstTick
 	for i := 0; i < holdTicks; i += 1 {
-
 		c.Core.QueueAttack(
 			aiCut,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
@@ -177,7 +175,6 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 			// there is a 5 frame delay when it shifts from initial to max
 			hitmark += 5
 		}
-
 	}
 	// move the hitmark back by 1 tick (15f) then forward by 5f for the Storm damage
 	hitmark = hitmark - 15 + 5

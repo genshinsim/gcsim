@@ -125,7 +125,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   windup + attackReleaseNormal[c.NormalCounter][len(attackReleaseNormal[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
-
 }
 
 func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {

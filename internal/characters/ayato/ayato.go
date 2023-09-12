@@ -72,7 +72,6 @@ func (c *char) AdvanceNormalIndex() {
 		if c.NormalCounter == c.NormalHitNum {
 			c.NormalCounter = 0
 		}
-
 	}
 }
 

@@ -273,7 +273,6 @@ var reImport = regexp.MustCompile(`(?m)^import "(.+)"$`)
 // readConfig will load and read the config at specified path. Will resolve any import statements
 // as well
 func ReadConfig(fpath string) (string, error) {
-
 	src, err := os.ReadFile(fpath)
 	if err != nil {
 		return "", err
@@ -294,7 +293,6 @@ func ReadConfig(fpath string) (string, error) {
 			}
 
 			data.WriteString(string(src))
-
 		} else {
 			data.WriteString(row)
 			data.WriteString("\n")

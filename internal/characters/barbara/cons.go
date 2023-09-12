@@ -27,7 +27,6 @@ func (c *char) c2() {
 				return c.c2buff, true
 			},
 		})
-
 	}
 }
 

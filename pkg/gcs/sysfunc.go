@@ -320,7 +320,6 @@ func (e *Eval) setDefaultTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	e.Core.Combat.Player().SetDirectionToClosestEnemy()
 
 	return &null{}, nil
-
 }
 
 func (e *Eval) setTargetPos(c *ast.CallExpr, env *Env) (Obj, error) {

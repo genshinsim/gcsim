@@ -67,5 +67,4 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	if c.debug {
 		evt.Write("mods affected", logs)
 	}
-
 }

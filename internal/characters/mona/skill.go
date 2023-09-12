@@ -33,7 +33,6 @@ func init() {
 	skillFrames[1][action.ActionDash] = 66    // Hold E -> D
 	skillFrames[1][action.ActionJump] = 59    // Hold E -> J
 	skillFrames[1][action.ActionSwap] = 73    // Hold E -> Swap
-
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {

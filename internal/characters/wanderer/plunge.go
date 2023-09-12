@@ -21,7 +21,6 @@ func init() {
 	lowPlungeFrames[action.ActionBurst] = 65
 	lowPlungeFrames[action.ActionDash] = 41
 	lowPlungeFrames[action.ActionSwap] = 57
-
 }
 
 func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {

@@ -25,7 +25,6 @@ func (c *char) c1() combat.AttackCBFunc {
 	done := false
 
 	return func(a combat.AttackCB) {
-
 		e := a.Target.(*enemy.Enemy)
 		if e.Type() != targets.TargettableEnemy {
 			return

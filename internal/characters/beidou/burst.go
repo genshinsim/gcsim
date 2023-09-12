@@ -175,6 +175,5 @@ func (c *char) chain(src, count int) combat.AttackCBFunc {
 			atk.Callbacks = append(atk.Callbacks, cb)
 		}
 		c.Core.QueueAttackEvent(&atk, 1)
-
 	}
 }

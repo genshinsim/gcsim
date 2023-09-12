@@ -9,7 +9,6 @@ import (
 )
 
 func TestEC(t *testing.T) {
-
 	c, _ := testCoreWithTrgs(1)
 	err := c.Init()
 	if err != nil {
@@ -25,7 +24,6 @@ func TestEC(t *testing.T) {
 			}
 		}
 		return false
-
 	}, "ec-dmg")
 
 	c.QueueAttackEvent(makeAOEAttack(c, attributes.Hydro, 25), 0)

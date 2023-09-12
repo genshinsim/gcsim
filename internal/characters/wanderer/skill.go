@@ -22,7 +22,6 @@ var skillFramesNormal []int
 
 func init() {
 	skillFramesNormal = frames.InitAbilSlice(28)
-
 }
 
 const skillHitmark = 2
@@ -71,7 +70,6 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) skillDeactivate(p map[string]int) action.ActionInfo {
-
 	delay := c.skillEndRoutine()
 
 	return action.ActionInfo{
@@ -142,7 +140,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		return c.skillActivate(p)
 	}
 	return c.skillDeactivate(p)
-
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

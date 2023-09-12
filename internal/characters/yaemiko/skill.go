@@ -26,7 +26,6 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
 	c.Core.Tasks.Add(func() { c.makeKitsune() }, skillStart)
 	c.SetCDWithDelay(action.ActionSkill, 4*60, 16)
 

@@ -43,7 +43,6 @@ func (c *CharWrapper) AddEnergy(src string, e float64) {
 		Write("post_recovery", c.Energy).
 		Write("source", src).
 		Write("max_energy", c.EnergyMax)
-
 }
 
 func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int) {
@@ -92,5 +91,4 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 		Write("amt", amt).
 		Write("post_recovery", c.Energy).
 		Write("max_energy", c.EnergyMax)
-
 }

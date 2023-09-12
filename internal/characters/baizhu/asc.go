@@ -46,7 +46,6 @@ func (c *char) a1() {
 			return nil, false
 		},
 	})
-
 }
 
 // Characters who are healed by Seamless Shields will gain the Year of Verdant Favor effect:
@@ -80,5 +79,4 @@ func (c *char) a4() {
 			return limitHP * 0.02, false
 		},
 	})
-
 }

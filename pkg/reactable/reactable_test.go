@@ -91,7 +91,6 @@ func makeSTAttack(ele attributes.Element, dur reactions.Durability, trg targets.
 		},
 		Pattern: combat.NewSingleTargetHit(trg),
 	}
-
 }
 
 type testTarget struct {
@@ -322,7 +321,6 @@ func TestTick(t *testing.T) {
 	if trg.DecayRate[ModifierFrozen] > frzDecayCap {
 		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[ModifierFrozen])
 	}
-
 }
 
 func (target *testTarget) allNil(t *testing.T) bool {

@@ -23,7 +23,6 @@ import (
 )
 
 func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []info.EnemyProfile) error {
-
 	// s.stats.ElementUptime = make([]map[core.EleType]int, len(s.C.Targets))
 	// s.stats.ElementUptime[0] = make(map[core.EleType]int)
 

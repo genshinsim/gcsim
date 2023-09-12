@@ -50,7 +50,6 @@ func init() {
 	skillHoldFrames[action.ActionSkill] = 80
 	skillHoldFrames[action.ActionWalk] = 86
 	skillHoldFrames[action.ActionSwap] = 85
-
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -123,7 +122,6 @@ func (c *char) skillMirrorGain() {
 		return
 	}
 	c.mirrorGain(1)
-
 }
 func (c *char) mirrorGain(generated int) {
 	if generated == 0 {
@@ -134,7 +132,6 @@ func (c *char) mirrorGain(generated int) {
 		c.lastInfusionSrc = c.Core.F
 		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
 		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
-
 	}
 
 	c.mirrorCount += generated
@@ -159,7 +156,6 @@ func (c *char) mirrorGain(generated int) {
 	}
 	c.Core.Log.NewEvent(fmt.Sprintf("Gained %v mirror(s)", generated), glog.LogCharacterEvent, c.Index).
 		Write("current mirrors", c.mirrorCount)
-
 }
 
 func (c *char) mirrorLoss(src, consumed int) func() {
@@ -190,7 +186,6 @@ func (c *char) mirrorLoss(src, consumed int) func() {
 		if c.mirrorCount > 0 {
 			c.Core.Tasks.Add(c.mirrorLoss(src, 1), 214) // not affected by hitlag, 448-234
 		}
-
 	}
 }
 
@@ -206,7 +201,6 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 func (c *char) projectionAttack(a combat.AttackCB) {
-
 	ae := a.AttackEvent
 	// ignore if projection on icd
 	if c.StatusIsActive(projectionICDKey) {
@@ -277,5 +271,4 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb, c.particleCB)
 	}
 	c.AddStatus(projectionICDKey, 96, true) // 1.6 sec icd
-
 }

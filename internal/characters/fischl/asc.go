@@ -21,7 +21,6 @@ func (c *char) a4() {
 	last := 0
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
 	a4cb := func(args ...interface{}) bool {
-
 		ae := args[1].(*combat.AttackEvent)
 
 		if ae.Info.ActorIndex != c.Core.Player.Active() {

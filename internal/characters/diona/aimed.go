@@ -65,7 +65,6 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			CanQueueAfter:   aimedHitmark,
 			State:           action.AimState,
 		}
-
 	}
 
 	c.Core.QueueAttack(

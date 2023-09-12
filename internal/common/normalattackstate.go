@@ -277,7 +277,6 @@ func (w *NAHook) checkState() bool {
 		return false
 	}
 	return true
-
 }
 func (w *NAHook) checkSrc(newSrc, src int) bool {
 	if newSrc != src {

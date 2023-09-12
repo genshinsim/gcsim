@@ -136,7 +136,6 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),

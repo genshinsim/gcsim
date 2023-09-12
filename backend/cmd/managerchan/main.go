@@ -59,7 +59,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func makeShareStore() api.ShareStore {

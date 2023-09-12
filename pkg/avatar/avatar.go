@@ -79,7 +79,6 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-
 	var isCrit bool
 
 	st := attributes.EleToDmgP(atk.Info.Element)
@@ -226,14 +225,12 @@ func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("target", p.Key())
-
 	}
 
 	return damage, isCrit
 }
 
 func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durability, f int) {
-
 	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).
 		Write("durability", dur).
 		Write("duration", f)
@@ -286,5 +283,4 @@ func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
 		Write("target", 0).
 		Write("existing", existing).
 		Write("after", p.Reactable.ActiveAuraString())
-
 }

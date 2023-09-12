@@ -17,7 +17,6 @@ type stamPercentMod struct {
 func (h *Handler) StamPercentMod(a action.Action) (amt float64) {
 	n := 0
 	for _, mod := range h.stamPercentMods {
-
 		if mod.Expiry > *h.F || mod.Expiry == -1 {
 			x, done := mod.Amount(a)
 			amt += x

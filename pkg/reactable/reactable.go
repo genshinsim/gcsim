@@ -284,7 +284,6 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
 func (r *Reactable) reduce(e attributes.Element, dur, factor reactions.Durability) reactions.Durability {
-
 	m := dur * factor // maximum amount reduceable
 	var reduced reactions.Durability
 
@@ -325,7 +324,6 @@ func (r *Reactable) deplete(m ReactableModifier) {
 }
 
 func (r *Reactable) Tick() {
-
 	// duability is reduced by decay * (1 + purge)
 	// where purge is 0 for anything that's not freeze
 	// for freeze, purge = 0.25 * time

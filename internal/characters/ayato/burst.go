@@ -27,7 +27,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kamisato Art: Suiyuu",

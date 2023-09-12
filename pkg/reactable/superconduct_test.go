@@ -7,7 +7,6 @@ import (
 )
 
 func TestSuperconduct(t *testing.T) {
-
 	c, trg := testCoreWithTrgs(1)
 	err := c.Init()
 	if err != nil {
@@ -25,7 +24,6 @@ func TestSuperconduct(t *testing.T) {
 }
 
 func TestFrozenSuperconduct(t *testing.T) {
-
 	c, trg := testCoreWithTrgs(1)
 	err := c.Init()
 	if err != nil {

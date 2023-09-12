@@ -28,7 +28,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	// add cooldown to sim
 	c.SetCD(action.ActionBurst, 20*60)
 	// use up energy

@@ -17,7 +17,6 @@ import (
 )
 
 func TestTravelerDendroBurstAttach(t *testing.T) {
-
 	c, trg := makeCore(2)
 	prof := defProfile(keys.AetherDendro)
 	prof.Base.Cons = 6
@@ -86,11 +85,9 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	if gr.Durability[reactable.ModifierDendro] != 10 {
 		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
 	}
-
 }
 
 func TestTravelerDendroBurstPyro(t *testing.T) {
-
 	c, trg := makeCore(1)
 	prof := defProfile(keys.AetherDendro)
 	prof.Base.Cons = 6
@@ -174,7 +171,6 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	if dmgCount != 1 {
 		t.Errorf("expected 1 dmg count, got %v", dmgCount)
 	}
-
 }
 
 // lotus is expected to tick at frame 37 after appearing, which is 54+37 after cast
@@ -224,7 +220,6 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	if dmgCount != expectedCount {
 		t.Errorf("expecting %v ticks, got %v", expectedCount, dmgCount)
 	}
-
 }
 
 func TestTravelerDendroBurstElectroTicks(t *testing.T) {
@@ -288,5 +283,4 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	if dmgCount != expectedCount {
 		t.Errorf("expecting %v ticks, got %v", expectedCount, dmgCount)
 	}
-
 }

@@ -86,7 +86,6 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	s.tmpl = tmpl
 
 	return s, nil
-
 }
 
 func (s *Store) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
@@ -162,7 +161,6 @@ func (s *Store) routes() {
 
 	// root should serve index
 	s.Router.Handle("/{key}", s.handleServeHTML())
-
 }
 
 func (s *Store) handleServeHTML() http.HandlerFunc {

@@ -23,7 +23,6 @@ func TestEventWriteKeyOnlyPanic(t *testing.T) {
 
 	// this should panic
 	e.WriteBuildMsg("keyonly")
-
 }
 
 func TestEventWriteNonStringKeyPanic(t *testing.T) {
@@ -43,7 +42,6 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 
 	// this should panic
 	e.WriteBuildMsg(1)
-
 }
 
 func TestEventWriteKeyVal(t *testing.T) {
@@ -92,7 +90,6 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		easyjson.Marshal(testdata)
 	}
-
 }
 
 type testChain struct{}

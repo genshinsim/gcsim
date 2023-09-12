@@ -7,7 +7,6 @@ import (
 )
 
 func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
-
 	var isCrit bool
 
 	st := attributes.EleToDmgP(atk.Info.Element)
@@ -155,7 +154,6 @@ func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 			Write("dmg_if_crit_react", precritdmg*(1+atk.Snapshot.Stats[attributes.CD])*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("avg_crit_dmg_react", ((1-atk.Snapshot.Stats[attributes.CR])*precritdmg+atk.Snapshot.Stats[attributes.CR]*precritdmg*(1+atk.Snapshot.Stats[attributes.CD]))*(atk.Info.AmpMult*(1+emBonus+reactBonus))).
 			Write("target", e.Key())
-
 	}
 
 	return damage, isCrit

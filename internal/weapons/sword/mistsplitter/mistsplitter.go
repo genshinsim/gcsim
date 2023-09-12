@@ -77,7 +77,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(burstBuffKey, 600, true)
 		return false
-
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("mistsplitter", -1),

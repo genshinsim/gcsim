@@ -39,5 +39,4 @@ func TestGetAllEntriesWithoutTag(t *testing.T) {
 	for _, v := range res {
 		log.Println(v.String())
 	}
-
 }

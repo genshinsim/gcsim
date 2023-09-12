@@ -21,7 +21,6 @@ type service struct {
 }
 
 func main() {
-
 	err := run()
 	if err != nil {
 		log.Fatal(err)

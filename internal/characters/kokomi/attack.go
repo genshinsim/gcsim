@@ -77,5 +77,4 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}
-
 }

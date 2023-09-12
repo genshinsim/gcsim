@@ -286,5 +286,4 @@ func (h *Handler) Tick() {
 		c.Tick()
 	}
 	h.AnimationHandler.Tick()
-
 }

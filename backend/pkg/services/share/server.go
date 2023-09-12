@@ -53,7 +53,6 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	}
 
 	if s.cfg.Store == nil {
-
 		return nil, fmt.Errorf("cfg.Store is nil")
 	}
 

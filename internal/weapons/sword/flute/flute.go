@@ -78,7 +78,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			trg := args[0].(combat.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 0, 1)
-
 		}
 		return false
 	}, fmt.Sprintf("flute-%v", char.Base.Key.String()))

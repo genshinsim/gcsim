@@ -15,7 +15,6 @@ type data struct {
 }
 
 func main() {
-
 	var d data
 
 	d.Art = walk("../../internal/artifacts")

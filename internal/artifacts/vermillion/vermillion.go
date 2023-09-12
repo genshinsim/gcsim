@@ -84,7 +84,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			})
 
 			return false
-
 		}, fmt.Sprintf("verm-4pc-%v", char.Base.Key.String()))
 
 		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
@@ -114,7 +113,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			s.stacks = 0 // resets stacks to 0 when the character swaps
 			return false
 		}, "char-exit")
-
 	}
 
 	return &s, nil

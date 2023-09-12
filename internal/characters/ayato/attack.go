@@ -47,7 +47,6 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
 	if c.StatusIsActive(SkillBuffKey) {
 		return c.SoukaiKanka(p)
 	}
@@ -97,7 +96,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 }
 
 func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
-
 	ai := combat.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex:         c.Index,

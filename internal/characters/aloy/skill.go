@@ -188,7 +188,6 @@ func (c *char) coilMod() {
 			return nil, false
 		},
 	})
-
 }
 
 // Exit Field Hook to start timer to clear coil stacks

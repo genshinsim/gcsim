@@ -42,7 +42,6 @@ func (s *Server) decryptHash(ciphertext, key []byte) ([]byte, error) {
 }
 
 func (s *Server) validateSigning(data []byte, str string) error {
-
 	// check if from valid source
 	// valid key is in the form of id:hash
 	id, hashStr, ok := strings.Cut(str, ":")

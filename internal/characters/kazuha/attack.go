@@ -42,7 +42,6 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
-
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,

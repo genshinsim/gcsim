@@ -15,7 +15,6 @@ import (
 
 func init() {
 	core.RegisterWeaponFunc(keys.TheViridescentHunt, NewWeapon)
-
 }
 
 type Weapon struct {

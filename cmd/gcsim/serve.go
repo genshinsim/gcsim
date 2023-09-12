@@ -17,8 +17,8 @@ func serve(
 	resultPath string,
 	hash string,
 	samplePath string,
-	keepAlive bool) {
-
+	keepAlive bool,
+) {
 	server := &http.Server{Addr: address}
 	done := make(chan bool)
 

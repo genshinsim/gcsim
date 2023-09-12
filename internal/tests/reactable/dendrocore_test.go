@@ -83,7 +83,6 @@ func TestModifyDendroCore(t *testing.T) {
 	if count != 0 {
 		t.Errorf("expecting 0 dmg count, got %v", count)
 	}
-
 }
 
 type fakeCore struct {

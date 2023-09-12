@@ -46,7 +46,6 @@ func init() {
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 90)
 	attackFrames[4][action.ActionAttack] = 67
-
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {

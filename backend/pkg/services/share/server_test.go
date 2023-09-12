@@ -79,7 +79,6 @@ func TestCreate(t *testing.T) {
 
 	if expiry != uint64(n) {
 		t.Errorf("expiry expected to be %v, got %v", n+2, expiry)
-
 	}
 
 	if res.GetConfig() != "blah" {
@@ -87,7 +86,6 @@ func TestCreate(t *testing.T) {
 	}
 
 	log.Println(res, expiry)
-
 }
 
 func TestReplace(t *testing.T) {
@@ -128,7 +126,6 @@ func TestReplace(t *testing.T) {
 	}
 
 	log.Println(res, expiry)
-
 }
 
 func TestDelete(t *testing.T) {

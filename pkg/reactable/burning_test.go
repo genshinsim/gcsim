@@ -8,7 +8,6 @@ import (
 )
 
 func TestBurning(t *testing.T) {
-
 	c := testCore()
 	trg := addTargetToCore(c)
 

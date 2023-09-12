@@ -146,7 +146,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				})
 			}
 		}
-
 	}, skillHitmark) //TODO: frames for e dmg? possibly 5 second after attaching?
 
 	c.SetCDWithDelay(action.ActionSkill, 600, skillHitmark-2)

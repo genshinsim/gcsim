@@ -31,7 +31,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
 	// first hit at 94, then 30 frames between hits. 9 anemo hits total
 	// yes the game description scams you on the duration
 	duration := burstHitmarks[c.gender] + 30*8

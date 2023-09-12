@@ -24,7 +24,6 @@ func init() {
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 28) // N2 -> N3
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 38) // N3 -> N4
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 61) // N4 -> N1
-
 }
 
 // Standard attack - infusion mechanics are handled as part of the skill

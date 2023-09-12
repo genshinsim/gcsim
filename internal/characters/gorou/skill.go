@@ -58,7 +58,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		// so it looks like gorou fields works much the same was as bennett field
 		// however e field cant be placed if q field still active
 		if c.Core.Status.Duration(generalGloryKey) == 0 {
-
 			c.eFieldSrc = c.Core.F
 			c.Core.Tasks.Add(c.gorouSkillBuffField(c.Core.F), 17) // 17 so we get one last tick
 

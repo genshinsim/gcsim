@@ -32,7 +32,6 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-
 	// if fieldSrc is < duration then this is prob a sac proc
 	// we need to stop the old field from ticking (by changing fieldSrc)
 	// and also trigger a4 delayed damage

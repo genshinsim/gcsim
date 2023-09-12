@@ -123,7 +123,6 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 	c.QueueCharTask(func() {
-
 		c.c6(c6Travel)
 		target := c.Core.Combat.PrimaryTarget()
 		c.Core.QueueAttack(

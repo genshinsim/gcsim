@@ -188,7 +188,6 @@ func (s *Server) Login() http.HandlerFunc {
 		})
 		w.WriteHeader(200)
 		w.Write(u)
-
 	}
 }
 

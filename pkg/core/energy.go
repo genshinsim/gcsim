@@ -90,5 +90,4 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		}
 		return false
 	}, "random-energy-restore-on-hit-swap")
-
 }
