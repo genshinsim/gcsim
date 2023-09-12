@@ -69,7 +69,7 @@ func mainImpl() error {
 	}
 
 	// fix the specialized key
-	for k, v := range d { //nolint:gocritic
+	for k, v := range d { //nolint:gocritic // map values are not addressable/can't edit without copying and writing back
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		v.Key = CharNameToKey[k]
 

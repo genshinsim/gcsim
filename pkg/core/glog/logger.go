@@ -10,17 +10,13 @@ import (
 // Debugw
 // Warnw
 
-// https://github.com/dominikh/go-tools/issues/836
-
-//nolint:staticcheck
+//nolint:staticcheck // staticcheck can't know nocopy is from easyjson and not json: https://github.com/dominikh/go-tools/issues/836
 type keyVal struct {
 	Key string      `json:"key,nocopy"`
 	Val interface{} `json:"val"`
 }
 
-// https://github.com/dominikh/go-tools/issues/836
-
-//nolint:staticcheck
+//nolint:staticcheck // staticcheck can't know nocopy is from easyjson and not json: https://github.com/dominikh/go-tools/issues/836
 //easyjson:json
 type LogEvent struct {
 	Typ      Source                 `json:"event"`

@@ -22,7 +22,7 @@ linters:
     - stylecheck # style check rules defined by staticcheck (minimum go standard style)
     - gocritic # provides diagnostics that check for bugs, performance and style issues
     - whitespace # detects leading and trailing whitespace
-    # - nolintlint # reports ill-formed or insufficient nolint directives
+    - nolintlint # reports ill-formed or insufficient nolint directives
     # - errname # checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error
     # - nonamedreturns # reports all named returns
     # - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint

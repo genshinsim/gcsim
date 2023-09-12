@@ -61,7 +61,7 @@ func main() {
 		log.Panic(err)
 	}
 	// fix the specialized key
-	for k, v := range d { //nolint:gocritic
+	for k, v := range d { //nolint:gocritic // map values are not addressable/can't edit without copying and writing back
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		if v.Specialized == "" {
 			v.Specialized = "attributes.NoStat"
