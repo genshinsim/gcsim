@@ -55,7 +55,7 @@ linters:
     - unconvert # removes unnecessary type conversions
     - goconst # finds repeated strings that could be replaced by a constant
     - predeclared # finds code that shadows one of Go's predeclared identifiers
-    # - reassign # checks that package variables are not reassigned
+    - reassign # checks that package variables are not reassigned
 
     # - dupl # tool for code clone detection
     # - nilnil # checks that there is no simultaneous return of nil error and an invalid value
