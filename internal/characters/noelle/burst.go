@@ -44,7 +44,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// Add mod for def to attack burst conversion
 	c.burstBuff[attributes.ATK] = mult * burstDefSnapshot
 
-	dur := 900 + burstStart //default duration
+	dur := 900 + burstStart // default duration
 	if c.Base.Cons >= 6 {
 		// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
 		// check extension

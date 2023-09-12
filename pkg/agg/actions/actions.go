@@ -29,9 +29,9 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 }
 
 func (b *buffer) Add(result stats.Result) {
-	for i, c := range result.Characters {
+	for i := range result.Characters {
 		characterActions := make(map[string]float64)
-		for _, ev := range c.ActionEvents {
+		for _, ev := range result.Characters[i].ActionEvents {
 			characterActions[ev.Action] += 1
 		}
 		for k, v := range characterActions {

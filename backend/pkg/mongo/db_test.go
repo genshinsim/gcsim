@@ -17,7 +17,7 @@ func TestGetWork(t *testing.T) {
 		t.FailNow()
 	}
 	for _, v := range work {
-		//we only care about results with sample prefix
+		// we only care about results with sample prefix
 		switch {
 		case strings.HasPrefix(v.Id, "sample_db_no_tag"):
 			compareHash(t, "", dbNoTag[v.Id])

@@ -20,15 +20,15 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//first hit 56 frame
-	//first tick 82 frame
-	//last tick 162
-	//last hit 197
+	// first hit 56 frame
+	// first tick 82 frame
+	// last tick 162
+	// last hit 197
 
 	// trigger a4
 	c.a4()
 
-	//initial
+	// initial
 	ai := combat.AttackInfo{
 		Abil:       "Starward Sword (Initial)",
 		ActorIndex: c.Index,
@@ -43,14 +43,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
-	//8 hits
+	// 8 hits
 	ai.Abil = "Starward Sword (Consecutive Slash)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	for i := 82; i < 162; i += 11 {
 		c.Core.QueueAttack(ai, ap, i, i)
 	}
 
-	//final
+	// final
 	ai.Abil = "Starward Sword (Last Attack)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
 	c.Core.QueueAttack(ai, ap, 197, 197)

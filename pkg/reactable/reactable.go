@@ -103,11 +103,11 @@ type Reactable struct {
 	// Source     []int //source frame of the aura
 	self combat.Target
 	core *core.Core
-	//ec specific
-	ecAtk      combat.AttackInfo //index of owner of next ec ticks
+	// ec specific
+	ecAtk      combat.AttackInfo // index of owner of next ec ticks
 	ecSnapshot combat.Snapshot
 	ecTickSrc  int
-	//burning specific
+	// burning specific
 	burningAtk      combat.AttackInfo
 	burningSnapshot combat.Snapshot
 	burningTickSrc  int
@@ -157,7 +157,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 	//TODO: double check order of reactions
 	switch a.Info.Element {
 	case attributes.Electro:
-		//hyperbloom
+		// hyperbloom
 		r.TryAggravate(a)
 		r.TryOverload(a)
 		r.TryAddEC(a)
@@ -165,7 +165,7 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		r.TrySuperconduct(a)
 		r.TryQuicken(a)
 	case attributes.Pyro:
-		//burgeon
+		// burgeon
 		r.TryOverload(a)
 		r.TryVaporize(a)
 		r.TryMelt(a)
@@ -186,8 +186,8 @@ func (r *Reactable) React(a *combat.AttackEvent) {
 		r.TrySwirlCryo(a)
 		r.TrySwirlFrozen(a)
 	case attributes.Geo:
-		//can't double crystallize it looks like
-		//freeze can trigger hydro first
+		// can't double crystallize it looks like
+		// freeze can trigger hydro first
 		//https://docs.google.com/spreadsheets/d/1lJSY2zRIkFDyLZxIor0DVMpYXx3E_jpDrSUZvQijesc/edit#gid=0
 		r.TryCrystallizeElectro(a)
 		r.TryCrystallizeHydro(a)
@@ -212,8 +212,8 @@ func (r *Reactable) AttachOrRefill(a *combat.AttackEvent) bool {
 	if a.Reacted {
 		return false
 	}
-	//handle pyro, electro, hydro, cryo, dendro
-	//special attachment of dendro (burning fuel) is handled in tryBurning
+	// handle pyro, electro, hydro, cryo, dendro
+	// special attachment of dendro (burning fuel) is handled in tryBurning
 	if mod, ok := elementToModifier[a.Info.Element]; ok {
 		r.attachOrRefillNormalEle(mod, a.Info.Durability)
 		return true
@@ -232,7 +232,7 @@ func (r *Reactable) attachOrRefillNormalEle(mod ReactableModifier, dur reactions
 	}
 }
 
-func (r *Reactable) attachOverlap(mod ReactableModifier, amt reactions.Durability, length reactions.Durability) {
+func (r *Reactable) attachOverlap(mod ReactableModifier, amt, length reactions.Durability) {
 	if r.Durability[mod] > ZeroDur {
 		add := max(amt-r.Durability[mod], 0)
 		if add > 0 {
@@ -246,7 +246,7 @@ func (r *Reactable) attachOverlap(mod ReactableModifier, amt reactions.Durabilit
 	}
 }
 
-func (r *Reactable) attachOverlapRefreshDuration(mod ReactableModifier, amt reactions.Durability, length reactions.Durability) {
+func (r *Reactable) attachOverlapRefreshDuration(mod ReactableModifier, amt, length reactions.Durability) {
 	if amt < r.Durability[mod] {
 		return
 	}
@@ -283,9 +283,9 @@ func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 // reduce the requested element by dur * factor, return the amount of dur consumed
 // if multiple modifier with same element are present, all of them are reduced
 // the max on reduced is used for consumption purpose
-func (r *Reactable) reduce(e attributes.Element, dur reactions.Durability, factor reactions.Durability) reactions.Durability {
+func (r *Reactable) reduce(e attributes.Element, dur, factor reactions.Durability) reactions.Durability {
 
-	m := dur * factor //maximum amount reduceable
+	m := dur * factor // maximum amount reduceable
 	var reduced reactions.Durability
 
 	for i := ModifierInvalid; i < EndReactableModifier; i++ {
@@ -297,13 +297,13 @@ func (r *Reactable) reduce(e attributes.Element, dur reactions.Durability, facto
 			// this allows us to safely call reduce even if an element doesn't exist
 			continue
 		}
-		//reduce by lesser of remaining and m
+		// reduce by lesser of remaining and m
 
 		red := m
 
 		if red > r.Durability[i] {
 			red = r.Durability[i]
-			//reset decay rate to 0
+			// reset decay rate to 0
 		}
 
 		r.Durability[i] -= red
@@ -326,17 +326,17 @@ func (r *Reactable) deplete(m ReactableModifier) {
 
 func (r *Reactable) Tick() {
 
-	//duability is reduced by decay * (1 + purge)
-	//where purge is 0 for anything that's not freeze
-	//for freeze, purge = 0.25 * time
-	//while defrosting, purge rate is reduced back down to 0 at new = old - 0.5 * time
-	//where time is in seconds
+	// duability is reduced by decay * (1 + purge)
+	// where purge is 0 for anything that's not freeze
+	// for freeze, purge = 0.25 * time
+	// while defrosting, purge rate is reduced back down to 0 at new = old - 0.5 * time
+	// where time is in seconds
 	//
-	//per frame then we have decay * (1 + 0.25 * (x/60))
+	// per frame then we have decay * (1 + 0.25 * (x/60))
 
-	//anything after the delim is special decay so we ignore
+	// anything after the delim is special decay so we ignore
 	for i := ModifierInvalid; i < ModifierSpecialDecayDelim; i++ {
-		//skip zero decay rates i.e. modifiers that don't decay (i.e. burning)
+		// skip zero decay rates i.e. modifiers that don't decay (i.e. burning)
 		if r.DecayRate[i] == 0 {
 			continue
 		}
@@ -359,8 +359,8 @@ func (r *Reactable) Tick() {
 		r.DecayRate[ModifierQuicken] = 0
 	}
 
-	//if burning fuel is present, dendro and quicken uses burning fuel decay rate
-	//otherwise it uses it's own
+	// if burning fuel is present, dendro and quicken uses burning fuel decay rate
+	// otherwise it uses it's own
 	for i := ModifierDendro; i <= ModifierQuicken; i++ {
 		if r.Durability[i] < ZeroDur {
 			continue
@@ -376,24 +376,24 @@ func (r *Reactable) Tick() {
 		r.deplete(i)
 	}
 
-	//for freeze, durability can be calculated as:
-	//d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
+	// for freeze, durability can be calculated as:
+	// d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
 	if r.Durability[ModifierFrozen] > ZeroDur {
-		//ramp up decay rate first
+		// ramp up decay rate first
 		r.DecayRate[ModifierFrozen] += frzDelta
 		r.Durability[ModifierFrozen] -= r.DecayRate[ModifierFrozen] / reactions.Durability(1.0-r.FreezeResist)
 
 		r.checkFreeze()
-	} else if r.DecayRate[ModifierFrozen] > frzDecayCap { //otherwise ramp down decay rate
+	} else if r.DecayRate[ModifierFrozen] > frzDecayCap { // otherwise ramp down decay rate
 		r.DecayRate[ModifierFrozen] -= frzDelta * 2
 
-		//cap decay
+		// cap decay
 		if r.DecayRate[ModifierFrozen] < frzDecayCap {
 			r.DecayRate[ModifierFrozen] = frzDecayCap
 		}
 	}
 
-	//for ec we need to reset src if ec is gone
+	// for ec we need to reset src if ec is gone
 	if r.ecTickSrc > -1 {
 		if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 			r.ecTickSrc = -1

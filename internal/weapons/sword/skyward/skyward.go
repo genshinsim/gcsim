@@ -37,7 +37,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.03 + float64(r)*0.01
 	char.AddStatMod(character.StatMod{
@@ -64,26 +64,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
-	//deals damage proc on normal/charged attacks. i dont know why description in game sucks
+	// deals damage proc on normal/charged attacks. i dont know why description in game sucks
 	dmgper := .15 + .05*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
-		//check if char is correct?
+		// check if char is correct?
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
-		//check if buff up
+		// check if buff up
 		if !char.StatModIsActive(buffKey) {
 			return false
 		}
 		if dmg == 0 {
 			return false
 		}
-		//add a new action that deals % dmg immediately
+		// add a new action that deals % dmg immediately
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Blade Proc",

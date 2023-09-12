@@ -27,7 +27,7 @@ func TestBurning(t *testing.T) {
 			Durability: 25,
 		},
 	})
-	//dendro electro gone; 20 quicken
+	// dendro electro gone; 20 quicken
 	if !durApproxEqual(20, trg.Durability[ModifierQuicken], 0.00001) {
 		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[ModifierQuicken])
 	}

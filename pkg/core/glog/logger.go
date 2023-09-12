@@ -7,8 +7,8 @@ import (
 	easyjson "github.com/mailru/easyjson"
 )
 
-//Debugw
-//Warnw
+// Debugw
+// Warnw
 
 // https://github.com/dominikh/go-tools/issues/836
 
@@ -45,7 +45,7 @@ func (e *LogEvent) Write(key string, value interface{}) Event {
 }
 
 func (e *LogEvent) WriteBuildMsg(keysAndValues ...interface{}) Event {
-	//should be even number
+	// should be even number
 	var key string
 	var ok bool
 	for i := 0; i < len(keysAndValues); i++ {
@@ -53,7 +53,7 @@ func (e *LogEvent) WriteBuildMsg(keysAndValues ...interface{}) Event {
 		if !ok {
 			log.Panicf("invalid key %v, expected type to be string", keysAndValues[i].(string))
 		}
-		//make sure there's a corresponding val
+		// make sure there's a corresponding val
 		i++
 		if i == len(keysAndValues) {
 			log.Panicf("expected an associated value after key %v, got nothing", key)
@@ -79,7 +79,7 @@ func (e *LogEvent) StartFrame() int   { return e.F }
 func (e *LogEvent) Src() int          { return e.SrcChar }
 
 type Ctrl struct {
-	//keep it in an array so we can keep track order it occured
+	// keep it in an array so we can keep track order it occured
 	// events []*Event
 	events map[int]*LogEvent
 	count  int

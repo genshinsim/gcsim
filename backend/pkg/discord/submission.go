@@ -55,7 +55,7 @@ func (b *Bot) cmdSubmit(ctx context.Context, data cmdroute.CommandData) *api.Int
 	resp := discord.NewEmbed()
 	if err != nil {
 		resp.Title = "Submission failed"
-		//catch all desc
+		// catch all desc
 		resp.Description = "An unexpected error occured. Please contact administrator"
 		st, ok := status.FromError(err)
 		if ok {

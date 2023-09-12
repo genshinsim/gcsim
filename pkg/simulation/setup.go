@@ -40,10 +40,10 @@ func SetupTargetsInCore(core *core.Core, p geometry.Point, r float64, targets []
 		}
 		e := enemy.New(core, v)
 		core.Combat.AddEnemy(e)
-		//s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
+		// s.stats.ElementUptime[i+1] = make(map[core.EleType]int)
 	}
 
-	//default target is closest to player?
+	// default target is closest to player?
 	defaultEnemy := core.Combat.ClosestEnemy(player.Pos())
 	if defaultEnemy == nil {
 		return errors.New("cannot set default target, got nil")
@@ -63,21 +63,21 @@ func SetupCharactersInCore(core *core.Core, chars []info.CharacterProfile, initi
 	dup := make(map[keys.Char]bool)
 
 	active := -1
-	for _, v := range chars {
-		i, err := core.AddChar(v)
+	for i := range chars {
+		i, err := core.AddChar(chars[i])
 		if err != nil {
 			return err
 		}
 
-		if v.Base.Key == initial {
+		if chars[i].Base.Key == initial {
 			core.Player.SetActive(i)
 			active = i
 		}
 
-		if _, ok := dup[v.Base.Key]; ok {
-			return fmt.Errorf("duplicated character %v", v.Base.Key)
+		if _, ok := dup[chars[i].Base.Key]; ok {
+			return fmt.Errorf("duplicated character %v", chars[i].Base.Key)
 		}
-		dup[v.Base.Key] = true
+		dup[chars[i].Base.Key] = true
 	}
 
 	if active == -1 {
@@ -90,9 +90,9 @@ func SetupCharactersInCore(core *core.Core, chars []info.CharacterProfile, initi
 func SetupResonance(s *core.Core) {
 	chars := s.Player.Chars()
 	if len(chars) < 4 {
-		return //no resonance if less than 4 chars
+		return // no resonance if less than 4 chars
 	}
-	//count number of ele first
+	// count number of ele first
 	count := make(map[attributes.Element]int)
 	for _, c := range chars {
 		count[c.Base.Element]++
@@ -174,14 +174,14 @@ func SetupResonance(s *core.Core) {
 				s.Events.Subscribe(event.OnAggravate, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnHyperbloom, recover, "electro-res")
 			case attributes.Geo:
-				//Increases shield strength by 15%. Additionally, characters protected by a shield will have the
-				//following special characteristics:
+				// Increases shield strength by 15%. Additionally, characters protected by a shield will have the
+				// following special characteristics:
 
 				//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
 				f := func() (float64, bool) { return 0.15, true }
 				s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
 
-				//shred geo res of target
+				// shred geo res of target
 				s.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 					t, ok := args[0].(*enemy.Enemy)
 					if !ok {
@@ -289,7 +289,7 @@ func SetupResonance(s *core.Core) {
 
 func SetupMisc(c *core.Core) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		//dmg tag is superconduct, target is enemy
+		// dmg tag is superconduct, target is enemy
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -298,7 +298,7 @@ func SetupMisc(c *core.Core) {
 		if atk.Info.AttackTag != attacks.AttackTagSuperconductDamage {
 			return false
 		}
-		//add shred
+		// add shred
 		t.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("superconduct-phys-shred", 12*60),
 			Ele:   attributes.Physical,
@@ -309,7 +309,7 @@ func SetupMisc(c *core.Core) {
 }
 
 func (s *Simulation) handleEnergy() {
-	//energy once interval=300 amount=1 #once at frame 300
+	// energy once interval=300 amount=1 #once at frame 300
 	if s.cfg.Energy.Active && s.cfg.Energy.Once {
 		f := s.cfg.Energy.Start
 		s.cfg.Energy.Active = false
@@ -326,7 +326,7 @@ func (s *Simulation) handleEnergy() {
 			Write("amt", s.cfg.Energy.Amount).
 			Write("energy_frame", s.C.F+f)
 	}
-	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	// energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	if s.cfg.Energy.Active && s.C.F-s.cfg.Energy.LastEnergyDrop >= s.cfg.Energy.Start {
 		f := s.C.Rand.Intn(s.cfg.Energy.End - s.cfg.Energy.Start)
 		s.cfg.Energy.LastEnergyDrop = s.C.F + f
@@ -346,7 +346,7 @@ func (s *Simulation) handleEnergy() {
 }
 
 func (s *Simulation) handleHurt() {
-	//hurt once interval=300 amount=1,300 element=physical #once at frame 300 (or nearest)
+	// hurt once interval=300 amount=1,300 element=physical #once at frame 300 (or nearest)
 	if s.cfg.Hurt.Active && s.cfg.Hurt.Once {
 		f := s.cfg.Hurt.Start
 		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)
@@ -376,7 +376,7 @@ func (s *Simulation) handleHurt() {
 			Write("amt", amt).
 			Write("hurt_frame", s.C.F+f)
 	}
-	//hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
+	// hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
 	if s.cfg.Hurt.Active && s.C.F-s.cfg.Hurt.LastHurt >= s.cfg.Hurt.Start {
 		f := s.C.Rand.Intn(s.cfg.Hurt.End - s.cfg.Hurt.Start)
 		amt := s.cfg.Hurt.Min + s.C.Rand.Float64()*(s.cfg.Hurt.Max-s.cfg.Hurt.Min)

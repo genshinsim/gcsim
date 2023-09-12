@@ -30,12 +30,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	b := p["bunny"]
 
 	if c.Base.Cons >= 2 && b != 0 {
-		//explode the first bunny
+		// explode the first bunny
 		c.Core.Tasks.Add(func() {
 			c.manualExplode()
 		}, aimedHitmark+travel)
 
-		//also don't do any dmg since we're shooting at bunny
+		// also don't do any dmg since we're shooting at bunny
 		return action.ActionInfo{
 			Frames:          frames.NewAbilFunc(aimedFrames),
 			AnimationLength: aimedFrames[action.InvalidAction],

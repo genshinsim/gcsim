@@ -20,7 +20,7 @@ linters:
     - gofmt # go fmt requirement
     - goimports # in addition to fixing imports, goimports also formats your code in the same style as gofmt
     - stylecheck # style check rules defined by staticcheck (minimum go standard style)
-    # - gocritic # provides diagnostics that check for bugs, performance and style issues
+    - gocritic # provides diagnostics that check for bugs, performance and style issues
     # - whitespace # detects leading and trailing whitespace
     # - nolintlint # reports ill-formed or insufficient nolint directives
     # - errname # checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error

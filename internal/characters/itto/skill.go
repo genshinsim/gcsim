@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ushihit = 3
 	}
 
-	//deal damage when created
+	// deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Masatsu Zetsugi: Akaushi Burst!",

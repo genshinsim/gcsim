@@ -16,7 +16,7 @@ func (c *char) addJadeShield() {
 	c.Core.Player.Shields.Add(c.newShield(shield, 1200))
 	c.Tags["shielded"] = 1
 
-	//add resist mod whenever we get a shield
+	// add resist mod whenever we get a shield
 	res := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro, attributes.Geo, attributes.Anemo, attributes.Physical, attributes.Dendro}
 
 	// shield applies res shred every 0.3s for 1s to all enemies within a certain area around the player
@@ -71,10 +71,10 @@ func (s *shd) OnExpire() {
 
 func (s *shd) OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) {
 	taken, ok := s.Tmpl.OnDamage(dmg, ele, bonus)
-	//try healing first
+	// try healing first
 	if s.c.Base.Cons >= 6 {
-		//40% of dmg is converted into healing, but cannot exceed 8% of each char max hp
-		//so we have to go through each char one at a time....
+		// 40% of dmg is converted into healing, but cannot exceed 8% of each char max hp
+		// so we have to go through each char one at a time....
 
 		active := s.c.Core.Player.ActiveChar()
 		heal := 0.4 * dmg

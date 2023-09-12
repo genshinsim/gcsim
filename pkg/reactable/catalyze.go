@@ -18,7 +18,7 @@ func (r *Reactable) TryAggravate(a *combat.AttackEvent) bool {
 
 	r.core.Events.Emit(event.OnAggravate, r.self, a)
 
-	//em isn't snapshot
+	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = reactions.Aggravate
@@ -37,7 +37,7 @@ func (r *Reactable) TrySpread(a *combat.AttackEvent) bool {
 
 	r.core.Events.Emit(event.OnSpread, r.self, a)
 
-	//em isn't snapshot
+	// em isn't snapshot
 	em := r.core.Player.ByIndex(a.Info.ActorIndex).Stat(attributes.EM)
 	a.Info.Catalyzed = true
 	a.Info.CatalyzedType = reactions.Spread
@@ -70,7 +70,7 @@ func (r *Reactable) TryQuicken(a *combat.AttackEvent) bool {
 
 	r.core.Events.Emit(event.OnQuicken, r.self, a)
 
-	//attach quicken aura; special amount
+	// attach quicken aura; special amount
 	r.attachQuicken(consumed)
 
 	if r.Durability[ModifierHydro] >= ZeroDur {

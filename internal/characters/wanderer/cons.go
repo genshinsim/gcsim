@@ -39,7 +39,7 @@ func (c *char) c2() {
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = math.Min((float64)(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
+	m[attributes.DmgP] = math.Min(float64(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
 		Amount: func() ([]float64, bool) {

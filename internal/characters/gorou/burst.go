@@ -95,15 +95,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 // recursive function for dealing damage
 func (c *char) gorouCrystalCollapse(src int) func() {
 	return func() {
-		//do nothing if this has been overwritten
+		// do nothing if this has been overwritten
 		if c.qFieldSrc != src {
 			return
 		}
-		//do nothing if field expired
+		// do nothing if field expired
 		if c.Core.Status.Duration(generalGloryKey) == 0 {
 			return
 		}
-		//trigger damage
+		// trigger damage
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Crystal Collapse",
@@ -123,23 +123,23 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(enemy, nil, 3.5), 0, 1)
 		}
 
-		//tick every 1.5s
+		// tick every 1.5s
 		c.Core.Tasks.Add(c.gorouCrystalCollapse(src), 90)
 	}
 }
 
 func (c *char) gorouBurstHealField(src int) func() {
 	return func() {
-		//do nothing if this has been overwritten
+		// do nothing if this has been overwritten
 		if c.qFieldSrc != src {
 			return
 		}
-		//do nothing if field expired
+		// do nothing if field expired
 		if c.Core.Status.Duration(generalGloryKey) == 0 {
 			return
 		}
-		//When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
-		//within its AoE by 50% of Gorou's own DEF every 1.5s.
+		// When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
+		// within its AoE by 50% of Gorou's own DEF every 1.5s.
 		amt := c.Base.Def*(1+c.healFieldStats[attributes.DEFP]) + c.healFieldStats[attributes.DEF]
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
@@ -149,7 +149,7 @@ func (c *char) gorouBurstHealField(src int) func() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
-		//tick every 1.5s
+		// tick every 1.5s
 		c.Core.Tasks.Add(c.gorouBurstHealField(src), 90)
 	}
 }

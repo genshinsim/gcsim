@@ -31,7 +31,7 @@ func TestEC(t *testing.T) {
 	c.QueueAttackEvent(makeAOEAttack(c, attributes.Hydro, 25), 0)
 	c.Tick()
 	c.QueueAttackEvent(makeAOEAttack(c, attributes.Electro, 25), 0)
-	//tick once every 60 second. we should get 2 ticks total
+	// tick once every 60 second. we should get 2 ticks total
 	for i := 0; i < 121; i++ {
 		advanceCoreFrame(c)
 	}

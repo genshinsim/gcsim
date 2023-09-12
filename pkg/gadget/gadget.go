@@ -18,10 +18,10 @@ type Gadget struct {
 	core            *core.Core
 	OnKill          func()
 	OnExpiry        func() // only called if gadget dies from expiry
-	ThinkInterval   int    //should be > 0
+	ThinkInterval   int    // should be > 0
 	OnThinkInterval func()
-	Duration        int //how long gadget should live for; use -1 for infinite
-	//internal helper
+	Duration        int // how long gadget should live for; use -1 for infinite
+	// internal helper
 	sinceLastThink int
 }
 

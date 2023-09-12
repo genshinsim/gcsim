@@ -13,15 +13,15 @@ type Simulation struct {
 	// f    int
 	preActionDelay int
 	C              *core.Core
-	//action list stuff
+	// action list stuff
 	cfg           *info.ActionList
 	queue         []*action.ActionEval
 	eval          action.Evaluator
 	noMoreActions bool
 	collectors    []stats.StatsCollector
 
-	//track previous action, when it was used at, and the earliest
-	//useable frame for all other chained actions
+	// track previous action, when it was used at, and the earliest
+	// useable frame for all other chained actions
 }
 
 /**

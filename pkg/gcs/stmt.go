@@ -64,7 +64,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	//res should be a number
+	// res should be a number
 	// v, ok := res.(*number)
 	e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	// if !ok {
@@ -75,12 +75,12 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	// num := *v //value copying
-	env.varMap[l.Ident.Val] = &res
+	env.varMap[l.Ident.Val] = res
 	return &null{}, nil
 }
 
 func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
-	//functionally, a FnStmt is just a special type of let statement
+	// functionally, a FnStmt is just a special type of let statement
 	_, exist := env.varMap[l.Ident.Val]
 	if exist {
 		return nil, fmt.Errorf("function %v already exists; cannot redeclare", l.Ident.Val)
@@ -91,7 +91,7 @@ func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 		Signature: l.Func.Signature,
 		Env:       NewEnv(env),
 	}
-	env.varMap[l.Ident.Val] = &res
+	env.varMap[l.Ident.Val] = res
 	return &null{}, nil
 }
 
@@ -101,13 +101,13 @@ func (e *Eval) evalAssignStmt(a *ast.AssignStmt, env *Env) (Obj, error) {
 		return nil, err
 	}
 	// e.Log.Printf("let expr: %v, type: %T\n", res, res)
-	n, err := env.v(a.Ident.Val)
+	_, err = env.v(a.Ident.Val)
 	if err != nil {
 		return nil, err
 	}
-	*n = res
+	n := res
 
-	return *n, nil
+	return n, nil
 }
 
 func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {

@@ -8,7 +8,7 @@ import (
 func TestValidateLink(t *testing.T) {
 	s := &Store{
 		Config: Config{
-			LinkValidationRegex: regexp.MustCompile(`https:\/\/\S+.app\/\S+\/(\S+)$`),
+			LinkValidationRegex: regexp.MustCompile(`https://\S+.app/\S+/(\S+)$`),
 		},
 	}
 

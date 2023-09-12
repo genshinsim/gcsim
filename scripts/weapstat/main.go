@@ -60,8 +60,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	//fix the specialized key
-	for k, v := range d {
+	// fix the specialized key
+	for k, v := range d { //nolint:gocritic
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		if v.Specialized == "" {
 			v.Specialized = "attributes.NoStat"
@@ -76,7 +76,7 @@ func main() {
 	writeTmpl(tmplShortcuts, "./shortcuts.txt", d)
 }
 
-func download(filepath string, url string) error {
+func download(filepath, url string) error {
 
 	// Get the data
 	resp, err := http.Get(url)
@@ -97,7 +97,7 @@ func download(filepath string, url string) error {
 	return err
 }
 
-func writeTmpl(tmplStr string, outFile string, d map[string]data) {
+func writeTmpl(tmplStr, outFile string, d map[string]data) {
 	t, err := template.New("out").Parse(tmplStr)
 	if err != nil {
 		log.Panic(err)
@@ -131,7 +131,7 @@ func readNameMap() map[string]string {
 	}
 
 	for k, v := range m.Names {
-		//strip out any none word characters
+		// strip out any none word characters
 		v = strings.ReplaceAll(v, "'", "")
 		m.Names[k] = re.ReplaceAllString(cases.Title(language.Und, cases.NoLower).String(v), "")
 	}

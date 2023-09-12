@@ -32,7 +32,7 @@ func New(maxWorker int, respCh chan stats.Result, errCh chan error) *Pool {
 		QueueCh: make(chan Job),
 		StopCh:  make(chan bool),
 	}
-	//create workers
+	// create workers
 	for i := 0; i < maxWorker; i++ {
 		go p.worker()
 	}
@@ -68,7 +68,7 @@ func (p *Pool) worker() {
 
 		case _, ok := <-p.StopCh:
 			if !ok {
-				//stopping
+				// stopping
 				return
 			}
 		}

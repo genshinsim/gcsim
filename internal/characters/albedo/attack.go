@@ -70,7 +70,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitboxes[c.NormalCounter][1],
 		)
 	}
-	//we don't need to use char queue here since each hit is single hit
+	// we don't need to use char queue here since each hit is single hit
 	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()

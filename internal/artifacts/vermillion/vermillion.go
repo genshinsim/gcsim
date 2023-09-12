@@ -31,7 +31,7 @@ const verm4pckey = "verm-4pc"
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
 func (s *Set) updateBuff() {
-	//8% base + 10% per stack
+	// 8% base + 10% per stack
 	s.buff[attributes.ATKP] = 0.08 + float64(s.stacks)*0.1
 }
 
@@ -53,13 +53,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 
-	//4 Piece: After using an Elemental Burst, this character will gain the
-	//Nascent Light effect, increasing their ATK by 8% for 16s. When the
-	//character's HP decreases, their ATK will further increase by 10%. This
-	//increase can occur this way a maximum of 4 times. This effect can be
-	//triggered once every 0.8s. Nascent Light will be dispelled when the
-	//character leaves the field. If an Elemental Burst is used again during the
-	//duration of Nascent Light, the original Nascent Light will be dispelled.
+	// 4 Piece: After using an Elemental Burst, this character will gain the
+	// Nascent Light effect, increasing their ATK by 8% for 16s. When the
+	// character's HP decreases, their ATK will further increase by 10%. This
+	// increase can occur this way a maximum of 4 times. This effect can be
+	// triggered once every 0.8s. Nascent Light will be dispelled when the
+	// character leaves the field. If an Elemental Burst is used again during the
+	// duration of Nascent Light, the original Nascent Light will be dispelled.
 	if count >= 4 {
 		const icdKey = "verm-4pc-icd"
 		icd := 48

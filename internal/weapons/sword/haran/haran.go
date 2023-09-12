@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	base := 0.09 + float64(r)*0.03
 	m[attributes.PyroP] = base
@@ -62,11 +62,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	wavespikeStacks := 0
 
 	nonActiveFn := func() bool {
-		//once every 0.3s
+		// once every 0.3s
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		//add stacks
+		// add stacks
 		wavespikeStacks++
 		if wavespikeStacks > maxWavespikeStacks {
 			wavespikeStacks = maxWavespikeStacks

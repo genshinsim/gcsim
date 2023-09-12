@@ -38,7 +38,7 @@ func (s *Set) Init() error {
 // 4-Piece Bonus: When the character equipping this artifact set heals a character in the party,
 // a Sea-Dyed Foam will appear for 3 seconds, accumulating the amount of HP recovered from healing (including overflow healing).
 // At the end of the duration, the Sea-Dyed Foam will explode, dealing DMG to nearby opponents based on 90% of the accumulated
-//healing.
+// healing.
 
 // (This DMG is calculated similarly to Reactions such as Electro-Charged, and Superconduct, but it is not affected by
 // Elemental Mastery, Character Levels, or Reaction DMG Bonuses).
@@ -120,7 +120,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						IgnoreDefPercent: 1,
 						FlatDmg:          s.bubbleHealStacks * .9,
 					}
-					//snapshot -1 since we don't need stats
+					// snapshot -1 since we don't need stats
 					c.QueueAttack(atk, combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 6), -1, 1)
 
 					// Reset

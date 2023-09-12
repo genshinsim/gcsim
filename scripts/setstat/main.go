@@ -19,7 +19,7 @@ func main() {
 	writeTmpl(tmplShortcuts, "./shortcuts.txt", names)
 }
 
-func writeTmpl(tmplStr string, outFile string, d map[string]string) {
+func writeTmpl(tmplStr, outFile string, d map[string]string) {
 	t, err := template.New("out").Parse(tmplStr)
 	if err != nil {
 		log.Panic(err)
@@ -53,7 +53,7 @@ func readNameMap() map[string]string {
 	}
 
 	for k, v := range m.Names {
-		//strip out any none word characters
+		// strip out any none word characters
 		v = strings.ReplaceAll(v, "'", "")
 		m.Names[k] = re.ReplaceAllString(cases.Title(language.Und, cases.NoLower).String(v), "")
 	}

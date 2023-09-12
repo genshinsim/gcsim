@@ -15,7 +15,7 @@ const chargeHitmark = 22
 
 func init() {
 	// charge -> x
-	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
+	chargeFrames = frames.InitAbilSlice(37) // n1, skill, burst all at 37
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 36
@@ -78,7 +78,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 			Element:            attributes.Electro,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
-			HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
+			HitlagHaltFrames:   0.02 * 60, // all raiden normals have 0.02s hitlag
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: true,
 		}

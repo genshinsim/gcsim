@@ -72,7 +72,7 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 		return nil, err
 	}
 
-	//check connection
+	// check connection
 	err = client.Ping(context.TODO(), nil)
 
 	if err != nil {

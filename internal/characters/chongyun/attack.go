@@ -75,7 +75,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			Durability: 25,
 			Mult:       .5,
 		}
-		//3 blades
+		// 3 blades
 		for i := 0; i < 3; i++ {
 			c.Core.QueueAttack(
 				ai,

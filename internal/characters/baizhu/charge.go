@@ -37,8 +37,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	windup := 0
-	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState:
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
 		windup = 14
 	}
 

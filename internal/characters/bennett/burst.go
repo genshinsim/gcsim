@@ -32,10 +32,10 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//add field effect timer
-	//deployable thus not hitlag
+	// add field effect timer
+	// deployable thus not hitlag
 	c.Core.Status.Add(burstKey, 720+burstStartFrame)
-	//hook for buffs; active right away after cast
+	// hook for buffs; active right away after cast
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -92,7 +92,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 	return func() {
 		c.Core.Log.NewEvent("bennett field ticking", glog.LogCharacterEvent, -1)
 
-		//self infuse
+		// self infuse
 		p, ok := c.Core.Combat.Player().(*avatar.Player)
 		if !ok {
 			panic("target 0 should be Player but is not!!")
@@ -100,7 +100,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 		p.ApplySelfInfusion(attributes.Pyro, 25, burstBuffDuration)
 
 		active := c.Core.Player.ActiveChar()
-		//heal if under 70%
+		// heal if under 70%
 		if active.CurrentHPRatio() < 0.7 {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
@@ -111,7 +111,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 			})
 		}
 
-		//add attack if over 70%
+		// add attack if over 70%
 		threshold := .7
 		if c.Base.Cons >= 1 {
 			threshold = 0

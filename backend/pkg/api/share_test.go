@@ -29,7 +29,7 @@ func TestValidation(t *testing.T) {
 	h.Write([]byte(data))
 	bs := h.Sum(nil)
 
-	//shareKey should be of the format id:key
+	// shareKey should be of the format id:key
 	key, err := hex.DecodeString(testKey)
 	if err != nil {
 		t.Error(err)
@@ -57,7 +57,7 @@ func TestValidation(t *testing.T) {
 
 	hash := gcm.Seal(nonce, nonce, bs, nil)
 	hashStr := base64.StdEncoding.EncodeToString(hash)
-	//sanity check?
+	// sanity check?
 	hash2, _ := base64.StdEncoding.DecodeString(hashStr)
 	if !bytes.Equal(hash, hash2) {
 		t.Error("hash is weird?")

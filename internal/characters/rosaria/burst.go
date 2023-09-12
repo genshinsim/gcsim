@@ -59,11 +59,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai.Abil = "Rites of Termination (Hit 2)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burst[1][c.TalentLvlBurst()]
-	//no more hitlag after first hit
+	// no more hitlag after first hit
 	ai.HitlagHaltFrames = 0
 
-	//duration is 8 seconds (extended by c2 by 4s), + 0.5
-	//should be a deployable
+	// duration is 8 seconds (extended by c2 by 4s), + 0.5
+	// should be a deployable
 	dur := 510
 	if c.Base.Cons >= 2 {
 		dur += 240

@@ -53,9 +53,9 @@ func (w *Weapon) updateBuff() {
 }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//Increases Movement SPD by 10%. When in battle, gain an 8% Elemental DMG
-	//Bonus every 4s. Max 4 stacks. Lasts until the character falls or leaves
-	//combat.
+	// Increases Movement SPD by 10%. When in battle, gain an 8% Elemental DMG
+	// Bonus every 4s. Max 4 stacks. Lasts until the character falls or leaves
+	// combat.
 	w := &Weapon{
 		char: char,
 		c:    c,

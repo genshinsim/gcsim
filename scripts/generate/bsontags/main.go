@@ -1,7 +1,7 @@
 package main
 
-//SOURCE: https://github.com/arkavo-com/pb-go-tag-bson
-//MIT LICENSED
+// SOURCE: https://github.com/arkavo-com/pb-go-tag-bson
+// MIT LICENSED
 
 import (
 	"flag"
@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 func main() {
@@ -77,8 +78,8 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 	if n == nil {
 		return nil
 	}
-	switch n.(type) {
-	case *ast.Field:
+	_, ok := n.(*ast.Field)
+	if ok {
 		ast.Inspect(n, func(subn ast.Node) bool {
 			switch subd := subn.(type) {
 			case *ast.Field:
@@ -86,20 +87,18 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 					if len(f.Names) == 0 {
 						return false
 					}
-					//skip non public fields
+					// skip non public fields
 					r := []rune(f.Names[0].Name)
 					if len(r) == 0 {
 						return false
 					}
-					if !unicode.IsUpper([]rune(f.Names[0].Name)[0]) {
-						return false
-					}
-					return true
+					ru, _ := utf8.DecodeRuneInString(f.Names[0].Name)
+					return unicode.IsUpper(ru)
 				}
 			case *ast.BasicLit:
 				existingTagValue := strings.Trim(subd.Value, "`")
 				bsonTags := []string{"bson:\"-\""}
-				//if no tag original, add ignore flag
+				// if no tag original, add ignore flag
 				if existingTagValue == "" {
 					subd.Value = fmt.Sprintf("`%s`", strings.Join(bsonTags, " "))
 					return true
@@ -125,7 +124,8 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 					}
 				}
 				bsonTags = []string{fmt.Sprintf(`bson:"%v,omitempty"`, name)}
-				mergedTags := append(existingTags, bsonTags...)
+				mergedTags := existingTags
+				mergedTags = append(mergedTags, bsonTags...)
 				subd.Value = fmt.Sprintf("`%s`", strings.Join(mergedTags, " "))
 			}
 			return true

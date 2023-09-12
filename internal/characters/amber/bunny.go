@@ -58,9 +58,9 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 		}
 	}
 
-	//apply damage delay is only there to make sure aura gets applied at the end of current frame
-	//however because we can only hold cryo, we'll only call this if atk is cryo and there
-	//is durability left
+	// apply damage delay is only there to make sure aura gets applied at the end of current frame
+	// however because we can only hold cryo, we'll only call this if atk is cryo and there
+	// is durability left
 	if atk.Info.Element != attributes.Cryo {
 		return 0
 	}
@@ -99,7 +99,7 @@ func (b *Bunny) attachEle(atk *combat.AttackEvent) {
 }
 
 func (b *Bunny) React(a *combat.AttackEvent) {
-	//only check the ones possible
+	// only check the ones possible
 	switch a.Info.Element {
 	case attributes.Electro:
 		b.TryFrozenSuperconduct(a)
@@ -121,7 +121,7 @@ func (b *Bunny) React(a *combat.AttackEvent) {
 }
 
 func (b *Bunny) Tick() {
-	//this is needed since gadget tick
+	// this is needed since gadget tick
 	b.Gadget.Tick()
 	b.Reactable.Tick()
 }
@@ -202,12 +202,12 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 }
 
 func (c *char) manualExplode() {
-	//do nothing if there are no bunnies
+	// do nothing if there are no bunnies
 	if len(c.bunnies) == 0 {
 		c.Core.Log.NewEvent("Did not find any Bunnies", glog.LogCharacterEvent, c.Index)
 		return
 	}
-	//only explode the first bunny
+	// only explode the first bunny
 	c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 	c.bunnies[0].Kill()
 

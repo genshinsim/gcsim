@@ -22,7 +22,7 @@ type char struct {
 	sanctumICD      int
 	burstCast       int
 	burstCounter    int
-	burstHitSrc     int //I am using this value as a counter because if I use frame I can get duplicates
+	burstHitSrc     int // I am using this value as a counter because if I use frame I can get duplicates
 	c1var           []float64
 	c6count         int
 }
@@ -83,7 +83,7 @@ func (c *char) onExitField() {
 		}
 		c.a1()
 		c.DeleteStatus(burstKey)
-		if remainingFieldDur > 0 { //place field
+		if remainingFieldDur > 0 { // place field
 			c.QueueCharTask(func() {
 				c.addField(remainingFieldDur)
 			}, kickHitmark)
@@ -113,7 +113,7 @@ func (c *char) Jump(p map[string]int) action.ActionInfo {
 	burstIsJumpCancelled = true
 	c.DeleteStatus(burstKey)
 
-	if remainingFieldDur > 0 { //place field
+	if remainingFieldDur > 0 { // place field
 		c.QueueCharTask(func() {
 			c.addField(remainingFieldDur)
 		}, kickHitmark)

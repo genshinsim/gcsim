@@ -98,11 +98,12 @@ func (s SlashType) Next(stacks int, c6Proc bool) SlashType {
 
 	// idle/CA0/CAF -> charge (based on stacks)
 	default:
-		if stacks == 1 && !c6Proc {
+		switch {
+		case stacks == 1 && !c6Proc:
 			return FinalSlash
-		} else if stacks == 1 && c6Proc {
+		case stacks == 1 && c6Proc:
 			return LeftSlash
-		} else if stacks > 1 {
+		case stacks > 1:
 			return LeftSlash
 		}
 		return SaichiSlash

@@ -64,7 +64,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// handle In/Out damage on field expiry
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), 600+burstStart)
 
-	//heal on cast
+	// heal on cast
 	hpplus := snap.Stats[attributes.Heal]
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
 	heal := burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]
@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		panic("target 0 should be Player but is not!!")
 	}
 
-	//attack self
+	// attack self
 	selfSwirl := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dandelion Breeze (Self Swirl)",

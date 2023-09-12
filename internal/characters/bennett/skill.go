@@ -184,7 +184,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 		)
 	}
 
-	//user-specified c4 variant adds an additional attack that deals 135% of the second hit
+	// user-specified c4 variant adds an additional attack that deals 135% of the second hit
 	if level == 1 && c4Active {
 		ai.Mult = skillHold[level-1][1][c.TalentLvlSkill()] * 1.35
 		ai.Abil = "Passion Overload (C4)"

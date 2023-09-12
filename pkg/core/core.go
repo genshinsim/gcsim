@@ -28,9 +28,9 @@ type Core struct {
 	Flags Flags
 	Seed  int64
 	Rand  *rand.Rand
-	//various functionalities of core
-	Log        glog.Logger    //we use an interface here so that we can pass in a nil logger for all except 1 run
-	Events     *event.Handler //track events: subscribe/unsubscribe/emit
+	// various functionalities of core
+	Log        glog.Logger    // we use an interface here so that we can pass in a nil logger for all except 1 run
+	Events     *event.Handler // track events: subscribe/unsubscribe/emit
 	Status     *status.Handler
 	Tasks      *task.Handler
 	Combat     *combat.Handler
@@ -40,9 +40,9 @@ type Core struct {
 
 type Flags struct {
 	LogDebug     bool // Used to determine logging level
-	DamageMode   bool //for hp mode
-	DefHalt      bool //for hitlag
-	EnableHitlag bool //hitlag enabled
+	DamageMode   bool // for hp mode
+	DefHalt      bool // for hitlag
+	EnableHitlag bool // hitlag enabled
 	Custom       map[string]int
 }
 
@@ -119,7 +119,7 @@ func New(opt CoreOpt) (*Core, error) {
 
 func (c *Core) Init() error {
 	var err error
-	//setup list
+	// setup list
 	//	- resonance
 	//	- on hit energy
 	//	- base stats
@@ -199,7 +199,7 @@ func (c *Core) AddChar(p info.CharacterProfile) (int, error) {
 	}
 	char.SetWeapon(weap)
 
-	//set bonus
+	// set bonus
 	total := 0
 	for key, count := range p.Sets {
 		total += count

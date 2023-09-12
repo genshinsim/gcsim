@@ -90,31 +90,31 @@ func (c *char) skillHold(travel int) action.ActionInfo {
 func (c *char) pawsPewPew(f, travel, pawCount int) {
 	bonus := 1.0
 	if pawCount == 5 {
-		bonus = 1.75 //bonus if firing off 5
+		bonus = 1.75 // bonus if firing off 5
 	}
 	shdHp := (pawShieldPer[c.TalentLvlSkill()]*c.MaxHP() + pawShieldFlat[c.TalentLvlSkill()]) * bonus
 	if c.Base.Cons >= 2 {
-		shdHp = shdHp * 1.15
+		shdHp *= 1.15
 	}
-	//call back to generate shield on hit
-	//note that each paw should only be able to trigger callback once (if hit multi target)
-	//and that subsequent shield generation should increase duation only
+	// call back to generate shield on hit
+	// note that each paw should only be able to trigger callback once (if hit multi target)
+	// and that subsequent shield generation should increase duation only
 	//TODO: need to look into maybe additional paw hits actually create "new" shields?
 	pawCB := func(done bool) combat.AttackCBFunc {
 		return func(_ combat.AttackCB) {
 			if done {
 				return
 			}
-			//make sure this is only triggered once
+			// make sure this is only triggered once
 			done = true
 
-			//check if shield already exists, if so then just update duration
+			// check if shield already exists, if so then just update duration
 			exist := c.Core.Player.Shields.Get(shield.ShieldDionaSkill)
 			var shd *shield.Tmpl
 			if exist != nil {
-				//update
+				// update
 				shd, _ = exist.(*shield.Tmpl)
-				shd.Expires = shd.Expires + pawDur[c.TalentLvlSkill()]
+				shd.Expires += pawDur[c.TalentLvlSkill()]
 			} else {
 				shd = &shield.Tmpl{
 					ActorIndex: c.Index,
@@ -123,7 +123,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 					Name:       "Diona Skill",
 					HP:         shdHp,
 					Ele:        attributes.Cryo,
-					Expires:    c.Core.F + pawDur[c.TalentLvlSkill()], //15 sec
+					Expires:    c.Core.F + pawDur[c.TalentLvlSkill()], // 15 sec
 				}
 			}
 			//TODO: check that this is actually properly extending duration

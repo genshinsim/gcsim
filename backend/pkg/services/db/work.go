@@ -51,7 +51,7 @@ func (s *Server) CompleteWork(ctx context.Context, req *CompleteWorkRequest) (*C
 		return nil, err
 	}
 
-	//it's possible old share key might be bad? shouldn't be
+	// it's possible old share key might be bad? shouldn't be
 	if entry.ShareKey != "" {
 		err = s.ShareStore.Replace(ctx, entry.ShareKey, res)
 		if err != nil {

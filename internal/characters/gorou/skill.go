@@ -97,11 +97,11 @@ func (c *char) particleCB(a combat.AttackCB) {
 // recursive function for queueing up ticks
 func (c *char) gorouSkillBuffField(src int) func() {
 	return func() {
-		//do nothing if this has been overwritten
+		// do nothing if this has been overwritten
 		if c.eFieldSrc != src {
 			return
 		}
-		//do nothing if both field expired
+		// do nothing if both field expired
 		eActive := c.Core.Status.Duration(generalWarBannerKey) > 0
 		qActive := c.Core.Status.Duration(generalGloryKey) > 0
 		if !eActive && !qActive {
@@ -113,8 +113,8 @@ func (c *char) gorouSkillBuffField(src int) func() {
 			return
 		}
 
-		//add buff to active char based on number of geo chars
-		//ok to overwrite existing mod
+		// add buff to active char based on number of geo chars
+		// ok to overwrite existing mod
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(defenseBuffKey, 120), // looks like it lasts 2 seconds
@@ -124,7 +124,7 @@ func (c *char) gorouSkillBuffField(src int) func() {
 			},
 		})
 
-		//looks like tick every 0.3s
+		// looks like tick every 0.3s
 		c.Core.Tasks.Add(c.gorouSkillBuffField(src), 18)
 	}
 }

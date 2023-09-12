@@ -4,10 +4,10 @@ type Source int
 
 const (
 	LogInvalid     Source = iota
-	LogDamageEvent        //tracks damages
+	LogDamageEvent        // tracks damages
 	LogPreDamageMod
-	LogCalc         //detailed calcs
-	LogElementEvent //tracks elemental application
+	LogCalc         // detailed calcs
+	LogElementEvent // tracks elemental application
 	LogSnapshotEvent
 	LogStatusEvent
 	LogActionEvent
@@ -27,7 +27,7 @@ const (
 	LogHurtEvent     // taking dmg event
 	LogCooldownEvent // for tracking things going on and off cooldown
 	LogHitlagEvent   // for debugging hitlag
-	LogUserEvent     //user print event
+	LogUserEvent     // user print event
 )
 
 var LogSourceFromString = map[string]Source{

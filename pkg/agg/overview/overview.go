@@ -63,12 +63,12 @@ func (b *buffer) Add(result stats.Result) {
 	}
 	b.shp.Xs[i] /= float64(result.Duration)
 
-	for _, c := range result.Characters {
-		b.rps.Xs[i] += float64(len(c.ReactionEvents))
-		for _, h := range c.HealEvents {
+	for i := range result.Characters {
+		b.rps.Xs[i] += float64(len(result.Characters[i].ReactionEvents))
+		for _, h := range result.Characters[i].HealEvents {
 			b.hps.Xs[i] += h.Heal
 		}
-		for _, e := range c.EnergyEvents {
+		for _, e := range result.Characters[i].EnergyEvents {
 			b.eps.Xs[i] += e.Gained + e.Wasted
 		}
 	}

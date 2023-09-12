@@ -177,7 +177,7 @@ type NAHook struct {
 
 func (w *NAHook) Enable() {
 	w.Core.Events.Subscribe(event.OnAttack, func(args ...interface{}) bool {
-		//check if buff is up
+		// check if buff is up
 		if !w.checkActive() {
 			return false
 		}
@@ -210,7 +210,7 @@ func (w *NAHook) Enable() {
 
 func (w *NAHook) naStateDelayFuncGen(src int) func() {
 	return func() {
-		//ignore if on ICD
+		// ignore if on ICD
 		if !w.checkActive() || !w.checkICD() || !w.checkState() || !w.checkSrc(w.abilHookSrc, src) {
 			return
 		}
@@ -226,7 +226,7 @@ func (w *NAHook) naStateDelayFuncGen(src int) func() {
 
 func (w *NAHook) naTickerFunc(src int) func() {
 	return func() {
-		//check if buff is up
+		// check if buff is up
 		if !w.checkActive() || !w.checkState() || !w.checkSrc(w.abilTickSrc, src) {
 			return
 		}
@@ -239,13 +239,13 @@ func (w *NAHook) naTickerFunc(src int) func() {
 }
 
 func (w *NAHook) trigger(src int) {
-	//we can trigger here b/c we're in normal state still and src is still the same
+	// we can trigger here b/c we're in normal state still and src is still the same
 	w.SummonFunc()
 	w.C.AddStatus(w.AbilICDKey, w.AbilProcICD, true)
-	//in theory this should not hit an icd?
-	//use the hitlag affected queue for this
+	// in theory this should not hit an icd?
+	// use the hitlag affected queue for this
 	w.abilTickSrc = w.Core.F
-	w.C.QueueCharTask(w.naTickerFunc(w.Core.F), w.AbilProcICD) //check every 1sec
+	w.C.QueueCharTask(w.naTickerFunc(w.Core.F), w.AbilProcICD) // check every 1sec
 }
 
 func (w *NAHook) checkActive() bool {
@@ -279,7 +279,7 @@ func (w *NAHook) checkState() bool {
 	return true
 
 }
-func (w *NAHook) checkSrc(newSrc int, src int) bool {
+func (w *NAHook) checkSrc(newSrc, src int) bool {
 	if newSrc != src {
 		w.Core.Log.NewEvent(fmt.Sprintf("%v not triggered, src diff", w.AbilName), glog.LogCharacterEvent, w.C.Index).
 			Write("src", src).

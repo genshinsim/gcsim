@@ -25,7 +25,7 @@ func init() {
 }
 
 func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
-	//last action must be hold skill
+	// last action must be hold skill
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["hold"] != 1 {
 		c.Core.Log.NewEvent("only plunge after hold skill ends", glog.LogActionEvent, c.Index).

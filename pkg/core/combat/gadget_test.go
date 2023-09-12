@@ -16,7 +16,7 @@ func TestGadgetCollision(t *testing.T) {
 	c := newCombatCtrl()
 	const ecount = 2
 	const gcount = 4
-	//1 player
+	// 1 player
 	player := &testtarg{
 		typ:   targets.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
@@ -27,7 +27,7 @@ func TestGadgetCollision(t *testing.T) {
 		},
 	}
 	c.SetPlayer(player)
-	//2 enemies
+	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   targets.TargettableEnemy,
@@ -40,12 +40,12 @@ func TestGadgetCollision(t *testing.T) {
 		}
 		c.AddEnemy(v)
 	}
-	//gadget should overlap player and first enemy
+	// gadget should overlap player and first enemy
 	var cw [targets.TargettableTypeCount]bool
 	cw[targets.TargettableEnemy] = true
 	cw[targets.TargettablePlayer] = true
 	count := 0
-	//make multiple gadgets in the same spot, so we should get gcount * 2 collision total
+	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			hdlr:        c,
@@ -74,7 +74,7 @@ func TestGadgetLimits(t *testing.T) {
 	c := newCombatCtrl()
 	const ecount = 2
 	const gcount = 20
-	//1 player
+	// 1 player
 	player := &testtarg{
 		typ:   targets.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
@@ -85,7 +85,7 @@ func TestGadgetLimits(t *testing.T) {
 		},
 	}
 	c.SetPlayer(player)
-	//2 enemies
+	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   targets.TargettableEnemy,
@@ -98,12 +98,12 @@ func TestGadgetLimits(t *testing.T) {
 		}
 		c.AddEnemy(v)
 	}
-	//gadget should overlap player and first enemy
+	// gadget should overlap player and first enemy
 	var cw [targets.TargettableTypeCount]bool
 	cw[targets.TargettableEnemy] = true
 	cw[targets.TargettablePlayer] = true
 	count := 0
-	//make multiple gadgets; gadgets should not exceed 2
+	// make multiple gadgets; gadgets should not exceed 2
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			hdlr:        c,
@@ -118,7 +118,7 @@ func TestGadgetLimits(t *testing.T) {
 
 	c.Tick()
 
-	//check how many we got
+	// check how many we got
 	for _, v := range c.gadgets {
 		if v != nil && v.GadgetTyp() == GadgetTypTest {
 			count++
@@ -136,14 +136,14 @@ func BenchmarkCollisionCheck(b *testing.B) {
 	c := newCombatCtrl()
 	const ecount = 2
 	const gcount = 20
-	//1 player
+	// 1 player
 	player := &testtarg{
 		typ:   targets.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
 		alive: true,
 	}
 	c.SetPlayer(player)
-	//2 enemies
+	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   targets.TargettableEnemy,
@@ -152,11 +152,11 @@ func BenchmarkCollisionCheck(b *testing.B) {
 		}
 		c.AddEnemy(v)
 	}
-	//gadget should overlap player and first enemy
+	// gadget should overlap player and first enemy
 	var cw [targets.TargettableTypeCount]bool
 	cw[targets.TargettableEnemy] = true
 	cw[targets.TargettablePlayer] = true
-	//make multiple gadgets in the same spot, so we should get gcount * 2 collision total
+	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			typ:         targets.TargettableGadget,
@@ -178,7 +178,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	c := newCombatCtrl()
 	const ecount = 2
 	const gcount = 4
-	//1 player
+	// 1 player
 	player := &testtarg{
 		typ:   targets.TargettablePlayer,
 		shp:   newSimpleCircle(0, 0, 0.2),
@@ -189,7 +189,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 		},
 	}
 	c.SetPlayer(player)
-	//2 enemies
+	// 2 enemies
 	for i := 0; i < ecount; i++ {
 		v := &testtarg{
 			typ:   targets.TargettableEnemy,
@@ -202,12 +202,12 @@ func TestKillGadgetOnCollision(t *testing.T) {
 		}
 		c.AddEnemy(v)
 	}
-	//gadget should overlap player and first enemy
+	// gadget should overlap player and first enemy
 	var cw [targets.TargettableTypeCount]bool
 	cw[targets.TargettableEnemy] = true
 	cw[targets.TargettablePlayer] = true
 	count := 0
-	//make multiple gadgets in the same spot, so we should get gcount * 2 collision total
+	// make multiple gadgets in the same spot, so we should get gcount * 2 collision total
 	for i := 0; i < gcount; i++ {
 		v := &testtarg{
 			typ:         targets.TargettableGadget,
@@ -217,7 +217,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 		}
 		v.onCollision = func(t Target) {
 			count++
-			//kill self
+			// kill self
 			c.RemoveGadget(v.key)
 		}
 		c.AddGadget(v)
@@ -225,7 +225,7 @@ func TestKillGadgetOnCollision(t *testing.T) {
 
 	c.Tick()
 
-	//only 1 collision per since it should kill self
+	// only 1 collision per since it should kill self
 	if count < gcount {
 		log.Printf("Expecting %v collisions, got %v\n", gcount, count)
 		t.FailNow()

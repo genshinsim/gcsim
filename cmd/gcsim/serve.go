@@ -44,7 +44,7 @@ func serve(
 	}()
 }
 
-func handleResults(resp http.ResponseWriter, req *http.Request, path string, hash string) bool {
+func handleResults(resp http.ResponseWriter, req *http.Request, path, hash string) bool {
 	if req.Method == "OPTIONS" {
 		log.Println("OPTIONS request received, responding...")
 		optionsResponse(resp)

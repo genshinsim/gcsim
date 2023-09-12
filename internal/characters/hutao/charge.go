@@ -38,7 +38,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		return c.ppChargeAttack(p)
 	}
 
-	//check for particles
+	// check for particles
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
@@ -107,7 +107,7 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		c.applyBB,
 	)
 
-	//frames changes if previous action is normal
+	// frames changes if previous action is normal
 	prevState := -1
 	if c.Core.Player.LastAction.Char == c.Index && c.Core.Player.LastAction.Type == action.ActionAttack {
 		prevState = c.NormalCounter - 1

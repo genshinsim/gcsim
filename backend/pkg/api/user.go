@@ -15,10 +15,10 @@ import (
 )
 
 type UserStore interface {
-	Create(id string, name string, ctx context.Context) error //create a new user; name is the discord tag
-	Read(id string, ctx context.Context) ([]byte, error)      //"user" should be set in ctx for auth purpose
-	UpdateData(data []byte, ctx context.Context) error        //"user" should be set in ctx for auth purpose
-	Has(id string, ctx context.Context) (bool, error)         //return true if user exists
+	Create(id string, name string, ctx context.Context) error // create a new user; name is the discord tag
+	Read(id string, ctx context.Context) ([]byte, error)      // "user" should be set in ctx for auth purpose
+	UpdateData(data []byte, ctx context.Context) error        // "user" should be set in ctx for auth purpose
+	Has(id string, ctx context.Context) (bool, error)         // return true if user exists
 }
 
 type RoleChecker interface {
@@ -73,7 +73,7 @@ func (s *Server) tokenCheck(next http.Handler) http.Handler {
 			r = r.WithContext(context.WithValue(r.Context(), UserContextKey, cl.User))
 			s.Log.Infow("token ok, user context set", "user", cl.User)
 		}
-		//do stuff here
+		// do stuff here
 		next.ServeHTTP(w, r)
 	})
 }
@@ -152,7 +152,7 @@ func (s *Server) Login() http.HandlerFunc {
 			return
 		}
 		if !ok {
-			//create
+			// create
 			err := s.cfg.UserStore.Create(du.ID, fmt.Sprintf("%v#%v", du.Username, du.Discriminator), r.Context())
 			if err != nil {
 				s.Log.Errorw("unexpected error encountered reading user", "err", err, "user", du)
@@ -168,7 +168,7 @@ func (s *Server) Login() http.HandlerFunc {
 			return
 		}
 
-		//create a JWT with user's id
+		// create a JWT with user's id
 		expirationTime := time.Now().Add(14 * 24 * time.Hour)
 		jwtToken := jwt.New(jwt.SigningMethodHS256)
 		claims := jwtToken.Claims.(jwt.MapClaims)

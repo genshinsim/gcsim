@@ -32,8 +32,8 @@ func init() {
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
 
-	//first hit at 94, then 30 frames between hits. 9 anemo hits total
-	//yes the game description scams you on the duration
+	// first hit at 94, then 30 frames between hits. 9 anemo hits total
+	// yes the game description scams you on the duration
 	duration := burstHitmarks[c.gender] + 30*8
 
 	c.Core.Status.Add("amcburst", duration)
@@ -88,7 +88,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				}
 				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, apAbs, 0, cbAbs)
 			}
-			//check if infused
+			// check if infused
 		}, 94+30*i)
 	}
 
@@ -122,7 +122,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		case attributes.Hydro:
 			c.qICDTag = attacks.ICDTagElementalBurstHydro
 		case attributes.NoElement:
-			//otherwise queue up
+			// otherwise queue up
 			c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)
 		}
 	}

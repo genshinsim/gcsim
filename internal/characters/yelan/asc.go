@@ -46,11 +46,11 @@ func (c *char) a4() {
 		this.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("yelan-a4", 15*60),
 			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				//char must be active
+				// char must be active
 				if c.Core.Player.Active() != this.Index {
 					return nil, false
 				}
-				//floor time elapsed
+				// floor time elapsed
 				dmg := float64(int((c.Core.F-started)/60))*0.035 + 0.01
 				if dmg > 0.5 {
 					dmg = 0.5

@@ -48,13 +48,12 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionDash:
+	if a == action.ActionDash {
 		f, ok := p["f"]
 		if !ok {
-			return 10 //tap = 36 frames, so under 1 second
+			return 10 // tap = 36 frames, so under 1 second
 		}
-		//for every 1 second passed, consume extra 15
+		// for every 1 second passed, consume extra 15
 		extra := f / 60
 		return float64(10 + 15*extra)
 	}

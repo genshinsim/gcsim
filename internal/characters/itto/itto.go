@@ -77,8 +77,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		// CA in Q state don't consume stamina
 		if c.Tags[strStackKey] > 0 {
 			return 0

@@ -14,19 +14,19 @@ import (
 
 // Provides mapping in JSON between gcsim keys and character data such as element, weapon type, etc...
 func main() {
-	//we pull the information from the curves pkg
-	//but in reality this should all just be piped from dimbreath's repo instead
+	// we pull the information from the curves pkg
+	// but in reality this should all just be piped from dimbreath's repo instead
 	res := make(map[string]curves.CharBase)
 
-	//we start at TravelerDelim because traveler has to be handled as special case
+	// we start at TravelerDelim because traveler has to be handled as special case
 	for i := keys.TravelerDelim + 1; i < keys.EndCharKeys; i++ {
 		res[i.String()] = curves.CharBaseMap[i]
 	}
 
-	//handle traveler
+	// handle traveler
 	for i := keys.NoChar + 1; i < keys.TravelerDelim-2; i++ {
 		key := i.String()
-		//odd is aether, even is lumine
+		// odd is aether, even is lumine
 		name := "aether"
 		if !strings.HasPrefix(key, name) {
 			name = "lumine"
@@ -43,8 +43,8 @@ func main() {
 		fmt.Println(res[key])
 	}
 
-	//write to file
+	// write to file
 	out, _ := json.MarshalIndent(res, "", " ")
-	os.WriteFile("./character_data.json", out, 0644)
+	os.WriteFile("./character_data.json", out, 0o644)
 
 }

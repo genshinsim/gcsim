@@ -52,7 +52,7 @@ func (w *WeaponClass) UnmarshalJSON(b []byte) error {
 
 type WeaponProfile struct {
 	Name     string         `json:"name"`
-	Key      keys.Weapon    `json:"key"` //use this to match with weapon curve mapping
+	Key      keys.Weapon    `json:"key"` // use this to match with weapon curve mapping
 	Class    WeaponClass    `json:"-"`
 	Refine   int            `json:"refine"`
 	Level    int            `json:"level"`

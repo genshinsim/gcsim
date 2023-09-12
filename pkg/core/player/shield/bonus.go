@@ -36,11 +36,11 @@ func (h *Handler) ShieldBonusModIsActive(key string) bool {
 			ind = i
 		}
 	}
-	//mod doesnt exist
+	// mod doesnt exist
 	if ind == -1 {
 		return false
 	}
-	//check expiry
+	// check expiry
 	if h.shieldBonusMods[ind].Expiry < *h.f && h.shieldBonusMods[ind].Expiry > -1 {
 		return false
 	}
@@ -63,7 +63,7 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 		}
 	}
 
-	//if does not exist, make new and add
+	// if does not exist, make new and add
 	if ind == -1 {
 		mod.Event = h.log.NewEvent("shield bonus added", glog.LogStatusEvent, -1).
 			Write("overwrite", false).
@@ -74,7 +74,7 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 		return
 	}
 
-	//otherwise check not expired
+	// otherwise check not expired
 	if h.shieldBonusMods[ind].Expiry > *h.f || h.shieldBonusMods[ind].Expiry == -1 {
 		h.log.NewEvent(
 			"shield bonus refreshed", glog.LogStatusEvent, -1,
@@ -85,7 +85,7 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 
 		mod.Event = h.shieldBonusMods[ind].Event
 	} else {
-		//if expired overide the event
+		// if expired overide the event
 		mod.Event = h.log.NewEvent("shield bonus added", glog.LogStatusEvent, -1).
 			Write("overwrite", false).
 			Write("key", mod.Key).

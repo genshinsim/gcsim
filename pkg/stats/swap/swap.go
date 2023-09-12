@@ -46,5 +46,6 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 		End:       core.F,
 		Character: b.activeChar,
 	}
-	result.ActiveCharacters = append(b.activeIntervals, interval)
+	result.ActiveCharacters = b.activeIntervals
+	result.ActiveCharacters = append(result.ActiveCharacters, interval)
 }

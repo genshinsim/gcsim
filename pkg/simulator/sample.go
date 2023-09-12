@@ -26,7 +26,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 	if err != nil {
 		return nil, err
 	}
-	//create a new simulation and run
+	// create a new simulation and run
 	s, err := simulation.New(simcfg, eval, c)
 	if err != nil {
 		return &model.Sample{}, err
@@ -36,7 +36,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 		return &model.Sample{}, err
 	}
 
-	//capture the log
+	// capture the log
 	logs, err := c.Log.Dump()
 	if err != nil {
 		return &model.Sample{}, err

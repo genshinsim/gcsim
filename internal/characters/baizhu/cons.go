@@ -26,7 +26,7 @@ func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
-		//only trigger with the active character
+		// only trigger with the active character
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}

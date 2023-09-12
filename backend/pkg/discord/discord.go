@@ -43,7 +43,7 @@ type Config struct {
 type Bot struct {
 	Config
 	Log *zap.SugaredLogger
-	//discord stuff
+	// discord stuff
 	*cmdroute.Router
 	s *state.State
 }
@@ -102,7 +102,7 @@ func (b *Bot) Run() error {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	//this is blocking
+	// this is blocking
 	if err := b.s.Connect(ctx); err != nil {
 		return err
 	}

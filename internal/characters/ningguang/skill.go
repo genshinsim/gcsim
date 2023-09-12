@@ -57,11 +57,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		)
 	}, skillHitmark)
 
-	//put skill on cd first then check for construct/c2
+	// put skill on cd first then check for construct/c2
 	c.SetCD(action.ActionSkill, 720)
 
-	//create a construct
-	c.Core.Constructs.New(c.newScreen(1800, screenDir, screenPos), true) //30 seconds
+	// create a construct
+	c.Core.Constructs.New(c.newScreen(1800, screenDir, screenPos), true) // 30 seconds
 
 	c.lastScreen = c.Core.F
 

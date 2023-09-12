@@ -31,7 +31,7 @@ func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
 		a.Info.AmpMult = 1.5
 		r.burningCheck()
 	default:
-		//should be here
+		// should be here
 		return false
 	}
 	a.Info.Durability -= consumed

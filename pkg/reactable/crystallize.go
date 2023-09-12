@@ -54,7 +54,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	//grab current snapshot for shield
+	// grab current snapshot for shield
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	ai := combat.AttackInfo{
 		ActorIndex: a.Info.ActorIndex,
@@ -64,14 +64,14 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	snap := char.Snapshot(&ai)
 	shd := NewCrystallizeShield(char.Index, ele, r.core.F, snap.CharLvl, snap.Stats[attributes.EM], r.core.F+900)
 	r.core.Player.Shields.Add(shd)
-	//reduce
+	// reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
 	//TODO: confirm u can only crystallize once
 	a.Info.Durability = 0
 	a.Reacted = true
-	//event
+	// event
 	r.core.Events.Emit(evt, r.self, a)
-	//check freeze + ec
+	// check freeze + ec
 	switch {
 	case ele == attributes.Electro && r.Durability[ModifierHydro] > ZeroDur:
 		r.checkEC()
@@ -81,7 +81,7 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	return true
 }
 
-func NewCrystallizeShield(index int, typ attributes.Element, src int, lvl int, em float64, expiry int) *CrystallizeShield {
+func NewCrystallizeShield(index int, typ attributes.Element, src, lvl int, em float64, expiry int) *CrystallizeShield {
 	s := &CrystallizeShield{}
 	s.Tmpl = &shield.Tmpl{}
 

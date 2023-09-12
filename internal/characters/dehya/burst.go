@@ -17,12 +17,12 @@ var remainingFieldDur int
 const burstKey = "dehya-burst"
 const kickKey = "dehya-burst-kick"
 const burstDoT1Hitmark = 105
-const kickHitmark = 46 //6 hits minimum
+const kickHitmark = 46 // 6 hits minimum
 var punchSlowHitmark = 43
 var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27}
 
 func init() {
-	//TODO:Deprecate bursty frames in favor of a constant?
+	//TODO: Deprecate bursty frames in favor of a constant?
 	burstFrames = frames.InitAbilSlice(102) // Q -> E/D/J
 	burstFrames[action.ActionSwap] = 102    // Q -> Swap
 
@@ -30,7 +30,7 @@ func init() {
 	kickFrames[action.ActionAttack] = 75        // Q -> N1
 	kickFrames[action.ActionSkill] = 71         // Q -> E
 	kickFrames[action.ActionJump] = 73          // Q -> J
-	kickFrames[action.ActionSwap] = kickHitmark //Q -> Swap
+	kickFrames[action.ActionSwap] = kickHitmark // Q -> Swap
 
 }
 
@@ -53,7 +53,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	remainingFieldDur = 0
 	if c.StatusIsActive(dehyaFieldKey) {
 		// pick up field at start
-		remainingFieldDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F //dur gets extended on field recast by a low margin, apparently
+		remainingFieldDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
 		c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
 			Write("Duration Remaining ", remainingFieldDur+sanctumPickupExtension).
 			Write("DoT tick CD", c.StatusDuration(skillICDKey))
@@ -114,7 +114,7 @@ func (c *char) burstPunch(src int, auto bool) action.ActionInfo {
 		if c.Core.Player.Active() != c.Index {
 			return
 		}
-		if burstIsJumpCancelled { //prevent punches if you jump cancel burst
+		if burstIsJumpCancelled { // prevent punches if you jump cancel burst
 			return
 		}
 		c.Core.QueueAttack(
@@ -168,7 +168,7 @@ func (c *char) burstKick(src int) action.ActionInfo {
 	}
 
 	c.Core.Tasks.Add(func() {
-		if src != c.burstHitSrc { //prevents duplicates
+		if src != c.burstHitSrc { // prevents duplicates
 			return
 		}
 		if c.Core.Player.Active() != c.Index {

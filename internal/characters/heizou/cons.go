@@ -22,7 +22,7 @@ func (c *char) c1() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("heizou-c1", 300), //5s
+			Base:         modifier.NewBaseWithHitlag("heizou-c1", 300), // 5s
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return c.c1buff, true

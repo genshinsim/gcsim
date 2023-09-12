@@ -26,7 +26,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.qPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 5}, player.Direction())
 	c.absorbCheckLocation = combat.NewBoxHitOnTarget(c.qPos, geometry.Point{Y: -1}, 2.5, 2.5)
 
-	//8 second duration, tick every .4 second
+	// 8 second duration, tick every .4 second
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wind's Grand Ode",
@@ -112,11 +112,11 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 			case attributes.Cryo:
 				c.aiAbsorb.ICDTag = attacks.ICDTagElementalBurstCryo
 			}
-			//trigger dmg ticks here
+			// trigger dmg ticks here
 			c.burstAbsorbedTicks()
 			return
 		}
-		//otherwise queue up
+		// otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)
 	}
 }

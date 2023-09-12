@@ -150,7 +150,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 						0,
 					)
 				}
-				//check if absorbed
+				// check if absorbed
 			}, hitmark)
 		} else {
 			c.Core.Tasks.Add(func() {
@@ -164,7 +164,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 						0,
 					)
 				}
-				//check if absorbed
+				// check if absorbed
 			}, hitmark)
 		}
 
@@ -232,7 +232,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				0,
 			)
 		}
-		//check if absorbed
+		// check if absorbed
 	}, hitmark)
 
 	// starts absorbing after the first tick?
@@ -295,7 +295,7 @@ func (c *char) absorbCheckE(src, count, max int) func() {
 		case attributes.Hydro:
 			c.eICDTag = attacks.ICDTagElementalArtHydro
 		case attributes.NoElement:
-			//otherwise queue up
+			// otherwise queue up
 			c.Core.Tasks.Add(c.absorbCheckE(src, count+1, max), 18)
 		}
 	}

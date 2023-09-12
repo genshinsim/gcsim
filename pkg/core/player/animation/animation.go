@@ -46,13 +46,13 @@ func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	if h.aniEvt == nil {
 		return false
 	}
-	//actions are always executed after ticks and right before we advance to
-	//the next frame i.e. at the end of a frame
+	// actions are always executed after ticks and right before we advance to
+	// the next frame i.e. at the end of a frame
 	//
-	//if an action should take 20 frames of animation then this action would be ready if
-	//f >= s + 20
+	// if an action should take 20 frames of animation then this action would be ready if
+	// f >= s + 20
 	//
-	//i.e the action lasted 20 frames counting the current frame
+	// i.e the action lasted 20 frames counting the current frame
 	// fmt.Printf("animation check; current frame %v, animation duration %v\n", *h.f, h.info.Frames(next))
 	return !h.aniEvt.CanUse(next)
 }
@@ -67,7 +67,7 @@ func (h *AnimationHandler) CanQueueNextAction() bool {
 }
 
 func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *action.ActionInfo) {
-	//remove previous if still active
+	// remove previous if still active
 	if h.aniEvt != nil {
 		if h.aniEvt.OnRemoved != nil {
 			h.aniEvt.OnRemoved(evt.State)
@@ -80,7 +80,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 			)
 		}
 	}
-	//setup next
+	// setup next
 	h.char = char
 	h.started = *h.f
 	h.aniEvt = evt

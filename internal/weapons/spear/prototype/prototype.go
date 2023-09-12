@@ -33,10 +33,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 	const buffKey = "prototype"
 
-	//no icd on this one
+	// no icd on this one
 	w.buff = make([]float64, attributes.EndStatType)
 	atkbonus := 0.06 + 0.02*float64(r)
-	//add on crit effect
+	// add on crit effect
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false

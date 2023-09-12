@@ -7,7 +7,7 @@ import "github.com/genshinsim/gcsim/pkg/core/attributes"
 type ShieldType int
 
 const (
-	ShieldCrystallize ShieldType = iota //lasts 15 seconds
+	ShieldCrystallize ShieldType = iota // lasts 15 seconds
 	ShieldNoelleSkill
 	ShieldNoelleA1
 	ShieldZhongliJadeShield
@@ -32,7 +32,7 @@ type Shield interface {
 	Key() int
 	Type() ShieldType
 	ShieldStrength(ele attributes.Element, bonus float64) float64
-	OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) //return dmg taken and shield stays
+	OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) // return dmg taken and shield stays
 	OnExpire()
 	OnOverwrite()
 	Expiry() int

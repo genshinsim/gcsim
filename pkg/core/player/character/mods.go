@@ -13,7 +13,7 @@ import (
 )
 
 type (
-	//Status is basic mod for keeping track Status; usually affected by hitlag
+	// Status is basic mod for keeping track Status; usually affected by hitlag
 	Status struct {
 		modifier.Base
 	}
@@ -147,7 +147,7 @@ func (c *CharWrapper) getModExpiry(key string) int {
 	if m != -1 {
 		return c.mods[m].Expiry()
 	}
-	//must be 0 if doesn't exist. avoid using -1 b/c that's infinite
+	// must be 0 if doesn't exist. avoid using -1 b/c that's infinite
 	return 0
 }
 func (c *CharWrapper) StatusExpiry(key string) int { return c.getModExpiry(key) }
@@ -175,9 +175,9 @@ func (c *CharWrapper) extendMod(key string, ext int) bool {
 		return false
 	}
 	if !active {
-		return false //nothing to extend is not active
+		return false // nothing to extend is not active
 	}
-	//other wise add to expiry
+	// other wise add to expiry
 	mod := c.mods[m]
 	mod.Extend(mod.Key(), c.log, c.Index, ext)
 	return true
@@ -188,7 +188,7 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 // Amount.
 
 func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
-	//skip if this is reaction damage
+	// skip if this is reaction damage
 	if a.Info.AttackTag >= attacks.AttackTagNoneStat {
 		return nil
 	}
@@ -259,7 +259,7 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 			n++
 			continue
 		}
-		//if not expired
+		// if not expired
 		if m.Expiry() == -1 || m.Expiry() > *c.f {
 			amt := m.Amount(a)
 			c.log.NewEvent("applying cooldown modifier", glog.LogActionEvent, c.Index).

@@ -54,7 +54,7 @@ func (c *char) skillPress() action.ActionInfo {
 }
 
 func (c *char) skillHold(createStele bool) action.ActionInfo {
-	//hold does dmg
+	// hold does dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Hold)",
@@ -69,14 +69,14 @@ func (c *char) skillHold(createStele bool) action.ActionInfo {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), 0, skillHoldHitmark)
 
-	//create a stele if less than zhongli's max stele count and desired by player
+	// create a stele if less than zhongli's max stele count and desired by player
 	if (c.steleCount < c.maxStele) && createStele {
 		c.Core.Tasks.Add(func() {
-			c.newStele(1860) //31 seconds
+			c.newStele(1860) // 31 seconds
 		}, skillHoldHitmark)
 	}
 
-	//make a shield - enemy debuff arrows appear 3-5 frames after the damage number shows up in game
+	// make a shield - enemy debuff arrows appear 3-5 frames after the damage number shows up in game
 	c.Core.Tasks.Add(func() {
 		c.addJadeShield()
 	}, skillHoldHitmark)

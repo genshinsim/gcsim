@@ -122,7 +122,7 @@ func (c *char) skillDmgTickTask(src int, ae *combat.AttackEvent, lastTickDuratio
 		}
 
 		// Clones initial snapshot
-		tick := *ae //deference the pointer here
+		tick := *ae // deference the pointer here
 		// pattern shouldn't snapshot on attack event creation because the skill follows the player
 		tick.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5)
 

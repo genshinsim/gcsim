@@ -36,7 +36,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		FlatDmg:    burstEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
 	}
 
-	//X number of hits depending on mirrors when casted
+	// X number of hits depending on mirrors when casted
 	for i := 0; i < 4+2*c.mirrorCount; i++ {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 7.1}, 6.8), 67, burstHitmark+i*21)
 

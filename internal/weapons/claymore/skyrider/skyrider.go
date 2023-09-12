@@ -28,7 +28,7 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//On hit, Normal or Charged Attacks increase ATK by 6% for 6s. Max 4 stacks. Can occur once every 0.5s.
+	// On hit, Normal or Charged Attacks increase ATK by 6% for 6s. Max 4 stacks. Can occur once every 0.5s.
 	w := &Weapon{}
 	r := p.Refine
 
@@ -50,22 +50,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		//if hit lands after all stack should have fallen off, reset to 0
+		// if hit lands after all stack should have fallen off, reset to 0
 		if !char.StatModIsActive("skyrider") {
 			w.stacks = 0
 		}
 
 		if w.stacks < 4 {
 			w.stacks++
-			//update buff
+			// update buff
 			w.buff[attributes.ATKP] = float64(w.stacks) * atkbuff
 		}
 
-		//extend buff timer
+		// extend buff timer
 		char.AddStatus(icdKey, 30, true)
 
-		//every whack adds a stack while under 4 and refreshes buff
-		//lasts 6 seconds
+		// every whack adds a stack while under 4 and refreshes buff
+		// lasts 6 seconds
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("skyrider", 360),
 			AffectedStat: attributes.NoStat,

@@ -46,14 +46,14 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	for !c.Player.CanQueueNextAction() {
 		advanceCoreFrame(c)
 	}
-	//wait until dendro gadget is created
+	// wait until dendro gadget is created
 	for c.Combat.GadgetCount() < 1 {
 		advanceCoreFrame(c)
 	}
-	//skip an additional frame to be safe
+	// skip an additional frame to be safe
 	advanceCoreFrame(c)
 
-	//check that gadget has dendro on it
+	// check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
 	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
@@ -65,7 +65,7 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
 	}
 
-	//pattern only hit gadet
+	// pattern only hit gadet
 	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
 	pattern.SkipTargets[targets.TargettableEnemy] = true
 
@@ -128,14 +128,14 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	for !c.Player.CanQueueNextAction() {
 		advanceCoreFrame(c)
 	}
-	//wait until dendro gadget is created
+	// wait until dendro gadget is created
 	for c.Combat.GadgetCount() < 1 {
 		advanceCoreFrame(c)
 	}
-	//skip an additional frame to be safe
+	// skip an additional frame to be safe
 	advanceCoreFrame(c)
 
-	//check that gadget has dendro on it
+	// check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
 	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
@@ -147,7 +147,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
 	}
 
-	//pattern only hit gadet
+	// pattern only hit gadet
 	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
 	pattern.SkipTargets[targets.TargettableEnemy] = true
 
@@ -166,7 +166,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierPyro])
 	}
 
-	//should get an explosion 60 frfames later
+	// should get an explosion 60 frfames later
 	for i := 0; i < 100; i++ {
 		advanceCoreFrame(c)
 	}
@@ -212,11 +212,11 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	log.Println("casting burst: ", c.F)
 	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
 
-	//expecting to take a total of 54 frames to appear + 15s duration
+	// expecting to take a total of 54 frames to appear + 15s duration
 	totalDuration := 15 * 60
 	expectedCount := 1 + (totalDuration-37)/90
 
-	//add 100 for good measures in case bugs from extra ticks
+	// add 100 for good measures in case bugs from extra ticks
 	for i := 0; i < 54+totalDuration+100; i++ {
 		advanceCoreFrame(c)
 	}
@@ -258,12 +258,12 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	p := make(map[string]int)
 	log.Println("casting burst: ", c.F)
 	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
-	//wait until dendro gadget is created
+	// wait until dendro gadget is created
 	for c.Combat.GadgetCount() < 1 {
 		advanceCoreFrame(c)
 	}
 
-	//pattern only hit gadet
+	// pattern only hit gadet
 	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
 	pattern.SkipTargets[targets.TargettableEnemy] = true
 
@@ -276,11 +276,11 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 		Pattern: pattern,
 	}, 0)
 
-	//first tick at 15, then tick every 54 after that
+	// first tick at 15, then tick every 54 after that
 	totalDuration := 15 * 60
 	expectedCount := 1 + (totalDuration-15)/54
 
-	//add 100 for good measures in case bugs from extra ticks
+	// add 100 for good measures in case bugs from extra ticks
 	for i := 0; i < totalDuration+100; i++ {
 		advanceCoreFrame(c)
 	}

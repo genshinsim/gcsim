@@ -13,7 +13,7 @@ import (
 )
 
 func evalDebuff(c *core.Core, fields []string) (bool, error) {
-	//.debuff.res.t1.name
+	// .debuff.res.t1.name
 	if err := fieldsCheck(fields, 4, "debuff"); err != nil {
 		return false, err
 	}
@@ -37,7 +37,7 @@ func evalDebuff(c *core.Core, fields []string) (bool, error) {
 }
 
 func evalElement(c *core.Core, fields []string) (float64, error) {
-	//.element.t1.pyro
+	// .element.t1.pyro
 	if err := fieldsCheck(fields, 3, "element"); err != nil {
 		return 0, err
 	}

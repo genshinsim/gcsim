@@ -58,7 +58,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		// despawn stiletto
 		c.Core.Status.Delete(stilettoKey)
 
-		//2 hits
+		// 2 hits
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Thunderclap Slash",

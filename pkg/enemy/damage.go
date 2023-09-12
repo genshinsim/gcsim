@@ -31,7 +31,7 @@ func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	}
 	dmgBonus := elePer + atk.Snapshot.Stats[attributes.DmgP]
 
-	//calculate using attack or def
+	// calculate using attack or def
 	var a float64
 	totalhp := atk.Snapshot.BaseHP*(1+atk.Snapshot.Stats[attributes.HPP]) + atk.Snapshot.Stats[attributes.HP]
 	if atk.Info.UseDef {
@@ -43,7 +43,7 @@ func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	base := atk.Info.Mult*a + atk.Info.FlatDmg
 	damage := base * (1 + dmgBonus)
 
-	//make sure 0 <= cr <= 1
+	// make sure 0 <= cr <= 1
 	if atk.Snapshot.Stats[attributes.CR] < 0 {
 		atk.Snapshot.Stats[attributes.CR] = 0
 	}
@@ -61,9 +61,9 @@ func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 		(float64(atk.Snapshot.CharLvl+100) +
 			float64(e.Level+100)*(1+defadj)*(1-atk.Info.IgnoreDefPercent))
 
-	//apply def mod
-	damage = damage * defmod
-	//apply resist mod
+	// apply def mod
+	damage *= defmod
+	// apply resist mod
 
 	resmod := 1 - res/2
 	if res >= 0 && res < 0.75 {
@@ -71,34 +71,34 @@ func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	} else if res > 0.75 {
 		resmod = 1 / (4*res + 1)
 	}
-	damage = damage * resmod
+	damage *= resmod
 
 	precritdmg := damage
 
-	//check if crit
+	// check if crit
 	if atk.Info.HitWeakPoint || e.Core.Rand.Float64() <= atk.Snapshot.Stats[attributes.CR] {
-		damage = damage * (1 + atk.Snapshot.Stats[attributes.CD])
+		damage *= (1 + atk.Snapshot.Stats[attributes.CD])
 		isCrit = true
 	}
 
 	preampdmg := damage
 
-	//calculate em bonus
+	// calculate em bonus
 	em := atk.Snapshot.Stats[attributes.EM]
 	emBonus := (2.78 * em) / (1400 + em)
 	var reactBonus float64
-	//check melt/vape
+	// check melt/vape
 	if atk.Info.Amped {
 		reactBonus = e.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
 		// e.Core.Log.Debugw("debug", "frame", e.Core.F, core.LogPreDamageMod, "char", e.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
-		damage = damage * (atk.Info.AmpMult * (1 + emBonus + reactBonus))
+		damage *= (atk.Info.AmpMult * (1 + emBonus + reactBonus))
 	}
 
-	//reduce damage by damage group
+	// reduce damage by damage group
 	x := 1.0
 	if !atk.Info.SourceIsSim {
 		x = e.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
-		damage = damage * x
+		damage *= x
 	}
 
 	if e.Core.Flags.LogDebug {

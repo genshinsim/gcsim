@@ -17,8 +17,8 @@ type Eval struct {
 	AST  ast.Node
 	Log  *log.Logger
 
-	next chan bool               //wait on this before continuing
-	work chan *action.ActionEval //send work to this chan
+	next chan bool               // wait on this before continuing
+	work chan *action.ActionEval // send work to this chan
 	// set to non-nil by the first error encountered
 	// this is necessary because Run() could have exited already with an err but
 	err error
@@ -28,7 +28,7 @@ type Eval struct {
 
 type Env struct {
 	parent *Env
-	varMap map[string]*Obj
+	varMap map[string]Obj
 }
 
 func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
@@ -44,11 +44,11 @@ func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
 func NewEnv(parent *Env) *Env {
 	return &Env{
 		parent: parent,
-		varMap: make(map[string]*Obj),
+		varMap: make(map[string]Obj),
 	}
 }
 
-func (e *Env) v(s string) (*Obj, error) {
+func (e *Env) v(s string) (Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {
 		return v, nil
@@ -61,7 +61,7 @@ func (e *Env) v(s string) (*Obj, error) {
 
 // Tell eval to exit now
 func (e *Eval) Exit() error {
-	//drain work if any
+	// drain work if any
 	select {
 	case <-e.work:
 	default:
@@ -69,7 +69,7 @@ func (e *Eval) Exit() error {
 	if e.isTerminated {
 		return e.err
 	}
-	//make sure we can't send or continue anymore
+	// make sure we can't send or continue anymore
 	e.isTerminated = true
 	close(e.next)
 	close(e.work)
@@ -105,8 +105,8 @@ func (e *Eval) Err() error {
 // via NextAction()
 func (e *Eval) Run() (res Obj, err error) {
 	defer func() {
-		//this defer ensures that e.err is set correctly; this has to be the first defer
-		//as defers are called last in first out so this needs to be before any panic handling
+		// this defer ensures that e.err is set correctly; this has to be the first defer
+		// as defers are called last in first out so this needs to be before any panic handling
 		e.err = err
 	}()
 	//TODO: this should hopefully be removed in the future
@@ -116,12 +116,12 @@ func (e *Eval) Run() (res Obj, err error) {
 			err = fmt.Errorf("panic occured: %v", pErr)
 		}
 	}()
-	//make sure to close work since we are the only sender
+	// make sure to close work since we are the only sender
 	defer e.Exit()
 	if e.Log == nil {
 		e.Log = log.New(io.Discard, "", log.LstdFlags)
 	}
-	//make sure ErrTerminate is discarded
+	// make sure ErrTerminate is discarded
 	defer func() {
 		if err == ErrTerminated {
 			err = nil
@@ -131,15 +131,15 @@ func (e *Eval) Run() (res Obj, err error) {
 	global := NewEnv(nil)
 	e.initSysFuncs(global)
 
-	//start running once we get the signal to go
+	// start running once we get the signal to go
 	err = e.waitForNext()
 	if err != nil {
 		return
 	}
 
-	//this should run until it hits an Action
-	//it will then pass the action on a resp channel
-	//it will then wait for Next before running again
+	// this should run until it hits an Action
+	// it will then pass the action on a resp channel
+	// it will then wait for Next before running again
 	res, err = e.evalNode(e.AST, global)
 	return
 }

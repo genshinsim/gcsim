@@ -80,7 +80,7 @@ func (b *buffer) Add(result stats.Result) {
 		stat.Add(val)
 	}
 
-	for i, char := range result.Characters {
+	for i := range result.Characters {
 		var charDPS float64
 		charElementDPS := makeElementMap()
 		charTargetDPS := make(map[int]float64)
@@ -102,7 +102,7 @@ func (b *buffer) Add(result stats.Result) {
 			stat.Add(val)
 		}
 
-		for _, ev := range char.DamageEvents {
+		for _, ev := range result.Characters[i].DamageEvents {
 			if _, ok := charTargetDPS[ev.Target]; !ok {
 				charTargetDPS[ev.Target] = 0
 			}

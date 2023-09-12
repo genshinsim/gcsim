@@ -78,7 +78,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 5), skillHitmark)
 
-	c.Core.Tasks.Add(func() { //place field
+	c.Core.Tasks.Add(func() { // place field
 		c.addField(dur)
 	}, skillHitmark+1)
 
@@ -96,7 +96,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 func (c *char) skillHook() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
-		//atk := args[1].(*combat.AttackEvent)
+		// atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
 		if !c.StatusIsActive(dehyaFieldKey) {
 			return false
@@ -129,14 +129,14 @@ func (c *char) skillHook() {
 }
 
 func (c *char) skillRecast() action.ActionInfo {
-	dur := c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F //dur gets extended on field recast by a low margin, apparently
+	dur := c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ranging Flame",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt, //TODO ???
+		StrikeType:         attacks.StrikeTypeBlunt, // TODO ???
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skillReposition[c.TalentLvlSkill()],
@@ -158,7 +158,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	c.sanctumICD = c.StatusDuration(skillICDKey)
 	c.AddStatus(skillICDKey, skillRecastHitmark+c.sanctumICD, false)
 
-	//reposition
+	// reposition
 
 	// TODO: damage frame
 
@@ -169,7 +169,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	c.Core.QueueAttackWithSnap(ai, c.skillSnapshot, combat.NewCircleHitOnTarget(skillPos, nil, 6), skillRecastHitmark)
 
 	// place field back down
-	c.Core.Tasks.Add(func() { //place field
+	c.Core.Tasks.Add(func() { // place field
 		c.addField(dur)
 	}, skillRecastHitmark+1)
 
@@ -188,7 +188,7 @@ func (c *char) addField(dur int) {
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt, //TODO ???
+		StrikeType:         attacks.StrikeTypeBlunt, // TODO ???
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skillDotAtk[c.TalentLvlSkill()],
@@ -197,7 +197,7 @@ func (c *char) addField(dur int) {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: false,
 	}
-	//places field
+	// places field
 	c.AddStatus(dehyaFieldKey, dur, false)
 	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
 		Write("Duration Remaining ", dur).

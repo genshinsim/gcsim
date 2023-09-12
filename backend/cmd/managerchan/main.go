@@ -24,7 +24,7 @@ func main() {
 	sugar := logger.Sugar()
 
 	store, err := backend.New(backend.Config{
-		LinkValidationRegex: regexp.MustCompile(`https:\/\/\S+.app\/\S+\/(\S+)$`),
+		LinkValidationRegex: regexp.MustCompile(`https://\S+.app/\S+/(\S+)$`),
 		ShareStore:          makeShareStore(),
 		DBgRPCAddr:          os.Getenv("DB_STORE_URL"),
 	}, func(s *backend.Store) error {

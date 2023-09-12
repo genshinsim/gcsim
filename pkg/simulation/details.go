@@ -14,42 +14,42 @@ import (
 func (s *Simulation) CharacterDetails() []*model.Character {
 	out := make([]*model.Character, len(s.C.Player.Chars()))
 
-	for i, v := range s.cfg.Characters {
+	for i := range s.cfg.Characters {
 		m := make(map[string]int32)
-		for k, v := range v.Sets {
+		for k, v := range s.cfg.Characters[i].Sets {
 			m[k.String()] = int32(v)
 		}
 
 		char := &model.Character{
-			Name:     v.Base.Key.String(),
-			Element:  v.Base.Element.String(),
-			Level:    int32(v.Base.Level),
-			MaxLevel: int32(v.Base.MaxLevel),
-			Cons:     int32(v.Base.Cons),
+			Name:     s.cfg.Characters[i].Base.Key.String(),
+			Element:  s.cfg.Characters[i].Base.Element.String(),
+			Level:    int32(s.cfg.Characters[i].Base.Level),
+			MaxLevel: int32(s.cfg.Characters[i].Base.MaxLevel),
+			Cons:     int32(s.cfg.Characters[i].Base.Cons),
 			Weapon: &model.Weapon{
-				Name:     v.Weapon.Key.String(),
-				Refine:   int32(v.Weapon.Refine),
-				Level:    int32(v.Weapon.Level),
-				MaxLevel: int32(v.Weapon.MaxLevel),
+				Name:     s.cfg.Characters[i].Weapon.Key.String(),
+				Refine:   int32(s.cfg.Characters[i].Weapon.Refine),
+				Level:    int32(s.cfg.Characters[i].Weapon.Level),
+				MaxLevel: int32(s.cfg.Characters[i].Weapon.MaxLevel),
 			},
 			Talents: &model.CharacterTalents{
-				Attack: int32(v.Talents.Attack),
-				Skill:  int32(v.Talents.Skill),
-				Burst:  int32(v.Talents.Burst),
+				Attack: int32(s.cfg.Characters[i].Talents.Attack),
+				Skill:  int32(s.cfg.Characters[i].Talents.Skill),
+				Burst:  int32(s.cfg.Characters[i].Talents.Burst),
 			},
 			Sets:  m,
-			Stats: v.Stats,
+			Stats: s.cfg.Characters[i].Stats,
 		}
 		out[i] = char
 	}
 
-	//grab a snapshot for each char
+	// grab a snapshot for each char
 	for i, c := range s.C.Player.Chars() {
 		snap := c.Snapshot(&combat.AttackInfo{
 			Abil:      "stats-check",
 			AttackTag: attacks.AttackTagNone,
 		})
-		//convert all atk%, def% and hp% into flat amounts by tacking on base
+		// convert all atk%, def% and hp% into flat amounts by tacking on base
 		snap.Stats[attributes.HP] += c.Base.HP * (1 + snap.Stats[attributes.HPP])
 		snap.Stats[attributes.DEF] += c.Base.Def * (1 + snap.Stats[attributes.DEFP])
 		snap.Stats[attributes.ATK] += (c.Base.Atk + c.Weapon.Atk) * (1 + snap.Stats[attributes.ATKP])

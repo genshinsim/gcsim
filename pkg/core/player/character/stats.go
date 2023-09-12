@@ -11,7 +11,7 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	var sb strings.Builder
 	var debugDetails []interface{} = nil
 
-	//grab char stats
+	// grab char stats
 
 	var stats [attributes.EndStatType]float64
 	copy(stats[:], c.BaseStats[:attributes.EndStatType])

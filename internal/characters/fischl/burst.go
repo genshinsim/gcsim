@@ -27,7 +27,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//initial damage; part of the burst tag
+	// initial damage; part of the burst tag
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Midnight Phantasmagoria",
@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 	)
 
-	//check for C4 damage
+	// check for C4 damage
 	if c.Base.Cons >= 4 {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -61,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 		// C4 damage always occurs before burst damage.
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 8, 8)
-		//heal at end of animation
+		// heal at end of animation
 		heal := c.MaxHP() * 0.2
 		c.Core.Tasks.Add(func() {
 			c.Core.Player.Heal(player.HealInfo{

@@ -32,7 +32,7 @@ func New(f *int, log glog.Logger, debug bool) InfusionHandler {
 }
 
 func (i *InfusionHandler) ExtendInfusion(char int, factor, dur float64) {
-	//if infusion is active, extend it
+	// if infusion is active, extend it
 	if i.infusion[char].Expiry < float64(*i.f) || i.infusion[char].Expiry == -1 {
 		return
 	}
@@ -60,7 +60,7 @@ func (i *InfusionHandler) WeaponInfuseIsActive(char int, key string) bool {
 	if i.infusion[char].Key != key {
 		return false
 	}
-	//check expiry
+	// check expiry
 	if i.infusion[char].Expiry < float64(*i.f) && i.infusion[char].Expiry > -1 {
 		return false
 	}

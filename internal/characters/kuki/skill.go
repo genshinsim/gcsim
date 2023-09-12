@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// C2: Grass Ring of Sanctification's duration is increased by 3s.
 	skilldur := 720
 	if c.Base.Cons >= 2 {
-		skilldur = 900 //12+3s
+		skilldur = 900 // 12+3s
 	}
 
 	// this gets executed before kuki can experience hitlag so no need for char queue
@@ -119,11 +119,11 @@ func (c *char) bellTick(src int) func() {
 			Mult:       skilldot[c.TalentLvlSkill()],
 			FlatDmg:    c.a4Damage(),
 		}
-		//trigger damage
+		// trigger damage
 		//TODO: Check for snapshots
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 2, 2, c.particleCB)
 
-		//A4 is considered here
+		// A4 is considered here
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),

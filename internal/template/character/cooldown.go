@@ -30,14 +30,14 @@ import (
 // cdQueueWorkerStartedAt[a] to represent the new worker start frame. This way the old worker can
 // check this value first and then gracefully exit if it no longer matches its starting frame
 func (c *Character) SetCD(a action.Action, dur int) {
-	//setting cd is just adding a cd to the recovery queue
-	//add current action and duration to the queue
+	// setting cd is just adding a cd to the recovery queue
+	// add current action and duration to the queue
 	c.cdQueue[a] = append(c.cdQueue[a], dur)
-	//if queue is zero before we added to it, then we'll start a cooldown queue worker
+	// if queue is zero before we added to it, then we'll start a cooldown queue worker
 	if len(c.cdQueue[a]) == 1 {
 		c.startCooldownQueueWorker(a, true)
 	}
-	//make sure to remove one from stack count
+	// make sure to remove one from stack count
 	c.AvailableCDCharge[a]--
 	if c.AvailableCDCharge[a] < 0 {
 		panic("unexpected charges less than 0")
@@ -58,7 +58,7 @@ func (c *Character) Charges(a action.Action) int {
 	return c.AvailableCDCharge[a]
 }
 
-func (c *Character) SetCDWithDelay(a action.Action, dur int, delay int) {
+func (c *Character) SetCDWithDelay(a action.Action, dur, delay int) {
 	if delay == 0 {
 		c.SetCD(a, dur)
 		return
@@ -67,11 +67,11 @@ func (c *Character) SetCDWithDelay(a action.Action, dur int, delay int) {
 }
 
 func (c *Character) Cooldown(a action.Action) int {
-	//remaining cooldown is src + first item in queue - current frame
+	// remaining cooldown is src + first item in queue - current frame
 	if c.AvailableCDCharge[a] > 0 {
 		return 0
 	}
-	//otherwise check our queue; if zero then it's ready
+	// otherwise check our queue; if zero then it's ready
 	if len(c.cdQueue) == 0 {
 		// panic("queue length is somehow 0??")
 		return 0
@@ -80,41 +80,41 @@ func (c *Character) Cooldown(a action.Action) int {
 }
 
 func (c *Character) ResetActionCooldown(a action.Action) {
-	//if stacks already maxed then do nothing
+	// if stacks already maxed then do nothing
 	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
 		return
 	}
-	//log.Printf("resetting; frame %v, queue %v\n", c.F, c.cdQueue[a])
-	//otherwise add a stack && pop queue
+	// log.Printf("resetting; frame %v, queue %v\n", c.F, c.cdQueue[a])
+	// otherwise add a stack && pop queue
 	c.AvailableCDCharge[a]++
 	c.Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
-	//reset worker time
+	// reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
 	c.cdCurrentQueueWorker[a] = nil
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reset").
 		Write("type", a.String()).
 		Write("charges_remain", c.AvailableCDCharge).
 		Write("cooldown_queue", c.cdQueue)
-	//check if anymore cd in queue
+	// check if anymore cd in queue
 	if len(c.cdQueue) > 0 {
 		c.startCooldownQueueWorker(a, true)
 	}
 }
 
 func (c *Character) ReduceActionCooldown(a action.Action, v int) {
-	//do nothing if stacks already maxed
+	// do nothing if stacks already maxed
 	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
 		return
 	}
-	//check if reduction > time remaing? if so then call reset cd
+	// check if reduction > time remaing? if so then call reset cd
 	remain := c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F
-	//log.Printf("hello reducing; reduction %v, remaining %v, frame %v, old queue %v\n", v, remain, c.F, c.cdQueue[a])
+	// log.Printf("hello reducing; reduction %v, remaining %v, frame %v, old queue %v\n", v, remain, c.F, c.cdQueue[a])
 	if v >= remain {
 		c.ResetActionCooldown(a)
 		return
 	}
-	//otherwise reduce remain and restart queue
+	// otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reduced").
 		Write("type", a.String()).
@@ -122,35 +122,35 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 		Write("charges_remain", c.AvailableCDCharge).
 		Write("cooldown_queue", c.cdQueue)
 	c.startCooldownQueueWorker(a, false)
-	//log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
+	// log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
 }
 
 func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
-	//check the length of the queue for action a, if there's nothing then there's
-	//nothing to start
+	// check the length of the queue for action a, if there's nothing then there's
+	// nothing to start
 	if len(c.cdQueue[a]) == 0 {
 		return
 	}
 
-	//set the time we starter this worker at
+	// set the time we starter this worker at
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
 	var src *func()
 
-	//reduce the first item by the current cooldown reduction
+	// reduce the first item by the current cooldown reduction
 	if cdReduct {
 		c.cdQueue[a][0] = c.CDReduction(a, c.cdQueue[a][0])
 	}
 
 	worker := func() {
-		//check if src changed; if so do nothing
+		// check if src changed; if so do nothing
 		if src != c.cdCurrentQueueWorker[a] {
 			// c.Log.Debugw("src changed",  "src", src, "new", c.cdQueueWorkerStartedAt[a])
 			return
 		}
-		//log.Printf("cd worker triggered, started; %v, queue: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a])
-		//check to make sure queue is not 0
+		// log.Printf("cd worker triggered, started; %v, queue: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a])
+		// check to make sure queue is not 0
 		if len(c.cdQueue[a]) == 0 {
-			//this should never happen
+			// this should never happen
 			panic(fmt.Sprintf(
 				"queue is empty? index :%v, frame : %v, worker src: %v, started: %v",
 				c.Index,
@@ -160,7 +160,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 			))
 			// return
 		}
-		//otherwise add a stack and pop first item in queue
+		// otherwise add a stack and pop first item in queue
 		c.AvailableCDCharge[a]++
 		c.Tags["skill_charge"]++
 		c.cdQueue[a] = c.cdQueue[a][1:]
@@ -168,7 +168,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 		// c.Log.Debugw("stack restored",  "avail", c.availableCDCharge[a], "queue", c.cdQueue)
 
 		if c.AvailableCDCharge[a] > 1+c.additionalCDCharge[a] {
-			//sanity check, this should never happen
+			// sanity check, this should never happen
 			panic(fmt.Sprintf("charges > max? index :%v, frame : %v", c.Index, c.Core.F))
 		}
 
@@ -177,7 +177,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 			Write("charges_remain", c.AvailableCDCharge).
 			Write("cooldown_queue", c.cdQueue)
 
-		//if queue still has len > 0 then call start queue again
+		// if queue still has len > 0 then call start queue again
 		if len(c.cdQueue) > 0 {
 			c.startCooldownQueueWorker(a, true)
 		}
@@ -187,7 +187,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 	c.cdCurrentQueueWorker[a] = &worker
 	src = &worker
 
-	//wait for c.cooldownQueue[a][0], then add a stack
+	// wait for c.cooldownQueue[a][0], then add a stack
 	c.Core.Tasks.Add(worker, c.cdQueue[a][0])
 
 }

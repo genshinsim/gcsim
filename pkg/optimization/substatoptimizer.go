@@ -75,8 +75,8 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// Sticks optimized substat string into config and output
 	if simopt.ResultSaveToPath != "" {
 		output = strings.TrimSpace(output) + "\n"
-		//try creating file to write to
-		err = os.WriteFile(simopt.ResultSaveToPath, []byte(output), 0644)
+		// try creating file to write to
+		err = os.WriteFile(simopt.ResultSaveToPath, []byte(output), 0o644)
 		if err != nil {
 			log.Panic(err)
 		}

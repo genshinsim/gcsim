@@ -46,7 +46,7 @@ func (h *Handler) Get(t ShieldType) Shield {
 
 // TODO: do shields get affected by hitlag? if so.. which timer? active char?
 func (h *Handler) Add(shd Shield) {
-	//we always assume over write of the same type
+	// we always assume over write of the same type
 	ind := -1
 	for i, v := range h.shields {
 		if v.Type() == shd.Type() {
@@ -79,9 +79,9 @@ func (h *Handler) List() []Shield {
 }
 
 func (h *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float64 {
-	//find shield bonuses
+	// find shield bonuses
 	bonus := h.ShieldBonus()
-	min := dmg //min of damage taken
+	min := dmg // min of damage taken
 	n := 0
 	for _, v := range h.shields {
 		preHp := v.CurrentHP()

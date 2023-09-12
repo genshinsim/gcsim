@@ -29,9 +29,9 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 }
 
 func (b *buffer) Add(result stats.Result) {
-	for i, c := range result.Characters {
+	for i := range result.Characters {
 		sourceEnergy := make(map[string]float64)
-		for _, ev := range c.EnergyEvents {
+		for _, ev := range result.Characters[i].EnergyEvents {
 			sourceEnergy[ev.Source] += ev.Gained + ev.Wasted
 		}
 		for k, v := range sourceEnergy {

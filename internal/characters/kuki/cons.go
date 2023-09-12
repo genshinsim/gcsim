@@ -22,15 +22,15 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		trg := args[0].(combat.Target)
-		//ignore if C4 on icd
+		// ignore if C4 on icd
 		if c.StatusIsActive(c4IcdKey) {
 			return false
 		}
-		//On normal,charge and plunge attack
+		// On normal,charge and plunge attack
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra && ae.Info.AttackTag != attacks.AttackTagPlunge {
 			return false
 		}
-		//make sure the person triggering the attack is on field still
+		// make sure the person triggering the attack is on field still
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
@@ -74,17 +74,17 @@ func (c *char) c6() {
 		if c.StatusIsActive(c6IcdKey) {
 			return false
 		}
-		//check if hp less than 25%
+		// check if hp less than 25%
 		if c.CurrentHPRatio() > 0.25 {
 			return false
 		}
-		//if dead, revive back to 1 hp
+		// if dead, revive back to 1 hp
 		if c.CurrentHPRatio() <= 0 {
 			c.SetHPByAmount(1)
 		}
 		c.AddStatus(c6IcdKey, 3600, false) // 60s * 60
 
-		//increase EM by 150 for 15s
+		// increase EM by 150 for 15s
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("kuki-c6", 900),
 			AffectedStat: attributes.EM,

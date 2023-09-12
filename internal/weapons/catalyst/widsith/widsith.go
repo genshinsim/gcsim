@@ -69,7 +69,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Base:         modifier.NewBaseWithHitlag("widsith", 600),
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
-				//sanity check; should never happen
+				// sanity check; should never happen
 				if state == -1 {
 					return nil, false
 				}

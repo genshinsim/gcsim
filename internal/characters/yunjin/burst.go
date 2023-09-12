@@ -74,7 +74,7 @@ func (c *char) burstProc() {
 			return false
 		}
 		char := c.Core.Player.ByIndex(ae.Info.ActorIndex)
-		//do nothing if buff gone or burst count gone
+		// do nothing if buff gone or burst count gone
 		if char.Tags[burstBuffKey] == 0 {
 			return false
 		}

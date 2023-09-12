@@ -26,7 +26,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hold := p["hold"]
-	//hold for p up to 5 seconds
+	// hold for p up to 5 seconds
 	if hold > 300 {
 		hold = 300
 	}

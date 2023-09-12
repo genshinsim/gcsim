@@ -85,7 +85,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				attackHitboxes[c.NormalCounter][1],
 			)
 		}
-		//the multihit part generates no hitlag so this is fine
+		// the multihit part generates no hitlag so this is fine
 		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
 

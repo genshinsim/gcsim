@@ -135,9 +135,9 @@ func (c *char) onBurstStackCount() {
 		stacks := resolveStackGain[c.TalentLvlBurst()] * char.EnergyMax
 		if c.Base.Cons > 0 {
 			if char.Base.Element == attributes.Electro {
-				stacks = stacks * 1.8
+				stacks *= 1.8
 			} else {
-				stacks = stacks * 1.2
+				stacks *= 1.2
 			}
 		}
 		c.stacks += stacks

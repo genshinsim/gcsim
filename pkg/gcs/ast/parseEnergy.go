@@ -6,8 +6,8 @@ import (
 )
 
 func parseEnergy(p *Parser) (parseFn, error) {
-	//energy once interval=300 amount=1 #once at frame 300
-	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	// energy once interval=300 amount=1 #once at frame 300
+	// energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	n := p.next()
 	switch n.Typ {
 	case itemIdentifier:
@@ -27,7 +27,7 @@ func parseEnergy(p *Parser) (parseFn, error) {
 }
 
 func parseEnergyOnce(p *Parser) (parseFn, error) {
-	//energy once interval=300 amount=1 #once at frame 300
+	// energy once interval=300 amount=1 #once at frame 300
 	var err error
 	p.res.Energy.Active = true
 	p.res.Energy.Once = true
@@ -67,7 +67,7 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 }
 
 func parseEnergyEvery(p *Parser) (parseFn, error) {
-	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	// energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	var err error
 	p.res.Energy.Active = true
 	p.res.Energy.Once = false

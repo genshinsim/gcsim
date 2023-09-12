@@ -76,7 +76,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatusIsActive(burstBuffKey) {
-		//infusion to attacks only
+		// infusion to attacks only
 		switch ai.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagPlunge:

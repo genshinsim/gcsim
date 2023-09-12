@@ -33,7 +33,7 @@ func (c *char) c4(buffEnergy float64) float64 {
 		collector := c.Core.Player.ActiveChar()
 		currentEnergyP := collector.Energy / collector.EnergyMax
 		if currentEnergyP < 0.35 {
-			buffEnergy = buffEnergy * 2.0
+			buffEnergy *= 2
 		}
 	}
 	return buffEnergy

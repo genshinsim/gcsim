@@ -39,7 +39,7 @@ func (c *char) c6() {
 		if di.Amount <= 0 {
 			return false
 		}
-		if c.Core.Player.Active() != c.Index { //trigger only when not barbara
+		if c.Core.Player.Active() != c.Index { // trigger only when not barbara
 			c.checkc6()
 		}
 		return false
@@ -53,9 +53,9 @@ func (c *char) checkc6() {
 	if c.Core.F < c.c6icd && c.c6icd != 0 {
 		return
 	}
-	//grab the active char
+	// grab the active char
 	char := c.Core.Player.ActiveChar()
-	//if dead, revive back to 1 hp
+	// if dead, revive back to 1 hp
 	if char.CurrentHPRatio() <= 0 {
 		char.SetHPByAmount(1)
 	}

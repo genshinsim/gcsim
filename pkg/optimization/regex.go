@@ -34,7 +34,7 @@ func removeSubstatLines(cfg string) (string, error) {
 			continue
 		}
 
-		clean = strings.Replace(clean, match, "", -1)
+		clean = strings.ReplaceAll(clean, match, "")
 		errorPrinted = true
 	}
 

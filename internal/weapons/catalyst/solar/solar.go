@@ -45,8 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("solar-na-buff", 6*60),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					switch atk.Info.AttackTag {
-					case attacks.AttackTagNormal:
+					if atk.Info.AttackTag == attacks.AttackTagNormal {
 						return val, true
 					}
 					return nil, false

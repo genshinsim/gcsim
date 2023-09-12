@@ -72,7 +72,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 
 	s.routes()
 
-	//build a template from index.html
+	// build a template from index.html
 	b, err := s.cfg.Files.ReadFile("dist/index.html")
 	if err != nil {
 		return s, fmt.Errorf("error reading index.html")
@@ -152,15 +152,15 @@ func (s *Store) routes() {
 
 	fs := http.FileServer(http.FS(&myFS{content: s.cfg.Files}))
 
-	//for requests to any assets
+	// for requests to any assets
 	s.Router.Handle("/assets/*", fs)
 
 	imgFS := http.FileServer(http.Dir(s.cfg.AssetsFolder))
 
-	//for images
+	// for images
 	s.Router.Handle("/api/assets/*", http.StripPrefix("/api/assets/", imgFS))
 
-	//root should serve index
+	// root should serve index
 	s.Router.Handle("/{key}", s.handleServeHTML())
 
 }
@@ -168,7 +168,7 @@ func (s *Store) routes() {
 func (s *Store) handleServeHTML() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.Log.Info("received request for embed html page")
-		//pull data from result store, insert into template, and then server
+		// pull data from result store, insert into template, and then server
 		key := chi.URLParam(r, "key")
 		var out struct {
 			Data string

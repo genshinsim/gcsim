@@ -68,10 +68,10 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 			Write("icd_group", a.ICDGroup)
 	}
 
-	//snapshot the stats
+	// snapshot the stats
 	s.Stats, debug = c.Stats()
 
-	//check infusion
+	// check infusion
 	var inf attributes.Element
 	if !a.IgnoreInfusion {
 		inf = c.Core.Player.Infused(c.Index, a.AttackTag)
@@ -80,7 +80,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		}
 	}
 
-	//check if we need to log
+	// check if we need to log
 	if c.Core.Flags.LogDebug {
 		evt.WriteBuildMsg(debug...)
 		evt.Write("final_stats", attributes.PrettyPrintStatsSlice(s.Stats[:]))

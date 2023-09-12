@@ -22,8 +22,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//tag a4
-	//first hit at 137, then 113 frames between hits
+	// tag a4
+	// first hit at 137, then 113 frames between hits
 	duration := 360
 	if c.Base.Cons >= 2 {
 		duration = 480
@@ -87,7 +87,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				aiAbs.Element = c.qAbsorb
 				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, ap, 0)
 			}
-			//check if absorbed
+			// check if absorbed
 		}, i)
 	}
 
@@ -117,7 +117,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 			}
 			return
 		}
-		//otherwise queue up
+		// otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheck(src, count+1, max), 18)
 	}
 }

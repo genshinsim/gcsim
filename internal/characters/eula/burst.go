@@ -39,7 +39,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.burstCounter = 5
 	}
 
-	//add initial damage
+	// add initial damage
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Glacial Illumination",
@@ -72,13 +72,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// handle Eula Q damage
 	// lightfall hitmark is 600f from cast
 	c.Core.Tasks.Add(func() {
-		//check to make sure it hasn't already exploded due to exiting field
+		// check to make sure it hasn't already exploded due to exiting field
 		if c.Core.Status.Duration(burstKey) > 0 {
 			c.triggerBurst()
 		}
 	}, 600-lightfallHitmark) // check if we can trigger Q damage right before Q status would normally expire
 
-	//energy does not deplete until after animation
+	// energy does not deplete until after animation
 	c.ConsumeEnergy(107)
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 97)
 

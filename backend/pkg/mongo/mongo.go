@@ -25,14 +25,14 @@ func init() {
 type Config struct {
 	URL      string
 	Database string
-	//collections
+	// collections
 	Collection string
 	ValidView  string
 	SubView    string
-	//auth
+	// auth
 	Username string
 	Password string
-	//compute
+	// compute
 	CurrentHash string
 	BatchSize   int
 	Iterations  int
@@ -84,7 +84,7 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 		return nil, err
 	}
 
-	//check connection
+	// check connection
 	err = client.Ping(context.TODO(), nil)
 
 	if err != nil {
@@ -92,7 +92,7 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 		return nil, err
 	}
 
-	//default sanity check
+	// default sanity check
 	if s.cfg.BatchSize == 0 {
 		s.cfg.BatchSize = 5
 	}

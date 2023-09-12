@@ -46,17 +46,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
-		//don't do anything if we're in icd period
+		// don't do anything if we're in icd period
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		//otherwise if this is first time proc'ing, set the duration and queue
-		//task to set icd
+		// otherwise if this is first time proc'ing, set the duration and queue
+		// task to set icd
 		if !char.StatusIsActive(durationKey) {
 			//TODO: we're assuming icd starts after the effect
 			char.QueueCharTask(func() {
-				char.AddStatus(icdKey, 90, false) //icd lasts for 1.5s
-			}, 6) //icd starts 6 frames after
+				char.AddStatus(icdKey, 90, false) // icd lasts for 1.5s
+			}, 6) // icd starts 6 frames after
 			char.AddStatus(durationKey, 6, false)
 		}
 		damageAdd := (char.Base.Def*(1+char.Stat(attributes.DEFP)) + char.Stat(attributes.DEF)) * defPer

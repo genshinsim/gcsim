@@ -112,7 +112,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 // After an extended casting time, calls down lightning from the heavens, dealing massive Electro DMG to all nearby opponents.
 // Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
 func (c *char) skillHold(p map[string]int) action.ActionInfo {
-	//no multiplier as that's target dependent
+	// no multiplier as that's target dependent
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc (Hold)",
@@ -124,9 +124,9 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		Durability: 50,
 	}
 
-	//c2 add defense? no interruptions either way
+	// c2 add defense? no interruptions either way
 	if c.Base.Cons >= 2 {
-		//increase def for the duration of this abil in however many frames
+		// increase def for the duration of this abil in however many frames
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DEFP] = 0.25
 		c.AddStatMod(character.StatMod{
@@ -153,8 +153,8 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	//[8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
-	//[9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
+	// [8:31 PM] ArchedNosi | Lisa Unleashed: yeah 4-5 50/50 with Hold
+	// [9:13 PM] ArchedNosi | Lisa Unleashed: @gimmeabreak actually wait, xd i noticed i misread my sheet, Lisa Hold E always gens 5 orbs
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), nil)
 	for _, e := range enemies {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(e, nil, 0.2), 0, skillHoldHitmark, c1cb, c.particleCB)
@@ -184,7 +184,7 @@ func (c *char) skillHoldMult() {
 
 		atk.Info.Mult = skillHold[stacks][c.TalentLvlSkill()]
 
-		//consume the stacks
+		// consume the stacks
 		t.SetTag(conductiveTag, 0)
 
 		return false

@@ -123,7 +123,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	}
 }
 
-func (c *char) queueOz(src string, ozSpawn int, firstTick int) {
+func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 	// calculate oz duration
 	dur := 600
 	if c.Base.Cons == 6 {

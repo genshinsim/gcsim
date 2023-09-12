@@ -124,7 +124,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
 
-	//special cases for traveler
+	// special cases for traveler
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/aether"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/lumine"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/aether"

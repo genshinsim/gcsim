@@ -96,7 +96,7 @@ func (c *char) checkForSkillEnd() int {
 }
 
 func (c *char) skillEndRoutine() int {
-	//print("Starting skill end routine")
+	// print("Starting skill end routine")
 	c.DeleteStatus(SkillKey)
 	c.Core.Player.SwapCD = 26
 

@@ -33,9 +33,9 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 
-	//if fieldSrc is < duration then this is prob a sac proc
-	//we need to stop the old field from ticking (by changing fieldSrc)
-	//and also trigger a4 delayed damage
+	// if fieldSrc is < duration then this is prob a sac proc
+	// we need to stop the old field from ticking (by changing fieldSrc)
+	// and also trigger a4 delayed damage
 	src := c.Core.F
 
 	ai := combat.AttackInfo{
@@ -177,7 +177,7 @@ func (c *char) onSwapHook() {
 		if c.Core.Status.Duration("chongyunfield") == 0 {
 			return false
 		}
-		//add infusion on swap
+		// add infusion on swap
 		c.Core.Log.NewEvent("chongyun adding infusion on swap", glog.LogCharacterEvent, c.Index).
 			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
 		active := c.Core.Player.ActiveChar()
@@ -187,7 +187,7 @@ func (c *char) onSwapHook() {
 }
 
 func (c *char) infuse(active *character.CharWrapper) {
-	//c2 reduces CD by 15%
+	// c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
 		active.AddCooldownMod(character.CooldownMod{
 			Base: modifier.NewBaseWithHitlag("chongyun-c2", 126),

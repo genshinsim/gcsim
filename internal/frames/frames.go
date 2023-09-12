@@ -37,7 +37,7 @@ func AtkSpdAdjust(f int, atkspd float64) int {
 
 func NewAttackFunc(c *character.Character, slice [][]int) func(action.Action) int {
 	return func(next action.Action) int {
-		//back out what last attack was
+		// back out what last attack was
 		n := c.NormalCounter - 1
 		if n < 0 {
 			n = c.NormalHitNum - 1

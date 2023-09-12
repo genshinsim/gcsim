@@ -57,7 +57,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.NormalCounter]+travel,
 	)
 
-	//check for c1
+	// check for c1
 	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Core.F {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,

@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 	c.QueueCharTask(func() {
-		//second hit is 14 frames after the first (if we exclude hitlag)
+		// second hit is 14 frames after the first (if we exclude hitlag)
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.8),

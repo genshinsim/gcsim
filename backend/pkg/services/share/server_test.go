@@ -70,7 +70,7 @@ func TestCreate(t *testing.T) {
 		t.Error(err)
 	}
 
-	//expecting expiry to be <= n + 2 (assuming test takes 1s to run; shouldnt)
+	// expecting expiry to be <= n + 2 (assuming test takes 1s to run; shouldnt)
 
 	res, expiry, err := c.Read(context.TODO(), id)
 	if err != nil {

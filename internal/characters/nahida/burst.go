@@ -60,7 +60,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			}, i)
 		}
 		if c.Base.Cons >= 6 {
-			//lasts 10s
+			// lasts 10s
 			//TODO: should this be delayed until animation end?
 			c.AddStatus(c6ActiveKey, 600, true)
 			c.c6Count = 0

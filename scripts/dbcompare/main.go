@@ -47,7 +47,7 @@ func main() {
 
 func runSim(w dbEntry) (float64, error) {
 	// start := time.Now()
-	//compute work??
+	// compute work??
 	// log.Printf("got work %v; starting compute", w.Id)
 	// compute result
 	simcfg, gcsl, err := simulator.Parse(w.Config)

@@ -144,8 +144,8 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	//assuming it's mark per skill cast; in this case refresh regardless if
-	//target already marked up until 8
+	// assuming it's mark per skill cast; in this case refresh regardless if
+	// target already marked up until 8
 	if c.markCount < 8 {
 		t.AddStatus(skillMarkKey, 1500, true)
 		c.markCount++
@@ -180,7 +180,7 @@ func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
 	if !ok {
 		return false
 	}
-	//only on bloom, burgeon, hyperbloom damage
+	// only on bloom, burgeon, hyperbloom damage
 	ae, ok := args[1].(*combat.AttackEvent)
 	if !ok {
 		return false

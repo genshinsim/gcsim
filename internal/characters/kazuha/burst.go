@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, ap, 0, burstHitmark)
 
-	//apply dot and check for absorb
+	// apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burstDot[c.TalentLvlBurst()]
@@ -100,7 +100,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstHitmark+1)
 
-	//reset skill cd
+	// reset skill cd
 	if c.Base.Cons >= 1 {
 		c.ResetActionCooldown(action.ActionSkill)
 	}
@@ -126,7 +126,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if c.qAbsorb != attributes.NoElement {
 			return
 		}
-		//otherwise queue up
+		// otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)
 	}
 }

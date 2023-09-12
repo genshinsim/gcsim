@@ -64,8 +64,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		return 25
 	}
 	return c.Character.ActionStam(a, p)

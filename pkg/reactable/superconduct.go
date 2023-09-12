@@ -12,7 +12,7 @@ func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	//this is for non frozen one
+	// this is for non frozen one
 	if r.Durability[ModifierFrozen] >= ZeroDur {
 		return false
 	}
@@ -24,7 +24,7 @@ func (r *Reactable) TrySuperconduct(a *combat.AttackEvent) bool {
 		}
 		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 1)
 	case attributes.Cryo:
-		//could be ec potentially
+		// could be ec potentially
 		if r.Durability[ModifierElectro] < ZeroDur {
 			return false
 		}
@@ -44,15 +44,15 @@ func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	//this is for frozen
+	// this is for frozen
 	if r.Durability[ModifierFrozen] < ZeroDur {
 		return false
 	}
 	switch a.Info.Element {
 	case attributes.Electro:
 		//TODO: the assumption here is we first reduce cryo, and if there's any
-		//src durability left, we reduce frozen. note that it's still only one
-		//superconduct reaction
+		// src durability left, we reduce frozen. note that it's still only one
+		// superconduct reaction
 		a.Info.Durability -= r.reduce(attributes.Cryo, a.Info.Durability, 1)
 		r.reduce(attributes.Frozen, a.Info.Durability, 1)
 		a.Info.Durability = 0
@@ -69,7 +69,7 @@ func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) bool {
 func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	r.core.Events.Emit(event.OnSuperconduct, r.self, a)
 
-	//superconduct attack
+	// superconduct attack
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),

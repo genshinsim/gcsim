@@ -27,15 +27,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.burstTaggedCount = 0
 	burstCB := func(a combat.AttackCB) {
-		//check if enemy
+		// check if enemy
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
-		//max 4 tagged
+		// max 4 tagged
 		if c.burstTaggedCount == 4 {
 			return
 		}
-		//check for element and queue attack
+		// check for element and queue attack
 		c.burstTaggedCount++
 		if c.Base.Cons >= 4 {
 			c.c4(c.burstTaggedCount)

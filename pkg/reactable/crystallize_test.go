@@ -34,7 +34,7 @@ func TestCrystallizeCryo(t *testing.T) {
 		},
 	})
 
-	//check shield
+	// check shield
 	if !ok {
 		t.Errorf("expecting crystallize to have occured")
 		t.FailNow()
@@ -67,7 +67,7 @@ func TestCrystallizePyro(t *testing.T) {
 			Durability: 25,
 		},
 	})
-	//force on burning
+	// force on burning
 	trg.Durability[ModifierBurning] = 50
 
 	trg.React(&combat.AttackEvent{
@@ -77,7 +77,7 @@ func TestCrystallizePyro(t *testing.T) {
 		},
 	})
 
-	//check shield
+	// check shield
 	if !ok {
 		t.Errorf("expecting crystallize to have occured")
 		t.FailNow()

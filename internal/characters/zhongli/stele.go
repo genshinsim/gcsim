@@ -14,7 +14,7 @@ const particleICDKey = "zhongli-particle-icd"
 
 func (c *char) newStele(dur int) {
 	flat := c.a4Skill()
-	//deal damage when created
+	// deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Initial)",
@@ -31,7 +31,7 @@ func (c *char) newStele(dur int) {
 	stelePos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, steleDir)
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(stelePos, nil, 2), 0, 0, c.particleCB())
 
-	//create a construct
+	// create a construct
 	con := &stoneStele{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,

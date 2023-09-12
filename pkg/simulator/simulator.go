@@ -64,7 +64,7 @@ func Parse(cfg string) (*info.ActionList, ast.Node, error) {
 		return &info.ActionList{}, nil, err
 	}
 
-	//check other errors as well
+	// check other errors as well
 	if len(simcfg.Errors) != 0 {
 		fmt.Println("The config has the following errors: ")
 		errMsgs := ""
@@ -110,16 +110,16 @@ func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Opti
 		aggregators = append(aggregators, a)
 	}
 
-	//set up a pool
+	// set up a pool
 	respCh := make(chan stats.Result)
 	errCh := make(chan error)
 	pool := worker.New(simcfg.Settings.NumberOfWorkers, respCh, errCh)
 	pool.StopCh = make(chan bool)
 
-	//spin off a go func that will queue jobs for as long as the total queued < iter
-	//this should block as queue gets full
+	// spin off a go func that will queue jobs for as long as the total queued < iter
+	// this should block as queue gets full
 	go func() {
-		//make all the seeds
+		// make all the seeds
 		wip := 0
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
@@ -133,7 +133,7 @@ func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Opti
 
 	defer close(pool.StopCh)
 
-	//start reading respCh, queueing a new job until wip == number of iterations
+	// start reading respCh, queueing a new job until wip == number of iterations
 	count := 0
 	for count < simcfg.Settings.Iterations {
 		select {
@@ -143,7 +143,7 @@ func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Opti
 			}
 			count += 1
 		case err := <-errCh:
-			//error encountered
+			// error encountered
 			return &model.SimulationResult{}, err
 		case <-ctx.Done():
 			return &model.SimulationResult{}, ctx.Err()
@@ -249,9 +249,9 @@ func GenerateResult(cfg string, simcfg *info.ActionList, opts Options) (*model.S
 	}
 	out.CharacterDetails = charDetails
 
-	for _, v := range simcfg.Characters {
-		if !result.IsCharacterComplete(v.Base.Key) {
-			out.IncompleteCharacters = append(out.IncompleteCharacters, v.Base.Key.String())
+	for i := range simcfg.Characters {
+		if !result.IsCharacterComplete(simcfg.Characters[i].Base.Key) {
+			out.IncompleteCharacters = append(out.IncompleteCharacters, simcfg.Characters[i].Base.Key.String())
 		}
 	}
 
@@ -279,14 +279,14 @@ func ReadConfig(fpath string) (string, error) {
 		return "", err
 	}
 
-	//check for imports
+	// check for imports
 	var data strings.Builder
 
 	rows := strings.Split(strings.ReplaceAll(string(src), "\r\n", "\n"), "\n")
 	for _, row := range rows {
 		match := reImport.FindStringSubmatch(row)
 		if match != nil {
-			//read import
+			// read import
 			p := path.Join(path.Dir(fpath), match[1])
 			src, err = os.ReadFile(p)
 			if err != nil {

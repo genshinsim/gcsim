@@ -26,7 +26,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		f = 0
 	}
 
-	//no dmg attack at end of dash
+	// no dmg attack at end of dash
 	ai := combat.AttackInfo{
 		Abil:       "Dash",
 		ActorIndex: c.Index,
@@ -46,7 +46,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		c.makeA4CB(),
 	)
 
-	//add cryo infuse
+	// add cryo infuse
 	//TODO: check weapon infuse timing; this SHOULD be ok?
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.AddWeaponInfuse(

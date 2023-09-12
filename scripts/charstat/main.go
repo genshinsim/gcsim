@@ -52,18 +52,24 @@ type profile struct {
 }
 
 func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func mainImpl() error {
 	b, err := fetch("src/data/stats/characters.json")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	var d map[string]data
 	if err := json.Unmarshal([]byte(b), &d); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// fix the specialized key
-	for k, v := range d {
+	for k, v := range d { //nolint:gocritic
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		v.Key = CharNameToKey[k]
 
@@ -75,10 +81,10 @@ func main() {
 		// fetch char profile
 		b, err := fetch(fmt.Sprintf("src/data/English/characters/%s.json", k))
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		if err := json.Unmarshal([]byte(b), &v.profile); err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		v.Body = cases.Title(language.Und, cases.NoLower).String(strings.ToLower(v.Body))
@@ -101,17 +107,18 @@ func main() {
 	// fmt.Println(d)
 	of, err := os.Create("./_output.go")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer of.Close()
 
 	t, err := template.New("out").Parse(tmpl)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	if err := t.Execute(of, d); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func fetch(path string) (string, error) {

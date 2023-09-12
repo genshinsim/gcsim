@@ -32,7 +32,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 25,
 	}
 
-	//5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
+	// 5 second, 20 ticks, so once every 15 frames, bloom after 5 seconds
 	ai.Mult = burstBloom[c.TalentLvlBurst()]
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Abil = "Soumetsu (Bloom)"

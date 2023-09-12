@@ -18,7 +18,7 @@ func (c *Core) QueueAttackWithSnap(
 		Snapshot:    s,
 		SourceFrame: c.F,
 	}
-	//add callbacks only if not nil
+	// add callbacks only if not nil
 	for _, f := range callbacks {
 		if f != nil {
 			ae.Callbacks = append(ae.Callbacks, f)
@@ -38,21 +38,21 @@ func (c *Core) QueueAttack(
 	dmgDelay int,
 	callbacks ...combat.AttackCBFunc,
 ) {
-	//panic if dmgDelay < snapshotDelay; this should not happen. if it happens then there's something wrong with the
-	//character's code
+	// panic if dmgDelay < snapshotDelay; this should not happen. if it happens then there's something wrong with the
+	// character's code
 	if dmgDelay < snapshotDelay {
 		panic("dmgDelay cannot be less than snapshotDelay")
 	}
 	if dmgDelay < 0 {
 		panic("dmgDelay cannot be less than 0")
 	}
-	//create attackevent
+	// create attackevent
 	ae := combat.AttackEvent{
 		Info:        a,
 		Pattern:     p,
 		SourceFrame: c.F,
 	}
-	//add callbacks only if not nil
+	// add callbacks only if not nil
 	for _, f := range callbacks {
 		if f != nil {
 			ae.Callbacks = append(ae.Callbacks, f)
@@ -61,14 +61,14 @@ func (c *Core) QueueAttack(
 
 	switch {
 	case snapshotDelay < 0:
-		//snapshotDelay < 0 means we don't need a snapshot; optimization for reaction
-		//damage essentially
+		// snapshotDelay < 0 means we don't need a snapshot; optimization for reaction
+		// damage essentially
 		c.queueDmg(&ae, dmgDelay)
 	case snapshotDelay == 0:
 		c.generateSnapshot(&ae)
 		c.queueDmg(&ae, dmgDelay)
 	default:
-		//use add task ctrl to queue; no need to track here
+		// use add task ctrl to queue; no need to track here
 		c.Tasks.Add(func() {
 			c.generateSnapshot(&ae)
 			c.queueDmg(&ae, dmgDelay-snapshotDelay)

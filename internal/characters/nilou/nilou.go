@@ -51,7 +51,7 @@ func (c *char) Init() error {
 	}
 
 	chars := c.Core.Player.Chars()
-	//count number of ele first
+	// count number of ele first
 	count := make(map[attributes.Element]int)
 	for _, this := range chars {
 		count[this.Base.Element]++

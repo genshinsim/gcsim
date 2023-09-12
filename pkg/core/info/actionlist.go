@@ -16,13 +16,13 @@ type ActionList struct {
 	Energy      EnergySettings     `json:"energy_settings"`
 	Hurt        HurtSettings       `json:"hurt_settings"`
 	Settings    SimulatorSettings  `json:"settings"`
-	Errors      []error            `json:"-"` //These represents errors preventing ActionList from being executed
+	Errors      []error            `json:"-"` // These represents errors preventing ActionList from being executed
 	ErrorMsgs   []string           `json:"errors"`
 }
 
 type EnergySettings struct {
 	Active         bool `json:"active"`
-	Once           bool `json:"once"` //how often
+	Once           bool `json:"once"` // how often
 	Start          int  `json:"start"`
 	End            int  `json:"end"`
 	Amount         int  `json:"amount"`
@@ -45,7 +45,7 @@ type SimulatorSettings struct {
 	DamageMode   bool    `json:"damage_mode"`
 	EnableHitlag bool    `json:"enable_hitlag"`
 	DefHalt      bool    `json:"def_halt"` // for hitlag
-	//other stuff
+	// other stuff
 	NumberOfWorkers int    `json:"-"`          // how many workers to run the simulation
 	Iterations      int    `json:"iterations"` // how many iterations to run
 	Delays          Delays `json:"delays"`
@@ -72,8 +72,8 @@ func (a *ActionList) Copy() *ActionList {
 	}
 
 	r.Characters = make([]CharacterProfile, len(a.Characters))
-	for i, v := range a.Characters {
-		r.Characters[i] = v.Clone()
+	for i := range a.Characters {
+		r.Characters[i] = a.Characters[i].Clone()
 	}
 
 	return &r

@@ -12,10 +12,10 @@ import (
 func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 	switch a {
 	case action.ActionCharge:
-		//20 sword (most)
-		//25 polearm
-		//40 per second claymore
-		//50 catalyst
+		// 20 sword (most)
+		// 25 polearm
+		// 40 per second claymore
+		// 50 catalyst
 		switch c.Weapon.Class {
 		case info.WeaponClassSword:
 			return 20
@@ -33,7 +33,7 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 			return 0
 		}
 	case action.ActionDash:
-		//18 per
+		// 18 per
 		return 18
 	default:
 		return 0
@@ -76,11 +76,11 @@ func (c *Character) ApplyDashCD() {
 }
 
 func (c *Character) QueueDashStaminaConsumption(p map[string]int) {
-	//consume stam at the end
+	// consume stam at the end
 	c.Core.Tasks.Add(func() {
 		req := c.Core.Player.AbilStamCost(c.Index, action.ActionDash, p)
 		c.Core.Player.Stam -= req
-		//this really shouldn't happen??
+		// this really shouldn't happen??
 		if c.Core.Player.Stam < 0 {
 			c.Core.Player.Stam = 0
 		}

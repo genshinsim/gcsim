@@ -44,7 +44,7 @@ type Config struct {
 	PreviewStore      PreviewStore
 	RoleCheck         RoleChecker
 	AESDecryptionKeys map[string][]byte
-	//mqtt for notification purposes
+	// mqtt for notification purposes
 	MQTTConfig MQTTConfig
 }
 
@@ -86,7 +86,7 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 	s.routes()
 
-	//sanity checks
+	// sanity checks
 	if s.cfg.ShareStore == nil {
 		return nil, fmt.Errorf("no result store provided")
 	}
@@ -94,14 +94,14 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 		return nil, fmt.Errorf("no user store provided")
 	}
 
-	//connect to db
+	// connect to db
 	conn, err := grpc.Dial(cfg.DBAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
 	s.dbClient = db.NewDBStoreClient(conn)
 
-	//connect to mqtt
+	// connect to mqtt
 	opts := mqttOpts(cfg)
 
 	client := mqtt.NewClient(opts)

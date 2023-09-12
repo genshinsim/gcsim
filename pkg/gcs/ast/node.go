@@ -607,7 +607,7 @@ type (
 
 	// A FuncLit node represents a function literal.
 	FuncLit struct {
-		Pos       //position of the starting (
+		Pos       // position of the starting (
 		Signature *FuncType
 		Args      []*Ident
 		Body      *BlockStmt
@@ -637,12 +637,12 @@ type (
 		Right Expr // operand
 	}
 
-	//A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
+	// A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
 	BinaryExpr struct {
 		Pos
 		Left  Expr
 		Right Expr  // need to evalute to same type as lhs
-		Op    Token //should be > itemCompareOP and < itemDot
+		Op    Token // should be > itemCompareOP and < itemDot
 	}
 
 	MapExpr struct {
@@ -1023,17 +1023,17 @@ type ExprType interface {
 
 type (
 	NumberType struct {
-		Pos //position of :, or of the ident if defaulting to NumberType
+		Pos // position of :, or of the ident if defaulting to NumberType
 	}
 	StringType struct {
-		Pos //position of :
+		Pos // position of :
 	}
 
 	MapType struct {
-		Pos //position of keyword map
+		Pos // position of keyword map
 	}
 	FuncType struct {
-		Pos        //position of opening (
+		Pos        // position of opening (
 		ArgsType   []ExprType
 		ResultType ExprType
 	}

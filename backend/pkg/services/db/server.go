@@ -112,7 +112,7 @@ func (s *Server) notify(topic string, msg protoreflect.ProtoMessage) {
 	if err != nil {
 		s.Log.Warnw("protojson marshal failed with err", "err", err)
 	}
-	//msg should be marshalled to some sort of string
+	// msg should be marshalled to some sort of string
 	err = s.NotifyService.Notify(topic, string(m))
 	if err != nil {
 		s.Log.Warnw("notify failed with err", "err", err)

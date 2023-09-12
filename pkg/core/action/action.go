@@ -17,12 +17,12 @@ type ActionInfo struct {
 	State               AnimationState
 	FramePausedOnHitlag func() bool               `json:"-"`
 	OnRemoved           func(next AnimationState) `json:"-"`
-	//following are exposed only so we can log it properly
+	// following are exposed only so we can log it properly
 	CachedFrames         [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
 	TimePassed           float64
 	NormalizedTimePassed float64
 	UseNormalizedTime    func(next Action) bool
-	//hidden stuff
+	// hidden stuff
 	queued []queuedAction
 }
 
@@ -35,7 +35,7 @@ type ActionEval struct {
 
 // Evaluator provides method for getting next action
 type Evaluator interface {
-	NextAction() (*ActionEval, error) //NextAction should reuturn the next action, or nil if no actions left
+	NextAction() (*ActionEval, error) // NextAction should reuturn the next action, or nil if no actions left
 	Continue()
 	Exit() error
 	Err() error
@@ -65,7 +65,7 @@ func (a *ActionInfo) CanUse(next Action) bool {
 	if a.UseNormalizedTime != nil && a.UseNormalizedTime(next) {
 		return a.NormalizedTimePassed >= float64(a.CachedFrames[next])
 	}
-	//can't use anything if we're frozen
+	// can't use anything if we're frozen
 	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
 		return false
 	}
@@ -77,14 +77,14 @@ func (a *ActionInfo) AnimationState() AnimationState {
 }
 
 func (a *ActionInfo) Tick() bool {
-	a.NormalizedTimePassed++ //this always increments
-	//time only goes on if either not hitlag function, or not paused
+	a.NormalizedTimePassed++ // this always increments
+	// time only goes on if either not hitlag function, or not paused
 	if a.FramePausedOnHitlag == nil || !a.FramePausedOnHitlag() {
 		a.TimePassed++
 	}
 
-	//execute all action such that timePassed > delay, and then remove from
-	//slice
+	// execute all action such that timePassed > delay, and then remove from
+	// slice
 	if a.queued != nil {
 		n := 0
 		for i := 0; i < len(a.queued); i++ {
@@ -98,9 +98,9 @@ func (a *ActionInfo) Tick() bool {
 		a.queued = a.queued[:n]
 	}
 
-	//check if animation is over
+	// check if animation is over
 	if a.TimePassed > float64(a.AnimationLength) {
-		//handle remove
+		// handle remove
 		if a.OnRemoved != nil {
 			a.OnRemoved(Idle)
 		}
@@ -123,13 +123,13 @@ const (
 	ActionAim
 	ActionDash
 	ActionJump
-	//following action have to implementations
+	// following action have to implementations
 	ActionSwap
 	ActionWalk
 	ActionWait  // character should stand around and wait
 	ActionDelay // delay before executing next action
 	EndActionType
-	//these are only used for frames purposes and that's why it's after end
+	// these are only used for frames purposes and that's why it's after end
 	ActionSkillHoldFramesOnly
 )
 

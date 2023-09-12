@@ -103,7 +103,7 @@ func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	}
 	dmgBonus := elePer + atk.Snapshot.Stats[attributes.DmgP]
 
-	//calculate using attack or def
+	// calculate using attack or def
 	var a float64
 	totalhp := atk.Snapshot.BaseHP*(1+atk.Snapshot.Stats[attributes.HPP]) + atk.Snapshot.Stats[attributes.HP]
 	if atk.Info.UseDef {
@@ -115,7 +115,7 @@ func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	base := atk.Info.Mult*a + atk.Info.FlatDmg
 	damage := base * (1 + dmgBonus)
 
-	//make sure 0 <= cr <= 1
+	// make sure 0 <= cr <= 1
 	if atk.Snapshot.Stats[attributes.CR] < 0 {
 		atk.Snapshot.Stats[attributes.CR] = 0
 	}
@@ -132,9 +132,9 @@ func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	def *= (1 - atk.Info.IgnoreDefPercent)
 	defmod := 1 - def/(def+float64(5*atk.Snapshot.CharLvl)+500)
 
-	//apply def mod
-	damage = damage * defmod
-	//apply resist mod
+	// apply def mod
+	damage *= defmod
+	// apply resist mod
 
 	resmod := 1 - res/2
 	if res >= 0 && res < 0.75 {
@@ -142,34 +142,34 @@ func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	} else if res > 0.75 {
 		resmod = 1 / (4*res + 1)
 	}
-	damage = damage * resmod
+	damage *= resmod
 
 	precritdmg := damage
 
-	//check if crit
+	// check if crit
 	if atk.Info.HitWeakPoint || p.Core.Rand.Float64() <= atk.Snapshot.Stats[attributes.CR] {
-		damage = damage * (1 + atk.Snapshot.Stats[attributes.CD])
+		damage *= (1 + atk.Snapshot.Stats[attributes.CD])
 		isCrit = true
 	}
 
 	preampdmg := damage
 
-	//calculate em bonus
+	// calculate em bonus
 	em := atk.Snapshot.Stats[attributes.EM]
 	emBonus := (2.78 * em) / (1400 + em)
 	var reactBonus float64
-	//check melt/vape
+	// check melt/vape
 	if atk.Info.Amped {
 		reactBonus = p.Core.Player.ByIndex(atk.Info.ActorIndex).ReactBonus(atk.Info)
 		// t.Core.Log.Debugw("debug", "frame", t.Core.F, core.LogPreDamageMod, "char", t.Index, "char_react", char.CharIndex(), "reactbonus", char.ReactBonus(atk.Info), "damage_pre", damage)
-		damage = damage * (atk.Info.AmpMult * (1 + emBonus + reactBonus))
+		damage *= (atk.Info.AmpMult * (1 + emBonus + reactBonus))
 	}
 
-	//reduce damage by damage group
+	// reduce damage by damage group
 	x := 1.0
 	if !atk.Info.SourceIsSim {
 		x = p.GroupTagDamageMult(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex)
-		damage = damage * x
+		damage *= x
 	}
 
 	if p.Core.Flags.LogDebug {
@@ -237,8 +237,8 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 	p.Core.Log.NewEventBuildMsg(glog.LogPlayerEvent, -1, "self infusion applied: "+ele.String()).
 		Write("durability", dur).
 		Write("duration", f)
-	//we're assuming self infusion isn't subject to 0.8x multiplier
-	//also no real sanity check
+	// we're assuming self infusion isn't subject to 0.8x multiplier
+	// also no real sanity check
 	if ele == attributes.Frozen {
 		return
 	}
@@ -256,25 +256,25 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 		mod = reactable.ModifierDendro
 	}
 
-	//we're assuming refill maintains the same decay rate?
+	// we're assuming refill maintains the same decay rate?
 	if p.Durability[mod] > reactable.ZeroDur {
-		//make sure we're not adding more than incoming
+		// make sure we're not adding more than incoming
 		if p.Durability[mod] < dur {
 			p.Durability[mod] = dur
 		}
 		return
 	}
-	//otherwise calculate decay based on specified f (in frames)
+	// otherwise calculate decay based on specified f (in frames)
 	p.Durability[mod] = dur
 	p.DecayRate[mod] = dur / reactions.Durability(f)
 }
 
 func (p *Player) ReactWithSelf(atk *combat.AttackEvent) {
-	//check if have an element
+	// check if have an element
 	if p.AuraCount() == 0 {
 		return
 	}
-	//otherwise react
+	// otherwise react
 	existing := p.Reactable.ActiveAuraString()
 	applied := atk.Info.Durability
 	p.React(atk)

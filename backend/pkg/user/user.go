@@ -67,7 +67,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	return s, nil
 }
 
-func (s *Store) Create(id string, name string, ctx context.Context) error {
+func (s *Store) Create(id, name string, ctx context.Context) error {
 	key := []byte(id)
 
 	return s.db.Update(func(txn *badger.Txn) error {
@@ -137,8 +137,8 @@ func (s *Store) Read(id string, ctx context.Context) ([]byte, error) {
 
 func (s *Store) UpdateData(data []byte, ctx context.Context) error {
 	return s.db.Update(func(txn *badger.Txn) error {
-		//as long as we have permission this operation is ok; we don't need to check
-		//what's in the data here
+		// as long as we have permission this operation is ok; we don't need to check
+		// what's in the data here
 		u, err := s.getRequester(txn, ctx)
 		if err != nil {
 			return err

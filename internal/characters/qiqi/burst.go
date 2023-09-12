@@ -78,11 +78,11 @@ func (c *char) talismanHealHook() {
 			return false
 		}
 
-		//do nothing if talisman expired
+		// do nothing if talisman expired
 		if !e.StatusIsActive(talismanKey) {
 			return false
 		}
-		//do nothing if talisman still on icd
+		// do nothing if talisman still on icd
 		if e.GetTag(talismanICDKey) >= c.Core.F {
 			return false
 		}

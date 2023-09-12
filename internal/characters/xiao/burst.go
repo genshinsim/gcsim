@@ -23,8 +23,8 @@ func init() {
 
 // Sets Xiao's burst damage state
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	var HPicd int
-	HPicd = 0
+	var hpICD int
+	hpICD = 0
 
 	// Per previous code, believe that the burst duration starts ticking down from after the animation is done
 	// TODO: No indication of that in library though
@@ -36,9 +36,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// Per gameplay video, HP ticks start after animation is finished
 	for i := burstStart + 60; i < 900+burstStart; i++ {
 		c.Core.Tasks.Add(func() {
-			if c.StatusIsActive(burstBuffKey) && c.Core.F >= HPicd {
+			if c.StatusIsActive(burstBuffKey) && c.Core.F >= hpICD {
 				// TODO: not sure if this is affected by hitlag
-				HPicd = c.Core.F + 60
+				hpICD = c.Core.F + 60
 				c.Core.Player.Drain(player.DrainInfo{
 					ActorIndex: c.Index,
 					Abil:       "Bane of All Evil",

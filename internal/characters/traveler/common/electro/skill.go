@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Counting from the frame E is pressed, it takes an average of 1.79 seconds for a character to be able to pick one up
 	// https://library.keqingmains.com/evidence/characters/electro/traveler-electro#amulets-delay
 	amuletDelay := p["amulet_delay"]
-	//make it so that it can't be faster than 1.79s
+	// make it so that it can't be faster than 1.79s
 	if amuletDelay < 107 {
 		amuletDelay = 107 // ~1.79s
 	}
@@ -116,7 +116,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.collectAmulets(active)
 	}, amuletDelay)
 
-	c.SetCDWithDelay(action.ActionSkill, 810, 20) //13.5s, starts 20 frames in
+	c.SetCDWithDelay(action.ActionSkill, 810, 20) // 13.5s, starts 20 frames in
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),

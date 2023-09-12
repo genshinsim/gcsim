@@ -29,7 +29,7 @@ func init() {
 // Charge attack function - handles seal use
 func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
-	//check for seal stacks
+	// check for seal stacks
 	if !c.StatusIsActive(sealBuffKey) {
 		c.sealCount = 0
 	}

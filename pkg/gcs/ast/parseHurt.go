@@ -6,8 +6,8 @@ import (
 )
 
 func parseHurt(p *Parser) (parseFn, error) {
-	//hurt once interval=300 amount=1,300 element=physical #once at frame 300 (or nearest)
-	//hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
+	// hurt once interval=300 amount=1,300 element=physical #once at frame 300 (or nearest)
+	// hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
 	n := p.next()
 	switch n.Typ {
 	case itemIdentifier:
@@ -27,7 +27,7 @@ func parseHurt(p *Parser) (parseFn, error) {
 }
 
 func parseHurtOnce(p *Parser) (parseFn, error) {
-	//hurt once interval=300 amount=1,300 element=physical #once at frame 300
+	// hurt once interval=300 amount=1,300 element=physical #once at frame 300
 	var err error
 	p.res.Hurt.Active = true
 	p.res.Hurt.Once = true
@@ -67,7 +67,7 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 }
 
 func parseHurtEvery(p *Parser) (parseFn, error) {
-	//hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
+	// hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
 	var err error
 	p.res.Hurt.Active = true
 	p.res.Hurt.Once = false

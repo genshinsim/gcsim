@@ -55,8 +55,8 @@ func (c *char) addGrimheartStack() {
 		c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
 			Write("current count", c.grimheartStacks)
 	}
-	//refresh grimheart duration regardless
-	c.AddStatus(grimheartDuration, 1080, true) //18 sec
+	// refresh grimheart duration regardless
+	c.AddStatus(grimheartDuration, 1080, true) // 18 sec
 }
 
 func (c *char) currentGrimheartStacks() int {
@@ -97,7 +97,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
-	//add 1 to grim heart if not capped by icd
+	// add 1 to grim heart if not capped by icd
 	cb := func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
@@ -145,9 +145,9 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) holdSkill(p map[string]int) action.ActionInfo {
-	//hold e
-	//296 to 341, but cd starts at 322
-	//60 fps = 108 frames cast, cd starts 62 frames in so need to + 62 frames to cd
+	// hold e
+	// 296 to 341, but cd starts at 322
+	// 60 fps = 108 frames cast, cd starts 62 frames in so need to + 62 frames to cd
 	lvl := c.TalentLvlSkill()
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -174,7 +174,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 
 	v := c.currentGrimheartStacks()
 
-	//shred
+	// shred
 	var shredCB combat.AttackCBFunc
 	if v > 0 {
 		shredCB = func(a combat.AttackCB) {
@@ -196,7 +196,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	}
 
 	for i := 0; i < v; i++ {
-		//multiple brand hits
+		// multiple brand hits
 		//TODO: need to double check if this is affected by hitlag; might be a deployable
 		icewhirlAI := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -210,7 +210,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			Mult:       icewhirl[lvl],
 		}
 		if i == 0 {
-			//per shizuka first swirl is not affected by hitlag?
+			// per shizuka first swirl is not affected by hitlag?
 			c.Core.QueueAttack(
 				icewhirlAI,
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
@@ -221,7 +221,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 			)
 		} else {
 			c.QueueCharTask(func() {
-				//spacing it out for stacks
+				// spacing it out for stacks
 				c.Core.QueueAttack(
 					icewhirlAI,
 					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
@@ -237,7 +237,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 		c.a1()
 	}
 
-	//c1 add debuff
+	// c1 add debuff
 	if c.Base.Cons >= 1 && v > 0 {
 		//TODO: check if the duration is right
 		c.AddStatMod(character.StatMod{
@@ -252,7 +252,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	c.consumeGrimheartStacks()
 	cd := 10
 	if c.Base.Cons >= 2 {
-		cd = 4 //press and hold have same cd TODO: check if this is right
+		cd = 4 // press and hold have same cd TODO: check if this is right
 	}
 	c.SetCDWithDelay(action.ActionSkill, cd*60, 46)
 

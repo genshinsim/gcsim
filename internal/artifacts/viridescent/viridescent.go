@@ -46,7 +46,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("vv-4pc", -1),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				//check to make sure this is not an amped swirl
+				// check to make sure this is not an amped swirl
 				if ai.Amped {
 					return 0, false
 				}
@@ -73,7 +73,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return false
 				}
 
-				//ignore if character not on field
+				// ignore if character not on field
 				if c.Player.Active() != char.Index {
 					return false
 				}
@@ -106,7 +106,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			//ignore if character not on field
+			// ignore if character not on field
 			if c.Player.Active() != char.Index {
 				return false
 			}

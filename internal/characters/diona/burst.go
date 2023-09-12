@@ -52,7 +52,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.Core.Tasks.Add(func() {
 		// add burst status for C4 check
 		c.Core.Status.Add("diona-q", 750)
-		//ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
+		// ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
 		for i := 0; i < 6; i++ {
 			c.Core.Tasks.Add(func() {
 				// attack
@@ -78,7 +78,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// C1
 	if c.Base.Cons >= 1 {
-		//15 energy after ends, flat not affected by ER
+		// 15 energy after ends, flat not affected by ER
 		c.Core.Tasks.Add(func() {
 			c.AddEnergy("diona-c1", 15)
 		}, burstStart+750)

@@ -23,7 +23,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//first zap has no icd and hits everyone
+	// first zap has no icd and hits everyone
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Initial)",
@@ -35,11 +35,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Durability: 0,
 		Mult:       0.1,
 	}
-	//based on discussion with nosi; turns out this does not apply def shred
+	// based on discussion with nosi; turns out this does not apply def shred
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), burstHitmark, burstHitmark)
 
-	//duration is 15 seconds, tick every .5 sec
-	//30 zaps once every 30 frame, starting at 119
+	// duration is 15 seconds, tick every .5 sec
+	// 30 zaps once every 30 frame, starting at 119
 	ai = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Rose (Tick)",
@@ -127,12 +127,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 					}
 					break
 				}
-				rand := c.Core.Rand.Float64()
-				if rand < 0.25 {
+				switch rand := c.Core.Rand.Float64(); {
+				case rand < 0.25:
 					dischargeCount = 1
-				} else if rand <= 0.25 && rand < 0.75 {
+				case rand <= 0.25 && rand < 0.75:
 					dischargeCount = 2
-				} else {
+				default:
 					dischargeCount = 3
 				}
 			}
@@ -158,13 +158,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, progress)
 	}
 
-	//add a status for this just in case someone cares
+	// add a status for this just in case someone cares
 	c.Core.Tasks.Add(func() {
 		c.Core.Status.Add("lisaburst", 119+900)
 	}, burstHitmark)
 
-	//burst cd starts 53 frames after executed
-	//energy usually consumed after 63 frames
+	// burst cd starts 53 frames after executed
+	// energy usually consumed after 63 frames
 	c.ConsumeEnergy(63)
 	// c.CD[def.BurstCD] = c.Core.F + 1200
 	c.SetCDWithDelay(action.ActionBurst, 1200, 53)

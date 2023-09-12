@@ -57,7 +57,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.particleCB,
 	)
 
-	//reduce charge by 1
+	// reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, 900, 9)
 
 	return action.ActionInfo{

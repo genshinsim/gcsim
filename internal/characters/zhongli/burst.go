@@ -21,7 +21,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//deal damage when created
+	// deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Planet Befall",

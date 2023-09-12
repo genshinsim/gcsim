@@ -6,15 +6,15 @@ import (
 )
 
 func parseOptions(p *Parser) (parseFn, error) {
-	//option iter=1000 duration=1000 worker=50 debug=true er_calc=true damage_mode=true
+	// option iter=1000 duration=1000 worker=50 debug=true er_calc=true damage_mode=true
 	var err error
 
-	//options debug=true iteration=5000 duration=90 workers=24;
+	// options debug=true iteration=5000 duration=90 workers=24;
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 
 		switch n.Typ {
 		case itemIdentifier:
-			//expecting identifier = some value
+			// expecting identifier = some value
 			switch n.Val {
 			case "debug":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
@@ -101,7 +101,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 					}
 				}
 			case "er_calc":
-				//does nothing thus far...
+				// does nothing thus far...
 			default:
 				return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.line, n.Val)
 			}

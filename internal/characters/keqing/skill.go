@@ -133,7 +133,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 		c.particleCB,
 	)
 
-	//add electro infusion
+	// add electro infusion
 	c.a1()
 
 	// despawn stiletto

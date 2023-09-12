@@ -48,7 +48,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		Snapshot: snap,
 	}
 
-	//trigger a chain of attacks starting at the first target
+	// trigger a chain of attacks starting at the first target
 	atk := *c.skillAtk
 	atk.SourceFrame = c.Core.F
 	atk.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.6)
@@ -71,13 +71,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) chain(src int, count int) combat.AttackCBFunc {
+func (c *char) chain(src, count int) combat.AttackCBFunc {
 	if count == 3 {
 		c.skillHealing()
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		//on hit figure out the next target
+		// on hit figure out the next target
 		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 10), nil)
 		if next == nil {
 			c.skillHealing()
@@ -87,7 +87,7 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		if next.Key() != a.Target.Key() {
 			delay += 6 // add some (estimated) delay in case it's a different target
 		}
-		//queue an attack vs next target
+		// queue an attack vs next target
 		atk := *c.skillAtk
 		atk.SourceFrame = src
 		atk.Pattern = combat.NewCircleHitOnTarget(next, nil, 0.6)

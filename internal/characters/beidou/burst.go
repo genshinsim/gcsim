@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 
 	if c.Base.Cons >= 1 {
-		//create a shield
+		// create a shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: c.Index,
 			Src:        c.Core.F,
@@ -118,7 +118,7 @@ func (c *char) burstProc() {
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
-		//make sure the person triggering the attack is on field still
+		// make sure the person triggering the attack is on field still
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
@@ -130,7 +130,7 @@ func (c *char) burstProc() {
 			return false
 		}
 
-		//trigger a chain of attacks starting at the first target
+		// trigger a chain of attacks starting at the first target
 		atk := *c.burstAtk
 		atk.SourceFrame = c.Core.F
 		atk.Pattern = combat.NewSingleTargetHit(t.Key())
@@ -150,7 +150,7 @@ func (c *char) burstProc() {
 	}, "beidou-burst")
 }
 
-func (c *char) chain(src int, count int) combat.AttackCBFunc {
+func (c *char) chain(src, count int) combat.AttackCBFunc {
 	if c.Base.Cons >= 2 && count == 5 {
 		return nil
 	}
@@ -158,15 +158,15 @@ func (c *char) chain(src int, count int) combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		//on hit figure out the next target
+		// on hit figure out the next target
 		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t combat.Enemy) bool {
 			return a.Target.Key() != t.Key()
 		})
 		if next == nil {
-			//do nothing if no other target other than this one
+			// do nothing if no other target other than this one
 			return
 		}
-		//queue an attack vs next target
+		// queue an attack vs next target
 		atk := *c.burstAtk
 		atk.SourceFrame = src
 		atk.Pattern = combat.NewSingleTargetHit(next.Key())

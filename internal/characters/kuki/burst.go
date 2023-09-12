@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	count := 7 //can be 11 at low HP
+	count := 7 // can be 11 at low HP
 	if c.CurrentHPRatio() <= 0.5 {
 		count = 12
 	}

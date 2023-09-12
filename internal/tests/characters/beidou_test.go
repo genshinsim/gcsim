@@ -30,12 +30,12 @@ func TestBeidouBounce(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	//initialize some settings
+	// initialize some settings
 	c.Combat.DefaultTarget = trg[0].Key()
 	c.QueueParticle("system", 1000, attributes.NoElement, 0)
 	advanceCoreFrame(c)
 
-	//start tests
+	// start tests
 	dmgCount := make(map[targets.TargetKey]int)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)

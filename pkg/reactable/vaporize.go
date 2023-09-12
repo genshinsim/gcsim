@@ -14,19 +14,19 @@ func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
 	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
-		//make sure there's hydro
+		// make sure there's hydro
 		if r.Durability[ModifierHydro] < ZeroDur {
 			return false
 		}
-		//if there's still frozen left don't try to vape
-		//game actively rejects vaporize reaction if frozen is present
+		// if there's still frozen left don't try to vape
+		// game actively rejects vaporize reaction if frozen is present
 		if r.Durability[ModifierFrozen] > ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Hydro, a.Info.Durability, .5)
 		a.Info.AmpMult = 1.5
 	case attributes.Hydro:
-		//make sure there's pyro to vape; no coexistance with pyro (yet)
+		// make sure there's pyro to vape; no coexistance with pyro (yet)
 		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
 			return false
 		}
@@ -34,10 +34,10 @@ func (r *Reactable) TryVaporize(a *combat.AttackEvent) bool {
 		a.Info.AmpMult = 2
 		r.burningCheck()
 	default:
-		//should be here
+		// should be here
 		return false
 	}
-	//there shouldn't be anything else to react with
+	// there shouldn't be anything else to react with
 	a.Info.Durability -= consumed
 	a.Info.Durability = max(a.Info.Durability, 0)
 	a.Reacted = true

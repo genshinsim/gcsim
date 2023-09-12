@@ -92,7 +92,7 @@ func TestECBurgeon(t *testing.T) {
 		return false
 	}, "burgeon")
 
-	//create 2 seeds with ec
+	// create 2 seeds with ec
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Hydro,
@@ -108,7 +108,7 @@ func TestECBurgeon(t *testing.T) {
 		},
 		Pattern: combat.NewCircleHitOnTarget(trg[0], nil, 100),
 	}, 0)
-	//reduce aura a bit
+	// reduce aura a bit
 	for i := 0; i < 10; i++ {
 		advanceCoreFrame(c)
 	}

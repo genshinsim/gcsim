@@ -61,14 +61,14 @@ func (e *Enemy) StatusIsActive(key string) bool    { return e.modIsActive(key) }
 func (e *Enemy) ResistModIsActive(key string) bool { return e.modIsActive(key) }
 func (e *Enemy) DefModIsActive(key string) bool    { return e.modIsActive(key) }
 
-//Expiry
+// Expiry
 
 func (e *Enemy) getModExpiry(key string) int {
 	m := modifier.Find(&e.mods, key)
 	if m != -1 {
 		return e.mods[m].Expiry()
 	}
-	//must be 0 if doesn't exist. avoid using -1 b/c that's infinite
+	// must be 0 if doesn't exist. avoid using -1 b/c that's infinite
 	return 0
 }
 func (e *Enemy) StatusExpiry(key string) int { return e.getModExpiry(key) }

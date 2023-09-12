@@ -106,11 +106,11 @@ func (c *char) eyeOnDamage() {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
-		//ignore if eye on icd
+		// ignore if eye on icd
 		if c.eyeICD > c.Core.F {
 			return false
 		}
-		//ignore if eye status not active on char that's doing dmg
+		// ignore if eye status not active on char that's doing dmg
 		if !c.Core.Player.ByIndex(ae.Info.ActorIndex).StatusIsActive(skillKey) {
 			return false
 		}
@@ -120,17 +120,17 @@ func (c *char) eyeOnDamage() {
 			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
 			return false
 		}
-		//ignore self dmg
+		// ignore self dmg
 		if ae.Info.Abil == "Eye of Stormy Judgement" {
 			return false
 		}
-		//ignore 0 damage
+		// ignore 0 damage
 		if dmg == 0 {
 			return false
 		}
 
-		//hit mark 857, eye land 862
-		//electro appears to be applied right away
+		// hit mark 857, eye land 862
+		// electro appears to be applied right away
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Eye of Stormy Judgement (Strike)",
@@ -147,7 +147,7 @@ func (c *char) eyeOnDamage() {
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 5, 5, c.particleCB)
 
-		c.eyeICD = c.Core.F + 54 //0.9 sec icd
+		c.eyeICD = c.Core.F + 54 // 0.9 sec icd
 		return false
 	}, "raiden-eye")
 

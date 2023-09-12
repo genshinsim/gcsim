@@ -34,7 +34,7 @@ func (c *char) a1() {
 			if c.StatusIsActive(a1ICDKey) {
 				return false
 			}
-			c.AddStatus(a1ICDKey, 120, true) //2s
+			c.AddStatus(a1ICDKey, 120, true) // 2s
 
 			if c.Base.Cons >= 4 {
 				c.AddEnergy("sayu-c4", 1.2)

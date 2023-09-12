@@ -43,14 +43,14 @@ func (s *Server) decryptHash(ciphertext, key []byte) ([]byte, error) {
 
 func (s *Server) validateSigning(data []byte, str string) error {
 
-	//check if from valid source
-	//valid key is in the form of id:hash
+	// check if from valid source
+	// valid key is in the form of id:hash
 	id, hashStr, ok := strings.Cut(str, ":")
 	if !ok {
 		return errors.New("no id:hash separation")
 	}
 
-	//hashStr is a hexstring
+	// hashStr is a hexstring
 	hash, err := base64.StdEncoding.DecodeString(hashStr)
 	if err != nil {
 		return errors.New("hash not base64 string")

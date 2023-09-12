@@ -97,7 +97,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) barbaraSelfTick(healAmt float64, hpplus float64, skillInitF int) func() {
+func (c *char) barbaraSelfTick(healAmt, hpplus float64, skillInitF int) func() {
 	return func() {
 		// make sure it's not overwritten
 		if c.skillInitF != skillInitF {

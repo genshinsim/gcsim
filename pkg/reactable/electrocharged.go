@@ -15,30 +15,30 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	//if there's still frozen left don't try to ec
-	//game actively rejects ec reaction if frozen is present
+	// if there's still frozen left don't try to ec
+	// game actively rejects ec reaction if frozen is present
 	if r.Durability[ModifierFrozen] > ZeroDur {
 		return false
 	}
 
-	//adding ec or hydro just adds to durability
+	// adding ec or hydro just adds to durability
 	switch a.Info.Element {
 	case attributes.Hydro:
-		//if there's no existing hydro or electro then do nothing
+		// if there's no existing hydro or electro then do nothing
 		if r.Durability[ModifierElectro] < ZeroDur {
 			return false
 		}
-		//add to hydro durability (can't add if the atk already reacted)
+		// add to hydro durability (can't add if the atk already reacted)
 		//TODO: this shouldn't happen here
 		if !a.Reacted {
 			r.attachOrRefillNormalEle(ModifierHydro, a.Info.Durability)
 		}
 	case attributes.Electro:
-		//if there's no existing hydro or electro then do nothing
+		// if there's no existing hydro or electro then do nothing
 		if r.Durability[ModifierHydro] < ZeroDur {
 			return false
 		}
-		//add to electro durability (can't add if the atk already reacted)
+		// add to electro durability (can't add if the atk already reacted)
 		if !a.Reacted {
 			r.attachOrRefillNormalEle(ModifierElectro, a.Info.Durability)
 		}
@@ -49,8 +49,8 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	a.Reacted = true
 	r.core.Events.Emit(event.OnElectroCharged, r.self, a)
 
-	//at this point ec is refereshed so we need to trigger a reaction
-	//and change ownership
+	// at this point ec is refereshed so we need to trigger a reaction
+	// and change ownership
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,
 		DamageSrc:        r.self.Key(),
@@ -69,8 +69,8 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 	r.ecAtk = atk
 	r.ecSnapshot = snap
 
-	//if this is a new ec then trigger tick immediately and queue up ticks
-	//otherwise do nothing
+	// if this is a new ec then trigger tick immediately and queue up ticks
+	// otherwise do nothing
 	//TODO: need to check if refresh ec triggers new tick immediately or not
 	if r.ecTickSrc == -1 {
 		r.ecTickSrc = r.core.F
@@ -82,9 +82,9 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 		)
 
 		r.core.Tasks.Add(r.nextTick(r.core.F), 60+10)
-		//subscribe to wane ticks
+		// subscribe to wane ticks
 		r.core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			//target should be first, then snapshot
+			// target should be first, then snapshot
 			n := args[0].(combat.Target)
 			a := args[1].(*combat.AttackEvent)
 			dmg := args[2].(float64)
@@ -95,16 +95,16 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 			if a.Info.AttackTag != attacks.AttackTagECDamage {
 				return false
 			}
-			//ignore if this dmg instance has been wiped out due to icd
+			// ignore if this dmg instance has been wiped out due to icd
 			if dmg == 0 {
 				return false
 			}
-			//ignore if we no longer have both electro and hydro
+			// ignore if we no longer have both electro and hydro
 			if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 				return true
 			}
 
-			//wane in 0.1 seconds
+			// wane in 0.1 seconds
 			r.core.Tasks.Add(func() {
 				r.waneEC()
 			}, 6)
@@ -112,8 +112,8 @@ func (r *Reactable) TryAddEC(a *combat.AttackEvent) bool {
 		}, fmt.Sprintf("ec-%v", r.self.Key()))
 	}
 
-	//ticks are 60 frames since last tick
-	//taking tick dmg resets last tick
+	// ticks are 60 frames since last tick
+	// taking tick dmg resets last tick
 	return true
 }
 
@@ -131,7 +131,7 @@ func (r *Reactable) waneEC() {
 		Write("hydro", r.Durability[ModifierHydro]).
 		Write("electro", r.Durability[ModifierElectro])
 
-	//ec is gone
+	// ec is gone
 	r.checkEC()
 }
 
@@ -154,16 +154,16 @@ func (r *Reactable) checkEC() {
 func (r *Reactable) nextTick(src int) func() {
 	return func() {
 		if r.ecTickSrc != src {
-			//source changed, do nothing
+			// source changed, do nothing
 			return
 		}
-		//ec SHOULD be active still, since if not we would have
-		//called cleanup and set source to -1
+		// ec SHOULD be active still, since if not we would have
+		// called cleanup and set source to -1
 		if r.Durability[ModifierElectro] < ZeroDur || r.Durability[ModifierHydro] < ZeroDur {
 			return
 		}
 
-		//so ec is active, which means both aura must still have value > 0; so we can do dmg
+		// so ec is active, which means both aura must still have value > 0; so we can do dmg
 		r.core.QueueAttackWithSnap(
 			r.ecAtk,
 			r.ecSnapshot,
@@ -171,7 +171,7 @@ func (r *Reactable) nextTick(src int) func() {
 			0,
 		)
 
-		//queue up next tick
+		// queue up next tick
 		r.core.Tasks.Add(r.nextTick(src), 60)
 	}
 }

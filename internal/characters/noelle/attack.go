@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatModIsActive(burstBuffKey) {
 		burstIndex = 1
 		if c.NormalCounter == 2 {
-			//q-n3 has different hit lag
+			// q-n3 has different hit lag
 			ai.HitlagHaltFrames = 0.1 * 60
 		}
 	}

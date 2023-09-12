@@ -27,17 +27,17 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//After the character's Elemental Skill hits an opponent, their ATK will be increased by 20% for 8s.
-	//After the character takes DMG, their ATK will be increased by 20% for 8s.
-	//The 2 aforementioned effects can be triggered even when the character is not on the field.
-	//Additionally, when not protected by a shield, the character's Max HP will be increased by 32%.
+	// After the character's Elemental Skill hits an opponent, their ATK will be increased by 20% for 8s.
+	// After the character takes DMG, their ATK will be increased by 20% for 8s.
+	// The 2 aforementioned effects can be triggered even when the character is not on the field.
+	// Additionally, when not protected by a shield, the character's Max HP will be increased by 32%.
 
 	w := &Weapon{}
 	r := p.Refine
 
 	stackAtk := .15 + float64(r)*.05
 
-	stackDuration := 480 //8s * 60
+	stackDuration := 480 // 8s * 60
 	const skillKey = "beacon-of-the-reed-sea-skill"
 	const damagedKey = "beacon-of-the-reed-sea-damaged"
 

@@ -37,8 +37,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Bonus:   c.Stat(attributes.Heal),
 	}
 
-	//[2:28 PM] Aluminum | Harbinger of Jank: I think the idea is that PP won't fall off before dmg hits, but other buffs aren't snapshot
-	//[2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
+	// [2:28 PM] Aluminum | Harbinger of Jank: I think the idea is that PP won't fall off before dmg hits, but other buffs aren't snapshot
+	// [2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
 	// if burstHitmark > c.Core.Status.Duration("paramita") && c.Core.Status.Duration("paramita") > 0 {
 	// 	c.Core.Status.Add("paramita", burstHitmark) //extend this to barely cover the burst
 	// 	c.Core.Log.NewEvent("Paramita status extension for burst", glog.LogCharacterEvent, c.Index).
