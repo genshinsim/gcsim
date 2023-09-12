@@ -186,7 +186,7 @@ func (s *Server) Login() http.HandlerFunc {
 			Value:   tokenString,
 			Expires: expirationTime,
 		})
-		w.WriteHeader(200)
+		w.WriteHeader(http.StatusOK)
 		w.Write(u)
 	}
 }

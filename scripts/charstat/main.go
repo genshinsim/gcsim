@@ -125,7 +125,7 @@ func fetch(path string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("%v: %v", resp.Status, path)
 	}
 

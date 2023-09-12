@@ -41,13 +41,13 @@ func serve(
 }
 
 func handleResults(resp http.ResponseWriter, req *http.Request, path, hash string) bool {
-	if req.Method == "OPTIONS" {
+	if req.Method == http.MethodOptions {
 		log.Println("OPTIONS request received, responding...")
 		optionsResponse(resp)
 		return false
 	}
 
-	if req.Method != "GET" {
+	if req.Method != http.MethodGet {
 		log.Printf("Invalid request method: %v\n", req.Method)
 		resp.WriteHeader(http.StatusForbidden)
 		return false
@@ -76,13 +76,13 @@ func handleResults(resp http.ResponseWriter, req *http.Request, path, hash strin
 }
 
 func handleSample(resp http.ResponseWriter, req *http.Request, path string) bool {
-	if req.Method == "OPTIONS" {
+	if req.Method == http.MethodOptions {
 		log.Println("OPTIONS request received, responding...")
 		optionsResponse(resp)
 		return false
 	}
 
-	if req.Method != "GET" {
+	if req.Method != http.MethodGet {
 		log.Printf("Invalid request method: %v\n", req.Method)
 		resp.WriteHeader(http.StatusForbidden)
 		return false

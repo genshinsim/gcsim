@@ -70,7 +70,7 @@ linters:
     - mirror # reports wrong mirror patterns of bytes/strings usage
     - tenv # detects using os.Setenv instead of t.Setenv since Go1.17
     - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
-    # - usestdlibvars # detects the possibility to use variables/constants from the Go standard library
+    - usestdlibvars # detects the possibility to use variables/constants from the Go standard library
 
 linters-settings:
   cyclop:
