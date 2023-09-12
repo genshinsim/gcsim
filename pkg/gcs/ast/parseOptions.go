@@ -16,7 +16,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 			// expecting identifier = some value
 			switch n.Val {
 			case "debug":
-				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
+				_, err = p.acceptSeqReturnLast(itemAssign, itemBool)
 				// every run is going to have a debug from now on so we basically ignore what this flag says
 			case "defhalt":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
@@ -41,7 +41,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 				}
 			case "mode":
 				//TODO: this is for backward compatibility for now
-				n, err = p.acceptSeqReturnLast(itemAssign, itemIdentifier)
+				_, err = p.acceptSeqReturnLast(itemAssign, itemIdentifier)
 			case "swap_delay":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err == nil {

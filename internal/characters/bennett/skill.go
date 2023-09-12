@@ -203,8 +203,7 @@ func (c *char) skillHold(level int, c4Active bool) action.Info {
 	// 2: skill (hold=1,c4) -> x
 	// 3: skill (hold=2) -> x
 	// 4: skill (hold=2,a4) -> x
-	idx := -1
-	var cd, cdDelay int
+	var idx, cd, cdDelay int
 	switch level {
 	case 1:
 		idx = 1
