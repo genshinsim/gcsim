@@ -90,7 +90,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	}
 
 	core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
-		bucket := int(core.F / bucketSize)
+		bucket := core.F / bucketSize
 		active := core.Player.ActiveChar()
 
 		out.activeTime[active.Index] += 1
@@ -153,7 +153,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	fill := bucketSize - (core.F % bucketSize) - 1
-	bucket := int(core.F / bucketSize)
+	bucket := core.F / bucketSize
 
 	// for averages, last bucket is inaccurate. Fill to fix
 	for i := 0; i < fill; i++ {

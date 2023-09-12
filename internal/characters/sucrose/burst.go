@@ -91,7 +91,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		}, i)
 	}
 
-	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, int(duration/18)), 136)
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, duration/18), 136)
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 18)
 	c.ConsumeEnergy(21)

@@ -51,7 +51,7 @@ func (c *char) a4() {
 					return nil, false
 				}
 				// floor time elapsed
-				dmg := float64(int((c.Core.F-started)/60))*0.035 + 0.01
+				dmg := float64((c.Core.F-started)/60)*0.035 + 0.01
 				if dmg > 0.5 {
 					dmg = 0.5
 				}

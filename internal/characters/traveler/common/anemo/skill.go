@@ -233,7 +233,7 @@ func (c *char) SkillHold(holdTicks int) action.Info {
 	}, hitmark)
 
 	// starts absorbing after the first tick?
-	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), firstTick+1)
+	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, hitmark/18), firstTick+1)
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.gender][next] + hitmark },
 		AnimationLength: skillHoldDelayFrames[c.gender][action.InvalidAction] + hitmark,

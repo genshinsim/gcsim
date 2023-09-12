@@ -133,7 +133,7 @@ func (p *Parser) acceptSeqReturnLast(items ...TokenType) (Token, error) {
 
 func itemNumberToInt(i Token) (int, error) {
 	r, err := strconv.Atoi(i.Val)
-	return int(r), err
+	return r, err
 }
 
 func itemNumberToFloat64(i Token) (float64, error) {

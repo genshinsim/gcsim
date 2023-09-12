@@ -30,7 +30,7 @@ func TestValidation(t *testing.T) {
 	}
 
 	h := sha256.New()
-	h.Write([]byte(data))
+	h.Write(data)
 	bs := h.Sum(nil)
 
 	// shareKey should be of the format id:key

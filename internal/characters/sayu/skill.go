@@ -217,7 +217,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 	// ticks
 	d := c.createSkillHoldSnapshot()
-	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, int(duration/12)), 18)
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, duration/12), 18)
 
 	for i := 0; i <= duration; i += 30 { // 1 tick for sure
 		c.Core.Tasks.Add(func() {

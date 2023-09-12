@@ -14,7 +14,7 @@ import (
 )
 
 func (s *Server) decryptHash(ciphertext, key []byte) ([]byte, error) {
-	c, err := aes.NewCipher([]byte(key))
+	c, err := aes.NewCipher(key)
 	if err != nil {
 		s.Log.Warnw("decryptHash: error creating AES cipher", "err", err)
 		return nil, err

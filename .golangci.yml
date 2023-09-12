@@ -52,7 +52,7 @@ linters:
     - nakedret # finds naked returns in functions greater than a specified function length
     - wastedassign # finds wasted assignment statements
     - unparam # reports unused function parameters
-    # - unconvert # removes unnecessary type conversions
+    - unconvert # removes unnecessary type conversions
     # - goconst # finds repeated strings that could be replaced by a constant
     # - predeclared # finds code that shadows one of Go's predeclared identifiers
     # - reassign # checks that package variables are not reassigned

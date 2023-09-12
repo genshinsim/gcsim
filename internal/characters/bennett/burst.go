@@ -84,7 +84,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATK] = pc * float64(c.Base.Atk+c.Weapon.BaseAtk)
+	m[attributes.ATK] = pc * (c.Base.Atk + c.Weapon.BaseAtk)
 	if c.Base.Cons >= 6 {
 		m[attributes.PyroP] = 0.15
 	}
