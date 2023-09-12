@@ -49,7 +49,7 @@ linters:
     - exportloopref # checks for pointers to enclosing loop variables
     - makezero # finds slice declarations with non-zero initial length
     - nilerr # finds the code that returns nil even if it checks that the error is not nil
-    # - nakedret # finds naked returns in functions greater than a specified function length
+    - nakedret # finds naked returns in functions greater than a specified function length
     # - wastedassign # finds wasted assignment statements
     # - unparam # reports unused function parameters
     # - unconvert # removes unnecessary type conversions

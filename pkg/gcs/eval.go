@@ -105,7 +105,7 @@ func (e *Eval) Err() error {
 // via NextAction()
 // TODO: remove defer in favour of every function actually returning error
 //
-//nolint:nonamedreturns // not possible to perform the res, err modification without named return
+//nolint:nonamedreturns,nakedret // not possible to perform the res, err modification without named return
 func (e *Eval) Run() (res Obj, err error) {
 	defer func() {
 		// this defer ensures that e.err is set correctly; this has to be the first defer
