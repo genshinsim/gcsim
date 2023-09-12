@@ -43,7 +43,7 @@ linters:
     - asasalint # checks for pass []any as any in variadic func(...any)
     - bidichk # checks for dangerous unicode character sequences
     - unused # checks for unused constants, variables, functions and types
-    # - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
+    - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
     # - errorlint # finds code that will cause problems with the error wrapping scheme introduced in Go 1.13
     # - errchkjson # checks for unnecessary json marshal error checks
     # - exportloopref # checks for pointers to enclosing loop variables
