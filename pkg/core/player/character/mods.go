@@ -276,8 +276,9 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 	return int(float64(dur) * cd)
 }
 
-func (c *CharWrapper) DamageReduction(char int) (amt float64) {
+func (c *CharWrapper) DamageReduction(char int) float64 {
 	n := 0
+	amt := 0.0
 	for _, v := range c.mods {
 		m, ok := v.(*DamageReductionMod)
 		if !ok {
@@ -298,8 +299,9 @@ func (c *CharWrapper) DamageReduction(char int) (amt float64) {
 	return amt
 }
 
-func (c *CharWrapper) HealBonus() (amt float64) {
+func (c *CharWrapper) HealBonus() float64 {
 	n := 0
+	amt := 0.0
 	for _, v := range c.mods {
 		m, ok := v.(*HealBonusMod)
 		if !ok {
@@ -322,8 +324,9 @@ func (c *CharWrapper) HealBonus() (amt float64) {
 
 // TODO: consider merging this with just attack mods? reaction bonus should
 // maybe just be it's own stat instead of being a separate mod really
-func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) (amt float64) {
+func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) float64 {
 	n := 0
+	amt := 0.0
 	for _, v := range c.mods {
 		m, ok := v.(*ReactBonusMod)
 		if !ok {

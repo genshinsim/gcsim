@@ -64,8 +64,9 @@ func NewBaseWithHitlag(key string, dur int) Base {
 }
 
 // Delete removes a modifier. Returns true if deleted ok
-func Delete[K Mod](slice *[]K, key string) (m Mod) {
+func Delete[K Mod](slice *[]K, key string) Mod {
 	n := 0
+	var m Mod
 	for i, v := range *slice {
 		if v.Key() == key {
 			m = (*slice)[i]
@@ -75,18 +76,20 @@ func Delete[K Mod](slice *[]K, key string) (m Mod) {
 		}
 	}
 	*slice = (*slice)[:n]
-	return
+	return m
 }
 
 // Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
 // TODO: consider adding a map here to track the index to assist with faster lookups
-func Add[K Mod](slice *[]K, mod K, f int) (overwrote bool, evt glog.Event) {
+func Add[K Mod](slice *[]K, mod K, f int) (bool, glog.Event) {
 	ind := Find(slice, mod.Key())
+	overwrote := false
+	var evt glog.Event
 
 	// if does not exist, make new and add
 	if ind == -1 {
 		*slice = append(*slice, mod)
-		return
+		return overwrote, evt
 	}
 
 	// otherwise check not expired
@@ -96,7 +99,7 @@ func Add[K Mod](slice *[]K, mod K, f int) (overwrote bool, evt glog.Event) {
 	}
 	(*slice)[ind] = mod
 
-	return
+	return overwrote, evt
 }
 
 func Find[K Mod](slice *[]K, key string) int {

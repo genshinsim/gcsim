@@ -290,42 +290,38 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	return nil, errors.New("unexpected end of line while parsing character add stats")
 }
 
-func (p *Parser) acceptLevelReturnBaseMax() (base, max int, err error) {
+func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {
+	base := 0
+	max := 0
+	var err error
 	// expect =xx/yy
 	var x Token
 	x, err = p.consume(itemAssign)
 	if err != nil {
-		err = fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		err = fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
 	}
 	base, err = itemNumberToInt(x)
 	if err != nil {
-		err = fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
 	}
 	x, err = p.consume(ItemForwardSlash)
 	if err != nil {
-		err = fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		err = fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
 	}
 	max, err = itemNumberToInt(x)
 	if err != nil {
-		err = fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
 	}
 	if max < base {
-		err = fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, max, base)
-		return
+		return base, max, fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, max, base)
 	}
-	return
+	return base, max, nil
 }

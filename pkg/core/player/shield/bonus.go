@@ -12,8 +12,9 @@ type shieldBonusMod struct {
 }
 
 // TODO: this probably should be affected by hitlag as well
-func (h *Handler) ShieldBonus() (amt float64) {
+func (h *Handler) ShieldBonus() float64 {
 	n := 0
+	amt := 0.0
 	for _, mod := range h.shieldBonusMods {
 		if mod.Expiry > *h.f || mod.Expiry == -1 {
 			a, done := mod.Amount()

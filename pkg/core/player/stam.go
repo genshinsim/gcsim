@@ -14,8 +14,9 @@ type stamPercentMod struct {
 	Event  glog.Event
 }
 
-func (h *Handler) StamPercentMod(a action.Action) (amt float64) {
+func (h *Handler) StamPercentMod(a action.Action) float64 {
 	n := 0
+	amt := 0.0
 	for _, mod := range h.stamPercentMods {
 		if mod.Expiry > *h.F || mod.Expiry == -1 {
 			x, done := mod.Amount(a)
