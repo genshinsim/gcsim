@@ -61,7 +61,7 @@ linters:
     # - nilnil # checks that there is no simultaneous return of nil error and an invalid value
 
     ## enforcements which can lead to better code
-    # - musttag # enforces field tags in (un)marshaled structs
+    - musttag # enforces field tags in (un)marshaled structs
     # - exhaustruct # checks if all structure fields are initialized
 
     ## misc linters

@@ -44,11 +44,11 @@ type data struct {
 }
 
 type profile struct {
-	Body       string
-	Element    string
-	Rarity     string
-	Region     string
-	WeaponType string
+	Body       string `json:"body"`
+	Element    string `json:"element"`
+	Rarity     string `json:"rarity"`
+	Region     string `json:"region"`
+	WeaponType string `json:"weapon_type"`
 }
 
 func main() {
