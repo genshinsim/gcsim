@@ -20,127 +20,127 @@ const (
 )
 
 type Result struct {
-	Seed          uint64    `msg:"seed" json:"seed"`
-	Duration      int       `msg:"duration" json:"sim_duration"`
-	TotalDamage   float64   `msg:"total_damage" json:"total_damage"`
-	DPS           float64   `msg:"dps" json:"dps"`
-	DamageBuckets []float64 `msg:"damage_buckets" json:"damage_buckets"`
+	Seed          uint64    `json:"seed"           msg:"seed"`
+	Duration      int       `json:"sim_duration"   msg:"duration"`
+	TotalDamage   float64   `json:"total_damage"   msg:"total_damage"`
+	DPS           float64   `json:"dps"            msg:"dps"`
+	DamageBuckets []float64 `json:"damage_buckets" msg:"damage_buckets"`
 
-	ActiveCharacters []ActiveCharacterInterval `msg:"active_characters" json:"active_characters"`
-	DamageMitigation []float64                 `msg:"damage_mitigation" json:"damage_mitigation"`
-	ShieldResults    ShieldResult              `msg:"shield_results" json:"shield_results"`
+	ActiveCharacters []ActiveCharacterInterval `json:"active_characters" msg:"active_characters"`
+	DamageMitigation []float64                 `json:"damage_mitigation" msg:"damage_mitigation"`
+	ShieldResults    ShieldResult              `json:"shield_results"    msg:"shield_results"`
 
-	Characters    []CharacterResult `msg:"characters" json:"characters"`
-	Enemies       []EnemyResult     `msg:"enemies" json:"enemies"`
-	TargetOverlap bool              `msg:"target_overlap" json:"target_overlap"`
+	Characters    []CharacterResult `json:"characters"     msg:"characters"`
+	Enemies       []EnemyResult     `json:"enemies"        msg:"enemies"`
+	TargetOverlap bool              `json:"target_overlap" msg:"target_overlap"`
 }
 
 type CharacterResult struct {
 	// For raw data usage outside of gcsim only
-	Name string `msg:"name" json:"name"`
+	Name string `json:"name" msg:"name"`
 
-	DamageEvents   []DamageEvent   `msg:"damage_events" json:"damage_events"`
-	ReactionEvents []ReactionEvent `msg:"reaction_events" json:"reaction_events"`
-	ActionEvents   []ActionEvent   `msg:"action_events" json:"action_events"`
-	EnergyEvents   []EnergyEvent   `msg:"energy_events" json:"energy_events"`
-	HealEvents     []HealEvent     `msg:"heal_events" json:"heal_events"`
+	DamageEvents   []DamageEvent   `json:"damage_events"   msg:"damage_events"`
+	ReactionEvents []ReactionEvent `json:"reaction_events" msg:"reaction_events"`
+	ActionEvents   []ActionEvent   `json:"action_events"   msg:"action_events"`
+	EnergyEvents   []EnergyEvent   `json:"energy_events"   msg:"energy_events"`
+	HealEvents     []HealEvent     `json:"heal_events"     msg:"heal_events"`
 
 	// TODO: Move to Result since only active character can perform actions?
-	FailedActions []ActionFailInterval `msg:"failed_actions" json:"failed_actions"`
+	FailedActions []ActionFailInterval `json:"failed_actions" msg:"failed_actions"`
 
-	EnergyStatus []float64 `msg:"energy" json:"energy"` // can be completely replaced by EnergyEvents?
-	HealthStatus []float64 `msg:"health" json:"health"`
+	EnergyStatus []float64 `json:"energy" msg:"energy"` // can be completely replaced by EnergyEvents?
+	HealthStatus []float64 `json:"health" msg:"health"`
 
-	DamageCumulativeContrib []float64 `msg:"damage_cumu_contrib" json:"damage_cumu_contrib"`
+	DamageCumulativeContrib []float64 `json:"damage_cumu_contrib" msg:"damage_cumu_contrib"`
 
-	ActiveTime  int     `msg:"active_time" json:"active_time"`
-	EnergySpent float64 `msg:"energy_spent" json:"energy_spent"`
+	ActiveTime  int     `json:"active_time"  msg:"active_time"`
+	EnergySpent float64 `json:"energy_spent" msg:"energy_spent"`
 }
 
 type EnemyResult struct {
-	ReactionStatus []ReactionStatusInterval `msg:"reaction_status" json:"reaction_status"`
-	ReactionUptime map[string]int           `msg:"reaction_uptime" json:"reaction_uptime"` // can calculate from intervals?
+	ReactionStatus []ReactionStatusInterval `json:"reaction_status" msg:"reaction_status"`
+	ReactionUptime map[string]int           `json:"reaction_uptime" msg:"reaction_uptime"` // can calculate from intervals?
 }
 
 type ShieldResult struct {
-	Shields         []ShieldStats                     `msg:"shields" json:"shields"`
-	EffectiveShield map[string][]ShieldSingleInterval `msg:"effective_shield" json:"effective_shield"`
+	Shields         []ShieldStats                     `json:"shields"          msg:"shields"`
+	EffectiveShield map[string][]ShieldSingleInterval `json:"effective_shield" msg:"effective_shield"`
 }
 
 type DamageEvent struct {
-	Frame            int              `msg:"frame" json:"frame"`
-	ActionId         int              `msg:"action_id" json:"action_id"`
-	Source           string           `msg:"src" json:"src"`
-	Target           int              `msg:"target" json:"target"`
-	Element          string           `msg:"element" json:"element"`
-	ReactionModifier ReactionModifier `msg:"reaction_modifier" json:"reaction_modifier"`
-	Crit             bool             `msg:"crit" json:"crit"`
-	Modifiers        []string         `msg:"modifiers" json:"modifiers"`
-	Mitigation       float64          `msg:"mitigation_modifier" json:"mitigation_modifier"`
-	Damage           float64          `msg:"damage" json:"damage"`
+	Frame            int              `json:"frame"               msg:"frame"`
+	ActionId         int              `json:"action_id"           msg:"action_id"`
+	Source           string           `json:"src"                 msg:"src"`
+	Target           int              `json:"target"              msg:"target"`
+	Element          string           `json:"element"             msg:"element"`
+	ReactionModifier ReactionModifier `json:"reaction_modifier"   msg:"reaction_modifier"`
+	Crit             bool             `json:"crit"                msg:"crit"`
+	Modifiers        []string         `json:"modifiers"           msg:"modifiers"`
+	Mitigation       float64          `json:"mitigation_modifier" msg:"mitigation_modifier"`
+	Damage           float64          `json:"damage"              msg:"damage"`
 }
 
 type ActionEvent struct {
-	Frame    int    `msg:"frame" json:"frame"`
-	ActionId int    `msg:"action_id" json:"action_id"`
-	Action   string `msg:"action" json:"action"`
+	Frame    int    `json:"frame"     msg:"frame"`
+	ActionId int    `json:"action_id" msg:"action_id"`
+	Action   string `json:"action"    msg:"action"`
 }
 
 type ReactionEvent struct {
-	Frame    int    `msg:"frame" json:"frame"`
-	Source   string `msg:"src" json:"src"`
-	Target   int    `msg:"target" json:"target"`
-	Reaction string `msg:"reaction" json:"reaction"`
+	Frame    int    `json:"frame"    msg:"frame"`
+	Source   string `json:"src"      msg:"src"`
+	Target   int    `json:"target"   msg:"target"`
+	Reaction string `json:"reaction" msg:"reaction"`
 }
 
 type EnergyEvent struct {
-	Frame   int         `msg:"frame" json:"frame"`
-	Source  string      `msg:"src" json:"src"`
-	Status  FieldStatus `msg:"field_status" json:"field_status"`
-	Gained  float64     `msg:"gained" json:"gained"`
-	Wasted  float64     `msg:"wasted" json:"wasted"`
-	Current float64     `msg:"current" json:"current"` // this is pre + gained
+	Frame   int         `json:"frame"        msg:"frame"`
+	Source  string      `json:"src"          msg:"src"`
+	Status  FieldStatus `json:"field_status" msg:"field_status"`
+	Gained  float64     `json:"gained"       msg:"gained"`
+	Wasted  float64     `json:"wasted"       msg:"wasted"`
+	Current float64     `json:"current"      msg:"current"` // this is pre + gained
 }
 
 // Heal events are stored in the source character
 type HealEvent struct {
-	Frame  int     `msg:"frame" json:"frame"`
-	Source string  `msg:"src" json:"src"`
-	Target int     `msg:"target" json:"target"`
-	Heal   float64 `msg:"heal" json:"heal"`
+	Frame  int     `json:"frame"  msg:"frame"`
+	Source string  `json:"src"    msg:"src"`
+	Target int     `json:"target" msg:"target"`
+	Heal   float64 `json:"heal"   msg:"heal"`
 }
 
 type ActionFailInterval struct {
-	Start  int    `msg:"start" json:"start"`
-	End    int    `msg:"end" json:"end"`
-	Reason string `msg:"reason" json:"reason"`
+	Start  int    `json:"start"  msg:"start"`
+	End    int    `json:"end"    msg:"end"`
+	Reason string `json:"reason" msg:"reason"`
 }
 
 type ReactionStatusInterval struct {
-	Start int    `msg:"start" json:"start"`
-	End   int    `msg:"end" json:"end"`
-	Type  string `msg:"type" json:"type"`
+	Start int    `json:"start" msg:"start"`
+	End   int    `json:"end"   msg:"end"`
+	Type  string `json:"type"  msg:"type"`
 }
 
 type ActiveCharacterInterval struct {
-	Start     int `msg:"start" json:"start"`
-	End       int `msg:"end" json:"end"`
-	Character int `msg:"character" json:"character"`
+	Start     int `json:"start"     msg:"start"`
+	End       int `json:"end"       msg:"end"`
+	Character int `json:"character" msg:"character"`
 }
 
 type ShieldStats struct {
-	Name      string           `msg:"name" json:"name"`
-	Intervals []ShieldInterval `msg:"intervals" json:"intervals"`
+	Name      string           `json:"name"      msg:"name"`
+	Intervals []ShieldInterval `json:"intervals" msg:"intervals"`
 }
 
 type ShieldInterval struct {
-	Start int                `msg:"start" json:"start"`
-	End   int                `msg:"end" json:"end"`
-	HP    map[string]float64 `msg:"hp" json:"hp"`
+	Start int                `json:"start" msg:"start"`
+	End   int                `json:"end"   msg:"end"`
+	HP    map[string]float64 `json:"hp"    msg:"hp"`
 }
 
 type ShieldSingleInterval struct {
-	Start int     `msg:"start" json:"start"`
-	End   int     `msg:"end" json:"end"`
-	HP    float64 `msg:"hp" json:"hp"`
+	Start int     `json:"start" msg:"start"`
+	End   int     `json:"end"   msg:"end"`
+	HP    float64 `json:"hp"    msg:"hp"`
 }

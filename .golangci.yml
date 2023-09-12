@@ -26,7 +26,7 @@ linters:
     - errname # checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error
     - nonamedreturns # reports all named returns
     - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint
-    # - tagalign # checks that struct tags are well aligned
+    - tagalign # checks that struct tags are well aligned
     # - tagliatelle # checks the struct tags are snake case
     # TODO: use this when merged into tagliatelle https://github.com/ldez/tagliatelle/pull/21
 
