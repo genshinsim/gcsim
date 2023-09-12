@@ -8,11 +8,11 @@ import (
 
 func TestEventWriteKeyOnlyPanic(t *testing.T) {
 	e := &LogEvent{
-		Msg:     "test",
-		F:       1,
-		Typ:     LogCharacterEvent,
-		SrcChar: 0,
-		Logs:    map[string]interface{}{},
+		Msg:       "test",
+		Frame:     1,
+		Event:     LogCharacterEvent,
+		CharIndex: 0,
+		Logs:      map[string]interface{}{},
 	}
 	// test writing
 	defer func() {
@@ -27,11 +27,11 @@ func TestEventWriteKeyOnlyPanic(t *testing.T) {
 
 func TestEventWriteNonStringKeyPanic(t *testing.T) {
 	e := &LogEvent{
-		Msg:     "test",
-		F:       1,
-		Typ:     LogCharacterEvent,
-		SrcChar: 0,
-		Logs:    map[string]interface{}{},
+		Msg:       "test",
+		Frame:     1,
+		Event:     LogCharacterEvent,
+		CharIndex: 0,
+		Logs:      map[string]interface{}{},
 	}
 	// test writing
 	defer func() {
@@ -46,12 +46,12 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 
 func TestEventWriteKeyVal(t *testing.T) {
 	e := &LogEvent{
-		Msg:      "test",
-		F:        1,
-		Typ:      LogCharacterEvent,
-		SrcChar:  0,
-		Logs:     map[string]interface{}{},
-		Ordering: make(map[string]int),
+		Msg:       "test",
+		Frame:     1,
+		Event:     LogCharacterEvent,
+		CharIndex: 0,
+		Logs:      map[string]interface{}{},
+		Ordering:  make(map[string]int),
 	}
 
 	// this should be ok no panic
@@ -70,12 +70,12 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 	testdata = make([]*LogEvent, 0, count)
 	for i := 0; i < count; i++ {
 		e := &LogEvent{
-			Msg:      "test",
-			F:        1,
-			Typ:      LogCharacterEvent,
-			SrcChar:  0,
-			Logs:     map[string]interface{}{},
-			Ordering: make(map[string]int),
+			Msg:       "test",
+			Frame:     1,
+			Event:     LogCharacterEvent,
+			CharIndex: 0,
+			Logs:      map[string]interface{}{},
+			Ordering:  make(map[string]int),
 		}
 		e.Write("a", 1).
 			Write("b", true).

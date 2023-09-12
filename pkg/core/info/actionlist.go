@@ -9,15 +9,15 @@ import (
 )
 
 type ActionList struct {
-	Targets     []EnemyProfile     `json:"targets"`
-	PlayerPos   Coord              `json:"player_initial_pos"`
-	Characters  []CharacterProfile `json:"characters"`
-	InitialChar keys.Char          `json:"initial"`
-	Energy      EnergySettings     `json:"energy_settings"`
-	Hurt        HurtSettings       `json:"hurt_settings"`
-	Settings    SimulatorSettings  `json:"settings"`
-	Errors      []error            `json:"-"` // These represents errors preventing ActionList from being executed
-	ErrorMsgs   []string           `json:"errors"`
+	Targets          []EnemyProfile     `json:"targets"`
+	InitialPlayerPos Coord              `json:"initial_player_pos"`
+	Characters       []CharacterProfile `json:"characters"`
+	InitialChar      keys.Char          `json:"initial_char"`
+	EnergySettings   EnergySettings     `json:"energy_settings"`
+	HurtSettings     HurtSettings       `json:"hurt_settings"`
+	Settings         SimulatorSettings  `json:"settings"`
+	Errors           []error            `json:"-"` // These represents errors preventing ActionList from being executed
+	ErrorMsgs        []string           `json:"error_msgs"`
 }
 
 type EnergySettings struct {

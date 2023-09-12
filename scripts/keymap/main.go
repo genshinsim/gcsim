@@ -34,10 +34,10 @@ func main() {
 		element := attributes.StringToEle(strings.TrimPrefix(key, name))
 
 		res[key] = curves.CharBase{
-			Rarity:     5,
-			Body:       info.BodyBoy,
-			Element:    element,
-			WeaponType: info.WeaponClassSword,
+			Rarity:      5,
+			Body:        info.BodyBoy,
+			Element:     element,
+			WeaponClass: info.WeaponClassSword,
 		}
 
 		fmt.Println(res[key])

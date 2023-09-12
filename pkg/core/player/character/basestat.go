@@ -76,7 +76,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	if lvl > 89 {
 		lvl = 89
 	}
-	c.Weapon.Atk = bw.BaseAtk * curves.WeaponStatGrowthMult[lvl][bw.AtkCurve]
+	c.Weapon.BaseAtk = bw.BaseAtk * curves.WeaponStatGrowthMult[lvl][bw.AtkCurve]
 	// add weapon special stat
 	c.BaseStats[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
 	specw[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
@@ -88,12 +88,12 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		}
 	}
 	if ind > -1 {
-		c.Weapon.Atk += bw.PromotionBonus[ind].Atk // atk
+		c.Weapon.BaseAtk += bw.PromotionBonus[ind].Atk // atk
 	}
 
 	// misc data
 	c.Base.Rarity = b.Rarity
-	c.Weapon.Class = b.WeaponType
+	c.Weapon.Class = b.WeaponClass
 	c.CharZone = b.Region
 	c.CharBody = b.Body
 

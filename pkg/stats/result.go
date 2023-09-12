@@ -21,7 +21,7 @@ const (
 
 type Result struct {
 	Seed          uint64    `json:"seed"           msg:"seed"`
-	Duration      int       `json:"sim_duration"   msg:"duration"`
+	Duration      int       `json:"duration"       msg:"duration"`
 	TotalDamage   float64   `json:"total_damage"   msg:"total_damage"`
 	DPS           float64   `json:"dps"            msg:"dps"`
 	DamageBuckets []float64 `json:"damage_buckets" msg:"damage_buckets"`
@@ -48,10 +48,10 @@ type CharacterResult struct {
 	// TODO: Move to Result since only active character can perform actions?
 	FailedActions []ActionFailInterval `json:"failed_actions" msg:"failed_actions"`
 
-	EnergyStatus []float64 `json:"energy" msg:"energy"` // can be completely replaced by EnergyEvents?
-	HealthStatus []float64 `json:"health" msg:"health"`
+	EnergyStatus []float64 `json:"energy_status" msg:"energy_status"` // can be completely replaced by EnergyEvents?
+	HealthStatus []float64 `json:"health_status" msg:"health_status"`
 
-	DamageCumulativeContrib []float64 `json:"damage_cumu_contrib" msg:"damage_cumu_contrib"`
+	DamageCumulativeContrib []float64 `json:"damage_cumulative_contrib" msg:"damage_cumulative_contrib"`
 
 	ActiveTime  int     `json:"active_time"  msg:"active_time"`
 	EnergySpent float64 `json:"energy_spent" msg:"energy_spent"`
@@ -68,16 +68,16 @@ type ShieldResult struct {
 }
 
 type DamageEvent struct {
-	Frame            int              `json:"frame"               msg:"frame"`
-	ActionId         int              `json:"action_id"           msg:"action_id"`
-	Source           string           `json:"src"                 msg:"src"`
-	Target           int              `json:"target"              msg:"target"`
-	Element          string           `json:"element"             msg:"element"`
-	ReactionModifier ReactionModifier `json:"reaction_modifier"   msg:"reaction_modifier"`
-	Crit             bool             `json:"crit"                msg:"crit"`
-	Modifiers        []string         `json:"modifiers"           msg:"modifiers"`
-	Mitigation       float64          `json:"mitigation_modifier" msg:"mitigation_modifier"`
-	Damage           float64          `json:"damage"              msg:"damage"`
+	Frame              int              `json:"frame"               msg:"frame"`
+	ActionId           int              `json:"action_id"           msg:"action_id"`
+	Source             string           `json:"source"              msg:"source"`
+	Target             int              `json:"target"              msg:"target"`
+	Element            string           `json:"element"             msg:"element"`
+	ReactionModifier   ReactionModifier `json:"reaction_modifier"   msg:"reaction_modifier"`
+	Crit               bool             `json:"crit"                msg:"crit"`
+	Modifiers          []string         `json:"modifiers"           msg:"modifiers"`
+	MitigationModifier float64          `json:"mitigation_modifier" msg:"mitigation_modifier"`
+	Damage             float64          `json:"damage"              msg:"damage"`
 }
 
 type ActionEvent struct {
@@ -88,24 +88,24 @@ type ActionEvent struct {
 
 type ReactionEvent struct {
 	Frame    int    `json:"frame"    msg:"frame"`
-	Source   string `json:"src"      msg:"src"`
+	Source   string `json:"source"   msg:"source"`
 	Target   int    `json:"target"   msg:"target"`
 	Reaction string `json:"reaction" msg:"reaction"`
 }
 
 type EnergyEvent struct {
-	Frame   int         `json:"frame"        msg:"frame"`
-	Source  string      `json:"src"          msg:"src"`
-	Status  FieldStatus `json:"field_status" msg:"field_status"`
-	Gained  float64     `json:"gained"       msg:"gained"`
-	Wasted  float64     `json:"wasted"       msg:"wasted"`
-	Current float64     `json:"current"      msg:"current"` // this is pre + gained
+	Frame       int         `json:"frame"        msg:"frame"`
+	Source      string      `json:"source"       msg:"source"`
+	FieldStatus FieldStatus `json:"field_status" msg:"field_status"`
+	Gained      float64     `json:"gained"       msg:"gained"`
+	Wasted      float64     `json:"wasted"       msg:"wasted"`
+	Current     float64     `json:"current"      msg:"current"` // this is pre + gained
 }
 
 // Heal events are stored in the source character
 type HealEvent struct {
 	Frame  int     `json:"frame"  msg:"frame"`
-	Source string  `json:"src"    msg:"src"`
+	Source string  `json:"source" msg:"source"`
 	Target int     `json:"target" msg:"target"`
 	Heal   float64 `json:"heal"   msg:"heal"`
 }

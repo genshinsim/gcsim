@@ -50,7 +50,7 @@ func New(input string) *Parser {
 				Swap: 1, // default swap timer of 1
 			},
 		},
-		PlayerPos: info.Coord{
+		InitialPlayerPos: info.Coord{
 			R: 0.3, // default player radius 0.3, pos 0,0
 		},
 	}

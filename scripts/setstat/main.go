@@ -36,7 +36,7 @@ func writeTmpl(tmplStr, outFile string, d map[string]string) {
 }
 
 type namemap struct {
-	Names map[string]string `json:"namemap"`
+	Names map[string]string `json:"names"`
 }
 
 var re = regexp.MustCompile(`(?i)[^0-9a-z]`)

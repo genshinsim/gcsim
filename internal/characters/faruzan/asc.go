@@ -49,7 +49,7 @@ func (c *char) a4() {
 
 		active := c.Core.Player.ByIndex(atk.Info.ActorIndex)
 		if active.StatusIsActive(burstBuffKey) && !c.StatusIsActive(a4ICDKey) {
-			amt := 0.32 * (c.Base.Atk + c.Weapon.Atk)
+			amt := 0.32 * (c.Base.Atk + c.Weapon.BaseAtk)
 			if c.Core.Flags.LogDebug {
 				c.Core.Log.NewEvent("faruzan a4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 					Write("before", atk.Info.FlatDmg).

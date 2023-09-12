@@ -15,15 +15,15 @@ import (
 )
 
 type stats struct {
-	Max         int     `json:"maxlevel"`
+	MaxLevel    int     `json:"max_level"`
 	HP          float64 `json:"hp"`
-	Atk         float64 `json:"attack"`
-	Def         float64 `json:"defense"`
+	Atk         float64 `json:"atk"`
+	Def         float64 `json:"def"`
 	Specialized float64 `json:"specialized"`
 }
 
 type curve struct {
-	Atk         string `json:"attack"`
+	Atk         string `json:"atk"`
 	Specialized string `json:"specialized"`
 }
 
@@ -31,7 +31,7 @@ type data struct {
 	Base          stats   `json:"base"`
 	Curve         curve   `json:"curve"`
 	Specialized   string  `json:"specialized"`
-	PromotionData []stats `json:"promotion"`
+	PromotionData []stats `json:"promotion_data"`
 	TitleCase     string
 }
 
@@ -113,7 +113,7 @@ func writeTmpl(tmplStr, outFile string, d map[string]data) {
 }
 
 type namemap struct {
-	Names map[string]string `json:"namemap"`
+	Names map[string]string `json:"names"`
 }
 
 var re = regexp.MustCompile(`(?i)[^0-9a-z]`)

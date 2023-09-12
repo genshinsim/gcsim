@@ -42,7 +42,7 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 	// fmt.Printf("cfg: %+v\n", cfg)
 	s.C = c
 
-	err = SetupTargetsInCore(c, geometry.Point{X: cfg.PlayerPos.X, Y: cfg.PlayerPos.Y}, cfg.PlayerPos.R, cfg.Targets)
+	err = SetupTargetsInCore(c, geometry.Point{X: cfg.InitialPlayerPos.X, Y: cfg.InitialPlayerPos.Y}, cfg.InitialPlayerPos.R, cfg.Targets)
 	if err != nil {
 		return nil, err
 	}

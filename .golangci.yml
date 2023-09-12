@@ -27,7 +27,7 @@ linters:
     - nonamedreturns # reports all named returns
     - revive # fast, configurable, extensible, flexible, and beautiful linter for Go, drop-in replacement of golint
     - tagalign # checks that struct tags are well aligned
-    # - tagliatelle # checks the struct tags are snake case
+    - tagliatelle # checks the struct tags are snake case
     # TODO: use this when merged into tagliatelle https://github.com/ldez/tagliatelle/pull/21
 
     ## code complexity detectors
@@ -180,3 +180,6 @@ issues:
         - stylecheck
         - revive
       text: ".*Id should be .*ID"
+    - linters:
+        - tagliatelle
+      text: "got '_id' want 'id'" # play nice with MongoDB

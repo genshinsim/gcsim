@@ -22,7 +22,7 @@ type Store struct {
 }
 
 type User struct {
-	ID         string         `json:"uid"`
+	ID         string         `json:"id"`
 	Name       string         `json:"name"`
 	Role       int            `json:"role"`
 	Permalinks []string       `json:"permalinks,omitempty"`

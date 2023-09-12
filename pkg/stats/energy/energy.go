@@ -35,9 +35,9 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 
 		if core.Player.Active() == character.Index {
-			event.Status = stats.OnField
+			event.FieldStatus = stats.OnField
 		} else {
-			event.Status = stats.OffField
+			event.FieldStatus = stats.OffField
 		}
 
 		out.events[character.Index] = append(out.events[character.Index], event)

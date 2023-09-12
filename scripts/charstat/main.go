@@ -16,21 +16,21 @@ import (
 
 type base struct {
 	HP  float64 `json:"hp"`
-	Atk float64 `json:"attack"`
-	Def float64 `json:"defense"`
+	Atk float64 `json:"atk"`
+	Def float64 `json:"def"`
 }
 
 type curve struct {
 	HP  string `json:"hp"`
-	Atk string `json:"attack"`
-	Def string `json:"defense"`
+	Atk string `json:"atk"`
+	Def string `json:"def"`
 }
 
 type promo struct {
-	Max         int     `json:"maxlevel"`
+	MaxLevel    int     `json:"max_level"`
 	HP          float64 `json:"hp"`
-	Atk         float64 `json:"attack"`
-	Def         float64 `json:"defense"`
+	Atk         float64 `json:"atk"`
+	Def         float64 `json:"def"`
 	Specialized float64 `json:"specialized"`
 }
 
@@ -40,7 +40,7 @@ type data struct {
 	Base          base    `json:"base"`
 	Curve         curve   `json:"curve"`
 	Specialized   string  `json:"specialized"`
-	PromotionData []promo `json:"promotion"`
+	PromotionData []promo `json:"promotion_data"`
 }
 
 type profile struct {
