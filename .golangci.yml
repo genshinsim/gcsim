@@ -65,7 +65,7 @@ linters:
     # - exhaustruct # checks if all structure fields are initialized
 
     ## misc linters
-    # - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
+    - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
     # - gomodguard # allow and block lists linter for direct Go module dependencies.
     # - mirror # reports wrong mirror patterns of bytes/strings usage
     # - tenv # detects using os.Setenv instead of t.Setenv since Go1.17
