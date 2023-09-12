@@ -48,12 +48,12 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.Info {
 	if p["hold"] != 0 {
-		return c.skillHold(p)
+		return c.skillHold()
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
-func (c *char) skillPress(p map[string]int) action.Info {
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Flowfrost Arrow",
@@ -104,7 +104,7 @@ func (c *char) skillPress(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.Info {
+func (c *char) skillHold() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rimestar Flare",

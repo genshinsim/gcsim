@@ -61,10 +61,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	wavespikeStacks := 0
 
-	nonActiveFn := func() bool {
+	nonActiveFn := func() {
 		// once every 0.3s
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// add stacks
 		wavespikeStacks++
@@ -73,7 +73,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index).Write("stack", wavespikeStacks)
 		char.AddStatus(icdKey, 18, true)
-		return false
 	}
 
 	val := make([]float64, attributes.EndStatType)
@@ -97,7 +96,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Player.Active() == char.Index {
 			return activeFn()
 		}
-		return nonActiveFn()
+		nonActiveFn()
+		return false
 	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
 
 	return w, nil

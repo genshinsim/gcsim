@@ -50,7 +50,7 @@ func (e *Enemy) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 		atk.Snapshot.Stats[attributes.CR] = 1
 	}
 	res := e.resist(&atk.Info, evt)
-	defadj := e.defAdj(&atk.Info, evt)
+	defadj := e.defAdj(evt)
 
 	if defadj > 0.9 {
 		defadj = 0.9

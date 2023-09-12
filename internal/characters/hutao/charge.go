@@ -34,7 +34,7 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.Info {
 	if c.StatModIsActive(paramitaBuff) {
-		return c.ppChargeAttack(p)
+		return c.ppChargeAttack()
 	}
 
 	// check for particles
@@ -72,7 +72,7 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) ppChargeAttack(p map[string]int) action.Info {
+func (c *char) ppChargeAttack() action.Info {
 	// pp slide: add 1.8s to paramita on charge attack start which gets removed once the charge attack ends
 	c.ExtendStatus(paramitaBuff, 1.8*60)
 

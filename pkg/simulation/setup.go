@@ -149,7 +149,8 @@ func SetupResonance(s *core.Core) {
 			}
 		case attributes.Electro:
 			last := 0
-			recoverParticle := func(args ...interface{}) bool {
+			//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
+			recoverParticle := func(_ ...interface{}) bool {
 				if s.F-last < 300 && last != 0 { // every 5 seconds
 					return false
 				}
@@ -261,7 +262,7 @@ func SetupResonance(s *core.Core) {
 
 			threeBuff := make([]float64, attributes.EndStatType)
 			threeBuff[attributes.EM] = 20
-			threeEl := func(args ...interface{}) bool {
+			threeEl := func(_ ...interface{}) bool {
 				for _, c := range chars {
 					c.AddStatMod(character.StatMod{
 						Base:         modifier.NewBaseWithHitlag("dendro-res-20", 6*60),
@@ -277,7 +278,7 @@ func SetupResonance(s *core.Core) {
 				if _, ok := args[0].(*gadget.Gadget); ok {
 					return false
 				}
-				return threeEl(args...)
+				return threeEl(nil)
 			}
 			s.Events.Subscribe(event.OnAggravate, threeElNoGadget, "dendro-res")
 			s.Events.Subscribe(event.OnSpread, threeElNoGadget, "dendro-res")

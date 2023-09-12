@@ -134,6 +134,7 @@ func (s *Server) aggregate(ctx context.Context, col *mongo.Collection, pipeline 
 	return result, nil
 }
 
+//nolint:unparam // opts is currently always nil but that might change
 func (s *Server) getOne(
 	ctx context.Context,
 	col *mongo.Collection,

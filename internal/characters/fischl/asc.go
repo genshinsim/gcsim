@@ -20,6 +20,7 @@ func (c *char) a4() {
 
 	last := 0
 	// Hyperbloom comes from a gadget so it doesn't ignore gadgets
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	a4cb := func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 

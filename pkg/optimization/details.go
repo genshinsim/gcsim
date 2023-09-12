@@ -85,8 +85,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 		relevantSubstats = append(relevantSubstats, addlSubstats...)
 	}
 
-	substatGradients, gradDebug := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean)
-	opDebug = append(opDebug, gradDebug...)
+	substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean)
 
 	allocDebug := stats.allocateSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats)
 	opDebug = append(opDebug, allocDebug...)
@@ -262,8 +261,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 	idxChar int,
 	relevantSubstats []attributes.Stat,
 	initialMean float64,
-) ([]float64, []string) {
-	var opDebug []string
+) []float64 {
 	substatGradients := make([]float64, len(relevantSubstats))
 
 	// Build "gradient" by substat
@@ -272,7 +270,6 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 		substatEvalResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
-		// opDebug = append(opDebug, fmt.Sprintf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD))
 
 		substatGradients[idxSubstat] = *substatEvalResult.Statistics.DPS.Mean - initialMean
 
@@ -284,7 +281,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		stats.charProfilesCopy[idxChar].Stats[substat] -= 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 	}
 
-	return substatGradients, opDebug
+	return substatGradients
 }
 
 // TODO: Seems like this should be configurable

@@ -17,7 +17,7 @@ func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
 	case *ast.ReturnStmt:
 		return e.evalReturnStmt(v, env)
 	case *ast.CtrlStmt:
-		return e.evalCtrlStmt(v, env)
+		return e.evalCtrlStmt(v)
 	case *ast.IfStmt:
 		return e.evalIfStmt(v, env)
 	case *ast.WhileStmt:
@@ -121,7 +121,7 @@ func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {
 	}, nil
 }
 
-func (e *Eval) evalCtrlStmt(r *ast.CtrlStmt, env *Env) (Obj, error) {
+func (e *Eval) evalCtrlStmt(r *ast.CtrlStmt) (Obj, error) {
 	return &ctrl{
 		typ: r.Typ,
 	}, nil

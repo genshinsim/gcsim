@@ -22,7 +22,7 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.Info {
 	if c.StatusIsActive(BurstKey) {
-		return c.chargeB(p)
+		return c.chargeB()
 	}
 
 	ai := combat.AttackInfo{
@@ -75,7 +75,7 @@ func init() {
 	chargeBFrames[action.ActionSwap] = 63
 }
 
-func (c *char) chargeB(p map[string]int) action.Info {
+func (c *char) chargeB() action.Info {
 	c.tryBurstPPSlide(chargeBHitmark)
 
 	ai := combat.AttackInfo{

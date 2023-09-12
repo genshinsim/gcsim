@@ -51,7 +51,7 @@ func (c *char) addDecStack() {
 	}
 }
 
-func (c *char) skillRelease(p map[string]int, delay int) action.Info {
+func (c *char) skillRelease(delay int) action.Info {
 	c.Core.Tasks.Add(func() {
 		hitDelay := skillHitmark - skillCDStart
 		ai := combat.AttackInfo{
@@ -119,25 +119,25 @@ func (c *char) skillRelease(p map[string]int, delay int) action.Info {
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.Info {
+func (c *char) skillHold() action.Info {
 	if c.decStack == 4 {
-		return c.skillRelease(p, holdAtFullStacksPenalty)
+		return c.skillRelease(holdAtFullStacksPenalty)
 	}
 	for i := c.decStack + 1; i <= 4; i++ {
 		c.Core.Tasks.Add(c.addDecStack, c.skillHoldDuration(i))
 	}
-	return c.skillRelease(p, c.skillHoldDuration(4))
+	return c.skillRelease(c.skillHoldDuration(4))
 }
 
-func (c *char) skillPress(p map[string]int) action.Info {
-	return c.skillRelease(p, 0)
+func (c *char) skillPress() action.Info {
+	return c.skillRelease(0)
 }
 
 func (c *char) Skill(p map[string]int) action.Info {
 	if p["hold"] != 0 {
-		return c.skillHold(p)
+		return c.skillHold()
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

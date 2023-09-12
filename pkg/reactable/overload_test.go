@@ -14,9 +14,9 @@ func TestOverload(t *testing.T) {
 		t.FailNow()
 	}
 
-	c.QueueAttackEvent(makeAOEAttack(c, attributes.Pyro, 25), 0)
+	c.QueueAttackEvent(makeAOEAttack(attributes.Pyro, 25), 0)
 	c.Tick()
-	c.QueueAttackEvent(makeAOEAttack(c, attributes.Electro, 25), 0)
+	c.QueueAttackEvent(makeAOEAttack(attributes.Electro, 25), 0)
 	advanceCoreFrame(c)
 	if trg[0].last.Info.Abil != "overload" {
 		t.Errorf("expecting overload, got %v", trg[0].last.Info.Abil)

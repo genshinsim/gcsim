@@ -77,12 +77,12 @@ func (c *char) consumeGrimheartStacks() {
 
 func (c *char) Skill(p map[string]int) action.Info {
 	if p["hold"] != 0 {
-		return c.holdSkill(p)
+		return c.holdSkill()
 	}
-	return c.pressSkill(p)
+	return c.pressSkill()
 }
 
-func (c *char) pressSkill(p map[string]int) action.Info {
+func (c *char) pressSkill() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex",
@@ -144,7 +144,7 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) holdSkill(p map[string]int) action.Info {
+func (c *char) holdSkill() action.Info {
 	// hold e
 	// 296 to 341, but cd starts at 322
 	// 60 fps = 108 frames cast, cd starts 62 frames in so need to + 62 frames to cd

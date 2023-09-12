@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
+//nolint:unparam // all calls currently have y = 0 but that can change
 func newSimpleCircle(x, y, r float64) *geometry.Circle {
 	return geometry.NewCircle(geometry.Point{X: x, Y: y}, r, geometry.DefaultDirection(), 360)
 }

@@ -49,7 +49,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) action.Info {
 	if c.StatusIsActive(burstKey) {
-		return c.skillBurst(p)
+		return c.skillBurst()
 	}
 
 	ai := combat.AttackInfo{
@@ -97,7 +97,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillBurst(p map[string]int) action.Info {
+func (c *char) skillBurst() action.Info {
 	c.explosiveFirework()
 
 	return action.Info{

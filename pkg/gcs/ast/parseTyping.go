@@ -2,7 +2,7 @@ package ast
 
 import "fmt"
 
-func (p *Parser) parseOptionalType(identPos Pos) (ExprType, error) {
+func (p *Parser) parseOptionalType() (ExprType, error) {
 	// the only time typing information should be present is either in a fn signature or after a let stmt
 	// should be safe to assume that if the next token is either an identifier or fn, it should be typing info
 	// if it's not either then we return nil
@@ -101,7 +101,7 @@ func (p *Parser) parseFnType() (ExprType, error) {
 		}
 	}
 	// check for optional return type
-	res.ResultType, err = p.parseOptionalType(n.pos)
+	res.ResultType, err = p.parseOptionalType()
 	if err != nil {
 		return nil, err
 	}

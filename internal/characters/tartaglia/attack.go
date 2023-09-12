@@ -45,7 +45,7 @@ func init() {
 // Perform up to 6 consecutive shots with a bow.
 func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatusIsActive(MeleeKey) {
-		return c.meleeAttack(p)
+		return c.meleeAttack()
 	}
 
 	travel, ok := p["travel"]
@@ -133,7 +133,7 @@ func init() {
 
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
-func (c *char) meleeAttack(p map[string]int) action.Info {
+func (c *char) meleeAttack() action.Info {
 	for i, mult := range eAttack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,

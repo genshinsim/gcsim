@@ -11,9 +11,9 @@ import (
 func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	switch v := ex.(type) {
 	case *ast.NumberLit:
-		return e.evalNumberLit(v, env), nil
+		return e.evalNumberLit(v), nil
 	case *ast.StringLit:
-		return e.evalStringLit(v, env), nil
+		return e.evalStringLit(v), nil
 	case *ast.FuncExpr:
 		return e.evalFuncExpr(v, env), nil
 	case *ast.Ident:
@@ -25,7 +25,7 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	case *ast.CallExpr:
 		return e.evalCallExpr(v, env)
 	case *ast.Field:
-		return e.evalField(v, env)
+		return e.evalField(v)
 	case *ast.MapExpr:
 		return e.evalMap(v, env)
 	default:
@@ -33,7 +33,7 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	}
 }
 
-func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
+func (e *Eval) evalNumberLit(n *ast.NumberLit) Obj {
 	return &number{
 		isFloat: n.IsFloat,
 		ival:    n.IntVal,
@@ -41,7 +41,7 @@ func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
 	}
 }
 
-func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
+func (e *Eval) evalStringLit(n *ast.StringLit) Obj {
 	// strip the ""
 	return &strval{
 		str: strings.Trim(n.Value, "\""),
@@ -190,7 +190,7 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 	return &null{}, nil
 }
 
-func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
+func (e *Eval) evalField(n *ast.Field) (Obj, error) {
 	r, err := conditional.Eval(e.Core, n.Value)
 	if err != nil {
 		return nil, err

@@ -41,7 +41,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 
 	// TODO: Implement reactions on player
 
-	dmg, crit = p.calc(atk, evt)
+	dmg, crit = p.calc(atk)
 
 	active := p.Core.Player.Active()
 	dmgLeft := p.Core.Player.Shields.OnDamage(active, dmg, atk.Info.Element)
@@ -78,7 +78,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	// towards the sim's TotalDamage and DPS statistic
 	return 0
 }
-func (p *Player) calc(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
+func (p *Player) calc(atk *combat.AttackEvent) (float64, bool) {
 	var isCrit bool
 
 	st := attributes.EleToDmgP(atk.Info.Element)

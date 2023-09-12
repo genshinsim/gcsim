@@ -73,7 +73,8 @@ func testCoreWithTrgs(count int) (*core.Core, []*testTarget) {
 	return c, r
 }
 
-func makeAOEAttack(c *core.Core, ele attributes.Element, dur reactions.Durability) *combat.AttackEvent {
+//nolint:unparam // dur is always 25 atm but that might change
+func makeAOEAttack(ele attributes.Element, dur reactions.Durability) *combat.AttackEvent {
 	return &combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    ele,
@@ -108,7 +109,7 @@ func (target *testTarget) HandleAttack(atk *combat.AttackEvent) float64 {
 	// delay damage event to end of the frame
 	target.Core.Combat.Tasks.Add(func() {
 		// apply the damage
-		target.applyDamage(atk, 1)
+		target.applyDamage(atk)
 		target.Core.Combat.Events.Emit(event.OnEnemyDamage, target, atk, 1.0, false)
 	}, 0)
 	return 1
@@ -124,7 +125,7 @@ func (target *testTarget) Attack(atk *combat.AttackEvent, evt glog.Event) (float
 	return 0, false
 }
 
-func (target *testTarget) applyDamage(atk *combat.AttackEvent, amt float64) {
+func (target *testTarget) applyDamage(atk *combat.AttackEvent) {
 	if !atk.Reacted {
 		target.Reactable.AttachOrRefill(atk)
 	}

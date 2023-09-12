@@ -75,7 +75,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatModIsActive(paramitaBuff) {
-		return c.ppAttack(p)
+		return c.ppAttack()
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -125,7 +125,7 @@ func (c *char) Attack(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) ppAttack(p map[string]int) action.Info {
+func (c *char) ppAttack() action.Info {
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,

@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -48,12 +47,12 @@ const (
 func (c *char) Skill(p map[string]int) action.Info {
 	c.markCount = 0
 	if p["hold"] == 0 {
-		return c.skillPress(p)
+		return c.skillPress()
 	}
 	return c.skillHold(p)
 }
 
-func (c *char) skillPress(p map[string]int) action.Info {
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
@@ -161,15 +160,13 @@ func (c *char) updateTriKarmaInterval() {
 	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
-func (c *char) triKarmaOnReaction(rx event.Event) func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
-		t, ok := args[0].(*enemy.Enemy)
-		if !ok {
-			return false
-		}
-		c.triggerTriKarmaDamageIfAvail(t)
+func (c *char) triKarmaOnReaction(args ...interface{}) bool {
+	t, ok := args[0].(*enemy.Enemy)
+	if !ok {
 		return false
 	}
+	c.triggerTriKarmaDamageIfAvail(t)
+	return false
 }
 
 func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {

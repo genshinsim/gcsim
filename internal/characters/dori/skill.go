@@ -40,9 +40,6 @@ func (c *char) Skill(p map[string]int) action.Info {
 		Durability: 25,
 		Mult:       skill[c.TalentLvlSkill()],
 	}
-	afterSalesCB := func(_ combat.AttackCB) { // executes after the troublshooter shot hits
-		c.afterSales(travel)
-	}
 
 	if c.Base.Cons >= 6 {
 		c.Core.Player.AddWeaponInfuse(
@@ -67,7 +64,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		),
 		0,
 		skillRelease+travel,
-		afterSalesCB,
+		c.afterSales(),
 		c.makeA4CB(),
 		c.particleCB,
 	)
@@ -93,8 +90,14 @@ func (c *char) particleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) afterSales(travel int) func() {
-	return func() {
+func (c *char) afterSales() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if done {
+			return
+		}
+		done = true
+
 		ae := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "After-Sales Service Round",

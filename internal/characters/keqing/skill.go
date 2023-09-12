@@ -40,12 +40,12 @@ func init() {
 func (c *char) Skill(p map[string]int) action.Info {
 	// check if stiletto is on-field
 	if c.Core.Status.Duration(stilettoKey) > 0 {
-		return c.skillRecast(p)
+		return c.skillRecast()
 	}
-	return c.skillFirst(p)
+	return c.skillFirst()
 }
 
-func (c *char) skillFirst(p map[string]int) action.Info {
+func (c *char) skillFirst() action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Stellar Restoration",
 		ActorIndex: c.Index,
@@ -82,7 +82,7 @@ func (c *char) skillFirst(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillRecast(p map[string]int) action.Info {
+func (c *char) skillRecast() action.Info {
 	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
 		ai := combat.AttackInfo{

@@ -114,7 +114,7 @@ func (p *Parser) parseFnArgs() ([]*Ident, []ExprType, error) {
 
 		// check for optional typing
 		// if not present assume number
-		typ, err := p.parseOptionalType(n.pos)
+		typ, err := p.parseOptionalType()
 		if err != nil {
 			return nil, nil, err
 		}

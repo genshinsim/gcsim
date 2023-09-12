@@ -203,7 +203,7 @@ func (w *NAHook) Enable() {
 			w.C.Index).
 			Write("state", w.Core.Player.CurrentState()).
 			Write("icd", w.C.StatusExpiry(w.AbilICDKey))
-		w.trigger(w.Core.F)
+		w.trigger()
 		return false
 	}, fmt.Sprintf("%v animation check", w.AbilName))
 }
@@ -220,7 +220,7 @@ func (w *NAHook) naStateDelayFuncGen(src int) func() {
 			w.C.Index).
 			Write("state", w.Core.Player.CurrentState()).
 			Write("icd", w.C.StatusExpiry(w.AbilICDKey))
-		w.trigger(src)
+		w.trigger()
 	}
 }
 
@@ -234,11 +234,11 @@ func (w *NAHook) naTickerFunc(src int) func() {
 			Write("src", src).
 			Write("state", w.Core.Player.CurrentState()).
 			Write("icd", w.C.StatusExpiry(w.AbilICDKey))
-		w.trigger(src)
+		w.trigger()
 	}
 }
 
-func (w *NAHook) trigger(src int) {
+func (w *NAHook) trigger() {
 	// we can trigger here b/c we're in normal state still and src is still the same
 	w.SummonFunc()
 	w.C.AddStatus(w.AbilICDKey, w.AbilProcICD, true)

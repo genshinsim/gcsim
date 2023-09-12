@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		shortHold = 1
 	}
 	if shortHold == 1 {
-		return c.skillShortHold(p)
+		return c.skillShortHold()
 	}
 
 	hold := p["hold"]
@@ -73,9 +73,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 		if hold > 10*60 {
 			hold = 10 * 60
 		}
-		return c.skillHold(p, hold)
+		return c.skillHold(hold)
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
 func (c *char) kickParticleCB(a combat.AttackCB) {
@@ -100,7 +100,7 @@ func (c *char) rollParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle("kirara-roll", 1, attributes.Dendro, c.ParticleDelay)
 }
 
-func (c *char) skillPress(p map[string]int) action.Info {
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Tail-Flicking Flying Kick",
@@ -138,7 +138,7 @@ func (c *char) skillPress(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillShortHold(p map[string]int) action.Info {
+func (c *char) skillShortHold() action.Info {
 	// 1 tick
 	d := c.createSkillHoldSnapshot()
 	c.Core.Tasks.Add(func() {
@@ -189,7 +189,7 @@ func (c *char) skillShortHold(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillHold(p map[string]int, duration int) action.Info {
+func (c *char) skillHold(duration int) action.Info {
 	// ticks
 	d := c.createSkillHoldSnapshot()
 

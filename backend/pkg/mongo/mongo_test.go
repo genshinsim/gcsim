@@ -221,7 +221,7 @@ func insertFakeEntries() error {
 		e := makeEntry(id, "notag", true, false)
 		_, err := col.InsertOne(context.TODO(), e)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		dbNoTag[id] = e
 	}
@@ -231,7 +231,7 @@ func insertFakeEntries() error {
 		e := makeEntry(id, "tag", true, true)
 		_, err := col.InsertOne(context.TODO(), e)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		dbEntries[id] = e
 	}
@@ -241,7 +241,7 @@ func insertFakeEntries() error {
 		e := makeEntry(id, "sub", false, false)
 		_, err := col.InsertOne(context.TODO(), e)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		subs[id] = e
 	}

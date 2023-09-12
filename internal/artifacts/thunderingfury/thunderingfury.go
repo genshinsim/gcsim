@@ -72,6 +72,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		},
 	})
 
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	reduce := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {

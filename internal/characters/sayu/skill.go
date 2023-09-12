@@ -58,7 +58,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		shortHold = 1
 	}
 	if shortHold == 1 {
-		return c.skillShortHold(p)
+		return c.skillShortHold()
 	}
 
 	hold := p["hold"]
@@ -66,9 +66,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 		if hold > 600 { // 10s
 			hold = 600
 		}
-		return c.skillHold(p, hold)
+		return c.skillHold(hold)
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
 func (c *char) kickParticleCB(a combat.AttackCB) {
@@ -93,7 +93,7 @@ func (c *char) rollParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle("sayu-roll", 1, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) skillPress(p map[string]int) action.Info {
+func (c *char) skillPress() action.Info {
 	c.c2Bonus = 0.033
 
 	// Fuufuu Windwheel DMG
@@ -149,7 +149,7 @@ func (c *char) skillPress(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillShortHold(p map[string]int) action.Info {
+func (c *char) skillShortHold() action.Info {
 	c.eDuration = c.Core.F + skillShortHoldKickHitmark
 	c.c2Bonus = .0
 
@@ -207,7 +207,7 @@ func (c *char) skillShortHold(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillHold(p map[string]int, duration int) action.Info {
+func (c *char) skillHold(duration int) action.Info {
 	c.eDuration = c.Core.F + (skillHoldKickHitmark - 600) + duration
 	c.c2Bonus = .0
 

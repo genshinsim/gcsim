@@ -26,7 +26,7 @@ func init() {
 
 const skillHitmark = 2
 
-func (c *char) skillActivate(p map[string]int) action.Info {
+func (c *char) skillActivate() action.Info {
 	c.AddStatus(SkillKey, 20*60, true)
 	c.Core.Player.SwapCD = math.MaxInt16
 
@@ -69,7 +69,7 @@ func (c *char) skillActivate(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillDeactivate(p map[string]int) action.Info {
+func (c *char) skillDeactivate() action.Info {
 	delay := c.skillEndRoutine()
 
 	return action.Info{
@@ -136,9 +136,9 @@ func (c *char) depleteSkydwellerPoints() {
 
 func (c *char) Skill(p map[string]int) action.Info {
 	if !c.StatusIsActive(SkillKey) {
-		return c.skillActivate(p)
+		return c.skillActivate()
 	}
-	return c.skillDeactivate(p)
+	return c.skillDeactivate()
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

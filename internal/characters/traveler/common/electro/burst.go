@@ -129,7 +129,7 @@ func (c *char) burstProc() {
 		//  dealt by the next Falling Thunder, which will deal 200% of its original DMG and will restore
 		//  an additional 1 Energy to the current character.
 		c.c6Damage(&atk)
-		atk.Callbacks = append(atk.Callbacks, c.fallingThunderEnergy(), c.c2(t), c.c6Energy())
+		atk.Callbacks = append(atk.Callbacks, c.fallingThunderEnergy(), c.c2(), c.c6Energy())
 
 		c.Core.QueueAttackEvent(&atk, 1)
 

@@ -69,12 +69,12 @@ func (c *char) Skill(p map[string]int) action.Info {
 		// min duration in e state: ~35f
 		// max duration in e state: ~184f
 		// -> offset of 34f to 1 <= hold <= 150
-		return c.skillHold(p, hold+34)
+		return c.skillHold(hold + 34)
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
-func (c *char) skillPress(p map[string]int) action.Info {
+func (c *char) skillPress() action.Info {
 	// press attack and aligned attack
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
@@ -100,7 +100,7 @@ func (c *char) skillPress(p map[string]int) action.Info {
 	}
 }
 
-func (c *char) skillHold(p map[string]int, duration int) action.Info {
+func (c *char) skillHold(duration int) action.Info {
 	// shadowsign activation
 	c.QueueCharTask(func() {
 		c.shadowsignSrc = c.Core.F

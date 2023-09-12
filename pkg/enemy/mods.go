@@ -113,7 +113,7 @@ func (e *Enemy) resist(ai *combat.AttackInfo, evt glog.Event) float64 {
 	return r
 }
 
-func (e *Enemy) defAdj(ai *combat.AttackInfo, evt glog.Event) float64 {
+func (e *Enemy) defAdj(evt glog.Event) float64 {
 	var logDetails []interface{}
 	var sb strings.Builder
 

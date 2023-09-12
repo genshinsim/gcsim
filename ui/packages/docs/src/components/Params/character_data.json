@@ -163,7 +163,7 @@
     {
       "ability": "skill",
       "param": "travel",
-      "desc": "Projectile travel time for both the Troubleshooter Shot and After-Sales Service Rounds from when the Troubleshooter Shot hits. Default 10 frames."
+      "desc": "Projectile travel time for Troubleshooter Shot. Default 10 frames."
     },
     {
       "ability": "burst",

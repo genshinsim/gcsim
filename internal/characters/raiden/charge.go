@@ -23,7 +23,7 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) action.Info {
 	if c.StatusIsActive(BurstKey) {
-		return c.swordCharge(p)
+		return c.swordCharge()
 	}
 
 	ai := combat.AttackInfo{
@@ -66,7 +66,7 @@ func init() {
 	swordCAFrames[action.ActionJump] = swordCAHitmarks[len(swordCAHitmarks)-1]
 }
 
-func (c *char) swordCharge(p map[string]int) action.Info {
+func (c *char) swordCharge() action.Info {
 	for i, mult := range chargeSword {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,

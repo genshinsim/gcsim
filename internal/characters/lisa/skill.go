@@ -46,9 +46,9 @@ func init() {
 func (c *char) Skill(p map[string]int) action.Info {
 	hold := p["hold"]
 	if hold == 1 {
-		return c.skillHold(p)
+		return c.skillHold()
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
@@ -63,7 +63,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 // TODO: how long do stacks last?
-func (c *char) skillPress(p map[string]int) action.Info {
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc",
@@ -111,7 +111,7 @@ func (c *char) skillPress(p map[string]int) action.Info {
 
 // After an extended casting time, calls down lightning from the heavens, dealing massive Electro DMG to all nearby opponents.
 // Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
-func (c *char) skillHold(p map[string]int) action.Info {
+func (c *char) skillHold() action.Info {
 	// no multiplier as that's target dependent
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

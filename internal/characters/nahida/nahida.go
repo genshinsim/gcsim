@@ -50,7 +50,7 @@ func (c *char) Init() error {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, c.triKarmaOnBloomDamage, "nahida-tri-karma")
 	// considers shatter as an elemental reaction
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
-		c.Core.Events.Subscribe(i, c.triKarmaOnReaction(i), fmt.Sprintf("nahida-tri-karma-on-%v", i))
+		c.Core.Events.Subscribe(i, c.triKarmaOnReaction, fmt.Sprintf("nahida-tri-karma-on-%v", i))
 	}
 	// skill cooldown
 	c.updateTriKarmaInterval()

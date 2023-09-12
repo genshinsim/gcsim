@@ -46,7 +46,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatusIsActive(BurstKey) {
-		return c.swordAttack(p)
+		return c.swordAttack()
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -120,7 +120,7 @@ func init() {
 	swordFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) swordAttack(p map[string]int) action.Info {
+func (c *char) swordAttack() action.Info {
 	for i, mult := range attackB[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
