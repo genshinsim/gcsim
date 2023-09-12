@@ -20,7 +20,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 95    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	low := c.CurrentHPRatio() <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
@@ -75,7 +75,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(68)
 	c.SetCDWithDelay(action.ActionBurst, 900, 62)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

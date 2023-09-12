@@ -53,7 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: char.Index,
 			Src:        c.F,
-			ShieldType: shield.ShieldBell,
+			ShieldType: shield.Bell,
 			Name:       "Bell",
 			HP:         hp * char.MaxHP(),
 			Ele:        attributes.NoElement,

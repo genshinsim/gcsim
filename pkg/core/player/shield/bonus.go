@@ -2,6 +2,7 @@ package shield
 
 import "github.com/genshinsim/gcsim/pkg/core/glog"
 
+//nolint:revive // stat name should be at the front for readibility so cannot just strip Shield in the front, will be changed as part of mod rewrite someday
 type ShieldBonusModFunc func() (float64, bool)
 
 type shieldBonusMod struct {

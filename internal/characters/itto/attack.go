@@ -21,10 +21,10 @@ var (
 
 const normalHitNum = 4
 
-type IttoAttackState int
+type ittoAttackState int
 
 const (
-	InvalidAttackState IttoAttackState = iota - 1
+	InvalidAttackState ittoAttackState = iota - 1
 	attack0Stacks
 	attack1PlusStacks
 	attackEndState
@@ -55,7 +55,7 @@ func init() {
 	attackFrames[attack1PlusStacks][3][action.ActionCharge] = 52 // N4 -> CA1/CAF
 }
 
-func (c *char) attackState() IttoAttackState {
+func (c *char) attackState() ittoAttackState {
 	if c.Tags[strStackKey] == 0 {
 		// 0 stacks: use NX -> CA0 frames
 		return attack0Stacks
@@ -69,7 +69,7 @@ func (c *char) attackState() IttoAttackState {
 // When the 2nd and 4th strikes hit opponents, Itto will gain 1 and 2 stacks of Superlative Superstrength, respectively.
 // Max 5 stacks. Triggering this effect will refresh the current duration of any existing stacks.
 // Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill, "Masatsu Zetsugi: Akaushi Burst!"
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	// Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill
 	switch c.Core.Player.CurrentState() {
 	case action.DashState, action.SkillState:
@@ -133,7 +133,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.savedNormalCounter = c.NormalCounter
 	}()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames[state]),
 		AnimationLength: attackFrames[state][c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],

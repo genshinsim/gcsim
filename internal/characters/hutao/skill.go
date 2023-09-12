@@ -31,7 +31,7 @@ func init() {
 	skillFrames[action.ActionJump] = 37
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	bonus := ppatk[c.TalentLvlSkill()] * c.MaxHP()
 	max := (c.Base.Atk + c.Weapon.Atk) * 4
 	if bonus > max {
@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 960, 14)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionBurst], // earliest cancel

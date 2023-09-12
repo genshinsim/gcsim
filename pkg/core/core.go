@@ -63,7 +63,7 @@ type Reactable interface {
 
 const MaxTeamSize = 4
 
-type CoreOpt struct {
+type Opt struct {
 	Seed         int64
 	Debug        bool
 	EnableHitlag bool
@@ -72,7 +72,7 @@ type CoreOpt struct {
 	Delays       info.Delays
 }
 
-func New(opt CoreOpt) (*Core, error) {
+func New(opt Opt) (*Core, error) {
 	c := &Core{}
 	c.Seed = opt.Seed
 	c.Rand = rand.New(rand.NewSource(opt.Seed))

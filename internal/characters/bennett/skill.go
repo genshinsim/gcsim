@@ -62,7 +62,7 @@ func init() {
 	skillFrames[4][action.ActionSwap] = 175
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	level, ok := p["hold"]
 	if !ok || level < 0 || level > 2 {
 		level = 0
@@ -80,7 +80,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillPress()
 }
 
-func (c *char) skillPress() action.ActionInfo {
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Passion Overload (Press)",
@@ -111,7 +111,7 @@ func (c *char) skillPress() action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(5*60)), 14)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[0]),
 		AnimationLength: skillFrames[0][action.InvalidAction],
 		CanQueueAfter:   skillFrames[0][action.ActionDash], // earliest cancel
@@ -135,7 +135,7 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }
 
-func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
+func (c *char) skillHold(level int, c4Active bool) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Passion Overload (Level %v)", level),
@@ -225,7 +225,7 @@ func (c *char) skillHold(level int, c4Active bool) action.ActionInfo {
 	}
 	c.SetCDWithDelay(action.ActionSkill, c.a4CD(c.a1(cd)), cdDelay)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[idx]),
 		AnimationLength: skillFrames[idx][action.InvalidAction],
 		CanQueueAfter:   skillFrames[idx][action.ActionDash], // earliest cancel

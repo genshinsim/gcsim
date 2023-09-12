@@ -23,14 +23,14 @@ func init() {
 	lowPlungeFrames[action.ActionSwap] = 57
 }
 
-func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	// Not in falling state
 	if !c.StatusIsActive(plungeAvailableKey) {
 		c.Core.Log.NewEvent("only plunge after skill ends", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
@@ -69,7 +69,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		delay+lowPlungeHitmark, delay+lowPlungeHitmark)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return lowPlungeFrames[next] },
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeHitmark,

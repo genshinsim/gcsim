@@ -56,7 +56,7 @@ func init() {
 	skillHoldDelayFrames[1][action.ActionSwap] = 83 - 54    // Short Hold E -> Swap - Short Hold E -> D
 }
 
-func (c *char) SkillPress() action.ActionInfo {
+func (c *char) SkillPress() action.Info {
 	hitmark := 34
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -79,7 +79,7 @@ func (c *char) SkillPress() action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames[c.gender]),
 		AnimationLength: skillPressFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[c.gender][action.ActionDash], // earliest cancel
@@ -98,7 +98,7 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) SkillHold(holdTicks int) action.ActionInfo {
+func (c *char) SkillHold(holdTicks int) action.Info {
 	c.eAbsorb = attributes.NoElement
 	c.eICDTag = attacks.ICDTagNone
 	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3)
@@ -234,7 +234,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 
 	// starts absorbing after the first tick?
 	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), firstTick+1)
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.gender][next] + hitmark },
 		AnimationLength: skillHoldDelayFrames[c.gender][action.InvalidAction] + hitmark,
 		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionDash] + hitmark, // earliest cancel
@@ -257,7 +257,7 @@ func (c *char) holdParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	holdTicks := 0
 	if p["hold"] == 1 {
 		holdTicks = 6
@@ -271,9 +271,8 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	if holdTicks == 0 {
 		return c.SkillPress()
-	} else {
-		return c.SkillHold(holdTicks)
 	}
+	return c.SkillHold(holdTicks)
 }
 
 func (c *char) absorbCheckE(src, count, max int) func() {

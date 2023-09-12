@@ -15,10 +15,10 @@ type Simulation struct {
 	C              *core.Core
 	// action list stuff
 	cfg           *info.ActionList
-	queue         []*action.ActionEval
+	queue         []*action.Eval
 	eval          action.Evaluator
 	noMoreActions bool
-	collectors    []stats.StatsCollector
+	collectors    []stats.Collector
 
 	// track previous action, when it was used at, and the earliest
 	// useable frame for all other chained actions

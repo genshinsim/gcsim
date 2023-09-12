@@ -22,7 +22,7 @@ func init() {
 }
 
 // Sets Xiao's burst damage state
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	var hpICD int
 	hpICD = 0
 
@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 29)
 	c.ConsumeEnergy(36)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel

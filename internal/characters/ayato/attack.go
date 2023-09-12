@@ -46,7 +46,7 @@ func init() {
 	shunsuikenFrames = frames.InitNormalCancelSlice(shunsuikenHitmark, 23)
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatusIsActive(SkillBuffKey) {
 		return c.SoukaiKanka(p)
 	}
@@ -87,7 +87,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	defer c.AdvanceNormalIndex()
 
 	// normal state
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
@@ -95,7 +95,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
+func (c *char) SoukaiKanka(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex:         c.Index,
@@ -122,7 +122,7 @@ func (c *char) SoukaiKanka(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			return frames.AtkSpdAdjust(shunsuikenFrames[next], c.Stat(attributes.AtkSpd))
 		},

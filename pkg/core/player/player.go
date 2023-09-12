@@ -33,7 +33,7 @@ type Handler struct {
 	// handlers
 	*animation.AnimationHandler
 	Shields *shield.Handler
-	infusion.InfusionHandler
+	infusion.Handler
 
 	// tracking
 	chars   []*character.CharWrapper
@@ -80,7 +80,7 @@ func New(opt Opt) *Handler {
 		Stam:            MaxStam,
 	}
 	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
-	h.InfusionHandler = infusion.New(opt.F, opt.Log, opt.Debug)
+	h.Handler = infusion.New(opt.F, opt.Log, opt.Debug)
 	h.AnimationHandler = animation.New(opt.F, opt.Debug, opt.Log, opt.Events, opt.Tasks)
 	return h
 }

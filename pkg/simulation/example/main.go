@@ -67,7 +67,7 @@ func main() {
 	fmt.Println(gcsl.String())
 
 	// create core
-	c, err := core.New(core.CoreOpt{
+	c, err := core.New(core.Opt{
 		Seed:       0,
 		Debug:      true,
 		DefHalt:    cfg.Settings.DefHalt,

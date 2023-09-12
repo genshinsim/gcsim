@@ -10,7 +10,7 @@ import (
 )
 
 // TODO: add a sync.Pool here to save some memory allocs
-type ActionInfo struct {
+type Info struct {
 	Frames              func(next Action) int `json:"-"`
 	AnimationLength     int
 	CanQueueAfter       int
@@ -26,8 +26,8 @@ type ActionInfo struct {
 	queued []queuedAction
 }
 
-// ActionEval represents a sim action
-type ActionEval struct {
+// Eval represents a sim action
+type Eval struct {
 	Char   keys.Char
 	Action Action
 	Param  map[string]int
@@ -35,7 +35,7 @@ type ActionEval struct {
 
 // Evaluator provides method for getting next action
 type Evaluator interface {
-	NextAction() (*ActionEval, error) // NextAction should reuturn the next action, or nil if no actions left
+	NextAction() (*Eval, error) // NextAction should reuturn the next action, or nil if no actions left
 	Continue()
 	Exit() error
 	Err() error
@@ -47,21 +47,21 @@ type queuedAction struct {
 	delay float64
 }
 
-func (a *ActionInfo) CacheFrames() {
+func (a *Info) CacheFrames() {
 	for i := range a.CachedFrames {
 		a.CachedFrames[i] = a.Frames(Action(i))
 	}
 }
 
-func (a *ActionInfo) QueueAction(f func(), delay int) {
+func (a *Info) QueueAction(f func(), delay int) {
 	a.queued = append(a.queued, queuedAction{f: f, delay: float64(delay)})
 }
 
-func (a *ActionInfo) CanQueueNext() bool {
+func (a *Info) CanQueueNext() bool {
 	return a.TimePassed >= float64(a.CanQueueAfter)
 }
 
-func (a *ActionInfo) CanUse(next Action) bool {
+func (a *Info) CanUse(next Action) bool {
 	if a.UseNormalizedTime != nil && a.UseNormalizedTime(next) {
 		return a.NormalizedTimePassed >= float64(a.CachedFrames[next])
 	}
@@ -72,11 +72,11 @@ func (a *ActionInfo) CanUse(next Action) bool {
 	return a.TimePassed >= float64(a.CachedFrames[next])
 }
 
-func (a *ActionInfo) AnimationState() AnimationState {
+func (a *Info) AnimationState() AnimationState {
 	return a.State
 }
 
-func (a *ActionInfo) Tick() bool {
+func (a *Info) Tick() bool {
 	a.NormalizedTimePassed++ // this always increments
 	// time only goes on if either not hitlag function, or not paused
 	if a.FramePausedOnHitlag == nil || !a.FramePausedOnHitlag() {

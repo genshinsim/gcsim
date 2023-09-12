@@ -16,7 +16,7 @@ type buffer struct {
 	activeIntervals []stats.ActiveCharacterInterval
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		activeChar:      core.Player.Active(),
 		activeCharStart: 0,

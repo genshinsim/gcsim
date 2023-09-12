@@ -27,7 +27,7 @@ func init() {
 
 // Skill handling - Handles primary damage instance
 // Deals Hydro DMG to surrounding opponents and heal nearby active characters once every 2s. This healing is based on Kokomi's Max HP.
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// skill duration is ~12.5s
 	// Plus 1 to avoid same frame issues with skill ticks
 	c.Core.Status.Add("kokomiskill", 12*60+30+1)
@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 20*60, 20)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillHitmark,

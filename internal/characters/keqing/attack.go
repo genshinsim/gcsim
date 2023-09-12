@@ -42,7 +42,7 @@ func init() {
 	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	centerTarget := c.Core.Combat.Player()
 	if c.NormalCounter == 4 {
 		centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
@@ -89,7 +89,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	act := action.ActionInfo{
+	act := action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],

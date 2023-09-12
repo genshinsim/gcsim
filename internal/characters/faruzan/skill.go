@@ -42,7 +42,7 @@ func init() {
 // character hit. This effect will be removed after a short delay, creating a
 // vortex that deals AoE Anemo DMG and pulls nearby objects and opponents in.
 // The vortex DMG is considered Elemental Skill DMG.
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Wind Realm of Nasamjnin (E)",
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.SetCD(action.ActionSkill, 360)
 	}, 12)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel

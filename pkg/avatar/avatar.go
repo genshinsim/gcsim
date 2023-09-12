@@ -239,18 +239,18 @@ func (p *Player) ApplySelfInfusion(ele attributes.Element, dur reactions.Durabil
 	if ele == attributes.Frozen {
 		return
 	}
-	var mod reactable.ReactableModifier
+	var mod reactable.Modifier
 	switch ele {
 	case attributes.Electro:
-		mod = reactable.ModifierElectro
+		mod = reactable.Electro
 	case attributes.Hydro:
-		mod = reactable.ModifierHydro
+		mod = reactable.Hydro
 	case attributes.Pyro:
-		mod = reactable.ModifierPyro
+		mod = reactable.Pyro
 	case attributes.Cryo:
-		mod = reactable.ModifierCryo
+		mod = reactable.Cryo
 	case attributes.Dendro:
-		mod = reactable.ModifierDendro
+		mod = reactable.Dendro
 	}
 
 	// we're assuming refill maintains the same decay rate?

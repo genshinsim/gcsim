@@ -172,7 +172,7 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 	return 0
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagExtra,
@@ -256,7 +256,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	c.c6Proc = c.Base.Cons >= 6 && c.Core.Rand.Float64() < 0.5
 	nextSlash := curSlash.Next(c.Tags[strStackKey], c.c6Proc)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			f := chargeFrames[curSlash][next]
 

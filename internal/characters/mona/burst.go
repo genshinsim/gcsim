@@ -26,7 +26,7 @@ func init() {
 	burstFrames[action.ActionJump] = 104    // Q -> J
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// bubble deal 0 dmg hydro app
 	// add bubble status, when bubble status disappears trigger omen dmg the frame after
 	// bubble status bursts either -> takes dmg no freeze OR freeze and freeze disappears
@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel is before burstHitmark

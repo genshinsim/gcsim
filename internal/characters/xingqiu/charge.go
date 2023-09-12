@@ -20,7 +20,7 @@ func init() {
 	chargeFrames[action.ActionSwap] = 31
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Charge",
 		ActorIndex: c.Index,
@@ -42,7 +42,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],

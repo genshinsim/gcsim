@@ -114,6 +114,7 @@ func (l *lexer) nextItem() Token {
 // drain drains the output so the lexing goroutine will exit.
 // Called by the parser, not in the lexing goroutine.
 func (l *lexer) drain() {
+	//nolint:revive // ranging a channel readies it, copied from go lex code
 	for range l.items {
 	}
 }
@@ -189,10 +190,9 @@ func lexText(l *lexer) stateFn {
 		if n == '/' {
 			l.ignore()
 			return lexComment
-		} else {
-			l.backup()
-			l.emit(ItemForwardSlash)
 		}
+		l.backup()
+		l.emit(ItemForwardSlash)
 	case r == '.':
 		// special look-ahead for ".field" so we don't break l.backup().
 		if l.pos < Pos(len(l.input)) {

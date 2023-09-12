@@ -152,7 +152,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	var hash string
 
 	if !opt.norun {
-		res, err = simulator.Run(simopt, context.Background())
+		res, err = simulator.Run(context.Background(), simopt)
 		if err != nil {
 			return err
 		}

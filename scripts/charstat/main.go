@@ -115,10 +115,7 @@ func mainImpl() error {
 	if err != nil {
 		return err
 	}
-	if err := t.Execute(of, d); err != nil {
-		return err
-	}
-	return nil
+	return t.Execute(of, d)
 }
 
 func fetch(path string) (string, error) {

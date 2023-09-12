@@ -32,7 +32,7 @@ const (
 
 // ult 365 to 415, 60fps = 120
 // looks like ult charges for 8 seconds
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	c.burstCounter = 0
 	if c.Base.Cons >= 6 {
 		c.burstCounter = 5
@@ -81,7 +81,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(107)
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 97)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionWalk], // earliest cancel

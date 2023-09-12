@@ -19,19 +19,19 @@ func (r *Reactable) TryFreeze(a *combat.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.Durability[ModifierCryo] < ZeroDur {
+		if r.Durability[Cryo] < ZeroDur {
 			return false
 		}
-		consumed = r.triggerFreeze(r.Durability[ModifierCryo], a.Info.Durability)
-		r.Durability[ModifierCryo] -= consumed
-		r.Durability[ModifierCryo] = max(r.Durability[ModifierCryo], 0)
+		consumed = r.triggerFreeze(r.Durability[Cryo], a.Info.Durability)
+		r.Durability[Cryo] -= consumed
+		r.Durability[Cryo] = max(r.Durability[Cryo], 0)
 	case attributes.Cryo:
-		if r.Durability[ModifierHydro] < ZeroDur {
+		if r.Durability[Hydro] < ZeroDur {
 			return false
 		}
-		consumed := r.triggerFreeze(r.Durability[ModifierHydro], a.Info.Durability)
-		r.Durability[ModifierHydro] -= consumed
-		r.Durability[ModifierHydro] = max(r.Durability[ModifierHydro], 0)
+		consumed := r.triggerFreeze(r.Durability[Hydro], a.Info.Durability)
+		r.Durability[Hydro] -= consumed
+		r.Durability[Hydro] = max(r.Durability[Hydro], 0)
 	default:
 		// should be here
 		return false
@@ -58,14 +58,14 @@ func min(a, b reactions.Durability) reactions.Durability {
 }
 
 func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
-	if r.Durability[ModifierFrozen] < ZeroDur {
+	if r.Durability[Frozen] < ZeroDur {
 		return false
 	}
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
 		return false
 	}
 	// remove 200 freeze gauge if availabe
-	r.Durability[ModifierFrozen] -= 200
+	r.Durability[Frozen] -= 200
 	r.checkFreeze()
 	// trigger shatter attack
 	r.core.Events.Emit(event.OnShatter, r.self, a)
@@ -101,13 +101,13 @@ func (r *Reactable) triggerFreeze(a, b reactions.Durability) reactions.Durabilit
 		return d
 	}
 	// trigger freeze should only addDurability and should not touch decay rate
-	r.attachOverlap(ModifierFrozen, 2*d, ZeroDur)
+	r.attachOverlap(Frozen, 2*d, ZeroDur)
 	return d
 }
 
 func (r *Reactable) checkFreeze() {
-	if r.Durability[ModifierFrozen] <= ZeroDur {
-		r.Durability[ModifierFrozen] = 0
+	if r.Durability[Frozen] <= ZeroDur {
+		r.Durability[Frozen] = 0
 		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Frozen)
 		// trigger another attack here, purely for the purpose of breaking bubbles >.>
 		ai := combat.AttackInfo{

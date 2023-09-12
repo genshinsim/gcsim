@@ -17,8 +17,8 @@ type Eval struct {
 	AST  ast.Node
 	Log  *log.Logger
 
-	next chan bool               // wait on this before continuing
-	work chan *action.ActionEval // send work to this chan
+	next chan bool         // wait on this before continuing
+	work chan *action.Eval // send work to this chan
 	// set to non-nil by the first error encountered
 	// this is necessary because Run() could have exited already with an err but
 	err error
@@ -36,7 +36,7 @@ func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
 		AST:  ast,
 		Core: c,
 		next: make(chan bool),
-		work: make(chan *action.ActionEval),
+		work: make(chan *action.Eval),
 	}
 	return e, nil
 }
@@ -84,7 +84,7 @@ func (e *Eval) Continue() {
 }
 
 // NextAction asks eval to return the next action. Return nil, nil if no more action
-func (e *Eval) NextAction() (*action.ActionEval, error) {
+func (e *Eval) NextAction() (*action.Eval, error) {
 	next, ok := <-e.work
 	if !ok {
 		return nil, nil
@@ -155,7 +155,7 @@ func (e *Eval) waitForNext() error {
 	return nil
 }
 
-func (e *Eval) sendWork(w *action.ActionEval) {
+func (e *Eval) sendWork(w *action.Eval) {
 	e.work <- w
 }
 
@@ -243,9 +243,8 @@ func (n *null) Typ() ObjTyp     { return typNull }
 func (n *number) Inspect() string {
 	if n.isFloat {
 		return strconv.FormatFloat(n.fval, 'f', -1, 64)
-	} else {
-		return strconv.FormatInt(n.ival, 10)
 	}
+	return strconv.FormatInt(n.ival, 10)
 }
 func (n *number) Typ() ObjTyp { return typNum }
 

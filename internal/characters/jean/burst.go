@@ -22,7 +22,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 88    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// p is the number of times enemy enters or exits the field
 	enter := p["enter"]
 	if enter < 1 {
@@ -135,7 +135,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.a4()
 	}, burstStart+1)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

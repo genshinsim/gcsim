@@ -22,7 +22,7 @@ func init() {
 
 const burstHitmark = 34
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	c.burstTaggedCount = 0
 	burstCB := func(a combat.AttackCB) {
 		// check if enemy
@@ -80,7 +80,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	//TODO: Check CD with or without delay, check energy consume frame
 	c.SetCD(action.ActionBurst, 12*60)
 	c.ConsumeEnergy(3)
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap],

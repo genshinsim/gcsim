@@ -55,7 +55,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		SourceFrame: c.Core.F,
 	}
 
-	var evt glog.Event = nil
+	var evt glog.Event
 	var debug []interface{}
 
 	if c.Core.Flags.LogDebug {

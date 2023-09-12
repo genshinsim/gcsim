@@ -16,7 +16,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 	switch a.Info.Element {
 	case attributes.Electro:
 		// must have pyro; pyro cant coexist (for now) so ok to ignore count?
-		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
+		if r.Durability[Pyro] < ZeroDur && r.Durability[Burning] < ZeroDur {
 			return false
 		}
 		// reduce; either gone or left; don't care how much actually reacted
@@ -24,7 +24,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 		r.burningCheck()
 	case attributes.Pyro:
 		// must have electro; gotta be careful with ec?
-		if r.Durability[ModifierElectro] < ZeroDur {
+		if r.Durability[Electro] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Electro, a.Info.Durability, 1)

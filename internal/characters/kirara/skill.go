@@ -59,7 +59,7 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 663
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	shortHold := p["short_hold"]
 	if p["short_hold"] != 0 {
 		shortHold = 1
@@ -100,7 +100,7 @@ func (c *char) rollParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle("kirara-roll", 1, attributes.Dendro, c.ParticleDelay)
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Tail-Flicking Flying Kick",
@@ -130,7 +130,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(c.generateSkillShield, skillPressHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 8*60, 12)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionSwap],
@@ -138,7 +138,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
+func (c *char) skillShortHold(p map[string]int) action.Info {
 	// 1 tick
 	d := c.createSkillHoldSnapshot()
 	c.Core.Tasks.Add(func() {
@@ -181,7 +181,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(c.generateSkillShield, 14)
 	c.SetCDWithDelay(action.ActionSkill, 8.2*60, skillShortHoldCDStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillShortHoldFrames),
 		AnimationLength: skillShortHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillShortHoldFrames[action.ActionSwap], // earliest cancel
@@ -189,7 +189,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
+func (c *char) skillHold(p map[string]int, duration int) action.Info {
 	// ticks
 	d := c.createSkillHoldSnapshot()
 
@@ -236,7 +236,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	c.QueueCharTask(c.generateSkillShield, 14)
 	c.SetCDWithDelay(action.ActionSkill, cd, (skillHoldCDStart-600)+duration)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillHoldFrames[next] - 600 + duration },
 		AnimationLength: skillHoldFrames[action.InvalidAction] - 600 + duration,
 		CanQueueAfter:   skillHoldFrames[action.ActionAttack] - 600 + duration, // earliest cancel

@@ -17,7 +17,7 @@ func init() {
 	EJumpFrames[action.ActionWalk] = 45
 }
 
-func (c *char) Jump(p map[string]int) action.ActionInfo {
+func (c *char) Jump(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -32,8 +32,8 @@ func (c *char) Jump(p map[string]int) action.ActionInfo {
 	return ai
 }
 
-func (c *char) WindfavoredJump(p map[string]int) action.ActionInfo {
-	return action.ActionInfo{
+func (c *char) WindfavoredJump(p map[string]int) action.Info {
+	return action.Info{
 		Frames:          frames.NewAbilFunc(EJumpFrames),
 		AnimationLength: EJumpFrames[action.ActionJump],
 		CanQueueAfter:   EJumpFrames[action.ActionSkill], // earliest cancel

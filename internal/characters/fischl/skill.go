@@ -41,7 +41,7 @@ func init() {
 	skillRecastFrames[action.ActionJump] = 5
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	if p["recast"] != 0 && c.ozActive && !c.StatusIsActive(skillRecastCDKey) {
 		return c.skillRecast()
 	}
@@ -84,7 +84,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// set on field oz to be this one
 	c.queueOz("Skill", skillOzSpawn, skillOzFirstTick)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
@@ -106,7 +106,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 }
 
-func (c *char) skillRecast() action.ActionInfo {
+func (c *char) skillRecast() action.Info {
 	c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	c.Core.Tasks.Add(func() {
 		c.ozTickSrc = c.Core.F // reset attack timer
@@ -115,7 +115,7 @@ func (c *char) skillRecast() action.ActionInfo {
 		c.Core.Log.NewEvent("Recasting oz", glog.LogCharacterEvent, c.Index).
 			Write("next expected tick", c.Core.F+60)
 	}, 2) // 2f delay
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel

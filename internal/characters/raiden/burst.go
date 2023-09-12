@@ -28,7 +28,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 110    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// activate burst, reset stacks
 	c.burstCastF = c.Core.F
 	c.restoreCount = 0
@@ -84,7 +84,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(8)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

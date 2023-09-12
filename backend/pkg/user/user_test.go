@@ -25,7 +25,7 @@ func TestUserStoreCRUD(t *testing.T) {
 
 	// CREATE
 
-	err = store.Create(testID, "bob", context.TODO())
+	err = store.Create(context.TODO(), testID, "bob")
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -35,7 +35,7 @@ func TestUserStoreCRUD(t *testing.T) {
 
 	var u User
 
-	data, err := store.Read(testID, context.WithValue(context.TODO(), api.UserContextKey, testID))
+	data, err := store.Read(context.WithValue(context.TODO(), api.UserContextKey, testID), testID)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

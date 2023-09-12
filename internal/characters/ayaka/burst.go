@@ -21,7 +21,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 123    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Soumetsu",
 		ActorIndex: c.Index,
@@ -115,7 +115,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(8)
 	c.SetCD(action.ActionBurst, 20*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel

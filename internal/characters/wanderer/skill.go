@@ -26,7 +26,7 @@ func init() {
 
 const skillHitmark = 2
 
-func (c *char) skillActivate(p map[string]int) action.ActionInfo {
+func (c *char) skillActivate(p map[string]int) action.Info {
 	c.AddStatus(SkillKey, 20*60, true)
 	c.Core.Player.SwapCD = math.MaxInt16
 
@@ -61,7 +61,7 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	c.c1()
 
 	// Return ActionInfo
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFramesNormal),
 		AnimationLength: skillFramesNormal[action.InvalidAction],
 		CanQueueAfter:   skillFramesNormal[action.ActionSwap], // earliest cancel
@@ -69,16 +69,15 @@ func (c *char) skillActivate(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillDeactivate(p map[string]int) action.ActionInfo {
+func (c *char) skillDeactivate(p map[string]int) action.Info {
 	delay := c.skillEndRoutine()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			if next == action.ActionLowPlunge {
 				return 7
-			} else {
-				return delay
 			}
+			return delay
 		},
 		AnimationLength: delay,
 		CanQueueAfter:   7,
@@ -135,7 +134,7 @@ func (c *char) depleteSkydwellerPoints() {
 	}
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	if !c.StatusIsActive(SkillKey) {
 		return c.skillActivate(p)
 	}

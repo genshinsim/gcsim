@@ -47,7 +47,7 @@ func (c *char) a1() {
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: c.Index,
 			Src:        c.Core.F,
-			ShieldType: shield.ShieldNoelleA1,
+			ShieldType: shield.NoelleA1,
 			Name:       "Noelle A1",
 			HP:         4 * x,
 			Ele:        attributes.Cryo,

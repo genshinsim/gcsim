@@ -32,7 +32,7 @@ func init() {
 	skillFrames[action.ActionCharge] = 54
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// restart a4 counter
 	c.a4extendCount = 0
 
@@ -89,7 +89,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.SetCDWithDelay(action.ActionSkill, 32*60, skillCDStart)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash],

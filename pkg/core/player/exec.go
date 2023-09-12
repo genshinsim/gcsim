@@ -180,7 +180,7 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		// log here that we're starting a swap
 		h.Log.NewEventBuildMsg(glog.LogActionEvent, h.active, "swapping ", h.chars[h.active].Base.Key.String(), " to ", h.chars[h.charPos[k]].Base.Key.String())
 
-		x := action.ActionInfo{
+		x := action.Info{
 			Frames: func(next action.Action) int {
 				return h.Delays.Swap
 			},
@@ -221,7 +221,7 @@ var actionToEvent = map[action.Action]event.Event{
 func (h *Handler) useAbility(
 	t action.Action,
 	param map[string]int,
-	f func(p map[string]int) action.ActionInfo,
+	f func(p map[string]int) action.Info,
 ) {
 	state, ok := actionToEvent[t]
 	if ok {

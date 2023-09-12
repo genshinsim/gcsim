@@ -130,7 +130,7 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.timeoutInSec)*time.Second)
 	defer cancel()
 
-	result, err := simulator.RunWithConfig(w.Config, simcfg, gcsl, simulator.Options{}, time.Now(), ctx)
+	result, err := simulator.RunWithConfig(ctx, w.Config, simcfg, gcsl, simulator.Options{}, time.Now())
 	if err != nil {
 		log.Printf("error running sim %v: %v\n", w.Id, err)
 		return nil, err

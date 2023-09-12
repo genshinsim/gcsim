@@ -25,7 +25,7 @@ func init() {
 }
 
 // Burst - The main buff effects are handled in a separate function
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// AoE Geo damage
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -57,7 +57,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(4)
 	c.SetCD(action.ActionBurst, 15*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel

@@ -21,7 +21,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 79
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	for i := range pyronadoInitial {
 		initialHit := combat.AttackInfo{
 			Abil:               fmt.Sprintf("Pyronado Hit %v", i+1),
@@ -90,7 +90,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// use up energy
 	c.ConsumeEnergy(24)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

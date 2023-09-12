@@ -14,7 +14,7 @@ func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
 	var consumed reactions.Durability
 	switch a.Info.Element {
 	case attributes.Pyro:
-		if r.Durability[ModifierCryo] < ZeroDur && r.Durability[ModifierFrozen] < ZeroDur {
+		if r.Durability[Cryo] < ZeroDur && r.Durability[Frozen] < ZeroDur {
 			return false
 		}
 		consumed = r.reduce(attributes.Cryo, a.Info.Durability, 2)
@@ -24,7 +24,7 @@ func (r *Reactable) TryMelt(a *combat.AttackEvent) bool {
 		}
 		a.Info.AmpMult = 2.0
 	case attributes.Cryo:
-		if r.Durability[ModifierPyro] < ZeroDur && r.Durability[ModifierBurning] < ZeroDur {
+		if r.Durability[Pyro] < ZeroDur && r.Durability[Burning] < ZeroDur {
 			return false
 		}
 		r.reduce(attributes.Pyro, a.Info.Durability, 0.5)

@@ -73,7 +73,7 @@ func init() {
 	ppAttackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatModIsActive(paramitaBuff) {
 		return c.ppAttack(p)
 	}
@@ -117,7 +117,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
@@ -125,7 +125,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) ppAttack(p map[string]int) action.ActionInfo {
+func (c *char) ppAttack(p map[string]int) action.Info {
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -165,7 +165,7 @@ func (c *char) ppAttack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	act := action.ActionInfo{
+	act := action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, ppAttackFrames),
 		AnimationLength: ppAttackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   ppAttackHitmarks[c.NormalCounter][len(ppAttackHitmarks[c.NormalCounter])-1],

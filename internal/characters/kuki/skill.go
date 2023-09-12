@@ -28,7 +28,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 50    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// only drain HP when above 20% HP
 	if c.CurrentHPRatio() > hpDrainThreshold {
 		currentHP := c.CurrentHP()
@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 7)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel

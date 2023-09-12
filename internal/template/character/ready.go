@@ -5,7 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// for dash and charge need to check for stam usage as well
 
 	switch a {

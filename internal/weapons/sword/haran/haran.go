@@ -96,9 +96,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() == char.Index {
 			return activeFn()
-		} else {
-			return nonActiveFn()
 		}
+		return nonActiveFn()
 	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
 
 	return w, nil

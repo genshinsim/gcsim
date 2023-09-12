@@ -21,7 +21,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 55    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// Initial Hit
 	// A1/C6/Q duration all start on Initial Hit
 	c.Core.Tasks.Add(func() {
@@ -84,7 +84,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(7)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel

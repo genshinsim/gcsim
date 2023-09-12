@@ -103,11 +103,7 @@ func (b *Bot) Run() error {
 	defer cancel()
 
 	// this is blocking
-	if err := b.s.Connect(ctx); err != nil {
-		return err
-	}
-
-	return nil
+	return b.s.Connect(ctx)
 }
 
 func overwriteCommands(s *state.State) error {

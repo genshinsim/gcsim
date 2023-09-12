@@ -22,7 +22,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 87    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Particular Field: Fetters of Phenomena",
 		ActorIndex: c.Index,
@@ -65,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, 184)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

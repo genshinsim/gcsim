@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
-type AnimationHandler struct {
+type AnimationHandler struct { //nolint:revive // cannot just name this Handler because then there is a conflict with Handler in player package
 	f      *int
 	events event.Eventter
 	log    glog.Logger
@@ -21,7 +21,7 @@ type AnimationHandler struct {
 	char    int
 	started int
 	lastAct action.Action
-	aniEvt  *action.ActionInfo
+	aniEvt  *action.Info
 
 	state       action.AnimationState
 	stateExpiry int
@@ -66,7 +66,7 @@ func (h *AnimationHandler) CanQueueNextAction() bool {
 	return h.aniEvt.CanQueueNext()
 }
 
-func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *action.ActionInfo) {
+func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *action.Info) {
 	// remove previous if still active
 	if h.aniEvt != nil {
 		if h.aniEvt.OnRemoved != nil {

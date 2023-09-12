@@ -26,11 +26,11 @@ func init() {
 // since E is aoe, so this should be considered aoe too
 // hitWeakPoint: tartaglia can proc Prototype Cresent's Passive on Geovishap's weakspots.
 // Evidence: https://youtu.be/oOfeu5pW0oE
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	if !c.StatusIsActive(MeleeKey) {
 		c.Core.Log.NewEvent("charge called when not in melee stance", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionCharge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
@@ -67,7 +67,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeFrames[action.ActionDash], // earliest cancel

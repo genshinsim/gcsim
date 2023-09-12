@@ -53,7 +53,7 @@ func init() {
 	skillFrames[2][action.ActionJump] = 48
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// reset counter
 	if !c.StatusIsActive(eWindowKey) {
 		c.eCounter = 0
@@ -156,7 +156,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.eCounter = 0
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[idx]),
 		AnimationLength: skillFrames[idx][action.InvalidAction],
 		CanQueueAfter:   skillFrames[idx][action.ActionDash], // earliest cancel

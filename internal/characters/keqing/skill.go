@@ -37,7 +37,7 @@ func init() {
 	skillRecastFrames[action.ActionSwap] = 42
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// check if stiletto is on-field
 	if c.Core.Status.Duration(stilettoKey) > 0 {
 		return c.skillRecast(p)
@@ -45,7 +45,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillFirst(p)
 }
 
-func (c *char) skillFirst(p map[string]int) action.ActionInfo {
+func (c *char) skillFirst(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Stellar Restoration",
 		ActorIndex: c.Index,
@@ -74,7 +74,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 7*60+30, 20)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
@@ -82,7 +82,7 @@ func (c *char) skillFirst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillRecast(p map[string]int) action.ActionInfo {
+func (c *char) skillRecast(p map[string]int) action.Info {
 	// C1 DMG happens before Recast DMG
 	if c.Base.Cons >= 1 {
 		ai := combat.AttackInfo{
@@ -139,7 +139,7 @@ func (c *char) skillRecast(p map[string]int) action.ActionInfo {
 	// despawn stiletto
 	c.Core.Status.Delete(stilettoKey)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel

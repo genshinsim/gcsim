@@ -75,14 +75,14 @@ func (c *char) consumeGrimheartStacks() {
 	c.DeleteStatus(grimheartDuration)
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	if p["hold"] != 0 {
 		return c.holdSkill(p)
 	}
 	return c.pressSkill(p)
 }
 
-func (c *char) pressSkill(p map[string]int) action.ActionInfo {
+func (c *char) pressSkill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Icetide Vortex",
@@ -120,7 +120,7 @@ func (c *char) pressSkill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 60*4, 16)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
@@ -144,7 +144,7 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Cryo, c.ParticleDelay)
 }
 
-func (c *char) holdSkill(p map[string]int) action.ActionInfo {
+func (c *char) holdSkill(p map[string]int) action.Info {
 	// hold e
 	// 296 to 341, but cd starts at 322
 	// 60 fps = 108 frames cast, cd starts 62 frames in so need to + 62 frames to cd
@@ -256,7 +256,7 @@ func (c *char) holdSkill(p map[string]int) action.ActionInfo {
 	}
 	c.SetCDWithDelay(action.ActionSkill, cd*60, 46)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel

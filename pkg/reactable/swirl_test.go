@@ -23,7 +23,7 @@ func TestSwirl50to25(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[ModifierPyro]
+	dur := trg[0].Durability[Pyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 50, 1), 0)
 	// dmg should trigger next tick
@@ -54,7 +54,7 @@ func TestSwirl25to25(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[ModifierPyro]
+	dur := trg[0].Durability[Pyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 0), 0)
 	// dmg should trigger next tick
@@ -84,7 +84,7 @@ func TestSwirl25to50(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[ModifierPyro]
+	dur := trg[0].Durability[Pyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 0), 0)
 	// dmg should trigger next tick
@@ -115,7 +115,7 @@ func TestSwirl50to50(t *testing.T) {
 	// 1 tick
 	advanceCoreFrame(c)
 	// check durability after 1 tick
-	dur := trg[0].Durability[ModifierPyro]
+	dur := trg[0].Durability[Pyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 50, 0), 0)
 	// dmg should trigger next tick
@@ -144,7 +144,7 @@ func TestSwirl25to10(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 	// check durability after 1 tick
-	dur := trg[0].Durability[ModifierPyro]
+	dur := trg[0].Durability[Pyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 1), 0)
 	// dmg should trigger next tick
@@ -177,7 +177,7 @@ func TestSwirl50to10(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 	// check durability after 1 tick
-	dur := trg[0].Durability[ModifierPyro]
+	dur := trg[0].Durability[Pyro]
 	fmt.Printf("pyro left: %v\n", dur)
 	c.QueueAttackEvent(makeSTAttack(attributes.Anemo, 25, 1), 0)
 	// dmg should trigger next tick

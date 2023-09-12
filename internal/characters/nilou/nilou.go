@@ -61,7 +61,7 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
 	if a == action.ActionSkill && c.StatusIsActive(pirouetteStatus) {
 		return true, action.NoFailure

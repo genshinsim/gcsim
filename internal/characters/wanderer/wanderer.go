@@ -54,7 +54,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 
 // Overwriting of remaining actions to account for falling state
 
-func (c *char) Walk(p map[string]int) action.ActionInfo {
+func (c *char) Walk(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	ai := c.Character.Walk(p)

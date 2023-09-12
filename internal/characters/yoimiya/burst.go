@@ -24,7 +24,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 109    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// assume it does skill dmg at end of it's animation
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.abApplied = false
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

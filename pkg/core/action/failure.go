@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-type ActionFailure int
+type Failure int
 
 const (
-	NoFailure ActionFailure = iota
+	NoFailure Failure = iota
 	SwapCD
 	SkillCD
 	BurstCD
@@ -30,15 +30,15 @@ var failureString = [...]string{
 	"dash_cd",
 }
 
-func (e ActionFailure) String() string {
+func (e Failure) String() string {
 	return failureString[e]
 }
 
-func (e ActionFailure) MarshalJSON() ([]byte, error) {
+func (e Failure) MarshalJSON() ([]byte, error) {
 	return json.Marshal(failureString[e])
 }
 
-func (e *ActionFailure) UnmarshalJSON(b []byte) error {
+func (e *Failure) UnmarshalJSON(b []byte) error {
 	var s string
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
@@ -46,7 +46,7 @@ func (e *ActionFailure) UnmarshalJSON(b []byte) error {
 	s = strings.ToLower(s)
 	for i, v := range failureString {
 		if v == s {
-			*e = ActionFailure(i)
+			*e = Failure(i)
 			return nil
 		}
 	}

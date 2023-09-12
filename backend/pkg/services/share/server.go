@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// ShareStore describes a database/service that can be used to store shares
-type ShareStore interface {
+// Store describes a database/service that can be used to store shares
+type Store interface {
 	Create(context.Context, *ShareEntry) (string, error)
 	Read(context.Context, string) (*ShareEntry, error)
 	Update(context.Context, *ShareEntry) (string, error)
@@ -20,7 +20,7 @@ type ShareStore interface {
 }
 
 type Config struct {
-	Store ShareStore
+	Store Store
 }
 
 type Server struct {

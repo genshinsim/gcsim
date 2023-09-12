@@ -62,7 +62,7 @@ func (c *char) Init() error {
 
 	return nil
 }
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
 	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
 		return true, action.NoFailure
@@ -95,12 +95,12 @@ func (c *char) onExitField() {
 
 var burstIsJumpCancelled = false
 
-func (c *char) Jump(p map[string]int) action.ActionInfo {
+func (c *char) Jump(p map[string]int) action.Info {
 	if !c.StatusIsActive(burstKey) {
 		if c.StatusIsActive(kickKey) {
 			c.Core.Log.NewEvent("dehya can't jump cancel her kick", glog.LogActionEvent, c.Index).
 				Write("action", action.ActionJump)
-			return action.ActionInfo{
+			return action.Info{
 				Frames:          func(action.Action) int { return 1200 },
 				AnimationLength: kickHitmark,
 				CanQueueAfter:   kickHitmark,

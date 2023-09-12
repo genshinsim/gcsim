@@ -55,7 +55,7 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 
 			// if other shields are active, need to elect greatest as new effective
 			var normalizedHP float64
-			var normalizedEnd int = math.MaxInt
+			normalizedEnd := math.MaxInt
 			for _, e := range elements {
 				if current[e] == endpoint.interval {
 					var best *stats.ShieldInterval
@@ -117,7 +117,7 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 		for _, e := range elements {
 			currentIdx := len(out[e.String()]) - 1
 			if endpoint.interval.HP[e.String()] > out[e.String()][currentIdx].HP {
-				new := stats.ShieldSingleInterval{
+				newShieldInterval := stats.ShieldSingleInterval{
 					Start: endpoint.pos,
 					End:   endpoint.interval.End,
 					HP:    endpoint.interval.HP[e.String()],
@@ -127,27 +127,27 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 
 				if out[e.String()][currentIdx].Start == endpoint.pos {
 					// this shield is a replacement rather than append
-					out[e.String()][currentIdx] = new
+					out[e.String()][currentIdx] = newShieldInterval
 				} else {
 					out[e.String()][currentIdx].End = endpoint.pos
-					out[e.String()] = append(out[e.String()], new)
+					out[e.String()] = append(out[e.String()], newShieldInterval)
 				}
 			}
 			normalizedHP += out[e.String()][len(out[e.String()])-1].HP
 		}
 
 		if modified {
-			new := stats.ShieldSingleInterval{
+			newShieldInterval := stats.ShieldSingleInterval{
 				Start: endpoint.pos,
 				End:   endpoint.interval.End,
 				HP:    normalizedHP / float64(len(elements)),
 			}
 			prevIndex := len(out[normalized]) - 1
 			if out[normalized][prevIndex].Start == endpoint.pos {
-				out[normalized][prevIndex] = new
+				out[normalized][prevIndex] = newShieldInterval
 			} else {
 				out[normalized][prevIndex].End = endpoint.pos
-				out[normalized] = append(out[normalized], new)
+				out[normalized] = append(out[normalized], newShieldInterval)
 			}
 		}
 	}

@@ -25,7 +25,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 60
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Jade Screen",
@@ -72,7 +72,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, 1)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash],

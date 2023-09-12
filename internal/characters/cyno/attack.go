@@ -38,7 +38,7 @@ func init() {
 	attackFrames[3][action.ActionCharge] = 500                               // impossible action
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatusIsActive(BurstKey) {
 		return c.attackB(p) // go to burst mode attacks
 	}
@@ -88,7 +88,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
@@ -126,7 +126,7 @@ func init() {
 	attackBFrames[4][action.ActionCharge] = 500                                // illegal action
 }
 
-func (c *char) attackB(p map[string]int) action.ActionInfo {
+func (c *char) attackB(p map[string]int) action.Info {
 	c.tryBurstPPSlide(attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1])
 
 	c2CB := c.makeC2CB()
@@ -171,7 +171,7 @@ func (c *char) attackB(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			n := c.normalBCounter - 1
 			if n < 0 {

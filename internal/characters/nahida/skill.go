@@ -45,16 +45,15 @@ const (
 	triKarmaParticleICD = "nahida-e-particle-icd"
 )
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	c.markCount = 0
 	if p["hold"] == 0 {
 		return c.skillPress(p)
-	} else {
-		return c.skillHold(p)
 	}
+	return c.skillHold(p)
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
@@ -77,7 +76,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, skillPressCD, 11)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionSwap], // earliest cancel
@@ -85,7 +84,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.ActionInfo {
+func (c *char) skillHold(p map[string]int) action.Info {
 	hold := p["hold"]
 	// earliest hold can be let go is roughly 16.5, max is 317
 	// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
@@ -118,7 +117,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold-17+30)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return hold - 17 + skillHoldFrames[next] },
 		AnimationLength: hold - 17 + 30 + skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   hold - 17 + 30 + skillHoldFrames[action.ActionSwap], // earliest cancel

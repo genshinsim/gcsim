@@ -43,7 +43,7 @@ func init() {
 }
 
 // p = 0 for no hold, p = 1 for hold
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	hold := p["hold"]
 	if hold == 1 {
 		return c.skillHold(p)
@@ -63,7 +63,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 // TODO: how long do stacks last?
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Violet Arc",
@@ -101,7 +101,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 60, 17)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionSwap], // earliest cancel
@@ -111,7 +111,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 // After an extended casting time, calls down lightning from the heavens, dealing massive Electro DMG to all nearby opponents.
 // Deals great amounts of extra damage to opponents based on the number of Conductive stacks applied to them, and clears their Conductive status.
-func (c *char) skillHold(p map[string]int) action.ActionInfo {
+func (c *char) skillHold(p map[string]int) action.Info {
 	// no multiplier as that's target dependent
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -162,7 +162,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 960, 114)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel

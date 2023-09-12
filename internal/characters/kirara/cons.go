@@ -30,7 +30,7 @@ func (c *char) c4() {
 		if c.StatusIsActive(c4IcdStatus) {
 			return false
 		}
-		existingShield := c.Core.Player.Shields.Get(shield.ShieldKiraraSkill)
+		existingShield := c.Core.Player.Shields.Get(shield.KiraraSkill)
 		if existingShield == nil {
 			return false
 		}

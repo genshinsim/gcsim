@@ -36,7 +36,7 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 23    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -63,11 +63,11 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) skillPress(travel int) action.ActionInfo {
+func (c *char) skillPress(travel int) action.Info {
 	c.pawsPewPew(skillPressHitmark, travel, 2)
 	c.SetCDWithDelay(action.ActionSkill, 360, skillPressHitmark)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionJump], // earliest cancel
@@ -75,11 +75,11 @@ func (c *char) skillPress(travel int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(travel int) action.ActionInfo {
+func (c *char) skillHold(travel int) action.Info {
 	c.pawsPewPew(skillHoldHitmark, travel, 5)
 	c.SetCDWithDelay(action.ActionSkill, 900, skillHoldHitmark)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionJump], // earliest cancel
@@ -109,7 +109,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			done = true
 
 			// check if shield already exists, if so then just update duration
-			exist := c.Core.Player.Shields.Get(shield.ShieldDionaSkill)
+			exist := c.Core.Player.Shields.Get(shield.DionaSkill)
 			var shd *shield.Tmpl
 			if exist != nil {
 				// update
@@ -119,7 +119,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 				shd = &shield.Tmpl{
 					ActorIndex: c.Index,
 					Src:        c.Core.F,
-					ShieldType: shield.ShieldDionaSkill,
+					ShieldType: shield.DionaSkill,
 					Name:       "Diona Skill",
 					HP:         shdHp,
 					Ele:        attributes.Cryo,

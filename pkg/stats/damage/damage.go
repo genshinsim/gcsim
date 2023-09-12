@@ -22,7 +22,7 @@ type buffer struct {
 	cumu    [][]float64
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		events:  make([][]stats.DamageEvent, len(core.Player.Chars())),
 		buckets: make([]float64, 0),

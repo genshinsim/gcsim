@@ -61,7 +61,7 @@ func runSim(w dbEntry) (float64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30)*time.Second)
 	defer cancel()
 
-	result, err := simulator.RunWithConfig(w.Config, simcfg, gcsl, simulator.Options{}, time.Now(), ctx)
+	result, err := simulator.RunWithConfig(ctx, w.Config, simcfg, gcsl, simulator.Options{}, time.Now())
 	if err != nil {
 		// log.Printf("error running sim %v: %v\n", w.Id, err)
 		return 0, err

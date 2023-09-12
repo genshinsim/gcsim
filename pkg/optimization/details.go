@@ -52,7 +52,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	stats.simcfg.Characters = stats.charProfilesCopy
 
 	// Get initial DPS value
-	initialResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), context.TODO())
+	initialResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
 	initialMean := *initialResult.Statistics.DPS.Mean
 
 	opDebug = append(opDebug, "Calculating optimal substat distribution...")
@@ -273,7 +273,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		stats.charProfilesCopy[idxChar].Stats[substat] += 10 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 
 		stats.simcfg.Characters = stats.charProfilesCopy
-		substatEvalResult, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), context.TODO())
+		substatEvalResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
 		// opDebug = append(opDebug, fmt.Sprintf("%v: %v (%v)", substat.String(), substatEvalResult.DPS.Mean, substatEvalResult.DPS.SD))
 
 		substatGradients[idxSubstat] = *substatEvalResult.Statistics.DPS.Mean - initialMean
@@ -365,7 +365,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 
-		result, _ := simulator.RunWithConfig(stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), context.TODO())
+		result, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
 
 		if erStack == 0 {
 			initialMean = *result.Statistics.DPS.Mean

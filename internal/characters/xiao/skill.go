@@ -28,7 +28,7 @@ const a4BuffKey = "xiao-a4"
 // Skill attack damage queue generator
 // Additionally implements A4
 // Using Lemniscatic Wind Cycling increases the DMG of subsequent uses of Lemniscatic Wind Cycling by 15%. This effect lasts for 7s and has a maximum of 3 stacks. Gaining a new stack refreshes the duration of this effect.
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lemniscatic Wind Cycling",
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.SetCD(action.ActionSkill, 600)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionSkill], // earliest cancel

@@ -37,7 +37,7 @@ Gorou can deploy only 1 General's War Banner on the field at any one time. Chara
 1 General's War Banner at a time. When a party member leaves the field, the active buff will last for 2s.
 *
 */
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	c.Core.Tasks.Add(func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// 10s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 600, 32)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

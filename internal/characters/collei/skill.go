@@ -30,7 +30,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 66
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// The game has ICD as AttackTagElementalArt, ICDTagElementalArt,
 	// ICDGroupColleiBoomerangForward, and ICDGroupColleiBoomerangBack. However,
 	// we believe this is unnecessary, so just use ICDTagNone.
@@ -97,7 +97,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel

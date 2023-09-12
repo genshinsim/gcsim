@@ -31,7 +31,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 51
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// add field effect timer
 	// deployable thus not hitlag
 	c.Core.Status.Add(burstKey, 720+burstStartFrame)
@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(36)
 	c.SetCDWithDelay(action.ActionBurst, 900, 34)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel

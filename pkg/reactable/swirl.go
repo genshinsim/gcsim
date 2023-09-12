@@ -61,7 +61,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierElectro] < ZeroDur {
+	if r.Durability[Electro] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Electro, a.Info.Durability, 0.5)
@@ -80,7 +80,7 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	)
 	// at this point if any durability left, we need to check for prescence of
 	// hydro in case of EC
-	if a.Info.Durability > ZeroDur && r.Durability[ModifierHydro] > ZeroDur {
+	if a.Info.Durability > ZeroDur && r.Durability[Hydro] > ZeroDur {
 		// trigger swirl hydro
 		r.TrySwirlHydro(a)
 		// check EC clean up
@@ -93,7 +93,7 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierHydro] < ZeroDur {
+	if r.Durability[Hydro] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Hydro, a.Info.Durability, 0.5)
@@ -117,7 +117,7 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierCryo] < ZeroDur {
+	if r.Durability[Cryo] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Cryo, a.Info.Durability, 0.5)
@@ -141,7 +141,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierPyro] < ZeroDur {
+	if r.Durability[Pyro] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Pyro, a.Info.Durability, 0.5)
@@ -166,7 +166,7 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierFrozen] < ZeroDur {
+	if r.Durability[Frozen] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Frozen, a.Info.Durability, 0.5)

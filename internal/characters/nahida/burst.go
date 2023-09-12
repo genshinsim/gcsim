@@ -21,7 +21,7 @@ const (
 	burstKey       = "nahida-q"
 )
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	var dur float64 = 15
 	if c.hydroCount > 0 {
 		dur += burstTriKarmaDurationExtend[c.hydroCount-1][c.TalentLvlBurst()]
@@ -70,7 +70,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.ConsumeEnergy(5)
 	c.SetCD(action.ActionBurst, 810)
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

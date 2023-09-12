@@ -50,7 +50,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			}
 
 			// Check shield
-			shd := core.Player.Shields.Get(shield.ShieldCrystallize)
+			shd := core.Player.Shields.Get(shield.Crystallize)
 			if shd == nil {
 				return false
 			}

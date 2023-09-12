@@ -53,7 +53,7 @@ func init() {
 	skillFrames[1][1][action.ActionSwap] = 40    // Short Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	shortHold, ok := p["short_hold"]
 	if !ok || shortHold < 0 {
 		shortHold = 0
@@ -100,7 +100,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[shortHold])
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[shortHold][c.gender]),
 		AnimationLength: skillFrames[shortHold][c.gender][action.InvalidAction],
 		CanQueueAfter:   skillFrames[shortHold][c.gender][action.ActionDash], // earliest cancel

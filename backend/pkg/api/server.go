@@ -48,13 +48,13 @@ type Config struct {
 	MQTTConfig MQTTConfig
 }
 
-type APIContextKey string
+type ContextKey string
 
 const (
-	TTLContextKey   APIContextKey = "ttl"
-	UserContextKey  APIContextKey = "user"
-	ShareContextKey APIContextKey = "share"
-	DBTagContextKey APIContextKey = "db-tag"
+	TTLContextKey   ContextKey = "ttl"
+	UserContextKey  ContextKey = "user"
+	ShareContextKey ContextKey = "share"
+	DBTagContextKey ContextKey = "db-tag"
 )
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {

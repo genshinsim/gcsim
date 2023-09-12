@@ -147,7 +147,7 @@ func SetupResonance(s *core.Core) {
 				}
 			case attributes.Electro:
 				last := 0
-				recover := func(args ...interface{}) bool {
+				recoverParticle := func(args ...interface{}) bool {
 					if s.F-last < 300 && last != 0 { // every 5 seconds
 						return false
 					}
@@ -164,14 +164,14 @@ func SetupResonance(s *core.Core) {
 					if _, ok := args[0].(*gadget.Gadget); ok {
 						return false
 					}
-					return recover(args...)
+					return recoverParticle(args...)
 				}
 				s.Events.Subscribe(event.OnOverload, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnSuperconduct, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnElectroCharged, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnQuicken, recoverNoGadget, "electro-res")
 				s.Events.Subscribe(event.OnAggravate, recoverNoGadget, "electro-res")
-				s.Events.Subscribe(event.OnHyperbloom, recover, "electro-res")
+				s.Events.Subscribe(event.OnHyperbloom, recoverParticle, "electro-res")
 			case attributes.Geo:
 				// Increases shield strength by 15%. Additionally, characters protected by a shield will have the
 				// following special characteristics:

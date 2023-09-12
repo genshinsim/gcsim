@@ -26,7 +26,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 24
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// initial damage; part of the burst tag
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.Tasks.Add(burstFullOzFunc, burstFullOzSpawn)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

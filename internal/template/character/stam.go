@@ -40,7 +40,7 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 	}
 }
 
-func (c *Character) Dash(p map[string]int) action.ActionInfo {
+func (c *Character) Dash(p map[string]int) action.Info {
 	// Execute dash CD logic
 	c.ApplyDashCD()
 
@@ -48,7 +48,7 @@ func (c *Character) Dash(p map[string]int) action.ActionInfo {
 	c.QueueDashStaminaConsumption(p)
 
 	length := c.DashLength()
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(action.Action) int { return length },
 		AnimationLength: length,
 		CanQueueAfter:   length,
@@ -102,7 +102,7 @@ func (c *Character) DashLength() int {
 	}
 }
 
-func (c *Character) Jump(p map[string]int) action.ActionInfo {
+func (c *Character) Jump(p map[string]int) action.Info {
 	f := 30
 	switch c.CharBody {
 	case info.BodyBoy, info.BodyGirl:
@@ -114,7 +114,7 @@ func (c *Character) Jump(p map[string]int) action.ActionInfo {
 	case info.BodyLoli:
 		f = 29
 	}
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(action.Action) int { return f },
 		AnimationLength: f,
 		CanQueueAfter:   f,
@@ -122,12 +122,12 @@ func (c *Character) Jump(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *Character) Walk(p map[string]int) action.ActionInfo {
+func (c *Character) Walk(p map[string]int) action.Info {
 	f, ok := p["f"]
 	if !ok {
 		f = 1
 	}
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return f },
 		AnimationLength: f,
 		CanQueueAfter:   f,

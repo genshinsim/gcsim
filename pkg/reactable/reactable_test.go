@@ -26,7 +26,7 @@ func init() {
 
 // make our own core because otherwise we run into problems with circular import
 func testCore() *core.Core {
-	c, _ := core.New(core.CoreOpt{
+	c, _ := core.New(core.Opt{
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})
@@ -150,36 +150,36 @@ func TestMain(m *testing.M) {
 
 func TestReduce(t *testing.T) {
 	r := &Reactable{}
-	r.Durability[ModifierElectro] = 20
+	r.Durability[Electro] = 20
 	r.reduce(attributes.Electro, 20, 1)
-	if r.Durability[ModifierElectro] != 0 {
-		t.Errorf("expecting nil electro balance, got %v", r.Durability[ModifierElectro])
+	if r.Durability[Electro] != 0 {
+		t.Errorf("expecting nil electro balance, got %v", r.Durability[Electro])
 	}
 
 	// straight up consumption
-	r.Durability[ModifierPyro] = 20
-	r.Durability[ModifierBurning] = 50
+	r.Durability[Pyro] = 20
+	r.Durability[Burning] = 50
 	consumed := r.reduce(attributes.Pyro, 30, 1)
 	if consumed != 30 {
 		t.Errorf("expecting consumed to be 30, got %v", consumed)
 	}
 
 	// 2x multiplier, i.e. 1 incoming reduces 2
-	r.Durability[ModifierPyro] = 50
+	r.Durability[Pyro] = 50
 	consumed = r.reduce(attributes.Pyro, 20, 2)
 	if consumed != 20 {
 		t.Errorf("expecting consumed to be 20, got %v", consumed)
 	}
-	if r.Durability[ModifierPyro] != 10 {
+	if r.Durability[Pyro] != 10 {
 		t.Errorf("expecting 10 remaining ModifierPyro, got %v", 10)
 	}
 
-	r.Durability[ModifierPyro] = 50
+	r.Durability[Pyro] = 50
 	consumed = r.reduce(attributes.Pyro, 50, 0.5)
 	if consumed != 50 {
 		t.Errorf("expecting consumed to be 50, got %v", consumed)
 	}
-	if r.Durability[ModifierPyro] != 25 {
+	if r.Durability[Pyro] != 25 {
 		t.Errorf("expecting 25 remaining ModifierPyro, got %v", 25)
 	}
 }
@@ -198,11 +198,11 @@ func TestTick(t *testing.T) {
 		},
 	})
 
-	if trg.Durability[ModifierElectro] != 0.8*25 {
-		t.Errorf("expecting 20 electro, got %v", trg.Durability[ModifierElectro])
+	if trg.Durability[Electro] != 0.8*25 {
+		t.Errorf("expecting 20 electro, got %v", trg.Durability[Electro])
 	}
-	if trg.DecayRate[ModifierElectro] != 20.0/(6*25+420) {
-		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[ModifierElectro])
+	if trg.DecayRate[Electro] != 20.0/(6*25+420) {
+		t.Errorf("expecting %v decay rate, got %v", 1.0/(6*25+420), trg.DecayRate[Electro])
 	}
 
 	// should deplete fully in 570 ticks
@@ -217,8 +217,8 @@ func TestTick(t *testing.T) {
 	}
 
 	// test multiple aura
-	trg.Durability[ModifierElectro] = 0 // reset from previous test
-	trg.DecayRate[ModifierElectro] = 0
+	trg.Durability[Electro] = 0 // reset from previous test
+	trg.DecayRate[Electro] = 0
 	trg.AttachOrRefill(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Electro,
@@ -277,8 +277,8 @@ func TestTick(t *testing.T) {
 		trg.Tick()
 	}
 	// make sure > 0
-	if trg.Durability[ModifierElectro] < 0 {
-		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[ModifierElectro])
+	if trg.Durability[Electro] < 0 {
+		t.Errorf("expecting electro not to be 0 yet, got %v", trg.Durability[Electro])
 	}
 	// 1 more tick and should be gone
 	trg.Tick()
@@ -289,7 +289,7 @@ func TestTick(t *testing.T) {
 
 	// test frozen
 	// 50 frozen should last just over 208 frames (i.e. 0 by 209)
-	trg.Durability[ModifierFrozen] = 50
+	trg.Durability[Frozen] = 50
 	for i := 0; i < 208; i++ {
 		trg.Tick()
 		// log.Println(trg.Durability)
@@ -297,13 +297,13 @@ func TestTick(t *testing.T) {
 		// log.Println("------------------------")
 	}
 	// should be > 0 still
-	if trg.Durability[ModifierFrozen] < 0 {
-		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[ModifierFrozen])
+	if trg.Durability[Frozen] < 0 {
+		t.Errorf("expecting frozen not to be 0 yet, got %v", trg.Durability[Frozen])
 	}
 	// 1 more tick and should be gone
 	trg.Tick()
-	if trg.Durability[ModifierFrozen] > 0 {
-		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[ModifierFrozen])
+	if trg.Durability[Frozen] > 0 {
+		t.Errorf("expecting frozen to be gone, got %v", trg.Durability[Frozen])
 	}
 	// 105 more frames to full recover
 	for i := 0; i < 104; i++ {
@@ -313,20 +313,20 @@ func TestTick(t *testing.T) {
 		// log.Println("------------------------")
 	}
 	// decay should be > 0 still
-	if trg.DecayRate[ModifierFrozen] < frzDecayCap {
-		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[ModifierFrozen])
+	if trg.DecayRate[Frozen] < frzDecayCap {
+		t.Errorf("expecting frozen decay to > cap, got %v", trg.Durability[Frozen])
 	}
 	// 1 more tick to reset decay
 	trg.Tick()
-	if trg.DecayRate[ModifierFrozen] > frzDecayCap {
-		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[ModifierFrozen])
+	if trg.DecayRate[Frozen] > frzDecayCap {
+		t.Errorf("expecting frozen decay to reset, got %v", trg.Durability[Frozen])
 	}
 }
 
 func (target *testTarget) allNil(t *testing.T) bool {
 	ok := true
 	for i, v := range target.Durability {
-		ele := ReactableModifier(i).Element()
+		ele := Modifier(i).Element()
 		if !durApproxEqual(0, v, 0.00001) {
 			t.Errorf("ele %v expected 0 durability got %v", ele, v)
 			ok = false

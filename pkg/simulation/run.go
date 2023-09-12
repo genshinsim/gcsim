@@ -145,7 +145,7 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	// append swap if called for char is not active
 	// check if NoChar incase this is some special action that does not require a character
 	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
-		s.queue = append(s.queue, &action.ActionEval{
+		s.queue = append(s.queue, &action.Eval{
 			Char:   next.Char,
 			Action: action.ActionSwap,
 		})
@@ -180,7 +180,7 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 	return executeActionPhase, nil
 }
 
-func (s *Simulation) handleWait(q *action.ActionEval) (stateFn, error) {
+func (s *Simulation) handleWait(q *action.Eval) (stateFn, error) {
 	// to maintain existing functionality, wait (alias sleep) is always ready and should cause
 	// advanceFrames to be called equal to the param f
 	skip := q.Param["f"]

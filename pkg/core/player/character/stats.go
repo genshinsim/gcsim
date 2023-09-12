@@ -9,7 +9,7 @@ import (
 
 func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 	var sb strings.Builder
-	var debugDetails []interface{} = nil
+	var debugDetails []interface{}
 
 	// grab char stats
 

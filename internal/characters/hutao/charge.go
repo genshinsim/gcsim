@@ -32,7 +32,7 @@ func init() {
 	ppChargeFrames[action.ActionJump] = ppChargeHitmark
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	if c.StatModIsActive(paramitaBuff) {
 		return c.ppChargeAttack(p)
 	}
@@ -64,7 +64,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		chargeHitmark,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
@@ -72,7 +72,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ppChargeAttack(p map[string]int) action.Info {
 	// pp slide: add 1.8s to paramita on charge attack start which gets removed once the charge attack ends
 	c.ExtendStatus(paramitaBuff, 1.8*60)
 
@@ -126,15 +126,13 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		case 0: // N1
 			if next == action.ActionDash {
 				return 1 // N1D
-			} else {
-				return 2 // N1J
 			}
+			return 2 // N1J
 		case 1: // N2
 			if next == action.ActionDash {
 				return 4 // N2D
-			} else {
-				return 5 // N2J
 			}
+			return 5 // N2J
 		case 2: // N3
 			return 2
 		case 3: // N4
@@ -146,7 +144,7 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          ff,
 		AnimationLength: ppChargeFrames[action.InvalidAction],
 		CanQueueAfter:   1,

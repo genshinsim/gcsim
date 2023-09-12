@@ -43,7 +43,7 @@ func init() {
 
 // Normal attack
 // Perform up to 6 consecutive shots with a bow.
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatusIsActive(MeleeKey) {
 		return c.meleeAttack(p)
 	}
@@ -79,7 +79,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
@@ -133,7 +133,7 @@ func init() {
 
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
-func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
+func (c *char) meleeAttack(p map[string]int) action.Info {
 	for i, mult := range eAttack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -178,7 +178,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, meleeFrames),
 		AnimationLength: meleeFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   meleeHitmarks[c.NormalCounter][len(meleeHitmarks[c.NormalCounter])-1],

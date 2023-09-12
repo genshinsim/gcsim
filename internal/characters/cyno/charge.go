@@ -20,7 +20,7 @@ func init() {
 	chargeFrames[action.ActionSwap] = 61
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	if c.StatusIsActive(BurstKey) {
 		return c.chargeB(p)
 	}
@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		chargeHitmark,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
@@ -75,7 +75,7 @@ func init() {
 	chargeBFrames[action.ActionSwap] = 63
 }
 
-func (c *char) chargeB(p map[string]int) action.ActionInfo {
+func (c *char) chargeB(p map[string]int) action.Info {
 	c.tryBurstPPSlide(chargeBHitmark)
 
 	ai := combat.AttackInfo{
@@ -106,7 +106,7 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 		chargeBHitmark,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeBFrames),
 		AnimationLength: chargeBFrames[action.InvalidAction],
 		CanQueueAfter:   chargeBHitmark,

@@ -46,7 +46,7 @@ func init() {
 // Has two parameters:
 // perfect = 1 if you are doing a perfect counter
 // hold = 1 or 2 for regular charging up to level 1 or 2
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// Hold parameter gets used in action frames to get earliest possible release frame
 	chargeLevel := p["hold"]
 	if chargeLevel > 2 {
@@ -111,7 +111,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Src:        c.Core.F,
 		Name:       "Yun Jin Skill",
-		ShieldType: shield.ShieldYunjinSkill,
+		ShieldType: shield.YunjinSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Geo,
 		Expires:    c.Core.F + hitDelay,
@@ -124,7 +124,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.SetCDWithDelay(action.ActionSkill, 9*60, skillCDStarts[animIdx])
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[animIdx]),
 		AnimationLength: skillFrames[animIdx][action.InvalidAction],
 		CanQueueAfter:   skillFrames[animIdx][action.ActionJump], // earliest cancel

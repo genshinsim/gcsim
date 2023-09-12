@@ -67,7 +67,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	return s, nil
 }
 
-func (s *Store) Create(id, name string, ctx context.Context) error {
+func (s *Store) Create(ctx context.Context, id, name string) error {
 	key := []byte(id)
 
 	return s.db.Update(func(txn *badger.Txn) error {
@@ -89,7 +89,7 @@ func (s *Store) Create(id, name string, ctx context.Context) error {
 	})
 }
 
-func (s *Store) Has(id string, ctx context.Context) (bool, error) {
+func (s *Store) Has(ctx context.Context, id string) (bool, error) {
 	has := false
 	err := s.db.View(func(txn *badger.Txn) error {
 		_, err := txn.Get([]byte(id))
@@ -105,10 +105,10 @@ func (s *Store) Has(id string, ctx context.Context) (bool, error) {
 	return has, err
 }
 
-func (s *Store) Read(id string, ctx context.Context) ([]byte, error) {
+func (s *Store) Read(ctx context.Context, id string) ([]byte, error) {
 	var data []byte
 	err := s.db.View(func(txn *badger.Txn) error {
-		x, err := s.getRequester(txn, ctx)
+		x, err := s.getRequester(ctx, txn)
 		if err != nil {
 			return err
 		}
@@ -135,11 +135,11 @@ func (s *Store) Read(id string, ctx context.Context) ([]byte, error) {
 	return data, err
 }
 
-func (s *Store) UpdateData(data []byte, ctx context.Context) error {
+func (s *Store) UpdateData(ctx context.Context, data []byte) error {
 	return s.db.Update(func(txn *badger.Txn) error {
 		// as long as we have permission this operation is ok; we don't need to check
 		// what's in the data here
-		u, err := s.getRequester(txn, ctx)
+		u, err := s.getRequester(ctx, txn)
 		if err != nil {
 			return err
 		}
@@ -168,7 +168,7 @@ func (s *Store) UpdateData(data []byte, ctx context.Context) error {
 	})
 }
 
-func (s *Store) getRequester(txn *badger.Txn, ctx context.Context) (User, error) {
+func (s *Store) getRequester(ctx context.Context, txn *badger.Txn) (User, error) {
 	id, err := extractUser(ctx)
 	if err != nil {
 		s.Log.Infow("bad request; no valid user set in context", "ctx", ctx)

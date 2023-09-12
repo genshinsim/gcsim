@@ -39,7 +39,7 @@ const burstHitmarkDelay = 6
 // TODO: Determine correct Frame
 const burstSnapshotDelay = 55
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -69,7 +69,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return delay + burstFramesNormal[next] },
 		AnimationLength: delay + burstFramesNormal[action.InvalidAction],
 		CanQueueAfter:   delay + burstFramesNormal[action.ActionAttack],
@@ -77,7 +77,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
+func (c *char) WindfavoredBurst(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kyougen: Five Ceremonial Plays (Windfavored)",
@@ -105,7 +105,7 @@ func (c *char) WindfavoredBurst(p map[string]int) action.ActionInfo {
 	// reset skydwellerPoints here
 	c.skydwellerPoints = 0
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return burstFramesE[next] },
 		AnimationLength: burstFramesE[action.InvalidAction],
 		CanQueueAfter:   burstFramesE[action.ActionWalk],

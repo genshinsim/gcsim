@@ -52,7 +52,7 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if stiletto is on-field
 	if a == action.ActionSkill && c.Core.Status.Duration(stilettoKey) > 0 {
 		return true, action.NoFailure

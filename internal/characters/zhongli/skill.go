@@ -29,7 +29,7 @@ func init() {
 	skillHoldFrames[action.ActionJump] = 55
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	h := p["hold"]
 	nostele := p["hold_nostele"] > 0
 	if h > 0 || nostele {
@@ -38,14 +38,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillPress()
 }
 
-func (c *char) skillPress() action.ActionInfo {
+func (c *char) skillPress() action.Info {
 	c.Core.Tasks.Add(func() {
 		c.newStele(1860)
 	}, skillPressHimark)
 
 	c.SetCDWithDelay(action.ActionSkill, 240, 22)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
@@ -53,7 +53,7 @@ func (c *char) skillPress() action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(createStele bool) action.ActionInfo {
+func (c *char) skillHold(createStele bool) action.Info {
 	// hold does dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -83,7 +83,7 @@ func (c *char) skillHold(createStele bool) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 720, 47)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel

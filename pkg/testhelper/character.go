@@ -13,7 +13,7 @@ type Character struct {
 }
 
 func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return combat.Snapshot{} }
-func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }
 func (c *Character) ActionStam(a action.Action, p map[string]int) float64 { return 0 }

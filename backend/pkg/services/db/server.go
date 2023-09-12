@@ -10,14 +10,14 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-type DBStore interface {
-	DBService
+type Store interface {
+	Service
 	TaggingService
 	ComputeService
 	AdminService
 }
 
-type DBService interface {
+type Service interface {
 	Create(context.Context, *Entry) (string, error)
 	Replace(context.Context, *Entry) error
 	Get(ctx context.Context, query *QueryOpt) ([]*Entry, error)
@@ -53,7 +53,7 @@ type NotifyService interface {
 }
 
 type Config struct {
-	DBStore           DBStore
+	DBStore           Store
 	ShareStore        ShareStore
 	NotifyService     NotifyService
 	DefaultIterations int

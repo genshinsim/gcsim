@@ -18,20 +18,20 @@ import (
 type Character interface {
 	Init() error // init function built into every char to setup any variables etc.
 
-	Attack(p map[string]int) action.ActionInfo
-	Aimed(p map[string]int) action.ActionInfo
-	ChargeAttack(p map[string]int) action.ActionInfo
-	HighPlungeAttack(p map[string]int) action.ActionInfo
-	LowPlungeAttack(p map[string]int) action.ActionInfo
-	Skill(p map[string]int) action.ActionInfo
-	Burst(p map[string]int) action.ActionInfo
-	Dash(p map[string]int) action.ActionInfo
-	Walk(p map[string]int) action.ActionInfo
-	Jump(p map[string]int) action.ActionInfo
+	Attack(p map[string]int) action.Info
+	Aimed(p map[string]int) action.Info
+	ChargeAttack(p map[string]int) action.Info
+	HighPlungeAttack(p map[string]int) action.Info
+	LowPlungeAttack(p map[string]int) action.Info
+	Skill(p map[string]int) action.Info
+	Burst(p map[string]int) action.Info
+	Dash(p map[string]int) action.Info
+	Walk(p map[string]int) action.Info
+	Jump(p map[string]int) action.Info
 
 	ActionStam(a action.Action, p map[string]int) float64
 
-	ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure)
+	ActionReady(a action.Action, p map[string]int) (bool, action.Failure)
 	SetCD(a action.Action, dur int)
 	Cooldown(a action.Action) int
 	ResetActionCooldown(a action.Action)

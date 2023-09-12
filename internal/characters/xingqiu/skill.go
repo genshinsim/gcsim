@@ -29,7 +29,7 @@ const (
 	particleICDKey = "xingqiu-particle-icd"
 )
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Guhua Sword: Fatal Rainscreen",
@@ -77,7 +77,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// should last 15s, cd 21s
 	c.SetCDWithDelay(action.ActionSkill, 21*60, 10)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

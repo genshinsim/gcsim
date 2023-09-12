@@ -30,7 +30,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 95     // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// first hit at 94, then 30 frames between hits. 9 anemo hits total
 	// yes the game description scams you on the duration
 	duration := burstHitmarks[c.gender] + 30*8
@@ -97,7 +97,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(3)
 
 	// TODO: Fill these out later
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   burstFrames[c.gender][action.ActionDash], // earliest cancel

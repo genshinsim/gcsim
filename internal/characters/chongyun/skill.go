@@ -31,7 +31,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 49    // E -> J
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// if fieldSrc is < duration then this is prob a sac proc
 	// we need to stop the old field from ticking (by changing fieldSrc)
 	// and also trigger a4 delayed damage
@@ -152,7 +152,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 900, 34)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

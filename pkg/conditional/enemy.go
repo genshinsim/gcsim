@@ -54,7 +54,7 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 		return 0, fmt.Errorf("bad element condition: invalid element %v", ele)
 	}
 	result := reactions.Durability(0)
-	for i := reactable.ModifierInvalid; i < reactable.EndReactableModifier; i++ {
+	for i := reactable.Invalid; i < reactable.EndModifier; i++ {
 		if i.Element() == elekey && e.Durability[i] > reactable.ZeroDur && e.Durability[i] > result {
 			result = e.Durability[i]
 		}

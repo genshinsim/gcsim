@@ -20,7 +20,7 @@ type Handler struct {
 
 func New(f *int, log glog.Logger, events event.Eventter) *Handler {
 	h := &Handler{
-		shields:         make([]Shield, 0, EndShieldType),
+		shields:         make([]Shield, 0, EndType),
 		log:             log,
 		events:          events,
 		f:               f,
@@ -35,7 +35,7 @@ func (h *Handler) PlayerIsShielded() bool {
 	return len(h.shields) > 0
 }
 
-func (h *Handler) Get(t ShieldType) Shield {
+func (h *Handler) Get(t Type) Shield {
 	for _, v := range h.shields {
 		if v.Type() == t {
 			return v

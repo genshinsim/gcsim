@@ -33,7 +33,7 @@ func init() {
 	kickFrames[action.ActionSwap] = kickHitmark // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	burstIsJumpCancelled = false
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -79,7 +79,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(15) //TODO: If this is ping related, this could be closer to 1 at 0 ping
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.ActionAttack],
 		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
@@ -87,7 +87,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) burstPunch(src int, auto bool) action.ActionInfo {
+func (c *char) burstPunch(src int, auto bool) action.Info {
 	hitmark := punchSlowHitmark
 	if !auto {
 		hitmark = punchHitmarks[c.burstCounter]
@@ -136,14 +136,14 @@ func (c *char) burstPunch(src int, auto bool) action.ActionInfo {
 		c.burstPunch(c.burstHitSrc, true)
 	}, hitmark)
 	if auto {
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return punchSlowHitmark },
 			AnimationLength: punchSlowHitmark,
 			CanQueueAfter:   punchSlowHitmark,
 			State:           action.BurstState,
 		}
 	}
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(action.Action) int { return punchHitmarks[c.burstCounter] },
 		AnimationLength: punchHitmarks[c.burstCounter],
 		CanQueueAfter:   punchHitmarks[c.burstCounter],
@@ -151,7 +151,7 @@ func (c *char) burstPunch(src int, auto bool) action.ActionInfo {
 	}
 }
 
-func (c *char) burstKick(src int) action.ActionInfo {
+func (c *char) burstKick(src int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Incineration Drive",
@@ -184,7 +184,7 @@ func (c *char) burstKick(src int) action.ActionInfo {
 		}
 	}, kickHitmark)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(kickFrames),
 		AnimationLength: kickFrames[action.ActionAttack],
 		CanQueueAfter:   kickFrames[action.ActionSwap], // earliest cancel
@@ -192,8 +192,8 @@ func (c *char) burstKick(src int) action.ActionInfo {
 	}
 }
 
-func (c *char) UseBurstAction() *action.ActionInfo {
-	var out action.ActionInfo
+func (c *char) UseBurstAction() *action.Info {
+	var out action.Info
 	c.burstHitSrc++
 	if c.StatusIsActive(kickKey) {
 		out = c.burstKick(c.burstHitSrc)

@@ -75,7 +75,7 @@ func init() {
 
 // Cast: AoE strong hydro damage
 // Melee Stance: infuse NA/CA to hydro damage
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	if c.StatusIsActive(MeleeKey) {
 		cdDelay := 11
 		switch c.Core.Player.CurrentState() {
@@ -98,7 +98,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				canQueueAfter = f
 			}
 		}
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          frames.NewAbilFunc(adjustedFrames),
 			AnimationLength: adjustedFrames[action.InvalidAction],
 			CanQueueAfter:   canQueueAfter,
@@ -157,7 +157,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			canQueueAfter = f
 		}
 	}
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
 		AnimationLength: adjustedFrames[action.InvalidAction],
 		CanQueueAfter:   canQueueAfter,

@@ -77,7 +77,7 @@ func (e *Enemy) HandleAttack(atk *combat.AttackEvent) float64 {
 func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) {
 	// if target is frozen prior to attack landing, set impulse to 0
 	// let the break freeze attack to trigger actual impulse
-	if e.Durability[reactable.ModifierFrozen] > reactable.ZeroDur {
+	if e.Durability[reactable.Frozen] > reactable.ZeroDur {
 		atk.Info.NoImpulse = true
 	}
 

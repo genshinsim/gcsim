@@ -80,7 +80,7 @@ func Parse(cfg string) (*info.ActionList, ast.Node, error) {
 }
 
 // Run will run the simulation given number of times
-func Run(opts Options, ctx context.Context) (*model.SimulationResult, error) {
+func Run(ctx context.Context, opts Options) (*model.SimulationResult, error) {
 	start := time.Now()
 
 	cfg, err := ReadConfig(opts.ConfigPath)
@@ -93,13 +93,13 @@ func Run(opts Options, ctx context.Context) (*model.SimulationResult, error) {
 		return &model.SimulationResult{}, err
 	}
 
-	return RunWithConfig(cfg, simcfg, gcsl, opts, start, ctx)
+	return RunWithConfig(ctx, cfg, simcfg, gcsl, opts, start)
 }
 
 // Runs the simulation with a given parsed config
 // TODO: cfg string should be in the action list instead
 // TODO: need to add a context here to avoid infinite looping
-func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time, ctx context.Context) (*model.SimulationResult, error) {
+func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time) (*model.SimulationResult, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {

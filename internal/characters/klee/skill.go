@@ -35,7 +35,7 @@ func init() {
 
 // Has two parameters, "bounce" determines the number of bounces that hit
 // "mine" determines the number of mines that hit the enemy
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	type attackData struct {
 		ai   combat.AttackInfo
 		snap combat.Snapshot
@@ -113,7 +113,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			canQueueAfter = f
 		}
 	}
-	actionInfo := action.ActionInfo{
+	actionInfo := action.Info{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
 		AnimationLength: adjustedFrames[action.InvalidAction],
 		CanQueueAfter:   canQueueAfter,

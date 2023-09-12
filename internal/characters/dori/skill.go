@@ -24,7 +24,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 43    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 9*60, 16)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel

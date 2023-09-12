@@ -75,16 +75,16 @@ type Handler struct {
 	events [][]ehook
 }
 
-type EventHook func(args ...interface{}) bool
+type Hook func(args ...interface{}) bool
 
 type Eventter interface {
-	Subscribe(e Event, f EventHook, key string)
+	Subscribe(e Event, f Hook, key string)
 	Unsubscribe(e Event, key string)
 	Emit(e Event, args ...interface{})
 }
 
 type ehook struct {
-	f   EventHook
+	f   Hook
 	key string
 }
 
@@ -100,7 +100,7 @@ func New() *Handler {
 	return h
 }
 
-func (h *Handler) Subscribe(e Event, f EventHook, key string) {
+func (h *Handler) Subscribe(e Event, f Hook, key string) {
 	a := h.events[e]
 
 	evt := ehook{

@@ -50,7 +50,7 @@ func init() {
 	attackFrames[attackTypeTwirl][action.ActionWalk] = 42
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -119,7 +119,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	c.prevAttack = nextAttack
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			return frames.AtkSpdAdjust(attackFrames[nextAttack][next], c.Stat(attributes.AtkSpd))
 		},

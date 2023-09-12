@@ -209,7 +209,7 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 
 	// condition should be a number
 	// res should be a number
-	var v *number = nil
+	var v *number
 	if _, ok := cond.(*null); !ok {
 		val, ok := cond.(*number)
 		// e.Log.Printf("let expr: %v, type: %T\n", res, res)

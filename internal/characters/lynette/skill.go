@@ -60,7 +60,7 @@ func init() {
 	skillHoldEndFrames[action.ActionSwap] = 27
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	hold := p["hold"]
 	if hold > 0 {
 		if hold > 150 {
@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	return c.skillPress(p)
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress(p map[string]int) action.Info {
 	// press attack and aligned attack
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
@@ -92,7 +92,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, skillCD, skillPressCDStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionSwap],
@@ -100,7 +100,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
+func (c *char) skillHold(p map[string]int, duration int) action.Info {
 	// shadowsign activation
 	c.QueueCharTask(func() {
 		c.shadowsignSrc = c.Core.F
@@ -127,7 +127,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, skillCD, duration+skillHoldEndCDStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return duration + skillHoldEndFrames[next] },
 		AnimationLength: duration + skillHoldEndFrames[action.InvalidAction],
 		CanQueueAfter:   duration + skillHoldEndFrames[action.ActionSwap],

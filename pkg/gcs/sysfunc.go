@@ -119,7 +119,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 		return &number{}, nil
 	}
 
-	e.sendWork(&action.ActionEval{
+	e.sendWork(&action.Eval{
 		Action: action.ActionWait,
 		Param:  map[string]int{"f": f},
 	})
@@ -159,7 +159,7 @@ func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 		return &number{}, nil
 	}
 
-	e.sendWork(&action.ActionEval{
+	e.sendWork(&action.Eval{
 		Action: action.ActionDelay,
 		Param:  map[string]int{"f": f},
 	})
@@ -581,7 +581,7 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	charKey := keys.Char(char.ival)
 	actionKey := action.Action(ac.ival)
-	e.sendWork(&action.ActionEval{
+	e.sendWork(&action.Eval{
 		Char:   charKey,
 		Action: actionKey,
 		Param:  params,

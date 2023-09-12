@@ -15,10 +15,10 @@ import (
 )
 
 type UserStore interface {
-	Create(id string, name string, ctx context.Context) error // create a new user; name is the discord tag
-	Read(id string, ctx context.Context) ([]byte, error)      // "user" should be set in ctx for auth purpose
-	UpdateData(data []byte, ctx context.Context) error        // "user" should be set in ctx for auth purpose
-	Has(id string, ctx context.Context) (bool, error)         // return true if user exists
+	Create(ctx context.Context, id string, name string) error // create a new user; name is the discord tag
+	Read(ctx context.Context, id string) ([]byte, error)      // "user" should be set in ctx for auth purpose
+	UpdateData(ctx context.Context, data []byte) error        // "user" should be set in ctx for auth purpose
+	Has(ctx context.Context, id string) (bool, error)         // return true if user exists
 }
 
 type RoleChecker interface {
@@ -145,7 +145,7 @@ func (s *Server) Login() http.HandlerFunc {
 		}
 
 		// check if user exists; create if not
-		ok, err := s.cfg.UserStore.Has(du.ID, r.Context())
+		ok, err := s.cfg.UserStore.Has(r.Context(), du.ID)
 		if err != nil {
 			s.Log.Errorw("unexpected error encountered checking if user exists", "err", err, "user", du)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -153,7 +153,7 @@ func (s *Server) Login() http.HandlerFunc {
 		}
 		if !ok {
 			// create
-			err := s.cfg.UserStore.Create(du.ID, fmt.Sprintf("%v#%v", du.Username, du.Discriminator), r.Context())
+			err := s.cfg.UserStore.Create(r.Context(), du.ID, fmt.Sprintf("%v#%v", du.Username, du.Discriminator))
 			if err != nil {
 				s.Log.Errorw("unexpected error encountered reading user", "err", err, "user", du)
 				w.WriteHeader(http.StatusInternalServerError)
@@ -161,7 +161,7 @@ func (s *Server) Login() http.HandlerFunc {
 			}
 		}
 
-		u, err := s.cfg.UserStore.Read(du.ID, context.WithValue(r.Context(), UserContextKey, du.ID))
+		u, err := s.cfg.UserStore.Read(context.WithValue(r.Context(), UserContextKey, du.ID), du.ID)
 		if err != nil {
 			s.Log.Errorw("unexpected error encountered reading user", "err", err, "user", du)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -201,7 +201,7 @@ func (s *Server) UserSave() http.HandlerFunc {
 			return
 		}
 		s.Log.Infow("received request to save user data", "data", string(d), "user", r.Context().Value("user"))
-		err = s.cfg.UserStore.UpdateData(d, r.Context())
+		err = s.cfg.UserStore.UpdateData(r.Context(), d)
 		switch err {
 		case nil:
 			w.WriteHeader(http.StatusOK)
