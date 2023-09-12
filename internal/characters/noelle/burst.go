@@ -48,18 +48,21 @@ func (c *char) Burst(p map[string]int) action.Info {
 	if c.Base.Cons >= 6 {
 		// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
 		// check extension
-		ext, ok := p["extend"]
-		if ok {
+		getExt := func() int {
+			ext, ok := p["extend"]
+			if !ok {
+				return 10 // to maintain prev default behaviour of full extension
+			}
 			if ext < 0 {
 				ext = 0
 			}
 			if ext > 10 {
 				ext = 10
 			}
-		} else {
-			ext = 10 // to maintain prev default behaviour of full extension
+			return ext
 		}
 
+		ext := getExt()
 		dur += ext * 60
 		c.Core.Log.NewEvent("noelle c6 extension applied", glog.LogCharacterEvent, c.Index).
 			Write("total_dur", dur).

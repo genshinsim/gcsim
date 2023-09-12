@@ -86,16 +86,12 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 
 	// check tags
 	if atk.Info.Durability > 0 {
-		// check for ICD first
-		atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		// special global ICD for Burning DMG
 		if atk.Info.ICDTag == attacks.ICDTagBurningDamage {
-			// checks for ICD on all the other characters as well
+			// checks for ICD on all characters
 			for i := 0; i < len(e.Core.Player.Chars()); i++ {
-				if i != atk.Info.ActorIndex {
-					// burning durability wiped out to 0 if any of the other char still on icd re burning dmg
-					atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
-				}
+				// burning durability wiped out to 0 if any chars still on icd re burning dmg
+				atk.Info.Durability *= reactions.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, i))
 			}
 		}
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {

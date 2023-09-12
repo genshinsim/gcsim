@@ -170,12 +170,14 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(
 		opDebug = append(opDebug, "Low damage contribution from substats - adding some points to ER instead")
 	}
 
-	var globalLimit int
-	var crLimit int
-	var cdLimit int
-	if crCDSubstatRatio > 0 {
-		globalLimit, crLimit = stats.assignSubstatsForChar(idxChar, char, attributes.CR, 0)
-		_, cdLimit = stats.assignSubstatsForChar(idxChar, char, attributes.CD, 0)
+	handleCRCD := func() {
+		if crCDSubstatRatio <= 0 {
+			stats.assignSubstatsForChar(idxChar, char, substatToMax, stats.indivSubstatLiquidCap+stats.fixedSubstatCount)
+			return
+		}
+
+		globalLimit, crLimit := stats.assignSubstatsForChar(idxChar, char, attributes.CR, 0)
+		_, cdLimit := stats.assignSubstatsForChar(idxChar, char, attributes.CD, 0)
 
 		// Continually add CR/CD to try to align CR/CD ratio to ratio of gradients until we hit a limit
 		var currentRatio float64
@@ -217,13 +219,9 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(
 			}
 			iteration += 1
 		}
-	} else {
-		globalLimit, _ = stats.assignSubstatsForChar(idxChar, char, substatToMax, stats.indivSubstatLiquidCap+stats.fixedSubstatCount)
-	}
-	if globalLimit == 0 {
-		return opDebug
 	}
 
+	handleCRCD()
 	return opDebug
 }
 

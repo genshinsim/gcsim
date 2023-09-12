@@ -31,7 +31,7 @@ linters:
     # TODO: use this when merged into tagliatelle https://github.com/ldez/tagliatelle/pull/21
 
     ## code complexity detectors
-    # - nestif # reports deeply nested if statements
+    - nestif # reports deeply nested if statements
 
     # - lll # reports long lines
     # - funlen # tool for detection of long functions

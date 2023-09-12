@@ -208,42 +208,47 @@ func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []
 			n++
 			continue
 		}
-		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			amt, ok := m.Amount(a, t)
-			if ok {
-				for k, v := range amt {
-					a.Snapshot.Stats[k] += v
-				}
-			}
-			c.mods[n] = v
-			n++
-			if c.debug {
-				modStatus := make([]string, 0)
-				if ok {
-					sb.WriteString(m.Key())
-					modStatus = append(
-						modStatus,
-						"status: added",
-						"expiry_frame: "+strconv.Itoa(m.Expiry()),
-					)
-					modStatus = append(
-						modStatus,
-						attributes.PrettyPrintStatsSlice(amt)...,
-					)
-					logDetails = append(logDetails, sb.String(), modStatus)
-					sb.Reset()
-				} else {
-					sb.WriteString(m.Key())
-					modStatus = append(
-						modStatus,
-						"status: rejected",
-						"reason: conditions not met",
-					)
-					logDetails = append(logDetails, sb.String(), modStatus)
-					sb.Reset()
-				}
+		if !(m.Expiry() > *c.f || m.Expiry() == -1) {
+			continue
+		}
+
+		amt, ok := m.Amount(a, t)
+		if ok {
+			for k, v := range amt {
+				a.Snapshot.Stats[k] += v
 			}
 		}
+		c.mods[n] = v
+		n++
+
+		if !c.debug {
+			continue
+		}
+		modStatus := make([]string, 0)
+
+		if ok {
+			sb.WriteString(m.Key())
+			modStatus = append(
+				modStatus,
+				"status: added",
+				"expiry_frame: "+strconv.Itoa(m.Expiry()),
+			)
+			modStatus = append(
+				modStatus,
+				attributes.PrettyPrintStatsSlice(amt)...,
+			)
+			logDetails = append(logDetails, sb.String(), modStatus)
+			sb.Reset()
+			continue
+		}
+		sb.WriteString(m.Key())
+		modStatus = append(
+			modStatus,
+			"status: rejected",
+			"reason: conditions not met",
+		)
+		logDetails = append(logDetails, sb.String(), modStatus)
+		sb.Reset()
 	}
 	c.mods = c.mods[:n]
 	return logDetails

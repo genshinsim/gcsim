@@ -52,49 +52,52 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
-	if count >= 4 {
-		const icdKey = "pf-4pc-icd"
-		icd := 18 // 0.3s * 60
-		s.buff = make([]float64, attributes.EndStatType)
 
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
-				return false
-			}
-			if c.Player.Active() != char.Index {
-				return false
-			}
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-				return false
-			}
-			if char.StatusIsActive(icdKey) {
-				return false
-			}
-			// reset stacks if expired
-			if !char.StatModIsActive(pf4key) {
-				s.stacks = 0
-			}
-			s.stacks++
-			if s.stacks >= 2 {
-				s.stacks = 2
-			}
-			s.updateBuff()
-
-			c.Log.NewEvent("paleflame gained stack", glog.LogArtifactEvent, char.Index).
-				Write("stacks", s.stacks)
-
-			char.AddStatus(icdKey, icd, true)
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(pf4key, 420),
-				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					return s.buff, true
-				},
-			})
-			return false
-		}, fmt.Sprintf("pf4-%v", char.Base.Key.String()))
+	if count < 4 {
+		return &s, nil
 	}
+
+	const icdKey = "pf-4pc-icd"
+	icd := 18 // 0.3s * 60
+	s.buff = make([]float64, attributes.EndStatType)
+
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
+		if c.Player.Active() != char.Index {
+			return false
+		}
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
+			return false
+		}
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		// reset stacks if expired
+		if !char.StatModIsActive(pf4key) {
+			s.stacks = 0
+		}
+		s.stacks++
+		if s.stacks >= 2 {
+			s.stacks = 2
+		}
+		s.updateBuff()
+
+		c.Log.NewEvent("paleflame gained stack", glog.LogArtifactEvent, char.Index).
+			Write("stacks", s.stacks)
+
+		char.AddStatus(icdKey, icd, true)
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(pf4key, 420),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				return s.buff, true
+			},
+		})
+		return false
+	}, fmt.Sprintf("pf4-%v", char.Base.Key.String()))
 
 	return &s, nil
 }

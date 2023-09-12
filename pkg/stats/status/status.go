@@ -103,39 +103,46 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 
 		for i, t := range core.Combat.Enemies() {
-			if enemy, ok := t.(*enemy.Enemy); ok {
-				current := make(map[reactable.Modifier]int)
-
-				for r, v := range enemy.Durability {
-					if v > reactable.ZeroDur {
-						var key = reactable.Modifier(r)
-						out.reactionUptime[i][key.String()] += 1
-
-						if start, ok := out.activeReactions[i][key]; ok {
-							current[key] = start
-						} else {
-							current[key] = core.F
-						}
-					}
-				}
-
-				for k, start := range out.activeReactions[i] {
-					if _, ok := current[k]; !ok {
-						if core.F-start <= 5 {
-							continue
-						}
-
-						interval := stats.ReactionStatusInterval{
-							Start: start,
-							End:   core.F,
-							Type:  k.String(),
-						}
-						out.enemyReactions[i] = append(out.enemyReactions[i], interval)
-					}
-				}
-
-				out.activeReactions[i] = current
+			enemy, ok := t.(*enemy.Enemy)
+			if !ok {
+				continue
 			}
+
+			current := make(map[reactable.Modifier]int)
+
+			for r, v := range enemy.Durability {
+				if v <= reactable.ZeroDur {
+					continue
+				}
+				var key = reactable.Modifier(r)
+				out.reactionUptime[i][key.String()] += 1
+
+				if start, ok := out.activeReactions[i][key]; ok {
+					current[key] = start
+				} else {
+					current[key] = core.F
+				}
+			}
+
+			for k, start := range out.activeReactions[i] {
+				_, ok := current[k]
+				if ok {
+					continue
+				}
+
+				if core.F-start <= 5 {
+					continue
+				}
+
+				interval := stats.ReactionStatusInterval{
+					Start: start,
+					End:   core.F,
+					Type:  k.String(),
+				}
+				out.enemyReactions[i] = append(out.enemyReactions[i], interval)
+			}
+
+			out.activeReactions[i] = current
 		}
 
 		return false

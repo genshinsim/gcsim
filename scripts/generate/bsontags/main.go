@@ -78,23 +78,28 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 	if n == nil {
 		return nil
 	}
-	_, ok := n.(*ast.Field)
-	if ok {
+	handleVisit := func() {
+		_, ok := n.(*ast.Field)
+		if !ok {
+			return
+		}
 		ast.Inspect(n, func(subn ast.Node) bool {
 			switch subd := subn.(type) {
 			case *ast.Field:
-				if f, ok := n.(*ast.Field); ok {
-					if len(f.Names) == 0 {
-						return false
-					}
-					// skip non public fields
-					r := []rune(f.Names[0].Name)
-					if len(r) == 0 {
-						return false
-					}
-					ru, _ := utf8.DecodeRuneInString(f.Names[0].Name)
-					return unicode.IsUpper(ru)
+				f, ok := n.(*ast.Field)
+				if !ok {
+					return true
 				}
+				if len(f.Names) == 0 {
+					return false
+				}
+				// skip non public fields
+				r := []rune(f.Names[0].Name)
+				if len(r) == 0 {
+					return false
+				}
+				ru, _ := utf8.DecodeRuneInString(f.Names[0].Name)
+				return unicode.IsUpper(ru)
 			case *ast.BasicLit:
 				existingTagValue := strings.Trim(subd.Value, "`")
 				bsonTags := []string{"bson:\"-\""}
@@ -110,16 +115,17 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 				name := "-"
 				for _, existingTag := range existingTags {
 					existingTagParts := strings.Split(existingTag, ":")
-					if existingTagParts[0] == "protobuf" {
-						protoTagsValue := strings.Trim(existingTagParts[1], `"`)
-						protoTags := strings.Split(protoTagsValue, ",")
-						for _, existingProtoTag := range protoTags {
-							if strings.HasPrefix(existingProtoTag, "name=") && name == "-" {
-								name = strings.TrimPrefix(existingProtoTag, "name=")
-							}
-							if strings.HasPrefix(existingProtoTag, "json=") {
-								name = strings.TrimPrefix(existingProtoTag, "json=")
-							}
+					if existingTagParts[0] != "protobuf" {
+						continue
+					}
+					protoTagsValue := strings.Trim(existingTagParts[1], `"`)
+					protoTags := strings.Split(protoTagsValue, ",")
+					for _, existingProtoTag := range protoTags {
+						if strings.HasPrefix(existingProtoTag, "name=") && name == "-" {
+							name = strings.TrimPrefix(existingProtoTag, "name=")
+						}
+						if strings.HasPrefix(existingProtoTag, "json=") {
+							name = strings.TrimPrefix(existingProtoTag, "json=")
 						}
 					}
 				}
@@ -131,5 +137,6 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 			return true
 		})
 	}
+	handleVisit()
 	return v
 }

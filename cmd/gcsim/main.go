@@ -225,17 +225,25 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		idleConnectionsClosed := make(chan struct{})
 		serve(idleConnectionsClosed, resultServeFile+".gz", hash, sampleServeFile+".gz", opt.keepserving)
 
-		url := "https://gcsim.app/local"
-		if !opt.nobrowser {
-			err := open(url)
-			if err != nil {
-				// try "xdg-open-wsl"
-				err = openWSL(url)
-				if err != nil {
-					fmt.Printf("Error opening default browser... please visit: %v\n", url)
-				}
+		openBrowser := func() {
+			url := "https://gcsim.app/local"
+			if opt.nobrowser {
+				return
 			}
+
+			err := open(url)
+			if err == nil {
+				return
+			}
+
+			// try "xdg-open-wsl"
+			err = openWSL(url)
+			if err == nil {
+				return
+			}
+			fmt.Printf("Error opening default browser... please visit: %v\n", url)
 		}
+		openBrowser()
 
 		<-idleConnectionsClosed
 	}

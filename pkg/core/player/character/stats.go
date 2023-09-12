@@ -28,42 +28,46 @@ func (c *CharWrapper) Stats() ([attributes.EndStatType]float64, []interface{}) {
 			n++
 			continue
 		}
-		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			amt, ok := m.Amount()
-			if ok {
-				for k, v := range amt {
-					stats[k] += v
-				}
-			}
-			c.mods[n] = m
-			n++
+		if !(m.Expiry() > *c.f || m.Expiry() == -1) {
+			continue
+		}
 
-			if c.debug {
-				modStatus := make([]string, 0)
-				if ok {
-					sb.WriteString(m.Key())
-					modStatus = append(
-						modStatus,
-						"status: added",
-						"expiry_frame: "+strconv.Itoa(m.Expiry()),
-					)
-					modStatus = append(
-						modStatus,
-						attributes.PrettyPrintStatsSlice(amt)...,
-					)
-					debugDetails = append(debugDetails, sb.String(), modStatus)
-					sb.Reset()
-				} else {
-					sb.WriteString(m.Key())
-					modStatus = append(
-						modStatus,
-						"status: rejected",
-						"reason: conditions not met",
-					)
-					debugDetails = append(debugDetails, sb.String(), modStatus)
-					sb.Reset()
-				}
+		amt, ok := m.Amount()
+		if ok {
+			for k, v := range amt {
+				stats[k] += v
 			}
+		}
+		c.mods[n] = m
+		n++
+
+		if !c.debug {
+			continue
+		}
+		modStatus := make([]string, 0)
+
+		if ok {
+			sb.WriteString(m.Key())
+			modStatus = append(
+				modStatus,
+				"status: added",
+				"expiry_frame: "+strconv.Itoa(m.Expiry()),
+			)
+			modStatus = append(
+				modStatus,
+				attributes.PrettyPrintStatsSlice(amt)...,
+			)
+			debugDetails = append(debugDetails, sb.String(), modStatus)
+			sb.Reset()
+		} else {
+			sb.WriteString(m.Key())
+			modStatus = append(
+				modStatus,
+				"status: rejected",
+				"reason: conditions not met",
+			)
+			debugDetails = append(debugDetails, sb.String(), modStatus)
+			sb.Reset()
 		}
 	}
 	c.mods = c.mods[:n]

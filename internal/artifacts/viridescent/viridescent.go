@@ -41,62 +41,33 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
-	if count >= 4 {
-		// add +0.6 reaction damage
-		char.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase("vv-4pc", -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				// check to make sure this is not an amped swirl
-				if ai.Amped {
-					return 0, false
-				}
-				switch ai.AttackTag {
-				case attacks.AttackTagSwirlCryo:
-				case attacks.AttackTagSwirlElectro:
-				case attacks.AttackTagSwirlHydro:
-				case attacks.AttackTagSwirlPyro:
-				default:
-					return 0, false
-				}
-				return 0.6, false
-			},
-		})
 
-		vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
-			return func(args ...interface{}) bool {
-				atk := args[1].(*combat.AttackEvent)
-				t, ok := args[0].(*enemy.Enemy)
-				if !ok {
-					return false
-				}
-				if atk.Info.ActorIndex != char.Index {
-					return false
-				}
+	if count < 4 {
+		return &s, nil
+	}
 
-				// ignore if character not on field
-				if c.Player.Active() != char.Index {
-					return false
-				}
-
-				t.AddResistMod(combat.ResistMod{
-					Base:  modifier.NewBaseWithHitlag(key, 10*60),
-					Ele:   ele,
-					Value: -0.4,
-				})
-				c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
-
-				return false
+	// add +0.6 reaction damage
+	char.AddReactBonusMod(character.ReactBonusMod{
+		Base: modifier.NewBase("vv-4pc", -1),
+		Amount: func(ai combat.AttackInfo) (float64, bool) {
+			// check to make sure this is not an amped swirl
+			if ai.Amped {
+				return 0, false
 			}
-		}
-		c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+			switch ai.AttackTag {
+			case attacks.AttackTagSwirlCryo:
+			case attacks.AttackTagSwirlElectro:
+			case attacks.AttackTagSwirlHydro:
+			case attacks.AttackTagSwirlPyro:
+			default:
+				return 0, false
+			}
+			return 0.6, false
+		},
+	})
 
-		// Additional event for on damage proc on secondary targets
-		// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
-		// Possibly closure related? Not sure
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
+		return func(args ...interface{}) bool {
 			atk := args[1].(*combat.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
@@ -111,17 +82,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return false
 			}
 
-			ele := atk.Info.Element
-			key := "vv" + ele.String()
-			switch atk.Info.AttackTag {
-			case attacks.AttackTagSwirlCryo:
-			case attacks.AttackTagSwirlElectro:
-			case attacks.AttackTagSwirlHydro:
-			case attacks.AttackTagSwirlPyro:
-			default:
-				return false
-			}
-
 			t.AddResistMod(combat.ResistMod{
 				Base:  modifier.NewBaseWithHitlag(key, 10*60),
 				Ele:   ele,
@@ -130,8 +90,51 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
 
 			return false
-		}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))
+		}
 	}
+	c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+
+	// Additional event for on damage proc on secondary targets
+	// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
+	// Possibly closure related? Not sure
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
+
+		// ignore if character not on field
+		if c.Player.Active() != char.Index {
+			return false
+		}
+
+		ele := atk.Info.Element
+		key := "vv" + ele.String()
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagSwirlCryo:
+		case attacks.AttackTagSwirlElectro:
+		case attacks.AttackTagSwirlHydro:
+		case attacks.AttackTagSwirlPyro:
+		default:
+			return false
+		}
+
+		t.AddResistMod(combat.ResistMod{
+			Base:  modifier.NewBaseWithHitlag(key, 10*60),
+			Ele:   ele,
+			Value: -0.4,
+		})
+		c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
+
+		return false
+	}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))
 
 	return &s, nil
 }
