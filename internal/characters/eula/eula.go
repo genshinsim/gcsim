@@ -18,7 +18,6 @@ type char struct {
 	burstCounter    int
 	grimheartStacks int
 	c1buff          []float64
-	particleDone    bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

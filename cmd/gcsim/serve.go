@@ -8,10 +8,6 @@ import (
 	"os/signal"
 )
 
-type viewerResults struct {
-	Data string `json:"data"`
-}
-
 func serve(
 	connectionsClosed chan struct{},
 	resultPath string,

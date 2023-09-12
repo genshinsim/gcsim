@@ -20,7 +20,6 @@ func init() {
 }
 
 type Set struct {
-	icd   int
 	core  *core.Core
 	Index int
 }

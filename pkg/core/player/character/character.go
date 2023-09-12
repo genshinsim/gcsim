@@ -104,11 +104,6 @@ type CharWrapper struct {
 	queue        []queue.Task
 }
 
-type charTask struct {
-	f     func()
-	delay float64
-}
-
 func New(
 	p info.CharacterProfile,
 	f *int, // current frame

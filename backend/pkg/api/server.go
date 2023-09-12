@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -167,10 +166,4 @@ func (s *Server) routes() {
 			r.Get("/", s.getDB())
 		})
 	})
-}
-
-func (s *Server) notImplemented() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotImplemented)
-	}
 }

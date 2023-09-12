@@ -15,12 +15,11 @@ const (
 	c6Status    = "kirara-c6"
 )
 
+// C2 is not implemented, co-op only
 // When Kirara is in the Urgent Neko Parcel state of Meow-teor Kick, she will grant other party members she crashes into Critical Transport Shields.
 // The DMG absorption of Critical Transport Shield is 40% of the maximum absorption Meow-teor Kick's normal Shields of Safe Transport
 // are capable of, and will absorb Dendro DMG with 250% effectiveness.
 // Critical Transport Shields last 12s and can be triggered once on each character every 10s.
-// co-op only
-func (c *char) c2() {}
 
 // After active character(s) protected by Shields of Safe Transport or Critical Transport Shields hit opponents with Normal, Charged, or Plunging Attacks,
 // Kirara will perform a coordinated attack with them using Small Cat Grass Cardamoms, dealing 200% of her ATK as Dendro DMG. DMG dealt this way is

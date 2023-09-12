@@ -111,14 +111,6 @@ func (l *lexer) nextItem() Token {
 	return <-l.items
 }
 
-// drain drains the output so the lexing goroutine will exit.
-// Called by the parser, not in the lexing goroutine.
-func (l *lexer) drain() {
-	//nolint:revive // ranging a channel readies it, copied from go lex code
-	for range l.items {
-	}
-}
-
 // lex creates a new scanner for the input string.
 func lex(input string) *lexer {
 	l := &lexer{
