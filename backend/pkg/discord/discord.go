@@ -86,7 +86,7 @@ func (b *Bot) Run() error {
 	b.s = state.New("Bot " + b.Token)
 	err := b.routes()
 	if err != nil {
-		return nil
+		return err
 	}
 	b.s.AddInteractionHandler(b)
 	b.s.AddIntents(gateway.IntentGuilds)
