@@ -70,7 +70,7 @@ func (s *Server) validateSigning(data []byte, str string) error {
 
 	dh, err := s.decryptHash(hash, key)
 	if err != nil {
-		return fmt.Errorf("error decrypting: %v", err)
+		return fmt.Errorf("error decrypting: %w", err)
 	}
 
 	if !bytes.Equal(bs, dh) {

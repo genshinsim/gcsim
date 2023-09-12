@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/dgraph-io/badger/v3"
@@ -72,7 +73,7 @@ func (s *Store) Create(ctx context.Context, id, name string) error {
 
 	return s.db.Update(func(txn *badger.Txn) error {
 		_, err := txn.Get(key)
-		if err != badger.ErrKeyNotFound {
+		if errors.Is(err, badger.ErrKeyNotFound) {
 			s.Log.Infow("creating user - already exists", "id", id)
 			return api.ErrUserAlreadyExists
 		}
@@ -93,7 +94,7 @@ func (s *Store) Has(ctx context.Context, id string) (bool, error) {
 	has := false
 	err := s.db.View(func(txn *badger.Txn) error {
 		_, err := txn.Get([]byte(id))
-		if err == badger.ErrKeyNotFound {
+		if errors.Is(err, badger.ErrKeyNotFound) {
 			return nil
 		}
 		if err != nil {
@@ -118,7 +119,7 @@ func (s *Store) Read(ctx context.Context, id string) ([]byte, error) {
 		key := []byte(id)
 		item, err := txn.Get(key)
 		if err != nil {
-			if err == badger.ErrKeyNotFound {
+			if errors.Is(err, badger.ErrKeyNotFound) {
 				//TODO: responding with bad request here but not sure if that's ideal..
 				s.Log.Infow("bad request; user does not exist", "id", id)
 				return api.ErrInvalidRequest
@@ -181,7 +182,7 @@ func (s *Store) getUser(id string, txn *badger.Txn) (User, error) {
 	var u User
 	item, err := txn.Get([]byte(id))
 	if err != nil {
-		if err == badger.ErrKeyNotFound {
+		if errors.Is(err, badger.ErrKeyNotFound) {
 			s.Log.Infow("bad request; requester user does not exist", "user", id)
 			return u, api.ErrInvalidRequest
 		}

@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"errors"
 	"math/rand"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
@@ -119,7 +120,7 @@ func (s *Server) Read(ctx context.Context, key string) (*share.ShareEntry, error
 
 	if err != nil {
 		s.Log.Infow("error getting share", "err", err)
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, status.Error(codes.NotFound, "no records found")
 		}
 		return nil, status.Error(codes.Internal, "unexpected server error")
@@ -190,7 +191,7 @@ func (s *Server) Random(ctx context.Context) (string, error) {
 
 	res := col.FindOne(ctx, bson.M{}, &options.FindOneOptions{Skip: &skip})
 	err = res.Err()
-	if err == mongo.ErrNoDocuments {
+	if errors.Is(err, mongo.ErrNoDocuments) {
 		s.Log.Infow("mongodb: get request done; no results")
 		return "", nil
 	}

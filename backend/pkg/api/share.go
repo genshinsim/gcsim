@@ -139,12 +139,12 @@ func (s *Server) GetShareByDBID() http.HandlerFunc {
 func (s *Server) GetRandomShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		share, err := s.cfg.ShareStore.Random(r.Context())
-		switch err {
-		case nil:
+		switch {
+		case err == nil:
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(share))
-		case ErrKeyNotFound:
+		case errors.Is(err, ErrKeyNotFound):
 			w.WriteHeader(http.StatusNotFound)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)

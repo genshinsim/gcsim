@@ -35,7 +35,7 @@ func main() {
 		fset := token.NewFileSet()
 		node, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
 		if err != nil {
-			return fmt.Errorf("could not parse go file: %v", err)
+			return fmt.Errorf("could not parse go file: %w", err)
 		}
 		var v visitor
 		// debug
@@ -45,12 +45,12 @@ func main() {
 		// output file
 		f, err := os.Create(path)
 		if err != nil {
-			return fmt.Errorf("could not open output file: %v", err)
+			return fmt.Errorf("could not open output file: %w", err)
 		}
 		defer f.Close()
 		err = format.Node(f, fset, node)
 		if err != nil {
-			return fmt.Errorf("could not write output file: %v", err)
+			return fmt.Errorf("could not write output file: %w", err)
 		}
 		if verbose {
 			newInfo, err := os.Stat(path)

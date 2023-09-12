@@ -101,11 +101,11 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	if opt.cpuprofile != "" {
 		f, err := os.Create(opt.cpuprofile)
 		if err != nil {
-			return fmt.Errorf("could not create CPU profile: %v", err)
+			return fmt.Errorf("could not create CPU profile: %w", err)
 		}
 		defer f.Close() // error handling omitted for example
 		if err := pprof.StartCPUProfile(f); err != nil {
-			return fmt.Errorf("could not start CPU profile: %v", err)
+			return fmt.Errorf("could not start CPU profile: %w", err)
 		}
 		defer pprof.StopCPUProfile()
 	}
@@ -251,12 +251,12 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	if opt.memprofile != "" {
 		f, err := os.Create(fmt.Sprintf(opt.memprofile))
 		if err != nil {
-			return fmt.Errorf("could not create memory profile: %v", err)
+			return fmt.Errorf("could not create memory profile: %w", err)
 		}
 		defer f.Close() // error handling omitted for example
 		runtime.GC()    // get up-to-date statistics
 		if err := pprof.WriteHeapProfile(f); err != nil {
-			return fmt.Errorf("could not write memory profile: %v", err)
+			return fmt.Errorf("could not write memory profile: %w", err)
 		}
 	}
 

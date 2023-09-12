@@ -23,7 +23,7 @@ func evalDebuff(c *core.Core, fields []string) (bool, error) {
 
 	e, err := parseTarget(c, trg)
 	if err != nil {
-		return false, fmt.Errorf("bad debuff condition: %v", err)
+		return false, fmt.Errorf("bad debuff condition: %w", err)
 	}
 
 	switch typ {
@@ -32,7 +32,7 @@ func evalDebuff(c *core.Core, fields []string) (bool, error) {
 	case "res":
 		return e.ResistModIsActive(mod), nil
 	default:
-		return false, fmt.Errorf("bad debuff condition: invalid type %v", typ)
+		return false, fmt.Errorf("bad debuff condition: invalid type %s", typ)
 	}
 }
 
@@ -46,12 +46,12 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 
 	e, err := parseTarget(c, trg)
 	if err != nil {
-		return 0, fmt.Errorf("bad element condition: %v", err)
+		return 0, fmt.Errorf("bad element condition: %w", err)
 	}
 
 	elekey := attributes.StringToEle(ele)
 	if elekey == attributes.UnknownElement {
-		return 0, fmt.Errorf("bad element condition: invalid element %v", ele)
+		return 0, fmt.Errorf("bad element condition: invalid element %s", ele)
 	}
 	result := reactions.Durability(0)
 	for i := reactable.Invalid; i < reactable.EndModifier; i++ {

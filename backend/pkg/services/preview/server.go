@@ -80,7 +80,7 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	tmplStr := re.ReplaceAllString(string(b), "<script>var data = \"{{.Data}}\"</script>")
 	tmpl, err := template.New("index").Parse(tmplStr)
 	if err != nil {
-		return s, fmt.Errorf("error compiling data template: %v", err)
+		return s, fmt.Errorf("error compiling data template: %w", err)
 	}
 
 	s.tmpl = tmpl

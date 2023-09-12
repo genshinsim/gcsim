@@ -1,6 +1,7 @@
 package optimization
 
 import (
+	"errors"
 	"log"
 	"os"
 	"strings"
@@ -52,7 +53,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	clean, err := removeSubstatLines(cfg)
-	if err == errInvalidStats {
+	if errors.Is(err, errInvalidStats) {
 		sugarLog.Panic("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.\n5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
 		os.Exit(1)
 	}

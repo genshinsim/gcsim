@@ -1,6 +1,7 @@
 package characters
 
 import (
+	"errors"
 	"testing"
 
 	_ "github.com/genshinsim/gcsim/internal/characters/beidou"
@@ -61,10 +62,10 @@ func TestBeidouBounce(t *testing.T) {
 	done := false
 	for !done {
 		err := c.Player.Exec(action.ActionAttack, keys.Beidou, p)
-		switch err {
-		case player.ErrActionNotReady, player.ErrPlayerNotReady, player.ErrActionNoOp:
+		switch {
+		case errors.Is(err, player.ErrActionNotReady) || errors.Is(err, player.ErrPlayerNotReady) || errors.Is(err, player.ErrActionNoOp):
 			advanceCoreFrame(c)
-		case nil:
+		case err == nil:
 			done = true
 		default:
 			t.Errorf("encountered unexpected error: %v", err)

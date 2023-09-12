@@ -126,7 +126,7 @@ func (e *Eval) Run() (res Obj, err error) {
 	}
 	// make sure ErrTerminate is discarded
 	defer func() {
-		if err == ErrTerminated {
+		if errors.Is(err, ErrTerminated) {
 			err = nil
 		}
 	}()

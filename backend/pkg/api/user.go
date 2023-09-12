@@ -45,12 +45,12 @@ type claim struct {
 func (s *Server) tokenCheck(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie("token")
-		if err != nil && err != http.ErrNoCookie {
+		if err != nil && !errors.Is(err, http.ErrNoCookie) {
 			s.Log.Infow("error reading cookie", "err", err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		if err == http.ErrNoCookie {
+		if errors.Is(err, http.ErrNoCookie) {
 			s.Log.Info("no token cookie sent; skipping")
 			next.ServeHTTP(w, r)
 			return
@@ -61,7 +61,7 @@ func (s *Server) tokenCheck(next http.Handler) http.Handler {
 			return []byte(s.cfg.Discord.JWTKey), nil
 		})
 		if err != nil {
-			if err == jwt.ErrSignatureInvalid {
+			if errors.Is(err, jwt.ErrSignatureInvalid) {
 				s.Log.Infow("token is not valid ", "err", err)
 			} else {
 				s.Log.Infow("error parsing token from cookie", "err", err)
@@ -202,13 +202,13 @@ func (s *Server) UserSave() http.HandlerFunc {
 		}
 		s.Log.Infow("received request to save user data", "data", string(d), "user", r.Context().Value("user"))
 		err = s.cfg.UserStore.UpdateData(r.Context(), d)
-		switch err {
-		case nil:
+		switch {
+		case err == nil:
 			w.WriteHeader(http.StatusOK)
-		case ErrUserNotFound:
+		case errors.Is(err, ErrUserNotFound):
 			w.WriteHeader(http.StatusBadRequest)
 			s.Log.Warnw("unexpected update from a user that does not exist", "user", r.Context().Value("user"))
-		case ErrInvalidRequest:
+		case errors.Is(err, ErrInvalidRequest):
 			w.WriteHeader(http.StatusBadRequest)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)

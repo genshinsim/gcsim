@@ -164,13 +164,13 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 	//TODO: this loop should be optimized to skip more than 1 frame at a time
 	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
 		// repeat this phase until action is ready
-		switch err {
-		case player.ErrActionNotReady:
+		switch {
+		case errors.Is(err, player.ErrActionNotReady):
 			s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
 			return s.advanceFrames(1, actionReadyCheckPhase)
-		case player.ErrPlayerNotReady:
+		case errors.Is(err, player.ErrPlayerNotReady):
 			return s.advanceFrames(1, actionReadyCheckPhase)
-		case player.ErrActionNoOp:
+		case errors.Is(err, player.ErrActionNoOp):
 			// don't do anything here
 		default:
 			return nil, err
@@ -215,7 +215,7 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 	err := s.C.Player.Exec(q.Action, q.Char, q.Param)
 	if err != nil {
 		//TODO: this check probably doesn't do anything
-		if err == player.ErrActionNoOp {
+		if errors.Is(err, player.ErrActionNoOp) {
 			if l := s.popQueue(); l > 0 {
 				// don't go back to queue if there are more actions already queued
 				return actionReadyCheckPhase, nil
