@@ -40,7 +40,7 @@ linters:
     # - cyclop # checks function and package cyclomatic complexity
 
     ## code smell (can lead to errors/bugs)
-    # - asasalint # checks for pass []any as any in variadic func(...any)
+    - asasalint # checks for pass []any as any in variadic func(...any)
     # - bidichk # checks for dangerous unicode character sequences
     # - unused # checks for unused constants, variables, functions and types
     # - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
