@@ -45,7 +45,7 @@ linters:
     - unused # checks for unused constants, variables, functions and types
     - dogsled # checks assignments with too many blank identifiers (e.g. x, , , _, := f())
     - errorlint # finds code that will cause problems with the error wrapping scheme introduced in Go 1.13
-    # - errchkjson # checks for unnecessary json marshal error checks
+    - errchkjson # checks for unnecessary json marshal error checks
     # - exportloopref # checks for pointers to enclosing loop variables
     # - makezero # finds slice declarations with non-zero initial length
     # - nilerr # finds the code that returns nil even if it checks that the error is not nil

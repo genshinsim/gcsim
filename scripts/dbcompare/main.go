@@ -83,11 +83,14 @@ func getDBEntries() ([]dbEntry, error) {
 
 	for {
 		q.Skip = 100 * page
-		jsonStr, _ := json.Marshal(q)
+		jsonStr, err := json.Marshal(q)
+		if err != nil {
+			return nil, err
+		}
 		url := fmt.Sprintf("https://simpact.app/api/db?q=%v", url.QueryEscape(string(jsonStr)))
 
 		var d dbData
-		err := getJSON(url, &d)
+		err = getJSON(url, &d)
 		if err != nil {
 			return nil, err
 		}

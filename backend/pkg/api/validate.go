@@ -62,7 +62,10 @@ func (s *Server) validateSigning(data []byte, str string) error {
 
 	var res map[string]interface{}
 	json.Unmarshal(data, &res)
-	d, _ := json.Marshal(res)
+	d, err := json.Marshal(res)
+	if err != nil {
+		return fmt.Errorf("error marshaling: %w", err)
+	}
 
 	h := sha256.New()
 	h.Write(d)

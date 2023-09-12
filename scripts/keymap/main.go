@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -44,6 +45,9 @@ func main() {
 	}
 
 	// write to file
-	out, _ := json.MarshalIndent(res, "", " ")
+	out, err := json.MarshalIndent(res, "", " ")
+	if err != nil {
+		log.Fatal(err)
+	}
 	os.WriteFile("./character_data.json", out, 0o644)
 }

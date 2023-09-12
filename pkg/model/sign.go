@@ -70,7 +70,10 @@ func (r *SimulationResult) hash() ([]byte, error) {
 
 	var res map[string]interface{}
 	json.Unmarshal(data, &res)
-	data, _ = json.Marshal(res)
+	data, err = json.Marshal(res)
+	if err != nil {
+		return nil, err
+	}
 
 	hash := sha256.Sum256(data)
 	return hash[:], nil
