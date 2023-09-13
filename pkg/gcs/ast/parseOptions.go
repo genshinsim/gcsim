@@ -23,7 +23,7 @@ func parseOptions(p *Parser) (parseFn, error) {
 				p.res.Settings.DefHalt = n.Val == TrueVal
 			case "hitlag":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
-				p.res.Settings.EnableHitlag = n.Val == FalseVal
+				p.res.Settings.EnableHitlag = n.Val == TrueVal
 			case "iteration":
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err == nil {
