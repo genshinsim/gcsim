@@ -20,13 +20,13 @@ const plungeHoldHitmark = 41
 // TODO: missing plunge -> skill
 func init() {
 	// skill (press) -> high plunge -> x
-	plungePressFrames = frames.InitAbilSlice(55) //max
+	plungePressFrames = frames.InitAbilSlice(55) // max
 	plungePressFrames[action.ActionDash] = 43
 	plungePressFrames[action.ActionJump] = 50
 	plungePressFrames[action.ActionSwap] = 50
 
 	// skill (hold) -> high plunge -> x
-	plungeHoldFrames = frames.InitAbilSlice(61) //max
+	plungeHoldFrames = frames.InitAbilSlice(61) // max
 	plungeHoldFrames[action.ActionSkill] = 60   // uses burst frames
 	plungeHoldFrames[action.ActionBurst] = 60
 	plungeHoldFrames[action.ActionDash] = 48
@@ -34,13 +34,13 @@ func init() {
 	plungeHoldFrames[action.ActionSwap] = 54
 }
 
-func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 	// last action must be skill without glide cancel
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["glide_cancel"] != 0 {
 		c.Core.Log.NewEvent("only plunge after skill without glide cancel", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
@@ -48,7 +48,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	act := action.ActionInfo{
+	act := action.Info{
 		State: action.PlungeAttackState,
 	}
 
@@ -88,7 +88,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	//aoe dmg
+	// aoe dmg
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
 		Abil:           "High Plunge",

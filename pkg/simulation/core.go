@@ -6,7 +6,7 @@ import (
 )
 
 func NewCore(seed int64, debug bool, cfg *info.ActionList) (*core.Core, error) {
-	return core.New(core.CoreOpt{
+	return core.New(core.Opt{
 		Seed:         seed,
 		Debug:        debug,
 		Delays:       cfg.Settings.Delays,

@@ -12,9 +12,9 @@ func (c *char) c1(delay int) {
 	if c.Base.Cons < 1 {
 		return
 	}
-	//0.1 base change, + 0.08 every failure
+	// 0.1 base change, + 0.08 every failure
 	if c.Core.Rand.Float64() > c.c1Chance {
-		//failed
+		// failed
 		c.c1Chance += 0.08
 		return
 	}

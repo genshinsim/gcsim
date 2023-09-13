@@ -38,7 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-
 	c.maxSkydwellerPoints = 100
 	c.a4Prob = 0.16
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
@@ -55,7 +54,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 
 // Overwriting of remaining actions to account for falling state
 
-func (c *char) Walk(p map[string]int) action.ActionInfo {
+func (c *char) Walk(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	ai := c.Character.Walk(p)

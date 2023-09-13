@@ -1,6 +1,7 @@
 package characters
 
 import (
+	"errors"
 	"testing"
 
 	_ "github.com/genshinsim/gcsim/internal/characters/beidou"
@@ -30,12 +31,12 @@ func TestBeidouBounce(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	//initialize some settings
+	// initialize some settings
 	c.Combat.DefaultTarget = trg[0].Key()
 	c.QueueParticle("system", 1000, attributes.NoElement, 0)
 	advanceCoreFrame(c)
 
-	//start tests
+	// start tests
 	dmgCount := make(map[targets.TargetKey]int)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
@@ -61,10 +62,10 @@ func TestBeidouBounce(t *testing.T) {
 	done := false
 	for !done {
 		err := c.Player.Exec(action.ActionAttack, keys.Beidou, p)
-		switch err {
-		case player.ErrActionNotReady, player.ErrPlayerNotReady, player.ErrActionNoOp:
+		switch {
+		case errors.Is(err, player.ErrActionNotReady) || errors.Is(err, player.ErrPlayerNotReady) || errors.Is(err, player.ErrActionNoOp):
 			advanceCoreFrame(c)
-		case nil:
+		case err == nil:
 			done = true
 		default:
 			t.Errorf("encountered unexpected error: %v", err)
@@ -82,5 +83,4 @@ func TestBeidouBounce(t *testing.T) {
 	if dmgCount[trg[1].Key()] != 2 {
 		t.Errorf("expecting target 1 (key %v) to take 2 hits, got %v", trg[1].Key(), dmgCount[trg[1].Key()])
 	}
-
 }

@@ -35,7 +35,7 @@ type buffer struct {
 
 	reactionUptime  []map[string]int
 	enemyReactions  [][]stats.ReactionStatusInterval
-	activeReactions []map[reactable.ReactableModifier]int
+	activeReactions []map[reactable.Modifier]int
 }
 
 func maxUpdate(arr []float64, index int, value float64) []float64 {
@@ -67,7 +67,7 @@ func damageMod(c *character.CharWrapper, elvl int) float64 {
 	return defmod * resmod
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		activeTime: make([]int, len(core.Player.Chars())),
 		charEnergy: make([][]float64, len(core.Player.Chars())),
@@ -75,12 +75,12 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 		reactionUptime:  make([]map[string]int, len(core.Combat.Enemies())),
 		enemyReactions:  make([][]stats.ReactionStatusInterval, len(core.Combat.Enemies())),
-		activeReactions: make([]map[reactable.ReactableModifier]int, len(core.Combat.Enemies())),
+		activeReactions: make([]map[reactable.Modifier]int, len(core.Combat.Enemies())),
 	}
 
 	for i := 0; i < len(core.Combat.Enemies()); i++ {
 		out.reactionUptime[i] = make(map[string]int)
-		out.activeReactions[i] = make(map[reactable.ReactableModifier]int)
+		out.activeReactions[i] = make(map[reactable.Modifier]int)
 
 		if enemy, ok := core.Combat.Enemies()[i].(*enemy.Enemy); ok {
 			if enemy.Level > out.maxEnemyLvl {
@@ -90,7 +90,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 	}
 
 	core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
-		bucket := int(core.F / bucketSize)
+		bucket := core.F / bucketSize
 		active := core.Player.ActiveChar()
 
 		out.activeTime[active.Index] += 1
@@ -103,39 +103,46 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		}
 
 		for i, t := range core.Combat.Enemies() {
-			if enemy, ok := t.(*enemy.Enemy); ok {
-				current := make(map[reactable.ReactableModifier]int)
-
-				for r, v := range enemy.Durability {
-					if v > reactable.ZeroDur {
-						var key = reactable.ReactableModifier(r)
-						out.reactionUptime[i][key.String()] += 1
-
-						if start, ok := out.activeReactions[i][key]; ok {
-							current[key] = start
-						} else {
-							current[key] = core.F
-						}
-					}
-				}
-
-				for k, start := range out.activeReactions[i] {
-					if _, ok := current[k]; !ok {
-						if core.F-start <= 5 {
-							continue
-						}
-
-						interval := stats.ReactionStatusInterval{
-							Start: start,
-							End:   core.F,
-							Type:  k.String(),
-						}
-						out.enemyReactions[i] = append(out.enemyReactions[i], interval)
-					}
-				}
-
-				out.activeReactions[i] = current
+			enemy, ok := t.(*enemy.Enemy)
+			if !ok {
+				continue
 			}
+
+			current := make(map[reactable.Modifier]int)
+
+			for r, v := range enemy.Durability {
+				if v <= reactable.ZeroDur {
+					continue
+				}
+				var key = reactable.Modifier(r)
+				out.reactionUptime[i][key.String()] += 1
+
+				if start, ok := out.activeReactions[i][key]; ok {
+					current[key] = start
+				} else {
+					current[key] = core.F
+				}
+			}
+
+			for k, start := range out.activeReactions[i] {
+				_, ok := current[k]
+				if ok {
+					continue
+				}
+
+				if core.F-start <= 5 {
+					continue
+				}
+
+				interval := stats.ReactionStatusInterval{
+					Start: start,
+					End:   core.F,
+					Type:  k.String(),
+				}
+				out.enemyReactions[i] = append(out.enemyReactions[i], interval)
+			}
+
+			out.activeReactions[i] = current
 		}
 
 		return false
@@ -146,7 +153,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	fill := bucketSize - (core.F % bucketSize) - 1
-	bucket := int(core.F / bucketSize)
+	bucket := core.F / bucketSize
 
 	// for averages, last bucket is inaccurate. Fill to fix
 	for i := 0; i < fill; i++ {

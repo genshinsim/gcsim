@@ -37,11 +37,11 @@ func Eval(c *core.Core, fields []string) (any, error) {
 	case "gadgets":
 		return evalGadgets(c, fields)
 	case "keys":
-		return evalKeys(c, fields)
+		return evalKeys(fields)
 	case "state":
 		return int(c.Player.CurrentState()), nil
 	case "action":
-		return evalAction(c, fields)
+		return evalAction(fields)
 	default:
 		// check if it's a char name; if so check char custom eval func
 		name := fields[0]

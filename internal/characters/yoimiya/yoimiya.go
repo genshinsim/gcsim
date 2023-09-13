@@ -50,7 +50,7 @@ func (c *char) Init() error {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	//infusion to normal attack only
+	// infusion to normal attack only
 	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult

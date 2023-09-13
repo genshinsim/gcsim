@@ -64,7 +64,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(icdKey, icd, true)
 		cycle++
-		cycle = cycle % 3
+		cycle %= 3
 		c.Log.NewEvent("fading twillight cycle changed", glog.LogWeaponEvent, char.Index).
 			Write("cycle", cycle).
 			Write("next cycle (without hitlag)", c.F+icd)

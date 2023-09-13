@@ -21,9 +21,9 @@ func init() {
 	burstFrames[action.ActionSwap] = 47
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//tag a4
-	//first hit at 137, then 113 frames between hits
+func (c *char) Burst(p map[string]int) action.Info {
+	// tag a4
+	// first hit at 137, then 113 frames between hits
 	duration := 360
 	if c.Base.Cons >= 2 {
 		duration = 480
@@ -87,16 +87,16 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				aiAbs.Element = c.qAbsorb
 				c.Core.QueueAttackWithSnap(aiAbs, snapAbs, ap, 0)
 			}
-			//check if absorbed
+			// check if absorbed
 		}, i)
 	}
 
-	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, int(duration/18)), 136)
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, duration/18), 136)
 
 	c.SetCDWithDelay(action.ActionBurst, 1200, 18)
 	c.ConsumeEnergy(21)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
@@ -117,7 +117,7 @@ func (c *char) absorbCheck(src, count, max int) func() {
 			}
 			return
 		}
-		//otherwise queue up
+		// otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheck(src, count+1, max), 18)
 	}
 }

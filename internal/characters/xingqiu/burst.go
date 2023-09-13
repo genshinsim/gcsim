@@ -25,7 +25,6 @@ func init() {
 	burstFrames[action.ActionSkill] = 33
 	burstFrames[action.ActionDash] = 33
 	burstFrames[action.ActionJump] = 33
-
 }
 
 /**
@@ -37,11 +36,11 @@ There is an approximately 1 second interval between summoned Hydro Sword waves, 
 Each wave of Hydro Swords is capable of applying one (1) source of Hydro status, and each individual sword is capable of getting a crit.
 **/
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//apply hydro every 3rd hit
-	//triggered on normal attack
-	//also applies hydro on cast if p=1
-	//how we doing that?? trigger 0 dmg?
+func (c *char) Burst(p map[string]int) action.Info {
+	// apply hydro every 3rd hit
+	// triggered on normal attack
+	// also applies hydro on cast if p=1
+	// how we doing that?? trigger 0 dmg?
 
 	/** c2
 	Extends the duration of Guhua Sword: Raincutter by 3s.
@@ -51,7 +50,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 2 {
 		dur += 3
 	}
-	dur = dur * 60
+	dur *= 60
 	c.AddStatus(burstKey, dur+33, true) // add 33f for anim
 	c.applyOrbital(dur, burstHitmark)
 
@@ -63,7 +62,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(3)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
@@ -84,7 +83,7 @@ func (c *char) summonSwordWave() {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	//only if c.nextRegen is true and first sword
+	// only if c.nextRegen is true and first sword
 	var c2cb, c6cb func(a combat.AttackCB)
 	if c.nextRegen {
 		done := false
@@ -141,7 +140,7 @@ func (c *char) summonSwordWave() {
 		c.burstCounter++
 	}
 
-	//figure out next wave # of swords
+	// figure out next wave # of swords
 	switch c.numSwords {
 	case 2:
 		c.numSwords = 3

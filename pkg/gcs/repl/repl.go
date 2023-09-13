@@ -13,7 +13,6 @@ import (
 const Prompt = ">> "
 
 func Eval(s string, log *log.Logger) {
-
 	p := ast.New(s)
 	res, gcsl, err := p.Parse()
 
@@ -34,7 +33,7 @@ func Eval(s string, log *log.Logger) {
 	fmt.Println(gcsl.String())
 
 	if len(res.Errors) != 0 {
-		//don't run the program if there are errors
+		// don't run the program if there are errors
 		return
 	}
 	fmt.Println("Running program...:")

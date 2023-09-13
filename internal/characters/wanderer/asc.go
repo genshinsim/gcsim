@@ -137,7 +137,6 @@ func (c *char) absorbCheckA1() {
 func (c *char) addA1Buff(absorbCheck attributes.Element) {
 	// buffs, need to be manually removed when state is ending
 	switch absorbCheck {
-
 	case attributes.Hydro:
 		c.maxSkydwellerPoints += 20
 		c.skydwellerPoints += 20

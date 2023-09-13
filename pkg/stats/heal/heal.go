@@ -15,7 +15,7 @@ type buffer struct {
 	events [][]stats.HealEvent
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		events: make([][]stats.HealEvent, len(core.Player.Chars())),
 	}

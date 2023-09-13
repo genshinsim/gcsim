@@ -26,10 +26,10 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//Increases Elemental Skill DMG by 6%. After Elemental Skill hits an
-	//opponent, the character loses 3 Energy but regenerates 3 Energy every 2s
-	//for the next 6s. This effect can occur once every 10s. Can be triggered
-	//even when the character is not on the field.0
+	// Increases Elemental Skill DMG by 6%. After Elemental Skill hits an
+	// opponent, the character loses 3 Energy but regenerates 3 Energy every 2s
+	// for the next 6s. This effect can occur once every 10s. Can be triggered
+	// even when the character is not on the field.0
 	w := &Weapon{}
 	r := p.Refine
 
@@ -66,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, 600, true)
 		char.AddEnergy("nagamasa", -3)
 		for i := 120; i <= 360; i += 120 {
-			//use char queue for hitlag
+			// use char queue for hitlag
 			char.QueueCharTask(func() {
 				char.AddEnergy("nagamasa", regen)
 			}, i)

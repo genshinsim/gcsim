@@ -11,7 +11,7 @@ import (
 )
 
 var burstFrames []int
-var burstDiceHitmarks = []int{25, 30, 36, 41} //c2 hitmark not framecounted
+var burstDiceHitmarks = []int{25, 30, 36, 41} // c2 hitmark not framecounted
 
 // initial hit
 const burstHitmark = 76
@@ -23,7 +23,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 90    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Depth-Clarion Dice",
@@ -39,10 +39,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagFactor:     0.05,
 		IsDeployable:     true,
 	}
-	//apply hydro every 3rd hit
-	//triggered on normal attack or yelan's skill
+	// apply hydro every 3rd hit
+	// triggered on normal attack or yelan's skill
 
-	//Initial hit
+	// Initial hit
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -1.5, Y: -1.7}, 6),
@@ -55,7 +55,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.AddStatus(burstKey, 15*60, false)
 		c.a4() //TODO: does this call need to be delayed?
 	}, burstHitmark)
-	if c.Base.Cons >= 6 { //C6 passive, lasts 20 seconds
+	if c.Base.Cons >= 6 { // C6 passive, lasts 20 seconds
 		c.Core.Status.Add(c6Status, 20*60)
 		c.c6count = 0
 	}
@@ -65,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(6)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

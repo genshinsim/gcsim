@@ -15,10 +15,10 @@ func init() {
 	dashFrames[action.ActionCharge] = 20
 }
 
-func (c *char) Dash(p map[string]int) action.ActionInfo {
+func (c *char) Dash(p map[string]int) action.Info {
 	// call default implementation to handle stamina
 	c.Character.Dash(p)
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(dashFrames),
 		AnimationLength: dashFrames[action.InvalidAction],
 		CanQueueAfter:   dashFrames[action.ActionBurst],

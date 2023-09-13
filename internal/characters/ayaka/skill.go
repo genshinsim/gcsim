@@ -24,7 +24,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 48
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Hyouka",
 		ActorIndex: c.Index,
@@ -49,7 +49,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCD(action.ActionSkill, 600)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

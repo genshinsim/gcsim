@@ -62,7 +62,7 @@ func init() {
 	attackFrames[1][4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -101,7 +101,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames[c.gender]),
 		AnimationLength: attackFrames[c.gender][c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.gender][c.NormalCounter],

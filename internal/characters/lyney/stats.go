@@ -96,6 +96,7 @@ var (
 			},
 		},
 	}
+	//nolint:unused // will be used once physical aim is implemented
 	aim = []float64{
 		0.4386,
 		0.4743,
@@ -147,7 +148,7 @@ var (
 		3.8880,
 		4.1040,
 	}
-	// TODO: gadget taking dmg is not implemented
+	//nolint:unused // gadget taking dmg is not implemented
 	propHP = []float64{
 		0.640,
 		0.688,

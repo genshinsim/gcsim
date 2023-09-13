@@ -46,46 +46,49 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 
 	current := make(map[attributes.Element]*stats.ShieldInterval)
 	active := make(map[*stats.ShieldInterval]bool)
+	handleEnd := func(endpoint endpoint) {
+		// if other shields are active, need to elect greatest as new effective
+		var normalizedHP float64
+		normalizedEnd := math.MaxInt
+		for _, e := range elements {
+			if current[e] == endpoint.interval {
+				var best *stats.ShieldInterval
+				for k := range active {
+					if best == nil || k.HP[e.String()] > best.HP[e.String()] {
+						best = k
+					}
+				}
+				// only add if this new interval is at least 1 frame wide
+				if best.End > endpoint.pos {
+					current[e] = best
+					out[e.String()] = append(out[e.String()], stats.ShieldSingleInterval{
+						Start: endpoint.pos,
+						End:   best.End,
+						HP:    best.HP[e.String()],
+					})
+					normalizedEnd = min(normalizedEnd, best.End)
+				}
+			}
+			normalizedHP += out[e.String()][len(out[e.String()])-1].HP
+		}
+		// at least one of the effective elementals got a new interval, so recompute normalized
+		if normalizedEnd >= math.MaxInt {
+			return
+		}
+		out[normalized] = append(out[normalized], stats.ShieldSingleInterval{
+			Start: endpoint.pos,
+			End:   normalizedEnd,
+			HP:    normalizedHP / float64(len(elements)),
+		})
+	}
+
 	for _, endpoint := range endpoints {
 		if endpoint.end {
 			delete(active, endpoint.interval)
 			if len(active) == 0 {
 				continue
 			}
-
-			// if other shields are active, need to elect greatest as new effective
-			var normalizedHP float64
-			var normalizedEnd int = math.MaxInt
-			for _, e := range elements {
-				if current[e] == endpoint.interval {
-					var best *stats.ShieldInterval
-					for k := range active {
-						if best == nil || k.HP[e.String()] > best.HP[e.String()] {
-							best = k
-						}
-					}
-					// only add if this new interval is at least 1 frame wide
-					if best.End > endpoint.pos {
-						current[e] = best
-						out[e.String()] = append(out[e.String()], stats.ShieldSingleInterval{
-							Start: endpoint.pos,
-							End:   best.End,
-							HP:    best.HP[e.String()],
-						})
-						normalizedEnd = min(normalizedEnd, best.End)
-					}
-				}
-				normalizedHP += out[e.String()][len(out[e.String()])-1].HP
-			}
-
-			// at least one of the effective elementals got a new interval, so recompute normalized
-			if normalizedEnd < math.MaxInt {
-				out[normalized] = append(out[normalized], stats.ShieldSingleInterval{
-					Start: endpoint.pos,
-					End:   normalizedEnd,
-					HP:    normalizedHP / float64(len(elements)),
-				})
-			}
+			handleEnd(endpoint)
 			continue
 		}
 
@@ -117,7 +120,7 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 		for _, e := range elements {
 			currentIdx := len(out[e.String()]) - 1
 			if endpoint.interval.HP[e.String()] > out[e.String()][currentIdx].HP {
-				new := stats.ShieldSingleInterval{
+				newShieldInterval := stats.ShieldSingleInterval{
 					Start: endpoint.pos,
 					End:   endpoint.interval.End,
 					HP:    endpoint.interval.HP[e.String()],
@@ -127,27 +130,27 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 
 				if out[e.String()][currentIdx].Start == endpoint.pos {
 					// this shield is a replacement rather than append
-					out[e.String()][currentIdx] = new
+					out[e.String()][currentIdx] = newShieldInterval
 				} else {
 					out[e.String()][currentIdx].End = endpoint.pos
-					out[e.String()] = append(out[e.String()], new)
+					out[e.String()] = append(out[e.String()], newShieldInterval)
 				}
 			}
 			normalizedHP += out[e.String()][len(out[e.String()])-1].HP
 		}
 
 		if modified {
-			new := stats.ShieldSingleInterval{
+			newShieldInterval := stats.ShieldSingleInterval{
 				Start: endpoint.pos,
 				End:   endpoint.interval.End,
 				HP:    normalizedHP / float64(len(elements)),
 			}
 			prevIndex := len(out[normalized]) - 1
 			if out[normalized][prevIndex].Start == endpoint.pos {
-				out[normalized][prevIndex] = new
+				out[normalized][prevIndex] = newShieldInterval
 			} else {
 				out[normalized][prevIndex].End = endpoint.pos
-				out[normalized] = append(out[normalized], new)
+				out[normalized] = append(out[normalized], newShieldInterval)
 			}
 		}
 	}

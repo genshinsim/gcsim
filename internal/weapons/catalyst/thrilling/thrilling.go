@@ -25,8 +25,8 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//When switching characters, the new character taking the field has their
-	//ATK increased by 24% for 10s. This effect can only occur once every 20s.
+	// When switching characters, the new character taking the field has their
+	// ATK increased by 24% for 10s. This effect can only occur once every 20s.
 	w := &Weapon{}
 	r := p.Refine
 

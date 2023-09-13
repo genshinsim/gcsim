@@ -80,63 +80,65 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
-	if count >= 4 {
-		m := make([]float64, attributes.EndStatType)
-
-		c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-			prev := args[0].(int)
-			if prev != char.Index {
-				return false
-			}
-			s.lastSwap = c.F
-			c.Tasks.Add(s.gainStackOfffield(c.F), 3*60)
-			return false
-		}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Key.String()))
-
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			// Only triggers when onfield
-			if c.Player.Active() != char.Index {
-				return false
-			}
-			if atk.Info.ActorIndex != char.Index {
-				return false
-			}
-
-			if char.StatusIsActive(s.stackGainICDKey) {
-				return false
-			}
-			if atk.Info.Element != attributes.Geo {
-				return false
-			}
-
-			if s.stacks < 4 {
-				s.stacks++
-			}
-
-			c.Log.NewEvent("Husk gained on-field stack", glog.LogArtifactEvent, char.Index).
-				Write("stacks", s.stacks).
-				Write("last_swap", s.lastSwap).
-				Write("last_stack_change", s.lastStackGain)
-
-			char.AddStatus(s.stackGainICDKey, s.stackGainICD, true)
-
-			s.lastStackGain = c.F
-			char.QueueCharTask(s.checkStackLoss(c.F), s.stackLossTimer)
-
-			return false
-		}, fmt.Sprintf("husk-4pc-%v", char.Base.Key.String()))
-
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("husk-4pc", -1),
-			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				m[attributes.DEFP] = 0.06 * float64(s.stacks)
-				m[attributes.GeoP] = 0.06 * float64(s.stacks)
-				return m, true
-			},
-		})
+	if count < 4 {
+		return &s, nil
 	}
+
+	m := make([]float64, attributes.EndStatType)
+
+	c.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		prev := args[0].(int)
+		if prev != char.Index {
+			return false
+		}
+		s.lastSwap = c.F
+		c.Tasks.Add(s.gainStackOfffield(c.F), 3*60)
+		return false
+	}, fmt.Sprintf("husk-4pc-off-field-gain-%v", char.Base.Key.String()))
+
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		// Only triggers when onfield
+		if c.Player.Active() != char.Index {
+			return false
+		}
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
+
+		if char.StatusIsActive(s.stackGainICDKey) {
+			return false
+		}
+		if atk.Info.Element != attributes.Geo {
+			return false
+		}
+
+		if s.stacks < 4 {
+			s.stacks++
+		}
+
+		c.Log.NewEvent("Husk gained on-field stack", glog.LogArtifactEvent, char.Index).
+			Write("stacks", s.stacks).
+			Write("last_swap", s.lastSwap).
+			Write("last_stack_change", s.lastStackGain)
+
+		char.AddStatus(s.stackGainICDKey, s.stackGainICD, true)
+
+		s.lastStackGain = c.F
+		char.QueueCharTask(s.checkStackLoss(c.F), s.stackLossTimer)
+
+		return false
+	}, fmt.Sprintf("husk-4pc-%v", char.Base.Key.String()))
+
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("husk-4pc", -1),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			m[attributes.DEFP] = 0.06 * float64(s.stacks)
+			m[attributes.GeoP] = 0.06 * float64(s.stacks)
+			return m, true
+		},
+	})
 
 	return &s, nil
 }

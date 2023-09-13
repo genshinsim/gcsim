@@ -27,7 +27,7 @@ func init() {
 }
 
 func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
-	c, _ := core.New(core.CoreOpt{
+	c, _ := core.New(core.Opt{
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})
@@ -161,7 +161,6 @@ func (t *testGadget) HandleAttack(atk *combat.AttackEvent) float64 {
 }
 
 func TestDefaultHitGadget(t *testing.T) {
-
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
@@ -198,7 +197,6 @@ func TestDefaultHitGadget(t *testing.T) {
 }
 
 func TestSkipTargets(t *testing.T) {
-
 	c, trgs := makeCore(rand.Intn(10))
 	count := 0
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {

@@ -58,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			w.stacks++
 			w.buff[attributes.DmgP] = dmgbuff * float64(w.stacks)
 		}
-		//refresh mod
+		// refresh mod
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("ironsting", 360),
 			AffectedStat: attributes.NoStat,

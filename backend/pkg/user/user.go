@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/dgraph-io/badger/v3"
@@ -22,7 +23,7 @@ type Store struct {
 }
 
 type User struct {
-	ID         string         `json:"uid"`
+	ID         string         `json:"id"`
 	Name       string         `json:"name"`
 	Role       int            `json:"role"`
 	Permalinks []string       `json:"permalinks,omitempty"`
@@ -67,12 +68,12 @@ func New(cfg Config, cust ...func(*Store) error) (*Store, error) {
 	return s, nil
 }
 
-func (s *Store) Create(id string, name string, ctx context.Context) error {
+func (s *Store) Create(ctx context.Context, id, name string) error {
 	key := []byte(id)
 
 	return s.db.Update(func(txn *badger.Txn) error {
 		_, err := txn.Get(key)
-		if err != badger.ErrKeyNotFound {
+		if errors.Is(err, badger.ErrKeyNotFound) {
 			s.Log.Infow("creating user - already exists", "id", id)
 			return api.ErrUserAlreadyExists
 		}
@@ -89,11 +90,11 @@ func (s *Store) Create(id string, name string, ctx context.Context) error {
 	})
 }
 
-func (s *Store) Has(id string, ctx context.Context) (bool, error) {
+func (s *Store) Has(ctx context.Context, id string) (bool, error) {
 	has := false
 	err := s.db.View(func(txn *badger.Txn) error {
 		_, err := txn.Get([]byte(id))
-		if err == badger.ErrKeyNotFound {
+		if errors.Is(err, badger.ErrKeyNotFound) {
 			return nil
 		}
 		if err != nil {
@@ -105,10 +106,10 @@ func (s *Store) Has(id string, ctx context.Context) (bool, error) {
 	return has, err
 }
 
-func (s *Store) Read(id string, ctx context.Context) ([]byte, error) {
+func (s *Store) Read(ctx context.Context, id string) ([]byte, error) {
 	var data []byte
 	err := s.db.View(func(txn *badger.Txn) error {
-		x, err := s.getRequester(txn, ctx)
+		x, err := s.getRequester(ctx, txn)
 		if err != nil {
 			return err
 		}
@@ -118,7 +119,7 @@ func (s *Store) Read(id string, ctx context.Context) ([]byte, error) {
 		key := []byte(id)
 		item, err := txn.Get(key)
 		if err != nil {
-			if err == badger.ErrKeyNotFound {
+			if errors.Is(err, badger.ErrKeyNotFound) {
 				//TODO: responding with bad request here but not sure if that's ideal..
 				s.Log.Infow("bad request; user does not exist", "id", id)
 				return api.ErrInvalidRequest
@@ -135,11 +136,11 @@ func (s *Store) Read(id string, ctx context.Context) ([]byte, error) {
 	return data, err
 }
 
-func (s *Store) UpdateData(data []byte, ctx context.Context) error {
+func (s *Store) UpdateData(ctx context.Context, data []byte) error {
 	return s.db.Update(func(txn *badger.Txn) error {
-		//as long as we have permission this operation is ok; we don't need to check
-		//what's in the data here
-		u, err := s.getRequester(txn, ctx)
+		// as long as we have permission this operation is ok; we don't need to check
+		// what's in the data here
+		u, err := s.getRequester(ctx, txn)
 		if err != nil {
 			return err
 		}
@@ -168,7 +169,7 @@ func (s *Store) UpdateData(data []byte, ctx context.Context) error {
 	})
 }
 
-func (s *Store) getRequester(txn *badger.Txn, ctx context.Context) (User, error) {
+func (s *Store) getRequester(ctx context.Context, txn *badger.Txn) (User, error) {
 	id, err := extractUser(ctx)
 	if err != nil {
 		s.Log.Infow("bad request; no valid user set in context", "ctx", ctx)
@@ -181,7 +182,7 @@ func (s *Store) getUser(id string, txn *badger.Txn) (User, error) {
 	var u User
 	item, err := txn.Get([]byte(id))
 	if err != nil {
-		if err == badger.ErrKeyNotFound {
+		if errors.Is(err, badger.ErrKeyNotFound) {
 			s.Log.Infow("bad request; requester user does not exist", "user", id)
 			return u, api.ErrInvalidRequest
 		}

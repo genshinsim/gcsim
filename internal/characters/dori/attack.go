@@ -28,7 +28,7 @@ func init() {
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 108)
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	c6CB := c.makeC6CB()
 	for i, mult := range auto[c.NormalCounter] {
 		ai := combat.AttackInfo{
@@ -57,7 +57,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],

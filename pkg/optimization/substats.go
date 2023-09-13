@@ -58,8 +58,8 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 	o.details.setInitialSubstats(o.details.fixedSubstatCount)
 	o.logger.Info("Starting ER Optimization...")
 
-	for i, char := range o.details.charProfilesERBaseline {
-		o.details.charProfilesCopy[i] = char.Clone()
+	for i := range o.details.charProfilesERBaseline {
+		o.details.charProfilesCopy[i] = o.details.charProfilesERBaseline[i].Clone()
 	}
 
 	// Tolerance cutoffs for mean and SD from initial state
@@ -90,8 +90,8 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 		charNames[charKey] = match[1]
 	}
 
-	for idxChar, char := range statsFinal.charProfilesInitial {
-		finalString := fmt.Sprintf("%v add stats", charNames[char.Base.Key])
+	for idxChar := range statsFinal.charProfilesInitial {
+		finalString := fmt.Sprintf("%v add stats", charNames[statsFinal.charProfilesInitial[idxChar].Base.Key])
 
 		for idxSubstat, value := range statsFinal.substatValues {
 			if value <= 0 {
@@ -102,7 +102,7 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 
 		fmt.Println(finalString + ";")
 
-		output = replaceSimOutputForChar(charNames[char.Base.Key], output, finalString)
+		output = replaceSimOutputForChar(charNames[statsFinal.charProfilesInitial[idxChar].Base.Key], output, finalString)
 	}
 
 	return output

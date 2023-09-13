@@ -42,19 +42,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	base := 0.09 + float64(r)*0.03
 	for i := attributes.PyroP; i <= attributes.DendroP; i++ {
 		m[i] = base
 	}
 
-	//stacking buff
+	// stacking buff
 	stack := 0.06 + float64(r)*0.02
 	max := 0.03 + float64(r)*0.01
 	bonus := attributes.EleToDmgP(char.Base.Element)
 
-	//normal dealing dmg
+	// normal dealing dmg
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -70,14 +70,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 
-	//using burst
+	// using burst
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		if c.Player.Active() != char.Index {
 			return false
 		}
 		char.AddStatus(burstBuffKey, 600, true)
 		return false
-
 	}, fmt.Sprintf("mistsplitter-%v", char.Base.Key.String()))
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("mistsplitter", -1),

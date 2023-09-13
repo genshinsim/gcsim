@@ -25,7 +25,7 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 			SetEnded(e.Core.F + int(math.Ceil(dur)))
 	}
 
-	//check resist mods
+	// check resist mods
 	for i, v := range e.mods {
 		if v.AffectedByHitlag() && v.Expiry() != -1 && v.Expiry() > e.Core.F {
 			mod := e.mods[i]
@@ -46,23 +46,23 @@ func (e *Enemy) QueueEnemyTask(f func(), delay int) {
 }
 
 func (e *Enemy) Tick() {
-	//dead enemy don't tick
+	// dead enemy don't tick
 	if !e.Target.Alive {
 		return
 	}
-	//decrement frozen time first
+	// decrement frozen time first
 	e.frozenFrames -= 1
 	left := 0
 	if e.frozenFrames < 0 {
 		left = -e.frozenFrames
 		e.frozenFrames = 0
 	}
-	//if any left then increase time passed
+	// if any left then increase time passed
 	if left <= 0 {
 		e.Core.Log.NewEvent("enemy skipping tick", glog.LogHitlagEvent, -1).
 			Write("target", e.Key()).
 			Write("frozen_for", e.frozenFrames)
-		//do nothing this tick
+		// do nothing this tick
 		return
 	}
 	e.timePassed += left

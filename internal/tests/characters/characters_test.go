@@ -19,7 +19,7 @@ func init() {
 }
 
 func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
-	c, _ := core.New(core.CoreOpt{
+	c, _ := core.New(core.Opt{
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})
@@ -41,9 +41,6 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 		c.Combat.AddEnemy(e)
 	}
 
-	for i := 0; i < 4; i++ {
-
-	}
 	c.Player.SetActive(0)
 
 	return c, trgs

@@ -12,23 +12,23 @@ import (
 func (p *Parser) parseAction() (Stmt, error) {
 	char, err := p.consume(itemCharacterKey)
 	if err != nil {
-		//this really shouldn't happen since we already checked
+		// this really shouldn't happen since we already checked
 		return nil, fmt.Errorf("ln%v: expecting character key, got %v", char.line, char.Val)
 	}
 	charKey := shortcut.CharNameToKey[char.Val]
 
-	//should be multiple action keys next
+	// should be multiple action keys next
 	var actions []*CallExpr
 	if n := p.peek(); n.Typ != itemActionKey {
 		return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
 	}
 
-	//all actions needs to come before any + flags
+	// all actions needs to come before any + flags
 Loop:
 	for {
 		switch n := p.next(); n.Typ {
 		case itemTerminateLine:
-			//stop here
+			// stop here
 			break Loop
 		case itemActionKey:
 			actionKey := action.StringToAction(n.Val)
@@ -54,7 +54,7 @@ Loop:
 					FloatVal: float64(actionKey),
 				},
 			)
-			//check for param -> then repeat
+			// check for param -> then repeat
 			param, err := p.acceptOptionalParamReturnMap()
 			if err != nil {
 				return nil, err
@@ -64,15 +64,15 @@ Loop:
 			}
 			expr.Args = append(expr.Args, param)
 
-			//optional : and a number
+			// optional : and a number
 			count, err := p.acceptOptionalRepeaterReturnCount()
 			if err != nil {
 				return nil, err
 			}
-			//add to array
+			// add to array
 			for i := 0; i < count; i++ {
 				//TODO: all the repeated action will access the same map
-				//ability implement should avoid modifying the maps
+				// ability implement should avoid modifying the maps
 				actions = append(actions, expr)
 			}
 
@@ -86,9 +86,9 @@ Loop:
 			return nil, fmt.Errorf("ln%v: expecting actions for character %v, got %v", n.line, char.Val, n.Val)
 		}
 	}
-	//check for optional flags
+	// check for optional flags
 
-	//build stmt
+	// build stmt
 	b := newBlockStmt(char.pos)
 	for _, v := range actions {
 		b.append(v)
@@ -97,7 +97,7 @@ Loop:
 }
 
 func (p *Parser) acceptOptionalParamReturnMap() (Expr, error) {
-	//check for params
+	// check for params
 	n := p.peek()
 	if n.Typ != itemLeftSquareParen {
 		return nil, nil
@@ -136,12 +136,12 @@ func (p *Parser) acceptOptionalRepeaterReturnCount() (int, error) {
 		p.backup()
 		return count, nil
 	}
-	//should be a number next
+	// should be a number next
 	n = p.next()
 	if n.Typ != itemNumber {
 		return count, fmt.Errorf("ln%v: expected a number after : but got %v", n.line, n)
 	}
-	//parse number
+	// parse number
 	count, err := itemNumberToInt(n)
 	return count, err
 }

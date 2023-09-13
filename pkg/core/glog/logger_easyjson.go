@@ -123,13 +123,13 @@ func easyjson22b64118DecodeGithubComGenshinsimGcsimPkgCoreGlog1(in *jlexer.Lexer
 		}
 		switch key {
 		case "event":
-			out.Typ = Source(LogSourceFromString[in.String()])
+			out.Event = Source(LogSourceFromString[in.String()])
 		case "frame":
-			out.F = int(in.Int())
+			out.Frame = int(in.Int())
 		case "ended":
 			out.Ended = int(in.Int())
 		case "char_index":
-			out.SrcChar = int(in.Int())
+			out.CharIndex = int(in.Int())
 		case "msg":
 			out.Msg = string(in.UnsafeString())
 		case "logs":
@@ -187,12 +187,12 @@ func easyjson22b64118EncodeGithubComGenshinsimGcsimPkgCoreGlog1(out *jwriter.Wri
 	{
 		const prefix string = ",\"event\":"
 		out.RawString(prefix[1:])
-		out.String(in.Typ.String())
+		out.String(in.Event.String())
 	}
 	{
 		const prefix string = ",\"frame\":"
 		out.RawString(prefix)
-		out.Int(int(in.F))
+		out.Int(int(in.Frame))
 	}
 	{
 		const prefix string = ",\"ended\":"
@@ -202,7 +202,7 @@ func easyjson22b64118EncodeGithubComGenshinsimGcsimPkgCoreGlog1(out *jwriter.Wri
 	{
 		const prefix string = ",\"char_index\":"
 		out.RawString(prefix)
-		out.Int(int(in.SrcChar))
+		out.Int(int(in.CharIndex))
 	}
 	{
 		const prefix string = ",\"msg\":"

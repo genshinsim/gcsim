@@ -52,30 +52,30 @@ func (b *buffer) Add(result stats.Result) {
 	b.hps.Xs = append(b.hps.Xs, 0)
 	b.eps.Xs = append(b.eps.Xs, 0)
 	b.shp.Xs = append(b.shp.Xs, 0)
-	i := len(b.shp.Xs) - 1
+	iX := len(b.shp.Xs) - 1
 
 	for _, interval := range result.ShieldResults.EffectiveShield["normalized"] {
 		end := interval.End
 		if end > result.Duration {
 			end = result.Duration
 		}
-		b.shp.Xs[i] += interval.HP * float64(end-interval.Start)
+		b.shp.Xs[iX] += interval.HP * float64(end-interval.Start)
 	}
-	b.shp.Xs[i] /= float64(result.Duration)
+	b.shp.Xs[iX] /= float64(result.Duration)
 
-	for _, c := range result.Characters {
-		b.rps.Xs[i] += float64(len(c.ReactionEvents))
-		for _, h := range c.HealEvents {
-			b.hps.Xs[i] += h.Heal
+	for i := range result.Characters {
+		b.rps.Xs[iX] += float64(len(result.Characters[i].ReactionEvents))
+		for _, h := range result.Characters[i].HealEvents {
+			b.hps.Xs[iX] += h.Heal
 		}
-		for _, e := range c.EnergyEvents {
-			b.eps.Xs[i] += e.Gained + e.Wasted
+		for _, e := range result.Characters[i].EnergyEvents {
+			b.eps.Xs[iX] += e.Gained + e.Wasted
 		}
 	}
 
-	b.rps.Xs[i] /= b.duration.Xs[i]
-	b.hps.Xs[i] /= b.duration.Xs[i]
-	b.eps.Xs[i] /= b.duration.Xs[i]
+	b.rps.Xs[iX] /= b.duration.Xs[iX]
+	b.hps.Xs[iX] /= b.duration.Xs[iX]
+	b.eps.Xs[iX] /= b.duration.Xs[iX]
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {

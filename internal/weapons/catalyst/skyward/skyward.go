@@ -27,7 +27,6 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-
 	w := &Weapon{}
 	r := p.Refine
 
@@ -86,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("skyward-atlas-%v", char.Base.Key.String()))
 
-	//permanent stat buff
+	// permanent stat buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = dmg
 	m[attributes.HydroP] = dmg

@@ -23,7 +23,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 56
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Astable Anemohypostasis Creation-6308",
@@ -57,10 +57,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.particleCB,
 	)
 
-	//reduce charge by 1
+	// reduce charge by 1
 	c.SetCDWithDelay(action.ActionSkill, 900, 9)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

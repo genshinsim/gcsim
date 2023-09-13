@@ -30,7 +30,7 @@ func init() {
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 107)
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -49,7 +49,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	if c.StatModIsActive(burstBuffKey) {
 		burstIndex = 1
 		if c.NormalCounter == 2 {
-			//q-n3 has different hit lag
+			// q-n3 has different hit lag
 			ai.HitlagHaltFrames = 0.1 * 60
 		}
 	}
@@ -74,7 +74,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],

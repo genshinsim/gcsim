@@ -47,7 +47,7 @@ func (c *char) c4() float64 {
 // C4 stacks are gained after the damage has been dealt and not before
 // https://library.keqingmains.com/evidence/characters/cryo/shenhe?q=shenhe#c4-insight
 func (c *char) c4CB(a combat.AttackCB) {
-	//reset stacks to zero if all expired
+	// reset stacks to zero if all expired
 	if !c.StatusIsActive(c4BuffKey) {
 		c.c4count = 0
 	}

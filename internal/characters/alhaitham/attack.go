@@ -46,10 +46,9 @@ func init() {
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 90)
 	attackFrames[4][action.ActionAttack] = 67
-
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	strikeType := attacks.StrikeTypeSlash
 	if c.NormalCounter == 1 {
 		strikeType = attacks.StrikeTypeSpear
@@ -97,7 +96,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],

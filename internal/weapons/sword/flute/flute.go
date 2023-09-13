@@ -52,16 +52,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		char.AddStatus(icdKey, 30, true) //every 0.5s
+		char.AddStatus(icdKey, 30, true) // every 0.5s
 		if !char.StatusIsActive(durationKey) {
 			stacks = 0
 		}
 		stacks++
-		//stacks lasts 30s
+		// stacks lasts 30s
 		char.AddStatus(durationKey, 1800, true)
 
 		if stacks == 5 {
-			//trigger dmg at 5 stacks
+			// trigger dmg at 5 stacks
 			stacks = 0
 			char.DeleteStatus(durationKey)
 
@@ -78,7 +78,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			}
 			trg := args[0].(combat.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 0, 1)
-
 		}
 		return false
 	}, fmt.Sprintf("flute-%v", char.Base.Key.String()))

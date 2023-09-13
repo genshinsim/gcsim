@@ -38,7 +38,7 @@ func (c *char) a1() {
 			default:
 				return false
 			}
-			//icd is triggered regardless if stacks are maxed or not
+			// icd is triggered regardless if stacks are maxed or not
 			c.AddStatus(a1IcdKey, 6, true)
 			c.addDecStack()
 			return false
@@ -58,7 +58,7 @@ func (c *char) a4() {
 	dur := 60 * 10
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
-			continue //nothing for heizou
+			continue // nothing for heizou
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("heizou-a4", dur),

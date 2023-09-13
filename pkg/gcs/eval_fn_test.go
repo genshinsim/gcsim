@@ -51,7 +51,7 @@ func TestFib(t *testing.T) {
 	if eval.Err() != nil {
 		t.Error(eval.Err())
 	}
-	//should get 34
+	// should get 34
 	res := result.(*retval)
 	val, ok := res.res.(*number)
 	if !ok {
@@ -105,7 +105,7 @@ func TestFunctional(t *testing.T) {
 	if eval.Err() != nil {
 		t.Error(eval.Err())
 	}
-	//should get 2
+	// should get 2
 	res := result.(*retval)
 	val, ok := res.res.(*number)
 	if !ok {
@@ -152,7 +152,7 @@ func TestAnonFunc(t *testing.T) {
 	if eval.Err() != nil {
 		t.Error(eval.Err())
 	}
-	//should get 5
+	// should get 5
 	res := result.(*retval)
 	val, ok := res.res.(*number)
 	if !ok {
@@ -199,7 +199,7 @@ func TestStringFunc(t *testing.T) {
 	if eval.Err() != nil {
 		t.Error(eval.Err())
 	}
-	//should get 5
+	// should get 5
 	res := result.(*retval)
 	val, ok := res.res.(*strval)
 	if !ok {

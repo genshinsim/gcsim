@@ -55,7 +55,7 @@ func (c *char) c2() {
 		return false
 	}, "nahida-c2-reaction-dmg-buff")
 
-	cb := func(rx event.Event) event.EventHook {
+	cb := func(rx event.Event) event.Hook {
 		return func(args ...interface{}) bool {
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {

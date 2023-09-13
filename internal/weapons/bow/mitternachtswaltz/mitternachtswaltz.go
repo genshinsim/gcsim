@@ -81,5 +81,4 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("mitternachtswaltz-%v", char.Base.Key.String()))
 
 	return w, nil
-
 }

@@ -10,7 +10,7 @@ import (
 type Sets map[keys.Set]int
 
 func (s Sets) MarshalJSON() ([]byte, error) {
-	//we'll use a custom string builder i guess
+	// we'll use a custom string builder i guess
 	var sb strings.Builder
 	sb.WriteString("{")
 	for k, v := range s {
@@ -22,7 +22,7 @@ func (s Sets) MarshalJSON() ([]byte, error) {
 	}
 	str := sb.String()
 	str = strings.TrimRight(str, ",")
-	str = str + "}"
+	str += "}"
 	return []byte(str), nil
 }
 

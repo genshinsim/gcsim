@@ -31,7 +31,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 102
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	// no heal on first shield
 	c.Core.Tasks.Add(func() {
 		c.summonSeamlessShield()
@@ -52,7 +52,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
@@ -62,7 +62,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 func (c *char) summonSeamlessShield() {
 	// add shield
-	exist := c.Core.Player.Shields.Get(shield.ShieldBaizhuBurst)
+	exist := c.Core.Player.Shields.Get(shield.BaizhuBurst)
 	shieldamt := (burstShieldPP[c.TalentLvlBurst()]*c.MaxHP() + burstShieldFlat[c.TalentLvlBurst()])
 	if exist != nil {
 		c.summonSpiritvein()

@@ -26,7 +26,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 90    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	player := c.Core.Combat.Player()
 	c.qAbsorb = attributes.NoElement
 	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(ai, ap, 0, burstHitmark)
 
-	//apply dot and check for absorb
+	// apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burstDot[c.TalentLvlBurst()]
@@ -100,7 +100,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstHitmark+1)
 
-	//reset skill cd
+	// reset skill cd
 	if c.Base.Cons >= 1 {
 		c.ResetActionCooldown(action.ActionSkill)
 	}
@@ -108,7 +108,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(4)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
@@ -126,7 +126,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if c.qAbsorb != attributes.NoElement {
 			return
 		}
-		//otherwise queue up
+		// otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)
 	}
 }

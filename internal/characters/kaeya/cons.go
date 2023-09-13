@@ -91,7 +91,7 @@ func (c *char) c4() {
 			c.Core.Player.Shields.Add(&shield.Tmpl{
 				ActorIndex: c.Index,
 				Src:        c.Core.F,
-				ShieldType: shield.ShieldKaeyaC4,
+				ShieldType: shield.KaeyaC4,
 				Name:       "Kaeya C4",
 				HP:         .3 * maxhp,
 				Ele:        attributes.Cryo,

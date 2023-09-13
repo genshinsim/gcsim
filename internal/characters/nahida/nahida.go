@@ -46,16 +46,16 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	//skill hooks
+	// skill hooks
 	c.Core.Events.Subscribe(event.OnEnemyDamage, c.triKarmaOnBloomDamage, "nahida-tri-karma")
-	//considers shatter as an elemental reaction
+	// considers shatter as an elemental reaction
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
-		c.Core.Events.Subscribe(i, c.triKarmaOnReaction(i), fmt.Sprintf("nahida-tri-karma-on-%v", i))
+		c.Core.Events.Subscribe(i, c.triKarmaOnReaction, fmt.Sprintf("nahida-tri-karma-on-%v", i))
 	}
-	//skill cooldown
+	// skill cooldown
 	c.updateTriKarmaInterval()
 
-	//burst ele counts
+	// burst ele counts
 	for _, char := range c.Core.Player.Chars() {
 		switch char.Base.Element {
 		case attributes.Pyro:
@@ -71,7 +71,7 @@ func (c *char) Init() error {
 		c.c1()
 	}
 
-	//sanity check
+	// sanity check
 	if c.pyroCount > 2 {
 		c.pyroCount = 2
 	}

@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "zxh404.vscode-proto3",
+    "redhat.vscode-yaml",
+    "mgmcdermott.vscode-language-babel",
+    "dbaeumer.vscode-eslint",
+    "golang.go",
+    "visualstudioexptteam.vscodeintellicode",
+    "eriklynd.json-tools",
+    "esbenp.prettier-vscode"
+  ]
+}

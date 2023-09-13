@@ -37,7 +37,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-
 	c.a1()
 
 	c.a4Buff = make([]float64, attributes.EndStatType)
@@ -64,8 +63,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		return 25
 	}
 	return c.Character.ActionStam(a, p)

@@ -11,10 +11,10 @@ import (
 )
 
 func parseCharacter(p *Parser) (parseFn, error) {
-	//expecting one of:
+	// expecting one of:
 	//	char lvl etc
 	// 	add
-	//should be any action here
+	// should be any action here
 	switch n := p.next(); n.Typ {
 	case keywordChar:
 		return parseCharDetails, nil
@@ -40,7 +40,7 @@ func (p *Parser) newChar(key keys.Char) {
 }
 
 func parseCharDetails(p *Parser) (parseFn, error) {
-	//xiangling c lvl=80/90 cons=4 talent=6,9,9;
+	// xiangling c lvl=80/90 cons=4 talent=6,9,9;
 	c := p.chars[p.currentCharKey]
 	var err error
 	var x Token
@@ -48,7 +48,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 		switch n.Typ {
 		case keywordLvl:
 			c.Base.Level, c.Base.MaxLevel, err = p.acceptLevelReturnBaseMax()
-			//err check below
+			// err check below
 		case keywordCons:
 			x, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err == nil {
@@ -81,17 +81,17 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
-		case ItemPlus: //optional flags
+		case ItemPlus: // optional flags
 			n = p.next()
 			switch n.Typ {
 			case keywordParams:
-				//expecting =[
+				// expecting =[
 				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
 				if err != nil {
 					return nil, fmt.Errorf("ln%v: invalid token after param;", n.line)
 				}
 				p.backup()
-				//overriding here if it already exists
+				// overriding here if it already exists
 				c.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
 				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
@@ -107,7 +107,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 }
 
 func parseCharacterAdd(p *Parser) (parseFn, error) {
-	//after add we expect either weapon, set, or stats
+	// after add we expect either weapon, set, or stats
 	n := p.next()
 	switch n.Typ {
 	case keywordWeapon:
@@ -122,7 +122,7 @@ func parseCharacterAdd(p *Parser) (parseFn, error) {
 }
 
 func parseCharAddSet(p *Parser) (parseFn, error) {
-	//xiangling add set="seal of insulation" count=4;
+	// xiangling add set="seal of insulation" count=4;
 	c := p.chars[p.currentCharKey]
 	var err error
 	var x Token
@@ -150,17 +150,17 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 			if err == nil {
 				count, err = itemNumberToInt(x)
 			}
-		case ItemPlus: //optional flags
+		case ItemPlus: // optional flags
 			n = p.next()
 			switch n.Typ {
 			case keywordParams:
-				//expecting =[
+				// expecting =[
 				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
 				if err != nil {
 					return nil, fmt.Errorf("ln%v: invalid token after param", n.line)
 				}
 				p.backup()
-				//overriding here if it already exists
+				// overriding here if it already exists
 				c.SetParams[label], err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
 				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
@@ -179,7 +179,7 @@ func parseCharAddSet(p *Parser) (parseFn, error) {
 }
 
 func parseCharAddWeapon(p *Parser) (parseFn, error) {
-	//weapon="string name" lvl=??/?? refine=xx
+	// weapon="string name" lvl=??/?? refine=xx
 	c := p.chars[p.currentCharKey]
 	var err error
 	var x Token
@@ -211,17 +211,17 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 				c.Weapon.Refine, err = itemNumberToInt(x)
 				refineOk = true
 			}
-		case ItemPlus: //optional flags
+		case ItemPlus: // optional flags
 			n = p.next()
 			switch n.Typ {
 			case keywordParams:
-				//expecting =[
+				// expecting =[
 				_, err = p.acceptSeqReturnLast(itemAssign, itemLeftSquareParen)
 				if err != nil {
 					return nil, fmt.Errorf("ln%v: invalid token after param", n.line)
 				}
 				p.backup()
-				//overriding here if it already exists
+				// overriding here if it already exists
 				c.Weapon.Params, err = p.acceptOptionalParamReturnOnlyIntMap()
 			default:
 				err = fmt.Errorf("ln%v: unexpected token after +: %v", n.line, n)
@@ -245,10 +245,10 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 }
 
 func parseCharAddStats(p *Parser) (parseFn, error) {
-	//xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
+	// xiangling add stats hp=4780 atk=311 er=.518 pyro%=0.466 cr=0.311;
 	c := p.chars[p.currentCharKey]
 
-	//each line will be parsed separately into the map
+	// each line will be parsed separately into the map
 	var line = make([]float64, attributes.EndStatType)
 	var key string
 
@@ -272,7 +272,7 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 			}
 			key = x.Val
 		case itemTerminateLine:
-			//add stats into label
+			// add stats into label
 			m, ok := c.StatsByLabel[key]
 			if !ok {
 				m = make([]float64, attributes.EndStatType)
@@ -290,42 +290,38 @@ func parseCharAddStats(p *Parser) (parseFn, error) {
 	return nil, errors.New("unexpected end of line while parsing character add stats")
 }
 
-func (p *Parser) acceptLevelReturnBaseMax() (base, max int, err error) {
-	//expect =xx/yy
+func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {
+	base := 0
+	max := 0
+	var err error
+	// expect =xx/yy
 	var x Token
 	x, err = p.consume(itemAssign)
 	if err != nil {
-		err = fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: unexpected token after lvl. expecting = got %v", x.line, x)
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		err = fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: expecting a number for base lvl, got %v", x.line, x)
 	}
 	base, err = itemNumberToInt(x)
 	if err != nil {
-		err = fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: unexpected token for base lvl. got %v", x.line, x)
 	}
 	x, err = p.consume(ItemForwardSlash)
 	if err != nil {
-		err = fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: expecting / separator for lvl, got %v", x.line, x)
 	}
 	x, err = p.consume(itemNumber)
 	if err != nil {
-		err = fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: expecting a number for max lvl, got %v", x.line, x)
 	}
 	max, err = itemNumberToInt(x)
 	if err != nil {
-		err = fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
-		return
+		return base, max, fmt.Errorf("ln%v: unexpected token for lvl. got %v", x.line, x)
 	}
 	if max < base {
-		err = fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, max, base)
-		return
+		return base, max, fmt.Errorf("ln%v: max level %v cannot be less than base level %v", x.line, max, base)
 	}
-	return
+	return base, max, nil
 }

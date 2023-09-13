@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -45,17 +44,15 @@ const (
 	triKarmaParticleICD = "nahida-e-particle-icd"
 )
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	c.markCount = 0
 	if p["hold"] == 0 {
-		return c.skillPress(p)
-	} else {
-		return c.skillHold(p)
+		return c.skillPress()
 	}
+	return c.skillHold(p)
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
-
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "All Schemes to Know (Press)",
@@ -78,7 +75,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, skillPressCD, 11)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionSwap], // earliest cancel
@@ -86,7 +83,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.ActionInfo {
+func (c *char) skillHold(p map[string]int) action.Info {
 	hold := p["hold"]
 	// earliest hold can be let go is roughly 16.5, max is 317
 	// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
@@ -119,13 +116,12 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold-17+30)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return hold - 17 + skillHoldFrames[next] },
 		AnimationLength: hold - 17 + 30 + skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   hold - 17 + 30 + skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}
-
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
@@ -144,8 +140,8 @@ func (c *char) skillMarkTargets(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	//assuming it's mark per skill cast; in this case refresh regardless if
-	//target already marked up until 8
+	// assuming it's mark per skill cast; in this case refresh regardless if
+	// target already marked up until 8
 	if c.markCount < 8 {
 		t.AddStatus(skillMarkKey, 1500, true)
 		c.markCount++
@@ -164,15 +160,13 @@ func (c *char) updateTriKarmaInterval() {
 	c.QueueCharTask(c.updateTriKarmaInterval, 60) // check every 1s
 }
 
-func (c *char) triKarmaOnReaction(rx event.Event) func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
-		t, ok := args[0].(*enemy.Enemy)
-		if !ok {
-			return false
-		}
-		c.triggerTriKarmaDamageIfAvail(t)
+func (c *char) triKarmaOnReaction(args ...interface{}) bool {
+	t, ok := args[0].(*enemy.Enemy)
+	if !ok {
 		return false
 	}
+	c.triggerTriKarmaDamageIfAvail(t)
+	return false
 }
 
 func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
@@ -180,7 +174,7 @@ func (c *char) triKarmaOnBloomDamage(args ...interface{}) bool {
 	if !ok {
 		return false
 	}
-	//only on bloom, burgeon, hyperbloom damage
+	// only on bloom, burgeon, hyperbloom damage
 	ae, ok := args[1].(*combat.AttackEvent)
 	if !ok {
 		return false
@@ -243,5 +237,4 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 			cb,
 		)
 	}
-
 }

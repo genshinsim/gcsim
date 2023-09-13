@@ -75,7 +75,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
-	//effect can only happen every 10s
+	// effect can only happen every 10s
 	if c.StatusIsActive(c6ICDKey) {
 		return
 	}
@@ -95,7 +95,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 	}
 
 	sigilcb := func(a combat.AttackCB) {
-		//add sigil only outside burst
+		// add sigil only outside burst
 		if c.StatusIsActive(burstBuffKey) {
 			return
 		}
@@ -109,5 +109,4 @@ func (c *char) c6cb(a combat.AttackCB) {
 		1,
 		sigilcb,
 	)
-
 }

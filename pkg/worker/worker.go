@@ -25,14 +25,13 @@ type Job struct {
 // Closing p.StopCh will cause the pool to stop executing any queued jobs and currently working
 // workers will no longer send back responses
 func New(maxWorker int, respCh chan stats.Result, errCh chan error) *Pool {
-
 	p := &Pool{
 		respCh:  respCh,
 		errCh:   errCh,
 		QueueCh: make(chan Job),
 		StopCh:  make(chan bool),
 	}
-	//create workers
+	// create workers
 	for i := 0; i < maxWorker; i++ {
 		go p.worker()
 	}
@@ -68,10 +67,9 @@ func (p *Pool) worker() {
 
 		case _, ok := <-p.StopCh:
 			if !ok {
-				//stopping
+				// stopping
 				return
 			}
 		}
-
 	}
 }

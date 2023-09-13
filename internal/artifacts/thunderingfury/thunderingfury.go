@@ -35,7 +35,6 @@ func (s *Set) Init() error      { return nil }
 // Elemental Reactions are triggered, Elemental Skill CD is decreased by 1s. Can only occur once every 0.8s.
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{}
-	icd := 0
 
 	if count >= 2 {
 		m := make([]float64, attributes.EndStatType)
@@ -48,60 +47,64 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
-	if count >= 4 {
-		const icdKey = "tf-4pc-icd"
-		icd = 48 // 0.8s * 60
 
-		char.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase("tf-4pc", -1),
-			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				if ai.Catalyzed && ai.CatalyzedType == reactions.Aggravate {
-					return 0.2, false
-				}
-				switch ai.AttackTag {
-				case attacks.AttackTagOverloadDamage,
-					attacks.AttackTagECDamage,
-					attacks.AttackTagSuperconductDamage,
-					attacks.AttackTagHyperbloom:
-					return 0.4, false
-				}
-				return 0, false
-			},
-		})
+	if count < 4 {
+		return &s, nil
+	}
 
-		reduce := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
-				return false
+	const icdKey = "tf-4pc-icd"
+	icd := 48 // 0.8s * 60
+
+	char.AddReactBonusMod(character.ReactBonusMod{
+		Base: modifier.NewBase("tf-4pc", -1),
+		Amount: func(ai combat.AttackInfo) (float64, bool) {
+			if ai.Catalyzed && ai.CatalyzedType == reactions.Aggravate {
+				return 0.2, false
 			}
-			if c.Player.Active() != char.Index {
-				return false
+			switch ai.AttackTag {
+			case attacks.AttackTagOverloadDamage,
+				attacks.AttackTagECDamage,
+				attacks.AttackTagSuperconductDamage,
+				attacks.AttackTagHyperbloom:
+				return 0.4, false
 			}
-			if char.StatusIsActive(icdKey) {
-				return false
-			}
-			char.AddStatus(icdKey, icd, true)
-			char.ReduceActionCooldown(action.ActionSkill, 60)
-			c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index).
-				Write("reaction", atk.Info.Abil).
-				Write("new cd", char.Cooldown(action.ActionSkill))
+			return 0, false
+		},
+	})
+
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
+	reduce := func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-
-		reduceNoGadget := func(args ...interface{}) bool {
-			if _, ok := args[0].(*gadget.Gadget); ok {
-				return false
-			}
-			return reduce(args...)
+		if c.Player.Active() != char.Index {
+			return false
 		}
-
-		c.Events.Subscribe(event.OnOverload, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnHyperbloom, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnQuicken, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnAggravate, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		char.AddStatus(icdKey, icd, true)
+		char.ReduceActionCooldown(action.ActionSkill, 60)
+		c.Log.NewEvent("thunderfury 4pc proc", glog.LogArtifactEvent, char.Index).
+			Write("reaction", atk.Info.Abil).
+			Write("new cd", char.Cooldown(action.ActionSkill))
+		return false
 	}
+
+	reduceNoGadget := func(args ...interface{}) bool {
+		if _, ok := args[0].(*gadget.Gadget); ok {
+			return false
+		}
+		return reduce(args...)
+	}
+
+	c.Events.Subscribe(event.OnOverload, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnHyperbloom, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnQuicken, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnAggravate, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 
 	return &s, nil
 }

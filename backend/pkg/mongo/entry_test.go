@@ -91,7 +91,7 @@ func TestGetMany(t *testing.T) {
 		t.Error(err)
 	}
 	for _, v := range results {
-		//we only care about results with sample prefix
+		// we only care about results with sample prefix
 		switch {
 		case strings.HasPrefix(v.Id, "sample_db_no_tag"):
 			compareConfig(t, dbNoTag[v.Id], v)
@@ -135,7 +135,7 @@ func TestGetSubs(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-	//insert new entry so not to pollute other tests
+	// insert new entry so not to pollute other tests
 	e := makeEntry("delete_test", "poop", true, false)
 	_, err := col.InsertOne(context.Background(), e)
 	if err != nil {
@@ -151,7 +151,7 @@ func TestDelete(t *testing.T) {
 
 func TestReplace(t *testing.T) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-	//insert new entry so not to pollute other tests
+	// insert new entry so not to pollute other tests
 	e := makeEntry("update_test", "poop", true, false)
 	_, err := col.InsertOne(context.Background(), e)
 	if err != nil {
@@ -174,5 +174,4 @@ func TestReplace(t *testing.T) {
 	if res.Config != "cool stuff" {
 		t.Error("update failed; config incorrect")
 	}
-
 }

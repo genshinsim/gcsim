@@ -6,8 +6,8 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"path"
 	"regexp"
 	"runtime/debug"
@@ -64,7 +64,7 @@ func Parse(cfg string) (*info.ActionList, ast.Node, error) {
 		return &info.ActionList{}, nil, err
 	}
 
-	//check other errors as well
+	// check other errors as well
 	if len(simcfg.Errors) != 0 {
 		fmt.Println("The config has the following errors: ")
 		errMsgs := ""
@@ -80,7 +80,7 @@ func Parse(cfg string) (*info.ActionList, ast.Node, error) {
 }
 
 // Run will run the simulation given number of times
-func Run(opts Options, ctx context.Context) (*model.SimulationResult, error) {
+func Run(ctx context.Context, opts Options) (*model.SimulationResult, error) {
 	start := time.Now()
 
 	cfg, err := ReadConfig(opts.ConfigPath)
@@ -93,13 +93,13 @@ func Run(opts Options, ctx context.Context) (*model.SimulationResult, error) {
 		return &model.SimulationResult{}, err
 	}
 
-	return RunWithConfig(cfg, simcfg, gcsl, opts, start, ctx)
+	return RunWithConfig(ctx, cfg, simcfg, gcsl, opts, start)
 }
 
 // Runs the simulation with a given parsed config
 // TODO: cfg string should be in the action list instead
 // TODO: need to add a context here to avoid infinite looping
-func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time, ctx context.Context) (*model.SimulationResult, error) {
+func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time) (*model.SimulationResult, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
@@ -110,16 +110,16 @@ func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Opti
 		aggregators = append(aggregators, a)
 	}
 
-	//set up a pool
+	// set up a pool
 	respCh := make(chan stats.Result)
 	errCh := make(chan error)
 	pool := worker.New(simcfg.Settings.NumberOfWorkers, respCh, errCh)
 	pool.StopCh = make(chan bool)
 
-	//spin off a go func that will queue jobs for as long as the total queued < iter
-	//this should block as queue gets full
+	// spin off a go func that will queue jobs for as long as the total queued < iter
+	// this should block as queue gets full
 	go func() {
-		//make all the seeds
+		// make all the seeds
 		wip := 0
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
@@ -133,7 +133,7 @@ func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Opti
 
 	defer close(pool.StopCh)
 
-	//start reading respCh, queueing a new job until wip == number of iterations
+	// start reading respCh, queueing a new job until wip == number of iterations
 	count := 0
 	for count < simcfg.Settings.Iterations {
 		select {
@@ -143,7 +143,7 @@ func RunWithConfig(cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Opti
 			}
 			count += 1
 		case err := <-errCh:
-			//error encountered
+			// error encountered
 			return &model.SimulationResult{}, err
 		case <-ctx.Done():
 			return &model.SimulationResult{}, ctx.Err()
@@ -200,21 +200,21 @@ func GenerateResult(cfg string, simcfg *info.ActionList, opts Options) (*model.S
 			},
 		},
 		EnergySettings: &model.EnergySettings{
-			Active:         simcfg.Energy.Active,
-			Once:           simcfg.Energy.Once,
-			Start:          int32(simcfg.Energy.Start),
-			End:            int32(simcfg.Energy.End),
-			Amount:         int32(simcfg.Energy.Amount),
-			LastEnergyDrop: int32(simcfg.Energy.LastEnergyDrop),
+			Active:         simcfg.EnergySettings.Active,
+			Once:           simcfg.EnergySettings.Once,
+			Start:          int32(simcfg.EnergySettings.Start),
+			End:            int32(simcfg.EnergySettings.End),
+			Amount:         int32(simcfg.EnergySettings.Amount),
+			LastEnergyDrop: int32(simcfg.EnergySettings.LastEnergyDrop),
 		},
 		Config:           cfg,
 		SampleSeed:       strconv.FormatUint(uint64(CryptoRandSeed()), 10),
 		InitialCharacter: simcfg.InitialChar.String(),
 		TargetDetails:    make([]*model.Enemy, len(simcfg.Targets)),
 		PlayerPosition: &model.Coord{
-			X: simcfg.PlayerPos.X,
-			Y: simcfg.PlayerPos.Y,
-			R: simcfg.PlayerPos.R,
+			X: simcfg.InitialPlayerPos.X,
+			Y: simcfg.InitialPlayerPos.Y,
+			R: simcfg.InitialPlayerPos.R,
 		},
 	}
 
@@ -249,9 +249,9 @@ func GenerateResult(cfg string, simcfg *info.ActionList, opts Options) (*model.S
 	}
 	out.CharacterDetails = charDetails
 
-	for _, v := range simcfg.Characters {
-		if !result.IsCharacterComplete(v.Base.Key) {
-			out.IncompleteCharacters = append(out.IncompleteCharacters, v.Base.Key.String())
+	for i := range simcfg.Characters {
+		if !result.IsCharacterComplete(simcfg.Characters[i].Base.Key) {
+			out.IncompleteCharacters = append(out.IncompleteCharacters, simcfg.Characters[i].Base.Key.String())
 		}
 	}
 
@@ -273,28 +273,26 @@ var reImport = regexp.MustCompile(`(?m)^import "(.+)"$`)
 // readConfig will load and read the config at specified path. Will resolve any import statements
 // as well
 func ReadConfig(fpath string) (string, error) {
-
-	src, err := ioutil.ReadFile(fpath)
+	src, err := os.ReadFile(fpath)
 	if err != nil {
 		return "", err
 	}
 
-	//check for imports
+	// check for imports
 	var data strings.Builder
 
 	rows := strings.Split(strings.ReplaceAll(string(src), "\r\n", "\n"), "\n")
 	for _, row := range rows {
 		match := reImport.FindStringSubmatch(row)
 		if match != nil {
-			//read import
+			// read import
 			p := path.Join(path.Dir(fpath), match[1])
-			src, err = ioutil.ReadFile(p)
+			src, err = os.ReadFile(p)
 			if err != nil {
 				return "", err
 			}
 
-			data.WriteString(string(src))
-
+			data.Write(src)
 		} else {
 			data.WriteString(row)
 			data.WriteString("\n")

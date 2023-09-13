@@ -41,7 +41,7 @@ const (
 // - "bomb_delay" = Delay in frames before bomblets go off and coil stacks get added
 //
 // - too many potential bomblet hit variations to keep syntax short, so we simplify how they can be handled here
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 5
@@ -105,7 +105,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 20*60, 19)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillRelease,
@@ -188,7 +188,6 @@ func (c *char) coilMod() {
 			return nil, false
 		},
 	})
-
 }
 
 // Exit Field Hook to start timer to clear coil stacks

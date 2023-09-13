@@ -18,19 +18,23 @@ import (
 )
 
 const id = "test"
-const test_key = "8B0D20CB790418B3CBE3A8B7B0A0A7F114BFFBD2179DF015A7EF086845B15C46"
+const testKey = "8B0D20CB790418B3CBE3A8B7B0A0A7F114BFFBD2179DF015A7EF086845B15C46"
 
 func TestValidation(t *testing.T) {
 	var res map[string]interface{}
 	json.Unmarshal([]byte(randomJSON), &res)
-	data, _ := json.Marshal(res)
+	data, err := json.Marshal(res)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
 	h := sha256.New()
-	h.Write([]byte(data))
+	h.Write(data)
 	bs := h.Sum(nil)
 
-	//shareKey should be of the format id:key
-	key, err := hex.DecodeString(test_key)
+	// shareKey should be of the format id:key
+	key, err := hex.DecodeString(testKey)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -57,7 +61,7 @@ func TestValidation(t *testing.T) {
 
 	hash := gcm.Seal(nonce, nonce, bs, nil)
 	hashStr := base64.StdEncoding.EncodeToString(hash)
-	//sanity check?
+	// sanity check?
 	hash2, _ := base64.StdEncoding.DecodeString(hashStr)
 	if !bytes.Equal(hash, hash2) {
 		t.Error("hash is weird?")
@@ -91,7 +95,6 @@ func TestValidation(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
 }
 
 const randomJSON = `

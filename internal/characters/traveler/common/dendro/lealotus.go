@@ -33,14 +33,14 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 	s.Gadget = gadget.New(c.Core, c.burstPos, 1, combat.GadgetTypLeaLotus)
 	s.Reactable = &reactable.Reactable{}
 	s.Reactable.Init(s, c.Core)
-	s.Durability[reactable.ModifierDendro] = 10
+	s.Durability[reactable.Dendro] = 10
 
 	s.Duration = 12 * 60
 	if c.Base.Cons >= 2 {
 		s.Duration += 3 * 60
 	}
 
-	//burst status last the duration of the gadget but is removed if pyro applied
+	// burst status last the duration of the gadget but is removed if pyro applied
 	c.Core.Status.Add(burstKey, s.Duration)
 
 	// First hitmark is 37f after spawn, all other pre-transfig hits will be 90f between.
@@ -49,7 +49,7 @@ func (c *char) newLeaLotusLamp() *LeaLotus {
 			return
 		}
 		s.QueueAttack(0)
-		//repeat attack every 90
+		// repeat attack every 90
 		s.Gadget.OnThinkInterval = func() {
 			s.QueueAttack(0)
 		}
@@ -108,14 +108,13 @@ func (s *LeaLotus) HandleAttack(atk *combat.AttackEvent) float64 {
 					Write("target", s.Key()).
 					Write("existing", existing).
 					Write("after", s.Reactable.ActiveAuraString())
-
 			}
 		}
 	}
 
-	//apply damage delay is only there to make sure aura gets applied at the end of current frame
-	//however because we can only hold cryo, we'll only call this if atk is cryo and there
-	//is durability left
+	// apply damage delay is only there to make sure aura gets applied at the end of current frame
+	// however because we can only hold cryo, we'll only call this if atk is cryo and there
+	// is durability left
 	if atk.Info.Element != attributes.Cryo {
 		return 0
 	}
@@ -149,54 +148,53 @@ func (s *LeaLotus) attachEle(atk *combat.AttackEvent) {
 			Write("target", s.Key()).
 			Write("existing", existing).
 			Write("after", s.Reactable.ActiveAuraString())
-
 	}
 }
 
 func (s *LeaLotus) Tick() {
-	//this is needed since gadget tick
+	// this is needed since gadget tick
 	s.Reactable.Tick()
 	s.Gadget.Tick()
 }
 
-func (l *LeaLotus) QueueAttack(delay int) {
-	enemy := l.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(l.Gadget, nil, l.char.burstRadius), nil)
+func (s *LeaLotus) QueueAttack(delay int) {
+	enemy := s.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(s.Gadget, nil, s.char.burstRadius), nil)
 	if enemy == nil {
 		return
 	}
-	l.Core.QueueAttackWithSnap(
-		l.burstAtk.Info,
-		l.burstAtk.Snapshot,
-		combat.NewCircleHitOnTarget(enemy, nil, l.hitboxRadius),
+	s.Core.QueueAttackWithSnap(
+		s.burstAtk.Info,
+		s.burstAtk.Snapshot,
+		combat.NewCircleHitOnTarget(enemy, nil, s.hitboxRadius),
 		delay,
 	)
 }
 
-func (r *LeaLotus) React(a *combat.AttackEvent) {
-	//only check the ones possible
+func (s *LeaLotus) React(a *combat.AttackEvent) {
+	// only check the ones possible
 	switch a.Info.Element {
 	case attributes.Electro:
-		r.TryAggravate(a)
-		r.TryFrozenSuperconduct(a)
-		r.TrySuperconduct(a)
-		r.TryQuicken(a)
+		s.TryAggravate(a)
+		s.TryFrozenSuperconduct(a)
+		s.TrySuperconduct(a)
+		s.TryQuicken(a)
 	case attributes.Pyro:
-		r.TryMelt(a)
-		r.TryBurning(a)
+		s.TryMelt(a)
+		s.TryBurning(a)
 	case attributes.Cryo:
 	case attributes.Hydro:
-		r.TryFreeze(a)
-		r.TryBloom(a)
+		s.TryFreeze(a)
+		s.TryBloom(a)
 	case attributes.Anemo:
-		r.TrySwirlHydro(a)
-		r.TrySwirlCryo(a)
-		r.TrySwirlFrozen(a)
+		s.TrySwirlHydro(a)
+		s.TrySwirlCryo(a)
+		s.TrySwirlFrozen(a)
 	case attributes.Geo:
-		r.TryCrystallizeCryo(a)
-		r.TryCrystallizeFrozen(a)
+		s.TryCrystallizeCryo(a)
+		s.TryCrystallizeFrozen(a)
 	case attributes.Dendro:
-		r.TrySpread(a)
-		r.TryBloom(a)
+		s.TrySpread(a)
+		s.TryBloom(a)
 	}
 }
 

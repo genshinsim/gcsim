@@ -56,7 +56,6 @@ func (b *Bot) cmdEcho(ctx context.Context, data cmdroute.CommandData) *api.Inter
 		Content:         option.NewNullableString(options.Arg),
 		AllowedMentions: &api.AllowedMentions{}, // don't mention anyone
 	}
-
 }
 
 func errorResponse(err error) *api.InteractionResponseData {

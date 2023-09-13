@@ -24,7 +24,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 38
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Guoba",
@@ -61,7 +61,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

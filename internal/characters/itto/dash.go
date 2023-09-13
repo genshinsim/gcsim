@@ -4,7 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 )
 
-func (c *char) Dash(p map[string]int) action.ActionInfo {
+func (c *char) Dash(p map[string]int) action.Info {
 	// anything but NA/E -> E should reset savedNormalCounter
 	switch c.Core.Player.LastAction.Type {
 	case action.ActionAttack:

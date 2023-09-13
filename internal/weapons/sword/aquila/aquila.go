@@ -34,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .15 + .05*float64(r)
 	char.AddStatMod(character.StatMod{

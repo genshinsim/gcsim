@@ -31,7 +31,7 @@ func (c *char) c2() {
 // When Xiao's HP falls below 50%, he gains a 100% DEF Bonus.
 func (c *char) c4() {
 	//TODO: in game this is actually a check every 0.3s. if hp is < 50% then buff is active until
-	//the next time check takes places
+	// the next time check takes places
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DEFP] = 1
 	c.AddStatMod(character.StatMod{

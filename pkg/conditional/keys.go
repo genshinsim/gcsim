@@ -3,12 +3,11 @@ package conditional
 import (
 	"fmt"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
-func evalKeys(c *core.Core, fields []string) (int, error) {
+func evalKeys(fields []string) (int, error) {
 	// .keys.weapon.polarstar
 	if err := fieldsCheck(fields, 3, "keys"); err != nil {
 		return 0, err
@@ -51,7 +50,7 @@ func evalCharacterKey(name string) (int, error) {
 	return int(key), nil
 }
 
-func evalAction(c *core.Core, fields []string) (int, error) {
+func evalAction(fields []string) (int, error) {
 	if err := fieldsCheck(fields, 1, "action"); err != nil {
 		return 0, err
 	}

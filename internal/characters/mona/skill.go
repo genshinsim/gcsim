@@ -33,10 +33,9 @@ func init() {
 	skillFrames[1][action.ActionDash] = 66    // Hold E -> D
 	skillFrames[1][action.ActionJump] = 59    // Hold E -> J
 	skillFrames[1][action.ActionSwap] = 73    // Hold E -> Swap
-
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	hold := 0
 	if p["hold"] != 0 {
 		hold = 1
@@ -79,7 +78,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 24)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[hold]),
 		AnimationLength: skillFrames[hold][action.InvalidAction],
 		CanQueueAfter:   skillFrames[hold][action.ActionBurst], // earliest cancel

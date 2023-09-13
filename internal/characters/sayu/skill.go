@@ -52,13 +52,13 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 706    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-	short_hold := p["short_hold"]
+func (c *char) Skill(p map[string]int) action.Info {
+	shortHold := p["short_hold"]
 	if p["short_hold"] != 0 {
-		short_hold = 1
+		shortHold = 1
 	}
-	if short_hold == 1 {
-		return c.skillShortHold(p)
+	if shortHold == 1 {
+		return c.skillShortHold()
 	}
 
 	hold := p["hold"]
@@ -66,9 +66,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if hold > 600 { // 10s
 			hold = 600
 		}
-		return c.skillHold(p, hold)
+		return c.skillHold(hold)
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
 func (c *char) kickParticleCB(a combat.AttackCB) {
@@ -93,7 +93,7 @@ func (c *char) rollParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle("sayu-roll", 1, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress() action.Info {
 	c.c2Bonus = 0.033
 
 	// Fuufuu Windwheel DMG
@@ -141,7 +141,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 6*60, skillPressCDStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionSwap], // earliest cancel
@@ -149,7 +149,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
+func (c *char) skillShortHold() action.Info {
 	c.eDuration = c.Core.F + skillShortHoldKickHitmark
 	c.c2Bonus = .0
 
@@ -199,7 +199,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	// 6.2s cooldown
 	c.SetCDWithDelay(action.ActionSkill, 372, skillShortHoldCDStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillShortHoldFrames),
 		AnimationLength: skillShortHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillShortHoldFrames[action.ActionSwap], // earliest cancel
@@ -207,7 +207,7 @@ func (c *char) skillShortHold(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
+func (c *char) skillHold(duration int) action.Info {
 	c.eDuration = c.Core.F + (skillHoldKickHitmark - 600) + duration
 	c.c2Bonus = .0
 
@@ -217,7 +217,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 
 	// ticks
 	d := c.createSkillHoldSnapshot()
-	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, int(duration/12)), 18)
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, duration/12), 18)
 
 	for i := 0; i <= duration; i += 30 { // 1 tick for sure
 		c.Core.Tasks.Add(func() {
@@ -259,7 +259,7 @@ func (c *char) skillHold(p map[string]int, duration int) action.ActionInfo {
 	// +2 frames for not proc the sacrificial by "Yoohoo Art: Fuuin Dash (Elemental DMG)"
 	c.SetCDWithDelay(action.ActionSkill, int(6*60+float64(duration)*0.5), (skillHoldCDStart-600)+duration+2)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillHoldFrames[next] - 600 + duration },
 		AnimationLength: skillHoldFrames[action.InvalidAction] - 600 + duration,
 		CanQueueAfter:   skillHoldFrames[action.ActionSwap] - 600 + duration, // earliest cancel

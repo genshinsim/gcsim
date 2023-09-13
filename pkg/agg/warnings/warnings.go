@@ -36,8 +36,8 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 func (b *buffer) Add(result stats.Result) {
 	var energy, stamina, swap, skill, dash float64
 
-	for _, c := range result.Characters {
-		for _, fail := range c.FailedActions {
+	for i := range result.Characters {
+		for _, fail := range result.Characters[i].FailedActions {
 			switch fail.Reason {
 			case action.InsufficientEnergy.String():
 				energy += float64(fail.End-fail.Start) / 60

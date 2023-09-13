@@ -19,14 +19,13 @@ func init() {
 	highPlungeFrames = frames.InitAbilSlice(highPlungeHitmark)
 }
 
-func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
-
+func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 	// check if hold skill was used
 	lastAct := c.Core.Player.LastAction
 	if lastAct.Char != c.Index || lastAct.Type != action.ActionSkill || lastAct.Param["hold"] != 0 {
 		c.Core.Log.NewEvent("high_plunge should be preceded by hold skill", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionHighPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
@@ -53,7 +52,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		highPlungeHitmark,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeHitmark,

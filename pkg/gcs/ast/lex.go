@@ -111,13 +111,6 @@ func (l *lexer) nextItem() Token {
 	return <-l.items
 }
 
-// drain drains the output so the lexing goroutine will exit.
-// Called by the parser, not in the lexing goroutine.
-func (l *lexer) drain() {
-	for range l.items {
-	}
-}
-
 // lex creates a new scanner for the input string.
 func lex(input string) *lexer {
 	l := &lexer{
@@ -184,15 +177,14 @@ func lexText(l *lexer) stateFn {
 		// l.backup()
 		l.emit(ItemPlus)
 	case r == '/':
-		//check if next is another / or not; if / then lexComment
+		// check if next is another / or not; if / then lexComment
 		n := l.next()
 		if n == '/' {
 			l.ignore()
 			return lexComment
-		} else {
-			l.backup()
-			l.emit(ItemForwardSlash)
 		}
+		l.backup()
+		l.emit(ItemForwardSlash)
 	case r == '.':
 		// special look-ahead for ".field" so we don't break l.backup().
 		if l.pos < Pos(len(l.input)) {
@@ -206,15 +198,15 @@ func lexText(l *lexer) stateFn {
 		l.backup()
 		return lexNumber
 	case r == '-':
-		//if next item is a number then lex number
+		// if next item is a number then lex number
 		n := l.next()
 		if isNumeric(n) {
-			//backup twice
+			// backup twice
 			l.backup()
 			l.backup()
 			return lexNumber
 		}
-		//other wise it's a - sign
+		// other wise it's a - sign
 		l.backup()
 		l.emit(ItemMinus)
 	case r == '>':
@@ -365,7 +357,7 @@ Loop:
 				l.emit(key[word])
 			case word[0] == '.':
 				l.emit(itemField)
-			case word == "true", word == "false":
+			case word == TrueVal, word == FalseVal:
 				l.emit(itemBool)
 			default:
 				l.emit(checkIdentifier(word))

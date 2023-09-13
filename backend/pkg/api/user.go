@@ -15,10 +15,10 @@ import (
 )
 
 type UserStore interface {
-	Create(id string, name string, ctx context.Context) error //create a new user; name is the discord tag
-	Read(id string, ctx context.Context) ([]byte, error)      //"user" should be set in ctx for auth purpose
-	UpdateData(data []byte, ctx context.Context) error        //"user" should be set in ctx for auth purpose
-	Has(id string, ctx context.Context) (bool, error)         //return true if user exists
+	Create(ctx context.Context, id string, name string) error // create a new user; name is the discord tag
+	Read(ctx context.Context, id string) ([]byte, error)      // "user" should be set in ctx for auth purpose
+	UpdateData(ctx context.Context, data []byte) error        // "user" should be set in ctx for auth purpose
+	Has(ctx context.Context, id string) (bool, error)         // return true if user exists
 }
 
 type RoleChecker interface {
@@ -45,12 +45,12 @@ type claim struct {
 func (s *Server) tokenCheck(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie("token")
-		if err != nil && err != http.ErrNoCookie {
+		if err != nil && !errors.Is(err, http.ErrNoCookie) {
 			s.Log.Infow("error reading cookie", "err", err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		if err == http.ErrNoCookie {
+		if errors.Is(err, http.ErrNoCookie) {
 			s.Log.Info("no token cookie sent; skipping")
 			next.ServeHTTP(w, r)
 			return
@@ -61,7 +61,7 @@ func (s *Server) tokenCheck(next http.Handler) http.Handler {
 			return []byte(s.cfg.Discord.JWTKey), nil
 		})
 		if err != nil {
-			if err == jwt.ErrSignatureInvalid {
+			if errors.Is(err, jwt.ErrSignatureInvalid) {
 				s.Log.Infow("token is not valid ", "err", err)
 			} else {
 				s.Log.Infow("error parsing token from cookie", "err", err)
@@ -73,7 +73,7 @@ func (s *Server) tokenCheck(next http.Handler) http.Handler {
 			r = r.WithContext(context.WithValue(r.Context(), UserContextKey, cl.User))
 			s.Log.Infow("token ok, user context set", "user", cl.User)
 		}
-		//do stuff here
+		// do stuff here
 		next.ServeHTTP(w, r)
 	})
 }
@@ -145,15 +145,15 @@ func (s *Server) Login() http.HandlerFunc {
 		}
 
 		// check if user exists; create if not
-		ok, err := s.cfg.UserStore.Has(du.ID, r.Context())
+		ok, err := s.cfg.UserStore.Has(r.Context(), du.ID)
 		if err != nil {
 			s.Log.Errorw("unexpected error encountered checking if user exists", "err", err, "user", du)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		if !ok {
-			//create
-			err := s.cfg.UserStore.Create(du.ID, fmt.Sprintf("%v#%v", du.Username, du.Discriminator), r.Context())
+			// create
+			err := s.cfg.UserStore.Create(r.Context(), du.ID, fmt.Sprintf("%v#%v", du.Username, du.Discriminator))
 			if err != nil {
 				s.Log.Errorw("unexpected error encountered reading user", "err", err, "user", du)
 				w.WriteHeader(http.StatusInternalServerError)
@@ -161,14 +161,14 @@ func (s *Server) Login() http.HandlerFunc {
 			}
 		}
 
-		u, err := s.cfg.UserStore.Read(du.ID, context.WithValue(r.Context(), UserContextKey, du.ID))
+		u, err := s.cfg.UserStore.Read(context.WithValue(r.Context(), UserContextKey, du.ID), du.ID)
 		if err != nil {
 			s.Log.Errorw("unexpected error encountered reading user", "err", err, "user", du)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		//create a JWT with user's id
+		// create a JWT with user's id
 		expirationTime := time.Now().Add(14 * 24 * time.Hour)
 		jwtToken := jwt.New(jwt.SigningMethodHS256)
 		claims := jwtToken.Claims.(jwt.MapClaims)
@@ -186,9 +186,8 @@ func (s *Server) Login() http.HandlerFunc {
 			Value:   tokenString,
 			Expires: expirationTime,
 		})
-		w.WriteHeader(200)
+		w.WriteHeader(http.StatusOK)
 		w.Write(u)
-
 	}
 }
 
@@ -202,14 +201,14 @@ func (s *Server) UserSave() http.HandlerFunc {
 			return
 		}
 		s.Log.Infow("received request to save user data", "data", string(d), "user", r.Context().Value("user"))
-		err = s.cfg.UserStore.UpdateData(d, r.Context())
-		switch err {
-		case nil:
+		err = s.cfg.UserStore.UpdateData(r.Context(), d)
+		switch {
+		case err == nil:
 			w.WriteHeader(http.StatusOK)
-		case ErrUserNotFound:
+		case errors.Is(err, ErrUserNotFound):
 			w.WriteHeader(http.StatusBadRequest)
 			s.Log.Warnw("unexpected update from a user that does not exist", "user", r.Context().Value("user"))
-		case ErrInvalidRequest:
+		case errors.Is(err, ErrInvalidRequest):
 			w.WriteHeader(http.StatusBadRequest)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)

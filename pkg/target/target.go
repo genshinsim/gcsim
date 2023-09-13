@@ -21,7 +21,7 @@ type Target struct {
 
 	Alive bool
 
-	//icd related
+	// icd related
 	icdTagOnTimer       [MaxTeamSize][attacks.ICDTagLength]bool
 	icdTagCounter       [MaxTeamSize][attacks.ICDTagLength]int
 	icdDamageTagOnTimer [MaxTeamSize][attacks.ICDTagLength]bool
@@ -84,14 +84,14 @@ func (t *Target) WillCollide(s geometry.Shape) bool {
 }
 
 func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
-	//shape shouldn't be nil; panic here
+	// shape shouldn't be nil; panic here
 	if a.Shape == nil {
 		panic("unexpected nil shape")
 	}
 	if !t.Alive {
 		return false, "target dead"
 	}
-	//shape can't be nil now, check if type matches
+	// shape can't be nil now, check if type matches
 	// if !a.Targets[t.typ] {
 	// 	return false, "wrong type"
 	// }
@@ -102,14 +102,14 @@ func (t *Target) AttackWillLand(a combat.AttackPattern) (bool, string) {
 		}
 	}
 
-	//check if shape matches
+	// check if shape matches
 	switch v := a.Shape.(type) {
 	case *geometry.Circle:
 		return t.Shape().IntersectCircle(*v), "intersect circle"
 	case *geometry.Rectangle:
 		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
 	case *geometry.SingleTarget:
-		//only true if
+		// only true if
 		return v.Target == t.key, "target"
 	default:
 		return false, "unknown shape"

@@ -26,7 +26,7 @@ const c6Key = "mona-c6"
 func (c *char) c1() {
 	// TODO: "Frozen duration is extended by 15%." is bugged
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		//ignore if target doesn't have debuff
+		// ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -87,7 +87,7 @@ func (c *char) c2(a combat.AttackCB) {
 	if c.c2icd > c.Core.F {
 		return
 	}
-	c.c2icd = c.Core.F + 300 //every 5 seconds
+	c.c2icd = c.Core.F + 300 // every 5 seconds
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
@@ -117,7 +117,7 @@ func (c *char) c4() {
 				if !ok {
 					return nil, false
 				}
-				//ok only if either bubble or omen is present
+				// ok only if either bubble or omen is present
 				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
 					return m, true
 				}

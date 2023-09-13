@@ -16,22 +16,22 @@ import (
 )
 
 type Character interface {
-	Init() error //init function built into every char to setup any variables etc.
+	Init() error // init function built into every char to setup any variables etc.
 
-	Attack(p map[string]int) action.ActionInfo
-	Aimed(p map[string]int) action.ActionInfo
-	ChargeAttack(p map[string]int) action.ActionInfo
-	HighPlungeAttack(p map[string]int) action.ActionInfo
-	LowPlungeAttack(p map[string]int) action.ActionInfo
-	Skill(p map[string]int) action.ActionInfo
-	Burst(p map[string]int) action.ActionInfo
-	Dash(p map[string]int) action.ActionInfo
-	Walk(p map[string]int) action.ActionInfo
-	Jump(p map[string]int) action.ActionInfo
+	Attack(p map[string]int) action.Info
+	Aimed(p map[string]int) action.Info
+	ChargeAttack(p map[string]int) action.Info
+	HighPlungeAttack(p map[string]int) action.Info
+	LowPlungeAttack(p map[string]int) action.Info
+	Skill(p map[string]int) action.Info
+	Burst(p map[string]int) action.Info
+	Dash(p map[string]int) action.Info
+	Walk(p map[string]int) action.Info
+	Jump(p map[string]int) action.Info
 
 	ActionStam(a action.Action, p map[string]int) float64
 
-	ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure)
+	ActionReady(a action.Action, p map[string]int) (bool, action.Failure)
 	SetCD(a action.Action, dur int)
 	Cooldown(a action.Action) int
 	ResetActionCooldown(a action.Action)
@@ -52,14 +52,14 @@ type Character interface {
 
 type CharWrapper struct {
 	Index int
-	f     *int //current frame
-	debug bool //debug mode?
+	f     *int // current frame
+	debug bool // debug mode?
 	Character
 	events event.Eventter
 	log    glog.Logger
 	tasks  task.Tasker
 
-	//base characteristics
+	// base characteristics
 	Base      info.CharacterBase
 	Weapon    info.WeaponProfile
 	Talents   info.TalentProfile
@@ -74,7 +74,7 @@ type CharWrapper struct {
 		Sets   map[keys.Set]info.Set
 	}
 
-	//current status
+	// current status
 	ParticleDelay  int // character custom particle delay
 	Energy         float64
 	EnergyMax      float64
@@ -83,45 +83,40 @@ type CharWrapper struct {
 	// needed so that start hp is not influenced by hp mods added during team initialization
 	StartHP int
 
-	//normal attack counter
-	NormalHitNum  int //how many hits in a normal combo
+	// normal attack counter
+	NormalHitNum  int // how many hits in a normal combo
 	NormalCounter int
 
-	//tags
+	// tags
 	Tags      map[string]int
 	BaseStats [attributes.EndStatType]float64
 
-	//mods
+	// mods
 	mods []modifier.Mod
 
-	//dash cd: keeps track of remaining cd frames for off-field chars
+	// dash cd: keeps track of remaining cd frames for off-field chars
 	RemainingDashCD int
 	DashLockout     bool
 
-	//hitlag stuff
-	timePassed   int //how many frames have passed since start of sim
-	frozenFrames int //how many frames are we still frozen for
+	// hitlag stuff
+	timePassed   int // how many frames have passed since start of sim
+	frozenFrames int // how many frames are we still frozen for
 	queue        []queue.Task
-}
-
-type charTask struct {
-	f     func()
-	delay float64
 }
 
 func New(
 	p info.CharacterProfile,
-	f *int, //current frame
-	debug bool, //are we running in debug mode
-	log glog.Logger, //logging, can be nil
-	events event.Eventter, //event emitter
+	f *int, // current frame
+	debug bool, // are we running in debug mode
+	log glog.Logger, // logging, can be nil
+	events event.Eventter, // event emitter
 	task task.Tasker,
 ) (*CharWrapper, error) {
 	c := &CharWrapper{
 		Base:          p.Base,
 		Weapon:        p.Weapon,
 		Talents:       p.Talents,
-		ParticleDelay: 100, //default particle delay
+		ParticleDelay: 100, // default particle delay
 		log:           log,
 		events:        events,
 		tasks:         task,
@@ -134,12 +129,12 @@ func New(
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]info.Set)
 
-	//set to -1 by default and let each char specify normal/skill/burst cons
+	// set to -1 by default and let each char specify normal/skill/burst cons
 	c.NormalCon = -1
 	c.SkillCon = -1
 	c.BurstCon = -1
 
-	//check talents
+	// check talents
 	if c.Talents.Attack < 1 || c.Talents.Attack > 10 {
 		return nil, fmt.Errorf("invalid talent lvl: attack - %v", c.Talents.Attack)
 	}

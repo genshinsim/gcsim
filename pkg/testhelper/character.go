@@ -13,14 +13,14 @@ type Character struct {
 }
 
 func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return combat.Snapshot{} }
-func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }
 func (c *Character) ActionStam(a action.Action, p map[string]int) float64 { return 0 }
 func (c *Character) ReduceActionCooldown(a action.Action, v int)          {}
 func (c *Character) ResetActionCooldown(a action.Action)                  {}
 func (c *Character) Cooldown(a action.Action) int                         { return 0 }
-func (h *Character) SetCDWithDelay(a action.Action, dur int, delay int)   {}
+func (c *Character) SetCDWithDelay(a action.Action, dur, delay int)       {}
 func (c *Character) Charges(a action.Action) int                          { return 1 }
 func (c *Character) SetCD(a action.Action, dur int)                       {}
 func (c *Character) Init() error                                          { return nil }

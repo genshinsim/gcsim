@@ -55,14 +55,14 @@ func (c *char) Init() error {
 }
 
 // Helper function to calculate healing amount dynamically using current character stats, which has all mods applied
-func (c *char) healDynamic(healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
-	atk := c.Base.Atk + c.Weapon.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+func (c *char) healDynamic(healScalePer, healScaleFlat []float64, talentLevel int) float64 {
+	atk := c.Base.Atk + c.Weapon.BaseAtk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal
 }
 
 // Helper function to calculate healing amount from a snapshot instance
-func (c *char) healSnapshot(d *combat.Snapshot, healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
+func (c *char) healSnapshot(d *combat.Snapshot, healScalePer, healScaleFlat []float64, talentLevel int) float64 {
 	atk := d.BaseAtk*(1+d.Stats[attributes.ATKP]) + d.Stats[attributes.ATK]
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal

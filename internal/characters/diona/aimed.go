@@ -25,7 +25,7 @@ func init() {
 	aimedC4Frames[action.ActionJump] = aimedC4Hitmark
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -49,23 +49,22 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	var a action.ActionInfo
+	var a action.Info
 
 	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 && c.Core.Combat.Player().IsWithinArea(c.burstBuffArea) {
-		a = action.ActionInfo{
+		a = action.Info{
 			Frames:          frames.NewAbilFunc(aimedC4Frames),
 			AnimationLength: aimedC4Frames[action.InvalidAction],
 			CanQueueAfter:   aimedC4Hitmark,
 			State:           action.AimState,
 		}
 	} else {
-		a = action.ActionInfo{
+		a = action.Info{
 			Frames:          frames.NewAbilFunc(aimedFrames),
 			AnimationLength: aimedFrames[action.InvalidAction],
 			CanQueueAfter:   aimedHitmark,
 			State:           action.AimState,
 		}
-
 	}
 
 	c.Core.QueueAttack(

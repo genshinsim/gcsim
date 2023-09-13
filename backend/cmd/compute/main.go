@@ -37,7 +37,7 @@ func main() {
 	flag.IntVar(&c.workerCount, "w", 10, "number of workers to use")
 	flag.IntVar(&c.timeoutInSec, "timeout", 30, "time out in seconds to run each sim for")
 	flag.Parse()
-	//compute steps
+	// compute steps
 	// 1. ask server for work
 	// 2. compute work
 	// 3. ask again for more work
@@ -52,7 +52,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func (c *client) run() error {
@@ -72,10 +71,10 @@ func (c *client) run() error {
 		}
 		err = c.processBatch(work)
 		if err != nil {
-			//this is only if we have unexpected error like rpc failed?
+			// this is only if we have unexpected error like rpc failed?
 			return err
 		}
-		//stop if we're done up to max
+		// stop if we're done up to max
 		if c.max == 0 {
 			return nil
 		}
@@ -103,7 +102,7 @@ func (c *client) processBatch(w []*db.ComputeWork) error {
 			return err
 		}
 
-		//don't do too much work
+		// don't do too much work
 		if c.max != -1 {
 			c.max--
 			if c.max == 0 {
@@ -116,7 +115,7 @@ func (c *client) processBatch(w []*db.ComputeWork) error {
 
 func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error) {
 	start := time.Now()
-	//compute work??
+	// compute work??
 	log.Printf("got work %v; starting compute", w.Id)
 	// compute result
 	simcfg, gcsl, err := simulator.Parse(w.Config)
@@ -131,7 +130,7 @@ func (c *client) processWork(w *db.ComputeWork) (*model.SimulationResult, error)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.timeoutInSec)*time.Second)
 	defer cancel()
 
-	result, err := simulator.RunWithConfig(w.Config, simcfg, gcsl, simulator.Options{}, time.Now(), ctx)
+	result, err := simulator.RunWithConfig(ctx, w.Config, simcfg, gcsl, simulator.Options{}, time.Now())
 	if err != nil {
 		log.Printf("error running sim %v: %v\n", w.Id, err)
 		return nil, err

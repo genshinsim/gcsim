@@ -18,7 +18,7 @@ func init() {
 	burstFrames[action.ActionJump] = 160    // Q -> J
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	stats, _ := c.Stats()
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(player.HealInfo{
@@ -33,7 +33,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(6)
 	c.SetCDWithDelay(action.ActionBurst, 20*60, 1)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionCharge], // earliest cancel

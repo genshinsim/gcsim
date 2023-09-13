@@ -1,3 +1,5 @@
+//go:build !codeanalysis
+
 package main
 
 import (
@@ -75,7 +77,7 @@ func doSample(this js.Value, args []js.Value) (out interface{}) {
 		return marshal(err)
 	}
 
-	marshalled, err := data.MarshalJson()
+	marshalled, err := data.MarshalJSON()
 	if err != nil {
 		return marshal(err)
 	}
@@ -200,7 +202,7 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 	// // store the result for reuse
 	cachedResult = result
 
-	marshalled, err := result.MarshalJson()
+	marshalled, err := result.MarshalJSON()
 	if err != nil {
 		return marshal(err)
 	}
@@ -267,7 +269,7 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 		Hash:  hash,
 	}
 
-	marshalled, err := signedResults.MarshalJson()
+	marshalled, err := signedResults.MarshalJSON()
 	if err != nil {
 		return marshal(err)
 	}

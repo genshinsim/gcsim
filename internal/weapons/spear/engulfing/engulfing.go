@@ -25,9 +25,9 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//ATK increased by 28% of Energy Recharge over the base 100%. You can gain a
-	//maximum bonus of 80% ATK. Gain 30% Energy Recharge for 12s after using an
-	//Elemental Burst.
+	// ATK increased by 28% of Energy Recharge over the base 100%. You can gain a
+	// maximum bonus of 80% ATK. Gain 30% Energy Recharge for 12s after using an
+	// Elemental Burst.
 	w := &Weapon{}
 	r := p.Refine
 

@@ -23,7 +23,7 @@ func init() {
 	skillFrames[action.ActionJump] = 5     // E -> J
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// +1 to avoid end duration issues
 	// Qiqi E is a deployable after Initial Hit, so it shouldn't be hitlag extendable
 	c.AddStatus(skillBuffKey, 15*60+1, false)
@@ -99,7 +99,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 1800, 3) // 30s * 60
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel is before skillHitmark
@@ -122,7 +122,7 @@ func (c *char) skillDmgTickTask(src int, ae *combat.AttackEvent, lastTickDuratio
 		}
 
 		// Clones initial snapshot
-		tick := *ae //deference the pointer here
+		tick := *ae // deference the pointer here
 		// pattern shouldn't snapshot on attack event creation because the skill follows the player
 		tick.Pattern = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.5)
 

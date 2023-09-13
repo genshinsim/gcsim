@@ -64,7 +64,6 @@ func TestFnTyping(t *testing.T) {
 		`fn z(a number, b number, c map) { print(c); }`,
 		t,
 	)
-
 }
 
 func TestAnonFn(t *testing.T) {

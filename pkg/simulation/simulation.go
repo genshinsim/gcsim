@@ -13,15 +13,15 @@ type Simulation struct {
 	// f    int
 	preActionDelay int
 	C              *core.Core
-	//action list stuff
+	// action list stuff
 	cfg           *info.ActionList
-	queue         []*action.ActionEval
+	queue         []*action.Eval
 	eval          action.Evaluator
 	noMoreActions bool
-	collectors    []stats.StatsCollector
+	collectors    []stats.Collector
 
-	//track previous action, when it was used at, and the earliest
-	//useable frame for all other chained actions
+	// track previous action, when it was used at, and the earliest
+	// useable frame for all other chained actions
 }
 
 /**
@@ -41,12 +41,8 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 	s.cfg = cfg
 	// fmt.Printf("cfg: %+v\n", cfg)
 	s.C = c
-	if err != nil {
-		return nil, err
-	}
-	s.C = c
 
-	err = SetupTargetsInCore(c, geometry.Point{X: cfg.PlayerPos.X, Y: cfg.PlayerPos.Y}, cfg.PlayerPos.R, cfg.Targets)
+	err = SetupTargetsInCore(c, geometry.Point{X: cfg.InitialPlayerPos.X, Y: cfg.InitialPlayerPos.Y}, cfg.InitialPlayerPos.R, cfg.Targets)
 	if err != nil {
 		return nil, err
 	}

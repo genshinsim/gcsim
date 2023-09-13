@@ -54,9 +54,9 @@ func (b buffer) Flush(result *model.SimulationStatistics) {
 		c2 = c1 + 1
 	}
 
-	result.P25Seed = strconv.FormatUint(b.runs[:c1].Median().seed, 10)
-	result.P50Seed = strconv.FormatUint(b.runs.Median().seed, 10)
-	result.P75Seed = strconv.FormatUint(b.runs[c2:].Median().seed, 10)
+	result.P25Seed = strconv.FormatUint(b.runs[:c1].median().seed, 10)
+	result.P50Seed = strconv.FormatUint(b.runs.median().seed, 10)
+	result.P75Seed = strconv.FormatUint(b.runs[c2:].median().seed, 10)
 }
 
 func (r Runs) Len() int           { return len(r) }
@@ -64,7 +64,7 @@ func (r Runs) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
 func (r Runs) Less(i, j int) bool { return r[i].dps < r[j].dps }
 
 // assumes already sorted
-func (r Runs) Median() run {
+func (r Runs) median() run {
 	l := r.Len()
 
 	if l == 0 {

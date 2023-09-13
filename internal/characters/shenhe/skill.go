@@ -49,14 +49,14 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 44
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	if p["hold"] != 0 {
-		return c.skillHold(p)
+		return c.skillHold()
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Spring Spirit Summoning (Press)",
@@ -94,7 +94,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 	c.SetCDWithDelay(action.ActionSkill, 10*60, skillPressCDStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
@@ -116,7 +116,7 @@ func (c *char) makePressParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.ActionInfo {
+func (c *char) skillHold() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spring Spirit Summoning (Hold)",
@@ -146,7 +146,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	}
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel
@@ -243,8 +243,8 @@ func (c *char) quillDamageMod() {
 
 		if char.Tags[quillKey] > 0 {
 			stats, _ := c.Stats()
-			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.Atk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
-			if consumeStack { //c6
+			amt := skillpp[c.TalentLvlSkill()] * ((c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK])
+			if consumeStack { // c6
 				char.Tags[quillKey]--
 			}
 

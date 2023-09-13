@@ -17,7 +17,7 @@ func (e *Eval) evalStmt(s ast.Stmt, env *Env) (Obj, error) {
 	case *ast.ReturnStmt:
 		return e.evalReturnStmt(v, env)
 	case *ast.CtrlStmt:
-		return e.evalCtrlStmt(v, env)
+		return e.evalCtrlStmt(v)
 	case *ast.IfStmt:
 		return e.evalIfStmt(v, env)
 	case *ast.WhileStmt:
@@ -64,7 +64,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	//res should be a number
+	// res should be a number
 	// v, ok := res.(*number)
 	e.Log.Printf("let expr: %v, type: %T\n", res, res)
 	// if !ok {
@@ -80,7 +80,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
-	//functionally, a FnStmt is just a special type of let statement
+	// functionally, a FnStmt is just a special type of let statement
 	_, exist := env.varMap[l.Ident.Val]
 	if exist {
 		return nil, fmt.Errorf("function %v already exists; cannot redeclare", l.Ident.Val)
@@ -121,7 +121,7 @@ func (e *Eval) evalReturnStmt(r *ast.ReturnStmt, env *Env) (Obj, error) {
 	}, nil
 }
 
-func (e *Eval) evalCtrlStmt(r *ast.CtrlStmt, env *Env) (Obj, error) {
+func (e *Eval) evalCtrlStmt(r *ast.CtrlStmt) (Obj, error) {
 	return &ctrl{
 		typ: r.Typ,
 	}, nil
@@ -209,7 +209,7 @@ func (e *Eval) evalSwitchStmt(swt *ast.SwitchStmt, env *Env) (Obj, error) {
 
 	// condition should be a number
 	// res should be a number
-	var v *number = nil
+	var v *number
 	if _, ok := cond.(*null); !ok {
 		val, ok := cond.(*number)
 		// e.Log.Printf("let expr: %v, type: %T\n", res, res)

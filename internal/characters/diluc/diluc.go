@@ -46,7 +46,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a4buff[attributes.PyroP] = 0.2
 
@@ -63,7 +62,7 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
 	if a == action.ActionSkill && c.StatusIsActive(eWindowKey) {
 		return true, action.NoFailure
@@ -76,7 +75,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatusIsActive(burstBuffKey) {
-		//infusion to attacks only
+		// infusion to attacks only
 		switch ai.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagPlunge:

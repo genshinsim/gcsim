@@ -60,7 +60,6 @@ func (c *char) c6Buff(delay int) {
 			case attributes.Pyro:
 				m[attributes.PyroP] = 0.12
 			}
-
 		}
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{

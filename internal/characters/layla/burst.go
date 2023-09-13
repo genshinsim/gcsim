@@ -28,7 +28,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 65    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = tickTravel
@@ -64,7 +64,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				}
 				done = true
 
-				exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
+				exist := c.Core.Player.Shields.Get(shield.LaylaSkill)
 				if exist != nil {
 					c.addNightStars(1, ICDNightStarBurst)
 				}
@@ -83,7 +83,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 12*60)
 	c.ConsumeEnergy(6)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

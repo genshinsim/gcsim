@@ -10,7 +10,7 @@ type xinyanShield struct {
 	c *char
 }
 
-func (c *char) newShield(base float64, t shield.ShieldType, dur int) *xinyanShield {
+func (c *char) newShield(base float64, t shield.Type, dur int) *xinyanShield {
 	n := &xinyanShield{}
 	n.Tmpl = &shield.Tmpl{}
 	n.Tmpl.ActorIndex = c.Index

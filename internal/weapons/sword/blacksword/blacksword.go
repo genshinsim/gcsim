@@ -69,8 +69,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Src:     heal * (atk.Snapshot.BaseAtk*(1+atk.Snapshot.Stats[attributes.ATKP]) + atk.Snapshot.Stats[attributes.ATK]),
 				Bonus:   char.Stat(attributes.Heal),
 			})
-			//trigger cd
-			char.AddStatus(icdKey, 300, true) //every 5s
+			// trigger cd
+			char.AddStatus(icdKey, 300, true) // every 5s
 		}
 		return false
 	}, fmt.Sprintf("black-sword-%v", char.Base.Key.String()))

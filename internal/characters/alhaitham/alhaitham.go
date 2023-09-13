@@ -50,7 +50,7 @@ func (c *char) onExitField() {
 		if prev != c.Index {
 			return false
 		}
-		c.lastInfusionSrc = -1 //Might prevent undesired behaviour
+		c.lastInfusionSrc = -1 // Might prevent undesired behaviour
 		if c.mirrorCount > 0 {
 			c.mirrorCount = 0
 			c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index)
@@ -63,7 +63,7 @@ func (c *char) onExitField() {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.mirrorCount > 0 { //weapon infusion can't be overriden for haitham
+	if c.mirrorCount > 0 { // weapon infusion can't be overriden for haitham
 		switch ai.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagPlunge:

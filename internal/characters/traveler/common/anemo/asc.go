@@ -65,7 +65,7 @@ func (c *char) a4() {
 
 		c.AddStatus(a4ICDKey, 300, true)
 
-		for i := 0; i < 5; i = i + 1 {
+		for i := 0; i < 5; i++ {
 			c.QueueCharTask(func() {
 				c.Core.Player.Heal(player.HealInfo{
 					Caller:  c.Index,

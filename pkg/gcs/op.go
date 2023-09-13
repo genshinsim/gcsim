@@ -12,15 +12,15 @@ func otob(v Obj) bool {
 }
 
 func ntob(v *number) bool {
-	//check int 0
+	// check int 0
 	if !v.isFloat && v.ival == 0 {
 		return false
 	}
-	//check float 0
+	// check float 0
 	if v.isFloat && v.fval == 0 {
 		return false
 	}
-	//otherwise true
+	// otherwise true
 	return true
 }
 

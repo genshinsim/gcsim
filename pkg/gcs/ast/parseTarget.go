@@ -17,8 +17,8 @@ func parseTarget(p *Parser) (parseFn, error) {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "pos": //pos will end up defaulting to 0,0 if not set
-				//pos=1.00,2,00
+			case "pos": // pos will end up defaulting to 0,0 if not set
+				// pos=1.00,2,00
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
@@ -66,7 +66,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 				r.Level, err = itemNumberToInt(n)
 			}
 		case itemStatKey:
-			//should be hp
+			// should be hp
 			if statKeys[n.Val] != attributes.HP {
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}
@@ -79,7 +79,7 @@ func parseTarget(p *Parser) (parseFn, error) {
 				p.res.Settings.DamageMode = true
 			}
 		case keywordResist:
-			//this sets all resistance
+			// this sets all resistance
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 			if err != nil {
 				return nil, err

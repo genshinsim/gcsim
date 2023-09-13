@@ -28,9 +28,9 @@ func (c *screen) OnDestruct() {
 	if c.char.Base.Cons < 2 {
 		return
 	}
-	//make sure last reset is more than 6 seconds ago
+	// make sure last reset is more than 6 seconds ago
 	if c.char.c2reset <= c.char.Core.F-360 && c.char.Cooldown(action.ActionSkill) > 0 {
-		//reset cd
+		// reset cd
 		c.char.c2reset = c.char.Core.F
 		c.char.ResetActionCooldown(action.ActionSkill)
 	}

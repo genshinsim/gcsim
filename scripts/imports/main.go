@@ -15,7 +15,6 @@ type data struct {
 }
 
 func main() {
-
 	var d data
 
 	d.Art = walk("../../internal/artifacts")
@@ -45,7 +44,7 @@ func walk(path string) []string {
 				return err
 			}
 			// fmt.Println(path, info.Size())
-			//skip if any of the following is true
+			// skip if any of the following is true
 			switch {
 			case !info.IsDir():
 				return nil

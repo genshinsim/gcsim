@@ -6,8 +6,8 @@ import (
 )
 
 func parseHurt(p *Parser) (parseFn, error) {
-	//hurt once interval=300 amount=1,300 element=physical #once at frame 300 (or nearest)
-	//hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
+	// hurt once interval=300 amount=1,300 element=physical #once at frame 300 (or nearest)
+	// hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
 	n := p.next()
 	switch n.Typ {
 	case itemIdentifier:
@@ -27,21 +27,21 @@ func parseHurt(p *Parser) (parseFn, error) {
 }
 
 func parseHurtOnce(p *Parser) (parseFn, error) {
-	//hurt once interval=300 amount=1,300 element=physical #once at frame 300
+	// hurt once interval=300 amount=1,300 element=physical #once at frame 300
 	var err error
-	p.res.Hurt.Active = true
-	p.res.Hurt.Once = true
+	p.res.HurtSettings.Active = true
+	p.res.HurtSettings.Once = true
 
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "interval":
+			case IntervalVal:
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err == nil {
-					p.res.Hurt.Start, err = itemNumberToInt(n)
+					p.res.HurtSettings.Start, err = itemNumberToInt(n)
 				}
-			case "amount":
+			case AmountVal:
 				err := parseHurtAmount(p)
 				if err != nil {
 					return nil, err
@@ -67,21 +67,21 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 }
 
 func parseHurtEvery(p *Parser) (parseFn, error) {
-	//hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
+	// hurt every interval=480,720 amount=1,300 element=physical #randomly 1 to 300 dmg every 480 to 720 frames
 	var err error
-	p.res.Hurt.Active = true
-	p.res.Hurt.Once = false
+	p.res.HurtSettings.Active = true
+	p.res.HurtSettings.Once = false
 
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "interval":
+			case IntervalVal:
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
 				}
-				p.res.Hurt.Start, err = itemNumberToInt(n)
+				p.res.HurtSettings.Start, err = itemNumberToInt(n)
 				if err != nil {
 					return nil, err
 				}
@@ -90,11 +90,11 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-				p.res.Hurt.End, err = itemNumberToInt(n)
+				p.res.HurtSettings.End, err = itemNumberToInt(n)
 				if err != nil {
 					return nil, err
 				}
-			case "amount":
+			case AmountVal:
 				err := parseHurtAmount(p)
 				if err != nil {
 					return nil, err
@@ -138,8 +138,8 @@ func parseHurtAmount(p *Parser) error {
 		return err
 	}
 
-	p.res.Hurt.Min = min
-	p.res.Hurt.Max = max
+	p.res.HurtSettings.Min = min
+	p.res.HurtSettings.Max = max
 
 	return nil
 }
@@ -153,6 +153,6 @@ func parseHurtElement(p *Parser) error {
 	if n.Typ != itemElementKey {
 		return fmt.Errorf("<hurt> bad token at line %v - %v: %v", n.line, n.pos, n)
 	}
-	p.res.Hurt.Element = eleKeys[n.Val]
+	p.res.HurtSettings.Element = eleKeys[n.Val]
 	return nil
 }

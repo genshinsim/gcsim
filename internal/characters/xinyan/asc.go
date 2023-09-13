@@ -35,7 +35,7 @@ func (c *char) a4() {
 				if !c.Core.Player.Shields.PlayerIsShielded() {
 					return nil, false
 				}
-				shd := c.Core.Player.Shields.Get(shield.ShieldXinyanSkill)
+				shd := c.Core.Player.Shields.Get(shield.XinyanSkill)
 				if shd == nil {
 					return nil, false
 				}

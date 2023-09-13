@@ -57,9 +57,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	w.buff = make([]float64, attributes.EndStatType)
 	w.teamBuff = make([]float64, attributes.EndStatType)
-	//em 32,40,48,56,64
+	// em 32,40,48,56,64
 	w.emBonus = 24 + float64(r)*8
-	//dmg% 10, 14, 18, 22, 26
+	// dmg% 10, 14, 18, 22, 26
 	w.dmgBonus = 0.06 + float64(r)*0.04
 	w.teamBuff[attributes.EM] = 38 + float64(r)*2
 

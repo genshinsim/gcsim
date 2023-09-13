@@ -9,11 +9,11 @@ import (
 
 // C2 - Violet Vehemence
 // When Falling Thunder created by Bellowing Thunder hits an opponent, it will decrease their Electro RES by 15% for 8s.
-func (c *char) c2(t combat.Target) combat.AttackCBFunc {
+func (c *char) c2() combat.AttackCBFunc {
+	if c.Base.Cons < 2 {
+		return nil
+	}
 	return func(a combat.AttackCB) {
-		if c.Base.Cons < 2 {
-			return
-		}
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -33,7 +33,7 @@ func (c *char) c4(buffEnergy float64) float64 {
 		collector := c.Core.Player.ActiveChar()
 		currentEnergyP := collector.Energy / collector.EnergyMax
 		if currentEnergyP < 0.35 {
-			buffEnergy = buffEnergy * 2.0
+			buffEnergy *= 2
 		}
 	}
 	return buffEnergy

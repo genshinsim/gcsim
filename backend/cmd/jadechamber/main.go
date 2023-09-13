@@ -63,7 +63,6 @@ func main() {
 
 	log.Println("API gateway starting to listen at port 3000")
 	log.Fatal(http.ListenAndServe(":3000", s.Router))
-
 }
 
 func setHash() {
@@ -112,7 +111,7 @@ func makePreviewStore() api.PreviewStore {
 }
 
 func getKeys() map[string][]byte {
-	//read from key file
+	// read from key file
 	var hexKeys map[string]string
 	f, err := os.Open(os.Getenv("SHARE_KEY_FILE"))
 	if err != nil {
@@ -129,7 +128,7 @@ func getKeys() map[string][]byte {
 	}
 
 	keys := make(map[string][]byte)
-	//convert key from hex string into []byte
+	// convert key from hex string into []byte
 	for k, v := range hexKeys {
 		key, err := hex.DecodeString(v)
 		if err != nil {

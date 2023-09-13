@@ -9,20 +9,20 @@ import (
 )
 
 type ActionList struct {
-	Targets     []EnemyProfile     `json:"targets"`
-	PlayerPos   Coord              `json:"player_initial_pos"`
-	Characters  []CharacterProfile `json:"characters"`
-	InitialChar keys.Char          `json:"initial"`
-	Energy      EnergySettings     `json:"energy_settings"`
-	Hurt        HurtSettings       `json:"hurt_settings"`
-	Settings    SimulatorSettings  `json:"settings"`
-	Errors      []error            `json:"-"` //These represents errors preventing ActionList from being executed
-	ErrorMsgs   []string           `json:"errors"`
+	Targets          []EnemyProfile     `json:"targets"`
+	InitialPlayerPos Coord              `json:"initial_player_pos"`
+	Characters       []CharacterProfile `json:"characters"`
+	InitialChar      keys.Char          `json:"initial_char"`
+	EnergySettings   EnergySettings     `json:"energy_settings"`
+	HurtSettings     HurtSettings       `json:"hurt_settings"`
+	Settings         SimulatorSettings  `json:"settings"`
+	Errors           []error            `json:"-"` // These represents errors preventing ActionList from being executed
+	ErrorMsgs        []string           `json:"error_msgs"`
 }
 
 type EnergySettings struct {
 	Active         bool `json:"active"`
-	Once           bool `json:"once"` //how often
+	Once           bool `json:"once"` // how often
 	Start          int  `json:"start"`
 	End            int  `json:"end"`
 	Amount         int  `json:"amount"`
@@ -45,7 +45,7 @@ type SimulatorSettings struct {
 	DamageMode   bool    `json:"damage_mode"`
 	EnableHitlag bool    `json:"enable_hitlag"`
 	DefHalt      bool    `json:"def_halt"` // for hitlag
-	//other stuff
+	// other stuff
 	NumberOfWorkers int    `json:"-"`          // how many workers to run the simulation
 	Iterations      int    `json:"iterations"` // how many iterations to run
 	Delays          Delays `json:"delays"`
@@ -62,27 +62,26 @@ type Delays struct {
 	Swap   int `json:"swap"`
 }
 
-func (c *ActionList) Copy() *ActionList {
+func (a *ActionList) Copy() *ActionList {
+	r := *a
 
-	r := *c
-
-	r.Targets = make([]EnemyProfile, len(c.Targets))
-	for i, v := range c.Targets {
+	r.Targets = make([]EnemyProfile, len(a.Targets))
+	for i, v := range a.Targets {
 		r.Targets[i] = v.Clone()
 	}
 
-	r.Characters = make([]CharacterProfile, len(c.Characters))
-	for i, v := range c.Characters {
-		r.Characters[i] = v.Clone()
+	r.Characters = make([]CharacterProfile, len(a.Characters))
+	for i := range a.Characters {
+		r.Characters[i] = a.Characters[i].Clone()
 	}
 
 	return &r
 }
 
 func (a *ActionList) PrettyPrint() string {
-	prettyJson, err := json.MarshalIndent(a, "", "  ")
+	prettyJSON, err := json.MarshalIndent(a, "", "  ")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	return string(prettyJson)
+	return string(prettyJSON)
 }

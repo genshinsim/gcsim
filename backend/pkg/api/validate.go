@@ -14,7 +14,7 @@ import (
 )
 
 func (s *Server) decryptHash(ciphertext, key []byte) ([]byte, error) {
-	c, err := aes.NewCipher([]byte(key))
+	c, err := aes.NewCipher(key)
 	if err != nil {
 		s.Log.Warnw("decryptHash: error creating AES cipher", "err", err)
 		return nil, err
@@ -42,15 +42,14 @@ func (s *Server) decryptHash(ciphertext, key []byte) ([]byte, error) {
 }
 
 func (s *Server) validateSigning(data []byte, str string) error {
-
-	//check if from valid source
-	//valid key is in the form of id:hash
+	// check if from valid source
+	// valid key is in the form of id:hash
 	id, hashStr, ok := strings.Cut(str, ":")
 	if !ok {
 		return errors.New("no id:hash separation")
 	}
 
-	//hashStr is a hexstring
+	// hashStr is a hexstring
 	hash, err := base64.StdEncoding.DecodeString(hashStr)
 	if err != nil {
 		return errors.New("hash not base64 string")
@@ -63,7 +62,10 @@ func (s *Server) validateSigning(data []byte, str string) error {
 
 	var res map[string]interface{}
 	json.Unmarshal(data, &res)
-	d, _ := json.Marshal(res)
+	d, err := json.Marshal(res)
+	if err != nil {
+		return fmt.Errorf("error marshaling: %w", err)
+	}
 
 	h := sha256.New()
 	h.Write(d)
@@ -71,7 +73,7 @@ func (s *Server) validateSigning(data []byte, str string) error {
 
 	dh, err := s.decryptHash(hash, key)
 	if err != nil {
-		return fmt.Errorf("error decrypting: %v", err)
+		return fmt.Errorf("error decrypting: %w", err)
 	}
 
 	if !bytes.Equal(bs, dh) {

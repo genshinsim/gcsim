@@ -35,7 +35,7 @@ func (c *char) makeC4Callback() func(combat.AttackCB) {
 		// https://youtu.be/jB3x5BTYWIA?t=20
 		cdReduction := 60 * int(c.Core.Rand.Float64()*6+1)
 
-		//we simply reduce the action cd
+		// we simply reduce the action cd
 		c.ReduceActionCooldown(action.ActionSkill, cdReduction)
 
 		c.Core.Log.NewEvent("sucrose c4 reducing E CD", glog.LogCharacterEvent, c.Index).

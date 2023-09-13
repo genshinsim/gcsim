@@ -18,22 +18,22 @@ func unmarshalOptions() protojson.UnmarshalOptions {
 	}
 }
 
-func (r *SimulationResult) MarshalJson() ([]byte, error) {
+func (r *SimulationResult) MarshalJSON() ([]byte, error) {
 	return marshalOptions().Marshal(r)
 }
 
-func (r *SimulationResult) UnmarshalJson(b []byte) error {
+func (r *SimulationResult) UnmarshalJSON(b []byte) error {
 	return unmarshalOptions().Unmarshal(b, r)
 }
 
-func (r *SimulationStatistics) MarshalJson() ([]byte, error) {
+func (r *SimulationStatistics) MarshalJSON() ([]byte, error) {
 	return marshalOptions().Marshal(r)
 }
 
-func (r *SignedSimulationStatistics) MarshalJson() ([]byte, error) {
+func (r *SignedSimulationStatistics) MarshalJSON() ([]byte, error) {
 	return marshalOptions().Marshal(r)
 }
 
-func (r *Sample) MarshalJson() ([]byte, error) {
-	return marshalOptions().Marshal(r)
+func (s *Sample) MarshalJSON() ([]byte, error) {
+	return marshalOptions().Marshal(s)
 }

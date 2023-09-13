@@ -23,7 +23,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 60     // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Fiery Rain",
 		ActorIndex: c.Index,
@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionBurst, 720, 56)
 	c.ConsumeEnergy(59)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel

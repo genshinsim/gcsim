@@ -16,7 +16,6 @@ import (
 )
 
 func init() {
-
 	core.RegisterWeaponFunc(keys.EverlastingMoonglow, NewWeapon)
 }
 

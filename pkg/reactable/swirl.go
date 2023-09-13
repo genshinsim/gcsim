@@ -17,8 +17,8 @@ func calcSwirlAtkDurability(consumed, src reactions.Durability) reactions.Durabi
 }
 
 func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element, tag attacks.AttackTag, icd attacks.ICDTag, dur reactions.Durability, charIndex int) {
-	//swirl triggers two attacks; one self with no gauge
-	//and one aoe with gauge
+	// swirl triggers two attacks; one self with no gauge
+	// and one aoe with gauge
 	ai := combat.AttackInfo{
 		ActorIndex:       charIndex,
 		DamageSrc:        r.self.Key(),
@@ -34,14 +34,14 @@ func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element
 	em := char.Stat(attributes.EM)
 	flatdmg, snap := calcReactionDmg(char, ai, em)
 	ai.FlatDmg = 0.6 * flatdmg
-	//first attack is self no hitbox
+	// first attack is self no hitbox
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
 		combat.NewSingleTargetHit(r.self.Key()),
 		1,
 	)
-	//next is aoe - hydro swirls never do AoE damage, as they only spread the element
+	// next is aoe - hydro swirls never do AoE damage, as they only spread the element
 	if ele == attributes.Hydro {
 		ai.FlatDmg = 0
 	}
@@ -61,14 +61,14 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierElectro] < ZeroDur {
+	if r.Durability[Electro] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Electro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	a.Reacted = true
-	//queue an attack first
+	// queue an attack first
 	r.core.Events.Emit(event.OnSwirlElectro, r.self, a)
 	r.queueSwirl(
 		reactions.SwirlElectro,
@@ -78,12 +78,12 @@ func (r *Reactable) TrySwirlElectro(a *combat.AttackEvent) bool {
 		atkDur,
 		a.Info.ActorIndex,
 	)
-	//at this point if any durability left, we need to check for prescence of
-	//hydro in case of EC
-	if a.Info.Durability > ZeroDur && r.Durability[ModifierHydro] > ZeroDur {
-		//trigger swirl hydro
+	// at this point if any durability left, we need to check for prescence of
+	// hydro in case of EC
+	if a.Info.Durability > ZeroDur && r.Durability[Hydro] > ZeroDur {
+		// trigger swirl hydro
 		r.TrySwirlHydro(a)
-		//check EC clean up
+		// check EC clean up
 		r.checkEC()
 	}
 	return true
@@ -93,14 +93,14 @@ func (r *Reactable) TrySwirlHydro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierHydro] < ZeroDur {
+	if r.Durability[Hydro] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Hydro, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	a.Reacted = true
-	//queue an attack first
+	// queue an attack first
 	r.core.Events.Emit(event.OnSwirlHydro, r.self, a)
 	r.queueSwirl(
 		reactions.SwirlHydro,
@@ -117,14 +117,14 @@ func (r *Reactable) TrySwirlCryo(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierCryo] < ZeroDur {
+	if r.Durability[Cryo] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Cryo, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	a.Reacted = true
-	//queue an attack first
+	// queue an attack first
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
 		reactions.SwirlCryo,
@@ -141,7 +141,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierPyro] < ZeroDur {
+	if r.Durability[Pyro] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Pyro, a.Info.Durability, 0.5)
@@ -149,7 +149,7 @@ func (r *Reactable) TrySwirlPyro(a *combat.AttackEvent) bool {
 	a.Info.Durability -= rd
 	a.Reacted = true
 	r.burningCheck()
-	//queue an attack first
+	// queue an attack first
 	r.core.Events.Emit(event.OnSwirlPyro, r.self, a)
 	r.queueSwirl(
 		reactions.SwirlPyro,
@@ -166,14 +166,14 @@ func (r *Reactable) TrySwirlFrozen(a *combat.AttackEvent) bool {
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
-	if r.Durability[ModifierFrozen] < ZeroDur {
+	if r.Durability[Frozen] < ZeroDur {
 		return false
 	}
 	rd := r.reduce(attributes.Frozen, a.Info.Durability, 0.5)
 	atkDur := calcSwirlAtkDurability(rd, a.Info.Durability)
 	a.Info.Durability -= rd
 	a.Reacted = true
-	//queue an attack first
+	// queue an attack first
 	r.core.Events.Emit(event.OnSwirlCryo, r.self, a)
 	r.queueSwirl(
 		reactions.SwirlCryo,

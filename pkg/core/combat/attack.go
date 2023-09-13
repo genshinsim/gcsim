@@ -24,7 +24,7 @@ func (h *Handler) attack(t Target, a *AttackEvent) (float64, bool) {
 		}
 		return 0, false
 	}
-	//make a copy first
+	// make a copy first
 	cpy := *a
 	dmg := t.HandleAttack(&cpy)
 	return dmg, true
@@ -58,18 +58,18 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 	// check gadgets
 	if !a.Pattern.SkipTargets[targets.TargettableGadget] {
 		for i := 0; i < len(h.gadgets); i++ {
-			//sanity check here; possible gadgets died and have not been cleaned up yet
+			// sanity check here; possible gadgets died and have not been cleaned up yet
 			if h.gadgets[i] == nil {
 				continue
 			}
 			h.attack(h.gadgets[i], a)
 		}
 	}
-	//add hitlag to actor but ignore if this is deployable
+	// add hitlag to actor but ignore if this is deployable
 	if h.EnableHitlag && landed && !a.Info.IsDeployable {
 		dur := a.Info.HitlagHaltFrames
 		if h.DefHalt && a.Info.CanBeDefenseHalted {
-			dur += 3.6 //0.06
+			dur += 3.6 // 0.06
 		}
 		if dur > 0 {
 			h.Team.ApplyHitlag(a.Info.ActorIndex, a.Info.HitlagFactor, dur)

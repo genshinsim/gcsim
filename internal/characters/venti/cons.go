@@ -14,7 +14,7 @@ import (
 // Fires 2 additional arrows per Aimed Shot, each dealing 33% of the original arrow's DMG.
 func (c *char) c1(ai combat.AttackInfo, travel int) {
 	ai.Abil = "Aim (Charged) C1"
-	ai.Mult = ai.Mult / 3.0
+	ai.Mult /= 3.0
 	for i := 0; i < 2; i++ {
 		c.Core.QueueAttack(
 			ai,

@@ -96,7 +96,7 @@ func (s *Store) GetDBStatus() (*model.DBStatus, error) {
 	}, nil
 }
 
-func (s *Store) ReplaceConfig(id string, link string) error {
+func (s *Store) ReplaceConfig(id, link string) error {
 	s.Log.Infow("replace config request received", "id", id, "link", link)
 
 	linkid, err := s.validateLink(link)

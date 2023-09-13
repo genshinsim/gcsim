@@ -16,7 +16,7 @@ type buffer struct {
 	activeIntervals []stats.ActiveCharacterInterval
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		activeChar:      core.Player.Active(),
 		activeCharStart: 0,
@@ -46,5 +46,6 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 		End:       core.F,
 		Character: b.activeChar,
 	}
-	result.ActiveCharacters = append(b.activeIntervals, interval)
+	result.ActiveCharacters = b.activeIntervals
+	result.ActiveCharacters = append(result.ActiveCharacters, interval)
 }

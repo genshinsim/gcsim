@@ -42,7 +42,7 @@ func TestType(t *testing.T) {
 }
 
 func TestForceTerminate(t *testing.T) {
-	//test terminate eval early should gracefully exit
+	// test terminate eval early should gracefully exit
 	p := ast.New("xingqiu attack:50;")
 	_, gcsl, err := p.Parse()
 	if err != nil {
@@ -75,7 +75,7 @@ func TestForceTerminate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	//confirm that NextAction now returns nil
+	// confirm that NextAction now returns nil
 	for i := 0; i < 4; i++ {
 		eval.Continue()
 		a, err := eval.NextAction()
@@ -89,7 +89,7 @@ func TestForceTerminate(t *testing.T) {
 }
 
 func TestSleepAsWaitAlias(t *testing.T) {
-	//make sure sleep is evaluated as wait
+	// make sure sleep is evaluated as wait
 	p := ast.New("sleep(1);")
 	_, gcsl, err := p.Parse()
 	if err != nil {
@@ -123,7 +123,7 @@ func TestSleepAsWaitAlias(t *testing.T) {
 }
 
 func TestDoneCheck(t *testing.T) {
-	//eval should exit once out of action; NextAction() should return nil
+	// eval should exit once out of action; NextAction() should return nil
 	p := ast.New("xingqiu attack, attack, skill, burst;")
 	_, gcsl, err := p.Parse()
 	if err != nil {
@@ -151,7 +151,7 @@ func TestDoneCheck(t *testing.T) {
 	if count != 4 {
 		t.Errorf("expecting NextAction to be called 4 times, got %v", count)
 	}
-	//confirm that NextAction continues to return nil
+	// confirm that NextAction continues to return nil
 	for i := 0; i < 4; i++ {
 		a, err := eval.NextAction()
 		if err != nil {
