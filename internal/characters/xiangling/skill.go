@@ -40,10 +40,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 	// delay in frames from guoba expiry until the a4 chili pepper is picked up
 	a4Delay, ok := p["a4_delay"]
 	if !ok {
-		a4Delay = 0
-	}
-	if a4Delay < 0 {
-		a4Delay = 0
+		a4Delay = -1
 	}
 	if a4Delay > 10*60 {
 		a4Delay = 10 * 60
@@ -56,6 +53,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 		c.AddStatus("xianglingguoba", guoba.Duration, false)
 		c.Core.Combat.AddGadget(guoba)
 		// queue up a4 relative to guoba expiry
+		if a4Delay < 0 {
+			return
+		}
 		c.a4(guoba.Duration + a4Delay)
 	}, 13)
 
