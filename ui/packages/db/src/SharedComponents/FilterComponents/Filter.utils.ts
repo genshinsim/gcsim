@@ -31,6 +31,12 @@ export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
 }, {} as TagFilter);
 
 export const sortByKeys = ["mean_dps_per_target", "create_date"];
+export enum SortByKeyState {
+  "none",
+  "asc",
+  "dsc",
+}
+
 export const initialSortBy: ISortBy = sortByKeys.reduce((acc, sortByKey) => {
   acc[sortByKey] = SortByKeyState.none;
   return acc;
@@ -85,12 +91,6 @@ export type TagFilterState =
       state: ItemFilterState.none;
       tag: string;
     };
-
-export enum SortByKeyState {
-  "none",
-  "asc",
-  "dsc",
-}
 
 export interface ISortBy {
   [key: string]: SortByKeyState;
@@ -318,6 +318,10 @@ export function filterReducer(
           newSortByState[action.sortByKey] = SortByKeyState.none;
           break;
       }
+
+      console.log("newSortByState", newSortByState);
+      console.log("action.sortByKey", action.sortByKey);
+      console.log("action", action);
 
       return {
         ...filter,

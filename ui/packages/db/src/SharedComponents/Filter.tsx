@@ -9,13 +9,14 @@ import {
 import tagData from "@gcsim/db/src/tags.json";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
 import useDebounce from "../SharedHooks/debounce";
 import {
   charNames,
   FilterContext,
   FilterDispatchContext,
   ItemFilterState,
+  sortByKeys,
   SortByKeyState,
 } from "./FilterComponents/Filter.utils";
 
@@ -298,8 +299,6 @@ function SortBy() {
   const { t: translation } = useTranslation();
   const t = (s: string) => translation<string>(s);
 
-  const sortParamKeys = ["dps"];
-
   return (
     <div className="w-full  overflow-x-hidden no-scrollbar">
       <button
@@ -312,9 +311,9 @@ function SortBy() {
       </button>
       <Collapse isOpen={sortIsOpen}>
         <div className="flex flex-col mt-2 bg-gray-800 p-1">
-          <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
-            {sortParamKeys.map((t) => (
-              <SortByParamButton key={t} />
+          <div className="flex flex-row gap-4">
+            {sortByKeys.map((t) => (
+              <SortByParamButton key={t} name={t} />
             ))}
           </div>
         </div>
@@ -323,21 +322,61 @@ function SortBy() {
   );
 }
 
-function SortByParamButton({ key }: { key: string }) {
+function SortByParamButton({ name }: { name: string }) {
   const filter = useContext(FilterContext);
   const dispatch = useContext(FilterDispatchContext);
+  const { t: translation } = useTranslation();
+  const t = (s: string) =>
+    translation<string>(
+      "db." +
+        s
+          .split("_")
+          .map((x, i) => {
+            if (i === 0) {
+              return x;
+            } else {
+              return Capitalise(x);
+            }
+          })
+          .join("")
+    );
 
   const handleClick = () => {
     dispatch({
       type: "handleSortBy",
-      sortByKey: key,
+      sortByKey: name,
     });
   };
 
+  let intent: Intent = "none";
+  switch (filter.sortBy[name]) {
+    case SortByKeyState.asc:
+      intent = "success";
+      break;
+    case SortByKeyState.dsc:
+      intent = "danger";
+      break;
+    case SortByKeyState.none:
+      intent = "none";
+      break;
+
+    default:
+      break;
+  }
+
   return (
-    <Button onClick={handleClick}>
-      {filter.sortBy[key] === SortByKeyState.asc && <FaArrowUp />}
-      {key}
+    <Button onClick={handleClick} intent={intent}>
+      <div className="flex flex-row gap-1 justify-center items-center">
+        {intent === "success" && <FaArrowUp className="" />}
+        {intent === "danger" && <FaArrowDown />}
+        {t(`${name}`)}
+      </div>
     </Button>
   );
+}
+
+function Capitalise(x: string) {
+  if (x === "") return "";
+
+  return x[0].toLocaleUpperCase() + x.slice(1);
 }

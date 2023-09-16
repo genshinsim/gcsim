@@ -1,6 +1,7 @@
 import {
   FilterState,
   ItemFilterState,
+  SortByKeyState,
 } from "SharedComponents/FilterComponents/Filter.utils";
 
 export function craftQuery(
@@ -115,14 +116,27 @@ export function craftQuery(
     }
   }
 
-  //force default sort by date for now
+  const sort = {};
+  Object.entries(filter.sortBy).map(([key, keyState]) => {
+    const sortKey =
+      key === "mean_dps_per_target" ? "summary.mean_dps_per_target" : keyState;
+    switch (keyState) {
+      case SortByKeyState.asc:
+        sort[sortKey] = 1;
+        break;
+      case SortByKeyState.dsc:
+        sort[sortKey] = -1;
+        break;
+      case SortByKeyState.none:
+        break;
+    }
+  });
+
   return {
     query,
     limit,
     skip,
-    sort: {
-      create_date: -1,
-    },
+    sort,
   };
 }
 
@@ -135,7 +149,9 @@ export interface DbQuery {
   };
   limit: number;
   sort?: {
-    create_date: number;
+    // create_date: 1 | -1;
+    // "summary.mean_dps_per_target"?: 1 | -1;
+    [key: string]: 1 | -1;
   };
   skip?: number;
 }
