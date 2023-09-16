@@ -1,12 +1,13 @@
-import { createContext } from "react";
-import charData from "../../Data/char_data.generated.json"
 import tagData from "@gcsim/db/src/tags.json";
+import { createContext } from "react";
+import charData from "../../Data/char_data.generated.json";
 
 export interface FilterState {
   charFilter: CharFilter;
   tagFilter: TagFilter;
   charIncludeCount: number;
   customFilter: string;
+  sortBy: ISortBy;
 }
 
 export enum ItemFilterState {
@@ -15,9 +16,9 @@ export enum ItemFilterState {
   "exclude",
 }
 
-export const charNames = Object.keys(charData.data).map(k => {
-  return k
-})
+export const charNames = Object.keys(charData.data).map((k) => {
+  return k;
+});
 
 export const initialCharFilter = charNames.reduce((acc, charName) => {
   acc[charName] = { state: ItemFilterState.none, charName };
@@ -25,15 +26,22 @@ export const initialCharFilter = charNames.reduce((acc, charName) => {
 }, {} as CharFilter);
 
 export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
-  acc[tag] = { state: ItemFilterState.none, tag}
-  return acc
-}, {} as TagFilter)
+  acc[tag] = { state: ItemFilterState.none, tag };
+  return acc;
+}, {} as TagFilter);
+
+export const sortByKeys = ["mean_dps_per_target", "create_date"];
+export const initialSortBy: ISortBy = sortByKeys.reduce((acc, sortByKey) => {
+  acc[sortByKey] = SortByKeyState.none;
+  return acc;
+}, {} as ISortBy);
 
 export const initialFilter: FilterState = {
   charFilter: initialCharFilter,
   tagFilter: initialTagFilter,
   charIncludeCount: 0,
   customFilter: "",
+  sortBy: initialSortBy,
 };
 
 export const FilterContext = createContext<FilterState>(initialFilter);
@@ -65,7 +73,7 @@ export type CharFilterState =
 
 export interface TagFilter {
   //tag key (int)
-  [key: string]: TagFilterState
+  [key: string]: TagFilterState;
 }
 
 export type TagFilterState =
@@ -76,7 +84,17 @@ export type TagFilterState =
   | {
       state: ItemFilterState.none;
       tag: string;
-    }
+    };
+
+export enum SortByKeyState {
+  "none",
+  "asc",
+  "dsc",
+}
+
+export interface ISortBy {
+  [key: string]: SortByKeyState;
+}
 
 export const FilterDispatchContext = createContext<
   React.Dispatch<FilterActions>
@@ -86,7 +104,8 @@ export type FilterActions =
   | CharFilterReducerAction
   | TagFilterReducerAction
   | GeneralFilterAction
-  | CustomFilterAction;
+  | CustomFilterAction
+  | SortByAction;
 
 interface GeneralFilterAction {
   type: "clearFilter";
@@ -112,9 +131,13 @@ interface CharFilterReducerAction {
 }
 
 interface TagFilterReducerAction {
-  type:
-    | "handleTag"
+  type: "handleTag";
   tag: string;
+}
+
+interface SortByAction {
+  type: "handleSortBy";
+  sortByKey: string;
 }
 
 export function filterReducer(
@@ -274,11 +297,34 @@ export function filterReducer(
         ...filter,
         tagFilter: {
           ...filter.tagFilter,
-          [action.tag] : {
+          [action.tag]: {
             state: newFilterState,
             tag: action.tag,
-          }
-        }
+          },
+        },
+      };
+    }
+
+    case "handleSortBy": {
+      const newSortByState: ISortBy = {};
+      switch (filter.sortBy[action.sortByKey]) {
+        case SortByKeyState.none:
+          newSortByState[action.sortByKey] = SortByKeyState.asc;
+          break;
+        case SortByKeyState.asc:
+          newSortByState[action.sortByKey] = SortByKeyState.dsc;
+          break;
+        case SortByKeyState.dsc:
+          newSortByState[action.sortByKey] = SortByKeyState.none;
+          break;
+      }
+
+      return {
+        ...filter,
+        sortBy: {
+          ...filter.sortBy,
+          ...newSortByState,
+        },
       };
     }
 
