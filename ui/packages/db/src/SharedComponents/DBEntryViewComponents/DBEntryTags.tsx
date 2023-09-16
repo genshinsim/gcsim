@@ -9,6 +9,8 @@ export default function DBEntryTags({
 }) {
   // const { t: translate } = useTranslation();
   // const t = (key: string) => translate(key) as string; // idk why this is needed
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setLocation] = useLocation();
 
   return (

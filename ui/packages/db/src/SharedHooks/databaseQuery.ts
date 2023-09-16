@@ -39,11 +39,11 @@ export function craftQuery(
   }
 
   if (includedChars.length > 0) {
-    let and: any[] = [];
-    let trav: { [key in string]: boolean } = {};
+    const and: unknown[] = [];
+    const trav: { [key in string]: boolean } = {};
     includedChars.forEach((char) => {
       if (char.includes("aether") || char.includes("lumine")) {
-        let ele = char.replace(/(aether|lumine)(.+)/, "$2");
+        const ele = char.replace(/(aether|lumine)(.+)/, "$2");
         trav[ele] = true;
         return;
       }
@@ -74,15 +74,15 @@ export function craftQuery(
         return;
       }
       and.push({
-          "summary.char_names": {$ne: char},
+        "summary.char_names": { $ne: char },
       });
     });
     Object.keys(trav).forEach((ele) => {
       and.push({
-          "summary.char_names": {$ne: `aether${ele}`},
+        "summary.char_names": { $ne: `aether${ele}` },
       });
       and.push({
-          "summary.char_names": {$ne: `lumine${ele}`},
+        "summary.char_names": { $ne: `lumine${ele}` },
       });
     });
     if (and.length > 0) {
@@ -100,7 +100,7 @@ export function craftQuery(
   for (const [tag, tagState] of Object.entries(filter.tagFilter)) {
     if (tagState.state === ItemFilterState.include) {
       includedTags.push(tag);
-    } 
+    }
   }
 
   if (includedTags.length > 0) {
@@ -122,13 +122,13 @@ export function craftQuery(
     skip,
     sort: {
       create_date: -1,
-    }
+    },
   };
 }
 
 export interface DbQuery {
   query: {
-    $and?: any[];
+    $and?: unknown[];
     accepted_tags?: {
       $in?: number[];
     };
