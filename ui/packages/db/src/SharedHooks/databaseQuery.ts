@@ -65,11 +65,11 @@ export function craftQuery(
   }
 
   if (excludedChars.length > 0) {
-    let and: any[] = [];
-    let trav: { [key in string]: boolean } = {};
+    const and: unknown[] = [];
+    const trav: { [key in string]: boolean } = {};
     excludedChars.forEach((char) => {
       if (char.includes("aether") || char.includes("lumine")) {
-        let ele = char.replace(/(aether|lumine)(.+)/, "$2");
+        const ele = char.replace(/(aether|lumine)(.+)/, "$2");
         trav[ele] = true;
         return;
       }
@@ -104,7 +104,7 @@ export function craftQuery(
   }
 
   if (includedTags.length > 0) {
-    let tags: any[] = [];
+    const tags: number[] = [];
     includedTags.forEach((tag) => {
       tags.push(parseInt(tag));
     });
