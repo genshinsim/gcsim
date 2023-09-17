@@ -314,7 +314,9 @@ export function filterReducer(
 
     case "handleSortBy": {
       let newSortByState: ISortBy;
-      switch (filter.sortBy[action.sortByKey]) {
+      console.log("action", action);
+
+      switch (filter.sortBy.sortByDirection) {
         case SortByDirection.dsc:
           newSortByState = {
             sortByDirection: SortByDirection.asc,
@@ -322,18 +324,18 @@ export function filterReducer(
           };
           break;
 
-        case SortByDirection.asc:
         default:
+        case SortByDirection.asc:
           newSortByState = {
-            sortByDirection: SortByDirection.asc,
+            sortByDirection: SortByDirection.dsc,
             sortKey: action.sortByKey,
           };
           break;
       }
 
       console.log("newSortByState", newSortByState);
-      console.log("action.sortByKey", action.sortByKey);
-      console.log("action", action);
+      // console.log("action.sortByKey", action.sortByKey);
+      // console.log("action", action);
 
       return {
         ...filter,

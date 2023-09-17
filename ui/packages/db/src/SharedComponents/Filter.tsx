@@ -315,7 +315,7 @@ function SortBy() {
             {sortByParams.map((param) => (
               <SortByParamButton
                 key={param.sortKey}
-                name={param.sortKey}
+                sortKey={param.sortKey}
                 translation={t(param.translationKey)}
               />
             ))}
@@ -327,10 +327,10 @@ function SortBy() {
 }
 
 function SortByParamButton({
-  name,
+  sortKey,
   translation,
 }: {
-  name: string;
+  sortKey: string;
   translation: string;
 }) {
   const filter = useContext(FilterContext);
@@ -339,21 +339,25 @@ function SortByParamButton({
   const handleClick = () => {
     dispatch({
       type: "handleSortBy",
-      sortByKey: name,
+      sortByKey: sortKey,
     });
   };
 
-  let intent: Intent = "none";
-  switch (filter.sortBy[name]) {
-    case SortByDirection.asc:
-      intent = "success";
-      break;
-    case SortByDirection.dsc:
-      intent = "danger";
-      break;
-    default:
-      intent = "none";
-      break;
+  let intent: Intent;
+  if (filter.sortBy.sortKey !== sortKey) {
+    intent = "none";
+  } else {
+    switch (filter.sortBy.sortByDirection) {
+      case SortByDirection.asc:
+        intent = "success";
+        break;
+      case SortByDirection.dsc:
+        intent = "danger";
+        break;
+      default:
+        intent = "none";
+        break;
+    }
   }
 
   return (
