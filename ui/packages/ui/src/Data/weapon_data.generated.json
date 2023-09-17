@@ -1,1173 +1,1180 @@
 {
-  "data": {
-    "akuoumaru": {
-      "id": 12416,
-      "key": "akuoumaru",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Maria"
-    },
-    "alleyhunter": {
-      "id": 15410,
-      "key": "alleyhunter",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Outlaw"
-    },
-    "amenomakageuchi": {
-      "id": 11414,
-      "key": "amenomakageuchi",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Bakufu"
-    },
-    "amosbow": {
-      "id": 15502,
-      "key": "amosbow",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Amos"
-    },
-    "apprenticesnotes": {
-      "id": 14101,
-      "key": "apprenticesnotes",
-      "rarity": 1,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Apprentice"
-    },
-    "aquasimulacra": {
-      "id": 15508,
-      "key": "aquasimulacra",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Kirin"
-    },
-    "aquilafavonia": {
-      "id": 11501,
-      "key": "aquilafavonia",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Falcon"
-    },
-    "athousandfloatingdreams": {
-      "id": 14511,
-      "key": "athousandfloatingdreams",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Ayus"
-    },
-    "balladofthefjords": {
-      "id": 13424,
-      "key": "balladofthefjords",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Shanty"
-    },
-    "beaconofthereedsea": {
-      "id": 12511,
-      "key": "beaconofthereedsea",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Deshret"
-    },
-    "beginnersprotector": {
-      "id": 13101,
-      "key": "beginnersprotector",
-      "rarity": 1,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Gewalt"
-    },
-    "blackcliffagate": {
-      "id": 14408,
-      "key": "blackcliffagate",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Blackrock"
-    },
-    "blackclifflongsword": {
-      "id": 11408,
-      "key": "blackclifflongsword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Blackrock"
-    },
-    "blackcliffpole": {
-      "id": 13404,
-      "key": "blackcliffpole",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Blackrock"
-    },
-    "blackcliffslasher": {
-      "id": 12408,
-      "key": "blackcliffslasher",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Blackrock"
-    },
-    "blackcliffwarbow": {
-      "id": 15408,
-      "key": "blackcliffwarbow",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Blackrock"
-    },
-    "blacktassel": {
-      "id": 13303,
-      "key": "blacktassel",
-      "rarity": 3,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Noire"
-    },
-    "bloodtaintedgreatsword": {
-      "id": 12302,
-      "key": "bloodtaintedgreatsword",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Siegfry"
-    },
-    "calamityqueller": {
-      "id": 13507,
-      "key": "calamityqueller",
-      "rarity": 5,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Santika"
-    },
-    "cinnabarspindle": {
-      "id": 11415,
-      "key": "cinnabarspindle",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Opus"
-    },
-    "compoundbow": {
-      "id": 15407,
-      "key": "compoundbow",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Exotic"
-    },
-    "coolsteel": {
-      "id": 11301,
-      "key": "coolsteel",
-      "rarity": 3,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Steel"
-    },
-    "crescentpike": {
-      "id": 13403,
-      "key": "crescentpike",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Exotic"
-    },
-    "darkironsword": {
-      "id": 11304,
-      "key": "darkironsword",
-      "rarity": 3,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Darker"
-    },
-    "deathmatch": {
-      "id": 13405,
-      "key": "deathmatch",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Gladiator"
-    },
-    "debateclub": {
-      "id": 12305,
-      "key": "debateclub",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Reasoning"
-    },
-    "dodocotales": {
-      "id": 14413,
-      "key": "dodocotales",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Ludiharpastum"
-    },
-    "dragonsbane": {
-      "id": 13401,
-      "key": "dragonsbane",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Stardust"
-    },
-    "dragonspinespear": {
-      "id": 13409,
-      "key": "dragonspinespear",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Everfrost"
-    },
-    "dullblade": {
-      "id": 11101,
-      "key": "dullblade",
-      "rarity": 1,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Blunt"
-    },
-    "elegyfortheend": {
-      "id": 15503,
-      "key": "elegyfortheend",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Widsith"
-    },
-    "emeraldorb": {
-      "id": 14304,
-      "key": "emeraldorb",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Jade"
-    },
-    "endoftheline": {
-      "id": 15418,
-      "key": "endoftheline",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Fin"
-    },
-    "engulfinglightning": {
-      "id": 13509,
-      "key": "engulfinglightning",
-      "rarity": 5,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Narukami"
-    },
-    "everlastingmoonglow": {
-      "id": 14506,
-      "key": "everlastingmoonglow",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Kaleido"
-    },
-    "eyeofperception": {
-      "id": 14409,
-      "key": "eyeofperception",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Truelens"
-    },
-    "fadingtwilight": {
-      "id": 15411,
-      "key": "fadingtwilight",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Fallensun"
-    },
-    "favoniuscodex": {
-      "id": 14401,
-      "key": "favoniuscodex",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Zephyrus"
-    },
-    "favoniusgreatsword": {
-      "id": 12401,
-      "key": "favoniusgreatsword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Zephyrus"
-    },
-    "favoniuslance": {
-      "id": 13407,
-      "key": "favoniuslance",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Zephyrus"
-    },
-    "favoniussword": {
-      "id": 11401,
-      "key": "favoniussword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Zephyrus"
-    },
-    "favoniuswarbow": {
-      "id": 15401,
-      "key": "favoniuswarbow",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Zephyrus"
-    },
-    "ferrousshadow": {
-      "id": 12301,
-      "key": "ferrousshadow",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Glaive"
-    },
-    "festeringdesire": {
-      "id": 11413,
-      "key": "festeringdesire",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Magnum"
-    },
-    "filletblade": {
-      "id": 11305,
-      "key": "filletblade",
-      "rarity": 3,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Sashimi"
-    },
-    "finaleofthedeep": {
-      "id": 11425,
-      "key": "finaleofthedeep",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Vorpal"
-    },
-    "fleuvecendreferryman": {
-      "id": 11426,
-      "key": "fleuvecendreferryman",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Machination"
-    },
-    "flowingpurity": {
-      "id": 14425,
-      "key": "flowingpurity",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Vorpal"
-    },
-    "forestregalia": {
-      "id": 12417,
-      "key": "forestregalia",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Arakalari"
-    },
-    "freedomsworn": {
-      "id": 11503,
-      "key": "freedomsworn",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Widsith"
-    },
-    "frostbearer": {
-      "id": 14412,
-      "key": "frostbearer",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Everfrost"
-    },
-    "fruitoffulfillment": {
-      "id": 14417,
-      "key": "fruitoffulfillment",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Arakalari"
-    },
-    "hakushinring": {
-      "id": 14414,
-      "key": "hakushinring",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Bakufu"
-    },
-    "halberd": {
-      "id": 13302,
-      "key": "halberd",
-      "rarity": 3,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Halberd"
-    },
-    "hamayumi": {
-      "id": 15414,
-      "key": "hamayumi",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Bakufu"
-    },
-    "harangeppakufutsu": {
-      "id": 11510,
-      "key": "harangeppakufutsu",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Amenoma"
-    },
-    "harbingerofdawn": {
-      "id": 11302,
-      "key": "harbingerofdawn",
-      "rarity": 3,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Dawn"
-    },
-    "huntersbow": {
-      "id": 15101,
-      "key": "huntersbow",
-      "rarity": 1,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Hunters"
-    },
-    "hunterspath": {
-      "id": 15511,
-      "key": "hunterspath",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Ayus"
-    },
-    "ibispiercer": {
-      "id": 15419,
-      "key": "ibispiercer",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Ibis"
-    },
-    "ironpoint": {
-      "id": 13201,
-      "key": "ironpoint",
-      "rarity": 2,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Rod"
-    },
-    "ironsting": {
-      "id": 11407,
-      "key": "ironsting",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Exotic"
-    },
-    "jadefallssplendor": {
-      "id": 14505,
-      "key": "jadefallssplendor",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Morax"
-    },
-    "kagotsurubeisshin": {
-      "id": 11416,
-      "key": "kagotsurubeisshin",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Youtou"
-    },
-    "kagurasverity": {
-      "id": 14509,
-      "key": "kagurasverity",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Narukami"
-    },
-    "katsuragikirinagamasa": {
-      "id": 12414,
-      "key": "katsuragikirinagamasa",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Bakufu"
-    },
-    "keyofkhajnisut": {
-      "id": 11511,
-      "key": "keyofkhajnisut",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Deshret"
-    },
-    "kingssquire": {
-      "id": 15417,
-      "key": "kingssquire",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Arakalari"
-    },
-    "kitaincrossspear": {
-      "id": 13414,
-      "key": "kitaincrossspear",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Bakufu"
-    },
-    "lightoffoliarincision": {
-      "id": 11512,
-      "key": "lightoffoliarincision",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Ayus"
-    },
-    "lionsroar": {
-      "id": 11405,
-      "key": "lionsroar",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Rockkiller"
-    },
-    "lithicblade": {
-      "id": 12410,
-      "key": "lithicblade",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Lapis"
-    },
-    "lithicspear": {
-      "id": 13406,
-      "key": "lithicspear",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Lapis"
-    },
-    "lostprayertothesacredwinds": {
-      "id": 14502,
-      "key": "lostprayertothesacredwinds",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Fourwinds"
-    },
-    "luxurioussealord": {
-      "id": 12412,
-      "key": "luxurioussealord",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_MillenniaTuna"
-    },
-    "magicguide": {
-      "id": 14301,
-      "key": "magicguide",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Intro"
-    },
-    "mailedflower": {
-      "id": 12418,
-      "key": "mailedflower",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Fleurfair"
-    },
-    "makhairaaquamarine": {
-      "id": 12415,
-      "key": "makhairaaquamarine",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Pleroma"
-    },
-    "mappamare": {
-      "id": 14407,
-      "key": "mappamare",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Exotic"
-    },
-    "memoryofdust": {
-      "id": 14504,
-      "key": "memoryofdust",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Kunwu"
-    },
-    "messenger": {
-      "id": 15305,
-      "key": "messenger",
-      "rarity": 3,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Msg"
-    },
-    "missivewindspear": {
-      "id": 13419,
-      "key": "missivewindspear",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Windvane"
-    },
-    "mistsplitterreforged": {
-      "id": 11509,
-      "key": "mistsplitterreforged",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Narukami"
-    },
-    "mitternachtswaltz": {
-      "id": 15412,
-      "key": "mitternachtswaltz",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Nachtblind"
-    },
-    "moonpiercer": {
-      "id": 13417,
-      "key": "moonpiercer",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Arakalari"
-    },
-    "mouunsmoon": {
-      "id": 15416,
-      "key": "mouunsmoon",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Maria"
-    },
-    "oathsworneye": {
-      "id": 14415,
-      "key": "oathsworneye",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Jyanome"
-    },
-    "oldmercspal": {
-      "id": 12201,
-      "key": "oldmercspal",
-      "rarity": 2,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Oyaji"
-    },
-    "otherworldlystory": {
-      "id": 14303,
-      "key": "otherworldlystory",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Lightnov"
-    },
-    "pocketgrimoire": {
-      "id": 14201,
-      "key": "pocketgrimoire",
-      "rarity": 2,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Pocket"
-    },
-    "polarstar": {
-      "id": 15507,
-      "key": "polarstar",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Worldbane"
-    },
-    "predator": {
-      "id": 15415,
-      "key": "predator",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Predator"
-    },
-    "primordialjadecutter": {
-      "id": 11505,
-      "key": "primordialjadecutter",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Morax"
-    },
-    "primordialjadewingedspear": {
-      "id": 13505,
-      "key": "primordialjadewingedspear",
-      "rarity": 5,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Morax"
-    },
-    "prototypeamber": {
-      "id": 14406,
-      "key": "prototypeamber",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Proto"
-    },
-    "prototypearchaic": {
-      "id": 12406,
-      "key": "prototypearchaic",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Proto"
-    },
-    "prototypecrescent": {
-      "id": 15406,
-      "key": "prototypecrescent",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Proto"
-    },
-    "prototyperancour": {
-      "id": 11406,
-      "key": "prototyperancour",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Proto"
-    },
-    "prototypestarglitter": {
-      "id": 13402,
-      "key": "prototypestarglitter",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Proto"
-    },
-    "rainslasher": {
-      "id": 12405,
-      "key": "rainslasher",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Perdue"
-    },
-    "ravenbow": {
-      "id": 15301,
-      "key": "ravenbow",
-      "rarity": 3,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Crowfeather"
-    },
-    "recurvebow": {
-      "id": 15303,
-      "key": "recurvebow",
-      "rarity": 3,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Curve"
-    },
-    "redhornstonethresher": {
-      "id": 12510,
-      "key": "redhornstonethresher",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Itadorimaru"
-    },
-    "rightfulreward": {
-      "id": 13425,
-      "key": "rightfulreward",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Vorpal"
-    },
-    "royalbow": {
-      "id": 15404,
-      "key": "royalbow",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Theocrat"
-    },
-    "royalgreatsword": {
-      "id": 12404,
-      "key": "royalgreatsword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Theocrat"
-    },
-    "royalgrimoire": {
-      "id": 14404,
-      "key": "royalgrimoire",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Theocrat"
-    },
-    "royallongsword": {
-      "id": 11404,
-      "key": "royallongsword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Theocrat"
-    },
-    "royalspear": {
-      "id": 13408,
-      "key": "royalspear",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Theocrat"
-    },
-    "rust": {
-      "id": 15405,
-      "key": "rust",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Recluse"
-    },
-    "sacrificialbow": {
-      "id": 15403,
-      "key": "sacrificialbow",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Fossil"
-    },
-    "sacrificialfragments": {
-      "id": 14403,
-      "key": "sacrificialfragments",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Fossil"
-    },
-    "sacrificialgreatsword": {
-      "id": 12403,
-      "key": "sacrificialgreatsword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Fossil"
-    },
-    "sacrificialjade": {
-      "id": 14424,
-      "key": "sacrificialjade",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Yue"
-    },
-    "sacrificialsword": {
-      "id": 11403,
-      "key": "sacrificialsword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Fossil"
-    },
-    "sapwoodblade": {
-      "id": 11417,
-      "key": "sapwoodblade",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Arakalari"
-    },
-    "scionoftheblazingsun": {
-      "id": 15424,
-      "key": "scionoftheblazingsun",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Gurabad"
-    },
-    "seasonedhuntersbow": {
-      "id": 15201,
-      "key": "seasonedhuntersbow",
-      "rarity": 2,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Old"
-    },
-    "serpentspine": {
-      "id": 12409,
-      "key": "serpentspine",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Kione"
-    },
-    "sharpshootersoath": {
-      "id": 15302,
-      "key": "sharpshootersoath",
-      "rarity": 3,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Arjuna"
-    },
-    "silversword": {
-      "id": 11201,
-      "key": "silversword",
-      "rarity": 2,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Silver"
-    },
-    "skyridergreatsword": {
-      "id": 12306,
-      "key": "skyridergreatsword",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Mitsurugi"
-    },
-    "skyridersword": {
-      "id": 11306,
-      "key": "skyridersword",
-      "rarity": 3,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Mitsurugi"
-    },
-    "skywardatlas": {
-      "id": 14501,
-      "key": "skywardatlas",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Dvalin"
-    },
-    "skywardblade": {
-      "id": 11502,
-      "key": "skywardblade",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Dvalin"
-    },
-    "skywardharp": {
-      "id": 15501,
-      "key": "skywardharp",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Dvalin"
-    },
-    "skywardpride": {
-      "id": 12501,
-      "key": "skywardpride",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Dvalin"
-    },
-    "skywardspine": {
-      "id": 13502,
-      "key": "skywardspine",
-      "rarity": 5,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Dvalin"
-    },
-    "slingshot": {
-      "id": 15304,
-      "key": "slingshot",
-      "rarity": 3,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Sling"
-    },
-    "snowtombedstarsilver": {
-      "id": 12411,
-      "key": "snowtombedstarsilver",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Dragonfell"
-    },
-    "solarpearl": {
-      "id": 14405,
-      "key": "solarpearl",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Resurrection"
-    },
-    "songofbrokenpines": {
-      "id": 12503,
-      "key": "songofbrokenpines",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Widsith"
-    },
-    "songofstillness": {
-      "id": 15425,
-      "key": "songofstillness",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Vorpal"
-    },
-    "staffofhoma": {
-      "id": 13501,
-      "key": "staffofhoma",
-      "rarity": 5,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Homa"
-    },
-    "staffofthescarletsands": {
-      "id": 13511,
-      "key": "staffofthescarletsands",
-      "rarity": 5,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Deshret"
-    },
-    "summitshaper": {
-      "id": 11504,
-      "key": "summitshaper",
-      "rarity": 5,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Kunwu"
-    },
-    "swordofdescension": {
-      "id": 11412,
-      "key": "swordofdescension",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Psalmus"
-    },
-    "talkingstick": {
-      "id": 12424,
-      "key": "talkingstick",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_BeastTamer"
-    },
-    "thealleyflash": {
-      "id": 11410,
-      "key": "thealleyflash",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Outlaw"
-    },
-    "thebell": {
-      "id": 12402,
-      "key": "thebell",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Troupe"
-    },
-    "theblacksword": {
-      "id": 11409,
-      "key": "theblacksword",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Bloodstained"
-    },
-    "thecatch": {
-      "id": 13415,
-      "key": "thecatch",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Mori"
-    },
-    "thefirstgreatmagic": {
-      "id": 15512,
-      "key": "thefirstgreatmagic",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Pledge"
-    },
-    "theflute": {
-      "id": 11402,
-      "key": "theflute",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Troupe"
-    },
-    "thestringless": {
-      "id": 15402,
-      "key": "thestringless",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Troupe"
-    },
-    "theunforged": {
-      "id": 12504,
-      "key": "theunforged",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Kunwu"
-    },
-    "theviridescenthunt": {
-      "id": 15409,
-      "key": "theviridescenthunt",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Viridescent"
-    },
-    "thewidsith": {
-      "id": 14402,
-      "key": "thewidsith",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Troupe"
-    },
-    "thrillingtalesofdragonslayers": {
-      "id": 14302,
-      "key": "thrillingtalesofdragonslayers",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Pulpfic"
-    },
-    "thunderingpulse": {
-      "id": 15509,
-      "key": "thunderingpulse",
-      "rarity": 5,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Narukami"
-    },
-    "tidalshadow": {
-      "id": 12425,
-      "key": "tidalshadow",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Vorpal"
-    },
-    "toukaboushigure": {
-      "id": 11422,
-      "key": "toukaboushigure",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Kasabouzu"
-    },
-    "travelershandysword": {
-      "id": 11303,
-      "key": "travelershandysword",
-      "rarity": 3,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Traveler"
-    },
-    "tulaytullahsremembrance": {
-      "id": 14512,
-      "key": "tulaytullahsremembrance",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Alaya"
-    },
-    "twinnephrite": {
-      "id": 14305,
-      "key": "twinnephrite",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Phoney"
-    },
-    "vortexvanquisher": {
-      "id": 13504,
-      "key": "vortexvanquisher",
-      "rarity": 5,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Kunwu"
-    },
-    "wanderingevenstar": {
-      "id": 14416,
-      "key": "wanderingevenstar",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Pleroma"
-    },
-    "wastergreatsword": {
-      "id": 12101,
-      "key": "wastergreatsword",
-      "rarity": 1,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Aniki"
-    },
-    "wavebreakersfin": {
-      "id": 13416,
-      "key": "wavebreakersfin",
-      "rarity": 4,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Maria"
-    },
-    "whiteblind": {
-      "id": 12407,
-      "key": "whiteblind",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Exotic"
-    },
-    "whiteirongreatsword": {
-      "id": 12303,
-      "key": "whiteirongreatsword",
-      "rarity": 3,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Tin"
-    },
-    "whitetassel": {
-      "id": 13301,
-      "key": "whitetassel",
-      "rarity": 3,
-      "weapon_class": "WEAPON_POLE",
-      "image_name": "UI_EquipIcon_Pole_Ruby"
-    },
-    "windblumeode": {
-      "id": 15413,
-      "key": "windblumeode",
-      "rarity": 4,
-      "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Fleurfair"
-    },
-    "wineandsong": {
-      "id": 14410,
-      "key": "wineandsong",
-      "rarity": 4,
-      "weapon_class": "WEAPON_CATALYST",
-      "image_name": "UI_EquipIcon_Catalyst_Outlaw"
-    },
-    "wolffang": {
-      "id": 11424,
-      "key": "wolffang",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Boreas"
-    },
-    "wolfsgravestone": {
-      "id": 12502,
-      "key": "wolfsgravestone",
-      "rarity": 5,
-      "weapon_class": "WEAPON_CLAYMORE",
-      "image_name": "UI_EquipIcon_Claymore_Wolfmound"
-    },
-    "xiphosmoonlight": {
-      "id": 11418,
-      "key": "xiphosmoonlight",
-      "rarity": 4,
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "image_name": "UI_EquipIcon_Sword_Pleroma"
+  "data":  {
+    "akuoumaru":  {
+      "id":  12416,
+      "key":  "akuoumaru",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Maria"
+    },
+    "alleyhunter":  {
+      "id":  15410,
+      "key":  "alleyhunter",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Outlaw"
+    },
+    "amenomakageuchi":  {
+      "id":  11414,
+      "key":  "amenomakageuchi",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Bakufu"
+    },
+    "amosbow":  {
+      "id":  15502,
+      "key":  "amosbow",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Amos"
+    },
+    "apprenticesnotes":  {
+      "id":  14101,
+      "key":  "apprenticesnotes",
+      "rarity":  1,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Apprentice"
+    },
+    "aquasimulacra":  {
+      "id":  15508,
+      "key":  "aquasimulacra",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Kirin"
+    },
+    "aquilafavonia":  {
+      "id":  11501,
+      "key":  "aquilafavonia",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Falcon"
+    },
+    "athousandfloatingdreams":  {
+      "id":  14511,
+      "key":  "athousandfloatingdreams",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Ayus"
+    },
+    "balladofthefjords":  {
+      "id":  13424,
+      "key":  "balladofthefjords",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Shanty"
+    },
+    "beaconofthereedsea":  {
+      "id":  12511,
+      "key":  "beaconofthereedsea",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Deshret"
+    },
+    "beginnersprotector":  {
+      "id":  13101,
+      "key":  "beginnersprotector",
+      "rarity":  1,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Gewalt"
+    },
+    "blackcliffagate":  {
+      "id":  14408,
+      "key":  "blackcliffagate",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Blackrock"
+    },
+    "blackclifflongsword":  {
+      "id":  11408,
+      "key":  "blackclifflongsword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Blackrock"
+    },
+    "blackcliffpole":  {
+      "id":  13404,
+      "key":  "blackcliffpole",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Blackrock"
+    },
+    "blackcliffslasher":  {
+      "id":  12408,
+      "key":  "blackcliffslasher",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Blackrock"
+    },
+    "blackcliffwarbow":  {
+      "id":  15408,
+      "key":  "blackcliffwarbow",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Blackrock"
+    },
+    "blacktassel":  {
+      "id":  13303,
+      "key":  "blacktassel",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Noire"
+    },
+    "bloodtaintedgreatsword":  {
+      "id":  12302,
+      "key":  "bloodtaintedgreatsword",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Siegfry"
+    },
+    "calamityqueller":  {
+      "id":  13507,
+      "key":  "calamityqueller",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Santika"
+    },
+    "cinnabarspindle":  {
+      "id":  11415,
+      "key":  "cinnabarspindle",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Opus"
+    },
+    "compoundbow":  {
+      "id":  15407,
+      "key":  "compoundbow",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Exotic"
+    },
+    "coolsteel":  {
+      "id":  11301,
+      "key":  "coolsteel",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Steel"
+    },
+    "crescentpike":  {
+      "id":  13403,
+      "key":  "crescentpike",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Exotic"
+    },
+    "darkironsword":  {
+      "id":  11304,
+      "key":  "darkironsword",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Darker"
+    },
+    "deathmatch":  {
+      "id":  13405,
+      "key":  "deathmatch",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Gladiator"
+    },
+    "debateclub":  {
+      "id":  12305,
+      "key":  "debateclub",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Reasoning"
+    },
+    "dodocotales":  {
+      "id":  14413,
+      "key":  "dodocotales",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Ludiharpastum"
+    },
+    "dragonsbane":  {
+      "id":  13401,
+      "key":  "dragonsbane",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Stardust"
+    },
+    "dragonspinespear":  {
+      "id":  13409,
+      "key":  "dragonspinespear",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Everfrost"
+    },
+    "dullblade":  {
+      "id":  11101,
+      "key":  "dullblade",
+      "rarity":  1,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Blunt"
+    },
+    "elegyfortheend":  {
+      "id":  15503,
+      "key":  "elegyfortheend",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Widsith"
+    },
+    "emeraldorb":  {
+      "id":  14304,
+      "key":  "emeraldorb",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Jade"
+    },
+    "endoftheline":  {
+      "id":  15418,
+      "key":  "endoftheline",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Fin"
+    },
+    "engulfinglightning":  {
+      "id":  13509,
+      "key":  "engulfinglightning",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Narukami"
+    },
+    "everlastingmoonglow":  {
+      "id":  14506,
+      "key":  "everlastingmoonglow",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Kaleido"
+    },
+    "eyeofperception":  {
+      "id":  14409,
+      "key":  "eyeofperception",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Truelens"
+    },
+    "fadingtwilight":  {
+      "id":  15411,
+      "key":  "fadingtwilight",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Fallensun"
+    },
+    "favoniuscodex":  {
+      "id":  14401,
+      "key":  "favoniuscodex",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Zephyrus"
+    },
+    "favoniusgreatsword":  {
+      "id":  12401,
+      "key":  "favoniusgreatsword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Zephyrus"
+    },
+    "favoniuslance":  {
+      "id":  13407,
+      "key":  "favoniuslance",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Zephyrus"
+    },
+    "favoniussword":  {
+      "id":  11401,
+      "key":  "favoniussword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Zephyrus"
+    },
+    "favoniuswarbow":  {
+      "id":  15401,
+      "key":  "favoniuswarbow",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Zephyrus"
+    },
+    "ferrousshadow":  {
+      "id":  12301,
+      "key":  "ferrousshadow",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Glaive"
+    },
+    "festeringdesire":  {
+      "id":  11413,
+      "key":  "festeringdesire",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Magnum"
+    },
+    "filletblade":  {
+      "id":  11305,
+      "key":  "filletblade",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Sashimi"
+    },
+    "finaleofthedeep":  {
+      "id":  11425,
+      "key":  "finaleofthedeep",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Vorpal"
+    },
+    "fleuvecendreferryman":  {
+      "id":  11426,
+      "key":  "fleuvecendreferryman",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Machination"
+    },
+    "flowingpurity":  {
+      "id":  14425,
+      "key":  "flowingpurity",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Vorpal"
+    },
+    "forestregalia":  {
+      "id":  12417,
+      "key":  "forestregalia",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Arakalari"
+    },
+    "freedomsworn":  {
+      "id":  11503,
+      "key":  "freedomsworn",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Widsith"
+    },
+    "frostbearer":  {
+      "id":  14412,
+      "key":  "frostbearer",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Everfrost"
+    },
+    "fruitoffulfillment":  {
+      "id":  14417,
+      "key":  "fruitoffulfillment",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Arakalari"
+    },
+    "hakushinring":  {
+      "id":  14414,
+      "key":  "hakushinring",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Bakufu"
+    },
+    "halberd":  {
+      "id":  13302,
+      "key":  "halberd",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Halberd"
+    },
+    "hamayumi":  {
+      "id":  15414,
+      "key":  "hamayumi",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Bakufu"
+    },
+    "harangeppakufutsu":  {
+      "id":  11510,
+      "key":  "harangeppakufutsu",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Amenoma"
+    },
+    "harbingerofdawn":  {
+      "id":  11302,
+      "key":  "harbingerofdawn",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Dawn"
+    },
+    "huntersbow":  {
+      "id":  15101,
+      "key":  "huntersbow",
+      "rarity":  1,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Hunters"
+    },
+    "hunterspath":  {
+      "id":  15511,
+      "key":  "hunterspath",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Ayus"
+    },
+    "ibispiercer":  {
+      "id":  15419,
+      "key":  "ibispiercer",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Ibis"
+    },
+    "ironpoint":  {
+      "id":  13201,
+      "key":  "ironpoint",
+      "rarity":  2,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Rod"
+    },
+    "ironsting":  {
+      "id":  11407,
+      "key":  "ironsting",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Exotic"
+    },
+    "jadefallssplendor":  {
+      "id":  14505,
+      "key":  "jadefallssplendor",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Morax"
+    },
+    "kagotsurubeisshin":  {
+      "id":  11416,
+      "key":  "kagotsurubeisshin",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Youtou"
+    },
+    "kagurasverity":  {
+      "id":  14509,
+      "key":  "kagurasverity",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Narukami"
+    },
+    "katsuragikirinagamasa":  {
+      "id":  12414,
+      "key":  "katsuragikirinagamasa",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Bakufu"
+    },
+    "keyofkhajnisut":  {
+      "id":  11511,
+      "key":  "keyofkhajnisut",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Deshret"
+    },
+    "kingssquire":  {
+      "id":  15417,
+      "key":  "kingssquire",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Arakalari"
+    },
+    "kitaincrossspear":  {
+      "id":  13414,
+      "key":  "kitaincrossspear",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Bakufu"
+    },
+    "lightoffoliarincision":  {
+      "id":  11512,
+      "key":  "lightoffoliarincision",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Ayus"
+    },
+    "lionsroar":  {
+      "id":  11405,
+      "key":  "lionsroar",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Rockkiller"
+    },
+    "lithicblade":  {
+      "id":  12410,
+      "key":  "lithicblade",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Lapis"
+    },
+    "lithicspear":  {
+      "id":  13406,
+      "key":  "lithicspear",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Lapis"
+    },
+    "lostprayertothesacredwinds":  {
+      "id":  14502,
+      "key":  "lostprayertothesacredwinds",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Fourwinds"
+    },
+    "luxurioussealord":  {
+      "id":  12412,
+      "key":  "luxurioussealord",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_MillenniaTuna"
+    },
+    "magicguide":  {
+      "id":  14301,
+      "key":  "magicguide",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Intro"
+    },
+    "mailedflower":  {
+      "id":  12418,
+      "key":  "mailedflower",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Fleurfair"
+    },
+    "makhairaaquamarine":  {
+      "id":  12415,
+      "key":  "makhairaaquamarine",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Pleroma"
+    },
+    "mappamare":  {
+      "id":  14407,
+      "key":  "mappamare",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Exotic"
+    },
+    "memoryofdust":  {
+      "id":  14504,
+      "key":  "memoryofdust",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Kunwu"
+    },
+    "messenger":  {
+      "id":  15305,
+      "key":  "messenger",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Msg"
+    },
+    "missivewindspear":  {
+      "id":  13419,
+      "key":  "missivewindspear",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Windvane"
+    },
+    "mistsplitterreforged":  {
+      "id":  11509,
+      "key":  "mistsplitterreforged",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Narukami"
+    },
+    "mitternachtswaltz":  {
+      "id":  15412,
+      "key":  "mitternachtswaltz",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Nachtblind"
+    },
+    "moonpiercer":  {
+      "id":  13417,
+      "key":  "moonpiercer",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Arakalari"
+    },
+    "mouunsmoon":  {
+      "id":  15416,
+      "key":  "mouunsmoon",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Maria"
+    },
+    "oathsworneye":  {
+      "id":  14415,
+      "key":  "oathsworneye",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Jyanome"
+    },
+    "oldmercspal":  {
+      "id":  12201,
+      "key":  "oldmercspal",
+      "rarity":  2,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Oyaji"
+    },
+    "otherworldlystory":  {
+      "id":  14303,
+      "key":  "otherworldlystory",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Lightnov"
+    },
+    "pocketgrimoire":  {
+      "id":  14201,
+      "key":  "pocketgrimoire",
+      "rarity":  2,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Pocket"
+    },
+    "polarstar":  {
+      "id":  15507,
+      "key":  "polarstar",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Worldbane"
+    },
+    "portablepowersaw":  {
+      "id":  12427,
+      "key":  "portablepowersaw",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Mechanic"
+    },
+    "predator":  {
+      "id":  15415,
+      "key":  "predator",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Predator"
+    },
+    "primordialjadecutter":  {
+      "id":  11505,
+      "key":  "primordialjadecutter",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Morax"
+    },
+    "primordialjadewingedspear":  {
+      "id":  13505,
+      "key":  "primordialjadewingedspear",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Morax"
+    },
+    "prototypeamber":  {
+      "id":  14406,
+      "key":  "prototypeamber",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Proto"
+    },
+    "prototypearchaic":  {
+      "id":  12406,
+      "key":  "prototypearchaic",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Proto"
+    },
+    "prototypecrescent":  {
+      "id":  15406,
+      "key":  "prototypecrescent",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Proto"
+    },
+    "prototyperancour":  {
+      "id":  11406,
+      "key":  "prototyperancour",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Proto"
+    },
+    "prototypestarglitter":  {
+      "id":  13402,
+      "key":  "prototypestarglitter",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Proto"
+    },
+    "rainslasher":  {
+      "id":  12405,
+      "key":  "rainslasher",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Perdue"
+    },
+    "ravenbow":  {
+      "id":  15301,
+      "key":  "ravenbow",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Crowfeather"
+    },
+    "recurvebow":  {
+      "id":  15303,
+      "key":  "recurvebow",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Curve"
+    },
+    "redhornstonethresher":  {
+      "id":  12510,
+      "key":  "redhornstonethresher",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Itadorimaru"
+    },
+    "rightfulreward":  {
+      "id":  13425,
+      "key":  "rightfulreward",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Vorpal"
+    },
+    "royalbow":  {
+      "id":  15404,
+      "key":  "royalbow",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Theocrat"
+    },
+    "royalgreatsword":  {
+      "id":  12404,
+      "key":  "royalgreatsword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Theocrat"
+    },
+    "royalgrimoire":  {
+      "id":  14404,
+      "key":  "royalgrimoire",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Theocrat"
+    },
+    "royallongsword":  {
+      "id":  11404,
+      "key":  "royallongsword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Theocrat"
+    },
+    "royalspear":  {
+      "id":  13408,
+      "key":  "royalspear",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Theocrat"
+    },
+    "rust":  {
+      "id":  15405,
+      "key":  "rust",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Recluse"
+    },
+    "sacrificialbow":  {
+      "id":  15403,
+      "key":  "sacrificialbow",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Fossil"
+    },
+    "sacrificialfragments":  {
+      "id":  14403,
+      "key":  "sacrificialfragments",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Fossil"
+    },
+    "sacrificialgreatsword":  {
+      "id":  12403,
+      "key":  "sacrificialgreatsword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Fossil"
+    },
+    "sacrificialjade":  {
+      "id":  14424,
+      "key":  "sacrificialjade",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Yue"
+    },
+    "sacrificialsword":  {
+      "id":  11403,
+      "key":  "sacrificialsword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Fossil"
+    },
+    "sapwoodblade":  {
+      "id":  11417,
+      "key":  "sapwoodblade",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Arakalari"
+    },
+    "scionoftheblazingsun":  {
+      "id":  15424,
+      "key":  "scionoftheblazingsun",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Gurabad"
+    },
+    "seasonedhuntersbow":  {
+      "id":  15201,
+      "key":  "seasonedhuntersbow",
+      "rarity":  2,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Old"
+    },
+    "serpentspine":  {
+      "id":  12409,
+      "key":  "serpentspine",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Kione"
+    },
+    "sharpshootersoath":  {
+      "id":  15302,
+      "key":  "sharpshootersoath",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Arjuna"
+    },
+    "silversword":  {
+      "id":  11201,
+      "key":  "silversword",
+      "rarity":  2,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Silver"
+    },
+    "skyridergreatsword":  {
+      "id":  12306,
+      "key":  "skyridergreatsword",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Mitsurugi"
+    },
+    "skyridersword":  {
+      "id":  11306,
+      "key":  "skyridersword",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Mitsurugi"
+    },
+    "skywardatlas":  {
+      "id":  14501,
+      "key":  "skywardatlas",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Dvalin"
+    },
+    "skywardblade":  {
+      "id":  11502,
+      "key":  "skywardblade",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Dvalin"
+    },
+    "skywardharp":  {
+      "id":  15501,
+      "key":  "skywardharp",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Dvalin"
+    },
+    "skywardpride":  {
+      "id":  12501,
+      "key":  "skywardpride",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Dvalin"
+    },
+    "skywardspine":  {
+      "id":  13502,
+      "key":  "skywardspine",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Dvalin"
+    },
+    "slingshot":  {
+      "id":  15304,
+      "key":  "slingshot",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Sling"
+    },
+    "snowtombedstarsilver":  {
+      "id":  12411,
+      "key":  "snowtombedstarsilver",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Dragonfell"
+    },
+    "solarpearl":  {
+      "id":  14405,
+      "key":  "solarpearl",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Resurrection"
+    },
+    "songofbrokenpines":  {
+      "id":  12503,
+      "key":  "songofbrokenpines",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Widsith"
+    },
+    "songofstillness":  {
+      "id":  15425,
+      "key":  "songofstillness",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Vorpal"
+    },
+    "staffofhoma":  {
+      "id":  13501,
+      "key":  "staffofhoma",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Homa"
+    },
+    "staffofthescarletsands":  {
+      "id":  13511,
+      "key":  "staffofthescarletsands",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Deshret"
+    },
+    "summitshaper":  {
+      "id":  11504,
+      "key":  "summitshaper",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Kunwu"
+    },
+    "swordofdescension":  {
+      "id":  11412,
+      "key":  "swordofdescension",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Psalmus"
+    },
+    "talkingstick":  {
+      "id":  12424,
+      "key":  "talkingstick",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_BeastTamer"
+    },
+    "thealleyflash":  {
+      "id":  11410,
+      "key":  "thealleyflash",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Outlaw"
+    },
+    "thebell":  {
+      "id":  12402,
+      "key":  "thebell",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Troupe"
+    },
+    "theblacksword":  {
+      "id":  11409,
+      "key":  "theblacksword",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Bloodstained"
+    },
+    "thecatch":  {
+      "id":  13415,
+      "key":  "thecatch",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Mori"
+    },
+    "thefirstgreatmagic":  {
+      "id":  15512,
+      "key":  "thefirstgreatmagic",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Pledge"
+    },
+    "theflute":  {
+      "id":  11402,
+      "key":  "theflute",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Troupe"
+    },
+    "thestringless":  {
+      "id":  15402,
+      "key":  "thestringless",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Troupe"
+    },
+    "theunforged":  {
+      "id":  12504,
+      "key":  "theunforged",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Kunwu"
+    },
+    "theviridescenthunt":  {
+      "id":  15409,
+      "key":  "theviridescenthunt",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Viridescent"
+    },
+    "thewidsith":  {
+      "id":  14402,
+      "key":  "thewidsith",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Troupe"
+    },
+    "thrillingtalesofdragonslayers":  {
+      "id":  14302,
+      "key":  "thrillingtalesofdragonslayers",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Pulpfic"
+    },
+    "thunderingpulse":  {
+      "id":  15509,
+      "key":  "thunderingpulse",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Narukami"
+    },
+    "tidalshadow":  {
+      "id":  12425,
+      "key":  "tidalshadow",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Vorpal"
+    },
+    "toukaboushigure":  {
+      "id":  11422,
+      "key":  "toukaboushigure",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Kasabouzu"
+    },
+    "travelershandysword":  {
+      "id":  11303,
+      "key":  "travelershandysword",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Traveler"
+    },
+    "tulaytullahsremembrance":  {
+      "id":  14512,
+      "key":  "tulaytullahsremembrance",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Alaya"
+    },
+    "twinnephrite":  {
+      "id":  14305,
+      "key":  "twinnephrite",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Phoney"
+    },
+    "vortexvanquisher":  {
+      "id":  13504,
+      "key":  "vortexvanquisher",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Kunwu"
+    },
+    "wanderingevenstar":  {
+      "id":  14416,
+      "key":  "wanderingevenstar",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Pleroma"
+    },
+    "wastergreatsword":  {
+      "id":  12101,
+      "key":  "wastergreatsword",
+      "rarity":  1,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Aniki"
+    },
+    "wavebreakersfin":  {
+      "id":  13416,
+      "key":  "wavebreakersfin",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Maria"
+    },
+    "whiteblind":  {
+      "id":  12407,
+      "key":  "whiteblind",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Exotic"
+    },
+    "whiteirongreatsword":  {
+      "id":  12303,
+      "key":  "whiteirongreatsword",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Tin"
+    },
+    "whitetassel":  {
+      "id":  13301,
+      "key":  "whitetassel",
+      "rarity":  3,
+      "weapon_class":  "WEAPON_POLE",
+      "image_name":  "UI_EquipIcon_Pole_Ruby"
+    },
+    "windblumeode":  {
+      "id":  15413,
+      "key":  "windblumeode",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_BOW",
+      "image_name":  "UI_EquipIcon_Bow_Fleurfair"
+    },
+    "wineandsong":  {
+      "id":  14410,
+      "key":  "wineandsong",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_CATALYST",
+      "image_name":  "UI_EquipIcon_Catalyst_Outlaw"
+    },
+    "wolffang":  {
+      "id":  11424,
+      "key":  "wolffang",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Boreas"
+    },
+    "wolfsgravestone":  {
+      "id":  12502,
+      "key":  "wolfsgravestone",
+      "rarity":  5,
+      "weapon_class":  "WEAPON_CLAYMORE",
+      "image_name":  "UI_EquipIcon_Claymore_Wolfmound"
+    },
+    "xiphosmoonlight":  {
+      "id":  11418,
+      "key":  "xiphosmoonlight",
+      "rarity":  4,
+      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
+      "image_name":  "UI_EquipIcon_Sword_Pleroma"
     }
   }
 }
