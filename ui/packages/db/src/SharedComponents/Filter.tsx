@@ -6,18 +6,18 @@ import {
   Intent,
   Position,
 } from "@blueprintjs/core";
-import tagData from "@gcsim/db/src/tags.json";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
 import useDebounce from "../SharedHooks/debounce";
+import tagData from "../tags.json";
 import {
   charNames,
   FilterContext,
   FilterDispatchContext,
   ItemFilterState,
-  sortByKeys,
-  SortByKeyState,
+  SortByDirection,
+  sortByParams,
 } from "./FilterComponents/Filter.utils";
 
 export function Filter() {
@@ -312,8 +312,12 @@ function SortBy() {
       <Collapse isOpen={sortIsOpen}>
         <div className="flex flex-col mt-2 bg-gray-800 p-1">
           <div className="flex flex-row gap-4">
-            {sortByKeys.map((t) => (
-              <SortByParamButton key={t} name={t} />
+            {sortByParams.map((param) => (
+              <SortByParamButton
+                key={param.sortKey}
+                name={param.sortKey}
+                translation={t(param.translationKey)}
+              />
             ))}
           </div>
         </div>
@@ -322,24 +326,15 @@ function SortBy() {
   );
 }
 
-function SortByParamButton({ name }: { name: string }) {
+function SortByParamButton({
+  name,
+  translation,
+}: {
+  name: string;
+  translation: string;
+}) {
   const filter = useContext(FilterContext);
   const dispatch = useContext(FilterDispatchContext);
-  const { t: translation } = useTranslation();
-  const t = (s: string) =>
-    translation<string>(
-      "db." +
-        s
-          .split("_")
-          .map((x, i) => {
-            if (i === 0) {
-              return x;
-            } else {
-              return Capitalise(x);
-            }
-          })
-          .join("")
-    );
 
   const handleClick = () => {
     dispatch({
@@ -350,17 +345,14 @@ function SortByParamButton({ name }: { name: string }) {
 
   let intent: Intent = "none";
   switch (filter.sortBy[name]) {
-    case SortByKeyState.asc:
+    case SortByDirection.asc:
       intent = "success";
       break;
-    case SortByKeyState.dsc:
+    case SortByDirection.dsc:
       intent = "danger";
       break;
-    case SortByKeyState.none:
-      intent = "none";
-      break;
-
     default:
+      intent = "none";
       break;
   }
 
@@ -369,14 +361,8 @@ function SortByParamButton({ name }: { name: string }) {
       <div className="flex flex-row gap-1 justify-center items-center">
         {intent === "success" && <FaArrowUp className="" />}
         {intent === "danger" && <FaArrowDown />}
-        {t(`${name}`)}
+        {translation}
       </div>
     </Button>
   );
-}
-
-function Capitalise(x: string) {
-  if (x === "") return "";
-
-  return x[0].toLocaleUpperCase() + x.slice(1);
 }

@@ -1,6 +1,6 @@
-import tagData from "@gcsim/db/src/tags.json";
 import { createContext } from "react";
 import charData from "../../Data/char_data.generated.json";
+import tagData from "../../tags.json";
 
 export interface FilterState {
   charFilter: CharFilter;
@@ -30,17 +30,28 @@ export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
   return acc;
 }, {} as TagFilter);
 
-export const sortByKeys = ["mean_dps_per_target", "create_date"];
-export enum SortByKeyState {
-  "none",
+export const sortByParams = [
+  {
+    translationKey: "db.dpsPerTarget",
+    sortKey: "summary.mean_dps_per_target",
+  },
+  {
+    translationKey: "db.createDate",
+    sortKey: "create_date",
+  },
+];
+export enum SortByDirection {
   "asc",
   "dsc",
 }
-
-export const initialSortBy: ISortBy = sortByKeys.reduce((acc, sortByKey) => {
-  acc[sortByKey] = SortByKeyState.none;
-  return acc;
-}, {} as ISortBy);
+export interface ISortBy {
+  sortKey: string;
+  sortByDirection: SortByDirection;
+}
+export const initialSortBy: ISortBy = {
+  sortKey: "create_date",
+  sortByDirection: SortByDirection.dsc,
+};
 
 export const initialFilter: FilterState = {
   charFilter: initialCharFilter,
@@ -91,10 +102,6 @@ export type TagFilterState =
       state: ItemFilterState.none;
       tag: string;
     };
-
-export interface ISortBy {
-  [key: string]: SortByKeyState;
-}
 
 export const FilterDispatchContext = createContext<
   React.Dispatch<FilterActions>
@@ -306,16 +313,21 @@ export function filterReducer(
     }
 
     case "handleSortBy": {
-      const newSortByState: ISortBy = {};
+      let newSortByState: ISortBy;
       switch (filter.sortBy[action.sortByKey]) {
-        case SortByKeyState.none:
-          newSortByState[action.sortByKey] = SortByKeyState.asc;
+        case SortByDirection.dsc:
+          newSortByState = {
+            sortByDirection: SortByDirection.asc,
+            sortKey: action.sortByKey,
+          };
           break;
-        case SortByKeyState.asc:
-          newSortByState[action.sortByKey] = SortByKeyState.dsc;
-          break;
-        case SortByKeyState.dsc:
-          newSortByState[action.sortByKey] = SortByKeyState.none;
+
+        case SortByDirection.asc:
+        default:
+          newSortByState = {
+            sortByDirection: SortByDirection.asc,
+            sortKey: action.sortByKey,
+          };
           break;
       }
 
@@ -325,10 +337,7 @@ export function filterReducer(
 
       return {
         ...filter,
-        sortBy: {
-          ...filter.sortBy,
-          ...newSortByState,
-        },
+        sortBy: newSortByState,
       };
     }
 
