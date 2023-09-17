@@ -47,7 +47,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 9)
 
-	c.Core.QueueAttack(ai, ap, 0, burstHitmark)
+	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
 	// apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
@@ -56,19 +56,21 @@ func (c *char) Burst(p map[string]int) action.Info {
 	ai.Durability = 25
 	// no more hitlag after initial slash
 	ai.HitlagHaltFrames = 0
-	snap := c.Snapshot(&ai)
 
 	aiAbsorb := ai
 	aiAbsorb.Abil = "Kazuha Slash (Absorb Dot)"
 	aiAbsorb.Mult = burstEleDot[c.TalentLvlBurst()]
 	aiAbsorb.Element = attributes.NoElement
-	snapAbsorb := c.Snapshot(&aiAbsorb)
 
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
 
 	// handle C2
 	// first tick is right before initial hit, ticks every 0.5s while burst is up
 	c.QueueCharTask(func() {
+		// snapshot ticks right before slash
+		c.qTickSnap = c.Snapshot(&ai)
+		c.qTickAbsorbSnap = c.Snapshot(&aiAbsorb)
+
 		c.Core.Status.Add(burstStatus, (burstFirstTick-(burstHitmark-1))+117*4)
 		if c.Base.Cons >= 2 {
 			c.qFieldSrc = c.Core.F
@@ -87,9 +89,9 @@ func (c *char) Burst(p map[string]int) action.Info {
 			c.Core.Tasks.Add(func() {
 				if c.qAbsorb != attributes.NoElement {
 					aiAbsorb.Element = c.qAbsorb
-					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, ap, 0)
+					c.Core.QueueAttackWithSnap(aiAbsorb, c.qTickAbsorbSnap, ap, 0)
 				}
-				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
+				c.Core.QueueAttackWithSnap(ai, c.qTickSnap, ap, 0)
 			}, (burstFirstTick-(burstHitmark+1))+117*i)
 		}
 		// C6:

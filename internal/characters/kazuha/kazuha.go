@@ -22,6 +22,8 @@ type char struct {
 	qAbsorb               attributes.Element
 	qFieldSrc             int
 	qAbsorbCheckLocation  combat.AttackPattern
+	qTickSnap             combat.Snapshot
+	qTickAbsorbSnap       combat.Snapshot
 	c2buff                []float64
 }
 
