@@ -129,12 +129,10 @@ function TagFilter() {
         <div className="">{tagIsOpen ? "-" : "+"}</div>
       </button>
       <Collapse isOpen={tagIsOpen}>
-        <div className="flex flex-col mt-2 bg-gray-800 p-1">
-          <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
-            {sortedTagnames.map((t) => (
-              <TagFilterButton key={t.key} name={t.name} tag={t.key} />
-            ))}
-          </div>
+        <div className="flex flex-row gap-2 mt-2 bg-gray-800 p-1">
+          {sortedTagnames.map((t) => (
+            <TagFilterButton key={t.key} name={t.name} tag={t.key} />
+          ))}
         </div>
       </Collapse>
     </div>
@@ -159,7 +157,7 @@ function TagFilterButton({ tag, name }: { tag; name: string }) {
 
   return (
     <Button intent={intent} onClick={handleClick}>
-      {name}
+      <div className="text-center">{name}</div>
     </Button>
   );
 }
@@ -363,7 +361,7 @@ function SortByParamButton({
   return (
     <Button onClick={handleClick} intent={intent}>
       <div className="flex flex-row gap-1 justify-center items-center">
-        {intent === "success" && <FaArrowUp className="" />}
+        {intent === "success" && <FaArrowUp />}
         {intent === "danger" && <FaArrowDown />}
         {translation}
       </div>

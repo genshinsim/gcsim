@@ -277,10 +277,7 @@ export function filterReducer(
     }
     case "clearFilter": {
       return {
-        ...filter,
-        charFilter: initialCharFilter,
-        tagFilter: initialTagFilter,
-        charIncludeCount: 0,
+        ...initialFilter,
       };
     }
     case "setCustomFilter": {
