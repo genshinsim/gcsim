@@ -1,15 +1,24 @@
-import { Button, Collapse, Drawer, DrawerSize, Intent, Position } from "@blueprintjs/core";
+import {
+  Button,
+  Collapse,
+  Drawer,
+  DrawerSize,
+  Intent,
+  Position,
+} from "@blueprintjs/core";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaFilter, FaSearch } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
 import useDebounce from "../SharedHooks/debounce";
+import tagData from "../tags.json";
 import {
+  charNames,
   FilterContext,
   FilterDispatchContext,
   ItemFilterState,
-  charNames,
+  SortByDirection,
+  sortByParams,
 } from "./FilterComponents/Filter.utils";
-import tagData from "@gcsim/db/src/tags.json";
 
 export function Filter() {
   // https://github.com/i18next/next-i18next/issues/1795
@@ -73,6 +82,7 @@ export function Filter() {
           />
           <CharacterFilter />
           <TagFilter />
+          <SortBy />
         </div>
       </Drawer>
     </div>
@@ -98,13 +108,15 @@ function TagFilter() {
   const { t: translation } = useTranslation();
   const t = (s: string) => translation<string>(s);
   const sortedTagnames = Object.keys(tagData)
-    .filter(key => { return key !== "0" && key !== "1" })
-    .map(key => {
+    .filter((key) => {
+      return key !== "0" && key !== "1";
+    })
+    .map((key) => {
       return {
         key: key,
         name: tagData[key]["display_name"],
-      }
-    })
+      };
+    });
 
   return (
     <div className="w-full  overflow-x-hidden no-scrollbar">
@@ -117,21 +129,17 @@ function TagFilter() {
         <div className="">{tagIsOpen ? "-" : "+"}</div>
       </button>
       <Collapse isOpen={tagIsOpen}>
-        <div className="flex flex-col mt-2 bg-gray-800 p-1">
-          <div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
-            {sortedTagnames
-              .map((t) => (
-                <TagFilterButton key={t.key} name={t.name} tag={t.key} />
-              ))}
-          </div>
+        <div className="flex flex-row gap-2 mt-2 bg-gray-800 p-1">
+          {sortedTagnames.map((t) => (
+            <TagFilterButton key={t.key} name={t.name} tag={t.key} />
+          ))}
         </div>
       </Collapse>
     </div>
   );
-
 }
 
-function TagFilterButton({ tag, name }: { tag, name: string }) {
+function TagFilterButton({ tag, name }: { tag; name: string }) {
   const filter = useContext(FilterContext);
   const dispatch = useContext(FilterDispatchContext);
 
@@ -142,18 +150,17 @@ function TagFilterButton({ tag, name }: { tag, name: string }) {
     });
   };
 
-  let intent = filter.tagFilter[tag].state === ItemFilterState.include ? Intent.SUCCESS : Intent.NONE
+  const intent =
+    filter.tagFilter[tag].state === ItemFilterState.include
+      ? Intent.SUCCESS
+      : Intent.NONE;
 
   return (
-    <Button
-      intent={intent}
-      onClick={handleClick}
-    >
-      {name}
+    <Button intent={intent} onClick={handleClick}>
+      <div className="text-center">{name}</div>
     </Button>
   );
 }
-
 
 function CharacterFilter() {
   const [charIsOpen, setCharIsOpen] = useState(false);
@@ -263,7 +270,11 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
   const t = (s: string) => translation<string>(s);
   const displayCharName = t("game:character_names." + charName);
 
-  const travelerName = (charName.includes("lumine") || charName.includes("aether") ? displayCharName : "").replace(/.*?\((\S+)\).*?/, "$1")
+  const travelerName = (
+    charName.includes("lumine") || charName.includes("aether")
+      ? displayCharName
+      : ""
+  ).replace(/.*?\((\S+)\).*?/, "$1");
 
   return (
     <div className="flex flex-col truncate gap-1">
@@ -272,7 +283,88 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
         src={`/api/assets/avatar/${charName}.png`}
         className="truncate h-16 object-contain"
       />
-      { travelerName != "" ?  <div className="text-center">{travelerName}</div> : <></> }
+      {travelerName != "" ? (
+        <div className="text-center">{travelerName}</div>
+      ) : (
+        <></>
+      )}
     </div>
+  );
+}
+
+function SortBy() {
+  const [sortIsOpen, setSortIsOpen] = useState(false);
+  const { t: translation } = useTranslation();
+  const t = (s: string) => translation<string>(s);
+
+  return (
+    <div className="w-full  overflow-x-hidden no-scrollbar">
+      <button
+        className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
+        onClick={() => setSortIsOpen(!sortIsOpen)}
+      >
+        <div className=" grow">{t("Sort By")}</div>
+
+        <div className="">{sortIsOpen ? "-" : "+"}</div>
+      </button>
+      <Collapse isOpen={sortIsOpen}>
+        <div className="flex flex-col mt-2 bg-gray-800 p-1">
+          <div className="flex flex-row gap-4">
+            {sortByParams.map((param) => (
+              <SortByParamButton
+                key={param.sortKey}
+                sortKey={param.sortKey}
+                translation={t(param.translationKey)}
+              />
+            ))}
+          </div>
+        </div>
+      </Collapse>
+    </div>
+  );
+}
+
+function SortByParamButton({
+  sortKey,
+  translation,
+}: {
+  sortKey: string;
+  translation: string;
+}) {
+  const filter = useContext(FilterContext);
+  const dispatch = useContext(FilterDispatchContext);
+
+  const handleClick = () => {
+    dispatch({
+      type: "handleSortBy",
+      sortByKey: sortKey,
+    });
+  };
+
+  let intent: Intent;
+  if (filter.sortBy.sortKey !== sortKey) {
+    intent = "none";
+  } else {
+    switch (filter.sortBy.sortByDirection) {
+      case SortByDirection.asc:
+        intent = "success";
+        break;
+      case SortByDirection.dsc:
+        intent = "danger";
+        break;
+      default:
+        intent = "none";
+        break;
+    }
+  }
+
+  return (
+    <Button onClick={handleClick} intent={intent}>
+      <div className="flex flex-row gap-1 justify-center items-center">
+        {intent === "success" && <FaArrowUp />}
+        {intent === "danger" && <FaArrowDown />}
+        {translation}
+      </div>
+    </Button>
   );
 }

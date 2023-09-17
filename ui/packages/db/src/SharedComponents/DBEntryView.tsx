@@ -56,9 +56,9 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
           </a>
         </div>
         <div className="basis-full text-xs font-bold w-full flex place-content-start">
-          {
-            dbEntry.submitter === "migrated" ? "Unknown author" : `Author: ${dbEntry.submitter}`
-          }
+          {dbEntry.submitter === "migrated"
+            ? "Unknown author"
+            : `Author: ${dbEntry.submitter}`}
         </div>
       </div>
     </>
@@ -71,10 +71,7 @@ function DBEntryDetails({
   mode,
   sim_duration,
   create_date,
-  description,
-}: // total_damage,
-// description,
-NonNullable<db.IEntry["summary"]> & {
+}: NonNullable<db.IEntry["summary"]> & {
   create_date?: number | Long | null;
   description?: string | null;
 }) {

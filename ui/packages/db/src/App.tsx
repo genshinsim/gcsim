@@ -1,4 +1,3 @@
-import TagDatabase from "Pages/TagDatabase";
 import { Route, Switch } from "wouter";
 import { Database } from "./Pages/Database";
 import Layout from "./Sectioning/layout";
