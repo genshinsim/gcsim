@@ -64,12 +64,11 @@ func TestOrderPrecedence(t *testing.T) {
 		}
 		// prettyPrint(res)
 		actual := prog.String()
-		//strip \n
+		// strip \n
 		actual = strings.TrimSuffix(actual, "\n")
 		if actual != test.expected {
 			t.Errorf("expected=%q, got %q", test.expected, actual)
 		}
-
 	}
 }
 

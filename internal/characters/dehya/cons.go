@@ -25,7 +25,6 @@ func (c *char) c1() {
 			return m, true
 		},
 	})
-
 }
 
 // When Flame-Mane's Fist and Incineration Drive attacks unleashed during Leonine Bite hit opponents,
@@ -38,7 +37,6 @@ func (c *char) c4cb() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-
 		e := a.Target.(*enemy.Enemy)
 		if e.Type() != targets.TargettableEnemy {
 			return
@@ -57,7 +55,6 @@ func (c *char) c4cb() combat.AttackCBFunc {
 		})
 		c.AddStatus(c4ICDKey, 0.2*60, false)
 	}
-
 }
 
 // The CRIT Rate of Leonine Bite is increased by 10%.
@@ -108,5 +105,4 @@ func (c *char) c6cb() combat.AttackCBFunc {
 			c.ExtendStatus(burstKey, 0.5*60)
 		}
 	}
-
 }

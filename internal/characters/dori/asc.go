@@ -20,8 +20,8 @@ func (c *char) a1() {
 
 	const icdKey = "dori-a1"
 	icd := 180 // 3s * 60
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	reduce := func(args ...interface{}) bool {
-
 		atk := args[1].(*combat.AttackEvent)
 
 		if c.Core.Player.Active() != atk.Info.ActorIndex { // only for on field character

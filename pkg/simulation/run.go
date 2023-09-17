@@ -19,7 +19,7 @@ func (s *Simulation) resFromCurrentState() stats.Result {
 }
 
 func (s *Simulation) run() (stats.Result, error) {
-	//core loop roughly as follows:
+	// core loop roughly as follows:
 	//  - initialize:
 	//		- setup
 	//		- advance frame by 1
@@ -36,14 +36,14 @@ func (s *Simulation) run() (stats.Result, error) {
 	//		- if executed action is no-op, move directly to queue phase
 	//		- else advance frame until CanQueueAfter then move to queue phase
 	//
-	//frame advance will perform the following;
+	// frame advance will perform the following;
 	//	- increment frame counter by 1
 	//  - execute any ticks
 	//  - check for eneryg procs
 	//  - emit OnTick
 	//  - perform exit check
 	//
-	//exit check checks for:
+	// exit check checks for:
 	//	- frame limit
 	//  - all enemies dead
 	//  - no more actions left
@@ -82,8 +82,8 @@ func (s *Simulation) gatherResult() stats.Result {
 		Enemies:     make([]stats.EnemyResult, s.C.Combat.EnemyCount()),
 	}
 
-	for i, v := range s.cfg.Characters {
-		res.Characters[i].Name = v.Base.Key.String()
+	for i := range s.cfg.Characters {
+		res.Characters[i].Name = s.cfg.Characters[i].Base.Key.String()
 	}
 
 	for _, collector := range s.collectors {
@@ -106,7 +106,7 @@ func (s *Simulation) popQueue() int {
 
 func initialize(s *Simulation) (stateFn, error) {
 	go s.eval.Start()
-	//run sim for 90s if no duration set
+	// run sim for 90s if no duration set
 	if s.cfg.Settings.Duration == 0 {
 		// fmt.Println("no duration set, running for 90s")
 		s.cfg.Settings.Duration = 90
@@ -125,27 +125,27 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	if err != nil {
 		return nil, err
 	}
-	//skip a frame and come back to queue phase if eval does not have any more actions
-	//relying on advance frame to exit if need be
+	// skip a frame and come back to queue phase if eval does not have any more actions
+	// relying on advance frame to exit if need be
 	if next == nil {
 		s.noMoreActions = true
-		//we do the same skip here as if eval doesn't have any more ations
+		// we do the same skip here as if eval doesn't have any more ations
 		return s.advanceFrames(1, queuePhase)
 	}
-	//handle sleep here since it's just a frame skip before requeing next
+	// handle sleep here since it's just a frame skip before requeing next
 	if next.Action == action.ActionWait {
 		return s.handleWait(next)
 	}
-	//if next action is delay, we can just queue up the action after that right now
+	// if next action is delay, we can just queue up the action after that right now
 	if next.Action == action.ActionDelay {
-		//append here because we can have multiple delay chained
+		// append here because we can have multiple delay chained
 		s.preActionDelay += next.Param["f"]
 		return queuePhase, nil
 	}
-	//append swap if called for char is not active
-	//check if NoChar incase this is some special action that does not require a character
+	// append swap if called for char is not active
+	// check if NoChar incase this is some special action that does not require a character
 	if next.Char != keys.NoChar && next.Char != s.C.Player.ActiveChar().Base.Key {
-		s.queue = append(s.queue, &action.ActionEval{
+		s.queue = append(s.queue, &action.Eval{
 			Char:   next.Char,
 			Action: action.ActionSwap,
 		})
@@ -163,15 +163,15 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 
 	//TODO: this loop should be optimized to skip more than 1 frame at a time
 	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
-		//repeat this phase until action is ready
-		switch err {
-		case player.ErrActionNotReady:
+		// repeat this phase until action is ready
+		switch {
+		case errors.Is(err, player.ErrActionNotReady):
 			s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
 			return s.advanceFrames(1, actionReadyCheckPhase)
-		case player.ErrPlayerNotReady:
+		case errors.Is(err, player.ErrPlayerNotReady):
 			return s.advanceFrames(1, actionReadyCheckPhase)
-		case player.ErrActionNoOp:
-			//don't do anything here
+		case errors.Is(err, player.ErrActionNoOp):
+			// don't do anything here
 		default:
 			return nil, err
 		}
@@ -180,11 +180,11 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 	return executeActionPhase, nil
 }
 
-func (s *Simulation) handleWait(q *action.ActionEval) (stateFn, error) {
-	//to maintain existing functionality, wait (alias sleep) is always ready and should cause
-	//advanceFrames to be called equal to the param f
+func (s *Simulation) handleWait(q *action.Eval) (stateFn, error) {
+	// to maintain existing functionality, wait (alias sleep) is always ready and should cause
+	// advanceFrames to be called equal to the param f
 	skip := q.Param["f"]
-	//log wait(0) differently to make it obvious
+	// log wait(0) differently to make it obvious
 	if skip == 0 {
 		s.C.Log.NewEvent("executed noop wait(0)", glog.LogActionEvent, s.C.Player.Active()).
 			Write("f", skip)
@@ -193,7 +193,7 @@ func (s *Simulation) handleWait(q *action.ActionEval) (stateFn, error) {
 			Write("f", skip)
 	}
 	if l := s.popQueue(); l > 0 {
-		//don't go back to queue if there are more actions already queued
+		// don't go back to queue if there are more actions already queued
 		return s.advanceFrames(skip, actionReadyCheckPhase)
 	}
 	return s.advanceFrames(skip, queuePhase)
@@ -215,19 +215,19 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 	err := s.C.Player.Exec(q.Action, q.Char, q.Param)
 	if err != nil {
 		//TODO: this check probably doesn't do anything
-		if err == player.ErrActionNoOp {
+		if errors.Is(err, player.ErrActionNoOp) {
 			if l := s.popQueue(); l > 0 {
-				//don't go back to queue if there are more actions already queued
+				// don't go back to queue if there are more actions already queued
 				return actionReadyCheckPhase, nil
 			}
 			return queuePhase, nil
 		}
-		//this is now unexpected since action should be ready now
+		// this is now unexpected since action should be ready now
 		return nil, err
 	}
 	//TODO: this check here is probably unnecessary
 	if l := s.popQueue(); l > 0 {
-		//don't go back to queue if there are more actions already queued
+		// don't go back to queue if there are more actions already queued
 		return actionReadyCheckPhase, nil
 	}
 
@@ -262,17 +262,18 @@ func (s *Simulation) nextFrame() (bool, error) {
 		return false, err
 	}
 	s.handleEnergy()
+	s.handleHurt()
 	s.C.Events.Emit(event.OnTick)
 	return s.stopCheck(), nil
 }
 
 func (s *Simulation) stopCheck() bool {
 	if s.C.Combat.DamageMode {
-		//stop if no more actions
+		// stop if no more actions
 		if s.noMoreActions {
 			return true
 		}
-		//stop if all targets are reporting dead
+		// stop if all targets are reporting dead
 		allDead := true
 		for _, t := range s.C.Combat.Enemies() {
 			if t.IsAlive() {
@@ -285,6 +286,9 @@ func (s *Simulation) stopCheck() bool {
 	return s.C.F == int(s.cfg.Settings.Duration*60)
 }
 
+// TODO: remove defer in favour of every function actually returning error
+//
+//nolint:nonamedreturns,nakedret // not possible to perform the res, err modification without named return
 func (s *Simulation) Run() (res stats.Result, err error) {
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
@@ -295,5 +299,4 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 	}()
 	res, err = s.run()
 	return
-
 }

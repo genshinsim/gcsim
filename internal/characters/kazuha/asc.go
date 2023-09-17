@@ -27,7 +27,7 @@ func (c *char) absorbCheckA1(src, count, max int) func() {
 			)
 			return
 		}
-		//otherwise queue up
+		// otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheckA1(src, count+1, max), 6)
 	}
 }
@@ -60,7 +60,7 @@ func (c *char) a4() {
 			}
 			icd = c.Core.F + 1
 
-			//recalc em
+			// recalc em
 			dmg := 0.0004 * c.NonExtraStat(attributes.EM)
 
 			for _, char := range c.Core.Player.Chars() {

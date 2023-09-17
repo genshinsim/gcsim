@@ -17,8 +17,8 @@ type Eval struct {
 	AST  ast.Node
 	Log  *log.Logger
 
-	next chan bool               //wait on this before continuing
-	work chan *action.ActionEval //send work to this chan
+	next chan bool         // wait on this before continuing
+	work chan *action.Eval // send work to this chan
 	// set to non-nil by the first error encountered
 	// this is necessary because Run() could have exited already with an err but
 	err error
@@ -36,7 +36,7 @@ func NewEvaluator(ast ast.Node, c *core.Core) (*Eval, error) {
 		AST:  ast,
 		Core: c,
 		next: make(chan bool),
-		work: make(chan *action.ActionEval),
+		work: make(chan *action.Eval),
 	}
 	return e, nil
 }
@@ -48,6 +48,7 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
+//nolint:gocritic // non-pointer type for *Obj doesn't make sense
 func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {
@@ -61,7 +62,7 @@ func (e *Env) v(s string) (*Obj, error) {
 
 // Tell eval to exit now
 func (e *Eval) Exit() error {
-	//drain work if any
+	// drain work if any
 	select {
 	case <-e.work:
 	default:
@@ -69,7 +70,7 @@ func (e *Eval) Exit() error {
 	if e.isTerminated {
 		return e.err
 	}
-	//make sure we can't send or continue anymore
+	// make sure we can't send or continue anymore
 	e.isTerminated = true
 	close(e.next)
 	close(e.work)
@@ -84,7 +85,7 @@ func (e *Eval) Continue() {
 }
 
 // NextAction asks eval to return the next action. Return nil, nil if no more action
-func (e *Eval) NextAction() (*action.ActionEval, error) {
+func (e *Eval) NextAction() (*action.Eval, error) {
 	next, ok := <-e.work
 	if !ok {
 		return nil, nil
@@ -103,10 +104,13 @@ func (e *Eval) Err() error {
 
 // Run will execute the provided AST. Any genshin specific actions will be available
 // via NextAction()
+// TODO: remove defer in favour of every function actually returning error
+//
+//nolint:nonamedreturns,nakedret // not possible to perform the res, err modification without named return
 func (e *Eval) Run() (res Obj, err error) {
 	defer func() {
-		//this defer ensures that e.err is set correctly; this has to be the first defer
-		//as defers are called last in first out so this needs to be before any panic handling
+		// this defer ensures that e.err is set correctly; this has to be the first defer
+		// as defers are called last in first out so this needs to be before any panic handling
 		e.err = err
 	}()
 	//TODO: this should hopefully be removed in the future
@@ -116,14 +120,14 @@ func (e *Eval) Run() (res Obj, err error) {
 			err = fmt.Errorf("panic occured: %v", pErr)
 		}
 	}()
-	//make sure to close work since we are the only sender
+	// make sure to close work since we are the only sender
 	defer e.Exit()
 	if e.Log == nil {
 		e.Log = log.New(io.Discard, "", log.LstdFlags)
 	}
-	//make sure ErrTerminate is discarded
+	// make sure ErrTerminate is discarded
 	defer func() {
-		if err == ErrTerminated {
+		if errors.Is(err, ErrTerminated) {
 			err = nil
 		}
 	}()
@@ -131,15 +135,15 @@ func (e *Eval) Run() (res Obj, err error) {
 	global := NewEnv(nil)
 	e.initSysFuncs(global)
 
-	//start running once we get the signal to go
+	// start running once we get the signal to go
 	err = e.waitForNext()
 	if err != nil {
 		return
 	}
 
-	//this should run until it hits an Action
-	//it will then pass the action on a resp channel
-	//it will then wait for Next before running again
+	// this should run until it hits an Action
+	// it will then pass the action on a resp channel
+	// it will then wait for Next before running again
 	res, err = e.evalNode(e.AST, global)
 	return
 }
@@ -152,7 +156,7 @@ func (e *Eval) waitForNext() error {
 	return nil
 }
 
-func (e *Eval) sendWork(w *action.ActionEval) {
+func (e *Eval) sendWork(w *action.Eval) {
 	e.work <- w
 }
 
@@ -240,9 +244,8 @@ func (n *null) Typ() ObjTyp     { return typNull }
 func (n *number) Inspect() string {
 	if n.isFloat {
 		return strconv.FormatFloat(n.fval, 'f', -1, 64)
-	} else {
-		return strconv.FormatInt(n.ival, 10)
 	}
+	return strconv.FormatInt(n.ival, 10)
 }
 func (n *number) Typ() ObjTyp { return typNum }
 
@@ -262,7 +265,7 @@ func (b *bfuncval) Typ() ObjTyp     { return typBif }
 func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
-func (n *retval) Typ() ObjTyp { return typRet }
+func (r *retval) Typ() ObjTyp { return typRet }
 
 // mapval.
 func (m *mapval) Inspect() string {

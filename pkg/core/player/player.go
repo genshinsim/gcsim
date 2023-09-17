@@ -30,29 +30,29 @@ const (
 
 type Handler struct {
 	Opt
-	//handlers
+	// handlers
 	*animation.AnimationHandler
 	Shields *shield.Handler
-	infusion.InfusionHandler
+	infusion.Handler
 
-	//tracking
+	// tracking
 	chars   []*character.CharWrapper
 	active  int
 	charPos map[keys.Char]int
 
-	//stam
+	// stam
 	Stam            float64
 	LastStamUse     int
 	stamPercentMods []stamPercentMod
 
-	//swap
+	// swap
 	SwapCD int
 
 	// dash: dash fails iff lockout && on CD
 	DashCDExpirationFrame int
 	DashLockout           bool
 
-	//last action
+	// last action
 	LastAction struct {
 		UsedAt int
 		Type   action.Action
@@ -80,7 +80,7 @@ func New(opt Opt) *Handler {
 		Stam:            MaxStam,
 	}
 	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
-	h.InfusionHandler = infusion.New(opt.F, opt.Log, opt.Debug)
+	h.Handler = infusion.New(opt.F, opt.Log, opt.Debug)
 	h.AnimationHandler = animation.New(opt.F, opt.Debug, opt.Log, opt.Events, opt.Tasks)
 	return h
 }
@@ -202,14 +202,14 @@ func (h *Handler) RestoreStam(v float64) {
 }
 
 func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
-	//make sure we only apply hitlag if this character is on field
+	// make sure we only apply hitlag if this character is on field
 	if char != h.active {
 		return
 	}
 
 	h.chars[char].ApplyHitlag(factor, dur)
 
-	//also extend infusion
+	// also extend infusion
 	//TODO: this is a really awkward place to apply this
 	h.ExtendInfusion(char, factor, dur)
 
@@ -241,7 +241,7 @@ func (h *Handler) InitializeTeam() error {
 			return err
 		}
 	}
-	//loop again to initialize
+	// loop again to initialize
 	for i := range h.chars {
 		err = h.chars[i].Init()
 		if err != nil {
@@ -251,7 +251,7 @@ func (h *Handler) InitializeTeam() error {
 		for k := range h.chars[i].Equip.Sets {
 			h.chars[i].Equip.Sets[k].Init()
 		}
-		//set each char's starting hp ratio
+		// set each char's starting hp ratio
 		if h.chars[i].StartHP <= 0 {
 			h.chars[i].SetHPByRatio(1)
 		} else {
@@ -271,7 +271,7 @@ func (h *Handler) Tick() {
 	//		- animation
 	//		- stamina
 	//		- swap
-	//recover stamina
+	// recover stamina
 	if h.Stam < MaxStam && *h.F-h.LastStamUse > StamCDFrames {
 		h.Stam += 25.0 / 60
 		if h.Stam > MaxStam {
@@ -286,5 +286,4 @@ func (h *Handler) Tick() {
 		c.Tick()
 	}
 	h.AnimationHandler.Tick()
-
 }

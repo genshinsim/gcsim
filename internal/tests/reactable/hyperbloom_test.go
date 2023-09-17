@@ -70,7 +70,7 @@ func TestHyperbloom(t *testing.T) {
 		advanceCoreFrame(c)
 	}
 
-	if count != 1 { //target 2 should be too far away
+	if count != 1 { // target 2 should be too far away
 		t.Errorf("expecting 1 instance of hyperbloom dmg, got %v", count)
 	}
 	if c.Combat.GadgetCount() != 0 {
@@ -98,7 +98,7 @@ func TestECHyperbloom(t *testing.T) {
 		return false
 	}, "hyperbloom")
 
-	//create 2 seeds with ec
+	// create 2 seeds with ec
 	c.QueueAttackEvent(&combat.AttackEvent{
 		Info: combat.AttackInfo{
 			Element:    attributes.Hydro,
@@ -114,7 +114,7 @@ func TestECHyperbloom(t *testing.T) {
 		},
 		Pattern: combat.NewSingleTargetHit(trg[0].Key()),
 	}, 0)
-	//reduce aura a bit
+	// reduce aura a bit
 	for i := 0; i < 10; i++ {
 		advanceCoreFrame(c)
 	}
@@ -154,5 +154,4 @@ func TestECHyperbloom(t *testing.T) {
 	if count != 2 {
 		t.Errorf("expected 2 instance of hyperbloom damage, got %v", count)
 	}
-
 }

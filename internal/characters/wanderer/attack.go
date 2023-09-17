@@ -70,7 +70,7 @@ func init() {
 	attackFramesE[2][action.ActionJump] = 33
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -116,7 +116,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
 				frames.AtkSpdAdjust(attackFramesNormal[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
@@ -125,10 +125,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   windup + attackReleaseNormal[c.NormalCounter][len(attackReleaseNormal[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
 	}
-
 }
 
-func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
+func (c *char) WindfavoredAttack(p map[string]int) action.Info {
 	// TODO: E can expire during N3, not implemented yet
 
 	windup := c.attackWindupE()
@@ -170,7 +169,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
 				frames.AtkSpdAdjust(attackFramesE[currentNormalCounter][next], c.Stat(attributes.AtkSpd))

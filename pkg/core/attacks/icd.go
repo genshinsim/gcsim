@@ -1,6 +1,6 @@
 package attacks
 
-type ICDTag int //same ICD tag shares the same counter
+type ICDTag int // same ICD tag shares the same counter
 
 const (
 	ICDTagNone ICDTag = iota
@@ -56,7 +56,7 @@ const (
 )
 
 // group dictate both the sequence and the reset timer
-type ICDGroup int //same ICD group shares the same timer
+type ICDGroup int // same ICD group shares the same timer
 
 const (
 	ICDGroupDefault ICDGroup = iota
@@ -82,7 +82,7 @@ const (
 	ICDGroupWandererC6
 	ICDGroupWandererA4
 	ICDGroupAlhaithamProjectionAttack
-	ICDGroupAlhaithamExtraAttack //CA
+	ICDGroupAlhaithamExtraAttack // CA
 	ICDGroupYaoyaoRadishSkill
 	ICDGroupYaoyaoRadishBurst
 	ICDGroupBaizhuC2
@@ -176,8 +176,8 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupNilou] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupReactionA] = []float64{1, 1, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupReactionB] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	//actual data: {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0}
-	//however there seems to be no limit to the amount of burning dmg a target can take
+	// actual data: {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0}
+	// however there seems to be no limit to the amount of burning dmg a target can take
 	ICDGroupDamageSequence[ICDGroupBurning] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupNahidaSkill] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupLayla] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}

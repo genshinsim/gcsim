@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		char.AddStatus(icdKey, icd, true) //10s icd
+		char.AddStatus(icdKey, icd, true) // 10s icd
 		char.AddEnergy("rightfulreward", refund)
 
 		return false

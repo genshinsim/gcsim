@@ -19,7 +19,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 23    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	hold := p["hold"]
 
 	c.Core.Tasks.Add(func() {
@@ -32,7 +32,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.SetCDWithDelay(action.ActionSkill, 900, skillStart+hold)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[next] + hold },
 		AnimationLength: skillFrames[action.InvalidAction] + hold,
 		CanQueueAfter:   skillStart + hold,

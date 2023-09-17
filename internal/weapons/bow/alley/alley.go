@@ -40,12 +40,12 @@ func (w *Weapon) Init() error {
 }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//While the character equipped with this weapon is in the party but not on the field, their DMG
-	//increases by 2% every second up to a max of 20%. When the character is on the field for more than 4s,
-	//the aforementioned DMG buff decreases by 4% per second until it reaches 0%.
+	// While the character equipped with this weapon is in the party but not on the field, their DMG
+	// increases by 2% every second up to a max of 20%. When the character is on the field for more than 4s,
+	// the aforementioned DMG buff decreases by 4% per second until it reaches 0%.
 	r := p.Refine
 
-	//max 10 stacks
+	// max 10 stacks
 	w := Weapon{
 		core: c,
 		char: char,

@@ -226,7 +226,6 @@ func (l *LetStmt) writeTo(sb *strings.Builder) {
 	}
 	sb.WriteString(" = ")
 	if l.Val != nil {
-
 		l.Val.writeTo(sb)
 	}
 }
@@ -607,7 +606,7 @@ type (
 
 	// A FuncLit node represents a function literal.
 	FuncLit struct {
-		Pos       //position of the starting (
+		Pos       // position of the starting (
 		Signature *FuncType
 		Args      []*Ident
 		Body      *BlockStmt
@@ -637,12 +636,12 @@ type (
 		Right Expr // operand
 	}
 
-	//A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
+	// A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
 	BinaryExpr struct {
 		Pos
 		Left  Expr
 		Right Expr  // need to evalute to same type as lhs
-		Op    Token //should be > itemCompareOP and < itemDot
+		Op    Token // should be > itemCompareOP and < itemDot
 	}
 
 	MapExpr struct {
@@ -818,14 +817,14 @@ func (i *Ident) Copy() Node {
 	return i.CopyIdent()
 }
 
-func (b *Ident) String() string {
+func (i *Ident) String() string {
 	var sb strings.Builder
-	b.writeTo(&sb)
+	i.writeTo(&sb)
 	return sb.String()
 }
 
-func (b *Ident) writeTo(sb *strings.Builder) {
-	sb.WriteString(b.Value)
+func (i *Ident) writeTo(sb *strings.Builder) {
+	sb.WriteString(i.Value)
 }
 
 // Field.
@@ -847,31 +846,31 @@ func (i *Field) Copy() Node {
 	return i.CopyField()
 }
 
-func (b *Field) String() string {
+func (i *Field) String() string {
 	var sb strings.Builder
-	b.writeTo(&sb)
+	i.writeTo(&sb)
 	return sb.String()
 }
 
-func (b *Field) writeTo(sb *strings.Builder) {
-	for _, v := range b.Value {
+func (i *Field) writeTo(sb *strings.Builder) {
+	for _, v := range i.Value {
 		sb.WriteString(v)
 	}
 }
 
 // CallExpr.
 
-func (c *CallExpr) CopyFn() Expr {
-	if c == nil {
+func (f *CallExpr) CopyFn() Expr {
+	if f == nil {
 		return nil
 	}
 	n := &CallExpr{
-		Pos:  c.Pos,
-		Fun:  c.Fun.CopyExpr(),
-		Args: make([]Expr, 0, len(c.Args)),
+		Pos:  f.Pos,
+		Fun:  f.Fun.CopyExpr(),
+		Args: make([]Expr, 0, len(f.Args)),
 	}
-	for i := range c.Args {
-		n.Args = append(n.Args, c.Args[i].CopyExpr())
+	for i := range f.Args {
+		n.Args = append(n.Args, f.Args[i].CopyExpr())
 	}
 
 	return n
@@ -891,10 +890,10 @@ func (f *CallExpr) String() string {
 	return sb.String()
 }
 
-func (b *CallExpr) writeTo(sb *strings.Builder) {
-	b.Fun.writeTo(sb)
+func (f *CallExpr) writeTo(sb *strings.Builder) {
+	f.Fun.writeTo(sb)
 	sb.WriteString("(")
-	for i, v := range b.Args {
+	for i, v := range f.Args {
 		if i > 0 {
 			sb.WriteString(", ")
 		}
@@ -1023,17 +1022,17 @@ type ExprType interface {
 
 type (
 	NumberType struct {
-		Pos //position of :, or of the ident if defaulting to NumberType
+		Pos // position of :, or of the ident if defaulting to NumberType
 	}
 	StringType struct {
-		Pos //position of :
+		Pos // position of :
 	}
 
 	MapType struct {
-		Pos //position of keyword map
+		Pos // position of keyword map
 	}
 	FuncType struct {
-		Pos        //position of opening (
+		Pos        // position of opening (
 		ArgsType   []ExprType
 		ResultType ExprType
 	}

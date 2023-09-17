@@ -14,10 +14,10 @@ type stamPercentMod struct {
 	Event  glog.Event
 }
 
-func (h *Handler) StamPercentMod(a action.Action) (amt float64) {
+func (h *Handler) StamPercentMod(a action.Action) float64 {
 	n := 0
+	amt := 0.0
 	for _, mod := range h.stamPercentMods {
-
 		if mod.Expiry > *h.F || mod.Expiry == -1 {
 			x, done := mod.Amount(a)
 			amt += x
@@ -38,11 +38,11 @@ func (h *Handler) StamPercentModIsActive(key string) bool {
 			ind = i
 		}
 	}
-	//mod doesnt exist
+	// mod doesnt exist
 	if ind == -1 {
 		return false
 	}
-	//check expiry
+	// check expiry
 	if h.stamPercentMods[ind].Expiry < *h.F && h.stamPercentMods[ind].Expiry > -1 {
 		return false
 	}
@@ -63,7 +63,7 @@ func (h *Handler) AddStamPercentMod(key string, dur int, f StamPercentModFunc) {
 		}
 	}
 
-	//if does not exist, make new and add
+	// if does not exist, make new and add
 	if ind == -1 {
 		mod.Event = h.Log.NewEvent("stam mod added", glog.LogStatusEvent, -1).
 			Write("overwrite", false).
@@ -74,7 +74,7 @@ func (h *Handler) AddStamPercentMod(key string, dur int, f StamPercentModFunc) {
 		return
 	}
 
-	//otherwise check not expired
+	// otherwise check not expired
 	if h.stamPercentMods[ind].Expiry > *h.F || h.stamPercentMods[ind].Expiry == -1 {
 		h.Log.NewEvent(
 			"stam mod refreshed", glog.LogStatusEvent, -1,
@@ -85,7 +85,7 @@ func (h *Handler) AddStamPercentMod(key string, dur int, f StamPercentModFunc) {
 
 		mod.Event = h.stamPercentMods[ind].Event
 	} else {
-		//if expired overide the event
+		// if expired overide the event
 		mod.Event = h.Log.NewEvent("stam mod added", glog.LogStatusEvent, -1).
 			Write("overwrite", false).
 			Write("key", mod.Key).

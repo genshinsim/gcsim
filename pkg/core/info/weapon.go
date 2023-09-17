@@ -31,11 +31,11 @@ func (w WeaponClass) String() string {
 	return weaponName[w]
 }
 
-func (e WeaponClass) MarshalJSON() ([]byte, error) {
-	return json.Marshal(weaponName[e])
+func (w WeaponClass) MarshalJSON() ([]byte, error) {
+	return json.Marshal(weaponName[w])
 }
 
-func (e *WeaponClass) UnmarshalJSON(b []byte) error {
+func (w *WeaponClass) UnmarshalJSON(b []byte) error {
 	var s string
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
@@ -43,7 +43,7 @@ func (e *WeaponClass) UnmarshalJSON(b []byte) error {
 	s = strings.ToLower(s)
 	for i, v := range weaponName {
 		if v == s {
-			*e = WeaponClass(i)
+			*w = WeaponClass(i)
 			return nil
 		}
 	}
@@ -52,12 +52,12 @@ func (e *WeaponClass) UnmarshalJSON(b []byte) error {
 
 type WeaponProfile struct {
 	Name     string         `json:"name"`
-	Key      keys.Weapon    `json:"key"` //use this to match with weapon curve mapping
+	Key      keys.Weapon    `json:"key"` // use this to match with weapon curve mapping
 	Class    WeaponClass    `json:"-"`
 	Refine   int            `json:"refine"`
 	Level    int            `json:"level"`
 	MaxLevel int            `json:"max_level"`
-	Atk      float64        `json:"base_atk"`
+	BaseAtk  float64        `json:"base_atk"`
 	Params   map[string]int `json:"-"`
 }
 type Weapon interface {

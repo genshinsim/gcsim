@@ -70,7 +70,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				ai.Mult = mc
 			}
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(t, nil, 3), 0, 1)
-
 		}
 		return false
 	}, fmt.Sprintf("starsilver-%v", char.Base.Key.String()))

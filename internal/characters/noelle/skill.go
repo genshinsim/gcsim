@@ -25,7 +25,7 @@ func init() {
 	skillFrames[action.ActionWalk] = 43
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Breastplate",
@@ -41,13 +41,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	//add shield first
+	// add shield first
 	defFactor := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 	shieldhp := shieldFlat[c.TalentLvlSkill()] + shieldDef[c.TalentLvlSkill()]*defFactor
-	c.Core.Player.Shields.Add(c.newShield(shieldhp, shield.ShieldNoelleSkill, 720))
+	c.Core.Player.Shields.Add(c.newShield(shieldhp, shield.NoelleSkill, 720))
 
-	//activate shield timer, on expiry explode
-	c.shieldTimer = c.Core.F + 720 //12 seconds
+	// activate shield timer, on expiry explode
+	c.shieldTimer = c.Core.F + 720 // 12 seconds
 
 	c.a4Counter = 0
 
@@ -70,7 +70,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 4 {
 		c.Core.Tasks.Add(func() {
 			if c.shieldTimer == c.Core.F {
-				//deal damage
+				// deal damage
 				c.explodeShield()
 			}
 		}, 720)
@@ -78,7 +78,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 24*60, 6)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
@@ -96,7 +96,7 @@ func (c *char) skillHealCB() combat.AttackCBFunc {
 			return
 		}
 		// check for healing
-		if c.Core.Player.Shields.Get(shield.ShieldNoelleSkill) != nil {
+		if c.Core.Player.Shields.Get(shield.NoelleSkill) != nil {
 			var prob float64
 			if c.Base.Cons >= 1 && c.StatModIsActive(burstBuffKey) {
 				prob = 1
@@ -139,6 +139,6 @@ func (c *char) explodeShield() {
 		CanBeDefenseHalted: true,
 	}
 
-	//center on player
+	// center on player
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4), 0, 0)
 }

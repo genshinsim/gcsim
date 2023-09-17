@@ -107,7 +107,7 @@ func (c *char) makeHealCB(area combat.AttackPattern, hi player.HealInfo) func(co
 }
 
 func (yg *yuegui) Tick() {
-	//this is needed since both reactable and gadget tick
+	// this is needed since both reactable and gadget tick
 	// yg.Reactable.Tick()
 	yg.Gadget.Tick()
 }

@@ -42,12 +42,11 @@ func main() {
 		dps, err := runSim(v)
 		fmt.Printf("%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
 	}
-
 }
 
 func runSim(w dbEntry) (float64, error) {
 	// start := time.Now()
-	//compute work??
+	// compute work??
 	// log.Printf("got work %v; starting compute", w.Id)
 	// compute result
 	simcfg, gcsl, err := simulator.Parse(w.Config)
@@ -62,7 +61,7 @@ func runSim(w dbEntry) (float64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30)*time.Second)
 	defer cancel()
 
-	result, err := simulator.RunWithConfig(w.Config, simcfg, gcsl, simulator.Options{}, time.Now(), ctx)
+	result, err := simulator.RunWithConfig(ctx, w.Config, simcfg, gcsl, simulator.Options{}, time.Now())
 	if err != nil {
 		// log.Printf("error running sim %v: %v\n", w.Id, err)
 		return 0, err
@@ -84,11 +83,14 @@ func getDBEntries() ([]dbEntry, error) {
 
 	for {
 		q.Skip = 100 * page
-		jsonStr, _ := json.Marshal(q)
+		jsonStr, err := json.Marshal(q)
+		if err != nil {
+			return nil, err
+		}
 		url := fmt.Sprintf("https://simpact.app/api/db?q=%v", url.QueryEscape(string(jsonStr)))
 
 		var d dbData
-		err := getJson(url, &d)
+		err = getJSON(url, &d)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +107,7 @@ func getDBEntries() ([]dbEntry, error) {
 
 var myClient = &http.Client{Timeout: 10 * time.Second}
 
-func getJson(url string, target any) error {
+func getJSON(url string, target any) error {
 	r, err := myClient.Get(url)
 	if err != nil {
 		return err

@@ -34,7 +34,7 @@ func init() {
 // - When Ushi takes DMG, Arataki Itto gains 1 stack of Superlative Superstrength. Only 1 stack can be gained in this way every 2s.
 // - Ushi will flee when its HP reaches 0 or its duration ends. It will grant Arataki Itto 1 stack of Superlative Superstrength when it leaves.
 // Ushi is considered a Geo Construct. Arataki Itto can only deploy 1 Ushi on the field at any one time.
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	// anything but NA/E -> E should reset savedNormalCounter
 	// can't use CurrentState here since AnimationLength of Dash is the same as Dash -> Skill, so it switches to Idle instead of staying DashState
 	switch c.Core.Player.LastAction.Type {
@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ushihit = 3
 	}
 
-	//deal damage when created
+	// deal damage when created
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Masatsu Zetsugi: Akaushi Burst!",
@@ -120,7 +120,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// Cooldown
 	c.SetCDWithDelay(action.ActionSkill, 600, skillRelease) // cd starts on release
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

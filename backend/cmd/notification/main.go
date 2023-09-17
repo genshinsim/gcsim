@@ -16,12 +16,11 @@ import (
 
 type service struct {
 	c           *notify.Client
-	infoUrl     string
-	criticalUrl string
+	infoURL     string
+	criticalURL string
 }
 
 func main() {
-
 	err := run()
 	if err != nil {
 		log.Fatal(err)
@@ -50,14 +49,14 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	s.infoUrl = fmt.Sprintf("discord://%v@%v", os.Getenv("NOTIFY_INFO_TOKEN"), os.Getenv("NOTIFY_INFO_ID"))
-	s.criticalUrl = fmt.Sprintf("discord://%v@%v", os.Getenv("NOTIFY_CRITICAL_TOKEN"), os.Getenv("NOTIFY_CRITICAL_ID"))
+	s.infoURL = fmt.Sprintf("discord://%v@%v", os.Getenv("NOTIFY_INFO_TOKEN"), os.Getenv("NOTIFY_INFO_ID"))
+	s.criticalURL = fmt.Sprintf("discord://%v@%v", os.Getenv("NOTIFY_CRITICAL_TOKEN"), os.Getenv("NOTIFY_CRITICAL_ID"))
 	err = s.sub()
 	if err != nil {
 		return err
 	}
-	log.Println(s.infoUrl)
-	log.Println(s.criticalUrl)
+	log.Println(s.infoURL)
+	log.Println(s.criticalURL)
 
 	return nil
 }
@@ -129,7 +128,7 @@ func (s *service) onDBComputeFailed(topic string, payload []byte) {
 }
 
 func (s *service) info(msg string) {
-	sender, err := shoutrrr.CreateSender(s.infoUrl)
+	sender, err := shoutrrr.CreateSender(s.infoURL)
 	if err != nil {
 		log.Println("creating info url sender failed:", err)
 		return
@@ -138,7 +137,7 @@ func (s *service) info(msg string) {
 }
 
 func (s *service) critical(msg string) {
-	sender, err := shoutrrr.CreateSender(s.criticalUrl)
+	sender, err := shoutrrr.CreateSender(s.criticalURL)
 	if err != nil {
 		log.Println("creating info url sender failed:", err)
 		return

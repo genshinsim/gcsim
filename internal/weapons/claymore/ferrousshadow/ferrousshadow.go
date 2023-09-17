@@ -30,7 +30,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.25 + float64(r)*0.05
-	hp_check := 0.65 + float64(r)*0.05
+	hpCheck := 0.65 + float64(r)*0.05
 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("ferrousshadow", -1),
@@ -40,7 +40,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return nil, false
 			}
 			// don't apply buff if above hp threshold
-			if char.CurrentHPRatio() > hp_check {
+			if char.CurrentHPRatio() > hpCheck {
 				return nil, false
 			}
 			return m, true

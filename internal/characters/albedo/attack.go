@@ -41,7 +41,7 @@ func init() {
 	attackFrames[4][action.ActionCharge] = 500                            //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -70,12 +70,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			attackHitboxes[c.NormalCounter][1],
 		)
 	}
-	//we don't need to use char queue here since each hit is single hit
+	// we don't need to use char queue here since each hit is single hit
 	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],

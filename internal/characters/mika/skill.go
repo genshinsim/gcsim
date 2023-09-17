@@ -46,14 +46,14 @@ func init() {
 	skillHoldFrames[action.ActionWalk] = 30
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	if p["hold"] != 0 {
-		return c.skillHold(p)
+		return c.skillHold()
 	}
-	return c.skillPress(p)
+	return c.skillPress()
 }
 
-func (c *char) skillPress(p map[string]int) action.ActionInfo {
+func (c *char) skillPress() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Flowfrost Arrow",
@@ -96,7 +96,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(c.applyBuffs, skillPressCDStart)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillPressCDStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionWalk], // earliest cancel
@@ -104,7 +104,7 @@ func (c *char) skillPress(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.ActionInfo {
+func (c *char) skillHold() action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rimestar Flare",
@@ -130,7 +130,7 @@ func (c *char) skillHold(p map[string]int) action.ActionInfo {
 	c.QueueCharTask(c.applyBuffs, skillHoldCDStart+1)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel

@@ -36,7 +36,7 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 500                            //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	if c.StatusIsActive(pirouetteStatus) {
 		return c.Pirouette(p, NilouSkillTypeDance)
 	}
@@ -76,7 +76,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],

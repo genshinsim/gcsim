@@ -42,16 +42,16 @@ func (c *char) a1() {
 		}
 		snap := c.Snapshot(&ai)
 
-		//add shield
+		// add shield
 		x := snap.BaseDef*(1+snap.Stats[attributes.DEFP]) + snap.Stats[attributes.DEF]
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: c.Index,
 			Src:        c.Core.F,
-			ShieldType: shield.ShieldNoelleA1,
+			ShieldType: shield.NoelleA1,
 			Name:       "Noelle A1",
 			HP:         4 * x,
 			Ele:        attributes.Cryo,
-			Expires:    c.Core.F + 1200, //20 sec
+			Expires:    c.Core.F + 1200, // 20 sec
 		})
 		return false
 	}, "noelle-a1")

@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
@@ -30,8 +31,8 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *Bo
 		ap := combat.NewCircleHitOnTarget(b.Gadget, nil, 6.5)
 		c.QueueAttackWithSnap(ai, snap, ap, 1)
 
-		//self damage
-		ai.Abil += " (self damage)"
+		// self damage
+		ai.Abil += reactions.SelfDamageSuffix
 		ai.FlatDmg = 0.05 * ai.FlatDmg
 		ap.SkipTargets[targets.TargettablePlayer] = false
 		ap.SkipTargets[targets.TargettableEnemy] = true
@@ -45,7 +46,7 @@ func newBountifulCore(c *core.Core, p geometry.Point, a *combat.AttackEvent) *Bo
 }
 
 func (b *BountifulCore) Tick() {
-	//this is needed since gadget tick
+	// this is needed since gadget tick
 	b.Gadget.Tick()
 }
 

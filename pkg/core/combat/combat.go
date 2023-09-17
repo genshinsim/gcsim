@@ -43,7 +43,7 @@ type Opt struct {
 	DamageMode    bool
 	DefHalt       bool
 	EnableHitlag  bool
-	DefaultTarget targets.TargetKey //index for default target
+	DefaultTarget targets.TargetKey // index for default target
 }
 
 func New(opt Opt) *Handler {
@@ -63,16 +63,16 @@ func (h *Handler) nextkey() targets.TargetKey {
 }
 
 func (h *Handler) Tick() {
-	//collision check happens before each object ticks (as collision may remove the object)
-	//enemy and player does not check for collision
-	//gadgets check against player and enemy
+	// collision check happens before each object ticks (as collision may remove the object)
+	// enemy and player does not check for collision
+	// gadgets check against player and enemy
 	for i := 0; i < len(h.gadgets); i++ {
 		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(targets.TargettablePlayer) {
 			if h.gadgets[i].WillCollide(h.player.Shape()) {
 				h.gadgets[i].CollidedWith(h.player)
 			}
 		}
-		//sanity check in case gadget is gone
+		// sanity check in case gadget is gone
 		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(targets.TargettableEnemy) {
 			for j := 0; j < len(h.enemies) && h.gadgets[i] != nil; j++ {
 				if h.gadgets[i].WillCollide(h.enemies[j].Shape()) {

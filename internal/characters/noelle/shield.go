@@ -10,7 +10,7 @@ type noelleShield struct {
 	c *char
 }
 
-func (c *char) newShield(base float64, t shield.ShieldType, dur int) *noelleShield {
+func (c *char) newShield(base float64, t shield.Type, dur int) *noelleShield {
 	n := &noelleShield{}
 	n.Tmpl = &shield.Tmpl{}
 	n.Tmpl.ActorIndex = c.Index

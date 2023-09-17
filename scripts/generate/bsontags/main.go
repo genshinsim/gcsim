@@ -1,7 +1,7 @@
 package main
 
-//SOURCE: https://github.com/arkavo-com/pb-go-tag-bson
-//MIT LICENSED
+// SOURCE: https://github.com/arkavo-com/pb-go-tag-bson
+// MIT LICENSED
 
 import (
 	"flag"
@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 func main() {
@@ -34,7 +35,7 @@ func main() {
 		fset := token.NewFileSet()
 		node, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
 		if err != nil {
-			return fmt.Errorf("could not parse go file: %v", err)
+			return fmt.Errorf("could not parse go file: %w", err)
 		}
 		var v visitor
 		// debug
@@ -44,12 +45,12 @@ func main() {
 		// output file
 		f, err := os.Create(path)
 		if err != nil {
-			return fmt.Errorf("could not open output file: %v", err)
+			return fmt.Errorf("could not open output file: %w", err)
 		}
 		defer f.Close()
 		err = format.Node(f, fset, node)
 		if err != nil {
-			return fmt.Errorf("could not write output file: %v", err)
+			return fmt.Errorf("could not write output file: %w", err)
 		}
 		if verbose {
 			newInfo, err := os.Stat(path)
@@ -77,29 +78,32 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 	if n == nil {
 		return nil
 	}
-	switch n.(type) {
-	case *ast.Field:
+	handleVisit := func() {
+		_, ok := n.(*ast.Field)
+		if !ok {
+			return
+		}
 		ast.Inspect(n, func(subn ast.Node) bool {
 			switch subd := subn.(type) {
 			case *ast.Field:
-				if f, ok := n.(*ast.Field); ok {
-					if len(f.Names) == 0 {
-						return false
-					}
-					//skip non public fields
-					r := []rune(f.Names[0].Name)
-					if len(r) == 0 {
-						return false
-					}
-					if !unicode.IsUpper([]rune(f.Names[0].Name)[0]) {
-						return false
-					}
+				f, ok := n.(*ast.Field)
+				if !ok {
 					return true
 				}
+				if len(f.Names) == 0 {
+					return false
+				}
+				// skip non public fields
+				r := []rune(f.Names[0].Name)
+				if len(r) == 0 {
+					return false
+				}
+				ru, _ := utf8.DecodeRuneInString(f.Names[0].Name)
+				return unicode.IsUpper(ru)
 			case *ast.BasicLit:
 				existingTagValue := strings.Trim(subd.Value, "`")
 				bsonTags := []string{"bson:\"-\""}
-				//if no tag original, add ignore flag
+				// if no tag original, add ignore flag
 				if existingTagValue == "" {
 					subd.Value = fmt.Sprintf("`%s`", strings.Join(bsonTags, " "))
 					return true
@@ -111,25 +115,28 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 				name := "-"
 				for _, existingTag := range existingTags {
 					existingTagParts := strings.Split(existingTag, ":")
-					if existingTagParts[0] == "protobuf" {
-						protoTagsValue := strings.Trim(existingTagParts[1], `"`)
-						protoTags := strings.Split(protoTagsValue, ",")
-						for _, existingProtoTag := range protoTags {
-							if strings.HasPrefix(existingProtoTag, "name=") && name == "-" {
-								name = strings.TrimPrefix(existingProtoTag, "name=")
-							}
-							if strings.HasPrefix(existingProtoTag, "json=") {
-								name = strings.TrimPrefix(existingProtoTag, "json=")
-							}
+					if existingTagParts[0] != "protobuf" {
+						continue
+					}
+					protoTagsValue := strings.Trim(existingTagParts[1], `"`)
+					protoTags := strings.Split(protoTagsValue, ",")
+					for _, existingProtoTag := range protoTags {
+						if strings.HasPrefix(existingProtoTag, "name=") && name == "-" {
+							name = strings.TrimPrefix(existingProtoTag, "name=")
+						}
+						if strings.HasPrefix(existingProtoTag, "json=") {
+							name = strings.TrimPrefix(existingProtoTag, "json=")
 						}
 					}
 				}
 				bsonTags = []string{fmt.Sprintf(`bson:"%v,omitempty"`, name)}
-				mergedTags := append(existingTags, bsonTags...)
+				mergedTags := existingTags
+				mergedTags = append(mergedTags, bsonTags...)
 				subd.Value = fmt.Sprintf("`%s`", strings.Join(mergedTags, " "))
 			}
 			return true
 		})
 	}
+	handleVisit()
 	return v
 }

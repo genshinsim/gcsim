@@ -8,7 +8,6 @@ import (
 )
 
 func TestBurning(t *testing.T) {
-
 	c := testCore()
 	trg := addTargetToCore(c)
 
@@ -27,9 +26,9 @@ func TestBurning(t *testing.T) {
 			Durability: 25,
 		},
 	})
-	//dendro electro gone; 20 quicken
-	if !durApproxEqual(20, trg.Durability[ModifierQuicken], 0.00001) {
-		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[ModifierQuicken])
+	// dendro electro gone; 20 quicken
+	if !durApproxEqual(20, trg.Durability[Quicken], 0.00001) {
+		t.Errorf("expecting 20 cryo attached, got %v", trg.Durability[Quicken])
 	}
 	if trg.AuraContains(attributes.Dendro, attributes.Electro) {
 		t.Error("expecting target to not contain any remaining dendro or electro aura")

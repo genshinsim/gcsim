@@ -41,7 +41,7 @@ func init() {
 	aimedPropFrames[action.ActionJump] = aimedPropRelease
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) action.Info {
 	level, ok := p["level"]
 	if !ok {
 		level = 1
@@ -87,7 +87,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		c.makeC4CB(),
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedRelease,
@@ -95,7 +95,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) PropAimed(p map[string]int) action.ActionInfo {
+func (c *char) PropAimed(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -123,7 +123,6 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 	c.QueueCharTask(func() {
-
 		c.c6(c6Travel)
 		target := c.Core.Combat.PrimaryTarget()
 		c.Core.QueueAttack(
@@ -148,7 +147,7 @@ func (c *char) PropAimed(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(c.skillAligned(target.Pos()), travel)
 	}, aimedPropRelease)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedPropFrames),
 		AnimationLength: aimedPropFrames[action.InvalidAction],
 		CanQueueAfter:   aimedPropRelease,

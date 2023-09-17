@@ -14,7 +14,7 @@ func (c *char) a1() {
 		return
 	}
 	c.Core.Player.Shields.AddShieldBonusMod("layla-a1", -1, func() (float64, bool) {
-		if exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill); exist == nil {
+		if exist := c.Core.Player.Shields.Get(shield.LaylaSkill); exist == nil {
 			return 0, false
 		}
 		return float64(c.a1Stack) * 0.06, false

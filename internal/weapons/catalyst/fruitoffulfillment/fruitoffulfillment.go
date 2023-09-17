@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.OnShatter; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
 		w.core.Events.Subscribe(i, f, fmt.Sprintf("fruitoffulfillment-%v", w.char.Base.Key.String()))
 	}
 

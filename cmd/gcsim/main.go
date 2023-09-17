@@ -25,10 +25,10 @@ var (
 
 type opts struct {
 	config           string
-	out              string //file result name
-	sample           string //file sample name
-	sampleMinDps     string //file sample name for the min-DPS run
-	sampleMaxDps     string //file sample name for the max-DPS run
+	out              string // file result name
+	sample           string // file sample name
+	sampleMinDps     string // file sample name for the min-DPS run
+	sampleMaxDps     string // file sample name for the max-DPS run
 	gz               bool
 	serve            bool
 	nobrowser        bool
@@ -48,7 +48,12 @@ const address = ":8381"
 
 // command line tool; following options are available:
 func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
+}
 
+func mainImpl() error {
 	var opt opts
 	var version bool
 	flag.BoolVar(&version, "version", false, "check gcsim version (git hash)")
@@ -96,18 +101,18 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	if opt.cpuprofile != "" {
 		f, err := os.Create(opt.cpuprofile)
 		if err != nil {
-			log.Fatal("could not create CPU profile: ", err)
+			return fmt.Errorf("could not create CPU profile: %w", err)
 		}
 		defer f.Close() // error handling omitted for example
 		if err := pprof.StartCPUProfile(f); err != nil {
-			log.Fatal("could not start CPU profile: ", err)
+			return fmt.Errorf("could not start CPU profile: %w", err)
 		}
 		defer pprof.StopCPUProfile()
 	}
 
 	if version {
 		fmt.Println(simulator.Version())
-		return
+		return nil
 	}
 
 	if shareKey == "" {
@@ -130,7 +135,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		// TODO: Eventually will want to handle verbose/options in some other way.
 		// Ideally once documentation is standardized, can move options to a config file, and verbose can also be moved into options or something
 		optimization.RunSubstatOptim(simopt, opt.verbose, opt.options)
-		return
+		return nil
 	}
 
 	if opt.substatOptimFull {
@@ -147,10 +152,9 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	var hash string
 
 	if !opt.norun {
-		res, err = simulator.Run(simopt, context.Background())
+		res, err = simulator.Run(context.Background(), simopt)
 		if err != nil {
-			log.Println(err)
-			return
+			return err
 		}
 		hash, _ = res.Sign(shareKey)
 		fmt.Println(res.PrettyPrint())
@@ -158,8 +162,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		if simopt.ResultSaveToPath != "" {
 			err = res.Save(simopt.ResultSaveToPath, simopt.GZIPResult)
 			if err != nil {
-				log.Println(err)
-				return
+				return err
 			}
 		}
 	}
@@ -185,8 +188,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		}
 
 		if err != nil {
-			log.Println(err)
-			return
+			return err
 		}
 	}
 
@@ -200,8 +202,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		)
 
 		if err != nil {
-			log.Println(err)
-			return
+			return err
 		}
 	}
 
@@ -215,8 +216,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		)
 
 		if err != nil {
-			log.Println(err)
-			return
+			return err
 		}
 	}
 
@@ -225,17 +225,25 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		idleConnectionsClosed := make(chan struct{})
 		serve(idleConnectionsClosed, resultServeFile+".gz", hash, sampleServeFile+".gz", opt.keepserving)
 
-		url := "https://gcsim.app/local"
-		if !opt.nobrowser {
-			err := open(url)
-			if err != nil {
-				//try "xdg-open-wsl"
-				err = openWSL(url)
-				if err != nil {
-					fmt.Printf("Error opening default browser... please visit: %v\n", url)
-				}
+		openBrowser := func() {
+			url := "https://gcsim.app/local"
+			if opt.nobrowser {
+				return
 			}
+
+			err := open(url)
+			if err == nil {
+				return
+			}
+
+			// try "xdg-open-wsl"
+			err = openWSL(url)
+			if err == nil {
+				return
+			}
+			fmt.Printf("Error opening default browser... please visit: %v\n", url)
 		}
+		openBrowser()
 
 		<-idleConnectionsClosed
 	}
@@ -243,14 +251,16 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 	if opt.memprofile != "" {
 		f, err := os.Create(fmt.Sprintf(opt.memprofile))
 		if err != nil {
-			log.Fatal("could not create memory profile: ", err)
+			return fmt.Errorf("could not create memory profile: %w", err)
 		}
 		defer f.Close() // error handling omitted for example
 		runtime.GC()    // get up-to-date statistics
 		if err := pprof.WriteHeapProfile(f); err != nil {
-			log.Fatal("could not write memory profile: ", err)
+			return fmt.Errorf("could not write memory profile: %w", err)
 		}
 	}
+
+	return nil
 }
 
 // open opens the specified URL in the default browser of the user.
@@ -277,7 +287,7 @@ func openWSL(url string) error {
 	return exec.Command(cmd, args...).Start()
 }
 
-func parseStrSeedAndWriteSample(seedStr string, outputPath string, config string, gz bool, simopt simulator.Options) error {
+func parseStrSeedAndWriteSample(seedStr, outputPath, config string, gz bool, simopt simulator.Options) error {
 	seed, err := strconv.ParseUint(seedStr, 10, 64)
 
 	if err != nil {
@@ -287,8 +297,7 @@ func parseStrSeedAndWriteSample(seedStr string, outputPath string, config string
 	return writeSample(seed, outputPath, config, gz, simopt)
 }
 
-
-func writeSample(seed uint64, outputPath string, config string, gz bool, simopt simulator.Options) error {
+func writeSample(seed uint64, outputPath, config string, gz bool, simopt simulator.Options) error {
 	cfg, err := simulator.ReadConfig(config)
 	if err != nil {
 		return err

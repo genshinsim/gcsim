@@ -34,8 +34,7 @@ func init() {
 // Crowfeathers will trigger Tengu Juurai: Ambush after a short time, dealing Electro DMG and granting the active character within its AoE an ATK Bonus based on Kujou Sara's Base ATK.
 // The ATK Bonuses from different Tengu Juurai will not stack, and their effects and duration will be determined by the last Tengu Juurai to take effect.
 // Also implements C2: Unleashing Tengu Stormcall will leave a Weaker Crowfeather at Kujou Sara's original position that will deal 30% of its original DMG.
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-
+func (c *char) Skill(p map[string]int) action.Info {
 	// Snapshot for all of the crowfeathers are taken upon cast
 	c.Core.Status.Add(coverKey, 18*60)
 
@@ -60,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 7)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
@@ -89,7 +88,7 @@ func (c *char) attackBuff(a combat.AttackPattern, delay int) {
 		}
 
 		active := c.Core.Player.ActiveChar()
-		buff := atkBuff[c.TalentLvlSkill()] * float64(c.Base.Atk+c.Weapon.Atk)
+		buff := atkBuff[c.TalentLvlSkill()] * (c.Base.Atk + c.Weapon.BaseAtk)
 
 		c.Core.Log.NewEvent("sara attack buff applied", glog.LogCharacterEvent, c.Index).
 			Write("char", active.Index).

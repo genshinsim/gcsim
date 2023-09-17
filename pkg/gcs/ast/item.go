@@ -10,22 +10,22 @@ type Token struct {
 	line int       // The line number at the start of this item.
 }
 
-func (i Token) String() string {
+func (t Token) String() string {
 	switch {
-	case i.Typ == itemEOF:
+	case t.Typ == itemEOF:
 		return "EOF"
-	case i.Typ == itemError:
-		return i.Val
-	case i.Typ == itemTerminateLine:
+	case t.Typ == itemError:
+		return t.Val
+	case t.Typ == itemTerminateLine:
 		return ";"
-	case i.Typ > itemTerminateLine && i.Typ < itemKeyword:
-		return i.Val
-	case i.Typ > itemKeyword:
-		return fmt.Sprintf("<%s>", i.Val)
+	case t.Typ > itemTerminateLine && t.Typ < itemKeyword:
+		return t.Val
+	case t.Typ > itemKeyword:
+		return fmt.Sprintf("<%s>", t.Val)
 		// case len(i.val) > 10:
 		// 	return fmt.Sprintf("%.10q...", i.val)
 	}
-	return fmt.Sprintf("%q", i.Val)
+	return fmt.Sprintf("%q", t.Val)
 }
 
 // TokenType identifies the type of lex items.
@@ -107,6 +107,7 @@ const (
 	keywordEnergy            // energy
 	keywordParticleThreshold // particle_threshold
 	keywordParticleDropCount // particle_drop_count
+	keywordHurt              // hurt
 
 	// Keywords specific to gcsim appears after this
 	itemKeys

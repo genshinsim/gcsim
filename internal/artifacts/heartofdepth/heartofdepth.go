@@ -64,7 +64,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			})
 			return false
 		}, s.key)
-
 	}
 
 	return &s, nil

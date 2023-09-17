@@ -20,7 +20,7 @@ func init() {
 }
 
 func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
-	c, _ := core.New(core.CoreOpt{
+	c, _ := core.New(core.Opt{
 		Seed:  time.Now().Unix(),
 		Debug: true,
 	})

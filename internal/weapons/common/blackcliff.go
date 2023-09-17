@@ -21,7 +21,6 @@ func (b *Blackcliff) SetIndex(idx int) { b.Index = idx }
 func (b *Blackcliff) Init() error      { return nil }
 
 func NewBlackcliff(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-
 	b := &Blackcliff{}
 
 	atk := 0.09 + float64(p.Refine)*0.03
@@ -59,9 +58,9 @@ func NewBlackcliff(c *core.Core, char *character.CharWrapper, p info.WeaponProfi
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		//add status to char given index
+		// add status to char given index
 		char.AddStatus(stackKey[index], 1800, true)
-		//update buff
+		// update buff
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("blackcliff", 1800),
 			AffectedStat: attributes.ATKP,

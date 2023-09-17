@@ -8,7 +8,7 @@ func (p *Parser) parseLet() (Stmt, error) {
 
 	ident, err := p.consume(itemIdentifier)
 	if err != nil {
-		//next token not an identifier
+		// next token not an identifier
 		return nil, fmt.Errorf("ln%v: expecting identifier after let, got %v", ident.line, ident.Val)
 	}
 
@@ -17,7 +17,7 @@ func (p *Parser) parseLet() (Stmt, error) {
 		Ident: ident,
 	}
 
-	//optional typing info; if not present assume number
+	// optional typing info; if not present assume number
 	if l := p.peek(); l.Typ != itemAssign {
 		stmt.Type, err = p.parseTyping()
 		if err != nil {
@@ -30,7 +30,7 @@ func (p *Parser) parseLet() (Stmt, error) {
 
 	a, err := p.consume(itemAssign)
 	if err != nil {
-		//next token not and identifier
+		// next token not and identifier
 		return nil, fmt.Errorf("ln%v: expecting = after identifier in let statement, got %v", a.line, a.Val)
 	}
 

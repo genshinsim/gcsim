@@ -22,7 +22,7 @@ func (c *char) c1() {
 			return false
 		}
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("heizou-c1", 300), //5s
+			Base:         modifier.NewBaseWithHitlag("heizou-c1", 300), // 5s
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				return c.c1buff, true
@@ -32,7 +32,6 @@ func (c *char) c1() {
 		c.AddStatus(c1Icd, 600, true)
 		return false
 	}, "heizou enter")
-
 }
 
 // The first Windmuster Iris explosion in each Windmuster Kick will regenerate 9 Elemental Energy for Shikanoin Heizou.

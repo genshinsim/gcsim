@@ -28,14 +28,14 @@ func init() {
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
 // Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
 	}
 
 	if c.Base.Cons >= 6 && c.Core.Status.Duration(c6Status) > 0 {
-		//c6 is default ICD group for some odd reason
+		// c6 is default ICD group for some odd reason
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
@@ -51,7 +51,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		for i := range attack[c.NormalCounter] {
 			c.c6count++
 			if c.c6count >= 5 {
-				c.Core.Status.Delete(c6Status) //delete status after 5 arrows
+				c.Core.Status.Delete(c6Status) // delete status after 5 arrows
 			}
 			c.Core.QueueAttack(
 				ai,
@@ -96,7 +96,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],

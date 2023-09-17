@@ -5,14 +5,14 @@ import (
 	"os"
 )
 
-func (s *SimulationResult) Save(fpath string, gz bool) error {
-	data, err := s.MarshalJson()
+func (r *SimulationResult) Save(fpath string, gz bool) error {
+	data, err := r.MarshalJSON()
 	if err != nil {
 		return err
 	}
 	if gz {
-		//add .gz to end of file
-		f, err := os.OpenFile(fpath+".gz", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+		// add .gz to end of file
+		f, err := os.OpenFile(fpath+".gz", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
 		if err != nil {
 			return err
 		}
@@ -22,18 +22,18 @@ func (s *SimulationResult) Save(fpath string, gz bool) error {
 		err = zw.Close()
 		return err
 	}
-	//else save json
-	return os.WriteFile(fpath, data, 0644)
+	// else save json
+	return os.WriteFile(fpath, data, 0o644)
 }
 
 func (s *Sample) Save(fpath string, gz bool) error {
-	data, err := s.MarshalJson()
+	data, err := s.MarshalJSON()
 	if err != nil {
 		return err
 	}
 
 	if gz {
-		f, err := os.OpenFile(fpath+".gz", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+		f, err := os.OpenFile(fpath+".gz", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
 		if err != nil {
 			return err
 		}
@@ -44,5 +44,5 @@ func (s *Sample) Save(fpath string, gz bool) error {
 		return zw.Close()
 	}
 
-	return os.WriteFile(fpath, data, 0644)
+	return os.WriteFile(fpath, data, 0o644)
 }

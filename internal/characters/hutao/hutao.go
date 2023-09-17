@@ -76,8 +76,7 @@ func (c *char) onExitField() {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		if c.StatModIsActive(paramitaBuff) && c.Base.Cons >= 1 {
 			return 0
 		}

@@ -9,18 +9,21 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type stats struct {
-	Max         int     `json:"maxlevel"`
+	MaxLevel    int     `json:"max_level"`
 	HP          float64 `json:"hp"`
-	Atk         float64 `json:"attack"`
-	Def         float64 `json:"defense"`
+	Atk         float64 `json:"atk"`
+	Def         float64 `json:"def"`
 	Specialized float64 `json:"specialized"`
 }
 
 type curve struct {
-	Atk         string `json:"attack"`
+	Atk         string `json:"atk"`
 	Specialized string `json:"specialized"`
 }
 
@@ -28,7 +31,7 @@ type data struct {
 	Base          stats   `json:"base"`
 	Curve         curve   `json:"curve"`
 	Specialized   string  `json:"specialized"`
-	PromotionData []stats `json:"promotion"`
+	PromotionData []stats `json:"promotion_data"`
 	TitleCase     string
 }
 
@@ -57,8 +60,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	//fix the specialized key
-	for k, v := range d {
+	// fix the specialized key
+	for k, v := range d { //nolint:gocritic // map values are not addressable/can't edit without copying and writing back
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		if v.Specialized == "" {
 			v.Specialized = "attributes.NoStat"
@@ -73,8 +76,7 @@ func main() {
 	writeTmpl(tmplShortcuts, "./shortcuts.txt", d)
 }
 
-func download(filepath string, url string) error {
-
+func download(filepath, url string) error {
 	// Get the data
 	resp, err := http.Get(url)
 	if err != nil {
@@ -94,7 +96,7 @@ func download(filepath string, url string) error {
 	return err
 }
 
-func writeTmpl(tmplStr string, outFile string, d map[string]data) {
+func writeTmpl(tmplStr, outFile string, d map[string]data) {
 	t, err := template.New("out").Parse(tmplStr)
 	if err != nil {
 		log.Panic(err)
@@ -111,7 +113,7 @@ func writeTmpl(tmplStr string, outFile string, d map[string]data) {
 }
 
 type namemap struct {
-	Names map[string]string `json:"namemap"`
+	Names map[string]string `json:"names"`
 }
 
 var re = regexp.MustCompile(`(?i)[^0-9a-z]`)
@@ -128,9 +130,9 @@ func readNameMap() map[string]string {
 	}
 
 	for k, v := range m.Names {
-		//strip out any none word characters
+		// strip out any none word characters
 		v = strings.ReplaceAll(v, "'", "")
-		m.Names[k] = re.ReplaceAllString(strings.Title(v), "")
+		m.Names[k] = re.ReplaceAllString(cases.Title(language.Und, cases.NoLower).String(v), "")
 	}
 	return m.Names
 }

@@ -33,7 +33,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 63    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	c.Core.Tasks.Add(func() {
 		c.a1CDReset()
 		// atk spd
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(6)
 	c.Core.Tasks.Add(c.clearSigil, 7)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,

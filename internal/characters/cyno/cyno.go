@@ -75,7 +75,7 @@ func (c *char) NextNormalCounter() int {
 	return c.NormalCounter + 1
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	if a != action.ActionSkill {
 		return c.Character.ActionReady(a, p)
 	}

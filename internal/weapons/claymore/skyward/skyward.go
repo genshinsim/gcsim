@@ -26,13 +26,13 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//Increases all DMG by 8%. After using an Elemental Burst, Normal or Charged
-	//Attack, on hit, creates a vacuum blade that does 80% of ATK as DMG to
-	//opponents along its path. Lasts for 20s or 8 vacuum blades.
+	// Increases all DMG by 8%. After using an Elemental Burst, Normal or Charged
+	// Attack, on hit, creates a vacuum blade that does 80% of ATK as DMG to
+	// opponents along its path. Lasts for 20s or 8 vacuum blades.
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.06 + float64(r)*0.02
 	char.AddStatMod(character.StatMod{

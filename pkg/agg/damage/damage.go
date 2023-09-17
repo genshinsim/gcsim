@@ -10,7 +10,7 @@ import (
 )
 
 // 30 = .5s
-const BUCKET_SIZE uint32 = 30
+const bucketSize uint32 = 30
 
 func init() {
 	agg.Register(NewAgg)
@@ -80,7 +80,7 @@ func (b *buffer) Add(result stats.Result) {
 		stat.Add(val)
 	}
 
-	for i, char := range result.Characters {
+	for i := range result.Characters {
 		var charDPS float64
 		charElementDPS := makeElementMap()
 		charTargetDPS := make(map[int]float64)
@@ -102,7 +102,7 @@ func (b *buffer) Add(result stats.Result) {
 			stat.Add(val)
 		}
 
-		for _, ev := range char.DamageEvents {
+		for _, ev := range result.Characters[i].DamageEvents {
 			if _, ok := charTargetDPS[ev.Target]; !ok {
 				charTargetDPS[ev.Target] = 0
 			}
@@ -222,7 +222,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		damageBuckets[i] = agg.ToDescriptiveStats(v)
 	}
 	result.DamageBuckets = &model.BucketStats{
-		BucketSize: BUCKET_SIZE,
+		BucketSize: bucketSize,
 		Buckets:    damageBuckets,
 	}
 
@@ -262,7 +262,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	}
 
 	result.CumulativeDamageContribution = &model.CharacterBucketStats{
-		BucketSize: BUCKET_SIZE,
+		BucketSize: bucketSize,
 		Characters: characterBuckets,
 	}
 }

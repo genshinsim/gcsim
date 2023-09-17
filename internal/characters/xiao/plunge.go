@@ -34,11 +34,11 @@ func init() {
 // High Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionHighPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
@@ -79,7 +79,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		c.c6cb(),
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
@@ -90,11 +90,11 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 // Low Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
@@ -135,7 +135,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		c.c6cb(),
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],

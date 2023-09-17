@@ -35,9 +35,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = atk
 	m[attributes.EM] = em
 
-	f := func(args ...interface{}) bool {
+	f := func() {
 		if c.Player.Active() != char.Index {
-			return false
+			return
 		}
 
 		char.AddStatMod(character.StatMod{
@@ -47,7 +47,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				return m, true
 			},
 		})
-		return false
 	}
 	fDamage := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -57,14 +56,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
-		return f(args)
+		f()
+		return false
 	}
 	fReact := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		return f(args)
+		f()
+		return false
 	}
 
 	c.Events.Subscribe(event.OnEnemyDamage, fDamage, "mailedflower-skill-"+char.Base.Key.String())

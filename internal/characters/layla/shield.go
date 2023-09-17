@@ -38,7 +38,7 @@ func (c *char) newShield(base float64, dur int) *shd {
 	n.Tmpl = &shield.Tmpl{}
 	n.Tmpl.ActorIndex = c.Index
 	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = shield.ShieldLaylaSkill
+	n.Tmpl.ShieldType = shield.LaylaSkill
 	n.Tmpl.Ele = attributes.Cryo
 	n.Tmpl.HP = base
 	n.Tmpl.Name = "Layla Skill"
@@ -193,7 +193,7 @@ func (c *char) tickNightStar(src int, star bool) func() {
 		if c.starTickSrc != src {
 			return
 		}
-		exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
+		exist := c.Core.Player.Shields.Get(shield.LaylaSkill)
 		if exist == nil {
 			return
 		}

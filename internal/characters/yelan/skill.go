@@ -37,7 +37,7 @@ Fires off a Lifeline that tractors her in rapidly, entangling and marking oppone
 When her rapid movement ends, the Lifeline will explode, dealing Hydro DMG to the marked opponents based on Yelan's Max HP.
 *
 */
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lingering Lifeline",
@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		FlatDmg:    skill[c.TalentLvlSkill()] * c.MaxHP(),
 	}
 
-	//clear all existing tags
+	// clear all existing tags
 	for _, t := range c.Core.Combat.Enemies() {
 		if e, ok := t.(*enemy.Enemy); ok {
 			e.SetTag(skillMarkedTag, 0)
@@ -63,9 +63,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index)
 	}
 
-	//add a task to loop through targets and mark them
+	// add a task to loop through targets and mark them
 	marked, ok := p[skillTargetCountTag]
-	//default 1
+	// default 1
 	if !ok {
 		marked = 1
 	}
@@ -95,7 +95,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
-		//check for breakthrough
+		// check for breakthrough
 		if c.Core.Rand.Float64() < 0.34 {
 			c.breakthrough = true
 			c.Core.Log.NewEvent("breakthrough state added", glog.LogCharacterEvent, c.Index)
@@ -107,7 +107,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	//add a task to loop through targets and deal damage if marked
+	// add a task to loop through targets and deal damage if marked
 	c.Core.Tasks.Add(func() {
 		for _, t := range c.Core.Combat.Enemies() {
 			e, ok := t.(*enemy.Enemy)
@@ -121,12 +121,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			c.Core.Log.NewEvent("damaging marked target", glog.LogCharacterEvent, c.Index).
 				Write("target", e.Key())
 			marked--
-			//queueing attack one frame later
+			// queueing attack one frame later
 			//TODO: does hold have different attack size? don't think so?
 			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, c.particleCB, cb)
 		}
 
-		//activate c4 if relevant
+		// activate c4 if relevant
 		//TODO: check if this is accurate
 		if c.Base.Cons >= 4 && c.c4count > 0 {
 			m := make([]float64, attributes.EndStatType)
@@ -146,12 +146,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				})
 			}
 		}
-
 	}, skillHitmark) //TODO: frames for e dmg? possibly 5 second after attaching?
 
 	c.SetCDWithDelay(action.ActionSkill, 600, skillHitmark-2)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel

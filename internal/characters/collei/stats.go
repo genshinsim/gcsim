@@ -90,6 +90,7 @@ var (
 		2.944999933242798,
 	}
 
+	//nolint:unused // will be used once physical aim is implemented
 	aim = []float64{
 		0.43860000371932983,
 		0.47429999709129333,

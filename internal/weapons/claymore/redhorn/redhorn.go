@@ -27,7 +27,7 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//DEF is increased by 28%. Normal and Charged Attack DMG is increased by 40% of DEF.
+	// DEF is increased by 28%. Normal and Charged Attack DMG is increased by 40% of DEF.
 	w := &Weapon{}
 	r := p.Refine
 

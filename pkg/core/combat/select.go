@@ -56,8 +56,8 @@ func gadgetsWithinAreaFiltered(a AttackPattern, filter func(t Gadget) bool, orig
 }
 
 // returns enemies within the given area, no sorting, pass nil for no filter
-func (c *Handler) EnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
-	enemies := enemiesWithinAreaFiltered(a, filter, c.enemies)
+func (h *Handler) EnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
+	enemies := enemiesWithinAreaFiltered(a, filter, h.enemies)
 	if len(enemies) == 0 {
 		return nil
 	}
@@ -65,8 +65,8 @@ func (c *Handler) EnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) 
 }
 
 // returns gadgets within the given area, no sorting, pass nil for no filter
-func (c *Handler) GadgetsWithinArea(a AttackPattern, filter func(t Gadget) bool) []Gadget {
-	gadgets := gadgetsWithinAreaFiltered(a, filter, c.gadgets)
+func (h *Handler) GadgetsWithinArea(a AttackPattern, filter func(t Gadget) bool) []Gadget {
+	gadgets := gadgetsWithinAreaFiltered(a, filter, h.gadgets)
 	if len(gadgets) == 0 {
 		return nil
 	}
@@ -76,33 +76,33 @@ func (c *Handler) GadgetsWithinArea(a AttackPattern, filter func(t Gadget) bool)
 // random targets
 
 // returns a random enemy within the given area, pass nil for no filter
-func (c *Handler) RandomEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
-	enemies := c.EnemiesWithinArea(a, filter)
+func (h *Handler) RandomEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
+	enemies := h.EnemiesWithinArea(a, filter)
 	if enemies == nil {
 		return nil
 	}
-	return enemies[c.Rand.Intn(len(enemies))]
+	return enemies[h.Rand.Intn(len(enemies))]
 }
 
 // returns a random gadget within the given area, pass nil for no filter
-func (c *Handler) RandomGadgetWithinArea(a AttackPattern, filter func(t Gadget) bool) Gadget {
-	gadgets := c.GadgetsWithinArea(a, filter)
+func (h *Handler) RandomGadgetWithinArea(a AttackPattern, filter func(t Gadget) bool) Gadget {
+	gadgets := h.GadgetsWithinArea(a, filter)
 	if gadgets == nil {
 		return nil
 	}
-	return gadgets[c.Rand.Intn(len(gadgets))]
+	return gadgets[h.Rand.Intn(len(gadgets))]
 }
 
 // returns a list of random enemies within the given area, pass nil for no filter
-func (c *Handler) RandomEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool, maxCount int) []Enemy {
-	enemies := c.EnemiesWithinArea(a, filter)
+func (h *Handler) RandomEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool, maxCount int) []Enemy {
+	enemies := h.EnemiesWithinArea(a, filter)
 	if enemies == nil {
 		return nil
 	}
 	enemyCount := len(enemies)
 
 	// generate random indexes to take from enemies (no duplicates!)
-	indexes := c.Rand.Perm(enemyCount)
+	indexes := h.Rand.Perm(enemyCount)
 
 	// determine length of slice to return
 	count := maxCount
@@ -119,15 +119,15 @@ func (c *Handler) RandomEnemiesWithinArea(a AttackPattern, filter func(t Enemy) 
 }
 
 // returns a list of random gadgets within the given area, pass nil for no filter
-func (c *Handler) RandomGadgetsWithinArea(a AttackPattern, filter func(t Gadget) bool, maxCount int) []Gadget {
-	gadgets := c.GadgetsWithinArea(a, filter)
+func (h *Handler) RandomGadgetsWithinArea(a AttackPattern, filter func(t Gadget) bool, maxCount int) []Gadget {
+	gadgets := h.GadgetsWithinArea(a, filter)
 	if gadgets == nil {
 		return nil
 	}
 	gadgetCount := len(gadgets)
 
 	// generate random indexes to take from gadgets (no duplicates!)
-	indexes := c.Rand.Perm(gadgetCount)
+	indexes := h.Rand.Perm(gadgetCount)
 
 	// determine length of slice to return
 	count := maxCount
@@ -223,8 +223,8 @@ func gadgetsWithinAreaSorted(a AttackPattern, filter func(t Gadget) bool, skipAt
 }
 
 // returns the closest enemy to the given position without any range restrictions; SHOULD NOT be used outside of pkg
-func (c *Handler) ClosestEnemy(pos geometry.Point) Enemy {
-	enemies := enemiesWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true, c.enemies)
+func (h *Handler) ClosestEnemy(pos geometry.Point) Enemy {
+	enemies := enemiesWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true, h.enemies)
 	if enemies == nil {
 		return nil
 	}
@@ -232,8 +232,8 @@ func (c *Handler) ClosestEnemy(pos geometry.Point) Enemy {
 }
 
 // returns the closest gadget to the given position without any range restrictions; SHOULD NOT be used outside of pkg
-func (c *Handler) ClosestGadget(pos geometry.Point) Gadget {
-	gadgets := gadgetsWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true, c.gadgets)
+func (h *Handler) ClosestGadget(pos geometry.Point) Gadget {
+	gadgets := gadgetsWithinAreaSorted(NewCircleHitOnTarget(pos, nil, 1), nil, true, h.gadgets)
 	if gadgets == nil {
 		return nil
 	}
@@ -241,8 +241,8 @@ func (c *Handler) ClosestGadget(pos geometry.Point) Gadget {
 }
 
 // returns the closest enemy within the given area, pass nil for no filter
-func (c *Handler) ClosestEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
-	enemies := enemiesWithinAreaSorted(a, filter, false, c.enemies)
+func (h *Handler) ClosestEnemyWithinArea(a AttackPattern, filter func(t Enemy) bool) Enemy {
+	enemies := enemiesWithinAreaSorted(a, filter, false, h.enemies)
 	if enemies == nil {
 		return nil
 	}
@@ -250,8 +250,8 @@ func (c *Handler) ClosestEnemyWithinArea(a AttackPattern, filter func(t Enemy) b
 }
 
 // returns the closest gadget within the given area, pass nil for no filter
-func (c *Handler) ClosestGadgetWithinArea(a AttackPattern, filter func(t Gadget) bool) Gadget {
-	gadgets := gadgetsWithinAreaSorted(a, filter, false, c.gadgets)
+func (h *Handler) ClosestGadgetWithinArea(a AttackPattern, filter func(t Gadget) bool) Gadget {
+	gadgets := gadgetsWithinAreaSorted(a, filter, false, h.gadgets)
 	if gadgets == nil {
 		return nil
 	}
@@ -259,8 +259,8 @@ func (c *Handler) ClosestGadgetWithinArea(a AttackPattern, filter func(t Gadget)
 }
 
 // returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
-func (c *Handler) ClosestEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
-	enemies := enemiesWithinAreaSorted(a, filter, false, c.enemies)
+func (h *Handler) ClosestEnemiesWithinArea(a AttackPattern, filter func(t Enemy) bool) []Enemy {
+	enemies := enemiesWithinAreaSorted(a, filter, false, h.enemies)
 	if enemies == nil {
 		return nil
 	}
@@ -273,8 +273,8 @@ func (c *Handler) ClosestEnemiesWithinArea(a AttackPattern, filter func(t Enemy)
 }
 
 // returns enemies within the given area, sorted from closest to furthest, pass nil for no filter
-func (c *Handler) ClosestGadgetsWithinArea(a AttackPattern, filter func(t Gadget) bool) []Gadget {
-	gadgets := gadgetsWithinAreaSorted(a, filter, false, c.gadgets)
+func (h *Handler) ClosestGadgetsWithinArea(a AttackPattern, filter func(t Gadget) bool) []Gadget {
+	gadgets := gadgetsWithinAreaSorted(a, filter, false, h.gadgets)
 	if gadgets == nil {
 		return nil
 	}

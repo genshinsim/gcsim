@@ -7,11 +7,11 @@ import (
 )
 
 type CharBase struct {
-	Rarity     int                `json:"rarity"`
-	Body       info.BodyType      `json:"-"`
-	Element    attributes.Element `json:"element"`
-	Region     info.ZoneType      `json:"-"`
-	WeaponType info.WeaponClass   `json:"weapon_class"`
+	Rarity      int                `json:"rarity"`
+	Body        info.BodyType      `json:"-"`
+	Element     attributes.Element `json:"element"`
+	Region      info.ZoneType      `json:"-"`
+	WeaponClass info.WeaponClass   `json:"weapon_class"`
 
 	HPCurve        CharStatCurve   `json:"-"`
 	AtkCurve       CharStatCurve   `json:"-"`
@@ -37,7 +37,7 @@ func init() {
 		Body:        info.BodyBoy,
 		Element:     attributes.NoElement,
 		Region:      info.ZoneUnknown,
-		WeaponType:  info.WeaponClassSword,
+		WeaponClass: info.WeaponClassSword,
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,

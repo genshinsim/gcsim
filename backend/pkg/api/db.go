@@ -105,6 +105,5 @@ func (s *Server) getDB() http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		writer.Write(data)
 		// w.Write(data)
-
 	}
 }

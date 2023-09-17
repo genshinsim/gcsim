@@ -15,7 +15,6 @@ import (
 var content embed.FS
 
 func main() {
-
 	server, err := preview.New(preview.Config{
 		Files:        content,
 		AssetsFolder: os.Getenv(("ASSETS_DATA_PATH")),

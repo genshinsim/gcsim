@@ -50,10 +50,9 @@ func init() {
 	skillHoldFrames[action.ActionSkill] = 80
 	skillHoldFrames[action.ActionWalk] = 86
 	skillHoldFrames[action.ActionSwap] = 85
-
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	hold := p["hold"]
 	if hold == 1 {
 		return c.SkillHold()
@@ -80,14 +79,14 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 15)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillTapFrames),
 		AnimationLength: skillTapFrames[action.InvalidAction],
 		CanQueueAfter:   skillTapFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}
 }
-func (c *char) SkillHold() action.ActionInfo {
+func (c *char) SkillHold() action.Info {
 	c.Core.Tasks.Add(c.skillMirrorGain, 23)
 
 	ai := combat.AttackInfo{
@@ -109,7 +108,7 @@ func (c *char) SkillHold() action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 23)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionLowPlunge], // earliest cancel
@@ -118,12 +117,11 @@ func (c *char) SkillHold() action.ActionInfo {
 }
 
 func (c *char) skillMirrorGain() {
-	if c.mirrorCount == 0 { //extra mirror if 0 when cast
+	if c.mirrorCount == 0 { // extra mirror if 0 when cast
 		c.mirrorGain(2)
 		return
 	}
 	c.mirrorGain(1)
-
 }
 func (c *char) mirrorGain(generated int) {
 	if generated == 0 {
@@ -134,20 +132,19 @@ func (c *char) mirrorGain(generated int) {
 		c.lastInfusionSrc = c.Core.F
 		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
 		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
-
 	}
 
 	c.mirrorCount += generated
-	if c.Base.Cons >= 2 { //triggers on overflow
+	if c.Base.Cons >= 2 { // triggers on overflow
 		c.c2(generated)
 	}
 
-	if c.mirrorCount > 3 { //max 3 mirrors at a time.
+	if c.mirrorCount > 3 { // max 3 mirrors at a time.
 		if c.Base.Cons >= 6 {
 			c.c6(c.mirrorCount - 3)
 		}
 		c.mirrorCount = 3
-		if c.Core.F != c.lastInfusionSrc { //this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
+		if c.Core.F != c.lastInfusionSrc { // this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
 			c.lastInfusionSrc = c.Core.F
 			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
 		}
@@ -159,10 +156,9 @@ func (c *char) mirrorGain(generated int) {
 	}
 	c.Core.Log.NewEvent(fmt.Sprintf("Gained %v mirror(s)", generated), glog.LogCharacterEvent, c.Index).
 		Write("current mirrors", c.mirrorCount)
-
 }
 
-func (c *char) mirrorLoss(src int, consumed int) func() {
+func (c *char) mirrorLoss(src, consumed int) func() {
 	return func() {
 		if consumed <= 0 {
 			return
@@ -173,13 +169,13 @@ func (c *char) mirrorLoss(src int, consumed int) func() {
 				Write("new src", c.lastInfusionSrc)
 			return
 		}
-		if c.mirrorCount == 0 { //just in case
+		if c.mirrorCount == 0 { // just in case
 			c.Core.Log.NewEvent("Mirror count is 0, omitting reduction", glog.LogCharacterEvent, c.Index)
 			return
 		}
 
 		c.mirrorCount -= consumed
-		if c.mirrorCount < 0 { //This shouldn't happen but just in case
+		if c.mirrorCount < 0 { // This shouldn't happen but just in case
 			c.mirrorCount = 0
 		}
 
@@ -188,9 +184,8 @@ func (c *char) mirrorLoss(src int, consumed int) func() {
 
 		// queue up again if we still have mirrors
 		if c.mirrorCount > 0 {
-			c.Core.Tasks.Add(c.mirrorLoss(src, 1), 214) //not affected by hitlag, 448-234
+			c.Core.Tasks.Add(c.mirrorLoss(src, 1), 214) // not affected by hitlag, 448-234
 		}
-
 	}
 }
 
@@ -206,21 +201,20 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 func (c *char) projectionAttack(a combat.AttackCB) {
-
 	ae := a.AttackEvent
-	//ignore if projection on icd
+	// ignore if projection on icd
 	if c.StatusIsActive(projectionICDKey) {
 		return
 	}
-	//ignore if alhaitham is not on field
+	// ignore if alhaitham is not on field
 	if c.Core.Player.Active() != c.Index {
 		return
 	}
-	//ignore if it doesn't have at least a mirror
+	// ignore if it doesn't have at least a mirror
 	if c.mirrorCount == 0 {
 		return
 	}
-	//ignore if it isn't NA/CA/Plunge
+	// ignore if it isn't NA/CA/Plunge
 	if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra && ae.Info.AttackTag != attacks.AttackTagPlunge {
 		return
 	}
@@ -262,13 +256,13 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	case 2:
 		ap = combat.NewCircleHitOnTargetFanAngle(player, geometry.Point{Y: -0.1}, 5.5, 180)
 		mirrorsHitmark = mirror2HitmarksLeft
-		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
+		if c.Core.Rand.Float64() < 0.5 { // 50% of using right/left hitmark frames
 			mirrorsHitmark = mirror2HitmarksRight
 		}
 	default:
 		ap = combat.NewBoxHitOnTarget(player, nil, 7, 3)
 		mirrorsHitmark = mirror1HitmarkLeft
-		if c.Core.Rand.Float64() < 0.5 { //50% of using right/left hitmark frames
+		if c.Core.Rand.Float64() < 0.5 { // 50% of using right/left hitmark frames
 			mirrorsHitmark = mirror1HitmarkRight
 		}
 	}
@@ -276,6 +270,5 @@ func (c *char) projectionAttack(a combat.AttackCB) {
 	for i := 0; i < c.mirrorCount; i++ {
 		c.Core.QueueAttack(ai, ap, snapshotTiming, mirrorsHitmark[i], c1cb, c.particleCB)
 	}
-	c.AddStatus(projectionICDKey, 96, true) //1.6 sec icd
-
+	c.AddStatus(projectionICDKey, 96, true) // 1.6 sec icd
 }

@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/genshinsim/gcsim/backend/pkg/services/db"
@@ -41,7 +42,7 @@ func (s *Server) Replace(ctx context.Context, entry *db.Entry) error {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	_, err := col.ReplaceOne(ctx, bson.M{"_id": entry.Id}, entry)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return status.Error(codes.NotFound, "no records found")
 		}
 		s.Log.Infow("update entry failed - unexpected", "err", err)
@@ -55,7 +56,7 @@ func (s *Server) Delete(ctx context.Context, id string) error {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	_, err := col.DeleteOne(ctx, bson.M{"_id": id})
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return status.Error(codes.NotFound, "no records found")
 		}
 		s.Log.Infow("delete entry failed - unexpected", "err", err)
@@ -70,13 +71,12 @@ func (s *Server) get(
 	filter interface{},
 	opts ...*options.FindOptions,
 ) ([]*db.Entry, error) {
-
 	s.Log.Infow("db get request", "filter", filter, "opts", opts)
 
 	cursor, err := col.Find(ctx, filter, opts...)
 	if err != nil {
 		s.Log.Infow("error querying", "err", err)
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, status.Error(codes.NotFound, "no records found")
 		}
 		return nil, status.Error(codes.Internal, "unexpected server error")
@@ -107,7 +107,7 @@ func (s *Server) aggregate(ctx context.Context, col *mongo.Collection, pipeline 
 	cursor, err := col.Aggregate(ctx, pipeline, opts...)
 	if err != nil {
 		s.Log.Infow("error aggregating", "err", err)
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, status.Error(codes.NotFound, "no records found")
 		}
 		return nil, status.Error(codes.Internal, "unexpected server error")
@@ -134,18 +134,18 @@ func (s *Server) aggregate(ctx context.Context, col *mongo.Collection, pipeline 
 	return result, nil
 }
 
+//nolint:unparam // opts is currently always nil but that might change
 func (s *Server) getOne(
 	ctx context.Context,
 	col *mongo.Collection,
 	filter interface{},
 	opts ...*options.FindOneOptions,
 ) (*db.Entry, error) {
-
 	res := col.FindOne(ctx, filter, opts...)
 	err := res.Err()
 	if err != nil {
 		s.Log.Infow("error querying", "err", err)
-		if err == mongo.ErrNoDocuments {
+		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, status.Error(codes.NotFound, "no records found")
 		}
 		return nil, status.Error(codes.Internal, "unexpected server error")

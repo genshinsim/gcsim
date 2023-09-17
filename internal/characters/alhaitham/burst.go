@@ -22,7 +22,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 87    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		Abil:       "Particular Field: Fetters of Phenomena",
 		ActorIndex: c.Index,
@@ -36,10 +36,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		FlatDmg:    burstEm[c.TalentLvlSkill()] * c.Stat(attributes.EM),
 	}
 
-	//X number of hits depending on mirrors when casted
+	// X number of hits depending on mirrors when casted
 	for i := 0; i < 4+2*c.mirrorCount; i++ {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 7.1}, 6.8), 67, burstHitmark+i*21)
-
 	}
 	c.ConsumeEnergy(6)
 	c.SetCD(action.ActionBurst, 18*60)
@@ -66,7 +65,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, 184)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

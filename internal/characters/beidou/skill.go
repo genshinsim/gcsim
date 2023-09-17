@@ -29,8 +29,8 @@ func init() {
 	skillFrames[action.ActionSwap] = 44
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-	//0 for base dmg, 1 for 1x bonus, 2 for max bonus
+func (c *char) Skill(p map[string]int) action.Info {
+	// 0 for base dmg, 1 for 1x bonus, 2 for max bonus
 	counter := p["counter"]
 	if counter >= 2 {
 		counter = 2
@@ -59,21 +59,21 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	)
 
 	if counter > 0 {
-		//add shield
+		// add shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: c.Index,
 			Src:        c.Core.F,
-			ShieldType: shield.ShieldBeidouThunderShield,
+			ShieldType: shield.BeidouThunderShield,
 			Name:       "Beidou Skill",
 			HP:         shieldPer[c.TalentLvlSkill()]*c.MaxHP() + shieldBase[c.TalentLvlSkill()],
 			Ele:        attributes.Electro,
-			Expires:    c.Core.F + 900, //15 sec
+			Expires:    c.Core.F + 900, // 15 sec
 		})
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 450, 4)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

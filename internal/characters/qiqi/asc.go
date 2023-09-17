@@ -38,7 +38,7 @@ func (c *char) a1() {
 		return false
 	}
 
-	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.OnShatter; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
 		c.Core.Events.Subscribe(i, a1Hook, "qiqi-a1")
 	}
 }

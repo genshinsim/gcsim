@@ -27,10 +27,10 @@ type Enemy struct {
 	damageTaken      float64
 	lastParticleDrop int
 
-	//mods
+	// mods
 	mods []modifier.Mod
 
-	//hitlag stuff
+	// hitlag stuff
 	timePassed   int
 	frozenFrames int
 	queue        []queue.Task

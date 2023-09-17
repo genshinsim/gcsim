@@ -54,7 +54,7 @@ func NewFavonius(c *core.Core, char *character.CharWrapper, p info.WeaponProfile
 		//TODO: used to be 80
 		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, char.ParticleDelay)
 
-		//adds a modifier to track icd; this should be fine since it's per char and not global
+		// adds a modifier to track icd; this should be fine since it's per char and not global
 		char.AddStatus(icdKey, cd, true)
 
 		return false

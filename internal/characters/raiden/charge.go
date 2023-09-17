@@ -15,15 +15,15 @@ const chargeHitmark = 22
 
 func init() {
 	// charge -> x
-	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
+	chargeFrames = frames.InitAbilSlice(37) // n1, skill, burst all at 37
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 36
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	if c.StatusIsActive(BurstKey) {
-		return c.swordCharge(p)
+		return c.swordCharge()
 	}
 
 	ai := combat.AttackInfo{
@@ -48,7 +48,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		chargeHitmark,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
@@ -66,7 +66,7 @@ func init() {
 	swordCAFrames[action.ActionJump] = swordCAHitmarks[len(swordCAHitmarks)-1]
 }
 
-func (c *char) swordCharge(p map[string]int) action.ActionInfo {
+func (c *char) swordCharge() action.Info {
 	for i, mult := range chargeSword {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -78,7 +78,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 			Element:            attributes.Electro,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
-			HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
+			HitlagHaltFrames:   0.02 * 60, // all raiden normals have 0.02s hitlag
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: true,
 		}
@@ -102,7 +102,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		}, swordCAHitmarks[i])
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(swordCAFrames),
 		AnimationLength: swordCAFrames[action.InvalidAction],
 		CanQueueAfter:   swordCAHitmarks[len(swordCAHitmarks)-1],

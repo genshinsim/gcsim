@@ -24,7 +24,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 115
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 0
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(7)
 	c.SetCD(action.ActionBurst, 12*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap],

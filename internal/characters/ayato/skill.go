@@ -19,7 +19,7 @@ func init() {
 
 const SkillBuffKey = "soukaikanka"
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	delay := p["illusion_delay"]
 	if delay < 35 {
 		delay = 35
@@ -55,7 +55,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.SetCD(action.ActionSkill, 12*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel

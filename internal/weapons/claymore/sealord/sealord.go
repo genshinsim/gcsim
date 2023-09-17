@@ -26,13 +26,13 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	//Increases Elemental Burst DMG by 12%. When Elemental Burst hits opponents,
-	//there is a 100% chance of summoning a huge onrush of tuna that deals 100%
-	//ATK as AoE DMG. This effect can occur once every 15s.
+	// Increases Elemental Burst DMG by 12%. When Elemental Burst hits opponents,
+	// there is a 100% chance of summoning a huge onrush of tuna that deals 100%
+	// ATK as AoE DMG. This effect can occur once every 15s.
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm burst dmg increase
+	// perm burst dmg increase
 	burstDmgIncrease := .09 + float64(r)*0.03
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.DmgP] = burstDmgIncrease

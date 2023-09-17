@@ -88,7 +88,7 @@ func (c *char) Init() error {
 	case 2:
 		c.c6Buff[attributes.CD] = 0.2
 	default:
-		//can't be less than 1 so this is 3 or 4
+		// can't be less than 1 so this is 3 or 4
 		c.c6Buff[attributes.CD] = 0.4
 	}
 

@@ -61,7 +61,7 @@ func (c *char) a1Throw() {
 	}, travelDelay-1)
 }
 
-func (c *char) a4(index int, src int) func() {
+func (c *char) a4(index, src int) func() {
 	return func() {
 		if c.a4Srcs[index] != c.Core.F {
 			return

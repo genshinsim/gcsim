@@ -28,7 +28,7 @@ func init() {
 	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -92,7 +92,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		skillCb,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return aimedFrames[skillActive][next] },
 		AnimationLength: aimedFrames[skillActive][action.InvalidAction],
 		CanQueueAfter:   aimedFrames[skillActive][action.ActionDash],

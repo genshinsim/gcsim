@@ -28,7 +28,7 @@ func init() {
 	skillFrames[action.ActionJump] = 53    // E -> J
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sweeping Fervor",
@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, skillShieldStart-skillHitmark)
 	}
 
-	if c.Core.Player.Shields.Get(shield.ShieldXinyanSkill) == nil {
+	if c.Core.Player.Shields.Get(shield.XinyanSkill) == nil {
 		c.QueueCharTask(func() {
 			c.updateShield(1, defFactor)
 		}, skillShieldStart)
@@ -77,7 +77,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 13)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
@@ -98,7 +98,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 func (c *char) shieldDot(src int) func() {
 	return func() {
-		if c.Core.Player.Shields.Get(shield.ShieldXinyanSkill) == nil {
+		if c.Core.Player.Shields.Get(shield.XinyanSkill) == nil {
 			return
 		}
 		if c.shieldLevel != 3 {
@@ -146,7 +146,7 @@ func (c *char) updateShield(level int, defFactor float64) {
 		c.shieldTickSrc = c.Core.F
 		c.Core.Tasks.Add(c.shieldDot(c.Core.F), 2*60)
 	}
-	shd := c.newShield(shieldhp, shield.ShieldXinyanSkill, 12*60)
+	shd := c.newShield(shieldhp, shield.XinyanSkill, 12*60)
 	c.Core.Player.Shields.Add(shd)
 	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index).
 		Write("previousLevel", previousLevel).

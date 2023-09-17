@@ -19,10 +19,9 @@ func init() {
 	chargeFrames[action.ActionJump] = 21
 	chargeFrames[action.ActionWalk] = 69
 	chargeFrames[action.ActionSwap] = 21
-
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
@@ -36,8 +35,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 
 	windup := 0
-	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState:
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
 		windup = 10
 	}
 
@@ -55,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.makeC6CB(),
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   chargeFrames[action.ActionDash] - windup,

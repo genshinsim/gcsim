@@ -27,11 +27,10 @@ func init() {
 	burstFrames[action.ActionSwap] = 56
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-
-	//add cooldown to sim
+func (c *char) Burst(p map[string]int) action.Info {
+	// add cooldown to sim
 	c.SetCD(action.ActionBurst, 20*60)
-	//use up energy
+	// use up energy
 	c.ConsumeEnergy(7)
 
 	burstAI := combat.AttackInfo{
@@ -62,7 +61,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Ascension >= 1 {
 		c.QueueCharTask(c.a1Ticker, 0.6*60)
 	}
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel

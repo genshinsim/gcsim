@@ -27,10 +27,10 @@ var (
 	whirlingStepsOffsets  = [][]float64{{0, 0.3}, {0, 0.6}, {0.2, -2}}
 )
 
-type NilouSkillType int
+type nilouSkillType int
 
 const (
-	NilouSkillTypeNone  NilouSkillType = iota
+	NilouSkillTypeNone  nilouSkillType = iota
 	NilouSkillTypeDance                // NA
 	NilouSkillTypeSteps                // Skill
 )
@@ -87,7 +87,7 @@ func init() {
 	whirlingStepsFrames[2][action.ActionSwap] = 61
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	if c.StatusIsActive(pirouetteStatus) {
 		return c.Pirouette(p, NilouSkillTypeSteps)
 	}
@@ -119,7 +119,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.AddStatus(pirouetteStatus, 10*60, true)
 	c.SetCD(action.ActionSkill, 18*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
@@ -143,8 +143,8 @@ func (c *char) initialParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay)
 }
 
-func (c *char) Pirouette(p map[string]int, srcType NilouSkillType) action.ActionInfo {
-	actionInfo := action.ActionInfo{}
+func (c *char) Pirouette(p map[string]int, srcType nilouSkillType) action.Info {
+	actionInfo := action.Info{}
 	delay := 0
 	switch srcType {
 	case NilouSkillTypeDance:
@@ -197,7 +197,7 @@ func (c *char) AdvanceSkillIndex() {
 	c.SetTag(skillStep, s)
 }
 
-func (c *char) SwordDance(p map[string]int) action.ActionInfo {
+func (c *char) SwordDance(p map[string]int) action.Info {
 	s := c.Tag(skillStep)
 	travel := 0
 
@@ -246,7 +246,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceSkillIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			return frames.AtkSpdAdjust(swordDanceFrames[s][next], c.Stat(attributes.AtkSpd))
 		},
@@ -256,7 +256,7 @@ func (c *char) SwordDance(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
+func (c *char) WhirlingSteps(p map[string]int) action.Info {
 	s := c.Tag(skillStep)
 
 	ai := combat.AttackInfo{
@@ -293,7 +293,7 @@ func (c *char) WhirlingSteps(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceSkillIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(whirlingStepsFrames[s]),
 		AnimationLength: whirlingStepsFrames[s][action.InvalidAction],
 		CanQueueAfter:   whirlingStepsFrames[s][action.ActionJump], // earliest cancel

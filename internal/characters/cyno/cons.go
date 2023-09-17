@@ -84,6 +84,7 @@ func (c *char) makeC2CB() combat.AttackCBFunc {
 // himself.)
 // This effect can occur 5 times within one use of Sacred Rite: Wolf’s Swiftness.
 func (c *char) c4() {
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	restore := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {

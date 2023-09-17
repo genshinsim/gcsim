@@ -23,7 +23,7 @@ func init() {
 	dashFrames[action.ActionSwap] = 34    // D -> Swap
 }
 
-func (c *char) Dash(p map[string]int) action.ActionInfo {
+func (c *char) Dash(p map[string]int) action.Info {
 	f, ok := p["f"]
 	if !ok {
 		f = 0
@@ -63,7 +63,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	// handle stamina usage, avoid default dash implementation since dont want CD
 	c.QueueDashStaminaConsumption(p)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return dashFrames[next] + f },
 		AnimationLength: dashFrames[action.InvalidAction] + f,
 		CanQueueAfter:   dashHitmark + f,

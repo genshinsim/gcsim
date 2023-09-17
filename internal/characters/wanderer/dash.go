@@ -22,7 +22,7 @@ func init() {
 	dashFramesE[action.ActionWalk] = 22
 }
 
-func (c *char) Dash(p map[string]int) action.ActionInfo {
+func (c *char) Dash(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -37,7 +37,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 
 	// length is standard dash length + skill end delay (to simulate falling)
 	length := c.DashLength() + delay
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(action.Action) int { return length },
 		AnimationLength: length,
 		CanQueueAfter:   length,
@@ -45,8 +45,8 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) WindfavoredDash(p map[string]int) action.ActionInfo {
-	ai := action.ActionInfo{
+func (c *char) WindfavoredDash(p map[string]int) action.Info {
+	ai := action.Info{
 		Frames:          func(next action.Action) int { return dashFramesE[next] },
 		AnimationLength: dashFramesE[action.InvalidAction],
 		CanQueueAfter:   dashFramesE[action.ActionSkill],

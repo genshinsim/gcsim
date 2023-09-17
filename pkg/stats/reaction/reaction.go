@@ -40,7 +40,7 @@ type buffer struct {
 	events [][]stats.ReactionEvent
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		events: make([][]stats.ReactionEvent, len(core.Player.Chars())),
 	}

@@ -52,26 +52,26 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
-		//check icd
+		// check icd
 		if icd > c.F {
 			return false
 		}
-		//check chance
+		// check chance
 		char := c.Player.ByIndex(atk.Info.ActorIndex)
 
 		if c.Rand.Float64() > current[atk.Info.ActorIndex][char.Weapon.Class] {
-			//increment chance
+			// increment chance
 			current[atk.Info.ActorIndex][char.Weapon.Class] += inc[char.Weapon.Class]
 			return false
 		}
 
-		//add energy
+		// add energy
 		char.AddEnergy("na-ca-on-hit", 1)
 		// Add this log in sim if necessary to see as AddEnergy already generates a log
 		c.Log.NewEvent("random energy on normal", glog.LogDebugEvent, char.Index).
 			Write("char", atk.Info.ActorIndex).
 			Write("chance", current[atk.Info.ActorIndex][char.Weapon.Class])
-		//set icd
+		// set icd
 		icd = c.F + 12
 		current[atk.Info.ActorIndex][char.Weapon.Class] = 0
 		if char.Weapon.Class == info.WeaponClassSword {
@@ -90,5 +90,4 @@ func (c *Core) SetupOnNormalHitEnergy() {
 		}
 		return false
 	}, "random-energy-restore-on-hit-swap")
-
 }

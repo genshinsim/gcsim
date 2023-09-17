@@ -15,16 +15,16 @@ type Parser struct {
 	res  *info.ActionList
 	prog *BlockStmt
 
-	//other information tracked as we parse
+	// other information tracked as we parse
 	chars          map[keys.Char]*info.CharacterProfile
 	charOrder      []keys.Char
 	currentCharKey keys.Char
 
-	//lookahead
+	// lookahead
 	token []Token
 	pos   int
 
-	//parseFn
+	// parseFn
 	prefixParseFns map[TokenType]func() (Expr, error)
 	infixParseFns  map[TokenType]func(Expr) (Expr, error)
 }
@@ -43,19 +43,19 @@ func New(input string) *Parser {
 	p.res = &info.ActionList{
 		Settings: info.SimulatorSettings{
 			EnableHitlag:    true, // default hitlag enabled
-			DefHalt:         true, //default defhalt to true
-			NumberOfWorkers: 20,   //default 20 workers if none set
-			Iterations:      1000, //default 1000 iterations
+			DefHalt:         true, // default defhalt to true
+			NumberOfWorkers: 20,   // default 20 workers if none set
+			Iterations:      1000, // default 1000 iterations
 			Delays: info.Delays{
-				Swap: 1, //default swap timer of 1
+				Swap: 1, // default swap timer of 1
 			},
 		},
-		PlayerPos: info.Coord{
-			R: 0.3, //default player radius 0.3, pos 0,0
+		InitialPlayerPos: info.Coord{
+			R: 0.3, // default player radius 0.3, pos 0,0
 		},
 	}
 	p.prog = newBlockStmt(0)
-	//expr functions
+	// expr functions
 	p.prefixParseFns[itemIdentifier] = p.parseIdent
 	p.prefixParseFns[itemField] = p.parseField
 	p.prefixParseFns[itemNumber] = p.parseNumber
@@ -96,7 +96,7 @@ func (p *Parser) consume(i TokenType) (Token, error) {
 func (p *Parser) next() Token {
 	p.pos++
 	if p.pos == len(p.token) {
-		//grab more from the stream
+		// grab more from the stream
 		n := p.lex.nextItem()
 		p.token = append(p.token, n)
 	}
@@ -106,7 +106,7 @@ func (p *Parser) next() Token {
 // backup backs the input stream up one token.
 func (p *Parser) backup() {
 	p.pos--
-	//no op if at beginning
+	// no op if at beginning
 	if p.pos < -1 {
 		p.pos = -1
 	}
@@ -133,7 +133,7 @@ func (p *Parser) acceptSeqReturnLast(items ...TokenType) (Token, error) {
 
 func itemNumberToInt(i Token) (int, error) {
 	r, err := strconv.Atoi(i.Val)
-	return int(r), err
+	return r, err
 }
 
 func itemNumberToFloat64(i Token) (float64, error) {

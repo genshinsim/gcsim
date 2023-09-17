@@ -171,7 +171,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 		t.FailNow()
 	}
 
-	//oldest should be the 2nd one, which is frame 3 ?
+	// oldest should be the 2nd one, which is frame 3 ?
 	for i := 0; i < 6; i++ {
 		c.QueueAttackEvent(&combat.AttackEvent{
 			Info: combat.AttackInfo{
@@ -199,7 +199,7 @@ func TestBloomOldestDeleted(t *testing.T) {
 		t.Errorf("expected only 5 seeds remaining, got %v", c.Combat.GadgetCount())
 	}
 
-	//find oldest
+	// find oldest
 	f := math.MaxInt
 	oldest := -1
 	for i, v := range c.Combat.Gadgets() {
@@ -215,5 +215,4 @@ func TestBloomOldestDeleted(t *testing.T) {
 	if og.Src() != 3+reactable.DendroCoreDelay {
 		t.Errorf("expecting oldest gadget to be from frame %v, got %v", reactable.DendroCoreDelay+3, og.Src())
 	}
-
 }

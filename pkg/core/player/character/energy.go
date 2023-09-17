@@ -43,7 +43,6 @@ func (c *CharWrapper) AddEnergy(src string, e float64) {
 		Write("post_recovery", c.Energy).
 		Write("source", src).
 		Write("max_energy", c.EnergyMax)
-
 }
 
 func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int) {
@@ -52,8 +51,8 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 	if !isActive {
 		r = 1.0 - 0.1*float64(partyCount)
 	}
-	//recharge amount - particles: same = 3, non-ele = 2, diff = 1
-	//recharge amount - orbs: same = 9, non-ele = 6, diff = 3 (3x particles)
+	// recharge amount - particles: same = 3, non-ele = 2, diff = 1
+	// recharge amount - orbs: same = 9, non-ele = 6, diff = 3 (3x particles)
 	switch {
 	case p.Ele == c.Base.Element:
 		amt = 3
@@ -62,12 +61,12 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 	default:
 		amt = 1
 	}
-	amt = amt * r //apply off field reduction
-	//apply energy regen stat
+	amt *= r // apply off field reduction
+	// apply energy regen stat
 
 	er = c.Stat(attributes.ER)
 
-	amt = amt * (1 + er) * float64(p.Num)
+	amt = amt * (1 + er) * p.Num
 
 	pre := c.Energy
 
@@ -92,5 +91,4 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 		Write("amt", amt).
 		Write("post_recovery", c.Energy).
 		Write("max_energy", c.EnergyMax)
-
 }

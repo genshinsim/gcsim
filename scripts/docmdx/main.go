@@ -15,7 +15,7 @@ type charData struct {
 
 func skip(key keys.Char) bool {
 	switch key {
-	case keys.AetherAnemo: //skip aether by default
+	case keys.AetherAnemo: // skip aether by default
 	case keys.AetherElectro:
 	case keys.AetherGeo:
 	case keys.AetherDendro:

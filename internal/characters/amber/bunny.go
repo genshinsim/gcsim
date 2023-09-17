@@ -53,14 +53,13 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 					Write("target", "Bunny").
 					Write("existing", existing).
 					Write("after", b.Reactable.ActiveAuraString())
-
 			}
 		}
 	}
 
-	//apply damage delay is only there to make sure aura gets applied at the end of current frame
-	//however because we can only hold cryo, we'll only call this if atk is cryo and there
-	//is durability left
+	// apply damage delay is only there to make sure aura gets applied at the end of current frame
+	// however because we can only hold cryo, we'll only call this if atk is cryo and there
+	// is durability left
 	if atk.Info.Element != attributes.Cryo {
 		return 0
 	}
@@ -76,13 +75,13 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 	return 0
 }
 
-func (s *Bunny) attachEle(atk *combat.AttackEvent) {
+func (b *Bunny) attachEle(atk *combat.AttackEvent) {
 	// check for ICD first
-	existing := s.Reactable.ActiveAuraString()
+	existing := b.Reactable.ActiveAuraString()
 	applied := atk.Info.Durability
-	s.AttachOrRefill(atk)
-	if s.Core.Flags.LogDebug {
-		s.Core.Log.NewEvent(
+	b.AttachOrRefill(atk)
+	if b.Core.Flags.LogDebug {
+		b.Core.Log.NewEvent(
 			"application",
 			glog.LogElementEvent,
 			atk.Info.ActorIndex,
@@ -93,41 +92,39 @@ func (s *Bunny) attachEle(atk *combat.AttackEvent) {
 			Write("abil", atk.Info.Abil).
 			Write("target", "Bunny").
 			Write("existing", existing).
-			Write("after", s.Reactable.ActiveAuraString())
-
+			Write("after", b.Reactable.ActiveAuraString())
 	}
 }
 
-func (r *Bunny) React(a *combat.AttackEvent) {
-	//only check the ones possible
+func (b *Bunny) React(a *combat.AttackEvent) {
+	// only check the ones possible
 	switch a.Info.Element {
 	case attributes.Electro:
-		r.TryFrozenSuperconduct(a)
-		r.TrySuperconduct(a)
+		b.TryFrozenSuperconduct(a)
+		b.TrySuperconduct(a)
 	case attributes.Pyro:
-		r.TryMelt(a)
+		b.TryMelt(a)
 	// Cryo cannot react because the only allowed aura is Cryo.
 	// case attributes.Cryo:
 	case attributes.Hydro:
-		r.TryFreeze(a)
+		b.TryFreeze(a)
 	case attributes.Anemo:
-		r.TrySwirlCryo(a)
-		r.TrySwirlFrozen(a)
+		b.TrySwirlCryo(a)
+		b.TrySwirlFrozen(a)
 	case attributes.Geo:
-		r.TryCrystallizeCryo(a)
-		r.TryCrystallizeFrozen(a)
+		b.TryCrystallizeCryo(a)
+		b.TryCrystallizeFrozen(a)
 	case attributes.Dendro:
 	}
 }
 
 func (b *Bunny) Tick() {
-	//this is needed since gadget tick
+	// this is needed since gadget tick
 	b.Gadget.Tick()
 	b.Reactable.Tick()
 }
 
 func (c *char) makeBunny() *Bunny {
-
 	b := &Bunny{}
 
 	// Bunny is offset 1.3-1.5m in the Y direction for Tap E.
@@ -202,15 +199,14 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 }
 
 func (c *char) manualExplode() {
-	//do nothing if there are no bunnies
+	// do nothing if there are no bunnies
 	if len(c.bunnies) == 0 {
 		c.Core.Log.NewEvent("Did not find any Bunnies", glog.LogCharacterEvent, c.Index)
 		return
 	}
-	//only explode the first bunny
+	// only explode the first bunny
 	c.bunnies[0].ae.Info.Abil = manualExplosionAbil
 	c.bunnies[0].Kill()
-
 }
 
 // explode all bunnies on overload

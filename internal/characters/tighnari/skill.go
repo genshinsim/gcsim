@@ -28,7 +28,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 21
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) action.Info {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 5
@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(c.c2, skillRelease+travel)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionAim], // earliest cancel

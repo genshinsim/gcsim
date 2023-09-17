@@ -33,7 +33,7 @@ func init() {
 }
 
 // Burst attack damage queue generator
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) action.Info {
 	c.QueueCharTask(func() {
 		c.AddStatus(burstKey, burstDuration, true)
 		c.QueueCharTask(c.burstTick, burstFirstInterval)
@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, burstCD)
 	c.ConsumeEnergy(burstEnergyDelay)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSkill],

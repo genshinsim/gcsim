@@ -33,7 +33,7 @@ func init() {
 	chargeFramesE[action.ActionJump] = 38
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) action.Info {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -65,7 +65,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		c.particleCB,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
 				frames.AtkSpdAdjust(chargeFramesNormal[next], c.Stat(attributes.AtkSpd))
@@ -76,7 +76,7 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	}
 }
 
-func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) WindfavoredChargeAttack(p map[string]int) action.Info {
 	windup := c.chargeWindupE()
 
 	ai := combat.AttackInfo{
@@ -102,7 +102,7 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.ActionInfo {
 		c.particleCB,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
 				frames.AtkSpdAdjust(chargeFramesE[next], c.Stat(attributes.AtkSpd))

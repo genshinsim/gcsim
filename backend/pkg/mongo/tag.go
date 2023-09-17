@@ -11,7 +11,7 @@ import (
 
 func (s *Server) ApproveTag(ctx context.Context, id string, tag model.DBTag) error {
 	s.Log.Infow("approve tag request", "id", id, "tag", tag)
-	//approve will
+	// approve will
 	//  1. $pull for rejected
 	//  2. $addToSet for accepted
 	//  3. set is_db_valid to true
@@ -59,7 +59,7 @@ func (s *Server) ApproveTag(ctx context.Context, id string, tag model.DBTag) err
 
 func (s *Server) RejectTag(ctx context.Context, id string, tag model.DBTag) error {
 	s.Log.Infow("reject tag request", "id", id, "tag", tag)
-	//approve will
+	// approve will
 	//  1. $pull for accepted
 	//  2. $addToSet for rejected
 	//  3. set is_db_valid to false IF accepted array count is 0
@@ -108,7 +108,7 @@ func (s *Server) RejectTag(ctx context.Context, id string, tag model.DBTag) erro
 
 func (s *Server) RejectTagAllUnapproved(ctx context.Context, tag model.DBTag) (int64, error) {
 	s.Log.Infow("reject all unapproved tag request", "tag", tag)
-	//reject all unapproved will
+	// reject all unapproved will
 	//  1. find all without accepted tag
 	//  2. $addToSet for rejected
 	//  3. set is_db_valid to false IF accepted array count is 0

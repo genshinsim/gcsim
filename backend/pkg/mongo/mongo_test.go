@@ -91,7 +91,7 @@ func TestMain(m *testing.M) {
 	setValidView()
 	setSubView()
 
-	//insert some fake entries for testing
+	// insert some fake entries for testing
 	err = insertFakeEntries()
 	if err != nil {
 		log.Fatal(err)
@@ -215,39 +215,38 @@ var dbNoTag map[string]*db.Entry = make(map[string]*db.Entry)
 
 func insertFakeEntries() error {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
-	//entries with data no tag
+	// entries with data no tag
 	for i := 0; i < rand.Intn(10)+5; i++ {
 		id := fmt.Sprintf("sample_db_no_tag_%v", i)
 		e := makeEntry(id, "notag", true, false)
 		_, err := col.InsertOne(context.TODO(), e)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		dbNoTag[id] = e
 	}
-	//entries with tag
+	// entries with tag
 	for i := 0; i < rand.Intn(10)+5; i++ {
 		id := fmt.Sprintf("sample_db_approved_%v", i)
 		e := makeEntry(id, "tag", true, true)
 		_, err := col.InsertOne(context.TODO(), e)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		dbEntries[id] = e
 	}
-	//entries without
+	// entries without
 	for i := 0; i < rand.Intn(10)+5; i++ {
 		id := fmt.Sprintf("sample_sub_only_%v", i)
 		e := makeEntry(id, "sub", false, false)
 		_, err := col.InsertOne(context.TODO(), e)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		subs[id] = e
 	}
 
 	return nil
-
 }
 
 // https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
