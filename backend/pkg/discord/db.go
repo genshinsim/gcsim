@@ -101,7 +101,14 @@ func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.Inter
 	}
 	b.Log.Infow("list request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID, "page", opts.Page)
 
-	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
+	channelId := data.Event.ChannelID.String()
+	if data.Event.Channel != nil {
+		if data.Event.Channel.Type == discord.GuildPublicThread || data.Event.Channel.Type == discord.GuildPrivateThread {
+			channelId = data.Event.Channel.ParentID.String()
+		}
+	}
+
+	tag, ok := b.TagMapping[channelId]
 	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),
@@ -166,7 +173,14 @@ func listEmbed(entries []*db.Entry, page int) []discord.Embed {
 func (b *Bot) cmdApprove(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	b.Log.Infow("approve request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
 
-	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
+	channelId := data.Event.ChannelID.String()
+	if data.Event.Channel != nil {
+		if data.Event.Channel.Type == discord.GuildPublicThread || data.Event.Channel.Type == discord.GuildPrivateThread {
+			channelId = data.Event.Channel.ParentID.String()
+		}
+	}
+
+	tag, ok := b.TagMapping[channelId]
 	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),
@@ -196,8 +210,14 @@ func (b *Bot) cmdApprove(ctx context.Context, data cmdroute.CommandData) *api.In
 
 func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	b.Log.Infow("reject request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
+	channelId := data.Event.ChannelID.String()
+	if data.Event.Channel != nil {
+		if data.Event.Channel.Type == discord.GuildPublicThread || data.Event.Channel.Type == discord.GuildPrivateThread {
+			channelId = data.Event.Channel.ParentID.String()
+		}
+	}
 
-	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
+	tag, ok := b.TagMapping[channelId]
 	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),
@@ -227,8 +247,14 @@ func (b *Bot) cmdReject(ctx context.Context, data cmdroute.CommandData) *api.Int
 
 func (b *Bot) cmdRejectAll(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	b.Log.Infow("reject all request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
+	channelId := data.Event.ChannelID.String()
+	if data.Event.Channel != nil {
+		if data.Event.Channel.Type == discord.GuildPublicThread || data.Event.Channel.Type == discord.GuildPrivateThread {
+			channelId = data.Event.Channel.ParentID.String()
+		}
+	}
 
-	tag, ok := b.TagMapping[data.Event.ChannelID.String()]
+	tag, ok := b.TagMapping[channelId]
 	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),

@@ -8,7 +8,7 @@ require (
 	github.com/containrrr/shoutrrr v0.7.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dgraph-io/badger/v3 v3.2103.5
-	github.com/diamondburned/arikawa/v3 v3.2.0
+	github.com/diamondburned/arikawa/v3 v3.3.3
 	github.com/eclipse/paho.mqtt.golang v1.4.2
 	github.com/go-chi/chi v1.5.4
 	github.com/golang-jwt/jwt v3.2.2+incompatible
