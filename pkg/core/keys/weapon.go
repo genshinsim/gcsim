@@ -184,6 +184,7 @@ var weaponNames = []string{
 	"thrillingtalesofdragonslayers",
 	"thunderingpulse",
 	"tidalshadow",
+	"tomeoftheeternalflow",
 	"toukaboushigure",
 	"travelershandysword",
 	"tulaytullahsremembrance",
@@ -355,6 +356,7 @@ const (
 	ThrillingTalesOfDragonSlayers
 	ThunderingPulse
 	TidalShadow
+	TomeOfTheEternalFlow
 	ToukabouShigure
 	TravelersHandySword
 	TulaytullahsRemembrance
