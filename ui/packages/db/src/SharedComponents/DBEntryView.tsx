@@ -18,7 +18,7 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
   }
   let link = `https://gcsim.app/sh/${dbEntry.share_key}`;
   if ("_id" in dbEntry) {
-    link = `https://gcsim.app/db/${dbEntry["_id"]}`;
+    link = `https://gcsim.app/db/${dbEntry["_id"]}#tab=config`;
   }
 
   return (
