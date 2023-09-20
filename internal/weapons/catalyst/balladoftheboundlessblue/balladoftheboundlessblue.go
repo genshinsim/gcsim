@@ -30,8 +30,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	stacks := 0
-	const buffIcd = "ballad-icd"
-	const buffKey = "ballad-of-the-boundless-blue-dmg"
+	const buffIcd = "ballad-of-the-boundless-blue-icd"
+	const buffKey = "ballad-of-the-boundless-blue-dmgp"
 	na := make([]float64, attributes.EndStatType)
 	ca := make([]float64, attributes.EndStatType)
 
@@ -73,8 +73,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					}
 				},
 			})
-		default:
-			return false
 		}
 		return false
 	}, fmt.Sprintf("ballad-of-the-boundless-blue-%v", char.Base.Key.String()))
