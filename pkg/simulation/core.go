@@ -13,5 +13,6 @@ func NewCore(seed int64, debug bool, cfg *info.ActionList) (*core.Core, error) {
 		DefHalt:      cfg.Settings.DefHalt,
 		DamageMode:   cfg.Settings.DamageMode,
 		EnableHitlag: cfg.Settings.EnableHitlag,
+		ErCalc:       cfg.Settings.ErCalc,
 	})
 }

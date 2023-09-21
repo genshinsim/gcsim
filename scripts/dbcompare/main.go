@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"net/url"
 	"time"
@@ -31,6 +32,8 @@ type dbEntry struct {
 	} `json:"summary"`
 }
 
+var iterations = 100
+
 func main() {
 	res, err := getDBEntries()
 	if err != nil {
@@ -40,7 +43,15 @@ func main() {
 	fmt.Println("id,original,next,err")
 	for _, v := range res {
 		dps, err := runSim(v)
-		fmt.Printf("%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
+
+		if err != nil {
+			fmt.Printf("\u001b[31m%v,%v,%v,%v\u001b[0m\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
+		} else if math.Abs(v.Summary.MeanDpsPerTarget-dps) > 1000 {
+			// If the difference is greater than 4x the standard error of the mean, then 99.7% chance a change happened
+			fmt.Printf("\u001b[32m%v,%v,%v,%v\u001b[0m\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
+		} else {
+			fmt.Printf("%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
+		}
 	}
 }
 
@@ -55,7 +66,7 @@ func runSim(w dbEntry) (float64, error) {
 		//TODO: we should post something here??
 		return 0, err
 	}
-	simcfg.Settings.Iterations = 1000
+	simcfg.Settings.Iterations = iterations
 	simcfg.Settings.NumberOfWorkers = 30
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30)*time.Second)
@@ -67,7 +78,6 @@ func runSim(w dbEntry) (float64, error) {
 		return 0, err
 	}
 	avgPerTarget := *result.Statistics.TotalDamage.Mean / (float64(len(result.TargetDetails)) * *result.Statistics.Duration.Mean)
-
 	// elapsed := time.Since(start)
 	// fmt.Printf()
 	return avgPerTarget, nil

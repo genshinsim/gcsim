@@ -2722,6 +2722,9 @@ export namespace model {
 
         /** SimulationStatistics target_aura_uptime */
         target_aura_uptime?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics er_needed */
+        er_needed?: (model.IOverviewStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2822,6 +2825,9 @@ export namespace model {
 
         /** SimulationStatistics target_aura_uptime. */
         public target_aura_uptime: model.ISourceStats[];
+
+        /** SimulationStatistics er_needed. */
+        public er_needed: model.IOverviewStats[];
 
         /**
          * Gets the default type url for SimulationStatistics
@@ -3689,6 +3695,9 @@ export namespace model {
         /** SimulatorSettings def_halt */
         def_halt?: (boolean|null);
 
+        /** SimulatorSettings er_calc */
+        er_calc?: (boolean|null);
+
         /** SimulatorSettings number_of_workers */
         number_of_workers?: (number|null);
 
@@ -3719,6 +3728,9 @@ export namespace model {
 
         /** SimulatorSettings def_halt. */
         public def_halt: boolean;
+
+        /** SimulatorSettings er_calc. */
+        public er_calc: boolean;
 
         /** SimulatorSettings number_of_workers. */
         public number_of_workers: number;
