@@ -1,8 +1,6 @@
 package energy
 
 import (
-	"fmt"
-
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -79,7 +77,6 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		result.ErNeeded[i] = agg.ToOverviewStats(c)
 	}
 	for i, c := range b.weightedER {
-		fmt.Println(c.Weights)
 		result.WeightedEr[i] = agg.ToOverviewStats(c)
 	}
 }
