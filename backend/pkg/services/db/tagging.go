@@ -16,6 +16,9 @@ func (s *Server) ApproveTag(ctx context.Context, req *ApproveTagRequest) (*Appro
 	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
 		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
 	}
+	if req.GetTag() == model.DBTag_DB_TAG_ADMIN_DO_NOT_USE {
+		return nil, status.Error(codes.InvalidArgument, "reserved tag cannot be used")
+	}
 	err := s.DBStore.ApproveTag(ctx, req.GetId(), req.GetTag())
 	if err != nil {
 		return nil, err
@@ -32,6 +35,9 @@ func (s *Server) RejectTag(ctx context.Context, req *RejectTagRequest) (*RejectT
 	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
 		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
 	}
+	if req.GetTag() == model.DBTag_DB_TAG_ADMIN_DO_NOT_USE {
+		return nil, status.Error(codes.InvalidArgument, "reserved tag cannot be used")
+	}
 	err := s.DBStore.RejectTag(ctx, req.GetId(), req.GetTag())
 	if err != nil {
 		return nil, err
@@ -43,6 +49,9 @@ func (s *Server) RejectTag(ctx context.Context, req *RejectTagRequest) (*RejectT
 func (s *Server) RejectTagAllUnapproved(ctx context.Context, req *RejectTagAllUnapprovedRequest) (*RejectTagAllUnapprovedResponse, error) {
 	if req.GetTag() == model.DBTag_DB_TAG_INVALID {
 		return nil, status.Error(codes.InvalidArgument, "tag cannot be blank")
+	}
+	if req.GetTag() == model.DBTag_DB_TAG_ADMIN_DO_NOT_USE {
+		return nil, status.Error(codes.InvalidArgument, "reserved tag cannot be used")
 	}
 	count, err := s.DBStore.RejectTagAllUnapproved(ctx, req.GetTag())
 	if err != nil {
