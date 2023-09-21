@@ -304,7 +304,7 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char inf
 // TODO: Can maybe replace with some kind of gradient descent for speed improvements/allow for 1 ER substat moves?
 // When I tried before, it was hard to define a good step size and penalty on high ER substats that generally worked well
 // At least this version works semi-reliably...
-func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean, tolSD float64) []string {
+func (stats *SubstatOptimizerDetails) optimizeERSubstats() []string {
 	var opDebug []string
 
 	stats.findOptimalERforChars()
