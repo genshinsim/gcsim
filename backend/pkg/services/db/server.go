@@ -40,7 +40,7 @@ type ComputeService interface {
 }
 
 type AdminService interface {
-	ReplaceConfig(ctx context.Context, id string, config string) (string, error)
+	ReplaceConfig(ctx context.Context, id string, config string, source model.DBTag) (string, error)
 }
 
 type ShareStore interface {

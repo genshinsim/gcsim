@@ -1094,6 +1094,9 @@ export namespace db {
 
         /** ReplaceConfigRequest config */
         config?: (string|null);
+
+        /** ReplaceConfigRequest source_tag */
+        source_tag?: (model.DBTag|null);
     }
 
     /** Represents a ReplaceConfigRequest. */
@@ -1110,6 +1113,9 @@ export namespace db {
 
         /** ReplaceConfigRequest config. */
         public config: string;
+
+        /** ReplaceConfigRequest source_tag. */
+        public source_tag: model.DBTag;
 
         /**
          * Gets the default type url for ReplaceConfigRequest
@@ -2309,7 +2315,8 @@ export namespace model {
         DB_TAG_KQM_GUIDE = 3,
         DB_TAG_GEO_SIMPS = 4,
         DB_TAG_ITTO_SIMPS = 5,
-        DB_TAG_RANDOM_DELAYS = 6
+        DB_TAG_RANDOM_DELAYS = 6,
+        DB_TAG_ADMIN_DO_NOT_USE = 99999999
     }
 
     /** Properties of a ComputeFailedEvent. */

@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Server) ReplaceConfig(ctx context.Context, req *ReplaceConfigRequest) (*ReplaceConfigResponse, error) {
-	old, err := s.DBStore.ReplaceConfig(ctx, req.GetId(), req.GetConfig())
+	old, err := s.DBStore.ReplaceConfig(ctx, req.GetId(), req.GetConfig(), req.GetSourceTag())
 	if err != nil {
 		return nil, err
 	}

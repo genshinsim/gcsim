@@ -103,8 +103,8 @@ func findOptFromQueryOpt(q *db.QueryOpt) *options.FindOptions {
 	return opt
 }
 
-func (s *Server) ReplaceConfig(ctx context.Context, id, config string) (string, error) {
-	s.Log.Infow("replace config request", "id", id, "config", config)
+func (s *Server) ReplaceConfig(ctx context.Context, id, config string, source model.DBTag) (string, error) {
+	s.Log.Infow("replace config request", "id", id, "config", config, "source_tag", source)
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	e, err := s.getOne(
 		ctx,
@@ -116,6 +116,17 @@ func (s *Server) ReplaceConfig(ctx context.Context, id, config string) (string, 
 	if err != nil {
 		s.Log.Infow("error getting existing entry", "err", err)
 		return "", err
+	}
+	//if source tag is ADMIN then go head, otherwise check to see that there is only one tag
+	//and that one tag is the same as source tag
+	//note that if the length of AcceptedTags is 0 then anyone can replace
+	if source != model.DBTag_DB_TAG_ADMIN_DO_NOT_USE {
+		if len(e.AcceptedTags) > 1 {
+			return "", status.Error(codes.PermissionDenied, "cannot replace when there are more than one existing tags")
+		}
+		if len(e.AcceptedTags) == 1 && e.AcceptedTags[0] != source {
+			return "", status.Error(codes.PermissionDenied, "cannot replace; sim does not have matching existing tag")
+		}
 	}
 	old := e.Config
 	e.Config = config

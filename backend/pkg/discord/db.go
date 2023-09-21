@@ -368,7 +368,15 @@ func (b *Bot) cmdEntryStatus(ctx context.Context, data cmdroute.CommandData) *ap
 func (b *Bot) cmdReplaceConfig(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	b.Log.Infow("replace config request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
 
-	if data.Event.ChannelID.String() != dbSuperAdminChan {
+	channelId := data.Event.ChannelID.String()
+	if data.Event.Channel != nil {
+		if data.Event.Channel.Type == discord.GuildPublicThread || data.Event.Channel.Type == discord.GuildPrivateThread {
+			channelId = data.Event.Channel.ParentID.String()
+		}
+	}
+
+	tag, ok := b.TagMapping[channelId]
+	if !ok {
 		return &api.InteractionResponseData{
 			Content: option.NewNullableString("Oops you don't have permission to do this"),
 		}
@@ -383,7 +391,7 @@ func (b *Bot) cmdReplaceConfig(ctx context.Context, data cmdroute.CommandData) *
 	}
 	b.Log.Infow("replace options", "opts", opts)
 
-	err := b.Backend.ReplaceConfig(opts.Id, opts.Link)
+	err := b.Backend.ReplaceConfig(opts.Id, opts.Link, tag)
 	if err != nil {
 		return errorResponse(err)
 	}
