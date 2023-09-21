@@ -2,64 +2,35 @@ import ArtifactDataGen from "@ui/Data/artifact_data.generated.json";
 import CharDataGen from "@ui/Data/char_data.generated.json";
 import WeaponDataGen from "@ui/Data/weapon_data.generated.json";
 
+import { Character, Set, Weapon } from "@gcsim/types";
+import { ArtifactMainStatsData } from "@ui/Data";
+import { GOODStatKey } from "../GOOD/GOODTypes";
 import {
-  GOODArtifact,
-  GOODArtifactSetKey,
-  GOODCharacter,
-  GOODSlotKey,
-  GOODStatKey,
-  GOODWeapon,
-  IGOOD,
-  ISubstat,
-} from "../GOOD/GOODTypes";
+  ascLvlMax,
+  ascToMaxLvl,
+  DMElementToKey,
+  GOODStatToIndexMap,
+} from "../util";
 import {
   EnkaData,
   FightProp,
   GenshinItemReliquary,
   GenshinItemWeapon,
-  ReliquaryEquipType,
 } from "./EnkaTypes";
 
-const characterMapV2 = Object.values(CharDataGen.data).reduce(
-  (acc, val) => {
-    const id_str = `${val.id}${"sub_id" in val ? "-" + val["sub_id"] : ""}`;
-    acc[id_str] = val;
-    return acc;
-  },
-  {} as {
-    [id_str: string]: {
-      id: number;
-      key: string;
-      rarity: string;
-      body: string;
-      region: string;
-      element: string;
-      weapon_class: string;
-      icon_name: string;
-      skill_details: {
-        skill: number;
-        burst: number;
-        attack: number;
-        burst_energy_cost: number;
-      };
-    };
-  }
-);
+const charIDToKeyLookup = Object.values(CharDataGen.data).reduce((acc, val) => {
+  //this concat here is to handle traveler which has the same id but diff sub_id
+  const id_str = `${val.id}${"sub_id" in val ? "-" + val["sub_id"] : ""}`;
+  acc[id_str] = val.key;
+  return acc;
+}, {} as { [id_str: string]: string });
 
-const weaponMapV2 = Object.values(WeaponDataGen.data).reduce(
+const weaponIDToKeyLookup = Object.values(WeaponDataGen.data).reduce(
   (acc, val) => {
-    acc[val.id] = val;
+    acc[val.id] = val.key;
     return acc;
   },
-  {} as {
-    [id: number]: {
-      id: number;
-      key: string;
-      rarity: number;
-      weapon_class: string;
-      image_name: string;
-    };
-  }
+  {} as { [id: number]: string }
 );
 
 let artifactMapByTextMapId: { [key in string]: string } = {};
@@ -67,117 +38,232 @@ for (const [k, v] of Object.entries(ArtifactDataGen.data)) {
   artifactMapByTextMapId[v.text_map_id] = k;
 }
 
-const travelerSkillIdToEleMap: {
-  skill_id: number;
-  sub_id: number;
-}[] = Object.values(CharDataGen.data)
-  .filter((e) => e.key.includes("aether"))
-  .map((e) => {
-    return {
-      skill_id: e.skill_details.skill,
-      sub_id: e["sub_id"],
+const stats_base = [
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
+
+type CharData = {
+  key: string;
+  element: string;
+  skill_details: {
+    skill: number;
+    burst: number;
+    attack: number;
+    burst_energy_cost: number;
+  };
+};
+
+//findCharDataFromEnka takes id and skillmap (required to identify traveler) from enka and
+//converts it to our internal generated data
+function findCharDataFromEnka(
+  avatarId: number,
+  skillDepotId: number
+): CharData {
+  let converted_id = avatarId.toString();
+  //if traveler, then we need to find the subid
+  if (avatarId === 10000007 || avatarId === 10000005) {
+    converted_id = converted_id + "-" + skillDepotId;
+    console.log("using id + skill depot id for traveler", converted_id);
+  }
+  //sanity check that this character is implemented
+  if (!(converted_id in charIDToKeyLookup)) {
+    throw `character with id ${converted_id} not imported; possibly not implemented`;
+  }
+  const key = charIDToKeyLookup[converted_id];
+  const data = {
+    key: key,
+    skill_details: CharDataGen.data[key].skill_details,
+    element: CharDataGen.data[key].element,
+  };
+  console.log("character data found", data);
+  return data;
+}
+
+//extract character weapon from enka equip list; return null if not found
+function extractWeapon(
+  equipList: (GenshinItemWeapon | GenshinItemReliquary)[]
+): Weapon {
+  let result: Weapon | null = null;
+  equipList.forEach((e) => {
+    if (e.flat.itemType != "ITEM_WEAPON") {
+      return;
+    }
+    const { weapon: enkaWeapon, itemId } = e as GenshinItemWeapon;
+    if (!(itemId in weaponIDToKeyLookup)) {
+      throw `unrecognized weapon (id ${itemId})`;
+    }
+    const key = weaponIDToKeyLookup[itemId];
+    result = {
+      name: key,
+      refine: determineWeaponRefinement(enkaWeapon.affixMap),
+      level: enkaWeapon.level,
+      max_level: ascLvlMax(enkaWeapon.promoteLevel ?? 0),
     };
   });
+  if (result === null) {
+    throw `no weapon found`;
+  }
+  return result;
+}
 
-export default function EnkaToGOOD(enkaData: EnkaData): IGOOD {
-  const characters: GOODCharacter[] = [];
-  const artifacts: GOODArtifact[] = [];
-  const weapons: GOODWeapon[] = [];
+function extractArtifactSet(
+  equipList: (GenshinItemWeapon | GenshinItemReliquary)[]
+): Set {
+  let result: Set = {};
+  equipList.forEach((e) => {
+    if (e.flat.itemType != "ITEM_RELIQUARY") {
+      return;
+    }
+    //find set, throw error if we can an unrecognized set
+    if (!(e.flat.setNameTextMapHash in artifactMapByTextMapId)) {
+      throw `unrecognized artifact set (id: ${e.flat.setNameTextMapHash})`;
+    }
+    const key = artifactMapByTextMapId[e.flat.setNameTextMapHash];
+    if (!(key in result)) {
+      result[key] = 0;
+    }
+    result[key] = result[key] + 1;
+  });
+  return result;
+}
 
-  let errors : any[] = []
+function extractArtifactStats(
+  equipList: (GenshinItemWeapon | GenshinItemReliquary)[]
+): number[] {
+  //TODO: using this here so we can in future return main + sub on sep lines
+
+  //track total
+  let total = stats_base.slice();
+  //we'll want to use labels for the other stuff (although doesn't do anything atm)
+  equipList.forEach((e) => {
+    if (e.flat.itemType != "ITEM_RELIQUARY") {
+      return;
+    }
+    const ms = extractMainStat(e as GenshinItemReliquary);
+    //TODO: we really shouldn't be doing this so roundabout...
+    const ms_idx =
+      GOODStatToIndexMap[
+        fightPropToGOODKey(e.flat.reliquaryMainstat.mainPropId)
+      ];
+    total[ms_idx] += ms;
+    //TODO: in future this should go into a diff slice
+    //add sub stats
+    const subs = extractSubStats(e as GenshinItemReliquary);
+    subs.forEach((v, i) => {
+      total[i] += v;
+    });
+  });
+  return total;
+}
+
+function extractSubStats(e: GenshinItemReliquary): number[] {
+  let total = stats_base.slice();
+  for (const sub of e.flat.reliquarySubstats) {
+    const key = fightPropToGOODKey(sub.appendPropId);
+    if (!(key in GOODStatToIndexMap)) {
+      continue;
+    }
+    const idx = GOODStatToIndexMap[key];
+    let val = sub.statValue;
+    //this corrects for percentages
+    if (key.includes("_")) {
+      val = val / 100.0;
+    }
+    total[idx] += val;
+  }
+  console.log("substats extracted", total);
+  return total;
+}
+
+function extractMainStat(e: GenshinItemReliquary): number {
+  const { flat, reliquary: data } = e;
+  //mainstat is calculated based on lvl + rarity + stat key
+  const lvl = data.level - 1; //enka returns lvl as +1, so 20 is actually 21
+  const rarity = e.flat.rankLevel.toString(); //keyed as string
+  const ms_key = fightPropToGOODKey(flat.reliquaryMainstat.mainPropId);
+  return ArtifactMainStatsData[rarity][ms_key][lvl];
+}
+
+export default function EnkaToGOOD(enkaData: EnkaData): {
+  characters: Character[];
+  errors: any[];
+} {
+  const characters: Character[] = [];
+  let errors: any[] = [];
+  const today = new Date();
   try {
     enkaData.avatarInfoList.forEach(
-      ({ avatarId, propMap, talentIdList, skillLevelMap, equipList }) => {
-        let converted_id = avatarId.toString();
-        //if traveler, then we need to find the subid
-        if (avatarId === 10000007) {
-          let index = travelerSkillIdToEleMap.findIndex((e) => {
-            return e.skill_id in skillLevelMap;
-          });
-          if (index === -1) {
-            throw `traveler not imported; could not match element (id: ${avatarId})`;
-          }
-          converted_id =
-            converted_id + "-" + travelerSkillIdToEleMap[index].sub_id;
-        }
-        const characterData = characterMapV2[converted_id];
-        if (!characterData || !characterData.key) {
-          throw `missing or unimplemented character (id: ${avatarId})`;
+      ({
+        avatarId,
+        propMap,
+        skillDepotId,
+        talentIdList,
+        skillLevelMap,
+        equipList,
+      }) => {
+        //try getting character data, if failed then skip this character
+        let characterData: CharData;
+        try {
+          characterData = findCharDataFromEnka(avatarId, skillDepotId);
+        } catch (e) {
+          errors.push(e);
+          return;
         }
 
-        const character: GOODCharacter = {
-          //this is already in srl key but goodtosrl is idempotent so its fine
-          key: characterData.key,
+        let weapon: Weapon;
+        try {
+          weapon = extractWeapon(equipList);
+        } catch (e) {
+          errors.push(`failed to import ${avatarId}: ${e}`);
+          return;
+        }
+
+        let set: Set;
+        try {
+          set = extractArtifactSet(equipList);
+        } catch (e) {
+          errors.push(`failed to import ${avatarId}: ${e}`);
+          return;
+        }
+
+        let stats: number[];
+        try {
+          stats = extractArtifactStats(equipList);
+        } catch (e) {
+          errors.push(`failed to import ${avatarId}: ${e}`);
+          return;
+        }
+
+        let result: Character = {
+          name: characterData.key,
           level: parseInt(propMap["4001"].val) ?? 1,
-          ascension: parseInt(propMap["1002"].val) ?? 1,
-          constellation: talentIdList?.length ?? 0,
-          talent: getCharacterTalentV2(
+          element: DMElementToKey[characterData.element],
+          max_level: ascToMaxLvl(parseInt(propMap["1002"].val) ?? 1),
+          cons: talentIdList?.length ?? 0,
+          talents: getCharacterTalentV2(
             characterData.skill_details,
             skillLevelMap
           ),
+          weapon: weapon,
+          sets: set,
+          stats: stats,
+          snapshot: stats_base.slice(),
+          date_added: today.toLocaleDateString(),
         };
-        characters.push(character);
 
-        equipList.forEach((equip) => {
-          if (equip.flat.itemType == "ITEM_WEAPON") {
-            const { weapon: enkaWeapon, itemId } = equip as GenshinItemWeapon;
-            if (!(itemId in weaponMapV2)) {
-              throw `${character.key} not imported; unrecognized weapon (id: ${itemId})`;
-            }
-            const weaponData = weaponMapV2[itemId];
-            const weapon: GOODWeapon = {
-              key: weaponData.key,
-              level: enkaWeapon.level,
-              ascension: enkaWeapon.promoteLevel ?? 0,
-              refinement: determineWeaponRefinement(enkaWeapon.affixMap),
-              location: character.key,
-              lock: false,
-            };
-            weapons.push(weapon);
-          } else {
-            const { flat, reliquary: enkaReliquary } =
-              equip as GenshinItemReliquary;
+        characters.push(result);
 
-            if (!(flat.setNameTextMapHash in artifactMapByTextMapId)) {
-              throw `${character.key} not imported; unrecognized artifact set (id: ${flat.setNameTextMapHash})`;
-            }
-
-            const artifactKey = artifactMapByTextMapId[flat.setNameTextMapHash]
-
-            const artifact: GOODArtifact = {
-              setKey: artifactKey,
-              level: enkaReliquary.level - 1,
-              slotKey: reliquaryTypeToGOODKey(flat.equipType),
-              rarity: flat.rankLevel,
-              location: character.key,
-              lock: false,
-              mainStatKey: fightPropToGOODKey(
-                flat.reliquaryMainstat.mainPropId
-              ),
-              substats: getGOODSubstatsFromReliquarySubstats(
-                flat.reliquarySubstats
-              ),
-            };
-            artifacts.push(artifact);
-          }
-        });
-
-        console.log(`succesfully imported ${character.key} (id: ${avatarId})`)
+        console.log(`succesfully imported ${result.name} (id: ${avatarId})`);
       }
     );
-  } catch (e : any) {
-    console.log(e)
-    errors.push(e)
+  } catch (e: any) {
+    console.log(e);
+    errors.push(e);
   }
 
   return {
-    format: "GOOD" as IGOOD["format"],
-    version: 2,
-    source: "gcsimFromEnka",
     characters,
-    weapons,
-    artifacts,
-    errors: errors
+    errors,
   };
 }
 
@@ -198,36 +284,10 @@ function getCharacterTalentV2(
   skillLevelMap: { [key: number]: number }
 ) {
   return {
-    auto: skillLevelMap[skill_details.attack],
+    attack: skillLevelMap[skill_details.attack],
     skill: skillLevelMap[skill_details.skill],
     burst: skillLevelMap[skill_details.burst],
   };
-}
-
-function textToGOODKey(string: string) {
-  function toTitleCase(str: string) {
-    return str.replace(/-/g, " ").replace(/\w\S*/g, function (txt: string) {
-      return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
-    });
-  }
-  return toTitleCase(string || "").replace(/[^A-Za-z]/g, "");
-}
-
-function reliquaryTypeToGOODKey(
-  reliquaryType: ReliquaryEquipType
-): GOODSlotKey {
-  switch (reliquaryType) {
-    case ReliquaryEquipType.EQUIP_BRACER:
-      return "flower";
-    case ReliquaryEquipType.EQUIP_NECKLACE:
-      return "plume";
-    case ReliquaryEquipType.EQUIP_SHOES:
-      return "sands";
-    case ReliquaryEquipType.EQUIP_RING:
-      return "goblet";
-    case ReliquaryEquipType.EQUIP_DRESS:
-      return "circlet";
-  }
 }
 
 function fightPropToGOODKey(fightProp: FightProp): GOODStatKey {
@@ -273,23 +333,4 @@ function fightPropToGOODKey(fightProp: FightProp): GOODStatKey {
     default:
       return "";
   }
-}
-
-function getGOODSubstatsFromReliquarySubstats(
-  reliquarySubstats: {
-    appendPropId: FightProp;
-    statValue: number;
-  }[]
-): ISubstat[] {
-  if (reliquarySubstats.length == 0 || reliquarySubstats.length > 4) {
-    return [];
-  }
-  const GOODSubstats: ISubstat[] = [];
-  for (const reliquarySubstat of reliquarySubstats) {
-    GOODSubstats.push({
-      key: fightPropToGOODKey(reliquarySubstat.appendPropId),
-      value: reliquarySubstat.statValue,
-    });
-  }
-  return GOODSubstats;
 }
