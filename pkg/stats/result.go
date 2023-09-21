@@ -55,6 +55,7 @@ type CharacterResult struct {
 
 	ActiveTime  int     `json:"active_time"  msg:"active_time"`
 	EnergySpent float64 `json:"energy_spent" msg:"energy_spent"`
+	ER_needed   float64 `json:"er_needed"   msg:"er_needed"`
 }
 
 type EnemyResult struct {
