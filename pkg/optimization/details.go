@@ -15,6 +15,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
+type Ordered interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr | ~float32 | ~float64 | ~string
+}
 type SubstatOptimizerDetails struct {
 	charRelevantSubstats   map[keys.Char][]attributes.Stat
 	artifactSets4Star      []keys.Set
@@ -304,31 +307,11 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char inf
 func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean, tolSD float64) []string {
 	var opDebug []string
 
-	for idxChar := range stats.charProfilesERBaseline {
-		stats.findOptimalERforChar(idxChar, stats.charProfilesERBaseline[idxChar], tolMean, tolSD)
-	}
+	stats.findOptimalERforChars()
 
-	// Need a separate optimization routine for strong battery characters (currently Raiden only, maybe EMC?)
-	// Need to set all other character's ER substats at final value, then see added benefit from ER for global battery chars
-	for i := range stats.charProfilesERBaseline {
-		stats.charProfilesERBaseline[i].Stats[attributes.ER] = stats.charProfilesInitial[i].Stats[attributes.ER]
-
-		if stats.charProfilesERBaseline[i].Base.Key == keys.Raiden {
-			stats.charSubstatFinal[i][attributes.ER] = stats.indivSubstatLiquidCap
-		}
-
-		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(
-			stats.charSubstatFinal[i][attributes.ER],
-		) * stats.substatValues[attributes.ER]
-	}
-
-	for i := range stats.charProfilesERBaseline {
-		if stats.charProfilesERBaseline[i].Base.Key != keys.Raiden {
-			continue
-		}
-		opDebug = append(opDebug, "Raiden found in team comp - running secondary optimization routine...")
-		stats.findOptimalERforChar(i, stats.charProfilesERBaseline[i], tolMean, tolSD)
-	}
+	// For now going to ignore Raiden, since typically she won't be running maximum ER subs just to battery. The scaling isn't that strong
+	// From minimum subs (0.1102 ER) to maximum subs (0.6612 ER) she restores 4 more flat energy per rotation.
+	// She is set to 4 ER subs for now, so her ult does +/- 2 flat energy from calculated
 
 	// Fix ER at previously found values then optimize all other substats
 	opDebug = append(opDebug, "Optimized ER Liquid Substats by character:")
@@ -345,52 +328,43 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats(tolMean, tolSD float64)
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) findOptimalERforChar(
-	idxChar int,
-	char info.CharacterProfile,
-	tolMean float64,
-	tolSD float64,
-) {
-	var initialMean float64
-	var initialSD float64
-
-	for erStack := 0; erStack <= stats.indivSubstatLiquidCap; erStack += 2 {
-		stats.charProfilesCopy[idxChar] = char.Clone()
-		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * stats.substatValues[attributes.ER]
-
-		stats.simcfg.Characters = stats.charProfilesCopy
-
-		result, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
-
-		if erStack == 0 {
-			initialMean = *result.Statistics.DPS.Mean
-			initialSD = *result.Statistics.DPS.SD
-		}
-
-		condition := *result.Statistics.DPS.Mean/initialMean-1 < -tolMean || *result.Statistics.DPS.SD/initialSD-1 > tolSD
-		// For Raiden, we can't use DPS directly as a measure since she scales off of her own ER
-		// Instead we ONLY use the SD tolerance as big jumps indicate the rotation is becoming more unstable
-		if char.Base.Key == keys.Raiden {
-			condition = *result.Statistics.DPS.SD/initialSD-1 > tolSD
-		}
-
-		// If differences exceed tolerances, then immediately break
-		if condition {
-			// Reset character stats
-			stats.charProfilesCopy[idxChar] = char.Clone()
-			// Save ER value - optimal value is the value immediately prior, so we subtract 2
-			stats.charSubstatFinal[idxChar][attributes.ER] -= erStack - 2
-			break
-		}
-
-		// Reached minimum possible ER stacks, so optimal is the minimum amount of ER stacks
-		if stats.charSubstatFinal[idxChar][attributes.ER]-erStack == 0 {
-			// Reset character stats
-			stats.charProfilesCopy[idxChar] = char.Clone()
-			stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
-			break
-		}
+func clamp[T Ordered](min, val, max T) T {
+	if val < min {
+		return min
 	}
+	if val > max {
+		return max
+	}
+	return val
+}
+
+func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
+	stats.simcfg.Settings.ErCalc = true
+	// characters start at maximum ER
+	// maybe need to set raiden/emc er sub count to 5 subs or something
+	stats.simcfg.Characters = stats.charProfilesERBaseline
+	result, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
+
+	for idxChar := range stats.charProfilesERBaseline {
+		fmt.Printf("Found character %s needs %.2f ER\n", stats.charProfilesERBaseline[idxChar].Base.Key.String(), *result.Statistics.ErNeeded[idxChar].Q3)
+
+		// erDiff is the amount of excess ER we have
+		erDiff := *result.Statistics.WeightedEr[idxChar].Q1 - *result.Statistics.ErNeeded[idxChar].Q3
+
+		// the bias is how much to "round".
+		// -0.5 bias is equivalent to flooring (guaruntees that the ER will be enough, even if
+		// 		the req was 1.2205 and 4 subs was 1.2204, we will get 1.1653 ER)
+		// +0.5 bias is equivalent to ceil
+		// maybe bias should be determined relative to DPS% of team?
+		bias := -0.15
+
+		// find the closest whole count of ER subs
+		erStack := int(math.Round(erDiff/stats.substatValues[attributes.ER] + bias))
+		erStack = clamp[int](0, erStack, stats.charSubstatFinal[idxChar][attributes.ER])
+		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
+		stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
+	}
+	stats.simcfg.Settings.ErCalc = false
 }
 
 func (stats *SubstatOptimizerDetails) setInitialSubstats(fixedSubstatCount int) {
@@ -426,7 +400,7 @@ func (stats *SubstatOptimizerDetails) calculateERBaseline() {
 		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
 		erStack := stats.charSubstatLimits[i][attributes.ER]
 		if stats.charProfilesInitial[i].Base.Key == keys.Raiden {
-			erStack = 0
+			erStack = 4
 		}
 		stats.charSubstatFinal[i][attributes.ER] = erStack
 
