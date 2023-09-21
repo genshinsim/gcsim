@@ -65,10 +65,8 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 	// Tolerance cutoffs for mean and SD from initial state
 	// Initial state is used rather than checking across each iteration due to noise
 	// TODO: May want to adjust further?
-	tolMean := o.optionsMap["tol_mean"]
-	tolSD := o.optionsMap["tol_sd"]
 
-	debugLogs := o.details.optimizeERSubstats(tolMean, tolSD)
+	debugLogs := o.details.optimizeERSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)
 	}
