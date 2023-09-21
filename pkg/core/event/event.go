@@ -46,7 +46,7 @@ const (
 	OnShielded         // shield
 	OnCharacterSwap    // prev, next
 	OnParticleReceived // particle
-	OnEnergyChange     // character_received_index, pre_energy, energy_change, src (post-energy available in character_received)
+	OnEnergyChange     // character_received_index, pre_energy, energy_change, src (post-energy available in character_received), is_particle
 	OnTargetDied       // target, AttackEvent
 	OnTargetMoved      // target
 	OnCharacterHit     // nil <- this is for when the character is going to get hit but might be shielded from dmg
