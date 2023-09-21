@@ -106,8 +106,6 @@ func init() {
 	)
 }
 
-const dbSuperAdminChan = "1118952347381547038"
-
 func (b *Bot) cmdList(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 	var opts struct {
 		Page float64 `discord:"page"`

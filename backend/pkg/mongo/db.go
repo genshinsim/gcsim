@@ -117,9 +117,9 @@ func (s *Server) ReplaceConfig(ctx context.Context, id, config string, source mo
 		s.Log.Infow("error getting existing entry", "err", err)
 		return "", err
 	}
-	//if source tag is ADMIN then go head, otherwise check to see that there is only one tag
-	//and that one tag is the same as source tag
-	//note that if the length of AcceptedTags is 0 then anyone can replace
+	// if source tag is ADMIN then go head, otherwise check to see that there is only one tag
+	// and that one tag is the same as source tag
+	// note that if the length of AcceptedTags is 0 then anyone can replace
 	if source != model.DBTag_DB_TAG_ADMIN_DO_NOT_USE {
 		if len(e.AcceptedTags) > 1 {
 			return "", status.Error(codes.PermissionDenied, "cannot replace when there are more than one existing tags")
@@ -153,9 +153,9 @@ func (s *Server) ReplaceDesc(ctx context.Context, id, desc string, source model.
 		s.Log.Infow("error getting existing entry", "err", err)
 		return "", err
 	}
-	//if source tag is ADMIN then go head, otherwise check to see that there is only one tag
-	//and that one tag is the same as source tag
-	//note that if the length of AcceptedTags is 0 then anyone can replace
+	// if source tag is ADMIN then go head, otherwise check to see that there is only one tag
+	// and that one tag is the same as source tag
+	// note that if the length of AcceptedTags is 0 then anyone can replace
 	if source != model.DBTag_DB_TAG_ADMIN_DO_NOT_USE {
 		if len(e.AcceptedTags) > 1 {
 			return "", status.Error(codes.PermissionDenied, "cannot replace when there are more than one existing tags")

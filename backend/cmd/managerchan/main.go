@@ -37,7 +37,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//parse tag mapping from json file
+	// parse tag mapping from json file
 	f, err := os.Open(os.Getenv("DISCORD_CHAN_TO_TAG_MAPPING_FILE"))
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +47,7 @@ func main() {
 	var mapping map[string]model.DBTag
 	err = json.Unmarshal(md, &mapping)
 	if err != nil {
-		log.Fatalf("error parsing mapping: %v", err)
+		log.Panicf("error parsing mapping: %v", err)
 	}
 	log.Printf("starting discord bot with mapping: %v", mapping)
 
@@ -61,12 +61,12 @@ func main() {
 		return nil
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	err = b.Run()
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
