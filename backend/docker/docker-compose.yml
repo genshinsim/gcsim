@@ -87,7 +87,6 @@ services:
       - ~/data:/data
       - ./keys.json:/keys.json
     environment:
-      - COMPUTE_API_KEY
       - USER_DATA_PATH=/data/user
       - DISCORD_ID
       - DISCORD_SECRET
