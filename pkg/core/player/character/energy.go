@@ -62,6 +62,7 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 		amt = 1
 	}
 	amt *= r // apply off field reduction
+
 	// apply energy regen stat
 
 	er = c.Stat(attributes.ER)

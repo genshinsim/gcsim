@@ -2837,6 +2837,9 @@ export namespace model {
 
         /** SimulationStatistics er_needed */
         er_needed?: (model.IOverviewStats[]|null);
+
+        /** SimulationStatistics weighted_er */
+        weighted_er?: (model.IOverviewStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2940,6 +2943,9 @@ export namespace model {
 
         /** SimulationStatistics er_needed. */
         public er_needed: model.IOverviewStats[];
+
+        /** SimulationStatistics weighted_er. */
+        public weighted_er: model.IOverviewStats[];
 
         /**
          * Gets the default type url for SimulationStatistics
