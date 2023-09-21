@@ -119,6 +119,7 @@ message SimulationStatistics {
 
   // er values from er_calc mode
   repeated OverviewStats er_needed = 31 [json_name="er_needed"];
+  repeated OverviewStats weighted_er = 32 [json_name="weighted_er"];
 }
 
 message SignedSimulationStatistics {

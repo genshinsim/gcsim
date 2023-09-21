@@ -43,6 +43,7 @@ type Flags struct {
 	DamageMode   bool // for hp mode
 	DefHalt      bool // for hitlag
 	EnableHitlag bool // hitlag enabled
+	ErCalc       bool
 	Custom       map[string]int
 }
 
@@ -69,6 +70,7 @@ type Opt struct {
 	EnableHitlag bool
 	DefHalt      bool
 	DamageMode   bool
+	ErCalc       bool
 	Delays       info.Delays
 }
 
@@ -87,6 +89,7 @@ func New(opt Opt) (*Core, error) {
 	c.Flags.DamageMode = opt.DamageMode
 	c.Flags.DefHalt = opt.DefHalt
 	c.Flags.EnableHitlag = opt.EnableHitlag
+	c.Flags.ErCalc = opt.ErCalc
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)

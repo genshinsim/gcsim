@@ -100,7 +100,8 @@ func parseOptions(p *Parser) (parseFn, error) {
 					}
 				}
 			case "er_calc":
-				// does nothing thus far...
+				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
+				p.res.Settings.ErCalc = n.Val == TrueVal
 			default:
 				return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.line, n.Val)
 			}
