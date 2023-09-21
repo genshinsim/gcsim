@@ -1151,6 +1151,72 @@ export namespace db {
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
+
+    /** Properties of a ReplaceDescRequest. */
+    interface IReplaceDescRequest {
+
+        /** ReplaceDescRequest id */
+        id?: (string|null);
+
+        /** ReplaceDescRequest desc */
+        desc?: (string|null);
+
+        /** ReplaceDescRequest source_tag */
+        source_tag?: (model.DBTag|null);
+    }
+
+    /** Represents a ReplaceDescRequest. */
+    class ReplaceDescRequest implements IReplaceDescRequest {
+
+        /**
+         * Constructs a new ReplaceDescRequest.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IReplaceDescRequest);
+
+        /** ReplaceDescRequest id. */
+        public id: string;
+
+        /** ReplaceDescRequest desc. */
+        public desc: string;
+
+        /** ReplaceDescRequest source_tag. */
+        public source_tag: model.DBTag;
+
+        /**
+         * Gets the default type url for ReplaceDescRequest
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a ReplaceDescResponse. */
+    interface IReplaceDescResponse {
+
+        /** ReplaceDescResponse id */
+        id?: (string|null);
+    }
+
+    /** Represents a ReplaceDescResponse. */
+    class ReplaceDescResponse implements IReplaceDescResponse {
+
+        /**
+         * Constructs a new ReplaceDescResponse.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: db.IReplaceDescResponse);
+
+        /** ReplaceDescResponse id. */
+        public id: string;
+
+        /**
+         * Gets the default type url for ReplaceDescResponse
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
 }
 
 /** Namespace preview. */
@@ -2469,6 +2535,45 @@ export namespace model {
 
         /**
          * Gets the default type url for EntryReplaceEvent
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a DescReplaceEvent. */
+    interface IDescReplaceEvent {
+
+        /** DescReplaceEvent db_id */
+        db_id?: (string|null);
+
+        /** DescReplaceEvent desc */
+        desc?: (string|null);
+
+        /** DescReplaceEvent old_desc */
+        old_desc?: (string|null);
+    }
+
+    /** Represents a DescReplaceEvent. */
+    class DescReplaceEvent implements IDescReplaceEvent {
+
+        /**
+         * Constructs a new DescReplaceEvent.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IDescReplaceEvent);
+
+        /** DescReplaceEvent db_id. */
+        public db_id: string;
+
+        /** DescReplaceEvent desc. */
+        public desc: string;
+
+        /** DescReplaceEvent old_desc. */
+        public old_desc: string;
+
+        /**
+         * Gets the default type url for DescReplaceEvent
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */

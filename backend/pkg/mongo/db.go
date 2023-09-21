@@ -125,12 +125,47 @@ func (s *Server) ReplaceConfig(ctx context.Context, id, config string, source mo
 			return "", status.Error(codes.PermissionDenied, "cannot replace when there are more than one existing tags")
 		}
 		if len(e.AcceptedTags) == 1 && e.AcceptedTags[0] != source {
-			return "", status.Error(codes.PermissionDenied, "cannot replace; sim does not have matching existing tag")
+			return "", status.Error(codes.PermissionDenied, "cannot replace; sim does not have matching existing tag; already tagged under "+e.AcceptedTags[0].String())
 		}
 	}
 	old := e.Config
 	e.Config = config
 	e.Hash = "should-recompute"
+	err = s.Replace(ctx, e)
+	if err != nil {
+		s.Log.Infow("error replacing entry", "err", err)
+		return "", err
+	}
+	return old, nil
+}
+
+func (s *Server) ReplaceDesc(ctx context.Context, id, desc string, source model.DBTag) (string, error) {
+	s.Log.Infow("replace desc request", "id", id, "desc", desc, "source_tag", source)
+	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
+	e, err := s.getOne(
+		ctx,
+		col,
+		bson.M{
+			"_id": id,
+		},
+	)
+	if err != nil {
+		s.Log.Infow("error getting existing entry", "err", err)
+		return "", err
+	}
+	//if source tag is ADMIN then go head, otherwise check to see that there is only one tag
+	//and that one tag is the same as source tag
+	//note that if the length of AcceptedTags is 0 then anyone can replace
+	if source != model.DBTag_DB_TAG_ADMIN_DO_NOT_USE {
+		if len(e.AcceptedTags) > 1 {
+			return "", status.Error(codes.PermissionDenied, "cannot replace when there are more than one existing tags")
+		}
+		if len(e.AcceptedTags) == 1 && e.AcceptedTags[0] != source {
+			return "", status.Error(codes.PermissionDenied, "cannot replace; sim does not have matching existing tag; already tagged under "+e.AcceptedTags[0].String())
+		}
+	}
+	old := e.Description
+	e.Description = desc
 	err = s.Replace(ctx, e)
 	if err != nil {
 		s.Log.Infow("error replacing entry", "err", err)

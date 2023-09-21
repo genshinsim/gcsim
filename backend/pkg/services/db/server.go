@@ -41,6 +41,7 @@ type ComputeService interface {
 
 type AdminService interface {
 	ReplaceConfig(ctx context.Context, id string, config string, source model.DBTag) (string, error)
+	ReplaceDesc(ctx context.Context, id string, desc string, source model.DBTag) (string, error)
 }
 
 type ShareStore interface {
@@ -97,6 +98,7 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 const (
 	TopicReplace                 string = "db/entry/replace"
+	TopicReplaceDesc             string = "db/entry/replace"
 	TopicSubmissionDelete        string = "db/submission/delete"
 	TopicComputeCompleted        string = "db/compute/complete"
 	TopicSubmissionComputeFailed string = "db/compute/submission/failed"

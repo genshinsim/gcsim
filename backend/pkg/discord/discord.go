@@ -27,6 +27,7 @@ type Backend interface {
 	GetDBStatus() (*model.DBStatus, error)
 	GetDBEntry(id string) (*db.Entry, error)
 	ReplaceConfig(id, link string, source model.DBTag) error
+	ReplaceDesc(id, desc string, source model.DBTag) error
 }
 
 type DBStatus struct {

@@ -126,3 +126,22 @@ func (s *Store) ReplaceConfig(id, link string, source model.DBTag) error {
 
 	return nil
 }
+
+func (s *Store) ReplaceDesc(id, desc string, source model.DBTag) error {
+	s.Log.Infow("replace desc request received", "id", id, "desc", desc)
+
+	resp, err := s.DBClient.ReplaceDesc(context.TODO(), &db.ReplaceDescRequest{
+		Id:        id,
+		Desc:      desc,
+		SourceTag: source,
+	})
+
+	if err != nil {
+		s.Log.Infow("replace desc failed", "err", err)
+		return err
+	}
+
+	s.Log.Infow("replace desc completed", "resp", resp.String())
+
+	return nil
+}

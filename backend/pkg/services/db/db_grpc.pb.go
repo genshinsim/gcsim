@@ -34,6 +34,7 @@ const (
 	DBStore_RejectWork_FullMethodName             = "/db.DBStore/RejectWork"
 	DBStore_WorkStatus_FullMethodName             = "/db.DBStore/WorkStatus"
 	DBStore_ReplaceConfig_FullMethodName          = "/db.DBStore/ReplaceConfig"
+	DBStore_ReplaceDesc_FullMethodName            = "/db.DBStore/ReplaceDesc"
 )
 
 // DBStoreClient is the client API for DBStore service.
@@ -58,8 +59,9 @@ type DBStoreClient interface {
 	CompleteWork(ctx context.Context, in *CompleteWorkRequest, opts ...grpc.CallOption) (*CompleteWorkResponse, error)
 	RejectWork(ctx context.Context, in *RejectWorkRequest, opts ...grpc.CallOption) (*RejectWorkResponse, error)
 	WorkStatus(ctx context.Context, in *WorkStatusRequest, opts ...grpc.CallOption) (*WorkStatusResponse, error)
-	// super-admin endpoint
+	// admin endpoint
 	ReplaceConfig(ctx context.Context, in *ReplaceConfigRequest, opts ...grpc.CallOption) (*ReplaceConfigResponse, error)
+	ReplaceDesc(ctx context.Context, in *ReplaceDescRequest, opts ...grpc.CallOption) (*ReplaceDescResponse, error)
 }
 
 type dBStoreClient struct {
@@ -205,6 +207,15 @@ func (c *dBStoreClient) ReplaceConfig(ctx context.Context, in *ReplaceConfigRequ
 	return out, nil
 }
 
+func (c *dBStoreClient) ReplaceDesc(ctx context.Context, in *ReplaceDescRequest, opts ...grpc.CallOption) (*ReplaceDescResponse, error) {
+	out := new(ReplaceDescResponse)
+	err := c.cc.Invoke(ctx, DBStore_ReplaceDesc_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DBStoreServer is the server API for DBStore service.
 // All implementations must embed UnimplementedDBStoreServer
 // for forward compatibility
@@ -227,8 +238,9 @@ type DBStoreServer interface {
 	CompleteWork(context.Context, *CompleteWorkRequest) (*CompleteWorkResponse, error)
 	RejectWork(context.Context, *RejectWorkRequest) (*RejectWorkResponse, error)
 	WorkStatus(context.Context, *WorkStatusRequest) (*WorkStatusResponse, error)
-	// super-admin endpoint
+	// admin endpoint
 	ReplaceConfig(context.Context, *ReplaceConfigRequest) (*ReplaceConfigResponse, error)
+	ReplaceDesc(context.Context, *ReplaceDescRequest) (*ReplaceDescResponse, error)
 	mustEmbedUnimplementedDBStoreServer()
 }
 
@@ -280,6 +292,9 @@ func (UnimplementedDBStoreServer) WorkStatus(context.Context, *WorkStatusRequest
 }
 func (UnimplementedDBStoreServer) ReplaceConfig(context.Context, *ReplaceConfigRequest) (*ReplaceConfigResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplaceConfig not implemented")
+}
+func (UnimplementedDBStoreServer) ReplaceDesc(context.Context, *ReplaceDescRequest) (*ReplaceDescResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReplaceDesc not implemented")
 }
 func (UnimplementedDBStoreServer) mustEmbedUnimplementedDBStoreServer() {}
 
@@ -564,6 +579,24 @@ func _DBStore_ReplaceConfig_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DBStore_ReplaceDesc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReplaceDescRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBStoreServer).ReplaceDesc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DBStore_ReplaceDesc_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBStoreServer).ReplaceDesc(ctx, req.(*ReplaceDescRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DBStore_ServiceDesc is the grpc.ServiceDesc for DBStore service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -630,6 +663,10 @@ var DBStore_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReplaceConfig",
 			Handler:    _DBStore_ReplaceConfig_Handler,
+		},
+		{
+			MethodName: "ReplaceDesc",
+			Handler:    _DBStore_ReplaceDesc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -77,6 +77,22 @@ func init() {
 			},
 		},
 		api.CreateCommandData{
+			Name:        "reword",
+			Description: "reword entry desc (admin only)",
+			Options: []discord.CommandOption{
+				&discord.StringOption{
+					OptionName:  "id",
+					Description: "id of the entry",
+					Required:    true,
+				},
+				&discord.StringOption{
+					OptionName:  "desc",
+					Description: "new description",
+					Required:    true,
+				},
+			},
+		},
+		api.CreateCommandData{
 			Name:        "status",
 			Description: "status db entry",
 			Options: []discord.CommandOption{
@@ -398,5 +414,41 @@ func (b *Bot) cmdReplaceConfig(ctx context.Context, data cmdroute.CommandData) *
 
 	return &api.InteractionResponseData{
 		Content: option.NewNullableString(fmt.Sprintf("DB entry with id %v has been updated", opts.Id)),
+	}
+}
+
+func (b *Bot) cmdReplaceDesc(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
+	b.Log.Infow("replace desc request received", "from", data.Event.Sender().Username, "channel", data.Event.ChannelID)
+
+	channelId := data.Event.ChannelID.String()
+	if data.Event.Channel != nil {
+		if data.Event.Channel.Type == discord.GuildPublicThread || data.Event.Channel.Type == discord.GuildPrivateThread {
+			channelId = data.Event.Channel.ParentID.String()
+		}
+	}
+
+	tag, ok := b.TagMapping[channelId]
+	if !ok {
+		return &api.InteractionResponseData{
+			Content: option.NewNullableString("Oops you don't have permission to do this"),
+		}
+	}
+
+	var opts struct {
+		Desc string `discord:"desc"`
+		Id   string `discord:"id"`
+	}
+	if err := data.Options.Unmarshal(&opts); err != nil {
+		return errorResponse(err)
+	}
+	b.Log.Infow("replace options", "opts", opts)
+
+	err := b.Backend.ReplaceDesc(opts.Id, opts.Desc, tag)
+	if err != nil {
+		return errorResponse(err)
+	}
+
+	return &api.InteractionResponseData{
+		Content: option.NewNullableString(fmt.Sprintf("Description for DB entry with id %v has been reworded", opts.Id)),
 	}
 }
