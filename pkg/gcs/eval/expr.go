@@ -25,6 +25,9 @@ func evalFromExpr(n ast.Expr) evalNode {
 		return identLitEval(v)
 	case *ast.CallExpr:
 		return callExprEval(v)
+	case *ast.Field:
+		//TODO: fields?
+		return nil
 	default:
 		return nil
 	}
