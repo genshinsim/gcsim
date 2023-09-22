@@ -116,13 +116,13 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 
 	for c := 0; c < len(core.Player.Chars()); c++ {
 		result.Characters[c].EnergySpent = b.energySpent[c]
-		result.Characters[c].ERneeded = 1.0
+		result.Characters[c].ErNeeded = 1.0
 
 		// ignore the first burst
 		for i := 1; i < len(b.flatEnergyPerBurst[c]); i++ {
 			erNeeded := (core.Player.Chars()[c].EnergyMax - b.flatEnergyPerBurst[c][i]) / b.rawParticleEnergyPerBurst[c][i]
-			if erNeeded > result.Characters[c].ERneeded {
-				result.Characters[c].ERneeded = erNeeded
+			if erNeeded > result.Characters[c].ErNeeded {
+				result.Characters[c].ErNeeded = erNeeded
 			}
 		}
 		wERsum := 0.0
