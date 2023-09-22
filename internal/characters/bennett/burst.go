@@ -31,7 +31,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 51
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// add field effect timer
 	// deployable thus not hitlag
 	c.Core.Status.Add(burstKey, 720+burstStartFrame)
@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
