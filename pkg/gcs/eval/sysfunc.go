@@ -9,21 +9,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
-func (e *Evaluator) initSysFuncs(env *Env) {
+func (e *Evaluator) initSysFuncs() {
 	// std funcs
-	e.addSysFunc("print", e.print, env)
-	e.addSysFunc("execute_action", e.executeAction, env)
+	e.addSysFunc("print", e.print)
+	e.addSysFunc("execute_action", e.executeAction)
 }
 
-func (e *Evaluator) addSysFunc(name string, f systemFunc, env *Env) {
+func (e *Evaluator) addSysFunc(name string, f systemFunc) {
 	var obj Obj = &bfuncval{
 		Body: f,
-		Env:  NewEnv(env),
 	}
-	env.varMap[name] = &obj
+	e.env.varMap[name] = &obj
 }
 
-func (e *Evaluator) print(args []Obj, env *Env) (Obj, error) {
+func (e *Evaluator) print(args []Obj) (Obj, error) {
 	//concat all args
 	var sb strings.Builder
 	for _, v := range args {
@@ -37,7 +36,7 @@ func (e *Evaluator) print(args []Obj, env *Env) (Obj, error) {
 	return &null{}, nil
 }
 
-func (e *Evaluator) executeAction(args []Obj, env *Env) (Obj, error) {
+func (e *Evaluator) executeAction(args []Obj) (Obj, error) {
 	//execute_action(char, action, params)
 	if len(args) != 3 {
 		return nil, fmt.Errorf("invalid number of params for execute_action, expected 3 got %v", len(args))

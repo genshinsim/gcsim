@@ -30,7 +30,7 @@ func TestEvalFuncStmt(t *testing.T) {
 		},
 	}
 	env := NewEnv(nil)
-	val, err := runEvalReturnResWhenDone(evalFromNode(n), env)
+	val, err := runEvalReturnResWhenDone(evalFromNode(n, env))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

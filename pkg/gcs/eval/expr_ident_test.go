@@ -14,7 +14,7 @@ func TestEvalBasicIdent(t *testing.T) {
 	var o Obj = &strval{str: "test"}
 	env.put("print", &o)
 
-	val, err := runEvalReturnResWhenDone(evalFromNode(n), env)
+	val, err := runEvalReturnResWhenDone(evalFromNode(n, env))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

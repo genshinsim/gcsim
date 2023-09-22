@@ -2,10 +2,20 @@ package eval
 
 import "github.com/genshinsim/gcsim/pkg/gcs/ast"
 
-func mapExprEval(n *ast.MapExpr) evalNode {
-	return &mapExprEvalNode{
-		root: n,
+func mapExprEval(n *ast.MapExpr, env *Env) evalNode {
+	m := &mapExprEvalNode{
+		root:   n,
+		fields: make(map[string]Obj),
+		stack:  make([]mapFieldWrapper, 0, len(n.Fields)),
 	}
+	//order really doesn't matter here
+	for k, v := range m.root.Fields {
+		m.stack = append(m.stack, mapFieldWrapper{
+			key:  k,
+			node: evalFromExpr(v, env),
+		})
+	}
+	return m
 }
 
 type mapFieldWrapper struct {
@@ -19,26 +29,14 @@ type mapExprEvalNode struct {
 	fields map[string]Obj
 }
 
-func (m *mapExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
+func (m *mapExprEvalNode) nextAction() (Obj, bool, error) {
 	if len(m.root.Fields) == 0 {
 		return &mapval{}, true, nil
 	}
 
-	if m.fields == nil {
-		m.fields = make(map[string]Obj)
-		m.stack = make([]mapFieldWrapper, 0, len(m.root.Fields))
-		//order really doesn't matter here
-		for k, v := range m.root.Fields {
-			m.stack = append(m.stack, mapFieldWrapper{
-				key:  k,
-				node: evalFromExpr(v),
-			})
-		}
-	}
-
 	for len(m.stack) > 0 {
 		idx := len(m.stack) - 1
-		res, done, err := m.stack[idx].node.nextAction(env)
+		res, done, err := m.stack[idx].node.nextAction()
 		if err != nil {
 			return nil, false, err
 		}

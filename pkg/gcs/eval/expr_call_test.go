@@ -23,7 +23,7 @@ func TestEvalBasicCallExpr(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	val, _, err := eval.base.nextAction(eval.env)
+	val, _, err := eval.base.nextAction()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -54,7 +54,7 @@ func TestEvalFnCall(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	val, _, err := eval.base.nextAction(eval.env)
+	val, _, err := eval.base.nextAction()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -65,7 +65,7 @@ func TestEvalFnCall(t *testing.T) {
 		t.Errorf("res is not an action val, got %v", val.Typ())
 	}
 	//next call should get end result
-	val, _, err = eval.base.nextAction(eval.env)
+	val, _, err = eval.base.nextAction()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

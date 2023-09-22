@@ -10,12 +10,12 @@ func TestEvalNum(t *testing.T) {
 	n := &ast.NumberLit{
 		IntVal: 5,
 	}
-	e := evalFromNode(n)
+	e := evalFromNode(n, nil)
 	if e == nil {
 		t.Error("invalid executor from number")
 		t.FailNow()
 	}
-	val, done, err := e.nextAction(nil)
+	val, done, err := e.nextAction()
 	if err != nil {
 		t.Error(err)
 	}
@@ -36,8 +36,8 @@ func BenchmarkEvalNum(b *testing.B) {
 		IntVal: 5,
 	}
 	for n := 0; n < b.N; n++ {
-		e := evalFromNode(x)
-		e.nextAction(nil)
+		e := evalFromNode(x, nil)
+		e.nextAction()
 	}
 }
 
@@ -45,12 +45,12 @@ func TestEvalString(t *testing.T) {
 	n := &ast.StringLit{
 		Value: "bob",
 	}
-	e := evalFromNode(n)
+	e := evalFromNode(n, nil)
 	if e == nil {
 		t.Error("invalid executor from string")
 		t.FailNow()
 	}
-	val, done, err := e.nextAction(nil)
+	val, done, err := e.nextAction()
 	if err != nil {
 		t.Error(err)
 	}
@@ -86,7 +86,7 @@ func TestEvalFuncExpr(t *testing.T) {
 			},
 		},
 	}
-	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
+	val, err := runEvalReturnResWhenDone(evalFromNode(n, nil))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

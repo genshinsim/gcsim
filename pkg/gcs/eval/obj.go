@@ -67,11 +67,10 @@ type (
 		Env       *Env
 	}
 
-	systemFunc func(args []Obj, env *Env) (Obj, error)
+	systemFunc func(args []Obj) (Obj, error)
 
 	bfuncval struct {
 		Body systemFunc
-		Env  *Env
 	}
 
 	mapval struct {
@@ -110,23 +109,18 @@ func (n *number) Inspect() string {
 		return strconv.FormatInt(n.ival, 10)
 	}
 }
-func (n *number) Typ() ObjTyp                        { return typNum }
-func (n *number) nextAction(*Env) (Obj, bool, error) { return n, true, nil }
+func (n *number) Typ() ObjTyp                    { return typNum }
+func (n *number) nextAction() (Obj, bool, error) { return n, true, nil }
 
 // strval.
-func (s *strval) Inspect() string                    { return s.str }
-func (s *strval) Typ() ObjTyp                        { return typStr }
-func (s *strval) nextAction(*Env) (Obj, bool, error) { return s, true, nil }
+func (s *strval) Inspect() string                { return s.str }
+func (s *strval) Typ() ObjTyp                    { return typStr }
+func (s *strval) nextAction() (Obj, bool, error) { return s, true, nil }
 
 // funcval.
-func (f *funcval) Inspect() string { return "function" }
-func (f *funcval) Typ() ObjTyp     { return typFun }
-func (f *funcval) nextAction(env *Env) (Obj, bool, error) {
-	if f.Env == nil {
-		f.Env = NewEnv(env)
-	}
-	return f, true, nil
-}
+func (f *funcval) Inspect() string                { return "function" }
+func (f *funcval) Typ() ObjTyp                    { return typFun }
+func (f *funcval) nextAction() (Obj, bool, error) { return f, true, nil }
 
 // bfuncval.
 func (b *bfuncval) Inspect() string { return "built-in function" }

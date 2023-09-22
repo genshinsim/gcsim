@@ -12,7 +12,7 @@ func TestEvalBasicMapExpr(t *testing.T) {
 			"test": &ast.NumberLit{IntVal: 5},
 		},
 	}
-	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
+	val, err := runEvalReturnResWhenDone(evalFromNode(n, nil))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

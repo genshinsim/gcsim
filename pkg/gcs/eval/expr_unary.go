@@ -11,11 +11,8 @@ type unaryExprEvalNode struct {
 	node evalNode
 }
 
-func (u *unaryExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
-	if u.node == nil {
-		u.node = evalFromExpr(u.root.Right)
-	}
-	res, done, err := u.node.nextAction(env)
+func (u *unaryExprEvalNode) nextAction() (Obj, bool, error) {
+	res, done, err := u.node.nextAction()
 	if err != nil {
 		return nil, false, err
 	}
@@ -44,9 +41,9 @@ func (u *unaryExprEvalNode) handleUnaryOperation(res Obj) (Obj, bool, error) {
 	}
 }
 
-func unaryExprEval(n *ast.UnaryExpr) evalNode {
+func unaryExprEval(n *ast.UnaryExpr, env *Env) evalNode {
 	return &unaryExprEvalNode{
 		root: n,
-		node: evalFromExpr(n.Right),
+		node: evalFromExpr(n.Right, env),
 	}
 }

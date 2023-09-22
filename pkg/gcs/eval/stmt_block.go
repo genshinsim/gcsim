@@ -8,16 +8,12 @@ type blockStmtEvalNode struct {
 	env   *Env
 }
 
-func (b *blockStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
-	//the first time this gets call, we should set up the block stmt env
-	if b.env == nil {
-		b.env = NewEnv(env)
-	}
+func (b *blockStmtEvalNode) nextAction() (Obj, bool, error) {
 	var res Obj
 	var done bool
 	var err error
 	for len(b.stack) > 0 {
-		res, done, err = b.stack[0].nextAction(b.env)
+		res, done, err = b.stack[0].nextAction()
 		if err != nil {
 			return nil, false, err
 		}
@@ -41,12 +37,13 @@ func (b *blockStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	return res, true, nil
 }
 
-func blockStmtEval(n *ast.BlockStmt) evalNode {
+func blockStmtEval(n *ast.BlockStmt, env *Env) evalNode {
 	b := &blockStmtEvalNode{
 		root: n,
+		env:  NewEnv(env),
 	}
 	for _, v := range n.List {
-		b.stack = append(b.stack, evalFromNode(v))
+		b.stack = append(b.stack, evalFromNode(v, b.env))
 	}
 	return b
 }

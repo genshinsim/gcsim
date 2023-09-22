@@ -11,7 +11,7 @@ import (
 type evalNode interface {
 	//execute the node; node should either return next action, or continue execution until the node is
 	//done. done should only be false if Obj is an action; otherwise must be true
-	nextAction(*Env) (Obj, bool, error)
+	nextAction() (Obj, bool, error)
 }
 
 type Evaluator struct {
@@ -26,8 +26,8 @@ func NewEvaluator(root ast.Node, core *core.Core) (*Evaluator, error) {
 		Core: core,
 		env:  NewEnv(nil),
 	}
-	e.initSysFuncs(e.env)
-	e.base = evalFromNode(root)
+	e.initSysFuncs()
+	e.base = evalFromNode(root, e.env)
 	if e.base == nil {
 		return nil, errors.New("invalid root node; no executor found")
 	}
@@ -39,7 +39,7 @@ func (e *Evaluator) NextAction() (*action.ActionEval, error) {
 	if e.base == nil {
 		return nil, e.err
 	}
-	res, done, err := e.base.nextAction(e.env)
+	res, done, err := e.base.nextAction()
 	if err != nil {
 		e.err = err
 		e.base = nil
@@ -59,12 +59,12 @@ func (e *Evaluator) Exit() error { return nil }
 func (e *Evaluator) Err() error  { return e.err }
 func (e *Evaluator) Start()      {}
 
-func evalFromNode(n ast.Node) evalNode {
+func evalFromNode(n ast.Node, env *Env) evalNode {
 	switch v := n.(type) {
 	case ast.Expr:
-		return evalFromExpr(v)
+		return evalFromExpr(v, env)
 	case ast.Stmt:
-		return evalFromStmt(v)
+		return evalFromStmt(v, env)
 	default:
 		return nil
 	}

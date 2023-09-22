@@ -34,7 +34,7 @@ func TestEvalBasicBlockStmt(t *testing.T) {
 		},
 	}
 
-	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
+	val, err := runEvalReturnResWhenDone(evalFromNode(n, nil))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -76,7 +76,7 @@ func TestEvalBlockWithReturnStmt(t *testing.T) {
 		},
 	}
 
-	val, err := runEvalReturnResWhenDone(evalFromNode(n), nil)
+	val, err := runEvalReturnResWhenDone(evalFromNode(n, nil))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

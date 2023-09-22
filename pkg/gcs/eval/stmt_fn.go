@@ -7,27 +7,27 @@ import (
 )
 
 type fnStmtEvalNode struct {
-	root *ast.FnStmt
+	*ast.FnStmt
+	env *Env
 }
 
-func (f *fnStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
+func (f *fnStmtEvalNode) nextAction() (Obj, bool, error) {
+	//functionally, FnStmt is just a special type of let statement
 	//add ident to env, then create a new fnval
-	_, exist := env.varMap[f.root.Ident.Val]
+	_, exist := f.env.varMap[f.Ident.Val]
 	if exist {
-		return nil, false, fmt.Errorf("function %v already exists; cannot redeclare", f.root.Ident.Val)
+		return nil, false, fmt.Errorf("function %v already exists; cannot redeclare", f.Ident.Val)
 	}
 	var fn Obj = &funcval{
-		Args:      f.root.Func.Args,
-		Body:      f.root.Func.Body,
-		Signature: f.root.Func.Signature,
-		Env:       NewEnv(env),
+		Args:      f.Func.Args,
+		Body:      f.Func.Body,
+		Signature: f.Func.Signature,
+		Env:       NewEnv(f.env),
 	}
-	env.varMap[f.root.Ident.Val] = &fn
+	f.env.varMap[f.Ident.Val] = &fn
 	return &null{}, true, nil
-
 }
 
-func fnStmtEval(n *ast.FnStmt) evalNode {
-	//functionally, FnStmt is just a special type of let statement
-	return &fnStmtEvalNode{root: n}
+func fnStmtEval(n *ast.FnStmt, env *Env) evalNode {
+	return &fnStmtEvalNode{FnStmt: n, env: env}
 }

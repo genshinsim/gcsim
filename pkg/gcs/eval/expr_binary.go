@@ -7,13 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-func binaryExprEval(n *ast.BinaryExpr) evalNode {
+func binaryExprEval(n *ast.BinaryExpr, env *Env) evalNode {
 	//the order of operation is going to be left, right, then root
 	return &binaryExprEvalNode{
 		root: n,
 		stack: []evalNode{
-			evalFromExpr(n.Right),
-			evalFromExpr(n.Left),
+			evalFromExpr(n.Right, env),
+			evalFromExpr(n.Left, env),
 		},
 		res: make([]Obj, 0, 2),
 	}
@@ -25,11 +25,11 @@ type binaryExprEvalNode struct {
 	stack []evalNode
 }
 
-func (b *binaryExprEvalNode) nextAction(env *Env) (Obj, bool, error) {
+func (b *binaryExprEvalNode) nextAction() (Obj, bool, error) {
 	//eval stack while none of the results are an action
 	for len(b.stack) > 0 {
 		idx := len(b.stack) - 1
-		res, done, err := b.stack[idx].nextAction(env)
+		res, done, err := b.stack[idx].nextAction()
 		if err != nil {
 			return nil, false, err
 		}

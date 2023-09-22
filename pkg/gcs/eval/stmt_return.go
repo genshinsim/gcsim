@@ -7,12 +7,8 @@ type returnStmtEvalNode struct {
 	node evalNode
 }
 
-func (r *returnStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
-	if r.node == nil {
-		r.node = evalFromExpr(r.root.Val)
-	}
-
-	res, done, err := r.node.nextAction(env)
+func (r *returnStmtEvalNode) nextAction() (Obj, bool, error) {
+	res, done, err := r.node.nextAction()
 	if err != nil {
 		return nil, false, err
 	}
@@ -24,6 +20,9 @@ func (r *returnStmtEvalNode) nextAction(env *Env) (Obj, bool, error) {
 	return res, false, nil
 }
 
-func returnStmtEval(n *ast.ReturnStmt) evalNode {
-	return &returnStmtEvalNode{root: n}
+func returnStmtEval(n *ast.ReturnStmt, env *Env) evalNode {
+	return &returnStmtEvalNode{
+		root: n,
+		node: evalFromExpr(n.Val, env),
+	}
 }
