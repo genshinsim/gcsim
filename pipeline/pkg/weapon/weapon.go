@@ -9,12 +9,12 @@ import (
 )
 
 type Config struct {
-	PackageName string   `yaml:"package_name,omitempty"`
-	GenshinID   int32    `yaml:"genshin_id,omitempty"`
+	PackageName string   `yaml:"packageName,omitempty"`
+	GenshinID   int32    `yaml:"genshinId,omitempty"`
 	Key         string   `yaml:"key,omitempty"`
 	Shortcuts   []string `yaml:"shortcuts,omitempty"`
 
-	//extra fields to be populate but not read from yaml
+	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
 }
 

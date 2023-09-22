@@ -36,5 +36,4 @@ func TestLoadPromotData(t *testing.T) {
 	if len(res) == 0 {
 		t.Error("res length cannot be 0")
 	}
-
 }

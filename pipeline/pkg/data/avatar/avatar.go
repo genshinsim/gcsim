@@ -75,14 +75,14 @@ func (a *DataSource) parseChar(id, sub int32) (*model.AvatarData, error) {
 	err = a.parseWeaponClass(c, err)
 	err = a.parseIconName(c, err)
 
-	//grab character skills and map that to skill/burst/attack first
+	// grab character skills and map that to skill/burst/attack first
 	err = a.parseSkillIDs(c, err)
 
-	//element is based on character burst skill
-	//this MUST BE DONE AFTER parsing skill
+	// element is based on character burst skill
+	// this MUST BE DONE AFTER parsing skill
 	err = a.parseElement(c, err)
 
-	//handle stat block
+	// handle stat block
 	err = a.parseBaseStats(c, err)
 	err = a.parseStatCurves(c, err)
 	err = a.parsePromoData(c, err)
@@ -124,8 +124,8 @@ func (a *DataSource) parseCharAssociation(c *model.AvatarData, err error) error 
 	}
 	c.Region = model.ZoneType(model.ZoneType_value[fd.AvatarAssocType])
 	if c.Region == model.ZoneType_INVALID_ZONE_TYPE {
-		//region does not have to be valid; just warn here
-		//traveler for example does not have a region
+		// region does not have to be valid; just warn here
+		// traveler for example does not have a region
 		log.Printf("WARNING: invalid region for char id %v: %v\n", c.Id, fd.AvatarAssocType)
 	}
 	return err
@@ -185,7 +185,7 @@ func (a *DataSource) parseSkillIDs(c *model.AvatarData, err error) error {
 }
 
 func (a *DataSource) parseElement(c *model.AvatarData, err error) error {
-	//element is found from burstID
+	// element is found from burstID
 	burstId := c.GetSkillDetails().GetBurst()
 	se, ok := a.skillExcel[burstId]
 	if !ok {

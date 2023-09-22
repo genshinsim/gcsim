@@ -1,5 +1,6 @@
 package dm
 
+//nolint:tagliatelle // need to match datamine
 type AvatarExcel struct {
 	// ScriptDataPathHashSuffix     int32           `json:"scriptDataPathHashSuffix"`
 	// ScriptDataPathHashPre        int32           `json:"scriptDataPathHashPre"`
@@ -53,6 +54,7 @@ type AvatarExcel struct {
 	UseType string `json:"useType,omitempty"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type PropGrowCurve struct {
 	Type      string `json:"type"`
 	GrowCurve string `json:"growCurve"`
@@ -60,6 +62,7 @@ type PropGrowCurve struct {
 
 type TextMap map[int32]string
 
+//nolint:tagliatelle // need to match datamine
 type AvatarSkillDepot struct {
 	ID          int32   `json:"id"`
 	EnergySkill int32   `json:"energySkill"`
@@ -73,6 +76,8 @@ type AvatarSkillDepot struct {
 	// SkillDepotAbilityGroup string `json:"skillDepotAbilityGroup"`
 	// LeaderTalent           int32    `json:"leaderTalent,omitempty"`
 }
+
+//nolint:tagliatelle // need to match datamine
 type AvatarSkillExcel struct {
 	ID           int32  `json:"id"`
 	CostElemType string `json:"costElemType,omitempty"`
@@ -92,12 +97,14 @@ type AvatarSkillExcel struct {
 	// CostStamina        float64   `json:"costStamina,omitempty"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type AvatarFetterInfo struct {
 	AvatarAssocType string `json:"avatarAssocType"`
 	AvatarId        int32  `json:"avatarId"`
 	FetterID        int32  `json:"fetterId"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type AvatarPromote struct {
 	AvatarPromoteID int32     `json:"avatarPromoteId"`
 	AddProps        []AddProp `json:"addProps"`
@@ -109,11 +116,14 @@ type AvatarPromote struct {
 	// ScoinCost           int32 `json:"scoinCost,omitempty"`
 	// RequiredPlayerLevel int32 `json:"requiredPlayerLevel,omitempty"`
 }
+
+//nolint:tagliatelle // need to match datamine
 type AddProp struct {
 	PropType string  `json:"propType"`
 	Value    float64 `json:"value"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type WeaponExcel struct {
 	WeaponType string `json:"weaponType"`
 	RankLevel  int32  `json:"rankLevel"`
@@ -147,6 +157,7 @@ type WeaponExcel struct {
 type WeaponCurve struct {
 }
 
+//nolint:tagliatelle // need to match datamine
 type WeaponPromote struct {
 	WeaponPromoteID int32 `json:"weaponPromoteId"`
 	// CostItems       []struct {

@@ -9,9 +9,9 @@ import (
 
 type Config struct {
 	Key       string `yaml:"key,omitempty"`
-	TextMapId string `yaml:"text_map_id,omitempty"`
+	TextMapId string `yaml:"textMapId,omitempty"`
 
-	//extra fields to be populate but not read from yaml
+	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
 }
 
@@ -38,16 +38,16 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	}
 	g.artifacts = a
 
-	textIdCheck := make(map[string]bool)
+	textIDCheck := make(map[string]bool)
 
 	for _, v := range a {
 		if _, ok := g.data[v.Key]; ok {
 			return nil, fmt.Errorf("duplicated key %v found; second instance at %v", v.Key, v.RelativePath)
 		}
-		if _, ok := textIdCheck[v.TextMapId]; ok {
+		if _, ok := textIDCheck[v.TextMapId]; ok {
 			return nil, fmt.Errorf("duplicated text map id %v found; second instance at %v", v.TextMapId, v.RelativePath)
 		}
-		textIdCheck[v.TextMapId] = true
+		textIDCheck[v.TextMapId] = true
 		g.data[v.Key] = &model.ArtifactData{
 			TextMapId: v.TextMapId,
 		}
