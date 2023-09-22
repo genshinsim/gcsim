@@ -165,6 +165,7 @@ linters-settings:
       use-field-name: true
       rules:
         json: snake
+        yaml: snake
 
 severity:
   default-severity: error
