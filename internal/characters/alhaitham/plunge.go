@@ -23,7 +23,7 @@ func init() {
 	lowPlungeFrames[action.ActionSwap] = 58
 }
 
-func (c *char) LowPlungeAttack(p map[string]int) action.Info {
+func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	// last action must be hold skill
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["hold"] != 1 {
@@ -34,7 +34,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	short := p["short"]
@@ -69,5 +69,5 @@ func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 		AnimationLength: lowPlungeFrames[action.InvalidAction] - skip,
 		CanQueueAfter:   lowPlungeFrames[action.ActionDash] - skip,
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
