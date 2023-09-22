@@ -7,8 +7,7 @@ func evalFromStmt(n ast.Stmt, env *Env) evalNode {
 	case *ast.BlockStmt:
 		return blockStmtEval(v, env)
 	case *ast.LetStmt:
-		//TODO: let stmt
-		return nil
+		return letStmtEval(v, env)
 	case *ast.ReturnStmt:
 		return returnStmtEval(v, env)
 	case *ast.FnStmt:
