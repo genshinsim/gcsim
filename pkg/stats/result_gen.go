@@ -667,7 +667,7 @@ func (z *CharacterResult) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "er_needed":
-			z.ERneeded, err = dc.ReadFloat64()
+			z.ErNeeded, err = dc.ReadFloat64()
 			if err != nil {
 				return
 			}
@@ -904,7 +904,7 @@ func (z *CharacterResult) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return err
 	}
-	err = en.WriteFloat64(z.ERneeded)
+	err = en.WriteFloat64(z.ErNeeded)
 	if err != nil {
 		return
 	}
@@ -1019,7 +1019,7 @@ func (z *CharacterResult) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.AppendFloat64(o, z.EnergySpent)
 	// string "er_needed"
 	o = append(o, 0xa9, 0x65, 0x72, 0x5f, 0x6e, 0x65, 0x65, 0x64, 0x65, 0x64)
-	o = msgp.AppendFloat64(o, z.ERneeded)
+	o = msgp.AppendFloat64(o, z.ErNeeded)
 	// string "weight_er"
 	o = append(o, 0xa9, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x65, 0x72)
 	o = msgp.AppendFloat64(o, z.WeightedER)
@@ -1271,7 +1271,7 @@ func (z *CharacterResult) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "er_needed":
-			z.ERneeded, bts, err = msgp.ReadFloat64Bytes(bts)
+			z.ErNeeded, bts, err = msgp.ReadFloat64Bytes(bts)
 			if err != nil {
 				return
 			}

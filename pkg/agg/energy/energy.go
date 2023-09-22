@@ -53,7 +53,7 @@ func (b *buffer) Add(result stats.Result) {
 			}
 			b.sourceEnergy[i][k].Add(v)
 		}
-		b.erNeeded[i].Xs = append(b.erNeeded[i].Xs, result.Characters[i].ERneeded)
+		b.erNeeded[i].Xs = append(b.erNeeded[i].Xs, result.Characters[i].ErNeeded)
 		b.weightedER[i].Xs = append(b.weightedER[i].Xs, result.Characters[i].WeightedER)
 	}
 }
