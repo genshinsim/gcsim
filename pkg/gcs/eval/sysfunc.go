@@ -23,7 +23,7 @@ func (e *Evaluator) addSysFunc(name string, f systemFunc) {
 }
 
 func (e *Evaluator) print(args []Obj) (Obj, error) {
-	//concat all args
+	// concat all args
 	var sb strings.Builder
 	for _, v := range args {
 		sb.WriteString(v.Inspect())
@@ -37,7 +37,7 @@ func (e *Evaluator) print(args []Obj) (Obj, error) {
 }
 
 func (e *Evaluator) executeAction(args []Obj) (Obj, error) {
-	//execute_action(char, action, params)
+	// execute_action(char, action, params)
 	if len(args) != 3 {
 		return nil, fmt.Errorf("invalid number of params for execute_action, expected 3 got %v", len(args))
 	}

@@ -14,10 +14,12 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
+//nolint:gocritic // non-pointer type for *Obj doesn't make sense
 func (e *Env) put(s string, v *Obj) {
 	e.varMap[s] = v
 }
 
+//nolint:gocritic // non-pointer type for *Obj doesn't make sense
 func (e *Env) v(s string) (*Obj, error) {
 	v, ok := e.varMap[s]
 	if ok {

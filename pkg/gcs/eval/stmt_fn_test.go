@@ -12,7 +12,7 @@ func TestEvalFuncStmt(t *testing.T) {
 			Val: "somefn",
 		},
 		Func: &ast.FuncLit{
-			Signature: nil, //ignoring signature for this test since we're not validating type for this
+			Signature: nil, // ignoring signature for this test since we're not validating type for this
 			Args: []*ast.Ident{
 				{
 					Value: "a",
@@ -47,5 +47,4 @@ func TestEvalFuncStmt(t *testing.T) {
 	if !ok {
 		t.Errorf("obj from env is not funcval, got %v", val.Typ())
 	}
-
 }

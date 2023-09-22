@@ -69,7 +69,7 @@ func TestEvalString(t *testing.T) {
 func TestEvalFuncExpr(t *testing.T) {
 	n := &ast.FuncExpr{
 		Func: &ast.FuncLit{
-			Signature: nil, //ignoring signature for this test since we're not validating type for this
+			Signature: nil, // ignoring signature for this test since we're not validating type for this
 			Args: []*ast.Ident{
 				{
 					Value: "a",

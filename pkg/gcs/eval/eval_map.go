@@ -8,7 +8,7 @@ func mapExprEval(n *ast.MapExpr, env *Env) evalNode {
 		fields: make(map[string]Obj),
 		stack:  make([]mapFieldWrapper, 0, len(n.Fields)),
 	}
-	//order really doesn't matter here
+	// order really doesn't matter here
 	for k, v := range m.root.Fields {
 		m.stack = append(m.stack, mapFieldWrapper{
 			key:  k,
@@ -45,7 +45,7 @@ func (m *mapExprEvalNode) nextAction() (Obj, bool, error) {
 			m.stack = m.stack[:idx]
 		}
 		if res.Typ() == typAction {
-			return res, false, nil //done is false b/c the node is not done yet
+			return res, false, nil // done is false b/c the node is not done yet
 		}
 	}
 

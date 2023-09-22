@@ -8,7 +8,7 @@ import (
 )
 
 func binaryExprEval(n *ast.BinaryExpr, env *Env) evalNode {
-	//the order of operation is going to be left, right, then root
+	// the order of operation is going to be left, right, then root
 	return &binaryExprEvalNode{
 		root: n,
 		stack: []evalNode{
@@ -26,7 +26,7 @@ type binaryExprEvalNode struct {
 }
 
 func (b *binaryExprEvalNode) nextAction() (Obj, bool, error) {
-	//eval stack while none of the results are an action
+	// eval stack while none of the results are an action
 	for len(b.stack) > 0 {
 		idx := len(b.stack) - 1
 		res, done, err := b.stack[idx].nextAction()
@@ -38,11 +38,11 @@ func (b *binaryExprEvalNode) nextAction() (Obj, bool, error) {
 			b.res = append(b.res, res)
 		}
 		if res.Typ() == typAction {
-			return res, false, nil //done is false b/c the binary node is not done yet
+			return res, false, nil // done is false b/c the binary node is not done yet
 		}
 	}
 
-	//once the stack is empty, then we eval left + right
+	// once the stack is empty, then we eval left + right
 	res, err := b.evalLeftRight()
 	return res, true, err
 }

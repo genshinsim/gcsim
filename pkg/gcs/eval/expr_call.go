@@ -44,24 +44,25 @@ func (c *callExprEvalNode) nextAction() (Obj, bool, error) {
 			return res, false, nil
 		}
 	}
+	//nolint:nestif // ignoring
 	if c.fn == nil {
 		// initialize function if needed
 		if c.fnCallNode == nil {
 			c.fnCallNode = evalFromExpr(c.root.Fun, c.parentEnv)
 		}
-		//eval the expr that should return our res
+		// eval the expr that should return our res
 		res, done, err := c.fnCallNode.nextAction()
 		if err != nil {
 			return nil, false, err
 		}
 		if !done {
-			//the only time it's not done is if the res is an action
+			// the only time it's not done is if the res is an action
 			if res.Typ() == typAction {
 				return res, false, nil
 			}
 			return nil, false, fmt.Errorf("unexpected error; call expr does not evaluate to a function: %v", c.root.String())
 		}
-		//handle fn call only when expr is done evaluating
+		// handle fn call only when expr is done evaluating
 		c.fn = res
 	}
 	return c.handleFnCall(c.fn)
@@ -88,7 +89,7 @@ func (c *callExprEvalNode) handleSysFnCall(fn *bfuncval) (Obj, bool, error) {
 
 func (c *callExprEvalNode) handleUserFnCall(fn *funcval) (Obj, bool, error) {
 	if c.fnBody == nil {
-		//functions are just blocks to be evaluated, along with args that are injected into the env
+		// functions are just blocks to be evaluated, along with args that are injected into the env
 		for i, v := range c.args {
 			fn.Env.put(fn.Args[i].Value, &v)
 		}

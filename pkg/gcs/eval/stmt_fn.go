@@ -12,8 +12,8 @@ type fnStmtEvalNode struct {
 }
 
 func (f *fnStmtEvalNode) nextAction() (Obj, bool, error) {
-	//functionally, FnStmt is just a special type of let statement
-	//add ident to env, then create a new fnval
+	// functionally, FnStmt is just a special type of let statement
+	// add ident to env, then create a new fnval
 	_, exist := f.env.varMap[f.Ident.Val]
 	if exist {
 		return nil, false, fmt.Errorf("function %v already exists; cannot redeclare", f.Ident.Val)

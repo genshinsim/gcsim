@@ -28,6 +28,8 @@ const (
 	// typTerminate
 )
 
+func (o ObjTyp) String() string { return typStrings[o] }
+
 var typStrings = []string{
 	"null",
 	"action",
@@ -93,8 +95,8 @@ func (n *null) Typ() ObjTyp     { return typNull }
 // action.
 func (a *actionval) Inspect() string { return "action" }
 func (a *actionval) Typ() ObjTyp     { return typAction }
-func (a *actionval) toActionEval() *action.ActionEval {
-	return &action.ActionEval{
+func (a *actionval) toActionEval() *action.Eval {
+	return &action.Eval{
 		Char:   a.char,
 		Action: a.action,
 		Param:  a.param,
@@ -105,9 +107,8 @@ func (a *actionval) toActionEval() *action.ActionEval {
 func (n *number) Inspect() string {
 	if n.isFloat {
 		return strconv.FormatFloat(n.fval, 'f', -1, 64)
-	} else {
-		return strconv.FormatInt(n.ival, 10)
 	}
+	return strconv.FormatInt(n.ival, 10)
 }
 func (n *number) Typ() ObjTyp                    { return typNum }
 func (n *number) nextAction() (Obj, bool, error) { return n, true, nil }
@@ -130,7 +131,7 @@ func (b *bfuncval) Typ() ObjTyp     { return typBif }
 func (r *retval) Inspect() string {
 	return r.res.Inspect()
 }
-func (n *retval) Typ() ObjTyp { return typRet }
+func (r *retval) Typ() ObjTyp { return typRet }
 
 // mapval.
 func (m *mapval) Inspect() string {

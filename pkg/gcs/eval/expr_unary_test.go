@@ -28,5 +28,4 @@ func TestEvalBasicUnaryExpr(t *testing.T) {
 	if v.ival != -4 {
 		t.Errorf("expected result to be %v, got %v", -4, v.ival)
 	}
-
 }

@@ -31,7 +31,6 @@ func TestEvalBasicBinaryExpr(t *testing.T) {
 	if v.ival != 1 {
 		t.Errorf("expected result to be %v, got %v", 1, v.ival)
 	}
-
 }
 
 func TestEvalNestedBinaryExpr(t *testing.T) {

@@ -24,14 +24,14 @@ func (b *blockStmtEvalNode) nextAction() (Obj, bool, error) {
 		case typAction:
 			return res, false, nil
 		case typRet:
-			//if res is a return statement, then forcefully exit block regardless of
-			//idx position
+			// if res is a return statement, then forcefully exit block regardless of
+			// idx position
 			return res, true, nil
 		}
 	}
 	if res == nil {
-		//this is necessary because if a block contains all actions, then block may get called again even if
-		//nothing is left, resulting in a nil res
+		// this is necessary because if a block contains all actions, then block may get called again even if
+		// nothing is left, resulting in a nil res
 		res = &null{}
 	}
 	return res, true, nil

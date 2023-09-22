@@ -59,12 +59,12 @@ func TestEvalFnCall(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	//expecting the first call to end with an action
+	// expecting the first call to end with an action
 	_, ok := val.(*actionval)
 	if !ok {
 		t.Errorf("res is not an action val, got %v", val.Typ())
 	}
-	//next call should get end result
+	// next call should get end result
 	val, _, err = eval.base.nextAction()
 	if err != nil {
 		t.Error(err)

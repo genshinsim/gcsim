@@ -19,7 +19,7 @@ func (u *unaryExprEvalNode) nextAction() (Obj, bool, error) {
 	if done {
 		return u.handleUnaryOperation(res)
 	}
-	//the only time it's not done is if the res is an action
+	// the only time it's not done is if the res is an action
 	if res.Typ() == typAction {
 		return res, false, nil
 	}

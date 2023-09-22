@@ -19,7 +19,7 @@ func evalFromExpr(n ast.Expr, env *Env) evalNode {
 	case *ast.UnaryExpr:
 		return unaryExprEval(v, env)
 	case *ast.FuncExpr:
-		//FuncExpr is only used for anon funcs, followed after a let stmt
+		// FuncExpr is only used for anon funcs, followed after a let stmt
 		return funcExprEval(v, env)
 	case *ast.Ident:
 		return identLitEval(v, env)

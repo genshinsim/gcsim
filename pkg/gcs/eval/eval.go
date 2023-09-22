@@ -9,8 +9,8 @@ import (
 )
 
 type evalNode interface {
-	//execute the node; node should either return next action, or continue execution until the node is
-	//done. done should only be false if Obj is an action; otherwise must be true
+	// execute the node; node should either return next action, or continue execution until the node is
+	// done. done should only be false if Obj is an action; otherwise must be true
 	nextAction() (Obj, bool, error)
 }
 
@@ -34,8 +34,8 @@ func NewEvaluator(root ast.Node, core *core.Core) (*Evaluator, error) {
 	return e, nil
 }
 
-func (e *Evaluator) NextAction() (*action.ActionEval, error) {
-	//base case: no more action
+func (e *Evaluator) NextAction() (*action.Eval, error) {
+	// base case: no more action
 	if e.base == nil {
 		return nil, e.err
 	}
