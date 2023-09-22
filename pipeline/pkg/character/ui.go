@@ -9,7 +9,7 @@ import (
 )
 
 func (g *Generator) DumpJSON(path string) error {
-	//delete existing
+	// delete existing
 	err := g.writeCharDataJSON(path + "/char_data.generated.json")
 	if err != nil {
 		return err
@@ -20,7 +20,7 @@ func (g *Generator) DumpJSON(path string) error {
 func (g *Generator) writeCharDataJSON(path string) error {
 	data := make(map[string]*model.AvatarData)
 	for _, v := range g.data {
-		//hide promodata from ui json; not needed
+		// hide promodata from ui json; not needed
 		x := proto.Clone(v).(*model.AvatarData)
 		x.Stats = nil
 		data[v.Key] = x
@@ -30,7 +30,7 @@ func (g *Generator) writeCharDataJSON(path string) error {
 	}
 	s := protojson.Format(m)
 	os.Remove(path)
-	err := os.WriteFile(path, []byte(s), 0644)
+	err := os.WriteFile(path, []byte(s), 0o644)
 	if err != nil {
 		return err
 	}

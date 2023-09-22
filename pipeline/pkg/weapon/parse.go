@@ -32,11 +32,11 @@ func readWeapon(path string) (Config, error) {
 	c := Config{}
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return c, fmt.Errorf("error reading %v: %v", path, err)
+		return c, fmt.Errorf("error reading %v: %w", path, err)
 	}
 	err = yaml.Unmarshal(data, &c)
 	if err != nil {
-		return c, fmt.Errorf("error parsing config %v: %v", path, err)
+		return c, fmt.Errorf("error parsing config %v: %w", path, err)
 	}
 
 	return c, nil
