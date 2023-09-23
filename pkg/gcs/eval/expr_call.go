@@ -8,9 +8,10 @@ import (
 
 func callExprEval(n *ast.CallExpr, env *Env) evalNode {
 	r := &callExprEvalNode{
-		root:      n,
-		args:      make([]Obj, 0, len(n.Args)),
-		parentEnv: env,
+		root:       n,
+		args:       make([]Obj, 0, len(n.Args)),
+		parentEnv:  env,
+		fnCallNode: evalFromExpr(n.Fun, env),
 	}
 	for _, v := range n.Args {
 		r.stack = append(r.stack, evalFromExpr(v, env))
@@ -44,12 +45,7 @@ func (c *callExprEvalNode) nextAction() (Obj, bool, error) {
 			return res, false, nil
 		}
 	}
-	//nolint:nestif // ignoring
 	if c.fn == nil {
-		// initialize function if needed
-		if c.fnCallNode == nil {
-			c.fnCallNode = evalFromExpr(c.root.Fun, c.parentEnv)
-		}
 		// eval the expr that should return our res
 		res, done, err := c.fnCallNode.nextAction()
 		if err != nil {
