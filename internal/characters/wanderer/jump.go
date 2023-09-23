@@ -25,7 +25,7 @@ func (c *char) Jump(p map[string]int) (action.Info, error) {
 	}
 
 	ai, err := c.Character.Jump(p)
-	ai.Frames = func(next action.Action) int { return delay + ai.Frames(next) }
+	ai.Frames = func(next action.Action) int { return delay + ai.AnimationLength } // jump has static frames
 	ai.AnimationLength = delay + ai.AnimationLength
 	ai.CanQueueAfter = delay + ai.CanQueueAfter
 
