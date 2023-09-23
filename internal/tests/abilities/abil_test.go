@@ -1,10 +1,13 @@
 package abilities
 
 import (
+	"errors"
+	"strings"
 	"testing"
 	"time"
 
 	// we import simulation like this so that import.go is pulled in
+
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -12,12 +15,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	_ "github.com/genshinsim/gcsim/pkg/simulation"
 )
 
-// purpose of this test is to check that characters have all abil implemented to avoid loops
-func TestAbilitiesImplemented(t *testing.T) {
+// purpose of this test is to check that characters abilities do not randomly panic
+func TestAbilities(t *testing.T) {
 	for k := range core.NewCharFuncMap {
 		testChar(t, k)
 	}
@@ -40,10 +44,34 @@ func testChar(t *testing.T, k keys.Char) {
 	}
 	// initialize some settings
 	c.Combat.DefaultTarget = trg[0].Key()
+	c.QueueParticle("system", 1000, attributes.NoElement, 0)
+	advanceCoreFrame(c)
 
 	p := make(map[string]int)
 	for a := action.InvalidAction + 1; a < action.ActionSwap; a++ {
-		c.Player.Exec(a, k, p)
+		for {
+			err := c.Player.ReadyCheck(a, k, p)
+			if err == nil {
+				break
+			}
+			switch {
+			case errors.Is(err, player.ErrActionNotReady):
+			case errors.Is(err, player.ErrPlayerNotReady):
+			case errors.Is(err, player.ErrActionNoOp):
+				break
+			default:
+				t.Errorf("unexpected error waiting for action to be ready: %v", err)
+				t.FailNow()
+			}
+			advanceCoreFrame(c)
+		}
+		err := c.Player.Exec(a, k, p)
+		if err != nil {
+			// we're ok if error is not implemented
+			if !strings.Contains(err.Error(), "not implemented") {
+				t.Errorf("error encountered for %v: %v", k.String(), err)
+			}
+		}
 		for !c.Player.CanQueueNextAction() {
 			advanceCoreFrame(c)
 		}
