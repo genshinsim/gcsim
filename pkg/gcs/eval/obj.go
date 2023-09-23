@@ -162,4 +162,5 @@ func (c *ctrl) Inspect() string {
 	}
 	return "invalid"
 }
-func (c *ctrl) Typ() ObjTyp { return typCtr }
+func (c *ctrl) Typ() ObjTyp                    { return typCtr }
+func (c *ctrl) nextAction() (Obj, bool, error) { return c, true, nil }

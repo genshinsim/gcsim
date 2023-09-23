@@ -13,13 +13,11 @@ func evalFromStmt(n ast.Stmt, env *Env) evalNode {
 	case *ast.FnStmt:
 		return fnStmtEval(v, env)
 	case *ast.CtrlStmt:
-		//TODO: ctrl stmts (break/continue)
-		return nil
+		return ctrlStmtEval(v)
 	case *ast.IfStmt:
 		return ifStmtEval(v, env)
 	case *ast.WhileStmt:
-		//TODO: while stmt
-		return nil
+		return whileStmtEval(v, env)
 	case *ast.ForStmt:
 		//TODO: for stmt
 		return nil
@@ -30,5 +28,11 @@ func evalFromStmt(n ast.Stmt, env *Env) evalNode {
 		return nil
 	default:
 		return nil
+	}
+}
+
+func ctrlStmtEval(n *ast.CtrlStmt) evalNode {
+	return &ctrl{
+		typ: n.Typ,
 	}
 }

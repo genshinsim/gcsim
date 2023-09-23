@@ -27,6 +27,10 @@ func (b *blockStmtEvalNode) nextAction() (Obj, bool, error) {
 			// if res is a return statement, then forcefully exit block regardless of
 			// idx position
 			return res, true, nil
+		case typCtr:
+			//TODO: validation step should make sure ctr stmts are only allowed if one of
+			// the parent blocks is an switch/loop/etc...
+			return res, true, nil
 		}
 	}
 	if res == nil {
