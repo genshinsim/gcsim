@@ -28,7 +28,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 43    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	vividTravel, ok := p["vivid_travel"]
 	if !ok {
 		vividTravel = 15
@@ -48,5 +48,5 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
-	}
+	}, nil
 }
