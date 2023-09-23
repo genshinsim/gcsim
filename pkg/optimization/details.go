@@ -30,6 +30,7 @@ type SubstatOptimizerDetails struct {
 	charWithFavonius       []bool
 	charProfilesERBaseline []info.CharacterProfile
 	charProfilesCopy       []info.CharacterProfile
+	charMaxExtraERSubs     []float64
 	simcfg                 *info.ActionList
 	gcsl                   ast.Node
 	simopt                 simulator.Options
@@ -167,8 +168,9 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(
 	}
 
 	// If DPS change is really low, then it's usually better to just toss a few extra points into ER for stability
-	if gradStat < 50 && crCDSubstatRatio == 0 {
-		stats.assignSubstatsForChar(idxChar, char, attributes.ER, 4)
+	// But only if the character actually needs ER
+	if gradStat < 50 && crCDSubstatRatio == 0 && stats.charMaxExtraERSubs[idxChar] > 0.1 {
+		stats.assignSubstatsForChar(idxChar, char, attributes.ER, clamp[int](1, 2, int(math.Ceil(stats.charMaxExtraERSubs[idxChar]))))
 		opDebug = append(opDebug, "Low damage contribution from substats - adding some points to ER instead")
 	}
 
@@ -346,7 +348,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 	result, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
 
 	for idxChar := range stats.charProfilesERBaseline {
-		fmt.Printf("Found character %s needs %.2f ER\n", stats.charProfilesERBaseline[idxChar].Base.Key.String(), *result.Statistics.ErNeeded[idxChar].Q3)
+		// fmt.Printf("Found character %s needs %.2f ER\n", stats.charProfilesERBaseline[idxChar].Base.Key.String(), *result.Statistics.ErNeeded[idxChar].Q3)
 
 		// erDiff is the amount of excess ER we have
 		erDiff := *result.Statistics.WeightedEr[idxChar].Q1 - *result.Statistics.ErNeeded[idxChar].Q3
@@ -361,6 +363,9 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 		// find the closest whole count of ER subs
 		erStack := int(math.Round(erDiff/stats.substatValues[attributes.ER] + bias))
 		erStack = clamp[int](0, erStack, stats.charSubstatFinal[idxChar][attributes.ER])
+		stats.charMaxExtraERSubs[idxChar] =
+			(*result.Statistics.ErNeeded[idxChar].Max-*result.Statistics.WeightedEr[idxChar].Min)/
+				stats.substatValues[attributes.ER] - float64(erStack)
 		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
 		stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
 	}
@@ -503,7 +508,7 @@ func NewSubstatOptimizerDetails(
 	for i := range simcfg.Characters {
 		s.charSubstatFinal[i] = make([]int, attributes.EndStatType)
 	}
-
+	s.charMaxExtraERSubs = make([]float64, len(simcfg.Characters))
 	s.charSubstatLimits = make([][]int, len(simcfg.Characters))
 	s.charSubstatRarityMod = make([]float64, len(simcfg.Characters))
 	s.charProfilesInitial = make([]info.CharacterProfile, len(simcfg.Characters))
