@@ -41,13 +41,13 @@ func TestEvalLetStmt(t *testing.T) {
 	if !ok {
 		t.Errorf("res is not null, got %v", val.Typ())
 	}
-	obj, err := env.v("someval")
-	if err != nil {
-		t.Error(err)
+	obj, ok := env.v("someval")
+	if !ok {
+		t.Errorf("someval does not exist in env")
 	}
 	v, ok := (*obj).(*number)
 	if !ok {
-		t.Errorf("obj from env is not funcval, got %v", val.Typ())
+		t.Errorf("obj from env is not number, got %v", val.Typ())
 	}
 	if v.ival != 5 {
 		t.Errorf("expected result to be %v, got %v", 5, v.ival)

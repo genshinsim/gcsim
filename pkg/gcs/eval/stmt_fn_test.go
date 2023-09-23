@@ -39,9 +39,9 @@ func TestEvalFuncStmt(t *testing.T) {
 	if !ok {
 		t.Errorf("res is not null, got %v", val.Typ())
 	}
-	obj, err := env.v("somefn")
-	if err != nil {
-		t.Error(err)
+	obj, ok := env.v("somefn")
+	if !ok {
+		t.Errorf("somefn does not exist in env")
 	}
 	_, ok = (*obj).(*funcval)
 	if !ok {

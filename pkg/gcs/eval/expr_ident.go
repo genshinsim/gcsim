@@ -1,6 +1,10 @@
 package eval
 
-import "github.com/genshinsim/gcsim/pkg/gcs/ast"
+import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+)
 
 func identLitEval(n *ast.Ident, env *Env) evalNode {
 	return &identExprEvalNode{
@@ -15,9 +19,9 @@ type identExprEvalNode struct {
 }
 
 func (i *identExprEvalNode) nextAction() (Obj, bool, error) {
-	res, err := i.env.v(i.root.Value)
-	if err != nil {
-		return nil, false, err
+	res, ok := i.env.v(i.root.Value)
+	if !ok {
+		return nil, false, fmt.Errorf("ident %v doeas not exist", i.root.Value)
 	}
 
 	return *res, true, nil

@@ -1,7 +1,5 @@
 package eval
 
-import "fmt"
-
 type Env struct {
 	parent *Env
 	varMap map[string]*Obj
@@ -20,13 +18,13 @@ func (e *Env) put(s string, v *Obj) {
 }
 
 //nolint:gocritic // non-pointer type for *Obj doesn't make sense
-func (e *Env) v(s string) (*Obj, error) {
+func (e *Env) v(s string) (*Obj, bool) {
 	v, ok := e.varMap[s]
 	if ok {
-		return v, nil
+		return v, true
 	}
 	if e.parent != nil {
 		return e.parent.v(s)
 	}
-	return nil, fmt.Errorf("variable %v does not exist", s)
+	return nil, false
 }

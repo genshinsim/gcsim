@@ -14,11 +14,9 @@ type letStmtEvalNode struct {
 }
 
 func (l *letStmtEvalNode) nextAction() (Obj, bool, error) {
-	// functionally, FnStmt is just a special type of let statement
-	// add ident to env, then create a new fnval
-	_, exist := l.env.varMap[l.Ident.Val]
-	if exist {
-		return nil, false, fmt.Errorf("function %v already exists; cannot redeclare", l.Ident.Val)
+	_, ok := l.env.v(l.Ident.Val)
+	if ok {
+		return nil, false, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	if l.res == nil {
 		res, done, err := l.node.nextAction()
