@@ -24,7 +24,7 @@ func (f *fnStmtEvalNode) nextAction() (Obj, bool, error) {
 		Signature: f.Func.Signature,
 		Env:       NewEnv(f.env),
 	}
-	f.env.varMap[f.Ident.Val] = &fn
+	f.env.put(f.Ident.Val, &fn)
 	return &null{}, true, nil
 }
 

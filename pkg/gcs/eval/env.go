@@ -12,9 +12,27 @@ func NewEnv(parent *Env) *Env {
 	}
 }
 
+// put puts a value in the current env regardless of existence or not
+//
 //nolint:gocritic // non-pointer type for *Obj doesn't make sense
 func (e *Env) put(s string, v *Obj) {
 	e.varMap[s] = v
+}
+
+// assign requires variable already exist and assign the value to first instance of variable going up the tree
+//
+//nolint:gocritic // non-pointer type for *Obj doesn't make sense
+func (e *Env) assign(s string, v *Obj) bool {
+	_, ok := e.varMap[s]
+	if !ok {
+		//base case: no parent and does not exist
+		if e.parent == nil {
+			return false
+		}
+		return e.parent.assign(s, v)
+	}
+	e.varMap[s] = v
+	return true
 }
 
 //nolint:gocritic // non-pointer type for *Obj doesn't make sense

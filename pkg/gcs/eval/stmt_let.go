@@ -14,8 +14,8 @@ type letStmtEvalNode struct {
 }
 
 func (l *letStmtEvalNode) nextAction() (Obj, bool, error) {
-	_, ok := l.env.v(l.Ident.Val)
-	if ok {
+	_, exist := l.env.varMap[l.Ident.Val]
+	if exist {
 		return nil, false, fmt.Errorf("variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	if l.res == nil {
@@ -32,7 +32,7 @@ func (l *letStmtEvalNode) nextAction() (Obj, bool, error) {
 		}
 		l.res = res
 	}
-	l.env.varMap[l.Ident.Val] = &l.res
+	l.env.put(l.Ident.Val, &l.res)
 	return &null{}, true, nil
 }
 

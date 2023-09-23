@@ -19,7 +19,7 @@ func (e *Evaluator) addSysFunc(name string, f systemFunc) {
 	var obj Obj = &bfuncval{
 		Body: f,
 	}
-	e.env.varMap[name] = &obj
+	e.env.put(name, &obj)
 }
 
 func (e *Evaluator) print(args []Obj) (Obj, error) {
