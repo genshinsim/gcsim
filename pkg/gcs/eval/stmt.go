@@ -19,8 +19,7 @@ func evalFromStmt(n ast.Stmt, env *Env) evalNode {
 	case *ast.WhileStmt:
 		return whileStmtEval(v, env)
 	case *ast.ForStmt:
-		//TODO: for stmt
-		return nil
+		return forStmtEval(v, env)
 	case *ast.AssignStmt:
 		return assignStmtEval(v, env)
 	case *ast.SwitchStmt:
