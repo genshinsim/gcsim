@@ -1,5 +1,6 @@
 package eval
 
+//nolint:unused // need this in future no point getting rid of right now
 func otob(v Obj) bool {
 	switch x := v.(type) {
 	case *number:
