@@ -25,7 +25,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 20    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() { c.makeKitsune() }, skillStart)
 	c.SetCDWithDelay(action.ActionSkill, 4*60, 16)
 
@@ -34,7 +34,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
