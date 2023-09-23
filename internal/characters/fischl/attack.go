@@ -93,7 +93,3 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		State:           action.NormalAttackState,
 	}, nil
 }
-
-func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	panic("not implemented")
-}
