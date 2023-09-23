@@ -1,7 +1,7 @@
 package character
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -110,23 +110,23 @@ func (c *Character) NextNormalCounter() int {
 }
 
 func (c *Character) Attack(map[string]int) (action.Info, error) {
-	return action.Info{}, errors.New("action attack not implemented")
+	return action.Info{}, fmt.Errorf("%v: action attack not implemented", c.CharWrapper.Base.Key)
 }
 func (c *Character) Aimed(map[string]int) (action.Info, error) {
-	return action.Info{}, errors.New("action aimed not implemented")
+	return action.Info{}, fmt.Errorf("%v: action aimed not implemented", c.CharWrapper.Base.Key)
 }
 func (c *Character) ChargeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, errors.New("action charge not implemented")
+	return action.Info{}, fmt.Errorf("%v: action charge not implemented", c.CharWrapper.Base.Key)
 }
 func (c *Character) HighPlungeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, errors.New("action high_plunge not implemented")
+	return action.Info{}, fmt.Errorf("%v: action high_plunge not implemented", c.CharWrapper.Base.Key)
 }
 func (c *Character) LowPlungeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, errors.New("action low_plunge not implemented")
+	return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.CharWrapper.Base.Key)
 }
 func (c *Character) Skill(map[string]int) (action.Info, error) {
-	return action.Info{}, errors.New("action skill not implemented")
+	return action.Info{}, fmt.Errorf("%v: action skill not implemented", c.CharWrapper.Base.Key)
 }
 func (c *Character) Burst(map[string]int) (action.Info, error) {
-	return action.Info{}, errors.New("action burst not implemented")
+	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.CharWrapper.Base.Key)
 }
