@@ -25,7 +25,7 @@ func init() {
 }
 
 // Only applies burst damage. Main Talisman functions are handled in qiqi.go
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Fortune-Preserving Talisman",
@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) talismanHealHook() {
