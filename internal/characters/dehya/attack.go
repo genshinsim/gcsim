@@ -30,10 +30,10 @@ func init() {
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 85) // N4 -> N1
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	burstAction := c.UseBurstAction()
 	if burstAction != nil {
-		return *burstAction
+		return *burstAction, nil
 	}
 	c.hasSkillRecast = false
 	ai := combat.AttackInfo{
@@ -70,7 +70,7 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }
 
 // TODO: charged attack
