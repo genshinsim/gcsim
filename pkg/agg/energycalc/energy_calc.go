@@ -13,6 +13,7 @@ func init() {
 }
 
 type buffer struct {
+	ercalc     bool
 	erNeeded   []*calc.Sample
 	weightedER []*calc.Sample
 }
@@ -25,7 +26,14 @@ func newSample(itr int) *calc.Sample {
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
+	if !cfg.Settings.ErCalc {
+		out := buffer{
+			ercalc: false,
+		}
+		return &out, nil
+	}
 	out := buffer{
+		ercalc:     true,
 		erNeeded:   make([]*calc.Sample, len(cfg.Characters)),
 		weightedER: make([]*calc.Sample, len(cfg.Characters)),
 	}
@@ -39,6 +47,9 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 }
 
 func (b *buffer) Add(result stats.Result) {
+	if !b.ercalc {
+		return
+	}
 	for i := range result.Characters {
 		b.erNeeded[i].Xs = append(b.erNeeded[i].Xs, result.Characters[i].ErNeeded)
 		b.weightedER[i].Xs = append(b.weightedER[i].Xs, result.Characters[i].WeightedER)
@@ -46,6 +57,9 @@ func (b *buffer) Add(result stats.Result) {
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {
+	if !b.ercalc {
+		return
+	}
 	result.ErNeeded = make([]*model.OverviewStats, len(b.erNeeded))
 	result.WeightedEr = make([]*model.OverviewStats, len(b.weightedER))
 	for i, c := range b.erNeeded {
