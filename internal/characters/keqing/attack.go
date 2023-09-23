@@ -42,7 +42,7 @@ func init() {
 	attackFrames[4][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	centerTarget := c.Core.Combat.Player()
 	if c.NormalCounter == 4 {
 		centerTarget = c.Core.Combat.PrimaryTarget() // N5 is a bullet
@@ -102,5 +102,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		}
 	}
 
-	return act
+	return act, nil
 }
