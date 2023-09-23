@@ -6,6 +6,7 @@ import (
 	_ "github.com/genshinsim/gcsim/pkg/agg/aura"
 	_ "github.com/genshinsim/gcsim/pkg/agg/damage"
 	_ "github.com/genshinsim/gcsim/pkg/agg/energy"
+	_ "github.com/genshinsim/gcsim/pkg/agg/energycalc"
 	_ "github.com/genshinsim/gcsim/pkg/agg/failures"
 	_ "github.com/genshinsim/gcsim/pkg/agg/fieldtime"
 	_ "github.com/genshinsim/gcsim/pkg/agg/metadata"
