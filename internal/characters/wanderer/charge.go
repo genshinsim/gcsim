@@ -33,7 +33,7 @@ func init() {
 	chargeFramesE[action.ActionJump] = 38
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -73,10 +73,10 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: windup + chargeFramesNormal[action.InvalidAction],
 		CanQueueAfter:   windup + chargeFramesNormal[action.ActionDash],
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
 
-func (c *char) WindfavoredChargeAttack(p map[string]int) action.Info {
+func (c *char) WindfavoredChargeAttack(p map[string]int) (action.Info, error) {
 	windup := c.chargeWindupE()
 
 	ai := combat.AttackInfo{
@@ -110,7 +110,7 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) action.Info {
 		AnimationLength: windup + chargeFramesE[action.InvalidAction],
 		CanQueueAfter:   windup + chargeFramesE[action.ActionDash],
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
 
 func (c *char) chargeWindupNormal() int {
