@@ -1,6 +1,8 @@
 package character
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -105,4 +107,26 @@ func (c *Character) AdvanceNormalIndex() {
 
 func (c *Character) NextNormalCounter() int {
 	return c.NormalCounter + 1
+}
+
+func (c *Character) Attack(map[string]int) (action.Info, error) {
+	return action.Info{}, errors.New("action attack not implemented")
+}
+func (c *Character) Aimed(map[string]int) (action.Info, error) {
+	return action.Info{}, errors.New("action aimed not implemented")
+}
+func (c *Character) ChargeAttack(map[string]int) (action.Info, error) {
+	return action.Info{}, errors.New("action charge not implemented")
+}
+func (c *Character) HighPlungeAttack(map[string]int) (action.Info, error) {
+	return action.Info{}, errors.New("action high_plunge not implemented")
+}
+func (c *Character) LowPlungeAttack(map[string]int) (action.Info, error) {
+	return action.Info{}, errors.New("action low_plunge not implemented")
+}
+func (c *Character) Skill(map[string]int) (action.Info, error) {
+	return action.Info{}, errors.New("action skill not implemented")
+}
+func (c *Character) Burst(map[string]int) (action.Info, error) {
+	return action.Info{}, errors.New("action burst not implemented")
 }
