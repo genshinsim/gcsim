@@ -1,8 +1,6 @@
 package energy
 
 import (
-	"fmt"
-
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -16,8 +14,6 @@ func init() {
 
 type buffer struct {
 	sourceEnergy []map[string]*calc.StreamStats
-	erNeeded     []*calc.Sample
-	weightedER   []*calc.Sample
 }
 
 func newSample(itr int) *calc.Sample {
@@ -30,14 +26,10 @@ func newSample(itr int) *calc.Sample {
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		sourceEnergy: make([]map[string]*calc.StreamStats, len(cfg.Characters)),
-		erNeeded:     make([]*calc.Sample, len(cfg.Characters)),
-		weightedER:   make([]*calc.Sample, len(cfg.Characters)),
 	}
 
 	for i := 0; i < len(cfg.Characters); i++ {
 		out.sourceEnergy[i] = make(map[string]*calc.StreamStats)
-		out.erNeeded[i] = newSample(cfg.Settings.Iterations)
-		out.weightedER[i] = newSample(cfg.Settings.Iterations)
 	}
 
 	return &out, nil
@@ -55,8 +47,6 @@ func (b *buffer) Add(result stats.Result) {
 			}
 			b.sourceEnergy[i][k].Add(v)
 		}
-		b.erNeeded[i].Xs = append(b.erNeeded[i].Xs, result.Characters[i].ErNeeded)
-		b.weightedER[i].Xs = append(b.weightedER[i].Xs, result.Characters[i].WeightedER)
 	}
 }
 
@@ -71,15 +61,5 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		result.TotalSourceEnergy[i] = &model.SourceStats{
 			Sources: source,
 		}
-	}
-
-	result.ErNeeded = make([]*model.OverviewStats, len(b.erNeeded))
-	result.WeightedEr = make([]*model.OverviewStats, len(b.erNeeded))
-	for i, c := range b.erNeeded {
-		result.ErNeeded[i] = agg.ToOverviewStats(c)
-	}
-	for i, c := range b.weightedER {
-		fmt.Println(c.Weights)
-		result.WeightedEr[i] = agg.ToOverviewStats(c)
 	}
 }
