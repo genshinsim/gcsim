@@ -26,7 +26,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 24
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// initial damage; part of the burst tag
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -91,7 +91,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 		OnRemoved:       func(next action.AnimationState) { burstShortOzFunc() },
-	}
+	}, nil
 }
 
 func (c *char) burstOzSpawn(src, ozSpawn, firstTick int) func() {

@@ -162,7 +162,7 @@ func (c *Core) AddChar(p info.CharacterProfile) (int, error) {
 		return -1, err
 	}
 
-	f, ok := charMap[p.Base.Key]
+	f, ok := NewCharFuncMap[p.Base.Key]
 	if !ok {
 		return -1, fmt.Errorf("invalid character: %v", p.Base.Key.String())
 	}

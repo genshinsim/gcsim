@@ -61,7 +61,7 @@ func init() {
 	attackFrames[3][action.ActionSwap] = 39
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -95,5 +95,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackFrames[c.NormalCounter][action.ActionSwap],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

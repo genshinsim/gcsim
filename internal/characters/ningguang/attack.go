@@ -50,7 +50,7 @@ func init() {
 	attackFrames[attackTypeTwirl][action.ActionWalk] = 42
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -126,5 +126,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[nextAttack][action.InvalidAction],
 		CanQueueAfter:   attackLockout[nextAttack],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

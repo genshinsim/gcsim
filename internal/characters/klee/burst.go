@@ -24,7 +24,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 101    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash",
@@ -115,7 +115,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel frames
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 // clear klee burst when she leaves the field and handle c4

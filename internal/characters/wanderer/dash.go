@@ -22,7 +22,7 @@ func init() {
 	dashFramesE[action.ActionWalk] = 22
 }
 
-func (c *char) Dash(p map[string]int) action.Info {
+func (c *char) Dash(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -42,10 +42,10 @@ func (c *char) Dash(p map[string]int) action.Info {
 		AnimationLength: length,
 		CanQueueAfter:   length,
 		State:           action.DashState,
-	}
+	}, nil
 }
 
-func (c *char) WindfavoredDash(p map[string]int) action.Info {
+func (c *char) WindfavoredDash(p map[string]int) (action.Info, error) {
 	ai := action.Info{
 		Frames:          func(next action.Action) int { return dashFramesE[next] },
 		AnimationLength: dashFramesE[action.InvalidAction],
@@ -58,5 +58,5 @@ func (c *char) WindfavoredDash(p map[string]int) action.Info {
 		c.skydwellerPoints -= 15
 	}
 
-	return ai
+	return ai, nil
 }

@@ -32,9 +32,9 @@ func init() {
 	ppChargeFrames[action.ActionJump] = ppChargeHitmark
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.StatModIsActive(paramitaBuff) {
-		return c.ppChargeAttack()
+		return c.ppChargeAttack(), nil
 	}
 
 	// check for particles
@@ -69,7 +69,7 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
 
 func (c *char) ppChargeAttack() action.Info {

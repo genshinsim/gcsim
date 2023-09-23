@@ -28,7 +28,7 @@ func init() {
 	aimedFrames[1][action.ActionJump] = aimedHitmarks[1]
 }
 
-func (c *char) Aimed(p map[string]int) action.Info {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -97,5 +97,5 @@ func (c *char) Aimed(p map[string]int) action.Info {
 		AnimationLength: aimedFrames[skillActive][action.InvalidAction],
 		CanQueueAfter:   aimedFrames[skillActive][action.ActionDash],
 		State:           action.AimState,
-	}
+	}, nil
 }

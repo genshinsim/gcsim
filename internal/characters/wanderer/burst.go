@@ -39,7 +39,7 @@ const burstHitmarkDelay = 6
 // TODO: Determine correct Frame
 const burstSnapshotDelay = 55
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -74,10 +74,10 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: delay + burstFramesNormal[action.InvalidAction],
 		CanQueueAfter:   delay + burstFramesNormal[action.ActionAttack],
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
-func (c *char) WindfavoredBurst(p map[string]int) action.Info {
+func (c *char) WindfavoredBurst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kyougen: Five Ceremonial Plays (Windfavored)",
@@ -115,5 +115,5 @@ func (c *char) WindfavoredBurst(p map[string]int) action.Info {
 				c.checkForSkillEnd()
 			}
 		},
-	}
+	}, nil
 }

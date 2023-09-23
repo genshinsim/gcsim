@@ -19,7 +19,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 122    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// first hit 56 frame
 	// first tick 82 frame
 	// last tick 162
@@ -67,5 +67,5 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

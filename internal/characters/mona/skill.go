@@ -35,7 +35,7 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 73    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := 0
 	if p["hold"] != 0 {
 		hold = 1
@@ -83,7 +83,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[hold][action.InvalidAction],
 		CanQueueAfter:   skillFrames[hold][action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
