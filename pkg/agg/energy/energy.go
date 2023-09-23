@@ -16,6 +16,13 @@ type buffer struct {
 	sourceEnergy []map[string]*calc.StreamStats
 }
 
+func newSample(itr int) *calc.Sample {
+	return &calc.Sample{
+		Xs:     make([]float64, 0, itr),
+		Sorted: false,
+	}
+}
+
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		sourceEnergy: make([]map[string]*calc.StreamStats, len(cfg.Characters)),
