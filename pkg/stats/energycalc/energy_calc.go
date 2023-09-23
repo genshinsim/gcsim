@@ -21,6 +21,10 @@ type buffer struct {
 }
 
 func NewStat(core *core.Core) (stats.Collector, error) {
+	if !core.Flags.ErCalc {
+		out := buffer{}
+		return &out, nil
+	}
 	out := buffer{
 		charRawParticles:    make([]float64, len(core.Player.Chars())),
 		charFlatEnergy:      make([]float64, len(core.Player.Chars())),
@@ -86,6 +90,10 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 }
 
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
+	if !core.Flags.ErCalc {
+		return
+	}
+
 	for c := 0; c < len(core.Player.Chars()); c++ {
 		result.Characters[c].ErNeeded = b.erNeeded[c]
 
