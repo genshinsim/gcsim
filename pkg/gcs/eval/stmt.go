@@ -16,8 +16,7 @@ func evalFromStmt(n ast.Stmt, env *Env) evalNode {
 		//TODO: ctrl stmts (break/continue)
 		return nil
 	case *ast.IfStmt:
-		//TODO: if stmts
-		return nil
+		return ifStmtEval(v, env)
 	case *ast.WhileStmt:
 		//TODO: while stmt
 		return nil
