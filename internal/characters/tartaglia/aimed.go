@@ -21,7 +21,7 @@ func init() {
 }
 
 // Once fully charged, deal Hydro DMG and apply the Riptide status.
-func (c *char) Aimed(p map[string]int) action.Info {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(MeleeKey) {
 		c.Core.Log.NewEvent("aim called when not in ranged stance", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionAim)
@@ -30,7 +30,7 @@ func (c *char) Aimed(p map[string]int) action.Info {
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	travel, ok := p["travel"]
@@ -77,5 +77,5 @@ func (c *char) Aimed(p map[string]int) action.Info {
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
 		State:           action.AimState,
-	}
+	}, nil
 }
