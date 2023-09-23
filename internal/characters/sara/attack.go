@@ -29,7 +29,7 @@ func init() {
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
 // Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -67,5 +67,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }
