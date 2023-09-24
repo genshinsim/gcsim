@@ -518,10 +518,13 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 		erStack := int(math.Round(erDiff/stats.substatValues[attributes.ER] + bias))
 		erStack = clamp[int](0, erStack, stats.charSubstatFinal[idxChar][attributes.ER])
 		stats.charMaxExtraERSubs[idxChar] =
-			(*result.Statistics.ErNeeded[idxChar].Max-*result.Statistics.WeightedEr[idxChar].Min)/
-				stats.substatValues[attributes.ER] - float64(erStack)
+			float64(erStack) - (*result.Statistics.WeightedEr[idxChar].Min-*result.Statistics.ErNeeded[idxChar].Max)/
+				stats.substatValues[attributes.ER]
+		fmt.Println(stats.simcfg.Characters[idxChar].Base.Key.Pretty(), ": has ", (*result.Statistics.WeightedEr[idxChar].Min-*result.Statistics.ErNeeded[idxChar].Max)/
+			stats.substatValues[attributes.ER], " for best case ER removal and ", erStack, " for current ER removal")
 		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
 		stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
+		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
 	}
 	stats.simcfg.Settings.ErCalc = false
 }
