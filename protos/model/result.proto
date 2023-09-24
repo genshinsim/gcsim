@@ -120,6 +120,10 @@ message SimulationStatistics {
   // er values from er_calc mode
   repeated OverviewStats er_needed = 31 [json_name="er_needed"];
   repeated OverviewStats weighted_er = 32 [json_name="weighted_er"];
+
+  // DPS using expected value of crit for substat optimizer
+  DescriptiveStats expected_dps = 33 [json_name="expected_dps"];
+  repeated DescriptiveStats character_expected_dps = 34 [json_name="character_expected_dps"];
 }
 
 message SignedSimulationStatistics {
