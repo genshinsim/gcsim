@@ -76,12 +76,83 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	return opDebug
 }
 
+// Calculate per-character per-substat "gradients" at initial state using finite differences
+// In practical evaluations, adding small numbers of substats (<10) can be VERY noisy
+// Therefore, "gradient" evaluations are done in groups of 10 substats
+// Allocation strategy is to just max substats according to highest gradient to lowest
+// TODO: Probably want to refactor to potentially run gradient step at least twice:
+// once initially then another at 10 assigned liquid substats
+// Fine grained evaluations are too expensive time wise, but can perhaps add in an option for people who want to sit around for a while
+func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstats() []string {
+	var (
+		opDebug   []string
+		charDebug []string
+	)
+
+	stats.simcfg.Settings.ExpectedCritDmg = true
+
+	stats.simcfg.Characters = stats.charProfilesCopy
+
+	opDebug = append(opDebug, "Calculating optimal ER and DMG substat distribution...")
+
+	for idxChar := range stats.charProfilesCopy {
+		charDebug = stats.optimizeERAndDMGSubstatsForChar(idxChar, stats.charProfilesCopy[idxChar], 0)
+		opDebug = append(opDebug, charDebug...)
+	}
+	return opDebug
+}
+
 func (stats *SubstatOptimizerDetails) getCharSubstatTotal(idxChar int) int {
 	sum := 0
 	for _, count := range stats.charSubstatFinal[idxChar] {
 		sum += count
 	}
 	return sum
+}
+
+// This function assumes that there are now all subs allocated. For every sub of ER we gain, we will lose one sub of damage
+func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
+	idxChar int,
+	char info.CharacterProfile,
+	initialMean float64,
+) []string {
+	var opDebug []string
+	opDebug = append(opDebug, fmt.Sprintf("%v", char.Base.Key))
+
+	relevantSubstats := stats.getNonErSubstatsToOptimizeForChar(char)
+
+	addlSubstats := stats.charRelevantSubstats[char.Base.Key]
+	if len(addlSubstats) > 0 {
+		relevantSubstats = append(relevantSubstats, addlSubstats...)
+	}
+	fmt.Println("Max extra ER: ", stats.charMaxExtraERSubs[idxChar])
+	for stats.charMaxExtraERSubs[idxChar] > 0.0 && stats.charSubstatFinal[idxChar][attributes.ER] < stats.charSubstatLimits[idxChar][attributes.ER] {
+		origIter := stats.simcfg.Settings.Iterations
+		stats.simcfg.Settings.ErCalc = true
+		stats.simcfg.Settings.Iterations = 25
+		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, 0, -1)
+		stats.simcfg.Settings.ErCalc = false
+		stats.simcfg.Settings.Iterations = 350
+		erGainGradient := stats.calculateSubstatGradientsForChar(idxChar, []attributes.Stat{attributes.ER}, 0, 1)
+		stats.simcfg.Settings.Iterations = origIter
+		lowestLoss := 0.0
+		for idxSubstat, gradient := range substatGradients {
+			substat := relevantSubstats[idxSubstat]
+			if stats.charSubstatFinal[idxChar][substat] > 0 && gradient < lowestLoss {
+				lowestLoss = gradient
+			}
+		}
+		if erGainGradient[0]+lowestLoss > 0 {
+			allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, -1)
+			stats.charSubstatFinal[idxChar][attributes.ER] += 1
+			stats.charProfilesCopy[idxChar].Stats[attributes.ER] += float64(1) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
+			stats.charMaxExtraERSubs[idxChar] -= 1
+			opDebug = append(opDebug, allocDebug...)
+			continue
+		}
+		return opDebug
+	}
+	return opDebug
 }
 
 func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
@@ -347,7 +418,7 @@ func (stats *SubstatOptimizerDetails) assignSubstatsForChar(
 func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 	idxChar int,
 	relevantSubstats []attributes.Stat,
-	initialMean_ float64,
+	unused float64,
 	amount int,
 ) []float64 {
 	stats.simcfg.Characters = stats.charProfilesCopy
@@ -363,11 +434,10 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		substatEvalResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
 
 		substatGradients[idxSubstat] = *substatEvalResult.Statistics.ExpectedDps.Mean - initialMean
-
 		// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
 		// might give them "too much" cr (= max out liquid cr subs) but that's probably not a big deal
 		if stats.charWithFavonius[idxChar] && substat == attributes.CR {
-			substatGradients[idxSubstat] += 1000
+			substatGradients[idxSubstat] += 1000 * float64(amount)
 		}
 		stats.charProfilesCopy[idxChar].Stats[substat] -= float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 	}

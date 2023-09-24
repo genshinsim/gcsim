@@ -75,6 +75,11 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)
 	}
+
+	debugLogs = o.details.optimizeERAndDMGSubstats()
+	for _, debugLog := range debugLogs {
+		o.logger.Info(debugLog)
+	}
 }
 
 // Final output
