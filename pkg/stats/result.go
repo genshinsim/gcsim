@@ -53,10 +53,11 @@ type CharacterResult struct {
 
 	DamageCumulativeContrib []float64 `json:"damage_cumulative_contrib" msg:"damage_cumulative_contrib"`
 
-	ActiveTime  int     `json:"active_time"  msg:"active_time"`
-	EnergySpent float64 `json:"energy_spent" msg:"energy_spent"`
-	ErNeeded    float64 `json:"er_needed"    msg:"er_needed"`
-	WeightedER  float64 `json:"weighted_er"  msg:"weight_er"`
+	ActiveTime      int     `json:"active_time"       msg:"active_time"`
+	EnergySpent     float64 `json:"energy_spent"      msg:"energy_spent"`
+	ErNeeded        float64 `json:"er_needed"         msg:"er_needed"`
+	WeightedER      float64 `json:"weighted_er"       msg:"weight_er"`
+	ExpectedCritDmg float64 `json:"expected_crit_dmg" msg:"expected_crit_dmg"`
 }
 
 type EnemyResult struct {

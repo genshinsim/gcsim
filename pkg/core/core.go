@@ -39,12 +39,13 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug     bool // Used to determine logging level
-	DamageMode   bool // for hp mode
-	DefHalt      bool // for hitlag
-	EnableHitlag bool // hitlag enabled
-	ErCalc       bool
-	Custom       map[string]int
+	LogDebug        bool // Used to determine logging level
+	DamageMode      bool // for hp mode
+	DefHalt         bool // for hitlag
+	EnableHitlag    bool // hitlag enabled
+	ErCalc          bool
+	ExpectedCritDmg bool
+	Custom          map[string]int
 }
 
 type Reactable interface {
@@ -65,13 +66,14 @@ type Reactable interface {
 const MaxTeamSize = 4
 
 type Opt struct {
-	Seed         int64
-	Debug        bool
-	EnableHitlag bool
-	DefHalt      bool
-	DamageMode   bool
-	ErCalc       bool
-	Delays       info.Delays
+	Seed            int64
+	Debug           bool
+	EnableHitlag    bool
+	DefHalt         bool
+	DamageMode      bool
+	ErCalc          bool
+	ExpectedCritDmg bool
+	Delays          info.Delays
 }
 
 func New(opt Opt) (*Core, error) {
@@ -90,6 +92,7 @@ func New(opt Opt) (*Core, error) {
 	c.Flags.DefHalt = opt.DefHalt
 	c.Flags.EnableHitlag = opt.EnableHitlag
 	c.Flags.ErCalc = opt.ErCalc
+	c.Flags.ExpectedCritDmg = opt.ExpectedCritDmg
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)
