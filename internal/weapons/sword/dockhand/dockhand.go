@@ -36,8 +36,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
-	const icdKey = "power-saw-roused-icd"
-	symbol := []string{"stoic-symbol-0", "stoic-symbol-1", "stoic-symbol-2"}
+	const icdKey = "dockhand-roused-icd"
+	symbol := []string{"unity-symbol-0", "unity-symbol-1", "unity-symbol-2"}
 	em := 30 + 10*float64(r)
 	refund := 1.5 + 0.5*float64(r)
 	duration := 10 * 60
@@ -64,11 +64,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus((symbol[idx]), 30*60, true)
 
-		c.Log.NewEvent("powersaw proc'd", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("dockhands-assistant proc'd", glog.LogWeaponEvent, char.Index).
 			Write("index", idx)
 
 		return false
-	}, fmt.Sprintf("portable-power-saw-heal-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("dockhands-assistant-heal-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
 		//check for active before deleting symbol
@@ -93,7 +93,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		//add em buff
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("portable-power-saw-em-boost", duration),
+			Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em-boost", duration),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return val, true
@@ -102,11 +102,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		//regen energy after 2 secs
 		char.QueueCharTask(func() {
-			char.AddEnergy("portable-power-saw-energy", refund*float64(count))
+			char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
 		}, 2*60)
 
 		return false
-	}, fmt.Sprintf("portable-power-saw-roused-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		//check for active before deleting symbol
@@ -131,7 +131,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		//add em buff
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("dockhands-assistance-em-boost", duration),
+			Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em-boost", duration),
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return val, true
@@ -140,10 +140,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		//regen energy after 2 secs
 		char.QueueCharTask(func() {
-			char.AddEnergy("dockhands-assistance-energy", refund*float64(count))
+			char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
 		}, 2*60)
 
 		return false
-	}, fmt.Sprintf("dockhands-assistance-roused-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String()))
 	return w, nil
 }

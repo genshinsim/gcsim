@@ -5193,7 +5193,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
 		BaseAtk:          42.4010009765625,
 		BaseSpecialized:  0.10000000149011612,
-		Specialized:      attributes.ER,
+		Specialized:      attributes.HPP,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
