@@ -125,7 +125,11 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 	if len(addlSubstats) > 0 {
 		relevantSubstats = append(relevantSubstats, addlSubstats...)
 	}
-	fmt.Println("Max extra ER: ", stats.charMaxExtraERSubs[idxChar])
+	totalSubs := stats.getCharSubstatTotal(idxChar)
+	if totalSubs != stats.totalLiquidSubstats {
+		opDebug = append(opDebug, fmt.Sprint("Character has", totalSubs, "total liquid subs allocated but expected", stats.totalLiquidSubstats))
+	}
+	// fmt.Println(char.Base.Key.Pretty(), "has", totalSubs, "total liquid substats")
 	for stats.charMaxExtraERSubs[idxChar] > 0.0 && stats.charSubstatFinal[idxChar][attributes.ER] < stats.charSubstatLimits[idxChar][attributes.ER] {
 		origIter := stats.simcfg.Settings.Iterations
 		stats.simcfg.Settings.ErCalc = true
@@ -148,6 +152,7 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 			stats.charProfilesCopy[idxChar].Stats[attributes.ER] += float64(1) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
 			stats.charMaxExtraERSubs[idxChar] -= 1
 			opDebug = append(opDebug, allocDebug...)
+			opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 			continue
 		}
 		return opDebug
@@ -228,8 +233,8 @@ func (stats *SubstatOptimizerDetails) allocateSomeSubstatGradientsForChar(
 			if stats.charSubstatFinal[idxChar][substat] < stats.charSubstatLimits[idxChar][substat] {
 				stats.charSubstatFinal[idxChar][substat] += amount
 				stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
-				fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
-				// opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+				// fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+				opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 				return opDebug
 			}
 		}
@@ -238,8 +243,8 @@ func (stats *SubstatOptimizerDetails) allocateSomeSubstatGradientsForChar(
 			amount = clamp[int](-stats.charSubstatFinal[idxChar][substat], amount, amount)
 			stats.charSubstatFinal[idxChar][substat] += amount
 			stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
-			fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
-			// opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+			// fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+			opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 			return opDebug
 		}
 	}
