@@ -15,6 +15,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
+const FAV_CRIT_RATE_BIAS = 8
+
 type Ordered interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr | ~float32 | ~float64 | ~string
 }
@@ -79,7 +81,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 
 	// Reset favonius char crit rate
 	if stats.charWithFavonius[idxChar] {
-		stats.charProfilesCopy[idxChar].Stats[attributes.CR] -= 8 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
+		stats.charProfilesCopy[idxChar].Stats[attributes.CR] -= FAV_CRIT_RATE_BIAS * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
 	}
 
 	relevantSubstats := stats.getNonErSubstatsToOptimizeForChar(char)
@@ -122,7 +124,7 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientsForChar(
 
 func (stats *SubstatOptimizerDetails) resetFavoniusCritRateForChar(idxChar int) {
 	if stats.charWithFavonius[idxChar] {
-		stats.charProfilesCopy[idxChar].Stats[attributes.CR] += 8 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
+		stats.charProfilesCopy[idxChar].Stats[attributes.CR] += FAV_CRIT_RATE_BIAS * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[idxChar]
 	}
 }
 
@@ -412,8 +414,6 @@ func (stats *SubstatOptimizerDetails) calculateERBaseline() {
 		stats.charSubstatFinal[i][attributes.ER] = erStack
 
 		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(erStack) * stats.substatValues[attributes.ER]
-		stats.charProfilesERBaseline[i].Stats[attributes.CR] += 4 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[i]
-		stats.charProfilesERBaseline[i].Stats[attributes.CD] += 4 * stats.substatValues[attributes.CD] * stats.charSubstatRarityMod[i]
 
 		if strings.Contains(stats.charProfilesInitial[i].Weapon.Name, "favonius") {
 			stats.calculateERBaselineHandleFav(i)
@@ -425,7 +425,7 @@ func (stats *SubstatOptimizerDetails) calculateERBaseline() {
 // Then at next step of substat optimization, should naturally see relatively big DPS increases for that character if higher crit matters a lot
 // TODO: Do we need a better special case for favonius?
 func (stats *SubstatOptimizerDetails) calculateERBaselineHandleFav(i int) {
-	stats.charProfilesERBaseline[i].Stats[attributes.CR] += 4 * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[i]
+	stats.charProfilesERBaseline[i].Stats[attributes.CR] += FAV_CRIT_RATE_BIAS * stats.substatValues[attributes.CR] * stats.charSubstatRarityMod[i]
 	stats.charWithFavonius[i] = true
 }
 
