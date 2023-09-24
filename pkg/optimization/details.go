@@ -57,7 +57,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	origIter := stats.simcfg.Settings.Iterations
 	stats.simcfg.Settings.ErCalc = true
 	stats.simcfg.Settings.ExpectedCritDmg = true
-	stats.simcfg.Settings.Iterations = 50
+	stats.simcfg.Settings.Iterations = 25
 	stats.simcfg.Characters = stats.charProfilesCopy
 
 	// Get initial DPS value
@@ -103,45 +103,77 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 	if len(addlSubstats) > 0 {
 		relevantSubstats = append(relevantSubstats, addlSubstats...)
 	}
-	for stats.getCharSubstatTotal(idxChar) < stats.totalLiquidSubstats {
-		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean)
+	// start from 0 liquid in all relevant substats
+	// for stats.getCharSubstatTotal(idxChar) < stats.totalLiquidSubstats {
+	// 	substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean, 1)
 
-		allocDebug := stats.allocateSingleSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats)
+	// 	allocDebug := stats.allocateSingleSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, 1)
+	// 	opDebug = append(opDebug, allocDebug...)
+	// }
+
+	// start from max liquid in all relevant substats
+	for _, substat := range relevantSubstats {
+		stats.charProfilesCopy[idxChar].Stats[substat] += float64(stats.charSubstatLimits[idxChar][substat]-stats.charSubstatFinal[idxChar][substat]) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+		stats.charSubstatFinal[idxChar][substat] = stats.charSubstatLimits[idxChar][substat]
+	}
+	totalSubs := stats.getCharSubstatTotal(idxChar)
+	for totalSubs > stats.totalLiquidSubstats {
+		amount := -1
+		if totalSubs-stats.totalLiquidSubstats >= 8 {
+			amount = -4
+		} else if totalSubs-stats.totalLiquidSubstats >= 4 {
+			amount = -2
+		}
+		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, initialMean, amount)
+		allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, amount)
+		totalSubs = stats.getCharSubstatTotal(idxChar)
 		opDebug = append(opDebug, allocDebug...)
 	}
-
 	return opDebug
 }
 
-func (stats *SubstatOptimizerDetails) allocateSingleSubstatGradientsForChar(
+func (stats *SubstatOptimizerDetails) allocateSomeSubstatGradientsForChar(
 	idxChar int,
 	char info.CharacterProfile,
 	substatGradient []float64,
 	relevantSubstats []attributes.Stat,
+	amount int,
 ) []string {
 	var opDebug []string
-	fmt.Println(substatGradient)
 	sorted := newSlice(substatGradient...)
 	sort.Sort(sort.Reverse(sorted))
 
 	for idxGrad, idxSubstat := range sorted.idx {
 		substat := relevantSubstats[idxSubstat]
-		if idxGrad < 50 && stats.charMaxExtraERSubs[idxChar] > 0.1 {
-			erGiven := clamp[int](1, 2, int(math.Ceil(stats.charMaxExtraERSubs[idxChar])))
-			stats.assignSubstatsForChar(idxChar, char, attributes.ER, erGiven)
-			stats.charMaxExtraERSubs[idxChar] -= float64(erGiven)
-			opDebug = append(opDebug, "Low damage contribution from substats - adding some points to ER instead")
-			return opDebug
+
+		if amount > 0 {
+			if idxGrad < 50 && stats.charMaxExtraERSubs[idxChar] > 0.1 {
+				erGiven := clamp[int](1, 2, int(math.Ceil(stats.charMaxExtraERSubs[idxChar])))
+				stats.assignSubstatsForChar(idxChar, char, attributes.ER, erGiven)
+				stats.charMaxExtraERSubs[idxChar] -= float64(erGiven)
+				opDebug = append(opDebug, "Low damage contribution from substats - adding some points to ER instead")
+				return opDebug
+			}
+			if stats.charSubstatFinal[idxChar][substat] < stats.charSubstatLimits[idxChar][substat] {
+				stats.charSubstatFinal[idxChar][substat] += amount
+				stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+				fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+				// opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
+				return opDebug
+			}
 		}
-		if stats.charSubstatFinal[idxChar][substat] < stats.charSubstatLimits[idxChar][substat] {
-			stats.charSubstatFinal[idxChar][substat] += 1
-			stats.charProfilesCopy[idxChar].Stats[substat] += 1 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+
+		if stats.charSubstatFinal[idxChar][substat] > 0 {
+			amount = clamp[int](-stats.charSubstatFinal[idxChar][substat], amount, amount)
+			stats.charSubstatFinal[idxChar][substat] += amount
+			stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 			fmt.Println("Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 			// opDebug = append(opDebug, "Current Liquid Substat Counts: ", PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 			return opDebug
 		}
 	}
-	// TODO: No relevant substat can be allocated, allocate to some random other substat
+	fmt.Println("Couldn't alloc/dealloc anything?????")
+	// TODO: No relevant substat can be deallocated, deallocate some random other substat??
 	return opDebug
 }
 
@@ -316,6 +348,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 	idxChar int,
 	relevantSubstats []attributes.Stat,
 	initialMean_ float64,
+	amount int,
 ) []float64 {
 	stats.simcfg.Characters = stats.charProfilesCopy
 	substatEvalResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
@@ -324,7 +357,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 	substatGradients := make([]float64, len(relevantSubstats))
 	// Build "gradient" by substat
 	for idxSubstat, substat := range relevantSubstats {
-		stats.charProfilesCopy[idxChar].Stats[substat] += 1 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+		stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 		substatEvalResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
@@ -336,7 +369,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		if stats.charWithFavonius[idxChar] && substat == attributes.CR {
 			substatGradients[idxSubstat] += 1000
 		}
-		stats.charProfilesCopy[idxChar].Stats[substat] -= 1 * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
+		stats.charProfilesCopy[idxChar].Stats[substat] -= float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 	}
 	return substatGradients
 }
@@ -349,7 +382,6 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char inf
 	if keys.CharKeyToEle[char.Base.Key] == attributes.Geo {
 		relevantSubstats = []attributes.Stat{attributes.ATKP, attributes.CR, attributes.CD}
 	}
-
 	return relevantSubstats
 }
 
@@ -410,7 +442,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 		// 		the req was 1.2205 and 4 subs was 1.2204, we will get 1.1653 ER)
 		// +0.5 bias is equivalent to ceil
 		// maybe bias should be determined relative to DPS% of team?
-		bias := -0.15
+		bias := -0.33
 
 		// find the closest whole count of ER subs
 		erStack := int(math.Round(erDiff/stats.substatValues[attributes.ER] + bias))
