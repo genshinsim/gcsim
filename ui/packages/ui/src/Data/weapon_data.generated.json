@@ -182,6 +182,13 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Reasoning"
     },
+    "dockhand": {
+      "id": 11427,
+      "key": "dockhand",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Mechanic"
+    },
     "dodocotales": {
       "id": 14413,
       "key": "dodocotales",

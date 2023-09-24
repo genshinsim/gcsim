@@ -175,6 +175,7 @@ var weaponNames = []string{
 	"thebell",
 	"theblacksword",
 	"thecatch",
+	"thedockhandsassistance",
 	"thefirstgreatmagic",
 	"theflute",
 	"thestringless",
@@ -346,6 +347,7 @@ const (
 	TheBell
 	TheBlackSword
 	TheCatch
+	TheDockhandsAssistance
 	TheFirstGreatMagic
 	TheFlute
 	TheStringless
