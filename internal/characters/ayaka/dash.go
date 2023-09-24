@@ -20,7 +20,7 @@ func init() {
 }
 
 // TODO: move this into PostDash event instead
-func (c *char) Dash(p map[string]int) action.Info {
+func (c *char) Dash(p map[string]int) (action.Info, error) {
 	f, ok := p["f"]
 	if !ok {
 		f = 0
@@ -67,5 +67,5 @@ func (c *char) Dash(p map[string]int) action.Info {
 		AnimationLength: dashFrames[action.InvalidAction] + f,
 		CanQueueAfter:   dashFrames[action.ActionDash] + f, // earliest cancel
 		State:           action.DashState,
-	}
+	}, nil
 }

@@ -22,7 +22,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 50
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// yuegui spawns after 48f
 	c.Core.Status.Add("yuegui", 600+yueguiThrowSpawn)
 
@@ -42,7 +42,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) getSkillHealInfo(snap *combat.Snapshot) player.HealInfo {

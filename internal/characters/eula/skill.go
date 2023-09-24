@@ -75,11 +75,11 @@ func (c *char) consumeGrimheartStacks() {
 	c.DeleteStatus(grimheartDuration)
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if p["hold"] != 0 {
-		return c.holdSkill()
+		return c.holdSkill(), nil
 	}
-	return c.pressSkill()
+	return c.pressSkill(), nil
 }
 
 func (c *char) pressSkill() action.Info {

@@ -133,11 +133,11 @@ func (c *char) skillPress() action.Info {
 	return c.skillRelease(0)
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if p["hold"] != 0 {
-		return c.skillHold()
+		return c.skillHold(), nil
 	}
-	return c.skillPress()
+	return c.skillPress(), nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

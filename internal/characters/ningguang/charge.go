@@ -69,7 +69,7 @@ func init() {
 	chargeFrames[attackTypeTwirl][action.ActionSwap] = 76
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -160,5 +160,5 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[chargeType][action.InvalidAction] - windup,
 		CanQueueAfter:   canQueueAfter - windup,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

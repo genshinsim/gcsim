@@ -25,7 +25,7 @@ func init() {
 	aimedWreathFrames[action.ActionJump] = aimedWreathHitmark
 }
 
-func (c *char) Aimed(p map[string]int) action.Info {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	level, ok := p["level"]
 	if !ok {
 		level = 0
@@ -79,10 +79,10 @@ func (c *char) Aimed(p map[string]int) action.Info {
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
 		State:           action.AimState,
-	}
+	}, nil
 }
 
-func (c *char) WreathAimed(p map[string]int) action.Info {
+func (c *char) WreathAimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -201,5 +201,5 @@ func (c *char) WreathAimed(p map[string]int) action.Info {
 		AnimationLength: aimedWreathFrames[action.InvalidAction] - skip,
 		CanQueueAfter:   aimedWreathHitmark - skip,
 		State:           action.AimState,
-	}
+	}, nil
 }

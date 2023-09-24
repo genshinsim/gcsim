@@ -30,7 +30,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 95     // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// first hit at 94, then 30 frames between hits. 9 anemo hits total
 	// yes the game description scams you on the duration
 	duration := burstHitmarks[c.gender] + 30*8
@@ -102,7 +102,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   burstFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) absorbCheckQ(src, count, max int) func() {

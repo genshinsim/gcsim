@@ -87,9 +87,9 @@ func init() {
 	whirlingStepsFrames[2][action.ActionSwap] = 61
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(pirouetteStatus) {
-		return c.Pirouette(p, NilouSkillTypeSteps)
+		return c.Pirouette(p, NilouSkillTypeSteps), nil
 	}
 
 	ai := combat.AttackInfo{
@@ -124,7 +124,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) initialParticleCB(a combat.AttackCB) {

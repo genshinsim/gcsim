@@ -37,12 +37,12 @@ func init() {
 	skillRecastFrames[action.ActionSwap] = 42
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// check if stiletto is on-field
 	if c.Core.Status.Duration(stilettoKey) > 0 {
-		return c.skillRecast()
+		return c.skillRecast(), nil
 	}
-	return c.skillFirst()
+	return c.skillFirst(), nil
 }
 
 func (c *char) skillFirst() action.Info {

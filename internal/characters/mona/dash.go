@@ -23,7 +23,7 @@ func init() {
 	dashFrames[action.ActionSwap] = 34    // D -> Swap
 }
 
-func (c *char) Dash(p map[string]int) action.Info {
+func (c *char) Dash(p map[string]int) (action.Info, error) {
 	f, ok := p["f"]
 	if !ok {
 		f = 0
@@ -68,5 +68,5 @@ func (c *char) Dash(p map[string]int) action.Info {
 		AnimationLength: dashFrames[action.InvalidAction] + f,
 		CanQueueAfter:   dashHitmark + f,
 		State:           action.DashState,
-	}
+	}, nil
 }

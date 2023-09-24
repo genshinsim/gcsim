@@ -23,7 +23,7 @@ func init() {
 	skillFrames[action.ActionJump] = 5     // E -> J
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// +1 to avoid end duration issues
 	// Qiqi E is a deployable after Initial Hit, so it shouldn't be hitlag extendable
 	c.AddStatus(skillBuffKey, 15*60+1, false)
@@ -104,7 +104,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 // Handles skill damage swipe instances

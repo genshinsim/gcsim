@@ -24,7 +24,7 @@ func init() {
 	chargeFrames[action.ActionSwap] = chargeHitmark // idk if this is correct or not
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
@@ -62,5 +62,5 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

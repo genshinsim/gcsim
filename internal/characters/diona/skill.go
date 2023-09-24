@@ -36,7 +36,7 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 23    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -63,7 +63,7 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) skillPress(travel int) action.Info {
+func (c *char) skillPress(travel int) (action.Info, error) {
 	c.pawsPewPew(skillPressHitmark, travel, 2)
 	c.SetCDWithDelay(action.ActionSkill, 360, skillPressHitmark)
 
@@ -72,10 +72,10 @@ func (c *char) skillPress(travel int) action.Info {
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
-func (c *char) skillHold(travel int) action.Info {
+func (c *char) skillHold(travel int) (action.Info, error) {
 	c.pawsPewPew(skillHoldHitmark, travel, 5)
 	c.SetCDWithDelay(action.ActionSkill, 900, skillHoldHitmark)
 
@@ -84,7 +84,7 @@ func (c *char) skillHold(travel int) action.Info {
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) pawsPewPew(f, travel, pawCount int) {
