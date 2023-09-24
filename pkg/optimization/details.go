@@ -170,7 +170,9 @@ func (stats *SubstatOptimizerDetails) allocateSubstatGradientForChar(
 	// If DPS change is really low, then it's usually better to just toss a few extra points into ER for stability
 	// But only if the character actually needs ER
 	if gradStat < 50 && crCDSubstatRatio == 0 && stats.charMaxExtraERSubs[idxChar] > 0.1 {
-		stats.assignSubstatsForChar(idxChar, char, attributes.ER, clamp[int](1, 2, int(math.Ceil(stats.charMaxExtraERSubs[idxChar]))))
+		erGiven := clamp[int](1, 2, int(math.Ceil(stats.charMaxExtraERSubs[idxChar])))
+		stats.assignSubstatsForChar(idxChar, char, attributes.ER, erGiven)
+		stats.charMaxExtraERSubs[idxChar] -= float64(erGiven)
 		opDebug = append(opDebug, "Low damage contribution from substats - adding some points to ER instead")
 	}
 
