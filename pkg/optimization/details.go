@@ -475,7 +475,7 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats() []string {
 	// She is set to 4 ER subs for now, so her ult does +/- 2 flat energy from calculated
 
 	// Fix ER at previously found values then optimize all other substats
-	opDebug = append(opDebug, "Optimized ER Liquid Substats by character:")
+	opDebug = append(opDebug, "Initial Calculated ER Liquid Substats by character:")
 	printVal := ""
 	for i := range stats.charProfilesInitial {
 		printVal += fmt.Sprintf(
@@ -525,8 +525,6 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 		stats.charMaxExtraERSubs[idxChar] =
 			float64(erStack) - (*result.Statistics.WeightedEr[idxChar].Min-*result.Statistics.ErNeeded[idxChar].Max)/
 				stats.substatValues[attributes.ER]
-		fmt.Println(stats.simcfg.Characters[idxChar].Base.Key.Pretty(), ": has ", (*result.Statistics.WeightedEr[idxChar].Min-*result.Statistics.ErNeeded[idxChar].Max)/
-			stats.substatValues[attributes.ER], " for best case ER removal and ", erStack, " for current ER removal")
 		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
 		stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
 		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
