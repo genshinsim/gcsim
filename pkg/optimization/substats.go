@@ -71,11 +71,13 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		o.logger.Info(debugLog)
 	}
 
+	o.logger.Info("Calculating optimal DMG substat distribution...")
 	debugLogs = o.details.optimizeNonERSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)
 	}
 
+	o.logger.Info("Fine tuning optimal ER vs DMG substat distribution...")
 	debugLogs = o.details.optimizeERAndDMGSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)
