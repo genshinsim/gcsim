@@ -9,9 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-// 30 = .5s
-const bucketSize int = 30
-
 func init() {
 	stats.Register(NewStat)
 }

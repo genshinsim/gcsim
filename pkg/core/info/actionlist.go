@@ -46,7 +46,7 @@ type SimulatorSettings struct {
 	EnableHitlag    bool    `json:"enable_hitlag"`
 	DefHalt         bool    `json:"def_halt"` // for hitlag
 	ErCalc          bool    `json:"er_calc"`
-	ExpectedCritDmg bool    `json:"expected_dmg"`
+	ExpectedCritDmg bool    `json:"expected_crit_dmg"`
 	// other stuff
 	NumberOfWorkers int    `json:"-"`          // how many workers to run the simulation
 	Iterations      int    `json:"iterations"` // how many iterations to run
