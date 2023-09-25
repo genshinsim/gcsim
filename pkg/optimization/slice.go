@@ -31,15 +31,3 @@ func newSlice(n ...float64) *Slice {
 	}
 	return s
 }
-
-// Gets the minimum of a slice of integers
-func minInt(vars ...int) int {
-	min := vars[0]
-
-	for _, val := range vars {
-		if min > val {
-			min = val
-		}
-	}
-	return min
-}
