@@ -17,7 +17,7 @@ const c4ICDKey = "travelerhydro-c4-icd"
 // the DMG Absorption of the Aegis will be restored to 10% of the Traveler's Max HP. If the Traveler is not presently
 // being protected by an Aegis, one will be redeployed.
 func (c *char) c4() {
-	existingShield := c.Core.Player.Shields.Get(shield.ShieldTravelerC4)
+	existingShield := c.Core.Player.Shields.Get(shield.ShieldTravelerHydroC4)
 	if existingShield != nil {
 		// update hp
 		shd, _ := existingShield.(*shield.Tmpl)
@@ -30,7 +30,7 @@ func (c *char) c4() {
 	// add shield
 	c.Core.Player.Shields.Add(&shield.Tmpl{
 		Src:        c.Core.F,
-		ShieldType: shield.ShieldTravelerC4,
+		ShieldType: shield.ShieldTravelerHydroC4,
 		Name:       "Traveler (Hydro) C4",
 		HP:         0.1 * c.MaxHP(),
 		Ele:        attributes.Hydro,
@@ -38,25 +38,36 @@ func (c *char) c4() {
 	})
 }
 
-func (c *char) c4CB(a combat.AttackCB) {
+func (c *char) makeC4CB() combat.AttackCBFunc {
 	if c.Base.Cons < 4 {
-		return
+		return nil
 	}
-	if a.Target.Type() != targets.TargettableEnemy {
-		return
-	}
-	if c.StatusIsActive(c4ICDKey) {
-		return
-	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(c4ICDKey) {
+			return
+		}
 
-	c.c4()
-	c.AddStatus(c4ICDKey, 2*60, true)
+		c.c4()
+		c.AddStatus(c4ICDKey, 2*60, true)
+	}
+}
+
+func (c *char) c4Remove() {
+	existingShield := c.Core.Player.Shields.Get(shield.ShieldTravelerHydroC4)
+	if existingShield == nil {
+		return
+	}
+	shd, _ := existingShield.(*shield.Tmpl)
+	shd.Expires = c.Core.F + 1
 }
 
 // When the Traveler picks up a Sourcewater Droplet, they will restore HP to a nearby party member with the lowest
 // remaining HP percentage based on 6% of said member's Max HP.
 func (c *char) c6() {
-	lowest := c.Index // TODO: can heal myself?
+	lowest := c.Index
 	chars := c.Core.Player.Chars()
 	for i, char := range chars {
 		if char.CurrentHPRatio() < chars[lowest].CurrentHPRatio() {

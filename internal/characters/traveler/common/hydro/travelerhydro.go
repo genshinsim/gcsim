@@ -22,7 +22,7 @@ func NewChar(gender int) core.NewCharacterFunc {
 		c.Character = tmpl.NewWithWrapper(s, w)
 
 		c.Base.Element = attributes.Hydro
-		c.EnergyMax = 60
+		c.EnergyMax = 80
 		c.BurstCon = 5
 		c.SkillCon = 3
 		c.NormalHitNum = normalHitNum

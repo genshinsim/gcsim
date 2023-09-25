@@ -2016,7 +2016,7 @@
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "notes": "Only skill and burst followed by walk have proper frames."
     },
     {
       "ability": "swap",

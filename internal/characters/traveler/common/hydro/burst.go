@@ -6,28 +6,32 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: anemomc based frames
-var burstHitmarks = []int{96, 94}
-var burstFrames [][]int
+var (
+	burstFirstHitmark  = []int{30, 36}
+	consumeEnergyFrame = []int{4, 6}
+
+	burstFrames [][]int
+)
 
 func init() {
 	burstFrames = make([][]int, 2)
 
 	// Male
-	burstFrames[0] = frames.InitAbilSlice(110) // Q -> N1
-	burstFrames[0][action.ActionSkill] = 109   // Q -> E
-	burstFrames[0][action.ActionDash] = 96     // Q -> D
-	burstFrames[0][action.ActionJump] = 96     // Q -> J
-	burstFrames[0][action.ActionSwap] = 100    // Q -> Swap
+	burstFrames[0] = frames.InitAbilSlice(78) // Q -> E/D/Walk
+	burstFrames[0][action.ActionAttack] = 76  // Q -> N1
+	burstFrames[0][action.ActionJump] = 77    // Q -> J
+	burstFrames[0][action.ActionSwap] = 76    // Q -> Swap
 
 	// Female
-	burstFrames[1] = frames.InitAbilSlice(105) // Q -> N1
-	burstFrames[1][action.ActionSkill] = 104   // Q -> E
-	burstFrames[1][action.ActionDash] = 90     // Q -> D
-	burstFrames[1][action.ActionJump] = 90     // Q -> J
-	burstFrames[1][action.ActionSwap] = 95     // Q -> Swap
+	burstFrames[1] = frames.InitAbilSlice(78) // Q -> Walk
+	burstFrames[1][action.ActionAttack] = 77  // Q -> N1
+	burstFrames[1][action.ActionSkill] = 77   // Q -> E
+	burstFrames[1][action.ActionDash] = 77    // Q -> D
+	burstFrames[1][action.ActionJump] = 77    // Q -> J
+	burstFrames[1][action.ActionSwap] = 76    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -35,37 +39,44 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Rising Waters",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst, // or the new one?
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupTravelerBurst,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       burstDot[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 0.15)
 	snap := c.Snapshot(&ai)
 
-	duration := burstHitmarks[c.gender] + 4*60
 	burstTicks := 8 // 4s duration * 0.5s tick
+	burstSpeed := 1.5
 	// The Movement SPD of Rising Waters' bubble will be decreased by 30%, and its duration increased by 3s.
 	if c.Base.Cons >= 2 {
 		burstTicks = 14 // 7s duration * 0.5s tick
-		duration += 3 * 60
+		burstSpeed = 1.05
 	}
-	c.Core.Status.Add("hmcburst", duration)
 
+	firstHitmark := burstFirstHitmark[c.gender]
+	initialPos := c.Core.Combat.Player().Pos()
+	initialDirection := c.Core.Combat.Player().Direction()
 	for i := 0; i < burstTicks; i++ {
-		// TODO: movable burst?
-		c.Core.QueueAttackWithSnap(ai, snap, ap, 94+30*i)
+		nextPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: burstSpeed * float64(i)}, initialDirection)
+		// TODO: Trigger the 0.15m AoE attack for every enemy within 2.5m (estimation) of the calculated pos to emulate the burst triggering its 0.15m AoE attack on collision.
+		c.Core.QueueAttackWithSnap(ai,
+			snap,
+			combat.NewCircleHit(c.Core.Combat.Player(), nextPos, nil, 0.15),
+			firstHitmark+30*i,
+		)
+
 	}
 
 	c.SetCD(action.ActionBurst, 20*60)
-	c.ConsumeEnergy(3)
+	c.ConsumeEnergy(consumeEnergyFrame[c.gender])
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   burstFrames[c.gender][action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[c.gender][action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
 }

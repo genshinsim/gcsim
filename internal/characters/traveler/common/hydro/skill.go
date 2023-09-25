@@ -12,15 +12,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-// TODO: dendromc/anemomc based frames
 var (
 	skillPressFrames     [][]int
+	skillShortHoldFrames [][]int
 	skillHoldDelayFrames [][]int
 )
 
 const (
-	skillPressHitmark = 28
-	skillPressCdStart = 25
+	skillPressHitmark            = 28
+	skillPressCdStart            = 24
+	skillPressMaleHitmark        = 25
+	skillPressFemaleHitmark      = 26
+	skillPressSpiritThornHitmark = 70
+
+	skillShortHoldCdStart                  = 56
+	skillShortHoldFirstDewdropRelease      = 54
+	skillShortHoldTorrentSurgeHitmark      = 57
+	skillShortHoldSpiritbreathThornHitmark = 103
 
 	particleICDKey          = "travelerhydro-particle-icd"
 	spiritbreathThornICDKey = "travelerhydro-spiritbreath-icd"
@@ -32,16 +40,41 @@ func init() {
 	skillPressFrames = make([][]int, 2)
 
 	// Male
-	skillPressFrames[0] = frames.InitAbilSlice(37) // E -> N1
-	skillPressFrames[0][action.ActionDash] = 29    // E -> D
-	skillPressFrames[0][action.ActionJump] = 29    // E -> J
-	skillPressFrames[0][action.ActionSwap] = 36    // E -> Swap
+	skillPressFrames[0] = frames.InitAbilSlice(45) // Tap E -> E
+	skillPressFrames[0][action.ActionAttack] = 44  // Tap E -> N1
+	skillPressFrames[0][action.ActionBurst] = 44   // Tap E -> Q
+	skillPressFrames[0][action.ActionDash] = 40    // Tap E -> D
+	skillPressFrames[0][action.ActionJump] = 41    // Tap E -> J
+	skillPressFrames[0][action.ActionWalk] = 44    // Tap E -> Walk
+	skillPressFrames[0][action.ActionSwap] = 43    // Tap E -> Swap
 
 	// Female
-	skillPressFrames[1] = frames.InitAbilSlice(37) // E -> N1/Q
-	skillPressFrames[1][action.ActionDash] = 28    // E -> D
-	skillPressFrames[1][action.ActionJump] = 28    // E -> J
-	skillPressFrames[1][action.ActionSwap] = 35    // E -> Swap
+	skillPressFrames[1] = frames.InitAbilSlice(44) // Tap E -> E/Q/Walk
+	skillPressFrames[1][action.ActionAttack] = 43  // Tap E -> N1
+	skillPressFrames[1][action.ActionDash] = 41    // Tap E -> D
+	skillPressFrames[1][action.ActionJump] = 40    // Tap E -> J
+	skillPressFrames[1][action.ActionSwap] = 43    // Tap E -> Swap
+
+	// Short Hold E
+	skillShortHoldFrames = make([][]int, 2)
+
+	// Male
+	skillShortHoldFrames[0] = frames.InitAbilSlice(90) // Short Hold E -> Swap
+	skillShortHoldFrames[0][action.ActionAttack] = 81  // Short Hold E -> N1
+	skillShortHoldFrames[0][action.ActionSkill] = 81   // Short Hold E -> E
+	skillShortHoldFrames[0][action.ActionBurst] = 81   // Short Hold E -> Q
+	skillShortHoldFrames[0][action.ActionDash] = 74    // Short Hold E -> D
+	skillShortHoldFrames[0][action.ActionJump] = 74    // Short Hold E -> J
+	skillShortHoldFrames[0][action.ActionWalk] = 81    // Short Hold E -> Walk
+
+	// Female
+	skillShortHoldFrames[1] = frames.InitAbilSlice(89) // Short Hold E -> Swap
+	skillShortHoldFrames[1][action.ActionAttack] = 81  // Short Hold E -> N1
+	skillShortHoldFrames[1][action.ActionSkill] = 81   // Short Hold E -> E
+	skillShortHoldFrames[1][action.ActionBurst] = 81   // Short Hold E -> Q
+	skillShortHoldFrames[1][action.ActionDash] = 74    // Short Hold E -> D
+	skillShortHoldFrames[1][action.ActionJump] = 73    // Short Hold E -> J
+	skillShortHoldFrames[1][action.ActionWalk] = 80    // Short Hold E -> Walk
 
 	// Short Hold E as base for Hold E frames
 	// "2 tick duration - 2 tick last hitmark"
@@ -74,6 +107,7 @@ func (c *char) SkillPress() action.ActionInfo {
 		AnimationLength: skillPressFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
 	}
 }
 
@@ -117,11 +151,11 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 			c.skillLosingHP(&aiHold)
 			c.Core.QueueAttack(
 				aiHold,
-				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 0.3, 1.3), // TODO: or single target hit?
+				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
 				1,
 				1,
-				c.a1,
-				c.c4CB,
+				c.makeA1CB(),
+				c.makeC4CB(),
 			)
 			aiHold.FlatDmg = 0
 		}, hitmark-1)
@@ -133,21 +167,22 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	return action.ActionInfo{
 		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.gender][next] + hitmark },
 		AnimationLength: skillHoldDelayFrames[c.gender][action.InvalidAction] + hitmark,
-		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionDash] + hitmark, // earliest cancel
+		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionJump] + hitmark, // earliest cancel
 		State:           action.SkillState,
+		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
 	}
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
 	holdTicks := 0
 	if p["hold"] == 1 {
-		holdTicks = 21
+		holdTicks = 22
 	}
 	if p["hold_ticks"] > 0 {
 		holdTicks = p["hold_ticks"]
 	}
-	if holdTicks > 21 {
-		holdTicks = 21
+	if holdTicks > 22 {
+		holdTicks = 22
 	}
 
 	if holdTicks == 0 {
@@ -170,12 +205,6 @@ func (c *char) torrentSurge() {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	// If HP has been consumed via Suffusion while using the Hold Mode Aquacrest Saber, the Torrent Surge at the skill's end
-	// will deal Bonus DMG equal to 45% of the total HP the Traveler has consumed in this skill use via Suffusion.
-	// The maximum DMG Bonus that can be gained this way is 5,000.
-	if c.a4Bonus > 5000 {
-		c.a4Bonus = 5000
-	}
 	if c.Base.Ascension >= 4 {
 		ai.FlatDmg += c.a4Bonus
 		c.a4Bonus = 0
@@ -186,18 +215,19 @@ func (c *char) torrentSurge() {
 
 	if !c.StatusIsActive(spiritbreathThornICDKey) {
 		ai = combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Spiritbreath Thorn",
-			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 0,
-			Mult:       spiritbreathThorn[c.TalentLvlSkill()],
+			ActorIndex:         c.Index,
+			Abil:               "Spiritbreath Thorn",
+			AttackTag:          attacks.AttackTagElementalArt,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypePierce,
+			Element:            attributes.Hydro,
+			Durability:         0,
+			Mult:               spiritbreathThorn[c.TalentLvlSkill()],
+			CanBeDefenseHalted: true,
 		}
 
-		c.Core.QueueAttack(ai, hitbox, 0.7*60, 0.7*60, c.skillParticleCB)
+		c.Core.QueueAttack(ai, hitbox, 0.7*60, 0.7*60)
 		c.AddStatus(spiritbreathThornICDKey, 9*60, true)
 	}
 }
@@ -217,9 +247,17 @@ func (c *char) skillLosingHP(ai *combat.AttackInfo) {
 		Abil:       "Suffusion",
 		Amount:     drainHP,
 	})
+
+	// If HP has been consumed via Suffusion while using the Hold Mode Aquacrest Saber, the Torrent Surge at the skill's end
+	// will deal Bonus DMG equal to 45% of the total HP the Traveler has consumed in this skill use via Suffusion.
+	// The maximum DMG Bonus that can be gained this way is 5,000.
 	if c.Base.Ascension >= 4 {
 		c.a4Bonus += drainHP * 0.45
-		c.Core.Log.NewEvent("hmc a4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
+		if c.a4Bonus > 5000 {
+			c.a4Bonus = 5000
+		}
+
+		c.Core.Log.NewEvent("travelerhydro a4 adding dmg bonus", glog.LogCharacterEvent, c.Index).
 			Write("dmg bonus", c.a4Bonus)
 	}
 	c.AddStatus(skillLosingHPICDKey, 0.9*60, true)
