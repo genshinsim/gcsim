@@ -14,7 +14,7 @@ func init() {
 }
 
 // sucrose's dash can be cancelled by her E and Q, so we override it here. wtf sucrose
-func (c *char) Dash(p map[string]int) action.Info {
+func (c *char) Dash(p map[string]int) (action.Info, error) {
 	// call default implementation to handle stamina
 	c.Character.Dash(p)
 	return action.Info{
@@ -22,5 +22,5 @@ func (c *char) Dash(p map[string]int) action.Info {
 		AnimationLength: dashFrames[action.InvalidAction],
 		CanQueueAfter:   dashFrames[action.ActionSkill], // earliest cancel
 		State:           action.DashState,
-	}
+	}, nil
 }

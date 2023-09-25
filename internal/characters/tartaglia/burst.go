@@ -37,7 +37,7 @@ func init() {
 // Performs a different attack depending on the stance in which it is cast.
 // Ranged Stance: dealing AoE Hydro DMG. Apply Riptide status to enemies hit. Returns 20 Energy after use
 // Melee Stance: dealing AoE Hydro DMG. Triggers Riptide Blast (clear riptide after triggering riptide blast)
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Ranged Stance: Flash of Havoc",
@@ -95,5 +95,5 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: cancels[action.InvalidAction],
 		CanQueueAfter:   cancels[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

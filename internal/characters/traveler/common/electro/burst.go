@@ -37,7 +37,7 @@ func init() {
 [12:01 PM] pai: the 3 hits from the skill also like split out and kind of auto target if that's useful information
 *
 */
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bellowing Thunder",
@@ -81,7 +81,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   burstFrames[c.gender][action.ActionJump], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstProc() {

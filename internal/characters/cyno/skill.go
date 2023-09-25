@@ -39,7 +39,7 @@ func init() {
 	skillBFrames[action.ActionSwap] = 33
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(BurstKey) {
 		return c.skillB()
 	}
@@ -76,10 +76,10 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
-func (c *char) skillB() action.Info {
+func (c *char) skillB() (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             skillBName,
@@ -152,7 +152,7 @@ func (c *char) skillB() action.Info {
 		AnimationLength: skillBFrames[action.InvalidAction],
 		CanQueueAfter:   skillBFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) triggerSkillCD() {

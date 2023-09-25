@@ -28,7 +28,7 @@ func init() {
 
 // Yanfei skill - Straightforward as it has little interactions with the rest of her kit
 // Summons flames that deal AoE Pyro DMG. Opponents hit by the flames will grant Yanfei the maximum number of Scarlet Seals.
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	done := false
 	addSeal := func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
@@ -80,7 +80,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

@@ -35,7 +35,7 @@ func init() {
 
 // Has two parameters, "bounce" determines the number of bounces that hit
 // "mine" determines the number of mines that hit the enemy
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	type attackData struct {
 		ai   combat.AttackInfo
 		snap combat.Snapshot
@@ -147,7 +147,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		c.c1(bounceHitmarks[0] - cooldownDelay)
 		c.SetCD(action.ActionSkill, 1200)
 	}, cooldownDelay)
-	return actionInfo
+	return actionInfo, nil
 }
 
 func (c *char) makeParticleCB() combat.AttackCBFunc {

@@ -21,7 +21,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 47
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// tag a4
 	// first hit at 137, then 113 frames between hits
 	duration := 360
@@ -101,7 +101,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) absorbCheck(src, count, max int) func() {

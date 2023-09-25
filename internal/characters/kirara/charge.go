@@ -27,7 +27,7 @@ func init() {
 	chargeFrames[action.ActionSwap] = 37
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	for i, mult := range charge {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -62,5 +62,5 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

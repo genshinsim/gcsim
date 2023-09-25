@@ -23,7 +23,7 @@ func init() {
 }
 
 // Burst - doesn't do much other than damage, so fairly straightforward
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// snapshots before or during Burst Animation
 	// https://library.keqingmains.com/evidence/characters/cryo/aloy#burst-mechanics
 	ai := combat.AttackInfo{
@@ -53,5 +53,5 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

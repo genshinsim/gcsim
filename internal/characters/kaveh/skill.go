@@ -27,7 +27,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 44
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		Abil:       "Artistic Ingenuity (E)",
 		ActorIndex: c.Index,
@@ -55,7 +55,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) ruptureDendroCores(ap combat.AttackPattern) {

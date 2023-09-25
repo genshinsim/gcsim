@@ -27,7 +27,7 @@ func init() {
 }
 
 // Charge attack function - handles seal use
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// check for seal stacks
 	if !c.StatusIsActive(sealBuffKey) {
 		c.sealCount = 0
@@ -77,5 +77,5 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   chargeFrames[action.ActionJump] - windup, // earliest cancel is before hitmark
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

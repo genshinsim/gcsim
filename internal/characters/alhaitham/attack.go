@@ -48,7 +48,7 @@ func init() {
 	attackFrames[4][action.ActionAttack] = 67
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	strikeType := attacks.StrikeTypeSlash
 	if c.NormalCounter == 1 {
 		strikeType = attacks.StrikeTypeSpear
@@ -101,5 +101,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

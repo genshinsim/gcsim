@@ -40,7 +40,7 @@ func init() {
 }
 
 // Standard aimed attack
-func (c *char) Aimed(p map[string]int) action.Info {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -133,5 +133,5 @@ func (c *char) Aimed(p map[string]int) action.Info {
 		AnimationLength: aimedFrames[kindling][action.InvalidAction],
 		CanQueueAfter:   aimedHitmarks[kindling],
 		State:           action.AimState,
-	}
+	}, nil
 }

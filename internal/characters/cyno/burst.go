@@ -24,7 +24,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 83
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstExtension = 0 // resets the number of possible extensions to the burst each time
 	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
@@ -60,7 +60,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) tryBurstPPSlide(hitmark int) {
