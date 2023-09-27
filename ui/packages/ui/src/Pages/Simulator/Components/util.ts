@@ -104,7 +104,7 @@ export const GOODStatToIndexMap: { [key in string]: number } = {
   atk: 5,
   atk_: 6,
   enerRech_: 7,
-  elesMas: 8,
+  eleMas: 8,
   critRate_: 9,
   critDMG_: 10,
   heal: 11,
