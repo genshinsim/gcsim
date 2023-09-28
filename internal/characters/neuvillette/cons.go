@@ -98,7 +98,7 @@ func (c *char) c6cb(atk combat.AttackCB) {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
-			FlatDmg:    0.1 * c.MaxHP(),
+			FlatDmg:    0.1 * c.MaxHP() * a1Multipliers[c.countA1()],
 		}
 		ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 8)
 		c.Core.QueueAttack(ai, ap, 0, 0)

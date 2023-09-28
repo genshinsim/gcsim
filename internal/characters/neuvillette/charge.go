@@ -151,7 +151,7 @@ func (c *char) judgementWave() {
 	// since sim changing position and/or primary target during the CA is not supported?
 	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 8)
 	if c.Base.Ascension >= 1 {
-		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * float64(c.countA1())
+		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * a1Multipliers[c.countA1()]
 	}
 	c.Core.QueueAttack(c.chargeAi, ap, 0, 0, c.c6cb)
 
