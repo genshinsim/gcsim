@@ -16,8 +16,7 @@ const normalHitNum = 3
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{23, 15, 26}
-	attackHitboxes = [][]float64{{2, 8}, {2.5, 8}, {2.5, 8}}
-	attackOffsets  = []float64{0, 0, 0}
+	attackHitboxes = []float64{1.0, 1.0, 1.5}
 )
 
 func init() {
@@ -66,12 +65,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHit(
-			c.Core.Combat.Player(),
+		combat.NewCircleHitOnTarget(
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][0],
-			attackHitboxes[c.NormalCounter][1],
+			geometry.Point{},
+			attackHitboxes[c.NormalCounter],
 		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
