@@ -46,9 +46,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	apInitialHit := combat.NewCircleHitOnTarget(player, geometry.Point{}, 8)
 	apWaterfall := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 5)
 
-	c.Core.QueueAttack(aiIninitialHit, apInitialHit, 0, 100)
-	c.Core.QueueAttack(aiWaterfall, apWaterfall, 0, 124)
-	c.Core.QueueAttack(aiWaterfall, apWaterfall, 0, 148)
+	c.Core.QueueAttack(aiIninitialHit, apInitialHit, 100, 100)
+	c.Core.QueueAttack(aiWaterfall, apWaterfall, 124, 124)
+	c.Core.QueueAttack(aiWaterfall, apWaterfall, 148, 148)
 	// and will generate 6 Sourcewater Droplets within an area in front.
 	c.Core.Tasks.Add(
 		func() {
