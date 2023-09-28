@@ -60,7 +60,7 @@ func (s *Server) CreateShare() http.HandlerFunc {
 		}
 
 		res := &model.SimulationResult{}
-		err = res.UnmarshalJson(data)
+		err = res.UnmarshalJSON(data)
 		if err != nil {
 			s.Log.Infow("create share request - unmarshall failed", "err", err)
 			http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -99,7 +99,7 @@ func (s *Server) sendShare(w http.ResponseWriter, r *http.Request, key string) {
 		s.Log.Errorw("unexpected error getting share", "err", err)
 		return
 	}
-	d, err := share.MarshalJson()
+	d, err := share.MarshalJSON()
 	if err != nil {
 		s.Log.Errorw("unexpected error marshalling to json", "err", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -138,19 +138,17 @@ func (s *Server) GetShareByDBID() http.HandlerFunc {
 
 func (s *Server) GetRandomShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		share, err := s.cfg.ShareStore.Random(r.Context())
-		switch err {
-		case nil:
+		switch {
+		case err == nil:
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(share))
-		case ErrKeyNotFound:
+		case errors.Is(err, ErrKeyNotFound):
 			w.WriteHeader(http.StatusNotFound)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
 			s.Log.Errorw("unexpected error getting share", "err", err)
 		}
-
 	}
 }

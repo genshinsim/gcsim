@@ -71,19 +71,19 @@ export class WasmExecutor implements Executor {
     for (let i = 0; i < diff; i++) {
       promises.push(new Promise<boolean>((resolve, reject) => {
         const worker = new Worker(new URL("./Workers/worker.ts", import.meta.url));
-        worker.postMessage(SimWorker.ReadyRequest(this.wasmPath));
+          worker.postMessage(SimWorker.ReadyRequest(this.wasmPath));
 
-        const idx = this.workers.push(worker) - 1;
-        worker.onmessage = (ev) => {
-          switch (ev.data.type as SimWorker.Response) {
-            case SimWorker.Response.Ready:
-              resolve(true);
-              return;
-            case SimWorker.Response.Failed:
+          const idx = this.workers.push(worker) - 1;
+          worker.onmessage = (ev) => {
+            switch (ev.data.type as SimWorker.Response) {
+              case SimWorker.Response.Ready:
+                resolve(true);
+                return;
+              case SimWorker.Response.Failed:
               reject("Worker " + idx + " " + (ev.data as SimWorker.FailedResponse).reason);
-              return;
-          }
-        };
+                return;
+            }
+          };
       }));
     }
     return Promise.all(promises).then(() => true);
@@ -91,7 +91,7 @@ export class WasmExecutor implements Executor {
 
   public run(
         cfg: string, updateResult: (result: SimResults, hash: string) => void
-      ): Promise<boolean | void> {
+  ): Promise<boolean | void> {
     this.isRunning = true;
 
     // 1. Create Aggregator & Workers
@@ -106,40 +106,40 @@ export class WasmExecutor implements Executor {
 
       // initialize aggregator
       promises.push(new Promise<boolean>((resolve, reject) => {
-        if (this.aggregator == null) {
-          reject("Aggregator is null!");
-          return;
-        }
-  
-        this.aggregator.onmessage = (ev) => {
-          switch (ev.data.type as Aggregator.Response) {
-            case Aggregator.Response.Initialized:
-              result = (ev.data as Aggregator.InitializeResponse).result;
-              maxIterations = result?.simulator_settings?.iterations ?? 1000;
-              resolve(true);
-              return;
-            case Aggregator.Response.Failed:
-              reject((ev.data as Aggregator.FailedResponse).reason);
-              return;
+          if (this.aggregator == null) {
+            reject("Aggregator is null!");
+            return;
           }
-        };
-        this.aggregator.postMessage(Aggregator.InitializeRequest(cfg));
+
+          this.aggregator.onmessage = (ev) => {
+            switch (ev.data.type as Aggregator.Response) {
+              case Aggregator.Response.Initialized:
+                result = (ev.data as Aggregator.InitializeResponse).result;
+                maxIterations = result?.simulator_settings?.iterations ?? 1000;
+                resolve(true);
+                return;
+              case Aggregator.Response.Failed:
+                reject((ev.data as Aggregator.FailedResponse).reason);
+                return;
+            }
+          };
+          this.aggregator.postMessage(Aggregator.InitializeRequest(cfg));
       }));
 
       // initialize workers
       this.workers.forEach((worker) => {
         promises.push(new Promise<boolean>((resolve, reject) => {
-          worker.onmessage = (ev) => {
-            switch (ev.data.type as SimWorker.Response) {
-              case SimWorker.Response.Initialized:
-                resolve(true);
-                return;
-              case SimWorker.Response.Failed:
-                reject((ev.data as SimWorker.FailedResponse).reason);
-                return;
-            }
-          };
-          worker.postMessage(SimWorker.InitializeRequest(cfg));
+            worker.onmessage = (ev) => {
+              switch (ev.data.type as SimWorker.Response) {
+                case SimWorker.Response.Initialized:
+                  resolve(true);
+                  return;
+                case SimWorker.Response.Failed:
+                  reject((ev.data as SimWorker.FailedResponse).reason);
+                  return;
+              }
+            };
+            worker.postMessage(SimWorker.InitializeRequest(cfg));
         }));
       });
 
@@ -147,65 +147,67 @@ export class WasmExecutor implements Executor {
     });
 
     const throttledFlush = throttle(() => {
-      if (this.isRunning) {
-        this.aggregator?.postMessage(Aggregator.FlushRequest());
-      }
+        if (this.isRunning) {
+          this.aggregator?.postMessage(Aggregator.FlushRequest());
+        }
     }, VIEWER_THROTTLE, { leading: true, trailing: true });
 
     // 3. start execution
     return initialized.then(() => {
-      if (this.aggregator == null) {
-        return Promise.reject("Aggregator is null!");
-      }
-
-      let completed = 0;
-      this.aggregator.onmessage = (ev) => {
-        switch (ev.data.type as Aggregator.Response) {
-          case Aggregator.Response.Result:
+      return new Promise((resolve, reject) => {
+        if (this.aggregator == null) {
+          reject("Aggregator is null!");
+          return;
+        }
+        let completed = 0;
+        this.aggregator.onmessage = (ev) => {
+          switch (ev.data.type as Aggregator.Response) {
+            case Aggregator.Response.Result:
             const { hash, stats } = (ev.data as Aggregator.ResultResponse).result;
 
-            const out = Object.assign({}, result);
-            out.statistics = stats;
-            updateResult(out, hash);
+              const out = Object.assign({}, result);
+              out.statistics = stats;
+              updateResult(out, hash);
 
-            if (completed >= maxIterations) {
-              this.isRunning = false;
-              return Promise.resolve(true);
-            }
-            return;
-          case Aggregator.Response.Done:
-            completed += 1;
-            throttledFlush();
-            return;
-          case Aggregator.Response.Failed:
-            // TODO: bug with throttled flush where a flush may happen after a cancel request.
-            //    When this happens, the existing aggregator has no data and fails to flush.
-            //    this doesnt cause any problems (yet) and just produces an error in console.
-            if (this.isRunning) {
-              return Promise.reject((ev.data as Aggregator.FailedResponse).reason);
-            }
-        }
-      };
-
-      let requested = 0;
-      this.workers.forEach((worker) => {
-        worker.onmessage = (ev) => {
-          switch (ev.data.type as SimWorker.Response) {
-            case SimWorker.Response.Done:
-              const resp: SimWorker.RunResponse = ev.data;
-              this.aggregator?.postMessage(Aggregator.AddRequest(resp.result));
-              if (requested < maxIterations) {
-                worker.postMessage(SimWorker.RunRequest(requested++));
+              if (completed >= maxIterations) {
+                this.isRunning = false;
+                resolve(true);
               }
               return;
-            case SimWorker.Response.Failed:
-              return Promise.reject((ev.data as Aggregator.FailedResponse).reason);
+            case Aggregator.Response.Done:
+              completed += 1;
+              throttledFlush();
+              return;
+            case Aggregator.Response.Failed:
+              // TODO: bug with throttled flush where a flush may happen after a cancel request.
+              //    When this happens, the existing aggregator has no data and fails to flush.
+              //    this doesnt cause any problems (yet) and just produces an error in console.
+              if (this.isRunning) {
+                reject((ev.data as Aggregator.FailedResponse).reason);
+              }
           }
         };
 
-        if (requested < maxIterations) {
-          worker.postMessage(SimWorker.RunRequest(requested++));
-        }
+        let requested = 0;
+        this.workers.forEach((worker) => {
+          worker.onmessage = (ev) => {
+            switch (ev.data.type as SimWorker.Response) {
+              case SimWorker.Response.Done:
+                const resp: SimWorker.RunResponse = ev.data;
+              this.aggregator?.postMessage(Aggregator.AddRequest(resp.result));
+                if (requested < maxIterations) {
+                  worker.postMessage(SimWorker.RunRequest(requested++));
+                }
+                return;
+              case SimWorker.Response.Failed:
+                reject((ev.data as Aggregator.FailedResponse).reason);
+            }
+          };
+
+          if (requested < maxIterations) {
+            worker.postMessage(SimWorker.RunRequest(requested++));
+          }
+        });
       });
     });
   }

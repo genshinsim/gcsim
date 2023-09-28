@@ -61,14 +61,14 @@ func (e *Enemy) StatusIsActive(key string) bool    { return e.modIsActive(key) }
 func (e *Enemy) ResistModIsActive(key string) bool { return e.modIsActive(key) }
 func (e *Enemy) DefModIsActive(key string) bool    { return e.modIsActive(key) }
 
-//Expiry
+// Expiry
 
 func (e *Enemy) getModExpiry(key string) int {
 	m := modifier.Find(&e.mods, key)
 	if m != -1 {
 		return e.mods[m].Expiry()
 	}
-	//must be 0 if doesn't exist. avoid using -1 b/c that's infinite
+	// must be 0 if doesn't exist. avoid using -1 b/c that's infinite
 	return 0
 }
 func (e *Enemy) StatusExpiry(key string) int { return e.getModExpiry(key) }
@@ -113,22 +113,22 @@ func (e *Enemy) resist(ai *combat.AttackInfo, evt glog.Event) float64 {
 	return r
 }
 
-func (t *Enemy) defAdj(ai *combat.AttackInfo, evt glog.Event) float64 {
+func (e *Enemy) defAdj(evt glog.Event) float64 {
 	var logDetails []interface{}
 	var sb strings.Builder
 
-	if t.Core.Flags.LogDebug {
-		logDetails = make([]interface{}, 0, 3*len(t.mods))
+	if e.Core.Flags.LogDebug {
+		logDetails = make([]interface{}, 0, 3*len(e.mods))
 	}
 
 	var r float64
-	for _, v := range t.mods {
+	for _, v := range e.mods {
 		m, ok := v.(*combat.DefMod)
 		if !ok {
 			continue
 		}
-		if m.Expiry() > t.Core.F {
-			if t.Core.Flags.LogDebug {
+		if m.Expiry() > e.Core.F {
+			if e.Core.Flags.LogDebug {
 				sb.WriteString(m.Key())
 				logDetails = append(logDetails, sb.String(), []string{
 					"status: added",
@@ -142,7 +142,7 @@ func (t *Enemy) defAdj(ai *combat.AttackInfo, evt glog.Event) float64 {
 	}
 
 	// No need to output if def was not modified
-	if t.Core.Flags.LogDebug && len(logDetails) > 1 {
+	if e.Core.Flags.LogDebug && len(logDetails) > 1 {
 		evt.Write("def_mods", logDetails)
 	}
 

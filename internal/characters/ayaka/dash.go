@@ -20,13 +20,13 @@ func init() {
 }
 
 // TODO: move this into PostDash event instead
-func (c *char) Dash(p map[string]int) action.ActionInfo {
+func (c *char) Dash(p map[string]int) (action.Info, error) {
 	f, ok := p["f"]
 	if !ok {
 		f = 0
 	}
 
-	//no dmg attack at end of dash
+	// no dmg attack at end of dash
 	ai := combat.AttackInfo{
 		Abil:       "Dash",
 		ActorIndex: c.Index,
@@ -46,7 +46,7 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 		c.makeA4CB(),
 	)
 
-	//add cryo infuse
+	// add cryo infuse
 	//TODO: check weapon infuse timing; this SHOULD be ok?
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.AddWeaponInfuse(
@@ -62,10 +62,10 @@ func (c *char) Dash(p map[string]int) action.ActionInfo {
 	// handle stamina usage, avoid default dash implementation since dont want CD
 	c.QueueDashStaminaConsumption(p)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return dashFrames[next] + f },
 		AnimationLength: dashFrames[action.InvalidAction] + f,
 		CanQueueAfter:   dashFrames[action.ActionDash] + f, // earliest cancel
 		State:           action.DashState,
-	}
+	}, nil
 }

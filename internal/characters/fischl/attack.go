@@ -27,7 +27,7 @@ func init() {
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 67)
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -57,7 +57,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		attackHitmarks[c.NormalCounter]+travel,
 	)
 
-	//check for c1
+	// check for c1
 	if c.Base.Cons >= 1 && c.ozActiveUntil < c.Core.F {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -86,10 +86,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

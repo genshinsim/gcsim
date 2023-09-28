@@ -51,7 +51,7 @@ func init() {
 	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	for i := 0; i < hits[c.NormalCounter]; i++ {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -85,17 +85,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 				attackHitboxes[c.NormalCounter][1],
 			)
 		}
-		//the multihit part generates no hitlag so this is fine
+		// the multihit part generates no hitlag so this is fine
 		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter][i], attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackEarliestCancel[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
-
+	}, nil
 }

@@ -26,7 +26,7 @@ func (c *char) c2() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		t := args[0].(combat.Target)
-		//only trigger with the active character
+		// only trigger with the active character
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return false
 		}
@@ -67,7 +67,6 @@ func (c *char) c2() {
 				Src:     (skillHealPP[c.TalentLvlBurst()]*c.MaxHP() + skillHealFlat[c.TalentLvlBurst()]) * 0.2,
 				Bonus:   c.Stat(attributes.Heal),
 			})
-
 		}, skillReturnTravel) // reuse skill for now
 
 		c.AddStatus(c2ICDKey, 60*5, false) // 5s
@@ -88,7 +87,6 @@ func (c *char) c4() {
 			},
 		})
 	}
-
 }
 
 // Increases the DMG dealt by Holistic Revivification's Spiritveins by 8% of Baizhu's Max HP.

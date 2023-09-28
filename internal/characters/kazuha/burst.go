@@ -26,7 +26,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 90    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	player := c.Core.Combat.Player()
 	c.qAbsorb = attributes.NoElement
 	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
@@ -47,28 +47,30 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 9)
 
-	c.Core.QueueAttack(ai, ap, 0, burstHitmark)
+	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
-	//apply dot and check for absorb
+	// apply dot and check for absorb
 	ai.Abil = "Kazuha Slash (Dot)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	ai.Durability = 25
 	// no more hitlag after initial slash
 	ai.HitlagHaltFrames = 0
-	snap := c.Snapshot(&ai)
 
 	aiAbsorb := ai
 	aiAbsorb.Abil = "Kazuha Slash (Absorb Dot)"
 	aiAbsorb.Mult = burstEleDot[c.TalentLvlBurst()]
 	aiAbsorb.Element = attributes.NoElement
-	snapAbsorb := c.Snapshot(&aiAbsorb)
 
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
 
 	// handle C2
 	// first tick is right before initial hit, ticks every 0.5s while burst is up
 	c.QueueCharTask(func() {
+		// snapshot ticks right before slash
+		c.qTickSnap = c.Snapshot(&ai)
+		c.qTickAbsorbSnap = c.Snapshot(&aiAbsorb)
+
 		c.Core.Status.Add(burstStatus, (burstFirstTick-(burstHitmark-1))+117*4)
 		if c.Base.Cons >= 2 {
 			c.qFieldSrc = c.Core.F
@@ -87,9 +89,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			c.Core.Tasks.Add(func() {
 				if c.qAbsorb != attributes.NoElement {
 					aiAbsorb.Element = c.qAbsorb
-					c.Core.QueueAttackWithSnap(aiAbsorb, snapAbsorb, ap, 0)
+					c.Core.QueueAttackWithSnap(aiAbsorb, c.qTickAbsorbSnap, ap, 0)
 				}
-				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
+				c.Core.QueueAttackWithSnap(ai, c.qTickSnap, ap, 0)
 			}, (burstFirstTick-(burstHitmark+1))+117*i)
 		}
 		// C6:
@@ -100,7 +102,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstHitmark+1)
 
-	//reset skill cd
+	// reset skill cd
 	if c.Base.Cons >= 1 {
 		c.ResetActionCooldown(action.ActionSkill)
 	}
@@ -108,12 +110,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(4)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) absorbCheckQ(src, count, max int) func() {
@@ -126,7 +128,7 @@ func (c *char) absorbCheckQ(src, count, max int) func() {
 		if c.qAbsorb != attributes.NoElement {
 			return
 		}
-		//otherwise queue up
+		// otherwise queue up
 		c.Core.Tasks.Add(c.absorbCheckQ(src, count+1, max), 18)
 	}
 }

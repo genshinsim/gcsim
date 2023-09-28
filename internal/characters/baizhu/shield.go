@@ -15,7 +15,7 @@ func (c *char) newShield(base float64, dur int) *shd {
 	n.Tmpl = &shield.Tmpl{}
 	n.Tmpl.ActorIndex = c.Index
 	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = shield.ShieldBaizhuBurst
+	n.Tmpl.ShieldType = shield.BaizhuBurst
 	n.Tmpl.Ele = attributes.Dendro
 	n.Tmpl.HP = base
 	n.Tmpl.Name = "Baizhu Seamless shield"

@@ -29,7 +29,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 42
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.a4Stacks = 0
 
 	ai := combat.AttackInfo{
@@ -68,12 +68,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}
 	}, burstHitmark)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) addBurstExitHandler() {

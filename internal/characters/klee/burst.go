@@ -24,7 +24,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 101    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sparks'n'Splash",
@@ -39,10 +39,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	//lasts 10 seconds, starts after 2.2 seconds maybe?
+	// lasts 10 seconds, starts after 2.2 seconds maybe?
 	c.Core.Status.Add("kleeq", 600+burstStart)
 
-	//every 1.8 second +on added shoots between 3 to 5, ignore the queue thing.. space it out .2 between each wave i guess
+	// every 1.8 second +on added shoots between 3 to 5, ignore the queue thing.. space it out .2 between each wave i guess
 
 	// snapshot at end of animation?
 	var snap combat.Snapshot
@@ -52,18 +52,18 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for _, start := range waveHitmarks {
 		c.Core.Tasks.Add(func() {
-			//no more if burst has ended early
+			// no more if burst has ended early
 			if c.Core.Status.Duration("kleeq") <= 0 {
 				return
 			}
-			//wave 1 = 1
+			// wave 1 = 1
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 0)
-			//wave 2 = 1 + 30% chance of 1
+			// wave 2 = 1 + 30% chance of 1
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 12)
 			if c.Core.Rand.Float64() < 0.3 {
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 12)
 			}
-			//wave 3 = 1 + 50% chance of 1
+			// wave 3 = 1 + 50% chance of 1
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 24)
 			if c.Core.Rand.Float64() < 0.5 {
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.5), 24)
@@ -71,13 +71,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		}, start)
 	}
 
-	//every 3 seconds add energy if c6
+	// every 3 seconds add energy if c6
 	if c.Base.Cons >= 6 {
 		//TODO: this should eventually use hitlag affected queue and duration
-		//but is not big deal right now b/c klee cant experience hitlag without getting hit
+		// but is not big deal right now b/c klee cant experience hitlag without getting hit
 		for i := burstStart + 180; i < burstStart+600; i += 180 {
 			c.Core.Tasks.Add(func() {
-				//no more if burst has ended early
+				// no more if burst has ended early
 				if c.Core.Status.Duration("kleeq") <= 0 {
 					return
 				}
@@ -110,12 +110,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 9)
 	c.ConsumeEnergy(12)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel frames
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 // clear klee burst when she leaves the field and handle c4
@@ -128,7 +128,7 @@ func (c *char) onExitField() {
 		c.Core.Status.Delete("kleeq")
 
 		if c.Base.Cons >= 4 {
-			//blow up
+			// blow up
 			ai := combat.AttackInfo{
 				ActorIndex:         c.Index,
 				Abil:               "Sparks'n'Splash C4",

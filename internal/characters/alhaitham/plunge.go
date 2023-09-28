@@ -21,21 +21,20 @@ func init() {
 	lowPlungeFrames[action.ActionBurst] = 50
 	lowPlungeFrames[action.ActionDash] = 40
 	lowPlungeFrames[action.ActionSwap] = 58
-
 }
 
-func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
-	//last action must be hold skill
+func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
+	// last action must be hold skill
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["hold"] != 1 {
 		c.Core.Log.NewEvent("only plunge after hold skill ends", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	short := p["short"]
@@ -65,10 +64,10 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		c.projectionAttack,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return lowPlungeFrames[next] - skip },
 		AnimationLength: lowPlungeFrames[action.InvalidAction] - skip,
 		CanQueueAfter:   lowPlungeFrames[action.ActionDash] - skip,
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }

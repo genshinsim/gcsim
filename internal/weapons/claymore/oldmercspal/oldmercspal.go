@@ -1,4 +1,4 @@
-﻿package oldmercspal
+package oldmercspal
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"

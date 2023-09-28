@@ -32,5 +32,4 @@ func evalDendroCore(c *core.Core, key string) (int, error) {
 	default:
 		return 0, fmt.Errorf("bad gadgets (dendrocore) condition: invalid criteria %v", key)
 	}
-
 }

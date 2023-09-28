@@ -7,9 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -28,7 +28,7 @@ const (
 	particleICDKey = "ayato-particle-icd"
 )
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -72,7 +72,6 @@ func (c *char) AdvanceNormalIndex() {
 		if c.NormalCounter == c.NormalHitNum {
 			c.NormalCounter = 0
 		}
-
 	}
 }
 
@@ -88,7 +87,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 			return ds
 		}
 		ai.Element = attributes.Hydro
-		//add namisen stack
+		// add namisen stack
 		flatdmg := c.MaxHP() * skillpp[c.TalentLvlSkill()] * float64(c.stacks)
 		ai.FlatDmg += flatdmg
 		c.Core.Log.NewEvent("namisen add damage", glog.LogCharacterEvent, c.Index).

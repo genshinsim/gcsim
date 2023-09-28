@@ -34,16 +34,16 @@ func init() {
 // High Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionHighPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	collision, ok := p["collision"]
@@ -79,27 +79,27 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 		c.c6cb(),
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
 
 // Low Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          func(action.Action) int { return 1200 },
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	collision, ok := p["collision"]
@@ -135,12 +135,12 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		c.c6cb(),
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
 
 // Plunge normal falling attack damage queue generator

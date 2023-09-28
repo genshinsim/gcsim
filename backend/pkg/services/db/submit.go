@@ -9,7 +9,6 @@ import (
 )
 
 func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitResponse, error) {
-
 	entry := &Entry{
 		Config:      req.GetConfig(),
 		Description: req.GetDescription(),
@@ -27,17 +26,16 @@ func (s *Server) Submit(ctx context.Context, req *SubmitRequest) (*SubmitRespons
 }
 
 func (s *Server) DeletePending(ctx context.Context, req *DeletePendingRequest) (*DeletePendingResponse, error) {
-
 	e, err := s.DBStore.GetById(ctx, req.GetId())
 	if err != nil {
 		return nil, err
 	}
-	//submitter must match sender
+	// submitter must match sender
 	if req.GetSender() != e.Submitter {
 		return nil, status.Error(codes.PermissionDenied, "delete failed; this submission is not owned by you")
 	}
 
-	//can only delete if it's not dbvalid
+	// can only delete if it's not dbvalid
 	if e.IsDbValid {
 		return nil, status.Error(codes.PermissionDenied, "submission already added to db; cannot be deleted")
 	}

@@ -84,7 +84,7 @@ Character PR checklist:
 - [ ] Normal Attack
 - [ ] Charge Attack / Aimed Shot
 - [ ] Skill
-- [ ] Burst 
+- [ ] Burst
 - [ ] A1
 - [ ] A4
 - [ ] C0
@@ -127,7 +127,8 @@ Artifact PR checklist:
 - [ ] 2pc
 - [ ] 4pc
 - [ ] Update documentation
-```
+
+````
 </details>
 
 
@@ -135,18 +136,38 @@ Artifact PR checklist:
 For those who are new to git/github
 
 ```git checkout -b newbranchname``` creates a new branch from your current branch
-If you have committed code, but upon finishing your feature, the main branch has progressed, you are encouraged to rebase it to ensure it still works. 
+If you have committed code, but upon finishing your feature, the main branch has progressed, you are encouraged to rebase it to ensure it still works.
 Please reach out for help if you are not sure how to do this step, the following steps can be dangerous and you can lose your work if not done correctly.
 
 To rebase your branch you will need to run the command
-```
+````
+
 git rebase --onto <newparent> <oldparent>
 git push -f
-```
+
+````
 Where new parent is the commitment hash of the newest commit on the main branch and old parent is the commitment hash of the oldest common commitment between your feature branch and the main branch.
+
+
+# Dev Environment Setup
+
+Install the following:
+- Golang v1.21+: https://go.dev/doc/install
+    - Alternative: https://github.com/stefanmaric/g this will keep golang up to date and configure all the necessary paths for you
+- Git: https://github.com/git-guides/install-git
+- (optional) Protobuf compiler v21+: https://github.com/protocolbuffers/protobuf/releases
+- vscode is the “officially supported” IDE for the repo: https://code.visualstudio.com/
+    - Install the recommended extensions.
+- golangci-lint: If using vscode, should give popup to install
+    - Alternative: manual install https://golangci-lint.run/usage/install/#local-installation
+    - Linters that use diffs (for example: gofmt) require [additional setup on Windows](https://github.com/golangci/golangci-lint/issues/307#issuecomment-1001301930) (This assumes you already installed Git for Windows!):
+        - Open PowerShell as Administrator
+        - execute the following command: setx /M PATH "$($env:path);C:\Program Files\git\usr\bin"
+        - Restart VS Code if it is currently open for the changes to take effect.
 
 # Local Testing/Building
 0. Create a Config file
 1. Navigate to ```./gcsim/cmd/gcsim```
-2. Run ```go build``` to build the executable and then feed your config file in e.g. ```./gcsim.exe -c config.txt -sample config -gz``` OR run ```go run . --c config.txt -sample config -gz``` 
+2. Run ```go build``` to build the executable and then feed your config file in e.g. ```./gcsim.exe -c config.txt -sample config -gz``` OR run ```go run . --c config.txt -sample config -gz```
 3. Upload the generated sample file to the [Sample page](https://gcsim.app/sample/upload) to confirm everything is working accordingly, and optionally share the sample file in discord for debugging help.
+````

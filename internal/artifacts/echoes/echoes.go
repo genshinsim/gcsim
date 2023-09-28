@@ -9,8 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -35,7 +35,7 @@ func (s *Set) Init() error      { return nil }
 //	This effect will be dispelled 0.05s after a Normal Attack deals DMG.
 //	If a Normal Attack fails to trigger Valley Rite, the odds of it triggering the next time will increase by 20%.
 //	This trigger can occur once every 0.2s.
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	procDuration := 3 // 0.05s
 
 	s := Set{}
@@ -55,64 +55,66 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		})
 	}
 
-	if count >= 4 {
-		var dmgAdded float64
+	if count < 4 {
+		return &s, nil
+	}
 
-		c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-			// if the active char is not the equipped char then ignore
-			if c.Player.Active() != char.Index {
-				return false
-			}
+	var dmgAdded float64
 
-			// If attack does not belong to the equipped character then ignore
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
-				return false
-			}
-			// If this is not a normal attack then ignore
-			if atk.Info.AttackTag != attacks.AttackTagNormal {
-				return false
-			}
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+		// if the active char is not the equipped char then ignore
+		if c.Player.Active() != char.Index {
+			return false
+		}
 
-			// if buff is already active then buff attack
-			snATK := char.Base.Atk*(1+char.Stat(attributes.ATKP)) + char.Stat(attributes.ATK)
-			if c.F < s.procExpireF {
-				dmgAdded = snATK * 0.7
-				atk.Info.FlatDmg += dmgAdded
-				c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
-					Write("buff_expiry", s.procExpireF).
-					Write("dmg_added", dmgAdded)
+		// If attack does not belong to the equipped character then ignore
+		atk := args[1].(*combat.AttackEvent)
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
+		// If this is not a normal attack then ignore
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
+			return false
+		}
 
-				return false
-			}
-
-			// If Artifact set effect is still on CD then ignore
-			if c.F < s.icd {
-				return false
-			}
-
-			if c.Rand.Float64() > s.prob {
-				s.prob += 0.2
-				return false
-			}
-
+		// if buff is already active then buff attack
+		snATK := char.Base.Atk*(1+char.Stat(attributes.ATKP)) + char.Stat(attributes.ATK)
+		if c.F < s.procExpireF {
 			dmgAdded = snATK * 0.7
 			atk.Info.FlatDmg += dmgAdded
-
-			s.procExpireF = c.F + procDuration
-			s.icd = c.F + 12 // 0.2s
-
-			c.Log.NewEvent("echoes 4pc proc'd", glog.LogArtifactEvent, char.Index).
-				Write("probability", s.prob).
-				Write("icd", s.icd).
+			c.Log.NewEvent("echoes 4pc adding dmg", glog.LogArtifactEvent, char.Index).
 				Write("buff_expiry", s.procExpireF).
 				Write("dmg_added", dmgAdded)
 
-			s.prob = 0.36
-
 			return false
-		}, fmt.Sprintf("echoes-4pc-%v", char.Base.Key.String()))
-	}
+		}
+
+		// If Artifact set effect is still on CD then ignore
+		if c.F < s.icd {
+			return false
+		}
+
+		if c.Rand.Float64() > s.prob {
+			s.prob += 0.2
+			return false
+		}
+
+		dmgAdded = snATK * 0.7
+		atk.Info.FlatDmg += dmgAdded
+
+		s.procExpireF = c.F + procDuration
+		s.icd = c.F + 12 // 0.2s
+
+		c.Log.NewEvent("echoes 4pc proc'd", glog.LogArtifactEvent, char.Index).
+			Write("probability", s.prob).
+			Write("icd", s.icd).
+			Write("buff_expiry", s.procExpireF).
+			Write("dmg_added", dmgAdded)
+
+		s.prob = 0.36
+
+		return false
+	}, fmt.Sprintf("echoes-4pc-%v", char.Base.Key.String()))
 
 	return &s, nil
 }

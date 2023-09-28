@@ -20,7 +20,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 95    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	low := c.CurrentHPRatio() <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
@@ -37,8 +37,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Bonus:   c.Stat(attributes.Heal),
 	}
 
-	//[2:28 PM] Aluminum | Harbinger of Jank: I think the idea is that PP won't fall off before dmg hits, but other buffs aren't snapshot
-	//[2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
+	// [2:28 PM] Aluminum | Harbinger of Jank: I think the idea is that PP won't fall off before dmg hits, but other buffs aren't snapshot
+	// [2:29 PM] Isu: yes, what Aluminum said. PP can't expire during the burst animation, but any other buff can
 	// if burstHitmark > c.Core.Status.Duration("paramita") && c.Core.Status.Duration("paramita") > 0 {
 	// 	c.Core.Status.Add("paramita", burstHitmark) //extend this to barely cover the burst
 	// 	c.Core.Log.NewEvent("Paramita status extension for burst", glog.LogCharacterEvent, c.Index).
@@ -75,12 +75,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(68)
 	c.SetCDWithDelay(action.ActionBurst, 900, 62)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstHealCB(atk combat.AttackCB) {

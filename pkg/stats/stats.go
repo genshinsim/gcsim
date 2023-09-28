@@ -6,11 +6,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
-type StatsCollector interface {
+type Collector interface {
 	Flush(core *core.Core, result *Result)
 }
 
-type NewStatsFunc func(core *core.Core) (StatsCollector, error)
+type NewStatsFunc func(core *core.Core) (Collector, error)
 
 var (
 	mu         sync.Mutex

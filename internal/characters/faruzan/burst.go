@@ -40,7 +40,7 @@ func init() {
 // Ruin to them, decreasing their Anemo RES.
 // - The Whirlwind Pulse will also apply Prayerful Wind's Gift to all nearby
 // characters when it is unleashed, granting them Anemo DMG Bonus.
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "The Wind's Secret Ways (Q)",
@@ -118,12 +118,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(3)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) applyBurstBuff(char *character.CharWrapper) {

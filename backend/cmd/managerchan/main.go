@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"io"
 	"log"
 	"os"
 	"regexp"
@@ -24,7 +26,7 @@ func main() {
 	sugar := logger.Sugar()
 
 	store, err := backend.New(backend.Config{
-		LinkValidationRegex: regexp.MustCompile(`https:\/\/\S+.app\/\S+\/(\S+)$`),
+		LinkValidationRegex: regexp.MustCompile(`https://\S+.app/\S+/(\S+)$`),
 		ShareStore:          makeShareStore(),
 		DBgRPCAddr:          os.Getenv("DB_STORE_URL"),
 	}, func(s *backend.Store) error {
@@ -35,30 +37,37 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// parse tag mapping from json file
+	f, err := os.Open(os.Getenv("DISCORD_CHAN_TO_TAG_MAPPING_FILE"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	md, _ := io.ReadAll(f)
+	var mapping map[string]model.DBTag
+	err = json.Unmarshal(md, &mapping)
+	if err != nil {
+		log.Panicf("error parsing mapping: %v", err)
+	}
+	log.Printf("starting discord bot with mapping: %v", mapping)
+
 	b, err := discord.New(discord.Config{
 		Token:   os.Getenv("DISCORD_BOT_TOKEN"),
 		Backend: store,
 		//TODO: consider moving this mapping to models maybe?
-		TagMapping: map[string]model.DBTag{
-			"1080228340427927593": model.DBTag_DB_TAG_GCSIM,
-			"1118916799153582170": model.DBTag_DB_TAG_TESTING,
-			"1120875165346177024": model.DBTag_DB_TAG_KQM_GUIDE,
-			"1120878673952788500": model.DBTag_DB_TAG_GEO_SIMPS,
-			"1120878739786571866": model.DBTag_DB_TAG_ITTO_SIMPS,
-		},
+		TagMapping: mapping,
 	}, func(b *discord.Bot) error {
 		b.Log = sugar
 		return nil
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	err = b.Run()
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
-
 }
 
 func makeShareStore() api.ShareStore {

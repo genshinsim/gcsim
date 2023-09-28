@@ -19,7 +19,7 @@ func (c *char) a1() {
 	c.applyA1 = false
 
 	for i, char := range c.Core.Player.Chars() {
-		//does not affect hutao
+		// does not affect hutao
 		if c.Index == i {
 			continue
 		}

@@ -30,7 +30,7 @@ func (c *char) makeA4CB() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if !c.StatusIsActive(skillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
+		if !c.StatusIsActive(SkillKey) || c.StatusIsActive(a4Key) || c.StatusIsActive(a4IcdKey) {
 			return
 		}
 
@@ -137,7 +137,6 @@ func (c *char) absorbCheckA1() {
 func (c *char) addA1Buff(absorbCheck attributes.Element) {
 	// buffs, need to be manually removed when state is ending
 	switch absorbCheck {
-
 	case attributes.Hydro:
 		c.maxSkydwellerPoints += 20
 		c.skydwellerPoints += 20

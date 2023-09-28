@@ -1501,7 +1501,7 @@ func (z *DamageEvent) DecodeMsg(dc *msgp.Reader) (err error) {
 				}
 			}
 		case "mitigation_modifier":
-			z.Mitigation, err = dc.ReadFloat64()
+			z.MitigationModifier, err = dc.ReadFloat64()
 			if err != nil {
 				err = msgp.WrapError(err, "Mitigation")
 				return
@@ -1618,7 +1618,7 @@ func (z *DamageEvent) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	err = en.WriteFloat64(z.Mitigation)
+	err = en.WriteFloat64(z.MitigationModifier)
 	if err != nil {
 		err = msgp.WrapError(err, "Mitigation")
 		return
@@ -1669,7 +1669,7 @@ func (z *DamageEvent) MarshalMsg(b []byte) (o []byte, err error) {
 	}
 	// string "mitigation_modifier"
 	o = append(o, 0xb3, 0x6d, 0x69, 0x74, 0x69, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6d, 0x6f, 0x64, 0x69, 0x66, 0x69, 0x65, 0x72)
-	o = msgp.AppendFloat64(o, z.Mitigation)
+	o = msgp.AppendFloat64(o, z.MitigationModifier)
 	// string "damage"
 	o = append(o, 0xa6, 0x64, 0x61, 0x6d, 0x61, 0x67, 0x65)
 	o = msgp.AppendFloat64(o, z.Damage)
@@ -1760,7 +1760,7 @@ func (z *DamageEvent) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				}
 			}
 		case "mitigation_modifier":
-			z.Mitigation, bts, err = msgp.ReadFloat64Bytes(bts)
+			z.MitigationModifier, bts, err = msgp.ReadFloat64Bytes(bts)
 			if err != nil {
 				err = msgp.WrapError(err, "Mitigation")
 				return
@@ -2174,7 +2174,7 @@ func (z *EnergyEvent) DecodeMsg(dc *msgp.Reader) (err error) {
 					err = msgp.WrapError(err, "Status")
 					return
 				}
-				z.Status = FieldStatus(zb0002)
+				z.FieldStatus = FieldStatus(zb0002)
 			}
 		case "gained":
 			z.Gained, err = dc.ReadFloat64()
@@ -2233,7 +2233,7 @@ func (z *EnergyEvent) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	err = en.WriteString(string(z.Status))
+	err = en.WriteString(string(z.FieldStatus))
 	if err != nil {
 		err = msgp.WrapError(err, "Status")
 		return
@@ -2283,7 +2283,7 @@ func (z *EnergyEvent) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.AppendString(o, z.Source)
 	// string "field_status"
 	o = append(o, 0xac, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73)
-	o = msgp.AppendString(o, string(z.Status))
+	o = msgp.AppendString(o, string(z.FieldStatus))
 	// string "gained"
 	o = append(o, 0xa6, 0x67, 0x61, 0x69, 0x6e, 0x65, 0x64)
 	o = msgp.AppendFloat64(o, z.Gained)
@@ -2334,7 +2334,7 @@ func (z *EnergyEvent) UnmarshalMsg(bts []byte) (o []byte, err error) {
 					err = msgp.WrapError(err, "Status")
 					return
 				}
-				z.Status = FieldStatus(zb0002)
+				z.FieldStatus = FieldStatus(zb0002)
 			}
 		case "gained":
 			z.Gained, bts, err = msgp.ReadFloat64Bytes(bts)
@@ -2368,7 +2368,7 @@ func (z *EnergyEvent) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *EnergyEvent) Msgsize() (s int) {
-	s = 1 + 6 + msgp.IntSize + 4 + msgp.StringPrefixSize + len(z.Source) + 13 + msgp.StringPrefixSize + len(string(z.Status)) + 7 + msgp.Float64Size + 7 + msgp.Float64Size + 8 + msgp.Float64Size
+	s = 1 + 6 + msgp.IntSize + 4 + msgp.StringPrefixSize + len(z.Source) + 13 + msgp.StringPrefixSize + len(string(z.FieldStatus)) + 7 + msgp.Float64Size + 7 + msgp.Float64Size + 8 + msgp.Float64Size
 	return
 }
 

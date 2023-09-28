@@ -135,6 +135,7 @@ var (
 		303.9 / 100,
 	}
 
+	//nolint:unused // leaving door open to potential high plunge implementation
 	highPlunge = []float64{
 		141.93 / 100,
 		153.49 / 100,

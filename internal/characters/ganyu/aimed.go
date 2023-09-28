@@ -21,14 +21,10 @@ func init() {
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
-	}
-	bloom, ok := p["bloom"]
-	if !ok {
-		bloom = 24
 	}
 	weakspot := p["weakspot"]
 
@@ -95,7 +91,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			ai,
 			snap,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
-			travel+bloom,
+			travel+18, // bloom always hits 18f after the arrow
 			c1cb,
 		)
 
@@ -103,10 +99,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		c.a1Expiry = c.Core.F + 60*5
 	}, aimedHitmark-skip)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return aimedFrames[next] - skip },
 		AnimationLength: aimedFrames[action.InvalidAction] - skip,
 		CanQueueAfter:   aimedHitmark - skip,
 		State:           action.AimState,
-	}
+	}, nil
 }

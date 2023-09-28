@@ -26,7 +26,8 @@ type Backend interface {
 	GetRandomSim() string
 	GetDBStatus() (*model.DBStatus, error)
 	GetDBEntry(id string) (*db.Entry, error)
-	ReplaceConfig(id, link string) error
+	ReplaceConfig(id, link string, source model.DBTag) error
+	ReplaceDesc(id, desc string, source model.DBTag) error
 }
 
 type DBStatus struct {
@@ -43,7 +44,7 @@ type Config struct {
 type Bot struct {
 	Config
 	Log *zap.SugaredLogger
-	//discord stuff
+	// discord stuff
 	*cmdroute.Router
 	s *state.State
 }
@@ -86,7 +87,7 @@ func (b *Bot) Run() error {
 	b.s = state.New("Bot " + b.Token)
 	err := b.routes()
 	if err != nil {
-		return nil
+		return err
 	}
 	b.s.AddInteractionHandler(b)
 	b.s.AddIntents(gateway.IntentGuilds)
@@ -102,12 +103,8 @@ func (b *Bot) Run() error {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	//this is blocking
-	if err := b.s.Connect(ctx); err != nil {
-		return err
-	}
-
-	return nil
+	// this is blocking
+	return b.s.Connect(ctx)
 }
 
 func overwriteCommands(s *state.State) error {

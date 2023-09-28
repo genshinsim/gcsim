@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -35,7 +35,7 @@ const (
 	icdKey = "swordofdescension-icd"
 )
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	m := make([]float64, attributes.EndStatType)
 
@@ -44,62 +44,64 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		passive = 1
 	}
 
-	if passive == 1 {
-		if char.Base.Key < keys.TravelerDelim {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBase("swordofdescension", -1),
-				AffectedStat: attributes.NoStat,
-				Amount: func() ([]float64, bool) {
-					m[attributes.ATK] = 66
-					return m, true
-				},
-			})
-		}
-
-		c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			dmg := args[2].(float64)
-			if atk.Info.ActorIndex != char.Index {
-				return false
-			}
-			// ignore if character not on field
-			if c.Player.Active() != char.Index {
-				return false
-			}
-			// Ignore if neither a charged nor normal attack
-			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-				return false
-			}
-			// Ignore if icd is still up
-			if char.StatusIsActive(icdKey) {
-				return false
-			}
-			// Ignore 50% of the time, 1:1 ratio
-			if c.Rand.Float64() < 0.5 {
-				return false
-			}
-			if dmg == 0 {
-				return false
-			}
-			char.AddStatus(icdKey, 600, true)
-
-			ai := combat.AttackInfo{
-				ActorIndex: char.Index,
-				Abil:       "Sword of Descension Proc",
-				AttackTag:  attacks.AttackTagWeaponSkill,
-				ICDTag:     attacks.ICDTagNone,
-				ICDGroup:   attacks.ICDGroupDefault,
-				StrikeType: attacks.StrikeTypeDefault,
-				Element:    attributes.Physical,
-				Durability: 100,
-				Mult:       2.00,
-			}
-			trg := args[0].(combat.Target)
-			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 1.5), 0, 1)
-
-			return false
-		}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
+	if passive != 1 {
+		return w, nil
 	}
+
+	if char.Base.Key < keys.TravelerDelim {
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("swordofdescension", -1),
+			AffectedStat: attributes.NoStat,
+			Amount: func() ([]float64, bool) {
+				m[attributes.ATK] = 66
+				return m, true
+			},
+		})
+	}
+
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
+		if atk.Info.ActorIndex != char.Index {
+			return false
+		}
+		// ignore if character not on field
+		if c.Player.Active() != char.Index {
+			return false
+		}
+		// Ignore if neither a charged nor normal attack
+		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
+			return false
+		}
+		// Ignore if icd is still up
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		// Ignore 50% of the time, 1:1 ratio
+		if c.Rand.Float64() < 0.5 {
+			return false
+		}
+		if dmg == 0 {
+			return false
+		}
+		char.AddStatus(icdKey, 600, true)
+
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
+			Abil:       "Sword of Descension Proc",
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Element:    attributes.Physical,
+			Durability: 100,
+			Mult:       2.00,
+		}
+		trg := args[0].(combat.Target)
+		c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 1.5), 0, 1)
+
+		return false
+	}, fmt.Sprintf("swordofdescension-%v", char.Base.Key.String()))
 
 	return w, nil
 }

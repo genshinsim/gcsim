@@ -28,7 +28,7 @@ func init() {
 	burstFrames[action.ActionWalk] = 90
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
 	aiSnapshot := combat.AttackInfo{
@@ -44,22 +44,25 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// Add mod for def to attack burst conversion
 	c.burstBuff[attributes.ATK] = mult * burstDefSnapshot
 
-	dur := 900 + burstStart //default duration
+	dur := 900 + burstStart // default duration
 	if c.Base.Cons >= 6 {
 		// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
 		// check extension
-		ext, ok := p["extend"]
-		if ok {
+		getExt := func() int {
+			ext, ok := p["extend"]
+			if !ok {
+				return 10 // to maintain prev default behaviour of full extension
+			}
 			if ext < 0 {
 				ext = 0
 			}
 			if ext > 10 {
 				ext = 10
 			}
-		} else {
-			ext = 10 // to maintain prev default behaviour of full extension
+			return ext
 		}
 
+		ext := getExt()
 		dur += ext * 60
 		c.Core.Log.NewEvent("noelle c6 extension applied", glog.LogCharacterEvent, c.Index).
 			Write("total_dur", dur).
@@ -122,10 +125,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 900)
 	c.ConsumeEnergy(8)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

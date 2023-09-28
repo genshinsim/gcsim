@@ -1,6 +1,7 @@
 package optimization
 
 import (
+	"errors"
 	"log"
 	"os"
 	"strings"
@@ -52,7 +53,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	clean, err := removeSubstatLines(cfg)
-	if err == errInvalidStats {
+	if errors.Is(err, errInvalidStats) {
 		sugarLog.Panic("Error: Could not identify valid main artifact stat rows for all characters based on flower HP values.\n5* flowers must have 4780 HP, and 4* flowers must have 3571 HP.")
 		os.Exit(1)
 	}
@@ -62,21 +63,21 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	}
 
 	parser := ast.New(clean)
-	simcfg, err := parser.Parse()
+	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	optimizer := NewSubstatOptimizer(optionsMap, sugarLog)
-	optimizer.Run(cfg, simopt, simcfg)
+	optimizer.Run(cfg, simopt, simcfg, gcsl)
 	output := optimizer.PrettyPrint(clean, optimizer.details)
 
 	// Sticks optimized substat string into config and output
 	if simopt.ResultSaveToPath != "" {
 		output = strings.TrimSpace(output) + "\n"
-		//try creating file to write to
-		err = os.WriteFile(simopt.ResultSaveToPath, []byte(output), 0644)
+		// try creating file to write to
+		err = os.WriteFile(simopt.ResultSaveToPath, []byte(output), 0o644)
 		if err != nil {
 			log.Panic(err)
 		}

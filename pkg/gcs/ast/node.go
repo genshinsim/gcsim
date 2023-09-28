@@ -3,9 +3,6 @@ package ast
 import (
 	"strconv"
 	"strings"
-
-	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 type Node interface {
@@ -41,14 +38,6 @@ type (
 		Pos
 	}
 
-	// ActionStmt represents a sim action; Does not produce a value
-	ActionStmt struct {
-		Pos
-		Char   keys.Char
-		Action action.Action
-		Param  map[string]int
-	}
-
 	// AssignStmt represents assigning of a value to a previously declared variable
 	AssignStmt struct {
 		Pos
@@ -60,6 +49,7 @@ type (
 	LetStmt struct {
 		Pos
 		Ident Token
+		Type  ExprType
 		Val   Expr
 	}
 
@@ -98,13 +88,14 @@ type (
 		Body      *BlockStmt
 	}
 
-	// A FnStmt node represents a function. Should always return a number
+	// A FnStmt node represents a function declared with syntax fn ident(..args) { block }.
+	// Functionally the same as a LetStmt
 	FnStmt struct {
 		Pos
-		FunVal Token
-		Args   []*Ident
-		Body   *BlockStmt
+		Ident Token
+		Func  *FuncLit
 	}
+
 	// WhileStmt represents a while block
 	WhileStmt struct {
 		Pos
@@ -133,7 +124,6 @@ const (
 
 // stmtNode()
 func (*BlockStmt) stmtNode()  {}
-func (*ActionStmt) stmtNode() {}
 func (*AssignStmt) stmtNode() {}
 func (*LetStmt) stmtNode()    {}
 func (*CtrlStmt) stmtNode()   {}
@@ -185,55 +175,6 @@ func (b *BlockStmt) Copy() Node {
 	return b.CopyBlock()
 }
 
-// ActionStmt.
-
-func (a *ActionStmt) String() string {
-	var sb strings.Builder
-	a.writeTo(&sb)
-	return sb.String()
-}
-
-func (a *ActionStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString(a.Char.String())
-	sb.WriteString(" ")
-	sb.WriteString(a.Action.String())
-	if a.Param != nil && len(a.Param) > 0 {
-		sb.WriteString("[")
-		for k, v := range a.Param {
-			sb.WriteString(k)
-			sb.WriteString("=")
-			sb.WriteString(strconv.FormatInt(int64(v), 10))
-		}
-		sb.WriteString("]")
-	}
-}
-
-func (a *ActionStmt) CopyActionStmt() *ActionStmt {
-	if a == nil {
-		return a
-	}
-	n := &ActionStmt{
-		Pos:    a.Pos,
-		Char:   a.Char,
-		Action: a.Action,
-	}
-	if a.Param != nil {
-		n.Param = make(map[string]int)
-		for k, v := range a.Param {
-			n.Param[k] = v
-		}
-	}
-	return n
-}
-
-func (a *ActionStmt) CopyStmt() Stmt {
-	return a.CopyActionStmt()
-}
-
-func (a *ActionStmt) Copy() Node {
-	return a.CopyActionStmt()
-}
-
 // AssignStmt.
 
 func (a *AssignStmt) String() string {
@@ -279,9 +220,12 @@ func (l *LetStmt) String() string {
 func (l *LetStmt) writeTo(sb *strings.Builder) {
 	sb.WriteString("let ")
 	sb.WriteString(l.Ident.String())
+	if l.Type != nil {
+		sb.WriteString(" ")
+		l.Type.writeTo(sb)
+	}
 	sb.WriteString(" = ")
 	if l.Val != nil {
-
 		l.Val.writeTo(sb)
 	}
 }
@@ -293,6 +237,7 @@ func (l *LetStmt) CopyLet() *LetStmt {
 	n := &LetStmt{
 		Pos:   l.Pos,
 		Ident: l.Ident,
+		Type:  l.Type.CopyExprType(),
 	}
 	n.Val = l.Val.CopyExpr()
 	return n
@@ -448,9 +393,9 @@ func (s *SwitchStmt) CopySwitch() *SwitchStmt {
 		return nil
 	}
 	n := &SwitchStmt{
-		Pos:       s.Pos,
-		Cases:     make([]*CaseStmt, 0, len(s.Cases)),
-		Default:   s.Default.CopyBlock(),
+		Pos:     s.Pos,
+		Cases:   make([]*CaseStmt, 0, len(s.Cases)),
+		Default: s.Default.CopyBlock(),
 	}
 	if s.Condition != nil {
 		n.Condition = s.Condition.CopyExpr()
@@ -504,20 +449,16 @@ func (c *CaseStmt) Copy() Node {
 	return c.CopyCase()
 }
 
-// FnExpr.
+// FnStmt.
 
 func (f *FnStmt) CopyFn() Stmt {
 	if f == nil {
 		return nil
 	}
 	n := &FnStmt{
-		Pos:    f.Pos,
-		FunVal: f.FunVal,
-		Body:   f.Body.CopyBlock(),
-		Args:   make([]*Ident, 0, len(f.Args)),
-	}
-	for i := range f.Args {
-		n.Args = append(n.Args, f.Args[i].CopyIdent())
+		Pos:   f.Pos,
+		Ident: f.Ident,
+		Func:  f.Func.copyFuncLit(),
 	}
 
 	return n
@@ -538,16 +479,9 @@ func (f *FnStmt) String() string {
 }
 
 func (f *FnStmt) writeTo(sb *strings.Builder) {
-	sb.WriteString("fn(")
-	for i, v := range f.Args {
-		if i > 0 {
-			sb.WriteString(", ")
-		}
-		v.writeTo(sb)
-	}
-	sb.WriteString(") {\n")
-	f.Body.writeTo(sb)
-	sb.WriteString("}")
+	sb.WriteString("fn ")
+	sb.WriteString(f.Ident.String())
+	f.Func.writeTo(sb)
 }
 
 // WhileStmt.
@@ -661,9 +595,21 @@ type (
 		Pos
 		Value string
 	}
-	BoolLit struct {
-		Pos
-		Value float64
+
+	// FuncExpr is just a wrapper around FuncLit representing an anonymous function declaration
+	// This node should only exists following a let statement
+	// The FuncExpr itself should have null type. The actual FuncLit will have it's own return type
+	FuncExpr struct {
+		Pos  // position of the fn keyword
+		Func *FuncLit
+	}
+
+	// A FuncLit node represents a function literal.
+	FuncLit struct {
+		Pos       // position of the starting (
+		Signature *FuncType
+		Args      []*Ident
+		Body      *BlockStmt
 	}
 
 	Ident struct {
@@ -690,23 +636,31 @@ type (
 		Right Expr // operand
 	}
 
-	//A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
+	// A BinaryExpr node represents a binary expression i.e. a > b, 1 + 1, etc..
 	BinaryExpr struct {
 		Pos
 		Left  Expr
 		Right Expr  // need to evalute to same type as lhs
-		Op    Token //should be > itemCompareOP and < itemDot
+		Op    Token // should be > itemCompareOP and < itemDot
+	}
+
+	MapExpr struct {
+		Pos
+		Fields map[string]Expr
 	}
 )
 
-//exprNode()
+// exprNode()
 func (*NumberLit) exprNode()  {}
 func (*StringLit) exprNode()  {}
+func (*FuncExpr) exprNode()   {}
+func (*FuncLit) exprNode()    {}
 func (*Ident) exprNode()      {}
 func (*Field) exprNode()      {}
 func (*CallExpr) exprNode()   {}
 func (*UnaryExpr) exprNode()  {}
 func (*BinaryExpr) exprNode() {}
+func (*MapExpr) exprNode()    {}
 
 // NumberLit.
 
@@ -764,6 +718,88 @@ func (n *StringLit) writeTo(sb *strings.Builder) {
 	sb.WriteString(n.Value)
 }
 
+// FuncExpr.
+
+func (f *FuncExpr) CopyExpr() Expr {
+	if f == nil {
+		return nil
+	}
+	n := &FuncExpr{
+		Pos:  f.Pos,
+		Func: f.Func.copyFuncLit(),
+	}
+	return n
+}
+
+func (f *FuncExpr) Copy() Node {
+	return f.CopyExpr()
+}
+
+func (f *FuncExpr) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FuncExpr) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn")
+	f.Func.writeTo(sb)
+}
+
+// FuncLit.
+
+func (f *FuncLit) CopyExpr() Expr {
+	if f == nil {
+		return nil
+	}
+	return f.copyFuncLit()
+}
+
+func (f *FuncLit) copyFuncLit() *FuncLit {
+	n := &FuncLit{
+		Pos:       f.Pos,
+		Signature: f.Signature.copyFuncType(),
+		Body:      f.Body.CopyBlock(),
+	}
+	n.Args = make([]*Ident, 0, len(f.Args))
+	for _, v := range f.Args {
+		n.Args = append(n.Args, v.CopyIdent())
+	}
+	return n
+}
+
+func (f *FuncLit) Copy() Node {
+	return f.CopyExpr()
+}
+
+func (f *FuncLit) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FuncLit) writeTo(sb *strings.Builder) {
+	sb.WriteString("(")
+	for i, v := range f.Args {
+		if i > 0 {
+			sb.WriteString(", ")
+		}
+		sb.WriteString(v.String())
+		if f.Signature.ArgsType[i] != nil {
+			sb.WriteString(" ")
+			f.Signature.ArgsType[i].writeTo(sb)
+		}
+	}
+	sb.WriteString(")")
+	if f.Signature.ResultType != nil {
+		sb.WriteString(" ")
+		f.Signature.ResultType.writeTo(sb)
+	}
+	sb.WriteString(" {\n")
+	f.Body.writeTo(sb)
+	sb.WriteString("}")
+}
+
 // Ident.
 
 func (i *Ident) CopyIdent() *Ident {
@@ -781,14 +817,14 @@ func (i *Ident) Copy() Node {
 	return i.CopyIdent()
 }
 
-func (b *Ident) String() string {
+func (i *Ident) String() string {
 	var sb strings.Builder
-	b.writeTo(&sb)
+	i.writeTo(&sb)
 	return sb.String()
 }
 
-func (b *Ident) writeTo(sb *strings.Builder) {
-	sb.WriteString(b.Value)
+func (i *Ident) writeTo(sb *strings.Builder) {
+	sb.WriteString(i.Value)
 }
 
 // Field.
@@ -810,31 +846,31 @@ func (i *Field) Copy() Node {
 	return i.CopyField()
 }
 
-func (b *Field) String() string {
+func (i *Field) String() string {
 	var sb strings.Builder
-	b.writeTo(&sb)
+	i.writeTo(&sb)
 	return sb.String()
 }
 
-func (b *Field) writeTo(sb *strings.Builder) {
-	for _, v := range b.Value {
+func (i *Field) writeTo(sb *strings.Builder) {
+	for _, v := range i.Value {
 		sb.WriteString(v)
 	}
 }
 
 // CallExpr.
 
-func (c *CallExpr) CopyFn() Expr {
-	if c == nil {
+func (f *CallExpr) CopyFn() Expr {
+	if f == nil {
 		return nil
 	}
 	n := &CallExpr{
-		Pos:  c.Pos,
-		Fun:  c.Fun.CopyExpr(),
-		Args: make([]Expr, 0, len(c.Args)),
+		Pos:  f.Pos,
+		Fun:  f.Fun.CopyExpr(),
+		Args: make([]Expr, 0, len(f.Args)),
 	}
-	for i := range c.Args {
-		n.Args = append(n.Args, c.Args[i].CopyExpr())
+	for i := range f.Args {
+		n.Args = append(n.Args, f.Args[i].CopyExpr())
 	}
 
 	return n
@@ -854,10 +890,10 @@ func (f *CallExpr) String() string {
 	return sb.String()
 }
 
-func (b *CallExpr) writeTo(sb *strings.Builder) {
-	b.Fun.writeTo(sb)
+func (f *CallExpr) writeTo(sb *strings.Builder) {
+	f.Fun.writeTo(sb)
 	sb.WriteString("(")
-	for i, v := range b.Args {
+	for i, v := range f.Args {
 		if i > 0 {
 			sb.WriteString(", ")
 		}
@@ -934,4 +970,197 @@ func (b *BinaryExpr) writeTo(sb *strings.Builder) {
 	sb.WriteString(" ")
 	b.Right.writeTo(sb)
 	sb.WriteString(")")
+}
+
+// MapExpr.
+
+func (m *MapExpr) CopyExpr() Expr {
+	if m == nil {
+		return m
+	}
+	n := &MapExpr{
+		Pos:    m.Pos,
+		Fields: make(map[string]Expr),
+	}
+	for k, v := range m.Fields {
+		n.Fields[k] = v.CopyExpr()
+	}
+	return n
+}
+
+func (m *MapExpr) Copy() Node {
+	return m.CopyExpr()
+}
+
+func (m *MapExpr) String() string {
+	var sb strings.Builder
+	m.writeTo(&sb)
+	return sb.String()
+}
+
+func (m *MapExpr) writeTo(sb *strings.Builder) {
+	sb.WriteString("[")
+	done := false
+	for k, v := range m.Fields {
+		if done {
+			sb.WriteString(", ")
+		}
+		done = true
+
+		sb.WriteString(k)
+		sb.WriteString(" = ")
+		sb.WriteString(v.String())
+	}
+	sb.WriteString("]")
+}
+
+type ExprType interface {
+	Node
+	exprTypeNode()
+	CopyExprType() ExprType
+}
+
+type (
+	NumberType struct {
+		Pos // position of :, or of the ident if defaulting to NumberType
+	}
+	StringType struct {
+		Pos // position of :
+	}
+
+	MapType struct {
+		Pos // position of keyword map
+	}
+	FuncType struct {
+		Pos        // position of opening (
+		ArgsType   []ExprType
+		ResultType ExprType
+	}
+)
+
+// exprTypeNode()
+func (*NumberType) exprTypeNode() {}
+func (*StringType) exprTypeNode() {}
+func (*MapType) exprTypeNode()    {}
+func (*FuncType) exprTypeNode()   {}
+
+// NumberType.
+func (n *NumberType) CopyExprType() ExprType {
+	if n == nil {
+		return nil
+	}
+	return &NumberType{
+		Pos: n.Pos,
+	}
+}
+
+func (n *NumberType) Copy() Node {
+	return n.CopyExprType()
+}
+
+func (n *NumberType) String() string {
+	var sb strings.Builder
+	n.writeTo(&sb)
+	return sb.String()
+}
+
+func (n *NumberType) writeTo(sb *strings.Builder) {
+	sb.WriteString("number")
+}
+
+// StringType.
+func (s *StringType) CopyExprType() ExprType {
+	if s == nil {
+		return nil
+	}
+	return &StringType{
+		Pos: s.Pos,
+	}
+}
+
+func (s *StringType) Copy() Node {
+	return s.CopyExprType()
+}
+
+func (s *StringType) String() string {
+	var sb strings.Builder
+	s.writeTo(&sb)
+	return sb.String()
+}
+
+func (s *StringType) writeTo(sb *strings.Builder) {
+	sb.WriteString("string")
+}
+
+// MapType.
+func (m *MapType) CopyExprType() ExprType {
+	if m == nil {
+		return nil
+	}
+	return &MapType{
+		Pos: m.Pos,
+	}
+}
+
+func (m *MapType) Copy() Node {
+	return m.CopyExprType()
+}
+
+func (m *MapType) String() string {
+	var sb strings.Builder
+	m.writeTo(&sb)
+	return sb.String()
+}
+
+func (m *MapType) writeTo(sb *strings.Builder) {
+	sb.WriteString("map")
+}
+
+// FuncType.
+func (f *FuncType) copyFuncType() *FuncType {
+	next := &FuncType{
+		Pos:        f.Pos,
+		ArgsType:   make([]ExprType, 0, len(f.ArgsType)),
+		ResultType: f.ResultType.CopyExprType(),
+	}
+
+	for _, v := range f.ArgsType {
+		next.ArgsType = append(next.ArgsType, v.CopyExprType())
+	}
+
+	return next
+}
+
+func (f *FuncType) CopyExprType() ExprType {
+	if f == nil {
+		return nil
+	}
+	return f.copyFuncType()
+}
+
+func (f *FuncType) Copy() Node {
+	return f.CopyExprType()
+}
+
+func (f *FuncType) String() string {
+	var sb strings.Builder
+	f.writeTo(&sb)
+	return sb.String()
+}
+
+func (f *FuncType) writeTo(sb *strings.Builder) {
+	sb.WriteString("fn(")
+	for i, v := range f.ArgsType {
+		if i > 0 {
+			sb.WriteString(", ")
+		}
+		if v != nil {
+			v.writeTo(sb)
+		}
+	}
+	sb.WriteString(")")
+	if f.ResultType != nil {
+		sb.WriteString(" ")
+		f.ResultType.writeTo(sb)
+	}
 }

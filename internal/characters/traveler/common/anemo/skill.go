@@ -56,7 +56,7 @@ func init() {
 	skillHoldDelayFrames[1][action.ActionSwap] = 83 - 54    // Short Hold E -> Swap - Short Hold E -> D
 }
 
-func (c *char) SkillPress() action.ActionInfo {
+func (c *char) SkillPress() action.Info {
 	hitmark := 34
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -79,7 +79,7 @@ func (c *char) SkillPress() action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 5*60, hitmark-5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames[c.gender]),
 		AnimationLength: skillPressFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[c.gender][action.ActionDash], // earliest cancel
@@ -98,8 +98,7 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 2, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) SkillHold(holdTicks int) action.ActionInfo {
-
+func (c *char) SkillHold(holdTicks int) action.Info {
 	c.eAbsorb = attributes.NoElement
 	c.eICDTag = attacks.ICDTagNone
 	c.eAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 3)
@@ -131,7 +130,6 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 	firstTick := 31
 	hitmark := firstTick
 	for i := 0; i < holdTicks; i += 1 {
-
 		c.Core.QueueAttack(
 			aiCut,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.2}, 1.7),
@@ -150,7 +148,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 						0,
 					)
 				}
-				//check if absorbed
+				// check if absorbed
 			}, hitmark)
 		} else {
 			c.Core.Tasks.Add(func() {
@@ -164,7 +162,7 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 						0,
 					)
 				}
-				//check if absorbed
+				// check if absorbed
 			}, hitmark)
 		}
 
@@ -177,7 +175,6 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 			// there is a 5 frame delay when it shifts from initial to max
 			hitmark += 5
 		}
-
 	}
 	// move the hitmark back by 1 tick (15f) then forward by 5f for the Storm damage
 	hitmark = hitmark - 15 + 5
@@ -232,12 +229,12 @@ func (c *char) SkillHold(holdTicks int) action.ActionInfo {
 				0,
 			)
 		}
-		//check if absorbed
+		// check if absorbed
 	}, hitmark)
 
 	// starts absorbing after the first tick?
-	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, int((hitmark)/18)), firstTick+1)
-	return action.ActionInfo{
+	c.Core.Tasks.Add(c.absorbCheckE(c.Core.F, 0, hitmark/18), firstTick+1)
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.gender][next] + hitmark },
 		AnimationLength: skillHoldDelayFrames[c.gender][action.InvalidAction] + hitmark,
 		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionDash] + hitmark, // earliest cancel
@@ -260,7 +257,7 @@ func (c *char) holdParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	holdTicks := 0
 	if p["hold"] == 1 {
 		holdTicks = 6
@@ -273,10 +270,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	if holdTicks == 0 {
-		return c.SkillPress()
-	} else {
-		return c.SkillHold(holdTicks)
+		return c.SkillPress(), nil
 	}
+	return c.SkillHold(holdTicks), nil
 }
 
 func (c *char) absorbCheckE(src, count, max int) func() {
@@ -295,7 +291,7 @@ func (c *char) absorbCheckE(src, count, max int) func() {
 		case attributes.Hydro:
 			c.eICDTag = attacks.ICDTagElementalArtHydro
 		case attributes.NoElement:
-			//otherwise queue up
+			// otherwise queue up
 			c.Core.Tasks.Add(c.absorbCheckE(src, count+1, max), 18)
 		}
 	}

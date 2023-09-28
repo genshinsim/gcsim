@@ -4,7 +4,7 @@ import (
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
@@ -25,7 +25,7 @@ type charFailures struct {
 	dash    *calc.StreamStats
 }
 
-func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
+func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		failures: make([]charFailures, len(cfg.Characters)),
 	}
@@ -44,10 +44,10 @@ func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
 }
 
 func (b *buffer) Add(result stats.Result) {
-	for i, c := range result.Characters {
+	for i := range result.Characters {
 		var energy, stamina, swap, skill, dash float64
 
-		for _, fail := range c.FailedActions {
+		for _, fail := range result.Characters[i].FailedActions {
 			switch fail.Reason {
 			case action.InsufficientEnergy.String():
 				energy += float64(fail.End-fail.Start) / 60

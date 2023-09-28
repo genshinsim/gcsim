@@ -38,7 +38,7 @@ func init() {
 // - When her Normal and Charged Attacks hit opponents, Kokomi will restore HP for all nearby party members, and the amount restored is based on her Max HP.
 // - Increases Sangonomiya Kokomi's resistance to interruption and allows her to move on the water's surface.
 // These effects will be cleared once Sangonomiya Kokomi leaves the field.
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Snapshot timing is not yet known. Assume it's dynamic for now
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -81,12 +81,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(57)
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 46)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 // Helper function for determining whether burst damage bonus should apply

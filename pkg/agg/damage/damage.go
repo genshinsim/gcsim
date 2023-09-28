@@ -4,13 +4,13 @@ import (
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 // 30 = .5s
-const BUCKET_SIZE uint32 = 30
+const bucketSize uint32 = 30
 
 func init() {
 	agg.Register(NewAgg)
@@ -34,7 +34,7 @@ type buffer struct {
 	cumulativeContrib [][]*calc.StreamStats
 }
 
-func NewAgg(cfg *ast.ActionList) (agg.Aggregator, error) {
+func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		elementDPS:            make(map[string]*calc.StreamStats),
 		targetDPS:             make(map[int]*calc.StreamStats),
@@ -80,7 +80,7 @@ func (b *buffer) Add(result stats.Result) {
 		stat.Add(val)
 	}
 
-	for i, char := range result.Characters {
+	for i := range result.Characters {
 		var charDPS float64
 		charElementDPS := makeElementMap()
 		charTargetDPS := make(map[int]float64)
@@ -102,7 +102,7 @@ func (b *buffer) Add(result stats.Result) {
 			stat.Add(val)
 		}
 
-		for _, ev := range char.DamageEvents {
+		for _, ev := range result.Characters[i].DamageEvents {
 			if _, ok := charTargetDPS[ev.Target]; !ok {
 				charTargetDPS[ev.Target] = 0
 			}
@@ -120,11 +120,15 @@ func (b *buffer) Add(result stats.Result) {
 
 		b.characterDPS[i].Add(charDPS * time)
 		for k, v := range charElementDPS {
+			if _, ok := elementDPS[k]; !ok {
+				elementDPS[k] = 0
+			}
+			elementDPS[k] += v
+
 			if _, ok := b.dpsByElement[i][k]; !ok {
 				b.dpsByElement[i][k] = &calc.StreamStats{}
 			}
 			b.dpsByElement[i][k].Add(v * time)
-			elementDPS[k] += v
 		}
 
 		for k, v := range charTargetDPS {
@@ -172,7 +176,7 @@ func (b *buffer) Add(result stats.Result) {
 func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.ElementDps = make(map[string]*model.DescriptiveStats)
 	for k, v := range b.elementDPS {
-		if v.Min > 0 {
+		if v.Mean() > 0 {
 			result.ElementDps[k] = agg.ToDescriptiveStats(v)
 		}
 	}
@@ -191,7 +195,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, em := range b.dpsByElement {
 		elements := make(map[string]*model.DescriptiveStats)
 		for k, v := range em {
-			if v.Min > 0 {
+			if v.Mean() > 0 {
 				elements[k] = agg.ToDescriptiveStats(v)
 			}
 		}
@@ -218,7 +222,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		damageBuckets[i] = agg.ToDescriptiveStats(v)
 	}
 	result.DamageBuckets = &model.BucketStats{
-		BucketSize: BUCKET_SIZE,
+		BucketSize: bucketSize,
 		Buckets:    damageBuckets,
 	}
 
@@ -258,7 +262,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	}
 
 	result.CumulativeDamageContribution = &model.CharacterBucketStats{
-		BucketSize: BUCKET_SIZE,
+		BucketSize: bucketSize,
 		Characters: characterBuckets,
 	}
 }

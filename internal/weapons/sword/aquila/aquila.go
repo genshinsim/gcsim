@@ -8,10 +8,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,11 +30,11 @@ func (w *Weapon) Init() error      { return nil }
 // West awakens, holding the banner of resistance aloft, regenerating HP equal to
 // 100% of ATK and dealing 200% of ATK as DMG to surrounding opponents. This
 // effect can only occur once every 15s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .15 + .05*float64(r)
 	char.AddStatMod(character.StatMod{
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if di.Amount <= 0 {
 			return false
 		}
-		if c.Player.Active() != char.Index {
+		if di.ActorIndex != char.Index {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {

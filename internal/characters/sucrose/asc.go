@@ -43,7 +43,7 @@ func (c *char) a1() {
 					continue
 				}
 				this.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("sucrose-a1", 480), //8s
+					Base:         modifier.NewBaseWithHitlag("sucrose-a1", 480), // 8s
 					AffectedStat: attributes.EM,
 					Amount: func() ([]float64, bool) {
 						return c.a1Buff, true
@@ -77,10 +77,10 @@ func (c *char) a4() {
 	c.a4Buff[attributes.EM] = c.NonExtraStat(attributes.EM) * .20
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index {
-			continue //nothing for sucrose
+			continue // nothing for sucrose
 		}
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("sucrose-a4", 480), //8 s
+			Base:         modifier.NewBaseWithHitlag("sucrose-a4", 480), // 8 s
 			AffectedStat: attributes.EM,
 			Extra:        true,
 			Amount: func() ([]float64, bool) {

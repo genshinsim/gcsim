@@ -22,7 +22,7 @@ func init() {
 // Rosaria swings her weapon to slash surrounding opponents, then she summons a frigid Ice Lance that strikes the ground. Both actions deal Cryo DMG.
 // While active, the Ice Lance periodically releases a blast of cold air, dealing Cryo DMG to surrounding opponents.
 // Also includes the following effects: A4, C6
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Note - if a more advanced targeting system is added in the future
 	// hit 1 is technically only on surrounding enemies, hits 2 and dot are on the lance
 	// For now assume that everything hits all targets
@@ -59,11 +59,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai.Abil = "Rites of Termination (Hit 2)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burst[1][c.TalentLvlBurst()]
-	//no more hitlag after first hit
+	// no more hitlag after first hit
 	ai.HitlagHaltFrames = 0
 
-	//duration is 8 seconds (extended by c2 by 4s), + 0.5
-	//should be a deployable
+	// duration is 8 seconds (extended by c2 by 4s), + 0.5
+	// should be a deployable
 	dur := 510
 	if c.Base.Cons >= 2 {
 		dur += 240
@@ -105,10 +105,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(6)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

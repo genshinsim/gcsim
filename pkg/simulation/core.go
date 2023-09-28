@@ -2,11 +2,11 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func NewCore(seed int64, debug bool, cfg *ast.ActionList) (*core.Core, error) {
-	return core.New(core.CoreOpt{
+func NewCore(seed int64, debug bool, cfg *info.ActionList) (*core.Core, error) {
+	return core.New(core.Opt{
 		Seed:         seed,
 		Debug:        debug,
 		Delays:       cfg.Settings.Delays,

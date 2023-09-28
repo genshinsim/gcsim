@@ -50,7 +50,7 @@ func (c *char) a1() {
 		b := newBountifulCore(c.Core, g.Gadget.Pos(), atk)
 		b.Gadget.SetKey(g.Gadget.Key())
 		c.Core.Combat.ReplaceGadget(g.Key(), b)
-		//prevent blowing up
+		// prevent blowing up
 		g.Gadget.OnExpiry = nil
 		g.Gadget.OnKill = nil
 

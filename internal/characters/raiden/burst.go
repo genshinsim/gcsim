@@ -28,7 +28,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 110    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// activate burst, reset stacks
 	c.burstCastF = c.Core.F
 	c.restoreCount = 0
@@ -84,12 +84,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(8)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstRestorefunc(a combat.AttackCB) {
@@ -135,9 +135,9 @@ func (c *char) onBurstStackCount() {
 		stacks := resolveStackGain[c.TalentLvlBurst()] * char.EnergyMax
 		if c.Base.Cons > 0 {
 			if char.Base.Element == attributes.Electro {
-				stacks = stacks * 1.8
+				stacks *= 1.8
 			} else {
-				stacks = stacks * 1.2
+				stacks *= 1.2
 			}
 		}
 		c.stacks += stacks

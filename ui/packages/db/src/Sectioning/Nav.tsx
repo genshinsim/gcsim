@@ -1,11 +1,4 @@
-import {
-  Alignment,
-  AnchorButton,
-  HTMLSelect,
-  IconName,
-  MaybeElement,
-  Navbar,
-} from "@blueprintjs/core";
+import { Alignment, HTMLSelect, Navbar } from "@blueprintjs/core";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import logo from "./logo.png";
@@ -65,18 +58,18 @@ export default function Nav() {
   );
 }
 
-type NavLinkProps = {
-  href: string;
-  icon: IconName | MaybeElement;
-  text: string;
-};
+// type NavLinkProps = {
+//   href: string;
+//   icon: IconName | MaybeElement;
+//   text: string;
+// };
 
-const NavLink = ({ href, icon, text }: NavLinkProps) => {
-  return (
-    <Link href={href}>
-      <AnchorButton minimal={true} icon={icon}>
-        <span className="hidden min-[798px]:block">{text}</span>
-      </AnchorButton>
-    </Link>
-  );
-};
+// const NavLink = ({ href, icon, text }: NavLinkProps) => {
+//   return (
+//     <Link href={href}>
+//       <AnchorButton minimal={true} icon={icon}>
+//         <span className="hidden min-[798px]:block">{text}</span>
+//       </AnchorButton>
+//     </Link>
+//   );
+// };

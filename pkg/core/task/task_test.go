@@ -6,7 +6,7 @@ import (
 )
 
 func TestTaskAddTask(t *testing.T) {
-	//queue a tasks that adds another task to current frame; should execute
+	// queue a tasks that adds another task to current frame; should execute
 	f := 1
 	h := New(&f)
 
@@ -19,7 +19,6 @@ func TestTaskAddTask(t *testing.T) {
 			count++
 			log.Println("hello this is the second task")
 		}, 0)
-
 	}, 0)
 
 	h.Run()
@@ -28,5 +27,4 @@ func TestTaskAddTask(t *testing.T) {
 		log.Printf("expecting count to be 2, got %v\n", count)
 		t.FailNow()
 	}
-
 }

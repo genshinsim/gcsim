@@ -47,6 +47,29 @@ energy once interval=300 amount=1;
 This drops 1 clear elemental particle once at frame 300.
 :::
 
+### Set hurt generation 
+
+Example: 
+```
+hurt every interval=480,720 amount=1,300 element=physical;
+```
+This means that gcsim will deal between 1 and 300 physical damage to the active character every 480 to 720 frames randomly.
+
+:::note
+If multiple `hurt every` lines are added, then the values specified by the final one will be used.
+:::
+
+:::info
+Generating hurt only at a specific frame for one time can also be specified. 
+Multiple `hurt once` lines can be added to deal damage at different points in time.
+
+Example:
+```
+hurt once interval=300 amount=1,300 element=physical;
+```
+This will deal between 1 and 300 physical damage to the active character once at frame 300.
+:::
+
 ### Perform character, weapon, artifact setup
 
 Character data can be roughly broken into 4 parts:

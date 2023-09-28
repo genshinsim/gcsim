@@ -15,7 +15,7 @@ type buffer struct {
 	targetOverlap bool
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		targetOverlap: overlaps(core.Combat.Enemies()),
 	}
@@ -24,6 +24,9 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		target := args[0].(combat.Target)
 
 		for _, enemy := range core.Combat.Enemies() {
+			if enemy.Key() == target.Key() {
+				continue
+			}
 			if target.WillCollide(enemy.Shape()) {
 				out.targetOverlap = true
 			}

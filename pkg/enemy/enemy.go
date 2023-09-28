@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/queue"
@@ -13,49 +14,29 @@ import (
 	"github.com/genshinsim/gcsim/pkg/target"
 )
 
-type EnemyProfile struct {
-	Level                 int                   `json:"level"`
-	HP                    float64               `json:"hp"`
-	Resist                attributes.ElementMap `json:"resist"`
-	Pos                   core.Coord            `json:"-"`
-	ParticleDropThreshold float64               `json:"particle_drop_threshold"` // drop particle every x dmg dealt
-	ParticleDropCount     float64               `json:"particle_drop_count"`
-	ParticleElement       attributes.Element    `json:"particle_element"`
-	FreezeResist          float64               `json:"freeze_resist"`
-}
-
-func (e *EnemyProfile) Clone() EnemyProfile {
-	r := *e
-	r.Resist = make(map[attributes.Element]float64)
-	for k, v := range e.Resist {
-		r.Resist[k] = v
-	}
-	return r
-}
-
 type Enemy struct {
 	*target.Target
 	*reactable.Reactable
 
 	Level   int
 	resists map[attributes.Element]float64
-	prof    EnemyProfile
+	prof    info.EnemyProfile
 	hp      float64
 	maxhp   float64
 
 	damageTaken      float64
 	lastParticleDrop int
 
-	//mods
+	// mods
 	mods []modifier.Mod
 
-	//hitlag stuff
+	// hitlag stuff
 	timePassed   int
 	frozenFrames int
 	queue        []queue.Task
 }
 
-func New(core *core.Core, p EnemyProfile) *Enemy {
+func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	e := &Enemy{}
 	e.Level = p.Level
 	//TODO: do we need to clone this map isntead?

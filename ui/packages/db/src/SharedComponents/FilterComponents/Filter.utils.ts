@@ -1,11 +1,13 @@
 import { createContext } from "react";
-import charData from "../../Data/char_data.generated.json"
+import charData from "../../Data/char_data.generated.json";
+import tagData from "../../tags.json";
 
 export interface FilterState {
   charFilter: CharFilter;
+  tagFilter: TagFilter;
   charIncludeCount: number;
   customFilter: string;
-  tags: number[];
+  sortBy: ISortBy;
 }
 
 export enum ItemFilterState {
@@ -14,20 +16,49 @@ export enum ItemFilterState {
   "exclude",
 }
 
-export const charNames = Object.keys(charData.data).map(k => {
-  return k
-})
+export const charNames = Object.keys(charData.data).map((k) => {
+  return k;
+});
 
 export const initialCharFilter = charNames.reduce((acc, charName) => {
   acc[charName] = { state: ItemFilterState.none, charName };
   return acc;
 }, {} as CharFilter);
 
+export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
+  acc[tag] = { state: ItemFilterState.none, tag };
+  return acc;
+}, {} as TagFilter);
+
+export const sortByParams = [
+  {
+    translationKey: "db.dpsPerTarget",
+    sortKey: "summary.mean_dps_per_target",
+  },
+  {
+    translationKey: "db.createDate",
+    sortKey: "create_date",
+  },
+];
+export enum SortByDirection {
+  "asc",
+  "dsc",
+}
+export interface ISortBy {
+  sortKey: string;
+  sortByDirection: SortByDirection;
+}
+export const initialSortBy: ISortBy = {
+  sortKey: "create_date",
+  sortByDirection: SortByDirection.dsc,
+};
+
 export const initialFilter: FilterState = {
   charFilter: initialCharFilter,
+  tagFilter: initialTagFilter,
   charIncludeCount: 0,
   customFilter: "",
-  tags: [],
+  sortBy: initialSortBy,
 };
 
 export const FilterContext = createContext<FilterState>(initialFilter);
@@ -57,14 +88,31 @@ export type CharFilterState =
       charName: string;
     };
 
+export interface TagFilter {
+  //tag key (int)
+  [key: string]: TagFilterState;
+}
+
+export type TagFilterState =
+  | {
+      tag: string;
+      state: ItemFilterState.include;
+    }
+  | {
+      state: ItemFilterState.none;
+      tag: string;
+    };
+
 export const FilterDispatchContext = createContext<
   React.Dispatch<FilterActions>
 >(null as unknown as React.Dispatch<FilterActions>);
 
 export type FilterActions =
   | CharFilterReducerAction
+  | TagFilterReducerAction
   | GeneralFilterAction
-  | CustomFilterAction;
+  | CustomFilterAction
+  | SortByAction;
 
 interface GeneralFilterAction {
   type: "clearFilter";
@@ -87,6 +135,16 @@ interface CharFilterReducerAction {
   char: string;
   weapon?: string;
   set?: string;
+}
+
+interface TagFilterReducerAction {
+  type: "handleTag";
+  tag: string;
+}
+
+interface SortByAction {
+  type: "handleSortBy";
+  sortByKey: string;
 }
 
 export function filterReducer(
@@ -219,15 +277,61 @@ export function filterReducer(
     }
     case "clearFilter": {
       return {
-        ...filter,
-        charFilter: initialCharFilter,
-        charIncludeCount: 0,
+        ...initialFilter,
       };
     }
     case "setCustomFilter": {
       return {
         ...filter,
         customFilter: action.customFilter,
+      };
+    }
+    case "handleTag": {
+      let newFilterState: ItemFilterState;
+      switch (filter.tagFilter[action.tag].state) {
+        case ItemFilterState.none:
+          newFilterState = ItemFilterState.include;
+          break;
+        case ItemFilterState.include:
+          newFilterState = ItemFilterState.none;
+          break;
+      }
+
+      return {
+        ...filter,
+        tagFilter: {
+          ...filter.tagFilter,
+          [action.tag]: {
+            state: newFilterState,
+            tag: action.tag,
+          },
+        },
+      };
+    }
+
+    case "handleSortBy": {
+      let newSortByState: ISortBy;
+
+      switch (filter.sortBy.sortByDirection) {
+        case SortByDirection.dsc:
+          newSortByState = {
+            sortByDirection: SortByDirection.asc,
+            sortKey: action.sortByKey,
+          };
+          break;
+
+        default:
+        case SortByDirection.asc:
+          newSortByState = {
+            sortByDirection: SortByDirection.dsc,
+            sortKey: action.sortByKey,
+          };
+          break;
+      }
+
+      return {
+        ...filter,
+        sortBy: newSortByState,
       };
     }
 

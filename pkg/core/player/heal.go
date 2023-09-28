@@ -58,6 +58,12 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 		heal = 0
 	}
 
+	// calc overheal
+	overheal := prevHP + heal - c.MaxHP()
+	if overheal < 0 {
+		overheal = 0
+	}
+
 	// update hp debt based on original heal amount
 	c.ModifyHPDebtByAmount(-healAmt)
 
@@ -72,12 +78,13 @@ func (h *Handler) HealIndex(info *HealInfo, index int) {
 		Write("bonus", bonus).
 		Write("final amount before hp debt", healAmt).
 		Write("final amount after hp debt", heal).
+		Write("overheal", overheal).
 		Write("current_hp_ratio", c.CurrentHPRatio()).
 		Write("current_hp", c.CurrentHP()).
 		Write("current_hp_debt", c.CurrentHPDebt()).
 		Write("max_hp", c.MaxHP())
 
-	h.Events.Emit(event.OnHeal, info, index, heal)
+	h.Events.Emit(event.OnHeal, info, index, heal, overheal)
 }
 
 type DrainInfo struct {

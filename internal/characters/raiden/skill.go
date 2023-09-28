@@ -32,7 +32,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 36
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Eye of Stormy Judgement",
@@ -74,12 +74,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 600, 6)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
@@ -106,11 +106,11 @@ func (c *char) eyeOnDamage() {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
-		//ignore if eye on icd
+		// ignore if eye on icd
 		if c.eyeICD > c.Core.F {
 			return false
 		}
-		//ignore if eye status not active on char that's doing dmg
+		// ignore if eye status not active on char that's doing dmg
 		if !c.Core.Player.ByIndex(ae.Info.ActorIndex).StatusIsActive(skillKey) {
 			return false
 		}
@@ -120,17 +120,17 @@ func (c *char) eyeOnDamage() {
 			ae.Info.AttackTag == attacks.AttackTagSwirlHydro {
 			return false
 		}
-		//ignore self dmg
+		// ignore self dmg
 		if ae.Info.Abil == "Eye of Stormy Judgement" {
 			return false
 		}
-		//ignore 0 damage
+		// ignore 0 damage
 		if dmg == 0 {
 			return false
 		}
 
-		//hit mark 857, eye land 862
-		//electro appears to be applied right away
+		// hit mark 857, eye land 862
+		// electro appears to be applied right away
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Eye of Stormy Judgement (Strike)",
@@ -147,8 +147,7 @@ func (c *char) eyeOnDamage() {
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 5, 5, c.particleCB)
 
-		c.eyeICD = c.Core.F + 54 //0.9 sec icd
+		c.eyeICD = c.Core.F + 54 // 0.9 sec icd
 		return false
 	}, "raiden-eye")
-
 }

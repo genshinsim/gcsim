@@ -39,7 +39,7 @@ func (c *char) c2() {
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = math.Min((float64)(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
+	m[attributes.DmgP] = math.Min(float64(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
 		Amount: func() ([]float64, bool) {
@@ -56,7 +56,7 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 	done := false
 
 	return func(a combat.AttackCB) {
-		if done || !c.StatusIsActive(skillKey) || c.skydwellerPoints <= 0 {
+		if done || !c.StatusIsActive(SkillKey) || c.skydwellerPoints <= 0 {
 			return
 		}
 
@@ -93,5 +93,4 @@ func (c *char) makeC6Callback() func(cb combat.AttackCB) {
 			combat.NewCircleHitOnTarget(trg, nil, 2), 8, 8,
 		)
 	}
-
 }

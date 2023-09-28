@@ -19,7 +19,7 @@ type (
 		typ         targets.TargettableType
 		gadgetTyp   GadgetTyp
 		hdlr        *Handler
-		src         int //source of gadget
+		src         int // source of gadget
 		idx         int
 		key         targets.TargetKey
 		shp         geometry.Shape
@@ -47,7 +47,7 @@ func (t *testtarg) SetKey(i targets.TargetKey)                      { t.key = i 
 func (t *testtarg) Type() targets.TargettableType                   { return t.typ }
 func (t *testtarg) Shape() geometry.Shape                           { return t.shp }
 func (t *testtarg) Pos() geometry.Point                             { return t.shp.Pos() }
-func (t *testtarg) SetPos(p geometry.Point)                         {} //??
+func (t *testtarg) SetPos(p geometry.Point)                         {} // ??
 func (t *testtarg) IsAlive() bool                                   { return t.alive }
 func (t *testtarg) SetTag(key string, val int)                      {}
 func (t *testtarg) GetTag(key string) int                           { return -1 }
@@ -80,14 +80,14 @@ func (t *testtarg) WillCollide(s geometry.Shape) bool {
 func (t *testtarg) HandleAttack(*AttackEvent) float64 { return 0 }
 
 func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
-	//geometry.Shape shouldn't be nil; panic here
+	// geometry.Shape shouldn't be nil; panic here
 	if a.Shape == nil {
 		panic("unexpected nil geometry.Shape")
 	}
 	if !t.alive {
 		return false, "target dead"
 	}
-	//geometry.Shape can't be nil now, check if type matches
+	// geometry.Shape can't be nil now, check if type matches
 	// if !a.Targets[t.typ] {
 	// 	return false, "wrong type"
 	// }
@@ -98,14 +98,14 @@ func (t *testtarg) AttackWillLand(a AttackPattern) (bool, string) {
 		}
 	}
 
-	//check if geometry.Shape matches
+	// check if geometry.Shape matches
 	switch v := a.Shape.(type) {
 	case *geometry.Circle:
 		return t.Shape().IntersectCircle(*v), "intersect circle"
 	case *geometry.Rectangle:
 		return t.Shape().IntersectRectangle(*v), "intersect rectangle"
 	case *geometry.SingleTarget:
-		//only true if
+		// only true if
 		return v.Target == t.key, "target"
 	default:
 		return false, "unknown geometry.Shape"

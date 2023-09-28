@@ -3,28 +3,25 @@ package simulation
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/gcs"
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 type Simulation struct {
 	// f    int
-	skip int
-	C    *core.Core
-	//action list stuff
-	cfg           *ast.ActionList
-	queue         *ast.ActionStmt
-	nextAction    chan *ast.ActionStmt
-	continueEval  chan bool
-	evalErr       chan error
-	queuer        gcs.Eval
+	preActionDelay int
+	C              *core.Core
+	// action list stuff
+	cfg           *info.ActionList
+	queue         []*action.Eval
+	eval          action.Evaluator
 	noMoreActions bool
-	collectors    []stats.StatsCollector
+	collectors    []stats.Collector
 
-	//track previous action, when it was used at, and the earliest
-	//useable frame for all other chained actions
+	// track previous action, when it was used at, and the earliest
+	// useable frame for all other chained actions
 }
 
 /**
@@ -38,18 +35,14 @@ Simulation should maintain the following:
 
 **/
 
-func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
+func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation, error) {
 	var err error
 	s := &Simulation{}
 	s.cfg = cfg
 	// fmt.Printf("cfg: %+v\n", cfg)
 	s.C = c
-	if err != nil {
-		return nil, err
-	}
-	s.C = c
 
-	err = SetupTargetsInCore(c, geometry.Point{X: cfg.PlayerPos.X, Y: cfg.PlayerPos.Y}, cfg.PlayerPos.R, cfg.Targets)
+	err = SetupTargetsInCore(c, geometry.Point{X: cfg.InitialPlayerPos.X, Y: cfg.InitialPlayerPos.Y}, cfg.InitialPlayerPos.R, cfg.Targets)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +73,8 @@ func New(cfg *ast.ActionList, c *core.Core) (*Simulation, error) {
 	if s.C.Combat.Debug {
 		s.CharacterDetails()
 	}
+
+	s.eval = eval
 
 	return s, nil
 }

@@ -1,4 +1,4 @@
-﻿package seasonedhuntersbow
+package seasonedhuntersbow
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"

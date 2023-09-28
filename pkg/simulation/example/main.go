@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 )
@@ -57,20 +57,19 @@ noelle attack:3, dash, attack:3, dash, attack;
 `
 
 func main() {
-	//parse cfg
+	// parse cfg
 	p := ast.New(cfg)
-	cfg, err := p.Parse()
+	cfg, gcsl, err := p.Parse()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(cfg.Program.String())
+	fmt.Println(gcsl.String())
 
-	//create core
-	c, err := core.New(core.CoreOpt{
+	// create core
+	c, err := core.New(core.Opt{
 		Seed:       0,
 		Debug:      true,
-		Delays:     cfg.Settings.Delays,
 		DefHalt:    cfg.Settings.DefHalt,
 		DamageMode: cfg.Settings.DamageMode,
 	})
@@ -78,19 +77,25 @@ func main() {
 		panic(err)
 	}
 
-	//create simulation
-	sim, err := simulation.New(cfg, c)
+	// create new eval
+	eval, err := gcs.NewEvaluator(gcsl, c)
 	if err != nil {
 		panic(err)
 	}
-	//run simulatin
-	res, err := sim.Run()
+
+	// create simulation
+	sim, err := simulation.New(cfg, eval, c)
+	if err != nil {
+		panic(err)
+	}
+	// run simulatin
+	_, err = sim.Run()
 
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(res)
+	// fmt.Println(res)
 
 	logs, err := c.Log.Dump()
 	if err != nil {
@@ -99,7 +104,7 @@ func main() {
 	// fmt.Println(string(logs))
 
 	os.Remove("logs.json")
-	ioutil.WriteFile("logs.json", logs, 0600)
+	os.WriteFile("logs.json", logs, 0o600)
 
-	//do stuff
+	// do stuff
 }

@@ -53,7 +53,7 @@ func (c *char) checkc6(check1HP bool) {
 		c.SetHPByAmount(1)
 	}
 
-	//increase crit rate to 100%
+	// increase crit rate to 100%
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("hutao-c6", 600),
 		AffectedStat: attributes.CR,
@@ -73,7 +73,7 @@ func (c *char) c4() {
 	c.c4buff[attributes.CR] = 0.12
 	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
-		//do nothing if not an enemy
+		// do nothing if not an enemy
 		if !ok {
 			return false
 		}
@@ -81,7 +81,7 @@ func (c *char) c4() {
 			return false
 		}
 		for i, char := range c.Core.Player.Chars() {
-			//does not affect hutao
+			// does not affect hutao
 			if c.Index == i {
 				continue
 			}

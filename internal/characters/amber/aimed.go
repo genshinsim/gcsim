@@ -20,7 +20,7 @@ func init() {
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -30,18 +30,18 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	b := p["bunny"]
 
 	if c.Base.Cons >= 2 && b != 0 {
-		//explode the first bunny
+		// explode the first bunny
 		c.Core.Tasks.Add(func() {
 			c.manualExplode()
 		}, aimedHitmark+travel)
 
-		//also don't do any dmg since we're shooting at bunny
-		return action.ActionInfo{
+		// also don't do any dmg since we're shooting at bunny
+		return action.Info{
 			Frames:          frames.NewAbilFunc(aimedFrames),
 			AnimationLength: aimedFrames[action.InvalidAction],
 			CanQueueAfter:   aimedHitmark,
 			State:           action.AimState,
-		}
+		}, nil
 	}
 
 	ai := combat.AttackInfo{
@@ -86,10 +86,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
 		State:           action.AimState,
-	}
+	}, nil
 }

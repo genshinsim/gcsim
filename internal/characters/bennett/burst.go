@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -31,11 +31,11 @@ func init() {
 	burstFrames[action.ActionSwap] = 51
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//add field effect timer
-	//deployable thus not hitlag
+func (c *char) Burst(p map[string]int) (action.Info, error) {
+	// add field effect timer
+	// deployable thus not hitlag
 	c.Core.Status.Add(burstKey, 720+burstStartFrame)
-	//hook for buffs; active right away after cast
+	// hook for buffs; active right away after cast
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -67,12 +67,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(36)
 	c.SetCDWithDelay(action.ActionBurst, 900, 34)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
@@ -84,7 +84,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATK] = pc * float64(c.Base.Atk+c.Weapon.Atk)
+	m[attributes.ATK] = pc * (c.Base.Atk + c.Weapon.BaseAtk)
 	if c.Base.Cons >= 6 {
 		m[attributes.PyroP] = 0.15
 	}
@@ -92,7 +92,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 	return func() {
 		c.Core.Log.NewEvent("bennett field ticking", glog.LogCharacterEvent, -1)
 
-		//self infuse
+		// self infuse
 		p, ok := c.Core.Combat.Player().(*avatar.Player)
 		if !ok {
 			panic("target 0 should be Player but is not!!")
@@ -100,7 +100,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 		p.ApplySelfInfusion(attributes.Pyro, 25, burstBuffDuration)
 
 		active := c.Core.Player.ActiveChar()
-		//heal if under 70%
+		// heal if under 70%
 		if active.CurrentHPRatio() < 0.7 {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
@@ -111,7 +111,7 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 			})
 		}
 
-		//add attack if over 70%
+		// add attack if over 70%
 		threshold := .7
 		if c.Base.Cons >= 1 {
 			threshold = 0
@@ -121,11 +121,11 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 			// add weapon infusion
 			if c.Base.Cons >= 6 {
 				switch active.Weapon.Class {
-				case weapon.WeaponClassClaymore:
+				case info.WeaponClassClaymore:
 					fallthrough
-				case weapon.WeaponClassSpear:
+				case info.WeaponClassSpear:
 					fallthrough
-				case weapon.WeaponClassSword:
+				case info.WeaponClassSword:
 					c.Core.Player.AddWeaponInfuse(
 						active.Index,
 						"bennett-fire-weapon",

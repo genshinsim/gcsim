@@ -63,7 +63,7 @@ func init() {
 	skillHoldFrames[1][action.ActionSwap] = 88    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// check if Q is up for different E frames
 	burstActive := 0
 	if c.StatusIsActive(burstBuffKey) {
@@ -71,12 +71,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	if p["hold"] > 0 {
-		return c.SkillHold(burstActive)
+		return c.SkillHold(burstActive), nil
 	}
-	return c.SkillPress(burstActive)
+	return c.SkillPress(burstActive), nil
 }
 
-func (c *char) SkillPress(burstActive int) action.ActionInfo {
+func (c *char) SkillPress(burstActive int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Claw and Thunder (Press)",
@@ -124,7 +124,7 @@ func (c *char) SkillPress(burstActive int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(6*60), skillPressCDStarts[burstActive])
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames[burstActive]),
 		AnimationLength: skillPressFrames[burstActive][action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[burstActive][action.ActionDash], // earliest cancel is 1f before skillPressHitmark
@@ -143,7 +143,7 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) SkillHold(burstActive int) action.ActionInfo {
+func (c *char) SkillHold(burstActive int) action.Info {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Claw and Thunder (Hold)",
@@ -173,7 +173,7 @@ func (c *char) SkillHold(burstActive int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(10*60), skillHoldCDStarts[burstActive])
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames[burstActive]),
 		AnimationLength: skillHoldFrames[burstActive][action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[burstActive][action.ActionJump], // earliest cancel is 3f before skillHoldHitmark

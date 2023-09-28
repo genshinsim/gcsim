@@ -15,7 +15,7 @@ type buffer struct {
 	events [][]stats.EnergyEvent
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		events: make([][]stats.EnergyEvent, len(core.Player.Chars())),
 	}
@@ -35,9 +35,9 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		}
 
 		if core.Player.Active() == character.Index {
-			event.Status = stats.OnField
+			event.FieldStatus = stats.OnField
 		} else {
-			event.Status = stats.OffField
+			event.FieldStatus = stats.OffField
 		}
 
 		out.events[character.Index] = append(out.events[character.Index], event)

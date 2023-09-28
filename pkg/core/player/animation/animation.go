@@ -1,6 +1,6 @@
-//package animation provides a simple way of tracking the current
-//animation state at any given frame, as well as if the current frame
-//is in animation lock or not
+// package animation provides a simple way of tracking the current
+// animation state at any given frame, as well as if the current frame
+// is in animation lock or not
 package animation
 
 import (
@@ -12,7 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/task"
 )
 
-type AnimationHandler struct {
+type AnimationHandler struct { //nolint:revive // cannot just name this Handler because then there is a conflict with Handler in player package
 	f      *int
 	events event.Eventter
 	log    glog.Logger
@@ -21,7 +21,7 @@ type AnimationHandler struct {
 	char    int
 	started int
 	lastAct action.Action
-	aniEvt  *action.ActionInfo
+	aniEvt  *action.Info
 
 	state       action.AnimationState
 	stateExpiry int
@@ -40,25 +40,25 @@ func New(f *int, debug bool, log glog.Logger, events event.Eventter, tasks task.
 	return h
 }
 
-//IsAnimationLocked returns true if the next action can be executed on the
-//current frame; false otherwise
+// IsAnimationLocked returns true if the next action can be executed on the
+// current frame; false otherwise
 func (h *AnimationHandler) IsAnimationLocked(next action.Action) bool {
 	if h.aniEvt == nil {
 		return false
 	}
-	//actions are always executed after ticks and right before we advance to
-	//the next frame i.e. at the end of a frame
+	// actions are always executed after ticks and right before we advance to
+	// the next frame i.e. at the end of a frame
 	//
-	//if an action should take 20 frames of animation then this action would be ready if
-	//f >= s + 20
+	// if an action should take 20 frames of animation then this action would be ready if
+	// f >= s + 20
 	//
-	//i.e the action lasted 20 frames counting the current frame
+	// i.e the action lasted 20 frames counting the current frame
 	// fmt.Printf("animation check; current frame %v, animation duration %v\n", *h.f, h.info.Frames(next))
 	return !h.aniEvt.CanUse(next)
 }
 
-//CanQueue returns true if we can start looking for the next action to queue
-//on the current frame, false otherwise
+// CanQueue returns true if we can start looking for the next action to queue
+// on the current frame, false otherwise
 func (h *AnimationHandler) CanQueueNextAction() bool {
 	if h.aniEvt == nil {
 		return true
@@ -66,8 +66,8 @@ func (h *AnimationHandler) CanQueueNextAction() bool {
 	return h.aniEvt.CanQueueNext()
 }
 
-func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *action.ActionInfo) {
-	//remove previous if still active
+func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *action.Info) {
+	// remove previous if still active
 	if h.aniEvt != nil {
 		if h.aniEvt.OnRemoved != nil {
 			h.aniEvt.OnRemoved(evt.State)
@@ -80,7 +80,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 			)
 		}
 	}
-	//setup next
+	// setup next
 	h.char = char
 	h.started = *h.f
 	h.aniEvt = evt

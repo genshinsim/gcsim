@@ -1,4 +1,4 @@
-﻿package reactable_test
+package reactable_test
 
 import (
 	"log"
@@ -37,7 +37,7 @@ func TestModifyDendroCore(t *testing.T) {
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
 				Gadget: gadget.New(c, geometry.Point{X: 0, Y: 0}, 0.2, combat.GadgetTypDendroCore),
 			})
-			//prevent blowing up
+			// prevent blowing up
 			g.OnKill = nil
 			g.OnExpiry = nil
 			g.OnCollision = nil
@@ -75,7 +75,7 @@ func TestModifyDendroCore(t *testing.T) {
 		t.Errorf("gadget not a fake core??")
 	}
 
-	//make sure no blow up
+	// make sure no blow up
 	for i := 0; i < 600; i++ {
 		advanceCoreFrame(c)
 	}
@@ -83,7 +83,6 @@ func TestModifyDendroCore(t *testing.T) {
 	if count != 0 {
 		t.Errorf("expecting 0 dmg count, got %v", count)
 	}
-
 }
 
 type fakeCore struct {

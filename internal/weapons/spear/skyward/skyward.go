@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -29,11 +29,11 @@ func (w *Weapon) Init() error      { return nil }
 // Normal and Charged Attacks hits on opponents have a 50% chance to trigger a
 // vacuum blade that deals 40% of ATK as DMG in a small AoE. This effect can
 // occur no more than once every 2s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.06 + float64(r)*0.02
 	m[attributes.AtkSpd] = 0.12
@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	atk := .25 + .15*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
-		//check if char is correct?
+		// check if char is correct?
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
@@ -59,7 +59,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
-		//check if cd is up
+		// check if cd is up
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
@@ -67,7 +67,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 
-		//add a new action that deals % dmg immediately
+		// add a new action that deals % dmg immediately
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Spine Proc",
@@ -82,7 +82,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		trg := args[0].(combat.Target)
 		c.QueueAttack(ai, combat.NewBoxHitOnTarget(trg, nil, 0.1, 0.1), 0, 1)
 
-		//trigger cd
+		// trigger cd
 		char.AddStatus(icdKey, 120, true)
 		return false
 	}, fmt.Sprintf("skyward-spine-%v", char.Base.Key.String()))

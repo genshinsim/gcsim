@@ -40,7 +40,7 @@ func init() {
 }
 
 // Standard aimed attack
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -57,9 +57,9 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	// used to adjust how long it takes for the kindling arrows to hit starting from CA arrow release
-	kindling_travel, ok := p["kindling_travel"]
+	kindlingTravel, ok := p["kindling_travel"]
 	if !ok {
-		kindling_travel = 30
+		kindlingTravel = 30
 	}
 
 	// Normal Arrow
@@ -122,16 +122,16 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 					0.6,
 				),
 				aimedHitmarks[kindling],
-				aimedHitmarks[kindling]+kindling_travel,
+				aimedHitmarks[kindling]+kindlingTravel,
 				c2CB,
 			)
 		}
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames[kindling]),
 		AnimationLength: aimedFrames[kindling][action.InvalidAction],
 		CanQueueAfter:   aimedHitmarks[kindling],
 		State:           action.AimState,
-	}
+	}, nil
 }

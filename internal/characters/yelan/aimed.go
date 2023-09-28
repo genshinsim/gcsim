@@ -28,7 +28,7 @@ func init() {
 }
 
 // Aimed charge attack damage queue generator
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -62,12 +62,12 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			aimedBarbHitmark+travel,
 		)
 
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          frames.NewAbilFunc(aimedBarbFrames),
 			AnimationLength: aimedBarbFrames[action.InvalidAction],
 			CanQueueAfter:   aimedBarbHitmark,
 			State:           action.AimState,
-		}
+		}, nil
 	}
 
 	ai := combat.AttackInfo{
@@ -95,10 +95,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		aimedHitmark+travel,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
 		State:           action.AimState,
-	}
+	}, nil
 }

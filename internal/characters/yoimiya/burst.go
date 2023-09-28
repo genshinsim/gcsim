@@ -24,8 +24,8 @@ func init() {
 	burstFrames[action.ActionSwap] = 109    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//assume it does skill dmg at end of it's animation
+func (c *char) Burst(p map[string]int) (action.Info, error) {
+	// assume it does skill dmg at end of it's animation
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Aurous Blaze",
@@ -51,19 +51,19 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.makeC2CB(),
 	)
 
-	//add cooldown to sim
+	// add cooldown to sim
 	c.SetCD(action.ActionBurst, 15*60)
-	//use up energy
+	// use up energy
 	c.ConsumeEnergy(5)
 
 	c.abApplied = false
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) applyAB(a combat.AttackCB) {
@@ -91,8 +91,8 @@ func (c *char) applyAB(a combat.AttackCB) {
 }
 
 func (c *char) burstHook() {
-	//check on attack landed for target 0
-	//if aurous active then trigger dmg if not on cd
+	// check on attack landed for target 0
+	// if aurous active then trigger dmg if not on cd
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		ae := args[1].(*combat.AttackEvent)
 		trg, ok := args[0].(*enemy.Enemy)
@@ -108,11 +108,11 @@ func (c *char) burstHook() {
 		if ae.Info.ActorIndex == c.Index {
 			return false
 		}
-		//ignore if on icd
+		// ignore if on icd
 		if trg.StatusIsActive(abIcdKey) {
 			return false
 		}
-		//ignore if wrong tags
+		// ignore if wrong tags
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
@@ -123,7 +123,7 @@ func (c *char) burstHook() {
 		default:
 			return false
 		}
-		//do explosion, set icd
+		// do explosion, set icd
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Aurous Blaze (Explode)",
@@ -145,11 +145,10 @@ func (c *char) burstHook() {
 		}
 
 		return false
-
 	}, "yoimiya-burst-check")
 
 	if c.Core.Flags.DamageMode {
-		//add check for if yoimiya dies
+		// add check for if yoimiya dies
 		c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(_ ...interface{}) bool {
 			if c.CurrentHPRatio() <= 0 {
 				// remove Aurous Blaze from target

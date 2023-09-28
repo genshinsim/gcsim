@@ -29,4 +29,6 @@ const (
 	FreezeExtend       ReactionType = "freeze-extend"
 )
 
+const SelfDamageSuffix = " (self damage)"
+
 type Durability float64

@@ -53,7 +53,7 @@ func (c *char) a1Buff(delay int) {
 // Overflowing Lotuslight has a maximum of 10 stacks.
 func (c *char) a1Stack(delay int) {
 	c.Core.Tasks.Add(func() {
-		if c.Core.Status.Duration(burstKey) > 0 && c.burstOverflowingLotuslight < 10 { //burst isn't expired, and stacks aren't capped
+		if c.Core.Status.Duration(burstKey) > 0 && c.burstOverflowingLotuslight < 10 { // burst isn't expired, and stacks aren't capped
 			c.burstOverflowingLotuslight += 1
 		}
 	}, delay)

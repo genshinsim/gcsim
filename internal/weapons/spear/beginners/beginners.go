@@ -1,4 +1,4 @@
-﻿package beginners
+package beginners
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"

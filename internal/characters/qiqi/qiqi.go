@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
@@ -27,7 +27,7 @@ type char struct {
 
 // TODO: Not implemented - C6 (revival mechanic, not suitable for sim)
 // C4 - Enemy Atk reduction, not useful in this sim version
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -55,14 +55,14 @@ func (c *char) Init() error {
 }
 
 // Helper function to calculate healing amount dynamically using current character stats, which has all mods applied
-func (c *char) healDynamic(healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
-	atk := c.Base.Atk + c.Weapon.Atk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
+func (c *char) healDynamic(healScalePer, healScaleFlat []float64, talentLevel int) float64 {
+	atk := c.Base.Atk + c.Weapon.BaseAtk*(1+c.Stat(attributes.ATKP)) + c.Stat(attributes.ATK)
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal
 }
 
 // Helper function to calculate healing amount from a snapshot instance
-func (c *char) healSnapshot(d *combat.Snapshot, healScalePer []float64, healScaleFlat []float64, talentLevel int) float64 {
+func (c *char) healSnapshot(d *combat.Snapshot, healScalePer, healScaleFlat []float64, talentLevel int) float64 {
 	atk := d.BaseAtk*(1+d.Stats[attributes.ATKP]) + d.Stats[attributes.ATK]
 	heal := healScaleFlat[talentLevel] + atk*healScalePer[talentLevel]
 	return heal

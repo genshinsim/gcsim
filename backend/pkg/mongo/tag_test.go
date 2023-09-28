@@ -14,7 +14,7 @@ import (
 func TestApproveTag(t *testing.T) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 
-	//insert new entry so not to pollute other tests
+	// insert new entry so not to pollute other tests
 	e := makeEntry("approve_test", "poop", true, false)
 	_, err := col.InsertOne(context.Background(), e)
 	if err != nil {
@@ -47,7 +47,7 @@ func TestApproveTag(t *testing.T) {
 		t.Error("result should be db valid")
 	}
 
-	//try adding same tag again
+	// try adding same tag again
 	err = s.ApproveTag(context.Background(), e.Id, model.DBTag_DB_TAG_TESTING)
 	if err != nil {
 		t.Error(err)
@@ -77,7 +77,7 @@ func TestApproveTag(t *testing.T) {
 func TestRejectTag(t *testing.T) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 
-	//insert new entry so not to pollute other tests
+	// insert new entry so not to pollute other tests
 	e := makeEntry("deny_test", "poop", true, true)
 	e.AcceptedTags = append(e.AcceptedTags, model.DBTag_DB_TAG_TESTING)
 	_, err := col.InsertOne(context.Background(), e)
@@ -107,7 +107,7 @@ func TestRejectTag(t *testing.T) {
 		t.Errorf("tag count not 0 in result: %v", res.String())
 	}
 
-	//there's still one more tag to remove
+	// there's still one more tag to remove
 	if !res.IsDbValid {
 		t.Error("result should db valid still")
 	}
@@ -133,7 +133,7 @@ func TestRejectTag(t *testing.T) {
 		t.Errorf("tag count not 0 in result: %v", res.String())
 	}
 
-	//there's still one more tag to remove
+	// there's still one more tag to remove
 	if res.IsDbValid {
 		t.Error("result should not be db valid")
 	}
@@ -142,7 +142,7 @@ func TestRejectTag(t *testing.T) {
 func TestRejectAllUnapprovedTag(t *testing.T) {
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 
-	//insert new entries so not to pollute other tests
+	// insert new entries so not to pollute other tests
 	e := makeEntry("reject_all_unapproved", "poop", true, true)
 	e.AcceptedTags = append(e.AcceptedTags, model.DBTag_DB_TAG_TESTING)
 	_, err := col.InsertOne(context.Background(), e)
@@ -152,7 +152,7 @@ func TestRejectAllUnapprovedTag(t *testing.T) {
 	}
 
 	total := rand.Intn(25)
-	//add a bunch of random entries
+	// add a bunch of random entries
 	for i := 0; i < total; i++ {
 		e := makeEntry(fmt.Sprintf("reject_all_unapproved_%v", i), "poop", true, false)
 		_, err := col.InsertOne(context.Background(), e)
@@ -167,7 +167,7 @@ func TestRejectAllUnapprovedTag(t *testing.T) {
 		t.Error(err)
 	}
 
-	//we should have total of reject_all_unapproved with testing as rejected tag
+	// we should have total of reject_all_unapproved with testing as rejected tag
 	results, err := s.get(context.Background(), col, bson.D{})
 	if err != nil {
 		t.Error(err)
@@ -175,7 +175,7 @@ func TestRejectAllUnapprovedTag(t *testing.T) {
 	rejectCount := 0
 	acceptCount := 0
 	for _, v := range results {
-		//we only care about reject_all_unapproved
+		// we only care about reject_all_unapproved
 		if strings.HasPrefix(v.Id, "reject_all_unapproved") {
 			for _, x := range v.RejectedTags {
 				if x == model.DBTag_DB_TAG_TESTING {

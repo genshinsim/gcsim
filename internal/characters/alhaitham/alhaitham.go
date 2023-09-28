@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -24,7 +24,7 @@ type char struct {
 	c2Counter       int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -50,7 +50,7 @@ func (c *char) onExitField() {
 		if prev != c.Index {
 			return false
 		}
-		c.lastInfusionSrc = -1 //Might prevent undesired behaviour
+		c.lastInfusionSrc = -1 // Might prevent undesired behaviour
 		if c.mirrorCount > 0 {
 			c.mirrorCount = 0
 			c.Core.Log.NewEvent("Alhaitham left the field, mirror lost", glog.LogCharacterEvent, c.Index)
@@ -63,7 +63,7 @@ func (c *char) onExitField() {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.mirrorCount > 0 { //weapon infusion can't be overriden for haitham
+	if c.mirrorCount > 0 { // weapon infusion can't be overriden for haitham
 		switch ai.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagPlunge:

@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -20,7 +20,6 @@ func init() {
 }
 
 type Set struct {
-	icd   int
 	core  *core.Core
 	Index int
 }
@@ -29,7 +28,7 @@ func (s *Set) SetIndex(idx int) { s.Index = idx }
 
 func (s *Set) Init() error { return nil }
 
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
 		core: c,
 	}
@@ -48,10 +47,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		counter := 0
-		permStacks := param["stacks"]
-		if permStacks > 5 {
-			permStacks = 5
-		}
 		mStack := make([]float64, attributes.EndStatType)
 		mStack[attributes.DmgP] = 0.08
 		addStackMod := func(idx int, duration int) {
@@ -69,20 +64,18 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				},
 			})
 		}
-		for i := 0; i < permStacks; i++ {
-			addStackMod(i, -1)
-		}
 		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 			di := args[0].(player.DrainInfo)
-			if di.Amount <= 0 {
-				return false
-			}
 			if di.ActorIndex != char.Index {
 				return false
 			}
-			if counter >= permStacks {
-				addStackMod(counter, 300)
+			if di.Amount <= 0 {
+				return false
 			}
+			if !di.External {
+				return false
+			}
+			addStackMod(counter, 300)
 			counter = (counter + 1) % 5
 			return false
 		}, fmt.Sprintf("vg-4pc-%v", char.Base.Key.String()))

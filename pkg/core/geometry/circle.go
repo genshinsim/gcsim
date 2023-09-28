@@ -1,4 +1,4 @@
-﻿package geometry
+package geometry
 
 import (
 	"fmt"
@@ -82,16 +82,16 @@ func (c *Circle) PointInShape(p Point) bool {
 	return rangeCheck && fanAngleAreaCheck(c.center, p, c.dir, c.fanAngle)
 }
 
-func (c1 *Circle) IntersectCircle(c2 Circle) bool {
+func (c *Circle) IntersectCircle(c2 Circle) bool {
 	// TODO: circle with fanAngle hurtbox-circle collision
-	if c1.segments != nil {
+	if c.segments != nil {
 		panic("target with fanAngle hurtbox isn't supported in circle-circle collision")
 	}
 	// https://stackoverflow.com/a/4226473
 	// A: full circles have to be intersecting
 	// (R0 - R1)^2 <= (x0 - x1)^2 + (y0 - y1)^2 <= (R0 + R1)^2
-	radiusSum := c1.r + c2.r
-	if c1.center.Sub(c2.center).MagnitudeSquared() > radiusSum*radiusSum {
+	radiusSum := c.r + c2.r
+	if c.center.Sub(c2.center).MagnitudeSquared() > radiusSum*radiusSum {
 		return false
 	}
 
@@ -106,7 +106,7 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 	// B: check if c1 intersects any of c2's segments, if yes we can exit early
 	// (it's necessary to check for this because c1 can collide with c2's fanAngle area
 	// even if c1's circle center isn't in c2's fanAngle range)
-	o := c1.center
+	o := c.center
 	p := c2.center
 
 	op := p.Sub(o)
@@ -124,13 +124,13 @@ func (c1 *Circle) IntersectCircle(c2 Circle) bool {
 		if op.Dot(qp) > 0 && oq.Dot(pq) > 0 {
 			minDist = math.Abs(op.Cross(oq)) / c2.r
 		}
-		if minDist <= c1.r {
+		if minDist <= c.r {
 			return true
 		}
 	}
 
 	// C: check if the angle between the vector pointing from c2 to c1 and the y axis lies within the fanAngle of c2
-	return fanAngleAreaCheck(c2.center, c1.center, c2.dir, c2.fanAngle)
+	return fanAngleAreaCheck(c2.center, c.center, c2.dir, c2.fanAngle)
 }
 
 func (c *Circle) IntersectRectangle(r Rectangle) bool {

@@ -45,7 +45,7 @@ func CalcDirection(src, trg Point) Point {
 }
 
 // generates a random point that is between minRadius and maxRadius distance away from the provided center
-func CalcRandomPointFromCenter(center Point, minRadius float64, maxRadius float64, rand *rand.Rand) Point {
+func CalcRandomPointFromCenter(center Point, minRadius, maxRadius float64, rand *rand.Rand) Point {
 	// generate random point inside unit circle using rejection sampling
 	var result Point
 	for {

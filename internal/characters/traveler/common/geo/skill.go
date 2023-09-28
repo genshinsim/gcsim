@@ -53,13 +53,13 @@ func init() {
 	skillFrames[1][1][action.ActionSwap] = 40    // Short Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-	short_hold, ok := p["short_hold"]
-	if !ok || short_hold < 0 {
-		short_hold = 0
+func (c *char) Skill(p map[string]int) (action.Info, error) {
+	shortHold, ok := p["short_hold"]
+	if !ok || shortHold < 0 {
+		shortHold = 0
 	}
-	if short_hold > 1 {
-		short_hold = 1
+	if shortHold > 1 {
+		shortHold = 1
 	}
 
 	ai := combat.AttackInfo{
@@ -86,7 +86,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai,
 		combat.NewCircleHitOnTarget(stonePos, nil, 3),
 		24,
-		skillHitmark[short_hold],
+		skillHitmark[shortHold],
 		c.makeParticleCB(),
 	)
 
@@ -96,16 +96,16 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			dur += 600
 		}
 		c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
-	}, skillHitmark[short_hold])
+	}, skillHitmark[shortHold])
 
-	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[short_hold])
+	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[shortHold])
 
-	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames[short_hold][c.gender]),
-		AnimationLength: skillFrames[short_hold][c.gender][action.InvalidAction],
-		CanQueueAfter:   skillFrames[short_hold][c.gender][action.ActionDash], // earliest cancel
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillFrames[shortHold][c.gender]),
+		AnimationLength: skillFrames[shortHold][c.gender][action.InvalidAction],
+		CanQueueAfter:   skillFrames[shortHold][c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB() combat.AttackCBFunc {

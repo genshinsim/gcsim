@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -23,7 +23,7 @@ type char struct {
 	c6Count             int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -38,7 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-
 	c.maxSkydwellerPoints = 100
 	c.a4Prob = 0.16
 	c.a1ValidBuffs = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
@@ -47,7 +46,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if c.StatusIsActive(skillKey) {
+	if c.StatusIsActive(SkillKey) {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
@@ -55,15 +54,15 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 
 // Overwriting of remaining actions to account for falling state
 
-func (c *char) Walk(p map[string]int) action.ActionInfo {
+func (c *char) Walk(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
-	ai := c.Character.Walk(p)
+	ai, err := c.Character.Walk(p)
 	ai.Frames = func(next action.Action) int { return delay + ai.Frames(next) }
 	ai.AnimationLength = delay + ai.AnimationLength
 	ai.CanQueueAfter = delay + ai.CanQueueAfter
 
-	return ai
+	return ai, err
 }
 
 func (c *char) Condition(fields []string) (any, error) {

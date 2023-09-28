@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -12,7 +13,7 @@ import (
 // GenerateSampleWithSeed will run one simulation with debug enabled using the given seed and output
 // the debug log. Used for generating debug for min/max runs
 func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sample, error) {
-	simcfg, err := Parse(cfg)
+	simcfg, gcsl, err := Parse(cfg)
 	if err != nil {
 		return &model.Sample{}, err
 	}
@@ -21,9 +22,12 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 	if err != nil {
 		return &model.Sample{}, err
 	}
-
-	//create a new simulation and run
-	s, err := simulation.New(simcfg, c)
+	eval, err := gcs.NewEvaluator(gcsl, c)
+	if err != nil {
+		return nil, err
+	}
+	// create a new simulation and run
+	s, err := simulation.New(simcfg, eval, c)
 	if err != nil {
 		return &model.Sample{}, err
 	}
@@ -32,7 +36,7 @@ func GenerateSampleWithSeed(cfg string, seed uint64, opts Options) (*model.Sampl
 		return &model.Sample{}, err
 	}
 
-	//capture the log
+	// capture the log
 	logs, err := c.Log.Dump()
 	if err != nil {
 		return &model.Sample{}, err

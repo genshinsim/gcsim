@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -44,21 +43,20 @@ type Config struct {
 	PreviewStore      PreviewStore
 	RoleCheck         RoleChecker
 	AESDecryptionKeys map[string][]byte
-	//mqtt for notification purposes
+	// mqtt for notification purposes
 	MQTTConfig MQTTConfig
 }
 
-type APIContextKey string
+type ContextKey string
 
 const (
-	TTLContextKey   APIContextKey = "ttl"
-	UserContextKey  APIContextKey = "user"
-	ShareContextKey APIContextKey = "share"
-	DBTagContextKey APIContextKey = "db-tag"
+	TTLContextKey   ContextKey = "ttl"
+	UserContextKey  ContextKey = "user"
+	ShareContextKey ContextKey = "share"
+	DBTagContextKey ContextKey = "db-tag"
 )
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
-
 	s := &Server{
 		cfg: cfg,
 	}
@@ -86,7 +84,7 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 	s.routes()
 
-	//sanity checks
+	// sanity checks
 	if s.cfg.ShareStore == nil {
 		return nil, fmt.Errorf("no result store provided")
 	}
@@ -94,14 +92,14 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 		return nil, fmt.Errorf("no user store provided")
 	}
 
-	//connect to db
+	// connect to db
 	conn, err := grpc.Dial(cfg.DBAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
 	s.dbClient = db.NewDBStoreClient(conn)
 
-	//connect to mqtt
+	// connect to mqtt
 	opts := mqttOpts(cfg)
 
 	client := mqtt.NewClient(opts)
@@ -146,7 +144,6 @@ func (s *Server) routes() {
 	r.Use(s.tokenCheck)
 
 	r.Route("/api", func(r chi.Router) {
-
 		r.Route("/preview", func(r chi.Router) {
 			r.Get("/{share-key}", s.GetPreview())
 			r.Get("/db/{db-key}", s.GetPreviewByDBID())
@@ -169,11 +166,4 @@ func (s *Server) routes() {
 			r.Get("/", s.getDB())
 		})
 	})
-
-}
-
-func (s *Server) notImplemented() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotImplemented)
-	}
 }

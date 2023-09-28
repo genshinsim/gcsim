@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -38,7 +38,7 @@ func (s *Set) Init() error {
 // 4-Piece Bonus: When the character equipping this artifact set heals a character in the party,
 // a Sea-Dyed Foam will appear for 3 seconds, accumulating the amount of HP recovered from healing (including overflow healing).
 // At the end of the duration, the Sea-Dyed Foam will explode, dealing DMG to nearby opponents based on 90% of the accumulated
-//healing.
+// healing.
 
 // (This DMG is calculated similarly to Reactions such as Electro-Charged, and Superconduct, but it is not affected by
 // Elemental Mastery, Character Levels, or Reaction DMG Bonuses).
@@ -46,7 +46,7 @@ func (s *Set) Init() error {
 //		Only one Sea-Dyed Foam can be produced every 3.5 seconds. Each Sea-Dyed Foam can accumulate up to 30,000 HP (including
 //	 overflow healing). There can be no more than one Sea-Dyed Foam active at any given time.
 //		This effect can still be triggered even when the character who is using this artifact set is not on the field.
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
 		core: c,
 	}
@@ -120,7 +120,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 						IgnoreDefPercent: 1,
 						FlatDmg:          s.bubbleHealStacks * .9,
 					}
-					//snapshot -1 since we don't need stats
+					// snapshot -1 since we don't need stats
 					c.QueueAttack(atk, combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 6), -1, 1)
 
 					// Reset
@@ -131,7 +131,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				c.Log.NewEvent("ohc bubble activated", glog.LogArtifactEvent, char.Index).
 					Write("bubble_pops_at", s.bubbleDurationExpiry).
 					Write("ohc_icd_expiry", bubbleICDExpiry)
-
 			}
 
 			c.Log.NewEvent("ohc bubble accumulation", glog.LogArtifactEvent, char.Index).

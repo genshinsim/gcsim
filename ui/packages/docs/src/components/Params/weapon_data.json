@@ -6,13 +6,6 @@
       "desc": "Number of stacks to gain at the beginning. Default 0, maximum 10."
     }
   ],
-  "beaconofthereedsea": [
-    {
-      "ability": "Beacon of the Reed Sea",
-      "param": "damaged",
-      "desc": "0 for damaged passive never triggered (default), 1 for triggered every time skill passive is triggered."
-    }
-  ],
   "forestregalia": [
     {
       "ability": "Forest Regalia",
@@ -67,13 +60,6 @@
       "ability": "Sword of Descension",
       "param": "passive",
       "desc": "0 for passive disabled, 1 for enabled (default)."
-    }
-  ],
-  "thealleyflash": [
-    {
-      "ability": "The Alley Flash",
-      "param": "lambda",
-      "desc": "Lambda for Poisson distribution to periodically turn off the weapon passive."
     }
   ]
 }

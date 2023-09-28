@@ -10,14 +10,14 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-type DBStore interface {
-	DBService
+type Store interface {
+	Service
 	TaggingService
 	ComputeService
 	AdminService
 }
 
-type DBService interface {
+type Service interface {
 	Create(context.Context, *Entry) (string, error)
 	Replace(context.Context, *Entry) error
 	Get(ctx context.Context, query *QueryOpt) ([]*Entry, error)
@@ -40,7 +40,8 @@ type ComputeService interface {
 }
 
 type AdminService interface {
-	ReplaceConfig(ctx context.Context, id string, config string) (string, error)
+	ReplaceConfig(ctx context.Context, id string, config string, source model.DBTag) (string, error)
+	ReplaceDesc(ctx context.Context, id string, desc string, source model.DBTag) (string, error)
 }
 
 type ShareStore interface {
@@ -53,7 +54,7 @@ type NotifyService interface {
 }
 
 type Config struct {
-	DBStore           DBStore
+	DBStore           Store
 	ShareStore        ShareStore
 	NotifyService     NotifyService
 	DefaultIterations int
@@ -97,6 +98,7 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 const (
 	TopicReplace                 string = "db/entry/replace"
+	TopicReplaceDesc             string = "db/entry/replace"
 	TopicSubmissionDelete        string = "db/submission/delete"
 	TopicComputeCompleted        string = "db/compute/complete"
 	TopicSubmissionComputeFailed string = "db/compute/submission/failed"
@@ -112,7 +114,7 @@ func (s *Server) notify(topic string, msg protoreflect.ProtoMessage) {
 	if err != nil {
 		s.Log.Warnw("protojson marshal failed with err", "err", err)
 	}
-	//msg should be marshalled to some sort of string
+	// msg should be marshalled to some sort of string
 	err = s.NotifyService.Notify(topic, string(m))
 	if err != nil {
 		s.Log.Warnw("notify failed with err", "err", err)

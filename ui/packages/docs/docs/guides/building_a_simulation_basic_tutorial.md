@@ -644,6 +644,92 @@ With this, the batterying will only occur if Xiangling has less than 70 energy a
 
 ![after batterying](sim_17.png)
 
+## Rotation optimization
+
+In this section we're going to go over some common rotation optimization tricks.
+
+### Maximizing number of Raiden attacks in burst
+
+I mentioned earlier that I put `raiden attack:15;` because I didn't know exactly how many normal attacks Raiden can squeeze in just spamming left mouse click (no fancy combos here) during her burst duration. Now we're going to look at how we can use sample to optimize that.
+
+:::info
+Although a lot of effort has gone into making sure gcsim has accurate frame counts, it's always a good idea to reference vs a video of your own gameplay to see what actions are possible. Keeping in mind that gcsim frames are as optimal as possible (i.e. frame perfect cancels) which could be significantly faster than what you may be able to execute.
+:::
+
+So to start, we're going to generate a sample using `Min Seed` again. This time, make sure that the options are set to show Advanced as follows (we're going to need some of the options here, namely `status`):
+
+![advanced options](opt_1.png)
+
+Next scroll down to the first instance where Raiden uses burst (roughly 6.7s in). You'll see a status line saying: `raidenburst status mod added`. We're going to click on the tiny little icon to the left of it, this is going to highlight the F column like so:
+
+![show buff duration](opt_2.png)
+
+This highlight on the F column is a little helper that shows how long the particular buff that you click on lasts. When the blue highlight fades is when that buff expires. So now we can scroll down and find where the Raiden burst buff expires:
+
+![raiden burst buff expires](opt_3.png)
+
+From this picture, we can see that the last normal attack started on frame 976, and the buff expires 980. This shows that our 15 normal attacks line up perfectly and fit into the burst duration perfectly! We didn't need to do anything.
+
+### Optimizing particles
+
+Another important aspect of optimizing a rotation involves taking a look at energy and making sure the right character is catching the particles. If you are familiar with this particular team, you may know that Xiangling is one of the more energy hungry characters of the team. One potential optimization we can make is to look for ways to increase her energy gain.
+
+Let's start by going back into the sample, and showing just the actions + energy and seeing what we can find:
+
+![energy only settings](opt_4.png)
+
+In particular, we want to look at how the team's energy behaves towards the end of Raiden's attack string during burst to see how far off they are from fully recharged. Scrolling down a bit: 
+
+![energy status](opt_5.png)
+
+We see that roughly 2/3rd of the way into Raiden's attack string, Bennett is already fully charged:
+
+![bennett energy from raiden](opt_6.png)
+
+Xingqiu took a bit longer than Bennett and didn't get fully recharged in this iteration until just after Raiden's attack string ended:
+
+![xingiu energy almost full](opt_7.png)
+
+While Xiangling is still a way off by the end of Raiden's attack string (48 out of 80, barely over the half way point):
+
+![Xiangling energy](opt_8.png)
+
+Seeing that Bennett has way more energy than he needs, one possible optimization is that we can try using Bennett to battery Xiangling instead at the beginning of our rotation, namely, instead of:
+
+```
+  ...
+  raiden skill;
+  xingqiu skill, burst;
+  bennett skill, burst;
+  xiangling burst, skill;
+  ...
+```
+
+Let's change this to:
+
+```
+  ...
+  raiden skill;
+  xingqiu skill, burst;
+  bennett burst, skill; // use bennett's skill after burst so that xiangling can catch the particles
+  xiangling burst, skill;
+  ...
+```
+
+Rerunning this and we get:
+
+![bennett battery xl results](opt_9.png)
+
+A nice 400dps gain. Let's double check the sample to make sure it's working as intended:
+
+![xiangling batteried](opt_10.png)
+
+Here you see that Xiangling is catching Bennett's particles right after using her burst, getting a slight head start on her energy
+
+:::caution
+Understand that this works because Xiangling uses burst as soon as she is swapped on field, giving her time to catch Bennett's particles. If you try this in game, you need to make sure you are using her Q ASAP. Add any delay and you may see that the particles arrive before her Q resulting in no energy gain.
+:::
+
 ## Concluding remarks
 
 This tutorial ends here for now. 

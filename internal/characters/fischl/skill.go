@@ -41,9 +41,9 @@ func init() {
 	skillRecastFrames[action.ActionJump] = 5
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if p["recast"] != 0 && c.ozActive && !c.StatusIsActive(skillRecastCDKey) {
-		return c.skillRecast()
+		return c.skillRecast(), nil
 	}
 	// always trigger electro no ICD on initial summon
 	ai := combat.AttackInfo{
@@ -84,12 +84,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// set on field oz to be this one
 	c.queueOz("Skill", skillOzSpawn, skillOzFirstTick)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
@@ -106,7 +106,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	}
 }
 
-func (c *char) skillRecast() action.ActionInfo {
+func (c *char) skillRecast() action.Info {
 	c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	c.Core.Tasks.Add(func() {
 		c.ozTickSrc = c.Core.F // reset attack timer
@@ -115,7 +115,7 @@ func (c *char) skillRecast() action.ActionInfo {
 		c.Core.Log.NewEvent("Recasting oz", glog.LogCharacterEvent, c.Index).
 			Write("next expected tick", c.Core.F+60)
 	}, 2) // 2f delay
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
@@ -123,7 +123,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	}
 }
 
-func (c *char) queueOz(src string, ozSpawn int, firstTick int) {
+func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 	// calculate oz duration
 	dur := 600
 	if c.Base.Cons == 6 {
@@ -131,6 +131,7 @@ func (c *char) queueOz(src string, ozSpawn int, firstTick int) {
 	}
 	spawnFn := func() {
 		// setup variables for tracking oz
+		c.ozActive = true
 		c.ozSource = c.Core.F
 		c.ozTickSrc = c.Core.F
 		c.ozActiveUntil = c.Core.F + dur

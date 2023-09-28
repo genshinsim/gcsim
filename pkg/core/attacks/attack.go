@@ -1,6 +1,6 @@
 package attacks
 
-type AttackTag int //attacktag is used instead of actions etc..
+type AttackTag int // attacktag is used instead of actions etc..
 
 const (
 	AttackTagNone AttackTag = iota

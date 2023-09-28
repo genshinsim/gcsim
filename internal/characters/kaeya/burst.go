@@ -26,7 +26,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 77    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Glacial Waltz",
@@ -72,12 +72,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// reset c2 proc count
 	c.c2ProcCount = 0
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstTickerFunc(ai combat.AttackInfo, snap combat.Snapshot, src int) func() {

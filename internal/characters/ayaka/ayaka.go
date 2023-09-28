@@ -4,9 +4,9 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -18,7 +18,7 @@ type char struct {
 	c6CDTimerAvail bool // Flag that controls whether the 0.5 C6 CD timer is available to be started
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -48,13 +48,12 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionDash:
+	if a == action.ActionDash {
 		f, ok := p["f"]
 		if !ok {
-			return 10 //tap = 36 frames, so under 1 second
+			return 10 // tap = 36 frames, so under 1 second
 		}
-		//for every 1 second passed, consume extra 15
+		// for every 1 second passed, consume extra 15
 		extra := f / 60
 		return float64(10 + 15*extra)
 	}

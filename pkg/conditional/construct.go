@@ -8,8 +8,8 @@ import (
 )
 
 func evalConstruct(c *core.Core, fields []string) (int, error) {
-	//.construct.count.<name>
-	//.construct.duration.<name>
+	// .construct.count.<name>
+	// .construct.duration.<name>
 	if err := fieldsCheck(fields, 3, "construct"); err != nil {
 		return 0, err
 	}

@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -64,7 +64,7 @@ func (w *Weapon) Init() error {
 // For every party member with a different Elemental Type from the wielder, gain 1 Theatrics stack.
 // When the wielder has 1/2/3 or more Gimmick stacks, ATK will be increased by 16%/32%/48% / 20%/40%/60% / 24%/48%/72% / 28%/56%/84% / 32%/64%/96%.
 // When the wielder has 1/2/3 or more Theatrics stacks, Movement SPD will be increased by 4%/7%/10% / 6%/9%/12% / 8%/11%/14% / 10%/13%/16% / 12%/15%/18%.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		core: c,
 		char: char,

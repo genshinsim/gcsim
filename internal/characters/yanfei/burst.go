@@ -28,7 +28,7 @@ func init() {
 }
 
 // Burst - Deals burst damage and adds status for charge attack bonus
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// +1 is to make sure the scarlet seal grant works correctly on the last frame
 	// TODO: Not 100% sure whether this adds a seal at the exact moment the burst ends or not
 	c.AddStatus(burstBuffKey, 15*60+1, true)
@@ -87,12 +87,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 // Recurring task to add seals every second while burst is up

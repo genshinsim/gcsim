@@ -23,58 +23,43 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.IEntry }) {
 
   return (
     <>
-      <div className="hidden lg:flex  flex-row bg-slate-800  p-4 gap-4 w-full max-w-7xl h-36">
-        <div className="flex gap-2 flex-row min-w-fit ">
+      <div className="flex flex-row flex-wrap place-content-center bg-slate-700 lg:bg-slate-800 max-w-xs sm:min-w-wsm md:min-w-wmd lg:min-w-wlg xl:min-w-wxl sm:max-w-sm md:max-w-2xl lg:max-w-4xl p-5 border sm:border-0 gap-4 sm:gap-1 ">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
           {team &&
             team.map((char, index) => {
               return <DBEntryPortrait {...char} key={index.toString()} />;
             })}
         </div>
-        <div className="flex flex-col grow  h-full">
-          <div className="max-w-2xl ">
-            <div className="flex flex-col ">
-              <DBEntryTags tags={dbEntry.accepted_tags} />
-              {!visibleTagCount(dbEntry.accepted_tags ?? []) && (
-                <div className=" p-1 overflow-ellipsis max-h-7 opacity-50">
-                  {dbEntry.description}
-                </div>
-              )}
-            </div>
-
-            <DBEntryDetails
-              {...dbEntry.summary}
-              run_date={dbEntry.last_update}
-            />
+        <div className="flex flex-col grow h-full">
+          {visibleTagCount(dbEntry.accepted_tags ?? []) > 0 ? (
+            <DBEntryTags tags={dbEntry.accepted_tags} />
+          ) : (
+            <></>
+          )}
+          <DBEntryDetails
+            {...dbEntry.summary}
+            create_date={dbEntry.create_date}
+            description={dbEntry.description}
+          />
+          <div className="hidden p-1 max-h-7 opacity-50 lg:block lg:w-0 lg:min-w-full">
+            {dbEntry.description}
           </div>
         </div>
-        <div className="flex flex-col justify-center ">
+        <div className="flex flex-col justify-center w-full lg:w-fit">
           <a
             href={link}
             target="_blank"
-            className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
+            className="bp4-button bp4-intent-primary w-full"
             rel="noreferrer"
           >
             <div className="m-0">{t("db.openInViewer")}</div>
           </a>
         </div>
-      </div>
-
-      <div className="lg:hidden flex flex-col items-center  bg-slate-700 max-w-xs p-5 border  gap-4 ">
-        <div className="grid grid-cols-2 grid-row-2  gap-4">
-          {team &&
-            team.map((char, index) => {
-              return <DBEntryPortrait {...char} key={index.toString()} />;
-            })}
+        <div className="basis-full text-xs font-bold w-full flex place-content-start">
+          {dbEntry.submitter === "migrated"
+            ? "Unknown author"
+            : `Author: ${dbEntry.submitter}`}
         </div>
-
-        <a
-          href={link}
-          target="_blank"
-          className="bp4-button    bp4-intent-primary w-full md:w-fit md:h-fit"
-          rel="noreferrer"
-        >
-          <div className="m-0">{t("db.openInViewer")}</div>
-        </a>
       </div>
     </>
   );
@@ -85,50 +70,46 @@ function DBEntryDetails({
   mean_dps_per_target,
   mode,
   sim_duration,
-  total_damage,
-  run_date,
-}: // total_damage,
-// description,
-NonNullable<db.IEntry["summary"]> & {
-  run_date?: number | Long | null;
+  create_date,
+}: NonNullable<db.IEntry["summary"]> & {
+  create_date?: number | Long | null;
+  description?: string | null;
 }) {
   const { t: translate } = useTranslation();
 
   const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
   let date = t("db.unknown");
-  if (run_date) {
-    date = new Date((run_date as number) * 1000).toLocaleDateString();
+  if (create_date) {
+    date = new Date((create_date as number) * 1000).toLocaleDateString();
   }
   return (
-    <table className="bp4-html-table  ">
+    <table className="bp4-html-table w-full">
       <thead>
-        <tr className="">
-          <th className="">
+        <tr className="text-xs">
+          <th className="priority-5">
             <div>{t("db.simMode") as ReactI18NextChild}</div>
           </th>
-          <th className="">{t("db.targetCount")}</th>
-          <th className="">{t("db.dpsPerTarget")}</th>
-          <th className="">{t("db.avgTotalDmg")}</th>
-          <th className="">{t("db.avgSimTime")}</th>
-          <th className="">{t("db.runDate")}</th>
+          <th className="priority-5">{t("db.targetCount")}</th>
+          <th className="priority-1">{t("db.dpsPerTarget")}</th>
+          <th className="priority-1">{t("db.avgSimTime")}</th>
+          <th className="priority-3">{t("db.createDate")}</th>
         </tr>
       </thead>
       <tbody>
         <tr className=" text-xs ">
-          <td className="">{mode ? t("db.ttk") : t("db.duration")}</td>
-          <td className="">{target_count}</td>
-          <td className="">
+          <td className="priority-5">
+            {mode ? t("db.ttk") : t("db.duration")}
+          </td>
+          <td className="priority-5">{target_count}</td>
+          <td className="priority-1">
             {prettyPrintNumberStr(mean_dps_per_target?.toFixed(2) ?? "")}
           </td>
-          <td className="">
-            {prettyPrintNumberStr(total_damage?.mean?.toFixed(1) ?? "")}
-          </td>
-          <td className="">
+          <td className="priority-1">
             {sim_duration?.mean
               ? `${sim_duration.mean.toPrecision(3)}s`
               : t("db.unknown")}
           </td>
-          <td className="">{date}</td>
+          <td className="priority-3">{date}</td>
         </tr>
       </tbody>
     </table>

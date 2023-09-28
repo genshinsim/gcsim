@@ -26,8 +26,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 120    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Kamisato Art: Suiyuu",
@@ -94,15 +93,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 			})
 		}
 	}
-	//add cooldown to sim
+	// add cooldown to sim
 	c.SetCD(action.ActionBurst, 20*60)
-	//use up energy
+	// use up energy
 	c.ConsumeEnergy(5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

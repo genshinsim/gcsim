@@ -2,6 +2,7 @@ package shield
 
 import "github.com/genshinsim/gcsim/pkg/core/glog"
 
+//nolint:revive // stat name should be at the front for readibility so cannot just strip Shield in the front, will be changed as part of mod rewrite someday
 type ShieldBonusModFunc func() (float64, bool)
 
 type shieldBonusMod struct {
@@ -11,11 +12,11 @@ type shieldBonusMod struct {
 	Event  glog.Event
 }
 
-//TODO: this probably should be affected by hitlag as well
-func (h *Handler) ShieldBonus() (amt float64) {
+// TODO: this probably should be affected by hitlag as well
+func (h *Handler) ShieldBonus() float64 {
 	n := 0
+	amt := 0.0
 	for _, mod := range h.shieldBonusMods {
-
 		if mod.Expiry > *h.f || mod.Expiry == -1 {
 			a, done := mod.Amount()
 			amt += a
@@ -36,11 +37,11 @@ func (h *Handler) ShieldBonusModIsActive(key string) bool {
 			ind = i
 		}
 	}
-	//mod doesnt exist
+	// mod doesnt exist
 	if ind == -1 {
 		return false
 	}
-	//check expiry
+	// check expiry
 	if h.shieldBonusMods[ind].Expiry < *h.f && h.shieldBonusMods[ind].Expiry > -1 {
 		return false
 	}
@@ -63,7 +64,7 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 		}
 	}
 
-	//if does not exist, make new and add
+	// if does not exist, make new and add
 	if ind == -1 {
 		mod.Event = h.log.NewEvent("shield bonus added", glog.LogStatusEvent, -1).
 			Write("overwrite", false).
@@ -74,7 +75,7 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 		return
 	}
 
-	//otherwise check not expired
+	// otherwise check not expired
 	if h.shieldBonusMods[ind].Expiry > *h.f || h.shieldBonusMods[ind].Expiry == -1 {
 		h.log.NewEvent(
 			"shield bonus refreshed", glog.LogStatusEvent, -1,
@@ -85,7 +86,7 @@ func (h *Handler) AddShieldBonusMod(key string, dur int, f ShieldBonusModFunc) {
 
 		mod.Event = h.shieldBonusMods[ind].Event
 	} else {
-		//if expired overide the event
+		// if expired overide the event
 		mod.Event = h.log.NewEvent("shield bonus added", glog.LogStatusEvent, -1).
 			Write("overwrite", false).
 			Write("key", mod.Key).

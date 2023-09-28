@@ -36,7 +36,7 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 23    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -63,67 +63,67 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) skillPress(travel int) action.ActionInfo {
+func (c *char) skillPress(travel int) (action.Info, error) {
 	c.pawsPewPew(skillPressHitmark, travel, 2)
 	c.SetCDWithDelay(action.ActionSkill, 360, skillPressHitmark)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
-func (c *char) skillHold(travel int) action.ActionInfo {
+func (c *char) skillHold(travel int) (action.Info, error) {
 	c.pawsPewPew(skillHoldHitmark, travel, 5)
 	c.SetCDWithDelay(action.ActionSkill, 900, skillHoldHitmark)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) pawsPewPew(f, travel, pawCount int) {
 	bonus := 1.0
 	if pawCount == 5 {
-		bonus = 1.75 //bonus if firing off 5
+		bonus = 1.75 // bonus if firing off 5
 	}
 	shdHp := (pawShieldPer[c.TalentLvlSkill()]*c.MaxHP() + pawShieldFlat[c.TalentLvlSkill()]) * bonus
 	if c.Base.Cons >= 2 {
-		shdHp = shdHp * 1.15
+		shdHp *= 1.15
 	}
-	//call back to generate shield on hit
-	//note that each paw should only be able to trigger callback once (if hit multi target)
-	//and that subsequent shield generation should increase duation only
+	// call back to generate shield on hit
+	// note that each paw should only be able to trigger callback once (if hit multi target)
+	// and that subsequent shield generation should increase duation only
 	//TODO: need to look into maybe additional paw hits actually create "new" shields?
 	pawCB := func(done bool) combat.AttackCBFunc {
 		return func(_ combat.AttackCB) {
 			if done {
 				return
 			}
-			//make sure this is only triggered once
+			// make sure this is only triggered once
 			done = true
 
-			//check if shield already exists, if so then just update duration
-			exist := c.Core.Player.Shields.Get(shield.ShieldDionaSkill)
+			// check if shield already exists, if so then just update duration
+			exist := c.Core.Player.Shields.Get(shield.DionaSkill)
 			var shd *shield.Tmpl
 			if exist != nil {
-				//update
+				// update
 				shd, _ = exist.(*shield.Tmpl)
-				shd.Expires = shd.Expires + pawDur[c.TalentLvlSkill()]
+				shd.Expires += pawDur[c.TalentLvlSkill()]
 			} else {
 				shd = &shield.Tmpl{
 					ActorIndex: c.Index,
 					Src:        c.Core.F,
-					ShieldType: shield.ShieldDionaSkill,
+					ShieldType: shield.DionaSkill,
 					Name:       "Diona Skill",
 					HP:         shdHp,
 					Ele:        attributes.Cryo,
-					Expires:    c.Core.F + pawDur[c.TalentLvlSkill()], //15 sec
+					Expires:    c.Core.F + pawDur[c.TalentLvlSkill()], // 15 sec
 				}
 			}
 			//TODO: check that this is actually properly extending duration

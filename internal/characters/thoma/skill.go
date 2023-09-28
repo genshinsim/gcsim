@@ -26,7 +26,7 @@ func init() {
 }
 
 // Skill attack damage queue generator
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Blazing Blessing",
@@ -74,12 +74,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.SetCDWithDelay(action.ActionSkill, cd*60, 9)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

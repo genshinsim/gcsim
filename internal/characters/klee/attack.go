@@ -77,7 +77,7 @@ func add9FrameLag(frames []int) {
 	}
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -134,7 +134,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			canQueueAfter = f
 		}
 	}
-	actionInfo := action.ActionInfo{
+	actionInfo := action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, adjustedFrames),
 		AnimationLength: adjustedFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   canQueueAfter,
@@ -150,5 +150,5 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		},
 	}
 	actionInfo.QueueAction(tryPerformAttack, adjustedHitmarks[c.NormalCounter])
-	return actionInfo
+	return actionInfo, nil
 }

@@ -29,7 +29,7 @@ const (
 	particleICDKey = "xingqiu-particle-icd"
 )
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Guhua Sword: Fatal Rainscreen",
@@ -48,9 +48,9 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {
-			//check if ult is up, if so increase multiplier
+			// check if ult is up, if so increase multiplier
 			if c.StatusIsActive(burstKey) {
-				ax.Mult = ax.Mult * 1.5
+				ax.Mult *= 1.5
 			}
 		}
 		ap := combat.NewCircleHitOnTarget(
@@ -72,17 +72,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 
 	// orbitals apply wet at 44f
-	c.applyOrbital(15*60, 43) //takes 1 frame to apply it
+	c.applyOrbital(15*60, 43) // takes 1 frame to apply it
 
-	//should last 15s, cd 21s
+	// should last 15s, cd 21s
 	c.SetCDWithDelay(action.ActionSkill, 21*60, 10)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

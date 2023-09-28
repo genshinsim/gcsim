@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,11 +33,11 @@ const (
 // Burst: Increases Movement SPD by 10%, increases ATK SPD by 10%, and Normal and
 // Charged hits deal additional DMG equal to 20% of ATK. Skypiercing Might lasts
 // for 12s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.03 + float64(r)*0.01
 	char.AddStatMod(character.StatMod{
@@ -64,26 +64,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
-	//deals damage proc on normal/charged attacks. i dont know why description in game sucks
+	// deals damage proc on normal/charged attacks. i dont know why description in game sucks
 	dmgper := .15 + .05*float64(r)
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		dmg := args[2].(float64)
-		//check if char is correct?
+		// check if char is correct?
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
-		//check if buff up
+		// check if buff up
 		if !char.StatModIsActive(buffKey) {
 			return false
 		}
 		if dmg == 0 {
 			return false
 		}
-		//add a new action that deals % dmg immediately
+		// add a new action that deals % dmg immediately
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Blade Proc",
@@ -98,7 +98,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		trg := args[0].(combat.Target)
 		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 		return false
-
 	}, fmt.Sprintf("skyward-blade-%v", char.Base.Key.String()))
 
 	return w, nil

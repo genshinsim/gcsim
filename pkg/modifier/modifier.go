@@ -29,7 +29,7 @@ func (t *Base) Expiry() int             { return t.ModExpiry + t.extension }
 func (t *Base) Event() glog.Event       { return t.event }
 func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
 func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
-func (t *Base) Extend(key string, logger glog.Logger, index int, amt int) {
+func (t *Base) Extend(key string, logger glog.Logger, index, amt int) {
 	t.extension += amt
 	if t.extension < 0 {
 		t.extension = 0
@@ -64,8 +64,9 @@ func NewBaseWithHitlag(key string, dur int) Base {
 }
 
 // Delete removes a modifier. Returns true if deleted ok
-func Delete[K Mod](slice *[]K, key string) (m Mod) {
+func Delete[K Mod](slice *[]K, key string) Mod {
 	n := 0
+	var m Mod
 	for i, v := range *slice {
 		if v.Key() == key {
 			m = (*slice)[i]
@@ -75,28 +76,30 @@ func Delete[K Mod](slice *[]K, key string) (m Mod) {
 		}
 	}
 	*slice = (*slice)[:n]
-	return
+	return m
 }
 
 // Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
 // TODO: consider adding a map here to track the index to assist with faster lookups
-func Add[K Mod](slice *[]K, mod K, f int) (overwrote bool, evt glog.Event) {
+func Add[K Mod](slice *[]K, mod K, f int) (bool, glog.Event) {
 	ind := Find(slice, mod.Key())
+	overwrote := false
+	var evt glog.Event
 
-	//if does not exist, make new and add
+	// if does not exist, make new and add
 	if ind == -1 {
 		*slice = append(*slice, mod)
-		return
+		return overwrote, evt
 	}
 
-	//otherwise check not expired
+	// otherwise check not expired
 	if (*slice)[ind].Expiry() > f || (*slice)[ind].Expiry() == -1 {
 		overwrote = true
 		evt = (*slice)[ind].Event()
 	}
 	(*slice)[ind] = mod
 
-	return
+	return overwrote, evt
 }
 
 func Find[K Mod](slice *[]K, key string) int {

@@ -27,7 +27,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 41    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Nights of Formal Focus",
@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.QueueCharTask(func() {
 		// add shield
-		exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
+		exist := c.Core.Player.Shields.Get(shield.LaylaSkill)
 		if exist == nil {
 			shield := shieldBase[c.TalentLvlSkill()] + shieldPer[c.TalentLvlSkill()]*c.MaxHP()
 			if c.Base.Cons >= 1 {
@@ -68,17 +68,17 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 19)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) starsSkill() {
 	c.Core.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		exist := c.Core.Player.Shields.Get(shield.ShieldLaylaSkill)
+		exist := c.Core.Player.Shields.Get(shield.LaylaSkill)
 		if exist != nil {
 			c.addNightStars(2, ICDNightStarSkill)
 		}

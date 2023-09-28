@@ -96,7 +96,7 @@ func (s *Store) GetDBStatus() (*model.DBStatus, error) {
 	}, nil
 }
 
-func (s *Store) ReplaceConfig(id string, link string) error {
+func (s *Store) ReplaceConfig(id, link string, source model.DBTag) error {
 	s.Log.Infow("replace config request received", "id", id, "link", link)
 
 	linkid, err := s.validateLink(link)
@@ -112,8 +112,9 @@ func (s *Store) ReplaceConfig(id string, link string) error {
 	}
 
 	resp, err := s.DBClient.ReplaceConfig(context.TODO(), &db.ReplaceConfigRequest{
-		Id:     id,
-		Config: res.Config,
+		Id:        id,
+		Config:    res.Config,
+		SourceTag: source,
 	})
 
 	if err != nil {
@@ -122,6 +123,25 @@ func (s *Store) ReplaceConfig(id string, link string) error {
 	}
 
 	s.Log.Infow("replace config completed", "resp", resp.String())
+
+	return nil
+}
+
+func (s *Store) ReplaceDesc(id, desc string, source model.DBTag) error {
+	s.Log.Infow("replace desc request received", "id", id, "desc", desc)
+
+	resp, err := s.DBClient.ReplaceDesc(context.TODO(), &db.ReplaceDescRequest{
+		Id:        id,
+		Desc:      desc,
+		SourceTag: source,
+	})
+
+	if err != nil {
+		s.Log.Infow("replace desc failed", "err", err)
+		return err
+	}
+
+	s.Log.Infow("replace desc completed", "resp", resp.String())
 
 	return nil
 }

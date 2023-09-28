@@ -1,4 +1,4 @@
-﻿package geometry
+package geometry
 
 import (
 	"fmt"
@@ -126,24 +126,24 @@ func (r *Rectangle) IntersectCircle(c Circle) bool {
 // https://stackoverflow.com/a/115520
 // https://gist.github.com/shamansir/3007244
 // https://stackoverflow.com/a/6016515
-func (r1 *Rectangle) IntersectRectangle(r2 Rectangle) bool {
+func (r *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 	// AABB test
-	if !AABBTest(r1.aabb, r2.aabb) {
+	if !AABBTest(r.aabb, r2.aabb) {
 		return false
 	}
 
 	// can skip SAT if both rectangles are axis aligned
-	if (r1.dir.X == 0 || r1.dir.Y == 0) && (r2.dir.X == 0 || r2.dir.Y == 0) {
+	if (r.dir.X == 0 || r.dir.Y == 0) && (r2.dir.X == 0 || r2.dir.Y == 0) {
 		return true
 	}
 
 	// SAT test
 	// https://dyn4j.org/2010/01/sat/
-	r1Axes := r1.getAxes()
+	r1Axes := r.getAxes()
 	r2Axes := r2.getAxes()
 	for i := 0; i < len(r1Axes); i++ {
 		axis := r1Axes[i]
-		rProj1 := getProjection(r1.corners, axis)
+		rProj1 := getProjection(r.corners, axis)
 		rProj2 := getProjection(r2.corners, axis)
 		if !rProj1.overlap(rProj2) {
 			return false
@@ -151,7 +151,7 @@ func (r1 *Rectangle) IntersectRectangle(r2 Rectangle) bool {
 	}
 	for i := 0; i < len(r2Axes); i++ {
 		axis := r2Axes[i]
-		rProj1 := getProjection(r1.corners, axis)
+		rProj1 := getProjection(r.corners, axis)
 		rProj2 := getProjection(r2.corners, axis)
 		if !rProj1.overlap(rProj2) {
 			return false

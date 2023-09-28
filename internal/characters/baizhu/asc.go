@@ -17,7 +17,7 @@ func (c *char) a1() {
 		return
 	}
 
-	//Healing part
+	// Healing part
 	mHeal := make([]float64, attributes.EndStatType)
 	mHeal[attributes.Heal] = 0.2
 	c.AddStatMod(character.StatMod{
@@ -32,7 +32,7 @@ func (c *char) a1() {
 		},
 	})
 
-	//Dendro DMG part
+	// Dendro DMG part
 	mDendroP := make([]float64, attributes.EndStatType)
 	mDendroP[attributes.DendroP] = 0.25
 	c.AddStatMod(character.StatMod{
@@ -46,7 +46,6 @@ func (c *char) a1() {
 			return nil, false
 		},
 	})
-
 }
 
 // Characters who are healed by Seamless Shields will gain the Year of Verdant Favor effect:
@@ -80,5 +79,4 @@ func (c *char) a4() {
 			return limitHP * 0.02, false
 		},
 	})
-
 }

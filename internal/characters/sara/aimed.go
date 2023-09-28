@@ -32,7 +32,7 @@ func init() {
 // Additionally handles crowfeather state, E skill damage, and A4
 // Has two parameters, "travel", used to set the number of frames that the arrow is in the air (default = 10)
 // weak_point, used to determine if an arrow is hitting a weak point (default = 1 for true)
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -97,10 +97,10 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		c.Core.Status.Delete(coverKey)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return aimedFrames[skillActive][next] },
 		AnimationLength: aimedFrames[skillActive][action.InvalidAction],
 		CanQueueAfter:   aimedHitmarks[skillActive],
 		State:           action.AimState,
-	}
+	}, nil
 }

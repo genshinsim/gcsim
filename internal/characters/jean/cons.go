@@ -1,4 +1,4 @@
-﻿package jean
+package jean
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -12,7 +12,7 @@ import (
 // C1:
 // Increases the pulling speed of Gale Blade after holding for more than 1s, and increases the DMG dealt by 40%.
 func (c *char) c1(snap *combat.Snapshot) {
-	//add 40% dmg
+	// add 40% dmg
 	snap.Stats[attributes.DmgP] += .4
 	c.Core.Log.NewEvent("jean c1 adding 40% dmg", glog.LogCharacterEvent, c.Index).
 		Write("final dmg%", snap.Stats[attributes.DmgP])

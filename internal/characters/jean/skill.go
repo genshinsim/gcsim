@@ -24,9 +24,9 @@ func init() {
 	skillFrames[action.ActionSwap] = 45
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
-	//hold for p up to 5 seconds
+	// hold for p up to 5 seconds
 	if hold > 300 {
 		hold = 300
 	}
@@ -59,12 +59,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 360, hitmark-2)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[next] + hold },
 		AnimationLength: skillFrames[action.InvalidAction] + hold,
 		CanQueueAfter:   skillFrames[action.ActionDash] + hold, // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) baseParticleCB(a combat.AttackCB) {

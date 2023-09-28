@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -19,7 +19,7 @@ type Lithic struct {
 func (b *Lithic) SetIndex(idx int) { b.Index = idx }
 func (b *Lithic) Init() error      { return nil }
 
-func NewLithic(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewLithic(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	l := &Lithic{}
 	r := p.Refine
 
@@ -28,7 +28,7 @@ func NewLithic(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
 		for _, char := range c.Player.Chars() {
-			if char.CharZone == profile.ZoneLiyue {
+			if char.CharZone == info.ZoneLiyue {
 				stacks++
 			}
 		}

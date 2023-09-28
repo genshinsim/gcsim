@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/internal/characters/ayato"
 	"github.com/genshinsim/gcsim/internal/characters/cyno"
 	"github.com/genshinsim/gcsim/internal/characters/tartaglia"
+	"github.com/genshinsim/gcsim/internal/characters/wanderer"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -113,11 +114,11 @@ func init() {
 	percentDelay5[keys.Alhaitham] = 14
 	percentDelay5[keys.Mika] = 10
 	percentDelay5[keys.Kirara] = 13
+	percentDelay5[keys.Lyney] = 12
 
-	// TODO: Uncomment when Wanderer Implementation is done
-	// percentDelay5[keys.Wanderer] = 0
-	// percentDelay5AltForms[keys.Wanderer] = 12
-	// AltFormStatusKeys[keys.Wanderer] = wanderer.SkillKey
+	percentDelay5[keys.Wanderer] = 0
+	percentDelay5AltForms[keys.Wanderer] = 12
+	altFormStatusKeys[keys.Wanderer] = wanderer.SkillKey
 
 	// Technically it's 15 for Left, 5 for Right, and 13 for Twirl
 	percentDelay5[keys.Ningguang] = (15 + 5 + 13) / 3
@@ -155,6 +156,8 @@ func Get0PercentN0Delay(activeChar *character.CharWrapper) int {
 		return 23
 	case keys.Kirara:
 		return 6
+	case keys.Lyney:
+		return 5
 	}
 	return 0
 }
@@ -174,7 +177,7 @@ type NAHook struct {
 
 func (w *NAHook) Enable() {
 	w.Core.Events.Subscribe(event.OnAttack, func(args ...interface{}) bool {
-		//check if buff is up
+		// check if buff is up
 		if !w.checkActive() {
 			return false
 		}
@@ -200,14 +203,14 @@ func (w *NAHook) Enable() {
 			w.C.Index).
 			Write("state", w.Core.Player.CurrentState()).
 			Write("icd", w.C.StatusExpiry(w.AbilICDKey))
-		w.trigger(w.Core.F)
+		w.trigger()
 		return false
 	}, fmt.Sprintf("%v animation check", w.AbilName))
 }
 
 func (w *NAHook) naStateDelayFuncGen(src int) func() {
 	return func() {
-		//ignore if on ICD
+		// ignore if on ICD
 		if !w.checkActive() || !w.checkICD() || !w.checkState() || !w.checkSrc(w.abilHookSrc, src) {
 			return
 		}
@@ -217,13 +220,13 @@ func (w *NAHook) naStateDelayFuncGen(src int) func() {
 			w.C.Index).
 			Write("state", w.Core.Player.CurrentState()).
 			Write("icd", w.C.StatusExpiry(w.AbilICDKey))
-		w.trigger(src)
+		w.trigger()
 	}
 }
 
 func (w *NAHook) naTickerFunc(src int) func() {
 	return func() {
-		//check if buff is up
+		// check if buff is up
 		if !w.checkActive() || !w.checkState() || !w.checkSrc(w.abilTickSrc, src) {
 			return
 		}
@@ -231,18 +234,18 @@ func (w *NAHook) naTickerFunc(src int) func() {
 			Write("src", src).
 			Write("state", w.Core.Player.CurrentState()).
 			Write("icd", w.C.StatusExpiry(w.AbilICDKey))
-		w.trigger(src)
+		w.trigger()
 	}
 }
 
-func (w *NAHook) trigger(src int) {
-	//we can trigger here b/c we're in normal state still and src is still the same
+func (w *NAHook) trigger() {
+	// we can trigger here b/c we're in normal state still and src is still the same
 	w.SummonFunc()
 	w.C.AddStatus(w.AbilICDKey, w.AbilProcICD, true)
-	//in theory this should not hit an icd?
-	//use the hitlag affected queue for this
+	// in theory this should not hit an icd?
+	// use the hitlag affected queue for this
 	w.abilTickSrc = w.Core.F
-	w.C.QueueCharTask(w.naTickerFunc(w.Core.F), w.AbilProcICD) //check every 1sec
+	w.C.QueueCharTask(w.naTickerFunc(w.Core.F), w.AbilProcICD) // check every 1sec
 }
 
 func (w *NAHook) checkActive() bool {
@@ -265,18 +268,17 @@ func (w *NAHook) checkState() bool {
 			Write("state", state)
 		return false
 	}
-	state_start := w.Core.Player.CurrentStateStart()
-	norm_counter := w.Core.Player.ActiveChar().NormalCounter
-	if (norm_counter == 1) && w.Core.F-state_start < w.DelayFunc(w.Core.Player.ActiveChar()) {
+	stateStart := w.Core.Player.CurrentStateStart()
+	normCounter := w.Core.Player.ActiveChar().NormalCounter
+	if (normCounter == 1) && w.Core.F-stateStart < w.DelayFunc(w.Core.Player.ActiveChar()) {
 		w.Core.Log.NewEvent(fmt.Sprintf("%v not triggered, not enough time since normal state start", w.AbilName), glog.LogCharacterEvent, w.C.Index).
 			Write("current_state", state).
-			Write("state_start", state_start)
+			Write("state_start", stateStart)
 		return false
 	}
 	return true
-
 }
-func (w *NAHook) checkSrc(newSrc int, src int) bool {
+func (w *NAHook) checkSrc(newSrc, src int) bool {
 	if newSrc != src {
 		w.Core.Log.NewEvent(fmt.Sprintf("%v not triggered, src diff", w.AbilName), glog.LogCharacterEvent, w.C.Index).
 			Write("src", src).

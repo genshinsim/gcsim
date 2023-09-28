@@ -2,15 +2,16 @@ package marechausseehunter
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -50,7 +51,7 @@ func (s *Set) onChangeHP() {
 	})
 }
 
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
 		core: c,
 		char: char,
@@ -72,44 +73,51 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	// When current HP increases or decreases, CRIT Rate will be increased by 12% for 5s. Max 3 stacks.
-	if count >= 4 {
-		s.buff = make([]float64, attributes.EndStatType)
-
-		c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
-			di := args[0].(player.DrainInfo)
-			if c.Player.Active() != char.Index {
-				return false
-			}
-			if di.ActorIndex != char.Index {
-				return false
-			}
-			if di.Amount <= 0 {
-				return false
-			}
-
-			s.onChangeHP()
-			return false
-		}, fmt.Sprintf("mh-4pc-drain-%v", char.Base.Key.String()))
-
-		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-			index := args[1].(int)
-			amount := args[2].(float64)
-			if c.Player.Active() != char.Index {
-				return false
-			}
-			if index != char.Index {
-				return false
-			}
-			if amount <= 0 {
-				return false
-			}
-
-			s.onChangeHP()
-			return false
-		}, fmt.Sprintf("mh-4pc-heal-%v", char.Base.Key.String()))
-
-		// TODO: OnCharacterHurt?
+	if count < 4 {
+		return &s, nil
 	}
+
+	s.buff = make([]float64, attributes.EndStatType)
+
+	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if di.ActorIndex != char.Index {
+			return false
+		}
+		if di.ActorIndex != char.Index {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
+
+		s.onChangeHP()
+		return false
+	}, fmt.Sprintf("mh-4pc-drain-%v", char.Base.Key.String()))
+
+	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+		index := args[1].(int)
+		amount := args[2].(float64)
+		overheal := args[3].(float64)
+		if c.Player.Active() != char.Index {
+			return false
+		}
+		if index != char.Index {
+			return false
+		}
+		if amount <= 0 {
+			return false
+		}
+		// do not trigger if at max hp already
+		if math.Abs(amount-overheal) <= 1e-9 {
+			return false
+		}
+
+		s.onChangeHP()
+		return false
+	}, fmt.Sprintf("mh-4pc-heal-%v", char.Base.Key.String()))
+
+	// TODO: OnCharacterHurt?
 
 	return &s, nil
 }

@@ -3922,6 +3922,261 @@
       }
     ]
   },
+  "lynette": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.3,
+        "boxX": 1.8,
+        "boxY": 2.8
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.5,
+        "boxY": 2.5
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.5,
+        "boxY": 2.5
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.2,
+        "boxY": 2.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.8,
+        "radius": 2.2
+      },
+      {
+        "ability": "CA-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.8,
+        "radius": 2.2
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 1.8,
+        "boxY": 4.5
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 1.8,
+        "boxY": 5,
+        "notes": "Spawns at the closest enemy in 8m radius around the player."
+      },
+      {
+        "ability": "E-Aligned",
+        "shape": "Box",
+        "center": "GlobalValue",
+        "offsetY": -0.3,
+        "boxX": 1.2,
+        "boxY": 4.5,
+        "notes": "Spawns on the first enemy hit by E."
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 1.5,
+        "radius": 4.5,
+        "notes": "Q spawns at Y: 1.8m offset from the player position."
+      },
+      {
+        "ability": "Q-Bogglecat",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 6,
+        "notes": "Spawns on the Q position. Absorbs an element either by getting hit or the absorb check with 0.48m radius around the Q position that happens every 0.3s."
+      },
+      {
+        "ability": "Q-VividShot",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 1,
+        "notes": "Spawns on a random enemy within 15m radius of the Q position."
+      }
+    ]
+  },
+  "lyney": {
+    "cons": [
+      {
+        "ability": "FullAim-Lv2-C6",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      }
+    ],
+    "aim": [
+      {
+        "ability": "Aim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1,
+        "notes": "not implemented yet"
+      },
+      {
+        "ability": "Aim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1,
+        "notes": "not implemented yet"
+      },
+      {
+        "ability": "FullAim",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Lv2",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Lv2-Head",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 0.1,
+        "boxY": 1
+      },
+      {
+        "ability": "FullAim-Lv2-Aligned",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2,
+        "notes": "Spawns at the target hit by FullAim-Lv2."
+      },
+      {
+        "ability": "FullAim-Lv2-PyrotechnicStrike",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "FullAim-Lv2-PyrotechnicStrike-Skill",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 3.5,
+        "notes": "Spawns at the position of the Grin-Malkin Hat which is at the FullAim-Lv2-Aligned position."
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Skill",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 5.5,
+        "radius": 5.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Move",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "On every tick: Applies to all enemies within 4m radius of the Player."
+      },
+      {
+        "ability": "Q-ExplosiveFirework",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6
+      } 
+    ]
+  },
   "mika": {
     "normal": [
       {

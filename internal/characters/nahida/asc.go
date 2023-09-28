@@ -81,7 +81,7 @@ func (c *char) a4Tick() {
 	em := c.Stat(attributes.EM)
 	var dmgBuff, crBuff float64
 	if em > 200 {
-		em = em - 200
+		em -= 200
 		dmgBuff = em * 0.001
 		if dmgBuff > 0.8 {
 			dmgBuff = 0.8

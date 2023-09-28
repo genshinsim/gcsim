@@ -1,70 +1,70 @@
 {
   "data": {
     "aetheranemo": {
-      "id": 10000007,
-      "sub_id": 704,
+      "id": 10000005,
+      "sub_id": 504,
       "key": "aetheranemo",
       "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
+      "body": "BODY_BOY",
       "region": "ASSOC_TYPE_MAINACTOR",
       "element": "Wind",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
       "skill_details": {
         "skill": 10067,
         "burst": 10068,
-        "attack": 100553,
+        "attack": 100543,
         "burst_energy_cost": 60
       }
     },
     "aetherdendro": {
-      "id": 10000007,
-      "sub_id": 708,
+      "id": 10000005,
+      "sub_id": 508,
       "key": "aetherdendro",
       "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
+      "body": "BODY_BOY",
       "region": "ASSOC_TYPE_MAINACTOR",
       "element": "Grass",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
       "skill_details": {
         "skill": 10117,
         "burst": 10118,
-        "attack": 100557,
+        "attack": 100547,
         "burst_energy_cost": 80
       }
     },
     "aetherelectro": {
-      "id": 10000007,
-      "sub_id": 707,
+      "id": 10000005,
+      "sub_id": 507,
       "key": "aetherelectro",
       "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
+      "body": "BODY_BOY",
       "region": "ASSOC_TYPE_MAINACTOR",
       "element": "Electric",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
       "skill_details": {
         "skill": 10602,
         "burst": 10605,
-        "attack": 100556,
+        "attack": 100546,
         "burst_energy_cost": 80
       }
     },
     "aethergeo": {
-      "id": 10000007,
-      "sub_id": 706,
+      "id": 10000005,
+      "sub_id": 506,
       "key": "aethergeo",
       "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
+      "body": "BODY_BOY",
       "region": "ASSOC_TYPE_MAINACTOR",
       "element": "Rock",
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
       "skill_details": {
         "skill": 10077,
         "burst": 10078,
-        "attack": 100555,
+        "attack": 100545,
         "burst_energy_cost": 60
       }
     },
@@ -742,6 +742,36 @@
         "skill": 10077,
         "burst": 10078,
         "attack": 100555,
+        "burst_energy_cost": 60
+      }
+    },
+    "lynette": {
+      "id": 10000083,
+      "key": "lynette",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Linette",
+      "skill_details": {
+        "skill": 10832,
+        "burst": 10835,
+        "attack": 10831,
+        "burst_energy_cost": 70
+      }
+    },
+    "lyney": {
+      "id": 10000084,
+      "key": "lyney",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "element": "Fire",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Liney",
+      "skill_details": {
+        "skill": 10842,
+        "burst": 10845,
+        "attack": 10841,
         "burst_energy_cost": 60
       }
     },

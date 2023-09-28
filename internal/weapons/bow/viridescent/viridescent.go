@@ -8,14 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
 	core.RegisterWeaponFunc(keys.TheViridescentHunt, NewWeapon)
-
 }
 
 type Weapon struct {
@@ -25,10 +24,10 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	//Upon hit, Normal and Charged Attacks have a 50% chance to generate a Cyclone, which will continuously
-	//attract surrounding opponents, dealing 40% of ATK as DMG to these opponents every 0.5s for 4s. This
-	//effect can only occur once every 14s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	// Upon hit, Normal and Charged Attacks have a 50% chance to generate a Cyclone, which will continuously
+	// attract surrounding opponents, dealing 40% of ATK as DMG to these opponents every 0.5s for 4s. This
+	// effect can only occur once every 14s.
 	w := &Weapon{}
 	r := p.Refine
 
@@ -46,7 +45,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		trg := args[0].(combat.Target)
 
-		//only proc on normal and charge attack
+		// only proc on normal and charge attack
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:

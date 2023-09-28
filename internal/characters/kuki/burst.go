@@ -19,7 +19,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 62    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Gyoei Narukami Kariyama Rite",
@@ -34,7 +34,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	snap := c.Snapshot(&ai)
 
-	count := 7 //can be 11 at low HP
+	count := 7 // can be 11 at low HP
 	if c.CurrentHPRatio() <= 0.5 {
 		count = 12
 	}
@@ -59,10 +59,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(4)
 	c.SetCD(action.ActionBurst, 900) // 15s * 60
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

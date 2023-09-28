@@ -25,8 +25,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 57 // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(2)
 
@@ -54,10 +53,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.Core.Combat.AddGadget(s)
 	}, leaLotusAppear)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   burstFrames[c.gender][action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

@@ -36,7 +36,7 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 110
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	chargeLevel := p["hold"]
 	if chargeLevel > 1 {
 		chargeLevel = 1
@@ -102,7 +102,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Src:        c.Core.F,
 		Name:       "Candace Skill",
-		ShieldType: shield.ShieldCandaceSkill,
+		ShieldType: shield.CandaceSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Hydro,
 		Expires:    c.Core.F + hitmark,
@@ -114,12 +114,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}
 	c.SetCDWithDelay(action.ActionSkill, cd, skillCDStarts[chargeLevel])
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[chargeLevel][next] - windup },
 		AnimationLength: skillFrames[chargeLevel][action.InvalidAction],
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB(particleCount float64) combat.AttackCBFunc {

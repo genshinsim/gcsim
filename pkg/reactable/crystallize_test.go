@@ -9,7 +9,6 @@ import (
 )
 
 func TestCrystallizeCryo(t *testing.T) {
-
 	c := testCore()
 	trg := addTargetToCore(c)
 
@@ -34,7 +33,7 @@ func TestCrystallizeCryo(t *testing.T) {
 		},
 	})
 
-	//check shield
+	// check shield
 	if !ok {
 		t.Errorf("expecting crystallize to have occured")
 		t.FailNow()
@@ -43,13 +42,12 @@ func TestCrystallizeCryo(t *testing.T) {
 		t.Errorf("expecting player to be shielded")
 	}
 
-	if !durApproxEqual(7.5, trg.Durability[ModifierCryo], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[ModifierCryo])
+	if !durApproxEqual(7.5, trg.Durability[Cryo], 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[Cryo])
 	}
 }
 
 func TestCrystallizePyro(t *testing.T) {
-
 	c := testCore()
 	trg := addTargetToCore(c)
 
@@ -67,8 +65,8 @@ func TestCrystallizePyro(t *testing.T) {
 			Durability: 25,
 		},
 	})
-	//force on burning
-	trg.Durability[ModifierBurning] = 50
+	// force on burning
+	trg.Durability[Burning] = 50
 
 	trg.React(&combat.AttackEvent{
 		Info: combat.AttackInfo{
@@ -77,7 +75,7 @@ func TestCrystallizePyro(t *testing.T) {
 		},
 	})
 
-	//check shield
+	// check shield
 	if !ok {
 		t.Errorf("expecting crystallize to have occured")
 		t.FailNow()
@@ -85,10 +83,10 @@ func TestCrystallizePyro(t *testing.T) {
 	if trg.core.Player.Shields.Count() == 0 {
 		t.Errorf("expecting player to be shielded")
 	}
-	if !durApproxEqual(7.5, trg.Durability[ModifierPyro], 0.0001) {
-		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[ModifierPyro])
+	if !durApproxEqual(7.5, trg.Durability[Pyro], 0.0001) {
+		t.Errorf("expecting 7.5 pyro left, got %v", trg.Durability[Pyro])
 	}
-	if !durApproxEqual(37.5, trg.Durability[ModifierBurning], 0.0001) {
-		t.Errorf("expecting 37.5 burning left, got %v", trg.Durability[ModifierBurning])
+	if !durApproxEqual(37.5, trg.Durability[Burning], 0.0001) {
+		t.Errorf("expecting 37.5 burning left, got %v", trg.Durability[Burning])
 	}
 }

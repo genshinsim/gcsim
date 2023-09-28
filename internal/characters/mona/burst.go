@@ -26,12 +26,12 @@ func init() {
 	burstFrames[action.ActionJump] = 104    // Q -> J
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//bubble deal 0 dmg hydro app
-	//add bubble status, when bubble status disappears trigger omen dmg the frame after
-	//bubble status bursts either -> takes dmg no freeze OR freeze and freeze disappears
+func (c *char) Burst(p map[string]int) (action.Info, error) {
+	// bubble deal 0 dmg hydro app
+	// add bubble status, when bubble status disappears trigger omen dmg the frame after
+	// bubble status bursts either -> takes dmg no freeze OR freeze and freeze disappears
 
-	//apply first non damage after 1.7 seconds
+	// apply first non damage after 1.7 seconds
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Initial)",
@@ -48,15 +48,15 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		if !ok {
 			return
 		}
-		//bubble is applied to each target on a per target basis
-		//lasts 8 seconds if not popped normally
-		t.AddStatus(bubbleKey, 481, true) //1 frame extra so we don't run into problems breaking
+		// bubble is applied to each target on a per target basis
+		// lasts 8 seconds if not popped normally
+		t.AddStatus(bubbleKey, 481, true) // 1 frame extra so we don't run into problems breaking
 		c.Core.Log.NewEvent("mona bubble on target", glog.LogCharacterEvent, c.Index).
 			Write("char", c.Index)
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), -1, burstHitmark, cb)
 
-	//queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
+	// queue a 0 damage attack to break bubble after 8 sec if bubble not broken yet
 	aiBreak := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Break)",
@@ -73,12 +73,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel is before burstHitmark
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstDamageBonus() {
@@ -92,7 +92,7 @@ func (c *char) burstDamageBonus() {
 				if !ok {
 					return nil, false
 				}
-				//ok only if either bubble or omen is present
+				// ok only if either bubble or omen is present
 				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
 					return m, true
 				}
@@ -105,13 +105,13 @@ func (c *char) burstDamageBonus() {
 // bubble bursts when hit by an attack either while not frozen, or when the attack breaks freeze
 // i.e. impulse > 0
 func (c *char) burstHook() {
-	//hook on to OnDamage; leave this always active
-	//since freeze will trigger an attack, this should be ok
+	// hook on to OnDamage; leave this always active
+	// since freeze will trigger an attack, this should be ok
 	//TODO: this implementation would currently cause bubble to break immediately on the first EC tick.
-	//According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
-	//only 2nd ec tick should break
+	// According to: https://docs.google.com/document/d/1pXlgCaYEpoizMIP9-QKlSkQbmRicWfrEoxb9USWD1Ro/edit#
+	// only 2nd ec tick should break
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		//ignore if target doesn't have debuff
+		// ignore if target doesn't have debuff
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return false
@@ -119,17 +119,17 @@ func (c *char) burstHook() {
 		if !t.StatusIsActive(bubbleKey) {
 			return false
 		}
-		//always break if it's due to time up
+		// always break if it's due to time up
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.AttackTag == attacks.AttackTagMonaBubbleBreak {
 			c.triggerBubbleBurst(t)
 			return false
 		}
-		//dont break if no impulse
+		// dont break if no impulse
 		if atk.Info.NoImpulse {
 			return false
 		}
-		//otherwise break on damage
+		// otherwise break on damage
 		c.triggerBubbleBurst(t)
 
 		return false
@@ -137,11 +137,11 @@ func (c *char) burstHook() {
 }
 
 func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
-	//remove bubble tag
+	// remove bubble tag
 	t.DeleteStatus(bubbleKey)
-	//add omen debuff
+	// add omen debuff
 	t.AddStatus(omenKey, omenDuration[c.TalentLvlBurst()], true)
-	//trigger dmg
+	// trigger dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Illusory Bubble (Explosion)",
