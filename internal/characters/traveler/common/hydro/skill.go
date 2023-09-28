@@ -100,7 +100,7 @@ func init() {
 	skillShortHoldFrames[1][action.ActionWalk] = 80    // Short Hold E -> Walk
 }
 
-func (c *char) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]int) action.ActionInfo {
+func (c *char) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]int) (action.Info, error) {
 	c.torrentSurge(hitmark, spiritHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 10*60, cdStart)
 
@@ -108,16 +108,16 @@ func (c *char) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]i
 		c.c4()
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
 		AnimationLength: skillFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
-	}
+	}, nil
 }
 
-func (c *char) skillShortHold(travel int) action.ActionInfo {
+func (c *char) skillShortHold(travel int) (action.Info, error) {
 	aiHold := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
@@ -149,16 +149,16 @@ func (c *char) skillShortHold(travel int) action.ActionInfo {
 	c.torrentSurge(skillShortHoldTorrentSurgeHitmark, skillShortHoldSpiritbreathThornHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 10*60, skillShortHoldCdStart)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillShortHoldFrames[c.gender]),
 		AnimationLength: skillShortHoldFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   skillShortHoldFrames[c.gender][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
-	}
+	}, nil
 }
 
-func (c *char) skillHold(travel, holdTicks int) action.ActionInfo {
+func (c *char) skillHold(travel, holdTicks int) (action.Info, error) {
 	aiHold := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dewdrop (Hold)",
@@ -194,16 +194,16 @@ func (c *char) skillHold(travel, holdTicks int) action.ActionInfo {
 	c.torrentSurge(skillShortHoldTorrentSurgeHitmark+extend, skillShortHoldSpiritbreathThornHitmark+extend)
 	c.SetCDWithDelay(action.ActionSkill, 10*60, skillShortHoldCdStart+extend)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          func(next action.Action) int { return skillShortHoldFrames[c.gender][next] + extend },
 		AnimationLength: skillShortHoldFrames[c.gender][action.InvalidAction] + extend,
 		CanQueueAfter:   skillShortHoldFrames[c.gender][action.ActionJump] + extend, // earliest cancel
 		State:           action.SkillState,
 		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
-	}
+	}, nil
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"] == 1
 	holdTicks := p["hold_ticks"]
 	if hold {

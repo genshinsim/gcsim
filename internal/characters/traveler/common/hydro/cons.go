@@ -17,7 +17,7 @@ const c4ICDKey = "travelerhydro-c4-icd"
 // the DMG Absorption of the Aegis will be restored to 10% of the Traveler's Max HP. If the Traveler is not presently
 // being protected by an Aegis, one will be redeployed.
 func (c *char) c4() {
-	existingShield := c.Core.Player.Shields.Get(shield.ShieldTravelerHydroC4)
+	existingShield := c.Core.Player.Shields.Get(shield.TravelerHydroC4)
 	if existingShield != nil {
 		// update hp
 		shd, _ := existingShield.(*shield.Tmpl)
@@ -30,7 +30,7 @@ func (c *char) c4() {
 	// add shield
 	c.Core.Player.Shields.Add(&shield.Tmpl{
 		Src:        c.Core.F,
-		ShieldType: shield.ShieldTravelerHydroC4,
+		ShieldType: shield.TravelerHydroC4,
 		Name:       "Traveler (Hydro) C4",
 		HP:         0.1 * c.MaxHP(),
 		Ele:        attributes.Hydro,
@@ -60,7 +60,7 @@ func (c *char) c4Remove() {
 		return
 	}
 
-	existingShield := c.Core.Player.Shields.Get(shield.ShieldTravelerHydroC4)
+	existingShield := c.Core.Player.Shields.Get(shield.TravelerHydroC4)
 	if existingShield == nil {
 		return
 	}

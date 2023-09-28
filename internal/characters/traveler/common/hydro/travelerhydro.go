@@ -5,9 +5,10 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
+
 
 type char struct {
 	*tmpl.Character
@@ -17,7 +18,7 @@ type char struct {
 }
 
 func NewChar(gender int) core.NewCharacterFunc {
-	return func(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+	return func(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 		c := char{
 			gender: gender,
 		}
