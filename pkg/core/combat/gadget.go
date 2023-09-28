@@ -32,7 +32,7 @@ func init() {
 	gadgetLimits[GadgetTypLeaLotus] = 1
 	gadgetLimits[GadgetTypYueguiThrowing] = 2
 	gadgetLimits[GadgetTypYueguiJumping] = 3
-	gadgetLimits[GadgetTypSourcewaterDroplet] = 4
+	gadgetLimits[GadgetTypSourcewaterDroplet] = 12
 }
 
 type Gadget interface {

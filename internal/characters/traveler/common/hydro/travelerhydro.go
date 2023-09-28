@@ -1,6 +1,7 @@
 package hydro
 
 import (
+	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -10,8 +11,9 @@ import (
 
 type char struct {
 	*tmpl.Character
-	a4Bonus float64
-	gender  int
+	droplets []*common.SourcewaterDroplet
+	a4Bonus  float64
+	gender   int
 }
 
 func NewChar(gender int) core.NewCharacterFunc {
@@ -34,5 +36,16 @@ func NewChar(gender int) core.NewCharacterFunc {
 }
 
 func (c *char) Init() error {
+	c.droplets = make([]*common.SourcewaterDroplet, 0)
+
 	return nil
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "droplets":
+		return len(c.droplets), nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }

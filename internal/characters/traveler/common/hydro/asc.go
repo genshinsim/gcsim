@@ -1,8 +1,10 @@
 package hydro
 
 import (
+	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -24,8 +26,21 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 			return
 		}
 
+		// remove excess droplet
+		if len(c.droplets) == 4 {
+			oldest := 0
+			for i, droplet := range c.droplets {
+				if droplet.Duration < c.droplets[oldest].Duration {
+					oldest = i
+				}
+			}
+
+			c.droplets[oldest].Kill()
+		}
+
 		droplet := c.newDropblet()
 		c.Core.Combat.AddGadget(droplet)
+		c.droplets = append(c.droplets, droplet)
 		c.AddStatus(a1ICDKey, 60, true)
 	}
 }
@@ -36,7 +51,7 @@ func (c *char) a1PickUp(count int) {
 			return
 		}
 
-		droplet, ok := g.(*sourcewaterDroplet)
+		droplet, ok := g.(*common.SourcewaterDroplet)
 		if !ok {
 			continue
 		}
@@ -61,4 +76,31 @@ func (c *char) a1PickUp(count int) {
 			c.c6()
 		}
 	}
+}
+
+func (c *char) newDropblet() *common.SourcewaterDroplet {
+	player := c.Core.Combat.Player()
+	pos := geometry.CalcRandomPointFromCenter(
+		geometry.CalcOffsetPoint(
+			player.Pos(),
+			geometry.Point{Y: 3.5},
+			player.Direction(),
+		),
+		0.3,
+		3,
+		c.Core.Rand,
+	)
+
+	droplet := common.NewSourcewaterDroplet(c.Core, pos)
+	remove := func() {
+		for i, g := range c.droplets {
+			if g.Key() == droplet.Key() {
+				c.droplets = append(c.droplets[:i], c.droplets[i+1:]...) // delete from the array
+				break
+			}
+		}
+	}
+	droplet.OnExpiry = remove
+	droplet.OnKill = remove
+	return droplet
 }

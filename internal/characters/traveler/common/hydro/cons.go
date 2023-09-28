@@ -56,6 +56,10 @@ func (c *char) makeC4CB() combat.AttackCBFunc {
 }
 
 func (c *char) c4Remove() {
+	if c.Base.Cons < 4 {
+		return
+	}
+
 	existingShield := c.Core.Player.Shields.Get(shield.ShieldTravelerHydroC4)
 	if existingShield == nil {
 		return

@@ -13,17 +13,20 @@ import (
 )
 
 var (
-	skillPressFrames     [][]int
-	skillShortHoldFrames [][]int
-	skillHoldDelayFrames [][]int
+	skillPressFrames           [][]int
+	skillShortHoldFrames       [][]int
+	skillShortHold0TicksFrames [][]int
+
+	skillPressHitmarks = []int{25, 26}
 )
 
 const (
-	skillPressHitmark            = 28
 	skillPressCdStart            = 24
-	skillPressMaleHitmark        = 25
-	skillPressFemaleHitmark      = 26
 	skillPressSpiritThornHitmark = 70
+
+	skillShortHold0TicksCdStart                  = 11
+	skillShortHold0TicksTorrentSurgeHitmark      = 13
+	skillShortHold0TicksSpiritbreathThornHitmark = 57
 
 	skillShortHoldCdStart                  = 56
 	skillShortHoldFirstDewdropRelease      = 54
@@ -55,6 +58,26 @@ func init() {
 	skillPressFrames[1][action.ActionJump] = 40    // Tap E -> J
 	skillPressFrames[1][action.ActionSwap] = 43    // Tap E -> Swap
 
+	// Short Hold E (0 ticks)
+	skillShortHold0TicksFrames = make([][]int, 2)
+
+	// Male
+	skillShortHold0TicksFrames[0] = frames.InitAbilSlice(29) // Short Hold E (0 ticks) -> D/J
+	skillShortHold0TicksFrames[0][action.ActionAttack] = 36  // Short Hold E (0 ticks) -> N1
+	skillShortHold0TicksFrames[0][action.ActionSkill] = 36   // Short Hold E (0 ticks) -> E
+	skillShortHold0TicksFrames[0][action.ActionBurst] = 36   // Short Hold E (0 ticks) -> Q
+	skillShortHold0TicksFrames[0][action.ActionWalk] = 35    // Short Hold E (0 ticks) -> Walk
+	skillShortHold0TicksFrames[0][action.ActionSwap] = 44    // Short Hold E (0 ticks) -> Swap
+
+	// Female
+	skillShortHold0TicksFrames[1] = frames.InitAbilSlice(29) // Short Hold E (0 ticks) -> D
+	skillShortHold0TicksFrames[1][action.ActionAttack] = 36  // Short Hold E (0 ticks) -> N1
+	skillShortHold0TicksFrames[1][action.ActionSkill] = 37   // Short Hold E (0 ticks) -> E
+	skillShortHold0TicksFrames[1][action.ActionBurst] = 35   // Short Hold E (0 ticks) -> Q
+	skillShortHold0TicksFrames[1][action.ActionJump] = 30    // Short Hold E (0 ticks) -> J
+	skillShortHold0TicksFrames[1][action.ActionWalk] = 36    // Short Hold E (0 ticks) -> Walk
+	skillShortHold0TicksFrames[1][action.ActionSwap] = 43    // Short Hold E (0 ticks) -> Swap
+
 	// Short Hold E
 	skillShortHoldFrames = make([][]int, 2)
 
@@ -75,39 +98,147 @@ func init() {
 	skillShortHoldFrames[1][action.ActionDash] = 74    // Short Hold E -> D
 	skillShortHoldFrames[1][action.ActionJump] = 73    // Short Hold E -> J
 	skillShortHoldFrames[1][action.ActionWalk] = 80    // Short Hold E -> Walk
-
-	// Short Hold E as base for Hold E frames
-	// "2 tick duration - 2 tick last hitmark"
-	skillHoldDelayFrames = make([][]int, 2)
-
-	// Male
-	skillHoldDelayFrames[0] = frames.InitAbilSlice(98 - 54) // Short Hold E -> N1/Q - Short Hold E -> D
-	skillHoldDelayFrames[0][action.ActionDash] = 0          // Short Hold E -> D - Short Hold E -> D
-	skillHoldDelayFrames[0][action.ActionJump] = 0          // Short Hold E -> J - Short Hold E -> D
-	skillHoldDelayFrames[0][action.ActionSwap] = 89 - 54    // Short Hold E -> Swap - Short Hold E -> D
-
-	// Female
-	skillHoldDelayFrames[1] = frames.InitAbilSlice(84 - 54) // Short Hold E -> Q - Short Hold E -> D
-	skillHoldDelayFrames[1][action.ActionAttack] = 83 - 54  // Short Hold E -> N1 - Short Hold E -> D
-	skillHoldDelayFrames[1][action.ActionDash] = 0          // Short Hold E -> D - Short Hold E -> D
-	skillHoldDelayFrames[1][action.ActionJump] = 0          // Short Hold E -> J - Short Hold E -> D
-	skillHoldDelayFrames[1][action.ActionSwap] = 83 - 54    // Short Hold E -> Swap - Short Hold E -> D
 }
 
-func (c *char) SkillPress() action.ActionInfo {
-	c.QueueCharTask(c.torrentSurge, skillPressHitmark-1)
-	c.SetCDWithDelay(action.ActionSkill, 10*60, skillPressCdStart)
+func (c *char) skillPress(hitmark, spiritHitmark, cdStart int, skillFrames [][]int) action.ActionInfo {
+	c.torrentSurge(hitmark, spiritHitmark)
+	c.SetCDWithDelay(action.ActionSkill, 10*60, cdStart)
 
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillPressFrames[c.gender]),
-		AnimationLength: skillPressFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[c.gender][action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
+		AnimationLength: skillFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
+	}
+}
+
+func (c *char) skillShortHold(travel int) action.ActionInfo {
+	aiHold := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Dewdrop (Hold)",
+		AttackTag:  attacks.AttackTagElementalArtHold,
+		ICDTag:     attacks.ICDTagTravelerDewdrop,
+		ICDGroup:   attacks.ICDGroupTravelerDewdrop,
+		StrikeType: attacks.StrikeTypeSlash,
+		Element:    attributes.Hydro,
+		Durability: 25,
+		Mult:       skillDewdrop[c.TalentLvlSkill()],
+	}
+
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
+	c.QueueCharTask(func() {
+		c.skillLosingHP(&aiHold)
+		c.Core.QueueAttack(
+			aiHold,
+			combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+			0,
+			1,
+			c.makeA1CB(),
+			c.makeC4CB(),
+		)
+	}, skillShortHoldFirstDewdropRelease+travel)
+
+	c.torrentSurge(skillShortHoldTorrentSurgeHitmark, skillShortHoldSpiritbreathThornHitmark)
+	c.SetCDWithDelay(action.ActionSkill, 10*60, skillShortHoldCdStart)
+
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(skillShortHoldFrames[c.gender]),
+		AnimationLength: skillShortHoldFrames[c.gender][action.InvalidAction],
+		CanQueueAfter:   skillShortHoldFrames[c.gender][action.ActionJump], // earliest cancel
+		State:           action.SkillState,
+		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
+	}
+}
+
+func (c *char) skillHold(travel, holdTicks int) action.ActionInfo {
+	aiHold := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Dewdrop (Hold)",
+		AttackTag:  attacks.AttackTagElementalArtHold,
+		ICDTag:     attacks.ICDTagTravelerDewdrop,
+		ICDGroup:   attacks.ICDGroupTravelerDewdrop,
+		StrikeType: attacks.StrikeTypeSlash,
+		Element:    attributes.Hydro,
+		Durability: 25,
+		Mult:       skillDewdrop[c.TalentLvlSkill()],
+	}
+
+	if c.Base.Cons >= 4 {
+		c.c4()
+	}
+
+	extend := 15 * (holdTicks - 1)
+	for i := 0; i <= extend; i += 15 {
+		c.QueueCharTask(func() {
+			c.skillLosingHP(&aiHold)
+			c.Core.QueueAttack(
+				aiHold,
+				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
+				0,
+				1,
+				c.makeA1CB(),
+				c.makeC4CB(),
+			)
+			aiHold.FlatDmg = 0
+		}, skillShortHoldFirstDewdropRelease+i+travel)
+	}
+
+	c.torrentSurge(skillShortHoldTorrentSurgeHitmark+extend, skillShortHoldSpiritbreathThornHitmark+extend)
+	c.SetCDWithDelay(action.ActionSkill, 10*60, skillShortHoldCdStart+extend)
+
+	return action.ActionInfo{
+		Frames:          func(next action.Action) int { return skillShortHoldFrames[c.gender][next] + extend },
+		AnimationLength: skillShortHoldFrames[c.gender][action.InvalidAction] + extend,
+		CanQueueAfter:   skillShortHoldFrames[c.gender][action.ActionJump] + extend, // earliest cancel
+		State:           action.SkillState,
+		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
+	}
+}
+
+func (c *char) Skill(p map[string]int) action.ActionInfo {
+	hold := p["hold"] == 1
+	holdTicks := p["hold_ticks"]
+	if hold {
+		holdTicks = 22
+	} else if holdTicks > 0 {
+		hold = true
+	}
+	if holdTicks > 22 {
+		holdTicks = 22
+	}
+
+	// for skill hold
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 6
+	}
+
+	if !hold { // hold=0
+		return c.skillPress(
+			skillPressHitmarks[c.gender],
+			skillPressSpiritThornHitmark,
+			skillPressCdStart,
+			skillPressFrames,
+		)
+	} else if holdTicks == 0 { // hold=1, hold_ticks=0
+		return c.skillPress(
+			skillShortHold0TicksTorrentSurgeHitmark,
+			skillShortHold0TicksSpiritbreathThornHitmark,
+			skillShortHold0TicksCdStart,
+			skillShortHold0TicksFrames,
+		)
+	} else if holdTicks == 1 { // hold=1, hold_ticks=1
+		return c.skillShortHold(travel)
+	} else { // hold=1, hold_ticks>1
+		return c.skillHold(travel, holdTicks)
 	}
 }
 
@@ -127,72 +258,7 @@ func (c *char) skillParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Hydro, c.ParticleDelay)
 }
 
-func (c *char) SkillHold(holdTicks int) action.ActionInfo {
-	aiHold := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Dewdrop (Hold)",
-		AttackTag:  attacks.AttackTagElementalArtHold,
-		ICDTag:     attacks.ICDTagTravelerDewdrop,
-		ICDGroup:   attacks.ICDGroupTravelerDewdrop,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		Mult:       skillDewdrop[c.TalentLvlSkill()],
-	}
-
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-
-	firstTick := 31
-	hitmark := firstTick
-	for i := 0; i < holdTicks; i++ {
-		c.QueueCharTask(func() {
-			c.skillLosingHP(&aiHold)
-			c.Core.QueueAttack(
-				aiHold,
-				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
-				1,
-				1,
-				c.makeA1CB(),
-				c.makeC4CB(),
-			)
-			aiHold.FlatDmg = 0
-		}, hitmark-1)
-		hitmark += 15
-	}
-
-	c.QueueCharTask(c.torrentSurge, hitmark)
-
-	return action.ActionInfo{
-		Frames:          func(next action.Action) int { return skillHoldDelayFrames[c.gender][next] + hitmark },
-		AnimationLength: skillHoldDelayFrames[c.gender][action.InvalidAction] + hitmark,
-		CanQueueAfter:   skillHoldDelayFrames[c.gender][action.ActionJump] + hitmark, // earliest cancel
-		State:           action.SkillState,
-		OnRemoved:       func(next action.AnimationState) { c.c4Remove() },
-	}
-}
-
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-	holdTicks := 0
-	if p["hold"] == 1 {
-		holdTicks = 22
-	}
-	if p["hold_ticks"] > 0 {
-		holdTicks = p["hold_ticks"]
-	}
-	if holdTicks > 22 {
-		holdTicks = 22
-	}
-
-	if holdTicks == 0 {
-		return c.SkillPress()
-	} else {
-		return c.SkillHold(holdTicks)
-	}
-}
-
-func (c *char) torrentSurge() {
+func (c *char) torrentSurge(hitmark, spiritHitmark int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Torrent Surge",
@@ -211,7 +277,7 @@ func (c *char) torrentSurge() {
 	}
 
 	hitbox := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 1.2, 15)
-	c.Core.QueueAttack(ai, hitbox, 0, 1, c.skillParticleCB)
+	c.Core.QueueAttack(ai, hitbox, hitmark, hitmark, c.skillParticleCB)
 
 	if !c.StatusIsActive(spiritbreathThornICDKey) {
 		ai = combat.AttackInfo{
@@ -227,7 +293,7 @@ func (c *char) torrentSurge() {
 			CanBeDefenseHalted: true,
 		}
 
-		c.Core.QueueAttack(ai, hitbox, 0.7*60, 0.7*60)
+		c.Core.QueueAttack(ai, hitbox, spiritHitmark, spiritHitmark)
 		c.AddStatus(spiritbreathThornICDKey, 9*60, true)
 	}
 }
