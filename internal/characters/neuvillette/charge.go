@@ -71,17 +71,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if p["short"] != 0 {
 		// By releasing too fast it is possible to absorb 3 orbs but not do a big CA
 		// Apparently this is the same input as doing a fast CA cancel so it might be random
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Charge Attack",
-			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			Mult:       charge[c.TalentLvlAttack()],
-		}
 		r := 1 + c.Core.Player.StamPercentMod(action.ActionCharge)
 		if r < 0 {
 			r = 0
@@ -93,11 +82,22 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			c.Core.Player.Stam -= 50 * r
 			c.Core.Player.LastStamUse = c.Core.F
 			c.Core.Player.Events.Emit(event.OnStamUse, action.ActionCharge)
-
+			ai := combat.AttackInfo{
+				ActorIndex: c.Index,
+				Abil:       "Charge Attack",
+				AttackTag:  attacks.AttackTagExtra,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Element:    attributes.Hydro,
+				Durability: 25,
+				Mult:       charge[c.TalentLvlAttack()],
+			}
+			ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 8)
 			// TODO: Not sure of snapshot timing
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 3),
+				ap,
 				shortChargeHitmark-windup,
 				shortChargeHitmark-windup,
 			)
@@ -110,6 +110,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			State:           action.ChargeAttackState,
 		}, nil
 	}
+
+	// TODO: Add param for fast CA startup cancel?
+
 	c.chargeAi = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       chargeJudgementName,
@@ -150,7 +153,7 @@ func (c *char) judgementWave() {
 	}
 	// Maybe we can optimize the Attack Pattern to not be recalculated every hit
 	// since sim changing position and/or primary target during the CA is not supported?
-	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 8)
+	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3.5, 15)
 	if c.Base.Ascension >= 1 {
 		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * a1Multipliers[c.countA1()]
 	}

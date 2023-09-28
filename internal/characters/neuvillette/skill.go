@@ -31,7 +31,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	skillGeneratedDroplets := false
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget().Pos(), geometry.Point{}, 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 6),
 		35, //TODO: snapshot delay?
 		35,
 		func(ac combat.AttackCB) {
@@ -44,7 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				}
 				for i := 0; i < 3; i++ {
 					// TODO: find the actual sourcewater droplet spawn radius for Neuv E
-					pos := geometry.CalcRandomPointFromCenter(ac.Target.Pos(), circ.Radius()+1.0, circ.Radius()+2.0, c.Core.Rand)
+					pos := geometry.CalcRandomPointFromCenter(ac.Target.Pos(), circ.Radius()+1.0, circ.Radius()+4.0, c.Core.Rand)
 					common.NewSourcewaterDroplet(c.Core, pos)
 				}
 			}
@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				}
 				c.Core.QueueAttack(
 					aiThorn,
-					combat.NewCircleHitOnTarget(ac.Target.Pos(), geometry.Point{}, 2),
+					combat.NewCircleHitOnTarget(ac.Target, geometry.Point{}, 4.5),
 					30, //TODO: snapshot delay?
 					30,
 				)

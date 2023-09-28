@@ -93,14 +93,15 @@ func (c *char) c6cb(atk combat.AttackCB) {
 			ActorIndex: c.Index,
 			Abil:       chargeJudgementName + " (C6)",
 			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagExtraAttack,
+			ICDTag:     attacks.ICDTagNeuvilletteC6,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 			FlatDmg:    0.1 * c.MaxHP() * a1Multipliers[c.countA1()],
 		}
-		ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 8)
+		ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 15)
+		c.Core.QueueAttack(ai, ap, 0, 0)
 		c.Core.QueueAttack(ai, ap, 0, 0)
 	}
 }
