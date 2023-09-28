@@ -70,6 +70,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	if p["short"] != 0 {
 		// By releasing too fast it is possible to absorb 3 orbs but not do a big CA
+		// Apparently this is the same input as doing a fast CA cancel so it might be random
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Charge Attack",
