@@ -18,7 +18,11 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
+	count := 0
 	return func(a combat.AttackCB) {
+		if count >= 4 {
+			return
+		}
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -38,6 +42,7 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 			c.droplets[oldest].Kill()
 		}
 
+		count++
 		droplet := c.newDropblet()
 		c.Core.Combat.AddGadget(droplet)
 		c.droplets = append(c.droplets, droplet)
