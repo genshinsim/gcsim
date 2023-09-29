@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-
 type char struct {
 	*tmpl.Character
 	droplets []*common.SourcewaterDroplet

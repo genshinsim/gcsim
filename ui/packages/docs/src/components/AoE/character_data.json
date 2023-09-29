@@ -4174,7 +4174,7 @@
         "shape": "Circle",
         "center": "Player",
         "radius": 6
-      } 
+      }
     ]
   },
   "mika": {
@@ -4671,7 +4671,7 @@
         "ability": "CA-Final",
         "shape": "Circle",
         "center": "Player",
-        "radius": 3.5, 
+        "radius": 3.5,
         "notes": "not implemented yet"
       },
       {
@@ -5852,7 +5852,7 @@
         "ability": "RiptideBlast",
         "shape": "Circle",
         "center": "GlobalValue",
-        "radius": 5, 
+        "radius": 5,
         "notes": "Spawns on all enemies affected by Riptide that were hit by Q-Melee."
       }
     ]
@@ -6703,21 +6703,21 @@
     ],
     "skill": [
       {
-        "ability": "E-Torrent-Surge",
+        "ability": "E-TorrentSurge",
         "shape": "Box",
         "center": "Player",
         "boxX": 1.2,
         "boxY": 15
       },
       {
-        "ability": "E-Spiritbreath-Thorn",
+        "ability": "E-Aligned",
         "shape": "Box",
         "center": "Player",
         "boxX": 1.2,
         "boxY": 15
       },
       {
-        "ability": "E-Hold",
+        "ability": "E-Dewdrop",
         "shape": "Box",
         "center": "PrimaryTarget",
         "offsetY": -0.4,
@@ -6727,11 +6727,11 @@
     ],
     "burst": [
       {
-        "ability": "Q-Tick",
+        "ability": "Q",
         "shape": "Circle",
         "center": "GlobalValue",
         "radius": 0.15,
-        "notes": "Starts at Traveler position in that direction and moves at 1.5m (or 1.05m if Traveler C2+) per attack."
+        "notes": "Starts at Traveler position + 0.5m in that direction and moves at 1.5m (or 1.05m if Traveler C2+) per attack."
       }
     ]
   },

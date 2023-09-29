@@ -819,7 +819,7 @@
     {
       "ability": "skill",
       "param": "hold_ticks",
-      "desc": "Number of ticks for Hold E. Default 22, maximum 22. Only works if hold = 1."
+      "desc": "Number of ticks for Hold E. Default 22, maximum 22, minimum 0. Only works if hold = 1. If 0, then a shorter version of Tap will be performed."
     },
     {
       "ability": "skill",

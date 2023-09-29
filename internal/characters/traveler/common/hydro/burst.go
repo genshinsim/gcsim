@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	burstFirstHitmark  = []int{30, 36}
+	burstFirstHitmark  = []int{34, 36}
 	consumeEnergyFrame = []int{4, 6}
 
 	burstFrames [][]int
@@ -60,14 +60,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	initialPos := c.Core.Combat.Player().Pos()
 	initialDirection := c.Core.Combat.Player().Direction()
 	for i := 0; i < burstTicks; i++ {
-		nextPos := geometry.CalcOffsetPoint(initialPos, geometry.Point{Y: burstSpeed * float64(i)}, initialDirection)
+		nextPos := geometry.CalcOffsetPoint(initialPos.Add(geometry.Point{X: 0.5, Y: 0.5}), geometry.Point{Y: burstSpeed * float64(i)}, initialDirection)
 		// TODO: Trigger the 0.15m AoE attack for every enemy within 2.5m (estimation) of the calculated pos to emulate the burst triggering its 0.15m AoE attack on collision.
 		c.Core.QueueAttackWithSnap(ai,
 			snap,
 			combat.NewCircleHit(c.Core.Combat.Player(), nextPos, nil, 0.15),
 			firstHitmark+30*i,
 		)
-
 	}
 
 	c.SetCD(action.ActionBurst, 20*60)
