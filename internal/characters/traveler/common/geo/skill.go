@@ -53,7 +53,7 @@ func init() {
 	skillFrames[1][1][action.ActionSwap] = 40    // Short Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	shortHold, ok := p["short_hold"]
 	if !ok || shortHold < 0 {
 		shortHold = 0
@@ -105,7 +105,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[shortHold][c.gender][action.InvalidAction],
 		CanQueueAfter:   skillFrames[shortHold][c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB() combat.AttackCBFunc {

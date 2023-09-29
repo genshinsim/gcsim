@@ -46,7 +46,7 @@ func init() {
 // Has two parameters:
 // perfect = 1 if you are doing a perfect counter
 // hold = 1 or 2 for regular charging up to level 1 or 2
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Hold parameter gets used in action frames to get earliest possible release frame
 	chargeLevel := p["hold"]
 	if chargeLevel > 2 {
@@ -129,7 +129,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[animIdx][action.InvalidAction],
 		CanQueueAfter:   skillFrames[animIdx][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {

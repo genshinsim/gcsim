@@ -11,6 +11,7 @@ import Warnings from "./Components/Warnings";
 import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import queryString from "query-string";
 import { useHistory } from "react-router";
+import { RootState, useAppSelector } from "@ui/Stores/store";
 
 type ViewerProps = {
   running: boolean;
@@ -35,7 +36,13 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
   const sampler = useCallback((cfg: string, seed: string) => exec().sample(cfg, seed), [exec]);
   const resetTab = useCallback(() => setTabId("results"), []);
 
-  const sample = useSample(running, data, sampler);
+  const { sampleOnLoad } = useAppSelector((state: RootState) => {
+    return {
+      sampleOnLoad: state.app.sampleOnLoad,
+    };
+  });
+
+  const sample = useSample(running, data, sampleOnLoad, sampler);
   const config = useConfig(data, exec);
   const names = useMemo(
       () => data?.character_details?.map(c => c.name), [data?.character_details]);

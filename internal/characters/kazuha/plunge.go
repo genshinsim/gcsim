@@ -34,7 +34,7 @@ func init() {
 	plungeHoldFrames[action.ActionSwap] = 54
 }
 
-func (c *char) HighPlungeAttack(p map[string]int) action.Info {
+func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// last action must be skill without glide cancel
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["glide_cancel"] != 0 {
@@ -45,7 +45,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	act := action.Info{
@@ -133,5 +133,5 @@ func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 		c.a1Absorb = attributes.NoElement
 	}
 
-	return act
+	return act, nil
 }

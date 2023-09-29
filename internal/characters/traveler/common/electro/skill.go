@@ -33,7 +33,7 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 55    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Blade",
@@ -123,7 +123,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB() combat.AttackCBFunc {

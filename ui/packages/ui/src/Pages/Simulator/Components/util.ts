@@ -95,3 +95,35 @@ export const StatToIndexMap: { [key in string]: number } = {
   DendroP: 18,
   PhyP: 19,
 };
+
+export const GOODStatToIndexMap: { [key in string]: number } = {
+  def_: 1,
+  def: 2,
+  hp: 3,
+  hp_: 4,
+  atk: 5,
+  atk_: 6,
+  enerRech_: 7,
+  eleMas: 8,
+  critRate_: 9,
+  critDMG_: 10,
+  heal: 11,
+  pyro_dmg_: 12,
+  hydro_dmg_: 13,
+  cryo_dmg_: 14,
+  electro_dmg_: 15,
+  anemo_dmg_: 16,
+  geo_dmg_: 17,
+  dendro_dmg_: 18,
+  physical_dmg_: 19,
+};
+
+export const DMElementToKey: { [key in string]: string } = {
+  Electric: "electro",
+  Fire: "pyro",
+  Ice: "cryo",
+  Water: "hydro",
+  Grass: "dendro",
+  Wind: "anemo",
+  Rock: "geo",
+};

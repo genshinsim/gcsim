@@ -26,7 +26,7 @@ func init() {
 
 // Standard charge attack
 // CA has no travel time
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
@@ -65,5 +65,5 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

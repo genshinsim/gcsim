@@ -30,7 +30,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 66
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// The game has ICD as AttackTagElementalArt, ICDTagElementalArt,
 	// ICDGroupColleiBoomerangForward, and ICDGroupColleiBoomerangBack. However,
 	// we believe this is unnecessary, so just use ICDTagNone.
@@ -102,7 +102,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB() combat.AttackCBFunc {

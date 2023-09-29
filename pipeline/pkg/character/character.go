@@ -15,7 +15,7 @@ type Config struct {
 	Key         string   `yaml:"key,omitempty"`
 	Shortcuts   []string `yaml:"shortcuts,omitempty"`
 
-	//extra fields to be populate but not read from yaml
+	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
 }
 

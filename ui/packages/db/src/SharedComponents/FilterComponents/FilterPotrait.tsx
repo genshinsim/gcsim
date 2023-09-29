@@ -1,6 +1,4 @@
-import kuki from "images/kuki.png";
 import nahida from "images/nahida.png";
-import { Long } from "protobufjs";
 import { FaPlus } from "react-icons/fa";
 import { ArtifactSetFilter } from "./Filter.utils";
 
@@ -103,72 +101,72 @@ function PortraitWeaponComponent({ weapon }: { weapon?: string }) {
   );
 }
 
-function PortraitArtifactsComponent({
-  artifactSet,
-}: {
-  artifactSet:
-    | {
-        [k: string]: number | Long;
-      }
-    | undefined
-    | null;
-}) {
-  if (!artifactSet) {
-    return (
-      <div>
-        <img src={kuki} alt="kuki" className="relative max-h-full" />
-      </div>
-    );
-  }
+// function PortraitArtifactsComponent({
+//   artifactSet,
+// }: {
+//   artifactSet:
+//     | {
+//         [k: string]: number | Long;
+//       }
+//     | undefined
+//     | null;
+// }) {
+//   if (!artifactSet) {
+//     return (
+//       <div>
+//         <img src={kuki} alt="kuki" className="relative max-h-full" />
+//       </div>
+//     );
+//   }
 
-  const artifacts = Object.entries(artifactSet).filter(
-    ([, setCount]) => (setCount as number) >= 2
-  );
+//   const artifacts = Object.entries(artifactSet).filter(
+//     ([, setCount]) => (setCount as number) >= 2
+//   );
 
-  switch (artifacts.length) {
-    case 1:
-      return (
-        <div className="relative bg-slate-700">
-          <img
-            src={
-              "https://gcsim.app/api/assets/artifacts/" +
-              artifacts[0][0] +
-              "_flower.png"
-            }
-            alt={artifacts[0][0]}
-          />
-        </div>
-      );
-    case 2:
-      return (
-        <div className="relative">
-          <img
-            src={
-              "https://gcsim.app/api/assets/artifacts/" +
-              artifacts[0][0] +
-              "_flower.png"
-            }
-            alt={artifacts[0][0]}
-            className="artifact-top-right-gap"
-          />
-          <img
-            src={
-              "https://gcsim.app/api/assets/artifacts/" +
-              artifacts[1][0] +
-              "_flower.png"
-            }
-            alt={artifacts[1][0]}
-            className="artifact-bottom-left-gap"
-          />
-        </div>
-      );
+//   switch (artifacts.length) {
+//     case 1:
+//       return (
+//         <div className="relative bg-slate-700">
+//           <img
+//             src={
+//               "https://gcsim.app/api/assets/artifacts/" +
+//               artifacts[0][0] +
+//               "_flower.png"
+//             }
+//             alt={artifacts[0][0]}
+//           />
+//         </div>
+//       );
+//     case 2:
+//       return (
+//         <div className="relative">
+//           <img
+//             src={
+//               "https://gcsim.app/api/assets/artifacts/" +
+//               artifacts[0][0] +
+//               "_flower.png"
+//             }
+//             alt={artifacts[0][0]}
+//             className="artifact-top-right-gap"
+//           />
+//           <img
+//             src={
+//               "https://gcsim.app/api/assets/artifacts/" +
+//               artifacts[1][0] +
+//               "_flower.png"
+//             }
+//             alt={artifacts[1][0]}
+//             className="artifact-bottom-left-gap"
+//           />
+//         </div>
+//       );
 
-    default:
-    case 0:
-      return (
-        <div>
-          <img src={kuki} alt="kuki" className="relative opacity-30" />
-        </div>
-      );
-  }
-}
+//     default:
+//     case 0:
+//       return (
+//         <div>
+//           <img src={kuki} alt="kuki" className="relative opacity-30" />
+//         </div>
+//       );
+//   }
+// }

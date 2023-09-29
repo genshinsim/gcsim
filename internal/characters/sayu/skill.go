@@ -52,13 +52,13 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 706    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	shortHold := p["short_hold"]
 	if p["short_hold"] != 0 {
 		shortHold = 1
 	}
 	if shortHold == 1 {
-		return c.skillShortHold()
+		return c.skillShortHold(), nil
 	}
 
 	hold := p["hold"]
@@ -66,9 +66,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 		if hold > 600 { // 10s
 			hold = 600
 		}
-		return c.skillHold(hold)
+		return c.skillHold(hold), nil
 	}
-	return c.skillPress()
+	return c.skillPress(), nil
 }
 
 func (c *char) kickParticleCB(a combat.AttackCB) {

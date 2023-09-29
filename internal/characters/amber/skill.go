@@ -19,7 +19,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 23    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
 
 	c.Core.Tasks.Add(func() {
@@ -37,5 +37,5 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction] + hold,
 		CanQueueAfter:   skillStart + hold,
 		State:           action.SkillState,
-	}
+	}, nil
 }

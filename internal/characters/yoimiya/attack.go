@@ -28,7 +28,7 @@ func init() {
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 52)
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -114,5 +114,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

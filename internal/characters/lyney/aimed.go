@@ -41,7 +41,7 @@ func init() {
 	aimedPropFrames[action.ActionJump] = aimedPropRelease
 }
 
-func (c *char) Aimed(p map[string]int) action.Info {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	level, ok := p["level"]
 	if !ok {
 		level = 1
@@ -92,10 +92,10 @@ func (c *char) Aimed(p map[string]int) action.Info {
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedRelease,
 		State:           action.AimState,
-	}
+	}, nil
 }
 
-func (c *char) PropAimed(p map[string]int) action.Info {
+func (c *char) PropAimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -152,7 +152,7 @@ func (c *char) PropAimed(p map[string]int) action.Info {
 		AnimationLength: aimedPropFrames[action.InvalidAction],
 		CanQueueAfter:   aimedPropRelease,
 		State:           action.AimState,
-	}
+	}, nil
 }
 
 // not implemented: The effect will be removed after the character spends 30s out of combat.

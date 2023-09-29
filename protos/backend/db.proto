@@ -30,8 +30,9 @@ service DBStore {
     rpc RejectWork (RejectWorkRequest) returns (RejectWorkResponse) {}
     rpc WorkStatus (WorkStatusRequest) returns (WorkStatusResponse) {}
 
-    //super-admin endpoint
+    //admin endpoint
     rpc ReplaceConfig (ReplaceConfigRequest) returns (ReplaceConfigResponse) {}
+    rpc ReplaceDesc (ReplaceDescRequest) returns (ReplaceDescResponse) {}
 }
 
 message Entry {
@@ -220,8 +221,19 @@ message WorkStatusResponse {
 message ReplaceConfigRequest {
     string id = 1 [json_name="_id"];
     string config = 2 [json_name="config"];
+    model.DBTag source_tag = 3 [json_name="source_tag"];
 }
 
 message ReplaceConfigResponse {
+    string id = 1 [json_name="_id"];
+}
+
+message ReplaceDescRequest {
+    string id = 1 [json_name="_id"];
+    string desc = 2 [json_name="desc"];
+    model.DBTag source_tag = 3 [json_name="source_tag"];
+}
+
+message ReplaceDescResponse {
     string id = 1 [json_name="_id"];
 }

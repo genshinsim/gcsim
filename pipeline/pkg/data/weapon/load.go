@@ -35,7 +35,7 @@ func loadWeaponExcel(path string) (map[int32]dm.WeaponExcel, error) {
 	}
 	data := make(map[int32]dm.WeaponExcel)
 	for _, v := range res {
-		//sanity check in case mhy allows for duplicated ids in future
+		// sanity check in case mhy allows for duplicated ids in future
 		if _, ok := data[v.ID]; ok {
 			return nil, fmt.Errorf("unexpected duplicated id: %v", v.ID)
 		}

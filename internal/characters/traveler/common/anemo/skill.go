@@ -257,7 +257,7 @@ func (c *char) holdParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	holdTicks := 0
 	if p["hold"] == 1 {
 		holdTicks = 6
@@ -270,9 +270,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 	}
 
 	if holdTicks == 0 {
-		return c.SkillPress()
+		return c.SkillPress(), nil
 	}
-	return c.SkillHold(holdTicks)
+	return c.SkillHold(holdTicks), nil
 }
 
 func (c *char) absorbCheckE(src, count, max int) func() {

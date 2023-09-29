@@ -73,9 +73,9 @@ func init() {
 	ppAttackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.StatModIsActive(paramitaBuff) {
-		return c.ppAttack()
+		return c.ppAttack(), nil
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
@@ -122,7 +122,7 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }
 
 func (c *char) ppAttack() action.Info {

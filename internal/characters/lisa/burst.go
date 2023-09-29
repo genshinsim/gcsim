@@ -22,7 +22,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 56
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// first zap has no icd and hits everyone
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -174,5 +174,5 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

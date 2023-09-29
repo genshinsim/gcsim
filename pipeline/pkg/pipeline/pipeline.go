@@ -17,10 +17,10 @@ func Walk(root string) ([]string, error) {
 	err := filepath.Walk(root,
 		func(path string, info fs.FileInfo, err error) error {
 			if err != nil {
-				return fmt.Errorf("unexpected error walking: %v", err)
+				return fmt.Errorf("unexpected error walking: %w", err)
 			}
 
-			//we're only interested in finding directories
+			// we're only interested in finding directories
 			switch {
 			case !info.IsDir():
 				return nil

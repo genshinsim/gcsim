@@ -27,7 +27,7 @@ func init() {
 // Skill attack damage queue generator
 // Includes optional argument "nobehind" for whether Rosaria appears behind her opponent or not (for her A1).
 // Default behavior is to appear behind enemy - set "nobehind=1" to diasble A1 proc
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// No ICD to the 2 hits
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -98,7 +98,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

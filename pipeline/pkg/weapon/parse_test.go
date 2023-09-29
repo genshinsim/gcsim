@@ -9,7 +9,7 @@ import (
 )
 
 func TestParseCharConfigs(t *testing.T) {
-	//write 2 config yaml to file, read it back
+	// write 2 config yaml to file, read it back
 	dir := t.TempDir()
 	r := []Config{
 		{
@@ -20,7 +20,7 @@ func TestParseCharConfigs(t *testing.T) {
 		},
 	}
 	for _, v := range r {
-		err := os.Mkdir(dir+"/"+v.PackageName, 0755)
+		err := os.Mkdir(dir+"/"+v.PackageName, 0o755)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -28,7 +28,7 @@ func TestParseCharConfigs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		err = os.WriteFile(fmt.Sprintf("%v/%v/config.yml", dir, v.PackageName), data, 0644)
+		err = os.WriteFile(fmt.Sprintf("%v/%v/config.yml", dir, v.PackageName), data, 0o644)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -48,5 +48,4 @@ func TestParseCharConfigs(t *testing.T) {
 			t.Errorf("data not matching, expecting pkg name %v, got pkg name %v", r[i].PackageName, v.PackageName)
 		}
 	}
-
 }

@@ -43,9 +43,9 @@ func init() {
 
 // Normal attack
 // Perform up to 6 consecutive shots with a bow.
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(MeleeKey) {
-		return c.meleeAttack()
+		return c.meleeAttack(), nil
 	}
 
 	travel, ok := p["travel"]
@@ -84,7 +84,7 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }
 
 var (

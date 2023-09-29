@@ -23,7 +23,7 @@ func init() {
 
 // Charge attack damage queue generator
 // Very standard - consistent with other characters like Xiangling
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge",
@@ -55,5 +55,5 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeFrames[action.ActionJump], // earliest cancel
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
