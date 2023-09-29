@@ -176,6 +176,8 @@ func (c *char) skillHold(travel, holdTicks int) (action.Info, error) {
 	}
 
 	extend := 15 * (holdTicks - 1)
+	a1cb := c.makeA1CB()
+	a4cb := c.makeC4CB()
 	for i := 0; i <= extend; i += 15 {
 		c.QueueCharTask(func() {
 			c.skillLosingHP(&aiHold)
@@ -184,8 +186,8 @@ func (c *char) skillHold(travel, holdTicks int) (action.Info, error) {
 				combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.4}, 0.3, 1.3),
 				0,
 				1,
-				c.makeA1CB(),
-				c.makeC4CB(),
+				a1cb,
+				a4cb,
 			)
 			aiHold.FlatDmg = 0
 		}, skillShortHoldFirstDewdropRelease+i+travel)
