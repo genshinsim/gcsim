@@ -30,18 +30,6 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 			return
 		}
 
-		// remove excess droplet
-		if len(c.droplets) == 4 {
-			oldest := 0
-			for i, droplet := range c.droplets {
-				if droplet.Duration < c.droplets[oldest].Duration {
-					oldest = i
-				}
-			}
-
-			c.droplets[oldest].Kill()
-		}
-
 		count++
 		droplet := c.newDropblet()
 		c.Core.Combat.AddGadget(droplet)
