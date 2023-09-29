@@ -220,24 +220,28 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		travel = 6
 	}
-
-	if !hold { // hold=0
+	switch {
+	case !hold:
+		// hold=0
 		return c.skillPress(
 			skillPressHitmarks[c.gender],
 			skillPressSpiritThornHitmark,
 			skillPressCdStart,
 			skillPressFrames,
 		)
-	} else if holdTicks == 0 { // hold=1, hold_ticks=0
+	case holdTicks == 0:
+		// hold=1, hold_ticks=0
 		return c.skillPress(
 			skillShortHold0TicksTorrentSurgeHitmark,
 			skillShortHold0TicksSpiritbreathThornHitmark,
 			skillShortHold0TicksCdStart,
 			skillShortHold0TicksFrames,
 		)
-	} else if holdTicks == 1 { // hold=1, hold_ticks=1
+	case holdTicks == 1:
+		// hold=1, hold_ticks=1
 		return c.skillShortHold(travel)
-	} else { // hold=1, hold_ticks>1
+	default:
+		// hold=1, hold_ticks>1
 		return c.skillHold(travel, holdTicks)
 	}
 }
