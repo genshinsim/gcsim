@@ -28,7 +28,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 110    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// activate burst, reset stacks
 	c.burstCastF = c.Core.F
 	c.restoreCount = 0
@@ -89,7 +89,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstRestorefunc(a combat.AttackCB) {

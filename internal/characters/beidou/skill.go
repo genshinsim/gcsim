@@ -29,7 +29,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 44
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// 0 for base dmg, 1 for 1x bonus, 2 for max bonus
 	counter := p["counter"]
 	if counter >= 2 {
@@ -78,7 +78,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB(counter int) combat.AttackCBFunc {

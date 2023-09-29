@@ -49,7 +49,6 @@ func TestLoadAvatarSkillExcel(t *testing.T) {
 	if len(res) == 0 {
 		t.Error("res length cannot be 0")
 	}
-
 }
 
 func TestLoadFetterInfo(t *testing.T) {
@@ -63,7 +62,6 @@ func TestLoadFetterInfo(t *testing.T) {
 	if len(res) == 0 {
 		t.Error("res length cannot be 0")
 	}
-
 }
 
 func TestLoadPromotData(t *testing.T) {
@@ -77,5 +75,4 @@ func TestLoadPromotData(t *testing.T) {
 	if len(res) == 0 {
 		t.Error("res length cannot be 0")
 	}
-
 }

@@ -18,16 +18,16 @@ import (
 type Character interface {
 	Init() error // init function built into every char to setup any variables etc.
 
-	Attack(p map[string]int) action.Info
-	Aimed(p map[string]int) action.Info
-	ChargeAttack(p map[string]int) action.Info
-	HighPlungeAttack(p map[string]int) action.Info
-	LowPlungeAttack(p map[string]int) action.Info
-	Skill(p map[string]int) action.Info
-	Burst(p map[string]int) action.Info
-	Dash(p map[string]int) action.Info
-	Walk(p map[string]int) action.Info
-	Jump(p map[string]int) action.Info
+	Attack(p map[string]int) (action.Info, error)
+	Aimed(p map[string]int) (action.Info, error)
+	ChargeAttack(p map[string]int) (action.Info, error)
+	HighPlungeAttack(p map[string]int) (action.Info, error)
+	LowPlungeAttack(p map[string]int) (action.Info, error)
+	Skill(p map[string]int) (action.Info, error)
+	Burst(p map[string]int) (action.Info, error)
+	Dash(p map[string]int) (action.Info, error)
+	Walk(p map[string]int) (action.Info, error)
+	Jump(p map[string]int) (action.Info, error)
 
 	ActionStam(a action.Action, p map[string]int) float64
 

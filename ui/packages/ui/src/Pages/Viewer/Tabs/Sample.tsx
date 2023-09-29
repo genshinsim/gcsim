@@ -11,7 +11,6 @@ import { Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../../Sample/Components";
 import queryString from "query-string";
-import { RootState, useAppSelector } from "../../../Stores/store";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
@@ -176,7 +175,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 };
 
 export function useSample(
-    running: boolean, data: SimResults | null,
+    running: boolean, data: SimResults | null, sampleOnLoad: boolean,
     sampler: (cfg: string, seed: string) => Promise<Sample>): UseSampleData {
   const [selected, setSelected] = useState<string[]>(() => {
     const saved = localStorage.getItem(SAVED_SAMPLE_KEY);
@@ -204,11 +203,6 @@ export function useSample(
   }, [running]);
   
   const initQuery = useRef(queryString.parse(location.hash));
-  const { sampleOnLoad } = useAppSelector((state: RootState) => {
-    return {
-      sampleOnLoad: state.app.sampleOnLoad
-    };
-  });
   
   // if seed in url or sampleOnLoad is checked, load sample on viewer load
   useEffect(() => {

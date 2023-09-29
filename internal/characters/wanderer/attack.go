@@ -70,7 +70,7 @@ func init() {
 	attackFramesE[2][action.ActionJump] = 33
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
 	if c.StatusIsActive(SkillKey) {
@@ -124,10 +124,10 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: windup + attackFramesNormal[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   windup + attackReleaseNormal[c.NormalCounter][len(attackReleaseNormal[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }
 
-func (c *char) WindfavoredAttack(p map[string]int) action.Info {
+func (c *char) WindfavoredAttack(p map[string]int) (action.Info, error) {
 	// TODO: E can expire during N3, not implemented yet
 
 	windup := c.attackWindupE()
@@ -177,7 +177,7 @@ func (c *char) WindfavoredAttack(p map[string]int) action.Info {
 		AnimationLength: windup + attackFramesE[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   windup + attackReleaseE[c.NormalCounter][len(attackReleaseE[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }
 
 func (c *char) attackWindupNormal() int {

@@ -12,7 +12,7 @@ func init() {
 	walkFrames[action.ActionSkill] = 4
 }
 
-func (c *char) Walk(p map[string]int) action.Info {
+func (c *char) Walk(p map[string]int) (action.Info, error) {
 	f, ok := p["f"]
 	if !ok {
 		f = 1
@@ -31,5 +31,5 @@ func (c *char) Walk(p map[string]int) action.Info {
 		AnimationLength: animLength,
 		CanQueueAfter:   f,
 		State:           action.WalkState,
-	}
+	}, nil
 }

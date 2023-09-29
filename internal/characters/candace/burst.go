@@ -29,7 +29,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 49
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.waveCount = 0
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {

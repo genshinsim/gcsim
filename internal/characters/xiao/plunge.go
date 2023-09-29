@@ -34,7 +34,7 @@ func init() {
 // High Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) HighPlungeAttack(p map[string]int) action.Info {
+func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionHighPlunge)
@@ -43,7 +43,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	collision, ok := p["collision"]
@@ -84,13 +84,13 @@ func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
 
 // Low Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) LowPlungeAttack(p map[string]int) action.Info {
+func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
 		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
 			Write("action", action.ActionLowPlunge)
@@ -99,7 +99,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	collision, ok := p["collision"]
@@ -140,7 +140,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
 
 // Plunge normal falling attack damage queue generator

@@ -27,7 +27,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 41    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Nights of Formal Focus",
@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel is before skillHitmark
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) starsSkill() {

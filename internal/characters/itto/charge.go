@@ -172,7 +172,7 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 	return 0
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		AttackTag:          attacks.AttackTagExtra,
@@ -283,5 +283,5 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[curSlash][action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmarks[curSlash] - windup,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

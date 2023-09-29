@@ -41,7 +41,7 @@ const (
 // - "bomb_delay" = Delay in frames before bomblets go off and coil stacks get added
 //
 // - too many potential bomblet hit variations to keep syntax short, so we simplify how they can be handled here
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 5
@@ -110,7 +110,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillRelease,
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB() combat.AttackCBFunc {

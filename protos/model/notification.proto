@@ -26,3 +26,9 @@ message EntryReplaceEvent {
     string config = 2;
     string old_config = 3;
 }
+
+message DescReplaceEvent {
+    string db_id = 1;
+    string desc = 2;
+    string old_desc = 3;
+}

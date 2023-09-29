@@ -87,7 +87,6 @@ services:
       - ~/data:/data
       - ./keys.json:/keys.json
     environment:
-      - COMPUTE_API_KEY
       - USER_DATA_PATH=/data/user
       - DISCORD_ID
       - DISCORD_SECRET
@@ -109,7 +108,10 @@ services:
     build:
       context: .
       dockerfile: ./managerchan.Dockerfile
+    volumes:
+      - ./tagger_mapping.json:/mapping.json
     environment:
+      - DISCORD_CHAN_TO_TAG_MAPPING_FILE=/mapping.json
       - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
       - DISCORD_BOT_TOKEN

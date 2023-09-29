@@ -22,7 +22,7 @@ func init() {
 }
 
 // Sets Xiao's burst damage state
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	var hpICD int
 	hpICD = 0
 
@@ -56,7 +56,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 // Hook to end Xiao's burst prematurely if he leaves the field

@@ -19,7 +19,7 @@ func init() {
 	highPlungeFrames = frames.InitAbilSlice(highPlungeHitmark)
 }
 
-func (c *char) HighPlungeAttack(p map[string]int) action.Info {
+func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// check if hold skill was used
 	lastAct := c.Core.Player.LastAction
 	if lastAct.Char != c.Index || lastAct.Type != action.ActionSkill || lastAct.Param["hold"] != 0 {
@@ -30,7 +30,7 @@ func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 
 	ai := combat.AttackInfo{
@@ -57,5 +57,5 @@ func (c *char) HighPlungeAttack(p map[string]int) action.Info {
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeHitmark,
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }

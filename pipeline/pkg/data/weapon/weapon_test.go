@@ -30,7 +30,7 @@ func TestParseWeapon(t *testing.T) {
 	expect(t, "weapon class", model.WeaponClass_WEAPON_CATALYST, w.WeaponClass)
 	expect(t, "image name", "UI_EquipIcon_Catalyst_Resurrection", w.ImageName)
 
-	//stats check
+	// stats check
 	if expect(t, "weapon props length", len(expectedSPWeaponProps), len(w.BaseStats.BaseProps)) == nil {
 		for i, v := range expectedSPWeaponProps {
 			got := w.BaseStats.BaseProps[i]
@@ -51,7 +51,6 @@ func TestParseWeapon(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func expect(t *testing.T, msg string, expect, got any) error {

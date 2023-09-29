@@ -36,7 +36,7 @@ There is an approximately 1 second interval between summoned Hydro Sword waves, 
 Each wave of Hydro Swords is capable of applying one (1) source of Hydro status, and each individual sword is capable of getting a crit.
 **/
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// apply hydro every 3rd hit
 	// triggered on normal attack
 	// also applies hydro on cast if p=1
@@ -67,7 +67,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) summonSwordWave() {

@@ -36,12 +36,12 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 500                            //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(pirouetteStatus) {
-		return c.Pirouette(p, NilouSkillTypeDance)
+		return c.Pirouette(p, NilouSkillTypeDance), nil
 	}
 	if c.StatusIsActive(lunarPrayerStatus) {
-		return c.SwordDance(p)
+		return c.SwordDance(p), nil
 	}
 
 	ai := combat.AttackInfo{
@@ -81,5 +81,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

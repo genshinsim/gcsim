@@ -21,9 +21,9 @@ func init() {
 	chargeFrames[action.ActionSwap] = 36
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.Info {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(BurstKey) {
-		return c.swordCharge()
+		return c.swordCharge(), nil
 	}
 
 	ai := combat.AttackInfo{
@@ -53,7 +53,7 @@ func (c *char) ChargeAttack(p map[string]int) action.Info {
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
 
 var swordCAFrames []int

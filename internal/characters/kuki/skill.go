@@ -28,7 +28,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 50    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// only drain HP when above 20% HP
 	if c.CurrentHPRatio() > hpDrainThreshold {
 		currentHP := c.CurrentHP()
@@ -84,7 +84,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

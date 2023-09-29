@@ -36,7 +36,7 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 110
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	chargeLevel := p["hold"]
 	if chargeLevel > 1 {
 		chargeLevel = 1
@@ -119,7 +119,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[chargeLevel][action.InvalidAction],
 		CanQueueAfter:   skillFrames[chargeLevel][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) makeParticleCB(particleCount float64) combat.AttackCBFunc {

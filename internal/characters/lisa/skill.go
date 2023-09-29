@@ -43,12 +43,12 @@ func init() {
 }
 
 // p = 0 for no hold, p = 1 for hold
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
 	if hold == 1 {
-		return c.skillHold()
+		return c.skillHold(), nil
 	}
-	return c.skillPress()
+	return c.skillPress(), nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
