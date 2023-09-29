@@ -177,7 +177,7 @@ func (c *char) skillHold(travel, holdTicks int) (action.Info, error) {
 
 	extend := 15 * (holdTicks - 1)
 	a1cb := c.makeA1CB()
-	a4cb := c.makeC4CB()
+	c4cb := c.makeC4CB()
 	for i := 0; i <= extend; i += 15 {
 		c.QueueCharTask(func() {
 			c.skillLosingHP(&aiHold)
@@ -187,7 +187,7 @@ func (c *char) skillHold(travel, holdTicks int) (action.Info, error) {
 				0,
 				1,
 				a1cb,
-				a4cb,
+				c4cb,
 			)
 			aiHold.FlatDmg = 0
 		}, skillShortHoldFirstDewdropRelease+i+travel)
