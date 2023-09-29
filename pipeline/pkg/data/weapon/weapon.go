@@ -82,8 +82,8 @@ func (d *DataSource) parseImageName(w *model.WeaponData, err error) error {
 	return err
 }
 
-func (a *DataSource) parseWeaponProps(w *model.WeaponData, err error) error {
-	wd, ok := a.weaponExcel[w.Id]
+func (d *DataSource) parseWeaponProps(w *model.WeaponData, err error) error {
+	wd, ok := d.weaponExcel[w.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("char with id %v not found in excel data", w.Id))
 	}
@@ -97,12 +97,12 @@ func (a *DataSource) parseWeaponProps(w *model.WeaponData, err error) error {
 	return err
 }
 
-func (a *DataSource) parsePromoData(c *model.WeaponData, err error) error {
-	wd, ok := a.weaponExcel[c.Id]
+func (d *DataSource) parsePromoData(c *model.WeaponData, err error) error {
+	wd, ok := d.weaponExcel[c.Id]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("weapon with id %v not found in excel data", c.Id))
 	}
-	pd, ok := a.promoteData[wd.WeaponPromoteID]
+	pd, ok := d.promoteData[wd.WeaponPromoteID]
 	if !ok {
 		return multierr.Append(err, fmt.Errorf("promote data with id %v not found in excel data", wd.WeaponPromoteID))
 	}

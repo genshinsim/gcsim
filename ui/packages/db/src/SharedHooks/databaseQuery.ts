@@ -1,6 +1,7 @@
 import {
   FilterState,
   ItemFilterState,
+  SortByDirection,
 } from "SharedComponents/FilterComponents/Filter.utils";
 
 export function craftQuery(
@@ -39,11 +40,11 @@ export function craftQuery(
   }
 
   if (includedChars.length > 0) {
-    let and: any[] = [];
-    let trav: { [key in string]: boolean } = {};
+    const and: unknown[] = [];
+    const trav: { [key in string]: boolean } = {};
     includedChars.forEach((char) => {
       if (char.includes("aether") || char.includes("lumine")) {
-        let ele = char.replace(/(aether|lumine)(.+)/, "$2");
+        const ele = char.replace(/(aether|lumine)(.+)/, "$2");
         trav[ele] = true;
         return;
       }
@@ -65,24 +66,24 @@ export function craftQuery(
   }
 
   if (excludedChars.length > 0) {
-    let and: any[] = [];
-    let trav: { [key in string]: boolean } = {};
+    const and: unknown[] = [];
+    const trav: { [key in string]: boolean } = {};
     excludedChars.forEach((char) => {
       if (char.includes("aether") || char.includes("lumine")) {
-        let ele = char.replace(/(aether|lumine)(.+)/, "$2");
+        const ele = char.replace(/(aether|lumine)(.+)/, "$2");
         trav[ele] = true;
         return;
       }
       and.push({
-          "summary.char_names": {$ne: char},
+        "summary.char_names": { $ne: char },
       });
     });
     Object.keys(trav).forEach((ele) => {
       and.push({
-          "summary.char_names": {$ne: `aether${ele}`},
+        "summary.char_names": { $ne: `aether${ele}` },
       });
       and.push({
-          "summary.char_names": {$ne: `lumine${ele}`},
+        "summary.char_names": { $ne: `lumine${ele}` },
       });
     });
     if (and.length > 0) {
@@ -100,11 +101,11 @@ export function craftQuery(
   for (const [tag, tagState] of Object.entries(filter.tagFilter)) {
     if (tagState.state === ItemFilterState.include) {
       includedTags.push(tag);
-    } 
+    }
   }
 
   if (includedTags.length > 0) {
-    let tags: any[] = [];
+    const tags: number[] = [];
     includedTags.forEach((tag) => {
       tags.push(parseInt(tag));
     });
@@ -115,27 +116,35 @@ export function craftQuery(
     }
   }
 
-  //force default sort by date for now
+  const sort = {};
+
+  switch (filter.sortBy.sortByDirection) {
+    case SortByDirection.asc:
+      sort[filter.sortBy.sortKey] = 1;
+      break;
+    case SortByDirection.dsc:
+      sort[filter.sortBy.sortKey] = -1;
+      break;
+  }
+
   return {
     query,
     limit,
     skip,
-    sort: {
-      create_date: -1,
-    }
+    sort,
   };
 }
 
 export interface DbQuery {
   query: {
-    $and?: any[];
+    $and?: unknown[];
     accepted_tags?: {
       $in?: number[];
     };
   };
   limit: number;
   sort?: {
-    create_date: number;
+    [key: string]: 1 | -1;
   };
   skip?: number;
 }

@@ -31,7 +31,7 @@ func init() {
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 99)
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	// C6: Additionally, Searing Onslaught will not interrupt the Normal Attack combo.
 	if c.Base.Cons >= 6 && c.Core.Player.CurrentState() == action.SkillState {
 		c.NormalCounter = c.savedNormalCounter
@@ -77,5 +77,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

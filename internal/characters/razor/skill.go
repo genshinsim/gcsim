@@ -63,7 +63,7 @@ func init() {
 	skillHoldFrames[1][action.ActionSwap] = 88    // Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// check if Q is up for different E frames
 	burstActive := 0
 	if c.StatusIsActive(burstBuffKey) {
@@ -71,9 +71,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 	}
 
 	if p["hold"] > 0 {
-		return c.SkillHold(burstActive)
+		return c.SkillHold(burstActive), nil
 	}
-	return c.SkillPress(burstActive)
+	return c.SkillPress(burstActive), nil
 }
 
 func (c *char) SkillPress(burstActive int) action.Info {

@@ -60,7 +60,7 @@ func init() {
 	skillHoldEndFrames[action.ActionSwap] = 27
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
 	if hold > 0 {
 		if hold > 150 {
@@ -69,9 +69,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 		// min duration in e state: ~35f
 		// max duration in e state: ~184f
 		// -> offset of 34f to 1 <= hold <= 150
-		return c.skillHold(hold + 34)
+		return c.skillHold(hold + 34), nil
 	}
-	return c.skillPress()
+	return c.skillPress(), nil
 }
 
 func (c *char) skillPress() action.Info {

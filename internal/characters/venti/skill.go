@@ -27,7 +27,7 @@ func init() {
 	skillHoldFrames[action.ActionHighPlunge] = 116
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Skyward Sonnett",
@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 
 	c.SetCDWithDelay(action.ActionSkill, cd, cdstart)
 
-	return act
+	return act, nil
 }
 
 func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {

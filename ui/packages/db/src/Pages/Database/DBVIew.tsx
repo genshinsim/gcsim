@@ -1,16 +1,15 @@
 import { db } from "@gcsim/types";
 import eula from "images/eula.png";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { ActionBar } from "SharedComponents/ActionBar";
 import { Warning } from "SharedComponents/Warning";
-import { PaginationButtons } from "SharedComponents/Pagination";
 import { ListView } from "../../SharedComponents/ListView";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 type Props = {
-  data: db.IEntry[]
-  fetchData: () => void
-  hasMore: boolean
-}
+  data: db.IEntry[];
+  fetchData: () => void;
+  hasMore: boolean;
+};
 
 export const DBView = (props: Props) => {
   return (
@@ -19,10 +18,7 @@ export const DBView = (props: Props) => {
       <Warning />
       {props.data.length === 0 ? (
         <div className="6 flex flex-col justify-center items-center h-screen">
-          <img
-            src={eula}
-            className=" object-contain opacity-50 w-32 h-32"
-          />
+          <img src={eula} className=" object-contain opacity-50 w-32 h-32" />
         </div>
       ) : (
         <InfiniteScroll
@@ -36,15 +32,15 @@ export const DBView = (props: Props) => {
                 <b>Yay! You have seen it all.</b>
               </p>
               <p className="text-center">
-                Didn't find what you're looking for? Create and submit your own on our discord 
+                {` Didn't find what you're looking for? Create and submit your own on our discord `}
               </p>
             </>
           }
-        //TODO: enable pull down functionality for refreshing maybe??
+          //TODO: enable pull down functionality for refreshing maybe??
         >
           <ListView data={props.data} />
         </InfiniteScroll>
       )}
     </div>
   );
-}
+};

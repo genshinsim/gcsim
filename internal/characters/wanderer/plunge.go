@@ -23,7 +23,7 @@ func init() {
 	lowPlungeFrames[action.ActionSwap] = 57
 }
 
-func (c *char) LowPlungeAttack(p map[string]int) action.Info {
+func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
 	// Not in falling state
@@ -35,7 +35,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 			AnimationLength: 1200,
 			CanQueueAfter:   1200,
 			State:           action.Idle,
-		}
+		}, nil
 	}
 	c.DeleteStatus(plungeAvailableKey)
 
@@ -74,7 +74,7 @@ func (c *char) LowPlungeAttack(p map[string]int) action.Info {
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeHitmark,
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
 
 func (c *char) plungeCollision(fullDelay int) {

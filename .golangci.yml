@@ -2,6 +2,8 @@ run:
   timeout: 5m
   build-tags:
     - codeanalysis
+  skip-dirs:
+    - cmd/wasm/
 
 linters:
   disable-all: true
@@ -57,7 +59,7 @@ linters:
     # - nilnil # checks that there is no simultaneous return of nil error and an invalid value
 
     ## enforcements which can lead to better code
-    - musttag # enforces field tags in (un)marshaled structs
+    # - musttag # enforces field tags in (un)marshaled structs
     # - exhaustruct # checks if all structure fields are initialized
 
     ## misc linters
@@ -163,6 +165,7 @@ linters-settings:
       use-field-name: true
       rules:
         json: snake
+        yaml: snake
 
 severity:
   default-severity: error

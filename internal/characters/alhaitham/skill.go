@@ -52,7 +52,7 @@ func init() {
 	skillHoldFrames[action.ActionSwap] = 85
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
 	if hold == 1 {
 		return c.SkillHold()
@@ -84,9 +84,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillTapFrames[action.InvalidAction],
 		CanQueueAfter:   skillTapFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
-func (c *char) SkillHold() action.Info {
+func (c *char) SkillHold() (action.Info, error) {
 	c.Core.Tasks.Add(c.skillMirrorGain, 23)
 
 	ai := combat.AttackInfo{
@@ -113,7 +113,7 @@ func (c *char) SkillHold() action.Info {
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionLowPlunge], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) skillMirrorGain() {

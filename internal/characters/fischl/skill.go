@@ -41,9 +41,9 @@ func init() {
 	skillRecastFrames[action.ActionJump] = 5
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if p["recast"] != 0 && c.ozActive && !c.StatusIsActive(skillRecastCDKey) {
-		return c.skillRecast()
+		return c.skillRecast(), nil
 	}
 	// always trigger electro no ICD on initial summon
 	ai := combat.AttackInfo{
@@ -89,7 +89,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

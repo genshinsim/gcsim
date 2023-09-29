@@ -47,7 +47,7 @@ func init() {
 	skillHoldFrames[1][action.ActionSwap] = 155
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
 	glide := p["glide_cancel"]
 	if glide < 0 {
@@ -60,9 +60,9 @@ func (c *char) Skill(p map[string]int) action.Info {
 	c.a1Absorb = attributes.NoElement
 
 	if hold == 0 {
-		return c.skillPress(glide)
+		return c.skillPress(glide), nil
 	}
-	return c.skillHold(glide)
+	return c.skillHold(glide), nil
 }
 
 func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {

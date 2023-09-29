@@ -25,7 +25,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 57 // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(2)
 
@@ -58,5 +58,5 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   burstFrames[c.gender][action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

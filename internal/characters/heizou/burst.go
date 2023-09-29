@@ -22,7 +22,7 @@ func init() {
 
 const burstHitmark = 34
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstTaggedCount = 0
 	burstCB := func(a combat.AttackCB) {
 		// check if enemy
@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 // When Vacuum Slugger hits opponents affected by Hydro/Pyro/Cryo/Electro,

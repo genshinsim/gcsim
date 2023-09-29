@@ -51,7 +51,7 @@ func init() {
 	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 }
 
-func (c *char) Attack(p map[string]int) action.Info {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	for i := 0; i < hits[c.NormalCounter]; i++ {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -96,5 +96,5 @@ func (c *char) Attack(p map[string]int) action.Info {
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackEarliestCancel[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

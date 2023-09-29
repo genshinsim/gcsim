@@ -38,10 +38,10 @@ const (
 	sanctumPickupExtension = 24 // On recast from Burst/Skill-2 the field duration is extended by 0.4s
 )
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	burstAction := c.UseBurstAction()
 	if burstAction != nil {
-		return *burstAction
+		return *burstAction, nil
 	}
 	if c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
 		c.hasSkillRecast = true
@@ -90,7 +90,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillHitmark,
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) skillHook() {
@@ -128,7 +128,7 @@ func (c *char) skillHook() {
 	}, "dehya-skill")
 }
 
-func (c *char) skillRecast() action.Info {
+func (c *char) skillRecast() (action.Info, error) {
 	dur := c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -178,7 +178,7 @@ func (c *char) skillRecast() action.Info {
 		AnimationLength: skillRecastFrames[action.InvalidAction],
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) addField(dur int) {

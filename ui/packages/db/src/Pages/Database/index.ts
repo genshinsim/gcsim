@@ -1,2 +1,2 @@
-export { DBView } from "./DBVIew"
-export { Database } from "./Database"
+export { Database } from "./Database";
+export { DBView } from "./DBVIew";

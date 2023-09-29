@@ -25,7 +25,7 @@ func init() {
 }
 
 // Burst attack damage queue generator
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Crimson Ooyoroi",
@@ -72,7 +72,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSkill],
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) summonFieryCollapse() {
