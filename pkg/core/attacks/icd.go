@@ -52,6 +52,7 @@ const (
 	ICDTagWandererA4
 	ICDTagLyneyEndBoom
 	ICDTagLyneyEndBoomEnhanced
+	ICDTagTravelerDewdrop
 	ICDTagLength
 )
 
@@ -88,6 +89,8 @@ const (
 	ICDGroupBaizhuC2
 	ICDGroupAyakaExtraAttack
 	ICDGroupLyneyExtra
+	ICDGroupTravelerDewdrop
+	ICDGroupTravelerBurst
 	ICDGroupLength
 )
 
@@ -126,6 +129,8 @@ func init() {
 	ICDGroupResetTimer[ICDGroupBaizhuC2] = 240
 	ICDGroupResetTimer[ICDGroupAyakaExtraAttack] = 30
 	ICDGroupResetTimer[ICDGroupLyneyExtra] = 60
+	ICDGroupResetTimer[ICDGroupTravelerDewdrop] = 90
+	ICDGroupResetTimer[ICDGroupTravelerBurst] = 480
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
 	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
@@ -157,6 +162,8 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupBaizhuC2] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupAyakaExtraAttack] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupLyneyExtra] = []float64{1, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupTravelerDewdrop] = []float64{1, 0, 0, 0, 0, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupTravelerBurst] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -190,4 +197,6 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupBaizhuC2] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupAyakaExtraAttack] = []float64{1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupLyneyExtra] = []float64{1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupTravelerDewdrop] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupTravelerBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 }
