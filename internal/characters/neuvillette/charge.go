@@ -16,6 +16,8 @@ import (
 
 // Hopefully chargeFrames of smol CA will end up equal to the endLag of the big CA?
 var chargeFrames []int
+
+// E can be used at any time
 var endLag []int
 
 const shortChargeHitmark = 55
@@ -111,8 +113,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	// TODO: Add param for fast CA startup cancel?
-
 	c.chargeAi = combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       chargeJudgementName,
@@ -132,7 +132,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		// the c6 droplet check has to happen immediately because otherwise we don't know how long this action will take
 		c.c6DropletCheck()
 	}
-
+	if p["ticks"] > 0 {
+		// calculate how long the judgement duration should be based on their tick count
+		// additionally modify the frames so that only D/J/Q/E can follow. Otherwise sim errors on action
+	}
 	// TODO: param for letting the user not do the full channel?
 	c.QueueCharTask(c.consumeHp, chargeJudgementStart+0)
 	c.QueueCharTask(c.judgementWave, chargeJudgementStart+0)

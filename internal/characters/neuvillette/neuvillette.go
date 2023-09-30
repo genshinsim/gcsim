@@ -19,8 +19,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	lastThorn int
-	lastc6    int
+	lastThorn         int
+	lastSkillParticle int
+	lastc6            int
 
 	a1Statuses         []NeuvA1Keys
 	a4Buff             []float64
@@ -40,6 +41,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	c.lastThorn = math.MinInt
 	c.lastc6 = math.MinInt
+	c.lastSkillParticle = math.MinInt
 
 	w.Character = &c
 
