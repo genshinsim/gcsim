@@ -11,6 +11,8 @@ import (
 )
 
 var burstFrames []int
+var dropletBurstSpawnCount = [3]int{3, 2, 1}
+var dropletBurstSpawnFrame = [3]int{100, 124, 148}
 
 func init() {
 	burstFrames = frames.InitAbilSlice(128)
@@ -49,18 +51,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(aiIninitialHit, apInitialHit, 100, 100)
 	c.Core.QueueAttack(aiWaterfall, apWaterfall, 124, 124)
 	c.Core.QueueAttack(aiWaterfall, apWaterfall, 148, 148)
-	// and will generate 6 Sourcewater Droplets within an area in front.
-	c.Core.Tasks.Add(
-		func() {
-			for i := 0; i < 6; i++ {
-				// TODO: find the actual sourcewater droplet spawn shape for Neuv Q
-				center := player.Pos().Add(player.Direction().Normalize().Mul(geometry.Point{X: 3.0, Y: 3.0}))
-				pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
-				common.NewSourcewaterDroplet(c.Core, pos)
-			}
-		},
-		100,
-	)
+
+	for i, f := range dropletBurstSpawnFrame {
+		c.Core.Tasks.Add(
+			func() {
+				for j := 0; i < dropletBurstSpawnCount[i]; j++ {
+					// TODO: find the actual sourcewater droplet spawn shape for Neuv Q
+					center := player.Pos().Add(player.Direction().Normalize().Mul(geometry.Point{X: 3.0, Y: 3.0}))
+					pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
+					common.NewSourcewaterDroplet(c.Core, pos)
+				}
+			},
+			f,
+		)
+	}
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(4)
