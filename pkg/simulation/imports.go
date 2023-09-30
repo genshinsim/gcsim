@@ -133,6 +133,8 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/electro/lumine"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/geo/aether"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/geo/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/hydro/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/hydro/lumine"
 
 	// weapons
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/alley"
