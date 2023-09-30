@@ -68,6 +68,23 @@
         "burst_energy_cost": 60
       }
     },
+    "aetherhydro": {
+      "id": 10000005,
+      "sub_id": 503,
+      "key": "aetherhydro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
+      "skill_details": {
+        "skill": 10087,
+        "burst": 10088,
+        "attack": 100542,
+        "burst_energy_cost": 80
+      }
+    },
     "albedo": {
       "id": 10000038,
       "key": "albedo",
@@ -756,6 +773,23 @@
         "burst": 10845,
         "attack": 10841,
         "burst_energy_cost": 60
+      }
+    },
+    "luminehydro": {
+      "id": 10000007,
+      "sub_id": 703,
+      "key": "luminehydro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10087,
+        "burst": 10088,
+        "attack": 100552,
+        "burst_energy_cost": 80
       }
     },
     "mika": {
