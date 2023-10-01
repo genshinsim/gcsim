@@ -25,12 +25,12 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-//When the wielder is healed or heals others, they will gain a Unity's Symbol that lasts 30s, up to a maximum of 3 Symbols.
-//When using their Elemental Skill or Burst, all Symbols will be consumed and the Roused effect will be granted for 10s.
-//For each Symbol consumed, gain 40/50/60/70/80 Elemental Mastery,
-//and 2s after the effect occurs, 2/2.5/3/3.5/4 Energy per Symbol consumed will be restored for said character.
-//The Roused effect can be triggered once every 15s,
-//and Symbols can be gained even when the character is not on the field.
+// When the wielder is healed or heals others, they will gain a Unity's Symbol that lasts 30s, up to a maximum of 3 Symbols.
+// When using their Elemental Skill or Burst, all Symbols will be consumed and the Roused effect will be granted for 10s.
+// For each Symbol consumed, gain 40/50/60/70/80 Elemental Mastery,
+// and 2s after the effect occurs, 2/2.5/3/3.5/4 Energy per Symbol consumed will be restored for said character.
+// The Roused effect can be triggered once every 15s,
+// and Symbols can be gained even when the character is not on the field.
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
@@ -48,14 +48,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		source := args[0].(*player.HealInfo)
 		index := args[1].(int)
 		amount := args[2].(float64)
-		if source.Caller != char.Index && index != char.Index { //heal others and get healed including wielder
+		if source.Caller != char.Index && index != char.Index { // heal others and get healed including wielder
 			return false
 		}
 		if amount <= 0 {
 			return false
 		}
 
-		//override oldest symbol
+		// override oldest symbol
 		idx := 0
 		for i, s := range symbol {
 			if char.StatusExpiry(s) < char.StatusExpiry(symbol[idx]) {
@@ -71,7 +71,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("dockhands-assistant-heal-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		//check for active before deleting symbol
+		// check for active before deleting symbol
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
@@ -91,7 +91,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, 15*60, true)
 		val[attributes.EM] = em * float64(count)
 
-		//add em buff
+		// add em buff
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em-boost", duration),
 			AffectedStat: attributes.EM,
@@ -100,7 +100,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		//regen energy after 2 secs
+		// regen energy after 2 secs
 		char.QueueCharTask(func() {
 			char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
 		}, 2*60)
@@ -109,7 +109,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		//check for active before deleting symbol
+		// check for active before deleting symbol
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
@@ -129,7 +129,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatus(icdKey, 15*60, true)
 		val[attributes.EM] = em * float64(count)
 
-		//add em buff
+		// add em buff
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em-boost", duration),
 			AffectedStat: attributes.EM,
@@ -138,7 +138,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		//regen energy after 2 secs
+		// regen energy after 2 secs
 		char.QueueCharTask(func() {
 			char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
 		}, 2*60)
