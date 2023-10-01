@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.TheDockhandsAssistance, NewWeapon)
+	core.RegisterWeaponFunc(keys.TheDockhandsAssistant, NewWeapon)
 }
 
 type Weapon struct {
