@@ -1,5 +1,5 @@
 ---
-title: "The Dockhand's Assistance"
+title: "The Dockhand's Assistant"
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
@@ -10,20 +10,20 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 
 ## AoE Data
 
-<AoETable item_key="thedockhandsassistance" data_src="weapon" />
+<AoETable item_key="thedockhandsassistant" data_src="weapon" />
 
 ## Known issues
 
-<IssuesTable item_key="thedockhandsassistance" data_src="weapon" />
+<IssuesTable item_key="thedockhandsassistant" data_src="weapon" />
 
 ## Names
 
-<NamesList item_key="thedockhandsassistance" data_src="weapon" />
+<NamesList item_key="thedockhandsassistant" data_src="weapon" />
 
 ## Params
 
-<ParamsTable item_key="thedockhandsassistance" data_src="weapon" />
+<ParamsTable item_key="thedockhandsassistant" data_src="weapon" />
 
 ## Fields
 
-<FieldsTable item_key="thedockhandsassistance" data_src="weapon" />
+<FieldsTable item_key="thedockhandsassistant" data_src="weapon" />
