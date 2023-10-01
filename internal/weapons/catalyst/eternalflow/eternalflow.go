@@ -133,7 +133,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatus(buffIcd, 0.3*60, true)
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(drainKey, 4*60),
+			Base: modifier.NewBaseWithHitlag(healKey, 4*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				buffCA[attributes.DmgP] = (0.105 + 0.035*float64(r)) * float64(stacks)
 				switch atk.Info.AttackTag {
