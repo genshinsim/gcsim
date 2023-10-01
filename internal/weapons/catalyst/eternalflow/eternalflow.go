@@ -83,7 +83,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(drainKey, 4*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				buffCA[attributes.DmgP] = (0.105 + 0.035*float64(r)) * float64(stacks)
+				buffCA[attributes.DmgP] = (0.10 + 0.04*float64(r)) * float64(stacks)
 				switch atk.Info.AttackTag {
 				case attacks.AttackTagExtra:
 					return buffCA, true
@@ -135,7 +135,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(healKey, 4*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				buffCA[attributes.DmgP] = (0.105 + 0.035*float64(r)) * float64(stacks)
+				buffCA[attributes.DmgP] = (0.10 + 0.04*float64(r)) * float64(stacks)
 				switch atk.Info.AttackTag {
 				case attacks.AttackTagExtra:
 					return buffCA, true
