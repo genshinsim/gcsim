@@ -26,11 +26,11 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 // When the wielder is healed or heals others, they will gain a Stoic's Symbol that lasts 30s, up to a maximum of 3 Symbols.
-//When using their Elemental Skill or Burst, all Symbols will be consumed and the Roused effect will be granted for 10s.
-//For each Symbol consumed, gain 40/50/60/70/80 Elemental Mastery,
-//and 2s after the effect occurs, 2/2.5/3/3.5/4 Energy per Symbol consumed will be restored for said character.
-//The Roused effect can be triggered once every 15s,
-//and Symbols can be gained even when the character is not on the field.
+// When using their Elemental Skill or Burst, all Symbols will be consumed and the Roused effect will be granted for 10s.
+// For each Symbol consumed, gain 40/50/60/70/80 Elemental Mastery,
+// and 2s after the effect occurs, 2/2.5/3/3.5/4 Energy per Symbol consumed will be restored for said character.
+// The Roused effect can be triggered once every 15s,
+// and Symbols can be gained even when the character is not on the field.
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
