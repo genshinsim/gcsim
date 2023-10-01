@@ -27,10 +27,10 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-// HP is increased by 16%.
-// When current HP increases or decreases, Charged Attack DMG will be increased by 14% for 4s.
+// HP is increased by 16/20/24/28/32%.
+// When current HP increases or decreases, Charged Attack DMG will be increased by 14/18/22/26/30% for 4s.
 // Max 3 stacks. This effect can be triggered once every 0.3s.
-// When the character has 3 stacks or a third stack's duration refreshes, 8 Energy will be restored.
+// When the character has 3 stacks or a third stack's duration refreshes, 8/9/10/11/12 Energy will be restored.
 // This Energy restoration effect can be triggered once every 12s.
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
