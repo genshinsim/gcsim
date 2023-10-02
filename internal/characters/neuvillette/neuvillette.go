@@ -23,11 +23,9 @@ type char struct {
 	lastSkillParticle int
 	lastc6            int
 
-	a1Statuses         []NeuvA1Keys
-	a4Buff             []float64
-	chargeJudgementDur int
-	chargeSrc          int
-	chargeAi           combat.AttackInfo
+	a1Statuses []NeuvA1Keys
+	a4Buff     []float64
+	chargeAi   combat.AttackInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -42,7 +40,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.lastThorn = math.MinInt
 	c.lastc6 = math.MinInt
 	c.lastSkillParticle = math.MinInt
-
 	w.Character = &c
 
 	return nil

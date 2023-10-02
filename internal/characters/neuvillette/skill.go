@@ -11,9 +11,18 @@ import (
 )
 
 var skillFrames []int
+var skillHitmarks = [2]int{23, 54}
+var skillHitbox = [2]float64{6.0, 4.5}
 
 func init() {
-	skillFrames = frames.InitAbilSlice(46)
+	skillFrames = frames.InitAbilSlice(42)
+	skillFrames[action.ActionCharge] = 21
+	skillFrames[action.ActionBurst] = 30
+	skillFrames[action.ActionDash] = 29
+	skillFrames[action.ActionJump] = 32
+	skillFrames[action.ActionWalk] = 41
+	skillFrames[action.ActionSwap] = 29
+	// skill -> skill is unknown
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -30,9 +39,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 6),
-		35, //TODO: snapshot delay?
-		35,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, skillHitbox[0]),
+		skillHitmarks[0], //TODO: snapshot delay?
+		skillHitmarks[0],
 		c.skillcb,
 	)
 	// 10s Spiritbreath Thorn Interval
@@ -52,9 +61,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 		c.Core.QueueAttack(
 			aiThorn,
-			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 4.5),
-			50, //TODO: snapshot delay?
-			50,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, skillHitbox[1]),
+			skillHitmarks[1], //TODO: snapshot delay?
+			skillHitmarks[1],
 		)
 	}
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 10)

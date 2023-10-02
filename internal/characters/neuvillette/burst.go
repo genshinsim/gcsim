@@ -11,11 +11,18 @@ import (
 )
 
 var burstFrames []int
+var burstHitmarks = [3]int{95, 95 + 40, 95 + 40 + 19}
 var dropletBurstSpawnCount = [3]int{3, 2, 1}
-var dropletBurstSpawnFrame = [3]int{100, 124, 148}
+var dropletBurstSpawnFrame = [3]int{93, 135, 152}
 
 func init() {
-	burstFrames = frames.InitAbilSlice(128)
+	burstFrames = frames.InitAbilSlice(135)
+	burstFrames[action.ActionCharge] = 133
+	burstFrames[action.ActionSkill] = 127
+	burstFrames[action.ActionDash] = 127
+	burstFrames[action.ActionJump] = 128
+	burstFrames[action.ActionWalk] = 134
+	burstFrames[action.ActionSwap] = 120
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -48,9 +55,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	apInitialHit := combat.NewCircleHitOnTarget(player, geometry.Point{}, 8)
 	apWaterfall := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 5)
 
-	c.Core.QueueAttack(aiIninitialHit, apInitialHit, 100, 100)
-	c.Core.QueueAttack(aiWaterfall, apWaterfall, 124, 124)
-	c.Core.QueueAttack(aiWaterfall, apWaterfall, 148, 148)
+	c.Core.QueueAttack(aiIninitialHit, apInitialHit, burstHitmarks[0], burstHitmarks[0])
+	c.Core.QueueAttack(aiWaterfall, apWaterfall, burstHitmarks[1], burstHitmarks[1])
+	c.Core.QueueAttack(aiWaterfall, apWaterfall, burstHitmarks[2], burstHitmarks[2])
 
 	for i, f := range dropletBurstSpawnFrame {
 		c.Core.Tasks.Add(

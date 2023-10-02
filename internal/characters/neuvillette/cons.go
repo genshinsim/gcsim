@@ -60,14 +60,11 @@ func (c *char) c4() {
 	}, "neuvillette-c4")
 }
 
-func (c *char) c6DropletCheck() {
+func (c *char) c6DropletCheck() int {
 	// I think the c6 droplet check should happen continuously,
 	// but currently we cannot modify the duration of an action while it is happening.
 	// so right now the c6 check only happens once at the start
 
-	// if c.Core.F-c.chargeSrc >= c.chargeJudgementDur {
-	// 	return
-	// }
 	droplets := make([]*common.SourcewaterDroplet, 0)
 	for _, g := range c.Core.Combat.Gadgets() {
 		droplet, ok := g.(*common.SourcewaterDroplet)
@@ -78,13 +75,13 @@ func (c *char) c6DropletCheck() {
 			droplets = append(droplets, droplet)
 		}
 	}
-
+	extraDur := 0
 	for _, g := range droplets {
 		g.Kill()
 		c.healWithDroplets()
-		c.chargeJudgementDur += 60
+		extraDur += 60
 	}
-	// c.QueueCharTask(c.c6DropletCheck, 30)
+	return extraDur
 }
 
 func (c *char) c6cb(atk combat.AttackCB) {
