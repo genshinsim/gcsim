@@ -37,9 +37,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalCon = 3
 	c.BurstCon = 5
 
-	c.lastThorn = math.MinInt
-	c.lastc6 = math.MinInt
-	c.lastSkillParticle = math.MinInt
+	c.lastThorn = math.MinInt / 2
+	c.lastc6 = math.MinInt / 2
+	c.lastSkillParticle = math.MinInt / 2
 	w.Character = &c
 
 	return nil

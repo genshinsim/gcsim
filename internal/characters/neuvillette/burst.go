@@ -1,6 +1,8 @@
 package neuvillette
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -8,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var burstFrames []int
@@ -60,14 +63,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(aiWaterfall, apWaterfall, burstHitmarks[2], burstHitmarks[2])
 
 	for i, f := range dropletBurstSpawnFrame {
+		i := i // need to make a copy or else the task func will use the actual i variable
 		c.Core.Tasks.Add(
 			func() {
-				for j := 0; i < dropletBurstSpawnCount[i]; j++ {
+				for j := 0; j < dropletBurstSpawnCount[i]; j++ {
 					// TODO: find the actual sourcewater droplet spawn shape for Neuv Q
 					center := player.Pos().Add(player.Direction().Normalize().Mul(geometry.Point{X: 3.0, Y: 3.0}))
 					pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
 					common.NewSourcewaterDroplet(c.Core, pos)
 				}
+				c.Core.Combat.Log.NewEvent(fmt.Sprint("Spawned ", dropletBurstSpawnCount[i], " droplets"), glog.LogCharacterEvent, c.Index)
 			},
 			f,
 		)
