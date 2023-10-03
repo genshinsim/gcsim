@@ -18,10 +18,11 @@ import (
 // Hopefully chargeFrames of smol CA will end up equal to the endLag of the big CA?
 var chargeFrames []int
 var endLag []int
+var earlyCancelEndLag []int
 
 const initialLegalEvalDur = 212
 
-var dropletLegalEvalReduction = []int{0, 58, 58 + 58, 58 + 58 + 93}
+var dropletLegalEvalReduction = []int{0, 57, 57 + 54, 57 + 54 + 98}
 
 const shortChargeHitmark = 55
 
@@ -35,6 +36,7 @@ func init() {
 	chargeFrames[action.ActionDash] = 25
 	chargeFrames[action.ActionJump] = 26
 	chargeFrames[action.ActionWalk] = 61
+	chargeFrames[action.ActionSwap] = 58
 
 	endLag = frames.InitAbilSlice(51)
 	endLag[action.ActionWalk] = 36
@@ -44,6 +46,12 @@ func init() {
 	endLag[action.ActionSkill] = 0
 	endLag[action.ActionDash] = 0
 	endLag[action.ActionJump] = 0
+
+	earlyCancelEndLag = frames.InitAbilSlice(5000)
+	earlyCancelEndLag[action.ActionBurst] = 0
+	earlyCancelEndLag[action.ActionSkill] = 0
+	earlyCancelEndLag[action.ActionDash] = 0
+	earlyCancelEndLag[action.ActionJump] = 0
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -83,7 +91,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	orbs := 0
 	for _, g := range droplets {
 		g.Kill()
-		c.healWithDroplets()
+		// the healing seems to be slightly delayed by 10f
+		c.QueueCharTask(c.healWithDroplets, 7)
 		orbs += 1
 		if orbs >= 3 {
 			break
@@ -146,32 +155,31 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	chargeJudgementStart := windup + chargeLegalEvalLeft
-	chargeJudgementDur := 175 // see
+	chargeJudgementDur := 173
 
 	if c.Base.Cons >= 6 {
 		// the c6 droplet check has to happen immediately because otherwise we don't know how long this action will take
 		chargeJudgementDur += c.c6DropletCheck()
 	}
 	if p["ticks"] > 0 {
-		// TODO: param for letting the user not do the full channel
+		// param for letting the user not do the full channel
 		// calculate how long the judgement duration should be based on their tick count
-		// also need to calculate it for c6
 		// additionally modify the frames so that only D/J/Q/E can follow. Otherwise sim errors on action
+		// also need to verify it for c6
 		maxTicks := p["ticks"]
 		ticksDone := 0
 		delay := getChargeJudgementHitmarkDelay(ticksDone)
 		for delay < chargeJudgementDur && ticksDone < maxTicks {
 			if ticksDone == maxTicks {
-				for d := 0; d < delay; d += 30 {
+				for d := 40; d < delay; d += 30 {
 					c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
 				}
-
 				return action.Info{
 					Frames: func(next action.Action) int {
-						return chargeJudgementStart + delay + endLag[next]
+						return chargeJudgementStart + delay + earlyCancelEndLag[next]
 					},
-					AnimationLength: chargeJudgementStart + delay + endLag[action.InvalidAction],
-					CanQueueAfter:   chargeJudgementStart + delay + endLag[action.ActionDash],
+					AnimationLength: chargeJudgementStart + delay + earlyCancelEndLag[action.InvalidAction],
+					CanQueueAfter:   chargeJudgementStart + delay + earlyCancelEndLag[action.ActionDash],
 					State:           action.ChargeAttackState,
 				}, nil
 			}
@@ -182,7 +190,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		}
 		if maxTicks == ticksDone+1 {
 			c.QueueCharTask(c.judgementWave, chargeJudgementStart+chargeJudgementDur)
-			for d := 0; d < chargeJudgementDur; d += 30 {
+			// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
+			for d := 40; d < chargeJudgementDur; d += 30 {
 				c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
 			}
 			return action.Info{
@@ -203,7 +212,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	c.QueueCharTask(c.judgementWave, chargeJudgementStart+chargeJudgementDur)
 
-	for d := 0; d < chargeJudgementDur; d += 30 {
+	// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
+	for d := 40; d < chargeJudgementDur; d += 30 {
 		c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
 	}
 
@@ -239,8 +249,6 @@ func getChargeJudgementHitmarkDelay(tick int) int {
 }
 
 func (c *char) consumeHp() {
-	// He only drains 5 times in 3s, on frame 0, 30, 60, 90, 120, 150?
-
 	if c.CurrentHPRatio() <= 0.5 {
 		return
 	}
