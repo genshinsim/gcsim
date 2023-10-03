@@ -4422,6 +4422,83 @@
       }
     ]
   },
+  "neuvillette": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.0
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 1.0
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 1.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "Equitable-Judgement",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 3,
+        "boxY": 8
+      },
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 3.5,
+        "boxY": 15
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Initial",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "E-Spiritbreath-Thorn",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 8
+      },
+      {
+        "ability": "Q-Waterfall",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ],
+    "cons": [
+      {
+        "ability": "C6 - Charged Attack: Equitable Judgement",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 3.5,
+        "boxY": 15
+      }
+    ]
+  },
   "nilou": {
     "normal": [
       {

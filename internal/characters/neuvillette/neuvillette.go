@@ -87,7 +87,7 @@ func (c *char) Condition(fields []string) (any, error) {
 			if !ok {
 				continue
 			}
-			if droplet.Pos().Distance(playerPos) <= 8 {
+			if droplet.Pos().Distance(playerPos) <= 15 {
 				total += 1
 			}
 		}

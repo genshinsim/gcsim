@@ -86,7 +86,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		if !ok {
 			continue
 		}
-		if droplet.Pos().Distance(playerPos) <= 8 {
+		if droplet.Pos().Distance(playerPos) <= 15 {
 			droplets = append(droplets, droplet)
 		}
 	}
