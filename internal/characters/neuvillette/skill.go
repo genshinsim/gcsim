@@ -89,7 +89,7 @@ func (c *char) skillcb(ac combat.AttackCB) {
 		for i := 0; i < 3; i++ {
 			// TODO: find the actual sourcewater droplet spawn radius for Neuv E
 			pos := geometry.CalcRandomPointFromCenter(ac.Target.Pos(), circ.Radius()+1.0, circ.Radius()+4.0, c.Core.Rand)
-			common.NewSourcewaterDroplet(c.Core, pos)
+			common.NewSourcewaterDropletNeuv(c.Core, pos)
 		}
 		c.Core.Combat.Log.NewEvent("Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
 	}

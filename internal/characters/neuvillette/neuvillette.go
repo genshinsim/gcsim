@@ -77,21 +77,25 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
+func (c *char) getSourcewaterDroplets() []combat.Gadget {
+	playerPos := c.Core.Combat.Player().Pos()
+	droplets := make([]combat.Gadget, 0)
+	for _, g := range c.Core.Combat.Gadgets() {
+		droplet, ok := g.(*common.SourcewaterDroplet)
+		if !ok {
+			continue
+		}
+		if droplet.Pos().Distance(playerPos) <= 15 {
+			droplets = append(droplets, g)
+		}
+	}
+	return droplets
+}
+
 func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "droplets":
-		playerPos := c.Core.Combat.Player().Pos()
-		total := 0
-		for _, g := range c.Core.Combat.Gadgets() {
-			droplet, ok := g.(*common.SourcewaterDroplet)
-			if !ok {
-				continue
-			}
-			if droplet.Pos().Distance(playerPos) <= 15 {
-				total += 1
-			}
-		}
-		return total, nil
+		return len(c.getSourcewaterDroplets()), nil
 	default:
 		return c.Character.Condition(fields)
 	}

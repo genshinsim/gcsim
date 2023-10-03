@@ -4,7 +4,6 @@ import (
 	"cmp"
 	"fmt"
 
-	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -76,20 +75,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		windup = 14
 	}
 
-	playerPos := c.Core.Combat.Player().Pos()
-
 	chargeLegalEvalLeft := initialLegalEvalDur
 
-	droplets := make([]*common.SourcewaterDroplet, 0)
-	for _, g := range c.Core.Combat.Gadgets() {
-		droplet, ok := g.(*common.SourcewaterDroplet)
-		if !ok {
-			continue
-		}
-		if droplet.Pos().Distance(playerPos) <= 15 {
-			droplets = append(droplets, droplet)
-		}
-	}
+	droplets := c.getSourcewaterDroplets()
 
 	// TODO: If droplets time out before the "droplet check" it doesn't count.
 	// However, this check needs to happen before c6 check, which needs to happen when this function is called.

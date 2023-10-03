@@ -31,9 +31,8 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 		}
 
 		count++
-		droplet := c.newDropblet()
+		droplet := c.newDroplet()
 		c.Core.Combat.AddGadget(droplet)
-		c.droplets = append(c.droplets, droplet)
 		c.AddStatus(a1ICDKey, 60, true)
 	}
 }
@@ -71,7 +70,7 @@ func (c *char) a1PickUp(count int) {
 	}
 }
 
-func (c *char) newDropblet() *common.SourcewaterDroplet {
+func (c *char) newDroplet() *common.SourcewaterDroplet {
 	player := c.Core.Combat.Player()
 	pos := geometry.CalcRandomPointFromCenter(
 		geometry.CalcOffsetPoint(
@@ -83,17 +82,6 @@ func (c *char) newDropblet() *common.SourcewaterDroplet {
 		3,
 		c.Core.Rand,
 	)
-
-	droplet := common.NewSourcewaterDroplet(c.Core, pos)
-	remove := func() {
-		for i, g := range c.droplets {
-			if g.Key() == droplet.Key() {
-				c.droplets = append(c.droplets[:i], c.droplets[i+1:]...) // delete from the array
-				break
-			}
-		}
-	}
-	droplet.OnExpiry = remove
-	droplet.OnKill = remove
+	droplet := common.NewSourcewaterDropletHydroTrav(c.Core, pos)
 	return droplet
 }

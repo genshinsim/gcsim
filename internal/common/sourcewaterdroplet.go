@@ -13,19 +13,28 @@ type SourcewaterDroplet struct {
 	*gadget.Gadget
 }
 
-func NewSourcewaterDroplet(core *core.Core, pos geometry.Point) *SourcewaterDroplet {
+func NewSourcewaterDropletHydroTrav(core *core.Core, pos geometry.Point) *SourcewaterDroplet {
 	p := &SourcewaterDroplet{}
-	p.Gadget = gadget.New(core, pos, 0.3, combat.GadgetTypSourcewaterDroplet)
-	p.Gadget.Duration = 914
+	p.Gadget = gadget.New(core, pos, 0.3, combat.GadgetTypSourcewaterDropletHydroTrav)
+	p.Gadget.Duration = 878
 	core.Combat.AddGadget(p)
 	return p
 }
 
-func (s *SourcewaterDroplet) Tick() {
-	// this is needed since gadget tick
-	s.Gadget.Tick()
+func NewSourcewaterDropletNeuv(core *core.Core, pos geometry.Point) *SourcewaterDroplet {
+	p := &SourcewaterDroplet{}
+	p.Gadget = gadget.New(core, pos, 0.3, combat.GadgetTypSourcewaterDropletNeuv)
+	p.Gadget.Duration = 878
+	core.Combat.AddGadget(p)
+	return p
+}
+
+func (s *SourcewaterDroplet) HandleAttack(*combat.AttackEvent) float64 { return 0 }
+func (s *SourcewaterDroplet) SetDirection(trg geometry.Point)          {}
+func (s *SourcewaterDroplet) SetDirectionToClosestEnemy()              {}
+func (s *SourcewaterDroplet) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
 }
 
 func (s *SourcewaterDroplet) Type() targets.TargettableType                          { return targets.TargettableGadget }
-func (s *SourcewaterDroplet) HandleAttack(*combat.AttackEvent) float64               { return 0 }
 func (s *SourcewaterDroplet) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }

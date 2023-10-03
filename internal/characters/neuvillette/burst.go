@@ -71,7 +71,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					// TODO: find the actual sourcewater droplet spawn shape for Neuv Q
 					center := player.Pos().Add(player.Direction().Normalize().Mul(geometry.Point{X: 3.0, Y: 3.0}))
 					pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
-					common.NewSourcewaterDroplet(c.Core, pos)
+					common.NewSourcewaterDropletNeuv(c.Core, pos)
 				}
 				c.Core.Combat.Log.NewEvent(fmt.Sprint("Spawned ", dropletBurstSpawnCount[i], " droplets"), glog.LogCharacterEvent, c.Index)
 			},
