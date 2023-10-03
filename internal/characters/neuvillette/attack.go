@@ -36,6 +36,10 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	if c.chargeEarlyCancelled {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack: Equitable Judgement with Normal Attack", c.CharWrapper.Base.Key)
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),

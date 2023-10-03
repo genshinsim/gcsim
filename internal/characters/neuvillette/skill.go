@@ -1,8 +1,6 @@
 package neuvillette
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -29,6 +27,7 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	c.chargeEarlyCancelled = false
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "O Tears, I Shall Repay",
@@ -92,7 +91,7 @@ func (c *char) skillcb(ac combat.AttackCB) {
 			pos := geometry.CalcRandomPointFromCenter(ac.Target.Pos(), circ.Radius()+1.0, circ.Radius()+4.0, c.Core.Rand)
 			common.NewSourcewaterDroplet(c.Core, pos)
 		}
-		c.Core.Combat.Log.NewEvent(fmt.Sprint("Spawned 3 droplets"), glog.LogCharacterEvent, c.Index)
+		c.Core.Combat.Log.NewEvent("Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
 	}
 
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Hydro, c.ParticleDelay)

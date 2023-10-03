@@ -120,7 +120,7 @@
       ],
       "desc": "Number of Prop Surplus stacks."
     }
-  ], 
+  ],
   "ningguang": [
     {
       "fields": [
@@ -173,6 +173,14 @@
         ".travelerhydro.droplets"
       ],
       "desc": "Number of Sourcewater droplets created by Traveler."
+    }
+  ],
+  "neuvillette": [
+    {
+      "fields": [
+        ".neuvillette.droplets"
+      ],
+      "desc": "Number of Sourcewater droplets in range."
     }
   ]
 }

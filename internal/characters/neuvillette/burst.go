@@ -29,6 +29,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
+	c.chargeEarlyCancelled = false
 	player := c.Core.Combat.Player()
 
 	aiIninitialHit := combat.AttackInfo{

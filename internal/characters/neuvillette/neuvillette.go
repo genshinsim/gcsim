@@ -3,6 +3,7 @@ package neuvillette
 import (
 	"math"
 
+	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -23,9 +24,10 @@ type char struct {
 	lastSkillParticle int
 	lastc6            int
 
-	a1Statuses []NeuvA1Keys
-	a4Buff     []float64
-	chargeAi   combat.AttackInfo
+	chargeEarlyCancelled bool
+	a1Statuses           []NeuvA1Keys
+	a4Buff               []float64
+	chargeAi             combat.AttackInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -40,6 +42,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.lastThorn = math.MinInt / 2
 	c.lastc6 = math.MinInt / 2
 	c.lastSkillParticle = math.MinInt / 2
+
+	c.chargeEarlyCancelled = false
 	w.Character = &c
 
 	return nil
@@ -71,4 +75,24 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "droplets":
+		playerPos := c.Core.Combat.Player().Pos()
+		total := 0
+		for _, g := range c.Core.Combat.Gadgets() {
+			droplet, ok := g.(*common.SourcewaterDroplet)
+			if !ok {
+				continue
+			}
+			if droplet.Pos().Distance(playerPos) <= 8 {
+				total += 1
+			}
+		}
+		return total, nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }

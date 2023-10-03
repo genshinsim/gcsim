@@ -1,8 +1,8 @@
 package neuvillette
 
 import (
+	"cmp"
 	"fmt"
-	"sort"
 
 	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -55,7 +55,20 @@ func init() {
 	earlyCancelEndLag[action.ActionJump] = 0
 }
 
+func max[T cmp.Ordered](x T, y ...T) T {
+	m := x
+	for _, val := range y {
+		if m < val {
+			m = val
+		}
+	}
+	return m
+}
+
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	if c.chargeEarlyCancelled {
+		return action.Info{}, fmt.Errorf("%v: Cannot early cancel Charged Attack: Equitable Judgement with Charged Attack", c.CharWrapper.Base.Key)
+	}
 	// there is a windup out of dash/jump/walk/swap. Otherwise it is rolled into the Q/E/CA/NA -> CA frames
 	windup := 0
 	switch c.Core.Player.CurrentState() {
@@ -82,18 +95,20 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// However, this check needs to happen before c6 check, which needs to happen when this function is called.
 
 	// TODO: Apparently it's semi random? I don't know how Neuv prioritizes his droplets
-	sort.Slice(droplets, func(i, j int) bool {
-		// return droplets[i].Pos().Distance(playerPos) < droplets[j].Pos().Distance(playerPos)
-		return droplets[i].Duration < droplets[j].Duration
-	})
+	// sort.Slice(droplets, func(i, j int) bool {
+	// 	// return droplets[i].Pos().Distance(playerPos) < droplets[j].Pos().Distance(playerPos)
+	// 	return droplets[i].Duration < droplets[j].Duration
+	// })
+	indices := c.Core.Combat.Rand.Perm(max(3, len(droplets)))
 
 	// TODO this should happen 3 frames into his CA but modifying action length
 	// during the action is unsupported in the current framework
 	orbs := 0
-	for _, g := range droplets {
+	for _, ind := range indices {
+		g := droplets[ind]
 		g.Kill()
 		// the healing seems to be slightly delayed by 10f
-		c.QueueCharTask(c.healWithDroplets, 7)
+		c.QueueCharTask(c.healWithDroplets, 10)
 		orbs += 1
 		if orbs >= 3 {
 			break
@@ -161,6 +176,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 {
 		// the c6 droplet check has to happen immediately because otherwise we don't know how long this action will take
+		// this is problematic with Q because the 3 of the 6 Q orbs spawn after CA starts.
 		chargeJudgementDur += c.c6DropletCheck()
 	}
 	if p["ticks"] > 0 {
@@ -178,6 +194,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 				}
 				return action.Info{
 					Frames: func(next action.Action) int {
+						if next == action.ActionSwap {
+							c.Core.Combat.Log.NewEvent(fmt.Sprint(c.Base.Key.String(), ": Cannot early cancel Charged Attack: Equitable Judgement with Swap"), glog.LogWarnings, c.Index)
+						}
 						return chargeJudgementStart + delay + earlyCancelEndLag[next]
 					},
 					AnimationLength: chargeJudgementStart + delay + earlyCancelEndLag[action.InvalidAction],

@@ -840,6 +840,21 @@
         "burst_energy_cost": 50
       }
     },
+    "neuvillette": {
+      "id": 10000087,
+      "key": "neuvillette",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "element": "Water",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Neuvillette",
+      "skill_details": {
+        "skill": 10872,
+        "burst": 10875,
+        "attack": 10871,
+        "burst_energy_cost": 70
+      }
+    },
     "nilou": {
       "id": 10000070,
       "key": "nilou",
