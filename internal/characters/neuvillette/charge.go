@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -98,6 +99,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			break
 		}
 	}
+	c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", orbs, " droplets"), glog.LogCharacterEvent, c.Index)
 	chargeLegalEvalLeft -= dropletLegalEvalReduction[orbs]
 
 	if p["short"] != 0 {
@@ -234,7 +236,11 @@ func (c *char) judgementWave() {
 	if c.Base.Ascension >= 1 {
 		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * a1Multipliers[c.countA1()]
 	}
-	c.Core.QueueAttack(c.chargeAi, ap, 0, 0, c.c6cb)
+	if c.Base.Cons >= 6 {
+		c.Core.QueueAttack(c.chargeAi, ap, 0, 0, c.c6cb)
+		return
+	}
+	c.Core.QueueAttack(c.chargeAi, ap, 0, 0)
 }
 
 func getChargeJudgementHitmarkDelay(tick int) int {
