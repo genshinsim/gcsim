@@ -2,7 +2,6 @@ package neuvillette
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -65,9 +64,11 @@ func (c *char) a4() {
 		return
 	}
 
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("neuvillette-a4", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+	c.AddStatMod(character.StatMod{
+		AffectedStat: attributes.HydroP,
+		Extra:        true,
+		Base:         modifier.NewBase("neuvillette-a4", -1),
+		Amount: func() ([]float64, bool) {
 			return c.a4Buff, true
 		},
 	})
@@ -87,5 +88,6 @@ func (c *char) a4Tick() {
 
 	c.a4Buff[attributes.HydroP] = hydroDmgBuff
 
+	// TODO: Is this on HP change or just on tick?
 	c.Core.Tasks.Add(c.a4Tick, 30)
 }
