@@ -175,16 +175,18 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		maxTicks := p["ticks"]
 		ticksDone := 0
 		delay := getChargeJudgementHitmarkDelay(ticksDone)
-		for delay < chargeJudgementDur && ticksDone < maxTicks {
+		for delay < chargeJudgementDur {
 			if ticksDone == maxTicks {
 				for d := 40; d < delay; d += 30 {
 					c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
 				}
 				return action.Info{
 					Frames: func(next action.Action) int {
-						if next == action.ActionSwap {
-							c.Core.Combat.Log.NewEvent(fmt.Sprint(c.Base.Key.String(), ": Cannot early cancel Charged Attack: Equitable Judgement with Swap"), glog.LogWarnings, c.Index)
-						}
+						// This is early eval'd instead of being evaluated after CanQueueAfter.
+						// Also it evals this for all actions instead of just the next action, so it will always show up, even if the config properly cancels with one of QEJD.
+						// if next == action.ActionSwap {
+						// 	c.Core.Combat.Log.NewEvent(fmt.Sprint(c.Base.Key.String(), ": Cannot early cancel Charged Attack: Equitable Judgement with Swap"), glog.LogWarnings, c.Index)
+						// }
 						return chargeJudgementStart + delay + earlyCancelEndLag[next]
 					},
 					AnimationLength: chargeJudgementStart + delay + earlyCancelEndLag[action.InvalidAction],
