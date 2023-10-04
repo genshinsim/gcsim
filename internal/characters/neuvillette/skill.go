@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 0,
-			FlatDmg:    thorn[c.TalentLvlSkill()] * c.MaxHP(),
+			Mult:       thorn[c.TalentLvlSkill()],
 		}
 		c.Core.QueueAttack(
 			aiThorn,

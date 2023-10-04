@@ -36,10 +36,12 @@ func (c *char) a1() {
 	)
 
 	for _, val := range a1 {
+		// need to make a copy of key for the status key
+		key := val.Key
 		c.Core.Events.Subscribe(val.Evt, func(args ...interface{}) bool {
-			c.AddStatus(val.Key, 30*60, false)
+			c.AddStatus(key, 30*60, false)
 			return false
-		}, val.Key)
+		}, key)
 	}
 }
 
