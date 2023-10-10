@@ -87,7 +87,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// 	// return droplets[i].Pos().Distance(playerPos) < droplets[j].Pos().Distance(playerPos)
 	// 	return droplets[i].Duration < droplets[j].Duration
 	// })
-	indices := c.Core.Combat.Rand.Perm(min(3, len(droplets)))
+	indices := c.Core.Combat.Rand.Perm(len(droplets))
 
 	// TODO this should happen 3 frames into his CA but modifying action length
 	// during the action is unsupported in the current framework
