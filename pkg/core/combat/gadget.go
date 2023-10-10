@@ -20,6 +20,7 @@ const (
 	GadgetTypYueguiJumping
 	GadgetTypBaronBunny
 	GadgetTypGrinMalkinHat
+	GadgetTypSourcewaterDroplet
 	GadgetTypTest
 	EndGadgetTyp
 )
@@ -33,6 +34,7 @@ func init() {
 	gadgetLimits[GadgetTypLeaLotus] = 1
 	gadgetLimits[GadgetTypYueguiThrowing] = 2
 	gadgetLimits[GadgetTypYueguiJumping] = 3
+	gadgetLimits[GadgetTypSourcewaterDroplet] = 12
 }
 
 type Gadget interface {
