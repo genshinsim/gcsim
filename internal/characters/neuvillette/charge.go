@@ -1,7 +1,6 @@
 package neuvillette
 
 import (
-	"cmp"
 	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -52,16 +51,6 @@ func init() {
 	earlyCancelEndLag[action.ActionSkill] = 0
 	earlyCancelEndLag[action.ActionDash] = 0
 	earlyCancelEndLag[action.ActionJump] = 0
-}
-
-func min[T cmp.Ordered](x T, y ...T) T {
-	m := x
-	for _, val := range y {
-		if m > val {
-			m = val
-		}
-	}
-	return m
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
