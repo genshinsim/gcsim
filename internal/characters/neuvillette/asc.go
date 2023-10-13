@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -39,6 +40,9 @@ func (c *char) a1() {
 		// need to make a copy of key for the status key
 		key := val.Key
 		c.Core.Events.Subscribe(val.Evt, func(args ...interface{}) bool {
+			if _, ok := args[0].(*gadget.Gadget); ok {
+				return false
+			}
 			c.AddStatus(key, 30*60, false)
 			return false
 		}, key)
