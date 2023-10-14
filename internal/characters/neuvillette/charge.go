@@ -235,10 +235,10 @@ func (c *char) judgementWave() {
 	if c.Base.Ascension >= 1 {
 		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * a1Multipliers[c.countA1()]
 	}
-	if c.Base.Cons >= 6 {
-		c.Core.QueueAttack(c.chargeAi, ap, 0, 0, c.c6cb)
-		return
-	}
+	// if c.Base.Cons >= 6 {
+	// c.Core.QueueAttack(c.chargeAi, ap, 0, 0, c.c6cb)
+	// return
+	// }
 	c.Core.QueueAttack(c.chargeAi, ap, 0, 0)
 }
 
