@@ -38,7 +38,7 @@ func (c *char) c2() {
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			if strings.Contains(atk.Info.Abil, chargeJudgementName) {
 				c2Buff := make([]float64, attributes.EndStatType)
-				c2Buff[attributes.DmgP] = 0.14 * float64(c.countA1())
+				c2Buff[attributes.CD] = 0.14 * float64(c.countA1())
 				return c2Buff, true
 			}
 			return nil, false
