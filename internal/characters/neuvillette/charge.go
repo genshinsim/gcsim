@@ -154,7 +154,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 6 {
 		// the c6 droplet check has to happen immediately because otherwise we don't know how long this action will take
 		// this is problematic with Q because the 3 of the 6 Q orbs spawn after CA starts.
-		chargeJudgementDur += c.c6DropletCheck()
+		// chargeJudgementDur += c.c6DropletCheck()
+		return action.Info{}, fmt.Errorf("%v: C6 Charge Attack Equitable Judgement is not supported", c.CharWrapper.Base.Key)
 	}
 	if p["ticks"] > 0 {
 		// param for letting the user not do the full channel
