@@ -151,12 +151,11 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	chargeJudgementStart := windup + chargeLegalEvalLeft
 	chargeJudgementDur := 173
 
-	if c.Base.Cons >= 6 {
-		// the c6 droplet check has to happen immediately because otherwise we don't know how long this action will take
-		// this is problematic with Q because the 3 of the 6 Q orbs spawn after CA starts.
-		// chargeJudgementDur += c.c6DropletCheck()
-		return action.Info{}, fmt.Errorf("%v: C6 Charge Attack Equitable Judgement is not supported", c.CharWrapper.Base.Key)
-	}
+	// if c.Base.Cons >= 6 {
+	// the c6 droplet check has to happen immediately because otherwise we don't know how long this action will take
+	// this is problematic with Q because the 3 of the 6 Q orbs spawn after CA starts.
+	// chargeJudgementDur += c.c6DropletCheck()
+	// }
 	if p["ticks"] > 0 {
 		// param for letting the user not do the full channel
 		// calculate how long the judgement duration should be based on their tick count
@@ -170,13 +169,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 				for d := 40; d < delay; d += 30 {
 					c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
 				}
+				c.chargeEarlyCancelled = true
 				return action.Info{
 					Frames: func(next action.Action) int {
-						// This is early eval'd instead of being evaluated after CanQueueAfter.
-						// Also it evals this for all actions instead of just the next action, so it will always show up, even if the config properly cancels with one of QEJD.
-						// if next == action.ActionSwap {
-						// 	c.Core.Combat.Log.NewEvent(fmt.Sprint(c.Base.Key.String(), ": Cannot early cancel Charged Attack: Equitable Judgement with Swap"), glog.LogWarnings, c.Index)
-						// }
 						return chargeJudgementStart + delay + earlyCancelEndLag[next]
 					},
 					AnimationLength: chargeJudgementStart + delay + earlyCancelEndLag[action.InvalidAction],

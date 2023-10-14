@@ -1,6 +1,7 @@
 package neuvillette
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/genshinsim/gcsim/internal/common"
@@ -65,6 +66,10 @@ func (c *char) Init() error {
 
 	if c.Base.Cons >= 4 {
 		c.c4()
+	}
+
+	if c.Base.Cons >= 6 {
+		return fmt.Errorf("%v: C6 is not supported", c.CharWrapper.Base.Key)
 	}
 
 	return nil
