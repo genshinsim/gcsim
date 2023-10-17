@@ -839,7 +839,7 @@
       "desc": "0 for Charged Attack: Equitable Judgment (default), 1 for Charged Attack. Will still absorb droplets if possible. This mirrors in game behaviour."
     },
     {
-      "ability": "skill",
+      "ability": "charge",
       "param": "ticks",
       "desc": "Number of ticks for Charged Attack: Equitable Judgment. Default is maximum number of ticks (8 at c0), minimum 1. Only works if short = 0. If the number of ticks is not the maximum, the next action must be Burst, Skill, Dash, or Jump."
     }

@@ -14,7 +14,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-// Hopefully chargeFrames of smol CA will end up equal to the endLag of the big CA?
 var chargeFrames []int
 var endLag []int
 var earlyCancelEndLag []int
@@ -69,13 +68,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	droplets := c.getSourcewaterDroplets()
 
 	// TODO: If droplets time out before the "droplet check" it doesn't count.
-	// However, this check needs to happen before c6 check, which needs to happen when this function is called.
-
-	// TODO: Apparently it's semi random? I don't know how Neuv prioritizes his droplets
-	// sort.Slice(droplets, func(i, j int) bool {
-	// 	// return droplets[i].Pos().Distance(playerPos) < droplets[j].Pos().Distance(playerPos)
-	// 	return droplets[i].Duration < droplets[j].Duration
-	// })
 	indices := c.Core.Combat.Rand.Perm(len(droplets))
 
 	// TODO this should happen 3 frames into his CA but modifying action length
@@ -123,15 +115,15 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			c.Core.QueueAttack(
 				ai,
 				ap,
-				shortChargeHitmark-windup,
-				shortChargeHitmark-windup,
+				shortChargeHitmark+windup,
+				shortChargeHitmark+windup,
 			)
 		}
 
 		return action.Info{
 			Frames:          func(next action.Action) int { return windup + chargeFrames[next] },
-			AnimationLength: chargeFrames[action.InvalidAction],
-			CanQueueAfter:   chargeFrames[action.ActionDash],
+			AnimationLength: windup + chargeFrames[action.InvalidAction],
+			CanQueueAfter:   windup + chargeFrames[action.ActionDash],
 			State:           action.ChargeAttackState,
 		}, nil
 	}
