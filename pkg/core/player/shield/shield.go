@@ -24,6 +24,7 @@ const (
 	LaylaSkill
 	BaizhuBurst
 	KiraraSkill
+	TravelerHydroC4
 	EndType
 )
 

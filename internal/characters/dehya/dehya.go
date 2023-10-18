@@ -95,7 +95,7 @@ func (c *char) onExitField() {
 
 var burstIsJumpCancelled = false
 
-func (c *char) Jump(p map[string]int) action.Info {
+func (c *char) Jump(p map[string]int) (action.Info, error) {
 	if !c.StatusIsActive(burstKey) {
 		if c.StatusIsActive(kickKey) {
 			c.Core.Log.NewEvent("dehya can't jump cancel her kick", glog.LogActionEvent, c.Index).
@@ -105,7 +105,7 @@ func (c *char) Jump(p map[string]int) action.Info {
 				AnimationLength: kickHitmark,
 				CanQueueAfter:   kickHitmark,
 				State:           action.BurstState,
-			}
+			}, nil
 		}
 		return c.Character.Jump(p)
 	}

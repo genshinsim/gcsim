@@ -31,7 +31,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 49    // E -> J
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// if fieldSrc is < duration then this is prob a sac proc
 	// we need to stop the old field from ticking (by changing fieldSrc)
 	// and also trigger a4 delayed damage
@@ -157,7 +157,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

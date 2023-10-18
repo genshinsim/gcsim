@@ -14,8 +14,8 @@ func TestParseCharacter(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	//needs to be typed so the comparison works
-	var id int32 = 10000002 //ayaka
+	// needs to be typed so the comparison works
+	var id int32 = 10000002 // ayaka
 
 	d, err := a.parseChar(id, 0)
 	if err != nil {
@@ -33,12 +33,12 @@ func TestParseCharacter(t *testing.T) {
 	expect(t, "element", model.Element_Ice, d.Element)
 	expect(t, "weapon class", model.WeaponClass_WEAPON_SWORD_ONE_HAND, d.WeaponClass)
 	expect(t, "icon", string("UI_AvatarIcon_Ayaka"), d.IconName)
-	expect(t, "burst id", int32(10019), d.GetSkillDetails().GetBurst()) //ayaka burst is 10019
+	expect(t, "burst id", int32(10019), d.GetSkillDetails().GetBurst()) // ayaka burst is 10019
 	expect(t, "attack id", int32(10024), d.GetSkillDetails().GetAttack())
 	expect(t, "skill id", int32(10018), d.GetSkillDetails().GetSkill())
 	expectTol(t, "burst energy cost", float64(80), d.GetSkillDetails().GetBurstEnergyCost(), 0.000000001)
 
-	//stat block
+	// stat block
 	expectTol(t, "base attack", 26.6266, d.GetStats().BaseAtk, 0.00001)
 	expectTol(t, "base hp", 1000.98602, d.GetStats().BaseHp, 0.00001)
 	expectTol(t, "base def", 61.02659, d.GetStats().BaseDef, 0.00001)
@@ -61,8 +61,8 @@ func TestParseCharacter(t *testing.T) {
 		}
 	}
 
-	//make sure traveler is picking up correct skills
-	id = 10000007 //lumine
+	// make sure traveler is picking up correct skills
+	id = 10000007 // lumine
 
 	d, err = a.parseChar(id, 707)
 	if err != nil {
@@ -84,7 +84,6 @@ func TestParseCharacter(t *testing.T) {
 	expect(t, "attack id", int32(100556), d.GetSkillDetails().GetAttack())
 	expect(t, "skill id", int32(10602), d.GetSkillDetails().GetSkill())
 	expectTol(t, "burst energy cost", float64(80), d.GetSkillDetails().GetBurstEnergyCost(), 0.000000001)
-
 }
 
 func expect(t *testing.T, msg string, expect, got any) error {

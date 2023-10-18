@@ -20,7 +20,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 95    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	low := c.CurrentHPRatio() <= 0.5
 	mult := burst[c.TalentLvlBurst()]
 	regen := regen[c.TalentLvlBurst()]
@@ -80,7 +80,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstHealCB(atk combat.AttackCB) {

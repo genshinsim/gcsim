@@ -40,7 +40,7 @@ func (c *Character) ActionStam(a action.Action, p map[string]int) float64 {
 	}
 }
 
-func (c *Character) Dash(p map[string]int) action.Info {
+func (c *Character) Dash(p map[string]int) (action.Info, error) {
 	// Execute dash CD logic
 	c.ApplyDashCD()
 
@@ -53,7 +53,7 @@ func (c *Character) Dash(p map[string]int) action.Info {
 		AnimationLength: length,
 		CanQueueAfter:   length,
 		State:           action.DashState,
-	}
+	}, nil
 }
 
 // set the dash CD. If the dash was on CD when this dash executes, lockout dash
@@ -102,7 +102,7 @@ func (c *Character) DashLength() int {
 	}
 }
 
-func (c *Character) Jump(p map[string]int) action.Info {
+func (c *Character) Jump(p map[string]int) (action.Info, error) {
 	f := 30
 	switch c.CharBody {
 	case info.BodyBoy, info.BodyGirl:
@@ -119,10 +119,10 @@ func (c *Character) Jump(p map[string]int) action.Info {
 		AnimationLength: f,
 		CanQueueAfter:   f,
 		State:           action.JumpState,
-	}
+	}, nil
 }
 
-func (c *Character) Walk(p map[string]int) action.Info {
+func (c *Character) Walk(p map[string]int) (action.Info, error) {
 	f, ok := p["f"]
 	if !ok {
 		f = 1
@@ -132,5 +132,5 @@ func (c *Character) Walk(p map[string]int) action.Info {
 		AnimationLength: f,
 		CanQueueAfter:   f,
 		State:           action.WalkState,
-	}
+	}, nil
 }

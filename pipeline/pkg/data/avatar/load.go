@@ -36,13 +36,13 @@ func loadAvatarExcel(path string) (map[int32]dm.AvatarExcel, error) {
 		return nil, err
 	}
 	data := make(map[int32]dm.AvatarExcel)
-	for _, v := range res {
-		//mhy can break this...
-		//sanity check in case mhy allows for duplicated ids in future
-		if _, ok := data[v.ID]; ok {
-			return nil, fmt.Errorf("unexpected duplicated id: %v", v.ID)
+	for i := range res {
+		// mhy can break this...
+		// sanity check in case mhy allows for duplicated ids in future
+		if _, ok := data[res[i].ID]; ok {
+			return nil, fmt.Errorf("unexpected duplicated id: %v", res[i].ID)
 		}
-		data[v.ID] = v
+		data[res[i].ID] = res[i]
 	}
 	return data, nil
 }
@@ -55,7 +55,7 @@ func loadAvatarSkillDepot(path string) (map[int32]dm.AvatarSkillDepot, error) {
 	}
 	data := make(map[int32]dm.AvatarSkillDepot)
 	for _, v := range res {
-		//sanity check in case mhy allows for duplicated ids in future
+		// sanity check in case mhy allows for duplicated ids in future
 		if _, ok := data[v.ID]; ok {
 			return nil, fmt.Errorf("unexpected duplicated id: %v", v.ID)
 		}
@@ -72,7 +72,7 @@ func loadAvatarSkillExcel(path string) (map[int32]dm.AvatarSkillExcel, error) {
 	}
 	data := make(map[int32]dm.AvatarSkillExcel)
 	for _, v := range res {
-		//sanity check in case mhy allows for duplicated ids in future
+		// sanity check in case mhy allows for duplicated ids in future
 		if _, ok := data[v.ID]; ok {
 			return nil, fmt.Errorf("unexpected duplicated id: %v", v.ID)
 		}
@@ -89,7 +89,7 @@ func loadAvatarFetterInfo(path string) (map[int32]dm.AvatarFetterInfo, error) {
 	}
 	data := make(map[int32]dm.AvatarFetterInfo)
 	for _, v := range res {
-		//sanity check in case mhy allows for duplicated ids in future
+		// sanity check in case mhy allows for duplicated ids in future
 		if _, ok := data[v.AvatarId]; ok {
 			return nil, fmt.Errorf("unexpected duplicated id: %v", v.AvatarId)
 		}

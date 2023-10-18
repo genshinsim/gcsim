@@ -2,6 +2,7 @@ package player
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -116,6 +117,7 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		return req, h.Stam >= req
 	}
 
+	var err error
 	switch t {
 	case action.ActionCharge: // require special calc for stam
 		amt, ok := stamCheck(t, param)
@@ -130,7 +132,7 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		h.Stam -= amt
 		h.LastStamUse = *h.F
 		h.Events.Emit(event.OnStamUse, t)
-		h.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
+		err = h.useAbility(t, param, char.ChargeAttack) //TODO: make sure characters are consuming stam in charge attack function
 	case action.ActionDash: // require special calc for stam
 		// dash handles it in the action itself
 		amt, ok := stamCheck(t, param)
@@ -150,24 +152,24 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 			return ErrActionNotReady
 		}
 
-		h.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
+		err = h.useAbility(t, param, char.Dash) //TODO: make sure characters are consuming stam in dashes
 	case action.ActionJump:
-		h.useAbility(t, param, char.Jump)
+		err = h.useAbility(t, param, char.Jump)
 	case action.ActionWalk:
-		h.useAbility(t, param, char.Walk)
+		err = h.useAbility(t, param, char.Walk)
 	case action.ActionAim:
-		h.useAbility(t, param, char.Aimed)
+		err = h.useAbility(t, param, char.Aimed)
 	case action.ActionSkill:
-		h.useAbility(t, param, char.Skill)
+		err = h.useAbility(t, param, char.Skill)
 	case action.ActionBurst:
-		h.useAbility(t, param, char.Burst)
+		err = h.useAbility(t, param, char.Burst)
 	case action.ActionAttack:
-		h.useAbility(t, param, char.Attack)
+		err = h.useAbility(t, param, char.Attack)
 	case action.ActionHighPlunge:
 		//TODO: there should be a flag that says airborne and only then can you plunge
-		h.useAbility(t, param, char.HighPlungeAttack)
+		err = h.useAbility(t, param, char.HighPlungeAttack)
 	case action.ActionLowPlunge:
-		h.useAbility(t, param, char.LowPlungeAttack)
+		err = h.useAbility(t, param, char.LowPlungeAttack)
 	case action.ActionSwap:
 		if h.active == h.charPos[k] {
 			return ErrActionNoOp
@@ -195,7 +197,10 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 		h.LastAction.Param = param
 		h.LastAction.Char = h.active
 	default:
-		panic("invalid action reached")
+		return fmt.Errorf("invalid action: %v", t)
+	}
+	if err != nil {
+		return err
 	}
 
 	if t != action.ActionAttack {
@@ -221,13 +226,16 @@ var actionToEvent = map[action.Action]event.Event{
 func (h *Handler) useAbility(
 	t action.Action,
 	param map[string]int,
-	f func(p map[string]int) action.Info,
-) {
+	f func(p map[string]int) (action.Info, error),
+) error {
 	state, ok := actionToEvent[t]
 	if ok {
 		h.Events.Emit(state)
 	}
-	info := f(param)
+	info, err := f(param)
+	if err != nil {
+		return err
+	}
 	info.CacheFrames()
 	h.SetActionUsed(h.active, t, &info)
 	if info.FramePausedOnHitlag == nil {
@@ -243,4 +251,5 @@ func (h *Handler) useAbility(
 		h.active,
 		"executed ", t.String(),
 	).Write("action", t.String())
+	return nil
 }

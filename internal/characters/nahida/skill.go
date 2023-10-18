@@ -44,10 +44,10 @@ const (
 	triKarmaParticleICD = "nahida-e-particle-icd"
 )
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.markCount = 0
 	if p["hold"] == 0 {
-		return c.skillPress()
+		return c.skillPress(), nil
 	}
 	return c.skillHold(p)
 }
@@ -83,7 +83,7 @@ func (c *char) skillPress() action.Info {
 	}
 }
 
-func (c *char) skillHold(p map[string]int) action.Info {
+func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
 	// earliest hold can be let go is roughly 16.5, max is 317
 	// adds the value in hold onto the minimum length of 16, so hold=1 gives 17f and hold=5 gives a 22f delay until hitmark.
@@ -121,7 +121,7 @@ func (c *char) skillHold(p map[string]int) action.Info {
 		AnimationLength: hold - 17 + 30 + skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   hold - 17 + 30 + skillHoldFrames[action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

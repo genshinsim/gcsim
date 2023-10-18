@@ -29,13 +29,13 @@ func init() {
 	skillHoldFrames[action.ActionJump] = 55
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	h := p["hold"]
 	nostele := p["hold_nostele"] > 0
 	if h > 0 || nostele {
-		return c.skillHold(!nostele)
+		return c.skillHold(!nostele), nil
 	}
-	return c.skillPress()
+	return c.skillPress(), nil
 }
 
 func (c *char) skillPress() action.Info {

@@ -27,7 +27,7 @@ func init() {
 
 // Skill handling - Handles primary damage instance
 // Deals Hydro DMG to surrounding opponents and heal nearby active characters once every 2s. This healing is based on Kokomi's Max HP.
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// skill duration is ~12.5s
 	// Plus 1 to avoid same frame issues with skill ticks
 	c.Core.Status.Add("kokomiskill", 12*60+30+1)
@@ -49,7 +49,7 @@ func (c *char) Skill(p map[string]int) action.Info {
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillHitmark,
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

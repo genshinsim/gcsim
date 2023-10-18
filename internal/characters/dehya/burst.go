@@ -33,7 +33,7 @@ func init() {
 	kickFrames[action.ActionSwap] = kickHitmark // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	burstIsJumpCancelled = false
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -84,7 +84,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.ActionAttack],
 		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstPunch(src int, auto bool) action.Info {

@@ -134,11 +134,11 @@ func (c *char) depleteSkydwellerPoints() {
 	}
 }
 
-func (c *char) Skill(p map[string]int) action.Info {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !c.StatusIsActive(SkillKey) {
-		return c.skillActivate()
+		return c.skillActivate(), nil
 	}
-	return c.skillDeactivate()
+	return c.skillDeactivate(), nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {

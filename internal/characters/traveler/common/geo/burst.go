@@ -33,7 +33,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 49    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	hits, ok := p["hits"]
 	if !ok {
 		hits = 4 // assume all 4 instances of shockwave dmg hit the enemy
@@ -133,7 +133,7 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[c.gender][action.InvalidAction],
 		CanQueueAfter:   burstFrames[c.gender][action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 type wall struct {

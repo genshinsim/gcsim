@@ -166,5 +166,13 @@
       ],
       "desc": "Number of Declension stacks."
     }
+  ],
+  "travelerhydro": [
+    {
+      "fields": [
+        ".travelerhydro.droplets"
+      ],
+      "desc": "Number of Sourcewater droplets created by Traveler."
+    }
   ]
 }

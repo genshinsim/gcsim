@@ -10,13 +10,13 @@ import (
 )
 
 type config struct {
-	//input data
+	// input data
 	charPath     string
 	weapPath     string
 	artifactPath string
 	excelPath    string
 
-	//output paths
+	// output paths
 	uiOut string
 	dbOut string
 }
@@ -31,7 +31,7 @@ func main() {
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
 	flag.Parse()
 
-	//generate character data
+	// generate character data
 	log.Println("running pipeline for characters...")
 	g, err := character.NewGenerator(character.GeneratorConfig{
 		Root:   cfg.charPath,
@@ -53,7 +53,7 @@ func main() {
 		panic(err)
 	}
 
-	//generate weapon data
+	// generate weapon data
 	log.Println("running pipeline for weapons...")
 	gw, err := weapon.NewGenerator(weapon.GeneratorConfig{
 		Root:   cfg.weapPath,
@@ -69,7 +69,7 @@ func main() {
 		panic(err)
 	}
 
-	//generate artifact data
+	// generate artifact data
 	log.Println("running pipeline for artifacts...")
 	ga, err := artifact.NewGenerator(artifact.GeneratorConfig{
 		Root: cfg.artifactPath,

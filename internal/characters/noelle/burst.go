@@ -28,7 +28,7 @@ func init() {
 	burstFrames[action.ActionWalk] = 90
 }
 
-func (c *char) Burst(p map[string]int) action.Info {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
 	aiSnapshot := combat.AttackInfo{
@@ -130,5 +130,5 @@ func (c *char) Burst(p map[string]int) action.Info {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
