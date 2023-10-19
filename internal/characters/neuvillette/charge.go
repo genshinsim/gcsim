@@ -157,6 +157,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ticksDone := 0
 		delay := getChargeJudgementHitmarkDelay(ticksDone)
 		for delay < chargeJudgementDur {
+			c.QueueCharTask(c.judgementWave, chargeJudgementStart+delay)
+			ticksDone += 1
+			delay = getChargeJudgementHitmarkDelay(ticksDone)
+
 			if ticksDone == maxTicks {
 				for d := 40; d < delay; d += 30 {
 					c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
@@ -171,10 +175,6 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 					State:           action.ChargeAttackState,
 				}, nil
 			}
-			c.QueueCharTask(c.judgementWave, chargeJudgementStart+delay)
-
-			ticksDone += 1
-			delay = getChargeJudgementHitmarkDelay(ticksDone)
 		}
 		if maxTicks == ticksDone+1 {
 			c.QueueCharTask(c.judgementWave, chargeJudgementStart+chargeJudgementDur)
