@@ -1057,6 +1057,13 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Vorpal"
     },
+    "tomeoftheeternalflow": {
+      "id": 14514,
+      "key": "tomeoftheeternalflow",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Iudex"
+    },
     "toukaboushigure": {
       "id": 11422,
       "key": "toukaboushigure",

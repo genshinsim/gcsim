@@ -273,6 +273,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"thunderingpulse":               keys.ThunderingPulse,
 	"tpulse":                        keys.ThunderingPulse,
 	"tidalshadow":                   keys.TidalShadow,
+	"tomeoftheeternalflow":          keys.TomeOfTheEternalFlow,
+	"eternalflow":                   keys.TomeOfTheEternalFlow,
 	"toukaboushigure":               keys.ToukabouShigure,
 	"shigure":                       keys.ToukabouShigure,
 	"umbrella":                      keys.ToukabouShigure,
