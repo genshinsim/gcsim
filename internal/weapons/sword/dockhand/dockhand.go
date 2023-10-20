@@ -14,12 +14,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const icdKey = "dockhands-assistant-icd"
+
+var symbol = []string{"unity-symbol-0", "unity-symbol-1", "unity-symbol-2"}
+
 func init() {
 	core.RegisterWeaponFunc(keys.TheDockhandsAssistant, NewWeapon)
 }
 
 type Weapon struct {
-	Index int
+	core   *core.Core
+	char   *character.CharWrapper
+	refine int
+	buff   []float64
+	Index  int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -33,16 +41,12 @@ func (w *Weapon) Init() error      { return nil }
 // and Symbols can be gained even when the character is not on the field.
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
-	r := p.Refine
-
-	const icdKey = "dockhand-roused-icd"
-	symbol := []string{"unity-symbol-0", "unity-symbol-1", "unity-symbol-2"}
-	em := 30 + 10*float64(r)
-	refund := 1.5 + 0.5*float64(r)
-	duration := 10 * 60
-
-	val := make([]float64, attributes.EndStatType)
+	w := &Weapon{
+		core:   c,
+		char:   char,
+		refine: p.Refine,
+		buff:   make([]float64, attributes.EndStatType),
+	}
 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		source := args[0].(*player.HealInfo)
@@ -62,7 +66,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				idx = i
 			}
 		}
-		char.AddStatus((symbol[idx]), 30*60, true)
+		char.AddStatus(symbol[idx], 30*60, true)
 
 		c.Log.NewEvent("dockhands-assistant proc'd", glog.LogWeaponEvent, char.Index).
 			Write("index", idx)
@@ -70,80 +74,51 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("dockhands-assistant-heal-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-		// check for active before deleting symbol
-		if char.StatusIsActive(icdKey) {
-			return false
-		}
-		if c.Player.Active() != char.Index {
-			return false
-		}
-		count := 0
-		for _, s := range symbol {
-			if char.StatusIsActive(s) {
-				count++
-			}
-			char.DeleteStatus(s)
-		}
-		if count == 0 {
-			return false
-		}
-		char.AddStatus(icdKey, 15*60, true)
-		val[attributes.EM] = em * float64(count)
-
-		// add em buff
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em-boost", duration),
-			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return val, true
-			},
-		})
-
-		// regen energy after 2 secs
-		char.QueueCharTask(func() {
-			char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
-		}, 2*60)
-
-		return false
-	}, fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String()))
-
-	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-		// check for active before deleting symbol
-		if char.StatusIsActive(icdKey) {
-			return false
-		}
-		if c.Player.Active() != char.Index {
-			return false
-		}
-		count := 0
-		for _, s := range symbol {
-			if char.StatusIsActive(s) {
-				count++
-			}
-			char.DeleteStatus(s)
-		}
-		if count == 0 {
-			return false
-		}
-		char.AddStatus(icdKey, 15*60, true)
-		val[attributes.EM] = em * float64(count)
-
-		// add em buff
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em-boost", duration),
-			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return val, true
-			},
-		})
-
-		// regen energy after 2 secs
-		char.QueueCharTask(func() {
-			char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
-		}, 2*60)
-
-		return false
-	}, fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String()))
+	key := fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String())
+	c.Events.Subscribe(event.OnBurst, w.consumeEnergy, key)
+	c.Events.Subscribe(event.OnSkill, w.consumeEnergy, key)
 	return w, nil
+}
+
+func (w *Weapon) consumeEnergy(args ...interface{}) bool {
+	em := 30 + 10*float64(w.refine)
+	refund := 1.5 + 0.5*float64(w.refine)
+
+	// check for active before deleting symbol
+	if w.char.StatusIsActive(icdKey) {
+		return false
+	}
+	if w.core.Player.Active() != w.char.Index {
+		return false
+	}
+
+	count := 0
+	for _, s := range symbol {
+		if w.char.StatusIsActive(s) {
+			count++
+		}
+		w.char.DeleteStatus(s)
+	}
+	if count == 0 {
+		return false
+	}
+
+	w.char.AddStatus(icdKey, 15*60, true)
+	w.buff[attributes.EM] = em * float64(count)
+
+	// add em buff
+	w.char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em", 10*60),
+		AffectedStat: attributes.EM,
+		Amount: func() ([]float64, bool) {
+			return w.buff, true
+		},
+	})
+
+	// regen energy after 2 secs
+	w.char.QueueCharTask(func() {
+		w.char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
+	}, 2*60)
+
+	return false
 }
