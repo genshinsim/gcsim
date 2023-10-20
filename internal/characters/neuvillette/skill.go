@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -79,6 +80,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillcb(ac combat.AttackCB) {
+	if ac.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	if c.Core.F-c.lastSkillParticle > 18 {
 		c.lastSkillParticle = c.Core.F
 
@@ -92,7 +96,6 @@ func (c *char) skillcb(ac combat.AttackCB) {
 			common.NewSourcewaterDropletNeuv(c.Core, pos)
 		}
 		c.Core.Combat.Log.NewEvent("Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
+		c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Hydro, c.ParticleDelay)
 	}
-
-	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Hydro, c.ParticleDelay)
 }
