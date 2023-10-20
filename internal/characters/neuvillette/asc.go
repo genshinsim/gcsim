@@ -83,6 +83,6 @@ func (c *char) a4Tick() {
 
 	c.a4Buff[attributes.HydroP] = hydroDmgBuff
 
-	// TODO: Is this on HP change or just on tick?
-	c.Core.Tasks.Add(c.a4Tick, 30)
+	// Tick every 2s
+	c.Core.Tasks.Add(c.a4Tick, 120)
 }
