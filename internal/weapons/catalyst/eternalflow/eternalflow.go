@@ -16,12 +16,23 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	buffKey   = "eternalflow-buff"
+	buffIcd   = "eternalflow-icd"
+	energyIcd = "eternalflow-energy-icd"
+)
+
 func init() {
 	core.RegisterWeaponFunc(keys.TomeOfTheEternalFlow, NewWeapon)
 }
 
 type Weapon struct {
-	Index int
+	stacks int
+	core   *core.Core
+	char   *character.CharWrapper
+	refine int
+	buffCA []float64
+	Index  int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -32,32 +43,27 @@ func (w *Weapon) Init() error      { return nil }
 // Max 3 stacks. This effect can be triggered once every 0.3s.
 // When the character has 3 stacks or a third stack's duration refreshes, 8/9/10/11/12 Energy will be restored.
 // This Energy restoration effect can be triggered once every 12s.
-
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
-	r := p.Refine
-	stacks := 0
-	const buffIcd = "eternalflow-ca-icd"
-	const healKey = "eternalflow-heal"
-	const drainKey = "eternalflow-drain"
-	const energyIcd = "eternalflow-energy-icd"
-
-	buffCA := make([]float64, attributes.EndStatType)
+	w := &Weapon{
+		core:   c,
+		char:   char,
+		refine: p.Refine,
+		buffCA: make([]float64, attributes.EndStatType),
+	}
 
 	hpp := 0.12 + float64(p.Refine)*0.04
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.HPP] = hpp
-
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("tome-of-the-eternal-flow-hpp", -1),
+		Base:         modifier.NewBaseWithHitlag("eternalflow-hpp", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
 	})
+
 	c.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		di := args[0].(player.DrainInfo)
-
 		if c.Player.Active() != char.Index {
 			return false
 		}
@@ -67,41 +73,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if di.Amount <= 0 {
 			return false
 		}
-		if char.StatusIsActive(buffIcd) {
-			return false
-		}
 
-		if !char.StatusIsActive(healKey) && !char.StatusIsActive(drainKey) {
-			stacks = 0
-		}
-		stacks++
-		if stacks > 3 {
-			stacks = 3
-		}
-
-		char.AddStatus(buffIcd, 0.3*60, true)
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(drainKey, 4*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				buffCA[attributes.DmgP] = (0.10 + 0.04*float64(r)) * float64(stacks)
-				switch atk.Info.AttackTag {
-				case attacks.AttackTagExtra:
-					return buffCA, true
-				default:
-					return nil, false
-				}
-			},
-		})
-
-		if stacks == 3 {
-			if char.StatusIsActive(energyIcd) {
-				return false
-			}
-			char.AddEnergy("eternal-flow-energy", 7+float64(r)*1)
-			char.AddStatus(energyIcd, 12*60, true)
-		}
+		w.onChangeHP()
 		return false
-	}, fmt.Sprintf("eternal-flow-ca-drain%v", char.Base.Key.String()))
+	}, fmt.Sprintf("eternalflow-drain-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		index := args[1].(int)
@@ -116,43 +91,44 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if amount <= 0 {
 			return false
 		}
+		// do not trigger if at max hp already
 		if math.Abs(amount-overheal) <= 1e-9 {
 			return false
 		}
-		if char.StatusIsActive(buffIcd) {
-			return false
-		}
 
-		if !char.StatusIsActive(healKey) && !char.StatusIsActive(drainKey) {
-			stacks = 0
-		}
-		stacks++
-		if stacks > 3 {
-			stacks = 3
-		}
-
-		char.AddStatus(buffIcd, 0.3*60, true)
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(healKey, 4*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				buffCA[attributes.DmgP] = (0.10 + 0.04*float64(r)) * float64(stacks)
-				switch atk.Info.AttackTag {
-				case attacks.AttackTagExtra:
-					return buffCA, true
-				default:
-					return nil, false
-				}
-			},
-		})
-
-		if stacks == 3 {
-			if char.StatusIsActive(energyIcd) {
-				return false
-			}
-			char.AddStatus(energyIcd, 12*60, true)
-			char.AddEnergy("eternal-flow-energy", 7+float64(r)*1)
-		}
+		w.onChangeHP()
 		return false
-	}, fmt.Sprintf("eternal-flow-ca-heal-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("eternalflow-heal-%v", char.Base.Key.String()))
 	return w, nil
+}
+
+func (w *Weapon) onChangeHP() {
+	if w.char.StatusIsActive(buffIcd) {
+		return
+	}
+	if !w.char.StatModIsActive(buffKey) {
+		w.stacks = 0
+	}
+	if w.stacks < 3 {
+		w.stacks++
+	}
+
+	w.char.AddStatus(buffIcd, 0.3*60, true)
+	w.char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBaseWithHitlag(buffKey, 4*60),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			w.buffCA[attributes.DmgP] = (0.10 + 0.04*float64(w.refine)) * float64(w.stacks)
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagExtra:
+				return w.buffCA, true
+			default:
+				return nil, false
+			}
+		},
+	})
+
+	if w.stacks == 3 && !w.char.StatusIsActive(energyIcd) {
+		w.char.AddEnergy("eternalflow-energy", 7+float64(w.refine)*1)
+		w.char.AddStatus(energyIcd, 12*60, true)
+	}
 }
