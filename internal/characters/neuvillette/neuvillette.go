@@ -51,10 +51,14 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.a1()
+	if c.Base.Ascension >= 1 {
+		c.a1()
+	}
 
-	c.a4Buff = make([]float64, attributes.EndStatType)
-	c.a4()
+	if c.Base.Ascension >= 4 {
+		c.a4Buff = make([]float64, attributes.EndStatType)
+		c.a4()
+	}
 
 	if c.Base.Cons >= 1 {
 		c.c1()

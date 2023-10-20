@@ -13,16 +13,9 @@ type NeuvA1Keys struct {
 	Key string
 }
 
-func init() {
-
-}
-
 var a1Multipliers = [4]float64{1, 1.1, 1.25, 1.6}
 
 func (c *char) a1() {
-	if c.Base.Ascension < 1 {
-		return
-	}
 	a1 := []NeuvA1Keys{
 		{event.OnBloom, "neuvillette-a1-bloom"},
 		{event.OnCrystallizeHydro, "neuvillette-a1-crystallize-hydro"},
@@ -66,10 +59,6 @@ func (c *char) countA1() int {
 }
 
 func (c *char) a4() {
-	if c.Base.Ascension < 4 {
-		return
-	}
-
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("neuvillette-a4", -1),
 		AffectedStat: attributes.HydroP,

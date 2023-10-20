@@ -48,7 +48,7 @@ func (c *char) c2() {
 func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		target := args[1].(int)
-		if c.Core.Player.ActiveChar().Index == c.Index && c.Index == target {
+		if c.Core.Player.Active() == c.Index && c.Index == target {
 			// TODO: find the actual sourcewater droplet spawn shape for Neuv C4
 			player := c.Core.Combat.Player()
 			center := player.Pos().Add(player.Direction().Normalize().Mul(geometry.Point{X: 3.0, Y: 3.0}))
