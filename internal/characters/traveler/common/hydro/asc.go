@@ -82,6 +82,6 @@ func (c *char) newDroplet() *common.SourcewaterDroplet {
 		3,
 		c.Core.Rand,
 	)
-	droplet := common.NewSourcewaterDropletHydroTrav(c.Core, pos)
+	droplet := common.NewSourcewaterDroplet(c.Core, pos, combat.GadgetTypSourcewaterDropletHydroTrav)
 	return droplet
 }

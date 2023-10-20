@@ -53,7 +53,7 @@ func (c *char) c4() {
 			player := c.Core.Combat.Player()
 			center := player.Pos().Add(player.Direction().Normalize().Mul(geometry.Point{X: 3.0, Y: 3.0}))
 			pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
-			common.NewSourcewaterDropletHydroTrav(c.Core, pos)
+			common.NewSourcewaterDroplet(c.Core, pos, combat.GadgetTypSourcewaterDropletHydroTrav)
 		}
 		return false
 	}, "neuvillette-c4")

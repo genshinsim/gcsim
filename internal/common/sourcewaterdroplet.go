@@ -13,17 +13,9 @@ type SourcewaterDroplet struct {
 	*gadget.Gadget
 }
 
-func NewSourcewaterDropletHydroTrav(core *core.Core, pos geometry.Point) *SourcewaterDroplet {
+func NewSourcewaterDroplet(core *core.Core, pos geometry.Point, typ combat.GadgetTyp) *SourcewaterDroplet {
 	p := &SourcewaterDroplet{}
-	p.Gadget = gadget.New(core, pos, 0.3, combat.GadgetTypSourcewaterDropletHydroTrav)
-	p.Gadget.Duration = 878
-	core.Combat.AddGadget(p)
-	return p
-}
-
-func NewSourcewaterDropletNeuv(core *core.Core, pos geometry.Point) *SourcewaterDroplet {
-	p := &SourcewaterDroplet{}
-	p.Gadget = gadget.New(core, pos, 0.3, combat.GadgetTypSourcewaterDropletNeuv)
+	p.Gadget = gadget.New(core, pos, 0.3, typ)
 	p.Gadget.Duration = 878
 	core.Combat.AddGadget(p)
 	return p
