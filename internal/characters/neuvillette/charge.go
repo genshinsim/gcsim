@@ -40,8 +40,16 @@ func init() {
 	endLag[action.ActionWalk] = 36
 	endLag[action.ActionCharge] = 30
 	endLag[action.ActionSwap] = 27
+	endLag[action.ActionBurst] = 0
+	endLag[action.ActionSkill] = 0
+	endLag[action.ActionDash] = 0
+	endLag[action.ActionJump] = 0
 
 	earlyCancelEndLag = frames.InitAbilSlice(5000)
+	earlyCancelEndLag[action.ActionBurst] = 0
+	earlyCancelEndLag[action.ActionSkill] = 0
+	earlyCancelEndLag[action.ActionDash] = 0
+	earlyCancelEndLag[action.ActionJump] = 0
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
