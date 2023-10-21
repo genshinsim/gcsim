@@ -27,6 +27,7 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | `stam` | - | - | - | Evaluates to the player's remaining stamina. |
 | `construct` | `duration`/`count` | construct name | - | Evaluates to the duration/count of the specified construct. See individual character page for acceptable construct names. |
 | `gadgets` | `dendrocore` | `count` | - | Evaluates to the current number of Dendro Cores. |
+| `gadgets` | `sourcewaterdroplet` | `count` | - | Evaluates to the current number of Sourcewater Droplets. |
 | `keys` | `char`/`weapon`/`artifact` | char/weapon/artifact name | - | Evaluates to the key for the specified char/weapon/artifact name. See the relevant character/weapon/artifact page for acceptable names. |
 | `state` | - | - | - | Evaluates to the current state of the player. | 
 | character name | `cons` | - | - | Evaluates to the character's constellation count. |
