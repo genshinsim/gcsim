@@ -116,7 +116,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	defer c.AdvanceNormalIndex()
 	atkspd := c.Stat(attributes.AtkSpd)
-
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
@@ -170,7 +169,6 @@ func (c *char) WindfavoredAttack(p map[string]int) (action.Info, error) {
 
 	defer c.AdvanceNormalIndex()
 	atkspd := c.Stat(attributes.AtkSpd)
-
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
