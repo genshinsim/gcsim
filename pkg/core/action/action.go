@@ -63,13 +63,24 @@ func (a *Info) CanQueueNext() bool {
 
 func (a *Info) CanUse(next Action) bool {
 	if a.UseNormalizedTime != nil && a.UseNormalizedTime(next) {
-		return a.NormalizedTimePassed >= float64(a.CachedFrames[next])
+		// recheck the frames to see if they have changed
+		if a.NormalizedTimePassed >= float64(a.CachedFrames[next]) {
+			a.CacheFrames()
+			return a.NormalizedTimePassed >= float64(a.CachedFrames[next])
+		}
+		return false
 	}
 	// can't use anything if we're frozen
 	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
 		return false
 	}
-	return a.TimePassed >= float64(a.CachedFrames[next])
+
+	if a.TimePassed >= float64(a.CachedFrames[next]) {
+		// recheck the frames to see if they have changed
+		a.CacheFrames()
+		return a.TimePassed >= float64(a.CachedFrames[next])
+	}
+	return false
 }
 
 func (a *Info) AnimationState() AnimationState {

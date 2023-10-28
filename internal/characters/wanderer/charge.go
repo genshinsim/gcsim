@@ -64,11 +64,11 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		c.makeA1ElectroCB(),
 		c.particleCB,
 	)
-
+	atkspd := c.Stat(attributes.AtkSpd)
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
-				frames.AtkSpdAdjust(chargeFramesNormal[next], c.Stat(attributes.AtkSpd))
+				frames.AtkSpdAdjust(chargeFramesNormal[next], atkspd)
 		},
 		AnimationLength: windup + chargeFramesNormal[action.InvalidAction],
 		CanQueueAfter:   windup + chargeFramesNormal[action.ActionDash],
@@ -101,11 +101,11 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) (action.Info, error) {
 		c.makeA1ElectroCB(),
 		c.particleCB,
 	)
-
+	atkspd := c.Stat(attributes.AtkSpd)
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
-				frames.AtkSpdAdjust(chargeFramesE[next], c.Stat(attributes.AtkSpd))
+				frames.AtkSpdAdjust(chargeFramesE[next], atkspd)
 		},
 		AnimationLength: windup + chargeFramesE[action.InvalidAction],
 		CanQueueAfter:   windup + chargeFramesE[action.ActionDash],
