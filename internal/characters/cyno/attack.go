@@ -170,14 +170,12 @@ func (c *char) attackB() (action.Info, error) {
 	}
 
 	defer c.AdvanceNormalIndex()
+	n := c.normalBCounter
+	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			n := c.normalBCounter - 1
-			if n < 0 {
-				n = burstHitNum - 1
-			}
-			return frames.AtkSpdAdjust(attackBFrames[n][next], c.Stat(attributes.AtkSpd))
+			return frames.AtkSpdAdjust(attackBFrames[n][next], atkspd)
 		},
 		AnimationLength: attackBFrames[c.normalBCounter][action.InvalidAction],
 		CanQueueAfter:   attackBHitmarks[c.normalBCounter][len(attackBHitmarks[c.normalBCounter])-1],

@@ -121,10 +121,11 @@ func (c *char) SoukaiKanka(p map[string]int) (action.Info, error) {
 	)
 
 	defer c.AdvanceNormalIndex()
+	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(shunsuikenFrames[next], c.Stat(attributes.AtkSpd))
+			return frames.AtkSpdAdjust(shunsuikenFrames[next], atkspd)
 		},
 		AnimationLength: shunsuikenFrames[action.InvalidAction],
 		CanQueueAfter:   shunsuikenHitmark,

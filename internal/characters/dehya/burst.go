@@ -135,18 +135,11 @@ func (c *char) burstPunch(src int, auto bool) action.Info {
 		c.burstHitSrc++
 		c.burstPunch(c.burstHitSrc, true)
 	}, hitmark)
-	if auto {
-		return action.Info{
-			Frames:          func(action.Action) int { return punchSlowHitmark },
-			AnimationLength: punchSlowHitmark,
-			CanQueueAfter:   punchSlowHitmark,
-			State:           action.BurstState,
-		}
-	}
+
 	return action.Info{
-		Frames:          func(action.Action) int { return punchHitmarks[c.burstCounter] },
-		AnimationLength: punchHitmarks[c.burstCounter],
-		CanQueueAfter:   punchHitmarks[c.burstCounter],
+		Frames:          func(action.Action) int { return hitmark },
+		AnimationLength: hitmark,
+		CanQueueAfter:   hitmark,
 		State:           action.BurstState,
 	}
 }

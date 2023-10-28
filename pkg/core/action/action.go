@@ -18,7 +18,6 @@ type Info struct {
 	FramePausedOnHitlag func() bool               `json:"-"`
 	OnRemoved           func(next AnimationState) `json:"-"`
 	// following are exposed only so we can log it properly
-	CachedFrames         [EndActionType]int //TODO: consider removing the cache frames and instead cache the frames function instead
 	TimePassed           float64
 	NormalizedTimePassed float64
 	UseNormalizedTime    func(next Action) bool
@@ -47,12 +46,6 @@ type queuedAction struct {
 	delay float64
 }
 
-func (a *Info) CacheFrames() {
-	for i := range a.CachedFrames {
-		a.CachedFrames[i] = a.Frames(Action(i))
-	}
-}
-
 func (a *Info) QueueAction(f func(), delay int) {
 	a.queued = append(a.queued, queuedAction{f: f, delay: float64(delay)})
 }
@@ -63,24 +56,13 @@ func (a *Info) CanQueueNext() bool {
 
 func (a *Info) CanUse(next Action) bool {
 	if a.UseNormalizedTime != nil && a.UseNormalizedTime(next) {
-		// recheck the frames to see if they have changed
-		if a.NormalizedTimePassed >= float64(a.CachedFrames[next]) {
-			a.CacheFrames()
-			return a.NormalizedTimePassed >= float64(a.CachedFrames[next])
-		}
-		return false
+		return a.NormalizedTimePassed >= float64(a.Frames(next))
 	}
 	// can't use anything if we're frozen
 	if a.FramePausedOnHitlag != nil && a.FramePausedOnHitlag() {
 		return false
 	}
-
-	if a.TimePassed >= float64(a.CachedFrames[next]) {
-		// recheck the frames to see if they have changed
-		a.CacheFrames()
-		return a.TimePassed >= float64(a.CachedFrames[next])
-	}
-	return false
+	return a.TimePassed >= float64(a.Frames(next))
 }
 
 func (a *Info) AnimationState() AnimationState {

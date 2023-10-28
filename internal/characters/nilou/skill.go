@@ -245,10 +245,11 @@ func (c *char) SwordDance(p map[string]int) action.Info {
 	c.Core.QueueAttack(ai, ap, swordDanceHitMarks[s]+travel, swordDanceHitMarks[s]+travel, c.c4cb(), particleCB)
 
 	defer c.AdvanceSkillIndex()
+	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(swordDanceFrames[s][next], c.Stat(attributes.AtkSpd))
+			return frames.AtkSpdAdjust(swordDanceFrames[s][next], atkspd)
 		},
 		AnimationLength: swordDanceFrames[s][action.InvalidAction],
 		CanQueueAfter:   swordDanceFrames[s][action.ActionJump], // earliest cancel

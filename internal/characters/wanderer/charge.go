@@ -64,7 +64,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		c.makeA1ElectroCB(),
 		c.particleCB,
 	)
+
 	atkspd := c.Stat(attributes.AtkSpd)
+
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
@@ -101,7 +103,9 @@ func (c *char) WindfavoredChargeAttack(p map[string]int) (action.Info, error) {
 		c.makeA1ElectroCB(),
 		c.particleCB,
 	)
+
 	atkspd := c.Stat(attributes.AtkSpd)
+
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
