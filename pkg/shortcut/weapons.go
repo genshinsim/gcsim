@@ -161,6 +161,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"pocket":                        keys.PocketGrimoire,
 	"polarstar":                     keys.PolarStar,
 	"polar":                         keys.PolarStar,
+	"portablepowersaw":              keys.PortablePowerSaw,
+	"powersaw":                      keys.PortablePowerSaw,
 	"predator":                      keys.Predator,
 	"primordialjadecutter":          keys.PrimordialJadeCutter,
 	"jadecutter":                    keys.PrimordialJadeCutter,

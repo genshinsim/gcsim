@@ -124,6 +124,7 @@ var weaponNames = []string{
 	"otherworldlystory",
 	"pocketgrimoire",
 	"polarstar",
+	"portablepowersaw",
 	"predator",
 	"primordialjadecutter",
 	"primordialjadewingedspear",
@@ -297,6 +298,7 @@ const (
 	OtherworldlyStory
 	PocketGrimoire
 	PolarStar
+	PortablePowerSaw
 	Predator
 	PrimordialJadeCutter
 	PrimordialJadeWingedSpear

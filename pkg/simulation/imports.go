@@ -222,6 +222,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/nagamasa"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/oldmercspal"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/pines"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/powersaw"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/prototype"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/rainslasher"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/redhorn"

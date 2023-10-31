@@ -637,6 +637,13 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Worldbane"
     },
+    "portablepowersaw": {
+      "id": 12427,
+      "key": "portablepowersaw",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Mechanic"
+    },
     "predator": {
       "id": 15415,
       "key": "predator",

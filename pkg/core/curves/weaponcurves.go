@@ -3317,6 +3317,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.PortablePowerSaw: {
+		AtkCurve:         GROW_CURVE_ATTACK_204,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          41.067100524902344,
+		BaseSpecialized:  0.11999999731779099,
+		Specialized:      attributes.HPP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.Predator: {
 		AtkCurve:         GROW_CURVE_ATTACK_201,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
