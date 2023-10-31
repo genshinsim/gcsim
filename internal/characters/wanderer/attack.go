@@ -115,11 +115,12 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	defer c.AdvanceNormalIndex()
+	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
-				frames.AtkSpdAdjust(attackFramesNormal[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
+				frames.AtkSpdAdjust(attackFramesNormal[currentNormalCounter][next], atkspd)
 		},
 		AnimationLength: windup + attackFramesNormal[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   windup + attackReleaseNormal[c.NormalCounter][len(attackReleaseNormal[c.NormalCounter])-1],
@@ -168,11 +169,12 @@ func (c *char) WindfavoredAttack(p map[string]int) (action.Info, error) {
 	}
 
 	defer c.AdvanceNormalIndex()
+	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return windup +
-				frames.AtkSpdAdjust(attackFramesE[currentNormalCounter][next], c.Stat(attributes.AtkSpd))
+				frames.AtkSpdAdjust(attackFramesE[currentNormalCounter][next], atkspd)
 		},
 		AnimationLength: windup + attackFramesE[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   windup + attackReleaseE[c.NormalCounter][len(attackReleaseE[c.NormalCounter])-1],
