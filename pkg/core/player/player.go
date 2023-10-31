@@ -282,8 +282,8 @@ func (h *Handler) Tick() {
 		h.SwapCD--
 	}
 	h.Shields.Tick()
+	h.AnimationHandler.Tick()
 	for _, c := range h.chars {
 		c.Tick()
 	}
-	h.AnimationHandler.Tick()
 }
