@@ -139,7 +139,11 @@ func queuePhase(s *Simulation) (stateFn, error) {
 	// if next action is delay, we can just queue up the action after that right now
 	if next.Action == action.ActionDelay {
 		// append here because we can have multiple delay chained
-		s.preActionDelay += next.Param["f"]
+		delay := next.Param["f"]
+		s.preActionDelay += delay
+		s.C.Log.NewEvent(fmt.Sprintf("delay: added %v, total: %v", delay, s.preActionDelay), glog.LogActionEvent, s.C.Player.Active()).
+			Write("added", delay).
+			Write("total", s.preActionDelay)
 		return queuePhase, nil
 	}
 	// append swap if called for char is not active
@@ -205,11 +209,10 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 		return nil, errors.New("unexpected queue length is 0")
 	}
 	if s.preActionDelay > 0 {
-		delay := s.preActionDelay
-		s.C.Log.NewEvent("executed pre action delay", glog.LogActionEvent, s.C.Player.Active()).
-			Write("f", delay)
-		s.preActionDelay = 0
-		return s.advanceFrames(delay, executeActionPhase)
+		if !s.C.Player.ActiveChar().FramePausedOnHitlag() {
+			s.preActionDelay--
+		}
+		return s.advanceFrames(1, executeActionPhase)
 	}
 	q := s.queue[0]
 	err := s.C.Player.Exec(q.Action, q.Char, q.Param)
