@@ -15,7 +15,7 @@ func (h *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 			}
 			if collision, _ := t.AttackWillLand(p); collision && t.AuraContains(e) {
 				h.Log.NewEvent(
-					"infusion check picked up "+e.String(),
+					"infusion check (e) picked up "+e.String(),
 					glog.LogElementEvent,
 					-1,
 				).
@@ -31,7 +31,7 @@ func (h *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 			}
 			if collision, _ := t.AttackWillLand(p); collision && t.AuraContains(e) {
 				h.Log.NewEvent(
-					"infusion check picked up "+e.String(),
+					"infusion check (g) picked up "+e.String(),
 					glog.LogElementEvent,
 					-1,
 				).
@@ -43,7 +43,7 @@ func (h *Handler) AbsorbCheck(p AttackPattern, prio ...attributes.Element) attri
 		if t, ok := h.player.(TargetWithAura); ok {
 			if collision, _ := t.AttackWillLand(p); collision && t.AuraContains(e) {
 				h.Log.NewEvent(
-					"infusion check picked up "+e.String(),
+					"infusion check (p) picked up "+e.String(),
 					glog.LogElementEvent,
 					-1,
 				).
