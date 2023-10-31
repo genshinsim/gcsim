@@ -254,6 +254,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"blacksword":                    keys.TheBlackSword,
 	"thecatch":                      keys.TheCatch,
 	"catch":                         keys.TheCatch,
+	"thedockhandsassistant":         keys.TheDockhandsAssistant,
+	"dockhand":                      keys.TheDockhandsAssistant,
 	"thefirstgreatmagic":            keys.TheFirstGreatMagic,
 	"firstgreatmagic":               keys.TheFirstGreatMagic,
 	"fgm":                           keys.TheFirstGreatMagic,

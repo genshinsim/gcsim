@@ -275,6 +275,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/cinnabar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/coolsteel"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/darkironsword"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/dockhand"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/dullblade"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/favonius"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/festering"

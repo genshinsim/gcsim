@@ -745,6 +745,23 @@
         "burst_energy_cost": 60
       }
     },
+    "luminehydro": {
+      "id": 10000007,
+      "sub_id": 703,
+      "key": "luminehydro",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10087,
+        "burst": 10088,
+        "attack": 100552,
+        "burst_energy_cost": 80
+      }
+    },
     "lynette": {
       "id": 10000083,
       "key": "lynette",
@@ -773,23 +790,6 @@
         "burst": 10845,
         "attack": 10841,
         "burst_energy_cost": 60
-      }
-    },
-    "luminehydro": {
-      "id": 10000007,
-      "sub_id": 703,
-      "key": "luminehydro",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
-      "region": "ASSOC_TYPE_MAINACTOR",
-      "element": "Water",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_PlayerGirl",
-      "skill_details": {
-        "skill": 10087,
-        "burst": 10088,
-        "attack": 100552,
-        "burst_energy_cost": 80
       }
     },
     "mika": {
