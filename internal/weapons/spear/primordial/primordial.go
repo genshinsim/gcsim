@@ -54,6 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// check if buff expired; if so reset the stacks
 		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
+			w.buff[attributes.DmgP] = 0
 		}
 		// every 0.3s
 		char.AddStatus(icdKey, 18, true)
