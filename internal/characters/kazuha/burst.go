@@ -62,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	aiAbsorb.Mult = burstEleDot[c.TalentLvlBurst()]
 	aiAbsorb.Element = attributes.NoElement
 
-	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), 10)
+	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int(310/18)), burstHitmark-1)
 
 	// handle C2
 	// first tick is right before initial hit, ticks every 0.5s while burst is up

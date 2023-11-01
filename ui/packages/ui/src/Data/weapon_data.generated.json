@@ -637,6 +637,13 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Worldbane"
     },
+    "portablepowersaw": {
+      "id": 12427,
+      "key": "portablepowersaw",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Mechanic"
+    },
     "predator": {
       "id": 15415,
       "key": "predator",
@@ -1001,6 +1008,13 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Mori"
     },
+    "thedockhandsassistant": {
+      "id": 11427,
+      "key": "thedockhandsassistant",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Mechanic"
+    },
     "thefirstgreatmagic": {
       "id": 15512,
       "key": "thefirstgreatmagic",
@@ -1063,6 +1077,13 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Vorpal"
+    },
+    "tomeoftheeternalflow": {
+      "id": 14514,
+      "key": "tomeoftheeternalflow",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Iudex"
     },
     "toukaboushigure": {
       "id": 11422,

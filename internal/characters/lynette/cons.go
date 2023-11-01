@@ -28,6 +28,9 @@ func (c *char) c4() {
 
 // When Lynette uses Enigmatic Feint's Enigma Thrust, she will gain an Anemo Infusion and 20% Anemo DMG Bonus for 6s.
 func (c *char) c6() {
+	if c.Base.Cons < 6 {
+		return
+	}
 	duration := int((6 + 0.4) * 60)
 
 	// add anemo infusion
