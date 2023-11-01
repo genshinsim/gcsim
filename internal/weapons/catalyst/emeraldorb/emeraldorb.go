@@ -58,10 +58,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}
 
-	c.Events.Subscribe(event.OnVaporize, addBuff, "emeraldorb-"+char.Base.Key.String())
-	c.Events.Subscribe(event.OnElectroCharged, addBuff, "emeraldorb-"+char.Base.Key.String())
-	c.Events.Subscribe(event.OnFrozen, addBuff, "emeraldorb-"+char.Base.Key.String())
-	c.Events.Subscribe(event.OnSwirlHydro, addBuff, "emeraldorb-"+char.Base.Key.String())
+	subKey := "emeraldorb-" + char.Base.Key.String()
+
+	c.Events.Subscribe(event.OnVaporize, addBuff, subKey)
+	c.Events.Subscribe(event.OnElectroCharged, addBuff, subKey)
+	c.Events.Subscribe(event.OnFrozen, addBuff, subKey)
+	c.Events.Subscribe(event.OnSwirlHydro, addBuff, subKey)
 
 	return w, nil
 }

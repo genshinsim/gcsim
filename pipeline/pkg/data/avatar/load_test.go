@@ -4,8 +4,10 @@ import (
 	"testing"
 )
 
+const dmSrc = "../../../data/ExcelBinOutput/"
+
 func TestLoadAvatarExcel(t *testing.T) {
-	const src = "../../../data/ExcelBinOutput/" + AvatarExcelConfigData
+	const src = dmSrc + AvatarExcelConfigData
 
 	res, err := loadAvatarExcel(src)
 	if err != nil {
@@ -26,7 +28,7 @@ func TestLoadAvatarExcel(t *testing.T) {
 }
 
 func TestLoadAvatarSkillDepot(t *testing.T) {
-	const src = "../../../data/ExcelBinOutput/" + AvatarSkillDepotExcelConfigData
+	const src = dmSrc + AvatarSkillDepotExcelConfigData
 
 	res, err := loadAvatarSkillDepot(src)
 	if err != nil {
@@ -39,7 +41,7 @@ func TestLoadAvatarSkillDepot(t *testing.T) {
 }
 
 func TestLoadAvatarSkillExcel(t *testing.T) {
-	const src = "../../../data/ExcelBinOutput/" + AvatarSkillExcelConfigData
+	const src = dmSrc + AvatarSkillExcelConfigData
 
 	res, err := loadAvatarSkillExcel(src)
 	if err != nil {
@@ -52,7 +54,7 @@ func TestLoadAvatarSkillExcel(t *testing.T) {
 }
 
 func TestLoadFetterInfo(t *testing.T) {
-	const src = "../../../data/ExcelBinOutput/" + FetterInfoExcelConfigData
+	const src = dmSrc + FetterInfoExcelConfigData
 
 	res, err := loadAvatarFetterInfo(src)
 	if err != nil {
@@ -65,7 +67,7 @@ func TestLoadFetterInfo(t *testing.T) {
 }
 
 func TestLoadPromotData(t *testing.T) {
-	const src = "../../../data/ExcelBinOutput/" + AvatarPromoteExcelConfigData
+	const src = dmSrc + AvatarPromoteExcelConfigData
 
 	res, err := loadAvatarPromoteData(src)
 	if err != nil {

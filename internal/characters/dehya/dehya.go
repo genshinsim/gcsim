@@ -25,6 +25,8 @@ type char struct {
 	burstHitSrc     int // I am using this value as a counter because if I use frame I can get duplicates
 	c1var           []float64
 	c6count         int
+	sanctumSavedDur int
+	burstJumpCancel bool
 }
 
 func init() {
@@ -62,6 +64,7 @@ func (c *char) Init() error {
 
 	return nil
 }
+
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
 	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
@@ -83,17 +86,14 @@ func (c *char) onExitField() {
 		}
 		c.a1()
 		c.DeleteStatus(burstKey)
-		if remainingFieldDur > 0 { // place field
-			c.QueueCharTask(func() {
-				c.addField(remainingFieldDur)
-			}, kickHitmark)
+		if dur := c.sanctumSavedDur; dur > 0 { // place field
+			c.sanctumSavedDur = 0
+			c.QueueCharTask(func() { c.addField(dur) }, kickHitmark)
 		}
 
 		return false
 	}, "dehya-exit")
 }
-
-var burstIsJumpCancelled = false
 
 func (c *char) Jump(p map[string]int) (action.Info, error) {
 	if !c.StatusIsActive(burstKey) {
@@ -110,13 +110,12 @@ func (c *char) Jump(p map[string]int) (action.Info, error) {
 		return c.Character.Jump(p)
 	}
 
-	burstIsJumpCancelled = true
+	c.burstJumpCancel = true
 	c.DeleteStatus(burstKey)
 
-	if remainingFieldDur > 0 { // place field
-		c.QueueCharTask(func() {
-			c.addField(remainingFieldDur)
-		}, kickHitmark)
+	if dur := c.sanctumSavedDur; dur > 0 { // place field
+		c.sanctumSavedDur = 0
+		c.QueueCharTask(func() { c.addField(dur) }, kickHitmark)
 	}
 	return c.Character.Jump(p)
 }

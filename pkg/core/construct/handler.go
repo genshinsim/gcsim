@@ -4,6 +4,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
+const destroyedMsg = "construct destroyed: "
+
 type Handler struct {
 	constructs  []Construct
 	consNoLimit []Construct
@@ -60,7 +62,7 @@ func (h *Handler) NewConstruct(c Construct, refresh bool, constructs *[]Construc
 		// if length > 3, then destruct the beginning ones
 		for i := 0; i < len((*constructs))-3; i++ {
 			(*constructs)[i].OnDestruct()
-			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+(*constructs)[i].Type().String()).
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, destroyedMsg+(*constructs)[i].Type().String()).
 				Write("key", (*constructs)[i].Key()).
 				Write("type", (*constructs)[i].Type())
 			(*constructs)[i] = nil
@@ -88,7 +90,7 @@ func (h *Handler) Tick() {
 	for _, v := range h.constructs {
 		if v.Expiry() == *h.f {
 			v.OnDestruct()
-			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, destroyedMsg+v.Type().String()).
 				Write("key", v.Key()).
 				Write("type", v.Type())
 		} else {
@@ -101,7 +103,7 @@ func (h *Handler) Tick() {
 	for i, v := range h.consNoLimit {
 		if v.Expiry() == *h.f {
 			h.consNoLimit[i].OnDestruct()
-			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, destroyedMsg+v.Type().String()).
 				Write("key", v.Key()).
 				Write("type", v.Type())
 		} else {
@@ -212,7 +214,7 @@ func (h *Handler) Destroy(key int) bool {
 		if v.Key() == key {
 			v.OnDestruct()
 			ok = true
-			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, destroyedMsg+v.Type().String()).
 				Write("key", v.Key()).
 				Write("type", v.Type())
 		} else {
@@ -229,7 +231,7 @@ func (h *Handler) Destroy(key int) bool {
 		if v.Key() == key {
 			h.consNoLimit[i].OnDestruct()
 			ok = true
-			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, "construct destroyed: "+v.Type().String()).
+			h.log.NewEventBuildMsg(glog.LogConstructEvent, -1, destroyedMsg+v.Type().String()).
 				Write("key", v.Key()).
 				Write("type", v.Type())
 		} else {
