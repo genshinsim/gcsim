@@ -128,7 +128,7 @@ func (c *Character) Walk(p map[string]int) (action.Info, error) {
 		f = 1
 	}
 	return action.Info{
-		Frames:          func(next action.Action) int { return f },
+		Frames:          func(action.Action) int { return f },
 		AnimationLength: f,
 		CanQueueAfter:   f,
 		State:           action.WalkState,

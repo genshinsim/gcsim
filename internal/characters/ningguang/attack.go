@@ -118,10 +118,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	c.prevAttack = nextAttack
+	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(attackFrames[nextAttack][next], c.Stat(attributes.AtkSpd))
+			return frames.AtkSpdAdjust(attackFrames[nextAttack][next], atkspd)
 		},
 		AnimationLength: attackFrames[nextAttack][action.InvalidAction],
 		CanQueueAfter:   attackLockout[nextAttack],

@@ -208,6 +208,9 @@
   "polarstar": [
     "polar"
   ],
+  "portablepowersaw": [
+    "powersaw"
+  ],
   "predator": [],
   "primordialjadecutter": [
     "jadecutter",
@@ -333,6 +336,9 @@
   "thecatch": [
     "catch"
   ],
+  "thedockhandsassistant": [
+    "dockhand"
+  ],
   "thefirstgreatmagic": [
     "firstgreatmagic",
     "fgm"
@@ -360,6 +366,9 @@
     "tpulse"
   ],
   "tidalshadow": [],
+  "tomeoftheeternalflow": [
+    "eternalflow"
+  ],
   "toukaboushigure": [
     "shigure",
     "umbrella"

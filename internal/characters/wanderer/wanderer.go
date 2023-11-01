@@ -58,9 +58,11 @@ func (c *char) Walk(p map[string]int) (action.Info, error) {
 	delay := c.checkForSkillEnd()
 
 	ai, err := c.Character.Walk(p)
-	ai.Frames = func(next action.Action) int { return delay + ai.Frames(next) }
-	ai.AnimationLength = delay + ai.AnimationLength
-	ai.CanQueueAfter = delay + ai.CanQueueAfter
+
+	f := delay + ai.AnimationLength
+	ai.Frames = func(action.Action) int { return f }
+	ai.AnimationLength = f
+	ai.CanQueueAfter = f
 
 	return ai, err
 }
