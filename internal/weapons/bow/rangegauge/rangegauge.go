@@ -14,12 +14,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const icdKey = "range-gauge-struggle-icd"
+
+var symbol = []string{"unity-symbol-0", "unity-symbol-1", "unity-symbol-2"}
+
 func init() {
 	core.RegisterWeaponFunc(keys.RangeGauge, NewWeapon)
 }
 
 type Weapon struct {
-	Index int
+	core    *core.Core
+	char    *character.CharWrapper
+	refine  int
+	atkp    []float64
+	eleDMGP []float64
+	Index   int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -32,11 +41,13 @@ func (w *Weapon) Init() error      { return nil }
 // and Symbols can be gained even when the character is not on the field.
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
-	r := p.Refine
+	w := &Weapon{
+		core:   c,
+		char:   char,
+		refine: p.Refine,
+		buff:   make([]float64, attributes.EndStatType),
+	}
 
-	const icdKey = "range-gauge-struggle-icd"
-	symbol := []string{"unity-symbol-0", "unity-symbol-1", "unity-symbol-2"}
 	atkp := 0.02 + 0.01*float64(r)
 	baseEleDMGP := 0.055 + 0.015*float64(r)
 	duration := 10 * 60
@@ -164,4 +175,56 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String()))
 	return w, nil
+}
+
+func (w *Weapon) consumeEnergy(args ...interface{}) bool {
+	em := 30 + 10*float64(w.refine)
+	refund := 1.5 + 0.5*float64(w.refine)
+
+	// check for active before deleting symbol
+	if w.char.StatusIsActive(icdKey) {
+		return false
+	}
+	if w.core.Player.Active() != w.char.Index {
+		return false
+	}
+
+	count := 0
+	for _, s := range symbol {
+		if w.char.StatusIsActive(s) {
+			count++
+		}
+		w.char.DeleteStatus(s)
+	}
+	if count == 0 {
+		return false
+	}
+
+	w.char.AddStatus(icdKey, 15*60, true)
+	w.buff[attributes.EM] = em * float64(count)
+
+	// add atk buff
+	w.char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag("range-gauge-atk-boost", duration),
+		AffectedStat: attributes.ATKP,
+		Amount: func() ([]float64, bool) {
+			return w.buff, true
+		},
+	})
+
+	eleDMGP := baseEleDMGP * float64(count)
+	for i := attributes.PyroP; i <= attributes.DendroP; i++ {
+		m[i] = eleDMGP
+	}
+
+	// add elemental dmg buff
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag("range-gauge-eledmg-buff", duration),
+		AffectedStat: attributes.NoStat,
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
+
+	return false
 }
