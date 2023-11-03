@@ -53,7 +53,7 @@ const (
 	ICDTagLyneyEndBoom
 	ICDTagLyneyEndBoomEnhanced
 	ICDTagTravelerDewdrop
-	// ICDTagNeuvilletteC6 // Neuv c6 is currently unsupported
+	ICDTagNeuvilletteC6
 	ICDTagLength
 )
 

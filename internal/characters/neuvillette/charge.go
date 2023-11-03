@@ -18,7 +18,7 @@ var chargeFrames []int
 var endLag []int
 var earlyCancelEndLag []int
 
-const initialLegalEvalDur = 212
+const initialLegalEvalDur = 209
 
 var dropletLegalEvalReduction = []int{0, 57, 57 + 54, 57 + 54 + 98}
 
@@ -63,158 +63,132 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		windup = 14
 	}
 
-	chargeLegalEvalLeft := initialLegalEvalDur
-
-	droplets := c.getSourcewaterDroplets()
-
-	// TODO: If droplets time out before the "droplet check" it doesn't count.
-	indices := c.Core.Combat.Rand.Perm(len(droplets))
-
-	// TODO this should happen 3 frames into his CA but modifying action length
-	// during the action is unsupported in the current framework
-	orbs := 0
-	for _, ind := range indices {
-		g := droplets[ind]
-		g.Kill()
-		// the healing seems to be slightly delayed by 10f
-		c.QueueCharTask(c.healWithDroplets, 10)
-		orbs += 1
-		if orbs >= 3 {
-			break
-		}
-	}
-	c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", orbs, " droplets"), glog.LogCharacterEvent, c.Index)
-	chargeLegalEvalLeft -= dropletLegalEvalReduction[orbs]
-
 	if p["short"] != 0 {
 		return c.chargeAttackShort(windup)
 	}
 
-	c.chargeAi = combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       chargeJudgementName,
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagExtraAttack,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Hydro,
-		Durability: 25,
-		FlatDmg:    chargeJudgement[c.TalentLvlAttack()] * c.MaxHP(),
-	}
+	return c.chargeAttackJudegement(p, windup)
+}
 
-	chargeJudgementStart := windup + chargeLegalEvalLeft
-	chargeJudgementDur := 173
+func (c *char) chargeAttackJudegement(p map[string]int, windup int) (action.Info, error) {
+	c.chargeJudgeDur = 0
+	c.nextTickTime = getChargeJudgementHitmarkDelay(0)
+	// current framework doesn't really support actions getting shorter, so the charge left is set to 0, but it will be increase later, when the ball absorb thing happens
+	chargeLegalEvalLeft := 0
 
-	// if c.Base.Cons >= 6 {
-	// the c6 droplet check has to happen immediately because otherwise we don't know how long this action will take
-	// this is problematic with Q because the 3 of the 6 Q orbs spawn after CA starts.
-	// chargeJudgementDur += c.c6DropletCheck()
-	// }
-	if p["ticks"] > 0 {
-		return c.chargeAttackTicks(chargeJudgementStart, chargeJudgementDur, p["ticks"])
-	}
+	c.QueueCharTask(func() {
+		chargeLegalEvalLeft = initialLegalEvalDur
+		droplets := c.getSourcewaterDroplets()
 
-	for tick := 0; getChargeJudgementHitmarkDelay(tick) < chargeJudgementDur; tick += 1 {
-		c.QueueCharTask(c.judgementWave, chargeJudgementStart+getChargeJudgementHitmarkDelay(tick))
-	}
-	c.QueueCharTask(c.judgementWave, chargeJudgementStart+chargeJudgementDur)
+		// TODO: If droplets time out before the "droplet check" it doesn't count.
+		indices := c.Core.Combat.Rand.Perm(len(droplets))
 
-	// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
-	for d := 40; d < chargeJudgementDur; d += 30 {
-		c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
-	}
+		// this should happen 3 frames into his CA
+		orbs := 0
+		for _, ind := range indices {
+			g := droplets[ind]
+			g.Kill()
+			// the healing seems to be slightly delayed by 7f
+			c.QueueCharTask(c.healWithDroplets, 10)
+			orbs += 1
+			if orbs >= 3 {
+				break
+			}
+		}
+		c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", orbs, " droplets"), glog.LogCharacterEvent, c.Index)
+		chargeLegalEvalLeft -= dropletLegalEvalReduction[orbs]
+
+		c.chargeAi = combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       chargeJudgementName,
+			AttackTag:  attacks.AttackTagExtra,
+			ICDTag:     attacks.ICDTagExtraAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
+			Element:    attributes.Hydro,
+			Durability: 25,
+			FlatDmg:    chargeJudgement[c.TalentLvlAttack()] * c.MaxHP(),
+		}
+
+		c.chargeJudgeStartF = c.Core.F + chargeLegalEvalLeft
+		c.chargeJudgeDur = 173
+
+		if c.Base.Cons >= 6 {
+			c.QueueCharTask(c.c6DropletCheck(c.chargeJudgeStartF), chargeLegalEvalLeft)
+			c.QueueCharTask(c.c6(c.chargeJudgeStartF), chargeLegalEvalLeft)
+		}
+		if p["ticks"] > 0 {
+			c.QueueCharTask(c.chargeJudgementTick(c.chargeJudgeStartF, 0, p["ticks"], false), chargeLegalEvalLeft+getChargeJudgementHitmarkDelay(0))
+		} else {
+			c.QueueCharTask(c.chargeJudgementTick(c.chargeJudgeStartF, 0, -1, false), chargeLegalEvalLeft+getChargeJudgementHitmarkDelay(0))
+		}
+		// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
+		c.QueueCharTask(c.consumeHp(c.chargeJudgeStartF), chargeLegalEvalLeft+30)
+	}, windup+3)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return chargeJudgementStart + chargeJudgementDur + endLag[next]
+			return windup + 3 + chargeLegalEvalLeft + c.nextTickTime + endLag[next]
 		},
-		AnimationLength: chargeJudgementStart + chargeJudgementDur + endLag[action.InvalidAction],
-		CanQueueAfter:   chargeJudgementStart + chargeJudgementDur + endLag[action.ActionDash],
+		AnimationLength: 1200, // there is no upper limit on the duration of the CA. We don't know when it ends until it ends
+		CanQueueAfter:   windup + 3 + endLag[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}, nil
 }
 
 func (c *char) chargeAttackShort(windup int) (action.Info, error) {
 	// By releasing too fast it is possible to absorb 3 orbs but not do a big CA
-	r := 1 + c.Core.Player.StamPercentMod(action.ActionCharge)
-	if r < 0 {
-		r = 0
-	}
-
-	// If there is not enough stamina to CA, nothing happens and he floats back down
-	if c.Core.Player.Stam > 50*r {
-		// use stam
-		c.Core.Player.Stam -= 50 * r
-		c.Core.Player.LastStamUse = c.Core.F
-		c.Core.Player.Events.Emit(event.OnStamUse, action.ActionCharge)
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Charge Attack",
-			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			Mult:       charge[c.TalentLvlAttack()],
+	c.QueueCharTask(func() {
+		droplets := c.getSourcewaterDroplets()
+		indices := c.Core.Combat.Rand.Perm(len(droplets))
+		orbs := 0
+		for _, ind := range indices {
+			g := droplets[ind]
+			g.Kill()
+			// the healing seems to be slightly delayed by 7f
+			c.QueueCharTask(c.healWithDroplets, 7)
+			orbs += 1
+			if orbs >= 3 {
+				break
+			}
 		}
-		ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 8)
-		// TODO: Not sure of snapshot timing
-		c.Core.QueueAttack(
-			ai,
-			ap,
-			shortChargeHitmark+windup,
-			shortChargeHitmark+windup,
-		)
-	}
+		c.Core.Combat.Log.NewEvent(fmt.Sprint("Picked up ", orbs, " droplets"), glog.LogCharacterEvent, c.Index)
+		// If there is not enough stamina to CA, nothing happens and he floats back down
+		r := 1 + c.Core.Player.StamPercentMod(action.ActionCharge)
+		if r < 0 {
+			r = 0
+		}
+		if c.Core.Player.Stam > 50*r {
+			// use stam
+			c.Core.Player.Stam -= 50 * r
+			c.Core.Player.LastStamUse = c.Core.F
+			c.Core.Player.Events.Emit(event.OnStamUse, action.ActionCharge)
+			ai := combat.AttackInfo{
+				ActorIndex: c.Index,
+				Abil:       "Charge Attack",
+				AttackTag:  attacks.AttackTagExtra,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
+				Element:    attributes.Hydro,
+				Durability: 25,
+				Mult:       charge[c.TalentLvlAttack()],
+			}
+			ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{}, 3, 8)
+			// TODO: Not sure of snapshot timing
+			c.Core.QueueAttack(
+				ai,
+				ap,
+				shortChargeHitmark+windup,
+				shortChargeHitmark+windup,
+			)
+		}
+	}, windup+3)
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return windup + chargeFrames[next] },
 		AnimationLength: windup + chargeFrames[action.InvalidAction],
 		CanQueueAfter:   windup + chargeFrames[action.ActionDash],
-		State:           action.ChargeAttackState,
-	}, nil
-}
-
-func (c *char) chargeAttackTicks(chargeJudgementStart, chargeJudgementDur, maxTicks int) (action.Info, error) {
-	// param for letting the user not do the full channel
-	// calculate how long the judgement duration should be based on their tick count
-	// additionally modify the frames so that only D/J/Q/E can follow. Otherwise sim errors on action
-	// also need to verify it for c6
-	ticksDone := 0
-	delay := getChargeJudgementHitmarkDelay(ticksDone)
-	lag := endLag
-	for delay < chargeJudgementDur {
-		c.QueueCharTask(c.judgementWave, chargeJudgementStart+delay)
-		ticksDone++
-		delay = getChargeJudgementHitmarkDelay(ticksDone)
-
-		if ticksDone == maxTicks {
-			c.chargeEarlyCancelled = true
-			lag = earlyCancelEndLag
-			break
-		}
-	}
-	if delay > chargeJudgementDur {
-		delay = chargeJudgementDur
-	}
-
-	if maxTicks == ticksDone+1 {
-		c.QueueCharTask(c.judgementWave, chargeJudgementStart+chargeJudgementDur)
-	} else if maxTicks > ticksDone {
-		return action.Info{}, fmt.Errorf("%v: Cannot execute %d CA Judgement Ticks. Max executed %d", c.CharWrapper.Base.Key, maxTicks, ticksDone)
-	}
-
-	// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
-	for d := 40; d < delay; d += 30 {
-		c.QueueCharTask(c.consumeHp, chargeJudgementStart+d)
-	}
-	return action.Info{
-		Frames: func(next action.Action) int {
-			return chargeJudgementStart + delay + lag[next]
-		},
-		AnimationLength: chargeJudgementStart + delay + lag[action.InvalidAction],
-		CanQueueAfter:   chargeJudgementStart + delay + lag[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}, nil
 }
@@ -226,10 +200,6 @@ func (c *char) judgementWave() {
 	if c.Base.Ascension >= 1 {
 		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * a1Multipliers[c.countA1()]
 	}
-	// if c.Base.Cons >= 6 {
-	// c.Core.QueueAttack(c.chargeAi, ap, 0, 0, c.c6cb)
-	// return
-	// }
 	c.Core.QueueAttack(c.chargeAi, ap, 0, 0)
 }
 
@@ -239,23 +209,64 @@ func getChargeJudgementHitmarkDelay(tick int) int {
 	switch tick {
 	case 0:
 		return 6
+	case 1:
+		return 22
 	default:
-		return 6 + 22 + 25*(tick-1)
+		return 25
 	}
 }
 
-func (c *char) consumeHp() {
-	if c.CurrentHPRatio() <= 0.5 {
-		return
+func (c *char) chargeJudgementTick(src, tick, maxTick int, last bool) func() {
+	return func() {
+		if c.chargeJudgeStartF != src {
+			return
+		}
+		if last {
+			if c.Core.F == c.chargeJudgeStartF+c.chargeJudgeDur {
+				c.judgementWave()
+			} else {
+				c.nextTickTime = c.nextTickTime2
+			}
+			return
+		}
+		if c.Core.F > c.chargeJudgeStartF+c.chargeJudgeDur {
+			return
+		}
+		c.judgementWave()
+		if maxTick == -1 || tick < maxTick {
+			nextF := c.Core.F + getChargeJudgementHitmarkDelay(tick+1)
+
+			// this one is queued even if the above queues in case the c6 extension extends the charge attack between this tick and the final tick
+			c.QueueCharTask(c.chargeJudgementTick(src, tick+1, maxTick, false), nextF-c.Core.F)
+			c.nextTickTime = nextF - c.chargeJudgeStartF
+			if nextF > c.chargeJudgeStartF+c.chargeJudgeDur {
+				c.QueueCharTask(c.chargeJudgementTick(src, tick+1, maxTick, true), c.chargeJudgeStartF+c.chargeJudgeDur-c.Core.F)
+				c.nextTickTime = c.chargeJudgeDur
+				c.nextTickTime2 = nextF - c.chargeJudgeStartF
+			}
+		}
 	}
+}
 
-	hpDrain := 0.08 * c.MaxHP()
+func (c *char) consumeHp(src int) func() {
+	return func() {
+		if c.chargeJudgeStartF != src {
+			return
+		}
+		if c.Core.F > c.chargeJudgeStartF+c.chargeJudgeDur {
+			return
+		}
+		if c.CurrentHPRatio() > 0.5 {
+			hpDrain := 0.08 * c.MaxHP()
 
-	c.Core.Player.Drain(player.DrainInfo{
-		ActorIndex: c.Index,
-		Abil:       "Charged Attack: Equitable Judgment",
-		Amount:     hpDrain,
-	})
+			c.Core.Player.Drain(player.DrainInfo{
+				ActorIndex: c.Index,
+				Abil:       "Charged Attack: Equitable Judgment",
+				Amount:     hpDrain,
+			})
+		}
+		c.QueueCharTask(c.consumeHp(src), 30)
+	}
 }
 
 func (c *char) healWithDroplets() {

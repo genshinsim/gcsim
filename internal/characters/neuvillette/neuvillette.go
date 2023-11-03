@@ -1,7 +1,6 @@
 package neuvillette
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/genshinsim/gcsim/internal/common"
@@ -21,10 +20,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	lastThorn         int
-	lastSkillParticle int
-	lastc6            int
-
+	lastThorn            int
+	lastSkillParticle    int
+	lastc4               int
+	chargeJudgeStartF    int
+	chargeJudgeDur       int
+	nextTickTime         int
+	nextTickTime2        int
 	chargeEarlyCancelled bool
 	a1Statuses           []NeuvA1Keys
 	a4Buff               []float64
@@ -41,7 +43,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 5
 
 	c.lastThorn = math.MinInt / 2
-	c.lastc6 = math.MinInt / 2
+	c.lastc4 = math.MinInt / 2
 	c.lastSkillParticle = math.MinInt / 2
 
 	c.chargeEarlyCancelled = false
@@ -70,10 +72,6 @@ func (c *char) Init() error {
 
 	if c.Base.Cons >= 4 {
 		c.c4()
-	}
-
-	if c.Base.Cons >= 6 {
-		return fmt.Errorf("%v: C6 is not supported", c.CharWrapper.Base.Key)
 	}
 
 	return nil

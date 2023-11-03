@@ -27,18 +27,10 @@ func TestAbilities(t *testing.T) {
 	}
 }
 
-var maxSupportedCons = map[keys.Char]int{
-	keys.Neuvillette: 5,
-}
-
 func testChar(t *testing.T, k keys.Char) {
 	c, trg := makeCore(2)
 	prof := defProfile(k)
 	prof.Base.Cons = 6
-	cons, ok := maxSupportedCons[prof.Base.Key]
-	if ok {
-		prof.Base.Cons = cons
-	}
 	idx, err := c.AddChar(prof)
 	if err != nil {
 		t.Errorf("error adding char: %v", err)
