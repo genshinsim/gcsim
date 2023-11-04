@@ -86,10 +86,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.chargeAttackShort(windup)
 	}
 
-	return c.chargeAttackJudegement(p, windup)
+	return c.chargeAttackJudgement(p, windup)
 }
 
-func (c *char) chargeAttackJudegement(p map[string]int, windup int) (action.Info, error) {
+func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info, error) {
 	c.chargeJudgeDur = 0
 	c.nextTickTime = getChargeJudgementHitmarkDelay(0)
 	// current framework doesn't really support actions getting shorter, so the legal eval is set to 0, but it may increase later
