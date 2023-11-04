@@ -276,7 +276,7 @@ func (c *char) consumeHp(src int) func() {
 
 func (c *char) consumeDroplet(g *common.SourcewaterDroplet) {
 	g.Kill()
-	// the healing is slightly delayed by 7f
+	// the healing is slightly delayed by 8f
 	c.QueueCharTask(func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
@@ -285,5 +285,5 @@ func (c *char) consumeDroplet(g *common.SourcewaterDroplet) {
 			Src:     c.MaxHP() * 0.16,
 			Bonus:   c.Stat(attributes.Heal),
 		})
-	}, 7)
+	}, 8)
 }
