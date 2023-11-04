@@ -83,8 +83,7 @@ func (c *char) c6DropletCheck(src int) func() {
 
 			// c6 only absorbs one droplet at a time
 			if len(droplets) > 0 {
-				droplets[c.Core.Combat.Rand.Intn(len(droplets))].Kill()
-				c.healWithDroplets()
+				c.consumeDroplet(droplets[c.Core.Combat.Rand.Intn(len(droplets))])
 				c.chargeJudgeDur += 60
 			}
 		}

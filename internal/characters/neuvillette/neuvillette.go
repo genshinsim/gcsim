@@ -84,16 +84,16 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) getSourcewaterDroplets() []combat.Gadget {
+func (c *char) getSourcewaterDroplets() []*common.SourcewaterDroplet {
 	playerPos := c.Core.Combat.Player().Pos()
-	droplets := make([]combat.Gadget, 0)
+	droplets := make([]*common.SourcewaterDroplet, 0)
 	for _, g := range c.Core.Combat.Gadgets() {
 		droplet, ok := g.(*common.SourcewaterDroplet)
 		if !ok {
 			continue
 		}
 		if droplet.Pos().Distance(playerPos) <= 15 {
-			droplets = append(droplets, g)
+			droplets = append(droplets, droplet)
 		}
 	}
 	return droplets

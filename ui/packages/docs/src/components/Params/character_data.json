@@ -841,7 +841,7 @@
     {
       "ability": "charge",
       "param": "ticks",
-      "desc": "Number of ticks for Charged Attack: Equitable Judgment. Default is maximum number of ticks (8 at c0), minimum 1. Only works if short = 0. If the number of ticks is not the maximum, the next action must be Burst, Skill, Dash, or Jump."
+      "desc": "Number of ticks for Charged Attack: Equitable Judgment. Default is maximum number of ticks, minimum 1. Only works if short = 0. If the number of ticks is not the maximum, the next action must be Burst, Skill, Dash, or Jump."
     }
   ]
 }
