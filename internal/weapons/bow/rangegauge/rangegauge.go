@@ -69,12 +69,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus((symbol[idx]), 30*60, true)
 
-		c.Log.NewEvent("dockhands-assistant proc'd", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("range-gauge proc'd", glog.LogWeaponEvent, char.Index).
 			Write("index", idx)
 
 		w.consumeEnergy()
 		return false
-	}, fmt.Sprintf("dockhands-assistant-heal-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("range-gauge-heal-%v", char.Base.Key.String()))
 
 	key := fmt.Sprintf("range-gauge-roused-%v", char.Base.Key.String())
 	c.Events.Subscribe(event.OnBurst, w.consumeEnergy, key)
@@ -84,8 +84,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 func (w *Weapon) consumeEnergy(args ...interface{}) bool {
 	baseEleDMGP := 0.055 + 0.015*float64(w.refine)
-	duration := 10 * 60
 	atkp := 0.02 + 0.01*float64(w.refine)
+	duration := 10 * 60
 
 	// check for active before deleting symbol
 	if w.char.StatusIsActive(icdKey) {
@@ -110,7 +110,7 @@ func (w *Weapon) consumeEnergy(args ...interface{}) bool {
 
 	// add atk buff
 	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("range-gauge-atk-boost", duration),
+		Base:         modifier.NewBaseWithHitlag("range-gauge-atk-buff", duration),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return w.atkp, true
