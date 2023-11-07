@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return false
 	}, fmt.Sprintf("range-gauge-heal-%v", char.Base.Key.String()))
 
-	key := fmt.Sprintf("range-gauge-roused-%v", char.Base.Key.String())
+	key := fmt.Sprintf("range-gauge-struggle-%v", char.Base.Key.String())
 	c.Events.Subscribe(event.OnBurst, w.consumeEnergy, key)
 	c.Events.Subscribe(event.OnSkill, w.consumeEnergy, key)
 	return w, nil
