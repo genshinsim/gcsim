@@ -170,6 +170,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"primordialjadewingedspear":     keys.PrimordialJadeWingedSpear,
 	"jadespear":                     keys.PrimordialJadeWingedSpear,
 	"pjws":                          keys.PrimordialJadeWingedSpear,
+	"prospectorsdrill":              keys.ProspectorsDrill,
 	"prototypeamber":                keys.PrototypeAmber,
 	"pamber":                        keys.PrototypeAmber,
 	"prototypearchaic":              keys.PrototypeArchaic,
