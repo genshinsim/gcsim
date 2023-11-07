@@ -56,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		mAtkSpd: make([]float64, attributes.EndStatType),
 	}
 
-	atkp := 0.12 + float64(p.Refine)*0.04
+	atkp := 0.12 + 0.04*float64(p.Refine)
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ATKP] = atkp
 
@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		w.onChangeHP()
 		return false
-	}, fmt.Sprintf("cashflow-na-ca-drain%v", char.Base.Key.String()))
+	}, fmt.Sprintf("cashflow-drain%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		index := args[1].(int)
@@ -109,7 +109,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		w.onChangeHP()
 		return false
-	}, fmt.Sprintf("cashflow-na-ca-heal-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("cashflow-heal-%v", char.Base.Key.String()))
 	return w, nil
 }
 
