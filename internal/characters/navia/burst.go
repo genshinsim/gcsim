@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
@@ -33,7 +35,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6),
+		combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.Player(), geometry.Point{Y: 0}, 12, 6),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -46,6 +48,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.Durability = 25
 	ai.Mult = burst[1][c.TalentLvlBurst()]
 
+	//TODO: Random Targetting
 	for i := 45; i <= 12*60; i = i + 45 {
 		c.Core.QueueAttack(
 			ai,
@@ -76,6 +79,8 @@ func (c *char) BurstCB() combat.AttackCBFunc {
 
 		if c.shrapnel < 6 {
 			c.shrapnel++
+			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index)
+
 		}
 
 		c.AddStatus("navia-q-shrapnel-icd", 2.4*60, false)

@@ -21,16 +21,19 @@ type char struct {
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
-
 	c.EnergyMax = 60
 	c.NormalHitNum = 4
 	c.SkillCon = 3
 	c.BurstCon = 5
-	c.shrapnel = 0
 	c.SetNumCharges(action.ActionSkill, 2)
-	c.shrapnelGain()
-
 	w.Character = &c
 
+	return nil
+}
+
+func (c *char) Init() error {
+	c.a4()
+	c.ShrapnelGain()
+	c.shrapnel = 0
 	return nil
 }

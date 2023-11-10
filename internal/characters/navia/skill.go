@@ -8,8 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 	"math"
 )
 
@@ -22,7 +25,6 @@ const (
 	skillPressCDStart = 16
 	skillPressHitmark = 17
 
-	skillHoldCDStart = 11
 	skillHoldHitmark = 12
 )
 
@@ -42,21 +44,19 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
-	c.SurgingBlade()
 	hitmark := 0
 	if hold > 0 {
 		hitmark += skillHoldHitmark + hold
+		c.SetCDWithDelay(action.ActionSkill, 9*60, hitmark)
 	} else {
 		hitmark += skillPressHitmark + hold
+		c.SetCDWithDelay(action.ActionSkill, 9*60, skillPressCDStart)
 	}
 
 	if p["shrapnel"] != 0 {
 		c.shrapnel = int(math.Min(float64(p["shrapnel"]), 6))
 	}
-	travel := 5
-	if p["travel"] != 0 {
-		travel = p["travel"]
-	}
+
 	shots := 1.0
 	switch c.shrapnel {
 	case 0:
@@ -82,11 +82,30 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// When firing, attack with the Surging Blade
 	c.SurgingBlade(hitmark)
 
+	excess := math.Max(float64(c.shrapnel-3), 0)
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("navia-skill-dmgup", 8*60),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != attacks.AttackTagExtra {
+				return nil, false
+			}
+			m := make([]float64, attributes.EndStatType)
+			m[attributes.DmgP] = 0.15 * excess
+			if c.Base.Cons >= 2 {
+				m[attributes.CR] = 0.08 * excess
+			}
+			if c.Base.Cons >= 6 {
+				m[attributes.CD] = 0.35 * excess
+			}
+			return m, true
+		},
+	})
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
 		hitmark,
-		travel+hitmark,
+		5+hitmark,
 		c.SkillCB(),
 	)
 	// C1 Energy Restoration and CD reduction
@@ -107,8 +126,18 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		},
 		hitmark,
 	)
+	// Add Geo Infusion
+	c.QueueCharTask(
+		c.a1,
+		hitmark+30,
+	)
 
-	return action.Info{}, nil
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillHoldFrames),
+		AnimationLength: skillHoldFrames[action.ActionDash],
+		CanQueueAfter:   skillHoldFrames[action.ActionDash],
+		State:           action.SkillState,
+	}, nil
 }
 
 func (c *char) SkillCB() combat.AttackCBFunc {
@@ -133,7 +162,21 @@ func (c *char) SkillCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) SurgingBlade(delay int) {
+func (c *char) ShrapnelGain() {
+
+	for _, crystal := range crystallise {
+		c.Core.Events.Subscribe(crystal, func(args ...interface{}) bool {
+			if c.shrapnel < 6 {
+				c.shrapnel++
+				c.Core.Log.NewEvent("Crystal Shrapnel gained from Crystallise", glog.LogCharacterEvent, c.Index)
+			}
+			return false
+		}, "shrapnel-gain")
+	}
+
+}
+
+func (c *char) SurgingBlade(hitmark int) {
 	if c.StatusIsActive("surging-blade-cd") {
 		return
 	}
@@ -151,23 +194,10 @@ func (c *char) SurgingBlade(delay int) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 0}, 3),
-		3+delay,
-		3+delay,
+		3+hitmark,
+		3+hitmark,
 		nil,
 	)
 	c.AddStatus("surging-blade-cd", 7*60, true)
 	return
-}
-
-func (c *char) ShrapnelGain() {
-
-	for _, crystal := range crystallise {
-		c.Core.Events.Subscribe(crystal, func(args ...interface{}) bool {
-			if c.shrapnel < 6 {
-				c.shrapnel++
-			}
-			return false
-		}, "shrapnel-gain")
-	}
-
 }
