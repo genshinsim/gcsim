@@ -54,6 +54,8 @@ const (
 	ICDTagLyneyEndBoomEnhanced
 	ICDTagTravelerDewdrop
 	ICDTagNeuvilletteC6
+	ICDTagFurinaSurintendanteChevalmarin
+	ICDTagFurinaGentilhommeUsher
 	ICDTagLength
 )
 
