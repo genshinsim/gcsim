@@ -1,6 +1,7 @@
 package navia
 
 import (
+	"fmt"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -57,6 +58,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.shrapnel = int(math.Min(float64(p["shrapnel"]), 6))
 	}
 
+	c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
+
 	shots := 1.0
 	switch c.shrapnel {
 	case 0:
@@ -83,13 +86,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.SurgingBlade(hitmark)
 
 	excess := math.Max(float64(c.shrapnel-3), 0)
+	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("navia-skill-dmgup", 8*60),
+		Base: modifier.NewBase("navia-skill-dmgup", hitmark+6),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagExtra {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 				return nil, false
 			}
-			m := make([]float64, attributes.EndStatType)
 			m[attributes.DmgP] = 0.15 * excess
 			if c.Base.Cons >= 2 {
 				m[attributes.CR] = 0.08 * excess
@@ -194,10 +197,16 @@ func (c *char) SurgingBlade(hitmark int) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 0}, 3),
-		3+hitmark,
-		3+hitmark,
+		10+hitmark,
+		10+hitmark,
 		nil,
 	)
-	c.AddStatus("surging-blade-cd", 7*60, true)
+	c.QueueCharTask(
+		func() {
+			c.AddStatus("surging-blade-cd", 7*60, true)
+		},
+		hitmark,
+	)
+
 	return
 }

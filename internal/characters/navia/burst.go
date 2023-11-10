@@ -68,11 +68,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) BurstCB() combat.AttackCBFunc {
-	if c.StatusIsActive("navia-q-shrapnel-icd") {
-		return nil
-	}
 
 	return func(a combat.AttackCB) {
+		if c.StatusIsActive("navia-q-shrapnel-icd") {
+			return
+		}
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
@@ -83,7 +83,7 @@ func (c *char) BurstCB() combat.AttackCBFunc {
 
 		}
 
-		c.AddStatus("navia-q-shrapnel-icd", 2.4*60, false)
+		c.AddStatus("navia-q-shrapnel-icd", 2.4*60-1, false)
 	}
 
 }
