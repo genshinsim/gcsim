@@ -63,6 +63,8 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		burstHitmark+burstDuration,
 	)
 
+=======
+>>>>>>> 9997d67d6 (Navia Initial Commit. Todo, fix SurgingBlade() and SkillCB() not being registered, and add skill buffs, and cons. Also fix Burst hitbox and targetting. Also Frames)
 	c.ConsumeEnergy(5)
 	c.SetCD(action.ActionBurst, 15*60)
 

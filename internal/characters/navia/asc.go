@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+var a4ATKP = 0.2
+
 func init() {
 
 }
@@ -70,7 +72,7 @@ func (c *char) a4() {
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.2 * float64(ele)
+	m[attributes.ATKP] = a4ATKP * float64(ele)
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("navia-a4", -1),
 		AffectedStat: attributes.ATKP,
@@ -78,4 +80,5 @@ func (c *char) a4() {
 			return m, true
 		},
 	})
+
 }
