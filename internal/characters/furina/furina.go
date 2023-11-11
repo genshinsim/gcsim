@@ -15,10 +15,31 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const ()
-
 func init() {
 	core.RegisterCharFunc(keys.Furina, NewChar)
+}
+
+type Float interface {
+	~float32 | ~float64
+}
+type Unsigned interface {
+	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+}
+type Signed interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+type Integer interface {
+	Signed | Unsigned
+}
+type Ordered interface {
+	Integer | Float | ~string
+}
+
+func min[T Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 type char struct {
@@ -51,7 +72,7 @@ func (c *char) Init() error {
 	c.maxBurstStacks = 300
 
 	if c.Base.Cons >= 1 {
-		c.maxBurstStacks = 450
+		c.maxBurstStacks = 400
 	}
 
 	c.burstStacks = 0
