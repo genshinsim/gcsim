@@ -28,7 +28,7 @@ type char struct {
 	a4Buff              []float64
 	a1HealsStopFrameMap []int
 	a1HealsFlagMap      []bool
-	lastSkillUseFrame   int
+	lastSummonFrame     int
 	arkhe               State
 }
 
