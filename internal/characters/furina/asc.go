@@ -1,6 +1,8 @@
 package furina
 
 import (
+	"strings"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -84,6 +86,9 @@ func (c *char) a4() {
 				return nil, false
 			}
 
+			if !strings.Contains(atk.Info.Abil, salonMemberKey) {
+				return nil, false
+			}
 			return c.a4Buff, true
 		},
 	})

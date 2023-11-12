@@ -23,6 +23,8 @@ const (
 	skillKey         = "furina-skill"
 	skillMaxDuration = 1800
 
+	salonMemberKey = "Salon Member"
+
 	chevalmarinIntervalMean   = 90
 	chevalmarinIntervalStddev = 5
 	chevalmarinTravelMean     = 10
@@ -71,7 +73,7 @@ func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
 func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       "Salon Solitaire",
+		Abil:       "Salon Solitaire: Ousia Bubble",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -135,7 +137,7 @@ func (c *char) surintendanteChevalmarin(src int) func() {
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Salon Solitaire: Surintendante Chevalmarin",
+			Abil:       fmt.Sprintf("%v: Surintendante Chevalmarin", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagFurinaChevalmarin,
 			ICDGroup:   attacks.ICDGroupFurinaSalonSolitaire,
@@ -171,7 +173,7 @@ func (c *char) gentilhommeUsher(src int) func() {
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Salon Solitaire: Gentilhomme Usher",
+			Abil:       fmt.Sprintf("%v: Gentilhomme Usher", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagFurinaUsher,
 			ICDGroup:   attacks.ICDGroupFurinaSalonSolitaire,
@@ -208,7 +210,7 @@ func (c *char) mademoiselleCrabaletta(src int) func() {
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "Salon Solitaire: Mademoiselle Crabaletta",
+			Abil:       fmt.Sprintf("%v: Mademoiselle Crabaletta", salonMemberKey),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -243,7 +245,7 @@ func (c *char) singerOfManyWaters(src int) func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Core.Player.Active(),
-			Message: "Melody Loop (Tick)",
+			Message: "Singer of Many Waters",
 			Src:     skillSingerHealFlat[c.TalentLvlSkill()] + skillSingerHealScale[c.TalentLvlSkill()]*c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
