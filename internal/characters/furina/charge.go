@@ -30,7 +30,7 @@ func init() {
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Charge"),
+		Abil:       fmt.Sprintf("Charge %v", c.arkhe),
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagNormalAttack,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -51,9 +51,15 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		chargeHitmark,
 	)
 	if c.arkhe == ousia {
-		c.arkhe = pneuma
+		c.QueueCharTask(func() {
+			c.arkhe = pneuma
+			c.summonSinger(c.Core.F, 0)
+		}, chargeHitmark)
 	} else {
-		c.arkhe = ousia
+		c.QueueCharTask(func() {
+			c.arkhe = ousia
+			c.summonSalonMembers(c.Core.F, 0)
+		}, chargeHitmark)
 	}
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
