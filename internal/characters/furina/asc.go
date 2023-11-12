@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	a1HealKey = "furina-a1"
 	a4BuffKey = "furina-a4"
 )
 
@@ -26,7 +27,6 @@ func (c *char) a1() {
 
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		hi := args[0].(*player.HealInfo)
-		target := hi.Target
 		overheal := args[3].(float64)
 
 		if hi.Caller == c.Index {
@@ -37,40 +37,35 @@ func (c *char) a1() {
 			return false
 		}
 
-		for _, char := range c.Core.Player.Chars() {
-			if char.Index == target {
-				continue
-			}
-
-			c.a1HealsStopFrameMap[char.Index] = c.Core.F + 240
-
-			if !c.a1HealsFlagMap[char.Index] {
-				c.Core.Tasks.Add(c.a1HealingOverTime(char.Index), 120)
-				c.a1HealsFlagMap[char.Index] = true
-			}
+		if !c.StatusIsActive(a1HealKey) {
+			c.Core.Tasks.Add(c.a1HealingOverTime(), 120)
 		}
+
+		c.AddStatus(a1HealKey, 240, false)
 
 		return false
 	}, "furina-a1")
 }
 
-func (c *char) a1HealingOverTime(target int) func() {
+func (c *char) a1HealingOverTime() func() {
 	return func() {
-		if c.a1HealsStopFrameMap[target] <= c.Core.F {
-			c.a1HealsFlagMap[target] = false
+		if !c.StatusIsActive(a1HealKey) {
 			return
 		}
+		heal := c.Stat(attributes.Heal)
+		for target := range c.Core.Player.Chars() {
+			amt := c.Core.Player.Chars()[target].MaxHP() * 0.02
+			c.Core.Player.Heal(player.HealInfo{
+				Caller:  c.Index,
+				Target:  target,
+				Type:    player.HealTypePercent,
+				Message: "Endless Waltz",
+				Src:     amt,
+				Bonus:   heal,
+			})
+		}
 
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  target,
-			Type:    player.HealTypePercent,
-			Message: "Endless Waltz",
-			Src:     0.02,
-			Bonus:   c.Stat(attributes.Heal),
-		})
-
-		c.Core.Tasks.Add(c.a1HealingOverTime(target), 120)
+		c.Core.Tasks.Add(c.a1HealingOverTime(), 120)
 	}
 }
 
@@ -99,8 +94,7 @@ func (c *char) a4Tick() {
 		return
 	}
 
-	maxHP := c.MaxHP()
-	var dmgBuff = maxHP / 1000 * 0.007
+	var dmgBuff = c.MaxHP() / 1000 * 0.007
 
 	if dmgBuff > 0.28 {
 		dmgBuff = 0.28
