@@ -19,6 +19,9 @@ func (c *char) a1() {
 		return
 	}
 
+	c.a1HealsStopFrameMap = make([]int, len(c.Core.Player.Chars()))
+	c.a1HealsFlagMap = make([]bool, len(c.Core.Player.Chars()))
+
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		hi := args[0].(*player.HealInfo)
 		target := hi.Target
@@ -73,7 +76,7 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-
+	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4BuffKey, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {

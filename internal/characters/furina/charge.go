@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	chargeFrames   []int
-	chargeHitmarks = []int{20, 27, 37}
-	chargeOffsets  = []float64{1, 1, 1.5}
+	chargeFrames  []int
+	chargeHitmark = 30
+	chargeOffset  = 0.0
 )
 
 func init() {
@@ -28,39 +28,37 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	for i, mult := range charge {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       fmt.Sprintf("Charge %v", i),
-			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagNormalAttack,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeSlash,
-			Element:    attributes.Physical,
-			Durability: 25,
-			Mult:       mult[c.TalentLvlAttack()],
-		}
-		if i == 2 {
-			ai.HitlagFactor = 0.01
-			ai.HitlagHaltFrames = 0.1 * 60
-			ai.CanBeDefenseHalted = true
-		}
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: chargeOffsets[i]},
-				2.8,
-			),
-			chargeHitmarks[i],
-			chargeHitmarks[i],
-		)
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       fmt.Sprintf("Charge"),
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
+		Element:    attributes.Physical,
+		Durability: 25,
+		Mult:       charge[c.TalentLvlAttack()],
 	}
 
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: chargeOffset},
+			2.8,
+		),
+		chargeHitmark,
+		chargeHitmark,
+	)
+	if c.arkhe == ousia {
+		c.arkhe = pneuma
+	} else {
+		c.arkhe = ousia
+	}
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
+		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
 	}, nil
 }

@@ -1,6 +1,8 @@
 package furina
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -23,6 +25,27 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	switch c.arkhe {
+	case ousia:
+		return c.skillOusia(p)
+	case pneuma:
+		return c.skillPneuma(p)
+	default:
+		return action.Info{}, fmt.Errorf("%v: character is in unknown arkhe: %v", c.CharWrapper.Base.Key, c.arkhe)
+	}
+}
+
+func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
+	c.SetCDWithDelay(action.ActionSkill, 1200, 0)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillFrames),
+		AnimationLength: skillFrames[action.InvalidAction],
+		CanQueueAfter:   skillFrames[action.ActionSwap],
+		State:           action.SkillState,
+	}, nil
+}
+func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Salon Solitaire",
@@ -32,7 +55,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
-		FlatDmg:    0.134 * c.MaxHP(),
+		FlatDmg:    skillOusiaBubble[c.TalentLvlSkill()] * c.MaxHP(),
 	}
 
 	c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, 0, func(ac combat.AttackCB) {
@@ -56,7 +79,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) surintendanteChevalmarin(src int) func() {
 	return func() {
-		if src != c.lastSkillUseFrame || c.Core.F-src > skillMaxDuration {
+		if c.arkhe != ousia {
+			return
+		}
+
+		if src != c.lastSkillUseFrame {
+			return
+		}
+
+		if c.Core.F-src > skillMaxDuration {
 			return
 		}
 
@@ -72,7 +103,7 @@ func (c *char) surintendanteChevalmarin(src int) func() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
-			FlatDmg:    0.0549 * c.MaxHP() * damageMultiplier,
+			FlatDmg:    skillChevalmarin[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, 0, c.particleCB)
@@ -83,7 +114,15 @@ func (c *char) surintendanteChevalmarin(src int) func() {
 
 func (c *char) gentilhommeUsher(src int) func() {
 	return func() {
-		if src != c.lastSkillUseFrame || c.Core.F-src > skillMaxDuration {
+		if c.arkhe != ousia {
+			return
+		}
+
+		if src != c.lastSkillUseFrame {
+			return
+		}
+
+		if c.Core.F-src > skillMaxDuration {
 			return
 		}
 
@@ -99,7 +138,7 @@ func (c *char) gentilhommeUsher(src int) func() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
-			FlatDmg:    0.1013 * c.MaxHP() * damageMultiplier,
+			FlatDmg:    skillUsher[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, 0, c.particleCB)
@@ -110,7 +149,14 @@ func (c *char) gentilhommeUsher(src int) func() {
 
 func (c *char) mademoiselleCrabaletta(src int) func() {
 	return func() {
-		if src != c.lastSkillUseFrame || c.Core.F-src > skillMaxDuration {
+		if c.arkhe != ousia {
+		}
+
+		if src != c.lastSkillUseFrame {
+			return
+		}
+
+		if c.Core.F-src > skillMaxDuration {
 			return
 		}
 
@@ -126,7 +172,7 @@ func (c *char) mademoiselleCrabaletta(src int) func() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
-			FlatDmg:    0.1409 * c.MaxHP() * damageMultiplier,
+			FlatDmg:    skillCrabaletta[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), 0, 0, c.particleCB)
