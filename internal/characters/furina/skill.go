@@ -274,7 +274,7 @@ func (c *char) particleCB(ac combat.AttackCB) {
 func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
 	var alliesWithDrainedHPCounter = 0
 
-	for _, char := range c.Core.Player.Chars() {
+	for i, char := range c.Core.Player.Chars() {
 		currentHPRatio := char.CurrentHPRatio()
 
 		if currentHPRatio <= 0.5 {
@@ -283,13 +283,17 @@ func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
 
 		alliesWithDrainedHPCounter++
 
+		if c.Core.Player.Active() == i && (c.Core.Player.CurrentState() == action.BurstState || c.Core.Player.CurrentState() == action.DashState) {
+			// her skill does not drain the HP of active characters that are in iframes (burst or dash)
+			return alliesWithDrainedHPCounter
+		}
 		hpDrain := char.MaxHP() * hpDrainRatio
 
 		c.Core.Player.Drain(player.DrainInfo{
 			ActorIndex: char.Index,
 			Abil:       "Salon Solitaire",
 			Amount:     hpDrain,
-			External:   true,
+			External:   false,
 		})
 	}
 
