@@ -28,42 +28,49 @@ func (c *char) c1(shrapnel int) {
 // from As the Sunlit Sky's Singing Salute will strike near the location of the hit.
 // Up to one instance of Fire Support can be triggered each time Ceremonial Crystalshot is used,
 // and DMG dealt by Fire Support in this way is considered Elemental Burst DMG.
-func (c *char) c2() combat.AttackCBFunc {
+func (c *char) c2(a combat.AttackCB) {
 	if c.Base.Cons < 2 {
-		return nil
+		return
 	}
-	return func(a combat.AttackCB) {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "The President's Pursuit of Victory",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeBlunt,
-			Element:    attributes.Geo,
-			Durability: 25,
-			Mult:       burst[1][c.TalentLvlSkill()],
-		}
-		//currently not snapshotting
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3), 0, 0)
+	if !c.naviaburst {
+		return
 	}
+
+	// Function doesn't check for enemy type or limit as assumes that the CB will check or it.
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "The President's Pursuit of Victory",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		Element:    attributes.Geo,
+		Durability: 25,
+		Mult:       burst[1][c.TalentLvlSkill()],
+	}
+	c.Core.QueueAttackWithSnap(
+		ai,
+		c.artillerySnapshot.Snapshot,
+		combat.NewCircleHitOnTarget(a.Target.Pos(), nil, 3),
+		0,
+		nil,
+	)
 }
 
 // When As the Sunlit Sky's Singing Salute hits an opponent,
 // that opponent's Geo RES will be decreased by 20% for 8s.
-func (c *char) c4() combat.AttackCBFunc {
+func (c *char) c4(a combat.AttackCB) {
 	if c.Base.Cons < 4 {
-		return nil
+		return
 	}
-	return func(a combat.AttackCB) {
-		e := a.Target.(*enemy.Enemy)
-		if e.Type() != targets.TargettableEnemy {
-			return
-		}
-		e.AddResistMod(combat.ResistMod{
-			Base:  modifier.NewBaseWithHitlag("navia-c4-shred", 8*60),
-			Ele:   attributes.Geo,
-			Value: -0.2,
-		})
+	e := a.Target.(*enemy.Enemy)
+	if e.Type() != targets.TargettableEnemy {
+		return
 	}
+	e.AddResistMod(combat.ResistMod{
+		Base:  modifier.NewBaseWithHitlag("navia-c4-shred", 8*60),
+		Ele:   attributes.Geo,
+		Value: -0.2,
+	})
 }

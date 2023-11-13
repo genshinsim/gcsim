@@ -25,8 +25,10 @@ var crystallise = []event.Event{event.OnCrystallizeElectro, event.OnCrystallizeC
 const (
 	skillPressCDStart = 16
 	skillPressHitmark = 17
+	skillHoldHitmark  = 12
 
-	skillHoldHitmark = 12
+	particleICDKey = "navia-particle-icd"
+	arkheICDKey    = "navia-arkhe-icd"
 )
 
 func init() {
@@ -82,8 +84,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       skillshotgun[c.TalentLvlSkill()] * shots,
 	}
-	// When firing, attack with the Surging Blade
-	c.SurgingBlade(hitmark)
 
 	excess := math.Max(float64(c.shrapnel-3), 0)
 	m := make([]float64, attributes.EndStatType)
@@ -109,7 +109,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
 		hitmark,
 		5+hitmark,
-		c.SkillCB(),
+		c.SkillCB(hitmark),
 	)
 	// C1 Energy Restoration and CD reduction
 	if c.Base.Cons >= 1 {
@@ -143,7 +143,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) SkillCB() combat.AttackCBFunc {
+func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
 		e := a.Target.(*enemy.Enemy)
@@ -151,14 +151,23 @@ func (c *char) SkillCB() combat.AttackCBFunc {
 			return
 		}
 
-		c.c4()
+		// When firing, attack with the Surging Blade
+		c.SurgingBlade(hitmark)
+
+		c.c4(a)
 
 		if done {
 			return
 		}
-		c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Geo, c.ParticleDelay)
-
-		c.c2()
+		c.c2(a)
+		if !c.StatusIsActive(particleICDKey) {
+			count := 3.0
+			if c.Core.Rand.Float64() < 0.5 {
+				count = 4
+			}
+			c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
+			c.AddStatus(particleICDKey, 0.2*60, true)
+		}
 
 		done = true
 
@@ -180,7 +189,7 @@ func (c *char) ShrapnelGain() {
 }
 
 func (c *char) SurgingBlade(hitmark int) {
-	if c.StatusIsActive("surging-blade-cd") {
+	if c.StatusIsActive(arkheICDKey) {
 		return
 	}
 	ai := combat.AttackInfo{
@@ -203,7 +212,7 @@ func (c *char) SurgingBlade(hitmark int) {
 	)
 	c.QueueCharTask(
 		func() {
-			c.AddStatus("surging-blade-cd", 7*60, true)
+			c.AddStatus(arkheICDKey, 7*60, true)
 		},
 		hitmark,
 	)

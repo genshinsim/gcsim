@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -15,7 +16,9 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	shrapnel int
+	shrapnel          int
+	artillerySnapshot combat.AttackEvent
+	naviaburst        bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -33,7 +36,20 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
-	c.ShrapnelGain()
 	c.shrapnel = 0
+	c.ShrapnelGain()
 	return nil
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "shrapnel":
+		return c.shrapnel, nil
+	case "navia-burst":
+		return c.naviaburst, nil
+	case "artillery":
+		return c.naviaburst, nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }

@@ -13,7 +13,12 @@ import (
 
 var burstFrames []int
 
-const burstHitmark = 100
+const (
+	burstHitmark  = 100
+	burstKey      = "navia-artillery"
+	burstDuration = 720
+	targetRadius  = 10
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(114)
@@ -40,6 +45,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstHitmark,
 	)
 
+	c.QueueCharTask(
+		func() {
+			c.AddStatus(burstKey, burstDuration, false)
+			c.naviaburst = true
+		},
+		burstHitmark,
+	)
+	c.QueueCharTask(
+		func() {
+			c.naviaburst = false
+		},
+		burstHitmark+burstDuration,
+	)
+
 	c.ConsumeEnergy(5)
 	c.SetCD(action.ActionBurst, 15*60)
 
@@ -48,12 +67,22 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.Durability = 25
 	ai.Mult = burst[1][c.TalentLvlBurst()]
 
-	//TODO: Random Targetting
-	for i := 45; i <= 12*60; i = i + 45 {
-		c.Core.QueueAttack(
+	snap := c.Snapshot(&ai)
+	c.artillerySnapshot = combat.AttackEvent{
+		Info:        ai,
+		Snapshot:    snap,
+		SourceFrame: c.Core.F,
+	}
+
+	for i := 45; i <= burstDuration; i = i + 45 {
+
+		c.Core.QueueAttackWithSnap(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3),
-			burstHitmark,
+			c.artillerySnapshot.Snapshot,
+			combat.NewCircleHitOnTarget(
+				c.location(targetRadius),
+				nil,
+				3),
 			burstHitmark+i,
 			c.BurstCB(),
 		)
@@ -86,4 +115,29 @@ func (c *char) BurstCB() combat.AttackCBFunc {
 		c.AddStatus("navia-q-shrapnel-icd", 2.4*60-1, false)
 	}
 
+}
+
+// random location
+func (c *char) location(r float64) geometry.Point {
+	enemy := c.Core.Combat.RandomEnemyWithinArea(
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 10),
+		nil,
+	)
+	var pos geometry.Point
+	if enemy != nil {
+		pos = enemy.Pos()
+	} else {
+		x := c.Core.Rand.Float64()*r*2 - r
+		y := c.Core.Rand.Float64()*r*2 - r
+		for x*x+y*y > r*r {
+			x = c.Core.Rand.Float64()*r*2 - r
+			y = c.Core.Rand.Float64()*r*2 - r
+
+		}
+		pos = geometry.Point{
+			X: x,
+			Y: y,
+		}
+	}
+	return pos
 }
