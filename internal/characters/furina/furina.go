@@ -12,12 +12,22 @@ func init() {
 	core.RegisterCharFunc(keys.Furina, NewChar)
 }
 
-type State int
+type Arkhe int
 
 const (
-	ousia State = iota
+	ousia Arkhe = iota
 	pneuma
 )
+
+func (a Arkhe) String() string {
+	switch a {
+	case ousia:
+		return "Ousia"
+	case pneuma:
+		return "Pneuma"
+	}
+	return "unknown"
+}
 
 type char struct {
 	*tmpl.Character
@@ -28,8 +38,8 @@ type char struct {
 	a4Buff              []float64
 	a1HealsStopFrameMap []int
 	a1HealsFlagMap      []bool
-	lastSummonFrame     int
-	arkhe               State
+	lastSummonSrc       int
+	arkhe               Arkhe
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

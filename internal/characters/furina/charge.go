@@ -29,15 +29,17 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       fmt.Sprintf("Charge %v", c.arkhe),
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNormalAttack,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Physical,
-		Durability: 25,
-		Mult:       charge[c.TalentLvlAttack()],
+		ActorIndex:         c.Index,
+		Abil:               fmt.Sprintf("Charge %v", c.arkhe),
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
+		Element:            attributes.Physical,
+		HitlagHaltFrames:   0.02 * 60,
+		CanBeDefenseHalted: false,
+		Durability:         25,
+		Mult:               charge[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(
@@ -45,7 +47,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: chargeOffset},
-			2.8,
+			2.6,
 		),
 		chargeHitmark,
 		chargeHitmark,

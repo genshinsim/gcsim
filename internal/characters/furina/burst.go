@@ -122,7 +122,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		FlatDmg:    c.MaxHP() * burstDMG[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, 0, func(ac combat.AttackCB) {
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), burstHitmark, burstHitmark)
+	c.QueueCharTask(func() {
 		c.curFanfare = 0
 
 		if c.Base.Cons >= 1 {
@@ -130,7 +131,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 
 		c.AddStatus(burstKey, 18*60, false)
-	})
+	}, burstHitmark+1)
 
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(7)

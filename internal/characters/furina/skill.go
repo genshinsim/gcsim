@@ -17,7 +17,7 @@ var skillFrames []int
 
 const (
 	skillHitmark     = 30
-	salonInitialTick = 30
+	salonInitialTick = 60
 	summonDelay      = 30
 	particleICDKey   = "furina-skill-particle-icd"
 	skillKey         = "furina-skill"
@@ -109,6 +109,7 @@ func (c *char) calcRandNorm(mean, std int) int {
 
 func (c *char) summonSalonMembers(src, delay int) {
 	// TODO: figure out first action time
+	c.lastSummonSrc = src
 	c.Core.Tasks.Add(c.surintendanteChevalmarin(src), delay+salonInitialTick)
 	c.Core.Tasks.Add(c.gentilhommeUsher(src), delay+salonInitialTick)
 	c.Core.Tasks.Add(c.mademoiselleCrabaletta(src), delay+salonInitialTick)
@@ -124,7 +125,7 @@ func (c *char) surintendanteChevalmarin(src int) func() {
 			return
 		}
 
-		if src != c.lastSummonFrame {
+		if src != c.lastSummonSrc {
 			return
 		}
 
@@ -147,10 +148,14 @@ func (c *char) surintendanteChevalmarin(src int) func() {
 			FlatDmg:    skillChevalmarin[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 		travel := c.calcRandNorm(chevalmarinTravelMean, chevalmarinTravelStddev)
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+		if c.Base.Cons >= 4 {
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB, c.c4cb)
+		} else {
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+		}
 
 		interval := c.calcRandNorm(chevalmarinIntervalMean, chevalmarinIntervalStddev)
-		c.Core.Tasks.Add(c.surintendanteChevalmarin(src), interval) // 1.5s interval
+		c.Core.Tasks.Add(c.surintendanteChevalmarin(src), interval)
 	}
 }
 
@@ -160,7 +165,7 @@ func (c *char) gentilhommeUsher(src int) func() {
 			return
 		}
 
-		if src != c.lastSummonFrame {
+		if src != c.lastSummonSrc {
 			return
 		}
 
@@ -184,10 +189,14 @@ func (c *char) gentilhommeUsher(src int) func() {
 		}
 
 		travel := c.calcRandNorm(usherTravelMean, usherTravelStddev)
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+		if c.Base.Cons >= 4 {
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB, c.c4cb)
+		} else {
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+		}
 
 		interval := c.calcRandNorm(usherIntervalMean, usherIntervalStddev)
-		c.Core.Tasks.Add(c.gentilhommeUsher(src), interval) // 3.75s interval
+		c.Core.Tasks.Add(c.gentilhommeUsher(src), interval)
 	}
 }
 
@@ -197,7 +206,7 @@ func (c *char) mademoiselleCrabaletta(src int) func() {
 			return
 		}
 
-		if src != c.lastSummonFrame {
+		if src != c.lastSummonSrc {
 			return
 		}
 
@@ -221,7 +230,12 @@ func (c *char) mademoiselleCrabaletta(src int) func() {
 		}
 
 		travel := c.calcRandNorm(crabalettaTravelMean, crabalettaTravelStddev)
-		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+
+		if c.Base.Cons >= 4 {
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB, c.c4cb)
+		} else {
+			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+		}
 
 		interval := c.calcRandNorm(crabalettaIntervalMean, crabalettaIntervalStddev)
 		c.Core.Tasks.Add(c.mademoiselleCrabaletta(src), interval)
@@ -234,7 +248,7 @@ func (c *char) singerOfManyWaters(src int) func() {
 			return
 		}
 
-		if src != c.lastSummonFrame {
+		if src != c.lastSummonSrc {
 			return
 		}
 
@@ -285,7 +299,7 @@ func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
 
 		if c.Core.Player.Active() == i && (c.Core.Player.CurrentState() == action.BurstState || c.Core.Player.CurrentState() == action.DashState) {
 			// her skill does not drain the HP of active characters that are in iframes (burst or dash)
-			return alliesWithDrainedHPCounter
+			continue
 		}
 		hpDrain := char.MaxHP() * hpDrainRatio
 

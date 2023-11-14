@@ -12,11 +12,14 @@ import (
 )
 
 var (
-	attackFrames          [][]int
-	attackHitmarks        = []int{13, 18, 17, 39}
-	attackHitlagHaltFrame = []float64{0.03, 0.03, 0.05, 0.06}
-	attackHitboxes        = []float64{2, 3.8, 2, 2.1}
-	attackOffsets         = []float64{0.6, -0.3, 0.4, 1}
+	attackFrames   [][]int
+	attackHitmarks = []int{13, 18, 17, 39}
+	attackOffsets  = []float64{1.4, 0.85, 0.95, 3}
+
+	// these ones should be correct
+	attackHitlagHaltFrame = []float64{0.01, 0.01, 0.02, 0.02}
+	attackHitboxes        = [][]float64{{2.8, 1.5}, {1.7}, {1.9}, {6, 5}}
+	attackStrikeType      = []attacks.StrikeType{attacks.StrikeTypePierce, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash, attacks.StrikeTypePierce}
 )
 
 const normalHitNum = 4
@@ -49,7 +52,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeSlash,
+		StrikeType:         attackStrikeType[c.NormalCounter],
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -57,17 +60,23 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
 		CanBeDefenseHalted: true,
 	}
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[c.NormalCounter],
-	)
-	if c.NormalCounter == 1 {
+
+	var ap combat.AttackPattern
+	switch c.NormalCounter {
+	case 0:
+	case 3:
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter],
-			attackHitboxes[c.NormalCounter],
+			attackHitboxes[c.NormalCounter][0],
+			attackHitboxes[c.NormalCounter][1],
+		)
+	case 1:
+	case 2:
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			attackHitboxes[c.NormalCounter][0],
 		)
 	}
 	c.QueueCharTask(func() {
