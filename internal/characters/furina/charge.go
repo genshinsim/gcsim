@@ -32,7 +32,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Charge %v", c.arkhe),
 		AttackTag:          attacks.AttackTagExtra,
-		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDTag:             attacks.ICDTagExtraAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
