@@ -29,16 +29,19 @@ const (
 	chevalmarinIntervalStddev = 5
 	chevalmarinTravelMean     = 10
 	chevalmarinTravelStddev   = 3
+	chevalmarinAoE            = 0.5
 
 	usherIntervalMean   = 225
 	usherIntervalStddev = 5
 	usherTravelMean     = 10
 	usherTravelStddev   = 3
+	usherAoE            = 2.5
 
 	crabalettaIntervalMean   = 256
 	crabalettaIntervalStddev = 5
 	crabalettaTravelMean     = 5
 	crabalettaTravelStddev   = 2
+	crabalettaAoE            = 3.5
 
 	singerInterval = 120
 )
@@ -147,11 +150,12 @@ func (c *char) surintendanteChevalmarin(src int) func() {
 			Durability: 25,
 			FlatDmg:    skillChevalmarin[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, chevalmarinAoE)
 		travel := c.calcRandNorm(chevalmarinTravelMean, chevalmarinTravelStddev)
 		if c.Base.Cons >= 4 {
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB, c.c4cb)
+			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB, c.c4cb)
 		} else {
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB)
 		}
 
 		interval := c.calcRandNorm(chevalmarinIntervalMean, chevalmarinIntervalStddev)
@@ -188,11 +192,12 @@ func (c *char) gentilhommeUsher(src int) func() {
 			FlatDmg:    skillUsher[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, usherAoE)
 		travel := c.calcRandNorm(usherTravelMean, usherTravelStddev)
 		if c.Base.Cons >= 4 {
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB, c.c4cb)
+			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB, c.c4cb)
 		} else {
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB)
 		}
 
 		interval := c.calcRandNorm(usherIntervalMean, usherIntervalStddev)
@@ -229,12 +234,13 @@ func (c *char) mademoiselleCrabaletta(src int) func() {
 			FlatDmg:    skillCrabaletta[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, crabalettaAoE)
 		travel := c.calcRandNorm(crabalettaTravelMean, crabalettaTravelStddev)
 
 		if c.Base.Cons >= 4 {
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB, c.c4cb)
+			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB, c.c4cb)
 		} else {
-			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key()), travel, travel, c.particleCB)
+			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB)
 		}
 
 		interval := c.calcRandNorm(crabalettaIntervalMean, crabalettaIntervalStddev)
