@@ -74,3 +74,16 @@ func (c *char) Init() error {
 
 	return nil
 }
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "ousia":
+		return c.arkhe == ousia, nil
+	case "fanfare":
+		return c.curFanfare, nil
+	case "c6-count":
+		return c.c6Count, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}

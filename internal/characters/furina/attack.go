@@ -12,13 +12,15 @@ import (
 )
 
 var (
-	attackFrames   [][]int
-	attackHitmarks = []int{13, 18, 17, 39}
-	attackOffsets  = []float64{-1.4, -0.85, -0.95, -3}
+	attackFrames    [][]int
+	attackHitmarks  = []int{13, 18, 17, 39}
+	attackOffsets   = []float64{-1.4, -0.85, -0.95, -3}
+	attackOffsetsC6 = []float64{-1.5, -1.15, -1.1, -3}
 
 	// these ones should be correct
 	attackHitlagHaltFrame = []float64{0.01, 0.01, 0.02, 0.02}
 	attackHitboxes        = [][]float64{{2.8, 1.5}, {1.7}, {1.9}, {6, 5}}
+	attackHitboxesC6      = [][]float64{{3, 1.5}, {2.3}, {2.2}, {6, 5}}
 	attackStrikeType      = []attacks.StrikeType{attacks.StrikeTypePierce, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash, attacks.StrikeTypePierce}
 )
 
@@ -62,26 +64,42 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	var ap combat.AttackPattern
-	switch c.NormalCounter {
-	case 0, 3:
-		ap = combat.NewBoxHitOnTarget(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][0],
-			attackHitboxes[c.NormalCounter][1],
-		)
-	case 1, 2:
-		ap = combat.NewCircleHitOnTarget(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][0],
-		)
-	}
+
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 		ai.Element = attributes.Hydro
 		ai.FlatDmg = c.c6BonusDMG()
+		switch c.NormalCounter {
+		case 0, 3:
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsetsC6[c.NormalCounter]},
+				attackHitboxesC6[c.NormalCounter][0],
+				attackHitboxesC6[c.NormalCounter][1],
+			)
+		case 1, 2:
+			ap = combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsetsC6[c.NormalCounter]},
+				attackHitboxesC6[c.NormalCounter][0],
+			)
+		}
 		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.c6cb)
 	} else {
+		switch c.NormalCounter {
+		case 0, 3:
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
+			)
+		case 1, 2:
+			ap = combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				attackHitboxes[c.NormalCounter][0],
+			)
+		}
 		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 	}
 
