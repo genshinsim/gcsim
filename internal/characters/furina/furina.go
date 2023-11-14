@@ -68,5 +68,9 @@ func (c *char) Init() error {
 
 	c.burstInit()
 
+	if c.Base.Cons >= 2 {
+		c.c2()
+	}
+
 	return nil
 }

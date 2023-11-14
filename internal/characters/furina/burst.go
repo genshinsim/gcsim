@@ -34,6 +34,7 @@ func (c *char) burstInit() {
 		c.maxFanfare = 400
 	}
 	if c.Base.Cons >= 2 {
+		// 400 + 140/0.35 = 800
 		c.maxFanfare = 800
 	}
 	c.curFanfare = 0
@@ -77,7 +78,7 @@ func (c *char) burstInit() {
 		c.curFanfare = common.Min(c.maxFanfare, c.curFanfare+stacksAmount)
 
 		return false
-	}, "furina-burst-stack-on-hp-drain")
+	}, "furina-fanfare-on-hp-drain")
 
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		if !c.StatusIsActive(burstKey) {
@@ -106,7 +107,7 @@ func (c *char) burstInit() {
 		c.curFanfare = common.Min(c.maxFanfare, c.curFanfare+stacksAmount)
 
 		return false
-	}, "furina-burst-stack-on-heal")
+	}, "furina-fanfare-on-heal")
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
