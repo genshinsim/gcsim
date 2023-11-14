@@ -63,16 +63,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	var ap combat.AttackPattern
 	switch c.NormalCounter {
-	case 0:
-	case 3:
+	case 0, 3:
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 			attackHitboxes[c.NormalCounter][1],
 		)
-	case 1:
-	case 2:
+	case 1, 2:
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
