@@ -14,7 +14,7 @@ import (
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{13, 18, 17, 39}
-	attackOffsets  = []float64{1.4, 0.85, 0.95, 3}
+	attackOffsets  = []float64{-1.4, -0.85, -0.95, -3}
 
 	// these ones should be correct
 	attackHitlagHaltFrame = []float64{0.01, 0.01, 0.02, 0.02}
@@ -77,7 +77,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			attackHitboxes[c.NormalCounter][0],
 		)
 	}
-
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 		ai.Element = attributes.Hydro
 		ai.FlatDmg = c.c6BonusDMG()
