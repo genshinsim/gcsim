@@ -2133,19 +2133,22 @@
         "ability": "E-Surintendante-Chevalmarin",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 0.5
+        "radius": 0.5,
+        "notes": "Target aquisition range is not implemented."
       },
       {
         "ability": "E-Gentilhomme-Usher",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 2.5
+        "radius": 2.5,
+        "notes": "Target aquisition range is not implemented."
       },
       {
         "ability": "E-Mademoiselle-Crabaletta",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 3.5
+        "radius": 3.5,
+        "notes": "Target aquisition range is not implemented."
       }
     ],
     "burst": [
