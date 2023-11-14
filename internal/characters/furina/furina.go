@@ -40,6 +40,8 @@ type char struct {
 	a1HealsFlagMap      []bool
 	lastSummonSrc       int
 	arkhe               Arkhe
+	c6Count             int
+	c6HealSrc           int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

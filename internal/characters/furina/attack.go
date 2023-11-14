@@ -79,9 +79,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			attackHitboxes[c.NormalCounter][0],
 		)
 	}
-	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, ap, 0, 0)
-	}, attackHitmarks[c.NormalCounter])
+
+	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
+		ai.Element = attributes.Hydro
+		ai.FlatDmg = c.c6BonusDMG()
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.c6cb)
+	} else {
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
+	}
 
 	defer c.AdvanceNormalIndex()
 

@@ -52,6 +52,10 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.SetCDWithDelay(action.ActionSkill, 1200, 0)
+	if c.Base.Cons >= 6 {
+		c.c6Count = 0
+		c.AddStatus(c6Key, 10*60, true)
+	}
 	switch c.arkhe {
 	case ousia:
 		return c.skillOusia(p)

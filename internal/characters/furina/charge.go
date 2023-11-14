@@ -41,27 +41,30 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
 	}
-
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: chargeOffset},
-			2.6,
-		),
-		chargeHitmark,
-		chargeHitmark,
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		geometry.Point{Y: chargeOffset},
+		2.6,
 	)
+
+	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
+		ai.Element = attributes.Hydro
+		ai.FlatDmg = c.c6BonusDMG()
+		c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark, c.c6cb)
+	} else {
+		c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark)
+	}
+
 	if c.arkhe == ousia {
 		c.QueueCharTask(func() {
 			c.arkhe = pneuma
 			c.summonSinger(c.Core.F, 0)
-		}, chargeHitmark)
+		}, chargeHitmark+1)
 	} else {
 		c.QueueCharTask(func() {
 			c.arkhe = ousia
 			c.summonSalonMembers(c.Core.F, 0)
-		}, chargeHitmark)
+		}, chargeHitmark+1)
 	}
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
