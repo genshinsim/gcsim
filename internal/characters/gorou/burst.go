@@ -36,6 +36,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			Durability: 25,
 			Mult:       burst[c.TalentLvlBurst()],
 			FlatDmg:    c.a4Burst(),
+			UseDef:     true,
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, 0)
 
@@ -115,6 +116,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			Durability: 25,
 			Mult:       burstTick[c.TalentLvlBurst()],
 			FlatDmg:    c.a4Burst(),
+			UseDef:     true,
 		}
 
 		enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8), nil)
