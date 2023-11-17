@@ -35,7 +35,10 @@ func (c *char) c2(a combat.AttackCB) {
 	if !c.naviaburst {
 		return
 	}
-
+	if !c.c2ready {
+		return
+	}
+	c.c2ready = false
 	// Function doesn't check for enemy type or limit as assumes that the CB will check or it.
 
 	ai := combat.AttackInfo{

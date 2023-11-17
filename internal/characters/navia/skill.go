@@ -21,31 +21,33 @@ var skillPressFrames []int
 var skillHoldFrames []int
 var crystallise = []event.Event{event.OnCrystallizeElectro, event.OnCrystallizeCryo, event.OnCrystallizeHydro,
 	event.OnCrystallizePyro}
+var skillMultiplier = []float64{0, 1, 1.05, 1.1, 1.2, 1.36, 1.4, 1.6, 1.666, 1.9, 2}
 
 const (
-	skillPressCDStart = 16
-	skillPressHitmark = 17
-	skillHoldHitmark  = 12
-
-	particleICDKey = "navia-particle-icd"
-	arkheICDKey    = "navia-arkhe-icd"
+	skillPressCDStart = 30
+	skillPressHitmark = 30
+	skillHoldHitmark  = 48
+	arkeDelay         = 12
+	particleICDKey    = "navia-particle-icd"
+	arkheICDKey       = "navia-arkhe-icd"
 )
 
 func init() {
-	skillPressFrames = frames.InitAbilSlice(39) // E -> N1/Q
-	skillPressFrames[action.ActionDash] = 34
-	skillPressFrames[action.ActionJump] = 35
-	skillPressFrames[action.ActionSwap] = 37
+	skillPressFrames = frames.InitAbilSlice(38) // E -> N1/Q
+	skillPressFrames[action.ActionDash] = 38
+	skillPressFrames[action.ActionJump] = 38
+	skillPressFrames[action.ActionSwap] = 38
 
 	// skill (hold) -> x
-	skillHoldFrames = frames.InitAbilSlice(46) // E -> Swap
-	skillHoldFrames[action.ActionAttack] = 38
-	skillHoldFrames[action.ActionBurst] = 37
-	skillHoldFrames[action.ActionDash] = 30
-	skillHoldFrames[action.ActionJump] = 30
+	skillHoldFrames = frames.InitAbilSlice(51) // E -> Swap
+	skillHoldFrames[action.ActionAttack] = 51
+	skillHoldFrames[action.ActionBurst] = 51
+	skillHoldFrames[action.ActionDash] = 51
+	skillHoldFrames[action.ActionJump] = 51
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	c.c2ready = true
 	hold := p["hold"]
 	hitmark := 0
 	if hold > 0 {
@@ -62,17 +64,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
 
-	shots := 1.0
-	switch c.shrapnel {
-	case 0:
-		shots = 1.2
-	case 1:
-		shots = 1.4
-	case 2:
-		shots = 1.66
-	default:
-		shots = 2.0
-	}
+	shots := 5 + int(math.Max(float64(c.shrapnel-3), 0))*2
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rosula Shardshot",
@@ -82,7 +75,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeBlunt,
 		Element:    attributes.Geo,
 		Durability: 25,
-		Mult:       skillshotgun[c.TalentLvlSkill()] * shots,
+		Mult:       skillshotgun[c.TalentLvlSkill()],
 	}
 
 	excess := math.Max(float64(c.shrapnel-3), 0)
@@ -104,13 +97,27 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		},
 	})
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 25),
-		hitmark,
-		5+hitmark,
-		c.SkillCB(hitmark),
-	)
+	for _, t := range c.Core.Combat.EnemiesWithinArea(
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0}, 25, 15),
+		nil,
+	) {
+		hits := 0
+		for i := 0; i < shots; i++ {
+			if ok, _ := t.AttackWillLand(combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(),
+				geometry.Point{Y: 0},
+				25, 15)); ok {
+				hits++
+			}
+		}
+		ai.Mult = skillshotgun[c.TalentLvlSkill()] * skillMultiplier[hits]
+		c.Core.QueueAttack(
+			ai,
+			combat.NewSingleTargetHit(t.Key()),
+			hitmark,
+			hitmark+5,
+			c.SkillCB(hitmark),
+		)
+	}
 	// C1 Energy Restoration and CD reduction
 	if c.Base.Cons >= 1 {
 		c.QueueCharTask(func() {
@@ -134,13 +141,22 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.a1,
 		hitmark+30,
 	)
-
+	c.c2ready = false
+	if hold > 1 {
+		return action.Info{
+			Frames:          frames.NewAbilFunc(skillHoldFrames),
+			AnimationLength: skillHoldFrames[action.ActionDash] + hold,
+			CanQueueAfter:   skillHoldFrames[action.ActionDash] + hold,
+			State:           action.SkillState,
+		}, nil
+	}
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillHoldFrames),
-		AnimationLength: skillHoldFrames[action.ActionDash],
-		CanQueueAfter:   skillHoldFrames[action.ActionDash],
+		Frames:          frames.NewAbilFunc(skillPressFrames),
+		AnimationLength: skillPressFrames[action.ActionDash],
+		CanQueueAfter:   skillPressFrames[action.ActionDash],
 		State:           action.SkillState,
 	}, nil
+
 }
 
 func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
@@ -160,6 +176,7 @@ func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
 			return
 		}
 		c.c2(a)
+		c.c2ready = false
 		if !c.StatusIsActive(particleICDKey) {
 			count := 3.0
 			if c.Core.Rand.Float64() < 0.5 {
@@ -174,6 +191,10 @@ func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
 	}
 }
 
+// ShrapnelGain adds Shrapnel Stacks when crystallise occurs. Stacks should last 300s but this is way to long to bother
+// When a character in the party obtains an Elemental Shard created from the Crystallize reaction,
+// Navia will gain 1 Crystal Shrapnel charge. Navia can hold up to 6 charges of Crystal Shrapnel at once.
+// Each time Crystal Shrapnel gain is triggered, the duration of the Shards you have already will be reset.
 func (c *char) ShrapnelGain() {
 
 	for _, crystal := range crystallise {
@@ -206,8 +227,8 @@ func (c *char) SurgingBlade(hitmark int) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 0}, 3),
-		10+hitmark,
-		10+hitmark,
+		arkeDelay+hitmark,
+		arkeDelay+hitmark,
 		nil,
 	)
 	c.QueueCharTask(

@@ -19,6 +19,7 @@ type char struct {
 	shrapnel          int
 	artillerySnapshot combat.AttackEvent
 	naviaburst        bool
+	c2ready           bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
