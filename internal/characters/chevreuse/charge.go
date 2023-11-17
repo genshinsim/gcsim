@@ -1,4 +1,4 @@
-package mika
+package chevreuse
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"

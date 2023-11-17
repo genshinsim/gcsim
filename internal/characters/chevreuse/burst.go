@@ -1,4 +1,4 @@
-package mika
+package chevreuse
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -6,17 +6,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
 	burstFrames []int
-	boxHitmark  = 38
-	mineExpired = "secondary-grenades-expired"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(61) // Q -> N1/Dash/Walk
+	burstFrames = frames.InitAbilSlice(59) // Q -> N1/Dash/Walk
 	burstFrames[action.ActionSkill] = 60
 	burstFrames[action.ActionJump] = 60
 	burstFrames[action.ActionSwap] = 59
@@ -33,7 +30,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Pyro,
 		Durability: 25,
-		FlatDmg:    c.MaxHP() * burst[c.TalentLvlBurst()],
+		Mult:       burst[c.TalentLvlBurst()],
 	}
 
 	mineAi := combat.AttackInfo{
@@ -41,7 +38,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Abil:               "Secondary Explosive Shell",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,
-		ICDGroup:           attacks.ICDGroupDefault,
+		ICDGroup:           attacks.ICDGroupChevreuseBurstMines,
 		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
@@ -50,26 +47,31 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		IsDeployable:       true,
 	}
 
-	player := c.Core.Combat.Player()
-	boxPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
-	c.QueueCharTask(func() {
-		c.AddStatus(mineExpired, 12*60, true)
-		c.Core.QueueAttackWithSnap(ai, c.mineSnap, combat.NewCircleHitOnTarget(boxPos, nil, 6), 0)
-	}, boxHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 3),
+		11,
+		12,
+	)
 
-	c.minePattern = combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2)
-	shellNum := 2
-	mineDuration := 4
+	shellNum := 8
 	c.QueueCharTask(func() {
 		for i := 0; i < shellNum; i++ {
-			c.Core.QueueAttackWithSnap(mineAi, c.mineSnap, c.minePattern, i*9*2)
+			c.Core.QueueAttack(
+				mineAi,
+				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2),
+				10, // random number
+				10) // random number
 		}
-		c.secondaryMineNum = 0
-	}, 80+mineDuration*60)
+	}, 60) // random number.
+
+	if c.Base.Cons >= 4 {
+		c.AddStatus(c4StatusKey, 6*60, false)
+		c.c4ShotsLeft = 2
+	}
 
 	c.ConsumeEnergy(4)
 	c.SetCD(action.ActionBurst, 15*60)
-
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],

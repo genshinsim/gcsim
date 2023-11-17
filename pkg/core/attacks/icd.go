@@ -91,6 +91,7 @@ const (
 	ICDGroupLyneyExtra
 	ICDGroupTravelerDewdrop
 	ICDGroupTravelerBurst
+	ICDGroupChevreuseBurstMines
 	ICDGroupLength
 )
 
@@ -130,6 +131,7 @@ func init() {
 	ICDGroupResetTimer[ICDGroupAyakaExtraAttack] = 30
 	ICDGroupResetTimer[ICDGroupLyneyExtra] = 60
 	ICDGroupResetTimer[ICDGroupTravelerDewdrop] = 90
+	ICDGroupResetTimer[ICDGroupChevreuseBurstMines] = 300
 	ICDGroupResetTimer[ICDGroupTravelerBurst] = 480
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
@@ -164,6 +166,7 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupLyneyExtra] = []float64{1, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupTravelerDewdrop] = []float64{1, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupTravelerBurst] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupChevreuseBurstMines] = []float64{1, 0, 0, 0, 1, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -199,4 +202,5 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupLyneyExtra] = []float64{1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupTravelerDewdrop] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupTravelerBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupChevreuseBurstMines] = []float64{1, 1, 1, 1, 1, 1, 1, 1}
 }

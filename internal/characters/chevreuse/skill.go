@@ -1,4 +1,4 @@
-package mika
+package chevreuse
 
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -19,9 +19,12 @@ const (
 	skillPressHitmark = 17
 	skillPressTravel  = 1
 
-	skillHoldCDStart = 11
+	skillHoldCDStart = 16
 	skillHoldHitmark = 12
 	skillHoldTravel  = 3
+
+	skillKey       = "chev-heal"
+	particleICDKey = "chev-particle-icd"
 )
 
 func init() {
@@ -63,32 +66,20 @@ func (c *char) skillPress() action.Info {
 		CanBeDefenseHalted: true,
 	}
 
-	var skillHealCB combat.AttackCBFunc
-
-	done := false
-	skillHealCB = func(a combat.AttackCB) {
-		if done {
-			return
-		}
-		done = true
-		c.addDetectorStack()
-	}
-
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.4}, 2.5, 10),
 		skillPressHitmark,
 		skillPressHitmark+skillPressTravel,
 		c.makeParticleCB(),
-		skillHealCB,
 	)
 
-	skillDur := 12
-	skillKey := "chev-heal"
+	skillDur := 12 * 60
 	skillHealInterval := 2
 	c.Core.Tasks.Add(func() {
 		c.Core.Status.Add(skillKey, skillDur)
-		c.Core.Tasks.Add(c.startSkillHealing, skillHealInterval*60) // Assuming this executes every 90 frames = 1.5s
+		c.Core.Tasks.Add(c.startSkillHealing(), skillHealInterval*60)
+		c.Core.Tasks.Add(c.c6TeamHeal(), 12*60) // Assuming this executes every 90 frames = 1.5s
 	}, 23)
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, skillPressCDStart)
@@ -102,17 +93,47 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Short-Range Rapid Interdiction Fire",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypePierce,
-		Element:    attributes.Pyro,
-		Durability: 25,
-		Mult:       skillHold[c.TalentLvlSkill()],
+
+	var ai combat.AttackInfo
+	if c.overChargedBall {
+		ai = combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Short-Range Rapid Interdiction Fire [Overcharged]",
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
+			Element:    attributes.Pyro,
+			Durability: 25,
+			Mult:       skillHold[c.TalentLvlSkill()],
+		}
+		// remove status once overcharged is ball shot
+		c.a4()
+		c.overChargedBall = false
+
+	} else {
+		ai = combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Short-Range Rapid Interdiction Fire [Hold]",
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
+			Element:    attributes.Pyro,
+			Durability: 25,
+			Mult:       skillHold[c.TalentLvlSkill()],
+		}
+
 	}
+
+	skillDur := 12 * 60
+	skillHealInterval := 2
+	c.Core.Tasks.Add(func() {
+		c.Core.Status.Add(skillKey, skillDur)
+		c.Core.Tasks.Add(c.startSkillHealing(), skillHealInterval*60)
+		c.Core.Tasks.Add(c.c6TeamHeal(), skillDur)
+	},
+		23)
 
 	c.Core.QueueAttack(
 		ai,
@@ -120,9 +141,18 @@ func (c *char) skillHold() action.Info {
 		skillHoldHitmark,
 		skillHoldHitmark+skillHoldTravel,
 		c.makeParticleCB(),
+		c.C2(),
 	)
 
-	c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
+	// c4
+	if c.StatModIsActive(c4StatusKey) {
+		c.c4ShotsLeft -= 1
+		if c.c4ShotsLeft == 0 {
+			c.DeleteStatus(c4StatusKey)
+		}
+	} else {
+		c.SetCDWithDelay(action.ActionSkill, 15*60, skillHoldCDStart+1)
+	}
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
@@ -138,6 +168,12 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
+
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+
+		c.AddStatus(particleICDKey, 10*60, false) // chev has 10s particle icd
 		if done {
 			return
 		}
@@ -146,13 +182,21 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) startSkillHealing() {
-	c.Core.Player.Heal(player.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Core.Player.Active(),
-		Message: "Short-Range Rapid Interdiction Fire Healing",
-		Src:     skillHpRegen[c.TalentLvlBurst()]*c.MaxHP() + skillHpFlat[c.TalentLvlBurst()],
-		Bonus:   c.Stat(attributes.Heal),
-	})
-	c.c6()
+func (c *char) startSkillHealing() func() {
+
+	return func() {
+		if c.Core.Status.Duration(skillKey) == 0 {
+			return
+		}
+
+		c.Core.Player.Heal(player.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.Player.Active(),
+			Message: "Short-Range Rapid Interdiction Fire Healing",
+			Src:     skillHpRegen[c.TalentLvlBurst()]*c.MaxHP() + skillHpFlat[c.TalentLvlBurst()],
+			Bonus:   c.Stat(attributes.Heal),
+		})
+		c.c6(c.Core.Player.ActiveChar())
+		c.Core.Tasks.Add(c.startSkillHealing(), 120)
+	}
 }
