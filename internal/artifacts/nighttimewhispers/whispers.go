@@ -56,17 +56,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 	if count >= 4 {
 		f := func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
-			if atk.Info.ActorIndex != char.Index {
+			if c.Player.Active() != char.Index {
 				return false
 			}
 			bonus := 1.0
 			// TODO: Need to make the Crystallise bonus not tied to the base buff
 			m := make([]float64, attributes.EndStatType)
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(buffKey, 60*10),
-				AffectedStat: attributes.DmgP,
-				Amount: func() ([]float64, bool) {
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBaseWithHitlag(buffKey, 60*10),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 						return nil, false
 					}
