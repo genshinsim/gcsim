@@ -18,11 +18,11 @@ import (
 var skillFrames [][]int
 
 const (
-	skillHitmark     = 18 // TODO:
-	salonInitialTick = 60 // TODO:
-	particleICDKey   = "furina-skill-particle-icd"
-	skillKey         = "furina-skill"
-	skillMaxDuration = 30 * 60
+	ousiaBubbleHitmark = 18
+	salonInitialTick   = 60 // TODO:
+	particleICDKey     = "furina-skill-particle-icd"
+	skillKey           = "furina-skill"
+	skillMaxDuration   = 1736
 
 	salonMemberKey = "Salon Member"
 
@@ -64,7 +64,7 @@ func init() {
 	skillFrames[ousia][action.ActionDash] = 18    // E -> D
 	skillFrames[ousia][action.ActionJump] = 18    // E -> J
 	skillFrames[ousia][action.ActionWalk] = 42    // E -> W
-	skillFrames[ousia][action.ActionSwap] = 52    // TODO: E -> Swap
+	skillFrames[ousia][action.ActionSwap] = 53    // E -> Swap
 
 	skillFrames[pneuma] = frames.InitAbilSlice(57)
 	skillFrames[pneuma][action.ActionAttack] = 56 // E -> N1
@@ -73,7 +73,7 @@ func init() {
 	skillFrames[pneuma][action.ActionDash] = 15   // E -> D
 	skillFrames[pneuma][action.ActionJump] = 18   // E -> J
 	skillFrames[pneuma][action.ActionWalk] = 41   // E -> W
-	skillFrames[pneuma][action.ActionSwap] = 55   // TODO: E -> Swap
+	skillFrames[pneuma][action.ActionSwap] = 56   // E -> Swap
 }
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 6 {
@@ -91,8 +91,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
-	c.AddStatus(skillKey, 1800+skillHitmark, false)
-	c.summonSinger(c.Core.F, skillHitmark)
+	c.AddStatus(skillKey, 1800+ousiaBubbleHitmark, false)
+	c.summonSinger(c.Core.F, ousiaBubbleHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 1200, 10)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[pneuma]),
@@ -114,10 +114,10 @@ func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 		FlatDmg:    skillOusiaBubble[c.TalentLvlSkill()] * c.MaxHP(),
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 5), skillHitmark, skillHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 5), ousiaBubbleHitmark, ousiaBubbleHitmark)
 
-	c.AddStatus(skillKey, 1736+skillHitmark, false)
-	c.summonSalonMembers(skillHitmark)
+	c.AddStatus(skillKey, 1736+ousiaBubbleHitmark, false)
+	c.summonSalonMembers(ousiaBubbleHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 1200, 0)
 
 	return action.Info{
