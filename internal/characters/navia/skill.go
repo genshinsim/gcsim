@@ -21,7 +21,7 @@ var skillPressFrames []int
 var skillHoldFrames []int
 var crystallise = []event.Event{event.OnCrystallizeElectro, event.OnCrystallizeCryo, event.OnCrystallizeHydro,
 	event.OnCrystallizePyro}
-var skillMultiplier = []float64{0, 1, 1.05, 1.1, 1.2, 1.36, 1.4, 1.6, 1.666, 1.9, 2}
+var skillMultiplier = []float64{0, 1, 1.05, 1.1, 1.15, 1.2, 1.36, 1.4, 1.6, 1.666, 1.9, 2}
 
 const (
 	skillPressCDStart = 30
