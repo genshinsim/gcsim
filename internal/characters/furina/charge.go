@@ -13,18 +13,18 @@ import (
 
 var (
 	chargeFrames  []int
-	chargeHitmark = 30
+	chargeHitmark = 32
 	chargeOffset  = 0.0
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(52) // C -> Walk
-	chargeFrames[action.ActionAttack] = 43
-	chargeFrames[action.ActionSkill] = 43
-	chargeFrames[action.ActionBurst] = 43
-	chargeFrames[action.ActionDash] = 38
-	chargeFrames[action.ActionJump] = 38
-	chargeFrames[action.ActionSwap] = 37
+	chargeFrames = frames.InitAbilSlice(253) // C -> Walk
+	chargeFrames[action.ActionAttack] = 37
+	chargeFrames[action.ActionSkill] = 47
+	chargeFrames[action.ActionBurst] = chargeHitmark
+	chargeFrames[action.ActionDash] = chargeHitmark
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionSwap] = chargeHitmark
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -63,7 +63,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	} else {
 		c.QueueCharTask(func() {
 			c.arkhe = ousia
-			c.summonSalonMembers(c.Core.F, 0)
+			c.summonSalonMembers(0)
 		}, chargeHitmark+1)
 	}
 	return action.Info{

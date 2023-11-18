@@ -2,7 +2,9 @@ package furina
 
 import (
 	"fmt"
+	"math"
 
+	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -13,45 +15,67 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillFrames []int
+var skillFrames [][]int
 
 const (
-	skillHitmark     = 30
-	salonInitialTick = 60
-	summonDelay      = 30
+	skillHitmark     = 18 // TODO:
+	salonInitialTick = 60 // TODO:
 	particleICDKey   = "furina-skill-particle-icd"
 	skillKey         = "furina-skill"
-	skillMaxDuration = 1800
+	skillMaxDuration = 30 * 60
 
 	salonMemberKey = "Salon Member"
 
-	chevalmarinIntervalMean   = 90
-	chevalmarinIntervalStddev = 5
-	chevalmarinTravelMean     = 10
-	chevalmarinTravelStddev   = 3
-	chevalmarinAoE            = 0.5
+	chevalmarinInitialTick  = 72.3333
+	chevalmarinIntervalMean = 97.5858
+	chevalmarinTravel       = 20
+	chevalmarinAoE          = 0.5
 
-	usherIntervalMean   = 225
+	usherInitialTick    = 74.5000
+	usherIntervalMean   = 202.138
 	usherIntervalStddev = 5
-	usherTravelMean     = 10
-	usherTravelStddev   = 3
+	usherTravel         = 40
 	usherAoE            = 2.5
 
-	crabalettaIntervalMean   = 256
-	crabalettaIntervalStddev = 5
-	crabalettaTravelMean     = 5
-	crabalettaTravelStddev   = 2
-	crabalettaAoE            = 3.5
+	crabalettaInitialTick  = 71.5926
+	crabalettaIntervalMean = 313.859
+	crabalettaTravel       = 41
+	crabalettaAoE          = 3.5
 
 	singerInterval = 120
 )
 
-func init() {
-	skillFrames = frames.InitAbilSlice(30)
+func (c *char) calcSalonTick(tickNum int, initialTick, interval float64) int {
+	// the distribution is left skewed. We approxiamated with boxcox with lambda 0.728
+	// then used the transformation to convert from norm dist to the experimental distribution
+	randOffset := math.Pow(common.Max(c.Core.Rand.NormFloat64()*1.0403+4.073023273, 0.0), (1/0.728)) - 7
+
+	// this limits the offset to [-7, 7]
+	randOffset = common.Min(randOffset, 7)
+	return int(math.Round(initialTick + float64(tickNum)*interval + randOffset))
 }
 
+func init() {
+	skillFrames = make([][]int, 2)
+	skillFrames[ousia] = frames.InitAbilSlice(54) // E -> Q
+	skillFrames[ousia][action.ActionAttack] = 53  // E -> N1
+	skillFrames[ousia][action.ActionCharge] = 53  // E -> CA
+	skillFrames[ousia][action.ActionBurst] = 54   // E -> Q
+	skillFrames[ousia][action.ActionDash] = 18    // E -> D
+	skillFrames[ousia][action.ActionJump] = 18    // E -> J
+	skillFrames[ousia][action.ActionWalk] = 42    // E -> W
+	skillFrames[ousia][action.ActionSwap] = 52    // TODO: E -> Swap
+
+	skillFrames[pneuma] = frames.InitAbilSlice(57)
+	skillFrames[pneuma][action.ActionAttack] = 56 // E -> N1
+	skillFrames[pneuma][action.ActionCharge] = 56 // E -> CA
+	skillFrames[pneuma][action.ActionBurst] = 57  // E -> Q
+	skillFrames[pneuma][action.ActionDash] = 15   // E -> D
+	skillFrames[pneuma][action.ActionJump] = 18   // E -> J
+	skillFrames[pneuma][action.ActionWalk] = 41   // E -> W
+	skillFrames[pneuma][action.ActionSwap] = 55   // TODO: E -> Swap
+}
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	c.SetCDWithDelay(action.ActionSkill, 1200, 0)
 	if c.Base.Cons >= 6 {
 		c.c6Count = 0
 		c.AddStatus(c6Key, 10*60, true)
@@ -67,13 +91,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
-	c.AddStatus(skillKey, 1800+summonDelay, false)
-	c.summonSinger(c.Core.F, summonDelay)
-
+	c.AddStatus(skillKey, 1800+skillHitmark, false)
+	c.summonSinger(c.Core.F, skillHitmark)
+	c.SetCDWithDelay(action.ActionSkill, 1200, 10)
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap],
+		Frames:          frames.NewAbilFunc(skillFrames[pneuma]),
+		AnimationLength: skillFrames[pneuma][action.InvalidAction],
+		CanQueueAfter:   skillFrames[pneuma][action.ActionDash],
 		State:           action.SkillState,
 	}, nil
 }
@@ -92,41 +116,57 @@ func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 5), skillHitmark, skillHitmark)
 
-	c.AddStatus(skillKey, 1800+summonDelay, false)
-	c.summonSalonMembers(c.Core.F, summonDelay)
+	c.AddStatus(skillKey, 1736+skillHitmark, false)
+	c.summonSalonMembers(skillHitmark)
+	c.SetCDWithDelay(action.ActionSkill, 1200, 0)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap],
+		Frames:          frames.NewAbilFunc(skillFrames[ousia]),
+		AnimationLength: skillFrames[ousia][action.InvalidAction],
+		CanQueueAfter:   skillFrames[ousia][action.ActionDash],
 		State:           action.SkillState,
 	}, nil
 }
 
-func (c *char) calcRandNorm(mean, std int) int {
-	val := int(c.Core.Rand.NormFloat64()*float64(std) + 0.5)
-	if val < -2*std {
-		val = -2 * std
-	}
-	if val > std*2 {
-		val = std * 2
-	}
-	return mean + val
-}
+func (c *char) summonSalonMembers(delay int) {
+	c.Core.Tasks.Add(func() {
+		src := c.Core.F
+		c.lastSummonSrc = src
 
-func (c *char) summonSalonMembers(src, delay int) {
-	// TODO: figure out first action time
-	c.lastSummonSrc = src
-	c.Core.Tasks.Add(c.surintendanteChevalmarin(src), delay+salonInitialTick)
-	c.Core.Tasks.Add(c.gentilhommeUsher(src), delay+salonInitialTick)
-	c.Core.Tasks.Add(c.mademoiselleCrabaletta(src), delay+salonInitialTick)
+		c.Core.Tasks.Add(
+			c.surintendanteChevalmarin(src, 0),
+			c.calcSalonTick(0, chevalmarinInitialTick, chevalmarinIntervalMean),
+		)
+		c.Core.Tasks.Add(
+			c.gentilhommeUsher(src, 0),
+			c.calcSalonTick(0, usherInitialTick, usherIntervalMean),
+		)
+		c.Core.Tasks.Add(
+			c.mademoiselleCrabaletta(src, 0),
+			c.calcSalonTick(0, crabalettaInitialTick, crabalettaIntervalMean),
+		)
+	}, delay)
 }
 
 func (c *char) summonSinger(src, delay int) {
-	c.Core.Tasks.Add(c.singerOfManyWaters(src), delay+salonInitialTick)
+	c.Core.Tasks.Add(c.singerOfManyWaters(src), delay)
 }
 
-func (c *char) surintendanteChevalmarin(src int) func() {
+func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackPattern, delay int, callbacks ...combat.AttackCBFunc) {
+	c.QueueCharTask(func() {
+		if src != c.lastSummonSrc {
+			return
+		}
+
+		if !c.StatusIsActive(skillKey) {
+			return
+		}
+
+		c.Core.QueueAttack(ai, ap, 0, 0, callbacks...)
+	}, delay)
+}
+
+func (c *char) surintendanteChevalmarin(src, tick int) func() {
 	return func() {
 		if c.arkhe != ousia {
 			return
@@ -155,19 +195,18 @@ func (c *char) surintendanteChevalmarin(src int) func() {
 			FlatDmg:    skillChevalmarin[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, chevalmarinAoE)
-		travel := c.calcRandNorm(chevalmarinTravelMean, chevalmarinTravelStddev)
 		if c.Base.Cons >= 4 {
-			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB, c.c4cb)
+			c.queueSalonAttack(src, ai, ap, chevalmarinTravel, c.particleCB, c.c4cb)
 		} else {
-			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB)
+			c.queueSalonAttack(src, ai, ap, chevalmarinTravel, c.particleCB)
 		}
 
-		interval := c.calcRandNorm(chevalmarinIntervalMean, chevalmarinIntervalStddev)
-		c.Core.Tasks.Add(c.surintendanteChevalmarin(src), interval)
+		interval := c.calcSalonTick(tick+1, chevalmarinInitialTick, chevalmarinIntervalMean) - (c.Core.F - src)
+		c.Core.Tasks.Add(c.surintendanteChevalmarin(src, tick+1), interval)
 	}
 }
 
-func (c *char) gentilhommeUsher(src int) func() {
+func (c *char) gentilhommeUsher(src, tick int) func() {
 	return func() {
 		if c.arkhe != ousia {
 			return
@@ -197,19 +236,18 @@ func (c *char) gentilhommeUsher(src int) func() {
 		}
 
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, usherAoE)
-		travel := c.calcRandNorm(usherTravelMean, usherTravelStddev)
 		if c.Base.Cons >= 4 {
-			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB, c.c4cb)
+			c.queueSalonAttack(src, ai, ap, usherTravel, c.particleCB, c.c4cb)
 		} else {
-			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB)
+			c.queueSalonAttack(src, ai, ap, usherTravel, c.particleCB)
 		}
 
-		interval := c.calcRandNorm(usherIntervalMean, usherIntervalStddev)
-		c.Core.Tasks.Add(c.gentilhommeUsher(src), interval)
+		interval := c.calcSalonTick(tick+1, usherInitialTick, usherIntervalMean) - (c.Core.F - src)
+		c.Core.Tasks.Add(c.gentilhommeUsher(src, tick+1), interval)
 	}
 }
 
-func (c *char) mademoiselleCrabaletta(src int) func() {
+func (c *char) mademoiselleCrabaletta(src, tick int) func() {
 	return func() {
 		if c.arkhe != ousia {
 			return
@@ -239,16 +277,15 @@ func (c *char) mademoiselleCrabaletta(src int) func() {
 		}
 
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, crabalettaAoE)
-		travel := c.calcRandNorm(crabalettaTravelMean, crabalettaTravelStddev)
 
 		if c.Base.Cons >= 4 {
-			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB, c.c4cb)
+			c.queueSalonAttack(src, ai, ap, crabalettaTravel, c.particleCB, c.c4cb)
 		} else {
-			c.Core.QueueAttack(ai, ap, travel, travel, c.particleCB)
+			c.queueSalonAttack(src, ai, ap, crabalettaTravel, c.particleCB)
 		}
 
-		interval := c.calcRandNorm(crabalettaIntervalMean, crabalettaIntervalStddev)
-		c.Core.Tasks.Add(c.mademoiselleCrabaletta(src), interval)
+		interval := c.calcSalonTick(tick+1, crabalettaInitialTick, crabalettaIntervalMean) - (c.Core.F - src)
+		c.Core.Tasks.Add(c.mademoiselleCrabaletta(src, tick+1), interval)
 	}
 }
 
@@ -273,10 +310,8 @@ func (c *char) singerOfManyWaters(src int) func() {
 			Src:     skillSingerHealFlat[c.TalentLvlSkill()] + skillSingerHealScale[c.TalentLvlSkill()]*c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
-		intervalDelta := c.MaxHP() / 1000.0 * 0.004
-		if intervalDelta > 0.16 {
-			intervalDelta = 0.16
-		}
+		intervalDelta := common.Min(c.MaxHP()/1000.0*0.004, 0.16)
+
 		interval := int(singerInterval*(1-intervalDelta) + 0.5)
 		c.Core.Tasks.Add(c.singerOfManyWaters(src), interval)
 	}

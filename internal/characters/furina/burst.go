@@ -18,12 +18,18 @@ import (
 var burstFrames []int
 
 const (
-	burstHitmark = 31
+	burstHitmark = 98
 	burstKey     = "furina-burst"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(96)
+	burstFrames = frames.InitAbilSlice(121)
+	burstFrames[action.ActionAttack] = 113 // Q -> N1
+	burstFrames[action.ActionCharge] = 113 // Q -> CA
+	burstFrames[action.ActionSkill] = 114  // Q -> E
+	burstFrames[action.ActionDash] = 115   // Q -> D
+	burstFrames[action.ActionJump] = 115   // Q -> J
+	burstFrames[action.ActionSwap] = 111   // Q -> Swap
 }
 
 func (c *char) burstInit() {
