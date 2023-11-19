@@ -3,9 +3,7 @@ package nighttimewhispers
 import (
 	"fmt"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -36,7 +34,7 @@ func (s *Set) Init() error {
 	return nil
 }
 
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, _ map[string]int) (info.Set, error) {
 	s := Set{
 		char:  char,
 		count: count,
@@ -62,12 +60,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			bonus := 1.0
 			// TODO: Need to make the Crystallise bonus not tied to the base buff
 			m := make([]float64, attributes.EndStatType)
-			char.AddAttackMod(character.AttackMod{
+			char.AddStatMod(character.StatMod{
 				Base: modifier.NewBaseWithHitlag(buffKey, 60*10),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-						return nil, false
-					}
+				Amount: func() ([]float64, bool) {
 					if char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded() {
 						s := c.Player.Shields.List()
 						for _, t := range s {
@@ -77,7 +72,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 							}
 						}
 					}
-					m[attributes.DmgP] = bonus * buffVal
+					m[attributes.GeoP] = bonus * buffVal
 					return m, true
 				},
 			})

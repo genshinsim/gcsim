@@ -32,9 +32,6 @@ func (c *char) c2(a combat.AttackCB) {
 	if c.Base.Cons < 2 {
 		return
 	}
-	if !c.naviaburst {
-		return
-	}
 	if !c.c2ready {
 		return
 	}
@@ -52,12 +49,12 @@ func (c *char) c2(a combat.AttackCB) {
 		Durability: 25,
 		Mult:       burst[1][c.TalentLvlSkill()],
 	}
-	c.Core.QueueAttackWithSnap(
+	c.Core.QueueAttack(
 		ai,
-		c.artillerySnapshot.Snapshot,
 		combat.NewCircleHitOnTarget(a.Target.Pos(), nil, 3),
 		0,
-		nil,
+		0,
+		c.BurstCB(),
 	)
 }
 

@@ -25,7 +25,7 @@ func init() {
 	burstFrames[action.ActionSkill] = 114
 }
 
-func (c *char) Burst(p map[string]int) (action.Info, error) {
+func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "As the Sunlit Sky's Singing Salute",
@@ -75,14 +75,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	for i := 45; i <= burstDuration; i = i + 45 {
-
-		c.Core.QueueAttackWithSnap(
+		c.Core.QueueAttack(
 			ai,
-			c.artillerySnapshot.Snapshot,
-			combat.NewCircleHitOnTarget(
-				c.location(targetRadius),
-				nil,
-				3),
+			combat.NewCircleHitOnTarget(c.location(targetRadius), nil, 3),
+			burstHitmark+i,
 			burstHitmark+i,
 			c.BurstCB(),
 		)
