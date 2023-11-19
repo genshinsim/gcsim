@@ -25,6 +25,10 @@ func init() {
 	burstFrames[action.ActionSkill] = 114
 }
 
+// On the orders of the President of the Spina di Rosula, call for a magnificent
+// Golden Rose Salute. Unleashes a massive bombardment on opponents in front of her,
+// dealing Aoe Geo DMG and providing Fire Support for a duration afterward, periodically
+// dealing Geo DMG.
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -92,6 +96,9 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	}, nil
 }
 
+// When attacks from Golden Rose's Salute hit opponents, Navia will gain 1 charge
+// of Crystal Shrapnel.
+// This effect can be triggered up to once every 2.4s.
 func (c *char) BurstCB() combat.AttackCBFunc {
 
 	return func(a combat.AttackCB) {
@@ -113,7 +120,7 @@ func (c *char) BurstCB() combat.AttackCBFunc {
 
 }
 
-// random location
+// Targets a random enemy if there is an enemy present, if not, it targets a random spot
 func (c *char) location(r float64) geometry.Point {
 	enemy := c.Core.Combat.RandomEnemyWithinArea(
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 10),
@@ -123,17 +130,7 @@ func (c *char) location(r float64) geometry.Point {
 	if enemy != nil {
 		pos = enemy.Pos()
 	} else {
-		x := c.Core.Rand.Float64()*r*2 - r
-		y := c.Core.Rand.Float64()*r*2 - r
-		for x*x+y*y > r*r {
-			x = c.Core.Rand.Float64()*r*2 - r
-			y = c.Core.Rand.Float64()*r*2 - r
-
-		}
-		pos = geometry.Point{
-			X: x,
-			Y: y,
-		}
+		pos = geometry.CalcRandomPointFromCenter(c.Core.Combat.Player().Pos(), 0, r, c.Core.Rand)
 	}
 	return pos
 }

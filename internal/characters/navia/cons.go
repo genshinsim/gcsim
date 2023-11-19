@@ -37,7 +37,6 @@ func (c *char) c2(a combat.AttackCB) {
 	}
 	c.c2ready = false
 	// Function doesn't check for enemy type or limit as assumes that the CB will check or it.
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "The President's Pursuit of Victory",

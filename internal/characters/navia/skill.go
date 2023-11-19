@@ -27,7 +27,7 @@ const (
 	skillPressCDStart = 30
 	skillPressHitmark = 30
 	skillHoldHitmark  = 48
-	arkeDelay         = 12
+	arkheDelay        = 12
 	particleICDKey    = "navia-particle-icd"
 	arkheICDKey       = "navia-arkhe-icd"
 )
@@ -97,10 +97,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		},
 	})
 
+	// Looks for enemies in the path of each bullet
+	// Initially trims enemies to check by scanning only the hit zone
 	for _, t := range c.Core.Combat.EnemiesWithinArea(
 		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0}, 25, 15),
 		nil,
 	) {
+		// Tallies up the hits
 		hits := 0
 		for i := 0; i < shots; i++ {
 			if ok, _ := t.AttackWillLand(combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(),
@@ -109,6 +112,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				hits++
 			}
 		}
+		// Applies damage based on the hits
 		ai.Mult = skillshotgun[c.TalentLvlSkill()] * skillMultiplier[hits]
 		c.Core.QueueAttack(
 			ai,
@@ -118,12 +122,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.SkillCB(hitmark),
 		)
 	}
-	// C1 Energy Restoration and CD reduction
-	if c.Base.Cons >= 1 {
-		c.QueueCharTask(func() {
-			c.c1(c.shrapnel)
-		}, hitmark)
-	}
+
 	// remove the shrapnel after firing
 	c.QueueCharTask(
 		func() {
@@ -169,6 +168,13 @@ func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
 
 		// When firing, attack with the Surging Blade
 		c.SurgingBlade(hitmark)
+
+		// C1 Energy Restoration and CD reduction
+		if c.Base.Cons >= 1 {
+			c.QueueCharTask(func() {
+				c.c1(c.shrapnel)
+			}, hitmark)
+		}
 
 		c.c4(a)
 
@@ -227,8 +233,8 @@ func (c *char) SurgingBlade(hitmark int) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 0}, 3),
-		arkeDelay+hitmark,
-		arkeDelay+hitmark,
+		arkheDelay+hitmark,
+		arkheDelay+hitmark,
 		nil,
 	)
 	c.QueueCharTask(
