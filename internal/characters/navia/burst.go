@@ -85,6 +85,7 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 			burstHitmark+i,
 			burstHitmark+i,
 			c.BurstCB(),
+			c.c4(),
 		)
 	}
 

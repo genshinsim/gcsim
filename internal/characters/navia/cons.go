@@ -54,22 +54,26 @@ func (c *char) c2(a combat.AttackCB) {
 		0,
 		0,
 		c.BurstCB(),
+		c.c4(),
 	)
 }
 
 // When As the Sunlit Sky's Singing Salute hits an opponent,
 // that opponent's Geo RES will be decreased by 20% for 8s.
-func (c *char) c4(a combat.AttackCB) {
+func (c *char) c4() combat.AttackCBFunc {
 	if c.Base.Cons < 4 {
-		return
+		return nil
 	}
-	e := a.Target.(*enemy.Enemy)
-	if e.Type() != targets.TargettableEnemy {
-		return
+	return func(a combat.AttackCB) {
+		e := a.Target.(*enemy.Enemy)
+		if e.Type() != targets.TargettableEnemy {
+			return
+		}
+		e.AddResistMod(combat.ResistMod{
+			Base:  modifier.NewBaseWithHitlag("navia-c4-shred", 8*60),
+			Ele:   attributes.Geo,
+			Value: -0.2,
+		})
 	}
-	e.AddResistMod(combat.ResistMod{
-		Base:  modifier.NewBaseWithHitlag("navia-c4-shred", 8*60),
-		Ele:   attributes.Geo,
-		Value: -0.2,
-	})
+
 }

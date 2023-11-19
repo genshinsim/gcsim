@@ -176,8 +176,6 @@ func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
 			}, hitmark)
 		}
 
-		c.c4(a)
-
 		if done {
 			return
 		}
