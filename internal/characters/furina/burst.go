@@ -32,6 +32,13 @@ func init() {
 	burstFrames[action.ActionSwap] = 111   // Q -> Swap
 }
 
+func (c *char) addFanfare(amt float64) {
+	if c.Base.Cons >= 2 {
+		amt *= 3.5
+	}
+	c.curFanfare = common.Min(c.maxFanfare, c.curFanfare+amt)
+}
+
 func (c *char) burstInit() {
 	c.maxFanfare = 300
 	c.maxQFanfare = 300
@@ -54,11 +61,11 @@ func (c *char) burstInit() {
 				return c.burstBuff, c.StatusIsActive(burstKey)
 			},
 		})
-
 		char.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBase("furina-burst-heal-buff", -1),
 			Amount: func() (float64, bool) {
-				return common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], c.StatusIsActive(burstKey)
+				// IDK why this needs to return false but using c.StatusIsActive(burstKey) instead makes it not work
+				return common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], false
 			},
 		})
 	}
@@ -75,13 +82,8 @@ func (c *char) burstInit() {
 		}
 
 		char := c.Core.Player.ByIndex(di.ActorIndex)
-		stacksAmount := di.Amount / char.MaxHP() * 100
-
-		if c.Base.Cons >= 2 {
-			stacksAmount *= 3.5
-		}
-
-		c.curFanfare = common.Min(c.maxFanfare, c.curFanfare+stacksAmount)
+		amt := di.Amount / char.MaxHP() * 100
+		c.addFanfare(amt)
 
 		return false
 	}, "furina-fanfare-on-hp-drain")
@@ -104,13 +106,9 @@ func (c *char) burstInit() {
 		}
 
 		char := c.Core.Player.ByIndex(target)
-		stacksAmount := (amount - overheal) / char.MaxHP() * 100
+		amt := (amount - overheal) / char.MaxHP() * 100
 
-		if c.Base.Cons >= 2 {
-			stacksAmount *= 3.5
-		}
-
-		c.curFanfare = common.Min(c.maxFanfare, c.curFanfare+stacksAmount)
+		c.addFanfare(amt)
 
 		return false
 	}, "furina-fanfare-on-heal")
