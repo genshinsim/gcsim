@@ -89,15 +89,13 @@ func (c *char) c6heal(src int) func() {
 		if !c.StatusIsActive(c6OusiaHealKey) {
 			return
 		}
-		heal := c.Stat(attributes.Heal)
-		amt := c.MaxHP() * 0.04
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  -1,
 			Type:    player.HealTypePercent,
 			Message: "Furina C6 Ousia Heal",
-			Src:     amt,
-			Bonus:   heal,
+			Src:     0.04,
+			Bonus:   c.Stat(attributes.Heal),
 		})
 		c.QueueCharTask(c.c6heal(src), 60)
 	}

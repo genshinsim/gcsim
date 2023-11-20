@@ -37,6 +37,10 @@ func (c *char) a1() {
 			return false
 		}
 
+		if hi.Target != c.Core.Player.Active() && hi.Target != -1 {
+			return false
+		}
+
 		if !c.StatusIsActive(a1HealKey) {
 			c.Core.Tasks.Add(c.a1HealingOverTime(), 120)
 		}
@@ -52,18 +56,14 @@ func (c *char) a1HealingOverTime() func() {
 		if !c.StatusIsActive(a1HealKey) {
 			return
 		}
-		heal := c.Stat(attributes.Heal)
-		for target := range c.Core.Player.Chars() {
-			amt := c.Core.Player.Chars()[target].MaxHP() * 0.02
-			c.Core.Player.Heal(player.HealInfo{
-				Caller:  c.Index,
-				Target:  target,
-				Type:    player.HealTypePercent,
-				Message: "Endless Waltz",
-				Src:     amt,
-				Bonus:   heal,
-			})
-		}
+		c.Core.Player.Heal(player.HealInfo{
+			Caller:  c.Index,
+			Target:  -1,
+			Type:    player.HealTypePercent,
+			Message: "Endless Waltz",
+			Src:     0.02,
+			Bonus:   c.Stat(attributes.Heal),
+		})
 
 		c.Core.Tasks.Add(c.a1HealingOverTime(), 120)
 	}
