@@ -57,14 +57,22 @@ func (c *char) burstInit() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if !c.StatusIsActive(burstKey) {
+					// rejects attackmod when burst status isn't active
+					return nil, false
+				}
 				c.burstBuff[attributes.DmgP] = common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareDMGRatio[c.TalentLvlBurst()]
-				return c.burstBuff, c.StatusIsActive(burstKey)
+				return c.burstBuff, true
 			},
 		})
+
 		char.AddHealBonusMod(character.HealBonusMod{
 			Base: modifier.NewBase("furina-burst-heal-buff", -1),
 			Amount: func() (float64, bool) {
-				// IDK why this needs to return false but using c.StatusIsActive(burstKey) instead makes it not work
+				if !c.StatusIsActive(burstKey) {
+					// return 0 when burst status isn't active
+					return 0, false
+				}
 				return common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], false
 			},
 		})
