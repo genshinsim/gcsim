@@ -88,10 +88,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			}
 			m[attributes.DmgP] = 0.15 * excess
 			if c.Base.Cons >= 2 {
-				m[attributes.CR] = 0.08 * excess
+				m[attributes.CR] = 0.12 * excess
 			}
 			if c.Base.Cons >= 6 {
-				m[attributes.CD] = 0.35 * excess
+				m[attributes.CD] = 0.45 * excess
 			}
 			return m, true
 		},

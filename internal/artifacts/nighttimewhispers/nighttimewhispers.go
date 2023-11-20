@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	buffKey       = "nighttime-whispers-buff"
-	buffVal       = 0.16
-	secondBuffKey = "nighttime-whispers-second-buff"
+	buffKey       = "nighttime-whispers-skill-buff"
+	buffVal       = 0.2
+	secondBuffKey = "nighttime-whispers-shield-buff"
 )
 
 func init() {

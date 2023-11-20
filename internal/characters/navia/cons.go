@@ -18,7 +18,7 @@ import (
 func (c *char) c1(shrapnel int) {
 	count := math.Min(float64(shrapnel), 3)
 	c.ReduceActionCooldown(action.ActionBurst, int(count*60))
-	c.AddEnergy("navia-c1-energy", count*2)
+	c.AddEnergy("navia-c1-energy", count*3)
 	return
 }
 
