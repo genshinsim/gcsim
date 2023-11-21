@@ -56,14 +56,26 @@ func (c *char) c6cb(a combat.AttackCB) {
 		return
 	}
 
+	if c.StatusIsActive(c6IcdKey) {
+		return
+	}
+
 	c.AddStatus(c6IcdKey, 0.1*60, true)
 
 	switch c.arkhe {
 	case ousia:
 		if !c.StatusIsActive(c6OusiaHealKey) {
-			c.QueueCharTask(c.c6heal(c.Core.F), 60)
+			c.c6HealSrc = c.Core.F
+			for _, char := range c.Core.Player.Chars() {
+				char.QueueCharTask(c.c6heal(char, c.Core.F), 60)
+				char.AddStatus(c6OusiaHealKey, 2.9*60, true)
+			}
+		} else {
+			for _, char := range c.Core.Player.Chars() {
+				char.ExtendStatus(c6OusiaHealKey, 2.9*60)
+			}
 		}
-		c.AddStatus(c6OusiaHealKey, 2.9*60, true)
+
 	case pneuma:
 		for _, char := range c.Core.Player.Chars() {
 			hpDrain := char.CurrentHP() * 0.01
@@ -81,7 +93,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 	}
 }
 
-func (c *char) c6heal(src int) func() {
+func (c *char) c6heal(char *character.CharWrapper, src int) func() {
 	return func() {
 		if c.c6HealSrc != src {
 			return
@@ -91,12 +103,12 @@ func (c *char) c6heal(src int) func() {
 		}
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
-			Target:  -1,
+			Target:  char.Index,
 			Type:    player.HealTypePercent,
 			Message: "Furina C6 Ousia Heal",
 			Src:     0.04,
 			Bonus:   c.Stat(attributes.Heal),
 		})
-		c.QueueCharTask(c.c6heal(src), 60)
+		char.QueueCharTask(c.c6heal(char, src), 60)
 	}
 }
