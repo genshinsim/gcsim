@@ -104,9 +104,9 @@ func (c *char) c6heal(char *character.CharWrapper, src int) func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  char.Index,
-			Type:    player.HealTypePercent,
+			Type:    player.HealTypeAbsolute,
 			Message: "Furina C6 Ousia Heal",
-			Src:     0.04,
+			Src:     0.04 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 		char.QueueCharTask(c.c6heal(char, src), 60)
