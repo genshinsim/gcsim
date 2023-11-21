@@ -150,7 +150,7 @@ func (w *Weapon) onOtherChangeHP() {
 		w.hpStacks++
 	}
 
-	hpp := (0.115 + float64(w.refine)*0.035) * float64(w.hpStacks)
+	hpp := (0.105 + float64(w.refine)*0.035) * float64(w.hpStacks)
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.HPP] = hpp
 	w.char.AddStatus(hpBuffIcd, 0.2*60, true)
