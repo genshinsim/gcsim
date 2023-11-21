@@ -19,6 +19,7 @@ var burstFrames []int
 
 const (
 	burstHitmark = 98
+	burstDur     = 18 * 60
 	burstKey     = "furina-burst"
 )
 
@@ -52,31 +53,6 @@ func (c *char) burstInit() {
 	}
 	c.curFanfare = 0
 	c.burstBuff = make([]float64, attributes.EndStatType)
-
-	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("furina-burst-damage-buff", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if !c.StatusIsActive(burstKey) {
-					// rejects attackmod when burst status isn't active
-					return nil, false
-				}
-				c.burstBuff[attributes.DmgP] = common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareDMGRatio[c.TalentLvlBurst()]
-				return c.burstBuff, true
-			},
-		})
-
-		char.AddHealBonusMod(character.HealBonusMod{
-			Base: modifier.NewBase("furina-burst-heal-buff", -1),
-			Amount: func() (float64, bool) {
-				if !c.StatusIsActive(burstKey) {
-					// return 0 when burst status isn't active
-					return 0, false
-				}
-				return common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], false
-			},
-		})
-	}
 
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
 		if !c.StatusIsActive(burstKey) {
@@ -135,15 +111,32 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		FlatDmg:    c.MaxHP() * burstDMG[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), burstHitmark, burstHitmark)
-	c.QueueCharTask(func() {
-		c.curFanfare = 0
+	c.QueueCharTask(func() { c.curFanfare = 0 }, 7)
 
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), burstHitmark, burstHitmark)
+
+	c.QueueCharTask(func() {
 		if c.Base.Cons >= 1 {
 			c.curFanfare = 150
 		}
 
-		c.AddStatus(burstKey, 18*60, false)
+		c.AddStatus(burstKey, burstDur, false)
+		for _, char := range c.Core.Player.Chars() {
+			char.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("furina-burst-damage-buff", burstDur),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					c.burstBuff[attributes.DmgP] = common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareDMGRatio[c.TalentLvlBurst()]
+					return c.burstBuff, true
+				},
+			})
+
+			char.AddHealBonusMod(character.HealBonusMod{
+				Base: modifier.NewBase("furina-burst-heal-buff", burstDur),
+				Amount: func() (float64, bool) {
+					return common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], false
+				},
+			})
+		}
 	}, burstHitmark+1)
 
 	c.SetCD(action.ActionBurst, 15*60)
