@@ -58,7 +58,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.arkhe == ousia {
 		c.QueueCharTask(func() {
 			c.arkhe = pneuma
-			c.summonSinger(c.Core.F, 0)
+			c.summonSinger(0)
 		}, chargeHitmark+1)
 	} else {
 		c.QueueCharTask(func() {

@@ -92,7 +92,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
 	c.AddStatus(skillKey, 1800+ousiaBubbleHitmark, false)
-	c.summonSinger(c.Core.F, ousiaBubbleHitmark)
+	c.summonSinger(ousiaBubbleHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 1200, 10)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[pneuma]),
@@ -148,8 +148,12 @@ func (c *char) summonSalonMembers(delay int) {
 	}, delay)
 }
 
-func (c *char) summonSinger(src, delay int) {
-	c.Core.Tasks.Add(c.singerOfManyWaters(src), delay)
+func (c *char) summonSinger(delay int) {
+	c.Core.Tasks.Add(func() {
+		src := c.Core.F
+		c.lastSummonSrc = src
+		c.singerOfManyWaters(src)
+	}, delay)
 }
 
 func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackPattern, delay int, callbacks ...combat.AttackCBFunc) {
