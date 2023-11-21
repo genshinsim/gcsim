@@ -155,7 +155,7 @@ func (w *Weapon) onOtherChangeHP() {
 	val[attributes.HPP] = hpp
 	w.char.AddStatus(hpBuffIcd, 0.2*60, true)
 	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("splendoroftranquilwaters-hpp", 6*60),
+		Base:         modifier.NewBaseWithHitlag(hpBuffKey, 6*60),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return val, true
