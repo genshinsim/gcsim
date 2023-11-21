@@ -19,7 +19,7 @@ var skillFrames [][]int
 
 const (
 	ousiaBubbleHitmark = 18
-	salonInitialTick   = 60 // TODO:
+	singerInitialTick  = 30 // TODO:
 	particleICDKey     = "furina-skill-particle-icd"
 	skillKey           = "furina-skill"
 	skillMaxDuration   = 1736
@@ -152,12 +152,12 @@ func (c *char) summonSinger(delay int) {
 	c.Core.Tasks.Add(func() {
 		src := c.Core.F
 		c.lastSummonSrc = src
-		c.singerOfManyWaters(src)
+		c.Core.Tasks.Add(c.singerOfManyWaters(src), singerInitialTick)
 	}, delay)
 }
 
 func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackPattern, delay int, callbacks ...combat.AttackCBFunc) {
-	c.QueueCharTask(func() {
+	c.Core.Tasks.Add(func() {
 		if src != c.lastSummonSrc {
 			return
 		}
