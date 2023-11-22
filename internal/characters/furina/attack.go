@@ -19,9 +19,12 @@ var (
 
 	// these ones should be correct
 	attackHitlagHaltFrame = []float64{0.01, 0.01, 0.02, 0.02}
-	attackHitboxes        = [][]float64{{2.8, 1.5}, {1.7}, {1.9}, {6, 5}}
-	attackHitboxesC6      = [][]float64{{3, 1.5}, {2.3}, {2.2}, {6, 5}}
+	attackHitboxes        = [][]float64{{1.5, 2.8}, {1.7}, {1.9}, {5, 6}}
+	attackHitboxesC6      = [][]float64{{1.5, 3}, {2.3}, {2.2}, {5, 6}}
 	attackStrikeType      = []attacks.StrikeType{attacks.StrikeTypePierce, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash, attacks.StrikeTypePierce}
+
+	arkheIcdKeys     = []string{"spiritbreath-thorn-icd", "surging-blade-icd"}
+	arkhePrettyPrint = []string{"Spiritbreath Thorn", "Surging Blade"}
 )
 
 const normalHitNum = 4
@@ -47,6 +50,33 @@ func init() {
 	attackFrames[3][action.ActionCharge] = 58
 }
 
+func (c *char) arkheCB(a combat.AttackCB) {
+	if c.StatusIsActive(arkheIcdKeys[c.arkhe]) {
+		return
+	}
+
+	c.AddStatus(arkheIcdKeys[c.arkhe], 6*60, true)
+
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.Pretty() + ")",
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
+		Element:    attributes.Hydro,
+		Durability: 0,
+		Mult:       arkhe[c.TalentLvlAttack()],
+	}
+
+	ap := combat.NewBoxHitOnTarget(
+		a.Target,
+		nil,
+		1.2,
+		4.5,
+	)
+	c.Core.QueueAttack(ai, ap, 42, 42)
+}
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -83,7 +113,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				attackHitboxesC6[c.NormalCounter][0],
 			)
 		}
-		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.c6cb)
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.arkheCB, c.c6cb)
 	} else {
 		switch c.NormalCounter {
 		case 0, 3:
@@ -100,7 +130,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				attackHitboxes[c.NormalCounter][0],
 			)
 		}
-		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
+		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.arkheCB)
 	}
 
 	defer c.AdvanceNormalIndex()
