@@ -16,6 +16,9 @@ import (
 // Up to 6 Energy can be gained this way, and the CD of Ceremonial Crystalshot can be
 // decreased by up to 3s.
 func (c *char) c1(shrapnel int) {
+	if c.Base.Cons < 1 {
+		return
+	}
 	count := math.Min(float64(shrapnel), 3)
 	c.ReduceActionCooldown(action.ActionBurst, int(count*60))
 	c.AddEnergy("navia-c1-energy", count*3)

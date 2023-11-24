@@ -123,9 +123,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		)
 	}
 
-	// remove the shrapnel after firing
+	// remove the shrapnel after firing and action C1
 	c.QueueCharTask(
 		func() {
+			c.c1(c.shrapnel)
 			if c.Base.Cons < 6 {
 				c.shrapnel = 0
 			} else {
@@ -168,13 +169,6 @@ func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
 
 		// When firing, attack with the Surging Blade
 		c.SurgingBlade(hitmark)
-
-		// C1 Energy Restoration and CD reduction
-		if c.Base.Cons >= 1 {
-			c.QueueCharTask(func() {
-				c.c1(c.shrapnel)
-			}, hitmark)
-		}
 
 		if done {
 			return
