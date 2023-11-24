@@ -84,7 +84,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		if di.ActorIndex != char.Index {
 			return false
 		}
-		if di.ActorIndex != char.Index {
+		if c.Player.Active() != char.Index {
 			return false
 		}
 		if di.Amount <= 0 {
