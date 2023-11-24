@@ -49,6 +49,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 		ai.Element = attributes.Hydro
+		ai.IgnoreInfusion = true
 		ai.FlatDmg = c.c6BonusDMG()
 		c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark, c.c6cb)
 	} else {

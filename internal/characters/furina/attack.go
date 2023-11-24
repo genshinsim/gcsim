@@ -58,15 +58,16 @@ func (c *char) arkheCB(a combat.AttackCB) {
 	c.AddStatus(arkheIcdKeys[c.arkhe], 6*60, true)
 
 	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.Pretty() + ")",
-		AttackTag:  attacks.AttackTagNormal,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeSlash,
-		Element:    attributes.Hydro,
-		Durability: 0,
-		Mult:       arkhe[c.TalentLvlAttack()],
+		ActorIndex:     c.Index,
+		Abil:           arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.Pretty() + ")",
+		AttackTag:      attacks.AttackTagNormal,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeSlash,
+		Element:        attributes.Hydro,
+		Durability:     0,
+		Mult:           arkhe[c.TalentLvlAttack()],
+		IgnoreInfusion: true,
 	}
 
 	ap := combat.NewBoxHitOnTarget(
@@ -97,6 +98,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 		ai.Element = attributes.Hydro
+		ai.IgnoreInfusion = true
 		ai.FlatDmg = c.c6BonusDMG()
 		switch c.NormalCounter {
 		case 0, 3:
