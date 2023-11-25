@@ -4896,7 +4896,7 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		AtkCurve:         GROW_CURVE_ATTACK_304,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
 		BaseAtk:          44.33580017089844,
-		BaseSpecialized:  0.09600000083446503,
+		BaseSpecialized:  0.19200000166893005,
 		Specialized:      attributes.CD,
 		PromotionBonus: []PromoData{
 			{
