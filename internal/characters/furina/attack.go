@@ -57,26 +57,32 @@ func (c *char) arkheCB(a combat.AttackCB) {
 
 	c.AddStatus(arkheIcdKeys[c.arkhe], 6*60, true)
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.Pretty() + ")",
-		AttackTag:      attacks.AttackTagNormal,
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeSlash,
-		Element:        attributes.Hydro,
-		Durability:     0,
-		Mult:           arkhe[c.TalentLvlAttack()],
-		IgnoreInfusion: true,
-	}
-
-	ap := combat.NewBoxHitOnTarget(
-		a.Target,
-		nil,
-		1.2,
-		4.5,
-	)
-	c.Core.QueueAttack(ai, ap, 42, 42)
+	c.QueueCharTask(func() {
+		ai := combat.AttackInfo{
+			ActorIndex:     c.Index,
+			Abil:           arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.Pretty() + ")",
+			AttackTag:      attacks.AttackTagNormal,
+			ICDTag:         attacks.ICDTagNone,
+			ICDGroup:       attacks.ICDGroupDefault,
+			StrikeType:     attacks.StrikeTypeSlash,
+			Element:        attributes.Hydro,
+			Durability:     0,
+			Mult:           arkhe[c.TalentLvlAttack()],
+			IgnoreInfusion: true,
+		}
+		// https://www.youtube.com/watch?v=sbKIEzelynE
+		// Furina's 18% Max HP boost applies to her Arkhe attacks
+		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
+			ai.FlatDmg = c.c6BonusDMGArkhe()
+		}
+		ap := combat.NewBoxHitOnTarget(
+			a.Target,
+			nil,
+			1.2,
+			4.5,
+		)
+		c.Core.QueueAttack(ai, ap, 0, 0)
+	}, 42)
 }
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
