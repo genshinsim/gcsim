@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
@@ -132,7 +133,7 @@ func (c *char) summonSalonMembers(delay int) {
 	c.Core.Tasks.Add(func() {
 		src := c.Core.F
 		c.lastSummonSrc = src
-
+		c.Core.Log.NewEvent("Summoned Salon Solitaire", glog.LogCharacterEvent, c.Index)
 		c.Core.Tasks.Add(
 			c.surintendanteChevalmarin(src, 0),
 			c.calcSalonTick(0, chevalmarinInitialTick, chevalmarinIntervalMean),
@@ -152,6 +153,7 @@ func (c *char) summonSinger(delay int) {
 	c.Core.Tasks.Add(func() {
 		src := c.Core.F
 		c.lastSummonSrc = src
+		c.Core.Log.NewEvent("Summoned Singer of Many Waters", glog.LogCharacterEvent, c.Index)
 		c.Core.Tasks.Add(c.singerOfManyWaters(src), singerInitialTick)
 	}, delay)
 }
