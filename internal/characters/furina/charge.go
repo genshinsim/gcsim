@@ -59,12 +59,16 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.arkhe == ousia {
 		c.QueueCharTask(func() {
 			c.arkhe = pneuma
-			c.summonSinger(0)
+			if c.StatusIsActive(skillKey) {
+				c.summonSinger(0)
+			}
 		}, chargeHitmark+1)
 	} else {
 		c.QueueCharTask(func() {
 			c.arkhe = ousia
-			c.summonSalonMembers(0)
+			if c.StatusIsActive(skillKey) {
+				c.summonSalonMembers(0)
+			}
 		}, chargeHitmark+1)
 	}
 	return action.Info{
