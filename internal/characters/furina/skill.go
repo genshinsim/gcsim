@@ -20,7 +20,7 @@ var skillFrames [][]int
 
 const (
 	ousiaBubbleHitmark = 18
-	singerInitialTick  = 30 // TODO:
+	singerInitialTick  = 80 // TODO:
 	particleICDKey     = "furina-skill-particle-icd"
 	skillKey           = "furina-skill"
 	skillMaxDuration   = 1736
