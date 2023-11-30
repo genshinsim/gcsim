@@ -348,8 +348,8 @@ func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
 
 		alliesWithDrainedHPCounter++
 
-		if c.Core.Player.Active() == i && (c.Core.Player.CurrentState() == action.BurstState || c.Core.Player.CurrentState() == action.DashState) {
-			// her skill does not drain the HP of active characters that are in iframes (burst or dash)
+		if c.Core.Player.Active() == i && c.Core.Player.CurrentState() == action.BurstState {
+			// her skill does not drain the HP of active characters that are in burst iframes
 			continue
 		}
 		hpDrain := char.MaxHP() * hpDrainRatio
