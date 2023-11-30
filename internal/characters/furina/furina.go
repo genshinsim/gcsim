@@ -80,7 +80,10 @@ func (c *char) Condition(fields []string) (any, error) {
 	case "ousia":
 		return c.arkhe == ousia, nil
 	case "fanfare":
-		return c.curFanfare, nil
+		if c.StatusIsActive(burstKey) {
+			return c.curFanfare, nil
+		}
+		return 0, nil
 	case "c6-count":
 		return c.c6Count, nil
 	default:
