@@ -19,11 +19,15 @@ import (
 var skillFrames [][]int
 
 const (
+	particleICDKey   = "furina-skill-particle-icd"
+	skillKey         = "furina-skill"
+	skillMaxDuration = 1736
+
+	pneumaCDDelay     = 10
+	singerInitialTick = 80 - pneumaCDDelay
+
 	ousiaBubbleHitmark = 18
-	singerInitialTick  = 80 // TODO:
-	particleICDKey     = "furina-skill-particle-icd"
-	skillKey           = "furina-skill"
-	skillMaxDuration   = 1736
+	ousiaCDDelay       = 0
 
 	salonMemberKey = "Salon Member"
 
@@ -92,9 +96,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
-	c.AddStatus(skillKey, 1800+ousiaBubbleHitmark, false)
-	c.summonSinger(ousiaBubbleHitmark)
-	c.SetCDWithDelay(action.ActionSkill, 1200, 10)
+	c.AddStatus(skillKey, 1736+pneumaCDDelay, false)
+	c.summonSinger(pneumaCDDelay)
+	c.SetCDWithDelay(action.ActionSkill, 1200, pneumaCDDelay)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[pneuma]),
 		AnimationLength: skillFrames[pneuma][action.InvalidAction],
@@ -119,7 +123,7 @@ func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 
 	c.AddStatus(skillKey, 1736+ousiaBubbleHitmark, false)
 	c.summonSalonMembers(ousiaBubbleHitmark)
-	c.SetCDWithDelay(action.ActionSkill, 1200, 0)
+	c.SetCDWithDelay(action.ActionSkill, 1200, ousiaCDDelay)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[ousia]),
