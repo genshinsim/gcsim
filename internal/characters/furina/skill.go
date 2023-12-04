@@ -31,6 +31,8 @@ const (
 
 	salonMemberKey = "Salon Member"
 
+	// Data can be found here.
+	// https://docs.google.com/spreadsheets/d/18LP6xlqh1DJhu6H0cvSaw3XLHhhLH6Wi/edit#gid=449781477
 	chevalmarinInitialTick  = 72.3333
 	chevalmarinIntervalMean = 97.5858
 	chevalmarinTravel       = 20
