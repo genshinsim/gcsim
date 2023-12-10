@@ -54,7 +54,7 @@ func init() {
 	skillPressureFrames[1][action.ActionSwap] = 51
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(persTimeKey) {
 		return c.detonateSkill()
 	}
@@ -92,12 +92,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, cd, 35)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillThrustFrames),
 		AnimationLength: skillThrustFrames[action.InvalidAction],
 		CanQueueAfter:   skillThrustFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) skillAligned() {
@@ -125,7 +125,7 @@ func (c *char) skillAligned() {
 	)
 }
 
-func (c *char) detonateSkill() action.ActionInfo {
+func (c *char) detonateSkill() (action.Info, error) {
 	pressureFrameIndex := 0
 	if c.skillStacks == 4 {
 		pressureFrameIndex = 1
@@ -196,12 +196,12 @@ func (c *char) detonateSkill() action.ActionInfo {
 	c.DeleteStatus(persTimeKey)
 	c.skillStacks = 0
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressureFrames[pressureFrameIndex]),
 		AnimationLength: skillPressureFrames[pressureFrameIndex][action.InvalidAction],
 		CanQueueAfter:   skillPressureFrames[pressureFrameIndex][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCBThrust(a combat.AttackCB) {

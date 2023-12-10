@@ -1377,7 +1377,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 		Body:        info.BodyBoy,
 		Element:     attributes.Cryo,
 		Region:      info.ZoneFontaine,
-		WeaponType:  info.WeaponClassClaymore,
+		WeaponClass: info.WeaponClassClaymore,
 		HPCurve:     GROW_CURVE_HP_S4,
 		AtkCurve:    GROW_CURVE_ATTACK_S4,
 		DefCurve:    GROW_CURVE_HP_S4,

@@ -25,7 +25,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 51
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.AddStatus(burstKey, 10*60, true)
 
 	c.ResetActionCooldown(action.ActionSkill)
@@ -52,12 +52,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 60*15)
 	c.ConsumeEnergy(4)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) onExitField() {

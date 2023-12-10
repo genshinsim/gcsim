@@ -130,5 +130,4 @@ func (c *char) c4c6() {
 	c.Core.Events.Subscribe(event.OnShatter, c4c6Buff, "freminet-c4-c6-shatter")
 	c.Core.Events.Subscribe(event.OnFrozen, c4c6Buff, "freminet-c4-c6-frozen")
 	c.Core.Events.Subscribe(event.OnSuperconduct, c4c6Buff, "freminet-c4-c6-superconduct")
-
 }
