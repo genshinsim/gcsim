@@ -39,6 +39,7 @@ Character PR checklist:
 - [ ] Particles
 - [ ] Frames
 - [ ] Update documentation
+- [ ] Update localization (IngameNames.json)
 
 Weapon PR checklist:
 
@@ -51,6 +52,7 @@ Weapon PR checklist:
 - [ ] Weapon curve
 - [ ] Weapon passive (might include an attack)
 - [ ] Update documentation
+- [ ] Update localization (IngameNames.json)
 
 Artifact PR checklist:
 
@@ -63,6 +65,7 @@ Artifact PR checklist:
 - [ ] 2pc
 - [ ] 4pc
 - [ ] Update documentation
+- [ ] Update localization (IngameNames.json)
 
 Please try to be explicit about what is complete or incomplete.
 
@@ -103,6 +106,7 @@ Character PR checklist:
 - [ ] Particles
 - [ ] Frames
 - [ ] Update documentation
+- [ ] Update localization (IngameNames.json)
 
 Weapon PR checklist:
 
@@ -115,6 +119,7 @@ Weapon PR checklist:
 - [ ] Weapon curve
 - [ ] Weapon passive
 - [ ] Update documentation
+- [ ] Update localization (IngameNames.json)
 
 Artifact PR checklist:
 
@@ -127,6 +132,7 @@ Artifact PR checklist:
 - [ ] 2pc
 - [ ] 4pc
 - [ ] Update documentation
+- [ ] Update localization (IngameNames.json)
 
 ````
 </details>
