@@ -421,6 +421,21 @@
         "burst_energy_cost": 60
       }
     },
+    "freminet": {
+      "id": 10000085,
+      "key": "freminet",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Freminet",
+      "skill_details": {
+        "skill": 10852,
+        "burst": 10855,
+        "attack": 10851,
+        "burst_energy_cost": 60
+      }
+    },
     "ganyu": {
       "id": 10000037,
       "key": "ganyu",

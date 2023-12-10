@@ -68,7 +68,7 @@
         "canBeDefenseHalt": true,
         "deployable": false
       }
-    ], 
+    ],
     "skill": [
       {
         "ability": "E-Tap-Initial",
@@ -674,7 +674,7 @@
       },
       {
         "ability": "N2",
-        "hitHaltTime": 0.10,
+        "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
@@ -970,6 +970,68 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
+      }
+    ]
+  },
+  "freminet": {
+    "normal": [
+      {
+        "ability": "N1",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N2",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N3",
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "N4",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-UpwardThrust",
+        "hitHaltTime": 0.08,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-Lv.0",
+        "hitHaltTime": 0.10,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-Lv.1/2/3-Cryo",
+        "hitHaltTime": 0.10,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
+      },
+      {
+        "ability": "E-Lv.4",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": false,
+        "deployable": false
       }
     ]
   },
@@ -1301,7 +1363,7 @@
     "normal": [
       {
         "ability": "Q-N1",
-        "hitHaltTime": 0.10,
+        "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
@@ -1322,7 +1384,7 @@
       },
       {
         "ability": "Q-N4",
-        "hitHaltTime": 0.10,
+        "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
@@ -1533,11 +1595,11 @@
         "canBeDefenseHalt": true,
         "deployable": false
       }
-    ], 
+    ],
     "charge": [
       {
         "ability": "CA-3",
-        "hitHaltTime": 0.10,
+        "hitHaltTime": 0.1,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
