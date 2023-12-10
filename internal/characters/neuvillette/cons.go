@@ -14,6 +14,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const c4ICDKey = "neuvillette-c4-icd"
+
 func (c *char) c1() {
 	if c.Base.Ascension < 1 {
 		return
@@ -51,23 +53,33 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		target := args[1].(int)
 
-		// 4s CD
-		if c.Core.F < c.lastc4+4*60 {
-			return false
-		}
 		if c.Core.Player.Active() != c.Index {
 			return false
 		}
 		if c.Index != target {
 			return false
 		}
+		if c.StatusIsActive(c4ICDKey) {
+			return false
+		}
 		if c.Core.Player.Active() == c.Index && c.Index == target {
-			// TODO: find the actual sourcewater droplet spawn shape for Neuv C4
+			// 4s CD
+			c.AddStatus(c4ICDKey, 4*60, true)
 			player := c.Core.Combat.Player()
-			center := player.Pos().Add(player.Direction().Normalize().Mul(geometry.Point{X: 3.0, Y: 3.0}))
-			pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
-			common.NewSourcewaterDroplet(c.Core, pos, combat.GadgetTypSourcewaterDropletNeuv)
-			c.lastc4 = c.Core.F
+			common.NewSourcewaterDroplet(
+				c.Core,
+				geometry.CalcRandomPointFromCenter(
+					geometry.CalcOffsetPoint(
+						player.Pos(),
+						geometry.Point{Y: 8},
+						player.Direction(),
+					),
+					1.3,
+					3,
+					c.Core.Rand,
+				),
+				combat.GadgetTypSourcewaterDropletNeuv,
+			)
 			c.Core.Combat.Log.NewEvent("Spawned 1 droplet", glog.LogCharacterEvent, c.Index).
 				Write("src_action", "c4")
 		}

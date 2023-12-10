@@ -22,7 +22,6 @@ type char struct {
 	*tmpl.Character
 	lastThorn              int
 	lastSkillParticle      int
-	lastc4                 int
 	chargeJudgeStartF      int
 	chargeJudgeDur         int
 	tickAnimLength         int
@@ -43,7 +42,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 5
 
 	c.lastThorn = math.MinInt / 2
-	c.lastc4 = math.MinInt / 2
 	c.lastSkillParticle = math.MinInt / 2
 
 	c.chargeEarlyCancelled = false
