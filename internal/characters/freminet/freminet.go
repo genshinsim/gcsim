@@ -27,8 +27,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
-	// TODO: Freminet; Third con is basic attack +3
-	c.BurstCon = 3
+	c.NormalCon = 3
 	c.SkillCon = 5
 
 	w.Character = &c
