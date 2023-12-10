@@ -171,7 +171,7 @@ func (c *char) chargeAttackShort(windup int) (action.Info, error) {
 				Durability: 25,
 				Mult:       charge[c.TalentLvlAttack()],
 			}
-			ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), 3, 8)
+			ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 3, 8)
 			// TODO: Not sure of snapshot timing
 			c.Core.QueueAttack(
 				ai,
@@ -192,7 +192,7 @@ func (c *char) chargeAttackShort(windup int) (action.Info, error) {
 
 func (c *char) judgementWave() {
 	// calculated every hit since canqueueafter is after the first tick, so configs can change the primary target/entity positions while the CA happens
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), 3.5, 15)
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 3.5, 15)
 	if c.Base.Ascension >= 1 {
 		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * a1Multipliers[c.countA1()]
 	}
