@@ -836,7 +836,7 @@
     {
       "ability": "charge",
       "param": "short",
-      "desc": "0 for Charged Attack: Equitable Judgment (default), 1 for Charged Attack. Will still absorb droplets if possible. This mirrors in game behaviour."
+      "desc": "0 for Charged Attack: Equitable Judgment (default), 1 for Charged Attack. Charged Attack will still absorb droplets if possible. This mirrors in game behaviour."
     },
     {
       "ability": "charge",
