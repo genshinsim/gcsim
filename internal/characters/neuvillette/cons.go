@@ -81,6 +81,10 @@ func (c *char) c6DropletCheck(src int) func() {
 			return
 		}
 
+		if c.Core.F > c.chargeJudgeStartF+c.tickAnimLength {
+			return
+		}
+
 		if c.chargeJudgeStartF+c.chargeJudgeDur-c.Core.F <= 60 {
 			droplets := c.getSourcewaterDroplets()
 
@@ -103,7 +107,7 @@ func (c *char) c6(src int) func() {
 		if c.chargeJudgeStartF != src {
 			return
 		}
-		if c.Core.F > c.chargeJudgeStartF+c.chargeJudgeDur {
+		if c.Core.F > c.chargeJudgeStartF+c.tickAnimLength {
 			return
 		}
 		ai := combat.AttackInfo{
