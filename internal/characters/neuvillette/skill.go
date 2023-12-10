@@ -147,7 +147,6 @@ func (c *char) makeDropletCB() combat.AttackCBFunc {
 				combat.GadgetTypSourcewaterDropletNeuv,
 			)
 		}
-		c.Core.Combat.Log.NewEvent("Spawned 3 droplets", glog.LogCharacterEvent, c.Index).
-			Write("src_action", "skill")
+		c.Core.Combat.Log.NewEvent("Skill: Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
 	}
 }

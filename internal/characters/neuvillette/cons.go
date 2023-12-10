@@ -80,8 +80,7 @@ func (c *char) c4() {
 				),
 				combat.GadgetTypSourcewaterDropletNeuv,
 			)
-			c.Core.Combat.Log.NewEvent("Spawned 1 droplet", glog.LogCharacterEvent, c.Index).
-				Write("src_action", "c4")
+			c.Core.Combat.Log.NewEvent("C4: Spawned 1 droplet", glog.LogCharacterEvent, c.Index)
 		}
 		return false
 	}, "neuvillette-c4")

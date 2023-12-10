@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					combat.GadgetTypSourcewaterDropletNeuv,
 				)
 			}
-			c.Core.Combat.Log.NewEvent(fmt.Sprint("Spawned ", dropletCount, " droplets"), glog.LogCharacterEvent, c.Index).Write("src_action", "burst")
+			c.Core.Combat.Log.NewEvent(fmt.Sprint("Burst: Spawned ", dropletCount, " droplets"), glog.LogCharacterEvent, c.Index)
 
 			// determine attack pattern
 			// initial tick
