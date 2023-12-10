@@ -4449,16 +4449,16 @@
       {
         "ability": "Equitable-Judgement",
         "shape": "Box",
-        "center": "PrimaryTarget",
-        "boxX": 3,
-        "boxY": 8
+        "center": "Player",
+        "boxX": 3.5,
+        "boxY": 15
       },
       {
         "ability": "CA",
         "shape": "Box",
-        "center": "PrimaryTarget",
-        "boxX": 3.5,
-        "boxY": 15
+        "center": "Player",
+        "boxX": 3,
+        "boxY": 8
       }
     ],
     "skill": [
