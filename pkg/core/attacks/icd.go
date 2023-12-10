@@ -53,6 +53,7 @@ const (
 	ICDTagLyneyEndBoom
 	ICDTagLyneyEndBoomEnhanced
 	ICDTagTravelerDewdrop
+	ICDTagNeuvilletteC6
 	ICDTagLength
 )
 

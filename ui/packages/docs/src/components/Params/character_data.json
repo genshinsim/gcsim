@@ -831,5 +831,17 @@
       "param": "pickup_droplets",
       "desc": "Number of picked up Sourcewater Droplets. Default 0."
     }
+  ],
+  "neuvillette": [
+    {
+      "ability": "charge",
+      "param": "short",
+      "desc": "0 for Charged Attack: Equitable Judgment (default), 1 for Charged Attack. Charged Attack will still absorb droplets if possible. This mirrors in game behaviour."
+    },
+    {
+      "ability": "charge",
+      "param": "ticks",
+      "desc": "Number of ticks for Charged Attack: Equitable Judgment. Default is maximum number of ticks, minimum 1. Only works if short = 0. If the number of ticks is not the maximum, the next action must be Burst, Skill, Dash, or Jump."
+    }
   ]
 }

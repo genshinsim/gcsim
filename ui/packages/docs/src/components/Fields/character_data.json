@@ -120,7 +120,7 @@
       ],
       "desc": "Number of Prop Surplus stacks."
     }
-  ], 
+  ],
   "ningguang": [
     {
       "fields": [
@@ -167,12 +167,18 @@
       "desc": "Number of Declension stacks."
     }
   ],
-  "travelerhydro": [
+  "neuvillette": [
     {
       "fields": [
-        ".travelerhydro.droplets"
+        ".neuvillette.droplets"
       ],
-      "desc": "Number of Sourcewater droplets created by Traveler."
+      "desc": "Number of Sourcewater droplets in range for Charged Attack Empowerment: Legal Evaluation."
+    },
+    {
+      "fields": [
+        ".neuvillette.droplets-c6"
+      ],
+      "desc": "Number of Sourcewater droplets in range for C6."
     }
   ]
 }
