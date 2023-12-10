@@ -124,6 +124,7 @@ func (c *char) c6cb(a combat.AttackCB) {
 	if c.StatusIsActive(c6ICDKey) {
 		return
 	}
+	c.AddStatus(c6ICDKey, 2*60, true)
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       chargeJudgementName + " (C6)",

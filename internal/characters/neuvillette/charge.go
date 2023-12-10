@@ -107,7 +107,9 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		c.chargeJudgeStartF = c.Core.F + chargeLegalEvalLeft
 		c.chargeJudgeDur = 173
 
-		c.QueueCharTask(c.c6DropletCheck(c.chargeJudgeStartF), chargeLegalEvalLeft)
+		if c.Base.Cons >= 6 {
+			c.QueueCharTask(c.c6DropletCheck(c.chargeJudgeStartF), chargeLegalEvalLeft)
+		}
 
 		ticks, ok := p["ticks"]
 		if !ok {
