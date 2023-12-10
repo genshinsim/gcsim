@@ -16,7 +16,6 @@ func init() {
 type char struct {
 	*tmpl.Character
 	skillStacks int
-	persID      int
 	c4Stacks    int
 	c6Stacks    int
 }

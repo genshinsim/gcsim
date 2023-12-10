@@ -17,10 +17,14 @@ var (
 )
 
 const (
-	skillThrustHitmark = 29
-	particleICDKey     = "freminet-particle-icd"
-	persTimeKey        = "freminet-pers-time"
-	pressureBaseName   = "Pressurized Floe: Shattering Pressure"
+	skillThrustHitmark   = 29
+	particleICDKeyThrust = "freminet-particle-icd-thrust"
+	particleICDKeyLv4    = "freminet-particle-icd-lv4"
+	persTimeKey          = "freminet-pers-time"
+	pressureBaseName     = "Pressurized Floe: Shattering Pressure"
+
+	skillAlignedICDKey = "freminet-aligned-icd"
+	skillAlignedICD    = 9 * 60
 )
 
 func init() {
@@ -51,144 +55,135 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if !c.StatusIsActive(persTimeKey) {
-		c.skillStacks = 0
+	if c.StatusIsActive(persTimeKey) {
+		return c.detonateSkill()
+	}
 
-		c.AddStatus(persTimeKey, 600, true)
-		c.persID = c.Core.F
+	c.skillStacks = 0
+	c.AddStatus(persTimeKey, 10*60, true)
 
-		// TODO: Freminet; Update Info
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               "Pressurized Floe: Upward Thrust",
-			AttackTag:          attacks.AttackTagElementalArt,
-			ICDTag:             attacks.ICDTagElementalArt,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeBlunt,
-			Element:            attributes.Cryo,
-			Durability:         50,
-			Mult:               skillThrust[c.TalentLvlSkill()],
-			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0.09 * 60,
-			CanBeDefenseHalted: false,
-		}
+	ai := combat.AttackInfo{
+		ActorIndex:       c.Index,
+		Abil:             "Pressurized Floe: Upward Thrust",
+		AttackTag:        attacks.AttackTagElementalArt,
+		ICDTag:           attacks.ICDTagElementalArt,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeBlunt,
+		Element:          attributes.Cryo,
+		Durability:       25,
+		Mult:             skillThrust[c.TalentLvlSkill()],
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: 0.08 * 60,
+	}
 
-		// TODO: Freminet; Insert Hitbox
-		skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 8)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+		0,
+		skillThrustHitmark,
+		c.particleCBThrust,
+	)
+	c.skillAligned()
 
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5),
-			0,
-			skillThrustHitmark,
-			c.particleCB,
-		)
+	cd := 600
+	if c.StatusIsActive(burstKey) {
+		cd = 3 * 60
+	}
 
-		// TODO: Freminet; Update Info
-		aiSpiritbreath := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               "Pressurized Floe: Spiritbreath Thorn",
-			AttackTag:          attacks.AttackTagElementalArt,
-			ICDTag:             attacks.ICDTagElementalArt,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeBlunt,
-			Element:            attributes.Cryo,
-			Durability:         50,
-			Mult:               skillBreath[c.TalentLvlSkill()],
-			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0.09 * 60,
-			CanBeDefenseHalted: false,
-		}
+	c.SetCDWithDelay(action.ActionSkill, cd, 35)
 
-		currentID := c.Core.F
-
-		c.Core.Tasks.Add(func() {
-			if c.StatusIsActive(persTimeKey) && currentID == c.persID {
-				c.Core.QueueAttack(aiSpiritbreath, combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5), 0, 0)
-			}
-		}, 62)
-
-		cd := 600
-
-		if c.StatusIsActive(burstKey) {
-			cd = 3 * 60
-		}
-
-		c.SetCDWithDelay(action.ActionSkill, cd, 35)
-
-		return action.ActionInfo{
-			Frames:          frames.NewAbilFunc(skillThrustFrames),
-			AnimationLength: skillThrustFrames[action.InvalidAction],
-			CanQueueAfter:   skillThrustFrames[action.ActionDash], // earliest cancel
-			State:           action.SkillState,
-		}
-	} else {
-		// Manual Cancel
-		actionInfo := c.detonateSkill()
-
-		return actionInfo
+	return action.ActionInfo{
+		Frames:          frames.NewAbilFunc(skillThrustFrames),
+		AnimationLength: skillThrustFrames[action.InvalidAction],
+		CanQueueAfter:   skillThrustFrames[action.ActionDash], // earliest cancel
+		State:           action.SkillState,
 	}
 }
 
+func (c *char) skillAligned() {
+	if c.StatusIsActive(skillAlignedICDKey) {
+		return
+	}
+	c.AddStatus(skillAlignedICDKey, skillAlignedICD, true)
+
+	aiSpiritbreath := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       "Pressurized Floe: Spiritbreath Thorn",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Cryo,
+		Durability: 0,
+		Mult:       skillBreath[c.TalentLvlSkill()],
+	}
+	c.Core.QueueAttack(
+		aiSpiritbreath,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
+		62,
+		62,
+	)
+}
+
 func (c *char) detonateSkill() action.ActionInfo {
-
-	// TODO: Freminet; Insert Hitbox
-	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 8)
-
 	pressureFrameIndex := 0
 	if c.skillStacks == 4 {
 		pressureFrameIndex = 1
 	}
 
 	if skillPressureCryo[c.skillStacks][c.TalentLvlSkill()] > 0 {
-		// TODO: Freminet; Update Info
 		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               pressureBaseName + " (Cryo)",
-			AttackTag:          attacks.AttackTagElementalArt,
-			ICDTag:             attacks.ICDTagElementalArt,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeBlunt,
-			Element:            attributes.Cryo,
-			Durability:         50,
-			Mult:               skillPressureCryo[c.skillStacks][c.TalentLvlSkill()],
-			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0.09 * 60,
-			CanBeDefenseHalted: false,
+			ActorIndex:       c.Index,
+			Abil:             pressureBaseName + " (Cryo)",
+			AttackTag:        attacks.AttackTagElementalArt,
+			ICDTag:           attacks.ICDTagElementalArt,
+			ICDGroup:         attacks.ICDGroupDefault,
+			StrikeType:       attacks.StrikeTypeBlunt,
+			Element:          attributes.Cryo,
+			Durability:       25,
+			Mult:             skillPressureCryo[c.skillStacks][c.TalentLvlSkill()],
+			HitlagFactor:     0.01,
+			HitlagHaltFrames: 0.10 * 60,
 		}
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5),
 			0,
 			skillPressureHitmarks[pressureFrameIndex],
-			c.particleCB,
 		)
 	}
 
 	if skillPressurePhys[c.skillStacks][c.TalentLvlSkill()] > 0 {
-		// TODO: Freminet; Update Info
 		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               pressureBaseName + " (Physical)",
-			AttackTag:          attacks.AttackTagElementalArt,
-			ICDTag:             attacks.ICDTagElementalArt,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeBlunt,
-			Element:            attributes.Physical,
-			Durability:         50,
-			Mult:               skillPressurePhys[c.skillStacks][c.TalentLvlSkill()],
-			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0.09 * 60,
-			CanBeDefenseHalted: false,
+			ActorIndex: c.Index,
+			Abil:       pressureBaseName + " (Physical)",
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			Element:    attributes.Physical,
+			Durability: 25,
+			Mult:       skillPressurePhys[c.skillStacks][c.TalentLvlSkill()],
+		}
+		if c.skillStacks == 4 {
+			ai.HitlagFactor = 0.01
+			ai.HitlagHaltFrames = 0.09 * 60
+		}
+
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 2.5)
+		var particleCB combat.AttackCBFunc
+		if c.skillStacks == 4 {
+			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: 0.5, Y: 0.5}, 3, 7)
+			particleCB = c.particleCBLv4
 		}
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5),
+			ap,
 			0,
 			skillPressureHitmarks[pressureFrameIndex],
-			c.particleCB,
+			particleCB,
 		)
 	}
 
@@ -209,14 +204,34 @@ func (c *char) detonateSkill() action.ActionInfo {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *char) particleCBThrust(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
-	if c.StatusIsActive(particleICDKey) {
+	if c.StatusIsActive(particleICDKeyThrust) {
 		return
 	}
-	// TODO: Freminet; Check Particle amount and ICD
-	c.AddStatus(particleICDKey, 0.2*60, true)
-	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Cryo, c.ParticleDelay)
+	c.AddStatus(particleICDKeyThrust, 0.3*60, true)
+
+	particles := 2.0
+	if c.StatusIsActive(burstKey) {
+		particles = 1
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), particles, attributes.Cryo, c.ParticleDelay)
+}
+
+func (c *char) particleCBLv4(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKeyLv4) {
+		return
+	}
+	c.AddStatus(particleICDKeyLv4, 0.3*60, true)
+
+	particles := 2.0
+	if c.StatusIsActive(burstKey) {
+		particles = 1
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), particles, attributes.Cryo, c.ParticleDelay)
 }
