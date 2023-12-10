@@ -4633,7 +4633,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 		DefCurve:    GROW_CURVE_HP_S5,
 		BaseHP:      1143.9840087890625,
 		BaseAtk:     16.218019485473633,
-		BaseDef:     44.87,
+		BaseDef:     44.872501373291016,
 		Specialized: attributes.CD,
 		PromotionBonus: []PromoData{
 			{
