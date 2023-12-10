@@ -2232,6 +2232,122 @@
       }
     ]
   },
+  "freminet": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.2
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.4
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-UpwardThrust",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 2.5
+      },
+      {
+        "ability": "E-Aligned",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 2.5
+      },
+      {
+        "ability": "E-Lv.0",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 2.5
+      },
+      {
+        "ability": "E-Lv.1/2/3-Cryo",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 2.5
+      },
+      {
+        "ability": "E-Lv.1/2/3-Physical",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 2.5
+      },
+      {
+        "ability": "E-Lv.4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetX": 0.5,
+        "offsetY": 0.5,
+        "boxX": 3,
+        "boxY": 7
+      },
+      {
+        "ability": "E-Frost-N1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.2
+      },
+      {
+        "ability": "E-Frost-N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.2
+      },
+      {
+        "ability": "E-Frost-N3",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.5,
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "E-Frost-N4",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.5,
+        "radius": 2.4
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q-Initial",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5
+      }
+    ]
+  },
   "ganyu": {
     "normal": [
       {
