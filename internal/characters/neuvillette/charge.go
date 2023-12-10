@@ -122,6 +122,7 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		// start counting at 1 for correct number of ticks when supplying ticks param
 		c.Core.Tasks.Add(c.chargeJudgementTick(c.chargeJudgeStartF, 1, ticks, false), chargeLegalEvalLeft+getChargeJudgementHitmarkDelay(1))
 
+		// TODO: drain timing affected by ping?
 		// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
 		c.QueueCharTask(c.consumeHp(c.chargeJudgeStartF), chargeLegalEvalLeft+40)
 	}, windup+3)
@@ -286,7 +287,8 @@ func (c *char) consumeHp(src int) func() {
 
 func (c *char) consumeDroplet(g *common.SourcewaterDroplet) {
 	g.Kill()
-	// the healing is slightly delayed by 8f
+	// TODO: adjust healing delay by ping amount
+	// the healing is slightly delayed by 5f
 	c.QueueCharTask(func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
@@ -295,5 +297,5 @@ func (c *char) consumeDroplet(g *common.SourcewaterDroplet) {
 			Src:     c.MaxHP() * 0.16,
 			Bonus:   c.Stat(attributes.Heal),
 		})
-	}, 8)
+	}, 5)
 }
