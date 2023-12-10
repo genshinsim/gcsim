@@ -16,7 +16,6 @@ import (
 
 var chargeFrames []int
 var endLag []int
-var earlyCancelEndLag []int
 
 const initialLegalEvalDur = 209
 
@@ -44,12 +43,6 @@ func init() {
 	endLag[action.ActionSkill] = 0
 	endLag[action.ActionDash] = 0
 	endLag[action.ActionJump] = 0
-
-	earlyCancelEndLag = frames.InitAbilSlice(5000)
-	earlyCancelEndLag[action.ActionBurst] = 0
-	earlyCancelEndLag[action.ActionSkill] = 0
-	earlyCancelEndLag[action.ActionDash] = 0
-	earlyCancelEndLag[action.ActionJump] = 0
 }
 
 func (c *char) legalEvalFindDroplets() int {
