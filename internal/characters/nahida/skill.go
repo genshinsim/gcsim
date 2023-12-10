@@ -233,7 +233,7 @@ func (c *char) triggerTriKarmaDamageIfAvail(t *enemy.Enemy) {
 			ai,
 			snap,
 			combat.NewSingleTargetHit(e.Key()),
-			4,
+			3,
 			cb,
 		)
 	}
