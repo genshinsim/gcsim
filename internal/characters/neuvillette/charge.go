@@ -91,7 +91,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info, error) {
 	c.chargeJudgeDur = 0
-	c.nextTickTime = getChargeJudgementHitmarkDelay(0)
+	c.tickAnimLength = getChargeJudgementHitmarkDelay(0)
 	// current framework doesn't really support actions getting shorter, so the legal eval is set to 0, but it may increase later
 	chargeLegalEvalLeft := 0
 
@@ -127,7 +127,11 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 			ticks = 0
 		}
 
-		c.QueueCharTask(c.chargeJudgementTick(c.chargeJudgeStartF, 0, ticks, false), chargeLegalEvalLeft+getChargeJudgementHitmarkDelay(0))
+		// cannot use hitlag affected queue because the logic just does not work then
+		// -> can't account for possible hitlag delaying the update of the anim length (sim moves on to next action, but ticks continue)
+
+		// start counting at 1 for correct number of ticks when supplying ticks param
+		c.Core.Tasks.Add(c.chargeJudgementTick(c.chargeJudgeStartF, 1, ticks, false), chargeLegalEvalLeft+getChargeJudgementHitmarkDelay(0))
 
 		// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
 		c.QueueCharTask(c.consumeHp(c.chargeJudgeStartF), chargeLegalEvalLeft+40)
@@ -135,7 +139,7 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return windup + 3 + chargeLegalEvalLeft + c.nextTickTime + endLag[next]
+			return windup + 3 + chargeLegalEvalLeft + c.tickAnimLength + endLag[next]
 		},
 		AnimationLength: 1200, // there is no upper limit on the duration of the CA
 		CanQueueAfter:   windup + 3 + endLag[action.ActionDash],
@@ -214,22 +218,25 @@ func (c *char) chargeJudgementTick(src, tick, maxTick int, last bool) func() {
 		if c.chargeJudgeStartF != src {
 			return
 		}
-		// The charge attack has ended
+		// no longer in CA anim -> no tick
 		if c.Core.F > c.chargeJudgeStartF+c.chargeJudgeDur {
 			return
 		}
 
+		// last tick -> check for C6 extension
 		if last {
+			// C6 did not extend CA -> proc wave and stop queuing ticks
 			if c.Core.F == c.chargeJudgeStartF+c.chargeJudgeDur {
 				c.judgementWave()
 			} else {
-				// c6 extended the CA between when this tick was queued and when this tick was executed
-				// allow the other non last queued task execute
-				c.nextTickTime = c.nextTickTime2
+				// C6 extended the CA between when this tick was queued and when this tick was executed
+				// -> allow the other non last queued task to execute by extend anim length to include that task
+				c.tickAnimLength = c.tickAnimLengthC6Extend
 			}
 			return
 		}
 
+		// tick param supplied and hit the limit -> proc wave, enable early cancel flag for next action check and stop queuing ticks
 		if tick == maxTick {
 			c.judgementWave()
 			c.chargeEarlyCancelled = true
@@ -237,17 +244,27 @@ func (c *char) chargeJudgementTick(src, tick, maxTick int, last bool) func() {
 		}
 
 		c.judgementWave()
+
+		// next tick handling
 		if maxTick == -1 || tick < maxTick {
-			nextF := c.Core.F + getChargeJudgementHitmarkDelay(tick+1)
+			tickDelay := getChargeJudgementHitmarkDelay(tick + 1)
+			// calc new animation length to be up until next tick happens
+			nextTickAnimLength := c.Core.F - c.chargeJudgeStartF + tickDelay
 
-			// this one is always queued. We don't cancel this even if it's beyond the CA duration in case the c6 extends the charge attack between this tick and the "final" tick
-			c.QueueCharTask(c.chargeJudgementTick(src, tick+1, maxTick, false), nextF-c.Core.F)
-			c.nextTickTime = nextF - c.chargeJudgeStartF
+			// always queue up non-final tick that will be executed in case C6 was proc'd
+			c.Core.Tasks.Add(c.chargeJudgementTick(src, tick+1, maxTick, false), tickDelay)
 
-			if nextF > c.chargeJudgeStartF+c.chargeJudgeDur {
-				c.QueueCharTask(c.chargeJudgementTick(src, tick+1, maxTick, true), c.chargeJudgeStartF+c.chargeJudgeDur-c.Core.F)
-				c.nextTickTime = c.chargeJudgeDur
-				c.nextTickTime2 = nextF - c.chargeJudgeStartF
+			// queue up last tick if next tick would happen after CA duration ends
+			if nextTickAnimLength > c.chargeJudgeDur {
+				// queue up final tick to happen at end of CA duration
+				c.Core.Tasks.Add(c.chargeJudgementTick(src, tick+1, maxTick, true), c.chargeJudgeDur-c.tickAnimLength)
+				// update tickAnimLength to be equal to entire CA duration at the end
+				c.tickAnimLength = c.chargeJudgeDur
+				// if C6 is triggered, then tickAnimLength will be wrong so this var holds the actual tickAnimLength if ticks continued normally beyond the original final tick
+				c.tickAnimLengthC6Extend = nextTickAnimLength
+			} else {
+				// next tick happens within CA duration -> update tickAnimLength as usual
+				c.tickAnimLength = nextTickAnimLength
 			}
 		}
 	}

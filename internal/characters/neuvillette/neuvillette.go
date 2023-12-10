@@ -20,17 +20,17 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	lastThorn            int
-	lastSkillParticle    int
-	lastc4               int
-	chargeJudgeStartF    int
-	chargeJudgeDur       int
-	nextTickTime         int
-	nextTickTime2        int
-	chargeEarlyCancelled bool
-	a1Statuses           []NeuvA1Keys
-	a4Buff               []float64
-	chargeAi             combat.AttackInfo
+	lastThorn              int
+	lastSkillParticle      int
+	lastc4                 int
+	chargeJudgeStartF      int
+	chargeJudgeDur         int
+	tickAnimLength         int
+	tickAnimLengthC6Extend int
+	chargeEarlyCancelled   bool
+	a1Statuses             []NeuvA1Keys
+	a4Buff                 []float64
+	chargeAi               combat.AttackInfo
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
