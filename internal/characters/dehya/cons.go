@@ -19,7 +19,7 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.2
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("dehya-c1", -1),
+		Base:         modifier.NewBase("dehya-c1", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return m, true

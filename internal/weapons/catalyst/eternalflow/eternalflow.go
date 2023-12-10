@@ -55,7 +55,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.HPP] = hpp
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("eternalflow-hpp", -1),
+		Base:         modifier.NewBase("eternalflow-hpp", -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
 			return val, true
