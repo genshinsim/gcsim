@@ -196,13 +196,7 @@ func (c *char) detonateSkill() action.ActionInfo {
 	c.a1()
 
 	// C2
-	if c.Base.Cons >= 2 {
-		if c.skillStacks < 4 {
-			c.AddEnergy(c1Key, 2)
-		} else {
-			c.AddEnergy(c1Key, 3)
-		}
-	}
+	c.c2()
 
 	c.DeleteStatus(persTimeKey)
 	c.skillStacks = 0

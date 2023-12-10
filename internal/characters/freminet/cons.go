@@ -31,12 +31,25 @@ func (c *char) c1() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(c1Key, -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if !strings.Contains(atk.Info.Abil, pressureBaseName) {
+			if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
 				return nil, false
 			}
 			return buff, true
 		},
 	})
+}
+
+func (c *char) c2() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	amt := 2
+	if c.skillStacks == 4 {
+		amt = 3
+	}
+
+	c.AddEnergy(c1Key, float64(amt))
 }
 
 func (c *char) c4c6() {
@@ -74,8 +87,8 @@ func (c *char) c4c6() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(c4Key, 60*6),
-			AffectedStat: attributes.NoStat,
+			Base:         modifier.NewBaseWithHitlag(c4Key, 6*60),
+			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				c4M[attributes.ATKP] = float64(c.c4Stacks) * 0.09
 				return c4M, true
@@ -101,8 +114,8 @@ func (c *char) c4c6() {
 		}
 
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(c6Key, 60*6),
-			AffectedStat: attributes.NoStat,
+			Base:         modifier.NewBaseWithHitlag(c6Key, 6*60),
+			AffectedStat: attributes.CD,
 			Amount: func() ([]float64, bool) {
 				c6M[attributes.CD] = float64(c.c6Stacks) * 0.12
 				return c6M, true
