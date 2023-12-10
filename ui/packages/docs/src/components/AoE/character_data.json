@@ -4433,21 +4433,19 @@
       {
         "ability": "N2",
         "shape": "Circle",
-        "center": "Player",
-        "offsetY": 0.5,
+        "center": "PrimaryTarget",
         "radius": 1.0
       },
       {
         "ability": "N3",
         "shape": "Circle",
-        "center": "Player",
-        "offsetY": 0.5,
+        "center": "PrimaryTarget",
         "radius": 1.5
       }
     ],
     "charge": [
       {
-        "ability": "Equitable-Judgement",
+        "ability": "CA-Judgement",
         "shape": "Box",
         "center": "Player",
         "boxX": 3.5,
@@ -4480,22 +4478,24 @@
         "ability": "Q-Initial",
         "shape": "Circle",
         "center": "Player",
-        "radius": 8
+        "radius": 8,
+        "offsetY": 1
       },
       {
         "ability": "Q-Waterfall",
         "shape": "Circle",
-        "center": "PrimaryTarget",
-        "radius": 5
+        "center": "GlobalValue",
+        "radius": 5,
+        "notes": "There are 2 attacks. If there is a target within 10m, they will spawn with centers randomly placed in a 1.5m radius circle from target pos, with offsetX -1.5/1.5, respectively, using the target's direction. Otherwise, the two attacks will spawn on the player with offsetX -3/4 and offsetY 7.5/6, respectively."
       }
     ],
     "cons": [
       {
-        "ability": "C6 - Charged Attack: Equitable Judgement",
-        "shape": "Box",
+        "ability": "C6",
+        "shape": "Circle",
         "center": "PrimaryTarget",
-        "boxX": 3.5,
-        "boxY": 15
+        "radius": 0.5,
+        "notes": "C6 projectile mechanics (collision) are not properly implemented yet."
       }
     ]
   },
