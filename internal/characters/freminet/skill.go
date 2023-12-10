@@ -1,8 +1,6 @@
 package freminet
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -229,53 +227,4 @@ func (c *char) particleCB(a combat.AttackCB) {
 	// TODO: Freminet; Check Particle amount and ICD
 	c.AddStatus(particleICDKey, 0.2*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Cryo, c.ParticleDelay)
-}
-
-func (c *char) persTimeCB() func(combat.AttackCB) {
-	done := false
-	return func(a combat.AttackCB) {
-		if done {
-			return
-		}
-
-		frostMod := skillAddNA[c.TalentLvlSkill()]
-
-		if c.StatusIsActive(burstKey) {
-			frostMod = frostMod * 2
-		}
-
-		// TODO: Freminet; Update Info
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Pressurized Floe: Pers Time Frost",
-			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagElementalArt,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeBlunt,
-			Element:    attributes.Cryo,
-			Durability: 25,
-			Mult:       frostMod,
-		}
-
-		// TODO: Freminet; Update Hitbox
-		ap := combat.NewCircleHitOnTargetFanAngle(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
-			attackHitboxes[c.NormalCounter][0],
-			attackFanAngles[c.NormalCounter],
-		)
-
-		c.Core.QueueAttack(ai, ap, 1, 1)
-
-		if c.skillStacks < 4 {
-			if c.StatusIsActive(burstKey) {
-				c.skillStacks = int(math.Min(float64(c.skillStacks+2), 4))
-			} else {
-				c.skillStacks++
-			}
-		}
-
-		done = true
-	}
-
 }

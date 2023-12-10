@@ -9,16 +9,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var (
-	attackFrames [][]int
-	// TODO: Freminet; Copied from Chongyun
+	attackFrames          [][]int
 	attackHitmarks        = []int{26, 23, 31, 42}
-	attackHitlagHaltFrame = []float64{.1, .09, .12, .12}
-	attackHitboxes        = [][]float64{{2}, {2}, {2}, {2, 3}}
-	attackOffsets         = []float64{1, 1, 1, -0.5}
-	attackFanAngles       = []float64{360, 270, 360, 360}
+	attackHitlagHaltFrame = []float64{0.06, 0.06, 0.06, 0.09}
+	attackHitboxes        = [][]float64{{2.2}, {2.2}, {2, 3}, {2.4}}
+	attackOffsets         = []float64{0.5, 0.5, -0.5, 0.5}
+	attackFrostDelay      = []int{10, 9, 10, 10} // delay from hitmark, approximation
 )
 
 const normalHitNum = 4
@@ -45,7 +45,6 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		return c.detonateSkill()
 	}
 
-	// TODO: Freminet; Copied from Chongyun
 	ai := combat.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		ActorIndex:         c.Index,
@@ -61,14 +60,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	ap := combat.NewCircleHitOnTargetFanAngle(
+	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
 		geometry.Point{Y: attackOffsets[c.NormalCounter]},
 		attackHitboxes[c.NormalCounter][0],
-		attackFanAngles[c.NormalCounter],
 	)
 
-	if c.NormalCounter == 3 {
+	if c.NormalCounter == 2 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
@@ -77,13 +75,45 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		)
 	}
 
-	var cb combat.AttackCBFunc
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 
 	if c.StatusIsActive(persTimeKey) {
-		cb = c.persTimeCB()
-	}
+		frostMod := skillAddNA[c.TalentLvlSkill()]
+		if c.StatusIsActive(burstKey) {
+			frostMod = frostMod * 2
+		}
 
-	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], cb)
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Pressurized Floe: Pers Time Frost",
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			Element:    attributes.Cryo,
+			Durability: 25,
+			Mult:       frostMod,
+		}
+
+		c.Core.QueueAttack(
+			ai,
+			ap,
+			attackHitmarks[c.NormalCounter]+attackFrostDelay[c.NormalCounter],
+			attackHitmarks[c.NormalCounter]+attackFrostDelay[c.NormalCounter],
+		)
+
+		amt := 1
+		if c.StatusIsActive(burstKey) {
+			amt = 2
+		}
+
+		c.skillStacks += amt
+		if c.skillStacks > 4 {
+			c.skillStacks = 4
+		}
+		c.Core.Log.NewEvent("freminet skill stacks gained", glog.LogCharacterEvent, c.Index).
+			Write("stacks", c.skillStacks)
+	}
 
 	defer c.AdvanceNormalIndex()
 
