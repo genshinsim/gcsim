@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
+const countField = "count"
+
 func fieldsCheck(fields []string, expecting int, category string) error {
 	if len(fields) < expecting {
 		return fmt.Errorf(
