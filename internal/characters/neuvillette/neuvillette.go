@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -83,17 +84,46 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 func (c *char) getSourcewaterDroplets() []*common.SourcewaterDroplet {
-	playerPos := c.Core.Combat.Player().Pos()
+	player := c.Core.Combat.Player()
+
+	// TODO: this is an approximation based on an ongoing KQM ticket (faster-neuvi-balls)
+	segment := combat.NewCircleHitOnTargetFanAngle(player, nil, 14, 60)
+	rect := combat.NewBoxHitOnTarget(player, geometry.Point{Y: -7}, 7, 14)
+
 	droplets := make([]*common.SourcewaterDroplet, 0)
 	for _, g := range c.Core.Combat.Gadgets() {
 		droplet, ok := g.(*common.SourcewaterDroplet)
 		if !ok {
 			continue
 		}
-		if droplet.Pos().Distance(playerPos) <= 15 {
-			droplets = append(droplets, droplet)
+		if !droplet.IsWithinArea(rect) && !droplet.IsWithinArea(segment) {
+			continue
 		}
+		droplets = append(droplets, droplet)
 	}
+
+	return droplets
+}
+
+func (c *char) getSourcewaterDropletsC6() []*common.SourcewaterDroplet {
+	player := c.Core.Combat.Player()
+
+	// TODO: this is an approximation based on an ongoing KQM ticket (faster-neuvi-balls)
+
+	circle := combat.NewCircleHitOnTarget(player, nil, 15)
+
+	droplets := make([]*common.SourcewaterDroplet, 0)
+	for _, g := range c.Core.Combat.Gadgets() {
+		droplet, ok := g.(*common.SourcewaterDroplet)
+		if !ok {
+			continue
+		}
+		if !droplet.IsWithinArea(circle) {
+			continue
+		}
+		droplets = append(droplets, droplet)
+	}
+
 	return droplets
 }
 
@@ -101,6 +131,8 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "droplets":
 		return len(c.getSourcewaterDroplets()), nil
+	case "droplets-c6":
+		return len(c.getSourcewaterDropletsC6()), nil
 	default:
 		return c.Character.Condition(fields)
 	}

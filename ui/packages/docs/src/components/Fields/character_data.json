@@ -172,7 +172,13 @@
       "fields": [
         ".neuvillette.droplets"
       ],
-      "desc": "Number of Sourcewater droplets in range."
+      "desc": "Number of Sourcewater droplets in range for Charged Attack Empowerment: Legal Evaluation."
+    },
+    {
+      "fields": [
+        ".neuvillette.droplets-c6"
+      ],
+      "desc": "Number of Sourcewater droplets in range for C6."
     }
   ]
 }

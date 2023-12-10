@@ -98,13 +98,15 @@ func (c *char) c6DropletCheck(src int) func() {
 		}
 
 		if c.chargeJudgeStartF+c.chargeJudgeDur-c.Core.F <= 60 {
-			droplets := c.getSourcewaterDroplets()
+			droplets := c.getSourcewaterDropletsC6()
 
 			// c6 only absorbs one droplet at a time
 			if len(droplets) > 0 {
 				c.Core.Combat.Log.NewEvent("C6: Picked up 1 droplet", glog.LogCharacterEvent, c.Index).
 					Write("prev-charge-duration", c.chargeJudgeDur).
 					Write("curr-charge-duration", c.chargeJudgeDur+60)
+
+				// TODO: Check if it's random
 				c.consumeDroplet(droplets[c.Core.Combat.Rand.Intn(len(droplets))])
 				c.chargeJudgeDur += 60
 			}
@@ -135,7 +137,7 @@ func (c *char) c6(src int) func() {
 		}
 		// C6 projectile stops on first target hit, with 0.5 rad sphere hitbox.
 		// Because we don't simulate the projectile, it's just a circle hit
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 0.5)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.5)
 		// it looks like the c6 has 29 frames of delay but I didn't count it rigourously
 		c.Core.QueueAttack(ai, ap, 29, 29)
 		c.Core.QueueAttack(ai, ap, 29, 29)

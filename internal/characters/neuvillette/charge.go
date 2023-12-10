@@ -22,7 +22,7 @@ const initialLegalEvalDur = 209
 
 var dropletLegalEvalReduction = []int{0, 57, 57 + 54, 57 + 54 + 98}
 
-const shortChargeHitmark = 55
+const shortChargeHitmark = 27
 
 const chargeJudgementName = "Charged Attack: Equitable Judgment"
 
