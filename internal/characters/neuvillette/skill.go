@@ -73,6 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Element:            attributes.Hydro,
 		Durability:         0,
 		Mult:               thorn[c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 	}
 	c.QueueCharTask(func() {
