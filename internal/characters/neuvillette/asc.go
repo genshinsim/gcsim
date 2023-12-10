@@ -36,7 +36,7 @@ func (c *char) a1() {
 			if _, ok := args[0].(*gadget.Gadget); ok {
 				return false
 			}
-			c.AddStatus(key, 30*60, false)
+			c.AddStatus(key, 30*60, true)
 			return false
 		}, key)
 	}
@@ -84,5 +84,5 @@ func (c *char) a4Tick() {
 	c.a4Buff[attributes.HydroP] = hydroDmgBuff
 
 	// Tick every 2s
-	c.Core.Tasks.Add(c.a4Tick, 120)
+	c.QueueCharTask(c.a4Tick, 120)
 }

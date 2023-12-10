@@ -24,7 +24,7 @@ func (c *char) c1() {
 	c.Core.Events.Subscribe(c1.Evt, func(args ...interface{}) bool {
 		next := args[1].(int)
 		if next == c.Index {
-			c.AddStatus(c1.Key, 30*60, false)
+			c.AddStatus(c1.Key, 30*60, true)
 		}
 		return false
 	}, c1.Key)
