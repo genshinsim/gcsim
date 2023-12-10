@@ -3,6 +3,7 @@ package freminet
 import (
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -15,6 +16,13 @@ import (
 const (
 	a4Key = "freminet-a4-buff"
 )
+
+func (c *char) a1() {
+	if c.Base.Ascension < 1 || c.skillStacks == 4 {
+		return
+	}
+	c.ReduceActionCooldown(action.ActionSkill, 60)
+}
 
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
@@ -35,9 +43,9 @@ func (c *char) a4() {
 		buff[attributes.DmgP] = 0.4
 
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(a4Key, 60*5),
+			Base: modifier.NewBaseWithHitlag(a4Key, 5*60),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if !strings.Contains(atk.Info.Abil, pressureBaseName) {
+				if !strings.HasPrefix(atk.Info.Abil, pressureBaseName) {
 					return nil, false
 				}
 				return buff, true

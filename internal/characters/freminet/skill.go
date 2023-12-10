@@ -193,9 +193,7 @@ func (c *char) detonateSkill() action.ActionInfo {
 	}
 
 	// A1
-	if c.Base.Ascension >= 1 && c.skillStacks < 4 {
-		c.ReduceActionCooldown(action.ActionSkill, 60)
-	}
+	c.a1()
 
 	// C2
 	if c.Base.Cons >= 2 {
