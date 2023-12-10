@@ -41,7 +41,7 @@ func (c *char) c2() {
 
 func (c *char) c4() {
 	c.AddReactBonusMod(character.ReactBonusMod{
-		Base: modifier.NewBaseWithHitlag("kaveh-c4", -1),
+		Base: modifier.NewBase("kaveh-c4", -1),
 		Amount: func(ai combat.AttackInfo) (float64, bool) {
 			if ai.AttackTag == attacks.AttackTagBloom {
 				return 0.6, false

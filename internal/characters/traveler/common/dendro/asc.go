@@ -67,7 +67,7 @@ func (c *char) a4Init() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("dmc-a4", -1),
+		Base: modifier.NewBase("dmc-a4", -1),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt:
