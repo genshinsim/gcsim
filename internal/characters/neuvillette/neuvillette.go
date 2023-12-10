@@ -108,8 +108,6 @@ func (c *char) getSourcewaterDroplets() []*common.SourcewaterDroplet {
 func (c *char) getSourcewaterDropletsC6() []*common.SourcewaterDroplet {
 	player := c.Core.Combat.Player()
 
-	// TODO: this is an approximation based on an ongoing KQM ticket (faster-neuvi-balls)
-
 	circle := combat.NewCircleHitOnTarget(player, nil, 15)
 
 	droplets := make([]*common.SourcewaterDroplet, 0)
