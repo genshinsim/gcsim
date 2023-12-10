@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 const normalHitNum = 3
@@ -56,7 +55,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTarget(
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{},
+			nil,
 			attackHitboxes[c.NormalCounter],
 		),
 		attackHitmarks[c.NormalCounter],
