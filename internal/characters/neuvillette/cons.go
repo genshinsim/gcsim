@@ -128,7 +128,7 @@ func (c *char) c6(src int) func() {
 			AttackTag:  attacks.AttackTagExtra,
 			ICDTag:     attacks.ICDTagNeuvilletteC6,
 			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Hydro,
 			Durability: 25,
 			FlatDmg:    0.1 * c.MaxHP() * a1Multipliers[c.countA1()],
