@@ -130,7 +130,7 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		// -> can't account for possible hitlag delaying the update of the anim length (sim moves on to next action, but ticks continue)
 
 		// start counting at 1 for correct number of ticks when supplying ticks param
-		c.Core.Tasks.Add(c.chargeJudgementTick(c.chargeJudgeStartF, 1, ticks, false), chargeLegalEvalLeft+getChargeJudgementHitmarkDelay(0))
+		c.Core.Tasks.Add(c.chargeJudgementTick(c.chargeJudgeStartF, 1, ticks, false), chargeLegalEvalLeft+getChargeJudgementHitmarkDelay(1))
 
 		// He drains 5 times in 3s, on frame 40, 70, 100, 130, 160
 		c.QueueCharTask(c.consumeHp(c.chargeJudgeStartF), chargeLegalEvalLeft+40)
@@ -203,9 +203,9 @@ func getChargeJudgementHitmarkDelay(tick int) int {
 	// first tick happens 6f after start, second tick is 22f after first, then other frames are 25f after, then last tick is when the judgement wave ends.
 	// TODO: check this is the case for c6
 	switch tick {
-	case 0:
-		return 6
 	case 1:
+		return 6
+	case 2:
 		return 22
 	default:
 		return 25
