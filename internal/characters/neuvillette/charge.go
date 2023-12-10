@@ -107,10 +107,7 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		c.chargeJudgeStartF = c.Core.F + chargeLegalEvalLeft
 		c.chargeJudgeDur = 173
 
-		if c.Base.Cons >= 6 {
-			c.QueueCharTask(c.c6DropletCheck(c.chargeJudgeStartF), chargeLegalEvalLeft)
-			c.QueueCharTask(c.c6(c.chargeJudgeStartF), chargeLegalEvalLeft)
-		}
+		c.QueueCharTask(c.c6DropletCheck(c.chargeJudgeStartF), chargeLegalEvalLeft)
 
 		ticks, ok := p["ticks"]
 		if !ok {
@@ -189,7 +186,11 @@ func (c *char) judgementWave() {
 	if c.Base.Ascension >= 1 {
 		c.chargeAi.FlatDmg = chargeJudgement[c.TalentLvlAttack()] * c.MaxHP() * a1Multipliers[c.countA1()]
 	}
-	c.Core.QueueAttack(c.chargeAi, ap, 0, 0)
+	if c.Base.Cons >= 6 {
+		c.Core.QueueAttack(c.chargeAi, ap, 0, 0, c.c6cb)
+	} else {
+		c.Core.QueueAttack(c.chargeAi, ap, 0, 0)
+	}
 }
 
 func getChargeJudgementHitmarkDelay(tick int) int {

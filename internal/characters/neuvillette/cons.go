@@ -11,10 +11,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const c4ICDKey = "neuvillette-c4-icd"
+const c6ICDKey = "neuvillette-c6-icd"
 
 func (c *char) c1() {
 	if c.Base.Ascension < 1 {
@@ -115,31 +117,28 @@ func (c *char) c6DropletCheck(src int) func() {
 	}
 }
 
-func (c *char) c6(src int) func() {
-	return func() {
-		if c.chargeJudgeStartF != src {
-			return
-		}
-		if c.Core.F > c.chargeJudgeStartF+c.tickAnimLength {
-			return
-		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       chargeJudgementName + " (C6)",
-			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagNeuvilletteC6,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypePierce,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			FlatDmg:    0.1 * c.MaxHP() * a1Multipliers[c.countA1()],
-		}
-		// C6 projectile stops on first target hit, with 0.5 rad sphere hitbox.
-		// Because we don't simulate the projectile, it's just a circle hit
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.5)
-		// it looks like the c6 has 29 frames of delay but I didn't count it rigourously
-		c.Core.QueueAttack(ai, ap, 29, 29)
-		c.Core.QueueAttack(ai, ap, 29, 29)
-		c.QueueCharTask(c.c6(src), 120)
+func (c *char) c6cb(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
 	}
+	if c.StatusIsActive(c6ICDKey) {
+		return
+	}
+	ai := combat.AttackInfo{
+		ActorIndex: c.Index,
+		Abil:       chargeJudgementName + " (C6)",
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNeuvilletteC6,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
+		Element:    attributes.Hydro,
+		Durability: 25,
+		FlatDmg:    0.1 * c.MaxHP() * a1Multipliers[c.countA1()],
+	}
+	// C6 projectile stops on first target hit, with 0.5 rad sphere hitbox.
+	// Because we don't simulate the projectile, it's just a circle hit
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 0.5)
+	// it looks like the c6 has 29 frames of delay but I didn't count it rigourously
+	c.Core.QueueAttack(ai, ap, 29, 29)
+	c.Core.QueueAttack(ai, ap, 29, 29)
 }
