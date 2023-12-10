@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 )
 
 var burstFrames []int
@@ -26,34 +26,26 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
-
-	c.AddStatus(burstKey, 600, true)
+	c.AddStatus(burstKey, 10*60, true)
 
 	c.ResetActionCooldown(action.ActionSkill)
 
-	// TODO: Freminet; Update Info
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Shadowhunter's Ambush",
-		AttackTag:          attacks.AttackTagElementalBurst,
-		ICDTag:             attacks.ICDTagElementalBurst,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt,
-		Element:            attributes.Cryo,
-		Durability:         50,
-		Mult:               burst[c.TalentLvlBurst()],
-		HitlagFactor:       0.01,
-		HitlagHaltFrames:   0.09 * 60,
-		CanBeDefenseHalted: false,
+		ActorIndex: c.Index,
+		Abil:       "Shadowhunter's Ambush",
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		Element:    attributes.Cryo,
+		Durability: 25,
+		Mult:       burst[c.TalentLvlBurst()],
 	}
-
-	// TODO: Freminet; Insert Hitbox
-	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 8)
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5),
-		0,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
+		burstHitmark,
 		burstHitmark,
 	)
 
@@ -66,4 +58,20 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}
+}
+
+func (c *char) onExitField() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		// do nothing if previous char wasn't freminet
+		prev := args[0].(int)
+		if prev != c.Index {
+			return false
+		}
+		if !c.StatusIsActive(burstKey) {
+			return false
+		}
+		c.DeleteStatus(burstKey)
+
+		return false
+	}, "freminet-exit")
 }
