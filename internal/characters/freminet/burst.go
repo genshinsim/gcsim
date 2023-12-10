@@ -12,14 +12,17 @@ import (
 var burstFrames []int
 
 const (
-	burstKey = "freminet-stalking"
-	// TODO: Freminet; Insert Correct Hitmarks
-	burstHitmark = 36
+	burstKey     = "freminet-stalking"
+	burstHitmark = 44
 )
 
 func init() {
-	// TODO: Freminet; Insert Correct Frames
-	burstFrames = frames.InitAbilSlice(70)
+	burstFrames = frames.InitAbilSlice(65)
+	burstFrames[action.ActionAttack] = 52
+	burstFrames[action.ActionSkill] = 52
+	burstFrames[action.ActionDash] = 53
+	burstFrames[action.ActionJump] = 52
+	burstFrames[action.ActionSwap] = 51
 }
 
 func (c *char) Burst(p map[string]int) action.ActionInfo {
@@ -54,9 +57,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		burstHitmark,
 	)
 
-	// TODO: Freminet; Check CD/Energy Consumption Delay
 	c.SetCD(action.ActionBurst, 60*15)
-	c.ConsumeEnergy(3)
+	c.ConsumeEnergy(4)
 
 	return action.ActionInfo{
 		Frames:          frames.NewAbilFunc(burstFrames),

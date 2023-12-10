@@ -12,20 +12,44 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillFrames []int
+var (
+	skillThrustFrames     []int
+	skillPressureFrames   [][]int
+	skillPressureHitmarks []int = []int{42, 37}
+)
 
 const (
-	// TODO: Freminet; Insert Correct Hitmarks
-	skillThrustHitmark   = 36
-	skillPressureHitmark = 36
-	particleICDKey       = "freminet-particle-icd"
-	persTimeKey          = "freminet-pers-time"
-	pressureBaseName     = "Pressurized Floe: Shattering Pressure"
+	skillThrustHitmark = 29
+	particleICDKey     = "freminet-particle-icd"
+	persTimeKey        = "freminet-pers-time"
+	pressureBaseName   = "Pressurized Floe: Shattering Pressure"
 )
 
 func init() {
-	// TODO: Freminet; Insert Correct Frames
-	skillFrames = frames.InitAbilSlice(50)
+	skillThrustFrames = frames.InitAbilSlice(46)
+	skillThrustFrames[action.ActionAttack] = 42
+	skillThrustFrames[action.ActionSkill] = 31
+	skillThrustFrames[action.ActionBurst] = 42
+	skillThrustFrames[action.ActionDash] = 32
+	skillThrustFrames[action.ActionJump] = 31
+
+	skillPressureFrames = make([][]int, 2)
+	// < Lv.4
+	skillPressureFrames[0] = frames.InitAbilSlice(55)
+	skillPressureFrames[0][action.ActionAttack] = 53
+	skillPressureFrames[0][action.ActionSkill] = 47
+	skillPressureFrames[0][action.ActionBurst] = 47
+	skillPressureFrames[0][action.ActionDash] = 47
+	skillPressureFrames[0][action.ActionJump] = 47
+	skillPressureFrames[0][action.ActionSwap] = 51
+	// == Lv.4
+	skillPressureFrames[1] = frames.InitAbilSlice(59)
+	skillPressureFrames[1][action.ActionAttack] = 53
+	skillPressureFrames[1][action.ActionSkill] = 42
+	skillPressureFrames[1][action.ActionBurst] = 42
+	skillPressureFrames[1][action.ActionDash] = 43
+	skillPressureFrames[1][action.ActionJump] = 41
+	skillPressureFrames[1][action.ActionSwap] = 51
 }
 
 func (c *char) Skill(p map[string]int) action.ActionInfo {
@@ -80,14 +104,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 		currentID := c.Core.F
 
-		// TODO: Freminet; Confirm Delay?!
 		c.Core.Tasks.Add(func() {
 			if c.StatusIsActive(persTimeKey) && currentID == c.persID {
 				c.Core.QueueAttack(aiSpiritbreath, combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5), 0, 0)
 			}
-		}, 9*60)
-
-		// TODO: Freminet; Check when CD starts (if it even starts when initially using skill)
+		}, 62)
 
 		cd := 600
 
@@ -95,12 +116,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			cd = 3 * 60
 		}
 
-		c.SetCDWithDelay(action.ActionSkill, cd, 0)
+		c.SetCDWithDelay(action.ActionSkill, cd, 35)
 
 		return action.ActionInfo{
-			Frames:          frames.NewAbilFunc(skillFrames),
-			AnimationLength: skillFrames[action.InvalidAction],
-			CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+			Frames:          frames.NewAbilFunc(skillThrustFrames),
+			AnimationLength: skillThrustFrames[action.InvalidAction],
+			CanQueueAfter:   skillThrustFrames[action.ActionDash], // earliest cancel
 			State:           action.SkillState,
 		}
 	} else {
@@ -115,6 +136,11 @@ func (c *char) detonateSkill() action.ActionInfo {
 
 	// TODO: Freminet; Insert Hitbox
 	skillArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 8)
+
+	pressureFrameIndex := 0
+	if c.skillStacks == 4 {
+		pressureFrameIndex = 1
+	}
 
 	if skillPressureCryo[c.skillStacks][c.TalentLvlSkill()] > 0 {
 		// TODO: Freminet; Update Info
@@ -137,7 +163,7 @@ func (c *char) detonateSkill() action.ActionInfo {
 			ai,
 			combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5),
 			0,
-			skillPressureHitmark,
+			skillPressureHitmarks[pressureFrameIndex],
 			c.particleCB,
 		)
 	}
@@ -163,7 +189,7 @@ func (c *char) detonateSkill() action.ActionInfo {
 			ai,
 			combat.NewCircleHitOnTarget(skillArea.Shape.Pos(), nil, 2.5),
 			0,
-			skillPressureHitmark,
+			skillPressureHitmarks[pressureFrameIndex],
 			c.particleCB,
 		)
 	}
@@ -186,9 +212,9 @@ func (c *char) detonateSkill() action.ActionInfo {
 	c.skillStacks = 0
 
 	return action.ActionInfo{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		Frames:          frames.NewAbilFunc(skillPressureFrames[pressureFrameIndex]),
+		AnimationLength: skillPressureFrames[pressureFrameIndex][action.InvalidAction],
+		CanQueueAfter:   skillPressureFrames[pressureFrameIndex][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
 	}
 }

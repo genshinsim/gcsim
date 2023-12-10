@@ -14,7 +14,7 @@ import (
 var (
 	attackFrames [][]int
 	// TODO: Freminet; Copied from Chongyun
-	attackHitmarks        = []int{26, 24, 41, 53}
+	attackHitmarks        = []int{26, 23, 31, 42}
 	attackHitlagHaltFrame = []float64{.1, .09, .12, .12}
 	attackHitboxes        = [][]float64{{2}, {2}, {2}, {2, 3}}
 	attackOffsets         = []float64{1, 1, 1, -0.5}
@@ -26,10 +26,17 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 31) // N1 -> N2
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 39) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 54) // N3 -> N4
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 64) // N4 -> N1
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 47)
+	attackFrames[0][action.ActionAttack] = 32
+
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 49)
+	attackFrames[1][action.ActionAttack] = 33
+
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 65)
+	attackFrames[2][action.ActionAttack] = 59
+
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 86)
+	attackFrames[3][action.ActionWalk] = 68
 }
 
 func (c *char) Attack(p map[string]int) action.ActionInfo {
