@@ -79,7 +79,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(persTimeKey) {
 		frostMod := skillAddNA[c.TalentLvlSkill()]
 		if c.StatusIsActive(burstKey) {
-			frostMod = frostMod * 2
+			frostMod *= 2
 		}
 
 		ai := combat.AttackInfo{

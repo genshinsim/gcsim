@@ -13,7 +13,7 @@ import (
 var (
 	skillThrustFrames     []int
 	skillPressureFrames   [][]int
-	skillPressureHitmarks []int = []int{42, 37}
+	skillPressureHitmarks = []int{42, 37}
 )
 
 const (
