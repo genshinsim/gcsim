@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -83,6 +84,9 @@ func (c *char) c6DropletCheck(src int) func() {
 
 			// c6 only absorbs one droplet at a time
 			if len(droplets) > 0 {
+				c.Core.Combat.Log.NewEvent("C6: Picked up 1 droplet", glog.LogCharacterEvent, c.Index).
+					Write("prev-charge-duration", c.chargeJudgeDur).
+					Write("curr-charge-duration", c.chargeJudgeDur+60)
 				c.consumeDroplet(droplets[c.Core.Combat.Rand.Intn(len(droplets))])
 				c.chargeJudgeDur += 60
 			}
