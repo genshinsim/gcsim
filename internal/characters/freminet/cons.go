@@ -44,12 +44,12 @@ func (c *char) c2() {
 		return
 	}
 
-	amt := 2
+	amt := 2.0
 	if c.skillStacks == 4 {
 		amt = 3
 	}
 
-	c.AddEnergy(c1Key, float64(amt))
+	c.AddEnergy(c1Key, amt)
 }
 
 func (c *char) c4c6() {
