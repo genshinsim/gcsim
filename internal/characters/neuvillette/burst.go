@@ -73,7 +73,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
 					common.NewSourcewaterDroplet(c.Core, pos, combat.GadgetTypSourcewaterDropletNeuv)
 				}
-				c.Core.Combat.Log.NewEvent(fmt.Sprint("Spawned ", dropletBurstSpawnCount[i], " droplets"), glog.LogCharacterEvent, c.Index)
+				c.Core.Combat.Log.NewEvent(fmt.Sprint("Spawned ", dropletBurstSpawnCount[i], " droplets"), glog.LogCharacterEvent, c.Index).
+					Write("src_action", "burst")
 			},
 			f,
 		)

@@ -95,7 +95,8 @@ func (c *char) skillcb(ac combat.AttackCB) {
 			pos := geometry.CalcRandomPointFromCenter(ac.Target.Pos(), circ.Radius()+1.0, circ.Radius()+4.0, c.Core.Rand)
 			common.NewSourcewaterDroplet(c.Core, pos, combat.GadgetTypSourcewaterDropletNeuv)
 		}
-		c.Core.Combat.Log.NewEvent("Spawned 3 droplets", glog.LogCharacterEvent, c.Index)
+		c.Core.Combat.Log.NewEvent("Spawned 3 droplets", glog.LogCharacterEvent, c.Index).
+			Write("src_action", "skill")
 		c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Hydro, c.ParticleDelay)
 	}
 }

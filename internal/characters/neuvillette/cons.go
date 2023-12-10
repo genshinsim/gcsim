@@ -68,6 +68,8 @@ func (c *char) c4() {
 			pos := geometry.CalcRandomPointFromCenter(center, 0, 2.5, c.Core.Rand)
 			common.NewSourcewaterDroplet(c.Core, pos, combat.GadgetTypSourcewaterDropletNeuv)
 			c.lastc4 = c.Core.F
+			c.Core.Combat.Log.NewEvent("Spawned 1 droplet", glog.LogCharacterEvent, c.Index).
+				Write("src_action", "c4")
 		}
 		return false
 	}, "neuvillette-c4")
