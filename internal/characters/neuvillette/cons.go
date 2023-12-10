@@ -62,26 +62,26 @@ func (c *char) c4() {
 		if c.StatusIsActive(c4ICDKey) {
 			return false
 		}
-		if c.Core.Player.Active() == c.Index && c.Index == target {
-			// 4s CD
-			c.AddStatus(c4ICDKey, 4*60, true)
-			player := c.Core.Combat.Player()
-			common.NewSourcewaterDroplet(
-				c.Core,
-				geometry.CalcRandomPointFromCenter(
-					geometry.CalcOffsetPoint(
-						player.Pos(),
-						geometry.Point{Y: 8},
-						player.Direction(),
-					),
-					1.3,
-					3,
-					c.Core.Rand,
+
+		// 4s CD
+		c.AddStatus(c4ICDKey, 4*60, true)
+		player := c.Core.Combat.Player()
+		common.NewSourcewaterDroplet(
+			c.Core,
+			geometry.CalcRandomPointFromCenter(
+				geometry.CalcOffsetPoint(
+					player.Pos(),
+					geometry.Point{Y: 8},
+					player.Direction(),
 				),
-				combat.GadgetTypSourcewaterDropletNeuv,
-			)
-			c.Core.Combat.Log.NewEvent("C4: Spawned 1 droplet", glog.LogCharacterEvent, c.Index)
-		}
+				1.3,
+				3,
+				c.Core.Rand,
+			),
+			combat.GadgetTypSourcewaterDropletNeuv,
+		)
+		c.Core.Combat.Log.NewEvent("C4: Spawned 1 droplet", glog.LogCharacterEvent, c.Index)
+
 		return false
 	}, "neuvillette-c4")
 }
