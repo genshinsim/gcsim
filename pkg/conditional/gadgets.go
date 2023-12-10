@@ -24,7 +24,7 @@ func evalGadgets(c *core.Core, fields []string) (int, error) {
 
 func evalDendroCore(c *core.Core, key string) (int, error) {
 	switch key {
-	case "count":
+	case countField:
 		count := 0
 		for i := 0; i < c.Combat.GadgetCount(); i++ {
 			if _, ok := c.Combat.Gadget(i).(*reactable.DendroCore); ok {
@@ -39,7 +39,7 @@ func evalDendroCore(c *core.Core, key string) (int, error) {
 
 func evalSourcewaterDroplet(c *core.Core, key string) (int, error) {
 	switch key {
-	case "count":
+	case countField:
 		count := 0
 		for i := 0; i < c.Combat.GadgetCount(); i++ {
 			if _, ok := c.Combat.Gadget(i).(*common.SourcewaterDroplet); ok {
