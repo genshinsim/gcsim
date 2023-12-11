@@ -15,7 +15,7 @@ type SourcewaterDroplet struct {
 
 func NewSourcewaterDroplet(core *core.Core, pos geometry.Point, typ combat.GadgetTyp) *SourcewaterDroplet {
 	p := &SourcewaterDroplet{}
-	p.Gadget = gadget.New(core, pos, 0.3, typ)
+	p.Gadget = gadget.New(core, pos, 1, typ)
 	p.Gadget.Duration = 878
 	core.Combat.AddGadget(p)
 	return p
