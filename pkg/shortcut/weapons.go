@@ -240,6 +240,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"splendoroftranquilwaters":      keys.SplendorOfTranquilWaters,
 	"tranquilwaters":                keys.SplendorOfTranquilWaters,
 	"sotw":                          keys.SplendorOfTranquilWaters,
+	"splendor":                      keys.SplendorOfTranquilWaters,
 	"staffofhoma":                   keys.StaffOfHoma,
 	"homa":                          keys.StaffOfHoma,
 	"staffofthescarletsands":        keys.StaffOfTheScarletSands,
