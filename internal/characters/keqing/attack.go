@@ -26,7 +26,7 @@ func init() {
 	// NA cancels
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 21)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 19)
 	attackFrames[0][action.ActionAttack] = 15
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 24)
