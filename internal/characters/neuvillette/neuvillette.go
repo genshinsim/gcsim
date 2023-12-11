@@ -87,8 +87,9 @@ func (c *char) getSourcewaterDroplets() []*common.SourcewaterDroplet {
 	player := c.Core.Combat.Player()
 
 	// TODO: this is an approximation based on an ongoing KQM ticket (faster-neuvi-balls)
-	segment := combat.NewCircleHitOnTargetFanAngle(player, nil, 14, 60)
-	rect := combat.NewBoxHitOnTarget(player, geometry.Point{Y: -7}, 7, 14)
+	// The fan is bigger than the 60 degrees in the ticket to account for the 10 degree camera tilt.
+	segment := combat.NewCircleHitOnTargetFanAngle(player, nil, 14, 80)
+	rect := combat.NewBoxHitOnTarget(player, geometry.Point{Y: -7}, 8, 18)
 
 	droplets := make([]*common.SourcewaterDroplet, 0)
 	for _, g := range c.Core.Combat.Gadgets() {
