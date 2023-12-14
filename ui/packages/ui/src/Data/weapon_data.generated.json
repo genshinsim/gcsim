@@ -679,6 +679,13 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Morax"
     },
+    "prospectorsdrill": {
+      "id": 13427,
+      "key": "prospectorsdrill",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Mechanic"
+    },
     "prototypeamber": {
       "id": 14406,
       "key": "prototypeamber",
