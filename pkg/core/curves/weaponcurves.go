@@ -3761,6 +3761,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.RangeGauge: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.RavenBow: {
 		AtkCurve:         GROW_CURVE_ATTACK_102,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,

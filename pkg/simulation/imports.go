@@ -159,6 +159,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/polarstar"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/predator"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/prototype"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/rangegauge"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/raven"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/recurve"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/royal"
