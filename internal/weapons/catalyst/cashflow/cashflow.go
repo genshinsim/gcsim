@@ -61,7 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.ATKP] = atkp
 
 	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("cashflow-supervision-atkp", -1),
+		Base:         modifier.NewBase("cashflow-supervision-atkp", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
 			return val, true
@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		w.onChangeHP()
 		return false
-	}, fmt.Sprintf("cashflow-drain%v", char.Base.Key.String()))
+	}, fmt.Sprintf("cashflow-drain-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		index := args[1].(int)
@@ -143,7 +143,7 @@ func (w *Weapon) onChangeHP() {
 	if w.stacks == 3 {
 		w.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(atkSpdKey, 4*60),
-			AffectedStat: attributes.NoStat,
+			AffectedStat: attributes.AtkSpd,
 			Amount: func() ([]float64, bool) {
 				w.mAtkSpd[attributes.AtkSpd] = 0.06 + float64(w.refine)*0.02
 				return w.mAtkSpd, true
