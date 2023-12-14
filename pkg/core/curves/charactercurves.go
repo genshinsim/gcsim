@@ -4754,7 +4754,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 	},
 	keys.Furina: {
 		Rarity:      5,
-		Body:        info.BodyLady,
+		Body:        info.BodyGirl,
 		Element:     attributes.Hydro,
 		Region:      info.ZoneFontaine,
 		WeaponClass: info.WeaponClassSword,
