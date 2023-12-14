@@ -140,6 +140,13 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Santika"
     },
+    "cashflowsupervision": {
+      "id": 14513,
+      "key": "cashflowsupervision",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Wheatley"
+    },
     "cinnabarspindle": {
       "id": 11415,
       "key": "cinnabarspindle",
