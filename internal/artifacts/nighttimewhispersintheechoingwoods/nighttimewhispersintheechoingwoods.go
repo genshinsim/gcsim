@@ -21,7 +21,6 @@ type Set struct {
 	Index int
 	core  *core.Core
 	char  *character.CharWrapper
-	bonus bool
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
@@ -46,7 +45,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	if count >= 4 {
-
 		// TODO need better approach
 		lastF := 0
 		c.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
