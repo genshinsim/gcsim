@@ -56,6 +56,13 @@
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Ayus"
     },
+    "balladoftheboundlessblue": {
+      "id": 14426,
+      "key": "balladoftheboundlessblue",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_DandelionPoem"
+    },
     "balladofthefjords": {
       "id": 13424,
       "key": "balladofthefjords",
