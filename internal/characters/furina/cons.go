@@ -1,7 +1,8 @@
 package furina
 
 import (
-	"github.com/genshinsim/gcsim/internal/common"
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -26,7 +27,7 @@ func (c *char) c2() {
 		Base:         modifier.NewBase(c2BuffKey, -1),
 		AffectedStat: attributes.HPP,
 		Amount: func() ([]float64, bool) {
-			m[attributes.HPP] = common.Max(c.curFanfare-c.maxQFanfare, 0) * 0.0035
+			m[attributes.HPP] = math.Max(c.curFanfare-c.maxQFanfare, 0) * 0.0035
 			return m, true
 		},
 	})

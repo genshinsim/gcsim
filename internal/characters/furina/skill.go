@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -55,10 +54,10 @@ const (
 func (c *char) calcSalonTick(tickNum int, initialTick, interval float64) int {
 	// the distribution is left skewed. We approxiamated with boxcox with lambda 0.728
 	// then used the transformation to convert from norm dist to the experimental distribution
-	randOffset := math.Pow(common.Max(c.Core.Rand.NormFloat64()*1.0403+4.073023273, 0.0), (1/0.728)) - 7
+	randOffset := math.Pow(math.Max(c.Core.Rand.NormFloat64()*1.0403+4.073023273, 0.0), (1/0.728)) - 7
 
 	// this limits the offset to [-7, 7]
-	randOffset = common.Min(randOffset, 7)
+	randOffset = math.Min(randOffset, 7)
 	return int(math.Round(initialTick + float64(tickNum)*interval + randOffset))
 }
 
@@ -322,7 +321,7 @@ func (c *char) singerOfManyWaters(src int) func() {
 			Src:     skillSingerHealFlat[c.TalentLvlSkill()] + skillSingerHealScale[c.TalentLvlSkill()]*c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
-		intervalDelta := common.Min(c.MaxHP()/1000.0*0.004, 0.16)
+		intervalDelta := math.Min(c.MaxHP()/1000.0*0.004, 0.16)
 
 		interval := int(singerInterval*(1-intervalDelta) + 0.5)
 		c.Core.Tasks.Add(c.singerOfManyWaters(src), interval)

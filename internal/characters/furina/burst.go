@@ -3,7 +3,6 @@ package furina
 import (
 	"math"
 
-	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -37,7 +36,7 @@ func (c *char) addFanfare(amt float64) {
 	if c.Base.Cons >= 2 {
 		amt *= 3.5
 	}
-	c.curFanfare = common.Min(c.maxFanfare, c.curFanfare+amt)
+	c.curFanfare = math.Min(c.maxFanfare, c.curFanfare+amt)
 }
 
 func (c *char) burstInit() {
@@ -125,7 +124,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBase("furina-burst-damage-buff", burstDur),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					c.burstBuff[attributes.DmgP] = common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareDMGRatio[c.TalentLvlBurst()]
+					c.burstBuff[attributes.DmgP] = math.Min(c.curFanfare, c.maxQFanfare) * burstFanfareDMGRatio[c.TalentLvlBurst()]
 					return c.burstBuff, true
 				},
 			})
@@ -133,7 +132,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			char.AddHealBonusMod(character.HealBonusMod{
 				Base: modifier.NewBase("furina-burst-heal-buff", burstDur),
 				Amount: func() (float64, bool) {
-					return common.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], false
+					return math.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], false
 				},
 			})
 		}
