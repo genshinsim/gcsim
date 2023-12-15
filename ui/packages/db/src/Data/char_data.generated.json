@@ -436,6 +436,21 @@
         "burst_energy_cost": 60
       }
     },
+    "furina": {
+      "id": 10000089,
+      "key": "furina",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Furina",
+      "skill_details": {
+        "skill": 10892,
+        "burst": 10895,
+        "attack": 10891,
+        "burst_energy_cost": 60
+      }
+    },
     "ganyu": {
       "id": 10000037,
       "key": "ganyu",
