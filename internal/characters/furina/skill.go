@@ -23,7 +23,7 @@ const (
 	skillMaxDuration = 1736
 
 	pneumaCDDelay     = 10
-	singerInitialTick = 80 - pneumaCDDelay
+	singerInitialTick = 73 - pneumaCDDelay
 
 	ousiaBubbleHitmark = 18
 	ousiaCDDelay       = 0
@@ -66,7 +66,6 @@ func init() {
 	skillFrames[ousia] = frames.InitAbilSlice(54) // E -> Q
 	skillFrames[ousia][action.ActionAttack] = 53  // E -> N1
 	skillFrames[ousia][action.ActionCharge] = 53  // E -> CA
-	skillFrames[ousia][action.ActionBurst] = 54   // E -> Q
 	skillFrames[ousia][action.ActionDash] = 18    // E -> D
 	skillFrames[ousia][action.ActionJump] = 18    // E -> J
 	skillFrames[ousia][action.ActionWalk] = 42    // E -> W
@@ -75,7 +74,6 @@ func init() {
 	skillFrames[pneuma] = frames.InitAbilSlice(57)
 	skillFrames[pneuma][action.ActionAttack] = 56 // E -> N1
 	skillFrames[pneuma][action.ActionCharge] = 56 // E -> CA
-	skillFrames[pneuma][action.ActionBurst] = 57  // E -> Q
 	skillFrames[pneuma][action.ActionDash] = 15   // E -> D
 	skillFrames[pneuma][action.ActionJump] = 18   // E -> J
 	skillFrames[pneuma][action.ActionWalk] = 41   // E -> W
@@ -97,7 +95,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillPneuma(_ map[string]int) (action.Info, error) {
-	c.AddStatus(skillKey, 1736+pneumaCDDelay, false)
+	c.AddStatus(skillKey, skillMaxDuration+pneumaCDDelay, false)
 	c.summonSinger(pneumaCDDelay)
 	c.SetCDWithDelay(action.ActionSkill, 1200, pneumaCDDelay)
 	return action.Info{
@@ -122,7 +120,7 @@ func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 5), ousiaBubbleHitmark, ousiaBubbleHitmark)
 
-	c.AddStatus(skillKey, 1736+ousiaBubbleHitmark, false)
+	c.AddStatus(skillKey, skillMaxDuration+ousiaBubbleHitmark, false)
 	c.summonSalonMembers(ousiaBubbleHitmark)
 	c.SetCDWithDelay(action.ActionSkill, 1200, ousiaCDDelay)
 
@@ -163,7 +161,9 @@ func (c *char) summonSinger(delay int) {
 	}, delay)
 }
 
-func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackPattern, delay int, callbacks ...combat.AttackCBFunc) {
+func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackPattern, delay int) {
+	// This implementation is to make attack be cancelled if the pets are desummoned to CA or new skill used
+	// TODO: Test if Chevalmarin or Usher projectile disappear on CA/Skill/Timing out, and if Crab body slam is cancelled by CA/Skill/Timing out
 	c.Core.Tasks.Add(func() {
 		if src != c.lastSummonSrc {
 			return
@@ -172,8 +172,11 @@ func (c *char) queueSalonAttack(src int, ai combat.AttackInfo, ap combat.AttackP
 		if !c.StatusIsActive(skillKey) {
 			return
 		}
-
-		c.Core.QueueAttack(ai, ap, 0, 0, callbacks...)
+		var c4cb combat.AttackCBFunc
+		if c.Base.Cons >= 4 {
+			c4cb = c.c4cb
+		}
+		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB, c4cb)
 	}, delay)
 }
 
@@ -206,12 +209,7 @@ func (c *char) surintendanteChevalmarin(src, tick int) func() {
 			FlatDmg:    skillChevalmarin[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, chevalmarinAoE)
-		if c.Base.Cons >= 4 {
-			c.queueSalonAttack(src, ai, ap, chevalmarinTravel, c.particleCB, c.c4cb)
-		} else {
-			c.queueSalonAttack(src, ai, ap, chevalmarinTravel, c.particleCB)
-		}
-
+		c.queueSalonAttack(src, ai, ap, chevalmarinTravel)
 		interval := c.calcSalonTick(tick+1, chevalmarinInitialTick, chevalmarinIntervalMean) - (c.Core.F - src)
 		c.Core.Tasks.Add(c.surintendanteChevalmarin(src, tick+1), interval)
 	}
@@ -247,12 +245,7 @@ func (c *char) gentilhommeUsher(src, tick int) func() {
 		}
 
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, usherAoE)
-		if c.Base.Cons >= 4 {
-			c.queueSalonAttack(src, ai, ap, usherTravel, c.particleCB, c.c4cb)
-		} else {
-			c.queueSalonAttack(src, ai, ap, usherTravel, c.particleCB)
-		}
-
+		c.queueSalonAttack(src, ai, ap, usherTravel)
 		interval := c.calcSalonTick(tick+1, usherInitialTick, usherIntervalMean) - (c.Core.F - src)
 		c.Core.Tasks.Add(c.gentilhommeUsher(src, tick+1), interval)
 	}
@@ -289,12 +282,7 @@ func (c *char) mademoiselleCrabaletta(src, tick int) func() {
 
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, crabalettaAoE)
 
-		if c.Base.Cons >= 4 {
-			c.queueSalonAttack(src, ai, ap, crabalettaTravel, c.particleCB, c.c4cb)
-		} else {
-			c.queueSalonAttack(src, ai, ap, crabalettaTravel, c.particleCB)
-		}
-
+		c.queueSalonAttack(src, ai, ap, crabalettaTravel)
 		interval := c.calcSalonTick(tick+1, crabalettaInitialTick, crabalettaIntervalMean) - (c.Core.F - src)
 		c.Core.Tasks.Add(c.mademoiselleCrabaletta(src, tick+1), interval)
 	}
@@ -337,7 +325,7 @@ func (c *char) particleCB(ac combat.AttackCB) {
 		return
 	}
 
-	c.AddStatus(particleICDKey, 2.5*60, false)
+	c.AddStatus(particleICDKey, 2.5*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Hydro, c.ParticleDelay)
 }
 
@@ -363,7 +351,6 @@ func (c *char) consumeAlliesHealth(hpDrainRatio float64) int {
 			ActorIndex: char.Index,
 			Abil:       "Salon Solitaire",
 			Amount:     hpDrain,
-			External:   false,
 		})
 	}
 
