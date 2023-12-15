@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
@@ -118,7 +117,7 @@ func (c *char) skillOusia(_ map[string]int) (action.Info, error) {
 		FlatDmg:    skillOusiaBubble[c.TalentLvlSkill()] * c.MaxHP(),
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, 5), ousiaBubbleHitmark, ousiaBubbleHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), ousiaBubbleHitmark, ousiaBubbleHitmark)
 
 	c.AddStatus(skillKey, skillMaxDuration+ousiaBubbleHitmark, false)
 	c.summonSalonMembers(ousiaBubbleHitmark)
@@ -208,7 +207,7 @@ func (c *char) surintendanteChevalmarin(src, tick int) func() {
 			Durability: 25,
 			FlatDmg:    skillChevalmarin[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, chevalmarinAoE)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, chevalmarinAoE)
 		c.queueSalonAttack(src, ai, ap, chevalmarinTravel)
 		interval := c.calcSalonTick(tick+1, chevalmarinInitialTick, chevalmarinIntervalMean) - (c.Core.F - src)
 		c.Core.Tasks.Add(c.surintendanteChevalmarin(src, tick+1), interval)
@@ -244,7 +243,7 @@ func (c *char) gentilhommeUsher(src, tick int) func() {
 			FlatDmg:    skillUsher[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, usherAoE)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, usherAoE)
 		c.queueSalonAttack(src, ai, ap, usherTravel)
 		interval := c.calcSalonTick(tick+1, usherInitialTick, usherIntervalMean) - (c.Core.F - src)
 		c.Core.Tasks.Add(c.gentilhommeUsher(src, tick+1), interval)
@@ -280,7 +279,7 @@ func (c *char) mademoiselleCrabaletta(src, tick int) func() {
 			FlatDmg:    skillCrabaletta[c.TalentLvlSkill()] * c.MaxHP() * damageMultiplier,
 		}
 
-		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{}, crabalettaAoE)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, crabalettaAoE)
 
 		c.queueSalonAttack(src, ai, ap, crabalettaTravel)
 		interval := c.calcSalonTick(tick+1, crabalettaInitialTick, crabalettaIntervalMean) - (c.Core.F - src)
