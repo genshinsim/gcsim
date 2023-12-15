@@ -112,7 +112,6 @@ func (c *char) c6heal(char *character.CharWrapper, src int) func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  char.Index,
-			Type:    player.HealTypeAbsolute,
 			Message: "Furina C6 Ousia Heal",
 			Src:     0.04 * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
