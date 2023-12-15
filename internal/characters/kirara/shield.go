@@ -1,6 +1,8 @@
 package kirara
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 )
@@ -10,7 +12,7 @@ func (c *char) genShield(src string, shieldamt float64) {
 	if existingShield != nil {
 		shieldamt += existingShield.CurrentHP()
 	}
-	shieldamt = min(shieldamt, c.maxShieldHP())
+	shieldamt = math.Min(shieldamt, c.maxShieldHP())
 
 	// add shield
 	c.Core.Tasks.Add(func() {

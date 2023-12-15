@@ -1,6 +1,8 @@
 package sayu
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -63,8 +65,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 {
 		// TODO: is it snapshots?
-		d.Info.FlatDmg += atk * min(d.Snapshot.Stats[attributes.EM]*0.002, 4.0)
-		heal += min(d.Snapshot.Stats[attributes.EM]*3, 6000)
+		d.Info.FlatDmg += atk * math.Min(d.Snapshot.Stats[attributes.EM]*0.002, 4.0)
+		heal += math.Min(d.Snapshot.Stats[attributes.EM]*3, 6000)
 	}
 
 	// make sure that this task gets executed:

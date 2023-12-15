@@ -1,6 +1,8 @@
 package thoma
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -20,9 +22,9 @@ func (c *char) genShield(src string, shieldamt float64, shouldStack bool) {
 		if shouldStack {
 			shieldamt += existingShield.CurrentHP()
 		} else {
-			shieldamt = max(shieldamt, existingShield.CurrentHP())
+			shieldamt = math.Max(shieldamt, existingShield.CurrentHP())
 		}
-		shieldamt = min(shieldamt, c.maxShieldHP())
+		shieldamt = math.Min(shieldamt, c.maxShieldHP())
 	}
 	// add shield
 	c.Core.Tasks.Add(func() {
