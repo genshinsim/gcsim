@@ -99,33 +99,38 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 	}
 
-	var c6cb combat.AttackCBFunc
-	c6Index := 0
-	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
-		c6Index = 1
-		ai.Element = attributes.Hydro
-		ai.IgnoreInfusion = true
-		ai.FlatDmg = c.c6BonusDMG()
-		c6cb = c.c6cb
-	}
+	c.QueueCharTask(
+		func() {
+			var c6cb combat.AttackCBFunc
+			var ap combat.AttackPattern
+			c6Index := 0
+			// TODO: Check if DMG bonus still applies if c6 runs out between start of NA and the hit
 
-	var ap combat.AttackPattern
-	switch c.NormalCounter {
-	case 0, 3:
-		ap = combat.NewBoxHitOnTarget(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
-			attackHitboxes[c6Index][c.NormalCounter][0],
-			attackHitboxes[c6Index][c.NormalCounter][1],
-		)
-	case 1, 2:
-		ap = combat.NewCircleHitOnTarget(
-			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
-			attackHitboxes[c6Index][c.NormalCounter][0],
-		)
-	}
-	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.arkheCB, c6cb)
+			if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
+				c6Index = 1
+				ai.Element = attributes.Hydro
+				ai.IgnoreInfusion = true
+				ai.FlatDmg = c.c6BonusDMG()
+				c6cb = c.c6cb
+			}
+			switch c.NormalCounter {
+			case 0, 3:
+				ap = combat.NewBoxHitOnTarget(
+					c.Core.Combat.Player(),
+					geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+					attackHitboxes[c6Index][c.NormalCounter][0],
+					attackHitboxes[c6Index][c.NormalCounter][1],
+				)
+			case 1, 2:
+				ap = combat.NewCircleHitOnTarget(
+					c.Core.Combat.Player(),
+					geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+					attackHitboxes[c6Index][c.NormalCounter][0],
+				)
+			}
+			c.Core.QueueAttack(ai, ap, 0, 0, c.arkheCB, c6cb)
+		}, attackHitmarks[c.NormalCounter],
+	)
 
 	defer c.AdvanceNormalIndex()
 

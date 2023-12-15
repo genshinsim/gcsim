@@ -72,6 +72,9 @@ func (c *char) c6cb(a combat.AttackCB) {
 	case ousia:
 		if !c.StatusIsActive(c6OusiaHealKey) {
 			c.c6HealSrc = c.Core.F
+			// https://www.youtube.com/watch?v=4aWLfPzA1WU
+			// Healing ticks is hitlag affect per char, and the
+			// healing extends for a long duration after the last c6 attack
 			for _, char := range c.Core.Player.Chars() {
 				char.QueueCharTask(c.c6heal(char, c.Core.F), 60)
 				char.AddStatus(c6OusiaHealKey, 2.9*60, true)
@@ -89,7 +92,6 @@ func (c *char) c6cb(a combat.AttackCB) {
 				ActorIndex: char.Index,
 				Abil:       "Furina C6 Pneuma Drain",
 				Amount:     hpDrain,
-				External:   false,
 			})
 		}
 	}

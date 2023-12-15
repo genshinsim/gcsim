@@ -50,15 +50,17 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		geometry.Point{Y: chargeOffset},
 		2.6,
 	)
-
-	var c6cb combat.AttackCBFunc
-	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
-		ai.Element = attributes.Hydro
-		ai.IgnoreInfusion = true
-		ai.FlatDmg = c.c6BonusDMG()
-		c6cb = c.c6cb
-	}
-	c.Core.QueueAttack(ai, ap, chargeHitmark-windup, chargeHitmark-windup, c6cb)
+	c.QueueCharTask(func() {
+		var c6cb combat.AttackCBFunc
+		// TODO: Check if DMG bonus still applies if c6 runs out between start of CA and the hit
+		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
+			ai.FlatDmg = c.c6BonusDMG()
+			c6cb = c.c6cb
+			ai.Element = attributes.Hydro
+			ai.IgnoreInfusion = true
+		}
+		c.Core.QueueAttack(ai, ap, chargeHitmark-windup, chargeHitmark-windup, c6cb)
+	}, chargeHitmark-windup)
 
 	arkheChangeFunc := func() {
 		c.arkhe = pneuma
@@ -74,6 +76,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			}
 		}
 	}
+
 	// +1 so that c6 evaluates DMG bonus/Heal status correctly
 	c.QueueCharTask(arkheChangeFunc, chargeHitmark-windup+1)
 
