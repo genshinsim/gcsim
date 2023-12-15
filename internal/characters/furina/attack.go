@@ -12,16 +12,18 @@ import (
 )
 
 var (
-	attackFrames    [][]int
-	attackHitmarks  = []int{15, 12, 21, 27}
-	attackOffsets   = []float64{-1.4, -0.85, -0.95, -3}
-	attackOffsetsC6 = []float64{-1.5, -1.15, -1.1, -3}
+	attackFrames   [][]int
+	attackHitmarks = []int{15, 12, 21, 27}
 
-	// these ones should be correct
+	// TODO: Get offsets for Furina
+	attackOffsets   = []float64{0, 0, 0, 0}
+	attackOffsetsC6 = []float64{0, 0, 0, 0}
+
+	// TODO: Get hithaltfactor
 	attackHitlagHaltFrame = []float64{0.01, 0.01, 0.02, 0.02}
 	attackHitboxes        = [][]float64{{1.5, 2.8}, {1.7}, {1.9}, {5, 6}}
 	attackHitboxesC6      = [][]float64{{1.5, 3}, {2.3}, {2.2}, {5, 6}}
-	attackStrikeType      = []attacks.StrikeType{attacks.StrikeTypePierce, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash, attacks.StrikeTypePierce}
+	attackStrikeType      = []attacks.StrikeType{attacks.StrikeTypeSpear, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash}
 
 	arkheIcdKeys     = []string{"spiritbreath-thorn-icd", "surging-blade-icd"}
 	arkhePrettyPrint = []string{"Spiritbreath Thorn", "Surging Blade"}
@@ -33,21 +35,18 @@ func init() {
 	// NA cancels
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 60) // N1 -> Walk
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 34) // N1 -> CA/Walk
 	attackFrames[0][action.ActionAttack] = 31
-	attackFrames[0][action.ActionCharge] = 34
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 60) // N2 -> Walk
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 28) // N2 -> CA/Walk
 	attackFrames[1][action.ActionAttack] = 23
-	attackFrames[1][action.ActionCharge] = 28
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 90) // N3 -> Walk
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 48) // N3 -> Walk
 	attackFrames[2][action.ActionAttack] = 36
 	attackFrames[2][action.ActionCharge] = 45
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 120) // N4 -> Walk
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 58) // N4 -> CA/Walk
 	attackFrames[3][action.ActionAttack] = 53
-	attackFrames[3][action.ActionCharge] = 58
 }
 
 func (c *char) arkheCB(a combat.AttackCB) {
@@ -82,7 +81,7 @@ func (c *char) arkheCB(a combat.AttackCB) {
 			4.5,
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0)
-	}, 42)
+	}, 30)
 }
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
