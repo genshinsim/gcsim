@@ -13,8 +13,9 @@ import (
 
 var (
 	chargeFrames  []int
-	chargeHitmark = 32
-	chargeOffset  = 0.0
+	chargeHitmark = 33
+	// TODO: Find offset
+	chargeOffset = 0.0
 )
 
 func init() {
@@ -28,18 +29,21 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	windup := 0
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		windup = 11
+	}
 	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               fmt.Sprintf("Charge %v", c.arkhe),
-		AttackTag:          attacks.AttackTagExtra,
-		ICDTag:             attacks.ICDTagExtraAttack,
-		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeSlash,
-		Element:            attributes.Physical,
-		HitlagHaltFrames:   0.02 * 60,
-		CanBeDefenseHalted: false,
-		Durability:         25,
-		Mult:               charge[c.TalentLvlAttack()],
+		ActorIndex:       c.Index,
+		Abil:             fmt.Sprintf("Charge %v", c.arkhe),
+		AttackTag:        attacks.AttackTagExtra,
+		ICDTag:           attacks.ICDTagExtraAttack,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeSlash,
+		Element:          attributes.Physical,
+		HitlagHaltFrames: 0.02 * 60,
+		Durability:       25,
+		Mult:             charge[c.TalentLvlAttack()],
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
@@ -47,34 +51,36 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		2.6,
 	)
 
+	var c6cb combat.AttackCBFunc
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 		ai.Element = attributes.Hydro
 		ai.IgnoreInfusion = true
 		ai.FlatDmg = c.c6BonusDMG()
-		c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark, c.c6cb)
-	} else {
-		c.Core.QueueAttack(ai, ap, chargeHitmark, chargeHitmark)
+		c6cb = c.c6cb
 	}
+	c.Core.QueueAttack(ai, ap, chargeHitmark-windup, chargeHitmark-windup, c6cb)
 
-	if c.arkhe == ousia {
-		c.QueueCharTask(func() {
-			c.arkhe = pneuma
-			if c.StatusIsActive(skillKey) {
-				c.summonSinger(0)
-			}
-		}, chargeHitmark+1)
-	} else {
-		c.QueueCharTask(func() {
+	arkheChangeFunc := func() {
+		c.arkhe = pneuma
+		if c.StatusIsActive(skillKey) {
+			c.summonSinger(0)
+		}
+	}
+	if c.arkhe == pneuma {
+		arkheChangeFunc = func() {
 			c.arkhe = ousia
 			if c.StatusIsActive(skillKey) {
 				c.summonSalonMembers(0)
 			}
-		}, chargeHitmark+1)
+		}
 	}
+	// +1 so that c6 evaluates DMG bonus/Heal status correctly
+	c.QueueCharTask(arkheChangeFunc, chargeHitmark-windup+1)
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }
