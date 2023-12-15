@@ -101,11 +101,10 @@ func (c *char) burstInit() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if c.StatusIsActive(burstKey) {
-					c.burstBuff[attributes.DmgP] = min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
-				} else {
-					c.burstBuff[attributes.DmgP] = 0
+				if !c.StatusIsActive(burstKey) {
+					return nil, false
 				}
+				c.burstBuff[attributes.DmgP] = math.Min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
 				return c.burstBuff, true
 			},
 		})
@@ -143,7 +142,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.curFanfare = 150
 		}
 		c.AddStatus(burstKey, burstDur, true)
-	}, 95)
+	}, 95) // This is before the hitmark, so Furina burst damage will benefit from C1. This was tested and confirmed
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), burstHitmark, burstHitmark)
 
