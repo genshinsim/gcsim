@@ -36,7 +36,7 @@ func (c *char) addFanfare(amt float64) {
 	if c.Base.Cons >= 2 {
 		amt *= 3.5
 	}
-	c.curFanfare = math.Min(c.maxC2Fanfare, c.curFanfare+amt)
+	c.curFanfare = min(c.maxC2Fanfare, c.curFanfare+amt)
 }
 
 func (c *char) burstInit() {
@@ -102,7 +102,7 @@ func (c *char) burstInit() {
 			Base: modifier.NewBase("furina-burst-damage-buff", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 				if c.StatusIsActive(burstKey) {
-					c.burstBuff[attributes.DmgP] = math.Min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
+					c.burstBuff[attributes.DmgP] = min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
 				} else {
 					c.burstBuff[attributes.DmgP] = 0
 				}
@@ -114,7 +114,7 @@ func (c *char) burstInit() {
 			Base: modifier.NewBase("furina-burst-heal-buff", -1),
 			Amount: func() (float64, bool) {
 				if c.StatusIsActive(burstKey) {
-					return math.Min(c.curFanfare, c.maxQFanfare) * burstHealRatio, false
+					return min(c.curFanfare, c.maxQFanfare) * burstHealRatio, false
 				}
 				return 0, false
 			},

@@ -54,10 +54,10 @@ const (
 func (c *char) calcSalonTick(tickNum int, initialTick, interval float64) int {
 	// the distribution is left skewed. We approxiamated with boxcox with lambda 0.728
 	// then used the transformation to convert from norm dist to the experimental distribution
-	randOffset := math.Pow(math.Max(c.Core.Rand.NormFloat64()*1.0403+4.073023273, 0.0), (1/0.728)) - 7
+	randOffset := math.Pow(max(c.Core.Rand.NormFloat64()*1.0403+4.073023273, 0.0), (1/0.728)) - 7
 
 	// this limits the offset to [-7, 7]
-	randOffset = math.Min(randOffset, 7)
+	randOffset = min(randOffset, 7)
 	return int(math.Round(initialTick + float64(tickNum)*interval + randOffset))
 }
 

@@ -1,8 +1,6 @@
 package wanderer
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -39,7 +37,7 @@ func (c *char) c2() {
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.DmgP] = math.Min(float64(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
+	m[attributes.DmgP] = min(float64(c.maxSkydwellerPoints-c.skydwellerPoints)*0.04, 2)
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag("wanderer-c2-burstbonus", burstFramesE[action.InvalidAction]),
 		Amount: func() ([]float64, bool) {

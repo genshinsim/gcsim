@@ -1,7 +1,6 @@
 package furina
 
 import (
-	"math"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -90,8 +89,8 @@ func (c *char) a4Tick() {
 		return
 	}
 
-	c.a4Buff[attributes.DmgP] = math.Min(c.MaxHP()/1000*0.007, 0.28)
-	c.a4IntervalReduction = math.Min(c.MaxHP()/1000.0*0.004, 0.16)
+	c.a4Buff[attributes.DmgP] = min(c.MaxHP()/1000*0.007, 0.28)
+	c.a4IntervalReduction = min(c.MaxHP()/1000.0*0.004, 0.16)
 
 	// TODO: check real A4 update interval
 	c.QueueCharTask(c.a4Tick, 30)
