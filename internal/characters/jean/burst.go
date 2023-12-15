@@ -46,8 +46,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	snap := c.Snapshot(&ai)
 
-	// initial hit at 40f
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), burstStart)
+	// initial hit at 15f after burst start
+	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), burstStart+15)
 
 	// field status
 	c.Core.Status.Add("jean-q", 600+burstStart)
@@ -56,15 +56,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: make this work with movement?
 	ai.Abil = "Dandelion Breeze (In/Out)"
 	ai.Mult = burstEnter[c.TalentLvlBurst()]
-	// first enter is at frame 55
+	// first enter is on burst start
 	for i := 0; i < enter; i++ {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), 55+i*delay)
+		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), burstStart+i*delay)
 	}
 
 	// handle In/Out damage on field expiry
 	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6), 600+burstStart)
 
-	// heal on cast
+	// heal on burst start
 	hpplus := snap.Stats[attributes.Heal]
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
 	heal := burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]
