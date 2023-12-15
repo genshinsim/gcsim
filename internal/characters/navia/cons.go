@@ -31,34 +31,41 @@ func (c *char) c1(shrapnel int) {
 // from As the Sunlit Sky's Singing Salute will strike near the location of the hit.
 // Up to one instance of Fire Support can be triggered each time Ceremonial Crystalshot is used,
 // and DMG dealt by Fire Support in this way is considered Elemental Burst DMG.
-func (c *char) c2(a combat.AttackCB) {
-	if c.Base.Cons < 2 {
-		return
+func (c *char) c2() combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if c.Base.Cons < 2 {
+			return
+		}
+		if !c.c2ready {
+			return
+		}
+		c.c2ready = false
+		e := a.Target.(*enemy.Enemy)
+		if e.Type() != targets.TargettableEnemy {
+			return
+		}
+
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "The President's Pursuit of Victory",
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			Element:    attributes.Geo,
+			Durability: 25,
+			Mult:       burst[1][c.TalentLvlSkill()],
+		}
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(e.Pos(), nil, 3),
+			0,
+			0,
+			c.BurstCB(),
+			c.c4(),
+		)
 	}
-	if !c.c2ready {
-		return
-	}
-	c.c2ready = false
-	// Function doesn't check for enemy type or limit as assumes that the CB will check or it.
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "The President's Pursuit of Victory",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 25,
-		Mult:       burst[1][c.TalentLvlSkill()],
-	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(a.Target.Pos(), nil, 3),
-		0,
-		0,
-		c.BurstCB(),
-		c.c4(),
-	)
+
 }
 
 // When As the Sunlit Sky's Singing Salute hits an opponent,

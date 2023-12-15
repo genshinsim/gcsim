@@ -46,6 +46,7 @@ func init() {
 	skillHoldFrames[action.ActionJump] = 51
 }
 
+// TODO: Refactor so that Shrapnel is calculated when fired
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.c2ready = true
 	hold := p["hold"]
@@ -119,7 +120,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			combat.NewSingleTargetHit(t.Key()),
 			hitmark,
 			hitmark+5,
-			c.SkillCB(hitmark),
+			c.particleCB(),
+			c.SurgingBlade(),
+			c.c2(),
 		)
 	}
 
@@ -159,7 +162,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 }
 
-func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
+func (c *char) particleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
 		e := a.Target.(*enemy.Enemy)
@@ -167,14 +170,9 @@ func (c *char) SkillCB(hitmark int) combat.AttackCBFunc {
 			return
 		}
 
-		// When firing, attack with the Surging Blade
-		c.SurgingBlade(hitmark)
-
 		if done {
 			return
 		}
-		c.c2(a)
-		c.c2ready = false
 		if !c.StatusIsActive(particleICDKey) {
 			count := 3.0
 			if c.Core.Rand.Float64() < 0.5 {
@@ -207,34 +205,30 @@ func (c *char) ShrapnelGain() {
 
 }
 
-func (c *char) SurgingBlade(hitmark int) {
-	if c.StatusIsActive(arkheICDKey) {
-		return
-	}
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Surging Blade",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		Element:    attributes.Geo,
-		Durability: 0,
-		Mult:       skillblade[c.TalentLvlSkill()],
-	}
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 0}, 3),
-		arkheDelay+hitmark,
-		arkheDelay+hitmark,
-		nil,
-	)
-	c.QueueCharTask(
-		func() {
-			c.AddStatus(arkheICDKey, 7*60, true)
-		},
-		hitmark,
-	)
+func (c *char) SurgingBlade() combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if c.StatusIsActive(arkheICDKey) {
+			return
+		}
+		c.AddStatus(arkheICDKey, 7*60, false)
+		ai := combat.AttackInfo{
+			ActorIndex: c.Index,
+			Abil:       "Surging Blade",
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			Element:    attributes.Geo,
+			Durability: 0,
+			Mult:       skillblade[c.TalentLvlSkill()],
+		}
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 0}, 3),
+			arkheDelay,
+			arkheDelay,
+			nil,
+		)
 
-	return
+	}
 }
