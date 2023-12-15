@@ -81,7 +81,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(arkheChangeFunc, chargeHitmark-windup+1)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
