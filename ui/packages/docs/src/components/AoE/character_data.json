@@ -2348,6 +2348,107 @@
       }
     ]
   },
+  "furina": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 1.5,
+        "boxY": 2.8
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.7
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1.9
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 5,
+        "boxY": 6
+      },
+      {
+        "ability": "N1-C6",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 1.5,
+        "boxY": 3
+      },
+      {
+        "ability": "N2-C6",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.3
+      },
+      {
+        "ability": "N3-C6",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.2
+      },
+      {
+        "ability": "N4-C6",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 5,
+        "boxY": 6
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 2.6
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Ousia-Bubble",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5
+      },
+      {
+        "ability": "E-Surintendante-Chevalmarin",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.5,
+        "notes": "Target aquisition range is not implemented."
+      },
+      {
+        "ability": "E-Gentilhomme-Usher",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.5,
+        "notes": "Target aquisition range is not implemented."
+      },
+      {
+        "ability": "E-Mademoiselle-Crabaletta",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3.5,
+        "notes": "Target aquisition range is not implemented."
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5
+      }
+    ]
+  },
   "ganyu": {
     "normal": [
       {

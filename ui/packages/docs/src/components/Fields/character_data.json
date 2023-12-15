@@ -43,6 +43,26 @@
       "desc": "Current number of coil stacks."
     }
   ],
+  "furina": [
+    {
+      "fields": [
+        ".furina.ousia"
+      ],
+      "desc": "Whether Furina is in the Ousia Arke."
+    },
+    {
+      "fields": [
+        ".furina.fanfare"
+      ],
+      "desc": "Current amount of fanfare."
+    },
+    {
+      "fields": [
+        ".furina.c6-count"
+      ],
+      "desc": "Number of c6 effects triggered."
+    }
+  ],
   "fischl": [
     {
       "fields": [

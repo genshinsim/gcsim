@@ -115,6 +115,7 @@ func init() {
 	percentDelay5[keys.Mika] = 10
 	percentDelay5[keys.Kirara] = 13
 	percentDelay5[keys.Lyney] = 12
+	percentDelay5[keys.Furina] = 13
 
 	percentDelay5[keys.Wanderer] = 0
 	percentDelay5AltForms[keys.Wanderer] = 12
