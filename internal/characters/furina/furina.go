@@ -37,8 +37,6 @@ type char struct {
 	burstBuff           []float64
 	a4Buff              []float64
 	a4IntervalReduction float64
-	a1HealsStopFrameMap []int
-	a1HealsFlagMap      []bool
 	lastSummonSrc       int
 	arkhe               Arkhe
 	c6Count             int
