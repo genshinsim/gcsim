@@ -23,9 +23,6 @@ func (c *char) a1() {
 		return
 	}
 
-	c.a1HealsStopFrameMap = make([]int, len(c.Core.Player.Chars()))
-	c.a1HealsFlagMap = make([]bool, len(c.Core.Player.Chars()))
-
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		hi := args[0].(*player.HealInfo)
 		overheal := args[3].(float64)
