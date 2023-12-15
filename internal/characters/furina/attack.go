@@ -16,13 +16,11 @@ var (
 	attackHitmarks = []int{15, 12, 21, 27}
 
 	// TODO: Get offsets for Furina
-	attackOffsets   = []float64{0, 0, 0, 0}
-	attackOffsetsC6 = []float64{0, 0, 0, 0}
+	attackOffsets = [][]float64{{0, 0, 0, 0}, {0, 0, 0, 0}}
 
-	// TODO: Get hithaltfactor
+	// TODO: Get hithaltfactor, verify hitbox data
 	attackHitlagHaltFrame = []float64{0.01, 0.01, 0.02, 0.02}
-	attackHitboxes        = [][]float64{{1.5, 2.8}, {1.7}, {1.9}, {5, 6}}
-	attackHitboxesC6      = [][]float64{{1.5, 3}, {2.3}, {2.2}, {5, 6}}
+	attackHitboxes        = [][][]float64{{{1.5, 2.8}, {1.7}, {1.9}, {5, 6}}, {{1.5, 3}, {2.3}, {2.2}, {5, 6}}}
 	attackStrikeType      = []attacks.StrikeType{attacks.StrikeTypeSpear, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash}
 
 	arkheIcdKeys     = []string{"spiritbreath-thorn-icd", "surging-blade-icd"}
@@ -74,8 +72,10 @@ func (c *char) arkheCB(a combat.AttackCB) {
 		if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
 			ai.FlatDmg = c.c6BonusDMGArkhe()
 		}
+
+		// TODO: Check the target, get offset
 		ap := combat.NewBoxHitOnTarget(
-			a.Target,
+			c.Core.Combat.Player(),
 			nil,
 			1.2,
 			4.5,
@@ -99,46 +99,33 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 	}
 
-	var ap combat.AttackPattern
-
+	var c6cb combat.AttackCBFunc
+	c6Index := 0
 	if c.Base.Cons >= 6 && c.StatusIsActive(c6Key) {
+		c6Index = 1
 		ai.Element = attributes.Hydro
 		ai.IgnoreInfusion = true
 		ai.FlatDmg = c.c6BonusDMG()
-		switch c.NormalCounter {
-		case 0, 3:
-			ap = combat.NewBoxHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsetsC6[c.NormalCounter]},
-				attackHitboxesC6[c.NormalCounter][0],
-				attackHitboxesC6[c.NormalCounter][1],
-			)
-		case 1, 2:
-			ap = combat.NewCircleHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsetsC6[c.NormalCounter]},
-				attackHitboxesC6[c.NormalCounter][0],
-			)
-		}
-		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.arkheCB, c.c6cb)
-	} else {
-		switch c.NormalCounter {
-		case 0, 3:
-			ap = combat.NewBoxHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
-				attackHitboxes[c.NormalCounter][0],
-				attackHitboxes[c.NormalCounter][1],
-			)
-		case 1, 2:
-			ap = combat.NewCircleHitOnTarget(
-				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
-				attackHitboxes[c.NormalCounter][0],
-			)
-		}
-		c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.arkheCB)
+		c6cb = c.c6cb
 	}
+
+	var ap combat.AttackPattern
+	switch c.NormalCounter {
+	case 0, 3:
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+			attackHitboxes[c6Index][c.NormalCounter][0],
+			attackHitboxes[c6Index][c.NormalCounter][1],
+		)
+	case 1, 2:
+		ap = combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[c6Index][c.NormalCounter]},
+			attackHitboxes[c6Index][c.NormalCounter][0],
+		)
+	}
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter], c.arkheCB, c6cb)
 
 	defer c.AdvanceNormalIndex()
 
