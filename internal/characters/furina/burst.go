@@ -18,7 +18,7 @@ var burstFrames []int
 
 const (
 	burstHitmark = 98
-	burstDur     = 18 * 60
+	burstDur     = 18.2 * 60
 	burstKey     = "furina-burst"
 )
 
@@ -36,21 +36,20 @@ func (c *char) addFanfare(amt float64) {
 	if c.Base.Cons >= 2 {
 		amt *= 3.5
 	}
-	c.curFanfare = math.Min(c.maxFanfare, c.curFanfare+amt)
+	c.curFanfare = math.Min(c.maxC2Fanfare, c.curFanfare+amt)
 }
 
 func (c *char) burstInit() {
-	c.maxFanfare = 300
+	c.maxC2Fanfare = 300
 	c.maxQFanfare = 300
 	if c.Base.Cons >= 1 {
 		c.maxQFanfare = 400
-		c.maxFanfare = 400
+		c.maxC2Fanfare = 400
 	}
 	if c.Base.Cons >= 2 {
 		// 400 + 140/0.35 = 800
-		c.maxFanfare = 800
+		c.maxC2Fanfare = 800
 	}
-	c.curFanfare = 0
 	c.burstBuff = make([]float64, attributes.EndStatType)
 
 	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
@@ -95,6 +94,32 @@ func (c *char) burstInit() {
 
 		return false
 	}, "furina-fanfare-on-heal")
+
+	burstDMGRatio := burstFanfareDMGRatio[c.TalentLvlBurst()]
+	burstHealRatio := burstFanfareHBRatio[c.TalentLvlBurst()]
+	for _, char := range c.Core.Player.Chars() {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("furina-burst-damage-buff", -1),
+			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				if c.StatusIsActive(burstKey) {
+					c.burstBuff[attributes.DmgP] = math.Min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
+				} else {
+					c.burstBuff[attributes.DmgP] = 0
+				}
+				return c.burstBuff, true
+			},
+		})
+
+		char.AddHealBonusMod(character.HealBonusMod{
+			Base: modifier.NewBase("furina-burst-heal-buff", -1),
+			Amount: func() (float64, bool) {
+				if c.StatusIsActive(burstKey) {
+					return math.Min(c.curFanfare, c.maxQFanfare) * burstHealRatio, false
+				}
+				return 0, false
+			},
+		})
+	}
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -110,33 +135,17 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		FlatDmg:    c.MaxHP() * burstDMG[c.TalentLvlBurst()],
 	}
 
-	c.QueueCharTask(func() { c.curFanfare = 0 }, 7)
-
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), burstHitmark, burstHitmark)
+	c.curFanfare = 0
+	c.DeleteStatus(burstKey)
 
 	c.QueueCharTask(func() {
 		if c.Base.Cons >= 1 {
 			c.curFanfare = 150
 		}
+		c.AddStatus(burstKey, burstDur, true)
+	}, 95)
 
-		c.AddStatus(burstKey, burstDur, false)
-		for _, char := range c.Core.Player.Chars() {
-			char.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("furina-burst-damage-buff", burstDur),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					c.burstBuff[attributes.DmgP] = math.Min(c.curFanfare, c.maxQFanfare) * burstFanfareDMGRatio[c.TalentLvlBurst()]
-					return c.burstBuff, true
-				},
-			})
-
-			char.AddHealBonusMod(character.HealBonusMod{
-				Base: modifier.NewBase("furina-burst-heal-buff", burstDur),
-				Amount: func() (float64, bool) {
-					return math.Min(c.curFanfare, c.maxQFanfare) * burstFanfareHBRatio[c.TalentLvlBurst()], false
-				},
-			})
-		}
-	}, burstHitmark+1)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), burstHitmark, burstHitmark)
 
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(7)
@@ -144,7 +153,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

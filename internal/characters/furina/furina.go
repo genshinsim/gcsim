@@ -33,7 +33,7 @@ type char struct {
 	*tmpl.Character
 	curFanfare          float64
 	maxQFanfare         float64
-	maxFanfare          float64
+	maxC2Fanfare        float64
 	burstBuff           []float64
 	a4Buff              []float64
 	a4IntervalReduction float64
