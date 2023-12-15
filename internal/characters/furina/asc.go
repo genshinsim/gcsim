@@ -1,6 +1,7 @@
 package furina
 
 import (
+	"math"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -42,31 +43,29 @@ func (c *char) a1() {
 		}
 
 		if !c.StatusIsActive(a1HealKey) {
-			c.Core.Tasks.Add(c.a1HealingOverTime(), 120)
+			c.QueueCharTask(c.a1HealingOverTime, 2*60)
 		}
 
-		c.AddStatus(a1HealKey, 240, false)
+		c.AddStatus(a1HealKey, 4*60, true)
 
 		return false
 	}, "furina-a1")
 }
 
-func (c *char) a1HealingOverTime() func() {
-	return func() {
-		if !c.StatusIsActive(a1HealKey) {
-			return
-		}
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  -1,
-			Type:    player.HealTypePercent,
-			Message: "Endless Waltz",
-			Src:     0.02,
-			Bonus:   c.Stat(attributes.Heal),
-		})
-
-		c.Core.Tasks.Add(c.a1HealingOverTime(), 120)
+func (c *char) a1HealingOverTime() {
+	if !c.StatusIsActive(a1HealKey) {
+		return
 	}
+	c.Core.Player.Heal(player.HealInfo{
+		Caller:  c.Index,
+		Target:  -1,
+		Type:    player.HealTypePercent,
+		Message: "Endless Waltz",
+		Src:     0.02,
+		Bonus:   c.Stat(attributes.Heal),
+	})
+
+	c.QueueCharTask(c.a1HealingOverTime, 2*60)
 }
 
 func (c *char) a4() {
@@ -94,13 +93,9 @@ func (c *char) a4Tick() {
 		return
 	}
 
-	var dmgBuff = c.MaxHP() / 1000 * 0.007
+	c.a4Buff[attributes.DmgP] = math.Min(c.MaxHP()/1000*0.007, 0.28)
+	c.a4IntervalReduction = math.Min(c.MaxHP()/1000.0*0.004, 0.16)
 
-	if dmgBuff > 0.28 {
-		dmgBuff = 0.28
-	}
-
-	c.a4Buff[attributes.DmgP] = dmgBuff
-
-	c.Core.Tasks.Add(c.a4Tick, 30)
+	// TODO: check real A4 update interval
+	c.QueueCharTask(c.a4Tick, 30)
 }

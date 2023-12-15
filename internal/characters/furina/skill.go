@@ -321,9 +321,9 @@ func (c *char) singerOfManyWaters(src int) func() {
 			Src:     skillSingerHealFlat[c.TalentLvlSkill()] + skillSingerHealScale[c.TalentLvlSkill()]*c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
-		intervalDelta := math.Min(c.MaxHP()/1000.0*0.004, 0.16)
 
-		interval := int(singerInterval*(1-intervalDelta) + 0.5)
+		// +0.5 to ensure it rounds
+		interval := int(singerInterval*(1-c.a4IntervalReduction) + 0.5)
 		c.Core.Tasks.Add(c.singerOfManyWaters(src), interval)
 	}
 }

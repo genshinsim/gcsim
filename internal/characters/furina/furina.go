@@ -36,6 +36,7 @@ type char struct {
 	maxFanfare          float64
 	burstBuff           []float64
 	a4Buff              []float64
+	a4IntervalReduction float64
 	a1HealsStopFrameMap []int
 	a1HealsFlagMap      []bool
 	lastSummonSrc       int
