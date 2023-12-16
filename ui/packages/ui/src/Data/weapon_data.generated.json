@@ -1002,11 +1002,11 @@
       "image_name": "UI_EquipIcon_Sword_Psalmus"
     },
     "swordofnarzissenkreuz":  {
-      "id":  11428,
-      "key":  "swordofnarzissenkreuz",
-      "rarity":  4,
-      "weapon_class":  "WEAPON_SWORD_ONE_HAND",
-      "image_name":  "UI_EquipIcon_Sword_Purewill"
+      "id": 11428,
+      "key": "swordofnarzissenkreuz",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_Purewill"
     },
     "talkingstick": {
       "id": 12424,
