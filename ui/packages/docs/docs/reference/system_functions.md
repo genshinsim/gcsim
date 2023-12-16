@@ -51,7 +51,8 @@ wait(arg); //deprecated, use sleep(arg)
 :::
 
 :::caution
-Due to how gcsim handles actions, the current implementation of `sleep` is not intuitive.
+Due to how gcsim handles actions, the current implementation of `sleep` is not intuitive when trying to extend the duration of actions.
+Please use `delay` for this purpose instead.
 
 Example:
 ```
@@ -80,6 +81,59 @@ The duration of `sleep` counts towards the action length.
 
 To make gcsim sleep for 1 frame after Keqing's N1 action ends, the user would have to insert a `sleep(5);`.
 :::
+
+## delay
+
+```
+delay(arg);
+```
+
+- `delay` is a special function that will ask gcsim to delay the start of the following action by a number of frames. 
+- `delay` will always evaluate to 0.
+
+:::danger
+`arg` must be a number or an expression that evaluates to a number and represents the number of frames the simulator will wait for.
+:::
+
+:::caution
+`delay` is executed before the sim checks if the next action is ready. 
+
+Example:
+```
+keqing burst;
+delay(5);
+keqing burst;
+```
+
+In this case, the sim would do the following:
+- Keqing's 1st Burst is executed
+- gcsim executes a `delay` for 5 frames at the end of the previous action
+- Once the delay is over, gcsim checks if Keqing's 2nd Burst can be executed
+- Since there is not enough energy, the sim will be stuck waiting for energy
+- After enough particles were collected from energy drops, Keqing's 2nd Burst is executed
+:::
+
+:::caution
+If the active character is affected by hitlag during the execution of `delay`, then it will last longer than specified.
+
+Example:
+```
+noelle skill;
+sleep(700);
+delay(50);
+noelle attack;
+```
+
+This example uses C4 Noelle to show a source of hitlag that can occur during `delay`.
+The `sleep` is used so that the C4 shield explosion happens during `delay`.
+
+- Noelle's Skill is executed
+- gcsim will sleep for 700 frames after the `CanQueueAfter` of the previous action 
+- gcsim starts executing a `delay` that should last 50 frames
+- A few frames after `delay` starts, C4 Noelle applies 13 frames of hitlag
+- Noelle's Attack is executed 50 + 13 = 63 frames after the start of `delay`
+:::
+
 
 ## f
 
