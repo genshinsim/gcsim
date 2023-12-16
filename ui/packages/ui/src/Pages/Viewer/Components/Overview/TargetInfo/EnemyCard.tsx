@@ -69,7 +69,7 @@ const EnemyResistances = ({ enemy }: Props) => {
       <Resistance type="pyro" num={enemy?.resist?.["pyro"]} />
       <Resistance type="cryo" num={enemy?.resist?.["cryo"]} />
       <Resistance type="dendro" num={enemy?.resist?.["dendro"]} />
-      <Resistance type="phys" num={enemy?.resist?.["phys"]} />
+      <Resistance type="physical" num={enemy?.resist?.["physical"]} />
     </div>
   );
 };
@@ -102,7 +102,7 @@ const Icon = ({ type }: { type: string }) => {
       return <IconGeo className={`${size} text-geo`} />;
     case "anemo":
       return <IconAnemo className={`${size} text-anemo`} />;
-    case "phys":
+    case "physical":
       return <IconPhysical className={`${size}`} />;
     case "dendro":
       return <IconDendro className={`${size} text-dendro`} />;
