@@ -115,8 +115,8 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		ticks, ok := p["ticks"]
 		if !ok {
 			ticks = -1
-		} else if ticks < 0 {
-			ticks = 0
+		} else {
+			ticks = max(ticks, 1)
 		}
 
 		c.Core.Player.SwapCD = math.MaxInt16
