@@ -61,5 +61,12 @@
       "param": "passive",
       "desc": "0 for passive disabled, 1 for enabled (default)."
     }
+  ],
+  "swordofnarzissenkreuz": [
+    {
+      "ability": "Sword of Narzissenkreuz",
+      "param": "arkhe",
+      "desc": "0 for Pneuma, 1 for Ousia (default)."
+    }
   ]
 }
