@@ -73,7 +73,6 @@ func OnShielded(s *Set) func(args ...interface{}) bool {
 
 func OnShieldBreak(s *Set) func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
-		breaked := args[0].(shield.Shield)
 		shd := s.core.Player.Shields.Get(shield.Crystallize)
 		if shd != nil {
 			return false
@@ -81,10 +80,7 @@ func OnShieldBreak(s *Set) func(args ...interface{}) bool {
 		if s.core.Player.Active() != s.char.Index {
 			return false
 		}
-		if breaked.Type() == shield.Crystallize {
-			s.lastF = s.core.F + 60
-			return false
-		}
+		s.lastF = s.core.F + 60
 		return false
 	}
 }
