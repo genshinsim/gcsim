@@ -112,6 +112,7 @@ func (h *Handler) OnDamage(char int, dmg float64, ele attributes.Element) float6
 			).Write("name", v.Desc()).
 				Write("ele", v.Element()).
 				Write("expiry", v.Expiry())
+			h.events.Emit(event.OnShieldBreak, v)
 		}
 	}
 	h.shields = h.shields[:n]
@@ -126,6 +127,7 @@ func (h *Handler) Tick() {
 			h.log.NewEvent("shield expired", glog.LogShieldEvent, -1).
 				Write("name", v.Desc()).
 				Write("hp", v.CurrentHP())
+			h.events.Emit(event.OnShieldBreak, v)
 		} else {
 			h.shields[n] = v
 			n++
