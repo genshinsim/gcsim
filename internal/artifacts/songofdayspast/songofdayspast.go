@@ -25,20 +25,20 @@ func init() {
 }
 
 type Set struct {
-	healStacks float64
-	core       *core.Core
 	Index      int
+	core       *core.Core
+	char       *character.CharWrapper
+	healStacks float64
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
-func (s *Set) Init() error {
-	s.wavesOfDaysPastEffect()
-	return nil
-}
+func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core: c,
+		core:       c,
+		char:       char,
+		healStacks: 0,
 	}
 
 	if count >= 2 {
@@ -54,43 +54,41 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
-			if s.core.Status.Duration(wavesOfDaysPastKey) > 0 {
-				return false
-			}
-
-			src := args[0].(*player.HealInfo)
-			healAmt := args[2].(float64)
-
-			if src.Caller != char.Index {
-				return false
-			}
-
-			s.healStacks += healAmt
-			if s.healStacks >= 15000 {
-				s.healStacks = 15000
-			}
-
-			if s.core.Status.Duration(yearningKey) == 0 {
-				s.core.Status.Add(yearningKey, 6*60)
-
-				c.Tasks.Add(func() {
-					s.core.Status.Add(wavesOfDaysPastKey, 10*60)
-					s.core.Flags.Custom[wavesOfDaysPastKey] = 5
-				}, 6*60)
-			}
-
-			return false
-		}, fmt.Sprintf("sodp-4pc-heal-accumulation-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnHeal, OnHeal(&s), fmt.Sprintf("sodp-4pc-heal-accumulation-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnEnemyHit, OnEnemyHit(&s), fmt.Sprintf("waves-of-days-past-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil
 }
 
-func (s *Set) wavesOfDaysPastEffect() {
-	s.core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+func OnHeal(s *Set) func(args ...interface{}) bool {
+	return func(args ...interface{}) bool {
+		if s.core.Status.Duration(wavesOfDaysPastKey) > 0 {
+			return false
+		}
+		src := args[0].(*player.HealInfo)
+		healAmt := args[2].(float64)
+		if src.Caller != s.char.Index {
+			return false
+		}
+		s.healStacks += healAmt
+		if s.healStacks >= 15000 {
+			s.healStacks = 15000
+		}
+		if s.core.Status.Duration(yearningKey) == 0 {
+			s.core.Status.Add(yearningKey, 6*60)
+			s.core.Tasks.Add(func() {
+				s.core.Status.Add(wavesOfDaysPastKey, 10*60)
+				s.core.Flags.Custom[wavesOfDaysPastKey] = 5
+			}, 6*60)
+		}
+		return false
+	}
+}
 
+func OnEnemyHit(s *Set) func(args ...interface{}) bool {
+	return func(args ...interface{}) bool {
+		atk := args[1].(*combat.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalBurst:
 		case attacks.AttackTagElementalArt:
@@ -101,28 +99,21 @@ func (s *Set) wavesOfDaysPastEffect() {
 		default:
 			return false
 		}
-
 		char := s.core.Player.ByIndex(atk.Info.ActorIndex)
-
 		if s.core.Status.Duration(wavesOfDaysPastKey) == 0 {
 			return false
 		}
-
 		if char.Index != s.core.Player.Active() {
 			return false
 		}
-
 		if s.core.Flags.Custom[wavesOfDaysPastKey] > 0 {
 			s.core.Flags.Custom[wavesOfDaysPastKey]--
 			amt := s.healStacks * 0.08
 			atk.Info.FlatDmg += amt
 		}
-
 		if s.core.Flags.Custom[wavesOfDaysPastKey] == 0 {
 			s.healStacks = 0
-			s.core.Status.Delete(wavesOfDaysPastKey)
 		}
-
 		return false
-	}, "waves-of-days-past-hook")
+	}
 }
