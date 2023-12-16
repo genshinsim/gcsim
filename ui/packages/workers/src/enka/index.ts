@@ -20,7 +20,11 @@ export async function handleEnka(request: IRequest): Promise<Response> {
 
   console.log(key);
 
-  const init = {};
+  const init = {
+    headers: {
+      "User-Agent": "gcsim/1.0",
+    },
+  };
 
   const requrl = `https://enka.network/api/uid/${key}/`;
   const response = await fetch(requrl, init);
