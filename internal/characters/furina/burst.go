@@ -104,7 +104,7 @@ func (c *char) burstInit() {
 				if !c.StatusIsActive(burstKey) {
 					return nil, false
 				}
-				c.burstBuff[attributes.DmgP] = math.Min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
+				c.burstBuff[attributes.DmgP] = min(c.curFanfare, c.maxQFanfare) * burstDMGRatio
 				return c.burstBuff, true
 			},
 		})

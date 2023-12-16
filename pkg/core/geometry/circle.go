@@ -120,7 +120,7 @@ func (c *Circle) IntersectCircle(c2 Circle) bool {
 		oq := q.Sub(o)
 		oqDist := o.Distance(q)
 
-		minDist := math.Min(opDist, oqDist)
+		minDist := min(opDist, oqDist)
 		if op.Dot(qp) > 0 && oq.Dot(pq) > 0 {
 			minDist = math.Abs(op.Cross(oq)) / c2.r
 		}
