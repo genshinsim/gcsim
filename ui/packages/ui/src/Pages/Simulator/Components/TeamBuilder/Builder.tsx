@@ -27,7 +27,6 @@ export const Builder = (props: Props) => {
         char={c}
         stats={teamStats.stats[c.name]}
         statsRows={teamStats.maxRows}
-        viewerMode
         handleToggleDetail={handleToggleDetail}
         showDetails={showDetails}
         handleDelete={props.handleRemove(index)}
