@@ -1,14 +1,13 @@
 package neuvillette
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -21,8 +20,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	lastThorn              int
-	lastSkillParticle      int
+	lastSwap               int
 	chargeJudgeStartF      int
 	chargeJudgeDur         int
 	tickAnimLength         int
@@ -41,9 +39,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.NormalCon = 3
 	c.BurstCon = 5
-
-	c.lastThorn = math.MinInt / 2
-	c.lastSkillParticle = math.MinInt / 2
 
 	c.chargeEarlyCancelled = false
 	w.Character = &c
@@ -72,6 +67,8 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 4 {
 		c.c4()
 	}
+
+	c.onSwap()
 
 	return nil
 }
@@ -135,4 +132,17 @@ func (c *char) Condition(fields []string) (any, error) {
 	default:
 		return c.Character.Condition(fields)
 	}
+}
+
+// used for early CA cancel swap cd calculation
+func (c *char) onSwap() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		// do nothing if next char isn't neuvillette
+		next := args[1].(int)
+		if next != c.Index {
+			return false
+		}
+		c.lastSwap = c.Core.F
+		return false
+	}, "neuvillette-swap")
 }
