@@ -51,6 +51,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.SkillCon = 5
 	c.BurstCon = 3
+	c.HasArkhe = true
 
 	w.Character = &c
 

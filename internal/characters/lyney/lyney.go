@@ -31,6 +31,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 	c.NormalHitNum = normalHitNum
 	c.BurstCon = 5
 	c.NormalCon = 3
+	c.HasArkhe = true
 
 	c2Stacks, ok := p.Params["c2_stacks"]
 	if !ok {
