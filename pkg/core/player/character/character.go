@@ -68,6 +68,7 @@ type CharWrapper struct {
 	NormalCon int
 	SkillCon  int
 	BurstCon  int
+	HasArkhe  bool
 
 	Equip struct {
 		Weapon info.Weapon
