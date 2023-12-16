@@ -1,5 +1,9 @@
 import { Button } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
+import { Character } from "@gcsim/types";
+import classNames from "classnames";
+import { Trans, useTranslation } from "react-i18next";
+import { CharStatBlock } from "../../Pages/Simulator/Components/character";
 import {
   IconAnemo,
   IconAtk,
@@ -18,13 +22,8 @@ import {
   IconPhysical,
   IconPyro,
 } from "../Icons";
-import { WeaponCard } from "./WeaponCard";
-import { Trans, useTranslation } from "react-i18next";
-import { Character } from "@gcsim/types";
-import { CharStatBlock } from "../../Pages/Simulator/Components/character";
-import classNames from "classnames";
 import placeholder from "../Images/default.png";
-import React from "react";
+import { WeaponCard } from "./WeaponCard";
 
 type Props = {
   char: Character;
@@ -32,7 +31,7 @@ type Props = {
   statsRows: number;
   className?: string;
   showDetails?: boolean;
-  viewerMode? : boolean; //hide the delete and edit button; add toggle for showing stats
+  viewerMode?: boolean; //hide the delete and edit button; add toggle for showing stats
   isSkeleton?: boolean;
   handleDelete?: () => void;
   toggleEdit?: () => void;
@@ -105,7 +104,6 @@ export function CharacterCard({
   showDetails = true,
   viewerMode = false,
   isSkeleton,
-  toggleEdit,
   handleDelete,
   handleToggleDetail,
   className = "",
@@ -122,7 +120,7 @@ export function CharacterCard({
             key="key"
             src={`/api/assets/artifacts/${key}_flower.png`}
             className="w-full h-8"
-            onError={(e) => (e.target as HTMLImageElement).src = placeholder}
+            onError={(e) => ((e.target as HTMLImageElement).src = placeholder)}
           />
         </Tooltip2>
 
@@ -206,23 +204,30 @@ export function CharacterCard({
             charBG(char.element)
           }
         >
-          <div className="absolute top-1 right-1">
-            {
-              viewerMode ?
-              <Button icon={showDetails ? "caret-up" : "caret-down"} small onClick={handleToggleDetail} />
-              :
-              <Button icon="cross" intent="danger" small onClick={handleDelete} />
-            }
+          <div className="flex flex-row gap-1 absolute top-1 right-1">
+            <Button
+              icon={showDetails ? "caret-up" : "caret-down"}
+              small
+              onClick={handleToggleDetail}
+            />
+            {viewerMode ? null : (
+              <Button
+                icon="cross"
+                intent="danger"
+                small
+                onClick={handleDelete}
+              />
+            )}
           </div>
           <div className="character-header"></div>
-          <div className={"character-name font-medium m-4 capitalize " + skeleton}>
+          <div
+            className={"character-name font-medium m-4 capitalize " + skeleton}
+          >
             <>
               <Trans>character.c_pre</Trans>
               {char.cons ? char.cons : 0}
               <Trans>character.c_post</Trans>{" "}
-              {t(
-                `game:character_names.${char.name}`
-              )}{" "}
+              {t(`game:character_names.${char.name}`)}{" "}
             </>
           </div>
           <div className="w-1/2 text-sm">
@@ -238,23 +243,25 @@ export function CharacterCard({
             </div>
           </div>
           <div className="w-1/2 h-32">
-            {isSkeleton ? null : <img
-              src={
-                "https://gcsim.app/api/assets/avatar/" +
-                char.name +
-                ".png"
-              }
-              alt={char.name}
-              className="ml-auto h-32"
-              onError={(e) => (e.target as HTMLImageElement).src = placeholder}
-            />}
+            {isSkeleton ? null : (
+              <img
+                src={
+                  "https://gcsim.app/api/assets/avatar/" + char.name + ".png"
+                }
+                alt={char.name}
+                className="ml-auto h-32"
+                onError={(e) =>
+                  ((e.target as HTMLImageElement).src = placeholder)
+                }
+              />
+            )}
           </div>
         </div>
 
         <WeaponCard weapon={char.weapon} isSkeleton={isSkeleton} />
 
         {showDetails ? (
-            <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
+          <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
             <span className="font-bold">
               <Trans>character.artifact_stats</Trans>
             </span>
@@ -264,19 +271,7 @@ export function CharacterCard({
               </table>
             </div>
           </div>
-        ) :  null
-        }
-
-        {
-          viewerMode ?
-          null
-          :
-        <div
-          className="ml-auto pl-2 pt-2 pr-2 flex flex-row gap-4" 
-        >
-          <Button icon="edit" onClick={toggleEdit} />
-        </div>
-        }
+        ) : null}
 
         <div className="" />
       </div>
