@@ -167,54 +167,6 @@ type(arg);
 
 `type` evaluates to the name of the gcsl type of `arg`.
 
-## execute_action
-
-```
-execute_action(char, action, params);
-```
-
-`execute_action` evaluates to null and is used by the sim to execute actions.
-The intent behind exposing this is to allow for users to override this function for implementing functions that run before each action.
-
-The main example for this is adding (random) frame delays before each action:
-```
-fn rand_delay(mean, stddev) {
-    let del = randnorm() * stddev + mean;
-    if del > (mean + mean) {
-        del = mean + mean;
-    }
-    delay(del);
-}
-
-let prev_char_id = -1;
-let prev_action_id = -1;
-
-let _execute_action = execute_action;
-fn execute_action(char_id number, action_id number, p map) {
-    print(prev_char_id, " ", prev_action_id, " ", char_id, " ", action_id);
-
-    if action_id == .action.swap {
-        # add delay before swap
-        rand_delay(12, 3);
-    } else if prev_action_id == .action.attack && action_id != .action.attack && action_id != .action.charge {
-        # add delay after attack, but only if not followed by another attack or charge
-        rand_delay(3, 1);
-    } else if prev_action_id != .action.attack {
-        # add delay to everything else
-        rand_delay(3, 1);
-    }
-
-    prev_char_id = char_id;
-    prev_action_id = action_id;
-    return _execute_action(char_id, action_id, p);
-}
-```
-
-:::danger
-- `char` and `action` must be a number or an expression that evaluates to a number. 
-- `params` must be a map or an expression that evaluates to a map.
-:::
-
 ## set_particle_delay
 
 ```
