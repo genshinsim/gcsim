@@ -44,6 +44,10 @@ func Eval(c *core.Core, fields []string) (any, error) {
 		return int(c.Player.CurrentState()), nil
 	case "action":
 		return evalAction(fields)
+	case "previous-action":
+		return int(c.Player.LastAction.Type), nil
+	case "previous-char":
+		return int(c.Player.ByIndex(c.Player.LastAction.Char).Base.Key), nil
 	default:
 		// check if it's a char name; if so check char custom eval func
 		name := fields[0]

@@ -29,7 +29,10 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | `gadgets` | `dendrocore` | `count` | - | Evaluates to the current number of Dendro Cores. |
 | `gadgets` | `sourcewaterdroplet` | `count` | - | Evaluates to the current number of Sourcewater Droplets. Use character specific fields to get number of Sourcewater Droplets in range. |
 | `keys` | `char`/`weapon`/`artifact` | char/weapon/artifact name | - | Evaluates to the key for the specified char/weapon/artifact name. See the relevant character/weapon/artifact page for acceptable names. |
+| `action` |  `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | - | Evaluates to the key for the specified action name. |
 | `state` | - | - | - | Evaluates to the current state of the player. | 
+| `previous-char` | - | - | - | Evaluates to the char that executed the previous action. Use `.keys.char.<char name>` for comparison. | 
+| `previous-action` | - | - | - | Evaluates to the previously executed action. Use `.action.<action name>` for comparison. | 
 | character name | `cons` | - | - | Evaluates to the character's constellation count. |
 | character name | `energy` | - | - | Evaluates to the character's current energy. |
 | character name | `energymax` | - | - | Evaluates to the character's maximum energy. |
