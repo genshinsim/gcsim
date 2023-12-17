@@ -22,9 +22,9 @@ export const Metadata = ({ data }: Props) => {
     );
   }
   let dps: number | undefined = data?.statistics?.dps?.mean;
-  let count: number = data?.statistics?.dps_by_target?.length ?? 0;
+  let count: number = Object.keys(data?.statistics?.target_dps ?? {}).length;
   if (count > 0 && dps != undefined) {
-    dps = dps / count;
+    dps = dps / (count * 1.0);
   } else {
     dps = undefined;
   }
