@@ -13,12 +13,19 @@ type Props = {
 
 type Graphs = Map<string, string>;
 
+export const all_filter = "all";
+
 export const SourceDPSCard = ({ data, running, names }: Props) => {
   const graphs: Graphs = new Map([
     ["dps", "DPS"],
     ["damage_instances", "Damage Instances"],
   ]);
   const [graph, setGraph] = useState("dps");
+
+  //@ts-ignore
+  const filters: string[] = [all_filter, ...(names || [])];
+  const [filter, setFilter] = useState(all_filter);
+
   const [stats, timer] = useRefreshWithTimer(
     (d) => {
       return {
@@ -42,7 +49,10 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
             tooltip="x"
             timer={timer}
           />
-          <Options graph={graph} setGraph={setGraph} graphs={graphs} />
+          <div className="flex flex-row gap-4">
+            <Options graph={graph} setGraph={setGraph} graphs={graphs} />
+            <Filters filter={filter} setFilter={setFilter} filters={filters} />
+          </div>
         </div>
         <div className="flex flex-grow justify-center items-center">
           <BarChartLegend names={names} />
@@ -55,6 +65,7 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
             height={height}
             dps={chart_data}
             names={names}
+            filter={filter}
           />
         )}
       </ParentSize>
@@ -77,7 +88,35 @@ const Options = ({
     <FormGroup label={label} inline={true} className="!mb-2">
       <HTMLSelect value={graph} onChange={(e) => setGraph(e.target.value)}>
         {[...graphs.keys()].map((key) => (
-          <option value={key}>{graphs.get(key)}</option>
+          <option key={key} value={key}>
+            {graphs.get(key)}
+          </option>
+        ))}
+      </HTMLSelect>
+    </FormGroup>
+  );
+};
+
+const Filters = ({
+  filter,
+  setFilter,
+  filters,
+}: {
+  filter: string;
+  setFilter: (v: string) => void;
+  filters: string[];
+}) => {
+  const label = (
+    <span className="text-xs font-mono text-gray-400">Character</span>
+  );
+
+  return (
+    <FormGroup label={label} inline={true} className="!mb-2">
+      <HTMLSelect value={filter} onChange={(e) => setFilter(e.target.value)}>
+        {[...filters].map((key) => (
+          <option key={key} value={key}>
+            {key}
+          </option>
         ))}
       </HTMLSelect>
     </FormGroup>

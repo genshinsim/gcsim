@@ -3,14 +3,21 @@ import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { range } from "lodash-es";
 import { memo, useMemo } from "react";
-import { DataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
+import { all_filter } from ".";
+import {
+  DataColors,
+  FloatStatTooltipContent,
+  HorizontalBarStack,
+  NoData,
+} from "../../Util";
 
 type Props = {
   width: number;
   height: number;
   names?: string[];
+  filter: string;
   dps?: SourceStats[];
-}
+};
 
 const margin = { top: 0, left: 300, right: 20, bottom: 40 };
 
@@ -25,14 +32,19 @@ export const BarChartLegend = ({ names }: { names?: string[] }) => {
   });
 
   return (
-    <LegendOrdinal scale={scale} direction="row" labelMargin="0 15px 0 0" className="flex-wrap" />
+    <LegendOrdinal
+      scale={scale}
+      direction="row"
+      labelMargin="0 15px 0 0"
+      className="flex-wrap"
+    />
   );
 };
 
-const Graph = ({ width, dps, names }: Props) => {
-  const { data, sources, xMax } = useData(dps, names);
+const Graph = ({ width, dps, names, filter }: Props) => {
+  const { data, sources, xMax } = useData(filter, dps, names);
 
-  const sourceNames = sources.map(s => s.name);
+  const sourceNames = sources.map((s) => s.name);
 
   if (dps == null || names == null) {
     return <NoData />;
@@ -44,7 +56,7 @@ const Graph = ({ width, dps, names }: Props) => {
       height={data.length * 40}
       xDomain={[0, xMax]}
       yDomain={sourceNames}
-      y={d => d.source}
+      y={(d) => d.source}
       data={data}
       keys={range(names.length)}
       value={(d, k) => {
@@ -54,15 +66,15 @@ const Graph = ({ width, dps, names }: Props) => {
         return 0;
       }}
       stat={(d, k) => d.data[names[k]].data}
-      barColor={k => DataColors.character(k)}
-      hoverColor={k => DataColors.characterLabel(k)}
+      barColor={(k) => DataColors.character(k)}
+      hoverColor={(k) => DataColors.characterLabel(k)}
       margin={margin}
       tooltipContent={(d, k) => (
         <FloatStatTooltipContent
-            title={names[k] + ": " + d.source}
-            data={d.data[names[k]].data}
-            color={DataColors.characterLabel(k)}
-            percent={d.data[names[k]].pct}
+          title={names[k] + ": " + d.source}
+          data={d.data[names[k]].data}
+          color={DataColors.characterLabel(k)}
+          percent={d.data[names[k]].pct}
         />
       )}
     />
@@ -77,12 +89,12 @@ type SourceData = {
   char: string;
   i: number;
   pct: number;
-}
+};
 
 type SourceName = {
   name: string;
   mean: number;
-}
+};
 
 type Row = {
   data: SourceMap;
@@ -92,15 +104,19 @@ type Row = {
 
 type SourceMap = {
   [key: string]: SourceData;
-}
+};
 
 type ChartData = {
   data: Row[];
   sources: SourceName[];
   xMax: number;
-}
+};
 
-function useData(dps?: SourceStats[], names?: string[]): ChartData {
+function useData(
+  filter: string,
+  dps?: SourceStats[],
+  names?: string[]
+): ChartData {
   return useMemo(() => {
     if (dps == null || names == null) {
       return { data: [], sources: [], xMax: 0 };
@@ -111,28 +127,39 @@ function useData(dps?: SourceStats[], names?: string[]): ChartData {
       if (names[i] == "") {
         continue;
       }
+      if (filter !== all_filter && names[i] !== filter) {
+        continue;
+      }
 
       const char = dps[i].sources;
       if (char == null) {
         continue;
       }
-      
+
       for (const key in char) {
         if (char[key].max == 0) {
           continue;
         }
 
         const entries = rows.get(key) ?? [];
-        entries.push({ name: key, data: char[key], char: names[i], i: i, pct: 1 });
+        entries.push({
+          name: key,
+          data: char[key],
+          char: names[i],
+          i: i,
+          pct: 1,
+        });
         rows.set(key, entries);
       }
     }
-    
+
     let maxDPS = 0;
     const sources: SourceName[] = [];
     rows.forEach((v, k) => {
-      const max: number = v.reduce((a, b) => { 
-        return a + Math.max(b.data.max ?? 0, (b.data.mean ?? 0) + (b.data.sd ?? 0));
+      const max: number = v.reduce((a, b) => {
+        return (
+          a + Math.max(b.data.max ?? 0, (b.data.mean ?? 0) + (b.data.sd ?? 0))
+        );
       }, 0);
 
       const mean = v.reduce((a, b) => {
@@ -143,36 +170,37 @@ function useData(dps?: SourceStats[], names?: string[]): ChartData {
       maxDPS = Math.max(maxDPS, max);
     });
 
-    const data = Array.from(rows.values())
-      .map(v => {
-        const total = v.reduce((a, b) => {
-          return a + (b.data.mean ?? 0);
-        }, 0);
+    const data = Array.from(rows.values()).map((v) => {
+      const total = v.reduce((a, b) => {
+        return a + (b.data.mean ?? 0);
+      }, 0);
 
-        const m: SourceMap = {};
-        let source = "";
-        v.forEach(v => {
-          source = v.name;
-          m[v.char] = {
-            name: v.name,
-            data: v.data,
-            char: v.char,
-            i: v.i,
-            pct: (v.data.mean ?? 0) / total,
-          };
-        });
-
-        return {
-          data: m,
-          source: source,
-          mean: total,
+      const m: SourceMap = {};
+      let source = "";
+      v.forEach((v) => {
+        source = v.name;
+        m[v.char] = {
+          name: v.name,
+          data: v.data,
+          char: v.char,
+          i: v.i,
+          pct: (v.data.mean ?? 0) / total,
         };
       });
 
+      return {
+        data: m,
+        source: source,
+        mean: total,
+      };
+    });
+
     return {
       data: data,
-      sources: sources.sort((a, b) => a.mean - b.mean).filter(v => v.mean > 0),
-      xMax: maxDPS
+      sources: sources
+        .sort((a, b) => a.mean - b.mean)
+        .filter((v) => v.mean > 0),
+      xMax: maxDPS,
     };
-  }, [dps, names]);
+  }, [filter, dps, names]);
 }
