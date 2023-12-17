@@ -6,10 +6,11 @@ import { Item } from "@gcsim/ui/src/Pages/Viewer/Components/Overview/Metadata/It
 import { Iterations } from "@gcsim/ui/src/Pages/Viewer/Components/Overview/Metadata/Iterations";
 import { ModeItem } from "@gcsim/ui/src/Pages/Viewer/Components/Overview/Metadata/Mode";
 import { Standard } from "@gcsim/ui/src/Pages/Viewer/Components/Overview/Metadata/Standard";
+import { WarningItem } from "@gcsim/ui/src/Pages/Viewer/Components/Overview/Metadata/Warning";
 
 type Props = {
   data: SimResults;
-}
+};
 
 export const Metadata = ({ data }: Props) => {
   if (data.schema_version == null) {
@@ -23,6 +24,7 @@ export const Metadata = ({ data }: Props) => {
   return (
     <Card className="flex flex-row flex-wrap !p-2 gap-2 justify-center">
       <Error signKey={data.key_type} modified={data.modified} />
+      <WarningItem warnings={data?.statistics?.warnings} />
       <Standard standard={data?.standard} />
       <Iterations itr={data?.statistics?.iterations} />
       <ModeItem mode={data?.mode} />
@@ -33,7 +35,7 @@ export const Metadata = ({ data }: Props) => {
 type ErrorProps = {
   signKey?: string;
   modified?: boolean;
-}
+};
 
 export const Error = ({ signKey, modified }: ErrorProps) => {
   if (signKey == null || signKey == "prod") {
