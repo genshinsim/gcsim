@@ -169,14 +169,26 @@ type(arg);
 
 ## execute_action
 
+:::danger
+**THIS FUNCTION IS EXPERIMENTAL AND SUBJECT TO CHANGE.**
+
+**USE AT YOUR OWN RISK.**
+:::
+
 ```
 execute_action(char, action, params);
 ```
 
 `execute_action` evaluates to null and is used by the sim to execute actions.
-The intent behind exposing this is to allow for users to override this function for implementing functions that run before each action.
+The intent behind this system function is to allow for proper typing/functional support in the future.
+It being exposed here is an unintended side effect which can be used to implement a function that runs before every action.
 
-The main example for this is adding (random) frame delays before each action:
+
+:::danger
+The following example is subject to breaking in the future!
+:::
+
+With that in mind it is possible to add (random) frame delays before each action:
 ```
 fn rand_delay(mean, stddev) {
     let del = randnorm() * stddev + mean;
@@ -355,7 +367,13 @@ acos(arg);
 
 ## set_on_tick
 
-```nginx
+:::danger
+**THIS FUNCTION IS EXPERIMENTAL AND SUBJECT TO CHANGE.**
+
+**USE AT YOUR OWN RISK.**
+:::
+
+```
 set_on_tick(func);
 ```
 
