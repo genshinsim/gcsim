@@ -261,6 +261,21 @@
         "burst_energy_cost": 60
       }
     },
+    "charlotte": {
+      "id": 10000088,
+      "key": "charlotte",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Charlotte",
+      "skill_details": {
+        "skill": 10882,
+        "burst": 10885,
+        "attack": 10881,
+        "burst_energy_cost": 80
+      }
+    },
     "chongyun": {
       "id": 10000036,
       "key": "chongyun",
