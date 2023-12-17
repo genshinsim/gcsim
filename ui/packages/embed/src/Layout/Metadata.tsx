@@ -57,7 +57,11 @@ export const DPS = ({ dps }: DPSProps) => {
   return (
     <Item
       title="dps/target"
-      value={(dps ?? 0).toLocaleString(i18n.language, { notation: "compact" })}
+      value={(dps ?? 0).toLocaleString(i18n.language, {
+        notation: "compact",
+        minimumSignificantDigits: 3,
+        maximumSignificantDigits: 3,
+      })}
     />
   );
 };
