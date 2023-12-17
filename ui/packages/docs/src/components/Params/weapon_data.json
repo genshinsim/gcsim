@@ -34,6 +34,13 @@
       "desc": "0 for passive disabled, 1 for enabled (default)."
     }
   ],
+  "sacrificialjade": [
+    {
+      "ability": "Sacrificial Jade",
+      "param": "stacks",
+      "desc": "1 to enable the passive in the beginning, 0 default."
+    }
+  ],
   "sapwoodblade": [
     {
       "ability": "Sapwood Blade",

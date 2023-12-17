@@ -46,6 +46,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		lastSwap: -1,
 		buff:     make([]float64, attributes.EndStatType),
 	}
+	if p.Params["stacks"] == 1 {
+		w.addBuff()
+	}
 
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("sacrificial-jade", -1),
@@ -74,6 +77,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	return w, nil
 }
 
+func (w *Weapon) addBuff() {
+	w.buff[attributes.HPP] = 0.24 + 0.08*float64(w.refine)
+	w.buff[attributes.EM] = 30 + 10*float64(w.refine)
+	w.c.Log.NewEvent("sacrificial jade gained buffs", glog.LogWeaponEvent, w.char.Index)
+}
+
 func (w *Weapon) getBuffs(src int) func() {
 	return func() {
 		if w.lastSwap != src {
@@ -82,10 +91,7 @@ func (w *Weapon) getBuffs(src int) func() {
 		if w.c.Player.Active() == w.char.Index {
 			return
 		}
-
-		w.buff[attributes.HPP] = 0.24 + 0.08*float64(w.refine)
-		w.buff[attributes.EM] = 30 + 10*float64(w.refine)
-		w.c.Log.NewEvent("sacrificial jade gained buffs", glog.LogWeaponEvent, w.char.Index)
+		w.addBuff()
 	}
 }
 
