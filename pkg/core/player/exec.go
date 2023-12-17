@@ -248,6 +248,9 @@ func (h *Handler) useAbility(
 		glog.LogActionEvent,
 		h.active,
 		"executed ", t.String(),
-	).Write("action", t.String())
+	).
+		Write("action", t.String()).
+		Write("stam_pre", h.Stam).
+		Write("swap_cd_pre", h.SwapCD)
 	return nil
 }
