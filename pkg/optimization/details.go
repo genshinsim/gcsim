@@ -510,18 +510,20 @@ func NewSubstatOptimizerDetails(
 
 	// Only includes damage related substats scaling. Ignores things like HP for Barbara
 	s.charRelevantSubstats = map[keys.Char][]attributes.Stat{
-		keys.Albedo:  {attributes.DEFP},
-		keys.Hutao:   {attributes.HPP},
-		keys.Kokomi:  {attributes.HPP},
-		keys.Zhongli: {attributes.HPP},
-		keys.Itto:    {attributes.DEFP},
-		keys.Yunjin:  {attributes.DEFP},
-		keys.Noelle:  {attributes.DEFP},
-		keys.Gorou:   {attributes.DEFP},
-		keys.Yelan:   {attributes.HPP},
-		keys.Candace: {attributes.HPP},
-		keys.Nilou:   {attributes.HPP},
-		keys.Layla:   {attributes.HPP},
+		keys.Albedo:      {attributes.DEFP},
+		keys.Hutao:       {attributes.HPP},
+		keys.Kokomi:      {attributes.HPP},
+		keys.Zhongli:     {attributes.HPP},
+		keys.Itto:        {attributes.DEFP},
+		keys.Yunjin:      {attributes.DEFP},
+		keys.Noelle:      {attributes.DEFP},
+		keys.Gorou:       {attributes.DEFP},
+		keys.Yelan:       {attributes.HPP},
+		keys.Candace:     {attributes.HPP},
+		keys.Nilou:       {attributes.HPP},
+		keys.Layla:       {attributes.HPP},
+		keys.Neuvillette: {attributes.HPP},
+		keys.Furina:      {attributes.HPP},
 	}
 
 	// Final output array that holds [character][substat_count]
