@@ -82,7 +82,8 @@ type CharWrapper struct {
 	currentHPRatio float64
 	currentHPDebt  float64
 	// needed so that start hp is not influenced by hp mods added during team initialization
-	StartHP int
+	StartHP      int
+	StartHPRatio int
 
 	// normal attack counter
 	NormalHitNum  int // how many hits in a normal combo
