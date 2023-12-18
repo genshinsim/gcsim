@@ -10,6 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { FaDiscord } from "react-icons/fa";
 import { IoIosDocument } from "react-icons/io";
+import { MdOutlineUpdate } from "react-icons/md";
 import logo from "./logo.png";
 import { useAppSelector } from "../Stores/store";
 import { Link } from "react-router-dom";
@@ -38,6 +39,16 @@ export default ({}) => {
         target="_blank">
       <span className="hidden min-[798px]:block">
         Documentation
+      </span>
+    </AnchorButton>,
+    <AnchorButton
+        key="update"
+        className={Classes.MINIMAL}
+        icon={<MdOutlineUpdate size="24px" color="#abb3bf"  />}
+        href="https://github.com/genshinsim/gcsim/releases"
+        target="_blank">
+      <span className="hidden min-[798px]:block">
+        Releases
       </span>
     </AnchorButton>,
     <AnchorButton
