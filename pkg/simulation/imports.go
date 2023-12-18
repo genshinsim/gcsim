@@ -312,6 +312,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/splendoroftranquilwaters"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/summit"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofdescension"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/swordofnarzissenkreuz"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/toukaboushigure"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/travelershandysword"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/wolffang"

@@ -101,15 +101,28 @@ An optional param flag may be added to the character/weapon/artifact set via the
 
 | name | description | default |
 | --- | --- | --- |
-| `start_hp` | Set the character's starting hp. | Character's max hp. |
+| `start_hp` | Set the character's starting hp. | -1 (Character's max hp). |
+| `start_hp%` | Set the character's starting hp ratio. | -1 (Character's max hp). Values should be 1 <= `start_hp%` <= 100. |
 | `start_energy` | Set the character's starting energy. | Character's max energy. |
+
+:::info
+Some details about `start_hp` and `start_hp%`:
+- a value <= 0 for both (manually supplied or by omission) will mean that the character's hp is set to max
+- `start_hp%` can only be set as a percentage without decimal places, so 50 or 49 but not 49.5.
+- the two params work additively so supplying both with a value > 0 will add them together
+
+Example:
+- `start_hp` is 10
+- `start_hp%` is 49
+- the sim will set the character's starting hp to be 49% of max hp + 10 flat hp
+:::
 
 :::info
 Example: 
 ```
-bennett char lvl=70/80 cons=2 talent=6,8,8 +params=[start_hp=10,start_energy=20];
+bennett char lvl=70/80 cons=2 talent=6,8,8 +params=[start_hp=10,start_hp%=49,start_energy=20];
 ```
-This will set Bennett's starting hp to 10 and starting energy to 20.
+This will set Bennett's starting hp to 49% + 10 and starting energy to 20.
 :::
 
 :::caution

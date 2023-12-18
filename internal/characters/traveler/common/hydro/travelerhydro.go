@@ -25,6 +25,8 @@ func NewChar(gender int) core.NewCharacterFunc {
 		c.EnergyMax = 80
 		c.BurstCon = 5
 		c.SkillCon = 3
+		c.HasArkhe = true
+
 		c.NormalHitNum = normalHitNum
 
 		w.Character = &c

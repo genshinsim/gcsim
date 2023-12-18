@@ -252,10 +252,16 @@ func (h *Handler) InitializeTeam() error {
 			h.chars[i].Equip.Sets[k].Init()
 		}
 		// set each char's starting hp ratio
-		if h.chars[i].StartHP <= 0 {
-			h.chars[i].SetHPByRatio(1)
-		} else {
+		switch {
+		case h.chars[i].StartHP > 0 && h.chars[i].StartHPRatio > 0:
+			h.chars[i].SetHPByRatio(float64(h.chars[i].StartHPRatio) / 100.0)
+			h.chars[i].ModifyHPByAmount(float64(h.chars[i].StartHP))
+		case h.chars[i].StartHP > 0:
 			h.chars[i].SetHPByAmount(float64(h.chars[i].StartHP))
+		case h.chars[i].StartHPRatio > 0:
+			h.chars[i].SetHPByRatio(float64(h.chars[i].StartHPRatio) / 100.0)
+		default:
+			h.chars[i].SetHPByRatio(1)
 		}
 		h.Log.NewEvent("starting hp set", glog.LogCharacterEvent, i).
 			Write("starting_hp_ratio", h.chars[i].CurrentHPRatio()).

@@ -22,7 +22,7 @@ export async function handleEnka(request: IRequest): Promise<Response> {
 
   const init = {
     headers: {
-      Authorization: 'Bearer KEKWOMEGALULGCSIMEPICSRL',
+      "User-Agent": "gcsim/1.0",
     },
   };
 

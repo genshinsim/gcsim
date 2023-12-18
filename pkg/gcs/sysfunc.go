@@ -581,6 +581,9 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	charKey := keys.Char(char.ival)
 	actionKey := action.Action(ac.ival)
+	if _, ok := e.Core.Player.ByKey(charKey); !ok {
+		return nil, fmt.Errorf("can't execute action: %v is not on this team", charKey)
+	}
 	e.sendWork(&action.Eval{
 		Char:   charKey,
 		Action: actionKey,

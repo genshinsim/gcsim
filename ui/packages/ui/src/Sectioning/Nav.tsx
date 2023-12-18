@@ -72,7 +72,7 @@ export default ({}) => {
           {PageNavs}
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT} className="!flex !items-stretch">
-          <NavButton href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} />
+          {/* <NavButton href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} /> */}
           <HTMLSelect
               className="ml-2 self-center"
               value={i18n.resolvedLanguage}

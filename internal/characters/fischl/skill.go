@@ -167,9 +167,9 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 	}
 	if ozSpawn > 0 {
 		c.Core.Tasks.Add(spawnFn, ozSpawn)
-	} else {
-		spawnFn()
+		return
 	}
+	spawnFn()
 }
 
 func (c *char) ozTick(src int) func() {

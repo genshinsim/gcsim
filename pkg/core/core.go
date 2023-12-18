@@ -177,6 +177,10 @@ func (c *Core) AddChar(p info.CharacterProfile) (int, error) {
 	if hp, ok := p.Params["start_hp"]; ok {
 		char.StartHP = hp
 	}
+	char.StartHPRatio = -1
+	if hpRatio, ok := p.Params["start_hp%"]; ok {
+		char.StartHPRatio = hpRatio
+	}
 
 	// set the energy
 	char.Energy = char.EnergyMax

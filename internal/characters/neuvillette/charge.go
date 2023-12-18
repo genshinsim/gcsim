@@ -2,6 +2,7 @@ package neuvillette
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/genshinsim/gcsim/internal/common"
 	"github.com/genshinsim/gcsim/internal/frames"
@@ -83,7 +84,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info, error) {
 	c.chargeJudgeDur = 0
-	c.tickAnimLength = getChargeJudgementHitmarkDelay(0)
+	c.tickAnimLength = getChargeJudgementHitmarkDelay(1)
 	// current framework doesn't really support actions getting shorter, so the legal eval is set to 0, but it may increase later
 	chargeLegalEvalLeft := 0
 
@@ -114,9 +115,11 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		ticks, ok := p["ticks"]
 		if !ok {
 			ticks = -1
-		} else if ticks < 0 {
-			ticks = 0
+		} else {
+			ticks = max(ticks, 1)
 		}
+
+		c.Core.Player.SwapCD = math.MaxInt16
 
 		// cannot use hitlag affected queue because the logic just does not work then
 		// -> can't account for possible hitlag delaying the update of the anim length (sim moves on to next action, but ticks continue)
@@ -136,6 +139,13 @@ func (c *char) chargeAttackJudgement(p map[string]int, windup int) (action.Info,
 		AnimationLength: 1200, // there is no upper limit on the duration of the CA
 		CanQueueAfter:   windup + 3 + endLag[action.ActionDash],
 		State:           action.ChargeAttackState,
+		OnRemoved: func(next action.AnimationState) {
+			// need to calculate correct swap cd in case of early cancel
+			switch next {
+			case action.SkillState, action.BurstState, action.DashState, action.JumpState:
+				c.Core.Player.SwapCD = max(player.SwapCDFrames-(c.Core.F-c.lastSwap), 0)
+			}
+		},
 	}, nil
 }
 
@@ -221,9 +231,11 @@ func (c *char) chargeJudgementTick(src, tick, maxTick int, last bool) func() {
 
 		// last tick -> check for C6 extension
 		if last {
-			// C6 did not extend CA -> proc wave and stop queuing ticks
+			// C6 did not extend CA -> proc wave, stop queuing ticks and set correct swap cd to account for endLag
 			if c.Core.F == c.chargeJudgeStartF+c.chargeJudgeDur {
 				c.judgementWave()
+				// no need to check for lastFrame here because a full CA definitely takes longer than 60f
+				c.Core.Player.SwapCD = endLag[action.ActionSwap]
 			} else {
 				// C6 extended the CA between when this tick was queued and when this tick was executed
 				// -> allow the other non last queued task to execute by extend anim length to include that task
