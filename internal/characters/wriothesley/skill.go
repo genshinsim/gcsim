@@ -28,7 +28,7 @@ func init() {
 	skillFrames[action.ActionSwap] = 31
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.Base.Ascension >= 4 {
 		c.a4Stack = 0
 	}
@@ -39,12 +39,12 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.AddStatus(skillKey, skillStart+10*60, true) // activate for 10
 	c.SetCDWithDelay(action.ActionSkill, 16*60, 11)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
 func (c *char) particleCB(a combat.AttackCB) {
