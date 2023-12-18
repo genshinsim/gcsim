@@ -37,7 +37,7 @@ export default ({}) => {
         href="https://docs.gcsim.app"
         target="_blank">
       <span className="hidden min-[798px]:block">
-        Docs
+        Documentation
       </span>
     </AnchorButton>,
     <AnchorButton
