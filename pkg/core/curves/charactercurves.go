@@ -4039,10 +4039,10 @@ var CharBaseMap = map[keys.Char]CharBase{
 	},
 	keys.Wriothesley: {
 		Rarity:      5,
-		Body:        profile.BodyMale,
+		Body:        info.BodyMale,
 		Element:     attributes.Cryo,
-		Region:      profile.ZoneFontaine,
-		WeaponType:  weapon.WeaponClassCatalyst,
+		Region:      info.ZoneFontaine,
+		WeaponClass: info.WeaponClassCatalyst,
 		HPCurve:     GROW_CURVE_HP_S5,
 		AtkCurve:    GROW_CURVE_ATTACK_S5,
 		DefCurve:    GROW_CURVE_HP_S5,
