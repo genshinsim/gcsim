@@ -1,7 +1,9 @@
-import React from 'react';
-import { Callout, Card, Elevation, Icon } from '@blueprintjs/core';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Button, Card, Collapse, Elevation } from "@blueprintjs/core";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
+import { Link } from "react-router-dom";
+import remarkGfm from "remark-gfm";
 
 interface DashCardProps {
   children: React.ReactNode;
@@ -41,76 +43,66 @@ function DashCard({ children, href, target }: DashCardProps) {
 
 export function Dash() {
   useTranslation();
+
+  const [{ isLoaded, text, tag }, setState] = useState({
+    isLoaded: false,
+    text: "",
+    tag: "",
+  });
+  const [tagIsOpen, setTagIsOpen] = useState(false);
+
+  // for size testing use: https://api.github.com/repos/genshinsim/gcsim/releases/tags/<tag name>
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/genshinsim/gcsim/releases/latest`)
+      .then((res) => res.arrayBuffer())
+      .then((buffer) => {
+        const decoder = new TextDecoder("utf-8");
+        const data = decoder.decode(buffer);
+        const release = JSON.parse(data);
+        setState({ isLoaded: true, text: release.body, tag: release.name });
+      })
+      .catch((err) => console.log("Error: " + err.message));
+  }, []);
+
   return (
-    <main className="w-full flex flex-col items-center flex-grow pb-4">
-      <span>
-        <Callout intent="success" className=" max-w-[600px] mt-4">
-          Thank you for your patience. The core rewrite is now complete. Hitlag
-          has been implemented along with a ton of config syntax improvements.
-          <br />
-          <div className="mt-2 font-bold">
-            Please check out the migration guide here:{' '}
-            <a href="https://docs.gcsim.app/migration" target="_blank" rel="noreferrer">
-              Migration Guide
-            </a>
-          </div>
-        </Callout>
-      </span>
-      <div className="flex flex-row flex-initial flex-wrap w-full lg:w-[60rem] mt-4">
-        <DashCard href="/simulator">
-          <span className="font-bold text-xl">
-            <Icon icon="calculator" className="mr-2" size={25} />
-            <Trans>dash.simulator</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="/viewer">
-          <span className="font-bold text-xl">
-            <Icon icon="chart" className="mr-2" size={25} />
-            <Trans>dash.viewer</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="https://db.gcsim.app" target="_blank">
-          <span className="font-bold text-xl">
-            <Icon icon="database" className="mr-2" size={25} />
-            <Trans>dash.teams_db</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard
-          href="https://github.com/genshinsim/gcsim/releases"
-          target="_blank"
-        >
-          <span className="font-bold text-xl">
-            <Icon icon="download" className="mr-2" size={25} />
-            <Trans>dash.desktop_tool</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="https://docs.gcsim.app" target="_blank">
-          <span className="font-bold text-xl">
-            <Icon icon="document" className="mr-2" size={25} />
-            <Trans>dash.documentation</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard
-          href="https://github.com/genshinsim/gcsim#Contributing"
-          target="_blank"
-        >
-          <span className="font-bold text-xl">
-            <Icon icon="git-branch" className="mr-2" size={25} />
-            <Trans>dash.contribute</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="/about">
-          <span className="font-bold text-xl">
-            <Icon icon="info-sign" className="mr-2" size={25} />
-            <Trans>dash.about</Trans>
-          </span>
-        </DashCard>
+    <main className="w-full flex flex-col items-center flex-grow gap-4 mt-2">
+      <div className="flex items-center justify-center w-full flex-grow text-2xl md:text-4xl lg:text-6xl px-4 text-center">
+        <h1 className="max-w-sm md:max-w-lg lg:max-w-4xl">
+          <b>
+            gcsim is a Team DPS / Combat Simulation Tool for Genshin Impact.
+          </b>
+        </h1>
+      </div>
+      <div className="flex flex-col flex-grow items-center px-8 mb-4">
+        {isLoaded ? (
+          <>
+            <div className="flex flex-col gap-4 mb-4">
+              <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
+                <b>Latest Release: </b>
+                <a
+                  href={`https://github.com/genshinsim/gcsim/releases/tag/${tag}`}
+                >
+                  {tag}
+                </a>
+              </h1>
+              <Button
+                className="w-[100%]"
+                onClick={() => setTagIsOpen(!tagIsOpen)}
+              >
+                {tagIsOpen ? "Hide" : "Show"} release notes
+              </Button>
+            </div>
+            <Collapse
+              className="text-md"
+              isOpen={tagIsOpen}
+              keepChildrenMounted={true}
+            >
+              <ReactMarkdown children={text} remarkPlugins={[remarkGfm]} />
+            </Collapse>
+          </>
+        ) : (
+          "Loading..."
+        )}
       </div>
     </main>
   );

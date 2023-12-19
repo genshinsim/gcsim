@@ -44,6 +44,7 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^12.0.0",
     "react-icons": "^4.6.0",
+    "react-markdown": "^9.0.1",
     "react-player": "^2.11.0",
     "react-redux": "^8.0.4",
     "react-router": "classic",
@@ -51,6 +52,7 @@
     "react-simple-code-editor": "^0.13.1",
     "react-virtual": "^2.10.4",
     "react-virtualized-auto-sizer": "^1.0.7",
+    "remark-gfm": "^4.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
