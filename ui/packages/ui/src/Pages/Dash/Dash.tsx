@@ -80,11 +80,7 @@ export function Dash() {
             <div className="flex flex-col gap-4 mb-4">
               <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
                 <b>Latest Release: </b>
-                <a
-                  href={`https://github.com/genshinsim/gcsim/releases/tag/${tag}`}
-                >
-                  {tag}
-                </a>
+                <a href="https://github.com/genshinsim/gcsim/releases">{tag}</a>
               </h1>
               <Button
                 className="w-[100%]"
