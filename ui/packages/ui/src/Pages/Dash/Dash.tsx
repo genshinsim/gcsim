@@ -69,7 +69,8 @@ export function Dash() {
       <div className="flex items-center justify-center w-full flex-grow text-2xl md:text-4xl lg:text-6xl px-4 text-center">
         <h1 className="max-w-sm md:max-w-lg lg:max-w-4xl">
           <b>
-            gcsim is a Team DPS / Combat Simulation Tool for Genshin Impact.
+            gcsim is a team dps / combat <br /> simulation tool <br /> for
+            Genshin Impact.
           </b>
         </h1>
       </div>
