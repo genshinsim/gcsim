@@ -27,7 +27,7 @@ export default ({}) => {
         icon="database"
         href="https://simpact.app/"
         target="_blank">
-      <span className="hidden min-[798px]:block">
+      <span className="hidden min-[902px]:block">
         {t<string>("nav.teams_db")}
       </span>
     </AnchorButton>,
@@ -37,7 +37,7 @@ export default ({}) => {
         icon={<IoIosDocument size="24px" color="#abb3bf"  />}
         href="https://docs.gcsim.app"
         target="_blank">
-      <span className="hidden min-[798px]:block">
+      <span className="hidden min-[902px]:block">
         Documentation
       </span>
     </AnchorButton>,
@@ -47,7 +47,7 @@ export default ({}) => {
         icon={<MdOutlineUpdate size="24px" color="#abb3bf"  />}
         href="https://github.com/genshinsim/gcsim/releases"
         target="_blank">
-      <span className="hidden min-[798px]:block">
+      <span className="hidden min-[902px]:block">
         Releases
       </span>
     </AnchorButton>,
@@ -58,7 +58,7 @@ export default ({}) => {
         target="_blank"
         rel="noreferrer"
         icon={<FaDiscord size="24px" color="#abb3bf" />}>
-      <span className="hidden min-[798px]:block">{"Discord"}</span>
+      <span className="hidden min-[902px]:block">{"Discord"}</span>
     </AnchorButton>,
   ];
 
@@ -70,19 +70,19 @@ export default ({}) => {
             <Link to="/" className="flex h-[50px] items-center">
               <img
                 src={logo}
-                className="object-scale-down max-h-[75%] m-auto mr-2"
+                className="object-scale-down max-h-[75%] m-auto min-[550px]:mr-2"
               />
-              <span className="font-medium font-mono">gcsim</span>
+              <span className="hidden min-[550px]:block font-medium font-mono">gcsim</span>
             </Link>
           </Navbar.Heading>
         </Navbar.Group>
         <Navbar.Group
             align={Alignment.LEFT}
-            className="!hidden min-[550px]:!flex !items-stretch">
-          <Navbar.Divider className="self-center" />
+            className="min-[550px]:!flex !items-stretch">
+          <Navbar.Divider className="!hidden min-[550px]:!flex self-center" />
           {PageNavs}
         </Navbar.Group>
-        <Navbar.Group align={Alignment.RIGHT} className="!flex !items-stretch">
+        <Navbar.Group align={Alignment.RIGHT} className="!hidden min-[420px]:!flex !items-stretch">
           {/* <NavButton href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} /> */}
           <HTMLSelect
               className="ml-2 self-center"
@@ -110,7 +110,7 @@ const NavButton = ({ href, icon, text }: NavButtonProps) => {
   return (
     <Link to={href} role="button" className="bp4-button bp4-minimal" tabIndex={0}>
       <Icon icon={icon} />
-      <span className="hidden min-[798px]:block bp4-button-text">{text}</span>
+      <span className="hidden min-[902px]:block bp4-button-text">{text}</span>
     </Link>
   );
 };
