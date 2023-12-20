@@ -89,7 +89,7 @@ export function Dash() {
             </span>
           </AnchorButton>
         </Card>
-        <Card className="flex flex-col items-center gap-4">
+        <Card className="flex flex-col items-center gap-4 overflow-x-auto">
           {isLoaded ? (
             <>
               <div className="flex flex-col gap-4">
