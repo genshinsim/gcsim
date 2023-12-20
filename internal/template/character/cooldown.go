@@ -3,6 +3,8 @@ package character
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -31,11 +33,13 @@ import (
 // check this value first and then gracefully exit if it no longer matches its starting frame
 func (c *Character) SetCD(a action.Action, dur int) {
 	// setting cd is just adding a cd to the recovery queue
+	// we need to check for cooldown reduction first to make sure the correct duration gets added
+	modified := c.CDReduction(a, dur)
 	// add current action and duration to the queue
-	c.cdQueue[a] = append(c.cdQueue[a], dur)
+	c.cdQueue[a] = append(c.cdQueue[a], modified)
 	// if queue is zero before we added to it, then we'll start a cooldown queue worker
 	if len(c.cdQueue[a]) == 1 {
-		c.startCooldownQueueWorker(a, true)
+		c.startCooldownQueueWorker(a)
 	}
 	// make sure to remove one from stack count
 	c.AvailableCDCharge[a]--
@@ -45,8 +49,21 @@ func (c *Character) SetCD(a action.Action, dur int) {
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown triggered").
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
-		Write("charges_remain", c.AvailableCDCharge).
-		Write("cooldown_queue", c.cdQueue)
+		Write("original_cd", dur).
+		Write("modified_cd_by_cdr", modified).
+		Write("charges_remain", c.AvailableCDCharge[a]).
+		Write("cooldown_queue", c.cdQueueString(a))
+}
+
+func (c *Character) cdQueueString(a action.Action) string {
+	var sb strings.Builder
+	for i, v := range c.cdQueue[a] {
+		if i > 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString(strconv.Itoa(v))
+	}
+	return sb.String()
 }
 
 func (c *Character) SetNumCharges(a action.Action, num int) {
@@ -94,11 +111,11 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 	c.cdCurrentQueueWorker[a] = nil
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reset").
 		Write("type", a.String()).
-		Write("charges_remain", c.AvailableCDCharge).
-		Write("cooldown_queue", c.cdQueue)
+		Write("charges_remain", c.AvailableCDCharge[a]).
+		Write("cooldown_queue", c.cdQueueString(a))
 	// check if anymore cd in queue
 	if len(c.cdQueue) > 0 {
-		c.startCooldownQueueWorker(a, true)
+		c.startCooldownQueueWorker(a)
 	}
 }
 
@@ -120,12 +137,12 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
 		Write("charges_remain", c.AvailableCDCharge).
-		Write("cooldown_queue", c.cdQueue)
-	c.startCooldownQueueWorker(a, false)
+		Write("cooldown_queue", c.cdQueueString(a))
+	c.startCooldownQueueWorker(a)
 	// log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
 }
 
-func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
+func (c *Character) startCooldownQueueWorker(a action.Action) {
 	// check the length of the queue for action a, if there's nothing then there's
 	// nothing to start
 	if len(c.cdQueue[a]) == 0 {
@@ -135,11 +152,6 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 	// set the time we starter this worker at
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
 	var src *func()
-
-	// reduce the first item by the current cooldown reduction
-	if cdReduct {
-		c.cdQueue[a][0] = c.CDReduction(a, c.cdQueue[a][0])
-	}
 
 	worker := func() {
 		// check if src changed; if so do nothing
@@ -174,12 +186,12 @@ func (c *Character) startCooldownQueueWorker(a action.Action, cdReduct bool) {
 
 		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown ready").
 			Write("type", a.String()).
-			Write("charges_remain", c.AvailableCDCharge).
-			Write("cooldown_queue", c.cdQueue)
+			Write("charges_remain", c.AvailableCDCharge[a]).
+			Write("cooldown_queue", c.cdQueueString(a))
 
 		// if queue still has len > 0 then call start queue again
 		if len(c.cdQueue) > 0 {
-			c.startCooldownQueueWorker(a, true)
+			c.startCooldownQueueWorker(a)
 		}
 	}
 
