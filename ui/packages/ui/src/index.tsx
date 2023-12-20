@@ -18,6 +18,7 @@ import {
   LocalSample,
   UploadSample,
   DBViewer,
+  Dash,
 } from "./Pages";
 import "./Translation/i18n";
 
@@ -152,14 +153,13 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
       <Nav />
       <div ref={content} className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip">
         <Switch>
-          {/* Landing Page
           <Route exact path="/">
             <Helmet><title>gcsim - simulation impact</title></Helmet>
             <Dash />
-          </Route> */}
+          </Route>
 
           {/* Simulator */}
-          <Route exact path={["/", "/simulator"]}>
+          <Route exact path="/simulator">
             <Helmet><title>gcsim - simulator</title></Helmet>
             <Simulator exec={exec} />
           </Route>
