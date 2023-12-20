@@ -186,10 +186,11 @@ func (c *char) onSwapHook() {
 }
 
 func (c *char) infuse(active *character.CharWrapper) {
+	dur := infuseDur[c.TalentLvlSkill()]
 	// c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
 		active.AddCooldownMod(character.CooldownMod{
-			Base: modifier.NewBaseWithHitlag("chongyun-c2", infuseDur[c.TalentLvlSkill()]),
+			Base: modifier.NewBaseWithHitlag("chongyun-c2", dur),
 			Amount: func(a action.Action) float64 {
 				if a == action.ActionSkill || a == action.ActionBurst {
 					return -0.15
@@ -206,12 +207,12 @@ func (c *char) infuse(active *character.CharWrapper) {
 			active.Index,
 			"chongyun-ice-weapon",
 			attributes.Cryo,
-			infuseDur[c.TalentLvlSkill()],
+			dur,
 			true,
 			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
 		c.Core.Log.NewEvent("chongyun adding infusion", glog.LogCharacterEvent, c.Index).
-			Write("expiry", c.Core.F+infuseDur[c.TalentLvlSkill()])
+			Write("expiry", c.Core.F+dur)
 		// A1:
 		// Sword, Claymore, or Polearm-wielding characters within the field created by
 		// Spirit Blade: Chonghua's Layered Frost have their Normal ATK SPD increased by 8%.
@@ -219,7 +220,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.AtkSpd] = 0.08
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("chongyun-field", infuseDur[c.TalentLvlSkill()]),
+				Base:         modifier.NewBaseWithHitlag("chongyun-field", dur),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return m, true
