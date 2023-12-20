@@ -32,9 +32,9 @@ import (
 func (c *Character) SetCD(a action.Action, dur int) {
 	// setting cd is just adding a cd to the recovery queue
 	// we need to check for cooldown reduction first to make sure the correct duration gets added
-	dur = c.CDReduction(a, dur)
+	modified := c.CDReduction(a, dur)
 	// add current action and duration to the queue
-	c.cdQueue[a] = append(c.cdQueue[a], dur)
+	c.cdQueue[a] = append(c.cdQueue[a], modified)
 	// if queue is zero before we added to it, then we'll start a cooldown queue worker
 	if len(c.cdQueue[a]) == 1 {
 		c.startCooldownQueueWorker(a)
@@ -48,6 +48,8 @@ func (c *Character) SetCD(a action.Action, dur int) {
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
 		Write("charges_remain", c.AvailableCDCharge).
+		Write("original_cd", dur).
+		Write("modified_cd_by_cdr", modified).
 		Write("cooldown_queue", c.cdQueue)
 }
 
