@@ -21,7 +21,20 @@ var skillPressFrames []int
 var skillHoldFrames []int
 var crystallise = []event.Event{event.OnCrystallizeElectro, event.OnCrystallizeCryo, event.OnCrystallizeHydro,
 	event.OnCrystallizePyro}
-var skillMultiplier = []float64{0, 1, 1.05, 1.1, 1.15, 1.2, 1.36, 1.4, 1.6, 1.666, 1.9, 2}
+var skillMultiplier = []float64{
+	0,                   //0 hits
+	1,                   //1 hit
+	1.05000000074505806, //2 hit
+	1.10000000149011612, //3 hit etc
+	1.15000000596046448,
+	1.20000000298023224,
+	1.36000001430511475,
+	1.4000000059604645,
+	1.6000000238418579,
+	1.6660000085830688,
+	1.8999999761581421,
+	2,
+}
 
 const (
 	skillPressCDStart = 30
@@ -46,7 +59,6 @@ func init() {
 	skillHoldFrames[action.ActionJump] = 51
 }
 
-// TODO: Refactor so that Shrapnel is calculated when fired
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.c2ready = true
 	hold := p["hold"]
@@ -58,14 +70,19 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		hitmark += skillPressHitmark + hold
 		c.SetCDWithDelay(action.ActionSkill, 9*60, skillPressCDStart)
 	}
-
+	shots := 5
 	if p["shrapnel"] != 0 {
 		c.shrapnel = int(math.Min(float64(p["shrapnel"]), 6))
 	}
 
-	c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
+	c.QueueCharTask(
+		func() {
+			c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
 
-	shots := 5 + int(math.Max(float64(c.shrapnel-3), 0))*2
+			shots = 5 + int(math.Max(float64(c.shrapnel-3), 0))*2
+		},
+		hitmark-1,
+	)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,

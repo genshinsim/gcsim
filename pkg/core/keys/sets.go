@@ -111,7 +111,6 @@ const (
 	MaidenBeloved
 	MarechausseeHunter
 	MartialArtist
-	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
 	NymphsDream
 	OceanHuedClam
