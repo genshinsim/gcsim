@@ -54,7 +54,7 @@ export function Dash() {
       <Link
         to="/simulator"
         role="button"
-        className="bp4-button bp4-intent-success p-3 !rounded-md"
+        className="bp4-button bp4-intent-success !p-3 !rounded-md"
         tabIndex={0}
       >
         <span className="bp4-button-text text-3xl md:text-4xl lg:text-5xl font-semibold">
@@ -82,7 +82,7 @@ export function Dash() {
             href="https://simpact.app/"
             intent="primary"
             target="_blank"
-            className="p-3 !rounded-md"
+            className="!p-3 !rounded-md"
           >
             <span className="text-xl md:text-2xl font-semibold">
               Visit the Teams DB
@@ -111,7 +111,7 @@ export function Dash() {
                 href="https://github.com/genshinsim/gcsim/releases"
                 intent="primary"
                 target="_blank"
-                className="p-3 !rounded-md"
+                className="!p-3 !rounded-md"
               >
                 <span className="text-xl md:text-2xl font-semibold">
                   View Releases on GitHub
