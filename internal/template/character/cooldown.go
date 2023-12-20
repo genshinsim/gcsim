@@ -3,6 +3,8 @@ package character
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -47,10 +49,21 @@ func (c *Character) SetCD(a action.Action, dur int) {
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown triggered").
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
-		Write("charges_remain", c.AvailableCDCharge).
 		Write("original_cd", dur).
 		Write("modified_cd_by_cdr", modified).
-		Write("cooldown_queue", c.cdQueue)
+		Write("charges_remain", c.AvailableCDCharge[a]).
+		Write("cooldown_queue", c.cdQueueString(a))
+}
+
+func (c *Character) cdQueueString(a action.Action) string {
+	var sb strings.Builder
+	for i, v := range c.cdQueue[a] {
+		if i > 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString(strconv.Itoa(v))
+	}
+	return sb.String()
 }
 
 func (c *Character) SetNumCharges(a action.Action, num int) {
@@ -98,8 +111,8 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 	c.cdCurrentQueueWorker[a] = nil
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown forcefully reset").
 		Write("type", a.String()).
-		Write("charges_remain", c.AvailableCDCharge).
-		Write("cooldown_queue", c.cdQueue)
+		Write("charges_remain", c.AvailableCDCharge[a]).
+		Write("cooldown_queue", c.cdQueueString(a))
 	// check if anymore cd in queue
 	if len(c.cdQueue) > 0 {
 		c.startCooldownQueueWorker(a)
@@ -124,7 +137,7 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
 		Write("charges_remain", c.AvailableCDCharge).
-		Write("cooldown_queue", c.cdQueue)
+		Write("cooldown_queue", c.cdQueueString(a))
 	c.startCooldownQueueWorker(a)
 	// log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
 }
@@ -173,8 +186,8 @@ func (c *Character) startCooldownQueueWorker(a action.Action) {
 
 		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index, a.String(), " cooldown ready").
 			Write("type", a.String()).
-			Write("charges_remain", c.AvailableCDCharge).
-			Write("cooldown_queue", c.cdQueue)
+			Write("charges_remain", c.AvailableCDCharge[a]).
+			Write("cooldown_queue", c.cdQueueString(a))
 
 		// if queue still has len > 0 then call start queue again
 		if len(c.cdQueue) > 0 {
