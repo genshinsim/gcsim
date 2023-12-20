@@ -61,7 +61,8 @@ export function Dash() {
           Get started
         </span>
       </Link>
-      <div className="flex flex-col gap-4">
+      {/* mobile Chrome/Safari needs w-full for padding to work properly, mobile Firefox works fine though... */}
+      <div className="flex flex-col gap-4 w-full md:w-fit">
         <Card className="flex flex-col gap-4 items-center">
           <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
             <b>Take a look at what users submitted:</b>
