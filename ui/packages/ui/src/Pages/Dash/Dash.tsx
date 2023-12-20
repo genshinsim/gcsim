@@ -54,10 +54,12 @@ export function Dash() {
       <Link
         to="/simulator"
         role="button"
-        className="bp4-button bp4-intent-success text-3xl md:text-4xl lg:text-5xl p-3 font-semibold rounded-md"
+        className="bp4-button bp4-intent-success p-3 rounded-md"
         tabIndex={0}
       >
-        <span className="bp4-button-text">Get started</span>
+        <span className="bp4-button-text text-3xl md:text-4xl lg:text-5xl font-semibold">
+          Get started
+        </span>
       </Link>
       <div className="flex flex-col gap-4">
         <Card className="flex flex-col gap-4 items-center">
@@ -79,9 +81,11 @@ export function Dash() {
             href="https://simpact.app/"
             intent="primary"
             target="_blank"
-            className="text-xl md:text-2xl font-semibold p-3 rounded-md"
+            className="p-3 rounded-md"
           >
-            <span>Visit the Teams DB</span>
+            <span className="text-xl md:text-2xl font-semibold">
+              Visit the Teams DB
+            </span>
           </AnchorButton>
         </Card>
         <Card className="flex flex-col items-center gap-4">
@@ -106,9 +110,11 @@ export function Dash() {
                 href="https://github.com/genshinsim/gcsim/releases"
                 intent="primary"
                 target="_blank"
-                className="text-xl md:text-2xl font-semibold p-3 rounded-md"
+                className="p-3 rounded-md"
               >
-                <span>View Releases on GitHub</span>
+                <span className="text-xl md:text-2xl font-semibold">
+                  View Releases on GitHub
+                </span>
               </AnchorButton>
             </>
           ) : (
