@@ -124,7 +124,8 @@ export default ({}) => {
         </div>
       </Navbar>
       <Collapse isOpen={isOpen}>
-        <Navbar className="flex flex-col gap-0.5 h-full py-2">
+        {/* Navbar's CSS will overwrite height and padding unless marked as important */}
+        <Navbar className="!h-full !py-2 flex flex-col gap-0.5">
           {PageNavs}
           <HTMLSelect
             className="my-1 ml-2 self-center"
