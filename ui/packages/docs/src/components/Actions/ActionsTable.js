@@ -20,7 +20,7 @@ const TH = styled.th`
 `;
 
 const actions = [
-  "normal",
+  "attack",
   "charge",
   "aim",
   "skill",

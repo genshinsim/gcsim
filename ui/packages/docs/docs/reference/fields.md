@@ -21,15 +21,18 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 <!-- prettier-ignore -->
 | field1 | field2 | field3 | field4 | description |
 | --- | --- | --- | --- | --- |
-| `debuff` | `res`/`def` | `t1`/`t2`/`t3`/... | res/def modifier name | Evaluates to the remaining duration of the specified res/def modifier on the specified target. See the relevant character/weapon/artifact page for acceptable modifier names. |
-| `element` |  `t1`/`t2`/`t3`/... | `pyro`/`hydro`/`anemo`/`electro`/`dendro`/`cryo`/`geo`/`frozen`/`quicken` | - | `1` if the specified element exists on specified target, `0` otherwise. |
+| `debuff` | `res`/`def` | `t0`/`t1`/`t2`/... | res/def modifier name | Evaluates to the remaining duration of the specified res/def modifier on the specified target. See the relevant character/weapon/artifact page for acceptable modifier names. |
+| `element` |  `t0`/`t1`/`t2`/... | `pyro`/`hydro`/`anemo`/`electro`/`dendro`/`cryo`/`geo`/`frozen`/`quicken` | - | Evaluates to the remaining durability of the specified element on the specified target. |
 | `status` | core status name | - | - | Evaluates to the remaining duration of the specified core status. See the relevant character/weapon/artifact page for acceptable status names. |
 | `stam` | - | - | - | Evaluates to the player's remaining stamina. |
 | `construct` | `duration`/`count` | construct name | - | Evaluates to the duration/count of the specified construct. See individual character page for acceptable construct names. |
 | `gadgets` | `dendrocore` | `count` | - | Evaluates to the current number of Dendro Cores. |
 | `gadgets` | `sourcewaterdroplet` | `count` | - | Evaluates to the current number of Sourcewater Droplets. Use character specific fields to get number of Sourcewater Droplets in range. |
 | `keys` | `char`/`weapon`/`artifact` | char/weapon/artifact name | - | Evaluates to the key for the specified char/weapon/artifact name. See the relevant character/weapon/artifact page for acceptable names. |
+| `action` |  `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | - | Evaluates to the key for the specified action name. |
 | `state` | - | - | - | Evaluates to the current state of the player. | 
+| `previous-char` | - | - | - | Evaluates to the char that executed the previous action. Use `.keys.char.<char name>` for comparison. | 
+| `previous-action` | - | - | - | Evaluates to the previously executed action. Use `.action.<action name>` for comparison. | 
 | character name | `cons` | - | - | Evaluates to the character's constellation count. |
 | character name | `energy` | - | - | Evaluates to the character's current energy. |
 | character name | `energymax` | - | - | Evaluates to the character's maximum energy. |

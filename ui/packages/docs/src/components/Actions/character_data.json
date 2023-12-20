@@ -1,7 +1,7 @@
 {
   "albedo": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -35,7 +35,7 @@
   ],
   "alhaitham": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -73,7 +73,7 @@
   ],
   "aloy": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -107,7 +107,7 @@
   ],
   "amber": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -141,7 +141,7 @@
   ],
   "itto": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -175,7 +175,7 @@
   ],
   "baizhu": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -209,7 +209,7 @@
   ],
   "barbara": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -243,7 +243,7 @@
   ],
   "beidou": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -278,7 +278,7 @@
   ],
   "bennett": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -312,7 +312,7 @@
   ],
   "candace": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -346,7 +346,7 @@
   ],
   "chongyun": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -381,7 +381,7 @@
   ],
   "collei": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -415,7 +415,7 @@
   ],
   "cyno": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -449,7 +449,7 @@
   ],
   "dehya": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -484,7 +484,7 @@
   ],
   "diluc": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -519,7 +519,7 @@
   ],
   "diona": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -553,7 +553,7 @@
   ],
   "dori": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -588,7 +588,7 @@
   ],
   "eula": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -623,7 +623,7 @@
   ],
   "faruzan": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -657,7 +657,7 @@
   ],
   "fischl": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -691,7 +691,7 @@
   ],
   "freminet": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -725,7 +725,7 @@
   ],
   "furina": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -759,7 +759,7 @@
   ],
   "ganyu": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -793,7 +793,7 @@
   ],
   "gorou": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -827,7 +827,7 @@
   ],
   "hutao": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -861,7 +861,7 @@
   ],
   "jean": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -895,7 +895,7 @@
   ],
   "kazuha": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -933,7 +933,7 @@
   ],
   "kaeya": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -967,7 +967,7 @@
   ],
   "ayaka": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1001,7 +1001,7 @@
   ],
   "ayato": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1035,7 +1035,7 @@
   ],
   "kaveh": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1070,7 +1070,7 @@
   ],
   "keqing": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1104,7 +1104,7 @@
   ],
   "kirara": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1138,7 +1138,7 @@
   ],
   "klee": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1172,7 +1172,7 @@
   ],
   "kuki": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1206,7 +1206,7 @@
   ],
   "sara": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1240,7 +1240,7 @@
   ],
   "layla": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1274,7 +1274,7 @@
   ],
   "lisa": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1308,7 +1308,7 @@
   ],
   "lynette": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1342,7 +1342,7 @@
   ],
   "lyney": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1376,7 +1376,7 @@
   ],
   "mika": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1410,7 +1410,7 @@
   ],
   "mona": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1444,7 +1444,7 @@
   ],
   "nahida": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1478,7 +1478,7 @@
   ],
   "neuvillette": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1512,7 +1512,7 @@
   ],
   "nilou": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1546,7 +1546,7 @@
   ],
   "ningguang": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1580,7 +1580,7 @@
   ],
   "noelle": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1615,7 +1615,7 @@
   ],
   "qiqi": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1649,7 +1649,7 @@
   ],
   "raiden": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1683,7 +1683,7 @@
   ],
   "razor": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1718,7 +1718,7 @@
   ],
   "rosaria": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1752,7 +1752,7 @@
   ],
   "kokomi": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1786,7 +1786,7 @@
   ],
   "sayu": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1821,7 +1821,7 @@
   ],
   "shenhe": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1855,7 +1855,7 @@
   ],
   "heizou": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1889,7 +1889,7 @@
   ],
   "sucrose": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1923,7 +1923,7 @@
   ],
   "tartaglia": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1957,7 +1957,7 @@
   ],
   "thoma": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -1991,7 +1991,7 @@
   ],
   "tighnari": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2025,7 +2025,7 @@
   ],
   "traveleranemo": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2059,7 +2059,7 @@
   ],
   "travelergeo": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2093,7 +2093,7 @@
   ],
   "travelerelectro": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2127,7 +2127,7 @@
   ],
   "travelerdendro": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2161,7 +2161,7 @@
   ],
   "travelerhydro": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2195,7 +2195,7 @@
   ],
   "venti": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2233,7 +2233,7 @@
   ],
   "wanderer": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2271,7 +2271,7 @@
   ],
   "xiangling": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2305,7 +2305,7 @@
   ],
   "xiao": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2347,7 +2347,7 @@
   ],
   "xingqiu": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2381,7 +2381,7 @@
   ],
   "xinyan": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2416,7 +2416,7 @@
   ],
   "yaemiko": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2450,7 +2450,7 @@
   ],
   "yanfei": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2484,7 +2484,7 @@
   ],
   "yaoyao": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2518,7 +2518,7 @@
   ],
   "yelan": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2552,7 +2552,7 @@
   ],
   "yoimiya": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2586,7 +2586,7 @@
   ],
   "yunjin": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {
@@ -2620,7 +2620,7 @@
   ],
   "zhongli": [
     {
-      "ability": "normal",
+      "ability": "attack",
       "legal": true
     },
     {

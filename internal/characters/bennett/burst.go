@@ -56,16 +56,24 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// buff appears to start ticking right before hit (t=0s)
 	// https://discord.com/channels/845087716541595668/869210750596554772/936507730779308032
 	stats, _ := c.Stats()
-	for i := 0; i <= 12*60; i += 60 {
+
+	// first tick should only buff atk and not heal
+	c.Core.Tasks.Add(func() {
+		if c.Core.Combat.Player().IsWithinArea(burstArea) {
+			c.applyBennettField(stats, true)()
+		}
+	}, burstStartFrame)
+	// other ticks should heal
+	for i := 60; i <= 12*60; i += 60 {
 		c.Core.Tasks.Add(func() {
 			if c.Core.Combat.Player().IsWithinArea(burstArea) {
-				c.applyBennettField(stats)()
+				c.applyBennettField(stats, false)()
 			}
 		}, i+burstStartFrame)
 	}
 
 	c.ConsumeEnergy(36)
-	c.SetCDWithDelay(action.ActionBurst, 900, 34)
+	c.SetCDWithDelay(action.ActionBurst, 900, burstStartFrame)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -75,7 +83,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
+func (c *char) applyBennettField(stats [attributes.EndStatType]float64, firstTick bool) func() {
 	hpplus := stats[attributes.Heal]
 	heal := bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP()
 	pc := burstatk[c.TalentLvlBurst()]
@@ -100,8 +108,8 @@ func (c *char) applyBennettField(stats [attributes.EndStatType]float64) func() {
 		p.ApplySelfInfusion(attributes.Pyro, 25, burstBuffDuration)
 
 		active := c.Core.Player.ActiveChar()
-		// heal if under 70%
-		if active.CurrentHPRatio() < 0.7 {
+		// heal if not first tick and under 70%
+		if !firstTick && active.CurrentHPRatio() < 0.7 {
 			c.Core.Player.Heal(player.HealInfo{
 				Caller:  c.Index,
 				Target:  active.Index,

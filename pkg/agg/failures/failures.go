@@ -1,4 +1,4 @@
-package failiures
+package failures
 
 import (
 	calc "github.com/aclements/go-moremath/stats"

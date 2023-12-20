@@ -25,10 +25,8 @@ func (c *char) c6() {
 		c.checkc6(false)
 		return false
 	}, "hutao-c6")
-	// check for C6 proc every 2s regardless of hurt
-	c.QueueCharTask(func() {
-		c.checkc6(true)
-	}, 120)
+	// check for C6 proc every 2s from start of sim regardless of hurt
+	c.checkc6(true)
 }
 
 func (c *char) checkc6(check1HP bool) {

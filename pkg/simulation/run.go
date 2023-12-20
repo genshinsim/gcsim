@@ -141,7 +141,7 @@ func queuePhase(s *Simulation) (stateFn, error) {
 		// append here because we can have multiple delay chained
 		delay := next.Param["f"]
 		s.preActionDelay += delay
-		s.C.Log.NewEvent(fmt.Sprintf("delay: added %v, total: %v", delay, s.preActionDelay), glog.LogActionEvent, s.C.Player.Active()).
+		s.C.Log.NewEvent(fmt.Sprintf("delay added %v, total: %v", delay, s.preActionDelay), glog.LogActionEvent, s.C.Player.Active()).
 			Write("added", delay).
 			Write("total", s.preActionDelay)
 		return queuePhase, nil
@@ -203,16 +203,27 @@ func (s *Simulation) handleWait(q *action.Eval) (stateFn, error) {
 	return s.advanceFrames(skip, queuePhase)
 }
 
+func executeActionDelay(s *Simulation) (stateFn, error) {
+	if s.preActionDelay > 0 {
+		if !s.C.Player.ActiveChar().FramePausedOnHitlag() {
+			s.preActionDelay--
+		}
+		return s.advanceFrames(1, executeActionDelay)
+	}
+	// go back to the ready check phase in case an action becomes unavailable after delay
+	return actionReadyCheckPhase, nil
+}
+
 func executeActionPhase(s *Simulation) (stateFn, error) {
 	//TODO: this sanity check is probably not necessary
 	if len(s.queue) == 0 {
 		return nil, errors.New("unexpected queue length is 0")
 	}
 	if s.preActionDelay > 0 {
-		if !s.C.Player.ActiveChar().FramePausedOnHitlag() {
-			s.preActionDelay--
-		}
-		return s.advanceFrames(1, executeActionPhase)
+		delay := s.preActionDelay
+		s.C.Log.NewEvent(fmt.Sprintf("pre action delay: %v", delay), glog.LogActionEvent, s.C.Player.Active()).
+			Write("delay", delay)
+		return executeActionDelay, nil
 	}
 	q := s.queue[0]
 	err := s.C.Player.Exec(q.Action, q.Char, q.Param)

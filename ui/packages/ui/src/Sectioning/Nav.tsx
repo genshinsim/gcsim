@@ -10,6 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { FaDiscord } from "react-icons/fa";
 import { IoIosDocument } from "react-icons/io";
+import { MdOutlineUpdate } from "react-icons/md";
 import logo from "./logo.png";
 import { useAppSelector } from "../Stores/store";
 import { Link } from "react-router-dom";
@@ -37,7 +38,17 @@ export default ({}) => {
         href="https://docs.gcsim.app"
         target="_blank">
       <span className="hidden min-[798px]:block">
-        Docs
+        Documentation
+      </span>
+    </AnchorButton>,
+    <AnchorButton
+        key="update"
+        className={Classes.MINIMAL}
+        icon={<MdOutlineUpdate size="24px" color="#abb3bf"  />}
+        href="https://github.com/genshinsim/gcsim/releases"
+        target="_blank">
+      <span className="hidden min-[798px]:block">
+        Releases
       </span>
     </AnchorButton>,
     <AnchorButton
@@ -72,7 +83,7 @@ export default ({}) => {
           {PageNavs}
         </Navbar.Group>
         <Navbar.Group align={Alignment.RIGHT} className="!flex !items-stretch">
-          <NavButton href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} />
+          {/* <NavButton href="/account" icon="user" text={user.uid === "" ? "Guest" : user.name} /> */}
           <HTMLSelect
               className="ml-2 self-center"
               value={i18n.resolvedLanguage}

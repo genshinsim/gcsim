@@ -176,6 +176,7 @@ var weaponNames = []string{
 	"staffofthescarletsands",
 	"summitshaper",
 	"swordofdescension",
+	"swordofnarzissenkreuz",
 	"talkingstick",
 	"thealleyflash",
 	"thebell",
@@ -355,6 +356,7 @@ const (
 	StaffOfTheScarletSands
 	SummitShaper
 	SwordOfDescension
+	SwordOfNarzissenkreuz
 	TalkingStick
 	TheAlleyFlash
 	TheBell
