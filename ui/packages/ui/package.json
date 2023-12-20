@@ -8,6 +8,7 @@
     "@blueprintjs/popover2": "^1.7.4",
     "@blueprintjs/select": "^4.8.4",
     "@fontsource/fira-mono": "^4.5.10",
+    "@gcsim/db": "workspace:^",
     "@gcsim/executors": "workspace:^",
     "@gcsim/types": "workspace:^",
     "@gcsim/utils": "workspace:^",

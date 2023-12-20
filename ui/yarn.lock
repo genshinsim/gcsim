@@ -3048,7 +3048,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gcsim/db@workspace:packages/db":
+"@gcsim/db@workspace:^, @gcsim/db@workspace:packages/db":
   version: 0.0.0-use.local
   resolution: "@gcsim/db@workspace:packages/db"
   dependencies:
@@ -3166,6 +3166,7 @@ __metadata:
     "@blueprintjs/popover2": ^1.7.4
     "@blueprintjs/select": ^4.8.4
     "@fontsource/fira-mono": ^4.5.10
+    "@gcsim/db": "workspace:^"
     "@gcsim/executors": "workspace:^"
     "@gcsim/types": "workspace:^"
     "@gcsim/utils": "workspace:^"

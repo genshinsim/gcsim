@@ -1,45 +1,23 @@
-import { Button, Card, Collapse, Elevation } from "@blueprintjs/core";
-import React, { useEffect, useState } from "react";
+import { AnchorButton, Card } from "@blueprintjs/core";
+import DBEntryView from "@gcsim/db/src/SharedComponents/DBEntryView";
+import { db } from "@gcsim/types";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 
-interface DashCardProps {
-  children: React.ReactNode;
-  href: string;
-  target?: string;
-}
-
-function DashCard({ children, href, target }: DashCardProps) {
-  return (
-    <div className="main-page-button-container">
-      {target ? (
-        <a href={href} target={target}>
-          <Card
-            interactive
-            elevation={Elevation.TWO}
-            className="main-page-card"
-          >
-            {children}
-          </Card>
-        </a>
-      ) : (
-        <Link to={href}>
-          <a>
-            <Card
-              interactive
-              elevation={Elevation.TWO}
-              className="main-page-card"
-            >
-              {children}
-            </Card>
-          </a>
-        </Link>
-      )}
-    </div>
-  );
-}
+const randQuery = {
+  query: {
+    $sampleRate: 0.01,
+  },
+  limit: 1,
+  skip: 0,
+  sort: {
+    create_date: -1,
+  },
+};
 
 export function Dash() {
   useTranslation();
@@ -49,57 +27,94 @@ export function Dash() {
     text: "",
     tag: "",
   });
-  const [tagIsOpen, setTagIsOpen] = useState(false);
+  const [data, setData] = useState<db.IEntry[]>([]);
+  const [dataIsLoaded, setDataIsLoaded] = useState(false);
 
-  // for size testing use: https://api.github.com/repos/genshinsim/gcsim/releases/tags/<tag name>
   useEffect(() => {
-    fetch(`https://api.github.com/repos/genshinsim/gcsim/releases/latest`)
-      .then((res) => res.arrayBuffer())
-      .then((buffer) => {
-        const decoder = new TextDecoder("utf-8");
-        const data = decoder.decode(buffer);
-        const release = JSON.parse(data);
-        setState({ isLoaded: true, text: release.body, tag: release.name });
+    axios("https://api.github.com/repos/genshinsim/gcsim/releases/latest")
+      .then((resp: { data }) => {
+        console.log(resp.data);
+        setState({ isLoaded: true, text: resp.data.body, tag: resp.data.name });
+      })
+      .catch((err) => console.log("Error: " + err.message));
+    axios(`/api/db?q=${encodeURIComponent(JSON.stringify(randQuery))}`)
+      .then((resp: { data: db.IEntries }) => {
+        console.log(resp);
+        if (resp.data && resp.data.data) {
+          setData(resp.data.data);
+          console.log(resp.data.data);
+          setDataIsLoaded(true);
+        }
       })
       .catch((err) => console.log("Error: " + err.message));
   }, []);
 
   return (
-    <main className="w-full flex flex-col items-center flex-grow gap-4 mt-2">
-      <div className="flex items-center justify-center w-full flex-grow text-2xl md:text-4xl lg:text-6xl px-4 text-center">
-        <h1 className="max-w-sm md:max-w-lg lg:max-w-4xl">
-          <b>
-            gcsim is a team dps / combat <br /> simulation tool <br /> for
-            Genshin Impact.
-          </b>
-        </h1>
-      </div>
-      <div className="flex flex-col flex-grow items-center px-8 mb-4">
-        {isLoaded ? (
-          <>
-            <div className="flex flex-col gap-4 mb-4">
-              <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
-                <b>Latest Release: </b>
-                <a href="https://github.com/genshinsim/gcsim/releases">{tag}</a>
-              </h1>
-              <Button
-                className="w-[100%]"
-                onClick={() => setTagIsOpen(!tagIsOpen)}
+    <main className="w-full flex flex-col items-center flex-grow gap-4 py-4 px-4">
+      <Link
+        to="/simulator"
+        role="button"
+        className="bp4-button bp4-intent-success text-3xl md:text-4xl lg:text-5xl p-3 font-semibold rounded-md"
+        tabIndex={0}
+      >
+        <span className="bp4-button-text">Get started</span>
+      </Link>
+      <div className="flex flex-col gap-4">
+        <Card className="flex flex-col gap-4 items-center">
+          <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
+            <b>Take a look at what users submitted:</b>
+          </h1>
+          <div>
+            {dataIsLoaded
+              ? data.map((entry, index) => (
+                  <DBEntryView
+                    dbEntry={entry}
+                    key={index}
+                    hideDescription={true}
+                  />
+                ))
+              : "Loading..."}
+          </div>
+          <AnchorButton
+            href="https://simpact.app/"
+            intent="primary"
+            target="_blank"
+            className="text-xl md:text-2xl font-semibold p-3 rounded-md"
+          >
+            <span>Visit the Teams DB</span>
+          </AnchorButton>
+        </Card>
+        <Card className="flex flex-col items-center gap-4">
+          {isLoaded ? (
+            <>
+              <div className="flex flex-col gap-4">
+                <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
+                  <b>Latest Release: </b>
+                  <a
+                    href={`https://github.com/genshinsim/gcsim/releases/tag/${tag}`}
+                  >
+                    {tag}
+                  </a>
+                </h1>
+              </div>
+              <div className="self-start">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {text}
+                </ReactMarkdown>
+              </div>
+              <AnchorButton
+                href="https://github.com/genshinsim/gcsim/releases"
+                intent="primary"
+                target="_blank"
+                className="text-xl md:text-2xl font-semibold p-3 rounded-md"
               >
-                {tagIsOpen ? "Hide" : "Show"} release notes
-              </Button>
-            </div>
-            <Collapse
-              className="text-md"
-              isOpen={tagIsOpen}
-              keepChildrenMounted={true}
-            >
-              <ReactMarkdown children={text} remarkPlugins={[remarkGfm]} />
-            </Collapse>
-          </>
-        ) : (
-          "Loading..."
-        )}
+                <span>View Releases on GitHub</span>
+              </AnchorButton>
+            </>
+          ) : (
+            "Loading..."
+          )}
+        </Card>
       </div>
     </main>
   );

@@ -9,13 +9,72 @@
   .main-page-button {
     @apply bg-gray-700 hover:bg-gray-600 hover:cursor-pointer rounded-md h-full w-full flex justify-center items-center;
   }
-  .main-page-card {
+  .main-page-card { 
     @apply rounded-md h-full w-full flex justify-center items-center;
   }
 
   .main-page-row {
     @apply grid sm:grid-cols-1 md:grid-cols-2 sm:gap-1 md:gap-4;
   }
+}
+
+@layer utilities {
+
+  .artifact-top-left {
+    top: 0;
+    position: absolute;
+    left: 0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+  .artifact-top-right-gap {
+    top: 0;
+    position: absolute;
+    left: 0;
+    clip-path: polygon(2% 0, 100% 0, 100% 98%);
+  }
+  .artifact-bottom-right {
+    top: 0;
+    left: 0;
+      clip-path: polygon(100% 100%, 0 100%, 100% 0);
+  }
+  .artifact-bottom-left-gap {
+    top: 0;
+    left: 0;
+      clip-path: polygon(98% 100%, 0 100%, 0 2%);
+  }
+  .artifact-left{
+    top: 0;
+    left: 0;
+    position: absolute;
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100% );
+  }
+  .artifact-left-gap{
+    top: 0;
+    left: 0;
+    position: absolute;
+      clip-path: polygon(0 0, 49% 0, 49% 100%, 0 100% );
+  }
+  .artifact-right{
+    top: 0;
+    left: 0;
+      clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100% );
+  }
+  .artifact-right-gap{
+    top: 0;
+    left: 0;
+      clip-path: polygon(51% 0, 100% 0, 100% 100%, 51% 100% );
+  }
+
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+}
+
 }
 
 body {
@@ -130,3 +189,59 @@ div.bp4-navbar-heading a:hover, div.main-page-button-container a:hover {
   color: inherit;
   text-decoration: inherit;
 }
+
+/* for hiding table columns */
+@media screen and (max-width: 1225px) and (min-width: 1045px) {
+		.priority-5{
+			display:none;
+		}
+	}
+	
+	@media screen and (max-width: 1045px) and (min-width: 770px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+	}
+
+  @media screen and (max-width: 770px) and (min-width: 565px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+		.priority-3{
+			display:none;
+		}
+	}
+	
+	@media screen and (max-width: 565px) and (min-width: 300px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+		.priority-3{
+			display:none;
+		}
+	}
+	
+	@media screen and (max-width: 300px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+		.priority-3{
+			display:none;
+		}
+		.priority-2{
+			display:none;
+		}
+	
+	}
