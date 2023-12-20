@@ -189,7 +189,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 	// c2 reduces CD by 15%
 	if c.Base.Cons >= 2 {
 		active.AddCooldownMod(character.CooldownMod{
-			Base: modifier.NewBaseWithHitlag("chongyun-c2", 126),
+			Base: modifier.NewBaseWithHitlag("chongyun-c2", infuseDur[c.TalentLvlSkill()]),
 			Amount: func(a action.Action) float64 {
 				if a == action.ActionSkill || a == action.ActionBurst {
 					return -0.15
@@ -219,7 +219,7 @@ func (c *char) infuse(active *character.CharWrapper) {
 			m := make([]float64, attributes.EndStatType)
 			m[attributes.AtkSpd] = 0.08
 			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("chongyun-field", 126),
+				Base:         modifier.NewBaseWithHitlag("chongyun-field", infuseDur[c.TalentLvlSkill()]),
 				AffectedStat: attributes.NoStat,
 				Amount: func() ([]float64, bool) {
 					return m, true
