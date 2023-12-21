@@ -14,21 +14,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const icdKey = "range-gauge-struggle-icd"
-
-var symbol = []string{"unity-symbol-0", "unity-symbol-1", "unity-symbol-2"}
+const (
+	symbolKey      = "range-gauge-symbol"
+	symbolDuration = 30 * 60
+	icdKey         = "range-gauge-icd"
+	icdDuration    = 15 * 60
+	buffKey        = "range-gauge"
+	buffDuration   = 10 * 60
+)
 
 func init() {
 	core.RegisterWeaponFunc(keys.RangeGauge, NewWeapon)
 }
 
 type Weapon struct {
-	core    *core.Core
-	char    *character.CharWrapper
-	refine  int
-	atkp    []float64
-	eleDMGP []float64
-	Index   int
+	stacks int
+	Index  int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -39,16 +40,11 @@ func (w *Weapon) Init() error      { return nil }
 // For each Symbol consumed, gain 3/4/5/6/7% ATK and 7/8.5/10/11.5/13% All Elemental DMG Bonus.
 // The Struggle effect can be triggered once every 15s,
 // and Symbols can be gained even when the character is not on the field.
-
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{
-		core:    c,
-		char:    char,
-		refine:  p.Refine,
-		atkp:    make([]float64, attributes.EndStatType),
-		eleDMGP: make([]float64, attributes.EndStatType),
-	}
+	w := &Weapon{}
+	r := p.Refine
 
+	// gain symbols
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		source := args[0].(*player.HealInfo)
 		index := args[1].(int)
@@ -60,76 +56,61 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		// override oldest symbol
-		idx := 0
-		for i, s := range symbol {
-			if char.StatusExpiry(s) < char.StatusExpiry(symbol[idx]) {
-				idx = i
-			}
+		if !char.StatusIsActive(symbolKey) {
+			w.stacks = 0
 		}
-		char.AddStatus((symbol[idx]), 30*60, true)
-
-		c.Log.NewEvent("range-gauge proc'd", glog.LogWeaponEvent, char.Index).
-			Write("index", idx)
-
-		w.consumeEnergy()
+		if w.stacks < 3 {
+			w.stacks++
+		}
+		c.Log.NewEvent("range-gauge adding stack", glog.LogWeaponEvent, char.Index).
+			Write("stacks", w.stacks)
+		char.AddStatus(symbolKey, symbolDuration, true)
 		return false
 	}, fmt.Sprintf("range-gauge-heal-%v", char.Base.Key.String()))
 
-	key := fmt.Sprintf("range-gauge-struggle-%v", char.Base.Key.String())
-	c.Events.Subscribe(event.OnBurst, w.consumeEnergy, key)
-	c.Events.Subscribe(event.OnSkill, w.consumeEnergy, key)
-	return w, nil
-}
-
-func (w *Weapon) consumeEnergy(args ...interface{}) bool {
-	baseEleDMGP := 0.055 + 0.015*float64(w.refine)
-	atkp := 0.02 + 0.01*float64(w.refine)
-	duration := 10 * 60
-
-	// check for active before deleting symbol
-	if w.char.StatusIsActive(icdKey) {
-		return false
-	}
-	if w.core.Player.Active() != w.char.Index {
-		return false
-	}
-	count := 0
-	for _, s := range symbol {
-		if w.char.StatusIsActive(s) {
-			count++
+	// consume symbols
+	baseEle := 0.055 + 0.015*float64(r)
+	atk := 0.02 + 0.01*float64(r)
+	m := make([]float64, attributes.EndStatType)
+	buffFunc := func(args ...interface{}) bool {
+		// skip if no symbols (status not active implies symbols == 0)
+		if !char.StatusIsActive(symbolKey) {
+			return false
 		}
-		w.char.DeleteStatus(s)
-	}
-	if count == 0 {
+		// skip if trigger on icd
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		// check for active before deleting symbol
+		if c.Player.Active() != char.Index {
+			return false
+		}
+		// add icd
+		char.AddStatus(icdKey, icdDuration, true)
+
+		// consume symbols
+		count := w.stacks
+		char.DeleteStatus(symbolKey)
+		w.stacks = 0
+
+		// add buff
+		m[attributes.ATKP] = atk * float64(count)
+		ele := baseEle * float64(count)
+		for i := attributes.PyroP; i <= attributes.DendroP; i++ {
+			m[i] = ele
+		}
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag(buffKey, buffDuration),
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+
 		return false
 	}
+	key := fmt.Sprintf("range-gauge-struggle-%v", char.Base.Key.String())
+	c.Events.Subscribe(event.OnBurst, buffFunc, key)
+	c.Events.Subscribe(event.OnSkill, buffFunc, key)
 
-	w.char.AddStatus(icdKey, 15*60, true)
-	w.atkp[attributes.ATKP] = atkp * float64(count)
-
-	// add atk buff
-	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("range-gauge-atk-buff", duration),
-		AffectedStat: attributes.ATKP,
-		Amount: func() ([]float64, bool) {
-			return w.atkp, true
-		},
-	})
-
-	eleDMGP := baseEleDMGP * float64(count)
-	for i := attributes.PyroP; i <= attributes.DendroP; i++ {
-		w.eleDMGP[i] = eleDMGP
-	}
-
-	// add elemental dmg buff
-	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("range-gauge-eledmg-buff", duration),
-		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return w.eleDMGP, true
-		},
-	})
-
-	return false
+	return w, nil
 }
