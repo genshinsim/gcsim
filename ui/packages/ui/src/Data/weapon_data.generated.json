@@ -1148,6 +1148,13 @@
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Phoney"
     },
+    "ultimateoverlordsmegamagicsword":  {
+      "id": 12426,
+      "key": "ultimateoverlordsmegamagicsword",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Champion"
+    },
     "verdict":  {
       "id": 12512,
       "key": "verdict",

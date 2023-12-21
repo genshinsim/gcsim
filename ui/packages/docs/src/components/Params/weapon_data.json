@@ -75,5 +75,12 @@
       "param": "arkhe",
       "desc": "0 for Pneuma, 1 for Ousia (default)."
     }
+  ],
+  "ultimateoverlordsmegamagicsword": [
+    {
+      "ability": "\"Ultimate Overlord's Mega Magic Sword\"",
+      "param": "melusines",
+      "desc": "Number of melusines that have been helped. Default 6, min 0, max 6. The atk% gained per melusine is 1/6 of the base atk% from the passive."
+    }
   ]
 }
