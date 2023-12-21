@@ -107,8 +107,8 @@ func (c *char) c6DropletCheck(src int) func() {
 					Write("prev-charge-duration", c.chargeJudgeDur).
 					Write("curr-charge-duration", c.chargeJudgeDur+60)
 
-				// TODO: Check if it's random
-				c.consumeDroplet(droplets[c.Core.Combat.Rand.Intn(len(droplets))])
+				// take first droplet
+				c.consumeDroplet(droplets[0])
 				c.chargeJudgeDur += 60
 			}
 		}
