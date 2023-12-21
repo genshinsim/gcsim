@@ -15,12 +15,10 @@ var (
 	attackFrames   [][]int
 	attackHitmarks = []int{15, 12, 21, 27}
 
-	// TODO: Get offsets for Furina
-	attackOffsets = [][]float64{{0, 0, 0, 0}, {0, 0, 0, 0}}
+	attackOffsets = [][]float64{{-0.1, 0.1, 0.5, -2.5}, {-0.1, 0.1, 0.8, -2.5}}
 
-	// TODO: Get hithaltfactor, verify hitbox data
 	attackHitlagHaltFrame = []float64{0.01, 0.01, 0.02, 0.02}
-	attackHitboxes        = [][][]float64{{{1.5, 2.8}, {1.7}, {1.9}, {5, 6}}, {{1.5, 3}, {2.3}, {2.2}, {5, 6}}}
+	attackHitboxes        = [][][]float64{{{1.5, 2.8}, {1.7}, {1.9}, {5, 6}}, {{1.5, 3}, {2.3}, {2.2}, {6, 7}}}
 	attackStrikeType      = []attacks.StrikeType{attacks.StrikeTypeSpear, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash, attacks.StrikeTypeSlash}
 
 	arkheIcdKeys     = []string{"spiritbreath-thorn-icd", "surging-blade-icd"}
@@ -51,9 +49,11 @@ func (c *char) arkheCB(a combat.AttackCB) {
 	if c.StatusIsActive(arkheIcdKeys[c.arkhe]) {
 		return
 	}
-
 	c.AddStatus(arkheIcdKeys[c.arkhe], 6*60, true)
 
+	// calc attack pos
+	player := c.Core.Combat.Player()
+	arkhePos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: -0.3}, player.Direction())
 	c.QueueCharTask(func() {
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
@@ -73,9 +73,8 @@ func (c *char) arkheCB(a combat.AttackCB) {
 			ai.FlatDmg = c.c6BonusDMGArkhe()
 		}
 
-		// TODO: Check the target, get offset
 		ap := combat.NewBoxHitOnTarget(
-			c.Core.Combat.Player(),
+			arkhePos,
 			nil,
 			1.2,
 			4.5,
