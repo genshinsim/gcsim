@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -63,8 +64,13 @@ func (c *char) c1() {
 // active character obtains an Elemental Shard from a Crystallize reaction.
 // This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnShielded, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
+			return false
+		}
+		// Check shield
+		shd := args[0].(shield.Shield)
+		if shd.Type() != shield.Crystallize {
 			return false
 		}
 		if c.c2Extension >= 3 {
