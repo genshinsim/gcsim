@@ -84,7 +84,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(icdKey, icd, true)
 
-		// TODO: check actual attack info and AoE, most weapons have 3m radius so that is what's used here
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Sword of Narzissenkreuz",
