@@ -242,6 +242,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/talkingstick"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/tidalshadow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/unforged"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/verdict"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/waster"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/whiteblind"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/whiteiron"

@@ -197,6 +197,7 @@ var weaponNames = []string{
 	"travelershandysword",
 	"tulaytullahsremembrance",
 	"twinnephrite",
+	"verdict",
 	"vortexvanquisher",
 	"wanderingevenstar",
 	"wastergreatsword",
@@ -377,6 +378,7 @@ const (
 	TravelersHandySword
 	TulaytullahsRemembrance
 	TwinNephrite
+	Verdict
 	VortexVanquisher
 	WanderingEvenstar
 	WasterGreatsword

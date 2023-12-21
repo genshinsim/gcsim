@@ -299,6 +299,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"tulaytullah":                   keys.TulaytullahsRemembrance,
 	"tula":                          keys.TulaytullahsRemembrance,
 	"twinnephrite":                  keys.TwinNephrite,
+	"verdict":                       keys.Verdict,
 	"vortexvanquisher":              keys.VortexVanquisher,
 	"vortex":                        keys.VortexVanquisher,
 	"wanderingevenstar":             keys.WanderingEvenstar,
