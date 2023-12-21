@@ -2354,6 +2354,7 @@
         "ability": "N1",
         "shape": "Box",
         "center": "PrimaryTarget",
+        "offsetY": -0.1,
         "boxX": 1.5,
         "boxY": 2.8
       },
@@ -2361,18 +2362,21 @@
         "ability": "N2",
         "shape": "Circle",
         "center": "PrimaryTarget",
+        "offsetY": 0.1,
         "radius": 1.7
       },
       {
         "ability": "N3",
         "shape": "Circle",
         "center": "PrimaryTarget",
+        "offsetY": 0.5,
         "radius": 1.9
       },
       {
         "ability": "N4",
         "shape": "Box",
         "center": "PrimaryTarget",
+        "offsetY": -2.5,
         "boxX": 5,
         "boxY": 6
       },
@@ -2380,6 +2384,7 @@
         "ability": "N1-C6",
         "shape": "Box",
         "center": "PrimaryTarget",
+        "offsetY": -0.1,
         "boxX": 1.5,
         "boxY": 3
       },
@@ -2387,20 +2392,23 @@
         "ability": "N2-C6",
         "shape": "Circle",
         "center": "PrimaryTarget",
+        "offsetY": 0.1,
         "radius": 2.3
       },
       {
         "ability": "N3-C6",
         "shape": "Circle",
         "center": "PrimaryTarget",
+        "offsetY": 0.8,
         "radius": 2.2
       },
       {
         "ability": "N4-C6",
         "shape": "Box",
         "center": "PrimaryTarget",
-        "boxX": 5,
-        "boxY": 6
+        "offsetY": -2.5,
+        "boxX": 6,
+        "boxY": 7
       }
     ],
     "charge": [

@@ -8,14 +8,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var (
 	chargeFrames  []int
 	chargeHitmark = 33
-	// TODO: Find offset
-	chargeOffset = 0.0
 )
 
 func init() {
@@ -45,11 +42,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Durability:       25,
 		Mult:             charge[c.TalentLvlAttack()],
 	}
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		geometry.Point{Y: chargeOffset},
-		2.6,
-	)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.6)
 	c.QueueCharTask(func() {
 		var c6cb combat.AttackCBFunc
 		// TODO: Check if DMG bonus still applies if c6 runs out between start of CA and the hit
