@@ -113,6 +113,8 @@ type Reactable struct {
 	burningTickSrc  int
 	// freeze specific
 	FreezeResist float64
+	// crystallize specific
+	crystallizeGCD int
 }
 
 type Enemy interface {
@@ -130,6 +132,7 @@ func (r *Reactable) Init(self combat.Target, c *core.Core) *Reactable {
 	r.DecayRate[Frozen] = frzDecayCap
 	r.ecTickSrc = -1
 	r.burningTickSrc = -1
+	r.crystallizeGCD = -1
 	return r
 }
 
