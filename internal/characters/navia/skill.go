@@ -22,10 +22,10 @@ var skillHoldFrames []int
 var crystallise = []event.Event{event.OnCrystallizeElectro, event.OnCrystallizeCryo, event.OnCrystallizeHydro,
 	event.OnCrystallizePyro}
 var skillMultiplier = []float64{
-	0,                   //0 hits
-	1,                   //1 hit
-	1.05000000074505806, //2 hit
-	1.10000000149011612, //3 hit etc
+	0,                   // 0 hits
+	1,                   // 1 hit
+	1.05000000074505806, // 2 hit
+	1.10000000149011612, // 3 hit etc
 	1.15000000596046448,
 	1.20000000298023224,
 	1.36000001430511475,
@@ -150,7 +150,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			if c.Base.Cons < 6 {
 				c.shrapnel = 0
 			} else {
-				c.shrapnel = c.shrapnel - 3 // C6 keeps any more than the three
+				c.shrapnel -= 3 // C6 keeps any more than the three
 			}
 			return
 		},
@@ -159,7 +159,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Add Geo Infusion
 	c.QueueCharTask(
 		c.a1,
-		hitmark+30,
+		hitmark,
 	)
 	c.c2ready = false
 	if hold > 1 {

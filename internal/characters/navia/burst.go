@@ -78,7 +78,7 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		SourceFrame: c.Core.F,
 	}
 
-	for i := 45; i <= burstDuration; i = i + 45 {
+	for i := 45; i <= burstDuration; i += 45 {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.location(targetRadius), nil, 3),

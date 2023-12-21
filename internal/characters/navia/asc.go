@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -20,18 +21,7 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-
-	// add Geo infusion
-	c.Core.Player.AddWeaponInfuse(
-		c.Index,
-		"navia-a1-infusion",
-		attributes.Geo,
-		60*4,
-		false,
-		attacks.AttackTagNormal,
-		attacks.AttackTagExtra,
-		attacks.AttackTagPlunge,
-	)
+	c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
 
 	// add Damage Bonus
 	m := make([]float64, attributes.EndStatType)
@@ -62,7 +52,7 @@ func (c *char) a4() {
 	for _, char := range c.Core.Player.Chars() {
 		if char.Base.Element != attributes.Geo && char.Base.
 			Element != attributes.Anemo && char.Base.Element != attributes.Dendro {
-			ele = ele + 1
+			ele++
 		}
 	}
 	if ele > 2 {
