@@ -74,16 +74,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if p["shrapnel"] != 0 {
 		c.shrapnel = int(math.Min(float64(p["shrapnel"]), 6))
 	}
-
-	c.QueueCharTask(
-		func() {
-			c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
-
-			shots = 5 + int(math.Min(float64(c.shrapnel), 3))*2
-		},
-		hitmark-1,
-	)
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rosula Shardshot",
@@ -96,71 +86,76 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skillshotgun[c.TalentLvlSkill()],
 	}
 
-	excess := math.Max(float64(c.shrapnel-3), 0)
-	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("navia-skill-dmgup", hitmark+6),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
-			}
-			m[attributes.DmgP] = 0.15 * excess
-			if c.Base.Cons >= 2 {
-				m[attributes.CR] = 0.12 * excess
-			}
-			if c.Base.Cons >= 6 {
-				m[attributes.CD] = 0.45 * excess
-			}
-			return m, true
-		},
-	})
-
-	// Looks for enemies in the path of each bullet
-	// Initially trims enemies to check by scanning only the hit zone
-	for _, t := range c.Core.Combat.EnemiesWithinArea(
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0}, 25, 15),
-		nil,
-	) {
-		// Tallies up the hits
-		hits := 0
-		for i := 0; i < shots; i++ {
-			if ok, _ := t.AttackWillLand(combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(),
-				geometry.Point{Y: 0},
-				25, 15)); ok {
-				hits++
-			}
-		}
-		// Applies damage based on the hits
-		ai.Mult = skillshotgun[c.TalentLvlSkill()] * skillMultiplier[hits]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewSingleTargetHit(t.Key()),
-			hitmark,
-			hitmark+5,
-			c.particleCB(),
-			c.SurgingBlade(),
-			c.c2(),
-		)
-	}
-
-	// remove the shrapnel after firing and action C1
 	c.QueueCharTask(
 		func() {
-			c.c1(c.shrapnel)
-			if c.Base.Cons < 6 {
-				c.shrapnel = 0
-			} else {
-				c.shrapnel -= 3 // C6 keeps any more than the three
+			c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
+			shots = 5 + int(math.Min(float64(c.shrapnel), 3))*2
+
+			// Calculate buffs based on excess shrapnel
+			excess := math.Max(float64(c.shrapnel-3), 0)
+			m := make([]float64, attributes.EndStatType)
+			c.AddAttackMod(character.AttackMod{
+				Base: modifier.NewBase("navia-skill-dmgup", hitmark+6),
+				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+					if atk.Info.AttackTag != attacks.AttackTagElementalArt {
+						return nil, false
+					}
+					m[attributes.DmgP] = 0.15 * excess
+					if c.Base.Cons >= 2 {
+						m[attributes.CR] = 0.12 * excess
+					}
+					if c.Base.Cons >= 6 {
+						m[attributes.CD] = 0.45 * excess
+					}
+					return m, true
+				},
+			})
+
+			// Looks for enemies in the path of each bullet
+			// Initially trims enemies to check by scanning only the hit zone
+			for _, t := range c.Core.Combat.EnemiesWithinArea(
+				combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0}, 25, 15),
+				nil,
+			) {
+				// Tallies up the hits
+				hits := 0
+				for i := 0; i < shots; i++ {
+					if ok, _ := t.AttackWillLand(combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(),
+						geometry.Point{Y: 0},
+						25, 15)); ok {
+						hits++
+					}
+				}
+				// Applies damage based on the hits
+				ai.Mult = skillshotgun[c.TalentLvlSkill()] * skillMultiplier[hits]
+				c.Core.QueueAttack(
+					ai,
+					combat.NewSingleTargetHit(t.Key()),
+					1,
+					6,
+					c.particleCB(),
+					c.SurgingBlade(),
+					c.c2(),
+				)
+				// remove the shrapnel after firing and action C1 and A1
+				c.QueueCharTask(
+					func() {
+						c.c1(c.shrapnel)
+						if c.Base.Cons < 6 {
+							c.shrapnel = 0
+						} else {
+							c.shrapnel -= 3 // C6 keeps any more than the three
+						}
+						c.a1()
+						return
+					},
+					1,
+				)
 			}
-			return
 		},
-		hitmark,
+		hitmark-1,
 	)
-	// Add Geo Infusion
-	c.QueueCharTask(
-		c.a1,
-		hitmark,
-	)
+
 	c.c2ready = false
 	if hold > 1 {
 		return action.Info{
