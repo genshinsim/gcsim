@@ -92,6 +92,5 @@ func (c *char) a4Tick() {
 	c.a4Buff[attributes.DmgP] = min(c.MaxHP()/1000*0.007, 0.28)
 	c.a4IntervalReduction = min(c.MaxHP()/1000.0*0.004, 0.16)
 
-	// TODO: check real A4 update interval
 	c.QueueCharTask(c.a4Tick, 30)
 }
