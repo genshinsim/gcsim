@@ -79,7 +79,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		func() {
 			c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
 
-			shots = 5 + int(math.Max(float64(c.shrapnel-3), 0))*2
+			shots = 5 + int(math.Min(float64(c.shrapnel), 3))*2
 		},
 		hitmark-1,
 	)
