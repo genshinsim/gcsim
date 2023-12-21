@@ -54,14 +54,14 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnHeal, OnHeal(&s), fmt.Sprintf("sodp-4pc-heal-accumulation-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnEnemyHit, OnEnemyHit(&s), fmt.Sprintf("waves-of-days-past-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnHeal, s.OnHeal(), fmt.Sprintf("sodp-4pc-heal-accumulation-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnEnemyHit, s.OnEnemyHit(), fmt.Sprintf("waves-of-days-past-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil
 }
 
-func OnHeal(s *Set) func(args ...interface{}) bool {
+func (s *Set) OnHeal() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		if s.core.Status.Duration(wavesOfDaysPastKey) > 0 {
 			return false
@@ -86,7 +86,7 @@ func OnHeal(s *Set) func(args ...interface{}) bool {
 	}
 }
 
-func OnEnemyHit(s *Set) func(args ...interface{}) bool {
+func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		switch atk.Info.AttackTag {
