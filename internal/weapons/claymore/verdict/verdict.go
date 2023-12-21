@@ -70,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(buffKey, buffDuration, true)
 		return false
-	}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("verdict-seal-%v", char.Base.Key.String()))
 
 	// skill dmg increase while seals active
 	skillDmg := 0.135 + float64(r)*0.045
