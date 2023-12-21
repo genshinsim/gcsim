@@ -29,8 +29,10 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 const (
-	buffKey      = "verdict-skill-dmg"
-	dmgWindowKey = "verdict-dmg-window"
+	buffKey           = "verdict-skill-dmg"
+	buffDuration      = 15 * 60
+	dmgWindowKey      = "verdict-dmg-window"
+	dmgWindowDuration = 0.2 * 60
 )
 
 // Increases ATK by 20/25/30/35/40%. When party members obtain Elemental Shards from Crystallize reactions,
@@ -52,6 +54,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
+	// seal gain on crystallize shard pickup
 	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
 		// Check shield
 		shd := args[0].(shield.Shield)
@@ -65,10 +68,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 2 {
 			w.stacks++
 		}
-		char.AddStatus(buffKey, 15*60, true)
+		char.AddStatus(buffKey, buffDuration, true)
 		return false
 	}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 
+	// skill dmg increase while seals active
 	skillDmg := 0.135 + float64(r)*0.045
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
@@ -86,11 +90,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		// - set duration for dmg window
 		// - reset buff once window is over
 		if !char.StatusIsActive(dmgWindowKey) {
-			char.AddStatus(dmgWindowKey, 0.2*60, true)
+			char.AddStatus(dmgWindowKey, dmgWindowDuration, true)
 			char.QueueCharTask(func() {
 				char.DeleteStatus(buffKey)
 				w.stacks = 0
-			}, 0.2*60)
+			}, dmgWindowDuration)
 		}
 		skillDmgAdd := skillDmg * float64(w.stacks)
 		atk.Snapshot.Stats[attributes.DmgP] += skillDmgAdd
