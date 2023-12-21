@@ -36,7 +36,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		melusines = min(melusines, melusinesCap)
 	}
 
-	// will be 0/0.2/0.4/0.6/0.8/1 depending on melusines count
 	// floating point division otherwise will either be 0 or 1
 	additional := max(float64(melusines)/float64(melusinesCap), 0)
 
