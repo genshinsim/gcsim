@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -51,7 +52,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	gainSealFunc := func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
+		// Check shield
+		shd := args[0].(shield.Shield)
+		if shd.Type() != shield.Crystallize {
+			return false
+		}
+
 		if !char.StatModIsActive(buffKey) {
 			w.stacks = 0
 		}
@@ -60,9 +67,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatus(buffKey, 15*60, true)
 		return false
-	}
+	}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
+
 	skillDmg := 0.135 + float64(r)*0.045
-	addSkillDmgFunc := func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
 			return false
@@ -90,14 +98,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Log.NewEvent("verdict adding skill dmg", glog.LogPreDamageMod, char.Index).
 			Write("skill_dmg_added", skillDmgAdd)
 		return false
-	}
-
-	c.Events.Subscribe(event.OnCrystallizeCryo, gainSealFunc, fmt.Sprintf("vertict-crystallizecryo-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnCrystallizeElectro, gainSealFunc, fmt.Sprintf("vertict-crystallizeelectro-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnCrystallizeHydro, gainSealFunc, fmt.Sprintf("vertict-crystallizehydro-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnCrystallizePyro, gainSealFunc, fmt.Sprintf("vertict-crystallizepyro-%v", char.Base.Key.String()))
-
-	c.Events.Subscribe(event.OnEnemyHit, addSkillDmgFunc, fmt.Sprintf("verdict-onhit-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("verdict-onhit-%v", char.Base.Key.String()))
 
 	return w, nil
 }
