@@ -54,6 +54,10 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 	if a.Info.Durability < ZeroDur {
 		return false
 	}
+	if r.crystallizeGCD != -1 && r.core.F < r.crystallizeGCD {
+		return false
+	}
+	r.crystallizeGCD = r.core.F + 60
 	// grab current snapshot for shield
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
 	ai := combat.AttackInfo{
