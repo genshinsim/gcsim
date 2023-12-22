@@ -327,7 +327,11 @@ pick_up_crystallize(element);
 - `pick_up_crystallize` will not pick up any shard if:
  - no shard with the specified `element` exists 
  - there is a shard with the specfied `element`, but it cannot be picked up yet
-- `pick_up_crystallize` will always evaluate to 0.
+- `pick_up_crystallize` will return the number of crystallize shards that were picked up (either 0 or 1).
+
+:::info
+`element` can also be "any" to pick up the oldest crystallize shard of any element.
+:::
 
 :::danger
 `element` must be a string or an expression that evaluates to a string.
