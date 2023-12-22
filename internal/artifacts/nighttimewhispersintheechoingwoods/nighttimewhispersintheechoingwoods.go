@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -39,7 +38,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.ATKP] = 0.18
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("nwew-2pc", -1),
+			Base:         modifier.NewBase("nighttimewhispers-2pc", -1),
 			AffectedStat: attributes.ATKP,
 			Amount: func() ([]float64, bool) {
 				return m, true
@@ -48,16 +47,16 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnShielded, OnShielded(&s), fmt.Sprintf("nwew-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnShieldBreak, OnShieldBreak(&s), fmt.Sprintf("nwew-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnCharacterSwap, OnCharacterSwap(&s), fmt.Sprintf("nwew-4pc-%v", char.Base.Key.String()))
-		c.Events.Subscribe(event.OnSkill, OnSkill(&s), fmt.Sprintf("nwew-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnShielded, s.OnShielded(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnShieldBreak, s.OnShieldBreak(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnCharacterSwap, s.OnCharacterSwap(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
+		c.Events.Subscribe(event.OnSkill, s.OnSkill(), fmt.Sprintf("nighttimewhispers-4pc-%v", char.Base.Key.String()))
 	}
 
 	return &s, nil
 }
 
-func OnShielded(s *Set) func(args ...interface{}) bool {
+func (s *Set) OnShielded() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		shd := args[0].(shield.Shield)
 		if s.core.Player.Active() != s.char.Index {
@@ -71,10 +70,10 @@ func OnShielded(s *Set) func(args ...interface{}) bool {
 	}
 }
 
-func OnShieldBreak(s *Set) func(args ...interface{}) bool {
+func (s *Set) OnShieldBreak() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
-		shd := s.core.Player.Shields.Get(shield.Crystallize)
-		if shd != nil {
+		shd := args[0].(shield.Shield)
+		if shd.Type() != shield.Crystallize {
 			return false
 		}
 		if s.core.Player.Active() != s.char.Index {
@@ -85,7 +84,7 @@ func OnShieldBreak(s *Set) func(args ...interface{}) bool {
 	}
 }
 
-func OnCharacterSwap(s *Set) func(args ...interface{}) bool {
+func (s *Set) OnCharacterSwap() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		prev := args[0].(int)
 		active := args[1].(int)
@@ -105,15 +104,16 @@ func OnCharacterSwap(s *Set) func(args ...interface{}) bool {
 	}
 }
 
-func OnSkill(s *Set) func(args ...interface{}) bool {
+func (s *Set) OnSkill() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
 		if s.core.Player.Active() != s.char.Index {
 			return false
 		}
 		m := make([]float64, attributes.EndStatType)
-		s.char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("nwew-4pc", 10*60),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		s.char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
+			AffectedStat: attributes.GeoP,
+			Amount: func() ([]float64, bool) {
 				if s.core.F <= s.lastF {
 					m[attributes.GeoP] = 0.2 * 2.5
 				} else {
