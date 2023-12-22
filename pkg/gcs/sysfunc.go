@@ -7,11 +7,13 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
@@ -33,6 +35,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
 	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
+	e.addSysFunc("pick_up_crystallize", e.pickUpCrystallize, env)
 
 	// math
 	e.addSysFunc("sin", e.sin, env)
@@ -412,6 +415,45 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Combat.KillEnemy(idx - 1)
+
+	return &null{}, nil
+}
+
+func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
+	// pick_up_crystallize("element");
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for pick_up_crystallize, expected 1 got %v", len(c.Args))
+	}
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	name, ok := t.(*strval)
+	if !ok {
+		return nil, fmt.Errorf("pick_up_crystallize argument element should evaluate to a string, got %v", t.Inspect())
+	}
+
+	// check if element is vaild
+	pickupEle := attributes.StringToEle(name.str)
+	if pickupEle == attributes.UnknownElement {
+		return nil, fmt.Errorf("pick_up_crystallize argument element %v is not a valid element", name.str)
+	}
+
+	for _, g := range e.Core.Combat.Gadgets() {
+		shard, ok := g.(*reactable.CrystallizeShard)
+		// skip if no shard
+		if !ok {
+			continue
+		}
+		// skip if shard not specified element
+		if shard.Shield.Ele != pickupEle {
+			continue
+		}
+		// try to pick up shard and stop if succeeded
+		if shard.AddShieldKillShard() {
+			break
+		}
+	}
 
 	return &null{}, nil
 }

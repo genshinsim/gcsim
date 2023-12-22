@@ -317,6 +317,22 @@ kill_target(arg);
 If `arg` is an invalid target (i.e. 3 when there are only 2 targets), then gcsim will exit with an error.
 :::
 
+## pick_up_crystallize
+
+```
+pick_up_crystallize(element);
+```
+
+- `pick_up_crystallize` will pick up the oldest crystallize shard with the specified `element` supplied as a string.
+- `pick_up_crystallize` will not pick up any shard if:
+ - no shard with the specified `element` exists 
+ - there is a shard with the specfied `element`, but it cannot be picked up yet
+- `pick_up_crystallize` will always evaluate to 0.
+
+:::danger
+`element` must be a string or an expression that evaluates to a string.
+:::
+
 ## sin
 
 ```
