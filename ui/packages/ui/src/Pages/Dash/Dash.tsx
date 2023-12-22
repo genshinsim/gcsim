@@ -1,116 +1,127 @@
-import React from 'react';
-import { Callout, Card, Elevation, Icon } from '@blueprintjs/core';
-import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { AnchorButton, Card } from "@blueprintjs/core";
+import DBEntryView from "@gcsim/db/src/SharedComponents/DBEntryView";
+import { db } from "@gcsim/types";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
+import { Link } from "react-router-dom";
+import remarkGfm from "remark-gfm";
 
-interface DashCardProps {
-  children: React.ReactNode;
-  href: string;
-  target?: string;
-}
-
-function DashCard({ children, href, target }: DashCardProps) {
-  return (
-    <div className="main-page-button-container">
-      {target ? (
-        <a href={href} target={target}>
-          <Card
-            interactive
-            elevation={Elevation.TWO}
-            className="main-page-card"
-          >
-            {children}
-          </Card>
-        </a>
-      ) : (
-        <Link to={href}>
-          <a>
-            <Card
-              interactive
-              elevation={Elevation.TWO}
-              className="main-page-card"
-            >
-              {children}
-            </Card>
-          </a>
-        </Link>
-      )}
-    </div>
-  );
-}
+const randQuery = {
+  query: {
+    $sampleRate: 0.01,
+  },
+  limit: 1,
+  skip: 0,
+  sort: {
+    create_date: -1,
+  },
+};
 
 export function Dash() {
   useTranslation();
+
+  const [{ isLoaded, text, tag }, setState] = useState({
+    isLoaded: false,
+    text: "",
+    tag: "",
+  });
+  const [data, setData] = useState<db.IEntry[]>([]);
+  const [dataIsLoaded, setDataIsLoaded] = useState(false);
+
+  useEffect(() => {
+    axios("https://api.github.com/repos/genshinsim/gcsim/releases/latest")
+      .then((resp: { data }) => {
+        console.log(resp.data);
+        setState({ isLoaded: true, text: resp.data.body, tag: resp.data.name });
+      })
+      .catch((err) => console.log("Error: " + err.message));
+    axios(`/api/db?q=${encodeURIComponent(JSON.stringify(randQuery))}`)
+      .then((resp: { data: db.IEntries }) => {
+        console.log(resp);
+        if (resp.data && resp.data.data) {
+          setData(resp.data.data);
+          console.log(resp.data.data);
+          setDataIsLoaded(true);
+        }
+      })
+      .catch((err) => console.log("Error: " + err.message));
+  }, []);
+
   return (
-    <main className="w-full flex flex-col items-center flex-grow pb-4">
-      <span>
-        <Callout intent="success" className=" max-w-[600px] mt-4">
-          Thank you for your patience. The core rewrite is now complete. Hitlag
-          has been implemented along with a ton of config syntax improvements.
-          <br />
-          <div className="mt-2 font-bold">
-            Please check out the migration guide here:{' '}
-            <a href="https://docs.gcsim.app/migration" target="_blank" rel="noreferrer">
-              Migration Guide
-            </a>
+    <main className="w-full flex flex-col items-center flex-grow gap-4 py-4 px-4">
+      <Link
+        to="/simulator"
+        role="button"
+        className="bp4-button bp4-intent-success !p-3 !rounded-md"
+        tabIndex={0}
+      >
+        <span className="bp4-button-text text-3xl md:text-4xl lg:text-5xl font-semibold">
+          Get started
+        </span>
+      </Link>
+      {/* mobile Chrome/Safari needs w-full for padding to work properly, mobile Firefox works fine though... */}
+      <div className="flex flex-col gap-4 w-full md:w-fit">
+        <Card className="flex flex-col gap-4 items-center">
+          <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
+            <b>Take a look at what users submitted:</b>
+          </h1>
+          <div>
+            {dataIsLoaded
+              ? data.map((entry, index) => (
+                  <DBEntryView
+                    dbEntry={entry}
+                    key={index}
+                    hideDescription={true}
+                  />
+                ))
+              : "Loading..."}
           </div>
-        </Callout>
-      </span>
-      <div className="flex flex-row flex-initial flex-wrap w-full lg:w-[60rem] mt-4">
-        <DashCard href="/simulator">
-          <span className="font-bold text-xl">
-            <Icon icon="calculator" className="mr-2" size={25} />
-            <Trans>dash.simulator</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="/viewer">
-          <span className="font-bold text-xl">
-            <Icon icon="chart" className="mr-2" size={25} />
-            <Trans>dash.viewer</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="https://db.gcsim.app" target="_blank">
-          <span className="font-bold text-xl">
-            <Icon icon="database" className="mr-2" size={25} />
-            <Trans>dash.teams_db</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard
-          href="https://github.com/genshinsim/gcsim/releases"
-          target="_blank"
-        >
-          <span className="font-bold text-xl">
-            <Icon icon="download" className="mr-2" size={25} />
-            <Trans>dash.desktop_tool</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="https://docs.gcsim.app" target="_blank">
-          <span className="font-bold text-xl">
-            <Icon icon="document" className="mr-2" size={25} />
-            <Trans>dash.documentation</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard
-          href="https://github.com/genshinsim/gcsim#Contributing"
-          target="_blank"
-        >
-          <span className="font-bold text-xl">
-            <Icon icon="git-branch" className="mr-2" size={25} />
-            <Trans>dash.contribute</Trans>
-          </span>
-        </DashCard>
-
-        <DashCard href="/about">
-          <span className="font-bold text-xl">
-            <Icon icon="info-sign" className="mr-2" size={25} />
-            <Trans>dash.about</Trans>
-          </span>
-        </DashCard>
+          <AnchorButton
+            href="https://simpact.app/"
+            intent="primary"
+            target="_blank"
+            className="!p-3 !rounded-md"
+          >
+            <span className="text-xl md:text-2xl font-semibold">
+              Visit the Teams DB
+            </span>
+          </AnchorButton>
+        </Card>
+        <Card className="flex flex-col items-center gap-4 overflow-x-auto">
+          {isLoaded ? (
+            <>
+              <div className="flex flex-col gap-4">
+                <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
+                  <b>Latest Release: </b>
+                  <a
+                    href={`https://github.com/genshinsim/gcsim/releases/tag/${tag}`}
+                  >
+                    {tag}
+                  </a>
+                </h1>
+              </div>
+              <div className="self-start">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {text}
+                </ReactMarkdown>
+              </div>
+              <AnchorButton
+                href="https://github.com/genshinsim/gcsim/releases"
+                intent="primary"
+                target="_blank"
+                className="!p-3 !rounded-md"
+              >
+                <span className="text-xl md:text-2xl font-semibold">
+                  View Releases on GitHub
+                </span>
+              </AnchorButton>
+            </>
+          ) : (
+            "Loading..."
+          )}
+        </Card>
       </div>
     </main>
   );

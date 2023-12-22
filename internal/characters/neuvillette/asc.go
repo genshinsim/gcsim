@@ -1,8 +1,11 @@
 package neuvillette
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -68,10 +71,48 @@ func (c *char) a4() {
 		},
 	})
 
-	c.a4Tick()
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+
+		if di.Amount <= 0 {
+			return false
+		}
+
+		if di.ActorIndex != c.Index {
+			return false
+		}
+
+		c.updateA4()
+
+		return false
+	}, "neuv-a4-update-on-hp-drain")
+
+	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+		target := args[1].(int)
+		amount := args[2].(float64)
+		overheal := args[3].(float64)
+
+		if amount <= 0 {
+			return false
+		}
+
+		if math.Abs(amount-overheal) <= 1e-9 {
+			return false
+		}
+
+		if target != c.Index {
+			return false
+		}
+
+		c.updateA4()
+
+		return false
+	}, "neuv-a4-update-on-heal")
+
+	c.updateA4()
 }
 
-func (c *char) a4Tick() {
+func (c *char) updateA4() {
 	hpRatio := c.CurrentHPRatio()
 	hydroDmgBuff := (hpRatio - 0.3) * 0.6
 
@@ -82,7 +123,4 @@ func (c *char) a4Tick() {
 	}
 
 	c.a4Buff[attributes.HydroP] = hydroDmgBuff
-
-	// Tick every 2s
-	c.QueueCharTask(c.a4Tick, 120)
 }

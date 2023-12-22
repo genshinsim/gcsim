@@ -14,19 +14,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const icdKey = "dockhands-assistant-icd"
-
-var symbol = []string{"unity-symbol-0", "unity-symbol-1", "unity-symbol-2"}
+const (
+	symbolKey      = "dockhands-assistant-symbol"
+	symbolDuration = 30 * 60
+	icdKey         = "dockhands-assistant-icd"
+	icdDuration    = 15 * 60
+	buffKey        = "dockhands-assistant-em"
+	buffDuration   = 10 * 60
+)
 
 func init() {
 	core.RegisterWeaponFunc(keys.TheDockhandsAssistant, NewWeapon)
 }
 
 type Weapon struct {
-	core   *core.Core
-	char   *character.CharWrapper
-	refine int
-	buff   []float64
+	stacks int
 	Index  int
 }
 
@@ -39,15 +41,11 @@ func (w *Weapon) Init() error      { return nil }
 // and 2s after the effect occurs, 2/2.5/3/3.5/4 Energy per Symbol consumed will be restored for said character.
 // The Roused effect can be triggered once every 15s,
 // and Symbols can be gained even when the character is not on the field.
-
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{
-		core:   c,
-		char:   char,
-		refine: p.Refine,
-		buff:   make([]float64, attributes.EndStatType),
-	}
+	w := &Weapon{}
+	r := p.Refine
 
+	// gain symbols
 	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		source := args[0].(*player.HealInfo)
 		index := args[1].(int)
@@ -59,66 +57,63 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return false
 		}
 
-		// override oldest symbol
-		idx := 0
-		for i, s := range symbol {
-			if char.StatusExpiry(s) < char.StatusExpiry(symbol[idx]) {
-				idx = i
-			}
+		if !char.StatusIsActive(symbolKey) {
+			w.stacks = 0
 		}
-		char.AddStatus(symbol[idx], 30*60, true)
-
-		c.Log.NewEvent("dockhands-assistant proc'd", glog.LogWeaponEvent, char.Index).
-			Write("index", idx)
-
+		if w.stacks < 3 {
+			w.stacks++
+		}
+		c.Log.NewEvent("dockhands-assistant adding stack", glog.LogWeaponEvent, char.Index).
+			Write("stacks", w.stacks)
+		char.AddStatus(symbolKey, symbolDuration, true)
 		return false
 	}, fmt.Sprintf("dockhands-assistant-heal-%v", char.Base.Key.String()))
 
-	key := fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String())
-	c.Events.Subscribe(event.OnBurst, w.consumeEnergy, key)
-	c.Events.Subscribe(event.OnSkill, w.consumeEnergy, key)
-	return w, nil
-}
-
-func (w *Weapon) consumeEnergy(args ...interface{}) bool {
-	em := 30 + 10*float64(w.refine)
-	refund := 1.5 + 0.5*float64(w.refine)
-
-	// check for active before deleting symbol
-	if w.char.StatusIsActive(icdKey) {
-		return false
-	}
-	if w.core.Player.Active() != w.char.Index {
-		return false
-	}
-
-	count := 0
-	for _, s := range symbol {
-		if w.char.StatusIsActive(s) {
-			count++
+	// consume symbols
+	em := 30 + 10*float64(r)
+	refund := 1.5 + 0.5*float64(r)
+	m := make([]float64, attributes.EndStatType)
+	buffFunc := func(args ...interface{}) bool {
+		// skip if no symbols (status not active implies symbols == 0)
+		if !char.StatusIsActive(symbolKey) {
+			return false
 		}
-		w.char.DeleteStatus(s)
-	}
-	if count == 0 {
+		// skip if trigger on icd
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		// check for active before deleting symbol
+		if c.Player.Active() != char.Index {
+			return false
+		}
+		// add icd
+		char.AddStatus(icdKey, icdDuration, true)
+
+		// consume symbols
+		count := w.stacks
+		char.DeleteStatus(symbolKey)
+		w.stacks = 0
+
+		// add em buff
+		m[attributes.EM] = em * float64(count)
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(buffKey, 10*60),
+			AffectedStat: attributes.EM,
+			Amount: func() ([]float64, bool) {
+				return m, true
+			},
+		})
+
+		// regen energy after 2 secs
+		char.QueueCharTask(func() {
+			char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
+		}, 2*60)
+
 		return false
 	}
+	key := fmt.Sprintf("dockhands-assistant-roused-%v", char.Base.Key.String())
+	c.Events.Subscribe(event.OnBurst, buffFunc, key)
+	c.Events.Subscribe(event.OnSkill, buffFunc, key)
 
-	w.char.AddStatus(icdKey, 15*60, true)
-	w.buff[attributes.EM] = em * float64(count)
-
-	// add em buff
-	w.char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag("dockhands-assistant-em", 10*60),
-		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
-			return w.buff, true
-		},
-	})
-
-	// regen energy after 2 secs
-	w.char.QueueCharTask(func() {
-		w.char.AddEnergy("dockhands-assistant-energy", refund*float64(count))
-	}, 2*60)
-
-	return false
+	return w, nil
 }

@@ -59,6 +59,7 @@ var setNames = []string{
 	"maidenbeloved",
 	"marechausseehunter",
 	"martialartist",
+	"nighttimewhispersintheechoingwoods",
 	"noblesseoblige",
 	"nymphsdream",
 	"oceanhuedclam",
@@ -71,6 +72,7 @@ var setNames = []string{
 	"retracingbolide",
 	"scholar",
 	"shimenawasreminiscence",
+	"songofdayspast",
 	"tenacityofthemillelith",
 	"theexile",
 	"thunderingfury",
@@ -110,6 +112,7 @@ const (
 	MaidenBeloved
 	MarechausseeHunter
 	MartialArtist
+	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
 	NymphsDream
 	OceanHuedClam
@@ -122,6 +125,7 @@ const (
 	RetracingBolide
 	Scholar
 	ShimenawasReminiscence
+	SongOfDaysPast
 	TenacityOfTheMillelith
 	TheExile
 	ThunderingFury

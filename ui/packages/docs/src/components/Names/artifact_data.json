@@ -74,6 +74,11 @@
     "mh"
   ],
   "martialartist": [],
+  "nighttimewhispersintheechoingwoods": [
+    "nighttimewhispers",
+    "echoingwoods",
+    "nighttime"
+  ],
   "noblesseoblige": [
     "noblesse",
     "no"
@@ -98,6 +103,9 @@
     "shime",
     "shim",
     "sr"
+  ],  
+  "songofdayspast": [
+    "sodp"
   ],
   "tenacityofthemillelith": [
     "tom",

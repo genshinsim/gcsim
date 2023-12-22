@@ -44,6 +44,7 @@ const (
 	// other stuff
 	OnStamUse          // abil
 	OnShielded         // shield
+	OnShieldBreak      // shield break
 	OnCharacterSwap    // prev, next
 	OnParticleReceived // particle
 	OnEnergyChange     // character_received_index, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
