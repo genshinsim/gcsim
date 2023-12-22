@@ -99,8 +99,9 @@ func parseOptions(p *Parser) (parseFn, error) {
 						return nil, fmt.Errorf("ln%v: unrecognized option for frame_defaults specified: %v", n.line, n.Val)
 					}
 				}
-			case "er_calc":
-				// does nothing thus far...
+			case "ignore_burst_energy":
+				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
+				p.res.Settings.IgnoreBurstEnergy = n.Val == TrueVal
 			default:
 				return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.line, n.Val)
 			}
