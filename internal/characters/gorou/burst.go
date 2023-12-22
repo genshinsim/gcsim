@@ -1,12 +1,15 @@
 package gorou
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var burstFrames []int
@@ -118,11 +121,34 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			FlatDmg:    c.a4Burst(),
 			UseDef:     true,
 		}
-
-		enemy := c.Core.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8), nil)
+		collapseArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
+		enemy := c.Core.Combat.ClosestEnemyWithinArea(collapseArea, nil)
 		if enemy != nil {
 			//TODO: skill damage frames
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(enemy, nil, 3.5), 0, 1)
+		}
+
+		// suck in crystallize shards
+		for i := 0; i < c.Core.Combat.GadgetCount(); i++ {
+			cs, ok := c.Core.Combat.Gadget(i).(*reactable.CrystallizeShard)
+			// skip if no shard
+			if !ok {
+				continue
+			}
+			// skip if shard not in area
+			if !cs.IsWithinArea(collapseArea) {
+				continue
+			}
+			// approximate sucking in as 0.4m per frame (~8m distance took 20f to arrive at gorou)
+			distance := cs.Pos().Distance(collapseArea.Shape.Pos())
+			travel := int(math.Ceil(distance / 0.4))
+			// special check to account for edge case if shard just spawned and will arrive before it can be picked up
+			if c.Core.F+travel < cs.EarliestPickup {
+				continue
+			}
+			c.Core.Tasks.Add(func() {
+				cs.AddShieldKillShard()
+			}, travel)
 		}
 
 		// tick every 1.5s
