@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -64,15 +65,8 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 		return false
 	}
 	r.crystallizeGCD = r.core.F + 60
-	// grab current snapshot for shield
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
-	ai := combat.AttackInfo{
-		ActorIndex: a.Info.ActorIndex,
-		DamageSrc:  r.self.Key(),
-		Abil:       string(rt),
-	}
-	snap := char.Snapshot(&ai)
-	r.addCrystallizeShard(char.Index, ele, r.core.F, snap.CharLvl, snap.Stats[attributes.EM])
+	r.addCrystallizeShard(char, rt, ele, r.core.F)
 	// reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
 	//TODO: confirm u can only crystallize once
@@ -229,12 +223,21 @@ type CrystallizeShard struct {
 // TODO: add sys func to pick up shard (add docs)
 // TODO: add conditional for shard count (one for all and then one per element, add docs)
 // TODO: check if em snapshots for shield strength on crystallize trigger -> looks like it snaps EM when the shard is spawned/avail for pickup?
-func (r *Reactable) addCrystallizeShard(index int, typ attributes.Element, src, lvl int, em float64) {
+func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt reactions.ReactionType, typ attributes.Element, src int) {
 	// delay shard spawn
 	r.core.Tasks.Add(func() {
+		// grab current snapshot for shield
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
+			DamageSrc:  r.self.Key(),
+			Abil:       string(rt),
+		}
+		snap := char.Snapshot(&ai)
+		lvl := snap.CharLvl
 		// shield snapshots em on shard spawn
+		em := snap.Stats[attributes.EM]
 		// expiry will get set properly later
-		shd := NewCrystallizeShield(index, typ, src, lvl, em, -1)
+		shd := NewCrystallizeShield(char.Index, typ, src, lvl, em, -1)
 		cs := NewCrystallizeShard(r.core, r.self.Shape(), shd)
 		r.core.Combat.AddGadget(cs)
 		r.core.Log.NewEvent(
