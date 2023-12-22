@@ -29,6 +29,7 @@ type Set struct {
 	core       *core.Core
 	char       *character.CharWrapper
 	healStacks float64
+	snapHeal   float64
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
@@ -39,6 +40,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		core:       c,
 		char:       char,
 		healStacks: 0,
+		snapHeal:   0,
 	}
 
 	if count >= 2 {
@@ -63,9 +65,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 func (s *Set) OnHeal() func(args ...interface{}) bool {
 	return func(args ...interface{}) bool {
-		if s.core.Status.Duration(wavesOfDaysPastKey) > 0 {
-			return false
-		}
 		src := args[0].(*player.HealInfo)
 		healAmt := args[2].(float64)
 		if src.Caller != s.char.Index {
@@ -78,6 +77,8 @@ func (s *Set) OnHeal() func(args ...interface{}) bool {
 		if s.core.Status.Duration(yearningKey) == 0 {
 			s.core.Status.Add(yearningKey, 6*60)
 			s.core.Tasks.Add(func() {
+				s.snapHeal = s.healStacks
+				s.healStacks = 0
 				s.core.Status.Add(wavesOfDaysPastKey, 10*60)
 				s.core.Flags.Custom[wavesOfDaysPastKey] = 5
 			}, 6*60)
@@ -99,20 +100,19 @@ func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
 		default:
 			return false
 		}
-		char := s.core.Player.ByIndex(atk.Info.ActorIndex)
 		if s.core.Status.Duration(wavesOfDaysPastKey) == 0 {
 			return false
 		}
-		if char.Index != s.core.Player.Active() {
+		if atk.Info.ActorIndex != s.core.Player.Active() {
 			return false
 		}
 		if s.core.Flags.Custom[wavesOfDaysPastKey] > 0 {
 			s.core.Flags.Custom[wavesOfDaysPastKey]--
-			amt := s.healStacks * 0.08
+			amt := s.snapHeal * 0.08
 			atk.Info.FlatDmg += amt
 		}
 		if s.core.Flags.Custom[wavesOfDaysPastKey] == 0 {
-			s.healStacks = 0
+			s.core.Status.Delete(wavesOfDaysPastKey)
 		}
 		return false
 	}
