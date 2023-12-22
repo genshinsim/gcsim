@@ -128,7 +128,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(enemy, nil, 3.5), 0, 1)
 		}
 
-		// suck in crystallize shards
+		// suck in 1 crystallize shard
 		for i := 0; i < c.Core.Combat.GadgetCount(); i++ {
 			cs, ok := c.Core.Combat.Gadget(i).(*reactable.CrystallizeShard)
 			// skip if no shard
@@ -149,6 +149,7 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 			c.Core.Tasks.Add(func() {
 				cs.AddShieldKillShard()
 			}, travel)
+			break
 		}
 
 		// tick every 1.5s
