@@ -68,6 +68,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 2 {
 			w.stacks++
 		}
+		c.Log.NewEvent("verdict adding stack", glog.LogWeaponEvent, char.Index).
+			Write("stacks", w.stacks)
 		char.AddStatus(buffKey, buffDuration, true)
 		return false
 	}, fmt.Sprintf("verdict-seal-%v", char.Base.Key.String()))

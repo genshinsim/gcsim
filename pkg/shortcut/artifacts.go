@@ -90,6 +90,8 @@ var SetNameToKey = map[string]keys.Set{
 	"shime":                              keys.ShimenawasReminiscence,
 	"shim":                               keys.ShimenawasReminiscence,
 	"sr":                                 keys.ShimenawasReminiscence,
+  "songofdayspast":                     keys.SongOfDaysPast,
+	"sodp":                               keys.SongOfDaysPast,
 	"tenacityofthemillelith":             keys.TenacityOfTheMillelith,
 	"tom":                                keys.TenacityOfTheMillelith,
 	"totm":                               keys.TenacityOfTheMillelith,
