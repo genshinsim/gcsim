@@ -218,11 +218,6 @@ type CrystallizeShard struct {
 	expiry int
 }
 
-// TODO: check gadget limit
-// TODO: check shard replacement logic
-// TODO: add sys func to pick up shard (add docs)
-// TODO: add conditional for shard count (one for all and then one per element, add docs)
-// TODO: check if em snapshots for shield strength on crystallize trigger -> looks like it snaps EM when the shard is spawned/avail for pickup?
 func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt reactions.ReactionType, typ attributes.Element, src int) {
 	// delay shard spawn
 	r.core.Tasks.Add(func() {
