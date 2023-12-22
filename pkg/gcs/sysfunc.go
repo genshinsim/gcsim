@@ -435,10 +435,11 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	// check if element is vaild
 	pickupEle := attributes.StringToEle(name.str)
-	if pickupEle == attributes.UnknownElement {
+	if pickupEle == attributes.UnknownElement && name.str != "any" {
 		return nil, fmt.Errorf("pick_up_crystallize argument element %v is not a valid element", name.str)
 	}
 
+	var count int64
 	for _, g := range e.Core.Combat.Gadgets() {
 		shard, ok := g.(*reactable.CrystallizeShard)
 		// skip if no shard
@@ -446,16 +447,19 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 			continue
 		}
 		// skip if shard not specified element
-		if shard.Shield.Ele != pickupEle {
+		if pickupEle != attributes.UnknownElement && shard.Shield.Ele != pickupEle {
 			continue
 		}
 		// try to pick up shard and stop if succeeded
 		if shard.AddShieldKillShard() {
+			count = 1
 			break
 		}
 	}
 
-	return &null{}, nil
+	return &number{
+		ival: count,
+	}, nil
 }
 
 func (e *Eval) sin(c *ast.CallExpr, env *Env) (Obj, error) {
