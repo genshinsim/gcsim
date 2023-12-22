@@ -1,11 +1,18 @@
 package reactable
 
 import (
+	"fmt"
+
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/core/reactions"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
 type CrystallizeShield struct {
@@ -58,16 +65,8 @@ func (r *Reactable) tryCrystallizeWithEle(a *combat.AttackEvent, ele attributes.
 		return false
 	}
 	r.crystallizeGCD = r.core.F + 60
-	// grab current snapshot for shield
 	char := r.core.Player.ByIndex(a.Info.ActorIndex)
-	ai := combat.AttackInfo{
-		ActorIndex: a.Info.ActorIndex,
-		DamageSrc:  r.self.Key(),
-		Abil:       string(rt),
-	}
-	snap := char.Snapshot(&ai)
-	shd := NewCrystallizeShield(char.Index, ele, r.core.F, snap.CharLvl, snap.Stats[attributes.EM], r.core.F+900)
-	r.core.Player.Shields.Add(shd)
+	r.addCrystallizeShard(char, rt, ele, r.core.F)
 	// reduce
 	r.reduce(ele, a.Info.Durability, 0.5)
 	//TODO: confirm u can only crystallize once
@@ -206,4 +205,107 @@ var shieldBaseHP = []float64{
 	1785.86657714844,
 	1817.13745117188,
 	1851.06030273438,
+}
+
+type CrystallizeShard struct {
+	*gadget.Gadget
+	// earliest that a shard can be picked up after spawn
+	EarliestPickup int
+	// captures the shield because em snapshots
+	Shield *CrystallizeShield
+	// for logging purposes
+	src    int
+	expiry int
+}
+
+func (r *Reactable) addCrystallizeShard(char *character.CharWrapper, rt reactions.ReactionType, typ attributes.Element, src int) {
+	// delay shard spawn
+	r.core.Tasks.Add(func() {
+		// grab current snapshot for shield
+		ai := combat.AttackInfo{
+			ActorIndex: char.Index,
+			DamageSrc:  r.self.Key(),
+			Abil:       string(rt),
+		}
+		snap := char.Snapshot(&ai)
+		lvl := snap.CharLvl
+		// shield snapshots em on shard spawn
+		em := snap.Stats[attributes.EM]
+		// expiry will get set properly later
+		shd := NewCrystallizeShield(char.Index, typ, src, lvl, em, -1)
+		cs := NewCrystallizeShard(r.core, r.self.Shape(), shd)
+		r.core.Combat.AddGadget(cs)
+		r.core.Log.NewEvent(
+			fmt.Sprintf("%v crystallize shard spawned", cs.Shield.Ele),
+			glog.LogElementEvent,
+			cs.Shield.ActorIndex,
+		).
+			Write("src", cs.src).
+			Write("expiry", cs.expiry).
+			Write("earliest_pickup", cs.EarliestPickup)
+	}, 23)
+}
+
+func NewCrystallizeShard(c *core.Core, shp geometry.Shape, shd *CrystallizeShield) *CrystallizeShard {
+	cs := &CrystallizeShard{}
+
+	circ, ok := shp.(*geometry.Circle)
+	if !ok {
+		panic("rectangle target hurtbox is not supported for crystallize shard spawning")
+	}
+
+	// for simplicity, crystallize shards spawn randomly at radius + 0.5
+	r := circ.Radius() + 0.5
+	// radius 2 is ok
+	cs.Gadget = gadget.New(c, geometry.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
+
+	// shard lasts for 15s from shard spawn
+	cs.Gadget.Duration = 15 * 60
+	// earliest shard pickup is 54f from crystallize text, so 31f from shard spawn
+	cs.EarliestPickup = c.F + 31
+	cs.Shield = shd
+	cs.src = c.F
+	cs.expiry = c.F + cs.Gadget.Duration
+
+	return cs
+}
+
+func (cs *CrystallizeShard) AddShieldKillShard() bool {
+	// don't pick up if shard is not available for pick up yet
+	if cs.Core.F < cs.EarliestPickup {
+		cs.Core.Log.NewEvent(
+			fmt.Sprintf("%v crystallize shard could not be picked up", cs.Shield.Ele),
+			glog.LogElementEvent,
+			cs.Core.Player.Active(),
+		).
+			Write("src", cs.src).
+			Write("expiry", cs.expiry).
+			Write("earliest_pickup", cs.EarliestPickup)
+		return false
+	}
+	cs.Core.Log.NewEvent(
+		fmt.Sprintf("%v crystallize shard picked up", cs.Shield.Ele),
+		glog.LogElementEvent,
+		cs.Core.Player.Active(),
+	).
+		Write("src", cs.src).
+		Write("expiry", cs.expiry).
+		Write("earliest_pickup", cs.EarliestPickup)
+	// add shield
+	cs.Shield.Expires = cs.Core.F + 15.1*60 // shield lasts for 15.1s from shard pickup
+	cs.Core.Player.Shields.Add(cs.Shield)
+	// kill self
+	cs.Kill()
+	return true
+}
+
+func (cs *CrystallizeShard) HandleAttack(atk *combat.AttackEvent) float64 {
+	cs.Core.Events.Emit(event.OnGadgetHit, cs, atk)
+	return 0
+}
+func (cs *CrystallizeShard) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
+func (cs *CrystallizeShard) SetDirection(trg geometry.Point)                        {}
+func (cs *CrystallizeShard) SetDirectionToClosestEnemy()                            {}
+func (cs *CrystallizeShard) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
 }

@@ -28,6 +28,7 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | `construct` | `duration`/`count` | construct name | - | Evaluates to the duration/count of the specified construct. See individual character page for acceptable construct names. |
 | `gadgets` | `dendrocore` | `count` | - | Evaluates to the current number of Dendro Cores. |
 | `gadgets` | `sourcewaterdroplet` | `count` | - | Evaluates to the current number of Sourcewater Droplets. Use character specific fields to get number of Sourcewater Droplets in range. |
+| `gadgets` | `crystallizeshard` | `all`/`pyro`/`hydro`/`electro`/`cryo` | - | Evaluates to the current number of Crystallize Shards that can be picked up. `count` will return the total number of Crystallize Shards while the others will only count the ones of the given element. |
 | `keys` | `char`/`weapon`/`artifact` | char/weapon/artifact name | - | Evaluates to the key for the specified char/weapon/artifact name. See the relevant character/weapon/artifact page for acceptable names. |
 | `action` |  `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | - | Evaluates to the key for the specified action name. |
 | `state` | - | - | - | Evaluates to the current state of the player. | 
@@ -36,7 +37,7 @@ For example, if you are looking for the tag for Lisa's A4 (defense shred), then 
 | character name | `cons` | - | - | Evaluates to the character's constellation count. |
 | character name | `energy` | - | - | Evaluates to the character's current energy. |
 | character name | `energymax` | - | - | Evaluates to the character's maximum energy. |
-| character name | `normal` | - | - | Evaluates to the character's next normal counter. Example: If the character is at N1, then the next normal counter is `1` (N2). |
+| character name | `normal` | - | - | Evaluates to the character's next normal counter. Example: If the character is in idle or just performed their last normal attack, then the next normal counter is `1` (N1). |
 | character name | `onfield` | - | - | `1` if the character is on the field, `0` otherwise. |
 | character name | `weapon` | - | - | Evaluates to the character's weapon. Use `.keys.weapon.<weapon name>` for comparison purposes.
 | character name | `mods`/`status` | mod/status name | - | Evaluates to the remaining duration of the mod/status on the character. See the relevant character page for acceptable mod/status names. | 
