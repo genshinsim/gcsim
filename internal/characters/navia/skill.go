@@ -40,7 +40,7 @@ var skillMultiplier = []float64{
 }
 
 var hitscans = [][]float64{
-	{0.9, 0, 0, 9},
+	{0.9, 0, 0, 0},
 	{0.25, 7.911, 0, 0},
 	{0.25, -1.826, 0, 0},
 	{0.25, -4.325, 0, 0},
@@ -51,6 +51,7 @@ var hitscans = [][]float64{
 	{0.25, -7.933, -0.01, -0.01},
 	{0.25, 2.626, 0, 0},
 	{0.25, -5.43724, 0, 0},
+	//width, angle, x offset, y offset
 }
 
 const (
@@ -194,16 +195,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			// Looks for enemies in the path of each bullet
 			// Initially trims enemies to check by scanning only the hit zone
 			for _, t := range c.Core.Combat.EnemiesWithinArea(
-				combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0}, 25, 15),
+				combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0}, 11.5, 15),
 				nil,
 			) {
 				// Tallies up the hits
 				hits := 0
 				for i := 0; i < shots; i++ {
 					if ok, _ := t.AttackWillLand(combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: hitscans[i][2],
-						Y: hitscans[i][3]}.Rotate(geometry.Point{X: math.Sin(hitscans[i][0]),
-						Y: math.Cos(hitscans[i][0])}),
-						11.5, hitscans[i][1])); ok {
+						Y: hitscans[i][3]}.Rotate(geometry.DegreesToDirection(hitscans[i][1])),
+						hitscans[i][0], 11.5)); ok {
 						hits++
 					}
 				}

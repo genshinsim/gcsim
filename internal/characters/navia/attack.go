@@ -46,17 +46,17 @@ func (c *char) Attack(_ map[string]int) (action.Info, error) {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		ap := combat.NewBoxHitOnTarget(
+		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
-			attackHitboxes[c.NormalCounter][1],
 		)
-		if c.NormalCounter == 1 {
-			ap = combat.NewCircleHitOnTarget(
+		if c.NormalCounter != 0 {
+			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
 				geometry.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
+				attackHitboxes[c.NormalCounter][1],
 			)
 		}
 		c.QueueCharTask(func() {
