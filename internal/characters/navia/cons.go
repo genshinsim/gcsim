@@ -60,7 +60,7 @@ func (c *char) c2() combat.AttackCBFunc {
 			ai,
 			combat.NewCircleHitOnTarget(e.Pos(), nil, 3),
 			0,
-			0,
+			9,
 			c.BurstCB(),
 			c.c4(),
 		)

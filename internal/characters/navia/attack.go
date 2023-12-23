@@ -12,12 +12,11 @@ import (
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{29}, {40}, {59, 65, 71}, {82}}
-	attackHitlagHaltFrame = [][]float64{{0.09}, {.12}, {0, 0, 0}, {.09}}
+	attackHitmarks        = [][]int{{23}, {22}, {31, 39, 38}, {41}}
+	attackHitlagHaltFrame = [][]float64{{0.06}, {0.06}, {0.01, 0.01, 0.01}, {.06}}
 	attackDefHalt         = [][]bool{{true}, {true}, {false, false, false}, {true}}
-	attackHitboxes        = [][]float64{{2}, {2}, {2}, {2}}
-	attackOffsets         = []float64{0.5, 0.5, 0.5, 0}
-	attackFanAngles       = []float64{270, 270, 360, 270}
+	attackHitboxes        = [][]float64{{2}, {4.3, 2}, {4.5, 3}, {4.7, 2}}
+	attackOffsets         = []float64{0.5, -1.5, 1, -1.85}
 )
 
 const normalHitNum = 4
@@ -25,10 +24,10 @@ const normalHitNum = 4
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 32)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 28)
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 42)
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 43)
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 82)
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 48)
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 93)
 }
 
 func (c *char) Attack(_ map[string]int) (action.Info, error) {
@@ -47,18 +46,17 @@ func (c *char) Attack(_ map[string]int) (action.Info, error) {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
 		}
-		ap := combat.NewCircleHitOnTargetFanAngle(
+		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
-			attackFanAngles[c.NormalCounter],
+			attackHitboxes[c.NormalCounter][1],
 		)
-		if c.NormalCounter == 4 {
-			ap = combat.NewBoxHitOnTarget(
+		if c.NormalCounter == 1 {
+			ap = combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
 				geometry.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
-				attackHitboxes[c.NormalCounter][1],
 			)
 		}
 		c.QueueCharTask(func() {

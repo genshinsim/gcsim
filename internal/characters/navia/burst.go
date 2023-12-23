@@ -11,18 +11,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var burstFrames []int
+var (
+	burstFrames []int
+)
 
 const (
-	burstHitmark  = 100
+	burstHitmark  = 104
 	burstKey      = "navia-artillery"
 	burstDuration = 720
 	targetRadius  = 10
+	burstDelay    = 154
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(114)
-	burstFrames[action.ActionSkill] = 114
+	burstFrames = frames.InitAbilSlice(102)
+	burstFrames[action.ActionSwap] = 93
+	burstFrames[action.ActionWalk] = 127
 }
 
 // On the orders of the President of the Spina di Rosula, call for a magnificent
@@ -51,19 +55,19 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 
 	c.QueueCharTask(
 		func() {
-			c.AddStatus(burstKey, burstDuration, false)
+			c.AddStatus(burstKey, burstDuration+burstDelay, false)
 			c.naviaburst = true
 		},
-		burstHitmark,
+		burstDelay,
 	)
 	c.QueueCharTask(
 		func() {
 			c.naviaburst = false
 		},
-		burstHitmark+burstDuration,
+		burstDuration+burstDelay,
 	)
 
-	c.ConsumeEnergy(5)
+	c.ConsumeEnergy(12)
 	c.SetCD(action.ActionBurst, 15*60)
 
 	ai.Abil = "Fire Support"
@@ -77,13 +81,12 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		Snapshot:    snap,
 		SourceFrame: c.Core.F,
 	}
-
-	for i := 45; i <= burstDuration; i += 45 {
+	for i, j := 3, 0; i <= burstDuration; i += BurstInterval(j) {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.location(targetRadius), nil, 3),
-			burstHitmark+i,
-			burstHitmark+i,
+			burstDelay+i,
+			burstDelay+i+9,
 			c.BurstCB(),
 			c.c4(),
 		)
@@ -95,6 +98,16 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
+}
+
+func BurstInterval(j int) int {
+	if j%3 == 1 {
+		j++
+		return 48
+	} else {
+		j++
+		return 42
+	}
 }
 
 // When attacks from Golden Rose's Salute hit opponents, Navia will gain 1 charge
@@ -116,7 +129,7 @@ func (c *char) BurstCB() combat.AttackCBFunc {
 
 		}
 
-		c.AddStatus("navia-q-shrapnel-icd", 2.4*60-1, false)
+		c.AddStatus("navia-q-shrapnel-icd", 2.4*60, false)
 	}
 
 }
