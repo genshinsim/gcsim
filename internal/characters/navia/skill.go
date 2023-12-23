@@ -122,9 +122,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.SetCDWithDelay(action.ActionSkill, 9*60, skillPressCDStart)
 	}
 	shots := 5
-	if p["shrapnel"] != 0 {
-		c.shrapnel = int(math.Min(float64(p["shrapnel"]), 6))
-	}
+	
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rosula Shardshot",
@@ -139,6 +137,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.QueueCharTask(
 		func() {
+			if p["shrapnel"] != 0 {
+				c.shrapnel = int(math.Min(float64(p["shrapnel"]), 6))
+			}
 			c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
 			shots = 5 + int(math.Min(float64(c.shrapnel), 3))*2
 
@@ -146,7 +147,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			excess := math.Max(float64(c.shrapnel-3), 0)
 			m := make([]float64, attributes.EndStatType)
 			c.AddAttackMod(character.AttackMod{
-				Base: modifier.NewBase("navia-skill-dmgup", travelDelay),
+				Base: modifier.NewBase("navia-skill-dmgup", travelDelay+1),
 				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 					if atk.Info.AttackTag != attacks.AttackTagElementalArt {
 						return nil, false
