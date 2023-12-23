@@ -114,37 +114,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// At 0.25, tap is converted to hold, and the suction begins
 		// TODO: Confirm suction begins at 15f
 		for i := 15; i < firingTime; i += 30 {
-			for j, k := 0, 0; j < c.Core.Combat.GadgetCount(); j++ {
-				cs, ok := c.Core.Combat.Gadget(j).(*reactable.CrystallizeShard)
-				// skip if not a shard
-				if !ok {
-					continue
-				}
-
-				// If shard is out of 12m range, skip
-				if !cs.IsWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 12)) {
-					continue
-				}
-
-				// approximate sucking in as 0.4m per frame (~8m distance took 20f to arrive at gorou)
-				distance := cs.Pos().Distance(c.Core.Combat.Player().Pos())
-				travel := int(math.Ceil(distance / 0.4))
-				// if the crystal won't arrive before the shot is fired, skip
-				if firingTime-i < travel {
-					continue
-				}
-				// special check to account for edge case if shard just spawned and will arrive before it can be picked up
-				if c.Core.F+travel < cs.EarliestPickup {
-					continue
-				}
-				c.Core.Tasks.Add(func() {
-					cs.AddShieldKillShard()
-				}, travel)
-				k++
-				if k >= 3 {
-					break
-				}
-			}
+			c.PullCrystals(firingTime, i)
 		}
 		c.SetCDWithDelay(action.ActionSkill, 9*60, skillHoldCDStart+hold)
 	} else {
@@ -348,4 +318,41 @@ func (c *char) SurgingBlade() {
 		)
 	}
 	return
+}
+
+// PullCrystals to Navia. This has a range of 12m from datamine, so
+// check every every 30f. 
+func (c *char) PullCrystals(firingTime, i int) {
+	for j, k := 0, 0; j < c.Core.Combat.GadgetCount(); j++ {
+		cs, ok := c.Core.Combat.Gadget(j).(*reactable.CrystallizeShard)
+		// skip if not a shard
+		if !ok {
+			continue
+		}
+
+		// If shard is out of 12m range, skip
+		if !cs.IsWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 12)) {
+			continue
+		}
+
+		// approximate sucking in as 0.4m per frame (~8m distance took 20f to arrive at gorou)
+		distance := cs.Pos().Distance(c.Core.Combat.Player().Pos())
+		travel := int(math.Ceil(distance / 0.4))
+		// if the crystal won't arrive before the shot is fired, skip
+		if firingTime-i < travel {
+			continue
+		}
+		// special check to account for edge case if shard just spawned and will arrive before it can be picked up
+		if c.Core.F+travel < cs.EarliestPickup {
+			continue
+		}
+		c.Core.Tasks.Add(func() {
+			cs.AddShieldKillShard()
+		}, travel)
+		// max three crystals
+		k++
+		if k >= 3 {
+			break
+		}
+	}
 }
