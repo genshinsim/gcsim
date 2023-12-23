@@ -103,11 +103,12 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.c2ready = true
+	shrapnel := 0
 	hold := p["hold"]
 	firingTime := 0
 	if hold > 0 {
 		if hold > skillHoldDuration {
-			hold = skillHoldDuration
+			hold = skillHoldDuration - 1
 		}
 		firingTime += skillHoldCDStart + hold - 1
 
@@ -142,7 +143,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			}
 			c.Core.Log.NewEvent(fmt.Sprintf("%v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
 			shots = 5 + int(math.Min(float64(c.shrapnel), 3))*2
-
+			shrapnel = c.shrapnel
 			// Calculate buffs based on excess shrapnel
 			excess := math.Max(float64(c.shrapnel-3), 0)
 			m := make([]float64, attributes.EndStatType)
@@ -205,32 +206,32 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.c2ready = false
 	if hold > 1 {
-		if shots >= 11 {
+		if shrapnel >= 3 {
 			return action.Info{
-				Frames:          frames.NewAbilFunc(skillPowerHoldFrames),
-				AnimationLength: skillPowerHoldFrames[action.ActionDash] + hold,
+				Frames:          func(next action.Action) int { return hold + skillPowerHoldFrames[next] },
+				AnimationLength: skillPowerHoldFrames[action.InvalidAction] + hold,
 				CanQueueAfter:   skillPowerHoldFrames[action.ActionDash] + hold,
 				State:           action.SkillState,
 			}, nil
 		}
 		return action.Info{
-			Frames:          frames.NewAbilFunc(skillHoldFrames),
-			AnimationLength: skillHoldFrames[action.ActionDash] + hold,
+			Frames:          func(next action.Action) int { return hold + skillHoldFrames[next] },
+			AnimationLength: skillHoldFrames[action.InvalidAction] + hold,
 			CanQueueAfter:   skillHoldFrames[action.ActionDash] + hold,
 			State:           action.SkillState,
 		}, nil
 	}
-	if shots >= 11 {
+	if shrapnel >= 3 {
 		return action.Info{
 			Frames:          frames.NewAbilFunc(skillPowerPressFrames),
-			AnimationLength: skillPowerPressFrames[action.ActionDash],
+			AnimationLength: skillPowerPressFrames[action.InvalidAction],
 			CanQueueAfter:   skillPowerPressFrames[action.ActionDash],
 			State:           action.SkillState,
 		}, nil
 	}
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
-		AnimationLength: skillPressFrames[action.ActionDash],
+		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash],
 		State:           action.SkillState,
 	}, nil
