@@ -206,7 +206,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.c2ready = false
 	if hold > 1 {
-		if shrapnel >= 3 {
+		if shrapnel >= 3 { //when does this get evaluated. It needs to look ahead to determine how long the lock out is?
 			return action.Info{
 				Frames:          func(next action.Action) int { return hold + skillPowerHoldFrames[next] },
 				AnimationLength: skillPowerHoldFrames[action.InvalidAction] + hold,
