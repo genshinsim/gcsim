@@ -9,9 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func init() {
-
-}
+const (
+	a1Key = "navia-a1-dmg"
+)
 
 // For 4s after using Ceremonial Crystalshot, the DMG dealt by Navia's Normal Attacks,
 // Charged Attacks, and Plunging Attacks will be converted into Geo DMG which cannot
@@ -21,12 +21,12 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("a1 infusion added", glog.LogCharacterEvent, c.Index)
 
 	// add Damage Bonus
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("navia-a1-dmg", 60*4), // 4s
+		Base: modifier.NewBaseWithHitlag(a1Key, 60*4), // 4s
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
 			// skip if not normal/charged/plunge
 			if atk.Info.AttackTag != attacks.AttackTagNormal &&
@@ -50,8 +50,8 @@ func (c *char) a4() {
 
 	ele := 0
 	for _, char := range c.Core.Player.Chars() {
-		if char.Base.Element != attributes.Geo && char.Base.
-			Element != attributes.Anemo && char.Base.Element != attributes.Dendro {
+		switch char.Base.Element {
+		case attributes.Pyro, attributes.Electro, attributes.Cryo, attributes.Hydro:
 			ele++
 		}
 	}

@@ -19,20 +19,22 @@ const (
 	burstHitmark  = 104
 	burstKey      = "navia-artillery"
 	burstDuration = 720
-	targetRadius  = 10
 	burstDelay    = 154
+	burstICDKey   = "navia-q-shrapnel-icd"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(102)
+	burstFrames = frames.InitAbilSlice(127)
+	burstFrames[action.ActionAttack] = 102
+	burstFrames[action.ActionSkill] = 102
+	burstFrames[action.ActionDash] = 103
+	burstFrames[action.ActionJump] = 103
 	burstFrames[action.ActionSwap] = 93
-	burstFrames[action.ActionWalk] = 127
 }
 
-// On the orders of the President of the Spina di Rosula, call for a magnificent
-// Golden Rose Salute. Unleashes a massive bombardment on opponents in front of her,
-// dealing Aoe Geo DMG and providing Fire Support for a duration afterward, periodically
-// dealing Geo DMG.
+// On the orders of the President of the Spina di Rosula, call for a magnificent Rosula Dorata Salute.
+// Unleashes a massive cannon bombardment on opponents in front of her, dealing AoE Geo DMG and
+// providing Cannon Fire Support for a duration afterward, periodically dealing Geo DMG to nearby opponents.
 func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
@@ -48,50 +50,48 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.Player(), geometry.Point{Y: 0}, 12, 6),
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 5, 12),
 		burstHitmark,
 		burstHitmark,
+		c.burstCB(),
+		c.c4(),
 	)
 
-	c.QueueCharTask(
-		func() {
-			c.AddStatus(burstKey, burstDuration+burstDelay, false)
-			c.naviaburst = true
-		},
-		burstDelay,
-	)
-	c.QueueCharTask(
-		func() {
-			c.naviaburst = false
-		},
-		burstDuration+burstDelay,
-	)
+	c.QueueCharTask(func() {
+		c.AddStatus(burstKey, burstDuration, false)
+
+		ai.Abil = "Cannon Fire Support"
+		ai.ICDTag = attacks.ICDTagElementalBurst
+		ai.ICDGroup = attacks.ICDGroupNaviaBurst
+		ai.Durability = 25
+		ai.Mult = burst[1][c.TalentLvlBurst()]
+
+		tick := 0
+		var nextTick int
+		for i := 0; i <= burstDuration; i += nextTick {
+			tick++
+			c.Core.Tasks.Add(func() {
+				// queue attack
+				c.Core.QueueAttack(
+					ai,
+					combat.NewCircleHitOnTarget(c.calcCannonPos(), nil, 3),
+					0,
+					9,
+					c.burstCB(),
+					c.c4(),
+				)
+			}, i)
+			// if tick 2, 5, 8, 11, 14 was queued then the next tick is in 48f instead of 42f
+			if tick%3 == 2 {
+				nextTick = 48
+			} else {
+				nextTick = 42
+			}
+		}
+	}, burstDelay)
 
 	c.ConsumeEnergy(12)
 	c.SetCD(action.ActionBurst, 15*60)
-
-	ai.Abil = "Fire Support"
-	ai.ICDTag = attacks.ICDTagElementalBurst
-	ai.Durability = 25
-	ai.Mult = burst[1][c.TalentLvlBurst()]
-
-	snap := c.Snapshot(&ai)
-	c.artillerySnapshot = combat.AttackEvent{
-		Info:        ai,
-		Snapshot:    snap,
-		SourceFrame: c.Core.F,
-	}
-	for i, j := 3, 0; i <= burstDuration; i += BurstInterval(j) {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(c.location(targetRadius), nil, 3),
-			burstDelay+i,
-			burstDelay+i+9,
-			c.BurstCB(),
-			c.c4(),
-		)
-	}
-
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
@@ -100,51 +100,53 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func BurstInterval(j int) int {
-	if j%3 == 1 {
-		j++
-		return 48
-	} else {
-		j++
-		return 42
-	}
-}
-
-// When attacks from Golden Rose's Salute hit opponents, Navia will gain 1 charge
-// of Crystal Shrapnel.
+// When cannon attacks hit opponents, Navia will gain 1 stack of Crystal Shrapnel.
 // This effect can be triggered up to once every 2.4s.
-func (c *char) BurstCB() combat.AttackCBFunc {
+func (c *char) burstCB() combat.AttackCBFunc {
 
 	return func(a combat.AttackCB) {
-		if c.StatusIsActive("navia-q-shrapnel-icd") {
+		if c.StatusIsActive(burstICDKey) {
 			return
 		}
+		c.AddStatus(burstICDKey, 2.4*60, true)
 		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 
 		if c.shrapnel < 6 {
 			c.shrapnel++
-			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index)
+			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)
 
 		}
 
-		c.AddStatus("navia-q-shrapnel-icd", 2.4*60, false)
 	}
 
 }
 
 // Targets a random enemy if there is an enemy present, if not, it targets a random spot
-func (c *char) location(r float64) geometry.Point {
+func (c *char) calcCannonPos() geometry.Point {
+	player := c.Core.Combat.Player() // gadget is attached to player
+
+	// look for random enemy within 10m radius from player pos
 	enemy := c.Core.Combat.RandomEnemyWithinArea(
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 10),
 		nil,
 	)
-	var pos geometry.Point
+
+	// enemy found: choose random point between 0 and 1.2m from their pos
 	if enemy != nil {
-		pos = enemy.Pos()
-	} else {
-		pos = geometry.CalcRandomPointFromCenter(c.Core.Combat.Player().Pos(), 0, r, c.Core.Rand)
+		return geometry.CalcRandomPointFromCenter(enemy.Pos(), 0, 1.2, c.Core.Rand)
 	}
-	return pos
+
+	// no enemy: targeting is randomly between 1m and 6m from player pos + Y: 4
+	return geometry.CalcRandomPointFromCenter(
+		geometry.CalcOffsetPoint(
+			player.Pos(),
+			geometry.Point{Y: 4},
+			player.Direction(),
+		),
+		1,
+		6,
+		c.Core.Rand,
+	)
 }

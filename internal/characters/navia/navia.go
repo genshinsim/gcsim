@@ -18,17 +18,14 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	shrapnel          int
-	artillerySnapshot combat.AttackEvent
-	naviaburst        bool
-	c2ready           bool
+	shrapnel int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 	c.EnergyMax = 60
-	c.NormalHitNum = 4
+	c.NormalHitNum = normalHitNum
 	c.SkillCon = 3
 	c.BurstCon = 5
 	c.SetNumCharges(action.ActionSkill, 2)
@@ -39,8 +36,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
-	c.shrapnel = 0
-	c.ShrapnelGain()
+	c.shrapnelGain()
 	return nil
 }
 
@@ -48,10 +44,6 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "shrapnel":
 		return c.shrapnel, nil
-	case "navia-burst":
-		return c.naviaburst, nil
-	case "artillery":
-		return c.naviaburst, nil
 	default:
 		return c.Character.Condition(fields)
 	}
@@ -59,7 +51,7 @@ func (c *char) Condition(fields []string) (any, error) {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	if c.Character.StatusIsActive("navia-a1-dmg") { // weapon infusion can't be overriden for navia
+	if c.Character.StatusIsActive(a1Key) { // weapon infusion can't be overriden for navia
 		switch ai.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagPlunge:

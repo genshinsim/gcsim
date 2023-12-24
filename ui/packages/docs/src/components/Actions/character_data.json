@@ -1476,6 +1476,40 @@
       "legal": true
     }
   ],
+  "navia": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Normal Attacks do not have legal walk cancels recorded, but Skill and Burst do"
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "neuvillette": [
     {
       "ability": "attack",

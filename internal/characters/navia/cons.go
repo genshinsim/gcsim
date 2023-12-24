@@ -5,41 +5,43 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
-	"math"
 )
 
-// Each charge of Crystal Shrapnel consumed when Navia uses Ceremonial Crystalshot will
-// restore 2 Energy to her and decrease the CD of As the Sunlit Sky's Singing Salute by 1s.
-// Up to 6 Energy can be gained this way, and the CD of Ceremonial Crystalshot can be
-// decreased by up to 3s.
+const c2IcdKey = "navia-c2-icd"
+
+// Each stack of Crystal Shrapnel consumed when Navia uses Ceremonial Crystalshot will
+// restore 3 Energy to her and decrease the CD of As the Sunlit Sky's Singing Salute by 1s.
+// Up to 9 Energy can be gained this way, and the CD of "As the Sunlit Sky's Singing Salute"
+// can be decreased by up to 3s.
 func (c *char) c1(shrapnel int) {
 	if c.Base.Cons < 1 {
 		return
 	}
-	count := math.Min(float64(shrapnel), 3)
-	c.ReduceActionCooldown(action.ActionBurst, int(count*60))
-	c.AddEnergy("navia-c1-energy", count*3)
+	count := min(shrapnel, 3)
+	c.ReduceActionCooldown(action.ActionBurst, count*60)
+	c.AddEnergy("navia-c1-energy", float64(count*3))
 	return
 }
 
-// The CRIT Rate of Ceremonial Crystalshot is increased by 8% for each charge of Crystal
-// Shrapnel consumed. CRIT Rate can be increased by up to 24% in this way.
-// In addition, when Ceremonial Crystalshot hits an opponent, one shot of Fire Support
-// from As the Sunlit Sky's Singing Salute will strike near the location of the hit.
-// Up to one instance of Fire Support can be triggered each time Ceremonial Crystalshot is used,
-// and DMG dealt by Fire Support in this way is considered Elemental Burst DMG.
+// Each stack of Crystal Shrapnel consumed will increase the CRIT Rate of this
+// Ceremonial Crystalshot instance by 12%. CRIT Rate can be increased by up to 36% in this way.
+// In addition, when Ceremonial Crystalshot hits an opponent, one Cannon Fire Support shot from
+// As the Sunlit Sky's Singing Salute will strike near the location of the hit.
+// Up to one instance of Cannon Fire Support can be triggered each time Ceremonial Crystalshot is used,
+// and DMG dealt by said Cannon Fire Support this way is considered Elemental Burst DMG.
 func (c *char) c2() combat.AttackCBFunc {
+	if c.Base.Cons < 2 {
+		return nil
+	}
 	return func(a combat.AttackCB) {
-		if c.Base.Cons < 2 {
+		if c.StatusIsActive(c2IcdKey) {
 			return
 		}
-		if !c.c2ready {
-			return
-		}
-		c.c2ready = false
+		c.AddStatus(c2IcdKey, 0.25*60, true)
 		e := a.Target.(*enemy.Enemy)
 		if e.Type() != targets.TargettableEnemy {
 			return
@@ -50,18 +52,18 @@ func (c *char) c2() combat.AttackCBFunc {
 			Abil:       "The President's Pursuit of Victory",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
-			ICDGroup:   attacks.ICDGroupDefault,
+			ICDGroup:   attacks.ICDGroupNaviaBurst,
 			StrikeType: attacks.StrikeTypeBlunt,
 			Element:    attributes.Geo,
 			Durability: 25,
-			Mult:       burst[1][c.TalentLvlSkill()],
+			Mult:       burst[1][c.TalentLvlBurst()],
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(e.Pos(), nil, 3),
+			combat.NewCircleHitOnTarget(geometry.CalcRandomPointFromCenter(e.Pos(), 0, 1.2, c.Core.Rand), nil, 3),
 			0,
-			9,
-			c.BurstCB(),
+			23,
+			c.burstCB(),
 			c.c4(),
 		)
 	}
