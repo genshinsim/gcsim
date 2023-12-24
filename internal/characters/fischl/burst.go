@@ -103,6 +103,8 @@ func (c *char) burstOzSpawn(src, ozSpawn, firstTick int, c4HealFunc func()) func
 		c.burstOzSpawnSrc = -1
 		c.queueOz("Burst", ozSpawn, firstTick)
 		// C4 heal should happen right after oz spawn/end of animation because buffs proc'd from the heal are not snapped into Oz
-		c.Core.Tasks.Add(c4HealFunc, ozSpawn+1)
+		if c4HealFunc != nil {
+			c.Core.Tasks.Add(c4HealFunc, ozSpawn+1)
+		}
 	}
 }
