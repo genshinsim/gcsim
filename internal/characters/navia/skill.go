@@ -244,7 +244,7 @@ func (c *char) addShrapnelBuffs(snap *combat.Snapshot, excess float64) {
 		cr = 0.12 * excess
 	}
 	if c.Base.Cons >= 6 {
-		cr = 0.45 * excess
+		cd = 0.45 * excess
 	}
 	snap.Stats[attributes.DmgP] += dmg
 	snap.Stats[attributes.CR] += cr
