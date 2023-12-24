@@ -24,7 +24,6 @@ func (c *char) c1(shrapnel int) {
 	count := min(shrapnel, 3)
 	c.ReduceActionCooldown(action.ActionBurst, count*60)
 	c.AddEnergy("navia-c1-energy", float64(count*3))
-	return
 }
 
 // Each stack of Crystal Shrapnel consumed will increase the CRIT Rate of this

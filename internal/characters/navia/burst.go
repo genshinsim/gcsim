@@ -115,7 +115,6 @@ func (c *char) burstCB() combat.AttackCBFunc {
 		if c.shrapnel < 6 {
 			c.shrapnel++
 			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)
-
 		}
 	}
 }

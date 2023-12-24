@@ -2,6 +2,7 @@ package navia
 
 import (
 	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -30,7 +31,6 @@ func init() {
 	attackFrames[2] = frames.InitNormalCancelSlice(attackEarliestCancel[2], 48)
 	attackFrames[2][action.ActionSkill] = 30
 	attackFrames[3] = frames.InitNormalCancelSlice(attackEarliestCancel[3], 93)
-
 }
 
 func (c *char) Attack(_ map[string]int) (action.Info, error) {
