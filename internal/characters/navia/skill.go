@@ -210,8 +210,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[holdIndex][shrapnelIndex][next] + hold },
-		AnimationLength: skillFrames[holdIndex][shrapnelIndex][action.InvalidAction] + hold,
-		CanQueueAfter:   skillFrames[holdIndex][shrapnelIndex][action.ActionJump] + hold,
+		AnimationLength: skillFrames[holdIndex][1][action.InvalidAction] + hold,
+		CanQueueAfter:   skillFrames[holdIndex][0][action.ActionJump] + hold,
 		State:           action.SkillState,
 	}, nil
 }
