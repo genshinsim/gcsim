@@ -58,7 +58,7 @@ const (
 	skillHoldCDStart     = 41
 	skillMaxHoldDuration = 241 // add 1f to account for hold being set to 1 for activation
 
-	bulletBoxWidth = 11.5
+	bulletBoxLength = 11.5
 
 	particleICDKey = "navia-particle-icd"
 	arkheICDKey    = "navia-arkhe-icd"
@@ -175,7 +175,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 							c.Core.Combat.Player(),
 							geometry.Point{X: hitscans[i][2], Y: hitscans[i][3]}.Rotate(geometry.DegreesToDirection(hitscans[i][1])),
 							hitscans[i][0],
-							bulletBoxWidth,
+							bulletBoxLength,
 						)); ok {
 						hits++
 					}
