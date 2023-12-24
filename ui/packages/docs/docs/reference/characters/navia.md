@@ -9,7 +9,7 @@ import FramesTable from "@site/src/components/Frames/FramesTable";
 import IssuesTable from "@site/src/components/Issues/IssuesTable";
 import AoETable from "@site/src/components/AoE/AoETable";
 import NamesList from "@site/src/components/Names/NamesList";
-**import ActionsTable from "@site/src/components/Actions/ActionsTable";**
+import ActionsTable from "@site/src/components/Actions/ActionsTable";
 
 ## Frames
 
