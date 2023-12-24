@@ -870,6 +870,21 @@
         "burst_energy_cost": 50
       }
     },
+    "navia": {
+      "id": 10000091,
+      "key": "navia",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "element": "Rock",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Navia",
+      "skill_details": {
+        "skill": 10912,
+        "burst": 10915,
+        "attack": 10911,
+        "burst_energy_cost": 60
+      }
+    },
     "neuvillette": {
       "id": 10000087,
       "key": "neuvillette",

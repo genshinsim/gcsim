@@ -55,7 +55,7 @@ func init() {
 	percentDelay5[keys.LumineGeo] = 7
 	percentDelay5[keys.LumineHydro] = 7
 	percentDelay5[keys.LuminePyro] = 7
-
+	percentDelay5[keys.Navia] = 19
 	percentDelay5[keys.Nilou] = 11
 	// I didn't test Nilou E stance, assuming it's the same values for now
 
@@ -162,6 +162,8 @@ func Get0PercentN0Delay(activeChar *character.CharWrapper) int {
 		return 5
 	case keys.Neuvillette:
 		return 0
+	case keys.Navia:
+		return 19
 	}
 	return 0
 }

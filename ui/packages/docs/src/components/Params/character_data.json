@@ -464,6 +464,13 @@
       "desc": "0 for Tap (default), value between 1 and 300 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (16)."
     }
   ],
+  "navia": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 241 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (41), subtracted by 1 to account for requiring a 1 to activate."
+    }
+  ],
   "nilou": [
     {
       "ability": "skill",
