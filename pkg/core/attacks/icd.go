@@ -56,7 +56,6 @@ const (
 	ICDTagNeuvilletteC6
 	ICDTagFurinaChevalmarin
 	ICDTagFurinaUsher
-	ICDTagNaviaBurst
 	ICDTagLength
 )
 

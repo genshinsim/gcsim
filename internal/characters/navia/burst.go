@@ -104,14 +104,13 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 // This effect can be triggered up to once every 2.4s.
 func (c *char) burstCB() combat.AttackCBFunc {
 	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
 		if c.StatusIsActive(burstICDKey) {
 			return
 		}
 		c.AddStatus(burstICDKey, 2.4*60, true)
-		if a.Target.Type() != targets.TargettableEnemy {
-			return
-		}
-
 		if c.shrapnel < 6 {
 			c.shrapnel++
 			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)

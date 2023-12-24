@@ -1949,42 +1949,42 @@
     "attack": [
       {
         "ability": "N1",
-        "hitHaltTime": 0,
-        "hitHaltTimeScale": 0.06,
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
         "ability": "N2",
-        "hitHaltTime": 0,
-        "hitHaltTimeScale": 0.06,
+        "hitHaltTime": 0.06,
+        "hitHaltTimeScale": 0.0,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
         "ability": "N3-1",
-        "hitHaltTime": 0,
+        "hitHaltTime": 0.01,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
       },
       {
         "ability": "N3-2",
-        "hitHaltTime": 0,
+        "hitHaltTime": 0.01,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
       },
       {
         "ability": "N3-3",
-        "hitHaltTime": 0,
+        "hitHaltTime": 0.01,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": true
       },
       {
         "ability": "N4",
-        "hitHaltTime": 0,
+        "hitHaltTime": 0.01,
         "hitHaltTimeScale": 0.06,
         "canBeDefenseHalt": true,
         "deployable": false

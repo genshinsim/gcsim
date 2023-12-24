@@ -1503,7 +1503,7 @@
     },
     {
       "ability": "walk",
-      "notes": "Normal Attacks do not have legal walk cancels recorded, but Skill and Burst do"
+      "notes": "Normal Attacks do not have legal walk cancels recorded, but Skill and Burst do."
     },
     {
       "ability": "swap",

@@ -468,12 +468,7 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "0 for Tap (default), value between 1 and 241 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (41), subtracted by 1 to account for requiring a 1 to activate"
-    },
-    {
-      "ability": "skill",
-      "param": "shrapnel",
-      "desc": "The number of shrapnel use the skill with. 0 (default) uses the number acquired throughout the config, 1-6 force that many shrapnel."
+      "desc": "0 for Tap (default), value between 1 and 241 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (41), subtracted by 1 to account for requiring a 1 to activate."
     }
   ],
   "nilou": [

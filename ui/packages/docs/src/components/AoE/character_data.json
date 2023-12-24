@@ -4710,70 +4710,90 @@
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is 7.911°."
       },
       {
         "ability": "E-3rd-Bullet",
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is -1.826°."
       },
       {
         "ability": "E-4th-Bullet",
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is -4.325°."
       },
       {
         "ability": "E-5th-Bullet",
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is 0.733°."
       },
       {
         "ability": "E-6th-Bullet",
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is 6.209°."
       },
       {
         "ability": "E-7th-Bullet",
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is -2.752°."
       },
       {
         "ability": "E-8th-Bullet",
         "shape": "Box",
         "center": "Player",
+        "offsetX": 0.01,
+        "offsetY": 0.01,
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is 7.845°."
       },
       {
         "ability": "E-9th-Bullet",
         "shape": "Box",
         "center": "Player",
+        "offsetX": -0.01,
+        "offsetY": -0.01,
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is -7.933°."
       },
       {
         "ability": "E-10th-Bullet",
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is 2.626°."
       },
       {
         "ability": "E-11th-Bullet",
         "shape": "Box",
         "center": "Player",
         "boxX": 0.25,
-        "boxY": 11.5
+        "boxY": 11.5,
+        "notes": "Box rotation angle is -9.993°."
+      },
+      {
+        "ability": "E-Ceremonial-Crystalshot",
+        "shape": "Single",
+        "center": "GlobalValue",
+        "notes": "If any bullet hits a target, then this attack will spawn on them."
       }
     ],
     "burst": [
@@ -4789,7 +4809,7 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 3,
-        "notes": "The Circle Spawns in a random position, within 1.2m of the centre of the enemy. If there are no enemies within 10m, then it will spawn in a random location between 1 and 6m from the player's position"
+        "notes": "The Circle Spawns in a random position, within 1.2m of the centre of the enemy. If there are no enemies within 10m, then it will spawn in a random location between 1 and 6m from the player's position + Y: 4m."
       }
     ]
   },

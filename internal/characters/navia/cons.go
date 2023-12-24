@@ -37,15 +37,14 @@ func (c *char) c2() combat.AttackCBFunc {
 		return nil
 	}
 	return func(a combat.AttackCB) {
-		if c.StatusIsActive(c2IcdKey) {
-			return
-		}
-		c.AddStatus(c2IcdKey, 0.25*60, true)
 		e := a.Target.(*enemy.Enemy)
 		if e.Type() != targets.TargettableEnemy {
 			return
 		}
-
+		if c.StatusIsActive(c2IcdKey) {
+			return
+		}
+		c.AddStatus(c2IcdKey, 0.25*60, true)
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "The President's Pursuit of Victory",

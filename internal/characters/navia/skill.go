@@ -202,7 +202,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			if c.Base.Cons < 6 {
 				c.shrapnel = 0
 			} else {
-				c.shrapnel = min(c.shrapnel-3, 0) // C6 keeps any more than the three
+				c.shrapnel = max(c.shrapnel-3, 0) // C6 keeps any more than the three
 			}
 		},
 		firingTime,
