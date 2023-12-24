@@ -60,7 +60,7 @@ func (c *char) c2() combat.AttackCBFunc {
 			ai,
 			combat.NewCircleHitOnTarget(geometry.CalcRandomPointFromCenter(e.Pos(), 0, 1.2, c.Core.Rand), nil, 3),
 			0,
-			23,
+			30, // somewhere between 28-31
 			c.burstCB(),
 			c.c4(),
 		)
