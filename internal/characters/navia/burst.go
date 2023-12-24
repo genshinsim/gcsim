@@ -103,7 +103,6 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 // When cannon attacks hit opponents, Navia will gain 1 stack of Crystal Shrapnel.
 // This effect can be triggered up to once every 2.4s.
 func (c *char) burstCB() combat.AttackCBFunc {
-
 	return func(a combat.AttackCB) {
 		if c.StatusIsActive(burstICDKey) {
 			return
@@ -118,9 +117,7 @@ func (c *char) burstCB() combat.AttackCBFunc {
 			c.Core.Log.NewEvent("Crystal Shrapnel gained from Burst", glog.LogCharacterEvent, c.Index).Write("shrapnel", c.shrapnel)
 
 		}
-
 	}
-
 }
 
 // Targets a random enemy if there is an enemy present, if not, it targets a random spot

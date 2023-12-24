@@ -67,7 +67,6 @@ func (c *char) c2() combat.AttackCBFunc {
 			c.c4(),
 		)
 	}
-
 }
 
 // When As the Sunlit Sky's Singing Salute hits an opponent,
@@ -87,5 +86,4 @@ func (c *char) c4() combat.AttackCBFunc {
 			Value: -0.2,
 		})
 	}
-
 }
