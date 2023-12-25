@@ -8,13 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
 
-// TODO frames & aoe
+// TODO aoe
 var chargeFrames []int
 
 const (
 	chargeHitmark = 67
-	chargeRadius  = 0
-	arkheRadius   = 0
+	chargeRadius  = 4
+	arkheRadius   = 4
 	arkheIcdKeys  = "spiritbreath-thorn-icd"
 )
 

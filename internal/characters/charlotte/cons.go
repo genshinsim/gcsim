@@ -17,7 +17,7 @@ const (
 	c6HealMsg       = "charlotte-c6-heal"
 	c6CoordinateAtk = "charlotte-c6-coordinate-atk"
 	c6IcdKey        = "charlotte-c6-icd"
-	c6Radius        = 0
+	c6Radius        = 4
 )
 
 func (c *char) c1() {

@@ -16,8 +16,8 @@ const normalHitNum = 3
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{13, 25, 31}
-	attackRadius   = []float64{0, 0, 0}
-	attackAngle    = []float64{0, 0, 0}
+	attackRadius   = []float64{6, 6, 6}
+	attackAngle    = []float64{120, 120, 120}
 )
 
 func init() {

@@ -17,7 +17,7 @@ var (
 
 const (
 	burstStart        = 53
-	burstRadius       = 0
+	burstRadius       = 6
 	burstConsumeDelay = 7
 	burstCD           = 1200
 	burstInitialAbil  = "Still Photo: Comprehensive Confirmation"
@@ -62,6 +62,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	ai.Abil = burstDotAbil
 	ai.Mult = burstDot[c.TalentLvlBurst()]
+	ai.ICDTag = attacks.ICDTagCharlotteKamera
+	ai.ICDGroup = attacks.ICDGroupCharlotteKamera
+	ai.Durability = 25
 
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(player.HealInfo{

@@ -37,9 +37,9 @@ func init() {
 }
 
 const (
-	skillPressRadius        = 0
-	skillPressAngle         = 0
-	skillHoldRadius         = 0
+	skillPressRadius        = 6
+	skillPressAngle         = 120
+	skillHoldRadius         = 6
 	skillPressCD            = 720
 	skillHoldCD             = 1080
 	skillPressHitmark       = 32
