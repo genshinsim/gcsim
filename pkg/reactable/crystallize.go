@@ -257,7 +257,7 @@ func NewCrystallizeShard(c *core.Core, shp geometry.Shape, shd *CrystallizeShiel
 	// for simplicity, crystallize shards spawn randomly at radius + 0.5
 	r := circ.Radius() + 0.5
 	// radius 2 is ok
-	cs.Gadget = gadget.New(c, geometry.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypDendroCore)
+	cs.Gadget = gadget.New(c, geometry.CalcRandomPointFromCenter(circ.Pos(), r, r, c.Rand), 2, combat.GadgetTypCrystallizeShard)
 
 	// shard lasts for 15s from shard spawn
 	cs.Gadget.Duration = 15 * 60
