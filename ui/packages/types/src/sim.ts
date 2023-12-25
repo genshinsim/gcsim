@@ -169,6 +169,7 @@ export interface FloatStat {
 export interface Settings {
   iterations?: number;
   delays?: Delays;
+  ignore_burst_energy?: boolean;
 }
 
 export interface EnergySettings {

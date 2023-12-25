@@ -23,6 +23,7 @@ options iteration=1000 duration=90 swap_delay=14;
 | `workers` | Number of workers to use. Only valid when using cli, ignored in web. | 20 |
 | `hitlag` | Whether hitlag should be enabled. See the [hitlag page](/mechanics/hitlag) for more details. | true |
 | `defhalt` | Whether to enable `canBeDefenseHalt` for hitlag. See the [hitlag page](/mechanics/hitlag) for more details. | true |
+| `ignore_burst_energy` | Bursts can be used without being at full energy. This will make .char.burst.ready only check for cooldowns. Energy levels for other effects will still work as usual. Enabling this setting will cause a warning to appear on the results page indicating that this setting was active. | false |
 
 ### Set energy generation
 
