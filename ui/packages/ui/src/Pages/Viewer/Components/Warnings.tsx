@@ -18,7 +18,7 @@ export default (props: WarningProps) => {
     <StaminaWarning key="stamina" {...props} />,
     <SwapWarning key="swap" {...props} />,
     <DashWarning key="dash" {...props} />,
-    <IgnoreBurstEnergyWarning key="ignore_burst_energy" {...props} />
+    <IgnoreBurstEnergyMode key="ignore_burst_energy" {...props} />
   ];
 
   return (
@@ -238,7 +238,7 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
 };
 
 
-const IgnoreBurstEnergyWarning = ({ data }: WarningProps) => {  
+const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {  
   const [show, setShow] = useState(true);
   const visible = show && (data?.simulator_settings?.ignore_burst_energy ?? false);
   
