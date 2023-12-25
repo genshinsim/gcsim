@@ -52,7 +52,7 @@ message SimulatorSettings {
     uint32 number_of_workers = 5 [json_name="number_of_workers"];
     uint32 iterations = 6 [json_name="iterations"];
     Delays delays = 7 [json_name="delays"];
-
+    bool ignore_burst_energy = 8 [json_name="ignore_burst_energy"];
 }
 
 message Delays {

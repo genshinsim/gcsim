@@ -3809,6 +3809,9 @@ export namespace model {
 
         /** SimulatorSettings delays */
         delays?: (model.IDelays|null);
+
+        /** SimulatorSettings ignore_burst_energy */
+        ignore_burst_energy?: (boolean|null);
     }
 
     /** Represents a SimulatorSettings. */
@@ -3840,6 +3843,9 @@ export namespace model {
 
         /** SimulatorSettings delays. */
         public delays?: (model.IDelays|null);
+
+        /** SimulatorSettings ignore_burst_energy. */
+        public ignore_burst_energy: boolean;
 
         /**
          * Gets the default type url for SimulatorSettings

@@ -17,7 +17,8 @@ export default (props: WarningProps) => {
     <CooldownWarning key="cd" {...props} />,
     <StaminaWarning key="stamina" {...props} />,
     <SwapWarning key="swap" {...props} />,
-    <DashWarning key="dash" {...props} />
+    <DashWarning key="dash" {...props} />,
+    <IgnoreBurstEnergyMode key="ignore_burst_energy" {...props} />
   ];
 
   return (
@@ -233,5 +234,23 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
         {details}
       </ul>
     </div>
+  );
+};
+
+
+const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {  
+  const [show, setShow] = useState(true);
+  const visible = show && (data?.simulator_settings?.ignore_burst_energy ?? false);
+  
+  return (
+    <DismissibleCallout
+        title="Ignore Burst Energy Costs"
+        intent={Intent.DANGER}
+        show={visible}
+        onDismiss={() => setShow(false)}>
+      <p>
+        {"Simulation was run while ignoring Elemental Burst energy requirements. This may result in inaccruate simulations."}
+      </p>
+    </DismissibleCallout>
   );
 };

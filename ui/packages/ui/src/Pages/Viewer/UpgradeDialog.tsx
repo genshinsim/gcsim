@@ -15,7 +15,7 @@ import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsBut
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
 const MAJOR = "4"; // Make sure the gcsim binary has also been updated
-const MINOR = "1"; // Make sure the gcsim binary has also been updated
+const MINOR = "2"; // Make sure the gcsim binary has also been updated
 
 enum MismatchType {
   MajorVersionMismatch,
