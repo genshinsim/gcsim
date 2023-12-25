@@ -5,6 +5,7 @@ export const DefaultSampleOptions = [
   "energy",
   "pre_damage_mods",
   "status",
+  "user",
 ];
 
 export const AllSampleOptions = [
@@ -54,7 +55,7 @@ export const AdvancedPreset = [
   "cooldown",
   "element",
   "shield",
-  "construct"
+  "construct",
 ];
 
 export const VerbosePreset = [
@@ -70,7 +71,7 @@ export const VerbosePreset = [
   "weapon",
   "enemy",
   "artifact",
-  "hitlag"
+  "hitlag",
 ];
 
 export const DebugPreset = [...VerbosePreset, "debug", "sim"];
