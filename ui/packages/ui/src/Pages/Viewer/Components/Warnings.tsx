@@ -249,7 +249,7 @@ const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {
         show={visible}
         onDismiss={() => setShow(false)}>
       <p>
-        {"Simulation was run while ignoring Elemental Burst energy requirements. This may result in inaccruate simulations."}
+        {"Simulation was run while ignoring Elemental Burst energy requirements. This may result in inaccurate simulations."}
       </p>
     </DismissibleCallout>
   );
