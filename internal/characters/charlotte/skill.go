@@ -10,30 +10,30 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-// TODO frame & aoe
+// TODO aoe
 var (
 	skillPressFrames []int
 	skillHoldFrames  []int
 )
 
 func init() {
-	skillPressFrames = frames.InitAbilSlice(0)
-	skillPressFrames[action.ActionAttack] = 0
-	skillPressFrames[action.ActionCharge] = 0
-	skillPressFrames[action.ActionSkill] = 0
-	skillPressFrames[action.ActionBurst] = 0
-	skillPressFrames[action.ActionDash] = 0
-	skillPressFrames[action.ActionJump] = 0
-	skillPressFrames[action.ActionSwap] = 0
+	skillPressFrames = frames.InitAbilSlice(42) // E -> Walk
+	skillPressFrames[action.ActionAttack] = 42
+	skillPressFrames[action.ActionCharge] = 42
+	skillPressFrames[action.ActionSkill] = 49
+	skillPressFrames[action.ActionBurst] = 41
+	skillPressFrames[action.ActionDash] = 43
+	skillPressFrames[action.ActionJump] = 42
+	skillPressFrames[action.ActionSwap] = 52
 
-	skillHoldFrames = frames.InitAbilSlice(0)
-	skillHoldFrames[action.ActionAttack] = 0
-	skillHoldFrames[action.ActionCharge] = 0
-	skillHoldFrames[action.ActionSkill] = 0
-	skillHoldFrames[action.ActionBurst] = 0
-	skillHoldFrames[action.ActionDash] = 0
-	skillHoldFrames[action.ActionJump] = 0
-	skillHoldFrames[action.ActionSwap] = 0
+	skillHoldFrames = frames.InitAbilSlice(135) // hE -> Walk
+	skillHoldFrames[action.ActionAttack] = 134
+	skillHoldFrames[action.ActionCharge] = 131
+	skillHoldFrames[action.ActionSkill] = 134
+	skillHoldFrames[action.ActionBurst] = 131
+	skillHoldFrames[action.ActionDash] = 137
+	skillHoldFrames[action.ActionJump] = 138
+	skillHoldFrames[action.ActionSwap] = 146
 }
 
 const (
@@ -42,10 +42,10 @@ const (
 	skillHoldRadius         = 0
 	skillPressCD            = 720
 	skillHoldCD             = 1080
-	skillPressHitmark       = 0
-	skillHoldHitmark        = 0
-	skillPressDelay         = 0
-	skillHoldDelay          = 0
+	skillPressHitmark       = 32
+	skillHoldHitmark        = 112
+	skillPressDelay         = 30
+	skillHoldDelay          = 111
 	skillPressParticleCount = 3
 	skillHoldParticleCount  = 5
 	skillPressMarkKey       = "charlotte-e"
@@ -91,7 +91,7 @@ func (c *char) skillPress() (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionSwap], // TODO earliest cancel
+		CanQueueAfter:   skillPressFrames[action.ActionBurst],
 		State:           action.SkillState,
 	}, nil
 }
@@ -128,7 +128,7 @@ func (c *char) skillHold() (action.Info, error) {
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillHoldDelay + skillHoldFrames[next] },
 		AnimationLength: skillHoldDelay + skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldDelay + skillHoldFrames[action.ActionSwap], // TODO earliest cancel
+		CanQueueAfter:   skillHoldDelay + skillHoldFrames[action.ActionBurst],
 		State:           action.SkillState,
 	}, nil
 }

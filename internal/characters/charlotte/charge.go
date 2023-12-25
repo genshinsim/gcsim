@@ -12,20 +12,21 @@ import (
 var chargeFrames []int
 
 const (
-	chargeHitmark = 0
+	chargeHitmark = 67
 	chargeRadius  = 0
 	arkheRadius   = 0
 	arkheIcdKeys  = "spiritbreath-thorn-icd"
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(0)
-	chargeFrames[action.ActionCharge] = 0
-	chargeFrames[action.ActionSkill] = 0
-	chargeFrames[action.ActionBurst] = 0
-	chargeFrames[action.ActionDash] = 0
-	chargeFrames[action.ActionJump] = 0
-	chargeFrames[action.ActionSwap] = 0
+	chargeFrames = frames.InitAbilSlice(79) // CA -> N1
+	chargeFrames[action.ActionCharge] = 84
+	chargeFrames[action.ActionSkill] = 74
+	chargeFrames[action.ActionBurst] = 71
+	chargeFrames[action.ActionDash] = 20
+	chargeFrames[action.ActionJump] = 21
+	chargeFrames[action.ActionWalk] = 74
+	chargeFrames[action.ActionSwap] = 71
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -62,7 +63,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
-		CanQueueAfter:   chargeFrames[action.ActionDash] - windup, // TODO earliest cancel
+		CanQueueAfter:   chargeFrames[action.ActionDash] - windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }

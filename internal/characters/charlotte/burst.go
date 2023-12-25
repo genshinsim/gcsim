@@ -9,16 +9,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-// TODO frame & aoe
+// TODO aoe
 var (
 	burstFrames     []int
-	burstTickFrames = []int{0, 0, 0, 0, 0, 0, 0, 0}
+	burstTickFrames = []int{95, 119, 143, 166, 179, 203, 226, 249}
 )
 
 const (
-	burstStart        = 0
+	burstStart        = 53
 	burstRadius       = 0
-	burstConsumeDelay = 0
+	burstConsumeDelay = 7
 	burstCD           = 1200
 	burstInitialAbil  = "Still Photo: Comprehensive Confirmation"
 	burstDotAbil      = "Still Photo: Kamera"
@@ -27,10 +27,14 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(0)
-	burstFrames[action.ActionDash] = 0
-	burstFrames[action.ActionJump] = 0
-	burstFrames[action.ActionSwap] = 0
+	burstFrames = frames.InitAbilSlice(77)
+	burstFrames[action.ActionAttack] = 70
+	burstFrames[action.ActionCharge] = 68
+	burstFrames[action.ActionSkill] = 68
+	burstFrames[action.ActionDash] = 56
+	burstFrames[action.ActionJump] = 58
+	burstFrames[action.ActionWalk] = 70
+	burstFrames[action.ActionSwap] = 77
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -81,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					Src:     healDot,
 					Bonus:   healp,
 				})
-			}, value)
+			}, value-burstStart)
 		}
 	}, burstStart)
 
@@ -91,7 +95,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // TODO earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionDash],
 		State:           action.BurstState,
 	}, nil
 }

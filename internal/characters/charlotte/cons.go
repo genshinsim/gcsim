@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+// TODO aoe
 const (
 	c1HealMsg       = "Verification"
 	c6HealMsg       = "charlotte-c6-heal"
