@@ -1073,6 +1073,75 @@
       }
     ]
   },
+  "charlotte": {
+    "cons": [
+      {
+        "ability": "C6",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "notes": "The 'Heal' and 'Attack' abilities have the same area of effect (AOE)."
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "offsetY": 3,
+        "radius": 3
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "shape": "Circle",
+        "center": "Player",
+        "fanAngle": 120,
+        "radius": 6
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 25
+      },
+      {
+        "ability": "Charlotte Mark",
+        "shape": "Single",
+        "center": "GlobalValue"
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 6,
+        "notes": "Q/Kamera area is the same as this hitbox."
+      }
+    ]
+  },
   "chongyun": {
     "asc": [
       {
