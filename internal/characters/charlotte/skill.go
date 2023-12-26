@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -233,4 +234,18 @@ func (c *char) skillHoldMark(t *enemy.Enemy) func() {
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Key()), 0, 0)
 		c.Core.Tasks.Add(c.skillHoldMark(t), 1.5*60)
 	}
+}
+
+func (c *char) charlotteMarkOnTargetDied() {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+		t, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return false
+		}
+		if !t.StatusIsActive(skillPressMarkKey) && !t.StatusIsActive(skillHoldMarkKey) {
+			return false
+		}
+		c.markCount--
+		return false
+	}, "charlotte-on-target-died")
 }

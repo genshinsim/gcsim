@@ -32,7 +32,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	// TODO subscribe OnTargetDied clear mark
+	c.charlotteMarkOnTargetDied()
+
 	c.a1()
 	c.a4()
 
