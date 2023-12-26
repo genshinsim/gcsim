@@ -6,15 +6,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO aoe
 var chargeFrames []int
 
 const (
 	chargeHitmark = 67
-	chargeRadius  = 4
-	arkheRadius   = 4
+	chargeRadius  = 3
+	chargeOffsetX = 0
+	chargeOffsetY = 3
+	arkheRadius   = 3
 	arkheIcdKeys  = "spiritbreath-thorn-icd"
 )
 
@@ -52,7 +54,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			nil,
+			geometry.Point{X: chargeOffsetX, Y: chargeOffsetY},
 			chargeRadius,
 		),
 		chargeHitmark-windup,

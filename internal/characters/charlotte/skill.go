@@ -11,7 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
-// TODO aoe
 var (
 	skillPressFrames []int
 	skillHoldFrames  []int
@@ -40,7 +39,7 @@ func init() {
 const (
 	skillPressRadius        = 6
 	skillPressAngle         = 120
-	skillHoldRadius         = 6
+	skillHoldRadius         = 25
 	skillPressCD            = 720
 	skillHoldCD             = 1080
 	skillPressHitmark       = 32
@@ -110,7 +109,7 @@ func (c *char) skillHold() (action.Info, error) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillHoldRadius)
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, skillHoldRadius)
 	if c.Base.Cons >= 2 {
 		c.c2(ap)
 	}

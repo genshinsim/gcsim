@@ -6,10 +6,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-// TODO aoe
 var (
 	burstFrames     []int
 	burstTickFrames = []int{95, 119, 143, 166, 179, 203, 226, 249}
@@ -18,6 +18,8 @@ var (
 const (
 	burstStart        = 53
 	burstRadius       = 6
+	burstOffsetX      = 0
+	burstOffsetY      = 2
 	burstConsumeDelay = 7
 	burstCD           = 1200
 	burstInitialAbil  = "Still Photo: Comprehensive Confirmation"
@@ -49,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, burstRadius)
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{X: burstOffsetX, Y: burstOffsetY}, burstRadius)
 
 	snap := c.Snapshot(&ai)
 

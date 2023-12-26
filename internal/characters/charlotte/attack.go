@@ -12,12 +12,10 @@ import (
 
 const normalHitNum = 3
 
-// aoe
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{13, 25, 31}
-	attackRadius   = []float64{6, 6, 6}
-	attackAngle    = []float64{120, 120, 120}
+	attackRadius   = []float64{2, 2, 2}
 )
 
 func init() {
@@ -64,11 +62,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
-	ap := combat.NewCircleHitOnTargetFanAngle(
-		c.Core.Combat.Player(),
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.PrimaryTarget(),
 		nil,
 		attackRadius[c.NormalCounter],
-		attackAngle[c.NormalCounter],
 	)
 
 	c.Core.QueueAttack(

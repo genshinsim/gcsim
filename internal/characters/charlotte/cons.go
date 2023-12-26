@@ -11,13 +11,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-// TODO aoe
 const (
 	c1HealMsg       = "Verification"
 	c6HealMsg       = "charlotte-c6-heal"
 	c6CoordinateAtk = "charlotte-c6-coordinate-atk"
 	c6IcdKey        = "charlotte-c6-icd"
-	c6Radius        = 4
+	c6Radius        = 2
 )
 
 func (c *char) c1() {
