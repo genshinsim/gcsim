@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	c1StatusKey     = "charlotte-c1"
 	c1HealMsg       = "Verification"
 	c6HealMsg       = "charlotte-c6-heal"
 	c6CoordinateAtk = "charlotte-c6-coordinate-atk"
@@ -19,23 +20,31 @@ const (
 	c6Radius        = 2
 )
 
+func (c *char) c1Heal() func() {
+	return func() {
+		if c.Core.Status.Duration(c1StatusKey) > 0 {
+			stats, _ := c.Stats()
+			atk := (c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
+			c.Core.Player.Heal(player.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: c1HealMsg,
+				Src:     atk * 0.8,
+				Bonus:   stats[attributes.Heal],
+			})
+			c.Core.Tasks.Add(c.c1Heal(), 2*60)
+		}
+	}
+}
+
 func (c *char) c1() {
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
 		src := args[0].(*player.HealInfo)
 		if src.Message == healInitialMsg || src.Message == healDotMsg || src.Message == c6HealMsg {
-			stats, _ := c.Stats()
-			atk := (c.Base.Atk+c.Weapon.BaseAtk)*(1+stats[attributes.ATKP]) + stats[attributes.ATK]
-			for i := 0; i < 3; i++ {
-				c.QueueCharTask(func() {
-					c.Core.Player.Heal(player.HealInfo{
-						Caller:  c.Index,
-						Target:  -1,
-						Message: c1HealMsg,
-						Src:     atk * 0.8,
-						Bonus:   stats[attributes.Heal],
-					})
-				}, 120+i*120)
+			if c.Core.Status.Duration(c1StatusKey) == 0 {
+				c.Core.Tasks.Add(c.c1Heal(), 2*60)
 			}
+			c.Core.Status.Add(c1StatusKey, 60*6)
 		}
 		return false
 	}, "charlotte-c1")
