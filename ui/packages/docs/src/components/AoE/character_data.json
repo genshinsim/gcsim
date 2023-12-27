@@ -1076,16 +1076,11 @@
   "charlotte": {
     "cons": [
       {
-        "ability": "C6 Heal",
-        "shape": "Circle",
-        "center": "PrimaryTarget",
-        "radius": 3.5
-      },
-      {
-        "ability": "C6 Attack",
-        "shape": "Circle",
-        "center": "PrimaryTarget",
-        "radius": 5
+        "ability": "C6",
+        "shape": "Circle", 
+        "center": "GlobalValue",
+        "radius": 3.5,
+        "notes": "Spawns on target that the C6 proc'd on. Heal is 5m instead of 3m."
       }
     ],
     "normal": [
@@ -1114,15 +1109,21 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 2.5
+      },
+      {
+        "ability": "CA-Spiritbreath-Thorn",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.5
       }
     ],
     "skill": [
       {
         "ability": "E-Tap",
-        "shape": "Circle",
+        "shape": "Box",
         "center": "Player",
-        "fanAngle": 120,
-        "radius": 6
+        "boxX": 4,
+        "boxY": 8
       },
       {
         "ability": "E-Hold",
@@ -1140,21 +1141,13 @@
     ],
     "burst": [
       {
-        "ability": "Q-Attack",
+        "ability": "Q",
         "shape": "Circle",
-        "center": "Player",
+        "center": "Player", 
         "offsetY": 4.5,
         "radius": 6,
-        "notes": "Q/Kamera area is the same as this hitbox."
-      },
-      {
-        "ability": "Q-Heal",
-        "shape": "Circle",
-        "center": "Player",
-        "offsetY": 4.5,
-        "radius": 7,
-        "notes": "Q/Kamera area is the same as this hitbox."
-      }
+        "notes": "Heal is 7m instead of 6m."
+    }
     ]
   },
   "chongyun": {
