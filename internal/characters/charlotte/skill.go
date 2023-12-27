@@ -44,10 +44,10 @@ const (
 	skillHoldBoxY           = 30
 	skillPressCD            = 720
 	skillHoldCD             = 1080
-	skillPressHitmark       = 32
-	skillHoldHitmark        = 112
-	skillPressDelay         = 30
-	skillHoldDelay          = 111
+	skillPressHitmark       = 31
+	skillHoldHitmark        = 111
+	skillPressDelay         = 29
+	skillHoldDelay          = 110
 	skillPressParticleCount = 3
 	skillHoldParticleCount  = 5
 	skillMarkKey            = "charlotte-mark"
