@@ -110,7 +110,7 @@ func (c *char) c4() {
 		}
 		dmg := 0.1
 		ae.Snapshot.Stats[attributes.DmgP] += dmg
-		c.Core.Log.NewEvent("charlotte c1 adding dmg%", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
+		c.Core.Log.NewEvent("charlotte c4 adding dmg%", glog.LogCharacterEvent, c.Index).Write("dmg%", dmg)
 		c.AddEnergy("charlotte-c4", 2)
 		counter++
 		return false
