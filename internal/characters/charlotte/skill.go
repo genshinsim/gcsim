@@ -128,7 +128,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		ai,
 		ap,
 		0,
-		skillHoldHitmark,
+		hold,
 		c.skillHoldParticleCB,
 		c.skillHoldMarkTargets,
 		c.makeC2CB(),
