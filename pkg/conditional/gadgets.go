@@ -29,8 +29,8 @@ func evalDendroCore(c *core.Core, key string) (int, error) {
 	switch key {
 	case countField:
 		count := 0
-		for i := 0; i < c.Combat.GadgetCount(); i++ {
-			if _, ok := c.Combat.Gadget(i).(*reactable.DendroCore); ok {
+		for _, g := range c.Combat.Gadgets() {
+			if _, ok := g.(*reactable.DendroCore); ok {
 				count++
 			}
 		}
@@ -44,8 +44,8 @@ func evalSourcewaterDroplet(c *core.Core, key string) (int, error) {
 	switch key {
 	case countField:
 		count := 0
-		for i := 0; i < c.Combat.GadgetCount(); i++ {
-			if _, ok := c.Combat.Gadget(i).(*common.SourcewaterDroplet); ok {
+		for _, g := range c.Combat.Gadgets() {
+			if _, ok := g.(*common.SourcewaterDroplet); ok {
 				count++
 			}
 		}
@@ -59,8 +59,8 @@ func evalCrystallizeShard(c *core.Core, key string) (int, error) {
 	switch key {
 	case "all":
 		count := 0
-		for i := 0; i < c.Combat.GadgetCount(); i++ {
-			cs, ok := c.Combat.Gadget(i).(*reactable.CrystallizeShard)
+		for _, g := range c.Combat.Gadgets() {
+			cs, ok := g.(*reactable.CrystallizeShard)
 			if !ok {
 				continue
 			}
@@ -79,8 +79,8 @@ func evalCrystallizeShard(c *core.Core, key string) (int, error) {
 
 func countElementalCrystallizeShards(c *core.Core, ele string) int {
 	count := 0
-	for i := 0; i < c.Combat.GadgetCount(); i++ {
-		cs, ok := c.Combat.Gadget(i).(*reactable.CrystallizeShard)
+	for _, g := range c.Combat.Gadgets() {
+		cs, ok := g.(*reactable.CrystallizeShard)
 		if !ok {
 			continue
 		}

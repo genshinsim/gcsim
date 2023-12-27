@@ -321,8 +321,8 @@ func (c *char) surgingBlade(excess float64) {
 // check every every 30f.
 func (c *char) pullCrystals(firingTimeF, i int) {
 	c.Core.Tasks.Add(func() {
-		for j := 0; j < c.Core.Combat.GadgetCount(); j++ {
-			cs, ok := c.Core.Combat.Gadget(j).(*reactable.CrystallizeShard)
+		for _, g := range c.Core.Combat.Gadgets() {
+			cs, ok := g.(*reactable.CrystallizeShard)
 			// skip if not a shard
 			if !ok {
 				continue

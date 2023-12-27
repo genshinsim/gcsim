@@ -129,8 +129,8 @@ func (c *char) gorouCrystalCollapse(src int) func() {
 		}
 
 		// suck in 1 crystallize shard
-		for i := 0; i < c.Core.Combat.GadgetCount(); i++ {
-			cs, ok := c.Core.Combat.Gadget(i).(*reactable.CrystallizeShard)
+		for _, g := range c.Core.Combat.Gadgets() {
+			cs, ok := g.(*reactable.CrystallizeShard)
 			// skip if no shard
 			if !ok {
 				continue
