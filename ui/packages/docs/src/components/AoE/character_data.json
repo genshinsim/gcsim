@@ -1073,6 +1073,83 @@
       }
     ]
   },
+  "charlotte": {
+    "cons": [
+      {
+        "ability": "C6",
+        "shape": "Circle", 
+        "center": "GlobalValue",
+        "radius": 3.5,
+        "notes": "Spawns on target that the C6 proc'd on. Heal is 5m instead of 3m."
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 1
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.5
+      },
+      {
+        "ability": "CA-Spiritbreath-Thorn",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.5
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 4,
+        "boxY": 8
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Box",
+        "center": "Player",
+        "offsetX": 1.3,
+        "boxX": 4.5,
+        "boxY": 30
+      },
+      {
+        "ability": "E-Mark",
+        "shape": "Single",
+        "center": "GlobalValue"
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player", 
+        "offsetY": 4.5,
+        "radius": 6,
+        "notes": "Heal is 7m instead of 6m."
+    }
+    ]
+  },
   "chongyun": {
     "asc": [
       {

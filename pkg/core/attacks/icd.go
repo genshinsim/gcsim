@@ -56,6 +56,8 @@ const (
 	ICDTagNeuvilletteC6
 	ICDTagFurinaChevalmarin
 	ICDTagFurinaUsher
+	ICDTagCharlotteMark
+	ICDTagCharlotteKamera
 	ICDTagLength
 )
 
@@ -96,6 +98,8 @@ const (
 	ICDGroupTravelerBurst
 	ICDGroupFurinaSalonSolitaire
 	ICDGroupNaviaBurst
+	ICDGroupCharlotteMark
+	ICDGroupCharlotteKamera
 	ICDGroupLength
 )
 
@@ -138,6 +142,8 @@ func init() {
 	ICDGroupResetTimer[ICDGroupTravelerBurst] = 480
 	ICDGroupResetTimer[ICDGroupFurinaSalonSolitaire] = 1800
 	ICDGroupResetTimer[ICDGroupNaviaBurst] = 720
+	ICDGroupResetTimer[ICDGroupCharlotteMark] = 720
+	ICDGroupResetTimer[ICDGroupCharlotteKamera] = 240
 
 	ICDGroupEleApplicationSequence = make([][]float64, ICDGroupLength)
 	ICDGroupEleApplicationSequence[ICDGroupDefault] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
@@ -173,6 +179,8 @@ func init() {
 	ICDGroupEleApplicationSequence[ICDGroupTravelerBurst] = []float64{1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}
 	ICDGroupEleApplicationSequence[ICDGroupFurinaSalonSolitaire] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
 	ICDGroupEleApplicationSequence[ICDGroupNaviaBurst] = []float64{1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}
+	ICDGroupEleApplicationSequence[ICDGroupCharlotteMark] = []float64{1, 0, 1, 0, 1, 0, 1, 0, 1, 0}
+	ICDGroupEleApplicationSequence[ICDGroupCharlotteKamera] = []float64{1, 0, 0, 0, 1, 0, 0, 0}
 
 	ICDGroupDamageSequence = make([][]float64, ICDGroupLength)
 	ICDGroupDamageSequence[ICDGroupDefault] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -210,4 +218,6 @@ func init() {
 	ICDGroupDamageSequence[ICDGroupTravelerBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupFurinaSalonSolitaire] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 	ICDGroupDamageSequence[ICDGroupNaviaBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupCharlotteMark] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	ICDGroupDamageSequence[ICDGroupCharlotteKamera] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 }
