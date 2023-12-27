@@ -30,7 +30,8 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(70) // Q -> Walk, Q -> N1
+	burstFrames = frames.InitAbilSlice(70) // Q -> Walk
+	burstFrames[action.ActionAttack] = 68
 	burstFrames[action.ActionCharge] = 68
 	burstFrames[action.ActionSkill] = 69
 	burstFrames[action.ActionDash] = 57
