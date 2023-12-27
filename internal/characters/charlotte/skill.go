@@ -18,9 +18,9 @@ var (
 
 func init() {
 	skillPressFrames = frames.InitAbilSlice(49) // E -> CA
-	skillPressFrames[action.ActionAttack] = 41
+	skillPressFrames[action.ActionAttack] = 42
 	skillPressFrames[action.ActionSkill] = 48
-	skillPressFrames[action.ActionBurst] = 41
+	skillPressFrames[action.ActionBurst] = 42
 	skillPressFrames[action.ActionDash] = 42
 	skillPressFrames[action.ActionJump] = 42
 	skillPressFrames[action.ActionWalk] = 42
@@ -28,9 +28,9 @@ func init() {
 
 	skillHoldFrames = frames.InitAbilSlice(137) // hE -> Dash, Jump
 	skillHoldFrames[action.ActionAttack] = 132
-	skillHoldFrames[action.ActionCharge] = 131
+	skillHoldFrames[action.ActionCharge] = 132
 	skillHoldFrames[action.ActionSkill] = 130
-	skillHoldFrames[action.ActionBurst] = 129
+	skillHoldFrames[action.ActionBurst] = 130
 	skillHoldFrames[action.ActionWalk] = 136
 	skillHoldFrames[action.ActionSwap] = 134
 }
@@ -93,7 +93,7 @@ func (c *char) skillPress() (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionBurst],
+		CanQueueAfter:   skillPressFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}, nil
 }
