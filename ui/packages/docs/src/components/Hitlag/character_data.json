@@ -459,6 +459,17 @@
       }
     ]
   },
+  "charlotte": {
+    "cons": [
+      {
+        "ability": "C6",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.02,
+        "canBeDefenseHalt": true,
+        "deployable": true
+      }
+    ]
+  },
   "chongyun": {
     "normal": [
       {
