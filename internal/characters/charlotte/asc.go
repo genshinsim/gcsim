@@ -21,14 +21,14 @@ func (c *char) a1() {
 		if !ok {
 			return false
 		}
-		if !t.StatusIsActive(skillPressMarkKey) && !t.StatusIsActive(skillHoldMarkKey) {
+		if !t.StatusIsActive(skillHoldMarkKey) {
 			return false
 		}
 		if count == 4 {
 			return false
 		}
 		if count == 0 {
-			c.Core.Tasks.Add(func() {
+			c.QueueCharTask(func() {
 				count = 0
 			}, 720)
 		}
@@ -48,7 +48,7 @@ func (c *char) a4() {
 		if c.Index == this.Index {
 			continue
 		}
-		if this.CharZone != info.ZoneFontaine {
+		if this.CharZone == info.ZoneFontaine {
 			heal++
 		} else {
 			cryop++

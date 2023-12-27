@@ -119,7 +119,7 @@
     {
       "ability": "skill",
       "param": "hold",
-      "desc": "0 for Tap (default), 1 for Hold."
+      "desc": "0 for Tap (default), value between 1 and 809 for Hold. The number determines the E duration in frames."
     }
   ],
   "collei": [

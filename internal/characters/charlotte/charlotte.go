@@ -15,6 +15,7 @@ func init() {
 type char struct {
 	*tmpl.Character
 	markCount int
+	c2Hits    int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -32,8 +33,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.charlotteMarkOnTargetDied()
-
 	c.a1()
 	c.a4()
 

@@ -17,9 +17,10 @@ var (
 
 const (
 	burstStart        = 53
-	burstRadius       = 6
+	burstAttackRadius = 6
+	burstHealRadius   = 7
 	burstOffsetX      = 0
-	burstOffsetY      = 2
+	burstOffsetY      = 4.5
 	burstConsumeDelay = 7
 	burstCD           = 1200
 	burstInitialAbil  = "Still Photo: Comprehensive Confirmation"
@@ -29,14 +30,12 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(77)
-	burstFrames[action.ActionAttack] = 70
+	burstFrames = frames.InitAbilSlice(70) // Q -> Walk, Q -> N1
 	burstFrames[action.ActionCharge] = 68
-	burstFrames[action.ActionSkill] = 68
-	burstFrames[action.ActionDash] = 56
+	burstFrames[action.ActionSkill] = 69
+	burstFrames[action.ActionDash] = 57
 	burstFrames[action.ActionJump] = 58
-	burstFrames[action.ActionWalk] = 70
-	burstFrames[action.ActionSwap] = 77
+	burstFrames[action.ActionSwap] = 68
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -51,7 +50,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{X: burstOffsetX, Y: burstOffsetY}, burstRadius)
+
+	attackAP := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: burstOffsetX, Y: burstOffsetY}, burstAttackRadius)
+	healAP := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: burstOffsetX, Y: burstOffsetY}, burstHealRadius)
 
 	snap := c.Snapshot(&ai)
 
@@ -60,7 +61,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	heal := burstInitialHealFlat[c.TalentLvlBurst()] + atk*burstInitialHealPer[c.TalentLvlBurst()]
 	healDot := burstDotHealFlat[c.TalentLvlBurst()] + atk*burstDotHealPer[c.TalentLvlBurst()]
 
-	c.Core.QueueAttack(ai, ap, 0, burstStart)
+	c.Core.QueueAttack(ai, attackAP, 0, burstStart)
 
 	ai.Abil = burstDotAbil
 	ai.Mult = burstDot[c.TalentLvlBurst()]
@@ -79,8 +80,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		for _, value := range burstTickFrames {
 			c.Core.Tasks.Add(func() {
-				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
-				if !c.Core.Combat.Player().IsWithinArea(ap) {
+				c.Core.QueueAttackWithSnap(ai, snap, attackAP, 0)
+				if !c.Core.Combat.Player().IsWithinArea(healAP) {
 					return
 				}
 				c.Core.Player.Heal(player.HealInfo{

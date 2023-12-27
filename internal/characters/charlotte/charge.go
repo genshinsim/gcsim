@@ -13,22 +13,20 @@ var chargeFrames []int
 
 const (
 	chargeHitmark = 67
-	chargeRadius  = 3
-	chargeOffsetX = 0
-	chargeOffsetY = 3
-	arkheRadius   = 3
+	chargeRadius  = 2.5
+	arkheRadius   = 2.5
 	arkheIcdKeys  = "spiritbreath-thorn-icd"
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(79) // CA -> N1
-	chargeFrames[action.ActionCharge] = 84
-	chargeFrames[action.ActionSkill] = 74
+	chargeFrames = frames.InitAbilSlice(84) // CA -> CA
+	chargeFrames[action.ActionAttack] = 79
+	chargeFrames[action.ActionSkill] = 71
 	chargeFrames[action.ActionBurst] = 71
-	chargeFrames[action.ActionDash] = 20
+	chargeFrames[action.ActionDash] = 21
 	chargeFrames[action.ActionJump] = 21
 	chargeFrames[action.ActionWalk] = 74
-	chargeFrames[action.ActionSwap] = 71
+	chargeFrames[action.ActionSwap] = 60
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -45,22 +43,29 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	windup := 0
-	if c.Core.Player.CurrentState() == action.NormalAttackState {
-		windup = 0
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState:
+		windup = 14
+	case action.SkillState:
+		if c.Core.Player.LastAction.Param["hold"] == 0 {
+			windup = 8
+		}
+	case action.BurstState:
+		windup = 3
 	}
 
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{X: chargeOffsetX, Y: chargeOffsetY},
+	pos := c.Core.Combat.PrimaryTarget().Pos()
+	c.QueueCharTask(func() {
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(
+			pos,
+			nil,
 			chargeRadius,
 		),
-		chargeHitmark-windup,
-		chargeHitmark-windup,
-		c.arkheCB,
-	)
+			0,
+			0,
+		)
+		c.QueueCharTask(c.arkhe(pos), 30)
+	}, chargeHitmark-windup)
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
@@ -70,37 +75,33 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) arkheCB(a combat.AttackCB) {
-	if c.StatusIsActive(arkheIcdKeys) {
-		return
-	}
-
-	c.AddStatus(arkheIcdKeys, 6*60, true)
-
-	c.QueueCharTask(func() {
+func (c *char) arkhe(pos geometry.Point) func() {
+	return func() {
+		if c.StatusIsActive(arkheIcdKeys) {
+			return
+		}
+		c.AddStatus(arkheIcdKeys, 6*60, true)
 		ai := combat.AttackInfo{
 			ActorIndex:     c.Index,
 			Abil:           "Spiritbreath Thorn" + " (" + c.Base.Key.Pretty() + ")",
 			AttackTag:      attacks.AttackTagExtra,
 			ICDTag:         attacks.ICDTagNone,
 			ICDGroup:       attacks.ICDGroupDefault,
-			StrikeType:     attacks.StrikeTypeSlash,
+			StrikeType:     attacks.StrikeTypePierce,
 			Element:        attributes.Cryo,
 			Durability:     0,
 			Mult:           arkhe[c.TalentLvlAttack()],
 			IgnoreInfusion: true,
 		}
-
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(
-				c.Core.Combat.Player(),
-				c.Core.Combat.PrimaryTarget(),
+			combat.NewCircleHitOnTarget(
+				pos,
 				nil,
 				arkheRadius,
 			),
 			0,
 			0,
 		)
-	}, 30)
+	}
 }

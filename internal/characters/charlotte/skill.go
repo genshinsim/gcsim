@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
@@ -17,29 +17,31 @@ var (
 )
 
 func init() {
-	skillPressFrames = frames.InitAbilSlice(42) // E -> Walk
-	skillPressFrames[action.ActionAttack] = 42
-	skillPressFrames[action.ActionCharge] = 42
-	skillPressFrames[action.ActionSkill] = 49
+	skillPressFrames = frames.InitAbilSlice(49) // E -> CA
+	skillPressFrames[action.ActionAttack] = 41
+	skillPressFrames[action.ActionSkill] = 48
 	skillPressFrames[action.ActionBurst] = 41
-	skillPressFrames[action.ActionDash] = 43
+	skillPressFrames[action.ActionDash] = 42
 	skillPressFrames[action.ActionJump] = 42
-	skillPressFrames[action.ActionSwap] = 52
+	skillPressFrames[action.ActionWalk] = 42
+	skillPressFrames[action.ActionSwap] = 41
 
-	skillHoldFrames = frames.InitAbilSlice(135) // hE -> Walk
-	skillHoldFrames[action.ActionAttack] = 134
+	skillHoldFrames = frames.InitAbilSlice(137) // hE -> Dash, Jump
+	skillHoldFrames[action.ActionAttack] = 132
 	skillHoldFrames[action.ActionCharge] = 131
-	skillHoldFrames[action.ActionSkill] = 134
-	skillHoldFrames[action.ActionBurst] = 131
-	skillHoldFrames[action.ActionDash] = 137
-	skillHoldFrames[action.ActionJump] = 138
-	skillHoldFrames[action.ActionSwap] = 146
+	skillHoldFrames[action.ActionSkill] = 130
+	skillHoldFrames[action.ActionBurst] = 129
+	skillHoldFrames[action.ActionWalk] = 136
+	skillHoldFrames[action.ActionSwap] = 134
 }
 
 const (
-	skillPressRadius        = 6
-	skillPressAngle         = 120
-	skillHoldRadius         = 25
+	skillPressBoxX = 4
+	skillPressBoxY = 8
+	// hold hitbox is an approximation
+	skillHoldOffsetX        = 1.3
+	skillHoldBoxX           = 4.5
+	skillHoldBoxY           = 30
 	skillPressCD            = 720
 	skillHoldCD             = 1080
 	skillPressHitmark       = 32
@@ -48,15 +50,17 @@ const (
 	skillHoldDelay          = 111
 	skillPressParticleCount = 3
 	skillHoldParticleCount  = 5
+	skillMarkKey            = "charlotte-mark"
 	skillPressMarkKey       = "charlotte-e"
 	skillHoldMarkKey        = "charlotte-hold-e"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	if p["hold"] == 1 {
-		return c.skillHold()
+	c.markCount = 0
+	if p["hold"] == 0 {
+		return c.skillPress()
 	}
-	return c.skillPress()
+	return c.skillHold(p)
 }
 
 func (c *char) skillPress() (action.Info, error) {
@@ -72,10 +76,7 @@ func (c *char) skillPress() (action.Info, error) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
-	ap := combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, skillPressRadius, skillPressAngle)
-	if c.Base.Cons >= 2 {
-		c.c2(ap)
-	}
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, skillPressBoxX, skillPressBoxY)
 
 	c.Core.QueueAttack(
 		ai,
@@ -84,6 +85,7 @@ func (c *char) skillPress() (action.Info, error) {
 		skillPressHitmark,
 		c.skillPressParticleCB,
 		c.skillPressMarkTargets,
+		c.makeC2CB(),
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, skillPressCD, skillPressDelay)
@@ -96,7 +98,18 @@ func (c *char) skillPress() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillHold() (action.Info, error) {
+func (c *char) skillHold(p map[string]int) (action.Info, error) {
+	hold := p["hold"]
+	// earliest hold hitmark is ~111f
+	// latest hold hitmark is ~919f
+	// hold=1 gives 111f and hold=809 gives a 919f delay until hitmark.
+	if hold < 1 {
+		hold = 1
+	}
+	if hold > 809 {
+		hold = 809
+	}
+	hold += skillHoldHitmark
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Framing: Freezing Point Composition (Hold)",
@@ -109,10 +122,7 @@ func (c *char) skillHold() (action.Info, error) {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, skillHoldRadius)
-	if c.Base.Cons >= 2 {
-		c.c2(ap)
-	}
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: skillHoldOffsetX}, skillHoldBoxX, skillHoldBoxY)
 
 	c.Core.QueueAttack(
 		ai,
@@ -121,14 +131,15 @@ func (c *char) skillHold() (action.Info, error) {
 		skillHoldHitmark,
 		c.skillHoldParticleCB,
 		c.skillHoldMarkTargets,
+		c.makeC2CB(),
 	)
 
-	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, skillHoldDelay)
+	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold-2)
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return skillHoldDelay + skillHoldFrames[next] },
-		AnimationLength: skillHoldDelay + skillHoldFrames[action.InvalidAction],
-		CanQueueAfter:   skillHoldDelay + skillHoldFrames[action.ActionBurst],
+		Frames:          func(next action.Action) int { return hold + skillHoldFrames[next] },
+		AnimationLength: hold + skillHoldFrames[action.InvalidAction],
+		CanQueueAfter:   hold + skillHoldFrames[action.ActionBurst],
 		State:           action.SkillState,
 	}, nil
 }
@@ -148,53 +159,54 @@ func (c *char) skillHoldParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) skillPressMarkTargets(a combat.AttackCB) {
+	if c.markCount == 5 {
+		return
+	}
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
+	}
+	c.markCount++
+
+	if t.StatusIsActive(skillPressMarkKey) {
+		t.DeleteStatus(skillPressMarkKey)
 	}
 	if t.StatusIsActive(skillHoldMarkKey) {
 		t.DeleteStatus(skillHoldMarkKey)
-		t.AddStatus(skillPressMarkKey, 360, true)
-		c.Core.Tasks.Add(c.skillPressMark(t), 1.5*60)
-		return
 	}
-	if t.StatusIsActive(skillPressMarkKey) {
-		t.AddStatus(skillPressMarkKey, 360, true)
-		return
-	}
-	if c.markCount < 5 {
-		c.markCount++
-		t.AddStatus(skillPressMarkKey, 360, true)
-		c.Core.Tasks.Add(c.skillPressMark(t), 1.5*60)
-		return
-	}
+
+	t.SetTag(skillMarkKey, c.Core.F)
+	t.AddStatus(skillPressMarkKey, 360+0.8*60, true)
+	t.QueueEnemyTask(c.skillPressMark(c.Core.F, t), 1.5*60)
 }
 
 func (c *char) skillHoldMarkTargets(a combat.AttackCB) {
+	if c.markCount == 5 {
+		return
+	}
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return
 	}
+	c.markCount++
+
 	if t.StatusIsActive(skillPressMarkKey) {
 		t.DeleteStatus(skillPressMarkKey)
-		t.AddStatus(skillHoldMarkKey, 720, true)
-		c.Core.Tasks.Add(c.skillHoldMark(t), 1.5*60)
-		return
 	}
 	if t.StatusIsActive(skillHoldMarkKey) {
-		t.AddStatus(skillHoldMarkKey, 720, true)
-		return
+		t.DeleteStatus(skillHoldMarkKey)
 	}
-	if c.markCount < 5 {
-		c.markCount++
-		t.AddStatus(skillHoldMarkKey, 720, true)
-		c.Core.Tasks.Add(c.skillHoldMark(t), 1.5*60)
-		return
-	}
+
+	t.SetTag(skillMarkKey, c.Core.F)
+	t.AddStatus(skillHoldMarkKey, 720+0.9*60, true)
+	t.QueueEnemyTask(c.skillHoldMark(c.Core.F, t), 1.5*60)
 }
 
-func (c *char) skillPressMark(t *enemy.Enemy) func() {
+func (c *char) skillPressMark(src int, t *enemy.Enemy) func() {
 	return func() {
+		if src != t.GetTag(skillMarkKey) {
+			return
+		}
 		if !t.StatusIsActive(skillPressMarkKey) {
 			return
 		}
@@ -210,12 +222,15 @@ func (c *char) skillPressMark(t *enemy.Enemy) func() {
 			Mult:       skillPressMark[c.TalentLvlSkill()],
 		}
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Key()), 0, 0)
-		c.Core.Tasks.Add(c.skillPressMark(t), 1.5*60)
+		c.Core.Tasks.Add(c.skillPressMark(src, t), 1.5*60)
 	}
 }
 
-func (c *char) skillHoldMark(t *enemy.Enemy) func() {
+func (c *char) skillHoldMark(src int, t *enemy.Enemy) func() {
 	return func() {
+		if src != t.GetTag(skillMarkKey) {
+			return
+		}
 		if !t.StatusIsActive(skillHoldMarkKey) {
 			return
 		}
@@ -231,20 +246,6 @@ func (c *char) skillHoldMark(t *enemy.Enemy) func() {
 			Mult:       skillHoldMark[c.TalentLvlSkill()],
 		}
 		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(t.Key()), 0, 0)
-		c.Core.Tasks.Add(c.skillHoldMark(t), 1.5*60)
+		c.Core.Tasks.Add(c.skillHoldMark(src, t), 1.5*60)
 	}
-}
-
-func (c *char) charlotteMarkOnTargetDied() {
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
-		t, ok := args[0].(*enemy.Enemy)
-		if !ok {
-			return false
-		}
-		if !t.StatusIsActive(skillPressMarkKey) && !t.StatusIsActive(skillHoldMarkKey) {
-			return false
-		}
-		c.markCount--
-		return false
-	}, "charlotte-on-target-died")
 }

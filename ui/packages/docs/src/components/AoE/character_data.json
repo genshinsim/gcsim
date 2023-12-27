@@ -1076,10 +1076,16 @@
   "charlotte": {
     "cons": [
       {
-        "ability": "C6",
+        "ability": "C6 Heal",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "notes": "The 'Heal' and 'Attack' abilities have the same area of effect (AOE)."
+        "radius": 3.5
+      },
+      {
+        "ability": "C6 Attack",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
       }
     ],
     "normal": [
@@ -1087,13 +1093,13 @@
         "ability": "N1",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 2
+        "radius": 1
       },
       {
         "ability": "N2",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "radius": 2
+        "radius": 1
       },
       {
         "ability": "N3",
@@ -1107,8 +1113,7 @@
         "ability": "CA",
         "shape": "Circle",
         "center": "PrimaryTarget",
-        "offsetY": 3,
-        "radius": 3
+        "radius": 2.5
       }
     ],
     "skill": [
@@ -1121,23 +1126,33 @@
       },
       {
         "ability": "E-Hold",
-        "shape": "Circle",
+        "shape": "Box",
         "center": "Player",
-        "radius": 25
+        "offsetX": 1.3,
+        "boxX": 4.5,
+        "boxY": 30
       },
       {
-        "ability": "Charlotte Mark",
+        "ability": "E-Mark",
         "shape": "Single",
         "center": "GlobalValue"
       }
     ],
     "burst": [
       {
-        "ability": "Q",
+        "ability": "Q-Attack",
         "shape": "Circle",
         "center": "Player",
-        "offsetY": 2,
+        "offsetY": 4.5,
         "radius": 6,
+        "notes": "Q/Kamera area is the same as this hitbox."
+      },
+      {
+        "ability": "Q-Heal",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 4.5,
+        "radius": 7,
         "notes": "Q/Kamera area is the same as this hitbox."
       }
     ]
