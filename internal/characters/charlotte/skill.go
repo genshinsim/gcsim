@@ -109,7 +109,7 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 	if hold > 809 {
 		hold = 809
 	}
-	hold += skillHoldHitmark
+	hitmark := hold + skillHoldHitmark
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Framing: Freezing Point Composition (Hold)",
@@ -128,13 +128,13 @@ func (c *char) skillHold(p map[string]int) (action.Info, error) {
 		ai,
 		ap,
 		0,
-		hold,
+		hitmark,
 		c.skillHoldParticleCB,
 		c.skillHoldMarkTargets,
 		c.makeC2CB(),
 	)
 
-	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hold-2)
+	c.SetCDWithDelay(action.ActionSkill, skillHoldCD, hitmark-2)
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return hold + skillHoldFrames[next] },
