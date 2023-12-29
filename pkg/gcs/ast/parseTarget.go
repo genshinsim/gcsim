@@ -123,7 +123,9 @@ func parseTarget(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
-			r.ParticleElement = eleKeys[item.Val]
+			if ele, ok := eleKeys[item.Val]; ok {
+				r.ParticleElement = ele
+			}
 		case itemElementKey:
 			s := n.Val
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
