@@ -118,6 +118,12 @@ func parseTarget(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 			r.ParticleDropCount = amt
+		case keywordParticleElement:
+			item, err := p.acceptSeqReturnLast(itemAssign, itemElementKey)
+			if err != nil {
+				return nil, err
+			}
+			r.ParticleElement = eleKeys[item.Val]
 		case itemElementKey:
 			s := n.Val
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)

@@ -39,6 +39,7 @@ var key = map[string]TokenType{
 	"target":              keywordTarget,
 	"particle_threshold":  keywordParticleThreshold,
 	"particle_drop_count": keywordParticleDropCount,
+	"particle_element":    keywordParticleElement,
 	"resist":              keywordResist,
 	"energy":              keywordEnergy,
 	"hurt":                keywordHurt,
