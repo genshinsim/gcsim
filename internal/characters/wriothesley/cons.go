@@ -37,7 +37,7 @@ func (c *char) c1(ai *combat.AttackInfo, snap *combat.Snapshot) (combat.AttackCB
 	}
 	c.c1N5Proc = false
 
-	// add status for stamina consumption checking
+	// add status that is removed on consumption
 	c.AddStatus(c1Status, -1, false)
 
 	// adjust ai

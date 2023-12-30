@@ -20,7 +20,6 @@ const (
 )
 
 func (c *char) a1Ready() bool {
-	// 60% hp check
 	return c.CurrentHPRatio() < 0.6 && !c.StatusIsActive(a1ICDKey)
 }
 
@@ -33,7 +32,7 @@ func (c *char) a1(ai *combat.AttackInfo, snap *combat.Snapshot) combat.AttackCBF
 		return nil
 	}
 
-	// add status for stamina consumption checking
+	// add status that is removed on consumption
 	c.AddStatus(a1Status, -1, false)
 
 	// adjust ai
