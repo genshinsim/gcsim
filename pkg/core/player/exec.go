@@ -250,7 +250,7 @@ func (h *Handler) useAbility(
 		"executed ", t.String(),
 	).
 		Write("action", t.String()).
-		Write("stam_pre", h.Stam).
-		Write("swap_cd_pre", h.SwapCD)
+		Write("stam_post", h.Stam).
+		Write("swap_cd_post", h.SwapCD)
 	return nil
 }
