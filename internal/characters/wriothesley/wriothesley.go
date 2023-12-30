@@ -57,9 +57,28 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	return ds
 }
 
+func (c *char) graciousRebukeReady() bool {
+	if c.Base.Ascension < 1 {
+		return false
+	}
+	if c.Base.Cons >= 1 {
+		return c.c1Ready()
+	}
+	return c.a1Ready()
+}
+
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if a == action.ActionCharge && (c.a1Ready() || c.c1Ready()) {
+	if a == action.ActionCharge && c.graciousRebukeReady() {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "gracious-rebuke":
+		return c.graciousRebukeReady(), nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }
