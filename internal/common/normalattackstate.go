@@ -85,6 +85,7 @@ func init() {
 	percentDelay5[keys.Razor] = 18
 	percentDelay5[keys.Sayu] = 24
 	percentDelay5[keys.Xinyan] = 28
+	percentDelay5[keys.Dehya] = 21
 
 	percentDelay5[keys.Aether] = 8
 	percentDelay5[keys.AetherAnemo] = 8
