@@ -1171,6 +1171,21 @@
         "burst_energy_cost": 60
       }
     },
+    "wriothesley": {
+      "id": 10000086,
+      "key": "wriothesley",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "element": "Ice",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Wriothesley",
+      "skill_details": {
+        "skill": 10862,
+        "burst": 10865,
+        "attack": 10861,
+        "burst_energy_cost": 60
+      }
+    },
     "xiangling": {
       "id": 10000023,
       "key": "xiangling",
