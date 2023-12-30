@@ -421,8 +421,8 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 
 func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	// pick_up_crystallize("element");
-	if len(c.Args) != 1 {
-		return nil, fmt.Errorf("invalid number of params for pick_up_crystallize, expected 1 got %v", len(c.Args))
+	if len(c.Args) < 1 || len(c.Args) > 2 {
+		return nil, fmt.Errorf("invalid number of params for pick_up_crystallize, expected 1 to 2 got %v", len(c.Args))
 	}
 	t, err := e.evalExpr(c.Args[0], env)
 	if err != nil {
@@ -439,8 +439,31 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("pick_up_crystallize argument element %v is not a valid element", name.str)
 	}
 
-	var count int64
+	// check for optional count param
+	var count int64 = 1
+	if len(c.Args) == 2 {
+		c, err := e.evalExpr(c.Args[1], env)
+		if err != nil {
+			return nil, err
+		}
+		cc, ok := c.(*number)
+		if !ok {
+			return nil, fmt.Errorf("pick_up_crystallize optional 2nd argument should evaluate to a number, got %v", t.Inspect())
+		}
+		count = cc.ival
+		if cc.isFloat {
+			count = int64(cc.fval)
+		}
+		if count < 0 {
+			count = 0
+		}
+	}
+
+	var picked int64
 	for _, g := range e.Core.Combat.Gadgets() {
+		if picked >= count {
+			break
+		}
 		shard, ok := g.(*reactable.CrystallizeShard)
 		// skip if no shard
 		if !ok {
@@ -452,13 +475,12 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 		}
 		// try to pick up shard and stop if succeeded
 		if shard.AddShieldKillShard() {
-			count = 1
-			break
+			picked++
 		}
 	}
 
 	return &number{
-		ival: count,
+		ival: picked,
 	}, nil
 }
 
