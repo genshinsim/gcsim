@@ -12,7 +12,6 @@ import (
 var chargeFrames []int
 
 const (
-	// TODO: fix me
 	chargeHitmark = 19
 )
 

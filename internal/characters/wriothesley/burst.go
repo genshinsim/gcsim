@@ -13,7 +13,7 @@ var burstFrames []int
 var burstHitmarks = []int{99, 104, 109, 114, 119}
 
 const (
-	burstOusiaHitmark = 161
+	burstOusiaHitmark = 160
 	burstOusiaICDKey  = "wriothesley-ousia-icd"
 )
 
