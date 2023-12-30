@@ -51,7 +51,7 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 
 	// apply skill multiplier
 	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
-		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
+		ai.Mult *= skill[c.TalentLvlSkill()]
 	}
 
 	return ds
