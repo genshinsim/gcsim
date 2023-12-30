@@ -179,6 +179,14 @@
       "desc": "Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state."
     }
   ],
+  "wriothesley": [
+    {
+      "fields": [
+        ".wriothesley.gracious-rebuke"
+      ],
+      "desc": "Whether Wriothesley currently has a Gracious Rebuke or not."
+    }
+  ],
   "heizou": [
     {
       "fields": [
