@@ -6,26 +6,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-// TODO: chongyun based frames & my assumptions
 var burstFrames []int
 
-var burstHitmarks = []int{50, 59, 67, 76, 85}
+var burstHitmarks = []int{99, 104, 109, 114, 119}
 
 const (
-	burstOusiaHitmark = 95
-
-	burstOusiaICDKey = "wriothesley-ousia-icd"
+	burstOusiaHitmark = 161
+	burstOusiaICDKey  = "wriothesley-ousia-icd"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(79) // Q -> Swap
-	burstFrames[action.ActionAttack] = 64  // Q -> N1
-	burstFrames[action.ActionSkill] = 64   // Q -> E
-	burstFrames[action.ActionDash] = 64    // Q -> D
-	burstFrames[action.ActionJump] = 66    // Q -> J
+	burstFrames = frames.InitAbilSlice(133)
+	burstFrames[action.ActionSwap] = 94
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -37,46 +31,52 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
-		Durability: 50,
+		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.00}, 5.00, 15.00)
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 8, 16)
 
+	// TODO: snapshot timing
+	snap := c.Snapshot(&ai)
+	c.c2(&snap)
 	for _, hitmark := range burstHitmarks {
-		c.Core.QueueAttack(ai, ap, hitmark, hitmark)
+		c.Core.QueueAttackWithSnap(ai, snap, ap, hitmark)
 	}
 
-	if !c.StatusIsActive(burstOusiaICDKey) {
-		aiOusia := combat.AttackInfo{
-			ActorIndex:         c.Index,
-			Abil:               "Surging Blade",
-			AttackTag:          attacks.AttackTagElementalBurst,
-			ICDTag:             attacks.ICDTagNone,
-			ICDGroup:           attacks.ICDGroupDefault,
-			StrikeType:         attacks.StrikeTypeDefault,
-			Element:            attributes.Cryo,
-			Mult:               burstOusia[c.TalentLvlBurst()],
-			HitlagFactor:       0.01,
-			HitlagHaltFrames:   0.03 * 60,
-			CanBeDefenseHalted: false,
+	c.QueueCharTask(func() {
+		if c.StatusIsActive(burstOusiaICDKey) {
+			return
 		}
-		c.Core.QueueAttack(
-			aiOusia,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.00}, 7.00, 15.00),
-			burstOusiaHitmark,
-			burstOusiaHitmark,
-		)
-
 		c.AddStatus(burstOusiaICDKey, 10*60, true)
-	}
+
+		aiOusia := combat.AttackInfo{
+			ActorIndex:       c.Index,
+			Abil:             "Surging Blade",
+			AttackTag:        attacks.AttackTagElementalBurst,
+			ICDTag:           attacks.ICDTagNone,
+			ICDGroup:         attacks.ICDGroupDefault,
+			StrikeType:       attacks.StrikeTypeDefault,
+			Element:          attributes.Cryo,
+			Durability:       0,
+			Mult:             burstOusia[c.TalentLvlBurst()],
+			HitlagFactor:     0.01,
+			HitlagHaltFrames: 0.03 * 60,
+		}
+		c.Core.QueueAttackWithSnap(
+			aiOusia,
+			snap,
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 10, 16),
+			0,
+		)
+	}, burstOusiaHitmark)
 
 	c.SetCD(action.ActionBurst, 15*60)
-	c.ConsumeEnergy(6)
+	c.ConsumeEnergy(5)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

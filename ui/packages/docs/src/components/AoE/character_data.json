@@ -1077,7 +1077,7 @@
     "cons": [
       {
         "ability": "C6",
-        "shape": "Circle", 
+        "shape": "Circle",
         "center": "GlobalValue",
         "radius": 3.5,
         "notes": "Spawns on target that the C6 proc'd on. Heal is 5m instead of 3m."
@@ -1143,11 +1143,11 @@
       {
         "ability": "Q",
         "shape": "Circle",
-        "center": "Player", 
+        "center": "Player",
         "offsetY": 4.5,
         "radius": 6,
         "notes": "Heal is 7m instead of 6m."
-    }
+      }
     ]
   },
   "chongyun": {
@@ -7584,6 +7584,138 @@
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 5
+      }
+    ]
+  },
+  "wriothesley": {
+    "cons": [
+      {
+        "ability": "C6",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.8,
+        "boxX": 4,
+        "boxY": 5
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.5,
+        "boxY": 3
+      },
+      {
+        "ability": "N4-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N4-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2,
+        "boxY": 3
+      },
+      {
+        "ability": "N5",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 3,
+        "boxY": 3
+      },
+      {
+        "ability": "E-N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N3",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.8,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N4-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N4-2",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 2.4,
+        "boxY": 3.4
+      },
+      {
+        "ability": "E-N5",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 3.4,
+        "boxY": 3.4
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1.2,
+        "boxX": 2.8,
+        "boxY": 3.6
+      },
+      {
+        "ability": "CA-Gracious-Rebuke",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.8,
+        "boxX": 4,
+        "boxY": 5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 8,
+        "boxY": 16
+      },
+      {
+        "ability": "Q-Surging-Blade",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 10,
+        "boxY": 16
       }
     ]
   },

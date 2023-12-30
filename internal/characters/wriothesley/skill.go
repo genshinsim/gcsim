@@ -10,39 +10,38 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-// TODO: yoimiya based frames
 var skillFrames []int
 
 const (
-	skillKey       = "wriothesleyskill"
-	particleICDKey = "wriothesley-particle-icd"
-	skillStart     = 11
+	skillKey          = "wriothesley-e"
+	skillCDDelay      = 1
+	skillLoseHPICDKey = "wriothesley-lose-hp-icd"
+	skillLoseHPICD    = 6
+	particleICDKey    = "wriothesley-particle-icd"
+	particleICD       = 2 * 60
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(34)
-	skillFrames[action.ActionAttack] = 22
-	skillFrames[action.ActionAim] = 22 // uses attack frames
-	skillFrames[action.ActionBurst] = 23
-	skillFrames[action.ActionJump] = 32
-	skillFrames[action.ActionSwap] = 31
+	skillFrames = frames.InitAbilSlice(29)
+	skillFrames[action.ActionAttack] = 15
+	skillFrames[action.ActionBurst] = 5
+	skillFrames[action.ActionDash] = 21
+	skillFrames[action.ActionJump] = 20
+	skillFrames[action.ActionSwap] = 19
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	if c.Base.Ascension >= 4 {
-		c.a4Stack = 0
-	}
-	if c.Base.Cons >= 1 {
-		c.c1Proc = false
-	}
+	c.resetA4()
+	c.resetC1SkillExtension()
 
-	c.AddStatus(skillKey, skillStart+10*60, true) // activate for 10
-	c.SetCDWithDelay(action.ActionSkill, 16*60, 11)
+	c.AddStatus(skillKey, 10*60+skillCDDelay, true)
+	c.applyA4(10*60 + skillCDDelay)
+	c.SetCDWithDelay(action.ActionSkill, 16*60, skillCDDelay)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -54,7 +53,7 @@ func (c *char) particleCB(a combat.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 2*60, true)
+	c.AddStatus(particleICDKey, particleICD, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Cryo, c.ParticleDelay)
 }
 
@@ -62,6 +61,10 @@ func (c *char) chillingPenalty(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
+	if c.StatusIsActive(skillLoseHPICDKey) {
+		return
+	}
+	c.AddStatus(skillLoseHPICDKey, skillLoseHPICD, true)
 	c.Core.Player.Drain(player.DrainInfo{
 		ActorIndex: c.Index,
 		Abil:       "Chilling Penalty",
@@ -71,9 +74,11 @@ func (c *char) chillingPenalty(a combat.AttackCB) {
 
 func (c *char) onExit() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		if !c.StatusIsActive(skillKey) {
+			return false
+		}
 		prev := args[0].(int)
-		next := args[1].(int)
-		if prev == c.Index && next != c.Index {
+		if prev == c.Index {
 			c.DeleteStatus(skillKey)
 		}
 		return false

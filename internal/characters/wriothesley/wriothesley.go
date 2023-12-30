@@ -15,12 +15,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1ICD     int
-	a1HPRatio float64
-	a1Buff    []float64
-	a1Heal    float64
-	a4Stack   int
-	c1Proc    bool
+	caHeal               float64
+	a4Stack              int
+	c1N5Proc             bool
+	c1SkillExtensionProc bool
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -40,30 +38,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.onExit()
 
-	if c.Base.Ascension >= 1 {
-		c.a1()
-	}
-	if c.Base.Ascension >= 4 {
-		c.a4()
-	}
-
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
+	c.a4()
+	c.c4()
 
 	return nil
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if a == action.ActionCharge && c.StatModIsActive(a1Status) {
+	if a == action.ActionCharge && (c.a1Ready() || c.c1Ready()) {
 		return 0
 	}
-
 	return c.Character.ActionStam(a, p)
 }
