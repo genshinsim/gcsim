@@ -159,7 +159,7 @@ func (c *char) skillShortHold() action.Info {
 
 	// 1 DoT Tick
 	d := c.createSkillHoldSnapshot()
-	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, 1), 18)
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, 1), 18+12)
 
 	c.Core.Tasks.Add(func() {
 		// pattern shouldn't snapshot on attack event creation because the skill follows the player
@@ -217,7 +217,7 @@ func (c *char) skillHold(duration int) action.Info {
 
 	// ticks
 	d := c.createSkillHoldSnapshot()
-	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, duration/12), 18)
+	c.Core.Tasks.Add(c.absorbCheck(c.Core.F, 0, duration/12), 18+12)
 
 	for i := 0; i <= duration; i += 30 { // 1 tick for sure
 		c.Core.Tasks.Add(func() {
