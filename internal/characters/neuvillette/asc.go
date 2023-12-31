@@ -49,7 +49,7 @@ func (c *char) countA1() int {
 	if c.Base.Ascension < 1 {
 		return 0
 	}
-	a1TriggeredReactionsCount := 0
+	a1TriggeredReactionsCount := c.a1BaseStackCount
 	for _, val := range c.a1Statuses {
 		if c.StatusIsActive(val.Key) {
 			a1TriggeredReactionsCount += 1

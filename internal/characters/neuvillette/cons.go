@@ -22,16 +22,7 @@ func (c *char) c1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-
-	c1 := NeuvA1Keys{event.OnCharacterSwap, "neuvillette-a1-c1-onfield"}
-	c.a1Statuses = append(c.a1Statuses, c1)
-	c.Core.Events.Subscribe(c1.Evt, func(args ...interface{}) bool {
-		next := args[1].(int)
-		if next == c.Index {
-			c.AddStatus(c1.Key, 30*60, true)
-		}
-		return false
-	}, c1.Key)
+	c.a1BaseStackCount = 1
 }
 
 func (c *char) c2() {

@@ -26,6 +26,7 @@ type char struct {
 	tickAnimLength         int
 	tickAnimLengthC6Extend int
 	chargeEarlyCancelled   bool
+	a1BaseStackCount       int
 	a1Statuses             []NeuvA1Keys
 	a4Buff                 []float64
 	chargeAi               combat.AttackInfo
