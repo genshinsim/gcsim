@@ -36,6 +36,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		counter = 2
 		c.a4()
 	}
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Tidecaller (E)",
@@ -43,6 +44,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           float64(100 * (counter + 1)),
 		Element:            attributes.Electro,
 		Durability:         50,
 		Mult:               skillbase[c.TalentLvlSkill()] + skillbonus[c.TalentLvlSkill()]*float64(counter),

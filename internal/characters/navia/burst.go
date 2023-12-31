@@ -43,6 +43,7 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   100,
 		Element:    attributes.Geo,
 		Durability: 50,
 		Mult:       burst[0][c.TalentLvlBurst()],
@@ -63,6 +64,7 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 		ai.Abil = "Cannon Fire Support"
 		ai.ICDTag = attacks.ICDTagElementalBurst
 		ai.ICDGroup = attacks.ICDGroupNaviaBurst
+		ai.PoiseDMG = 50
 		ai.Durability = 25
 		ai.Mult = burst[1][c.TalentLvlBurst()]
 

@@ -25,6 +25,7 @@ func (c *char) a1() {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   180,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       burstExplodeBase[c.TalentLvlBurst()] * 0.5,

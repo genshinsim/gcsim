@@ -22,6 +22,7 @@ var (
 		{attacks.StrikeTypeSlash, attacks.StrikeTypeSlash},
 		{attacks.StrikeTypeSpear},
 	}
+	attackPoiseDMG  = []float64{60.08, 59.76, 38.08, 94.8}
 	attackHitboxes  = [][]float64{{2.5}, {2.2, 3}, {2.5}, {2.2, 7}}
 	attackOffsets   = []float64{-0.3, -0.1, 0.3, -0.1}
 	attackFanAngles = []float64{360, 360, 270, 360}
@@ -52,6 +53,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attackStrikeTypes[c.NormalCounter][i],
+			PoiseDMG:           attackPoiseDMG[c.NormalCounter],
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],

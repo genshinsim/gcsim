@@ -14,6 +14,7 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{28, 25, 20, 42}
+	attackPoiseDMG        = [][]float64{{105.8, 98.1, 115.34, 151.68}, {132.25, 122.82, 143.865, 189.75}}
 	attackHitlagHaltFrame = []float64{0.10, 0.10, 0.09, 0.15}
 	attackHitboxes        = [][][]float64{{{2}, {2}, {2}, {2, 3}}, {{5.2}, {5.2}, {5.2}, {3.3, 6.2}}}
 	attackOffsets         = []float64{1, 1, 1, -1}
@@ -53,6 +54,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			ai.HitlagHaltFrames = 0.1 * 60
 		}
 	}
+	ai.PoiseDMG = attackPoiseDMG[burstIndex][c.NormalCounter]
 	// TODO: don't forget the callbacks when implementing her CA
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),

@@ -151,6 +151,7 @@ func (c *char) makeBunny() *Bunny {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   260,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       bunnyExplode[c.TalentLvlSkill()],

@@ -31,6 +31,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         110,
 		Element:          attributes.Cryo,
 		Durability:       25,
 		Mult:             charge[c.TalentLvlAttack()],
@@ -66,6 +67,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c6Attack {
 		ai.Abil += " (C6)"
 		ai.StrikeType = attacks.StrikeTypeDefault
+		ai.PoiseDMG = 50
 		c.Core.QueueAttackWithSnap(ai, snap, ap, chargeHitmark, rebukeCB, particleCB)
 	}
 

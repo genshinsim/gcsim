@@ -62,6 +62,7 @@ func (c *char) skillHold(createStele bool) action.Info {
 		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   142.9,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],

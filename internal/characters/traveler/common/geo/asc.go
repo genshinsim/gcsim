@@ -27,6 +27,7 @@ func (c *char) a4() {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   13.5,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       0.6,

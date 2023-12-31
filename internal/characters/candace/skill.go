@@ -67,6 +67,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
 	case 0:
+		ai.PoiseDMG = 150
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			geometry.Point{Y: skillOffsets[chargeLevel]},
@@ -75,6 +76,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		)
 		particleCount = 2
 	case 1:
+		ai.PoiseDMG = 300
 		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),

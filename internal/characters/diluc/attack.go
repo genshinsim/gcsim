@@ -14,6 +14,7 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{24, 39, 26, 49}
+	attackPoiseDMG        = []float64{108.1, 105.57, 119.03, 161.46}
 	attackHitlagHaltFrame = []float64{.1, .09, .09, .12}
 	attackHitboxes        = [][]float64{{2}, {2, 3}, {2}, {2, 3}}
 	attackOffsets         = []float64{0.5, -1, 0.5, -0.5}
@@ -44,6 +45,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           attackPoiseDMG[c.NormalCounter],
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
