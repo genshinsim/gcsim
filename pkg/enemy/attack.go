@@ -81,7 +81,8 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 		atk.Info.NoImpulse = true
 	}
 
-	// check shatter first
+	// check poise dmg and then shatter first
+	e.PoiseDMGCheck(atk)
 	e.ShatterCheck(atk)
 
 	checkBurningICD := func() {
