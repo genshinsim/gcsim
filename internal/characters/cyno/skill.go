@@ -87,6 +87,7 @@ func (c *char) skillB() (action.Info, error) {
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         75,
 		Element:          attributes.Electro,
 		Durability:       25,
 		Mult:             skillB[c.TalentLvlSkill()],
@@ -119,6 +120,7 @@ func (c *char) skillB() (action.Info, error) {
 		ai.ICDTag = attacks.ICDTagElementalArt
 		ai.ICDGroup = attacks.ICDGroupCynoBolt
 		ai.StrikeType = attacks.StrikeTypeSlash
+		ai.PoiseDMG = 25
 		ai.HitlagFactor = 0
 		ai.HitlagHaltFrames = 0
 

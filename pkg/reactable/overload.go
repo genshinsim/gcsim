@@ -48,6 +48,7 @@ func (r *Reactable) TryOverload(a *combat.AttackEvent) bool {
 		ICDTag:           attacks.ICDTagOverloadDamage,
 		ICDGroup:         attacks.ICDGroupReactionB,
 		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         90,
 		Element:          attributes.Pyro,
 		IgnoreDefPercent: 1,
 	}

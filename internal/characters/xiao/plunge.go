@@ -55,8 +55,10 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
+	poiseDMG := 150.0
 	highPlungeRadius := 5.0
 	if c.StatusIsActive(burstBuffKey) {
+		poiseDMG = 225
 		highPlungeRadius = 6
 	}
 
@@ -67,6 +69,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   poiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       highplunge[c.TalentLvlAttack()],
@@ -111,8 +114,10 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		c.plungeCollision(collisionHitmark)
 	}
 
+	poiseDMG := 100.0
 	lowPlungeRadius := 3.0
 	if c.StatusIsActive(burstBuffKey) {
+		poiseDMG = 150
 		lowPlungeRadius = 4
 	}
 
@@ -123,6 +128,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   poiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       lowplunge[c.TalentLvlAttack()],

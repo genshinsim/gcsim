@@ -61,6 +61,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           50,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -136,7 +137,8 @@ func (c *char) skillRecast() (action.Info, error) {
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt, // TODO ???
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           50,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skillReposition[c.TalentLvlSkill()],
@@ -188,7 +190,7 @@ func (c *char) addField(dur int) {
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
 		ICDGroup:           attacks.ICDGroupDefault,
-		StrikeType:         attacks.StrikeTypeBlunt, // TODO ???
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skillDotAtk[c.TalentLvlSkill()],

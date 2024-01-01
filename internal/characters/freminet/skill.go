@@ -69,6 +69,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDTag:           attacks.ICDTagElementalArt,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         75,
 		Element:          attributes.Cryo,
 		Durability:       25,
 		Mult:             skillThrust[c.TalentLvlSkill()],
@@ -132,6 +133,10 @@ func (c *char) detonateSkill() (action.Info, error) {
 	}
 
 	if skillPressureCryo[c.skillStacks][c.TalentLvlSkill()] > 0 {
+		poiseDMG := 150.0
+		if c.skillStacks > 0 {
+			poiseDMG = 70.0
+		}
 		ai := combat.AttackInfo{
 			ActorIndex:       c.Index,
 			Abil:             pressureBaseName + " (Cryo)",
@@ -139,6 +144,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 			ICDTag:           attacks.ICDTagElementalArt,
 			ICDGroup:         attacks.ICDGroupDefault,
 			StrikeType:       attacks.StrikeTypeBlunt,
+			PoiseDMG:         poiseDMG,
 			Element:          attributes.Cryo,
 			Durability:       25,
 			Mult:             skillPressureCryo[c.skillStacks][c.TalentLvlSkill()],
@@ -155,6 +161,10 @@ func (c *char) detonateSkill() (action.Info, error) {
 	}
 
 	if skillPressurePhys[c.skillStacks][c.TalentLvlSkill()] > 0 {
+		poiseDMG := 150.0
+		if c.skillStacks < 4 {
+			poiseDMG = 70.0
+		}
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       pressureBaseName + " (Physical)",
@@ -162,6 +172,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   poiseDMG,
 			Element:    attributes.Physical,
 			Durability: 25,
 			Mult:       skillPressurePhys[c.skillStacks][c.TalentLvlSkill()],

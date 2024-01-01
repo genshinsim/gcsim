@@ -50,6 +50,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   100,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       lowPlunge[c.TalentLvlAttack()],

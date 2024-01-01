@@ -57,6 +57,19 @@ func min(a, b reactions.Durability) reactions.Durability {
 	return a
 }
 
+func (r *Reactable) PoiseDMGCheck(a *combat.AttackEvent) bool {
+	if r.Durability[Frozen] < ZeroDur {
+		return false
+	}
+	if a.Info.StrikeType != attacks.StrikeTypeBlunt {
+		return false
+	}
+	// remove frozen durability according to poise dmg
+	r.Durability[Frozen] -= reactions.Durability(0.15 * a.Info.PoiseDMG)
+	r.checkFreeze()
+	return true
+}
+
 func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	if r.Durability[Frozen] < ZeroDur {
 		return false
@@ -64,7 +77,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	if a.Info.StrikeType != attacks.StrikeTypeBlunt && a.Info.Element != attributes.Geo {
 		return false
 	}
-	// remove 200 freeze gauge if availabe
+	// remove 200 freeze gauge if available
 	r.Durability[Frozen] -= 200
 	r.checkFreeze()
 	// trigger shatter attack
@@ -89,7 +102,7 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 		ai,
 		snap,
 		combat.NewSingleTargetHit(r.self.Key()),
-		1,
+		0,
 	)
 	return true
 }
@@ -123,6 +136,6 @@ func (r *Reactable) checkFreeze() {
 			DoNotLog:    true,
 		}
 		//TODO: delay attack by 1 frame ok?
-		r.core.QueueAttack(ai, combat.NewSingleTargetHit(r.self.Key()), -1, 1)
+		r.core.QueueAttack(ai, combat.NewSingleTargetHit(r.self.Key()), -1, 0)
 	}
 }

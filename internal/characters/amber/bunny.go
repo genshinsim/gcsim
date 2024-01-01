@@ -30,6 +30,7 @@ func (b *Bunny) HandleAttack(atk *combat.AttackEvent) float64 {
 
 	b.Core.Log.NewEvent(fmt.Sprintf("baron bunny hit by %s", atk.Info.Abil), glog.LogCharacterEvent, b.char.Index)
 
+	b.PoiseDMGCheck(atk)
 	b.ShatterCheck(atk)
 
 	//TODO: Check if sucrose E or faruzan E on Bunny is 25 dur or 50 dur
@@ -151,6 +152,7 @@ func (c *char) makeBunny() *Bunny {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   260,
 		Element:    attributes.Pyro,
 		Durability: 50,
 		Mult:       bunnyExplode[c.TalentLvlSkill()],

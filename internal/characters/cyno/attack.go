@@ -148,8 +148,13 @@ func (c *char) attackB() (action.Info, error) {
 			FlatDmg:            c.a4NormalAttack(),
 			IgnoreInfusion:     true,
 		}
-		if c.normalBCounter == 2 || c.normalBCounter == 4 {
+		if c.normalBCounter == 2 {
 			ai.StrikeType = attacks.StrikeTypeBlunt
+			ai.PoiseDMG = 64.0248
+		}
+		if c.normalBCounter == 4 {
+			ai.StrikeType = attacks.StrikeTypeBlunt
+			ai.PoiseDMG = 77.7
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),

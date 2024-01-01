@@ -15,6 +15,7 @@ var (
 	attackFrames          [][]int
 	attackFramesWithLag   [][]int
 	attackHitmarks        = []int{16, 23, 37}
+	attackPoiseDMG        = []float64{65, 65, 130}
 	attackHitmarksWithLag []int
 	attackRadius          = []float64{1, 1, 1.5}
 )
@@ -90,6 +91,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagKleeFireDamage,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   attackPoiseDMG[c.NormalCounter],
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],

@@ -35,6 +35,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupFischl,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   150,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
