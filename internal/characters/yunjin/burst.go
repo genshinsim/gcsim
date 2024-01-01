@@ -38,6 +38,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
+
+	// delete burst, c2 and c6 at start
+	c.DeleteStatus(burstBuffKey)
+	c.deleteC2()
+	c.deleteC6()
+
+	// queue dmg and burst, c2 and c6 start
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), 0, 0)
 		// Reset number of burst triggers to 30
@@ -45,12 +52,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			char.SetTag(burstBuffKey, 30)
 			char.AddStatus(burstBuffKey, 720, true)
 		}
-		if c.Base.Cons >= 2 {
-			c.c2()
-		}
-		if c.Base.Cons >= 6 {
-			c.c6()
-		}
+		c.c2()
+		c.c6()
 	}, burstHitmark)
 
 	c.ConsumeEnergy(4)

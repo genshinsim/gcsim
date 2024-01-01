@@ -40,9 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.a4Init()
 	c.burstProc()
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
+	c.c4()
 	if c.Base.Cons >= 6 {
 		c.c6bonus = make([]float64, attributes.EndStatType)
 		c.c6bonus[attributes.AtkSpd] = .12
