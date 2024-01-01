@@ -38,21 +38,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), burstHitmark, burstHitmark)
-
-	// Reset number of burst triggers to 30
-	for _, char := range c.Core.Player.Chars() {
-		char.SetTag(burstBuffKey, 30)
-		char.AddStatus(burstBuffKey, 720, true)
-	}
-
-	// TODO: Need to obtain exact timing of c2/c6. Currently assume that it starts when burst is used
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6()
-	}
+	c.QueueCharTask(func() {
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6), 0, 0)
+		// Reset number of burst triggers to 30
+		for _, char := range c.Core.Player.Chars() {
+			char.SetTag(burstBuffKey, 30)
+			char.AddStatus(burstBuffKey, 720, true)
+		}
+		if c.Base.Cons >= 2 {
+			c.c2()
+		}
+		if c.Base.Cons >= 6 {
+			c.c6()
+		}
+	}, burstHitmark)
 
 	c.ConsumeEnergy(4)
 	c.SetCD(action.ActionBurst, 15*60)
