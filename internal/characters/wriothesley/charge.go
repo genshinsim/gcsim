@@ -41,30 +41,32 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// TODO: snapshot timing
 	snap := c.Snapshot(&ai)
 	var ap combat.AttackPattern
-	var cb combat.AttackCBFunc
+	var rebukeCB combat.AttackCBFunc
+	var particleCB combat.AttackCBFunc
 	var c6Attack bool
 	if c.Base.Ascension >= 1 {
 		if c.Base.Cons >= 1 {
-			cb, c6Attack = c.c1(&ai, &snap)
+			rebukeCB, c6Attack = c.c1(&ai, &snap)
 		} else {
-			cb = c.a1(&ai, &snap)
+			rebukeCB = c.a1(&ai, &snap)
 		}
 
-		if cb != nil {
+		if rebukeCB != nil {
+			particleCB = c.particleCB
 			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.8}, 4, 5)
 		} else {
 			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -1.2}, 2.8, 3.6)
 		}
 	}
 
-	c.Core.QueueAttackWithSnap(ai, snap, ap, chargeHitmark, cb)
+	c.Core.QueueAttackWithSnap(ai, snap, ap, chargeHitmark, rebukeCB, particleCB)
 	// When released, it will also unleash an icicle that deals 100% of Rebuke: Vaulting Fist's Base
 	// DMG. DMG dealt this way is regarded as Charged Attack DMG.
 	// You must first unlock the Passive Talent "There Shall Be a Plea for Justice."
 	if c6Attack {
 		ai.Abil += " (C6)"
 		ai.StrikeType = attacks.StrikeTypeDefault
-		c.Core.QueueAttackWithSnap(ai, snap, ap, chargeHitmark, cb)
+		c.Core.QueueAttackWithSnap(ai, snap, ap, chargeHitmark, rebukeCB, particleCB)
 	}
 
 	return action.Info{
