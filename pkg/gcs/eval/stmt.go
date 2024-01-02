@@ -23,8 +23,7 @@ func evalFromStmt(n ast.Stmt, env *Env) evalNode {
 	case *ast.AssignStmt:
 		return assignStmtEval(v, env)
 	case *ast.SwitchStmt:
-		//TODO: switch
-		return nil
+		return switchStmtEval(v, env)
 	default:
 		return nil
 	}

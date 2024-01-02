@@ -63,8 +63,22 @@ func lte(l, r *number) *number {
 	return bton(ntof(l) <= ntof(r))
 }
 
-func eq(l, r *number) *number {
-	return bton(ntof(l) == ntof(r))
+func eq(l, r Obj) *number {
+	// we only do number and str comparison for now
+	if l.Typ() == typNum && r.Typ() == typNum {
+		return bton(ntof(l.(*number)) == ntof(r.(*number)))
+	}
+	if l.Typ() == typStr && r.Typ() == typStr {
+		return seq(l.(*strval), r.(*strval))
+	}
+	return &number{}
+}
+
+func seq(l, r *strval) *number {
+	if l.str == r.str {
+		return &number{ival: 1, fval: 1}
+	}
+	return &number{}
 }
 
 func neq(l, r *number) *number {
