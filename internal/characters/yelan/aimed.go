@@ -23,8 +23,8 @@ func init() {
 	aimedFrames[action.ActionJump] = aimedHitmark
 
 	aimedBarbFrames = frames.InitAbilSlice(42)
-	aimedBarbFrames[action.ActionDash] = aimedHitmark
-	aimedBarbFrames[action.ActionJump] = aimedHitmark
+	aimedBarbFrames[action.ActionDash] = aimedBarbHitmark
+	aimedBarbFrames[action.ActionJump] = aimedBarbHitmark
 }
 
 // Aimed charge attack damage queue generator
