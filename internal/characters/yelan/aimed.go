@@ -79,7 +79,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Hydro,
 		Durability:   25,
-		Mult:         aimed[c.TalentLvlAttack()],
+		Mult:         fullaim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
 	c.Core.QueueAttack(
