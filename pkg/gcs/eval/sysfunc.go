@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/conditional"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -499,19 +500,33 @@ func (e *Evaluator) setOnTick(args []Obj) (Obj, error) {
 	}
 
 	// should eval to a function
-	arg := args[0]
-	if arg.Typ() != typFun {
-		return nil, fmt.Errorf("set_on_tick argument should evaluate to a function, got %v", arg.Inspect())
+	fn, ok := args[0].(*funcval)
+	if !ok {
+		return nil, fmt.Errorf("set_on_tick argument should evaluate to a function, got %v", args[0].Inspect())
 	}
-	// TODO: fix function eval on ticks
-	/*
-		fn := arg.(*funcval)
 
-		e.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
-			e.evalNode(fn.Body, env)
-			return false
-		}, "sysfunc-ontick")
-	*/
+	e.Core.Events.Subscribe(event.OnTick, func(args ...interface{}) bool {
+		//TODO: this is a bit wonky since we can't really handle any character actions here
+		// so for now we're just going to ignore anything invalid
+		// ideally this should error but events currently don't have an error handler and
+		// don't want to introduce more panic in this code
+		for {
+			res, done, err := fn.nextAction()
+			if err != nil {
+				e.Core.Log.NewEventBuildMsg(glog.LogWarnings, -1, "error encountered in set_tick_on func", err.Error())
+				break
+			}
+			//TODO: this is bugged still; action will cause this to freeze on sample don't know why
+			if res.Typ() == typAction {
+				e.Core.Log.NewEventBuildMsg(glog.LogWarnings, -1, "unexpected set_tick_on func evaluated to action: ", res.Inspect())
+				continue
+			}
+			if done {
+				break
+			}
+		}
+		return false
+	}, "sysfunc-ontick")
 	return &null{}, nil
 }
 
