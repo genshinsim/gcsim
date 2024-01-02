@@ -65,9 +65,9 @@ func (c *char) Attack(_ map[string]int) (action.Info, error) {
 				attackHitboxes[c.NormalCounter][1],
 			)
 		}
-		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0)
-		}, attackHitmarks[c.NormalCounter][i])
+		// no char queue is fine here because multhit doesn't have hitlag on her
+		// N3 should snap on gadget creation which is assumed to be earliest cancel here so that infusion is snapped properly
+		c.Core.QueueAttack(ai, ap, attackEarliestCancel[c.NormalCounter], attackHitmarks[c.NormalCounter][i])
 	}
 
 	defer c.AdvanceNormalIndex()
