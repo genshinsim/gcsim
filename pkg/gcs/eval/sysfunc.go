@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/conditional"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -13,6 +14,7 @@ func (e *Evaluator) initSysFuncs() {
 	// std funcs
 	e.addSysFunc("print", e.print)
 	e.addSysFunc("execute_action", e.executeAction)
+	e.addSysFunc("evaluate_conditional", e.evaluateConditions)
 }
 
 func (e *Evaluator) addSysFunc(name string, f systemFunc) {
@@ -34,6 +36,40 @@ func (e *Evaluator) print(args []Obj) (Obj, error) {
 		fmt.Println(sb.String())
 	}
 	return &null{}, nil
+}
+
+func (e *Evaluator) evaluateConditions(args []Obj) (Obj, error) {
+	// expecting args to be all strings
+	var vals []string
+	for _, v := range args {
+		str, ok := v.(*strval)
+		if !ok {
+			return nil, fmt.Errorf("system error; expecting str for conditional args, got %v", v.Typ())
+		}
+		vals = append(vals, str.str)
+	}
+	r, err := conditional.Eval(e.Core, vals)
+	if err != nil {
+		return nil, err
+	}
+
+	num := &number{}
+	switch v := r.(type) {
+	case bool:
+		if v {
+			num.ival = 1
+		}
+	case int:
+		num.ival = int64(v)
+	case int64:
+		num.ival = v
+	case float64:
+		num.fval = v
+		num.isFloat = true
+	default:
+		return nil, fmt.Errorf("field condition '.%v' does not evaluate to a number, got %v", strings.Join(vals, "."), v)
+	}
+	return num, nil
 }
 
 func (e *Evaluator) executeAction(args []Obj) (Obj, error) {

@@ -26,8 +26,7 @@ func evalFromExpr(n ast.Expr, env *Env) evalNode {
 	case *ast.CallExpr:
 		return callExprEval(v, env)
 	case *ast.Field:
-		//TODO: fields?
-		return nil
+		return fieldsExprEval(v, env)
 	default:
 		return nil
 	}
