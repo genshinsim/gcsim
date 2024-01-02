@@ -23,8 +23,8 @@ func init() {
 	aimedFrames[action.ActionJump] = aimedHitmark
 
 	aimedBarbFrames = frames.InitAbilSlice(42)
-	aimedBarbFrames[action.ActionDash] = aimedHitmark
-	aimedBarbFrames[action.ActionJump] = aimedHitmark
+	aimedBarbFrames[action.ActionDash] = aimedBarbHitmark
+	aimedBarbFrames[action.ActionJump] = aimedBarbHitmark
 }
 
 // Aimed charge attack damage queue generator
@@ -40,15 +40,16 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		c.Core.Log.NewEvent("breakthrough state deleted", glog.LogCharacterEvent, c.Index)
 
 		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Breakthrough Barb",
-			AttackTag:  attacks.AttackTagExtra,
-			ICDTag:     attacks.ICDTagYelanBreakthrough,
-			ICDGroup:   attacks.ICDGroupYelanBreakthrough,
-			StrikeType: attacks.StrikeTypePierce,
-			Element:    attributes.Hydro,
-			Durability: 25,
-			FlatDmg:    barb[c.TalentLvlAttack()] * c.MaxHP(),
+			ActorIndex:   c.Index,
+			Abil:         "Breakthrough Barb",
+			AttackTag:    attacks.AttackTagExtra,
+			ICDTag:       attacks.ICDTagYelanBreakthrough,
+			ICDGroup:     attacks.ICDGroupYelanBreakthrough,
+			StrikeType:   attacks.StrikeTypePierce,
+			Element:      attributes.Hydro,
+			Durability:   25,
+			FlatDmg:      barb[c.TalentLvlAttack()] * c.MaxHP(),
+			HitWeakPoint: weakspot == 1,
 		}
 		c.Core.QueueAttack(
 			ai,
@@ -79,7 +80,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Hydro,
 		Durability:   25,
-		Mult:         aimed[c.TalentLvlAttack()],
+		Mult:         fullaim[c.TalentLvlAttack()],
 		HitWeakPoint: weakspot == 1,
 	}
 	c.Core.QueueAttack(
