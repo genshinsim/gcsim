@@ -550,14 +550,9 @@ func (e *Evaluator) executeAction(args []Obj) (Obj, error) {
 		params[k] = int(v.(*number).ival)
 	}
 
-	charKey := keys.Char(char.ival)
-	actionKey := action.Action(ac.ival)
-	if _, ok := e.Core.Player.ByKey(charKey); !ok {
-		return nil, fmt.Errorf("can't execute action: %v is not on this team", charKey)
-	}
 	return &actionval{
-		char:   charKey,
-		action: actionKey,
+		char:   keys.Char(char.ival),
+		action: action.Action(ac.ival),
 		param:  params,
 	}, nil
 }

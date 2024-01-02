@@ -132,6 +132,10 @@ func queuePhase(s *Simulation) (stateFn, error) {
 		// we do the same skip here as if eval doesn't have any more ations
 		return s.advanceFrames(1, queuePhase)
 	}
+	// sanity check if action is from a valid char
+	if _, ok := s.C.Player.ByKey(next.Char); !ok {
+		return nil, fmt.Errorf("can't execute action %v: %v is not on this team", next.Action, next.Char)
+	}
 	// handle sleep here since it's just a frame skip before requeing next
 	if next.Action == action.ActionWait {
 		return s.handleWait(next)
