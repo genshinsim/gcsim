@@ -101,6 +101,7 @@ var (
 		},
 	}
 
+	//nolint:unused // will be used once physical aim is implemented
 	aim = []float64{
 		43.86 / 100,
 		47.43 / 100,
