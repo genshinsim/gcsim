@@ -237,13 +237,17 @@ function useScrollToLocation() {
       scrolled.current = false;
     }
 
-    if (!scrolled.current) {
-      const id = hash.replace('#', '');
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-        scrolled.current = true;
-      }
+    if (scrolled.current) {
+      return;
+    }
+    const id = hash.replace('#', '');
+    if (!id) {
+      return;
+    }
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      scrolled.current = true;
     }
   });
 }
