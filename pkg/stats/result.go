@@ -39,11 +39,11 @@ type CharacterResult struct {
 	// For raw data usage outside of gcsim only
 	Name string `json:"name" msg:"name"`
 
-	DamageEvents   []DamageEvent   `json:"damage_events"   msg:"damage_events"`
-	ReactionEvents []ReactionEvent `json:"reaction_events" msg:"reaction_events"`
-	ActionEvents   []ActionEvent   `json:"action_events"   msg:"action_events"`
-	EnergyEvents   []EnergyEvent   `json:"energy_events"   msg:"energy_events"`
-	HealEvents     []HealEvent     `json:"heal_events"     msg:"heal_events"`
+	DamageEvents   []DamageEvent   `json:"damage_events"       msg:"damage_events"`
+	ReactionEvents []ReactionEvent `json:"reaction_events"     msg:"reaction_events"`
+	ActionEvents   []ActionEvent   `json:"action_events"       msg:"action_events"`
+	EnergyEvents   []EnergyEvent   `json:"energy_events"       msg:"energy_events"`
+	HealEvents     []HealEvent     `json:"heal_events"         msg:"heal_events"`
 
 	// TODO: Move to Result since only active character can perform actions?
 	FailedActions []ActionFailInterval `json:"failed_actions" msg:"failed_actions"`
@@ -53,8 +53,9 @@ type CharacterResult struct {
 
 	DamageCumulativeContrib []float64 `json:"damage_cumulative_contrib" msg:"damage_cumulative_contrib"`
 
-	ActiveTime  int     `json:"active_time"  msg:"active_time"`
-	EnergySpent float64 `json:"energy_spent" msg:"energy_spent"`
+	ActiveTime  int        `json:"active_time"  msg:"active_time"`
+	EnergySpent float64    `json:"energy_spent" msg:"energy_spent"`
+	EnergyInfo  EnergyInfo `json:"EnergyInfo"   msg:"EnergyInfo"`
 }
 
 type EnemyResult struct {
@@ -143,4 +144,10 @@ type ShieldSingleInterval struct {
 	Start int     `json:"start" msg:"start"`
 	End   int     `json:"end"   msg:"end"`
 	HP    float64 `json:"hp"    msg:"hp"`
+}
+
+type EnergyInfo struct {
+	RawParticlesPerBurst []float64 `json:"raw_particles_per_burst" msg:"raw_particles_per_burst"`
+	FlatEnergyPerBurst   []float64 `json:"flat_energy_per_burst"   msg:"flat_energy_per_burst"`
+	WeightedER           []float64 `json:"weighted_er"             msg:"weighted_er"`
 }

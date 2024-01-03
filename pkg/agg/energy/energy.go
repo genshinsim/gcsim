@@ -14,11 +14,18 @@ func init() {
 
 type buffer struct {
 	sourceEnergy []map[string]*calc.StreamStats
+
+	rawParticles [][][]float64
+	flatEnergy   [][][]float64
+	weightedER   [][][]float64
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	out := buffer{
 		sourceEnergy: make([]map[string]*calc.StreamStats, len(cfg.Characters)),
+		rawParticles: make([][][]float64, len(cfg.Characters)),
+		flatEnergy:   make([][][]float64, len(cfg.Characters)),
+		weightedER:   make([][][]float64, len(cfg.Characters)),
 	}
 
 	for i := 0; i < len(cfg.Characters); i++ {
@@ -40,6 +47,9 @@ func (b *buffer) Add(result stats.Result) {
 			}
 			b.sourceEnergy[i][k].Add(v)
 		}
+		b.weightedER[i] = append(b.weightedER[i], result.Characters[i].EnergyInfo.WeightedER)
+		b.flatEnergy[i] = append(b.flatEnergy[i], result.Characters[i].EnergyInfo.FlatEnergyPerBurst)
+		b.rawParticles[i] = append(b.rawParticles[i], result.Characters[i].EnergyInfo.RawParticlesPerBurst)
 	}
 }
 
@@ -54,5 +64,17 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 		result.TotalSourceEnergy[i] = &model.SourceStats{
 			Sources: source,
 		}
+	}
+	result.CharacterEnergyInfo = make([]*model.CharacterEnergyInfo, len(b.weightedER))
+	for char := range b.weightedER {
+		energyInfo := make([]*model.EnergyPerBurstInfo, len(b.weightedER[char]))
+		for iter := range b.weightedER[char] {
+			energyInfo[iter] = &model.EnergyPerBurstInfo{
+				WeightedEr:     b.weightedER[char][iter],
+				FlatEnergy:     b.flatEnergy[char][iter],
+				ParticleEnergy: b.rawParticles[char][iter],
+			}
+		}
+		result.CharacterEnergyInfo[char] = &model.CharacterEnergyInfo{BurstEnergyInfo: energyInfo}
 	}
 }

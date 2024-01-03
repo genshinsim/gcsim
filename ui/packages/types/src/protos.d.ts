@@ -2834,6 +2834,9 @@ export namespace model {
 
         /** SimulationStatistics target_aura_uptime */
         target_aura_uptime?: (model.ISourceStats[]|null);
+
+        /** SimulationStatistics character_energy_info */
+        character_energy_info?: (model.ICharacterEnergyInfo[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2934,6 +2937,9 @@ export namespace model {
 
         /** SimulationStatistics target_aura_uptime. */
         public target_aura_uptime: model.ISourceStats[];
+
+        /** SimulationStatistics character_energy_info. */
+        public character_energy_info: model.ICharacterEnergyInfo[];
 
         /**
          * Gets the default type url for SimulationStatistics
@@ -3432,6 +3438,72 @@ export namespace model {
 
         /**
          * Gets the default type url for ShieldInfo
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a CharacterEnergyInfo. */
+    interface ICharacterEnergyInfo {
+
+        /** CharacterEnergyInfo burst_energy_info */
+        burst_energy_info?: (model.IEnergyPerBurstInfo[]|null);
+    }
+
+    /** Represents a CharacterEnergyInfo. */
+    class CharacterEnergyInfo implements ICharacterEnergyInfo {
+
+        /**
+         * Constructs a new CharacterEnergyInfo.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ICharacterEnergyInfo);
+
+        /** CharacterEnergyInfo burst_energy_info. */
+        public burst_energy_info: model.IEnergyPerBurstInfo[];
+
+        /**
+         * Gets the default type url for CharacterEnergyInfo
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an EnergyPerBurstInfo. */
+    interface IEnergyPerBurstInfo {
+
+        /** EnergyPerBurstInfo weighted_er */
+        weighted_er?: (number[]|null);
+
+        /** EnergyPerBurstInfo flat_energy */
+        flat_energy?: (number[]|null);
+
+        /** EnergyPerBurstInfo particle_energy */
+        particle_energy?: (number[]|null);
+    }
+
+    /** Represents an EnergyPerBurstInfo. */
+    class EnergyPerBurstInfo implements IEnergyPerBurstInfo {
+
+        /**
+         * Constructs a new EnergyPerBurstInfo.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IEnergyPerBurstInfo);
+
+        /** EnergyPerBurstInfo weighted_er. */
+        public weighted_er: number[];
+
+        /** EnergyPerBurstInfo flat_energy. */
+        public flat_energy: number[];
+
+        /** EnergyPerBurstInfo particle_energy. */
+        public particle_energy: number[];
+
+        /**
+         * Gets the default type url for EnergyPerBurstInfo
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
