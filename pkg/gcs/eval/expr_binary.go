@@ -56,11 +56,11 @@ func (b *binaryExprEvalNode) evalLeftRight() (Obj, error) {
 
 	l, ok := left.(*number)
 	if !ok {
-		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", left.Inspect())
+		return nil, fmt.Errorf("left binary expression does not evaluate to a number, got %v from expr %v ", left.Typ(), b.root.String())
 	}
 	r, ok := right.(*number)
 	if !ok {
-		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", right.Inspect())
+		return nil, fmt.Errorf("right binary expression does not evaluate to a number, got %v from expr %v ", right.Typ(), b.root.String())
 	}
 	switch b.root.Op.Typ {
 	case ast.LogicAnd:
