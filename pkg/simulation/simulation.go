@@ -62,7 +62,7 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 	}
 
 	for _, collector := range stats.Collectors() {
-		stat, err := collector(s.C)
+		stat, err := collector.New(s.C)
 		if err != nil {
 			return nil, err
 		}

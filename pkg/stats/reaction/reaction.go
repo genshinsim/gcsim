@@ -33,7 +33,10 @@ var eventToReaction = map[event.Event]reactions.ReactionType{
 }
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "reaction",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {

@@ -103,7 +103,7 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
-		a, err := aggregator(simcfg)
+		a, err := aggregator.New(simcfg)
 		if err != nil {
 			return &model.SimulationResult{}, err
 		}

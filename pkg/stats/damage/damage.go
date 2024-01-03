@@ -13,7 +13,10 @@ import (
 const bucketSize int = 30
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "damage",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {

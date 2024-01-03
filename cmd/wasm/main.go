@@ -177,7 +177,7 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 
 	aggregators = aggregators[:0]
 	for _, aggregator := range agg.Aggregators() {
-		a, err := aggregator(simcfg)
+		a, err := aggregator.New(simcfg)
 		if err != nil {
 			return marshal(err)
 		}
