@@ -76,6 +76,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		attackHitmarks[c.NormalCounter],
 	)
 
+	defer c.AdvanceNormalIndex()
+
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
