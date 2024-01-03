@@ -57,6 +57,7 @@ func runSim(w dbEntry) (float64, error) {
 	}
 	simcfg.Settings.Iterations = 1000
 	simcfg.Settings.NumberOfWorkers = 30
+	simcfg.Settings.CollectStats = []string{"overview"}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30)*time.Second)
 	defer cancel()
