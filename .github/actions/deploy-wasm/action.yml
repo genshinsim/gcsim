@@ -21,6 +21,14 @@ runs:
     env:
       GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
 
+  - name: Optimize WASM
+    working-directory: ./cmd/wasm
+    uses: NiklasEi/wasm-opt-action@v2
+    with:
+      file: ./dist/$GITHUB_SHA/main.wasm
+      output: ./dist/$GITHUB_SHA/main.wasm
+      options: --enable-bulk-memory -Oz  
+
   - name: Upload to R2
     uses: AnimMouse/setup-rclone@v1 
     with:
