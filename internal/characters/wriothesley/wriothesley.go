@@ -17,6 +17,7 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	savedNormalCounter   int
 	caHeal               float64
 	a4Stack              int
 	c1N5Proc             bool
