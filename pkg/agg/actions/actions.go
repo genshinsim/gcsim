@@ -9,7 +9,10 @@ import (
 )
 
 func init() {
-	agg.Register(NewAgg)
+	agg.Register(agg.Config{
+		Name: "actions",
+		New:  NewAgg,
+	})
 }
 
 type buffer struct {

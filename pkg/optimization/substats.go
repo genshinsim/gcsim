@@ -39,6 +39,8 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 	// Fix iterations at 350 for performance
 	// TODO: Seems to be a roughly good number at KQM standards
 	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
+	// disable stats collection since optimizer has no use for it
+	simcfg.Settings.CollectStats = []string{"overview"}
 
 	o.details = NewSubstatOptimizerDetails(
 		cfg,
