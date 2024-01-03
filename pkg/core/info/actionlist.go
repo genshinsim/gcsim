@@ -50,6 +50,8 @@ type SimulatorSettings struct {
 	NumberOfWorkers int    `json:"-"`          // how many workers to run the simulation
 	Iterations      int    `json:"iterations"` // how many iterations to run
 	Delays          Delays `json:"delays"`
+	// Specify which stats to collect. An empty/nil slice enables all
+	CollectStats []string `json:"-"`
 }
 
 type Delays struct {

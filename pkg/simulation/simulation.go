@@ -2,6 +2,8 @@
 package simulation
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
@@ -62,6 +64,10 @@ func New(cfg *info.ActionList, eval action.Evaluator, c *core.Core) (*Simulation
 	}
 
 	for _, collector := range stats.Collectors() {
+		enabled := cfg.Settings.CollectStats
+		if len(enabled) > 0 && !slices.Contains(enabled, collector.Name) {
+			continue
+		}
 		stat, err := collector.New(s.C)
 		if err != nil {
 			return nil, err

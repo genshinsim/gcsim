@@ -11,6 +11,7 @@ import (
 	"path"
 	"regexp"
 	"runtime/debug"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -103,6 +104,10 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
+		enabled := simcfg.Settings.CollectStats
+		if len(enabled) > 0 && !slices.Contains(enabled, aggregator.Name) {
+			continue
+		}
 		a, err := aggregator.New(simcfg)
 		if err != nil {
 			return &model.SimulationResult{}, err
