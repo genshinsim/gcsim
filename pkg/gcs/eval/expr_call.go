@@ -80,16 +80,23 @@ func (c *callExprEvalNode) handleSysFnCall(fn *bfuncval) (Obj, bool, error) {
 	if err != nil {
 		return nil, false, err
 	}
+	if r, ok := res.(*retval); ok {
+		return r.res, true, nil
+	}
 	return res, true, nil
 }
 
 func (c *callExprEvalNode) handleUserFnCall(fn *funcval) (Obj, bool, error) {
 	if c.fnBody == nil {
 		// functions are just blocks to be evaluated, along with args that are injected into the env
-		for i, v := range c.args {
-			fn.Env.put(fn.Args[i].Value, &v)
+		for i := range c.args {
+			fn.Env.put(fn.Args[i].Value, &c.args[i])
 		}
 		c.fnBody = evalFromStmt(fn.Body, fn.Env)
 	}
-	return c.fnBody.nextAction()
+	res, done, err := c.fnBody.nextAction()
+	if r, ok := res.(*retval); ok {
+		return r.res, done, err
+	}
+	return res, done, err
 }
