@@ -23,9 +23,11 @@ func forStmtEval(n *ast.ForStmt, env *Env) evalNode {
 		env:     NewEnv(env), // for has it's own scope in order to handle init
 		lastRes: &null{},
 	}
-	// start state is init
+	// start state is init if not nil
 	f.state = f.init
-	f.initNode = evalFromStmt(f.Init, f.env)
+	if f.Init != nil {
+		f.initNode = evalFromStmt(f.Init, f.env)
+	}
 	f.reset()
 
 	return f
@@ -47,7 +49,7 @@ func (f *forStmtEvalNode) nextAction() (Obj, bool, error) {
 			return res, true, nil
 		}
 		f.state = next
-		if res.Typ() == typAction {
+		if _, ok := res.(*actionval); ok {
 			// this will effectively pause the execution
 			return res, false, nil
 		}
@@ -55,12 +57,21 @@ func (f *forStmtEvalNode) nextAction() (Obj, bool, error) {
 }
 
 func (f *forStmtEvalNode) reset() {
-	f.condNode = evalFromExpr(f.Cond, f.env)
-	f.postNode = evalFromStmt(f.Post, f.env)
+	f.condNode = nil
+	f.postNode = nil
+	if f.Cond != nil {
+		f.condNode = evalFromExpr(f.Cond, f.env)
+	}
+	if f.Post != nil {
+		f.postNode = evalFromStmt(f.Post, f.env)
+	}
 	f.bodyNode = evalFromStmt(f.Body, f.env)
 }
 
 func (f *forStmtEvalNode) init() (nodeStateFn, Obj, error) {
+	if f.initNode == nil {
+		return f.cond, nil, nil
+	}
 	// init is simply a stmt that must be evaluated before anything happens
 	res, done, err := f.initNode.nextAction()
 	if done {
@@ -70,6 +81,9 @@ func (f *forStmtEvalNode) init() (nodeStateFn, Obj, error) {
 }
 
 func (f *forStmtEvalNode) cond() (nodeStateFn, Obj, error) {
+	if f.condNode == nil {
+		return f.loop, nil, nil
+	}
 	// if condition evaluates to false then we should simply exit
 	res, done, err := f.condNode.nextAction()
 	// if not done we really don't care what the res or err is at this step
@@ -116,6 +130,10 @@ func (f *forStmtEvalNode) loop() (nodeStateFn, Obj, error) {
 }
 
 func (f *forStmtEvalNode) post() (nodeStateFn, Obj, error) {
+	if f.postNode == nil {
+		f.reset()
+		return f.cond, nil, nil
+	}
 	res, done, err := f.postNode.nextAction()
 	if !done {
 		return f.post, res, err
