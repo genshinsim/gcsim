@@ -24,8 +24,8 @@ runs:
   - name: Optimize WASM
     uses: NiklasEi/wasm-opt-action@v2
     with:
-      file: cmd/wasm/dist/$GITHUB_SHA/main.wasm
-      output: cmd/wasm/dist/$GITHUB_SHA/main.wasm
+      file: cmd/wasm/dist/${{ github.sha }}/main.wasm
+      output: cmd/wasm/dist/${{ github.sha }}/main.wasm
       options: --enable-bulk-memory -Oz  
 
   - name: Upload to R2
