@@ -666,7 +666,7 @@ func (z *CharacterResult) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "EnergyInfo":
+		case "energy_info":
 			err = z.EnergyInfo.DecodeMsg(dc)
 			if err != nil {
 				return
@@ -894,8 +894,8 @@ func (z *CharacterResult) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "EnergyInfo"
-	err = en.Append(0xaa, 0x45, 0x6e, 0x65, 0x72, 0x67, 0x79, 0x49, 0x6e, 0x66, 0x6f)
+	// write "energy_info"
+	err = en.Append(0xab, 0x65, 0x6e, 0x65, 0x72, 0x67, 0x79, 0x5f, 0x69, 0x6e, 0x66, 0x6f)
 	if err != nil {
 		return err
 	}
@@ -1003,8 +1003,8 @@ func (z *CharacterResult) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "energy_spent"
 	o = append(o, 0xac, 0x65, 0x6e, 0x65, 0x72, 0x67, 0x79, 0x5f, 0x73, 0x70, 0x65, 0x6e, 0x74)
 	o = msgp.AppendFloat64(o, z.EnergySpent)
-	// string "EnergyInfo"
-	o = append(o, 0xaa, 0x45, 0x6e, 0x65, 0x72, 0x67, 0x79, 0x49, 0x6e, 0x66, 0x6f)
+	// string "energy_info"
+	o = append(o, 0xab, 0x65, 0x6e, 0x65, 0x72, 0x67, 0x79, 0x5f, 0x69, 0x6e, 0x66, 0x6f)
 	o, err = z.EnergyInfo.MarshalMsg(o)
 	if err != nil {
 		return
@@ -1256,7 +1256,7 @@ func (z *CharacterResult) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "EnergyInfo":
+		case "energy_info":
 			bts, err = z.EnergyInfo.UnmarshalMsg(bts)
 			if err != nil {
 				return
@@ -1298,7 +1298,7 @@ func (z *CharacterResult) Msgsize() (s int) {
 	for zpks := range z.FailedActions {
 		s += 1 + 6 + msgp.IntSize + 4 + msgp.IntSize + 7 + msgp.StringPrefixSize + len(z.FailedActions[zpks].Reason)
 	}
-	s += 14 + msgp.ArrayHeaderSize + (len(z.EnergyStatus) * (msgp.Float64Size)) + 14 + msgp.ArrayHeaderSize + (len(z.HealthStatus) * (msgp.Float64Size)) + 26 + msgp.ArrayHeaderSize + (len(z.DamageCumulativeContrib) * (msgp.Float64Size)) + 12 + msgp.IntSize + 13 + msgp.Float64Size + 11 + z.EnergyInfo.Msgsize()
+	s += 14 + msgp.ArrayHeaderSize + (len(z.EnergyStatus) * (msgp.Float64Size)) + 14 + msgp.ArrayHeaderSize + (len(z.HealthStatus) * (msgp.Float64Size)) + 26 + msgp.ArrayHeaderSize + (len(z.DamageCumulativeContrib) * (msgp.Float64Size)) + 12 + msgp.IntSize + 13 + msgp.Float64Size + 12 + z.EnergyInfo.Msgsize()
 	return
 }
 

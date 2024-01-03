@@ -39,11 +39,11 @@ type CharacterResult struct {
 	// For raw data usage outside of gcsim only
 	Name string `json:"name" msg:"name"`
 
-	DamageEvents   []DamageEvent   `json:"damage_events"       msg:"damage_events"`
-	ReactionEvents []ReactionEvent `json:"reaction_events"     msg:"reaction_events"`
-	ActionEvents   []ActionEvent   `json:"action_events"       msg:"action_events"`
-	EnergyEvents   []EnergyEvent   `json:"energy_events"       msg:"energy_events"`
-	HealEvents     []HealEvent     `json:"heal_events"         msg:"heal_events"`
+	DamageEvents   []DamageEvent   `json:"damage_events"   msg:"damage_events"`
+	ReactionEvents []ReactionEvent `json:"reaction_events" msg:"reaction_events"`
+	ActionEvents   []ActionEvent   `json:"action_events"   msg:"action_events"`
+	EnergyEvents   []EnergyEvent   `json:"energy_events"   msg:"energy_events"`
+	HealEvents     []HealEvent     `json:"heal_events"     msg:"heal_events"`
 
 	// TODO: Move to Result since only active character can perform actions?
 	FailedActions []ActionFailInterval `json:"failed_actions" msg:"failed_actions"`
@@ -55,7 +55,7 @@ type CharacterResult struct {
 
 	ActiveTime  int        `json:"active_time"  msg:"active_time"`
 	EnergySpent float64    `json:"energy_spent" msg:"energy_spent"`
-	EnergyInfo  EnergyInfo `json:"EnergyInfo"   msg:"EnergyInfo"`
+	EnergyInfo  EnergyInfo `json:"energy_info"  msg:"energy_info"`
 }
 
 type EnemyResult struct {
