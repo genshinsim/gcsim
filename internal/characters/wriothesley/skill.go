@@ -31,6 +31,15 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	// anything but NA/E -> E should reset savedNormalCounter
+	// can't use CurrentState here since AnimationLength of Dash is the same as Dash -> Skill, so it switches to Idle instead of staying DashState
+	switch c.Core.Player.LastAction.Type {
+	case action.ActionAttack:
+	case action.ActionSkill:
+	default:
+		c.savedNormalCounter = 0
+	}
+
 	c.resetA4()
 	c.resetC1SkillExtension()
 
@@ -74,7 +83,6 @@ func (c *char) chillingPenalty(a combat.AttackCB) {
 
 func (c *char) onExit() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
-		c.savedNormalCounter = 0
 		if !c.StatusIsActive(skillKey) {
 			return false
 		}
