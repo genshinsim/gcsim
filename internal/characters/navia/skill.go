@@ -237,12 +237,12 @@ func (c *char) particleCB(a combat.AttackCB) {
 func (c *char) addShrapnelBuffs(snap *combat.Snapshot, count int) {
 	// Calculate buffs based on excess shrapnel
 	excess := float64(max(count-3, 0))
-	
+
 	dmg := 0.15 * excess
 	cr := 0.0
 	cd := 0.0
 	if c.Base.Cons >= 2 {
-		cr = 0.12 * float64(min(count,3))
+		cr = 0.12 * float64(min(count, 3))
 	}
 	if c.Base.Cons >= 6 {
 		cd = 0.45 * excess
