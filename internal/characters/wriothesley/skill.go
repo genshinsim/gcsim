@@ -74,6 +74,7 @@ func (c *char) chillingPenalty(a combat.AttackCB) {
 
 func (c *char) onExit() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+		c.savedNormalCounter = 0
 		if !c.StatusIsActive(skillKey) {
 			return false
 		}
