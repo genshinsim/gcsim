@@ -1,4 +1,4 @@
-package energy_burst
+package energyburst
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
