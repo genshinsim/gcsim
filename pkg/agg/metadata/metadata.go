@@ -11,7 +11,10 @@ import (
 )
 
 func init() {
-	agg.Register(NewAgg)
+	agg.Register(agg.Config{
+		Name: "metadata",
+		New:  NewAgg,
+	})
 }
 
 type Runs []run

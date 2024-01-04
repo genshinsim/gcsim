@@ -87,7 +87,6 @@ const Options = ({
   setTarget: (v: string) => void;
   targets: string[];
 }) => {
-  console.log(targets);
   const label = <span className="text-xs font-mono text-gray-400">Target</span>;
 
   return (

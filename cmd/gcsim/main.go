@@ -254,7 +254,6 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 			return fmt.Errorf("could not create memory profile: %w", err)
 		}
 		defer f.Close() // error handling omitted for example
-		runtime.GC()    // get up-to-date statistics
 		if err := pprof.WriteHeapProfile(f); err != nil {
 			return fmt.Errorf("could not write memory profile: %w", err)
 		}

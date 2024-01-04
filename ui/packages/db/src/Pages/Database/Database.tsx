@@ -47,7 +47,6 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
           if (resp.data.data.length < query.limit) {
             setHasMore(false);
           }
-          console.log("data: ", resp.data.data);
         } else {
           setHasMore(false);
           if (!append) {

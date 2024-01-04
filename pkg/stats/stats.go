@@ -6,6 +6,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 )
 
+type Config struct {
+	Name string
+	New  NewStatsFunc
+}
+
 type Collector interface {
 	Flush(core *core.Core, result *Result)
 }
@@ -14,15 +19,18 @@ type NewStatsFunc func(core *core.Core) (Collector, error)
 
 var (
 	mu         sync.Mutex
-	collectors []NewStatsFunc
+	collectors = map[string]Config{}
 )
 
-func Register(f NewStatsFunc) {
+func Register(cfg Config) {
 	mu.Lock()
 	defer mu.Unlock()
-	collectors = append(collectors, f)
+	if _, ok := collectors[cfg.Name]; ok {
+		panic("duplicate stats collector registered: " + cfg.Name)
+	}
+	collectors[cfg.Name] = cfg
 }
 
-func Collectors() []NewStatsFunc {
+func Collectors() map[string]Config {
 	return collectors
 }

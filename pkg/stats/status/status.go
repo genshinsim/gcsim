@@ -14,7 +14,10 @@ import (
 const bucketSize int = 1
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "status",
+		New:  NewStat,
+	})
 }
 
 /*
