@@ -154,12 +154,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			}
 			c.Core.Log.NewEvent(fmt.Sprintf("firing %v crystal shrapnel", c.shrapnel), glog.LogCharacterEvent, c.Index)
 
-			// Calculate buffs based on excess shrapnel
-			excess := float64(max(c.shrapnel-3, 0))
-
 			// snap and add buffs
 			snap := c.Snapshot(&ai)
-			c.addShrapnelBuffs(&snap, excess)
+			c.addShrapnelBuffs(&snap, c.shrapnel)
 
 			// Looks for enemies in the path of each bullet
 			// Initially trims enemies to check by scanning only the hit zone
@@ -193,7 +190,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 					c.c2(),
 				)
 			}
-			c.surgingBlade(excess)
+			c.surgingBlade(c.shrapnel)
 
 			// trigger A1 and C1 on firing
 			c.a1()
@@ -237,12 +234,15 @@ func (c *char) particleCB(a combat.AttackCB) {
 
 // add the buffs by modifying snap
 // needs to be done this way so that excess calculated during firing is also used for that firing's surgingBlade
-func (c *char) addShrapnelBuffs(snap *combat.Snapshot, excess float64) {
+func (c *char) addShrapnelBuffs(snap *combat.Snapshot, count int) {
+	// Calculate buffs based on excess shrapnel
+	excess := float64(max(count-3, 0))
+
 	dmg := 0.15 * excess
 	cr := 0.0
 	cd := 0.0
 	if c.Base.Cons >= 2 {
-		cr = 0.12 * excess
+		cr = 0.12 * float64(min(count, 3))
 	}
 	if c.Base.Cons >= 6 {
 		cd = 0.45 * excess
@@ -274,11 +274,10 @@ func (c *char) shrapnelGain() {
 	}, "shrapnel-gain")
 }
 
-func (c *char) surgingBlade(excess float64) {
+func (c *char) surgingBlade(count int) {
 	if c.StatusIsActive(arkheICDKey) {
 		return
 	}
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Surging Blade",
@@ -307,7 +306,7 @@ func (c *char) surgingBlade(excess float64) {
 		c.AddStatus(arkheICDKey, 7*60, true)
 		c.QueueCharTask(func() {
 			snap := c.Snapshot(&ai)
-			c.addShrapnelBuffs(&snap, excess)
+			c.addShrapnelBuffs(&snap, count)
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
