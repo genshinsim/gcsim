@@ -8,7 +8,10 @@ import (
 )
 
 func init() {
-	agg.Register(NewAgg)
+	agg.Register(agg.Config{
+		Name: "energy_burst",
+		New:  NewAgg,
+	})
 }
 
 type buffer struct {

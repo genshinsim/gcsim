@@ -9,7 +9,10 @@ import (
 )
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "energy_burst",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {
@@ -21,6 +24,11 @@ type buffer struct {
 }
 
 func NewStat(core *core.Core) (stats.Collector, error) {
+	if !core.Flags.IgnoreBurstEnergy {
+		// This data doesn't mean much without the IgnoreBurstEnergy flag set
+		// So the stat collector disables itself when this flag isn't set
+		return buffer{}, nil
+	}
 	out := buffer{
 		charRawParticles:    make([][]float64, len(core.Player.Chars())),
 		charFlatEnergy:      make([][]float64, len(core.Player.Chars())),
@@ -43,23 +51,8 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		character := args[0].(*character.CharWrapper)
 		preEnergy := args[1].(float64)
 		amount := args[2].(float64)
-		source := args[3].(string)
 		isParticle := args[4].(bool)
 		ind := character.Index
-
-		event := stats.EnergyEvent{
-			Frame:   core.F,
-			Source:  source,
-			Gained:  character.Energy - preEnergy,
-			Wasted:  preEnergy + amount - character.Energy,
-			Current: character.Energy,
-		}
-
-		if core.Player.Active() == ind {
-			event.FieldStatus = stats.OnField
-		} else {
-			event.FieldStatus = stats.OffField
-		}
 
 		er := character.Stat(attributes.ER)
 
@@ -108,6 +101,10 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 }
 
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
+	if !core.Flags.IgnoreBurstEnergy {
+		// The stat collector is disabled when this flag isn't set
+		return
+	}
 	for c := 0; c < len(b.charRawParticles); c++ {
 		data := stats.EnergyInfo{
 			RawParticlesPerBurst: b.charRawParticles[c],
