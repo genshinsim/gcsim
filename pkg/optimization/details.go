@@ -360,7 +360,8 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChar(
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 
-		result, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
+		a := NewCustomAggBuffer()
+		result, _ := simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), NewOptimizerStat, a.Add)
 
 		if erStack == 0 {
 			initialMean = *result.Statistics.DPS.Mean
