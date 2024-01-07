@@ -170,6 +170,83 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 	return result, nil
 }
 
+// Runs the simulation with a given parsed config and custom stat collector and aggregator
+// TODO: cfg string should be in the action list instead
+// TODO: need to add a context here to avoid infinite looping
+func RunWithConfigCustomStats[T any](ctx context.Context, cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time, cstat stats.NewStatsFuncCustomStats[T], cagg func(T)) (*model.SimulationResult, error) {
+	// initialize aggregators
+	var aggregators []agg.Aggregator
+	for _, aggregator := range agg.Aggregators() {
+		enabled := simcfg.Settings.CollectStats
+		if len(enabled) > 0 && !slices.Contains(enabled, aggregator.Name) {
+			continue
+		}
+		a, err := aggregator.New(simcfg)
+		if err != nil {
+			return &model.SimulationResult{}, err
+		}
+		aggregators = append(aggregators, a)
+	}
+
+	// set up a pool
+	respCh := make(chan stats.Result)
+	errCh := make(chan error)
+	customCh := make(chan T)
+	pool := worker.NewWithCustomStats(simcfg.Settings.NumberOfWorkers, respCh, errCh, customCh)
+	pool.StopCh = make(chan bool)
+
+	// spin off a go func that will queue jobs for as long as the total queued < iter
+	// this should block as queue gets full
+	go func() {
+		// make all the seeds
+		wip := 0
+		for wip < simcfg.Settings.Iterations {
+			pool.QueueCh <- worker.JobCustomStats[T]{
+				Cfg:     simcfg.Copy(),
+				Actions: gcsl.Copy(),
+				Seed:    CryptoRandSeed(),
+				Cstat:   cstat,
+			}
+			wip++
+		}
+	}()
+
+	defer close(pool.StopCh)
+
+	// start reading respCh, queueing a new job until wip == number of iterations
+	count := 0
+	for count < simcfg.Settings.Iterations {
+		select {
+		case result := <-customCh:
+			cagg(result)
+		case result := <-respCh:
+			for _, a := range aggregators {
+				a.Add(result)
+			}
+			count += 1
+		case err := <-errCh:
+			// error encountered
+			return &model.SimulationResult{}, err
+		case <-ctx.Done():
+			return &model.SimulationResult{}, ctx.Err()
+		}
+	}
+
+	result, err := GenerateResult(cfg, simcfg, opts)
+	if err != nil {
+		return result, err
+	}
+
+	// generate final agg results
+	stats := &model.SimulationStatistics{}
+	for _, a := range aggregators {
+		a.Flush(stats)
+	}
+	result.Statistics = stats
+
+	return result, nil
+}
+
 // Note: this generation should be iteration independent (iterations do not change output)
 func GenerateResult(cfg string, simcfg *info.ActionList, opts Options) (*model.SimulationResult, error) {
 	out := &model.SimulationResult{
