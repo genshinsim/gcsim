@@ -1,13 +1,14 @@
 package tartaglia
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var aimedFrames []int
@@ -23,14 +24,7 @@ func init() {
 // Once fully charged, deal Hydro DMG and apply the Riptide status.
 func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(MeleeKey) {
-		c.Core.Log.NewEvent("aim called when not in ranged stance", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionAim)
-		return action.Info{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}, nil
+		return action.Info{}, errors.New("aim called when not in ranged stance")
 	}
 
 	travel, ok := p["travel"]
