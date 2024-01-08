@@ -1,43 +1,43 @@
 package optimization
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-type CustomStatsBuffer struct {
-	charRawParticles    [][]float64
-	charFlatEnergy      [][]float64
-	WeightedER          [][]float64
-	erPerParticleEvent  [][]float64
-	rawPerParticleEvent [][]float64
+type CustomEnergyStatsBuffer struct {
+	ErNeeded   [][]float64
+	WeightedER [][]float64
 }
 
-func NewOptimizerStat(core *core.Core) (stats.CollectorCustomStats[CustomStatsBuffer], error) {
+func OptimizerERStat(core *core.Core) (stats.CollectorCustomStats[CustomEnergyStatsBuffer], error) {
 	if !core.Flags.IgnoreBurstEnergy {
 		// This data doesn't mean much without the IgnoreBurstEnergy flag set
 		// So the stat collector disables itself when this flag isn't set
-		return &CustomStatsBuffer{}, nil
-	}
-	out := CustomStatsBuffer{
-		charRawParticles:    make([][]float64, len(core.Player.Chars())),
-		charFlatEnergy:      make([][]float64, len(core.Player.Chars())),
-		WeightedER:          make([][]float64, len(core.Player.Chars())),
-		erPerParticleEvent:  make([][]float64, len(core.Player.Chars())),
-		rawPerParticleEvent: make([][]float64, len(core.Player.Chars())),
+		return &CustomEnergyStatsBuffer{}, nil
 	}
 
+	out := CustomEnergyStatsBuffer{
+		ErNeeded:   make([][]float64, len(core.Player.Chars())),
+		WeightedER: make([][]float64, len(core.Player.Chars())),
+	}
 	burstCount := make([]int, len(core.Player.Chars()))
-	for ind := 0; ind < len(core.Player.Chars()); ind++ {
-		out.charRawParticles[ind] = append(out.charRawParticles[ind], 0)
-		out.charFlatEnergy[ind] = append(out.charFlatEnergy[ind], 0)
-		out.erPerParticleEvent[ind] = make([]float64, 0)
-		out.rawPerParticleEvent[ind] = make([]float64, 0)
-		out.erPerParticleEvent[ind] = append(out.erPerParticleEvent[ind], 0)
-		out.rawPerParticleEvent[ind] = append(out.rawPerParticleEvent[ind], 0)
+	erPerParticleEvent := make([][]float64, len(core.Player.Chars()))
+	rawPerParticleEvent := make([][]float64, len(core.Player.Chars()))
+	charRawParticles := make([]float64, len(core.Player.Chars()))
+	charFlatEnergy := make([]float64, len(core.Player.Chars()))
+
+	for ind, _ := range core.Player.Chars() {
+		erPerParticleEvent[ind] = make([]float64, 0)
+		rawPerParticleEvent[ind] = make([]float64, 0)
+		erPerParticleEvent[ind] = append(erPerParticleEvent[ind], 0)
+		rawPerParticleEvent[ind] = append(rawPerParticleEvent[ind], 0)
 	}
 
 	core.Events.Subscribe(event.OnEnergyChange, func(args ...interface{}) bool {
@@ -51,15 +51,15 @@ func NewOptimizerStat(core *core.Core) (stats.CollectorCustomStats[CustomStatsBu
 
 		if isParticle {
 			raw := amount / (1.0 + er)
-			out.charRawParticles[ind][burstCount[ind]] += raw
-			out.erPerParticleEvent[ind] = append(out.erPerParticleEvent[ind], 1+er)
-			out.rawPerParticleEvent[ind] = append(out.rawPerParticleEvent[ind], raw)
+			charRawParticles[ind] += raw
+			erPerParticleEvent[ind] = append(erPerParticleEvent[ind], 1+er)
+			rawPerParticleEvent[ind] = append(rawPerParticleEvent[ind], raw)
 		} else {
 			if amount < 0 {
-				out.charFlatEnergy[ind][burstCount[ind]] -= max(-amount, preEnergy)
+				charFlatEnergy[ind] -= max(-amount, preEnergy)
 			} else {
 				// log.Println("Flat energy gained by", character.Base.Key, out.charFlatEnergy[ind])
-				out.charFlatEnergy[ind][burstCount[ind]] += amount
+				charFlatEnergy[ind] += amount
 			}
 		}
 		return false
@@ -71,8 +71,8 @@ func NewOptimizerStat(core *core.Core) (stats.CollectorCustomStats[CustomStatsBu
 
 		wERsum := 0.0
 		wsum := 0.0
-		for i, raw := range out.rawPerParticleEvent[ind] {
-			wERsum += out.erPerParticleEvent[ind][i] * raw
+		for i, raw := range rawPerParticleEvent[ind] {
+			wERsum += erPerParticleEvent[ind][i] * raw
 			wsum += raw
 		}
 		if wsum == 0 {
@@ -80,12 +80,19 @@ func NewOptimizerStat(core *core.Core) (stats.CollectorCustomStats[CustomStatsBu
 		} else {
 			out.WeightedER[ind] = append(out.WeightedER[ind], wERsum/wsum)
 		}
-		out.erPerParticleEvent[ind] = make([]float64, 0)
-		out.rawPerParticleEvent[ind] = make([]float64, 0)
 
+		erNeeded := 999999999999.9
+		if charRawParticles[ind] > 0 {
+			erNeeded = max((char.EnergyMax-charFlatEnergy[ind])/charRawParticles[ind], 1.0)
+		}
+		erPerParticleEvent[ind] = erPerParticleEvent[ind][:0]
+		rawPerParticleEvent[ind] = rawPerParticleEvent[ind][:0]
+
+		out.ErNeeded[ind] = append(out.ErNeeded[ind], erNeeded)
+
+		charRawParticles[ind] = 0
+		charFlatEnergy[ind] = 0
 		burstCount[ind]++
-		out.charRawParticles[ind] = append(out.charRawParticles[ind], 0)
-		out.charFlatEnergy[ind] = append(out.charFlatEnergy[ind], 0)
 		// log.Println("After burst", char.Base.Key, out.charFlatEnergy[ind])
 		return false
 	}, "stats-energy-burst-log")
@@ -93,17 +100,65 @@ func NewOptimizerStat(core *core.Core) (stats.CollectorCustomStats[CustomStatsBu
 	return &out, nil
 }
 
-func (b CustomStatsBuffer) Flush(core *core.Core) CustomStatsBuffer {
+func (b CustomEnergyStatsBuffer) Flush(core *core.Core) CustomEnergyStatsBuffer {
+	for i, _ := range core.Player.Chars() {
+		if len(b.ErNeeded[i]) == 0 {
+			b.ErNeeded[i] = append(b.ErNeeded[i], 1)
+		}
+	}
+
 	return b
 }
 
-type CustomAggBuffer struct {
+type CustomEnergyAggBuffer struct {
+	WeightedER         [][]float64
+	ErNeeded           [][]float64
+	AdditionalErNeeded [][]float64
 }
 
-func NewCustomAggBuffer() CustomAggBuffer {
-	return CustomAggBuffer{}
+func NewEnergyAggBuffer(cfg *info.ActionList) CustomEnergyAggBuffer {
+
+	character_count := len(cfg.Characters)
+	return CustomEnergyAggBuffer{
+		WeightedER:         make([][]float64, character_count),
+		ErNeeded:           make([][]float64, character_count),
+		AdditionalErNeeded: make([][]float64, character_count),
+	}
 }
 
-func (agg *CustomAggBuffer) Add(b CustomStatsBuffer) {
+func (agg *CustomEnergyAggBuffer) Add(b CustomEnergyStatsBuffer) {
+	char_count := len(b.WeightedER)
+	for i := 0; i < char_count; i++ {
+
+		burst_count := len(b.WeightedER[i])
+		if burst_count == 0 {
+			agg.WeightedER[i] = append(agg.WeightedER[i], 1.0)
+			agg.ErNeeded[i] = append(agg.ErNeeded[i], 1.0)
+			agg.AdditionalErNeeded[i] = append(agg.AdditionalErNeeded[i], 0.0)
+		}
+
+		weighted_er := 99999999999.0 // some very large initial value
+		er_needed := 1.0
+		additional_needed := 0.0
+		for j := 0; j < burst_count; j++ {
+			weighted_er = min(weighted_er, b.WeightedER[i][j])
+			er_needed = max(er_needed, b.ErNeeded[i][j])
+			additional_needed = max(additional_needed, b.ErNeeded[i][j]-b.WeightedER[i][j])
+		}
+
+		agg.WeightedER[i] = append(agg.WeightedER[i], weighted_er)
+		agg.ErNeeded[i] = append(agg.ErNeeded[i], er_needed)
+		agg.AdditionalErNeeded[i] = append(agg.AdditionalErNeeded[i], additional_needed)
+	}
+}
+
+func (agg *CustomEnergyAggBuffer) Flush() {
+	char_count := len(agg.WeightedER)
+
+	for i := 0; i < char_count; i++ {
+		slices.Sort(agg.WeightedER[i])
+		slices.Sort(agg.ErNeeded[i])
+		slices.Sort(agg.AdditionalErNeeded[i])
+	}
 
 }
