@@ -1,6 +1,7 @@
 package abilities
 
 import (
+	"errors"
 	"testing"
 	"time"
 
@@ -8,10 +9,12 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	_ "github.com/genshinsim/gcsim/pkg/simulation"
 )
@@ -42,6 +45,30 @@ func testChar(t *testing.T, k keys.Char) {
 	c.Combat.DefaultTarget = trg[0].Key()
 	c.QueueParticle("system", 1000, attributes.NoElement, 0)
 	advanceCoreFrame(c)
+
+	p := make(map[string]int)
+	for a := action.InvalidAction + 1; a < action.ActionSwap; a++ {
+		for {
+			err := c.Player.ReadyCheck(a, k, p)
+			if err == nil {
+				break
+			}
+			switch {
+			case errors.Is(err, player.ErrActionNotReady):
+			case errors.Is(err, player.ErrPlayerNotReady):
+			case errors.Is(err, player.ErrActionNoOp):
+				break
+			default:
+				t.Errorf("unexpected error waiting for action to be ready: %v", err)
+				t.FailNow()
+			}
+			advanceCoreFrame(c)
+		}
+		c.Player.Exec(a, k, p)
+		for !c.Player.CanQueueNextAction() {
+			advanceCoreFrame(c)
+		}
+	}
 }
 
 func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
