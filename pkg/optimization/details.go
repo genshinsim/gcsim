@@ -284,6 +284,7 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char inf
 // to be run
 func (stats *SubstatOptimizerDetails) optimizeERSubstats() []string {
 	var opDebug []string
+	stats.simcfg.Settings.Iterations = 350
 
 	// For now going to ignore Raiden, since typically she won't be running maximum ER subs just to battery. The scaling isn't that strong
 	// From minimum subs (0.1102 ER) to maximum subs (0.6612 ER) she restores 4 more flat energy per rotation.

@@ -36,8 +36,6 @@ func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLog
 //
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
 func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
-	// Fix iterations at 350 for performance
-	// TODO: Seems to be a roughly good number at KQM standards
 	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
 	// disable stats collection since optimizer has no use for it
 	simcfg.Settings.CollectStats = []string{"overview"}
