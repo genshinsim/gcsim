@@ -69,6 +69,12 @@ func (r *Reactable) TryFrozenSuperconduct(a *combat.AttackEvent) bool {
 func (r *Reactable) queueSuperconduct(a *combat.AttackEvent) {
 	r.core.Events.Emit(event.OnSuperconduct, r.self, a)
 
+	// 0.1s gcd on superconduct attack
+	if r.superconductGCD != -1 && r.core.F < r.superconductGCD {
+		return
+	}
+	r.superconductGCD = r.core.F + 0.1*60
+
 	// superconduct attack
 	atk := combat.AttackInfo{
 		ActorIndex:       a.Info.ActorIndex,

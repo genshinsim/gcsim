@@ -80,30 +80,37 @@ func (r *Reactable) ShatterCheck(a *combat.AttackEvent) bool {
 	// remove 200 freeze gauge if available
 	r.Durability[Frozen] -= 200
 	r.checkFreeze()
-	// trigger shatter attack
+
 	r.core.Events.Emit(event.OnShatter, r.self, a)
-	ai := combat.AttackInfo{
-		ActorIndex:       a.Info.ActorIndex,
-		DamageSrc:        r.self.Key(),
-		Abil:             string(reactions.Shatter),
-		AttackTag:        attacks.AttackTagShatter,
-		ICDTag:           attacks.ICDTagShatter,
-		ICDGroup:         attacks.ICDGroupReactionA,
-		StrikeType:       attacks.StrikeTypeDefault,
-		Element:          attributes.Physical,
-		IgnoreDefPercent: 1,
+
+	// 0.2s gcd on shatter attack
+	if !(r.shatterGCD != -1 && r.core.F < r.shatterGCD) {
+		r.shatterGCD = r.core.F + 0.2*60
+		// trigger shatter attack
+		ai := combat.AttackInfo{
+			ActorIndex:       a.Info.ActorIndex,
+			DamageSrc:        r.self.Key(),
+			Abil:             string(reactions.Shatter),
+			AttackTag:        attacks.AttackTagShatter,
+			ICDTag:           attacks.ICDTagShatter,
+			ICDGroup:         attacks.ICDGroupReactionA,
+			StrikeType:       attacks.StrikeTypeDefault,
+			Element:          attributes.Physical,
+			IgnoreDefPercent: 1,
+		}
+		char := r.core.Player.ByIndex(a.Info.ActorIndex)
+		em := char.Stat(attributes.EM)
+		flatdmg, snap := calcReactionDmg(char, ai, em)
+		ai.FlatDmg = 1.5 * flatdmg
+		// shatter is a self attack
+		r.core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewSingleTargetHit(r.self.Key()),
+			0,
+		)
 	}
-	char := r.core.Player.ByIndex(a.Info.ActorIndex)
-	em := char.Stat(attributes.EM)
-	flatdmg, snap := calcReactionDmg(char, ai, em)
-	ai.FlatDmg = 1.5 * flatdmg
-	// shatter is a self attack
-	r.core.QueueAttackWithSnap(
-		ai,
-		snap,
-		combat.NewSingleTargetHit(r.self.Key()),
-		0,
-	)
+
 	return true
 }
 
