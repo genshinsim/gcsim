@@ -44,7 +44,7 @@ type Flags struct {
 	DefHalt           bool // for hitlag
 	EnableHitlag      bool // hitlag enabled
 	IgnoreBurstEnergy bool // for ignoring energy when using burst
-	Custom            map[string]int
+	Custom            map[string]float64
 }
 
 type Reactable interface {
@@ -78,7 +78,7 @@ func New(opt Opt) (*Core, error) {
 	c := &Core{}
 	c.Seed = opt.Seed
 	c.Rand = rand.New(rand.NewSource(opt.Seed))
-	c.Flags.Custom = make(map[string]int)
+	c.Flags.Custom = make(map[string]float64)
 	if opt.Debug {
 		c.Log = glog.New(&c.F, 500)
 		c.Flags.LogDebug = true
