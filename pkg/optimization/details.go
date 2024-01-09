@@ -54,8 +54,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	)
 	origIter := stats.simcfg.Settings.Iterations
 	stats.simcfg.Settings.IgnoreBurstEnergy = true
-	stats.simcfg.Settings.ExpectedCritDmg = true
-	stats.simcfg.Settings.Iterations = 25
+	stats.simcfg.Settings.Iterations = 50
 	stats.simcfg.Characters = stats.charProfilesCopy
 
 	for idxChar := range stats.charProfilesCopy {
@@ -63,7 +62,6 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 		opDebug = append(opDebug, charDebug...)
 	}
 	stats.simcfg.Settings.IgnoreBurstEnergy = false
-	stats.simcfg.Settings.ExpectedCritDmg = false
 	stats.simcfg.Settings.Iterations = origIter
 	return opDebug
 }
@@ -74,8 +72,6 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstats() []string {
 		opDebug   []string
 		charDebug []string
 	)
-
-	stats.simcfg.Settings.ExpectedCritDmg = true
 
 	stats.simcfg.Characters = stats.charProfilesCopy
 
@@ -239,8 +235,13 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 	amount int,
 ) []float64 {
 	stats.simcfg.Characters = stats.charProfilesCopy
-	substatEvalResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
-	initialMean := *substatEvalResult.Statistics.ExpectedDps.Mean
+
+	a := NewDamageAggBuffer(stats.simcfg)
+	simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), OptimizerDmgStat, a.Add)
+	a.Flush()
+
+	// TODO: Test if median or mean gives better results
+	initialMedian := percentile(a.ExpectedDps, 0.50)
 
 	substatGradients := make([]float64, len(relevantSubstats))
 	// Build "gradient" by substat
@@ -248,9 +249,12 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		stats.charProfilesCopy[idxChar].Stats[substat] += float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
 
 		stats.simcfg.Characters = stats.charProfilesCopy
-		substatEvalResult, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
 
-		substatGradients[idxSubstat] = *substatEvalResult.Statistics.ExpectedDps.Mean - initialMean
+		a := NewDamageAggBuffer(stats.simcfg)
+		simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), OptimizerDmgStat, a.Add)
+		a.Flush()
+
+		substatGradients[idxSubstat] = percentile(a.ExpectedDps, 0.50) - initialMedian
 		// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
 		// might give them "too much" cr (= max out liquid cr subs or overcap crit beyond 100%) but that's probably not a big deal
 		if stats.charWithFavonius[idxChar] && substat == attributes.CR {
@@ -321,24 +325,17 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 	a := NewEnergyAggBuffer(stats.simcfg)
 	simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), OptimizerERStat, a.Add)
 	a.Flush()
-
 	for idxChar := range stats.charProfilesERBaseline {
-		// fmt.Printf("Found character %s needs %.2f ER\n", stats.charProfilesERBaseline[idxChar].Base.Key.String(), *result.Statistics.ErNeeded[idxChar].Q3)
+		// fmt.Printf("Found character %s has ER len of %d\n", stats.charProfilesERBaseline[idxChar].Base.Key.String(), len(a.AdditionalErNeeded[idxChar]))
 
 		// erDiff is the amount of excess ER we have
-		er_len := len(a.AdditionalErNeeded[idxChar])
-		erDiff := -a.AdditionalErNeeded[idxChar][int(float64(er_len)*0.93)]
-
-		// the bias is how much to "round".
-		// -0.5 bias is equivalent to flooring (guaruntees that the ER will be enough, even if
-		// 		the req was 1.2205 and 4 subs was 1.2204, we will get 1.1653 ER)
-		// +0.5 bias is equivalent to ceil
-		// maybe bias should be determined relative to DPS% of team?
+		erLen := len(a.AdditionalErNeeded[idxChar])
+		erDiff := -percentile(a.AdditionalErNeeded[idxChar], 0.75)
 
 		// find the closest whole count of ER subs
 		erStack := int(math.Round(erDiff / stats.substatValues[attributes.ER]))
 		erStack = clamp[int](0, erStack, stats.charSubstatFinal[idxChar][attributes.ER])
-		stats.charMaxExtraERSubs[idxChar] = float64(erStack) + a.AdditionalErNeeded[idxChar][er_len-1]/stats.substatValues[attributes.ER]
+		stats.charMaxExtraERSubs[idxChar] = float64(erStack) + a.AdditionalErNeeded[idxChar][erLen-1]/stats.substatValues[attributes.ER]
 		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
 		stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
 		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]

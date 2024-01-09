@@ -33,7 +33,7 @@ func OptimizerERStat(core *core.Core) (stats.CollectorCustomStats[CustomEnergySt
 	charRawParticles := make([]float64, len(core.Player.Chars()))
 	charFlatEnergy := make([]float64, len(core.Player.Chars()))
 
-	for ind, _ := range core.Player.Chars() {
+	for ind := range core.Player.Chars() {
 		erPerParticleEvent[ind] = make([]float64, 0)
 		rawPerParticleEvent[ind] = make([]float64, 0)
 		erPerParticleEvent[ind] = append(erPerParticleEvent[ind], 0)
@@ -63,7 +63,7 @@ func OptimizerERStat(core *core.Core) (stats.CollectorCustomStats[CustomEnergySt
 			}
 		}
 		return false
-	}, "stats-energy-log")
+	}, "substat-opt-energy-log")
 
 	core.Events.Subscribe(event.OnBurst, func(_ ...interface{}) bool {
 		char := core.Player.ActiveChar()
@@ -85,8 +85,8 @@ func OptimizerERStat(core *core.Core) (stats.CollectorCustomStats[CustomEnergySt
 		if charRawParticles[ind] > 0 {
 			erNeeded = max((char.EnergyMax-charFlatEnergy[ind])/charRawParticles[ind], 1.0)
 		}
-		erPerParticleEvent[ind] = erPerParticleEvent[ind][:0]
-		rawPerParticleEvent[ind] = rawPerParticleEvent[ind][:0]
+		erPerParticleEvent[ind] = nil
+		rawPerParticleEvent[ind] = nil
 
 		out.ErNeeded[ind] = append(out.ErNeeded[ind], erNeeded)
 
@@ -95,15 +95,16 @@ func OptimizerERStat(core *core.Core) (stats.CollectorCustomStats[CustomEnergySt
 		burstCount[ind]++
 		// log.Println("After burst", char.Base.Key, out.charFlatEnergy[ind])
 		return false
-	}, "stats-energy-burst-log")
+	}, "substat-opt-energy-burst-log")
 
 	return &out, nil
 }
 
 func (b CustomEnergyStatsBuffer) Flush(core *core.Core) CustomEnergyStatsBuffer {
-	for i, _ := range core.Player.Chars() {
+	for i := range core.Player.Chars() {
 		if len(b.ErNeeded[i]) == 0 {
 			b.ErNeeded[i] = append(b.ErNeeded[i], 1)
+			b.WeightedER[i] = append(b.WeightedER[i], 1)
 		}
 	}
 
@@ -117,48 +118,47 @@ type CustomEnergyAggBuffer struct {
 }
 
 func NewEnergyAggBuffer(cfg *info.ActionList) CustomEnergyAggBuffer {
-
-	character_count := len(cfg.Characters)
+	charCount := len(cfg.Characters)
 	return CustomEnergyAggBuffer{
-		WeightedER:         make([][]float64, character_count),
-		ErNeeded:           make([][]float64, character_count),
-		AdditionalErNeeded: make([][]float64, character_count),
+		WeightedER:         make([][]float64, charCount),
+		ErNeeded:           make([][]float64, charCount),
+		AdditionalErNeeded: make([][]float64, charCount),
 	}
 }
 
 func (agg *CustomEnergyAggBuffer) Add(b CustomEnergyStatsBuffer) {
-	char_count := len(b.WeightedER)
-	for i := 0; i < char_count; i++ {
-
-		burst_count := len(b.WeightedER[i])
-		if burst_count == 0 {
+	charCount := len(b.WeightedER)
+	for i := 0; i < charCount; i++ {
+		burstCount := len(b.WeightedER[i])
+		if burstCount == 0 {
 			agg.WeightedER[i] = append(agg.WeightedER[i], 1.0)
 			agg.ErNeeded[i] = append(agg.ErNeeded[i], 1.0)
 			agg.AdditionalErNeeded[i] = append(agg.AdditionalErNeeded[i], 0.0)
 		}
 
-		weighted_er := 99999999999.0 // some very large initial value
-		er_needed := 1.0
-		additional_needed := 0.0
-		for j := 0; j < burst_count; j++ {
-			weighted_er = min(weighted_er, b.WeightedER[i][j])
-			er_needed = max(er_needed, b.ErNeeded[i][j])
-			additional_needed = max(additional_needed, b.ErNeeded[i][j]-b.WeightedER[i][j])
+		weightedEr := 99999999999.0 // some very large initial value
+		erNeeded := 1.0
+		additionalNeeded := erNeeded - weightedEr
+
+		// j starts at 1 to ignore the first burst
+		for j := 1; j < burstCount; j++ {
+			weightedEr = min(weightedEr, b.WeightedER[i][j])
+			erNeeded = max(erNeeded, b.ErNeeded[i][j])
+			additionalNeeded = max(additionalNeeded, b.ErNeeded[i][j]-b.WeightedER[i][j])
 		}
 
-		agg.WeightedER[i] = append(agg.WeightedER[i], weighted_er)
-		agg.ErNeeded[i] = append(agg.ErNeeded[i], er_needed)
-		agg.AdditionalErNeeded[i] = append(agg.AdditionalErNeeded[i], additional_needed)
+		agg.WeightedER[i] = append(agg.WeightedER[i], weightedEr)
+		agg.ErNeeded[i] = append(agg.ErNeeded[i], erNeeded)
+		agg.AdditionalErNeeded[i] = append(agg.AdditionalErNeeded[i], additionalNeeded)
 	}
 }
 
 func (agg *CustomEnergyAggBuffer) Flush() {
-	char_count := len(agg.WeightedER)
+	charCount := len(agg.WeightedER)
 
-	for i := 0; i < char_count; i++ {
+	for i := 0; i < charCount; i++ {
 		slices.Sort(agg.WeightedER[i])
 		slices.Sort(agg.ErNeeded[i])
 		slices.Sort(agg.AdditionalErNeeded[i])
 	}
-
 }

@@ -1,6 +1,9 @@
 package optimization
 
-import "sort"
+import (
+	"math"
+	"sort"
+)
 
 // Thin wrapper around sort Slice to retrieve the sorted indices as well
 type Slice struct {
@@ -42,4 +45,8 @@ func minInt(vars ...int) int {
 		}
 	}
 	return min
+}
+
+func percentile[T comparable](arr []T, percentile float64) T {
+	return arr[int(math.Floor(float64(len(arr))*percentile))]
 }
