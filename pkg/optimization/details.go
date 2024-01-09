@@ -326,8 +326,6 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 	simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), OptimizerERStat, a.Add)
 	a.Flush()
 	for idxChar := range stats.charProfilesERBaseline {
-		// fmt.Printf("Found character %s has ER len of %d\n", stats.charProfilesERBaseline[idxChar].Base.Key.String(), len(a.AdditionalErNeeded[idxChar]))
-
 		// erDiff is the amount of excess ER we have
 		erLen := len(a.AdditionalErNeeded[idxChar])
 		erDiff := -percentile(a.AdditionalErNeeded[idxChar], 0.75)

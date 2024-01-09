@@ -64,10 +64,6 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		o.details.charProfilesCopy[i] = o.details.charProfilesERBaseline[i].Clone()
 	}
 
-	// Tolerance cutoffs for mean and SD from initial state
-	// Initial state is used rather than checking across each iteration due to noise
-	// TODO: May want to adjust further?
-
 	debugLogs := o.details.optimizeERSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)

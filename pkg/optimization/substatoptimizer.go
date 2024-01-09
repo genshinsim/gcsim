@@ -17,13 +17,10 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 	// Each optimizer run should not be saving anything out for the GZIP
 	simopt.GZIPResult = false
 
-	// Fix iterations at 350 for performance
-	// TODO: Seems to be a roughly good number at KQM standards
 	optionsMap := map[string]float64{
 		"total_liquid_substats": 20,
 		"indiv_liquid_cap":      10,
 		"fixed_substats_count":  2,
-		"sim_iter":              350,
 		"verbose":               0,
 	}
 
