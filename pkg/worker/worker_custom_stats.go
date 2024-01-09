@@ -51,17 +51,17 @@ func (p *PoolCustomStats[T]) worker() {
 				p.errCh <- err
 				break
 			}
-			t, err := job.Cstat(c)
-			if err != nil {
-				p.errCh <- err
-				break
-			}
 			eval, err := gcs.NewEvaluator(job.Actions, c)
 			if err != nil {
 				p.errCh <- err
 				break
 			}
 			s, err := simulation.New(job.Cfg, eval, c)
+			if err != nil {
+				p.errCh <- err
+				break
+			}
+			t, err := job.Cstat(c)
 			if err != nil {
 				p.errCh <- err
 				break
