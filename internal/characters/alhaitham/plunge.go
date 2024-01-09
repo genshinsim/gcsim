@@ -1,13 +1,14 @@
 package alhaitham
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var lowPlungeFrames []int
@@ -27,14 +28,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	// last action must be hold skill
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["hold"] != 1 {
-		c.Core.Log.NewEvent("only plunge after hold skill ends", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionLowPlunge)
-		return action.Info{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}, nil
+		return action.Info{}, errors.New("only plunge after hold skill ends")
 	}
 
 	short := p["short"]
