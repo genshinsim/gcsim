@@ -16,9 +16,11 @@ type positional interface {
 }
 
 func NewSingleTargetHit(ind targets.TargetKey) AttackPattern {
-	return AttackPattern{
+	a := AttackPattern{
 		Shape: &geometry.SingleTarget{Target: ind},
 	}
+	a.SkipTargets[targets.TargettablePlayer] = true
+	return a
 }
 
 func getCenterAndDirection(src, center, offset positional) (geometry.Point, geometry.Point) {
