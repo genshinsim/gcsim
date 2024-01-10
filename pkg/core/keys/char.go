@@ -133,6 +133,7 @@ const (
 	Furina
 	Navia
 	Wriothesley
+	Chevreuse
 	TestCharDoNotUse
 	EndCharKeys
 )
@@ -231,6 +232,7 @@ var charNames = []string{
 	"furina",
 	"navia",
 	"wriothesley",
+	"chevreuse",
 	"test_char_do_not_use",
 }
 
@@ -328,6 +330,7 @@ var charPrettyName = []string{
 	"Furina",
 	"Navia",
 	"Wriothesley",
+	"Chevreuse",
 	"!!!TEST CHAR DO NOT USE!!!",
 }
 
@@ -421,5 +424,6 @@ var CharKeyToEle = map[Char]attributes.Element{
 	Furina:           attributes.Hydro,
 	Navia:            attributes.Geo,
 	Wriothesley:      attributes.Cryo,
+	Chevreuse:        attributes.Pyro,
 	TestCharDoNotUse: attributes.Geo,
 }
