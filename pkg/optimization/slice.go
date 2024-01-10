@@ -50,3 +50,15 @@ func minInt(vars ...int) int {
 func percentile[T comparable](arr []T, percentile float64) T {
 	return arr[int(math.Floor(float64(len(arr))*percentile))]
 }
+
+func mean(arr []float64) float64 {
+	if len(arr) == 0 {
+		return 0.0
+	}
+	sum := 0.0
+	for _, v := range arr {
+		sum += v
+	}
+
+	return sum / float64(len(arr))
+}

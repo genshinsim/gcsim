@@ -1,4 +1,4 @@
-package stats
+package optstats
 
 import "github.com/genshinsim/gcsim/pkg/core"
 

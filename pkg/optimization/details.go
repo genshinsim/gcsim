@@ -12,6 +12,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/optimization/optstats"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
@@ -54,7 +55,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	)
 	origIter := stats.simcfg.Settings.Iterations
 	stats.simcfg.Settings.IgnoreBurstEnergy = true
-	stats.simcfg.Settings.Iterations = 50
+	stats.simcfg.Settings.Iterations = 25
 	stats.simcfg.Characters = stats.charProfilesCopy
 
 	for idxChar := range stats.charProfilesCopy {
@@ -119,21 +120,25 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 		stats.simcfg.Settings.Iterations = 25
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, -1)
 		stats.simcfg.Settings.IgnoreBurstEnergy = false
-		stats.simcfg.Settings.Iterations = 350
+		stats.simcfg.Settings.Iterations = 250
 		erGainGradient := stats.calculateSubstatGradientsForChar(idxChar, []attributes.Stat{attributes.ER}, 1)
 		stats.simcfg.Settings.Iterations = origIter
-		lowestLoss := 0.0
+		lowestLoss := -999999999999.0
+		lowestSub := attributes.NoStat
 		for idxSubstat, gradient := range substatGradients {
 			substat := relevantSubstats[idxSubstat]
-			if stats.charSubstatFinal[idxChar][substat] > 0 && gradient < lowestLoss {
+			if stats.charSubstatFinal[idxChar][substat] > 0 && gradient > lowestLoss {
 				lowestLoss = gradient
+				lowestSub = substat
 			}
 		}
-		if erGainGradient[0]+lowestLoss <= 0 {
+		if erGainGradient[0]+lowestLoss <= 0 || lowestSub == attributes.NoStat {
 			break
 		}
-		allocDebug := stats.allocateSomeSubstatGradientsForChar(idxChar, char, substatGradients, relevantSubstats, -1)
-		opDebug = append(opDebug, allocDebug...)
+
+		stats.charSubstatFinal[idxChar][lowestSub] -= 1
+		stats.charProfilesCopy[idxChar].Stats[lowestSub] -= float64(1) * stats.substatValues[lowestSub] * stats.charSubstatRarityMod[idxChar]
+
 		stats.charSubstatFinal[idxChar][attributes.ER] += 1
 		stats.charProfilesCopy[idxChar].Stats[attributes.ER] += float64(1) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
 		stats.charMaxExtraERSubs[idxChar] -= 1
@@ -235,14 +240,11 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 	amount int,
 ) []float64 {
 	stats.simcfg.Characters = stats.charProfilesCopy
-
-	a := NewDamageAggBuffer(stats.simcfg)
-	simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), OptimizerDmgStat, a.Add)
-	a.Flush()
-
+	init := optstats.NewDamageAggBuffer(stats.simcfg)
+	optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), optstats.OptimizerDmgStat, init.Add)
+	init.Flush()
 	// TODO: Test if median or mean gives better results
-	initialMedian := percentile(a.ExpectedDps, 0.50)
-
+	initialMean := mean(init.ExpectedDps)
 	substatGradients := make([]float64, len(relevantSubstats))
 	// Build "gradient" by substat
 	for idxSubstat, substat := range relevantSubstats {
@@ -250,14 +252,14 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 
 		stats.simcfg.Characters = stats.charProfilesCopy
 
-		a := NewDamageAggBuffer(stats.simcfg)
-		simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), OptimizerDmgStat, a.Add)
+		a := optstats.NewDamageAggBuffer(stats.simcfg)
+		optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), optstats.OptimizerDmgStat, a.Add)
 		a.Flush()
 
-		substatGradients[idxSubstat] = percentile(a.ExpectedDps, 0.50) - initialMedian
+		substatGradients[idxSubstat] = mean(a.ExpectedDps) - initialMean
 		// fixes cases in which fav holders don't get enough crit rate to reliably proc fav (an important example would be fav kazuha)
 		// might give them "too much" cr (= max out liquid cr subs or overcap crit beyond 100%) but that's probably not a big deal
-		if stats.charWithFavonius[idxChar] && substat == attributes.CR {
+		if stats.simcfg.Settings.IgnoreBurstEnergy && stats.charWithFavonius[idxChar] && substat == attributes.CR {
 			substatGradients[idxSubstat] += 1000 * float64(amount)
 		}
 		stats.charProfilesCopy[idxChar].Stats[substat] -= float64(amount) * stats.substatValues[substat] * stats.charSubstatRarityMod[idxChar]
@@ -323,8 +325,8 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 	// characters start at maximum ER
 	stats.simcfg.Characters = stats.charProfilesERBaseline
 
-	a := NewEnergyAggBuffer(stats.simcfg)
-	simulator.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), OptimizerERStat, a.Add)
+	a := optstats.NewEnergyAggBuffer(stats.simcfg)
+	optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), optstats.OptimizerERStat, a.Add)
 	a.Flush()
 	for idxChar := range stats.charProfilesERBaseline {
 		// erDiff is the amount of excess ER we have

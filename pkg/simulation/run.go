@@ -306,10 +306,10 @@ func (s *Simulation) stopCheck() bool {
 func (s *Simulation) Run() (res stats.Result, err error) {
 	defer func() {
 		// recover from panic if one occured. Set err to nil otherwise.
-		if r := recover(); r != nil {
-			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
-			err = fmt.Errorf("simulation panic occured: %v", r)
-		}
+		// if r := recover(); r != nil {
+		// 	res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
+		// 	err = fmt.Errorf("simulation panic occured: %v", r)
+		// }
 	}()
 	res, err = s.run()
 	return

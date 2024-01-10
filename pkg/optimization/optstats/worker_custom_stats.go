@@ -1,4 +1,4 @@
-package worker
+package optstats
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -20,13 +20,13 @@ type JobCustomStats[T any] struct {
 	Cfg     *info.ActionList
 	Actions ast.Node
 	Seed    int64
-	Cstat   stats.NewStatsFuncCustomStats[T]
+	Cstat   NewStatsFuncCustomStats[T]
 }
 
 // New creates a new Pool. Jobs can be sent to new pool by sending to p.QueueCh
 // Closing p.StopCh will cause the pool to stop executing any queued jobs and currently working
 // workers will no longer send back responses
-func NewWithCustomStats[T any](maxWorker int, respCh chan stats.Result, errCh chan error, customCh chan T) *PoolCustomStats[T] {
+func WorkerNewWithCustomStats[T any](maxWorker int, respCh chan stats.Result, errCh chan error, customCh chan T) *PoolCustomStats[T] {
 	p := &PoolCustomStats[T]{
 		respCh:   respCh,
 		errCh:    errCh,

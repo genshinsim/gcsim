@@ -1,4 +1,4 @@
-package optimization
+package optstats
 
 import (
 	"slices"
@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 type CustomEnergyStatsBuffer struct {
@@ -16,7 +15,7 @@ type CustomEnergyStatsBuffer struct {
 	WeightedER [][]float64
 }
 
-func OptimizerERStat(core *core.Core) (stats.CollectorCustomStats[CustomEnergyStatsBuffer], error) {
+func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuffer], error) {
 	if !core.Flags.IgnoreBurstEnergy {
 		// This data doesn't mean much without the IgnoreBurstEnergy flag set
 		// So the stat collector disables itself when this flag isn't set

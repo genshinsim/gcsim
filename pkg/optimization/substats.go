@@ -38,7 +38,7 @@ func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLog
 func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
 	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
 	// disable stats collection since optimizer has no use for it
-	simcfg.Settings.CollectStats = []string{"overview"}
+	simcfg.Settings.CollectStats = []string{""}
 
 	o.details = NewSubstatOptimizerDetails(
 		cfg,

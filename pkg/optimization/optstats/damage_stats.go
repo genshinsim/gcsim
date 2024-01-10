@@ -1,4 +1,4 @@
-package optimization
+package optstats
 
 import (
 	"slices"
@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 type CustomDamageStatsBuffer struct {
@@ -17,13 +16,7 @@ type CustomDamageStatsBuffer struct {
 	duration        int
 }
 
-func OptimizerDmgStat(core *core.Core) (stats.CollectorCustomStats[CustomDamageStatsBuffer], error) {
-	if !core.Flags.IgnoreBurstEnergy {
-		// This data doesn't mean much without the IgnoreBurstEnergy flag set
-		// So the stat collector disables itself when this flag isn't set
-		return &CustomDamageStatsBuffer{}, nil
-	}
-
+func OptimizerDmgStat(core *core.Core) (CollectorCustomStats[CustomDamageStatsBuffer], error) {
 	out := CustomDamageStatsBuffer{
 		ExpectedDmgCumu: make([]float64, len(core.Player.Chars())),
 	}
@@ -64,16 +57,16 @@ type CustomDamageAggBuffer struct {
 }
 
 func NewDamageAggBuffer(cfg *info.ActionList) CustomDamageAggBuffer {
-	character_count := len(cfg.Characters)
+	charCount := len(cfg.Characters)
 	return CustomDamageAggBuffer{
-		CharExpectedDps: make([][]float64, character_count),
+		CharExpectedDps: make([][]float64, charCount),
 	}
 }
 
 func (agg *CustomDamageAggBuffer) Add(b CustomDamageStatsBuffer) {
-	char_count := len(b.ExpectedDmgCumu)
+	charCount := len(b.ExpectedDmgCumu)
 	totalExpectedDPS := 0.0
-	for i := 0; i < char_count; i++ {
+	for i := 0; i < charCount; i++ {
 		charExpectedDps := b.ExpectedDmgCumu[i] / (float64(b.duration) / 60.0)
 		agg.CharExpectedDps[i] = append(agg.CharExpectedDps[i], charExpectedDps)
 		totalExpectedDPS += charExpectedDps
@@ -82,8 +75,8 @@ func (agg *CustomDamageAggBuffer) Add(b CustomDamageStatsBuffer) {
 }
 
 func (agg *CustomDamageAggBuffer) Flush() {
-	char_count := len(agg.CharExpectedDps)
-	for i := 0; i < char_count; i++ {
+	charCount := len(agg.CharExpectedDps)
+	for i := 0; i < charCount; i++ {
 		slices.Sort(agg.CharExpectedDps[i])
 	}
 	slices.Sort(agg.ExpectedDps)
