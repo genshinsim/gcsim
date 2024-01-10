@@ -1150,6 +1150,101 @@
       }
     ]
   },
+  "chevreuse": {
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "offsetX": 0,
+        "boxX": 1.6,
+        "boxY": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": 0.4,
+        "radius": 1.6
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetX": 0,
+        "boxX": 1.6,
+        "boxY": 2      
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetX": 0.6,
+        "radius": 1.6
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetX": 0.1,
+        "boxX": 1.5,
+        "boxY": 4   
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Press",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 1.5,
+        "boxY": 6
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 2.5,
+        "boxY": 7
+      },
+      {
+        "ability": "OverchargedBall",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "Q (Secondary Explosive Shell)",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6,
+        "notes" : "Mine should have exploded radius 6 from it's spawned position"
+      }
+    ]
+  },
   "chongyun": {
     "asc": [
       {

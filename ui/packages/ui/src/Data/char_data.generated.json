@@ -276,6 +276,21 @@
         "burst_energy_cost": 80
       }
     },
+    "chevreuse": {
+      "id": 10000090,
+      "key": "chevreuse",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_GIRL",
+      "element": "Fire",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Chevreuse",
+      "skill_details": {
+        "skill": 10902,
+        "burst": 10905,
+        "attack": 10901,
+        "burst_energy_cost": 80
+      }
+    },
     "chongyun": {
       "id": 10000036,
       "key": "chongyun",
