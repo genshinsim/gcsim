@@ -329,17 +329,17 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 	optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now(), optstats.OptimizerERStat, a.Add)
 	a.Flush()
 	for idxChar := range stats.charProfilesERBaseline {
-		// erDiff is the amount of excess ER we have
+		// erDiff is the amount of ER we need
 		erLen := len(a.AdditionalErNeeded[idxChar])
-		erDiff := -percentile(a.AdditionalErNeeded[idxChar], 0.75)
+		erDiff := percentile(a.AdditionalErNeeded[idxChar], 0.75)
 
 		// find the closest whole count of ER subs
-		erStack := int(math.Round(erDiff / stats.substatValues[attributes.ER]))
-		erStack = clamp[int](0, erStack, stats.charSubstatFinal[idxChar][attributes.ER])
-		stats.charMaxExtraERSubs[idxChar] = float64(erStack) + a.AdditionalErNeeded[idxChar][erLen-1]/stats.substatValues[attributes.ER]
+		erSubs := int(math.Round(erDiff / stats.substatValues[attributes.ER]))
+		erSubs = clamp[int](0, erSubs, stats.charSubstatLimits[idxChar][attributes.ER]-stats.charSubstatFinal[idxChar][attributes.ER])
+		stats.charMaxExtraERSubs[idxChar] = math.Ceil(a.AdditionalErNeeded[idxChar][erLen-1]/stats.substatValues[attributes.ER]) - float64(stats.charSubstatFinal[idxChar][attributes.ER])
 		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
-		stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
-		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
+		stats.charSubstatFinal[idxChar][attributes.ER] += erSubs
+		stats.charProfilesCopy[idxChar].Stats[attributes.ER] += float64(erSubs) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
 	}
 	stats.simcfg.Settings.IgnoreBurstEnergy = false
 }
@@ -375,13 +375,13 @@ func (stats *SubstatOptimizerDetails) calculateERBaseline() {
 		// Need special exception to Raiden due to her burst mechanics
 		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
 		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks low
-		erStack := stats.charSubstatLimits[i][attributes.ER]
+		erSubs := 0
 		if stats.charProfilesInitial[i].Base.Key == keys.Raiden {
-			erStack = 4
+			erSubs = 4
 		}
-		stats.charSubstatFinal[i][attributes.ER] = erStack
+		stats.charSubstatFinal[i][attributes.ER] = erSubs
 
-		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(erStack) * stats.substatValues[attributes.ER]
+		stats.charProfilesERBaseline[i].Stats[attributes.ER] += float64(erSubs) * stats.substatValues[attributes.ER]
 
 		if strings.Contains(stats.charProfilesInitial[i].Weapon.Name, "favonius") {
 			stats.calculateERBaselineHandleFav(i)
