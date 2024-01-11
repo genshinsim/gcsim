@@ -215,14 +215,17 @@ func (c *char) skillHold() action.Info {
 }
 
 func (c *char) SkillHeal() combat.AttackCBFunc {
-
+	skillDur := 12*60 + 1 //heal on last tick of expiry
 	return func(a combat.AttackCB) {
 		if c.Core.Status.Duration(skillHealKey) == 0 {
-			skillDur := 12*60 + 1 //heal on last tick of expiry
 			c.Core.Tasks.Add(func() {
 				c.Core.Status.Add(skillHealKey, skillDur)
 				c.Core.Tasks.Add(c.startSkillHealing(), skillHealInterval) // first heal comes after 2s
-				c.Core.Tasks.Add(c.c6TeamHeal(), 12*60)                    // Assuming this executes every 90 frames = 1.5s
+				c.Core.Tasks.Add(c.c6TeamHeal(), 12*60)
+			}, skillStatusDelay)
+		} else {
+			c.Core.Tasks.Add(func() {
+				c.Core.Status.Extend(skillHealKey, skillDur)
 			}, skillStatusDelay)
 		}
 	}

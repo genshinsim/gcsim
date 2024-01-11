@@ -71,6 +71,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}, mineExplosionInterval)
 
+	c.c4()
 	c.ConsumeEnergy(4)
 	c.SetCD(action.ActionBurst, 15*60)
 	return action.Info{

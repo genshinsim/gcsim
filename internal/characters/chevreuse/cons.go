@@ -37,21 +37,24 @@ func (c *char) c6TeamHeal() func() {
 			return
 		}
 
-		for _, char := range c.Core.Player.Chars() {
-			c.c6(char)
-		}
+		if c.Core.F > c.c6Icd {
+			c.c6Icd = c.Core.F + (60 * 15) // 15s. will only activate once regardless of c4
+			for _, char := range c.Core.Player.Chars() {
+				c.c6(char)
+			}
 
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  -1,
-			Message: "In Pursuit of Ending Evil (C6)",
-			Src:     0.1 * c.MaxHP(),
-			Bonus:   c.Stat(attributes.Heal),
-		})
+			c.Core.Player.Heal(player.HealInfo{
+				Caller:  c.Index,
+				Target:  -1,
+				Message: "In Pursuit of Ending Evil (C6)",
+				Src:     0.1 * c.MaxHP(),
+				Bonus:   c.Stat(attributes.Heal),
+			})
+		}
 	}
 }
 
-func (c *char) c4(char *character.CharWrapper) {
+func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}

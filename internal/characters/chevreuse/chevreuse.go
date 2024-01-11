@@ -42,6 +42,7 @@ type char struct {
 	c2Icd           int
 	c4ShotsLeft     int
 	c6Stack         int
+	c6Icd           int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
