@@ -22,6 +22,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		"indiv_liquid_cap":      10,
 		"fixed_substats_count":  2,
 		"verbose":               0,
+		"fine_tune":             1,
 	}
 
 	if verbose {

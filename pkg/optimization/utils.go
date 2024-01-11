@@ -35,18 +35,6 @@ func newSlice(n ...float64) *Slice {
 	return s
 }
 
-// Gets the minimum of a slice of integers
-func minInt(vars ...int) int {
-	min := vars[0]
-
-	for _, val := range vars {
-		if min > val {
-			min = val
-		}
-	}
-	return min
-}
-
 func percentile[T comparable](arr []T, percentile float64) T {
 	return arr[int(math.Floor(float64(len(arr))*percentile))]
 }
@@ -61,4 +49,16 @@ func mean(arr []float64) float64 {
 	}
 
 	return sum / float64(len(arr))
+}
+
+func clamp[T Ordered](minVal, val, maxVal T) T {
+	return max(min(val, maxVal), minVal)
+}
+
+func (stats *SubstatOptimizerDetails) getCharSubstatTotal(idxChar int) int {
+	sum := 0
+	for _, count := range stats.charSubstatFinal[idxChar] {
+		sum += count
+	}
+	return sum
 }
