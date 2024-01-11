@@ -45,14 +45,16 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 	if totalSubs != stats.totalLiquidSubstats {
 		opDebug = append(opDebug, fmt.Sprint("Character has", totalSubs, "total liquid subs allocated but expected", stats.totalLiquidSubstats))
 	}
-	// fmt.Println(char.Base.Key.Pretty(), "has", totalSubs, "total liquid substats")
+
+	addedEr := false
+	// Check if adding ER subs adds damage
 	for stats.charMaxExtraERSubs[idxChar] > 0.0 && stats.charSubstatFinal[idxChar][attributes.ER] < stats.charSubstatLimits[idxChar][attributes.ER] {
 		origIter := stats.simcfg.Settings.Iterations
 		stats.simcfg.Settings.IgnoreBurstEnergy = true
 		stats.simcfg.Settings.Iterations = 25
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, -1)
 		stats.simcfg.Settings.IgnoreBurstEnergy = false
-		stats.simcfg.Settings.Iterations = 250
+		stats.simcfg.Settings.Iterations = 200
 		erGainGradient := stats.calculateSubstatGradientsForChar(idxChar, []attributes.Stat{attributes.ER}, 1)
 		stats.simcfg.Settings.Iterations = origIter
 		lowestLoss := -999999999999.0
@@ -64,9 +66,12 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 				lowestSub = substat
 			}
 		}
+
+		// If the overall damage gain is less than 0, we are done
 		if erGainGradient[0]+lowestLoss <= 0 || lowestSub == attributes.NoStat {
 			break
 		}
+		addedEr = true
 
 		stats.charSubstatFinal[idxChar][lowestSub] -= 1
 		stats.charProfilesCopy[idxChar].Stats[lowestSub] -= float64(1) * stats.substatValues[lowestSub] * stats.charSubstatRarityMod[idxChar]
@@ -75,6 +80,44 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 		stats.charProfilesCopy[idxChar].Stats[attributes.ER] += float64(1) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
 		stats.charMaxExtraERSubs[idxChar] -= 1
 	}
+
+	// Check if removing ER subs adds damage
+	// We use less iterations and a higher threshold here because we prefer having more ER for better stddev.
+	// This should help cover the case where users don't apply the suggestions to modify .char.burst.ready into
+	// their intended rotation change. This still might get stuck in a local minima.
+	// TODO: How to adjust for local minima?
+	for !addedEr && stats.charSubstatFinal[idxChar][attributes.ER] > 0 {
+		origIter := stats.simcfg.Settings.Iterations
+		stats.simcfg.Settings.IgnoreBurstEnergy = true
+		stats.simcfg.Settings.Iterations = 25
+		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, 1)
+		stats.simcfg.Settings.IgnoreBurstEnergy = false
+		stats.simcfg.Settings.Iterations = 100
+		erGainGradient := stats.calculateSubstatGradientsForChar(idxChar, []attributes.Stat{attributes.ER}, -1)
+		stats.simcfg.Settings.Iterations = origIter
+		largestGain := -999999999999.0
+		largestSub := attributes.NoStat
+		for idxSubstat, gradient := range substatGradients {
+			substat := relevantSubstats[idxSubstat]
+			if stats.charSubstatFinal[idxChar][substat] < stats.charSubstatLimits[idxChar][substat] && gradient > largestGain {
+				largestGain = gradient
+				largestSub = substat
+			}
+		}
+
+		// If the overall damage gain is less than 100, we are done
+		if erGainGradient[0]+largestGain <= 100 || largestSub == attributes.NoStat {
+			break
+		}
+
+		stats.charSubstatFinal[idxChar][largestSub] += 1
+		stats.charProfilesCopy[idxChar].Stats[largestSub] += float64(1) * stats.substatValues[largestSub] * stats.charSubstatRarityMod[idxChar]
+
+		stats.charSubstatFinal[idxChar][attributes.ER] -= 1
+		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(1) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
+		stats.charMaxExtraERSubs[idxChar] += 1
+	}
+
 	opDebug = append(opDebug, "Final Liquid Substat Counts: "+PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	return opDebug
 }

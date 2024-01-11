@@ -87,7 +87,7 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 	for idxChar := range stats.charProfilesERBaseline {
 		// erDiff is the amount of ER we need
 		erLen := len(a.AdditionalErNeeded[idxChar])
-		erDiff := percentile(a.AdditionalErNeeded[idxChar], 0.75)
+		erDiff := percentile(a.AdditionalErNeeded[idxChar], 0.8)
 
 		// find the closest whole count of ER subs
 		// TODO: is ceil better than round? Maybe round with some kind of bias?
