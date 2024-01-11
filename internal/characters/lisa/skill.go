@@ -149,7 +149,9 @@ func (c *char) skillHold() action.Info {
 				return
 			}
 			count++
-			c.AddEnergy("lisa-c1", 2)
+			c.QueueCharTask(func() {
+				c.AddEnergy("lisa-c1", 2)
+			}, 0.4*60)
 		}
 	}
 
