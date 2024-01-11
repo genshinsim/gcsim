@@ -211,20 +211,15 @@ export function parseLogV2(
 
         e.icon = "queue";
         break;
+      case "cooldown":
+        // if (d.expiry != undefined) {
+        //   e.ended = e.frame + d.expiry;
+        //   e.msg += strFrameWithSec(e.ended);
+        // }
+        break;
       case "action":
         if (line.msg.includes("executed") && d.action === "swap") {
           e.msg += " to " + d.target;
-        }
-
-        if (line.msg.includes("cooldown")) {
-          // Add expiry frame to the end if exists
-          switch (d.expiry) {
-            case undefined:
-              break;
-            default:
-              e.msg += strFrameWithSec(d.expiry);
-              e.msg = d.type + " " + e.msg;
-          }
         }
         //trim "executed "
         e.msg = e.msg.replace("executed ", "");
