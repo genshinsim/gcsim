@@ -337,15 +337,7 @@ export function parseLogV2(
         break;
       case "status":
         e.icon = "iso";
-
-        // Add expiry frame to the end if exists
-        switch (d.expiry) {
-          case undefined:
-            break;
-          default:
-            e.msg += strFrameWithSec(d.expiry);
-            e.msg = d.key + " " + e.msg;
-        }
+        e.msg = d.key + " " + e.msg;
 
         // this hacky but i don't care
         if (e.ended === e.frame && line.msg.includes("refreshed")) {
@@ -365,8 +357,9 @@ export function parseLogV2(
           }
         }
 
-        if (d.target != undefined) {
-          e.target = d.target;
+        if (e.ended != undefined) {
+          // maybe use e.target?
+          e.msg += strFrameWithSec(e.ended);
         }
         break;
       default:
