@@ -340,12 +340,11 @@ export function parseLogV2(
         e.msg = d.key + " " + e.msg;
 
         // this hacky but i don't care
-        if (e.ended === e.frame && line.msg.includes("refreshed")) {
+        if (e.ended === e.frame && (line.msg.includes("refreshed") || line.msg.includes("extended"))) {
           const idx = lines.findIndex((a) => {
             return (
               a.event === "status" &&
               line.char_index === a.char_index &&
-              !a.logs.overwrite &&
               a.logs.key === line.logs.key &&
               line.frame >= a.frame &&
               line.frame < a.ended
