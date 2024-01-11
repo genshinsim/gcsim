@@ -64,6 +64,7 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		o.details.charProfilesCopy[i] = o.details.charProfilesERBaseline[i].Clone()
 	}
 
+	// TODO: Maybe add a configuration to only calculate ER?
 	debugLogs := o.details.optimizeERSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)

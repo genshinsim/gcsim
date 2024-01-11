@@ -20,10 +20,13 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char inf
 }
 
 // Calculate per-character per-substat "gradients" at initial state using finite differences
-// We need to use the ErCalc mode to remove noise from energy, and the ExpectedCritDmg mode
-// to remove noise from random crit. This allows us to run a very small 25 iterations per gradient calculation
+// We use ignore_burst_energy mode to remove noise from energy, and the custom damage collector
+// is used to remove noise from random crit. This allows us to run a very small 25 iterations per gradient calculation
+//
 // TODO: Add setting which allows the user to increase the number of iterations (for cases
 // with inherent randomness like Widsith or random delays)
+//
+// TODO: Automatically increase iteration count when stddev is very high?
 func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 	var (
 		opDebug   []string
@@ -44,11 +47,13 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 }
 
 // This calculation starts all the relevant substats at maximum allocated liquid.
-// This reduces the chances of hitting a local maximum of stacking atk%
+// This reduces the chances of hitting a local maximum of stacking atk%/hp%/def%
 // It uses a gradient to determine which substat would cause the least damage loss
 // when removing. This continues until we are within the total liquid limits
-// Initially substats are removed 4 or 2 at a time to speed up the computations
+// Initially substats are removed 5 or 2 at a time to speed up the computations
+//
 // TODO: Allow the user to specify the removal rate?
+//
 // TODO: Multistart gradient descent/ascent from 0 allocated liquid and compare?
 func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 	idxChar int,
@@ -78,7 +83,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 	for totalSubs > stats.totalLiquidSubstats {
 		amount := -1
 		if totalSubs-stats.totalLiquidSubstats >= 8 {
-			amount = -4
+			amount = -5
 		} else if totalSubs-stats.totalLiquidSubstats >= 4 {
 			amount = -2
 		}
