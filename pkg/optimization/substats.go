@@ -2,6 +2,8 @@ package optimization
 
 import (
 	"fmt"
+	"math"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -36,11 +38,9 @@ func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLog
 //
 // 3) Given ER values, we then optimize the other substats by doing a "gradient descent" (but not really) method
 func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *info.ActionList, gcsl ast.Node) {
-	// Fix iterations at 350 for performance
-	// TODO: Seems to be a roughly good number at KQM standards
 	simcfg.Settings.Iterations = int(o.optionsMap["sim_iter"])
 	// disable stats collection since optimizer has no use for it
-	simcfg.Settings.CollectStats = []string{"overview"}
+	simcfg.Settings.CollectStats = []string{""}
 
 	o.details = NewSubstatOptimizerDetails(
 		cfg,
@@ -64,20 +64,24 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 		o.details.charProfilesCopy[i] = o.details.charProfilesERBaseline[i].Clone()
 	}
 
-	// Tolerance cutoffs for mean and SD from initial state
-	// Initial state is used rather than checking across each iteration due to noise
-	// TODO: May want to adjust further?
-	tolMean := o.optionsMap["tol_mean"]
-	tolSD := o.optionsMap["tol_sd"]
-
-	debugLogs := o.details.optimizeERSubstats(tolMean, tolSD)
+	// TODO: Maybe add a configuration to only calculate ER?
+	debugLogs := o.details.optimizeERSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)
 	}
 
+	o.logger.Info("Calculating optimal DMG substat distribution...")
 	debugLogs = o.details.optimizeNonERSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)
+	}
+
+	if o.optionsMap["fine_tune"] != 0 {
+		o.logger.Info("Fine tuning optimal ER vs DMG substat distribution...")
+		debugLogs = o.details.optimizeERAndDMGSubstats()
+		for _, debugLog := range debugLogs {
+			o.logger.Info(debugLog)
+		}
 	}
 }
 
@@ -108,4 +112,151 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 	}
 
 	return output
+}
+
+func NewSubstatOptimizerDetails(
+	cfg string,
+	simopt simulator.Options,
+	simcfg *info.ActionList,
+	gcsl ast.Node,
+	indivLiquidCap int,
+	totalLiquidSubstats int,
+	fixedSubstatCount int,
+) *SubstatOptimizerDetails {
+	s := SubstatOptimizerDetails{}
+	s.cfg = cfg
+	s.simopt = simopt
+	s.simcfg = simcfg
+	s.fixedSubstatCount = fixedSubstatCount
+	s.indivSubstatLiquidCap = indivLiquidCap
+	s.totalLiquidSubstats = totalLiquidSubstats
+
+	s.artifactSets4Star = []keys.Set{
+		keys.ResolutionOfSojourner,
+		keys.TinyMiracle,
+		keys.Berserker,
+		keys.Instructor,
+		keys.TheExile,
+		keys.DefendersWill,
+		keys.BraveHeart,
+		keys.MartialArtist,
+		keys.Gambler,
+		keys.Scholar,
+		keys.PrayersForWisdom,
+		keys.PrayersForDestiny,
+		keys.PrayersForIllumination,
+		keys.PrayersToSpringtime,
+	}
+
+	s.substatValues = make([]float64, attributes.EndStatType)
+	s.mainstatValues = make([]float64, attributes.EndStatType)
+
+	// TODO: Is this actually the best way to set these values or am I missing something..?
+	s.substatValues[attributes.ATKP] = 0.0496
+	s.substatValues[attributes.CR] = 0.0331
+	s.substatValues[attributes.CD] = 0.0662
+	s.substatValues[attributes.EM] = 19.82
+	s.substatValues[attributes.ER] = 0.0551
+	s.substatValues[attributes.HPP] = 0.0496
+	s.substatValues[attributes.DEFP] = 0.062
+	s.substatValues[attributes.ATK] = 16.54
+	s.substatValues[attributes.DEF] = 19.68
+	s.substatValues[attributes.HP] = 253.94
+
+	// Used to try to back out artifact main stats for limits
+	// TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
+	// Most people will have 1 5* artifact which messes things up
+	s.mainstatValues[attributes.ATKP] = 0.466
+	s.mainstatValues[attributes.CR] = 0.311
+	s.mainstatValues[attributes.CD] = 0.622
+	s.mainstatValues[attributes.EM] = 186.5
+	s.mainstatValues[attributes.ER] = 0.518
+	s.mainstatValues[attributes.HPP] = 0.466
+	s.mainstatValues[attributes.DEFP] = 0.583
+
+	// Only includes damage related substats scaling. Ignores things like HP for Barbara
+	s.charRelevantSubstats = map[keys.Char][]attributes.Stat{
+		keys.Albedo:      {attributes.DEFP},
+		keys.Hutao:       {attributes.HPP},
+		keys.Kokomi:      {attributes.HPP},
+		keys.Zhongli:     {attributes.HPP},
+		keys.Itto:        {attributes.DEFP},
+		keys.Yunjin:      {attributes.DEFP},
+		keys.Noelle:      {attributes.DEFP},
+		keys.Gorou:       {attributes.DEFP},
+		keys.Yelan:       {attributes.HPP},
+		keys.Candace:     {attributes.HPP},
+		keys.Nilou:       {attributes.HPP},
+		keys.Layla:       {attributes.HPP},
+		keys.Neuvillette: {attributes.HPP},
+		keys.Furina:      {attributes.HPP},
+	}
+
+	// Final output array that holds [character][substat_count]
+	s.charSubstatFinal = make([][]int, len(simcfg.Characters))
+	for i := range simcfg.Characters {
+		s.charSubstatFinal[i] = make([]int, attributes.EndStatType)
+	}
+	s.charMaxExtraERSubs = make([]float64, len(simcfg.Characters))
+	s.charSubstatLimits = make([][]int, len(simcfg.Characters))
+	s.charSubstatRarityMod = make([]float64, len(simcfg.Characters))
+	s.charProfilesInitial = make([]info.CharacterProfile, len(simcfg.Characters))
+
+	// Need to make an exception in energy calcs for these characters for optimization purposes
+	s.charWithFavonius = make([]bool, len(simcfg.Characters))
+	// Give all characters max ER to set initial state
+	s.charProfilesERBaseline = make([]info.CharacterProfile, len(simcfg.Characters))
+	s.charProfilesCopy = make([]info.CharacterProfile, len(simcfg.Characters))
+	s.gcsl = gcsl
+
+	return &s
+}
+
+// Obtain substat count limits based on main stats and also determine 4* set status
+// TODO: Not sure how to handle 4* artifact sets... Config can't really identify these instances easily
+// Most people will have 1 5* artifact which messes things up
+// TODO: Check whether taking like an average of the two stat values is good enough?
+func (stats *SubstatOptimizerDetails) setStatLimits() bool {
+	profileIncludesFourStar := false
+
+	for i := range stats.simcfg.Characters {
+		stats.charSubstatLimits[i] = make([]int, attributes.EndStatType)
+		for idxStat, stat := range stats.mainstatValues {
+			if stat == 0 {
+				continue
+			}
+			if stats.simcfg.Characters[i].Stats[idxStat] == 0 {
+				stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap
+			} else {
+				stats.charSubstatLimits[i][idxStat] = stats.indivSubstatLiquidCap - (stats.fixedSubstatCount * int(math.Round(stats.simcfg.Characters[i].Stats[idxStat]/stats.mainstatValues[idxStat])))
+			}
+		}
+
+		// Display warning message for 4* sets
+		stats.charSubstatRarityMod[i] = 1
+		for set := range stats.simcfg.Characters[i].Sets {
+			for _, fourStar := range stats.artifactSets4Star {
+				if set == fourStar {
+					profileIncludesFourStar = true
+					stats.charSubstatRarityMod[i] = 0.8
+				}
+			}
+		}
+	}
+
+	return profileIncludesFourStar
+}
+
+// Helper function to pretty print substat counts. Stolen from similar function that takes in the float array
+func PrettyPrintStatsCounts(statsCounts []int) string {
+	var sb strings.Builder
+	for i, v := range statsCounts {
+		if v > 0 {
+			sb.WriteString(attributes.StatTypeString[i])
+			sb.WriteString(": ")
+			sb.WriteString(fmt.Sprintf("%v", v))
+			sb.WriteString(" ")
+		}
+	}
+	return strings.Trim(sb.String(), " ")
 }
