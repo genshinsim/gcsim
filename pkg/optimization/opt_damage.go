@@ -83,6 +83,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 	for totalSubs > stats.totalLiquidSubstats {
 		amount := -1
 		if totalSubs-stats.totalLiquidSubstats >= 8 {
+			// reduce 5 at a time to quickly go from 10 liquid in an useless sub to 0 liquid
 			amount = -5
 		} else if totalSubs-stats.totalLiquidSubstats >= 4 {
 			amount = -2

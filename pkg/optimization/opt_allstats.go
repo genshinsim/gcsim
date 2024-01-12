@@ -28,6 +28,9 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstats() []string {
 // We deallocate that DMG sub and allocate 1 ER sub if it would be an overall gain
 // Repeat until we cannot allocate ER subs or the DMG loss would be greater than the gain
 // The ER dmg gain is prone to noise, so we need to do more iterations
+//
+// We also check if losing an ER sub and gaining a DMG sub is an overall gain. This will cover when the initial ER heuristic fails
+// due to if .char.burst.ready { char burst; } lines not being modified as recommended.
 func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 	idxChar int,
 	char info.CharacterProfile,
