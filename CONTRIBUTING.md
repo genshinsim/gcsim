@@ -34,6 +34,7 @@ Character PR checklist:
 - [ ] Hitlag
 - [ ] ICD
 - [ ] StrikeType
+- [ ] PoiseDMG (blunt attacks only for now)
 - [ ] Hitboxes
 - [ ] Attack durability
 - [ ] Particles
@@ -101,6 +102,7 @@ Character PR checklist:
 - [ ] Hitlag
 - [ ] ICD
 - [ ] StrikeType
+- [ ] PoiseDMG (blunt attacks only for now)
 - [ ] Hitboxes
 - [ ] Attack durability
 - [ ] Particles
