@@ -117,7 +117,7 @@ func (c *char) skillHook() {
 			c.skillAttackInfo,
 			c.skillSnapshot,
 			combat.NewCircleHitOnTarget(trg, nil, 4.5),
-			10,
+			2,
 		)
 
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
