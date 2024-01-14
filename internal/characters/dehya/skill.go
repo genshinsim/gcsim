@@ -171,7 +171,7 @@ func (c *char) skillRecast() (action.Info, error) {
 	c.Core.Tasks.Add(func() { // place field
 		// if C2, duration will be extended by 6s on recreation
 		if c.Base.Cons >= 2 {
-			dur = dur + 360
+			dur += 360
 		}
 		c.addField(dur)
 	}, skillRecastHitmark+1)
