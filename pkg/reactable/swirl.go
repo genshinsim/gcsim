@@ -53,7 +53,7 @@ func (r *Reactable) queueSwirl(rt reactions.ReactionType, ele attributes.Element
 		ai,
 		snap,
 		ap,
-		1,
+		1+4, // 4f after self swirl
 	)
 }
 
