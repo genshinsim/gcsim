@@ -17,6 +17,7 @@ type char struct {
 	*tmpl.Character
 	// tracking skill information
 	hasSkillRecast  bool
+	hasC2DamageBuff bool
 	skillArea       combat.AttackPattern
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
@@ -58,6 +59,11 @@ func (c *char) Init() error {
 	c.c1var = []float64{0.0, 0.0}
 	if c.Base.Cons >= 1 {
 		c.c1()
+	}
+	if c.Base.Cons >= 2 {
+		// TODO: figure out damage mitigation and move out of c2
+		c.skillHurtHook()
+		c.c2()
 	}
 	if c.Base.Cons >= 6 {
 		c.c6()

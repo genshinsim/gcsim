@@ -174,9 +174,11 @@ func (c *char) burstKick(src int) action.Info {
 			0,
 			c.c4cb(),
 		)
-		if dur := c.sanctumSavedDur; dur > 0 { // place field
+		if dur := c.sanctumSavedDur; dur > 0 { // place field with 1f delay to avoid self-trigger
 			c.sanctumSavedDur = 0
-			c.addField(dur)
+			c.Core.Tasks.Add(func() {
+				c.addField(dur)
+			}, 1)
 		}
 	}, kickHitmark)
 

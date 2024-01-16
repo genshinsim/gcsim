@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
 var skillFrames []int
@@ -48,6 +49,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillRecast()
 	}
 	c.hasSkillRecast = false
+	c.hasC2DamageBuff = false
 	// Initial cast duration is always 12s
 	dur := 720
 
@@ -119,6 +121,13 @@ func (c *char) skillHook() {
 			combat.NewCircleHitOnTarget(trg, nil, 4.5),
 			2,
 		)
+
+		// Set buff flag to false with 2f delay to line up with activation delay
+		if c.hasC2DamageBuff {
+			c.Core.Tasks.Add(func() {
+				c.hasC2DamageBuff = false
+			}, 2)
+		}
 
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
 
@@ -210,4 +219,30 @@ func (c *char) addField(dur int) {
 	// snapshot for ticks
 	c.skillAttackInfo = ai
 	c.skillSnapshot = c.Snapshot(&c.skillAttackInfo)
+}
+
+func (c *char) skillHurtHook() {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+		di := args[0].(player.DrainInfo)
+		if !di.External {
+			return false
+		}
+		if di.Amount <= 0 {
+			return false
+		}
+		if !c.StatusIsActive(dehyaFieldKey) {
+			return false
+		}
+		if !c.Core.Combat.Player().IsWithinArea(c.skillArea) {
+			c.Core.Log.NewEvent("dehya-c2-check failed", glog.LogCharacterEvent, c.Index).
+				Write("Target not within field", c.Core.Combat.Player().Pos())
+			return false
+		}
+		// Damage mitigation in the future if target is not Dehya
+		if c.Base.Cons >= 2 {
+			c.Core.Log.NewEvent("dehya-sanctum-c2-damage activated", glog.LogCharacterEvent, c.Index)
+			c.hasC2DamageBuff = true
+		}
+		return false
+	}, "dehya-field-dmgtaken")
 }

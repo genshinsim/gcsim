@@ -27,6 +27,23 @@ func (c *char) c1() {
 	})
 }
 
+// When Dehya uses Molten Inferno: Ranging Flame, the duration of the recreated Fiery Sanctum field will be increased by 6s.
+// Additionally, when a Fiery Sanctum exists on the field, DMG dealt by its next coordinated attack will be
+// increased by 50% when active character(s) within the Fiery Sanctum field are attacked.
+func (c *char) c2() {
+	val := make([]float64, attributes.EndStatType)
+	val[attributes.DmgP] = 0.5
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("dehya-sanctum-dot-c2", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.Abil != "Molten Inferno (DoT)" || !c.hasC2DamageBuff {
+				return nil, false
+			}
+			return val, true
+		},
+	})
+}
+
 // When Flame-Mane's Fist and Incineration Drive attacks unleashed during Leonine Bite hit opponents,
 // they will restore 1.5 Energy for Dehya and 2.5% of her Max HP. This effect can be triggered once every 0.2s.
 const c4Key = "dehya-c4"
