@@ -50,6 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.c6count = 0
 	c.sanctumSavedDur = 0
+	c.sanctumICD = c.StatusDuration(skillICDKey)
 	if c.StatusIsActive(dehyaFieldKey) {
 		// pick up field at start
 		c.sanctumSavedDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
@@ -177,6 +178,7 @@ func (c *char) burstKick(src int) action.Info {
 		if dur := c.sanctumSavedDur; dur > 0 { // place field with 1f delay to avoid self-trigger
 			c.sanctumSavedDur = 0
 			c.Core.Tasks.Add(func() {
+				c.AddStatus(skillICDKey, c.sanctumICD, false)
 				c.addField(dur)
 			}, 1)
 		}

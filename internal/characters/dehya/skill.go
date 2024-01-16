@@ -214,7 +214,7 @@ func (c *char) addField(dur int) {
 	c.Core.Log.NewEvent("sanctum added", glog.LogCharacterEvent, c.Index).
 		Write("Duration Remaining ", dur).
 		Write("New Expiry Frame", c.StatusExpiry(dehyaFieldKey)).
-		Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
+		Write("DoT tick CD", c.StatusDuration(skillICDKey))
 
 	// snapshot for ticks
 	c.skillAttackInfo = ai
