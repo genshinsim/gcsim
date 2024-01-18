@@ -155,18 +155,11 @@ func (c *char) c6(char *character.CharWrapper) {
 	m[attributes.PyroP] = 0.20
 	m[attributes.ElectroP] = 0.20
 
-	addStackMod := func(idx int, duration int) {
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", idx+1), duration),
-			AffectedStat: attributes.NoStat,
-			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-	}
-
-	buffDuration := 8 * 60
-	addStackMod(c.c6StackCounts[char.Index], buffDuration)
+	char.AddStatMod(character.StatMod{
+		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", c.c6StackCounts[char.Index]+1), 8*60),
+		Amount: func() ([]float64, bool) {
+			return m, true
+		},
+	})
 	c.c6StackCounts[char.Index] = (c.c6StackCounts[char.Index] + 1) % 3
 }
