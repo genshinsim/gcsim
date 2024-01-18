@@ -201,22 +201,20 @@ func (c *char) arkhe(delay int) combat.AttackCBFunc {
 
 func (c *char) skillHeal(delay int) {
 	skillDur := 12*60 + 1 // heal on last tick of expiry
-	if !c.StatusIsActive(skillHealKey) {
-		c.Core.Tasks.Add(func() {
-			c.AddStatus(skillHealKey, skillDur, false)               // not hitlag extendable
-			c.Core.Tasks.Add(c.startSkillHealing, skillHealInterval) // first heal comes after 2s
-			// don't queue up c6 team heal if there is one already queued up
-			if c.c6HealQueued {
-				return
-			}
-			c.c6HealQueued = true
-			c.Core.Tasks.Add(c.c6TeamHeal, 12*60)
-		}, delay)
-		return
-	}
-	// extend skill heal on retrigger while still active (c4+)
 	c.Core.Tasks.Add(func() {
-		c.ExtendStatus(skillHealKey, skillDur)
+		// only refresh skill heal status on retrigger while still active (c4+)
+		if c.StatusIsActive(skillHealKey) {
+			c.AddStatus(skillHealKey, skillDur, false) // not hitlag extendable
+			return
+		}
+		c.AddStatus(skillHealKey, skillDur, false)               // not hitlag extendable
+		c.Core.Tasks.Add(c.startSkillHealing, skillHealInterval) // first heal comes after 2s
+		// don't queue up c6 team heal if there is one already queued up
+		if c.c6HealQueued {
+			return
+		}
+		c.c6HealQueued = true
+		c.Core.Tasks.Add(c.c6TeamHeal, 12*60)
 	}, delay)
 }
 
