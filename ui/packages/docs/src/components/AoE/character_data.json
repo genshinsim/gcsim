@@ -1155,8 +1155,9 @@
       {
         "ability": "C2",
         "shape": "Circle",
-        "center": "PrimaryTarget",
-        "radius": 3
+        "center": "GlobalValue",
+        "radius": 3,
+        "notes": "Spawns at X: -1.5/1.5m offset from the target that the C2 proc'd on."
       }
     ],
     "normal": [
@@ -1164,7 +1165,6 @@
         "ability": "N1",
         "shape": "Box",
         "center": "Player",
-        "offsetX": 0,
         "boxX": 1.6,
         "boxY": 2
       },
@@ -1172,14 +1172,13 @@
         "ability": "N2",
         "shape": "Circle",
         "center": "Player",
-        "offsetX": 0.4,
+        "offsetY": 0.4,
         "radius": 1.6
       },
       {
         "ability": "N3-1",
         "shape": "Box",
-        "center": "PrimaryTarget",
-        "offsetX": 0,
+        "center": "Player",
         "boxX": 1.6,
         "boxY": 2      
       },
@@ -1187,14 +1186,14 @@
         "ability": "N3-2",
         "shape": "Circle",
         "center": "Player",
-        "offsetX": 0.6,
+        "offsetY": 0.4,
         "radius": 1.6
       },
       {
         "ability": "N4",
         "shape": "Box",
-        "center": "PrimaryTarget",
-        "offsetX": 0.1,
+        "center": "Player",
+        "offsetY": 1,
         "boxX": 1.5,
         "boxY": 4   
       }
@@ -1209,24 +1208,33 @@
     ],
     "skill": [
       {
-        "ability": "E-Press",
+        "ability": "E-Tap",
         "shape": "Box",
         "center": "PrimaryTarget",
-        "boxX": 1.5,
+        "offsetY": -0.5,
+        "boxX": 2,
         "boxY": 6
       },
       {
         "ability": "E-Hold",
         "shape": "Box",
         "center": "PrimaryTarget",
-        "boxX": 2.5,
+        "offsetY": -0.5,
+        "boxX": 3,
         "boxY": 7
       },
       {
-        "ability": "OverchargedBall",
+        "ability": "E-Overcharged-Ball",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 5
+      }, 
+      {
+        "ability": "E-Surging-Blade",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2,
+        "notes": "Spawns on the first enemy hit by E."
       }
     ],
     "burst": [
@@ -1237,11 +1245,12 @@
         "radius": 6
       },
       {
-        "ability": "Q (Secondary Explosive Shell)",
+        "ability": "Q-Explosive-Shell",
         "shape": "Circle",
-        "center": "PrimaryTarget",
+        "center": "GlobalValue",
         "radius": 6,
-        "notes" : "Mine should have exploded radius 6 from it's spawned position"
+        "fanAngle": 60,
+        "notes" : "There are 8 shells which split the 6m radius around the Q hit pos into 8 equal parts. Each shell attack extends to the edge of the radius."
       }
     ]
   },

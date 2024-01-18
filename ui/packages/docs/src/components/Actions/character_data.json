@@ -405,7 +405,7 @@
     },
     {
       "ability": "walk",
-      "legal": false
+      "legal": true
     },
     {
       "ability": "swap",

@@ -6,6 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -20,9 +22,8 @@ func init() {
 }
 
 const (
-	snapshotDelay         = 10
-	damageDelay           = 10
-	mineExplosionInterval = 60
+	snapshotDelay = 43
+	damageDelay   = 10
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -44,9 +45,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ActorIndex: c.Index,
 		Abil:       "Secondary Explosive Shell",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagChevreuseBurstMines,
+		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupChevreuseBurstMines,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   25,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstSecondary[c.TalentLvlBurst()],
@@ -59,17 +61,32 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		damageDelay,
 	)
 
-	shellNum := 8
-	c.QueueCharTask(func() {
-		for i := 0; i < shellNum; i++ {
-			c.Core.QueueAttack(
-				mineAi,
-				// TODO: How to tackle mines?
-				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
-				damageDelay,   // random number
-				snapshotDelay) // random number
+	burstInitialDirection := c.Core.Combat.Player().Direction()
+	burstInitialPos := c.Core.Combat.PrimaryTarget().Pos()
+	// 8 mines total, explode in groups
+	// 5 groups of mines
+	// basically:
+	// - cut circle into 8 slices
+	// - start exploding mine at the top
+	// - keep exploding 2 mines (1 on each half) until hitting bottom mine
+	// - explode bottom mine last (closest to player)
+	mineGroups := 5
+	mineCounts := []int{1, 2, 2, 2, 1}
+	mineSteps := [][]float64{{0}, {45, 315}, {90, 270}, {135, 225}, {180}}
+	mineDelays := []int{24, 33, 42, 51, 60}
+	for i := 0; i < mineGroups; i++ {
+		for j := 0; j < mineCounts[i]; j++ {
+			// every shell has its own direction
+			direction := geometry.DegreesToDirection(mineSteps[i][j]).Rotate(burstInitialDirection)
+
+			// can't use combat attack pattern func because can't easily supply direction
+			mineAp := combat.AttackPattern{
+				Shape: geometry.NewCircle(burstInitialPos, 6, direction, 60),
+			}
+			mineAp.SkipTargets[targets.TargettablePlayer] = true
+			c.Core.QueueAttack(mineAi, mineAp, snapshotDelay, mineDelays[i])
 		}
-	}, mineExplosionInterval)
+	}
 
 	c.c4()
 	c.ConsumeEnergy(4)

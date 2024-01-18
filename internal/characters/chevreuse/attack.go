@@ -23,7 +23,8 @@ var (
 		{attacks.StrikeTypeSlash},
 		{attacks.StrikeTypeSlash},
 		{attacks.StrikeTypeSlash, attacks.StrikeTypeSlash},
-		{attacks.StrikeTypeSpear}}
+		{attacks.StrikeTypeSpear},
+	}
 	attackOffsets = [][]float64{{0}, {0.4}, {0, 0.4}, {1.0}}
 )
 
@@ -39,8 +40,7 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 43
 
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 69) // N4 -> N1
-	attackFrames[3][action.ActionCharge] = 500
-	// TODO: this action is illegal; need better way to handle it
+	attackFrames[3][action.ActionCharge] = 500                               // TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -52,7 +52,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attackStrikeTypes[c.NormalCounter][i],
-			PoiseDMG:           0.25,
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlAttack()],

@@ -490,7 +490,7 @@
         "ability": "N3-2",
         "hitHaltTime": 0.06,
         "hitHaltTimeScale": 0.01,
-        "canBeDefenseHalt": false,
+        "canBeDefenseHalt": true,
         "deployable": false
       },
       {
@@ -499,6 +499,15 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "hitHaltTime": 0,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": true
       }
     ]
   },

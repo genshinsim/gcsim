@@ -3,8 +3,7 @@ package chevreuse
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -16,17 +15,18 @@ func init() {
 
 func (c *char) Init() error {
 
-	// setup for a1
-	chars := c.Core.Player.Chars()
-	count := make(map[attributes.Element]int)
-	for _, this := range chars {
-		count[this.Base.Element]++
-	}
-
-	c.onlyPyroElectro = count[attributes.Pyro] > 0 && count[attributes.Electro] > 0 && count[attributes.Electro]+count[attributes.Pyro] == len(chars)
+	c.c6StackCounts = [4]int{0, 0, 0, 0}
 
 	// setup overcharged ball
-	c.Core.Events.Subscribe(event.OnOverload, c.AddOverchargedBall, "chev-E")
+	c.overchargedBallEventSub()
+
+	// make sure to use the same key everywhere so that these passives don't stack
+	c.Core.Player.AddStamPercentMod("utility-dash", -1, func(a action.Action) (float64, bool) {
+		if a == action.ActionDash && c.CurrentHPRatio() > 0 {
+			return -0.2, false
+		}
+		return 0, false
+	})
 
 	// start subscribing for a1/c1
 	c.a1()
@@ -38,11 +38,9 @@ type char struct {
 	*tmpl.Character
 	onlyPyroElectro bool
 	overChargedBall bool
-	c1Icd           int
-	c2Icd           int
 	c4ShotsLeft     int
-	c6Stack         int
-	c6Icd           int
+	c6HealQueued    bool
+	c6StackCounts   [4]int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -52,8 +50,17 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.EnergyMax = 60
 	c.BurstCon = 5
 	c.SkillCon = 3
-	c.NormalHitNum = 4
+	c.NormalHitNum = normalHitNum
 	w.Character = &c
 
 	return nil
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "overcharged-ball":
+		return c.overChargedBall, nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }

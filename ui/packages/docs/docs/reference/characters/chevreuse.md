@@ -41,4 +41,4 @@ import ActionsTable from "@site/src/components/Actions/ActionsTable";
 
 ## Fields
 
-<FieldsTable item_key="charlotte" />
+<FieldsTable item_key="chevreuse" />
