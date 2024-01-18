@@ -86,7 +86,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				Shape: geometry.NewCircle(burstInitialPos, 6, direction, 60),
 			}
 			mineAp.SkipTargets[targets.TargettablePlayer] = true
-			c.Core.QueueAttack(mineAi, mineAp, snapshotDelay, mineDelays[i])
+			c.Core.QueueAttack(mineAi, mineAp, snapshotDelay, burstHitmark+mineDelays[i])
 		}
 	}
 
