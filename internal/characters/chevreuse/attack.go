@@ -15,7 +15,7 @@ const normalHitNum = 4
 
 var (
 	attackFrames          [][]int
-	attackHitmarks        = [][]int{{11}, {12}, {15, 10}, {33}} // TODO
+	attackHitmarks        = [][]int{{11}, {12}, {15, 25}, {33}} // TODO
 	attackHitlagHaltFrame = [][]float64{{0.06}, {0.06}, {0, 0.06}, {0.1}}
 	attackDefHalt         = [][]bool{{true}, {true}, {false, true}, {true}}
 	attackHitboxes        = [][]float64{{1.6, 2}, {1.6}, {1.6, 2}, {1.5, 4}}
