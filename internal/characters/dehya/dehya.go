@@ -16,18 +16,18 @@ import (
 type char struct {
 	*tmpl.Character
 	// tracking skill information
-	hasSkillRecast  bool
+	hasRecastSkill  bool
 	hasC2DamageBuff bool
 	skillArea       combat.AttackPattern
 	skillAttackInfo combat.AttackInfo
 	skillSnapshot   combat.Snapshot
+	sanctumSavedDur int
 	sanctumICD      int
 	burstCast       int
 	burstCounter    int
 	burstHitSrc     int // I am using this value as a counter because if I use frame I can get duplicates
 	c1var           []float64
 	c6count         int
-	sanctumSavedDur int
 	burstJumpCancel bool
 }
 
@@ -74,7 +74,7 @@ func (c *char) Init() error {
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
-	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
+	if a == action.ActionSkill && c.StatusIsActive(dehyaFieldKey) && !c.hasRecastSkill {
 		return true, action.NoFailure
 	}
 	if a == action.ActionSkill && (c.StatusIsActive(burstKey) || c.StatusIsActive(kickKey)) {

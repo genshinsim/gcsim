@@ -44,11 +44,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if burstAction != nil {
 		return *burstAction, nil
 	}
-	if c.StatusIsActive(dehyaFieldKey) && !c.hasSkillRecast {
-		c.hasSkillRecast = true
-		return c.skillRecast()
+	if c.StatusIsActive(dehyaFieldKey) {
+		// If recast has been used, sanctum needs to be placed anew
+		if c.hasRecastSkill {
+			c.removeField()
+		} else {
+			c.hasRecastSkill = true
+			return c.skillRecast()
+		}
 	}
-	c.hasSkillRecast = false
+
+	c.hasRecastSkill = false
 	c.hasC2DamageBuff = false
 	// Initial cast duration is always 12s
 	dur := 720
@@ -136,7 +142,6 @@ func (c *char) skillHook() {
 }
 
 func (c *char) skillRecast() (action.Info, error) {
-	dur := c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Ranging Flame",
@@ -155,15 +160,9 @@ func (c *char) skillRecast() (action.Info, error) {
 	}
 
 	// pick up field at start
-	c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
-		Write("Duration Remaining ", dur).
-		Write("DoT tick CD", c.StatusDuration("dehya-skill-icd"))
-	c.Core.Tasks.Add(func() {
-		c.DeleteStatus(dehyaFieldKey)
-	}, 1)
+	c.removeField()
 
-	// save current DoT icd
-	c.sanctumICD = c.StatusDuration(skillICDKey)
+	// Add icd extension
 	c.AddStatus(skillICDKey, skillRecastHitmark+c.sanctumICD, false)
 
 	// reposition
@@ -180,9 +179,9 @@ func (c *char) skillRecast() (action.Info, error) {
 	c.Core.Tasks.Add(func() { // place field
 		// if C2, duration will be extended by 6s on recreation
 		if c.Base.Cons >= 2 {
-			dur += 360
+			c.sanctumSavedDur += 360
 		}
-		c.addField(dur)
+		c.addField(c.sanctumSavedDur)
 	}, skillRecastHitmark+1)
 
 	return action.Info{
@@ -191,6 +190,18 @@ func (c *char) skillRecast() (action.Info, error) {
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}, nil
+}
+
+// Remove field and save current ICD and duration with implicit extension
+func (c *char) removeField() {
+	c.sanctumICD = c.StatusDuration(skillICDKey)
+	c.sanctumSavedDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
+	c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
+		Write("Duration Remaining ", c.sanctumSavedDur).
+		Write("DoT tick CD", c.StatusDuration(skillICDKey))
+	c.Core.Tasks.Add(func() {
+		c.DeleteStatus(dehyaFieldKey)
+	}, 1)
 }
 
 func (c *char) addField(dur int) {

@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 const burstKey = "dehya-burst"
@@ -50,14 +49,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.c6count = 0
 	c.sanctumSavedDur = 0
-	c.sanctumICD = c.StatusDuration(skillICDKey)
 	if c.StatusIsActive(dehyaFieldKey) {
 		// pick up field at start
-		c.sanctumSavedDur = c.StatusExpiry(dehyaFieldKey) + sanctumPickupExtension - c.Core.F // dur gets extended on field recast by a low margin, apparently
-		c.Core.Log.NewEvent("sanctum removed", glog.LogCharacterEvent, c.Index).
-			Write("Duration Remaining ", c.sanctumSavedDur+sanctumPickupExtension).
-			Write("DoT tick CD", c.StatusDuration(skillICDKey))
-		c.DeleteStatus(dehyaFieldKey)
+		c.removeField()
 	}
 
 	c.Core.Tasks.Add(func() {

@@ -36,7 +36,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if burstAction != nil {
 		return *burstAction, nil
 	}
-	c.hasSkillRecast = false
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
