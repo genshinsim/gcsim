@@ -14,7 +14,6 @@ func init() {
 }
 
 func (c *char) Init() error {
-
 	c.c6StackCounts = [4]int{0, 0, 0, 0}
 
 	// setup overcharged ball

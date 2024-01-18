@@ -32,7 +32,6 @@ var skillPressFrames []int
 var skillHoldFrames []int
 
 func init() {
-
 	// skill (press) -> x
 	skillPressFrames = frames.InitAbilSlice(31) // E -> N1/Q
 	skillPressFrames[action.ActionDash] = 23
@@ -90,7 +89,6 @@ func (c *char) skillPress() action.Info {
 }
 
 func (c *char) skillHold(p map[string]int) action.Info {
-
 	hold := p["hold"]
 	// earliest hold hitmark is ~19f
 	// latest hold hitmark is ~319f
@@ -127,7 +125,6 @@ func (c *char) skillHold(p map[string]int) action.Info {
 		// remove status once overcharged is ball shot
 		c.overChargedBall = false
 		c.Core.Tasks.Add(c.a4, cdStart)
-
 	} else {
 		ai = combat.AttackInfo{
 			ActorIndex: c.Index,
@@ -141,7 +138,6 @@ func (c *char) skillHold(p map[string]int) action.Info {
 			Mult:       skillHold[c.TalentLvlSkill()],
 		}
 		ap = combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.5}, 3, 7)
-
 	}
 
 	// c4
