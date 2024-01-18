@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -108,6 +109,8 @@ func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
 			s.core.Flags.Custom[wavesOfDaysPastKey]--
 			amt := s.core.Flags.Custom[healSnapKey] * 0.08
 			atk.Info.FlatDmg += amt
+			s.core.Log.NewEvent("sodp 4pc adding dmg", glog.LogArtifactEvent, atk.Info.ActorIndex).
+				Write("dmg_added", amt)
 		}
 		if s.core.Flags.Custom[wavesOfDaysPastKey] == 0 {
 			s.core.Status.Delete(wavesOfDaysPastKey)
