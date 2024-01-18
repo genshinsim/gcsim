@@ -15,15 +15,17 @@ var (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(59) // Q -> N1/Dash/Walk
-	burstFrames[action.ActionSkill] = 60
-	burstFrames[action.ActionJump] = 60
-	burstFrames[action.ActionSwap] = 59
+	burstFrames = frames.InitAbilSlice(61) // Q -> Walk
+	burstFrames[action.ActionAttack] = 57
+	burstFrames[action.ActionSkill] = 59
+	burstFrames[action.ActionDash] = 57
+	burstFrames[action.ActionJump] = 57
+	burstFrames[action.ActionSwap] = 56
 }
 
 const (
+	burstHitmark  = 59
 	snapshotDelay = 43
-	damageDelay   = 10
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -58,7 +60,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
 		snapshotDelay,
-		damageDelay,
+		burstHitmark,
 	)
 
 	burstInitialDirection := c.Core.Combat.Player().Direction()

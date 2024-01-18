@@ -14,13 +14,12 @@ import (
 )
 
 const (
-	// TODO: Frames taken from Mika
-	skillPressCDStart      = 16
-	skillPressHitmark      = 17
+	skillPressCDStart      = 18
+	skillPressHitmark      = 25
 	skillPressArkheHitmark = 59
 
-	skillHoldCDStart      = 16
-	skillHoldHitmark      = 12
+	skillHoldCDStart      = 13
+	skillHoldHitmark      = 19
 	skillHoldArkheHitmark = 55
 
 	skillHealKey      = "chev-skill-heal"
@@ -34,21 +33,23 @@ var skillHoldFrames []int
 
 func init() {
 
-	// TODO: Mika frames
 	// skill (press) -> x
-	skillPressFrames = frames.InitAbilSlice(39) // E -> N1/Q
-	skillPressFrames[action.ActionDash] = 34
-	skillPressFrames[action.ActionJump] = 35
-	skillPressFrames[action.ActionWalk] = 19
-	skillPressFrames[action.ActionSwap] = 37
+	skillPressFrames = frames.InitAbilSlice(31) // E -> N1/Q
+	skillPressFrames[action.ActionAttack] = 31
+	skillPressFrames[action.ActionBurst] = 31
+	skillPressFrames[action.ActionDash] = 23
+	skillPressFrames[action.ActionJump] = 25
+	skillPressFrames[action.ActionWalk] = 24
+	skillPressFrames[action.ActionSwap] = 24
 
 	// skill (hold) -> x
-	skillHoldFrames = frames.InitAbilSlice(46) // E -> Swap
-	skillHoldFrames[action.ActionAttack] = 38
-	skillHoldFrames[action.ActionBurst] = 37
-	skillHoldFrames[action.ActionDash] = 30
-	skillHoldFrames[action.ActionJump] = 30
-	skillHoldFrames[action.ActionWalk] = 30
+	skillHoldFrames = frames.InitAbilSlice(26) // E -> Q
+	skillHoldFrames[action.ActionAttack] = 25
+	skillHoldFrames[action.ActionBurst] = 26
+	skillHoldFrames[action.ActionDash] = 21
+	skillHoldFrames[action.ActionJump] = 23
+	skillHoldFrames[action.ActionWalk] = 24
+	skillHoldFrames[action.ActionSwap] = 23
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -86,7 +87,7 @@ func (c *char) skillPress() action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
-		CanQueueAfter:   skillPressFrames[action.ActionWalk], // earliest cancel
+		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}
 }
