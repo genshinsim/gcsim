@@ -135,6 +135,7 @@ func init() {
 	percentDelay5[keys.Neuvillette] = 0
 	percentDelay5[keys.Charlotte] = 6
 	percentDelay5[keys.Wriothesley] = 12
+	percentDelay5[keys.Chevreuse] = 12
 }
 
 func Get5PercentN0Delay(activeChar *character.CharWrapper) int {
