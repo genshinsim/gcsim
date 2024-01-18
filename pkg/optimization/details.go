@@ -36,6 +36,7 @@ type SubstatOptimizerDetails struct {
 	fixedSubstatCount      int
 	indivSubstatLiquidCap  int
 	totalLiquidSubstats    int
+	optimizer              *SubstatOptimizer
 }
 
 func (stats *SubstatOptimizerDetails) allocateSomeSubstatGradientsForChar(

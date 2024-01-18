@@ -1,8 +1,10 @@
 package optimization
 
 import (
+	"fmt"
 	"math"
 	"sort"
+	"strings"
 )
 
 // Thin wrapper around sort Slice to retrieve the sorted indices as well
@@ -61,4 +63,71 @@ func (stats *SubstatOptimizerDetails) getCharSubstatTotal(idxChar int) int {
 		sum += count
 	}
 	return sum
+}
+
+func fmtHist(sortedArr []float64, start, binSize float64) []string {
+	valPerBlock := 0.01
+
+	output := make([]string, 0)
+	binMin := make([]float64, 0)
+	binMax := make([]float64, 0)
+	binCount := make([]float64, 0)
+
+	for i := start; i <= sortedArr[len(sortedArr)-1]; i += binSize {
+		output = append(output, "")
+		binMin = append(binMin, i)
+		binCount = append(binCount, 0)
+		binMax = append(binMax, i+binSize)
+	}
+
+	currBin := 0
+	for _, val := range sortedArr {
+		for val > binMax[currBin] {
+			currBin++
+		}
+		binCount[currBin]++
+	}
+
+	for i := range binCount {
+		binCount[i] /= float64(len(sortedArr))
+	}
+	// strip bins from start and end that don't have enough iterations
+	for i := range binCount {
+		if int(binCount[i]/valPerBlock) == 0 && int(math.Round(math.Mod(binCount[i], valPerBlock)*8)) == 0 {
+			continue
+		}
+		if i != 0 {
+			output = output[i:]
+			binMin = binMin[i:]
+			binMax = binMax[i:]
+			binCount = binCount[i:]
+		}
+		break
+	}
+
+	for i := len(binCount) - 1; i >= 0; i-- {
+		if int(binCount[i]/valPerBlock) == 0 && int(math.Round(math.Mod(binCount[i], valPerBlock)*8)) == 0 {
+			continue
+		}
+		output = output[:i+1]
+		binMin = binMin[:i+1]
+		binMax = binMax[:i+1]
+		binCount = binCount[:i+1]
+		break
+	}
+
+	for i := range output {
+		// The ASCII block elements come in chunks of 8, so we work out how
+		// many fractions of 8 we need.
+		// https://en.wikipedia.org/wiki/Block_Elements
+		barChunks := int(binCount[i] / valPerBlock)
+		rem := int(math.Round(math.Mod(binCount[i], valPerBlock) * 8))
+		bar := strings.Repeat("█", barChunks)
+		if rem > 0 {
+			bar += fmt.Sprint(int('█') + (8 - rem))
+		}
+		output[i] = fmt.Sprintf("   %.0f-%.0f  |%s", binMin[i]*100, binMax[i]*100, bar)
+	}
+
+	return output
 }
