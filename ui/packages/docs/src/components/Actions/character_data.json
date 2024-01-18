@@ -378,6 +378,40 @@
       "legal": true
     }
   ],
+  "chevreuse": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "chongyun": [
     {
       "ability": "attack",

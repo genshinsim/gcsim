@@ -216,5 +216,13 @@
       ],
       "desc": "Number of Sourcewater droplets in range for C6."
     }
+  ],
+  "chevreuse": [
+    {
+      "fields": [
+        ".chevreuse.overcharged-ball"
+      ],
+      "desc": "Whether Chevreuse has an Overcharged Ball or not."
+    }
   ]
 }
