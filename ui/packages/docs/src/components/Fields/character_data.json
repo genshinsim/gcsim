@@ -229,12 +229,6 @@
         ".chevreuse.overcharged-ball"
       ],
       "desc": "Whether Chevreuse has an Overcharged Ball or not."
-    },
-    {
-      "fields": [
-        ".chevreuse.c6-stacks"
-      ],
-      "desc": "Number of C6 stacks that are currently active."
     }
   ]
 }
