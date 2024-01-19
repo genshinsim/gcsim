@@ -59,6 +59,14 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "overcharged-ball":
 		return c.overChargedBall, nil
+	case "c6-stacks":
+		stacks := 0
+		for i := 1; i <= c6MaxStacks; i++ {
+			if c.StatusIsActive(c6ModName(i)) {
+				stacks++
+			}
+		}
+		return stacks, nil
 	default:
 		return c.Character.Condition(fields)
 	}
