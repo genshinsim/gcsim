@@ -17,7 +17,6 @@ const (
 	c1ICDKey    = "chev-c1-icd"
 	c2ICDKey    = "chev-c2-icd"
 	c4StatusKey = "chev-c4"
-	c6MaxStacks = 3
 )
 
 // When the active character with the "Coordinated Tactics" status (not including Chevreuse herself)
@@ -157,14 +156,10 @@ func (c *char) c6(char *character.CharWrapper) {
 	m[attributes.ElectroP] = 0.20
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag(c6ModName(c.c6StackCounts[char.Index]+1), 8*60),
+		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("chev-c6-%v-stack", c.c6StackCounts[char.Index]+1), 8*60),
 		Amount: func() ([]float64, bool) {
 			return m, true
 		},
 	})
-	c.c6StackCounts[char.Index] = (c.c6StackCounts[char.Index] + 1) % c6MaxStacks
-}
-
-func c6ModName(num int) string {
-	return fmt.Sprintf("chev-c6-%v-stack", num)
+	c.c6StackCounts[char.Index] = (c.c6StackCounts[char.Index] + 1) % 3
 }
