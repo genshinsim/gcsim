@@ -48,7 +48,6 @@ export function useData(
     }
     let targetData: TargetBucket | undefined;
     if (graph === "overall") {
-      console.log(input.targets);
       targetData = Object.values(input.targets).reduce((acc, v) => {
         if (v.overall == null) {
           return acc;
