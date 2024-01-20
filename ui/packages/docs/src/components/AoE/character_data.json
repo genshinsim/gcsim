@@ -1150,6 +1150,110 @@
       }
     ]
   },
+  "chevreuse": {
+    "cons": [
+      {
+        "ability": "C2",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 3,
+        "notes": "Spawns at X: -1.5/1.5m offset from the target that the C2 proc'd on."
+      }
+    ],
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.6,
+        "boxY": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.4,
+        "radius": 1.6
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Box",
+        "center": "Player",
+        "boxX": 1.6,
+        "boxY": 2      
+      },
+      {
+        "ability": "N3-2",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.4,
+        "radius": 1.6
+      },
+      {
+        "ability": "N4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": 1,
+        "boxX": 1.5,
+        "boxY": 4   
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 0.8
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E-Tap",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 2,
+        "boxY": 6
+      },
+      {
+        "ability": "E-Hold",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -0.5,
+        "boxX": 3,
+        "boxY": 7
+      },
+      {
+        "ability": "E-Overcharged-Ball",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 5
+      }, 
+      {
+        "ability": "E-Surging-Blade",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 2,
+        "notes": "Spawns on the first enemy hit by E."
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 6
+      },
+      {
+        "ability": "Q-Explosive-Shell",
+        "shape": "Circle",
+        "center": "GlobalValue",
+        "radius": 6,
+        "fanAngle": 60,
+        "notes" : "There are 8 shells which split the 6m radius around the Q hit pos into 8 equal parts. Each shell attack extends to the edge of the radius."
+      }
+    ]
+  },
   "chongyun": {
     "asc": [
       {

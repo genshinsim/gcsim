@@ -55,7 +55,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 			rawPerParticleEvent[ind] = append(rawPerParticleEvent[ind], raw)
 		} else {
 			if amount < 0 {
-				charFlatEnergy[ind] -= max(-amount, preEnergy)
+				charFlatEnergy[ind] -= min(-amount, preEnergy)
 			} else {
 				// log.Println("Flat energy gained by", character.Base.Key, out.charFlatEnergy[ind])
 				charFlatEnergy[ind] += amount
