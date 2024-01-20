@@ -58,9 +58,9 @@ type CharacterResult struct {
 }
 
 type EnemyResult struct {
-	ReactionStatus   []ReactionStatusInterval `json:"reaction_status"          msg:"reaction_status"`
-	ReactionUptime   map[string]int           `json:"reaction_uptime"          msg:"reaction_uptime"` // can calculate from intervals?
-	CumulativeDamage []float64                `json:"cumulative_target_damage" msg:"cumulative_target_damage"`
+	ReactionStatus   []ReactionStatusInterval `json:"reaction_status"   msg:"reaction_status"`
+	ReactionUptime   map[string]int           `json:"reaction_uptime"   msg:"reaction_uptime"` // can calculate from intervals?
+	CumulativeDamage []float64                `json:"cumulative_damage" msg:"cumulative_damage"`
 }
 
 type ShieldResult struct {

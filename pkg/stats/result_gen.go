@@ -1704,7 +1704,7 @@ func (z *EnemyResult) DecodeMsg(dc *msgp.Reader) (err error) {
 				}
 				z.ReactionUptime[ztyy] = zinl
 			}
-		case "cumulative_target_damage":
+		case "cumulative_damage":
 			var zswy uint32
 			zswy, err = dc.ReadArrayHeader()
 			if err != nil {
@@ -1792,8 +1792,8 @@ func (z *EnemyResult) EncodeMsg(en *msgp.Writer) (err error) {
 			return
 		}
 	}
-	// write "cumulative_target_damage"
-	err = en.Append(0xb8, 0x63, 0x75, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x69, 0x76, 0x65, 0x5f, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x64, 0x61, 0x6d, 0x61, 0x67, 0x65)
+	// write "cumulative_damage"
+	err = en.Append(0xb1, 0x63, 0x75, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x69, 0x76, 0x65, 0x5f, 0x64, 0x61, 0x6d, 0x61, 0x67, 0x65)
 	if err != nil {
 		return err
 	}
@@ -1836,8 +1836,8 @@ func (z *EnemyResult) MarshalMsg(b []byte) (o []byte, err error) {
 		o = msgp.AppendString(o, ztyy)
 		o = msgp.AppendInt(o, zinl)
 	}
-	// string "cumulative_target_damage"
-	o = append(o, 0xb8, 0x63, 0x75, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x69, 0x76, 0x65, 0x5f, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x64, 0x61, 0x6d, 0x61, 0x67, 0x65)
+	// string "cumulative_damage"
+	o = append(o, 0xb1, 0x63, 0x75, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x69, 0x76, 0x65, 0x5f, 0x64, 0x61, 0x6d, 0x61, 0x67, 0x65)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.CumulativeDamage)))
 	for zare := range z.CumulativeDamage {
 		o = msgp.AppendFloat64(o, z.CumulativeDamage[zare])
@@ -1935,7 +1935,7 @@ func (z *EnemyResult) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				}
 				z.ReactionUptime[ztyy] = zinl
 			}
-		case "cumulative_target_damage":
+		case "cumulative_damage":
 			var zfzb uint32
 			zfzb, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
@@ -1976,7 +1976,7 @@ func (z *EnemyResult) Msgsize() (s int) {
 			s += msgp.StringPrefixSize + len(ztyy) + msgp.IntSize
 		}
 	}
-	s += 25 + msgp.ArrayHeaderSize + (len(z.CumulativeDamage) * (msgp.Float64Size))
+	s += 18 + msgp.ArrayHeaderSize + (len(z.CumulativeDamage) * (msgp.Float64Size))
 	return
 }
 
