@@ -3,7 +3,7 @@ import { Card, Colors } from "@blueprintjs/core";
 import { ReactNode, useEffect, useRef } from "react";
 import classNames from "classnames";
 import { DistributionCard, RollupCards, TargetInfo, TeamHeader } from "../Components/Overview";
-import { CharacterDPSBarChart, CharacterDPSCard, DamageTimelineCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
+import { CharacterDPSBarChart, CharacterDPSCard, CumulativeDamageCard, DamageTimelineCard, ElementDPSCard, TargetDPSCard } from "../Components/Damage";
 import { useLocation } from "react-router";
 import { FiLink2 } from "react-icons/fi";
 import Metadata from "../Components/Overview/Metadata";
@@ -46,6 +46,7 @@ const SingleGroup = ({ data, running, names }: Props) => (
     <DistributionCard data={data} />
 
     <DamageTimelineCard data={data} running={running} names={names} />
+    <CumulativeDamageCard data={data} running={running} />
 
     <CharacterDPSCard data={data} running={running} names={names} />
     <ElementDPSCard data={data} running={running} />
