@@ -21,8 +21,9 @@ var punchHitmarks = []int{30, 30, 28, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27
 
 func init() {
 	//TODO: Deprecate bursty frames in favor of a constant?
-	burstFrames = frames.InitAbilSlice(102) // Q -> E/D/J
+	burstFrames = frames.InitAbilSlice(102) // Q -> D/J
 	burstFrames[action.ActionSwap] = 102    // Q -> Swap
+	burstFrames[action.ActionSkill] = 105   // Q -> E
 
 	kickFrames = frames.InitAbilSlice(72)       // Q -> Dash/Walk
 	kickFrames[action.ActionAttack] = 75        // Q -> N1
@@ -54,14 +55,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.removeField()
 	}
 
+	// Setting burstKey status immediately to handle cancels before first punch
+	c.AddStatus(burstKey, 240+burstDoT1Hitmark, false)
 	c.Core.Tasks.Add(func() {
-		c.AddStatus(burstKey, 240, false)
-		c.burstCast = c.Core.F
 		c.burstHitSrc = 0
 		c.burstCounter = 0
 		c.burstPunch(c.burstHitSrc, true)
 	}, burstDoT1Hitmark)
 
+	// Jumping immediately will let first punch land, may fix later
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
@@ -76,7 +78,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
-		AnimationLength: burstFrames[action.ActionAttack],
+		AnimationLength: burstFrames[action.ActionSkill],
 		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
 	}, nil

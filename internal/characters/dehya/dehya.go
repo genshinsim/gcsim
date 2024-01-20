@@ -23,7 +23,6 @@ type char struct {
 	skillSnapshot   combat.Snapshot
 	sanctumSavedDur int
 	sanctumICD      int
-	burstCast       int
 	burstCounter    int
 	burstHitSrc     int // I am using this value as a counter because if I use frame I can get duplicates
 	c1var           []float64
@@ -55,7 +54,6 @@ func (c *char) Init() error {
 	c.onExitField()
 	c.skillHook()
 	c.a4()
-	c.burstCast = -241
 	c.c1var = []float64{0.0, 0.0}
 	if c.Base.Cons >= 1 {
 		c.c1()
