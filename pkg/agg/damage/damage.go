@@ -1,6 +1,9 @@
 package damage
 
 import (
+	"cmp"
+	"slices"
+
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -19,6 +22,50 @@ func init() {
 	})
 }
 
+// copied and adjusted from metadata agg pkg
+type run struct {
+	overallDPS float64
+	targetDPS  float64
+	buckets    []float64
+}
+
+type runs []run
+
+func (r runs) Len() int { return len(r) }
+
+// assumes already sorted
+func (r runs) median() run {
+	l := r.Len()
+
+	if l == 0 {
+		return run{}
+	}
+	// if length of array is even, median is between r[l/2] and r[l/2+1]
+	// since need a seed that was used, r[l/2] is close enough
+	return r[l/2]
+}
+
+func (r runs) getPercentiles() *model.TargetBucket {
+	l := r.Len()
+	var c1 int
+	var c2 int
+	if l%2 == 0 {
+		c1 = l / 2
+		c2 = l / 2
+	} else {
+		c1 = (l - 1) / 2
+		c2 = c1 + 1
+	}
+
+	return &model.TargetBucket{
+		Min: r[0].buckets,
+		Max: r[r.Len()-1].buckets,
+		Q1:  r[:c1].median().buckets,
+		Q2:  r.median().buckets,
+		Q3:  r[c2:].median().buckets,
+	}
+}
+
 // TODO: We need to populate targetDPS with 0s if damage wasn't done that iteration
 // for an accurate measure. The problem is that we need target keys to be decided at the cfg level
 // not the core level.
@@ -35,6 +82,8 @@ type buffer struct {
 
 	damageBuckets     []*calc.StreamStats
 	cumulativeContrib [][]*calc.StreamStats
+	// first index is for target, 2nd for iteration
+	cumulativeDamage []runs
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
@@ -48,6 +97,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 		dpsByTarget:           make([]map[int]*calc.StreamStats, len(cfg.Characters)),
 		cumulativeContrib:     make([][]*calc.StreamStats, len(cfg.Characters)),
 		damageBuckets:         make([]*calc.StreamStats, 0),
+		cumulativeDamage:      make([]runs, len(cfg.Targets)),
 	}
 
 	// start with single entry
@@ -61,6 +111,9 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 		out.dpsByTarget[i] = make(map[int]*calc.StreamStats)
 		out.cumulativeContrib[i] = make([]*calc.StreamStats, 0)
 		out.cumulativeContrib[i] = append(out.cumulativeContrib[i], &calc.StreamStats{})
+	}
+	for i := 0; i < len(cfg.Targets); i++ {
+		out.cumulativeDamage[i] = make(runs, 0, cfg.Settings.Iterations)
 	}
 
 	return &out, nil
@@ -176,6 +229,18 @@ func (b *buffer) Add(result stats.Result) {
 		}
 		b.elementDPS[k].Add(v * time)
 	}
+
+	for i := range result.Enemies {
+		b.cumulativeDamage[i] = append(
+			b.cumulativeDamage[i],
+			run{
+				overallDPS: result.DPS,
+				// TODO: subject to break if target key gen changes
+				targetDPS: targetDPS[i+1] * time,
+				buckets:   result.Enemies[i].CumulativeDamage,
+			},
+		)
+	}
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {
@@ -269,6 +334,28 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	result.CumulativeDamageContribution = &model.CharacterBucketStats{
 		BucketSize: bucketSize,
 		Characters: characterBuckets,
+	}
+
+	targetBuckets := make(map[int32]*model.TargetBuckets, len(b.cumulativeDamage))
+	for i, e := range b.cumulativeDamage {
+		slices.SortFunc(e, func(k, j run) int {
+			return cmp.Compare(k.overallDPS, j.overallDPS)
+		})
+		overall := e.getPercentiles()
+		slices.SortFunc(e, func(k, j run) int {
+			return cmp.Compare(k.targetDPS, j.targetDPS)
+		})
+		target := e.getPercentiles()
+		// TODO: mapping target index back to target key here, subject to break...
+		targetBuckets[int32(i+1)] = &model.TargetBuckets{
+			Overall: overall,
+			Target:  target,
+		}
+	}
+
+	result.CumulativeDamage = &model.TargetBucketStats{
+		BucketSize: bucketSize,
+		Targets:    targetBuckets,
 	}
 }
 
