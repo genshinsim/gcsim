@@ -25,6 +25,12 @@
         ".alhaitham.mirrors"
       ],
       "desc": "Current number of Mirrors that Alhaitham has."
+    },
+    {
+      "fields": [
+        ".alhaitham.c2-stacks"
+      ],
+      "desc": "Number of C2 stacks that are currently active."
     }
   ],
   "faruzan": [
