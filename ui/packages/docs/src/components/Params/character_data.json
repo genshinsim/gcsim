@@ -711,7 +711,7 @@
     {
       "ability": "-",
       "param": "breakthrough",
-      "desc": "0 for no Breakthrough state at start of sim, 1 for Breakthrough state at start of sim. Set via '+params=[breakthrough=...]' in Yelan's 'char' line."
+      "desc": "0 for no Breakthrough state at start of sim, 1 (default) for Breakthrough state at start of sim. Set via '+params=[breakthrough=...]' in Yelan's 'char' line."
     },
     {
       "ability": "attack",
