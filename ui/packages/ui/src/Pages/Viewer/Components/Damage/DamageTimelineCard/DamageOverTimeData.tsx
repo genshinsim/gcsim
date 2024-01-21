@@ -36,10 +36,7 @@ export function useData(input?: BucketStats): OverTimeData {
       };
     }
 
-    const duration = Math.floor(((data.length-1) * bucketSize) / 60);
-    if (duration < data[data.length-1].x) {
-      data.pop();
-    }
+    const duration = ((data.length - 1) * bucketSize) / 60;
 
     return {
       data: data,

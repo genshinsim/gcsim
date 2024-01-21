@@ -98,6 +98,7 @@ message SimulationStatistics {
 
   BucketStats damage_buckets = 21 [json_name="damage_buckets"];
   CharacterBucketStats cumulative_damage_contribution = 22 [json_name="cumu_damage_contrib"];
+  TargetBucketStats cumulative_damage = 31 [json_name="cumu_damage"];
 
   // shield
   map<string, ShieldInfo> shields = 23 [json_name="shields"];
@@ -167,6 +168,25 @@ message CharacterBucketStats {
 
 message CharacterBuckets {
   repeated DescriptiveStats buckets = 1 [json_name="buckets"];
+}
+
+message TargetBucketStats {
+  uint32 bucket_size = 1 [json_name="bucket_size"];
+  map<int32, TargetBuckets> targets = 2 [json_name="targets"];
+}
+
+message TargetBuckets {
+  TargetBucket overall = 1 [json_name="overall"];
+  TargetBucket target = 2 [json_name="target"];
+}
+
+message TargetBucket {
+  repeated double min = 1 [json_name="min"];
+  repeated double max = 2 [json_name="max"];
+
+  repeated double Q1 = 3 [json_name="q1"];
+  repeated double Q2 = 4 [json_name="q2"];
+  repeated double Q3 = 5 [json_name="q3"];
 }
 
 message Warnings {
