@@ -1,7 +1,8 @@
 package metadata
 
 import (
-	"sort"
+	"math"
+	"slices"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/agg"
@@ -40,40 +41,23 @@ func (b *buffer) Add(result stats.Result) {
 }
 
 func (b buffer) Flush(result *model.SimulationStatistics) {
-	result.Iterations = uint32(b.runs.Len())
+	iterations := len(b.runs)
+	result.Iterations = uint32(iterations)
 
-	sort.Sort(b.runs)
+	slices.SortStableFunc(b.runs, func(k, j run) int {
+		if math.Abs(k.dps-j.dps) < agg.FloatEqDelta {
+			return 0
+		}
+		if k.dps < j.dps {
+			return -1
+		}
+		return 1
+	})
+	c1, c2 := agg.GetPercentileIndexes(b.runs)
+
 	result.MinSeed = strconv.FormatUint(b.runs[0].seed, 10)
-	result.MaxSeed = strconv.FormatUint(b.runs[b.runs.Len()-1].seed, 10)
-
-	l := b.runs.Len()
-	var c1 int
-	var c2 int
-	if l%2 == 0 {
-		c1 = l / 2
-		c2 = l / 2
-	} else {
-		c1 = (l - 1) / 2
-		c2 = c1 + 1
-	}
-
-	result.P25Seed = strconv.FormatUint(b.runs[:c1].median().seed, 10)
-	result.P50Seed = strconv.FormatUint(b.runs.median().seed, 10)
-	result.P75Seed = strconv.FormatUint(b.runs[c2:].median().seed, 10)
-}
-
-func (r Runs) Len() int           { return len(r) }
-func (r Runs) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
-func (r Runs) Less(i, j int) bool { return r[i].dps < r[j].dps }
-
-// assumes already sorted
-func (r Runs) median() run {
-	l := r.Len()
-
-	if l == 0 {
-		return run{seed: 0, dps: -1}
-	}
-	// if length of array is even, median is between r[l/2] and r[l/2+1]
-	// since need a seed that was used, r[l/2] is close enough
-	return r[l/2]
+	result.MaxSeed = strconv.FormatUint(b.runs[iterations-1].seed, 10)
+	result.P25Seed = strconv.FormatUint(agg.Median(b.runs[:c1]).seed, 10)
+	result.P50Seed = strconv.FormatUint(agg.Median(b.runs).seed, 10)
+	result.P75Seed = strconv.FormatUint(agg.Median(b.runs[c2:]).seed, 10)
 }
