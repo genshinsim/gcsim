@@ -80,6 +80,5 @@ func (h *Handler) ApplyAttack(a *AttackEvent) float64 {
 			}
 		}
 	}
-	h.TotalDamage += total
 	return total
 }
