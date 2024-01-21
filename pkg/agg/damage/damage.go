@@ -1,7 +1,7 @@
 package damage
 
 import (
-	"cmp"
+	"math"
 	"slices"
 
 	calc "github.com/aclements/go-moremath/stats"
@@ -31,38 +31,15 @@ type run struct {
 
 type runs []run
 
-func (r runs) Len() int { return len(r) }
-
 // assumes already sorted
-func (r runs) median() run {
-	l := r.Len()
-
-	if l == 0 {
-		return run{}
-	}
-	// if length of array is even, median is between r[l/2] and r[l/2+1]
-	// since need a seed that was used, r[l/2] is close enough
-	return r[l/2]
-}
-
 func (r runs) getPercentiles() *model.TargetBucket {
-	l := r.Len()
-	var c1 int
-	var c2 int
-	if l%2 == 0 {
-		c1 = l / 2
-		c2 = l / 2
-	} else {
-		c1 = (l - 1) / 2
-		c2 = c1 + 1
-	}
-
+	c1, c2 := agg.GetPercentileIndexes(r)
 	return &model.TargetBucket{
 		Min: r[0].buckets,
-		Max: r[r.Len()-1].buckets,
-		Q1:  r[:c1].median().buckets,
-		Q2:  r.median().buckets,
-		Q3:  r[c2:].median().buckets,
+		Max: r[len(r)-1].buckets,
+		Q1:  agg.Median(r[:c1]).buckets,
+		Q2:  agg.Median(r).buckets,
+		Q3:  agg.Median(r[c2:]).buckets,
 	}
 }
 
@@ -338,12 +315,24 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 
 	targetBuckets := make(map[int32]*model.TargetBuckets, len(b.cumulativeDamage))
 	for i, e := range b.cumulativeDamage {
-		slices.SortFunc(e, func(k, j run) int {
-			return cmp.Compare(k.overallDPS, j.overallDPS)
+		slices.SortStableFunc(e, func(k, j run) int {
+			if math.Abs(k.overallDPS-j.overallDPS) < agg.FloatEqDelta {
+				return 0
+			}
+			if k.overallDPS < j.overallDPS {
+				return -1
+			}
+			return 1
 		})
 		overall := e.getPercentiles()
-		slices.SortFunc(e, func(k, j run) int {
-			return cmp.Compare(k.targetDPS, j.targetDPS)
+		slices.SortStableFunc(e, func(k, j run) int {
+			if math.Abs(k.targetDPS-j.targetDPS) < agg.FloatEqDelta {
+				return 0
+			}
+			if k.targetDPS < j.targetDPS {
+				return -1
+			}
+			return 1
 		})
 		target := e.getPercentiles()
 		// TODO: mapping target index back to target key here, subject to break...
