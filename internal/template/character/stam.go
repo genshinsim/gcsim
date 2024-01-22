@@ -47,7 +47,7 @@ func (c *Character) Dash(p map[string]int) (action.Info, error) {
 	// consume stamina at end of the dash
 	c.QueueDashStaminaConsumption(p)
 
-	length := c.DashLength()
+	length := c.DashLength(p)
 	return action.Info{
 		Frames:          func(action.Action) int { return length },
 		AnimationLength: length,
@@ -86,19 +86,23 @@ func (c *Character) QueueDashStaminaConsumption(p map[string]int) {
 		}
 		c.Core.Player.LastStamUse = c.Core.F
 		c.Core.Events.Emit(event.OnStamUse, action.DashState)
-	}, c.DashLength()-1)
+	}, c.DashLength(p)-1)
 }
 
-func (c *Character) DashLength() int {
+func (c *Character) DashLength(p map[string]int) int {
+	ext := p["extend"]
+	if ext < 0 {
+		ext = 0
+	}
 	switch c.CharBody {
 	case info.BodyBoy, info.BodyLoli:
-		return 21
+		return 21 + ext
 	case info.BodyMale:
-		return 19
+		return 19 + ext
 	case info.BodyLady:
-		return 22
+		return 22 + ext
 	default:
-		return 20
+		return 20 + ext
 	}
 }
 

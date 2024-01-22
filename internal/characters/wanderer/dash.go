@@ -36,7 +36,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	}, delay)
 
 	// length is standard dash length + skill end delay (to simulate falling)
-	length := c.DashLength() + delay
+	length := c.DashLength(p) + delay
 	return action.Info{
 		Frames:          func(action.Action) int { return length },
 		AnimationLength: length,
