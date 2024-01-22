@@ -12,6 +12,7 @@
     },
     "character": {
         "artifact_stats": "圣遗物属性",
+        "total_stats": "总计属性（0 秒时，尽力而为）",
         "c_post": "命",
         "c_pre": "",
         "lvl": "等级",

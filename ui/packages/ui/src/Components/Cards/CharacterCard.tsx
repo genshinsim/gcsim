@@ -28,14 +28,17 @@ import { WeaponCard } from "./WeaponCard";
 type Props = {
   char: Character;
   stats: CharStatBlock[];
+  snapshot: CharStatBlock[];
   statsRows: number;
   className?: string;
   showDetails?: boolean;
+  showSnapshot?: boolean;
   viewerMode?: boolean; //hide the delete and edit button; add toggle for showing stats
   isSkeleton?: boolean;
   handleDelete?: () => void;
   toggleEdit?: () => void;
   handleToggleDetail?: () => void;
+  handleToggleSnapshot?: () => void;
 };
 
 function statKeyToIcon(key: string): JSX.Element {
@@ -100,12 +103,15 @@ function charBG(element: string) {
 export function CharacterCard({
   char,
   stats,
+  snapshot,
   statsRows,
   showDetails = true,
+  showSnapshot = true,
   viewerMode = false,
   isSkeleton,
   handleDelete,
   handleToggleDetail,
+  handleToggleSnapshot,
   className = "",
 }: Props) {
   const { t } = useTranslation();
@@ -132,6 +138,11 @@ export function CharacterCard({
   let count = 0;
   const rows: JSX.Element[] = [];
 
+  let statsHeader = <Trans>character.artifact_stats</Trans>;
+  if (showSnapshot && viewerMode) {
+    stats = snapshot;
+    statsHeader = <Trans>character.total_stats</Trans>;
+  }
   stats.forEach((s, i) => {
     const val: JSX.Element[] = [];
     if (s.flat === 0 && s.percent === 0) {
@@ -205,11 +216,20 @@ export function CharacterCard({
           }
         >
           <div className="flex flex-row gap-1 absolute top-1 right-1">
-            <Button
-              icon={showDetails ? "caret-up" : "caret-down"}
-              small
-              onClick={handleToggleDetail}
-            />
+            <div className="flex flex-col gap-1">
+              <Button
+                icon={showDetails ? "caret-up" : "caret-down"}
+                small
+                onClick={handleToggleDetail}
+              />
+              {showDetails && viewerMode ? (
+                <Button
+                  icon={showSnapshot ? "glass" : "zoom-in"}
+                  small
+                  onClick={handleToggleSnapshot}
+                />
+              ) : null}
+            </div>
             {viewerMode ? null : (
               <Button
                 icon="cross"
@@ -263,7 +283,7 @@ export function CharacterCard({
         {showDetails ? (
           <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
             <span className="font-bold">
-              <Trans>character.artifact_stats</Trans>
+              {statsHeader}
             </span>
             <div className="px-2">
               <table className="w-full">

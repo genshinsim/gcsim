@@ -12,6 +12,7 @@
     },
     "character": {
         "artifact_stats": "Atributos de artefactos",
+        "total_stats": "Total de atributos (a los 0 segundos, mejor esfuerzo)",
         "c_post": "",
         "c_pre": "C",
         "lvl": "Nivel",

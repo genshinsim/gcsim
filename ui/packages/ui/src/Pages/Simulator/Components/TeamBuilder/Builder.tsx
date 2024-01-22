@@ -12,12 +12,16 @@ type Props = {
 
 export const Builder = (props: Props) => {
   const [showDetails, setShowDetails] = React.useState(false);
+  const [showSnapshot, setShowSnapshot] = React.useState(false);
   const teamStats = ConsolidateCharStats(props.team);
 
   // console.log(team);
   // console.log(teamStats);
   const handleToggleDetail = () => {
     setShowDetails(!showDetails);
+  };
+  const handleToggleSnapshot = () => {
+    setShowSnapshot(!showSnapshot);
   };
 
   const cards: JSX.Element[] = props.team.map((c, index) => {
@@ -26,9 +30,12 @@ export const Builder = (props: Props) => {
         key={c.name}
         char={c}
         stats={teamStats.stats[c.name]}
+        snapshot={teamStats.snapshot[c.name]}
         statsRows={teamStats.maxRows}
         handleToggleDetail={handleToggleDetail}
+        handleToggleSnapshot={handleToggleSnapshot}
         showDetails={showDetails}
+        showSnapshot={showSnapshot}
         handleDelete={props.handleRemove(index)}
         className="basis-full sm:basis-1/2 hd:basis-1/4 pt-2 pr-2 pb-2"
       />
