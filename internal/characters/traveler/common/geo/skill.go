@@ -62,6 +62,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		shortHold = 1
 	}
 
+	noMeteorite := p["no_meteorite"] == 1
+
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Starfell Sword",
@@ -91,13 +93,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.makeParticleCB(),
 	)
 
-	c.Core.Tasks.Add(func() {
-		dur := 30 * 60
-		if c.Base.Cons >= 6 {
-			dur += 600
-		}
-		c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
-	}, skillHitmark[shortHold])
+	if !noMeteorite {
+		c.Core.Tasks.Add(func() {
+			dur := 30 * 60
+			if c.Base.Cons >= 6 {
+				dur += 600
+			}
+			c.Core.Constructs.New(c.newStone(dur, stoneDir, stonePos), false)
+		}, skillHitmark[shortHold])
+	}
 
 	c.SetCDWithDelay(action.ActionSkill, c.skillCD, skillCDStart[shortHold])
 

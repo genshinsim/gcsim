@@ -792,6 +792,11 @@
       "desc": "0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold."
     },
     {
+      "ability": "skill",
+      "param": "no_meteorite",
+      "desc": "If 1, no meteorite will be created. Default 0."
+    },
+    {
       "ability": "burst",
       "param": "hits",
       "desc": "Number of shockwave attacks to perform. Default 4."
