@@ -1,6 +1,7 @@
 package electro
 
 import (
+	"github.com/genshinsim/gcsim/internal/characters/traveler/common"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -21,12 +22,13 @@ type char struct {
 }
 
 func NewChar(gender int) core.NewCharacterFunc {
-	return func(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+	return func(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 		c := char{
 			gender: gender,
 		}
 		c.Character = tmpl.NewWithWrapper(s, w)
 
+		c.Base.Atk += common.TravelerBaseAtkIncrease(p)
 		c.Base.Element = attributes.Electro
 		c.EnergyMax = 80
 		c.BurstCon = 3
