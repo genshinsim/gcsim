@@ -38,7 +38,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		er := char.NonExtraStat(attributes.ER) + 1
+		er := char.NonExtraStat(attributes.ER)
 		amt := 0.25 * er
 		if amt > 0.75 {
 			amt = 0.75
@@ -52,7 +52,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					return nil, false
 				}
 				// calc er
-				er := char.NonExtraStat(attributes.ER) + 1
+				er := char.NonExtraStat(attributes.ER)
 				amt := 0.25 * er
 				if amt > 0.75 {
 					amt = 0.75
