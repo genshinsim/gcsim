@@ -787,6 +787,11 @@
   ],
   "travelergeo": [
     {
+      "ability": "-",
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "short_hold",
       "desc": "0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold."
@@ -809,6 +814,11 @@
   ],
   "travelerelectro": [
     {
+      "ability": "-",
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hits",
       "desc": "Number of times Thunder Shadow hits. Default 1, maximum 3."
@@ -826,6 +836,11 @@
   ],
   "traveleranemo": [
     {
+      "ability": "-",
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -837,6 +852,11 @@
     }
   ],
   "travelerhydro": [
+    {
+      "ability": "-",
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
+    },
     {
       "ability": "skill",
       "param": "hold",
@@ -856,6 +876,13 @@
       "ability": "dash",
       "param": "pickup_droplets",
       "desc": "Number of picked up Sourcewater Droplets. Default 0."
+    }
+  ],
+  "travelerdendro": [
+    {
+      "ability": "-",
+      "param": "base_atk_buff",
+      "desc": "0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line."
     }
   ],
   "neuvillette": [
