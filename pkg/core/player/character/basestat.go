@@ -40,7 +40,8 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	// += to account for potential base atk increases that are defined outside of curves like for Traveler
 	c.Base.Atk += b.BaseAtk * curves.CharStatGrowthMult[lvl][b.AtkCurve]
 	c.Base.Def = b.BaseDef * curves.CharStatGrowthMult[lvl][b.DefCurve]
-	// default cr/cd
+	// default er/cr/cd
+	c.BaseStats[attributes.ER] += 1
 	c.BaseStats[attributes.CD] += 0.5
 	c.BaseStats[attributes.CR] += 0.05
 	// track specialized stat

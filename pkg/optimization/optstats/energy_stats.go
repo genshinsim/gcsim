@@ -49,9 +49,9 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 		er := character.Stat(attributes.ER)
 
 		if isParticle {
-			raw := amount / (1.0 + er)
+			raw := amount / er
 			charRawParticles[ind] += raw
-			erPerParticleEvent[ind] = append(erPerParticleEvent[ind], 1+er)
+			erPerParticleEvent[ind] = append(erPerParticleEvent[ind], er)
 			rawPerParticleEvent[ind] = append(rawPerParticleEvent[ind], raw)
 		} else {
 			if amount < 0 {
@@ -75,7 +75,7 @@ func OptimizerERStat(core *core.Core) (CollectorCustomStats[CustomEnergyStatsBuf
 			wsum += raw
 		}
 		if wsum == 0 {
-			out.WeightedER[ind] = append(out.WeightedER[ind], char.Stat(attributes.ER+1))
+			out.WeightedER[ind] = append(out.WeightedER[ind], char.Stat(attributes.ER))
 		} else {
 			out.WeightedER[ind] = append(out.WeightedER[ind], wERsum/wsum)
 		}
