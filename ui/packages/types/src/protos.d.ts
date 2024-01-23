@@ -2817,6 +2817,9 @@ export namespace model {
         /** SimulationStatistics cumulative_damage_contribution */
         cumulative_damage_contribution?: (model.ICharacterBucketStats|null);
 
+        /** SimulationStatistics cumulative_damage */
+        cumulative_damage?: (model.ITargetBucketStats|null);
+
         /** SimulationStatistics shields */
         shields?: ({ [k: string]: model.IShieldInfo }|null);
 
@@ -2916,6 +2919,9 @@ export namespace model {
 
         /** SimulationStatistics cumulative_damage_contribution. */
         public cumulative_damage_contribution?: (model.ICharacterBucketStats|null);
+
+        /** SimulationStatistics cumulative_damage. */
+        public cumulative_damage?: (model.ITargetBucketStats|null);
 
         /** SimulationStatistics shields. */
         public shields: { [k: string]: model.IShieldInfo };
@@ -3291,6 +3297,123 @@ export namespace model {
 
         /**
          * Gets the default type url for CharacterBuckets
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a TargetBucketStats. */
+    interface ITargetBucketStats {
+
+        /** TargetBucketStats bucket_size */
+        bucket_size?: (number|null);
+
+        /** TargetBucketStats targets */
+        targets?: ({ [k: string]: model.ITargetBuckets }|null);
+    }
+
+    /** Represents a TargetBucketStats. */
+    class TargetBucketStats implements ITargetBucketStats {
+
+        /**
+         * Constructs a new TargetBucketStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ITargetBucketStats);
+
+        /** TargetBucketStats bucket_size. */
+        public bucket_size: number;
+
+        /** TargetBucketStats targets. */
+        public targets: { [k: string]: model.ITargetBuckets };
+
+        /**
+         * Gets the default type url for TargetBucketStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a TargetBuckets. */
+    interface ITargetBuckets {
+
+        /** TargetBuckets overall */
+        overall?: (model.ITargetBucket|null);
+
+        /** TargetBuckets target */
+        target?: (model.ITargetBucket|null);
+    }
+
+    /** Represents a TargetBuckets. */
+    class TargetBuckets implements ITargetBuckets {
+
+        /**
+         * Constructs a new TargetBuckets.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ITargetBuckets);
+
+        /** TargetBuckets overall. */
+        public overall?: (model.ITargetBucket|null);
+
+        /** TargetBuckets target. */
+        public target?: (model.ITargetBucket|null);
+
+        /**
+         * Gets the default type url for TargetBuckets
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of a TargetBucket. */
+    interface ITargetBucket {
+
+        /** TargetBucket min */
+        min?: (number[]|null);
+
+        /** TargetBucket max */
+        max?: (number[]|null);
+
+        /** TargetBucket Q1 */
+        Q1?: (number[]|null);
+
+        /** TargetBucket Q2 */
+        Q2?: (number[]|null);
+
+        /** TargetBucket Q3 */
+        Q3?: (number[]|null);
+    }
+
+    /** Represents a TargetBucket. */
+    class TargetBucket implements ITargetBucket {
+
+        /**
+         * Constructs a new TargetBucket.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.ITargetBucket);
+
+        /** TargetBucket min. */
+        public min: number[];
+
+        /** TargetBucket max. */
+        public max: number[];
+
+        /** TargetBucket Q1. */
+        public Q1: number[];
+
+        /** TargetBucket Q2. */
+        public Q2: number[];
+
+        /** TargetBucket Q3. */
+        public Q3: number[];
+
+        /**
+         * Gets the default type url for TargetBucket
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
