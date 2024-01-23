@@ -12,6 +12,7 @@
     },
     "character": {
         "artifact_stats": "聖遺物ステータス",
+        "total_stats": "トータルステータス (0秒後, ベストエフォート)",
         "c_post": "凸",
         "c_pre": "星座",
         "lvl": "レベル",

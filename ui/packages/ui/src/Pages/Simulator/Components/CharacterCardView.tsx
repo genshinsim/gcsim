@@ -27,6 +27,7 @@ export function CharacterCardView(props: Props) {
         key={c.name}
         char={c}
         stats={teamStats.stats[c.name]}
+        snapshot={teamStats.snapshot[c.name]}
         statsRows={teamStats.maxRows}
         handleDelete={() => console.log("deleting " + c.name)}
         className="basis-full md:basis-1/2 wide:basis-1/4 pt-2 pr-2 pb-2"

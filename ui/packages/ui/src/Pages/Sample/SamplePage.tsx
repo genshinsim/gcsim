@@ -58,6 +58,7 @@ export default ({ sample, error, retry }: Props) => {
               char={c}
               showDetails={false}
               stats={[]}
+              snapshot={[]}
               statsRows={0}
               className={cardClass} />
         ))}

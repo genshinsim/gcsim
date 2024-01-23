@@ -12,6 +12,7 @@
     },
     "character": {
         "artifact_stats": "Artifact Stats (w/o Set Effects)",
+        "total_stats": "Total Stats (at 0 seconds, best effort basis)",
         "c_post": "",
         "c_pre": "C",
         "lvl": "Lvl",

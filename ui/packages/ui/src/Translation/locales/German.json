@@ -12,6 +12,7 @@
     },
     "character": {
         "artifact_stats": "Artefaktattribute",
+        "total_stats": "Attribute insgesamt (bei 0 Sekunden, Best-Effort-Prinzip)",
         "c_post": "",
         "c_pre": "C",
         "lvl": "Stufe",
