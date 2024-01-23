@@ -1,5 +1,5 @@
-import { Alert, Intent } from "@blueprintjs/core";
-import { useCallback, useMemo, useState } from "react";
+import { Alert, Intent, Position, Toaster } from "@blueprintjs/core";
+import { useCallback, useMemo, useRef, useState } from "react";
 import ConfigUI, { useConfig } from "./Tabs/Config";
 import SampleUI, { useSample } from "./Tabs/Sample";
 import Results from "./Tabs/Results";
@@ -12,6 +12,8 @@ import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import queryString from "query-string";
 import { useHistory } from "react-router";
 import { RootState, useAppSelector } from "@ui/Stores/store";
+import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
+import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
 
 type ViewerProps = {
   running: boolean;
@@ -44,12 +46,13 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
 
   const sample = useSample(running, data, sampleOnLoad, sampler);
   const config = useConfig(data, exec);
+  const [recoverConfig, setRecoverConfig] = useState(config.cfg ?? "");
   const names = useMemo(
       () => data?.character_details?.map(c => c.name), [data?.character_details]);
 
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} running={running} names={names} />,
-    config: <ConfigUI config={config} running={running} resetTab={resetTab} />,
+    config: <ConfigUI config={config} setRecoverConfig={setRecoverConfig} running={running} resetTab={resetTab} />,
     analyze: <div></div>,
     sample: <SampleUI sampler={sampler} data={data} sample={sample} running={running} />,
   };
@@ -74,20 +77,23 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
         current={data?.statistics?.iterations}
         total={data?.simulator_settings?.iterations}
       />
-      <ErrorAlert msg={error} redirect={redirect} retry={retry} />
+      <ErrorAlert msg={error} config={recoverConfig} redirect={redirect} retry={retry} />
     </div>
   );
 };
 
 const ErrorAlert = ({
       msg,
+      config,
       redirect,
       retry,
     }: {
       msg: string | null;
+      config: string | undefined;
       redirect: string;
       retry?: () => void;
     }) => {
+  const copyToast = useRef<Toaster>(null);
   const history = useHistory();
 
   let cancelButtonText: string | undefined;
@@ -104,11 +110,19 @@ const ErrorAlert = ({
       onCancel={onCancel}
       canEscapeKeyCancel={false}
       canOutsideClickCancel={false}
-      confirmButtonText="Close"
+      confirmButtonText="Return to Simulator"
       cancelButtonText={cancelButtonText}
       intent={Intent.DANGER}
     >
-      <p>{msg}</p>
+      <div className="flex flex-col gap-2 mb-1">
+        <p>{msg}</p>
+        <CopyToClipboard
+                copyToast={copyToast}
+                config={config ?? ""}
+                className="hidden ml-[7px] sm:flex" />
+        <SendToSimulator config={config ?? ""} />
+      </div>
+      <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Alert>
   );
 };
