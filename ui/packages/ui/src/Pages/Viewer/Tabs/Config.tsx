@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import Editor from "react-simple-code-editor";
 import { Button, Callout, Intent, NonIdealState, Spinner, SpinnerSize } from "@blueprintjs/core";
 import { SimResults } from '@gcsim/types';
@@ -26,11 +26,12 @@ type UseConfigData = {
 
 type ConfigProps = {
   config: UseConfigData;
+  setRecoverConfig: Dispatch<SetStateAction<string>>;
   running: boolean;
   resetTab: () => void;
 };
 
-const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
+const ConfigUI = ({ config, setRecoverConfig, running, resetTab }: ConfigProps) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -51,6 +52,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
               loading={!config.isReady || running}
               className="basis-1/2"
               onClick={() => {
+                setRecoverConfig(config.cfg ?? "");
                 dispatch(runSim(config.exec(), config.cfg ?? ""));
                 resetTab();
                 history.push("/web");
