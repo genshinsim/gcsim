@@ -31,7 +31,7 @@ type Props = {
   mode: string;
   commit: string;
   setResult: (result: SimResults | null, hash: string | null) => void;
-  setError: (err: string | null) => void;
+  setError: (recoveryConfig: string | null, err: string | null) => void;
 };
 
 // TODO: translations
@@ -214,7 +214,7 @@ const UpgradeButton = ({
       exec: ExecutorSupplier<Executor>,
       cfg?: string;
       setResult: (result: SimResults | null, hash: string | null) => void;
-      setError: (err: string | null) => void;
+      setError: (config: string | null, err: string | null) => void;
     }) => {
   const [isReady, setReady] = useState(false);
   useEffect(() => {
@@ -230,9 +230,9 @@ const UpgradeButton = ({
     }
 
     setResult(null, null);
-    setError(null);
+    setError(null, null);
     exec().run(cfg, setResult).catch((err) => {
-      setError(err);
+      setError(cfg, err);
     });
   };
 

@@ -116,6 +116,7 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
     <UpgradableViewer
         data={data}
         hash={hash}
+        recoveryConfig={null}
         error={error}
         src={src}
         exec={exec}
@@ -138,10 +139,11 @@ type FromStateProps = {
 
 const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
   const isRunning = useRunningState(exec);
-  const { data, hash, error } = useAppSelector((state: RootState) => {
+  const { data, hash, recoveryConfig, error } = useAppSelector((state: RootState) => {
     return {
       data: state.viewer.data,
       hash: state.viewer.hash,
+      recoveryConfig: state.viewer.recoveryConfig,
       error: state.viewer.error,
     };
   });
@@ -156,17 +158,18 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
     }, VIEWER_THROTTLE, { leading: true, trailing: true })
   );
 
-  const setError = (error: string | null) => {
+  const setError = (recoveryConfig: string | null, error: string | null) => {
     if (error == null) {
       return;
     }
-    dispatch(viewerActions.setError({ error: error }));
+    dispatch(viewerActions.setError({ recoveryConfig, error }));
   };
 
   return (
     <UpgradableViewer
         data={data}
         hash={hash}
+        recoveryConfig={recoveryConfig}
         error={error}
         src={ResultSource.Generated}
         exec={exec}
@@ -182,6 +185,7 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
 type UpgradableViewerProps = {
   data: SimResults | null;
   hash: string | null;
+  recoveryConfig: string | null;
   error: string | null;
   src: ResultSource;
   running: boolean;
@@ -191,7 +195,7 @@ type UpgradableViewerProps = {
   exec: ExecutorSupplier<Executor>;
   retry?: () => void;
   setResult: (r: SimResults | null, hash: string | null) => void;
-  setError: (err: string | null) => void;
+  setError: (recoveryConfig: string | null, err: string | null) => void;
 }
 
 const UpgradableViewer = (props: UpgradableViewerProps) => {
@@ -202,6 +206,7 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
           data={props.data}
           hash={props.hash}
           src={props.src}
+          recoveryConfig={props.recoveryConfig}
           error={props.error}
           redirect={props.redirect}
           exec={props.exec}
