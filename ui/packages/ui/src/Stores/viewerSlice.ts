@@ -26,6 +26,7 @@ export const viewerSlice = createSlice({
     },
     start: (state) => {
       state.data = null;
+      state.recoveryConfig = null;
       state.error = null;
       return state;
     },
