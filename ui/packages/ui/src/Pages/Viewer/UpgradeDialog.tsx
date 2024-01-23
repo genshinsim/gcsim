@@ -214,7 +214,7 @@ const UpgradeButton = ({
       exec: ExecutorSupplier<Executor>,
       cfg?: string;
       setResult: (result: SimResults | null, hash: string | null) => void;
-      setError: (config: string | null, err: string | null) => void;
+      setError: (recoveryConfig: string | null, err: string | null) => void;
     }) => {
   const [isReady, setReady] = useState(false);
   useEffect(() => {
