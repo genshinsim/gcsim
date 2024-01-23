@@ -34,7 +34,7 @@ export function runSim(pool: Executor, cfg: string): AppThunk {
     );
 
     pool.run(cfg, updateResult).catch((err) => {
-      dispatch(viewerActions.setError({ error: err }));
+      dispatch(viewerActions.setError({ recoveryConfig: cfg, error: err }));
     });
   };
 }

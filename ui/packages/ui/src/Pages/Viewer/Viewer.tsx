@@ -19,6 +19,7 @@ type ViewerProps = {
   running: boolean;
   data: SimResults | null;
   hash: string | null;
+  recoveryConfig: string | null;
   error: string | null;
   src: ResultSource;
   redirect: string;
@@ -30,7 +31,7 @@ type ViewerProps = {
 // above viewer in the hierarchy tree. The viewer can perform whatever additional calculations it
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
-export default ({ running, data, hash = "", error, src, redirect, exec, retry }: ViewerProps) => {
+export default ({ running, data, hash = "", recoveryConfig, error, src, redirect, exec, retry }: ViewerProps) => {
   const parsed = queryString.parse(location.hash);
   const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
 
@@ -46,13 +47,12 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
 
   const sample = useSample(running, data, sampleOnLoad, sampler);
   const config = useConfig(data, exec);
-  const [recoverConfig, setRecoverConfig] = useState(config.cfg ?? "");
   const names = useMemo(
       () => data?.character_details?.map(c => c.name), [data?.character_details]);
 
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} running={running} names={names} />,
-    config: <ConfigUI config={config} setRecoverConfig={setRecoverConfig} running={running} resetTab={resetTab} />,
+    config: <ConfigUI config={config} running={running} resetTab={resetTab} />,
     analyze: <div></div>,
     sample: <SampleUI sampler={sampler} data={data} sample={sample} running={running} />,
   };
@@ -77,19 +77,19 @@ export default ({ running, data, hash = "", error, src, redirect, exec, retry }:
         current={data?.statistics?.iterations}
         total={data?.simulator_settings?.iterations}
       />
-      <ErrorAlert msg={error} config={recoverConfig} redirect={redirect} retry={retry} />
+      <ErrorAlert msg={error} recoveryConfig={recoveryConfig} redirect={redirect} retry={retry} />
     </div>
   );
 };
 
 const ErrorAlert = ({
       msg,
-      config,
+      recoveryConfig,
       redirect,
       retry,
     }: {
       msg: string | null;
-      config: string | undefined;
+      recoveryConfig: string | null;
       redirect: string;
       retry?: () => void;
     }) => {
@@ -116,11 +116,16 @@ const ErrorAlert = ({
     >
       <div className="flex flex-col gap-2 mb-1">
         <p>{msg}</p>
-        <CopyToClipboard
-                copyToast={copyToast}
-                config={config ?? ""}
-                className="hidden ml-[7px] sm:flex" />
-        <SendToSimulator config={config ?? ""} />
+        {recoveryConfig != null ? (
+          <>
+            <CopyToClipboard
+              copyToast={copyToast}
+              config={recoveryConfig}
+              className="hidden ml-[7px] sm:flex"
+            />
+            <SendToSimulator config={recoveryConfig} />
+          </>
+        ) : null}
       </div>
       <Toaster ref={copyToast} position={Position.TOP_RIGHT} />
     </Alert>
