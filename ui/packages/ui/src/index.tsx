@@ -73,6 +73,7 @@ function RedirectDB() {
 // TODO: Move to its own file?
 // TODO: Add tabs for better settings management + extensibility?
 const ExecutorSettings = ({ children }: { children: ReactNode }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { isOpen, sampleOnLoad } = useAppSelector((state: RootState) => {
     return {
@@ -85,7 +86,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
     <Dialog
         isOpen={isOpen}
         onClose={() => dispatch(appActions.setSettingsOpen(false))}
-        title="Settings"
+        title={t<string>("simple.settings")}
         icon="settings"
         className="!pb-0">
       <div className={Classes.DIALOG_BODY}>
@@ -95,7 +96,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
               checked={sampleOnLoad}
               onChange={() => dispatch(appActions.setSampleOnLoad(!sampleOnLoad))}
               className="pt-5"
-              labelElement={"Generate sample on page load"} />
+              labelElement={t<string>("simple.generate_sample")} />
         </>
       </div>
     </Dialog>

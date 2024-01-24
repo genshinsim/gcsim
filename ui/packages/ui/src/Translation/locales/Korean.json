@@ -152,7 +152,6 @@
     },
     "simple": {
         "action_list": "액션 리스트",
-        "add_character": "캐릭터 추가",
         "artifacts": "성유물",
         "copied_to_clipboard": "{{item}} 텍스트가 클립보드에 복사됨",
         "discord_post": "에 유저들이 제출한 수많은 액션 리스트들이 있으니 참고바랍니다.",
@@ -160,23 +159,18 @@
         "documentation": "문서",
         "documentation_post": "를 읽어보세요.",
         "documentation_pre": "또는, 초심자가 config를 작성하는 방법에 대한 간단한 튜토리얼이 포함된 저희의 ",
-        "done": "완료",
-        "exit_edit": "편집 종료",
-        "give_me_back": "툴팁 다시 불러오기",
-        "hide": "숨기기",
+        "generate_sample": "페이지 로딩 시 샘플 생성",
         "hide_all_tips": "모든 팁 숨기기",
-        "loading_workers": "워커 로딩 중",
         "name_search": "이름 검색하기",
         "run": "실행",
-        "show": "표시",
-        "sim_options": "심 옵션",
-        "start_by_adding": "팀원을 추가하는 것에서부터 시작하세요.",
+        "settings": "설정",
         "team": "팀",
+        "tools": "도구",
         "video": "비디오",
         "video_post": "를 참고해 시작해봅시다.",
         "video_pre": "팀에 캐릭터를 추가하는 것에서부터 시작하세요. 이 ",
         "weapons": "무기",
-        "workers_available": "사용 가능한 워커 수: "
+        "workers": "워커"
     },
     "src": {
         "this_page_is": "이 페이지는 아직 지원되지 않습니다. 기대해주세요!"
