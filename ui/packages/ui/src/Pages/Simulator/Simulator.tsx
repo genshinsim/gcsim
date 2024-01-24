@@ -58,10 +58,14 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
           ) : null}
 
           <SectionDivider>
-            <Trans>simple.action_list</Trans>
+            <Trans>simple.name_search</Trans>
           </SectionDivider>
 
           <OmnibarBlock />
+
+          <SectionDivider>
+            <Trans>simple.action_list</Trans>
+          </SectionDivider>
 
           <ActionListTooltip />
 
