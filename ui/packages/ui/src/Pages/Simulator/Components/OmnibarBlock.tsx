@@ -12,7 +12,7 @@ export function OmnibarBlock() {
   const [weaponsOpen, setWeaponsOpen] = useState(false);
   const copyToast = useRef<Toaster>(null);
   return (
-    <div className="flex flex-col gap-1.5 my-2 mx-2">
+    <div className="flex flex-row gap-1.5 my-2 mx-2">
       <Button
         icon="people"
         fill
