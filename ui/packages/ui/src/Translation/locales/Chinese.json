@@ -122,6 +122,9 @@
     "simple": {
         "action_list": "动作列表",
         "add_character": "添加角色",
+        "artifacts": "聖遺物",
+        "characters": "作用",
+        "copied_to_clipboard": "{{item}} 复制到剪贴板",
         "discord_post": "上有大量用户提交的动作列表可供参考。",
         "discord_pre": "在下面的文本框中输入你希望使用的动作列表。我们在",
         "documentation": "文档",
@@ -141,7 +144,8 @@
         "video": "视频",
         "video_post": "来了解更多。",
         "video_pre": "开始添加角色到你的队伍中吧。查看这个",
-        "workers_available": "可用工作器："
+        "workers_available": "可用工作器：",
+        "weapons": "武器"
     },
     "src": {
         "this_page_is": "此页面正在施工中。敬请期待！"

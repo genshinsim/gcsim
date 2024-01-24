@@ -1,22 +1,22 @@
 import { Omnibar } from "@blueprintjs/select";
-import { IArtifact } from "@gcsim/types";
+import { ICharacter } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
-import { artifactSelectProps } from "./artifacts";
+import { characterSelectProps } from "./characters";
 
-const ArtifactOmnibar = Omnibar.ofType<IArtifact>();
+const CharacterOmnibar = Omnibar.ofType<ICharacter>();
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (artifact: IArtifact) => void;
+  onSelect: (character: ICharacter) => void;
 };
 
-export function ArtifactSelect(props: Props) {
+export function CharacterSelect(props: Props) {
   const { t } = useTranslation();
   return (
-    <ArtifactOmnibar
+    <CharacterOmnibar
       resetOnSelect
-      {...artifactSelectProps}
+      {...characterSelectProps}
       isOpen={props.isOpen}
       onClose={props.onClose}
       onItemSelect={props.onSelect}

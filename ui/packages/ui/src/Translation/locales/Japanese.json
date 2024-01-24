@@ -109,6 +109,9 @@
     "simple": {
         "action_list": "アクションリスト",
         "add_character": "キャラクター追加",
+        "artifacts": "聖遺物",
+        "characters": "キャラクター",
+        "copied_to_clipboard": "{{item}}クリップボードにコピーされた",
         "discord_post": " に多くの記述例がありますのでご参照ください。",
         "discord_pre": "下のテキストボックスにシミュレーションへ追加したい行動や要素を記述します。何を書けばいいかわからない方は",
         "documentation": "資料",
@@ -128,7 +131,8 @@
         "video": "動画",
         "video_post": "をチェックしてください！",
         "video_pre": "編成にキャラクターを追加して開始しましょう！使い方はこの",
-        "workers_available": "使用可能なワーカー数: "
+        "workers_available": "使用可能なワーカー数: ",
+        "weapons": "武器"
     },
     "src": {
         "this_page_is": "このページはまだ実装されていません。いましばらくお待ちください！"

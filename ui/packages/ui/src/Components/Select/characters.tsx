@@ -1,12 +1,15 @@
 import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
-import { IWeapon } from "@gcsim/types";
+import { ICharacter } from "@gcsim/types";
 import i18n from "i18next";
-import { valid_weapons } from "../../Data";
+import { valid_characters } from "../../Data";
 
-export const weapons: IWeapon[] = valid_weapons;
+export const characters: ICharacter[] = valid_characters;
 
-export const renderWeapon: ItemRenderer<IWeapon> = (weapon, { handleClick, modifiers, query }) => {
+export const renderCharacter: ItemRenderer<ICharacter> = (
+  character,
+  { handleClick, modifiers, query }
+) => {
   if (!modifiers.matchesPredicate) {
     return null;
   }
@@ -15,23 +18,28 @@ export const renderWeapon: ItemRenderer<IWeapon> = (weapon, { handleClick, modif
       active={modifiers.active}
       disabled={modifiers.disabled}
       label={""}
-      key={weapon}
+      key={character}
       onClick={handleClick}
-      text={highlightText(i18n.t("game:weapon_names." + weapon), query)}
+      text={highlightText(i18n.t("game:character_names." + character), query)}
     />
   );
 };
 
-export const filterWeapon: ItemPredicate<IWeapon> = (query, weapon, _index, exactMatch) => {
+export const filterCharacter: ItemPredicate<ICharacter> = (
+  query,
+  character,
+  _index,
+  exactMatch
+) => {
   const normalizedQuery = query.toLowerCase();
   const transWeapon = i18n
-    .t("game:weapon_names." + weapon)
+    .t("game:character_names." + character)
     .replace(" ", "")
     .toLowerCase();
   if (exactMatch) {
-    return weapon === normalizedQuery;
+    return character === normalizedQuery;
   } else {
-    return `${weapon} ${transWeapon}`.indexOf(normalizedQuery) >= 0;
+    return `${character} ${transWeapon}`.indexOf(normalizedQuery) >= 0;
   }
 };
 
@@ -70,8 +78,8 @@ function highlightText(text: string, query: string) {
   return tokens;
 }
 
-export const weaponSelectProps = {
-  itemPredicate: filterWeapon,
-  itemRenderer: renderWeapon,
-  items: weapons,
+export const characterSelectProps = {
+  itemPredicate: filterCharacter,
+  itemRenderer: renderCharacter,
+  items: characters,
 };

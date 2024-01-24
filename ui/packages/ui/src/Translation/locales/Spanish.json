@@ -112,6 +112,9 @@
     "simple": {
         "action_list": "Lista de acciones",
         "add_character": "Agregar personaje",
+        "artifacts": "Artefactos",
+        "characters": "Personajes",
+        "copied_to_clipboard": "{{item}} copiado en el portapapeles",
         "discord_post": " si necesitas algunas ideas.",
         "discord_pre": "Ingresa la lista de acciones que deseas usar en la caja de texto debajo. Tenemos una vasta colección de lista de acciones compartidas por usuarios en nuestro ",
         "documentation": "documentación",
@@ -131,7 +134,8 @@
         "video": "video",
         "video_post": " como guía inicial.",
         "video_pre": "Empieza por agregar miembros de equipo. checa este ",
-        "workers_available": "Trabajadores disponibles: "
+        "workers_available": "Trabajadores disponibles: ",
+        "weapons": "Armas"
     },
     "src": {
         "this_page_is": "Esta página no está implementada aún. Manténganse al tanto!"

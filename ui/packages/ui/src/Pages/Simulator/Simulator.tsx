@@ -11,6 +11,7 @@ import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { appActions, defaultStats } from "../../Stores/appSlice";
 import { Character } from "@gcsim/types";
 import { debounce } from "lodash-es";
+import { OmnibarBlock } from "./Components/OmnibarBlock";
 
 export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
   const dispatch = useAppDispatch();
@@ -59,6 +60,8 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
           <SectionDivider>
             <Trans>simple.action_list</Trans>
           </SectionDivider>
+
+          <OmnibarBlock />
 
           <ActionListTooltip />
 

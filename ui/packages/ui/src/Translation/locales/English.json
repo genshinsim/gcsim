@@ -125,6 +125,9 @@
     "simple": {
         "action_list": "Action List",
         "add_character": "Add Character",
+        "artifacts": "Artifacts",
+        "characters": "Characters",
+        "copied_to_clipboard": "{{item}} copied to clipboard",
         "discord_post": " if you need some ideas.",
         "discord_pre": "Enter the action list you wish to use in the textbox below. We have a vast collection of user submitted action lists on our ",
         "documentation": "documentation",
@@ -144,7 +147,8 @@
         "video": "video",
         "video_post": " to get started.",
         "video_pre": "Get started by adding characters in to your team. Check out this ",
-        "workers_available": "Workers available: "
+        "workers_available": "Workers available: ",
+        "weapons": "Weapons"
     },
     "src": {
         "this_page_is": "This page is not implemented yet. Stay tuned!"
