@@ -21,6 +21,7 @@ export function WeaponSelect(props: Props) {
       onClose={props.onClose}
       onItemSelect={props.onSelect}
       inputProps={{ placeholder: `${t("db.type_to_search")}` }}
+      className="absolute left-0 right-0 mx-auto w-80"
     />
   );
 }
