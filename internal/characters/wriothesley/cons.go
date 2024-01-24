@@ -116,6 +116,9 @@ func (c *char) resetC1SkillExtension() {
 // "There Shall Be a Reckoning for Sin" will increase said ability's DMG dealt by 40%.
 // You must first unlock the Passive Talent "There Shall Be a Reckoning for Sin."
 func (c *char) c2(snap *combat.Snapshot) {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	if c.Base.Cons < 2 {
 		return
 	}
