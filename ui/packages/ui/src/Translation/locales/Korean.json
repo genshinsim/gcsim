@@ -62,15 +62,11 @@
         "workers_pre": "워커 수: "
     },
     "dash": {
-        "about": "정보",
-        "advanced_mode": "고급 모드",
-        "contribute": "기여하기",
-        "desktop_tool": "데스크톱 도구",
-        "documentation": "문서",
-        "is_a_team": "은 원신의 팀 DPS 시뮬레이터입니다. 다음 옵션 중 하나를 골라 시작하세요!",
-        "simulator": "시뮬레이터",
-        "teams_db": "팀 데이터베이스",
-        "viewer": "뷰어"
+        "get_started": "시작하기",
+        "users_submitted": "사용자가 제출한 내용을 살펴보세요:",
+        "visit_teams_db": "팀 데이터베이스 방문",
+        "latest_release": "최신 릴리스: ",
+        "view_releases": "GitHub에서 릴리스 보기"
     },
     "db": {
         "author": "저자: ",

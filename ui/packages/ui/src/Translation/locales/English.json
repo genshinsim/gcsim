@@ -32,15 +32,11 @@
         "workers_pre": "Running sim with "
     },
     "dash": {
-        "about": "About",
-        "advanced_mode": "Advanced Mode",
-        "contribute": "Contribute",
-        "desktop_tool": "Desktop Tool",
-        "documentation": "Documentation",
-        "is_a_team": "is a team DPS simulator for Genshin Impact. Get started by choosing one of the following options!",
-        "simulator": "Simulator",
-        "teams_db": "Teams DB",
-        "viewer": "Viewer"
+        "get_started": "Get started",
+        "users_submitted": "Take a look at what users submitted:",
+        "visit_teams_db": "Visit the Teams DB",
+        "latest_release": "Latest Release: ",
+        "view_releases": "View Releases on GitHub"
     },
     "db": {
         "author": "Author: ",

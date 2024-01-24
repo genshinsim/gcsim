@@ -32,15 +32,11 @@
         "workers_pre": "Corriendo simulador con "
     },
     "dash": {
-        "about": "Acerca de",
-        "advanced_mode": "Modo avanzado",
-        "contribute": "Contribuye",
-        "desktop_tool": "Versión de escritorio",
-        "documentation": "Documentación",
-        "is_a_team": "es un simulador de DPS del equipo, para Genshin Impact. Empieza seleccionando una de las siguientes opciones!",
-        "simulator": "Simulador",
-        "teams_db": "Base de datos de equipos",
-        "viewer": "Visor"
+        "get_started": "Empezar",
+        "users_submitted": "Echa un vistazo a lo que han enviado los usuarios:",
+        "visit_teams_db": "Visite la base de datos de equipos",
+        "latest_release": "Último lanzamiento: ",
+        "view_releases": "Ver lanzamientos en GitHub"
     },
     "db": {
         "author": "Autor: ",

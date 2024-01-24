@@ -32,15 +32,11 @@
         "workers_pre": "正在使用"
     },
     "dash": {
-        "about": "关于",
-        "advanced_mode": "进阶模式",
-        "contribute": "合作开发",
-        "desktop_tool": "桌面版工具",
-        "documentation": "文档",
-        "is_a_team": "是一个原神配队DPS模拟器。快点击下面的一个选项开始吧！",
-        "simulator": "模拟器",
-        "teams_db": "配队数据库",
-        "viewer": "视图"
+        "get_started": "入门",
+        "users_submitted": "看看用户提交的内容:",
+        "visit_teams_db": "访问配队数据库",
+        "latest_release": "最新发行版: ",
+        "view_releases": "在 GitHub 上查看发行版"
     },
     "db": {
         "author": "作者：",

@@ -20,7 +20,7 @@ const randQuery = {
 };
 
 export function Dash() {
-  useTranslation();
+  const { t } = useTranslation();
 
   const [{ isLoaded, text, tag }, setState] = useState({
     isLoaded: false,
@@ -58,14 +58,14 @@ export function Dash() {
         tabIndex={0}
       >
         <span className="bp4-button-text text-3xl md:text-4xl lg:text-5xl font-semibold">
-          Get started
+          {t<string>("dash.get_started")}
         </span>
       </Link>
       {/* mobile Chrome/Safari needs w-full for padding to work properly, mobile Firefox works fine though... */}
       <div className="flex flex-col gap-4 w-full md:w-fit">
         <Card className="flex flex-col gap-4 items-center">
           <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
-            <b>Take a look at what users submitted:</b>
+            <b>{t<string>("dash.users_submitted")}</b>
           </h1>
           <div>
             {dataIsLoaded
@@ -85,7 +85,7 @@ export function Dash() {
             className="!p-3 !rounded-md"
           >
             <span className="text-xl md:text-2xl font-semibold">
-              Visit the Teams DB
+            {t<string>("dash.visit_teams_db")}
             </span>
           </AnchorButton>
         </Card>
@@ -94,7 +94,7 @@ export function Dash() {
             <>
               <div className="flex flex-col gap-4">
                 <h1 className="text-center text-xl md:text-2xl lg:text-4xl">
-                  <b>Latest Release: </b>
+                  <b>{t<string>("dash.latest_release")}</b>
                   <a
                     href={`https://github.com/genshinsim/gcsim/releases/tag/${tag}`}
                   >
@@ -114,7 +114,7 @@ export function Dash() {
                 className="!p-3 !rounded-md"
               >
                 <span className="text-xl md:text-2xl font-semibold">
-                  View Releases on GitHub
+                  {t<string>("dash.view_releases")}
                 </span>
               </AnchorButton>
             </>
