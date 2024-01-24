@@ -5,6 +5,7 @@ import Chinese from "./locales/Chinese.json";
 import English from "./locales/English.json";
 import IngameNames from "./locales/IngameNames.json";
 import Japanese from "./locales/Japanese.json";
+import Korean from "./locales/Korean.json";
 import Russian from "./locales/Russian.json";
 import Spanish from "./locales/Spanish.json";
 
@@ -20,6 +21,10 @@ const resources = {
   ja: {
     translation: Japanese,
     game: IngameNames.Japanese,
+  },
+  ko: {
+    translation: Korean,
+    game: IngameNames.Korean,
   },
   es: {
     translation: Spanish,
