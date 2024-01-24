@@ -105,20 +105,17 @@
         "error_loading_database": "Error loading database. No data found"
     },
     "nav": {
-        "about": "About",
-        "advanced": "Advanced",
+        "english": "English",
         "chinese": "中文",
         "japanese": "日本語",
         "korean": "한국어",
-        "english": "English",
         "spanish": "Español",
         "russian": "Русский",
         "german": "Deutsch",
-        "language": "Language:",
         "simulator": "Simulator",
         "teams_db": "Teams DB",
-        "viewer": "Viewer",
-        "database": "Database"
+        "documentation": "Documentation",
+        "releases": "Releases"
     },
     "sim": {
         "loading_simulator_please": "Loading simulator. Please wait"

@@ -103,18 +103,17 @@
         "error_loading_database": "Fehler beim Laden der Datenbank. Keine Daten gefunden."
     },
     "nav": {
-        "about": "Über uns",
-        "advanced": "Fortgeschritten",
+        "english": "English",
         "chinese": "中文",
         "japanese": "日本語",
-        "english": "English",
+        "korean": "한국어",
         "spanish": "Español",
         "russian": "Русский",
         "german": "Deutsch",
-        "language": "Sprache:",
         "simulator": "Simulator",
         "teams_db": "Teamdatenbank",
-        "viewer": "Betrachter"
+        "documentation": "Dokumentation",
+        "releases": "Releases"
     },
     "sim": {
         "loading_simulator_please": "Simulator wird geladen. Bitte warten."
