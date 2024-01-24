@@ -112,6 +112,8 @@
     "simple": {
         "action_list": "Lista de acciones",
         "add_character": "Agregar personaje",
+        "artifacts": "Artefactos",
+        "copied_to_clipboard": "{{item}} copiado en el portapapeles",
         "discord_post": " si necesitas algunas ideas.",
         "discord_pre": "Ingresa la lista de acciones que deseas usar en la caja de texto debajo. Tenemos una vasta colección de lista de acciones compartidas por usuarios en nuestro ",
         "documentation": "documentación",
@@ -123,6 +125,7 @@
         "hide": "Ocultar",
         "hide_all_tips": "Ocultar todos los tips",
         "loading_workers": "Cargando trabajadores",
+        "name_search": "Búsqueda de nombre",
         "run": "Correr",
         "show": "Mostrar",
         "sim_options": "Opciones de simulación",
@@ -131,6 +134,7 @@
         "video": "video",
         "video_post": " como guía inicial.",
         "video_pre": "Empieza por agregar miembros de equipo. checa este ",
+        "weapons": "Armas",
         "workers_available": "Trabajadores disponibles: "
     },
     "src": {

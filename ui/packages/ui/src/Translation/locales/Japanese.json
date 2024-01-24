@@ -109,6 +109,8 @@
     "simple": {
         "action_list": "アクションリスト",
         "add_character": "キャラクター追加",
+        "artifacts": "聖遺物",
+        "copied_to_clipboard": "{{item}}クリップボードにコピーされた",
         "discord_post": " に多くの記述例がありますのでご参照ください。",
         "discord_pre": "下のテキストボックスにシミュレーションへ追加したい行動や要素を記述します。何を書けばいいかわからない方は",
         "documentation": "資料",
@@ -120,6 +122,7 @@
         "hide": "隠す",
         "hide_all_tips": "すべてのチュートリアルを隠す",
         "loading_workers": "ワーカーを読み込み中",
+        "name_search": "名前検索",
         "run": "実行",
         "show": "表示",
         "sim_options": "シミュレーター",
@@ -128,6 +131,7 @@
         "video": "動画",
         "video_post": "をチェックしてください！",
         "video_pre": "編成にキャラクターを追加して開始しましょう！使い方はこの",
+        "weapons": "武器",
         "workers_available": "使用可能なワーカー数: "
     },
     "src": {

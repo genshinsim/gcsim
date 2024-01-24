@@ -1,4 +1,5 @@
 import charPipelineData from "./char_data.generated.json";
+import artifactPipelineData from "./artifact_data.generated.json";
 import weaponPipelineData from "./weapon_data.generated.json";
 
 export interface CharDataMap {
@@ -47,7 +48,9 @@ export function protoWeapTypeToDisplayString(w: string): string {
   }
 }
 
-export const valid_weapons: string[] = Object.keys(weaponPipelineData.data)
+export const valid_characters: string[] = Object.keys(charPipelineData.data);
+export const valid_artifacts: string[] = Object.keys(artifactPipelineData.data);
+export const valid_weapons: string[] = Object.keys(weaponPipelineData.data);
 
 let charData: CharDataMap = {};
 

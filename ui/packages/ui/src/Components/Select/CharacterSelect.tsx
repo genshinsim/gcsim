@@ -1,22 +1,22 @@
 import { Omnibar } from "@blueprintjs/select";
-import { IWeapon } from "@gcsim/types";
+import { ICharacter } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
-import { weaponSelectProps } from "./weapons";
+import { characterSelectProps } from "./characters";
 
-const WeaponOmnibar = Omnibar.ofType<IWeapon>();
+const CharacterOmnibar = Omnibar.ofType<ICharacter>();
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (item: IWeapon) => void;
+  onSelect: (character: ICharacter) => void;
 };
 
-export function WeaponSelect(props: Props) {
+export function CharacterSelect(props: Props) {
   const { t } = useTranslation();
   return (
-    <WeaponOmnibar
+    <CharacterOmnibar
       resetOnSelect
-      {...weaponSelectProps}
+      {...characterSelectProps}
       isOpen={props.isOpen}
       onClose={props.onClose}
       onItemSelect={props.onSelect}
