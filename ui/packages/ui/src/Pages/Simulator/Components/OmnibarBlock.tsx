@@ -52,7 +52,7 @@ export function OmnibarBlock() {
         isOpen={weaponsOpen}
         onClose={() => setWeaponsOpen(false)}
         onSelect={(weapon: IWeapon) => {
-          setArtifactsOpen(false);
+          setWeaponsOpen(false);
           navigator.clipboard.writeText(weapon ?? "").then(() => {
             copyToast.current?.show({
               message: `${t("simple.copied_to_clipboard", { item: weapon })}`,
