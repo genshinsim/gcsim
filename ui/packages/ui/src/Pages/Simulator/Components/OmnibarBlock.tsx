@@ -20,7 +20,7 @@ export function OmnibarBlock() {
           setCharactersOpen(true);
         }}
       >
-        <Trans>simple.characters</Trans>
+        <Trans>db.characters</Trans>
       </Button>
       <CharacterSelect
         isOpen={charactersOpen}
