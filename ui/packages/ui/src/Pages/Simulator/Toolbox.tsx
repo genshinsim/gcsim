@@ -111,7 +111,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
             placement="top"
             className="basis-full md:basis-1/2"
             popoverClassName={Classes.POPOVER_DISMISS}>
-          <Button icon="wrench" fill text="Tools" />
+          <Button icon="wrench" fill text={t<string>("simple.tools")} />
         </Popover2>
         <Button
             icon="play"

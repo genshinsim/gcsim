@@ -122,7 +122,6 @@
     },
     "simple": {
         "action_list": "Action List",
-        "add_character": "Add Character",
         "artifacts": "Artifacts",
         "copied_to_clipboard": "{{item}} copied to clipboard",
         "discord_post": " if you need some ideas.",
@@ -130,23 +129,18 @@
         "documentation": "documentation",
         "documentation_post": " which includes a simple tutorial on how to write a config from scratch.",
         "documentation_pre": "Alternatively, check out our ",
-        "done": "Done",
-        "exit_edit": "Exit edit",
-        "give_me_back": "Give me back my tooltips!",
-        "hide": "Hide",
+        "generate_sample": "Generate sample on page load",
         "hide_all_tips": "Hide all tips",
-        "loading_workers": "Loading workers",
         "name_search": "Name Search",
         "run": "Run",
-        "show": "Show",
-        "sim_options": "Sim Options",
-        "start_by_adding": "Start by adding some team members",
+        "settings": "Settings",
         "team": "Team",
+        "tools": "Tools",
         "video": "video",
         "video_post": " to get started.",
         "video_pre": "Get started by adding characters in to your team. Check out this ",
         "weapons": "Weapons",
-        "workers_available": "Workers available: "
+        "workers": "Workers"
     },
     "src": {
         "this_page_is": "This page is not implemented yet. Stay tuned!"
