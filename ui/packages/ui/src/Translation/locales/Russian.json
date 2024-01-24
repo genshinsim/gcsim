@@ -83,15 +83,11 @@
     "workers_pre": "Запускаю симуляцию с "
   },
   "dash": {
-    "about": "О нас",
-    "advanced_mode": "Продвинутый режим",
-    "contribute": "Помочь нам",
-    "desktop_tool": "Приложение на ПК",
-    "documentation": "Документация",
-    "is_a_team": "это симулятор DPS отряда для Genshin Impact. Начните с выбора одного из вариантов!",
-    "simulator": "Симулятор",
-    "teams_db": "База данных команд",
-    "viewer": "Просмотр"
+    "get_started": "Начать",
+    "users_submitted": "Посмотрите, что прислали пользователи:",
+    "visit_teams_db": "Посетит базу данных команд",
+    "latest_release": "Последний выпуск: ",
+    "view_releases": "Просмотреть выпуски на GitHub"
   },
   "db": {
     "author": "Автор: ",

@@ -32,15 +32,11 @@
         "workers_pre": "ワーカー数："
     },
     "dash": {
-        "about": "このツールについて",
-        "advanced_mode": "詳細モード(上級者向け)",
-        "contribute": "協力する",
-        "desktop_tool": "デスクトップ版",
-        "documentation": "資料",
-        "is_a_team": "は原神のための編成DPSシミュレーターです。 以下のボタンから各モードへ移れます!",
-        "simulator": "シミュレーター",
-        "teams_db": "編成データベース",
-        "viewer": "閲覧モード"
+        "get_started": "スタート",
+        "users_submitted": "ユーザーの投稿をご覧ください:",
+        "visit_teams_db": "編成データベースを見る",
+        "latest_release": "最新リリース: ",
+        "view_releases": "GitHubでリリースを見る"
     },
     "db": {
         "author": "作成者: ",
