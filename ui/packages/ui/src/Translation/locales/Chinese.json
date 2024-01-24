@@ -103,19 +103,17 @@
         "import_success": "GOOD信息库已成功上载"
     },
     "nav": {
-        "about": "关于",
-        "advanced": "进阶",
-        "chinese": "中文",
         "english": "English",
+        "chinese": "中文",
         "japanese": "日本語",
         "korean": "한국어",
         "spanish": "Español",
         "russian": "Русский",
         "german": "Deutsch",
-        "language": "语言：",
         "simulator": "模拟器",
         "teams_db": "配队数据库",
-        "viewer": "视图"
+        "documentation": "文献资料",
+        "releases": "发行版"
     },
     "sim": {
         "loading_simulator_please": "加载模拟器中。请稍候"

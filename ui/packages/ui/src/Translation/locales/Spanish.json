@@ -93,19 +93,17 @@
         "error_loading_database": "Error cargando base de datos. No se encontraron datos"
     },
     "nav": {
-        "about": "Acerca",
-        "advanced": "Avanzado",
-        "chinese": "中文",
         "english": "English",
+        "chinese": "中文",
         "japanese": "日本語",
         "korean": "한국어",
         "spanish": "Español",
         "russian": "Русский",
         "german": "Deutsch",
-        "language": "Idioma:",
         "simulator": "Simulador",
         "teams_db": "Base de datos de equipos",
-        "viewer": "Visor"
+        "documentation": "Documentación",
+        "releases": "Lanzamientos"
     },
     "sim": {
         "loading_simulator_please": "Cargando simulador. Por favor espere"

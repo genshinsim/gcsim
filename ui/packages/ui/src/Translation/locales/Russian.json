@@ -155,19 +155,17 @@
     "error_loading_database": "Ошибка загрузки базы данных. Данные не найдены"
   },
   "nav": {
-    "about": "О нас",
-    "advanced": "Продвинутый режим",
+    "english": "English",
     "chinese": "中文",
     "japanese": "日本語",
     "korean": "한국어",
-    "english": "English",
     "spanish": "Español",
     "russian": "Русский",
     "german": "Deutsch",
-    "language": "Язык:",
     "simulator": "Симулятор",
     "teams_db": "База данных команд",
-    "viewer": "Просмотр"
+    "documentation": "Документация",
+    "releases": "Выпуски"
   },
   "sim": {
     "loading_simulator_please": "Симулятор загружается. Пожалуйста подождите"

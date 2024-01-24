@@ -135,20 +135,17 @@
         "error_loading_database": "데이터베이스를 불러오는 중 에러 발생. 데이터를 찾을 수 없음."
     },
     "nav": {
-        "about": "정보",
-        "advanced": "고급",
-        "chinese": "중국어",
-        "japanese": "일본어",
+        "english": "English",
+        "chinese": "中文",
+        "japanese": "日本語",
         "korean": "한국어",
-        "english": "영어",
-        "spanish": "에스파냐어",
-        "russian": "러시아어",
-        "german": "독일어",
-        "language": "언어:",
+        "spanish": "Español",
+        "russian": "Русский",
+        "german": "Deutsch",
         "simulator": "시뮬레이터",
         "teams_db": "팀 데이터베이스",
-        "viewer": "뷰어",
-        "database": "데이터베이스"
+        "documentation": "설명서",
+        "releases": "릴리스"
     },
     "sim": {
         "loading_simulator_please": "시뮬레이터 불러오는 중. 기다려주세요"

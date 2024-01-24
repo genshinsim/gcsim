@@ -90,19 +90,17 @@
         "error_loading_database": "データベースを読み込み中にエラーが発生しました: データが存在しません"
     },
     "nav": {
-        "about": "このツールについて",
-        "advanced": "詳細モード",
+        "english": "English",
         "chinese": "中文",
         "japanese": "日本語",
         "korean": "한국어",
-        "english": "English",
         "spanish": "Español",
         "russian": "Русский",
         "german": "Deutsch",
-        "language": "言語設定:",
         "simulator": "シミュレーター",
         "teams_db": "編成データベース",
-        "viewer": "閲覧モード"
+        "documentation": "ドキュメント",
+        "releases": "リリース"
     },
     "sim": {
         "loading_simulator_please": "シミュレーター読み込み中 - しばらくお待ちください。"

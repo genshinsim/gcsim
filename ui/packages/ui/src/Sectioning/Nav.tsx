@@ -46,7 +46,7 @@ export default ({}) => {
       href="https://docs.gcsim.app"
       target="_blank"
     >
-      <span>Documentation</span>
+      <span>{t<string>("nav.documentation")}</span>
     </AnchorButton>,
     <AnchorButton
       key="update"
@@ -55,7 +55,7 @@ export default ({}) => {
       href="https://github.com/genshinsim/gcsim/releases"
       target="_blank"
     >
-      <span>Releases</span>
+      <span>{t<string>("nav.releases")}</span>
     </AnchorButton>,
     <AnchorButton
       key="discord"
@@ -65,7 +65,8 @@ export default ({}) => {
       rel="noreferrer"
       icon={<FaDiscord size="24px" color="#abb3bf" />}
     >
-      <span>{"Discord"}</span>
+      {/* no localization needed */}
+      <span>Discord</span>
     </AnchorButton>,
   ];
 
