@@ -23,6 +23,7 @@ export function CharacterQuickSelect() {
     return (
       <div className="grow max-w-xl">
         <MultiSelect2
+          placeholder={t<string>("db.type_to_search")}
           items={charNames}
           itemRenderer={(charName, itemProps) => {
             return (

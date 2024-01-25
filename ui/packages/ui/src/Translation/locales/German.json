@@ -1,15 +1,4 @@
 {
-    "advanced": {
-        "action_list": "Aktionsliste",
-        "helpers": "Helfer",
-        "hide": "Ausblenden",
-        "loading_workers": "Arbeiter werden geladen",
-        "run": "Ausführen",
-        "show": "Anzeigen",
-        "sim_options": "Simulationsoptionen",
-        "substat_helper": "Bonusattributhelfer",
-        "workers_available": "Verfügbare Arbeiter: "
-    },
     "character": {
         "artifact_stats": "Artefaktattribute",
         "total_stats": "Attribute insgesamt (bei 0 Sekunden, Best-Effort-Prinzip)",
@@ -17,19 +6,6 @@
         "c_pre": "C",
         "lvl": "Stufe",
         "talents": "Talente"
-    },
-    "components": {
-        "close": "Schließen",
-        "currently_loaded_workers": "Aktuell geladene Arbeiter: ",
-        "no_characters": "Keine Figuren",
-        "result_post": "ms mit durchschnittlichem DPS: ",
-        "result_pre": "Simulation abgeschlossen in ",
-        "running_simulation": "Führe Simulation aus:",
-        "see_results_in": "Ergebnisse im Betrachter ansehen",
-        "set": "Speichern",
-        "simulation_exited_with": "Simulation mit Fehler beendet: ",
-        "workers_post": " Arbeitern aus",
-        "workers_pre": "Führe Simulation mit "
     },
     "dash": {
         "get_started": "Loslegen",
@@ -53,7 +29,6 @@
         "filters": "Filter:",
         "hash": "Hash: ",
         "load_in_simulator": "Im Simulator laden",
-        "loading": "Wird geladen...",
         "number_of_targets": "Anzahl der Ziele: ",
         "r": " Verfeinerungsgrad",
         "show_in_viewer": "Im Betrachter anzeigen",
@@ -67,7 +42,7 @@
         "dpsPerTarget": "DPS pro Ziel",
         "avgTotalDmg": "Durchschnittlicher Gesamtschaden",
         "avgSimTime": "Durchschnittliche Simulationszeit",
-        "runDate": "Simulations datum",
+        "createDate": "Erstelldatum",
         "timeToKill": "Zeit zum Töten",
         "duration": "Dauer",
         "unknown": "Unbekannt",
@@ -75,9 +50,11 @@
         "filter": "Filter",
         "customFilter": "Benutzerdefinierter Filter",
         "characters": "Figuren",
+        "tags": "Tags",
         "clear": "Zurücksetzen",
         "approve": "Genehmigen",
-        "DB_TAG_KQM_GUIDE": "KQM Guide"
+        "DB_TAG_KQM_GUIDE": "KQM Guide",
+        "sort_by": "Sortieren nach"
     },
     "elements": {
         "none": "Elementlos",
@@ -95,9 +72,6 @@
     "importer": {
         "import_success": "GOOD-Daten erfolgreich importiert"
     },
-    "links": {
-        "error_loading_database": "Fehler beim Laden der Datenbank. Keine Daten gefunden."
-    },
     "nav": {
         "english": "English",
         "chinese": "中文",
@@ -111,8 +85,13 @@
         "documentation": "Dokumentation",
         "releases": "Releases"
     },
+    "sample": {
+        "drop_text": "Beispiel-Datei (.gz) aus gcsim per Drag-and-drop hochladen oder per Klick Dateien auswählen."
+    },
     "sim": {
-        "loading_simulator_please": "Simulator wird geladen. Bitte warten."
+        "loaded": "{{i}} Iterationen geladen!",
+        "loading": "Wird geladen...",
+        "running": "Wird ausgeführt"
     },
     "simple": {
         "action_list": "Aktionsliste",
@@ -123,16 +102,33 @@
         "documentation": "Dokumentation",
         "documentation_post": " an, welche ein einfaches Tutorial zum Schreiben von sequentiellen Listen enthält.",
         "documentation_pre": "Ansonsten, schauen Sie sich unsere ",
+        "fetch": "Abrufen",
         "generate_sample": "Beispiel beim Laden der Seite erzeugen",
         "hide_all_tips": "Alle Tipps ausblenden",
+        "load": "Einlesen",
         "name_search": "Namenssuche",
         "run": "Ausführen",
         "settings": "Einstellungen",
         "tools": "Tools",
+        "tools_hide_builder": "Builder ausblenden",
+        "tools_hide_tooltips": "Tooltips ausblenden",
+        "tools_show_builder": "Builder einblenden",
+        "tools_show_tooltips": "Tooltips einblenden",
+        "tools_sample_upload": "Beispiel-Upload",
+        "tools_substat_snippets": "Artefaktschnipsel",
+        "tools_import": "Aus {{src}} importieren",
+        "tools_import_after": "Sobald deine Figurdaten importiert wurden, kannst du deine importierte Figur hinzufügen, indem du auf das \"+\" im \"Team\"-Bereich klickst und nach dem Namen der Figur suchst.",
+        "tools_paste_uid": "UID hier einfügen",
+        "tools_import_pre_go": "Fügen Sie die Importdaten im GOOD-Format in das Textfeld unten ein. Wenn Sie von Genshin Optimizer kommen, können Sie Ihre Datenbank im GOOD-Format <0>hier</0> exportieren.",
+        "tools_import_pre_enka": "Stellen Sie sicher, dass Ihre UID keine Probleme auf <0>Enka.Network</0> hat.",
+        "tools_import_post_go": "Daten erfolgreich geparst.",
+        "tools_import_post_enka": "Die Daten wurden erfolgreich abgerufen. Die folgenden Figuren wurden importiert: <0></0>",
+        "tools_import_warning": "Das Importieren wird alle bestehenden Importe von {{ src }} überschreiben. Dieser Vorgang kann nicht rückgängig gemacht werden.",
         "team": "Team",
         "video": "Video",
         "video_post": " an um anzufangen.",
-        "video_pre": "Fügen Sie Charaktere zu ihrem Team hinzu um zu beginnen. Schauen Sie sich dieses ",
+        "video_pre": "Fügen Sie Figuren zu ihrem Team hinzu um zu beginnen. Schauen Sie sich dieses ",
+        "weapons": "Waffen",
         "workers": "Arbeiter"
     },
     "src": {
@@ -151,11 +147,18 @@
         "clear": "Ausschalten",
         "close": "Schließen",
         "combined": "Insgesamt",
+        "commit_mismatch_body_hash": "Diese Simulation wurde mit einem veralteten Commit erstellt. Einige Daten, Diagramme oder Funktionen können fehlen oder ungenau sein. Aktualisieren Sie, um Kompatibilitätsprobleme zu beheben.",
+        "commit_mismatch_body_minor": "Diese Simulation wurde mit veralteten Ergebnissen erstellt. Einige Daten, Diagramme oder Funktionen können fehlen oder ungenau sein. Aktualisieren Sie, um Kompatibilitätsprobleme zu beheben.",
+        "commit_mismatch_body_major": "Die Simulationsergebnisse sind mit der neuesten Version von gcsim nicht kompatibel. Beim Aktualisieren wird versucht, eine neue Simulation durchzuführen und neue Ergebnisse zu erzeugen.",
+        "commit_mismatch_title_hash": "Unstimmigkeit beim Commit-Hash",
+        "commit_mismatch_title_minor": "Geringfügige Versionsabweichung",
+        "commit_mismatch_title_major": "Große Versionsabweichung",
         "config": "Konfiguration",
         "continue": "Fortfahren",
         "copied_to_clipboard": "In die Zwischenablage kopiert",
         "copy": "Kopieren",
         "copy_link": "Link kopieren",
+        "copy_list_only": "Nur Aktionsliste kopieren (ohne Artefaktattribute)",
         "cr": "KT",
         "create_a_shareable": "Teilbaren Link erstellen",
         "damage_dealt_over": "Über die Zeit angerichteter Schaden",
@@ -164,13 +167,16 @@
         "defaults": "Defaults",
         "defense": "Verteidigung",
         "details": "Details",
+        "download": "Herunterladen",
         "dps_by_ability": "DPS pro Fähigkeit (Durchschnitt)",
         "em": "Elementarkunde",
         "er": "Aufladerate",
         "error_copying_not": "Fehler beim Kopieren :( Irgendwas ist schief gelaufen",
         "error_encountered": "Es ist ein Fehler aufgetreten: ",
         "git_hash": "git hash: ",
+        "generate": "Generieren",
         "hp": "LP",
+        "ignore": "Ignorieren",
         "level": "Stufe",
         "link_is_permanent": "Der Link ist permanent. ",
         "link_post": "Die Ergebnisse können unter diesem Link eingesehen werden: ",
@@ -184,10 +190,22 @@
         "please_note_that": "Bitte beachten Sie: Es soll sich niemand deswegen dazu gezwungen fühlen Geld zu spenden. Es handelt sich hierbei um einen einfachen Weg die Menge an geteilten Daten zu deckeln und gleichzeitig soll es ein kleines Dankeschön an diejenigen sein, welche dieses Projekt finanziell oder durch ihr Mitwirken unterstützt haben. Falls Sie keinen Zugangsschlüssel haben, dann schauen Sie doch mal auf unserem Discord vorbei und bitten Sie jemand anderes darum einen Link für Sie zu erstellen.",
         "reactions_triggered": "Ausgelöste Reaktionen",
         "refinement": "Verfeinerungsgrad",
+        "rerun": "Erneut ausführen",
+        "results": "Ergebnisse",
+        "results_outdated": "Veraltete Ergebnisse",
+        "retry": "Erneut versuchen",
+        "return_to_sim": "Zurück zum Simulator",
+        "sample": "Beispiel",
+        "search": "Suche",
+        "seed_sample": "Beispiel-Seed",
+        "seed_min": "Min-Seed",
+        "seed_max": "Max-Seed",
+        "seed_p": "{{p}}. Perzentil-Seed",
         "sec_post": "s an Kampf simuliert (",
         "sec_pre": "Es wurden ",
         "send_to_simulator": "Zum Simulator senden",
         "share": "Teilen",
+        "share_link": "Teilbarer Link",
         "substats": "Bonusattribute",
         "summary": "Zusammenfassung",
         "target": "Ziel",
@@ -195,15 +213,8 @@
         "time_post": "s zum Ausführen).",
         "time_pre": " Iterationen benötigten ",
         "unknown": "unbekannt",
+        "upgrade": "Aktualisieren",
         "upload": "Hochladen",
         "upload_failed": "Der Upload ist fehlgeschlagen."
-    },
-    "viewerdashboard": {
-        "drag_n_drop": "JSON-Datei (.gz) aus gcsim per Drag-and-drop hochladen oder per Klick Dateien auswählen",
-        "drop_the_file": "Legen Sie die Datei hier ab...",
-        "error_retrieving_specified": "Fehler beim Abrufen der angegebenen URL",
-        "or_select_from": "Oder wählen Sie eine der folgenden Dateien aus, die Sie vorher geöffnet haben (wird beim Neuladen der Seite gelöscht):",
-        "upload_a_file": "Datei hochladen",
-        "url_does_not": "URL enthält keine gültige JSON-Datei (.gz)"
     }
 }

@@ -86,13 +86,14 @@ type DialogProps = {
 }
 
 const DialogBody = ({shareLink, copy}: DialogProps) => {
+  const { t } = useTranslation();
   if (shareLink == null) {
     return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
   }
 
   return (
     <Label>
-      Share Link
+      {t<string>("viewer.share_link")}
       <InputGroup
         readOnly={true}
         fill={true}

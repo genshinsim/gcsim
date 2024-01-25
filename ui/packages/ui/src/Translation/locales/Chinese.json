@@ -1,15 +1,4 @@
 {
-    "advanced": {
-        "action_list": "动作列表",
-        "helpers": "辅助器",
-        "hide": "隐藏",
-        "loading_workers": "加载工作器中",
-        "run": "运行",
-        "show": "显示",
-        "sim_options": "模拟选项",
-        "substat_helper": "副属性辅助器",
-        "workers_available": "可用工作器："
-    },
     "character": {
         "artifact_stats": "圣遗物属性",
         "total_stats": "总计属性（0 秒时，尽力而为）",
@@ -17,19 +6,6 @@
         "c_pre": "",
         "lvl": "等级",
         "talents": "天赋"
-    },
-    "components": {
-        "close": "关闭",
-        "currently_loaded_workers": "当前加载的工作器：",
-        "no_characters": "没有角色",
-        "result_post": "毫秒，平均DPS：",
-        "result_pre": "模拟完成，用时",
-        "running_simulation": "正在运行模拟：",
-        "see_results_in": "在视图中查看结果",
-        "set": "设置",
-        "simulation_exited_with": "模拟中发生了错误：",
-        "workers_post": "个工作器运行模拟",
-        "workers_pre": "正在使用"
     },
     "dash": {
         "get_started": "入门",
@@ -53,7 +29,6 @@
         "filters": "过滤器：",
         "hash": "哈希：",
         "load_in_simulator": "加载到模拟器",
-        "loading": "加载中……",
         "number_of_targets": "目标数：",
         "r": " 精",
         "show_in_viewer": "在视图中展示",
@@ -67,7 +42,7 @@
         "dpsPerTarget": "每个目标的DPS",
         "avgTotalDmg": "平均总伤害",
         "avgSimTime": "平均模拟时间",
-        "runDate": "运行日期",
+        "createDate": "运行日期",
         "ttk": "死亡时间",
         "duration": "持续时间",
         "unknown": "未知",
@@ -75,12 +50,11 @@
         "filter": "过滤",
         "customFilter": "自定义过滤器",
         "characters": "角色",
+        "tags": "标签",
         "clear": "清除",
         "approve": "批准",
-        "DB_TAG_KQM_GUIDE": "KQM Guide"
-    },
-    "footer": {
-        "gcsim_is_not": "gcsim不是官方工具，原神的游戏内容和素材的商标和版权归米哈游所有。本网站的国际化汉化支持来自：古月浪子。"
+        "DB_TAG_KQM_GUIDE": "KQM Guide",
+        "sort_by": "排序方式"
     },
     "elements": {
         "none": "无属性",
@@ -92,8 +66,8 @@
         "electro": "雷属性",
         "dendro": "草属性"
     },
-    "links": {
-        "error_loading_database": "加载数据库失败。找不到数据"
+    "footer": {
+        "gcsim_is_not": "gcsim不是官方工具，原神的游戏内容和素材的商标和版权归米哈游所有。本网站的国际化汉化支持来自：古月浪子。"
     },
     "importer": {
         "import_success": "GOOD信息库已成功上载"
@@ -111,8 +85,13 @@
         "documentation": "文献资料",
         "releases": "发行版"
     },
+    "sample": {
+        "drop_text": "拖动gcsim的gzip-JSON样本文件到此处，或者点击以选择。"
+    },
     "sim": {
-        "loading_simulator_please": "加载模拟器中。请稍候"
+        "loaded": "加载了 {{i}} 次迭代！",
+        "loading": "加载中…",
+        "running": "正在运行"
     },
     "simple": {
         "action_list": "动作列表",
@@ -123,12 +102,28 @@
         "documentation": "文档",
         "documentation_post": "，其中包含有关如何编写顺序列表的简单教程。",
         "documentation_pre": "或者，查看我们的",
+        "fetch": "导入",
         "generate_sample": "在页面加载时生成样本",
         "hide_all_tips": "隐藏所有小提示",
+        "load": "加载",
         "name_search": "名称搜索",
         "run": "运行",
         "settings": "设置",
         "tools": "工具",
+        "tools_hide_builder": "隐藏所设者",
+        "tools_hide_tooltips": "隐藏所工具提示",
+        "tools_show_builder": "显示建设者",
+        "tools_show_tooltips": "显示建工具提示",
+        "tools_sample_upload": "上传样本",
+        "tools_substat_snippets": "圣遗代码段",
+        "tools_import": "从 {{src}} 导入",
+        "tools_import_after": "导入角色数据后，点击 \"配队 \"部分的 \"+\"并搜索角色名称，即可添加导入的角色。",
+        "tools_paste_uid": "在此粘贴 UID",
+        "tools_import_pre_go": "在下面的文本框中粘贴 GOOD 格式的导入数据。如果您来自 Genshin Optimizer，可以<0>在此</0>导出 GOOD 格式的数据库。",
+        "tools_import_pre_enka": "确保您的 UID 在 <0>Enka.Network</0> 上没有问题。",
+        "tools_import_post_go": "数据解析成功。",
+        "tools_import_post_enka": "数据检索成功。已导入以下角色： <0></0>",
+        "tools_import_warning": "导入将替换 {{src}} 的任何现有导入。此操作无法逆转。",
         "team": "配队",
         "video": "视频",
         "video_post": "来了解更多。",
@@ -152,10 +147,17 @@
         "clear": "清空",
         "close": "关闭",
         "combined": "合计",
+        "commit_mismatch_body_hash": "此模拟是使用过时的提交生成的。某些数据、图表或功能可能丢失或不准确。请升级以解决兼容性问题。",
+        "commit_mismatch_body_minor": "本模拟结果已过时。某些数据、图表或功能可能丢失或不准确。请升级以解决兼容性问题。",
+        "commit_mismatch_body_major": "模拟结果与最新版 gcsim 不兼容。升级后将尝试重新模拟并生成新结果。",
+        "commit_mismatch_title_hash": "提交哈希值不匹配",
+        "commit_mismatch_title_minor": "次要版本不匹配",
+        "commit_mismatch_title_major": "主要版本不匹配",
         "config": "配置",
         "continue": "继续",
         "copied_to_clipboard": "复制到剪切板",
         "copy": "复制",
+        "copy_list_only": "仅复制动作列表（忽略圣遗物属性）",
         "copy_link": "复制链接",
         "cr": "暴击率",
         "create_a_shareable": "创建分享链接",
@@ -165,13 +167,16 @@
         "defaults": "恢复默认",
         "defense": "防御力",
         "details": "详情",
+        "download": "下载",
         "dps_by_ability": "天赋DPS（平均）",
         "em": "元素精通",
         "er": "元素充能效率",
         "error_copying_not": "复制失败 :( 不确定为什么出问题了",
         "error_encountered": "发生错误：",
         "git_hash": "git哈希：",
+        "generate": "生成",
         "hp": "生命值",
+        "ignore": "不予理会",
         "level": "等级",
         "link_is_permanent": "链接是永久的。",
         "link_post": "可在此处查看结果：",
@@ -185,10 +190,22 @@
         "please_note_that": "请注意，这并不是试图让人们捐款。这是一种控制共享数据量的简单方法，同时对那些在经济上或通过贡献支持该项目的人表示感谢。如果你确实需要一个永久链接并且你没有访问密钥，只需跳到我们的Discord并请别人为你代做。",
         "reactions_triggered": "触发的反应",
         "refinement": "精炼",
+        "rerun": "重运行",
+        "results": "结果",
+        "results_outdated": "结果过时",
+        "retry": "重试",
+        "return_to_sim": "返回模拟器",
+        "sample": "样本",
+        "search": "搜索",
+        "seed_sample": "样本种子",
+        "seed_min": "最低种子",
+        "seed_max": "最大种子",
+        "seed_p": "第 {{p}} 百分位种子",
         "sec_post": "秒的战斗（",
         "sec_pre": "模拟了",
         "send_to_simulator": "发送到模拟器",
         "share": "分享",
+        "share_link": "分享链接",
         "substats": "副属性",
         "summary": "摘要",
         "target": "目标",
@@ -196,15 +213,8 @@
         "time_post": "秒运行）。",
         "time_pre": "次迭代使用了",
         "unknown": "未知",
+        "upgrade": "升级",
         "upload": "上传",
         "upload_failed": "上传失败"
-    },
-    "viewerdashboard": {
-        "drag_n_drop": "拖动gcsim的gzip-JSON文件到此处，或者点击以选择",
-        "drop_the_file": "将文件拖动到此处…",
-        "error_retrieving_specified": "检索指定URL失败",
-        "or_select_from": "或者选择之前打开过的文件（页面重载时将会被删除）：",
-        "upload_a_file": "上传文件",
-        "url_does_not": "无效的gzip-JSON文件URL"
     }
 }

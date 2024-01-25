@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { ActionBar } from "SharedComponents/ActionBar";
 import { Warning } from "SharedComponents/Warning";
 import { ListView } from "../../SharedComponents/ListView";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: db.IEntry[];
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export const DBView = (props: Props) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4 m-8 my-4 items-center">
       <ActionBar simCount={props.data.length} />
@@ -25,7 +27,7 @@ export const DBView = (props: Props) => {
           dataLength={props.data.length} //This is important field to render the next data
           next={props.fetchData}
           hasMore={props.hasMore}
-          loader={<h4>Loading...</h4>}
+          loader={<h4>{t<string>("sim.loading")}</h4>}
           endMessage={
             <>
               <p className="text-center mt-4">

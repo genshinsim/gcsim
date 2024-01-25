@@ -1,15 +1,4 @@
 {
-    "advanced": {
-        "action_list": "アクションリスト",
-        "helpers": "補助ツール",
-        "hide": "畳む",
-        "loading_workers": "ワーカーを読み込み中",
-        "run": "実行",
-        "show": "展開",
-        "sim_options": "シミュレーター設定",
-        "substat_helper": "サブオプション設定ツール",
-        "workers_available": "使用可能なワーカー数: "
-    },
     "character": {
         "artifact_stats": "聖遺物ステータス",
         "total_stats": "トータルステータス (0秒後, ベストエフォート)",
@@ -17,19 +6,6 @@
         "c_pre": "星座",
         "lvl": "レベル",
         "talents": "天賦"
-    },
-    "components": {
-        "close": "閉じる",
-        "currently_loaded_workers": "現在読み込まれているワーカー数: ",
-        "no_characters": "キャラクターがありません",
-        "result_post": "ミリ秒 / DPS: ",
-        "result_pre": "シミュレーション完了 - 経過時間: ",
-        "running_simulation": "シミュレーション実行中:",
-        "see_results_in": "結果を閲覧モードで確認",
-        "set": "設定",
-        "simulation_exited_with": "エラー発生によりシミレーションは中断されました: ",
-        "workers_post": "でシミュレーションを実行中...",
-        "workers_pre": "ワーカー数："
     },
     "dash": {
         "get_started": "スタート",
@@ -53,7 +29,6 @@
         "filters": "絞り込み:",
         "hash": "ハッシュ: ",
         "load_in_simulator": "シミュレーターに読み込み",
-        "loading": "読み込み中 ...",
         "number_of_targets": "ターゲット数: ",
         "r": " 精錬",
         "show_in_viewer": "閲覧モードに読み込み",
@@ -67,7 +42,7 @@
         "dpsPerTarget": "ターゲット1体あたりのDPS",
         "avgTotalDmg": "平均総ダメージ",
         "avgSimTime": "平均シミュレーション時間",
-        "runDate": "実行日時",
+        "createDate": "作成日",
         "ttk": "撃破時間",
         "duration": "時間",
         "unknown": "不明",
@@ -75,15 +50,27 @@
         "filter": "フィルター",
         "customFilter": "カスタムフィルター",
         "characters": "キャラクター",
+        "tags": "タグ",
         "clear": "クリア",
         "approve": "承認",
-        "DB_TAG_KQM_GUIDE": "KQM Guide"
+        "DB_TAG_KQM_GUIDE": "KQM Guide",
+        "sort_by": "ソート順"
+    },
+    "elements": {
+        "none": "元素なし",
+        "anemo": "風",
+        "geo": "岩",
+        "pyro": "炎",
+        "cryo": "氷",
+        "hydro": "水",
+        "electro": "雷",
+        "dendro": "草"
     },
     "footer": {
         "gcsim_is_not": "このウェブサイトは個人的な計算を目的としており、gcsim, miHoYoとは関係ありません。原神のゲームコンテンツや素材の商標および著作権はmiHoYoに帰属します。 日本語翻訳作成: からしな_（Karashina#8663）"
     },
-    "links": {
-        "error_loading_database": "データベースを読み込み中にエラーが発生しました: データが存在しません"
+    "importer": {
+        "import_success": "GOODデータのインポートに成功"
     },
     "nav": {
         "english": "English",
@@ -98,8 +85,13 @@
         "documentation": "ドキュメント",
         "releases": "リリース"
     },
+    "sample": {
+        "drop_text": "読み込むにはzip化されたgcsimのサンプルJSONファイルをドラッグアンドドロップするかボタンをクリックしてアップロードしてください。"
+    },
     "sim": {
-        "loading_simulator_please": "シミュレーター読み込み中 - しばらくお待ちください。"
+        "loaded": "{{i}}反復をロード！",
+        "loading": "読み込み中...",
+        "running": "実行中"
     },
     "simple": {
         "action_list": "アクションリスト",
@@ -110,12 +102,28 @@
         "documentation": "資料",
         "documentation_post": "もありますのでご活用ください。",
         "documentation_pre": "また、連続モードの使い方や使用できる要素をまとめた",
+        "fetch": "取得",
         "generate_sample": "ページロード時にサンプルを生成",
         "hide_all_tips": "すべてのチュートリアルを隠す",
+        "load": "読み込み",
         "name_search": "名前検索",
         "run": "実行",
         "settings": "設定",
         "tools": "工具",
+        "tools_hide_builder": "ビルダーを隠す",
+        "tools_hide_tooltips": "ツールチップを隠す",
+        "tools_show_builder": "ビルダーを表示する",
+        "tools_show_tooltips": "ツールチップを表示する",
+        "tools_sample_upload": "サンプルのアップロード",
+        "tools_substat_snippets": "聖遺物スニペット",
+        "tools_import": "{{src}} からのインポート",
+        "tools_import_after": "キャラクターデータのインポートが完了したら、編成セクションの＋をクリックし、キャラクター名を検索することで、インポートしたキャラクターを追加することができます。",
+        "tools_paste_uid": "UIDをここに貼り付ける",
+        "tools_import_pre_go": "下のテキストボックスにGOOD形式のインポートデータを貼り付けてください。Genshin Optimizerをご利用の場合は、<0>こちら</0>からGOOD形式でエクスポートできます。",
+        "tools_import_pre_enka": "あなたのUIDが<0>Enka.Network</0>上で問題がないことを確認してください。",
+        "tools_import_post_go": "データは正常に解析された。",
+        "tools_import_post_enka": "データは正常に取り込まれました。以下のキャラクターがインポートされました： <0></0>",
+        "tools_import_warning": "読み込みは、{{src}}からの既存の読み込みを置き換えます。この動作は元に戻せません。",
         "team": "編成",
         "video": "動画",
         "video_post": "をチェックしてください！",
@@ -139,11 +147,18 @@
         "clear": "クリア",
         "close": "閉じる",
         "combined": "合計",
+        "commit_mismatch_body_hash": "このシミュレーションは古いコミットで生成されました。一部のデータ、グラフ、機能が欠けていたり、不正確な場合があります。アップグレードして互換性の問題を解決してください。",
+        "commit_mismatch_body_minor": "このシミュレーションは古い結果で生成されました。一部のデータ、グラフ、機能が欠けていたり、不正確な場合があります。アップグレードして互換性の問題を解決してください。",
+        "commit_mismatch_body_major": "シミュレーション結果が最新バージョンのgcsimと互換性がありません。アップグレードすると、再シミュレーションが行われ、新しい結果が生成されます。",
+        "commit_mismatch_title_hash": "コミットハッシュの不一致",
+        "commit_mismatch_title_minor": "マイナーバージョンの不一致",
+        "commit_mismatch_title_major": "メジャーバージョンの不一致",
         "config": "設定",
         "continue": "続ける",
         "copied_to_clipboard": "クリップボードにコピーしました",
         "copy": "コピー",
         "copy_link": "URLをコピー",
+        "copy_list_only": "コピーアクションリストのみ（聖遺物のスタッツは無視）",
         "cr": "会心率",
         "create_a_shareable": "共有可能なリンクを取得",
         "damage_dealt_over": "時間経過による与ダメージの推移",
@@ -152,13 +167,16 @@
         "defaults": "でフォルト",
         "defense": "防御力",
         "details": "詳細",
+        "download": "ダウンロード",
         "dps_by_ability": "天賦ごとのDPS (平均)",
         "em": "元素熟知",
         "er": "元素チャージ効率",
         "error_copying_not": "コピー失敗エラー :( 原因不明",
         "error_encountered": "エラー発生: ",
         "git_hash": "git hash: ",
+        "generate": "作成する",
         "hp": "HP",
+        "ignore": "無視",
         "level": "レベル",
         "link_is_permanent": "リンクは失効しません。 ",
         "link_post": "結果はこちらで確認可能です: ",
@@ -172,10 +190,22 @@
         "please_note_that": "なおこの仕様は寄付を募るためのものではありません。制限されたサーバーの容量を適切に管理するための施策で、このプロジェクトを金銭的または寄付によってサポートしてくれた人々にささやかな感謝の意を示すものです。なおアクセスキーは私たちのDiscordサーバーにアクセスして取得することができます。",
         "reactions_triggered": "トリガーされた元素反応",
         "refinement": "精錬",
+        "rerun": "再実行",
+        "results": "結果",
+        "results_outdated": "結果は時代遅れ",
+        "retry": "再試行",
+        "return_to_sim": "シミュレーターに戻る",
+        "sample": "サンプル",
+        "search": "検索",
+        "seed_sample": "サンプルシード",
+        "seed_min": "最小シード",
+        "seed_max": "最大シード",
+        "seed_p": "{{p}}パーセンタイルシード",
         "sec_post": "秒間の戦闘をシミュレート (",
         "sec_pre": "",
         "send_to_simulator": "シミュレーターに送る",
         "share": "共有",
+        "share_link": "共有可能なリンク",
         "substats": "サブオプション",
         "summary": "概要",
         "target": "ターゲット",
@@ -183,15 +213,8 @@
         "time_post": "秒かけて計算完了)",
         "time_pre": " 回の反復を ",
         "unknown": "不明",
+        "upgrade": "アップグレード",
         "upload": "アップロード",
         "upload_failed": "アップロード失敗"
-    },
-    "viewerdashboard": {
-        "drag_n_drop": "読み込むにはzip化されたgcsimのJSONファイルをドラッグアンドドロップするかボタンをクリックしてアップロードしてください。",
-        "drop_the_file": "ここにファイルをドロップ ...",
-        "error_retrieving_specified": "指定されたURLを取得できませんでした",
-        "or_select_from": "こちらから履歴を読み込む事もできます。（注意:再読み込みすると削除されます）",
-        "upload_a_file": "ファイルをアップロード",
-        "url_does_not": "このURLには読み込み可能なファイルが含まれていません。"
     }
 }

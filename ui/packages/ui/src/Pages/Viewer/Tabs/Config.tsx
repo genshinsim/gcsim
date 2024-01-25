@@ -13,6 +13,7 @@ import { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-gcsim";
 import "prismjs/themes/prism-tomorrow.css";
 import { useHistory } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 type UseConfigData = {
   cfg?: string;
@@ -31,6 +32,7 @@ type ConfigProps = {
 };
 
 const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -45,7 +47,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
           <ExecutorSettingsButton />
           <Button
               icon="refresh"
-              text="Rerun"
+              text={t<string>("viewer.rerun")}
               intent={Intent.SUCCESS}
               disabled={config.error !== "" || (!config.validated && config.modified)}
               loading={!config.isReady || running}

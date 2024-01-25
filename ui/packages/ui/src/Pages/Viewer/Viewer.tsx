@@ -14,6 +14,7 @@ import { useHistory } from "react-router";
 import { RootState, useAppSelector } from "@ui/Stores/store";
 import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
+import { useTranslation } from "react-i18next";
 
 type ViewerProps = {
   running: boolean;
@@ -93,13 +94,14 @@ const ErrorAlert = ({
       redirect: string;
       retry?: () => void;
     }) => {
+  const { t } = useTranslation();
   const copyToast = useRef<Toaster>(null);
   const history = useHistory();
 
   let cancelButtonText: string | undefined;
   let onCancel: (() => void) | undefined;
   if (retry != null) {
-    cancelButtonText = "Retry";
+    cancelButtonText = t<string>("viewer.retry");
     onCancel = () => retry();
   }
 
@@ -110,7 +112,7 @@ const ErrorAlert = ({
       onCancel={onCancel}
       canEscapeKeyCancel={false}
       canOutsideClickCancel={false}
-      confirmButtonText="Return to Simulator"
+      confirmButtonText={t<string>("viewer.return_to_sim")}
       cancelButtonText={cancelButtonText}
       intent={Intent.DANGER}
     >

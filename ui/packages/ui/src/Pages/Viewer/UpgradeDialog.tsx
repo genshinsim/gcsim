@@ -12,6 +12,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
+import { useTranslation } from "react-i18next";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
 const MAJOR = "4"; // Make sure the gcsim binary has also been updated
@@ -36,6 +37,7 @@ type Props = {
 
 // TODO: translations
 export default ({ exec, data, redirect, mode, commit, setResult, setError }: Props) => {
+  const { t } = useTranslation();
   const mismatch = useMismatch(data?.sim_version, commit, data?.schema_version);
   const [isOpen, setOpen] = useState(true);
   const location = useLocation();
@@ -61,7 +63,7 @@ export default ({ exec, data, redirect, mode, commit, setResult, setError }: Pro
   return (
     <Dialog
         isOpen={isOpen}
-        title="Results Outdated"
+        title={t<string>("viewer.results_outdated")}
         icon="outdated"
         usePortal={false}
         canEscapeKeyClose={minor}
@@ -116,6 +118,7 @@ type BodyProps = {
 };
 
 const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
+  const { t } = useTranslation();
   const simCommit = data?.sim_version ?? data?.version;
 
   const shortResultCommit = simCommit?.substring(0, 7);
@@ -173,10 +176,9 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 
   if (mismatch == MismatchType.CommitMismatch) {
     return (
-      <Callout title="Commit Hash Mismatch" intent={Intent.WARNING}>
+      <Callout title={t<string>("viewer.commit_mismatch_title_hash")} intent={Intent.WARNING}>
         <div>
-          This simulation was generated with an outdated commit. Some data, graphs, or features
-          may be missing or inaccurate. Upgrade to resolve compatibility issues.
+          {t<string>("viewer.commit_mismatch_body_hash")}
         </div>
         <VersionInfo />
       </Callout>
@@ -185,20 +187,18 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 
   if (mismatch == MismatchType.MinorVersionMismatch) {
     return (
-      <Callout title="Minor Version Mismatch" intent={Intent.WARNING}>
+      <Callout title={t<string>("viewer.commit_mismatch_title_minor")} intent={Intent.WARNING}>
         <div>
-          This simulation was generated with outdated results. Some data, graphs, or features may be
-          missing or inaccurate. Upgrade to resolve compatibility issues.
+          {t<string>("viewer.commit_mismatch_body_minor")}
         </div>
         <VersionInfo />
       </Callout>
     );
   }
   return (
-    <Callout title="Major Version Mismatch" intent={Intent.DANGER}>
+    <Callout title={t<string>("viewer.commit_mismatch_title_major")} intent={Intent.DANGER}>
       <div>
-        Simulation results are incompatible with latest version of gcsim. Upgrade will attempt to
-        resimulate and generate new results.
+        {t<string>("viewer.commit_mismatch_body_major")}
       </div>
       <VersionInfo />
     </Callout>
@@ -216,6 +216,7 @@ const UpgradeButton = ({
       setResult: (result: SimResults | null, hash: string | null) => void;
       setError: (recoveryConfig: string | null, err: string | null) => void;
     }) => {
+  const { t } = useTranslation();
   const [isReady, setReady] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -236,7 +237,7 @@ const UpgradeButton = ({
     });
   };
 
-  return <Button text="Upgrade" intent={Intent.SUCCESS} loading={!isReady} onClick={run} />;
+  return <Button text={t<string>("viewer.upgrade")} intent={Intent.SUCCESS} loading={!isReady} onClick={run} />;
 };
 
 const CancelButton = ({ mismatch, setOpen, redirect }: {
@@ -244,10 +245,11 @@ const CancelButton = ({ mismatch, setOpen, redirect }: {
       setOpen: (open: boolean) => void;
       redirect: string;
     }) => {
+  const { t } = useTranslation();
   const history = useHistory();
 
   if (mismatch == MismatchType.MajorVersionMismatch) {
-    return <Button text="Cancel" intent={Intent.DANGER} onClick={() => history.push(redirect)} />;
+    return <Button text={t<string>("db.cancel")} intent={Intent.DANGER} onClick={() => history.push(redirect)} />;
   }
-  return <Button text="Dismiss" onClick={() => setOpen(false)} />;
+  return <Button text={t<string>("viewer.ignore")} onClick={() => setOpen(false)} />;
 };
