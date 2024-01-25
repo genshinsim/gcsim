@@ -79,24 +79,24 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
     <Menu>
       <MenuItem
         icon="help"
-        text={settings.showTips ? "Hide Tooltips" : "Show Tooltips"}
+        text={settings.showTips ? t<string>("simple.tools_hide_tooltips") : t<string>("simple.tools_show_tooltips")}
         onClick={toggleTips}
       />
       <MenuItem
         icon="people"
-        text={settings.showBuilder ? "Hide Builder" : "Show Builder"}
+        text={settings.showBuilder ? t<string>("simple.tools_hide_builder") : t<string>("simple.tools_show_builder")}
         onClick={toggleBuilder}
       />
       <MenuDivider />
       <MenuItem
-          text="Sample Upload"
+          text={t<string>("simple.tools_sample_upload")}
           icon="helper-management"
           onClick={() => history.push("/sample/upload")}/>
-      <MenuItem icon="cut" text="Substat Snippets" disabled />
+      <MenuItem icon="cut" text={t<string>("simple.tools_substat_snippets")} disabled />
       <MenuDivider />
 
-      <MenuItem text="Import from GO" icon="import" onClick={() => setOpenGOODImport(true)} />
-      <MenuItem text="Import from Enka" icon="import" onClick={() => setOpenImportFromEnka(true)} />
+      <MenuItem text={t<string>("simple.tools_import", { src: "GO" })} icon="import" onClick={() => setOpenGOODImport(true)} />
+      <MenuItem text={t<string>("simple.tools_import", { src: "Enka" })} icon="import" onClick={() => setOpenImportFromEnka(true)} />
     </Menu>
   );
 

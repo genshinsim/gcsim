@@ -76,7 +76,7 @@ export function Dash() {
                     hideDescription={true}
                   />
                 ))
-              : "Loading..."}
+              : t<string>("sim.loading")}
           </div>
           <AnchorButton
             href="https://simpact.app/"
@@ -119,7 +119,7 @@ export function Dash() {
               </AnchorButton>
             </>
           ) : (
-            "Loading..."
+            t<string>("sim.loading")
           )}
         </Card>
       </div>

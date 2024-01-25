@@ -109,6 +109,7 @@ export default ({}) => {
                 <option value="ko">{t<string>("nav.korean")}</option>
                 <option value="es">{t<string>("nav.spanish")}</option>
                 <option value="ru">{t<string>("nav.russian")}</option>
+                <option value="de">{t<string>("nav.german")}</option>
               </HTMLSelect>
             </Navbar.Group>
             <Navbar.Group
@@ -140,6 +141,7 @@ export default ({}) => {
             <option value="ko">{t<string>("nav.korean")}</option>
             <option value="es">{t<string>("nav.spanish")}</option>
             <option value="ru">{t<string>("nav.russian")}</option>
+            <option value="de">{t<string>("nav.german")}</option>
           </HTMLSelect>
         </Navbar>
       </Collapse>

@@ -11,6 +11,7 @@ import { Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../../Sample/Components";
 import queryString from "query-string";
+import { useTranslation } from "react-i18next";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
@@ -76,6 +77,7 @@ type GenerateProps = {
 }
 
 const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
+  const { t } = useTranslation();
   let startValue = "sample";
   switch (sample.seed) {
     case null:
@@ -102,13 +104,13 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
   }
   const [value, setValue] = useState(startValue);
   const options: OptionProps[] = [
-    { label: "Sample Seed", value: "sample" },
+    { label: t<string>("viewer.seed_sample"), value: "sample" },
     // { label: "Random", value: "rand" },
-    { label: "Min Seed", value: "min" },
-    { label: "Max Seed", value: "max" },
-    { label: "P25 Seed", value: "q1" },
-    { label: "P50 Seed", value: "q2" },
-    { label: "P75 Seed", value: "q3" },
+    { label: t<string>("viewer.seed_min"), value: "min" },
+    { label: t<string>("viewer.seed_max"), value: "max" },
+    { label: t<string>("viewer.seed_p", { p: 25 }), value: "q1" },
+    { label: t<string>("viewer.seed_p", { p: 50 }), value: "q2" },
+    { label: t<string>("viewer.seed_p", { p: 75 }), value: "q3" },
   ];
 
   const disabled = () => {
@@ -163,7 +165,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
       />
       <Button
         large={true}
-        text="Generate"
+        text={t<string>("viewer.generate")}
         icon="refresh"
         intent={Intent.PRIMARY}
         disabled={disabled()}

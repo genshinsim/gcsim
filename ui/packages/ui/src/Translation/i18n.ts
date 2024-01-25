@@ -8,6 +8,7 @@ import Japanese from "./locales/Japanese.json";
 import Korean from "./locales/Korean.json";
 import Russian from "./locales/Russian.json";
 import Spanish from "./locales/Spanish.json";
+import German from "./locales/German.json";
 
 const resources = {
   en: {
@@ -33,6 +34,10 @@ const resources = {
   ru: {
     translation: Russian,
     game: IngameNames.Russian,
+  },
+  de: {
+    translation: German,
+    game: IngameNames.German,
   },
 };
 

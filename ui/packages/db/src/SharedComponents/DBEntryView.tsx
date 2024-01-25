@@ -66,7 +66,7 @@ export default function DBEntryView({
         <div className="basis-full text-xs font-bold w-full flex place-content-start">
           {dbEntry.submitter === "migrated"
             ? "Unknown author"
-            : `Author: ${dbEntry.submitter}`}
+            : `${translate("db.author")} ${dbEntry.submitter}`}
         </div>
       </div>
     </>

@@ -1,15 +1,4 @@
 {
-    "advanced": {
-        "action_list": "액션 리스트",
-        "helpers": "도우미",
-        "hide": "숨기기",
-        "loading_workers": "워커 로딩",
-        "run": "실행",
-        "show": "보이기",
-        "sim_options": "심 옵션",
-        "substat_helper": "부 속성 도우미",
-        "workers_available": "사용 가능한 워커 수: "
-    },
     "character": {
         "artifact_stats": "성유물 속성 (세트 효과 없이)",
         "total_stats": "총합 속성 (0초 기준, 최선의 노력 기반)",
@@ -48,19 +37,6 @@
         "skill": "원소 스킬",
         "weapons_and_artifacts": "무기 및 성유물"
     },
-    "components": {
-        "close": "닫기",
-        "currently_loaded_workers": "현재 로딩된 워커 수: ",
-        "no_characters": "캐릭터 없음",
-        "result_post": "밀리초, 평균 DPS: ",
-        "result_pre": "시뮬레이션 완료까지 걸린 시간: ",
-        "running_simulation": "시뮬레이션 실행중:",
-        "see_results_in": "뷰어에서 결과 보기",
-        "set": "설정",
-        "simulation_exited_with": "다음의 오류로 시뮬레이션 취소: ",
-        "workers_post": " 로 시뮬레이션 실행 중",
-        "workers_pre": "워커 수: "
-    },
     "dash": {
         "get_started": "시작하기",
         "users_submitted": "사용자가 제출한 내용을 살펴보세요:",
@@ -83,7 +59,6 @@
         "filters": "필터:",
         "hash": "해시: ",
         "load_in_simulator": "시뮬레이터로 불러오기",
-        "loading": "로딩 중 ...",
         "number_of_targets": "타겟 수: ",
         "r": " R",
         "show_in_viewer": "뷰어에서 보기",
@@ -97,7 +72,6 @@
         "dpsPerTarget": "타겟 당 DPS",
         "avgTotalDmg": "평균 총합 피해량",
         "avgSimTime": "평균 심 시간",
-        "runDate": "실행 날짜",
         "createDate": "추가된 날짜",
         "ttk": "처치까지 걸리는 시간",
         "duration": "지속 시간",
@@ -109,7 +83,8 @@
         "tags": "태그",
         "clear": "제거",
         "approve": "승인",
-        "DB_TAG_KQM_GUIDE": "KQM 가이드"
+        "DB_TAG_KQM_GUIDE": "KQM 가이드",
+        "sort_by": "정렬 기준"
     },
     "elements": {
         "none": "없음",
@@ -127,9 +102,6 @@
     "importer": {
         "import_success": "GOOD 데이터가 성공적으로 가져와졌습니다"
     },
-    "links": {
-        "error_loading_database": "데이터베이스를 불러오는 중 에러 발생. 데이터를 찾을 수 없음."
-    },
     "nav": {
         "english": "English",
         "chinese": "中文",
@@ -143,8 +115,13 @@
         "documentation": "설명서",
         "releases": "릴리스"
     },
+    "sample": {
+        "drop_text": "gcsim으로부터 gzip 압축된 JSON 샘플 파일을 드래그 앤 드롭하거나, 클릭하여 선택하세요."
+    },
     "sim": {
-        "loading_simulator_please": "시뮬레이터 불러오는 중. 기다려주세요"
+        "loaded": "이터레이션 {{i}}회 로드!",
+        "loading": "로딩 중...",
+        "running": "실행 중입니다"
     },
     "simple": {
         "action_list": "액션 리스트",
@@ -155,13 +132,29 @@
         "documentation": "문서",
         "documentation_post": "를 읽어보세요.",
         "documentation_pre": "또는, 초심자가 config를 작성하는 방법에 대한 간단한 튜토리얼이 포함된 저희의 ",
+        "fetch": "가져오기",
         "generate_sample": "페이지 로딩 시 샘플 생성",
         "hide_all_tips": "모든 팁 숨기기",
+        "load": "불러오기",
         "name_search": "이름 검색하기",
         "run": "실행",
         "settings": "설정",
         "team": "팀",
         "tools": "도구",
+        "tools_hide_builder": "빌더 숨기기",
+        "tools_hide_tooltips": "팁 숨기기",
+        "tools_show_builder": "빌더 표시",
+        "tools_show_tooltips": "팁 표시",
+        "tools_sample_upload": "샘플 업로드",
+        "tools_substat_snippets": "성유물 스니펫",
+        "tools_import": "{{src}}에서 가져오기",
+        "tools_import_after": "캐릭터 데이터를 가져온 후에는 팀 섹션에서 +를 클릭하고 캐릭터의 이름을 검색하여 가져온 캐릭터를 추가할 수 있습니다.",
+        "tools_paste_uid": "여기에 UID 붙여넣기",
+        "tools_import_pre_go": "아래 텍스트 상자에 가져오기 데이터를 GOOD 형식으로 붙여넣습니다. Genshin Optimizer에서 가져오는 경우 데이터베이스를 GOOD 형식 <0>여기</0>로 내보낼 수 있습니다.",
+        "tools_import_pre_enka": "<0>Enka.Network</0>에서 UID에 문제가 없는지 확인합니다.",
+        "tools_import_post_go": "데이터가 성공적으로 구문 분석되었습니다.",
+        "tools_import_post_enka": "데이터를 성공적으로 검색했습니다. 다음 캐릭터를 가져왔습니다: <0></0>",
+        "tools_import_warning": "가져오기는 {{src}}에서 기존 가져오기를 대체합니다. 이 작업은 되돌릴 수 없습니다.",
         "video": "비디오",
         "video_post": "를 참고해 시작해봅시다.",
         "video_pre": "팀에 캐릭터를 추가하는 것에서부터 시작하세요. 이 ",
@@ -172,10 +165,6 @@
         "this_page_is": "이 페이지는 아직 지원되지 않습니다. 기대해주세요!"
     },
     "viewer": {
-        "results": "결과",
-        "analyze": "분석",
-        "sample": "샘플",
-        "sample_settings": "샘플 설정",
         "ability_usage_count": "능력 사용 횟수 (평균)",
         "api_key_supporters": "API 키 (서포터 한정)",
         "attack": "공격력",
@@ -188,11 +177,18 @@
         "clear": "제거",
         "close": "닫기",
         "combined": "합계",
+        "commit_mismatch_body_hash": "이 시뮬레이션은 오래된 커밋으로 생성되었습니다. 일부 데이터, 그래프 또는 기능이 누락되었거나 부정확할 수 있습니다. 업그레이드하여 호환성 문제를 해결하세요.",
+        "commit_mismatch_body_minor": "이 시뮬레이션은 오래된 결과로 생성되었습니다. 일부 데이터, 그래프 또는 기능이 누락되었거나 부정확할 수 있습니다. 업그레이드하여 호환성 문제를 해결하세요.",
+        "commit_mismatch_body_major": "시뮬레이션 결과가 최신 버전의 gcsim과 호환되지 않습니다. 업그레이드하면 시뮬레이션을 다시 시도하여 새 결과를 생성합니다.",
+        "commit_mismatch_title_hash": "커밋 해시 불일치",
+        "commit_mismatch_title_minor": "사소한 버전 불일치",
+        "commit_mismatch_title_major": "주요 버전 불일치",
         "config": "Config",
         "continue": "계속",
         "copied_to_clipboard": "Config가 클립보드에 복사됨",
         "copy": "Config 복사",
         "copy_link": "링크 복사",
+        "copy_list_only": "액션 리스트만 복사 (성유물 속성 무시)",
         "cr": "치명타 확률",
         "create_a_shareable": "공유 가능한 링크 생성",
         "damage_dealt_over": "시간 경과에 따른 가해진 피해량",
@@ -201,13 +197,16 @@
         "defaults": "기본 값",
         "defense": "방어력",
         "details": "상세",
+        "download": "다운로드",
         "dps_by_ability": "능력 별 DPS (평균)",
         "em": "원소 마스터리",
         "er": "원소 충전 효율",
         "error_copying_not": "복사 에러 :( 무엇이 잘못되었는지 확실하지 않음",
         "error_encountered": "에러 발생: ",
         "git_hash": "git 해시: ",
+        "generate": "생성",
         "hp": "체력",
+        "ignore": "무시",
         "level": "레벨",
         "link_is_permanent": "링크는 영구적입니다. ",
         "link_post": "에서 볼 수 있습니다.",
@@ -221,10 +220,22 @@
         "please_note_that": "이것은 사람들이 돈을 기부하게 만드려는 시도가 아님을 알아주세요. 이것은 이 프로젝트를 금전적으로나 서포트해준 분들이나 직접 기여한 사람들에게 작은 감사를 제공하면서 공유되는 데이터의 양을 적절히 제한하려는 간단한 방법입니다. 영구 링크가 필요하지만 접근 키가 없으신 분들은, 간단히 저희의 Discord에 참여하여 질문해주세요.",
         "reactions_triggered": "발동된 원소반응",
         "refinement": "재련",
+        "rerun": "재실행",
+        "results": "결과",
+        "results_outdated": "오래된 결과",
+        "retry": "재시도",
+        "return_to_sim": "시뮬레이터로 돌아가기",
+        "sample": "샘플",
+        "search": "검색하기",
+        "seed_sample": "샘플 씨앗",
+        "seed_min": "최소 씨앗",
+        "seed_max": "최대 씨앗",
+        "seed_p": "{{p}}번째 백분위수 씨앗",
         "sec_post": "초의 전투를 시뮬레이션(",
         "sec_pre": "",
         "send_to_simulator": "시뮬레이터로 보내기",
         "share": "공유",
+        "share_link": "공유 가능한 링크",
         "substats": "부 속성",
         "summary": "요약",
         "target": "Target",
@@ -232,15 +243,8 @@
         "time_post": "초가 소모됨).",
         "time_pre": " 이터레이션을 실행하는 데에 ",
         "unknown": "알 수 없음",
+        "upgrade": "업그레이드",
         "upload": "업로드",
         "upload_failed": "업로드 실패"
-    },
-    "viewerdashboard": {
-        "drag_n_drop": "gcsim으로부터 gzip 압축된 JSON 파일을 드래그 앤 드롭하거나, 클릭하여 선택하세요.",
-        "drop_the_file": "파일을 여기에 드롭하세요 ...",
-        "error_retrieving_specified": "지정된 URL 검색 중 에러 발생",
-        "or_select_from": "또는 다음의 이전에 열었던 파일에서 고르세요 (페이지를 다시 불러오면 삭제됩니다):",
-        "upload_a_file": "파일 업로드",
-        "url_does_not": "URL이 유효한 gzip 압축된 JSON 파일을 포함하지 않습니다."
     }
 }

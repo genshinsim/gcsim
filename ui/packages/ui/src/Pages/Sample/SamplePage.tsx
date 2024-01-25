@@ -6,6 +6,7 @@ import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { CharacterCard } from "../../Components/Cards";
 import { characterCardsClassNames } from "../Viewer/Components/Overview/TeamHeader";
 import { DefaultSampleOptions, parseLogV2, Sampler, SampleRow } from "./Components";
+import { useTranslation } from "react-i18next";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
@@ -24,6 +25,7 @@ type Props = {
 }
 
 export default ({ sample, error, retry }: Props) => {
+  const { t } = useTranslation();
   const data = useSample(sample);
   const copyToast = useRef<Toaster>(null);
 
@@ -41,7 +43,7 @@ export default ({ sample, error, retry }: Props) => {
     <div className="flex flex-col gap-2 w-full 2xl:mx-auto 2xl:container py-6">
       <div className="flex flex-row justify-between px-6 pb-2">
         <span className="text-lg font-bold font-mono">
-          {"Targets: " + sample.target_details?.length}
+          {t<string>("db.number_of_targets") + sample.target_details?.length}
         </span>
         <ButtonGroup>
           <CopyToClipboard
@@ -84,12 +86,13 @@ type ErrorProps = {
 }
 
 const ErrorAlert = ({ msg, retry }: ErrorProps) => {
+  const { t } = useTranslation();
   const history = useHistory();
 
   let cancelButtonText: string | undefined;
   let onCancel: (() => void) | undefined;
   if (retry != null) {
-    cancelButtonText = "Retry";
+    cancelButtonText = t<string>("viewer.retry");
     onCancel = () => retry();
   }
 

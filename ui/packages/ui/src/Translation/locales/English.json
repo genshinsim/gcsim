@@ -1,15 +1,4 @@
 {
-    "advanced": {
-        "action_list": "Action List",
-        "helpers": "Helpers",
-        "hide": "Hide",
-        "loading_workers": "Loading workers",
-        "run": "Run",
-        "show": "Show",
-        "sim_options": "Sim Options",
-        "substat_helper": "Substat Helper",
-        "workers_available": "Workers available: "
-    },
     "character": {
         "artifact_stats": "Artifact Stats (w/o Set Effects)",
         "total_stats": "Total Stats (at 0 seconds, best effort basis)",
@@ -17,19 +6,6 @@
         "c_pre": "C",
         "lvl": "Lvl",
         "talents": "Talents"
-    },
-    "components": {
-        "close": "Close",
-        "currently_loaded_workers": "Currently loaded workers: ",
-        "no_characters": "No characters",
-        "result_post": "ms with average DPS: ",
-        "result_pre": "Simulation completed in ",
-        "running_simulation": "Running Simulation:",
-        "see_results_in": "See Results in Viewer",
-        "set": "Set",
-        "simulation_exited_with": "Simulation exited with error: ",
-        "workers_post": " workers",
-        "workers_pre": "Running sim with "
     },
     "dash": {
         "get_started": "Get started",
@@ -53,7 +29,6 @@
         "filters": "Filters:",
         "hash": "Hash: ",
         "load_in_simulator": "Load in Simulator",
-        "loading": "Loading ...",
         "number_of_targets": "Number of targets: ",
         "r": " R",
         "show_in_viewer": "Show in Viewer",
@@ -67,7 +42,6 @@
         "dpsPerTarget": "DPS per Target",
         "avgTotalDmg": "Avg Total Dmg",
         "avgSimTime": "Avg Sim Time",
-        "runDate": "Run Date",
         "createDate": "Date Added",
         "ttk": "Time to Kill",
         "duration": "Duration",
@@ -79,7 +53,8 @@
         "tags": "Tags",
         "clear": "Clear",
         "approve": "Approve",
-        "DB_TAG_KQM_GUIDE": "KQM Guide"
+        "DB_TAG_KQM_GUIDE": "KQM Guide",
+        "sort_by": "Sort by"
     },
     "elements": {
         "none": "None",
@@ -97,9 +72,6 @@
     "importer": {
         "import_success": "GOOD data imported successfully"
     },
-    "links": {
-        "error_loading_database": "Error loading database. No data found"
-    },
     "nav": {
         "english": "English",
         "chinese": "中文",
@@ -113,8 +85,13 @@
         "documentation": "Documentation",
         "releases": "Releases"
     },
+    "sample": {
+        "drop_text": "Drop sample file (.gz) from gcsim here, or click to select file."
+    },
     "sim": {
-        "loading_simulator_please": "Loading simulator. Please wait"
+        "loaded": "Loaded {{i}} iterations!",
+        "loading": "Loading...",
+        "running": "Running"
     },
     "simple": {
         "action_list": "Action List",
@@ -125,13 +102,29 @@
         "documentation": "documentation",
         "documentation_post": " which includes a simple tutorial on how to write a config from scratch.",
         "documentation_pre": "Alternatively, check out our ",
+        "fetch": "Fetch",
         "generate_sample": "Generate sample on page load",
         "hide_all_tips": "Hide all tips",
+        "load": "Load",
         "name_search": "Name Search",
         "run": "Run",
         "settings": "Settings",
         "team": "Team",
         "tools": "Tools",
+        "tools_hide_builder": "Hide Builder",
+        "tools_hide_tooltips": "Hide Tooltips",
+        "tools_show_builder": "Show Builder",
+        "tools_show_tooltips": "Show Tooltips",
+        "tools_sample_upload": "Sample Upload",
+        "tools_substat_snippets": "Substat Snippets",
+        "tools_import": "Import from {{src}}",
+        "tools_import_after": "Once your character data has been imported, you can add your imported character by clicking on the \"+\" in the \"Team\" section and searching for the character's name.",
+        "tools_paste_uid": "Paste UID here",
+        "tools_import_pre_go": "Paste import data in GOOD format in the textbox below. If you are coming from Genshin Optimizer, you can export your database in GOOD format <0>here</0>.",
+        "tools_import_pre_enka": "Ensure your UID has no problems on <0>Enka.Network</0>.",
+        "tools_import_post_go": "Data parsed successfully.",
+        "tools_import_post_enka": "Data retrieved successfully. The following characters have been imported: <0></0>",
+        "tools_import_warning": "Importing will replace any existing import from {{ src }}. This action cannot be reversed.",
         "video": "video",
         "video_post": " to get started.",
         "video_pre": "Get started by adding characters in to your team. Check out this ",
@@ -142,10 +135,6 @@
         "this_page_is": "This page is not implemented yet. Stay tuned!"
     },
     "viewer": {
-        "results": "Results",
-        "analyze": "Analyze",
-        "sample": "Sample",
-        "sample_settings": "Sample Settings",
         "ability_usage_count": "Ability Usage Count (Average)",
         "api_key_supporters": "API Key (Supporters only)",
         "attack": "Attack",
@@ -158,11 +147,18 @@
         "clear": "Clear",
         "close": "Close",
         "combined": "Combined",
+        "commit_mismatch_body_hash": "This simulation was generated with an outdated commit. Some data, graphs, or features may be missing or inaccurate. Upgrade to resolve compatibility issues.",
+        "commit_mismatch_body_minor": "This simulation was generated with outdated results. Some data, graphs, or features may be missing or inaccurate. Upgrade to resolve compatibility issues.",
+        "commit_mismatch_body_major": "Simulation results are incompatible with latest version of gcsim. Upgrade will attempt to resimulate and generate new results.",
+        "commit_mismatch_title_hash": "Commit Hash Mismatch",
+        "commit_mismatch_title_minor": "Minor Version Mismatch",
+        "commit_mismatch_title_major": "Major Version Mismatch",
         "config": "Config",
         "continue": "Continue",
         "copied_to_clipboard": "Config copied to clipboard",
         "copy": "Copy Config",
         "copy_link": "Copy Link",
+        "copy_list_only": "Copy action list only (ignore artifact stats)",
         "cr": "CR",
         "create_a_shareable": "Create a shareable link",
         "damage_dealt_over": "Damage Dealt Over Time",
@@ -171,13 +167,16 @@
         "defaults": "Defaults",
         "defense": "Defense",
         "details": "Details",
+        "download": "Download",
         "dps_by_ability": "DPS by Ability (Average)",
         "em": "EM",
         "er": "ER",
         "error_copying_not": "Error copying :( Not sure what went wrong",
         "error_encountered": "error encountered: ",
         "git_hash": "git hash: ",
+        "generate": "Generate",
         "hp": "HP",
+        "ignore": "Ignore",
         "level": "Level",
         "link_is_permanent": "Link is permanent. ",
         "link_post": "Results can be viewed at: ",
@@ -191,10 +190,22 @@
         "please_note_that": "Please note that this is not an attempt to get people to donate money. This is a simple way to gate the amount of data being shared while providing a small thank you for those that either supported this project financially or by contributing. If you do need a permanent link and you don't have the access key, simply hop over to our Discord and ask someone to do it for you.",
         "reactions_triggered": "Reactions Triggered",
         "refinement": "Refinement",
+        "rerun": "Rerun",
+        "results": "Results",
+        "results_outdated": "Results Outdated",
+        "retry": "Retry",
+        "return_to_sim": "Return to Simulator",
+        "sample": "Sample",
+        "search": "Search",
+        "seed_sample": "Sample Seed",
+        "seed_min": "Min Seed",
+        "seed_max": "Max Seed",
+        "seed_p": "{{p}}th Percentile Seed",
         "sec_post": "s of combat (",
         "sec_pre": "Simulated ",
         "send_to_simulator": "Send To Simulator",
         "share": "Share",
+        "share_link": "Share Link",
         "substats": "Substats",
         "summary": "Summary",
         "target": "Target",
@@ -202,15 +213,8 @@
         "time_post": "s to run).",
         "time_pre": " iterations took ",
         "unknown": "unknown",
+        "upgrade": "Upgrade",
         "upload": "Upload",
         "upload_failed": "upload failed"
-    },
-    "viewerdashboard": {
-        "drag_n_drop": "Drag 'n' drop gzipped JSON file from gcsim here, or click to select",
-        "drop_the_file": "Drop the file here ...",
-        "error_retrieving_specified": "error retrieving specified URL",
-        "or_select_from": "Or select from the following previously opened files (deleted when page reloads):",
-        "upload_a_file": "Upload a file",
-        "url_does_not": "URL does not contain valid gzipped JSON file"
     }
 }
