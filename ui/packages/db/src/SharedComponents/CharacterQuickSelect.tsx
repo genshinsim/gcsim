@@ -66,9 +66,10 @@ export function CharacterQuickSelect() {
           }}
           itemListPredicate={(query, items) => {
             return items.filter((item) => {
-              return translateCharName(item)
-                .toLocaleLowerCase()
-                .includes(query.toLocaleLowerCase());
+              const normalizedItem = item.toLowerCase();
+              const normalizedLocalizedItem = translateCharName(item).toLowerCase();
+              const normalizedQuery = query.toLocaleLowerCase();
+              return normalizedItem.includes(normalizedQuery) || normalizedLocalizedItem.includes(normalizedQuery);
             });
           }}
           selectedItems={includedChars}
