@@ -54,7 +54,7 @@ export function Options(props: OptionsProp) {
           <div>{/* <ButtonGroup></ButtonGroup> */}</div>
         </div>
         <div className={Classes.DIALOG_FOOTER}>
-          <div className={classNames(Classes.DIALOG_FOOTER_ACTIONS, "!flex !flex-col !gap-1.5 !sm:flex-row !sm:gap-0")}>
+          <div className={classNames(Classes.DIALOG_FOOTER_ACTIONS, "!flex !flex-col !gap-1.5 sm:!flex-row sm:!gap-0")}>
             <Button onClick={() => props.handleSetPresets("simple")}>
               {t<string>("viewer.simple")}
             </Button>
