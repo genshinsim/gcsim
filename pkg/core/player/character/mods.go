@@ -115,7 +115,7 @@ func (c *CharWrapper) AddStatMod(mod StatMod) {
 
 func (c *CharWrapper) deleteMod(key string) {
 	m := modifier.Delete(&c.mods, key)
-	if m != nil {
+	if m != nil && (m.Expiry() > *c.f || m.Expiry() == -1) {
 		m.Event().SetEnded(*c.f)
 	}
 }

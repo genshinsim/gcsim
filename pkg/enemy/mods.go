@@ -43,7 +43,7 @@ func (e *Enemy) AddDefMod(mod combat.DefMod) {
 
 func (e *Enemy) deleteMod(key string) {
 	m := modifier.Delete(&e.mods, key)
-	if m != nil {
+	if m != nil && (m.Expiry() > e.Core.F || m.Expiry() == -1) {
 		m.Event().SetEnded(e.Core.F)
 	}
 }
