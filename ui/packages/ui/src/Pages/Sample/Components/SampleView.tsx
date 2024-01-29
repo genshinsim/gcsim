@@ -196,51 +196,52 @@ function SamplerUI({ sample, data, team, searchable, settings, setSettings }: Sa
   };
 
   return (
+    <>
+    <div className="flex flex-col sm:flex-row justify-between">
+      <FormGroup label={t<string>("viewer.search")} inline>
+        <InputGroup
+          type="text"
+          inputRef={searchRef}
+          rightElement={
+            <FormGroup>
+              <Button
+                icon="arrow-down"
+                intent="warning"
+                onClick={() => {
+                  if (searchRef.current != null) {
+                    searchAndScroll(searchRef.current.value);
+                  }
+                }}
+              />
+              <Button
+                icon="reset"
+                intent="warning"
+                onClick={() => {
+                  if (searchRef.current != null) {
+                    searchRef.current.value = "";
+                  }
+                  lastSearchIndex = 0;
+                  rowVirtualizer.scrollToIndex(0);
+                }}
+              />
+            </FormGroup>
+          }
+        />
+      </FormGroup>
+      <ButtonGroup className="mb-[15px]">
+        <SampleOptions settings={settings} setSettings={setSettings} />
+        <Button
+            icon="bring-data"
+            text={t<string>("viewer.download")}
+            intent={Intent.SUCCESS}
+            onClick={() => {
+              const out = Pako.deflate(JSON.stringify(sample));
+              const blob = new Blob([out], { type: "application/base64" });
+              saveAs(blob, "sample.gz");
+            }} />
+      </ButtonGroup>
+    </div>
     <div className="flex flex-col overflow-x-auto h-[80vh]">
-      <div className="flex justify-between">
-        <FormGroup label={t<string>("viewer.search")} inline>
-          <InputGroup
-            type="text"
-            inputRef={searchRef}
-            rightElement={
-              <FormGroup>
-                <Button
-                  icon="arrow-down"
-                  intent="warning"
-                  onClick={() => {
-                    if (searchRef.current != null) {
-                      searchAndScroll(searchRef.current.value);
-                    }
-                  }}
-                />
-                <Button
-                  icon="reset"
-                  intent="warning"
-                  onClick={() => {
-                    if (searchRef.current != null) {
-                      searchRef.current.value = "";
-                    }
-                    lastSearchIndex = 0;
-                    rowVirtualizer.scrollToIndex(0);
-                  }}
-                />
-              </FormGroup>
-            }
-          />
-        </FormGroup>
-        <ButtonGroup className="mb-[15px]">
-          <SampleOptions settings={settings} setSettings={setSettings} />
-          <Button
-              icon="bring-data"
-              text={t<string>("viewer.download")}
-              intent={Intent.SUCCESS}
-              onClick={() => {
-                const out = Pako.deflate(JSON.stringify(sample));
-                const blob = new Blob([out], { type: "application/base64" });
-                saveAs(blob, "sample.gz");
-              }} />
-        </ButtonGroup>
-      </div>
       <Card className="flex-auto !bg-gray-600 !text-xs min-w-[60rem] ">
         <AutoSizer disableWidth={true}>
           {({ height, width }) => (
@@ -315,6 +316,7 @@ function SamplerUI({ sample, data, team, searchable, settings, setSettings }: Sa
         </AutoSizer>
       </Card>
     </div>
+    </>
   );
 }
 

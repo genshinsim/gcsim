@@ -56,7 +56,7 @@ export default ({ sampler, data, sample, running }: Props) => {
   }
 
   return (
-    <div className="flex flex-grow flex-col gap-[15px] px-2">
+    <div className="w-full 2xl:mx-auto 2xl:container flex flex-grow flex-col gap-[15px] px-2">
       <Generate sampler={sampler} data={data} sample={sample} running={running} />
       <Sampler
           sample={sample.sample}

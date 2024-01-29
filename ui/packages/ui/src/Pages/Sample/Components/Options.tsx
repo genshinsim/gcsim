@@ -1,6 +1,7 @@
 import { Button, Classes, Dialog } from "@blueprintjs/core";
 import { eventColor } from "./parse";
 import { Trans, useTranslation } from "react-i18next";
+import classNames from "classnames";
 
 export interface OptionsProp {
   isOpen: boolean;
@@ -49,11 +50,11 @@ export function Options(props: OptionsProp) {
           <div className="text-md font-medium">
             <Trans>viewer.log_options</Trans>
           </div>
-          <div className="grid grid-cols-3">{cols}</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3">{cols}</div>
           <div>{/* <ButtonGroup></ButtonGroup> */}</div>
         </div>
         <div className={Classes.DIALOG_FOOTER}>
-          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+          <div className={classNames(Classes.DIALOG_FOOTER_ACTIONS, "!flex !flex-col !gap-1.5 !sm:flex-row !sm:gap-0")}>
             <Button onClick={() => props.handleSetPresets("simple")}>
               {t<string>("viewer.simple")}
             </Button>
