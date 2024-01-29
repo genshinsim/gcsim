@@ -71,7 +71,6 @@ export function Dash() {
                   <DBEntryView
                     dbEntry={entry}
                     key={index}
-                    hideDescription={true}
                   />
                 ))
               : t<string>("sim.loading")}
