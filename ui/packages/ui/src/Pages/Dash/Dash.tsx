@@ -38,7 +38,6 @@ export function Dash() {
       .catch((err) => console.log(t<string>("viewer.error_encountered") + err.message));
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(randQuery))}`)
       .then((resp: { data: db.IEntries }) => {
-        console.log(resp);
         if (resp.data && resp.data.data) {
           setData(resp.data.data);
           setDataIsLoaded(true);
