@@ -20,7 +20,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
     (state: RootState) => {
       return {
         cfg: state.app.cfg,
-      settings: state.user.data.settings,
+        settings: state.user.data.settings,
       };
     }
   );
@@ -58,11 +58,14 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
             </>
           ) : null}
 
-          <SectionDivider>
-            <Trans>simple.name_search</Trans>
-          </SectionDivider>
-
-          <OmnibarBlock />
+          {settings.showNameSearch ? (
+            <>
+              <SectionDivider>
+                <Trans>simple.name_search</Trans>
+              </SectionDivider>
+              <OmnibarBlock />
+            </>
+          ) : null}
 
           <SectionDivider>
             <Trans>simple.action_list</Trans>
