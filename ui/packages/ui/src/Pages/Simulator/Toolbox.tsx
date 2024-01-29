@@ -57,6 +57,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
       userActions.setUserSettings({
         showTips: !settings.showTips,
         showBuilder: settings.showBuilder,
+        showNameSearch: settings.showNameSearch,
       })
     );
   };
@@ -71,6 +72,17 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
       userActions.setUserSettings({
         showTips: settings.showTips,
         showBuilder: !settings.showBuilder,
+        showNameSearch: settings.showNameSearch,
+      })
+    );
+  };
+
+  const toggleNameSearch = () => {
+    dispatch(
+      userActions.setUserSettings({
+        showTips: settings.showTips,
+        showBuilder: settings.showBuilder,
+        showNameSearch: !settings.showNameSearch,
       })
     );
   };
@@ -86,6 +98,11 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
         icon="people"
         text={settings.showBuilder ? t<string>("simple.tools_hide_builder") : t<string>("simple.tools_show_builder")}
         onClick={toggleBuilder}
+      />
+      <MenuItem
+        icon="search"
+        text={settings.showNameSearch ? t<string>("simple.tools_hide_name_search") : t<string>("simple.tools_show_name_search")}
+        onClick={toggleNameSearch}
       />
       <MenuDivider />
       <MenuItem
