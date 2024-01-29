@@ -1,4 +1,4 @@
-import { Alert, Intent, Position, Toaster } from "@blueprintjs/core";
+import { Alert, Callout, Intent, Position, Toaster } from "@blueprintjs/core";
 import { useCallback, useMemo, useRef, useState } from "react";
 import ConfigUI, { useConfig } from "./Tabs/Config";
 import SampleUI, { useSample } from "./Tabs/Sample";
@@ -33,6 +33,7 @@ type ViewerProps = {
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
 export default ({ running, data, hash = "", recoveryConfig, error, src, redirect, exec, retry }: ViewerProps) => {
+  const { t } = useTranslation();
   const parsed = queryString.parse(location.hash);
   const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
 
@@ -49,7 +50,7 @@ export default ({ running, data, hash = "", recoveryConfig, error, src, redirect
   const sample = useSample(running, data, sampleOnLoad, sampler);
   const config = useConfig(data, exec);
   const names = useMemo(
-      () => data?.character_details?.map(c => c.name), [data?.character_details]);
+      () => data?.character_details?.map(c => t<string>("character_names." + c.name, { ns: "game" })), [data?.character_details, t]);
 
   const tabs: { [k: string]: React.ReactNode } = {
     results: <Results data={data} running={running} names={names} />,
@@ -117,7 +118,9 @@ const ErrorAlert = ({
       intent={Intent.DANGER}
     >
       <div className="flex flex-col gap-2 mb-1">
-        <p>{msg}</p>
+        <Callout intent={Intent.DANGER} title={t<string>("viewer.error_encountered")}>
+          <pre className="whitespace-pre-wrap pl-5">{msg}</pre>
+        </Callout>
         {recoveryConfig != null ? (
           <>
             <CopyToClipboard

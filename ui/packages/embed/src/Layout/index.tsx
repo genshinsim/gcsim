@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Avatars } from "../Avatar/AvatarCard";
 import { Graphs } from "../Graphs";
 import { Metadata } from "./Metadata";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: SimResults;
@@ -11,6 +12,8 @@ type Props = {
 const Layout = ({ data }: Props) => {
   const [ready, setReady] = useState(false);
   const [loaded, setLoaded] = useState(0);
+  const { i18n } = useTranslation();
+  i18n.changeLanguage("en"); // make sure that embed is definitely using English localization, might not be necessary?
 
   const handleLoaded = () => {
     if (loaded + 1 == data.character_details?.length) {

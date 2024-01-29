@@ -1,7 +1,7 @@
 import { Popover2 } from "@blueprintjs/popover2";
 import { TooltipWithBounds } from "@visx/tooltip";
 import { useTranslation } from "react-i18next";
-import { DataColors } from "../../Util";
+import { DataColorsConst } from "../../Util";
 
 export interface TooltipData {
   player: boolean;
@@ -66,14 +66,15 @@ type Props = {
 }
 
 export const RenderTooltip = (props: Props) => {
+  const { t } = useTranslation();
   if (!props.tooltipOpen || !props.tooltipData) {
     return null;
   }
 
   const data = props.tooltipData;
 
-  const title = data.player ? "Player" : `Target ${data.index + 1}`;
-  const titleColor = data.player ? DataColors.gray : DataColors.qualitative5(data.index);
+  const title = data.player ? t<string>("result.player") : `${t<string>("viewer.target")} ${data.index + 1}`;
+  const titleColor = data.player ? DataColorsConst.gray : DataColorsConst.qualitative5(data.index);
 
   const content = (
     <div
@@ -90,7 +91,7 @@ export const RenderTooltip = (props: Props) => {
         <span className="text-gray-400 whitespace-nowrap" style={{ color: titleColor }}>
           {title}
         </span>
-        <ul className="grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-start">
+        <ul className="grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-start">
           <Item name="x" value={data.x ?? 0} />
           <Item name="y" value={data.y ?? 0} />
           <Item name="r" value={data.r ?? 1} />

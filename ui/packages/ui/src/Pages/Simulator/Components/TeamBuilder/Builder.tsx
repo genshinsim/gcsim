@@ -3,6 +3,7 @@ import { Character } from "@gcsim/types";
 import React from "react";
 import { CharacterCard } from "../../../../Components/Cards";
 import { ConsolidateCharStats } from "../character";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   team: Character[];
@@ -11,9 +12,10 @@ type Props = {
 };
 
 export const Builder = (props: Props) => {
+  const { t } = useTranslation();
   const [showDetails, setShowDetails] = React.useState(false);
   const [showSnapshot, setShowSnapshot] = React.useState(false);
-  const teamStats = ConsolidateCharStats(props.team);
+  const teamStats = ConsolidateCharStats(t, props.team);
 
   // console.log(team);
   // console.log(teamStats);

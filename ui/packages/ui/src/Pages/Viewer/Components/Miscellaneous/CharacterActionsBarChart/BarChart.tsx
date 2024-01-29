@@ -2,7 +2,7 @@ import { SourceStat, SourceStats } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { memo, useMemo } from "react";
-import { DataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
+import { useDataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
 
 type Props = {
   width: number;
@@ -13,6 +13,7 @@ type Props = {
 }
 
 export const BarChartLegend = ({ actionNames }: { actionNames?: string[] | null }) => {
+  const { DataColors } = useDataColors();
   if (actionNames == null) {
     return null;
   }
@@ -28,6 +29,7 @@ export const BarChartLegend = ({ actionNames }: { actionNames?: string[] | null 
 };
 
 const Graph = ({ height, width, actions, names, actionNames }: Props) => {
+  const { DataColors } = useDataColors();
   const {data, xMax} = useData(actions, names);
 
   if (actions == null || names == null || actionNames == null) {

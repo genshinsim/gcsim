@@ -33,21 +33,19 @@ export function Dash() {
   useEffect(() => {
     axios("https://api.github.com/repos/genshinsim/gcsim/releases/latest")
       .then((resp: { data }) => {
-        console.log(resp.data);
         setState({ isLoaded: true, text: resp.data.body, tag: resp.data.name });
       })
-      .catch((err) => console.log("Error: " + err.message));
+      .catch((err) => console.log(t<string>("viewer.error_encountered") + err.message));
     axios(`/api/db?q=${encodeURIComponent(JSON.stringify(randQuery))}`)
       .then((resp: { data: db.IEntries }) => {
         console.log(resp);
         if (resp.data && resp.data.data) {
           setData(resp.data.data);
-          console.log(resp.data.data);
           setDataIsLoaded(true);
         }
       })
-      .catch((err) => console.log("Error: " + err.message));
-  }, []);
+      .catch((err) => console.log(t<string>("viewer.error_encountered") + err.message));
+  }, [t]);
 
   return (
     <main className="w-full flex flex-col items-center flex-grow gap-4 py-4 px-4">

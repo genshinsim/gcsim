@@ -88,12 +88,13 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
 };
 
 const Error = ({ error, cfg }: { error: string, cfg: string}) => {
+  const { t } = useTranslation();
   if (error === "" || cfg === "") {
     return null;
   }
   return (
     <div className="px-6 pt-4">
-      <Callout intent={Intent.DANGER} title="Error: Config Invalid">
+      <Callout intent={Intent.DANGER} title={t<string>("viewer.error_encountered") + + t<string>("viewer.config_invalid")}>
         <pre className="whitespace-pre-wrap pl-5">{error}</pre>
       </Callout>
     </div>

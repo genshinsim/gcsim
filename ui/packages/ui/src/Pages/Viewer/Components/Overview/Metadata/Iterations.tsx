@@ -6,11 +6,11 @@ type Props = {
 };
 
 export const Iterations = ({ itr }: Props) => {
-  const {i18n} = useTranslation();
+  const { i18n, t } = useTranslation();
 
   return (
     <Item
-      title="iterations"
+      title={t<string>("result.iterations")}
       value={(itr ?? 0).toLocaleString(i18n.language, { notation: "compact" })}
     />
   );

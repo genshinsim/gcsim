@@ -1,6 +1,6 @@
 import { BucketStats } from "@gcsim/types";
 import { useData } from "@gcsim/ui/src/Pages/Viewer/Components/Damage/DamageTimelineCard/DamageOverTimeData";
-import { DataColors } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
+import { DataColorsConst } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
 import { NoDataIcon } from "@gcsim/ui/src/Pages/Viewer/Components/Util/NoData";
 import { curveBasis } from "@visx/curve";
 import { Group } from "@visx/group";
@@ -60,7 +60,7 @@ const Graph = (
     domain: [0, maxValue],
   });
 
-  const color = DataColors.qualitative3(8);
+  const color = DataColorsConst.qualitative3(8);
 
   return (
     <div className="relative">

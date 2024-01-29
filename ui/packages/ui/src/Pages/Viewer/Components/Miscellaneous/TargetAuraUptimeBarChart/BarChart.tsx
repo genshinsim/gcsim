@@ -1,11 +1,12 @@
 import { FloatStat, SourceStats } from "@gcsim/types";
 import { useMemo } from "react";
 import {
-  DataColors,
+  useDataColors,
   FloatStatTooltipContent,
   HorizontalBarStack,
   NoData,
 } from "../../Util";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   width: number;
@@ -15,8 +16,6 @@ type Props = {
   target: string;
 };
 
-const margin = { top: 0, left: 120, right: 20, bottom: 40 };
-
 export const BarChart = ({
   width,
   height,
@@ -24,6 +23,8 @@ export const BarChart = ({
   auraUptime,
   target,
 }: Props) => {
+  const { DataColors } = useDataColors();
+  const { t } = useTranslation();
   const { data, sources, xMax } = useData(auras, target, auraUptime);
 
   const sourceNames = sources.map((s) => s.name);
@@ -50,15 +51,15 @@ export const BarChart = ({
       stat={(d, k) => d.data[k].data}
       barColor={DataColors.reactableModifier}
       hoverColor={DataColors.reactableModifierLabel}
-      margin={margin}
+      margin={{ top: 0, left: width*0.25, right: width*0.10, bottom: 20 }}
       tooltipContent={(d, k) => (
         <FloatStatTooltipContent
-          title={k + " uptime"}
+          title={k + " " + t<string>("result.uptime")}
           data={d.data[k].data}
           color={DataColors.reactableModifierLabel(k)}
         />
       )}
-      bottomLabel="% of total duration"
+      bottomLabel={t<string>("result.p_of_total_dur")}
     />
   );
 };
@@ -164,5 +165,5 @@ function useData(
         .filter((v) => v.mean > 0),
       xMax: maxAura,
     };
-  }, [auraUptime, auras, target]);
+  }, [auraUptime, target]);
 }

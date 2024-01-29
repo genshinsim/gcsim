@@ -9,7 +9,7 @@ type Props = {
 };
 
 export function CharacterCardView(props: Props) {
-  useTranslation();
+  const { t } = useTranslation();
 
   if (!props.chars) {
     return (
@@ -19,7 +19,7 @@ export function CharacterCardView(props: Props) {
     );
   }
 
-  const teamStats = ConsolidateCharStats(props.chars);
+  const teamStats = ConsolidateCharStats(t, props.chars);
 
   const rows = props.chars.map((c) => {
     return (

@@ -31,10 +31,10 @@ export const DBView = (props: Props) => {
           endMessage={
             <>
               <p className="text-center mt-4">
-                <b>Yay! You have seen it all.</b>
+                <b>{t<string>("db.seen_it_all")}</b>
               </p>
               <p className="text-center">
-                {` Didn't find what you're looking for? Create and submit your own on our discord `}
+                {t<string>("db.not_find")}
               </p>
             </>
           }

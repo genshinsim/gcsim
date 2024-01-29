@@ -130,7 +130,7 @@ type TooltipContentProps = {
 }
 
 const TooltipContent = ({ idx, lower, upper, count, stat }: TooltipContentProps) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const lowerVal = lower?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
   const upperVal = upper?.toLocaleString(i18n.language, { maximumFractionDigits: 2 });
@@ -152,7 +152,7 @@ const TooltipContent = ({ idx, lower, upper, count, stat }: TooltipContentProps)
 
   return (
     <div
-        className="px-5 py-2 font-mono text-xs grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-center">
+        className="px-5 py-2 font-mono text-xs grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-center">
       {muIndex && muIndex == idx && (
         <><span className="justify-self-end text-gray-400">mean</span><span>{mean}</span></>
       ) || null}
@@ -165,9 +165,9 @@ const TooltipContent = ({ idx, lower, upper, count, stat }: TooltipContentProps)
       {p75Index && p75Index == idx && (
         <><span className="justify-self-end text-gray-400">p75</span><span>{p75}</span></>
       ) || null}
-      <span className="justify-self-end text-gray-400">lower</span><span>{lowerVal}</span>
-      <span className="justify-self-end text-gray-400">upper</span><span>{upperVal}</span>
-      <span className="justify-self-end text-gray-400">itrs</span><span>{countVal}</span>
+      <span className="justify-self-end text-gray-400">{t<string>("result.lower")}</span><span>{lowerVal}</span>
+      <span className="justify-self-end text-gray-400">{t<string>("result.upper")}</span><span>{upperVal}</span>
+      <span className="justify-self-end text-gray-400">{t<string>("result.iterations_short")}</span><span>{countVal}</span>
     </div>
   );
 };
