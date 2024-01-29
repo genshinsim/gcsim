@@ -6,7 +6,7 @@ import { Line } from "@visx/shape";
 import { TooltipWithBounds } from "@visx/tooltip";
 import { ScaleLinear } from "d3-scale";
 import { useTranslation } from "react-i18next";
-import { DataColors, FloatStatTooltipContent } from "../../Util";
+import { DataColorsConst, useDataColors, FloatStatTooltipContent } from "../../Util";
 import { CumulativePoint } from "./CumulativeData";
 
 export interface TooltipData {
@@ -105,7 +105,7 @@ export const HoverLine = (props: HoverLineProps) => {
             cx={x}
             cy={y}
             r={4}
-            fill={DataColors.qualitative4(char)}
+            fill={DataColorsConst.qualitative4(char)}
             pointerEvents="none"
             stroke="#FFF"
             strokeWidth={2}
@@ -143,7 +143,8 @@ type TooltipProps = {
 }
 
 export const RenderTooltip = (props: TooltipProps) => {
-  const { i18n } = useTranslation();
+  const { DataColors } = useDataColors();
+  const { i18n, t } = useTranslation();
 
   if (!props.tooltipOpen || !props.tooltipData || !props.tooltipLeft || !props.names) {
     return null;
@@ -163,15 +164,15 @@ export const RenderTooltip = (props: TooltipProps) => {
         }}
         onMouseLeave={() => props.handles.mouseLeave()}>
       <div className="flex flex-row px-2 py-1 font-mono text-xs gap-2 whitespace-nowrap">
-        <span style={{ color: Colors.SEPIA4 }}>time: </span>
-        <span>{point.x + "s"}</span>
+        <span style={{ color: Colors.SEPIA4 }}>{t<string>("result.time")}: </span>
+        <span>{point.x + t<string>("result.seconds_short")}</span>
       </div>
       {point.y.slice(0).reverse().map((val, char) => {
         const i = (props.names?.length ?? 0) - char - 1;
         return (
           <FloatStatTooltipContent
               key={"tooltip-" + i}
-              title={props.names?.[i] + " contribution"}
+              title={props.names?.[i] + " " + t<string>("result.contribution")}
               data={val}
               color={DataColors.characterLabel(i)}
               format={s =>

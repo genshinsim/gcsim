@@ -5,7 +5,7 @@ import { useRefresh } from "../../Util";
 import { RollupCard } from "./Template";
 
 export const DPSRollupCard = ({ data, color }: { data: SimResults | null; color: string }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const fmt = useCallback(
     (val?: number) => val?.toLocaleString(i18n.language, { maximumFractionDigits: 0 }), [i18n]);
   
@@ -23,7 +23,7 @@ export const DPSRollupCard = ({ data, color }: { data: SimResults | null; color:
     <RollupCard
         key="dps"
         color={color}
-        title="Damage Per Second (DPS)"
+        title={`${t("result.dps_long")} (DPS)`}
         value={fmt(dps?.mean)}
         auxStats={auxStats}
         tooltip="help"

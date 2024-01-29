@@ -4,7 +4,7 @@ import { scaleLinear } from "@visx/scale";
 import { Circle } from "@visx/shape";
 import { useTooltip } from "@visx/tooltip";
 import { useMemo } from "react";
-import { DataColors, GraphAxisBottom, GraphAxisLeft, GraphAxisRight, GraphGrid, NoData } from "../../Util";
+import { DataColorsConst, GraphAxisBottom, GraphAxisLeft, GraphAxisRight, GraphGrid, NoData } from "../../Util";
 import { RenderTooltip, TooltipData, useTooltipHandles } from "./PositionGraphTooltip";
 
 type Props = {
@@ -102,8 +102,8 @@ export const PositionGraph = ({
                 cy={yScale(e.y)}
                 r={sizeScale(e.r)}
                 fillOpacity={opacity}
-                fill={DataColors.qualitative3(i)}
-                stroke={DataColors.qualitative3(i)}
+                fill={DataColorsConst.qualitative3(i)}
+                stroke={DataColorsConst.qualitative3(i)}
                 strokeWidth={1}
                 onMouseMove={(ev) => tooltipHandles.mouseHover(ev, {
                   player: false,
@@ -122,8 +122,8 @@ export const PositionGraph = ({
               cy={yScale(player.y ?? 0)}
               r={sizeScale(player.r ?? 0.3)}
               fillOpacity={tooltip.tooltipData?.player ? 0.75 : 0}
-              fill={DataColors.gray}
-              stroke={DataColors.gray}
+              fill={DataColorsConst.gray}
+              stroke={DataColorsConst.gray}
               strokeWidth={2}
               onMouseMove={(ev) => tooltipHandles.mouseHover(ev, {
                 player: true,

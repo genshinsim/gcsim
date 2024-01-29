@@ -132,7 +132,7 @@ export function ImportFromEnkaDialog(props: Props) {
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <ButtonGroup>
             <Button onClick={handleClick} intent="primary">
-              {t<string>("simple.fetch")}
+              {t<string>("simple.import")}
             </Button>
           </ButtonGroup>
         </div>

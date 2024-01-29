@@ -154,19 +154,19 @@ export function CharacterCard({
     switch (s.t) {
       case "both":
         val.push(
-          <td key={"flat-" + i} className="text-right">
+          <td key={"flat-" + i} className="text-right text-xs">
             {s.flat.toFixed(0)}
           </td>
         );
         val.push(
-          <td key={"per-" + i} className="text-right">
+          <td key={"per-" + i} className="text-right text-xs">
             {(s.percent * 100).toFixed(2) + "%"}
           </td>
         );
         break;
       case "f":
         val.push(
-          <td key={"flat-" + i} className="text-right">
+          <td key={"flat-" + i} className="text-right text-xs">
             {s.flat.toFixed(0)}
           </td>
         );
@@ -175,7 +175,7 @@ export function CharacterCard({
       case "%":
         val.push(<td key={"flat-" + i}></td>);
         val.push(
-          <td key={"per-" + i} className="text-right">
+          <td key={"per-" + i} className="text-right text-xs">
             {(s.percent * 100).toFixed(2) + "%"}
           </td>
         );
@@ -183,9 +183,9 @@ export function CharacterCard({
 
     rows.push(
       <tr key={count}>
-        <td className="flex flex-row place-items-center">
-          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>{" "}
-          {s.name}
+        <td className="flex flex-row gap-0.5 place-items-center">
+          <div className="w-4 mr-1 fill-gray-100">{statKeyToIcon(s.key)}</div>
+          <span className="text-xs sm:text-sm">{s.name}</span>
         </td>
         {val}
       </tr>
@@ -281,7 +281,7 @@ export function CharacterCard({
         <WeaponCard weapon={char.weapon} isSkeleton={isSkeleton} />
 
         {showDetails ? (
-          <div className="ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
+          <div className="flex flex-col gap-2 mx-2 p-2 bg-[#252A31] border-gray-600 border">
             <span className="font-bold">
               {statsHeader}
             </span>

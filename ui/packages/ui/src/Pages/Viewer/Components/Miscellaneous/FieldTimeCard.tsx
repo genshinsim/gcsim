@@ -3,7 +3,7 @@ import { FloatStat, SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle, DataColors, FloatStatTooltipContent, NoData, OuterLabelPie, useRefreshWithTimer } from "../Util";
+import { CardTitle, useDataColors, FloatStatTooltipContent, NoData, OuterLabelPie, useRefreshWithTimer } from "../Util";
 
 type Props = {
   data: SimResults | null;
@@ -12,11 +12,13 @@ type Props = {
 }
 
 export default ({ data, running, names }: Props) => {
+  const { t } = useTranslation();
   const [field_time, timer] = useRefreshWithTimer(
       d => d?.statistics?.field_time, 10000, data, running);
+
   return (
     <Card className="flex flex-col col-span-3 h-72 min-h-full gap-0">
-      <CardTitle title="Field Time Distribution" tooltip="x" timer={timer} />
+      <CardTitle title={t<string>("result.dist", { d: t<string>("result.field_time") })} tooltip="x" timer={timer} />
       <FieldTimePie names={names} field_time={field_time} />
     </Card>
   );
@@ -28,7 +30,8 @@ type PieProps = {
 }
 
 const FieldTimePie = memo(({ names, field_time }: PieProps) => {
-  const { i18n } = useTranslation();
+  const { DataColors } = useDataColors();
+  const { i18n, t } = useTranslation();
   const { data } = useData(field_time, names);
 
   if (field_time == null || names == null) {
@@ -52,7 +55,7 @@ const FieldTimePie = memo(({ names, field_time }: PieProps) => {
             }}
             tooltipContent={d => (
               <FloatStatTooltipContent
-                  title={d.name + " field time (s)"}
+                  title={d.name + " " + `${t<string>("result.field_time")} (${t<string>("result.seconds_short")})`}
                   data={d.value}
                   color={DataColors.characterLabel(d.index)}
                   percent={d.pct} />

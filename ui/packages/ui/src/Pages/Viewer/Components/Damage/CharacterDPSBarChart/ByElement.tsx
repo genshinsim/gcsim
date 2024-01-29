@@ -2,7 +2,7 @@ import { ElementDPS, ElementStats } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { useMemo } from "react";
-import { DataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
+import { useDataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
 
 type Props = {
   width: number;
@@ -12,6 +12,7 @@ type Props = {
 }
 
 export const ByElementLegend = ({ dps }: { dps?: ElementStats[] }) => {
+  const { DataColors } = useDataColors();
   const keys = useMemo(() => {
     if (dps == null) {
       return [];
@@ -37,6 +38,7 @@ export const ByElementLegend = ({ dps }: { dps?: ElementStats[] }) => {
 };
 
 export const ByElementChart = ({ width, height, names, dps }: Props) => {
+  const { DataColors } = useDataColors();
   const { data, keys, xMax } = useData(dps, names);
 
   if (dps == null || names == null || keys.length == 0) {
@@ -63,7 +65,7 @@ export const ByElementChart = ({ width, height, names, dps }: Props) => {
         hoverColor={DataColors.elementLabel}
         tooltipContent={(d, k) => (
           <FloatStatTooltipContent
-              title={d.name + " " + k + " dps"}
+              title={d.name + " " + k + " DPS"}
               data={d.data[k]}
               color={DataColors.elementLabel(k)}
               percent={(d.data[k].mean ?? 0) / d.total}

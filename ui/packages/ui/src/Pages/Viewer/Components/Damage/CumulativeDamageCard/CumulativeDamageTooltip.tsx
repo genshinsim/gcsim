@@ -7,7 +7,7 @@ import { TooltipWithBounds } from "@visx/tooltip";
 import { ScaleLinear } from "d3-scale";
 import { MutableRefObject } from "react";
 import { useTranslation } from "react-i18next";
-import { DataColors } from "../../Util";
+import { DataColorsConst } from "../../Util";
 import { Point } from "./CumulativeDamageData";
 
 export interface TooltipData {
@@ -115,35 +115,35 @@ export const HoverLine = (props: HoverLineProps) => {
       <DataPoint
         cx={x}
         x={props.xScale(point.x)}
-        fill={DataColors.qualitative2(3)}
+        fill={DataColorsConst.qualitative2(3)}
         path={props.minRef}
         name={"dps-min"}
       />
       <DataPoint
         cx={x}
         x={props.xScale(point.x)}
-        fill={DataColors.qualitative2(1)}
+        fill={DataColorsConst.qualitative2(1)}
         path={props.maxRef}
         name={"dps-max"}
       />
       <DataPoint
         cx={x}
         x={props.xScale(point.x)}
-        fill={DataColors.qualitative2(4)}
+        fill={DataColorsConst.qualitative2(4)}
         path={props.q1Ref}
         name={"dps-q1"}
       />
       <DataPoint
         cx={x}
         x={props.xScale(point.x)}
-        fill={DataColors.qualitative3(8)}
+        fill={DataColorsConst.qualitative3(8)}
         path={props.q2Ref}
         name={"dps-q2"}
       />
       <DataPoint
         cx={x}
         x={props.xScale(point.x)}
-        fill={DataColors.qualitative2(5)}
+        fill={DataColorsConst.qualitative2(5)}
         path={props.q3Ref}
         name={"dps-q3"}
       />
@@ -237,6 +237,7 @@ type TooltipProps = {
 };
 
 export const RenderTooltip = (props: TooltipProps) => {
+  const { t } = useTranslation();
   if (
     !props.tooltipOpen ||
     !props.tooltipData ||
@@ -261,35 +262,35 @@ export const RenderTooltip = (props: TooltipProps) => {
       onMouseLeave={() => props.handles.mouseLeave()}
     >
       <div className="flex flex-col px-2 py-1 font-mono text-xs">
-        <ul className="grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-start">
+        <ul className="grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-start">
           <Item
             color={Colors.SEPIA4}
-            name="time"
+            name={t<string>("result.time")}
             value={point.x}
-            suffix={"s"}
+            suffix={t<string>("result.seconds_short")}
           />
           <Item
-            color={DataColors.qualitative2(3)}
+            color={DataColorsConst.qualitative2(3)}
             name="min"
             value={point.y.min}
           />
           <Item
-            color={DataColors.qualitative2(1)}
+            color={DataColorsConst.qualitative2(1)}
             name="max"
             value={point.y.max}
           />
           <Item
-            color={DataColors.qualitative2(4)}
+            color={DataColorsConst.qualitative2(4)}
             name="p25"
             value={point.y.q1}
           />
           <Item
-            color={DataColors.qualitative3(8)}
+            color={DataColorsConst.qualitative3(8)}
             name="p50"
             value={point.y.q2}
           />
           <Item
-            color={DataColors.qualitative2(5)}
+            color={DataColorsConst.qualitative2(5)}
             name="p75"
             value={point.y.q3}
           />

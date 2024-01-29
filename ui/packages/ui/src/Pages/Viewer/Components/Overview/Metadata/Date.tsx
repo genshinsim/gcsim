@@ -7,6 +7,7 @@ type Props = {
 };
 
 export const DateItem = memo(({ date }: Props) => {
+  const { t } = useTranslation();
   const { i18n } = useTranslation();
 
   if (date == null) {
@@ -15,5 +16,5 @@ export const DateItem = memo(({ date }: Props) => {
 
   const d = new Date(Date.parse(date));
 
-  return <Item title="created" value={d.toLocaleDateString(i18n.language)} />;
+  return <Item title={t<string>("result.metadata_created")} value={d.toLocaleDateString(i18n.language)} />;
 });

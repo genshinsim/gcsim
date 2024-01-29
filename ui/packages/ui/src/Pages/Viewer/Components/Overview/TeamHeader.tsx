@@ -3,6 +3,7 @@ import classNames from "classnames";
 import React, { memo } from "react";
 import { CharacterCard } from "../../../../Components/Cards";
 import { ConsolidateCharStats } from "../../../Simulator/Components/character";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   characters?: Character[];
@@ -30,6 +31,7 @@ export function characterCardsClassNames(num: number): string {
 }
 
 const CharacterCards = ({ characters }: Props) => {
+  const { t } = useTranslation();
   const cardClass = characterCardsClassNames(characters?.length ?? 4);
   const [showDetails, setShowDetails] = React.useState(false);
   const [showSnapshot, setShowSnapshot] = React.useState(true);
@@ -52,7 +54,7 @@ const CharacterCards = ({ characters }: Props) => {
     setShowSnapshot(!showSnapshot);
   };
 
-  const statBlock = ConsolidateCharStats(characters);
+  const statBlock = ConsolidateCharStats(t, characters);
 
   return (
     <>

@@ -88,7 +88,7 @@ export function ImportFromGOODDialog(props: Props) {
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <ButtonGroup>
             <Button onClick={handleLoad} disabled={!data || data.err !== ""} intent="primary">
-            {t<string>("simple.load")}
+            {t<string>("simple.import")}
             </Button>
             <Button onClick={props.onClose} intent="danger">
               {t<string>("db.cancel")}
