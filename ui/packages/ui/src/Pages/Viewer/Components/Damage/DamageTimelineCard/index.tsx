@@ -77,7 +77,7 @@ export default ({ data, running, names }: Props) => {
           <CardTitle title={t<string>("result.dmg_timeline")} tooltip="x" />
           <Options graph={graph} setGraph={setGraph} />
         </div>
-        <div className="flex justify-start sm:justify-center pb-5 sm:pb-0 items-center">
+        <div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">
           <Legend graph={graph} names={names} glyphNames={glyphNames} glyphs={glyphs} />
         </div>
       </div>
