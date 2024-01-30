@@ -57,7 +57,7 @@ export const TargetAuraUptimeCard = ({ data, running }: Props) => {
   }, [stats.data, DataColors.reactableModifierKeys, target]);
 
   return (
-    <Card className="flex flex-col col-span-3 h-96">
+    <Card className="flex flex-col col-span-3 min-h-[384px]">
       <div className="flex flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
           <CardTitle
