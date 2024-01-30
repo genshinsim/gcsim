@@ -7,14 +7,14 @@ type Props = {
 };
 
 export const Swap = memo(({ swap }: Props ) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   if (swap == null) {
     return null;
   }
   return (
     <Item
-      title="swap delay"
+      title={t<string>("result.metadata_swap_delay")}
       value={swap.toLocaleString(i18n.language) + "f"}
       valueCase="lowercase"
     />

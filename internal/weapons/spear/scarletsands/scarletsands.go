@@ -47,6 +47,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
+	icdKey := "scarletsands-icd"
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -58,7 +59,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
-		// TODO: is there icd?
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		char.AddStatus(icdKey, 0.3*60, true)
 
 		// reset stacks if expired
 		if !char.StatModIsActive(skillBuff) {

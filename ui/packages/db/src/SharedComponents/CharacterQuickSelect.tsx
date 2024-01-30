@@ -23,6 +23,7 @@ export function CharacterQuickSelect() {
     return (
       <div className="grow max-w-xl">
         <MultiSelect2
+          placeholder={t<string>("db.type_to_search")}
           items={charNames}
           itemRenderer={(charName, itemProps) => {
             return (
@@ -65,9 +66,10 @@ export function CharacterQuickSelect() {
           }}
           itemListPredicate={(query, items) => {
             return items.filter((item) => {
-              return translateCharName(item)
-                .toLocaleLowerCase()
-                .includes(query.toLocaleLowerCase());
+              const normalizedItem = item.toLowerCase();
+              const normalizedLocalizedItem = translateCharName(item).toLowerCase();
+              const normalizedQuery = query.toLocaleLowerCase();
+              return normalizedItem.includes(normalizedQuery) || normalizedLocalizedItem.includes(normalizedQuery);
             });
           }}
           selectedItems={includedChars}

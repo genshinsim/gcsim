@@ -104,3 +104,32 @@ func (h *LinearHist) BinToValue(bin float64) float64 {
 func Ptr[T any](v T) *T {
 	return &v
 }
+
+// util for metadata and damage agg
+
+const FloatEqDelta = 0.00001
+
+// given a pre-sorted slice of values, returns the indexes of the percentiles
+func GetPercentileIndexes[T any](a []T) (int, int) {
+	l := len(a)
+	if l == 1 {
+		return 1, 0
+	}
+	if l%2 == 0 {
+		return l / 2, l / 2
+	}
+	return (l - 1) / 2, (l-1)/2 + 1
+}
+
+// given a pre-sorted slice of values, returns the median element
+func Median[T any](a []T) T {
+	l := len(a)
+
+	if l == 0 {
+		var empty T
+		return empty
+	}
+	// if length of array is even, median is between a[l/2] and a[l/2+1]
+	// since need an element that was used, a[l/2] is close enough
+	return a[l/2]
+}

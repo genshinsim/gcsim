@@ -12,6 +12,7 @@ import React from "react";
 import { useAppDispatch } from "../../../../Stores/store";
 import { userDataActions } from "../../../../Stores/userDataSlice";
 import FetchCharsFromEnka from "./FetchCharsFromEnka";
+import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
   isOpen: boolean;
@@ -25,6 +26,7 @@ const AppToaster = Toaster.create({
 const lsKey = "Enka-UID";
 
 export function ImportFromEnkaDialog(props: Props) {
+  const { t } = useTranslation();
   const [message, setMessage] = React.useState<string>("");
   const [errors, setErrors] = React.useState<string[]>([]);
   const [characters, setCharacters] = React.useState<Character[]>([]);
@@ -61,20 +63,17 @@ export function ImportFromEnkaDialog(props: Props) {
       canEscapeKeyClose
       canOutsideClickClose
       icon="import"
-      title="Import from Enka"
+      title={t<string>("simple.tools_import", { src: "Enka.Network" })}
       style={{ width: "85%" }}
     >
       <div className={Classes.DIALOG_BODY}>
-        <p>
-          Ensure your UID has no problems on{" "}
-          <a href="https://enka.network/" target="_blank" rel="noreferrer">
-            Enka
-          </a>
-          .
+        <p className="!pb-2">
+          <Trans i18nKey="simple.tools_import_pre_enka">
+            <a href="https://enka.network/" target="_blank" rel="noreferrer"/>
+          </Trans>
         </p>
-        <Callout intent="warning" title="Warning">
-          Importing will replace any existing GOOD/Enka import you already have.
-          This action cannot be reversed.
+        <Callout intent="warning">
+          {t<string>("simple.tools_import_warning", { src: "GOOD/Enka" })}
         </Callout>
         <input
           value={uid}
@@ -82,25 +81,24 @@ export function ImportFromEnkaDialog(props: Props) {
             setUid(e.target.value.trim());
           }}
           className="w-full p-2 bg-gray-600 rounded-md mt-2"
-          placeholder="Paste UID here"
+          placeholder={t<string>("simple.tools_paste_uid")}
         />
 
         {message === "success" ? (
           <>
             <Callout intent="success" className="mt-2 p-2">
-              Data retrieved successfully.
               {characters.length > 0 ? (
-                <>
-                  <br />
-                  The following characters have been imported:
-                  {characters.map((e, i) => {
-                    return (
-                      <div key={i} className="ml-2">
-                        {e.name}
-                      </div>
-                    );
-                  })}
-                </>
+                <Trans i18nKey="simple.tools_import_post_enka">
+                  <div i18nIsDynamicList>
+                    {characters.map((e, i) => {
+                      return (
+                        <div key={i} className="ml-2">
+                          {e.name}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Trans>
               ) : null}
             </Callout>
             {errors.length > 0 ? (
@@ -126,17 +124,15 @@ export function ImportFromEnkaDialog(props: Props) {
           </div>
         )}
 
-        <p className="font-bold pt-2">
-          Once your character data has been imported, you can add your imported
-          character via Add Character button and search for the character&apos;s
-          name.
+        <p className="font-bold !pt-2">
+          {t<string>("simple.tools_import_after")}
         </p>
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <ButtonGroup>
             <Button onClick={handleClick} intent="primary">
-              Fetch
+              {t<string>("simple.import")}
             </Button>
           </ButtonGroup>
         </div>

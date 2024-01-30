@@ -2,7 +2,8 @@ import { TargetStats } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { useMemo } from "react";
-import { DataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
+import { useDataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   width: number;
@@ -12,6 +13,7 @@ type Props = {
 }
 
 export const ByTargetLegend = ({ dps }: { dps?: TargetStats[] }) => {
+  const { DataColors } = useDataColors();
   const keys = useMemo(() => {
     if (dps == null) {
       return [];
@@ -37,6 +39,8 @@ export const ByTargetLegend = ({ dps }: { dps?: TargetStats[] }) => {
 };
 
 export const ByTargetChart = ({ width, height, names, dps }: Props) => {
+  const { DataColors } = useDataColors();
+  const { t } = useTranslation();
   const { data, keys, xMax } = useData(dps, names);
 
   if (dps == null || names == null || keys.length == 0) {
@@ -63,7 +67,7 @@ export const ByTargetChart = ({ width, height, names, dps }: Props) => {
         hoverColor={k => DataColors.targetLabel(k)}
         tooltipContent={(d, k) => (
           <FloatStatTooltipContent
-              title={d.name + " target " + k + " dps"}
+              title={d.name + " " + t<string>("viewer.target") + " " + k + " DPS"}
               data={d.data[k]}
               color={DataColors.targetLabel(k)}
               percent={(d.data[k].mean ?? 0) / d.total}

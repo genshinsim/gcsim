@@ -5,7 +5,7 @@ import { useRefresh } from "../../Util";
 import { RollupCard } from "./Template";
 
 export const SimDurRollupCard = ({ data, color }: { data: SimResults | null; color: string }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const fmt = useCallback(
       (val?: number) => val?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }), [i18n]);
   
@@ -23,8 +23,8 @@ export const SimDurRollupCard = ({ data, color }: { data: SimResults | null; col
     <RollupCard
         key="duration"
         color={color}
-        title="Sim Duration"
-        label="s"
+        title={`${t("result.dur_long")} (Dur)`}
+        label={t<string>("result.seconds_short")}
         value={fmt(duration?.mean)}
         auxStats={auxStats}
         tooltip="help"

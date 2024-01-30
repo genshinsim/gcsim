@@ -13,4 +13,5 @@ export interface UserData {
 export interface UserSettings {
   showTips: boolean;
   showBuilder: boolean;
+  showNameSearch: boolean;
 }

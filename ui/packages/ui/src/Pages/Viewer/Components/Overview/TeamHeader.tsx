@@ -3,6 +3,7 @@ import classNames from "classnames";
 import React, { memo } from "react";
 import { CharacterCard } from "../../../../Components/Cards";
 import { ConsolidateCharStats } from "../../../Simulator/Components/character";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   characters?: Character[];
@@ -30,8 +31,10 @@ export function characterCardsClassNames(num: number): string {
 }
 
 const CharacterCards = ({ characters }: Props) => {
+  const { t } = useTranslation();
   const cardClass = characterCardsClassNames(characters?.length ?? 4);
   const [showDetails, setShowDetails] = React.useState(false);
+  const [showSnapshot, setShowSnapshot] = React.useState(true);
 
   if (characters == null) {
     return (
@@ -47,8 +50,11 @@ const CharacterCards = ({ characters }: Props) => {
   const handleToggleDetail = () => {
     setShowDetails(!showDetails);
   };
+  const handleToggleSnapshot = () => {
+    setShowSnapshot(!showSnapshot);
+  };
 
-  const statBlock = ConsolidateCharStats(characters);
+  const statBlock = ConsolidateCharStats(t, characters);
 
   return (
     <>
@@ -57,9 +63,12 @@ const CharacterCards = ({ characters }: Props) => {
         key={c.name}
         char={c}
         showDetails={showDetails}
+        showSnapshot={showSnapshot}
         handleToggleDetail={handleToggleDetail}
+        handleToggleSnapshot={handleToggleSnapshot}
         viewerMode
         stats={statBlock.stats[c.name] ? statBlock.stats[c.name] : []}
+        snapshot={statBlock.snapshot[c.name] ? statBlock.snapshot[c.name] : []}
         statsRows={statBlock.maxRows ? statBlock.maxRows : 0}
         className={cardClass} />
     ))}
@@ -94,6 +103,7 @@ export const FakeCard = ({ className }: { className: string }) => (
       showDetails={false}
       viewerMode
       stats={[]}
+      snapshot={[]}
       statsRows={0}
       isSkeleton={true}
       className={className} />

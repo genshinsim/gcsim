@@ -303,7 +303,7 @@ function SortBy() {
         className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
         onClick={() => setSortIsOpen(!sortIsOpen)}
       >
-        <div className=" grow">{t("Sort By")}</div>
+        <div className=" grow">{t("db.sort_by")}</div>
 
         <div className="">{sortIsOpen ? "-" : "+"}</div>
       </button>

@@ -2,8 +2,9 @@ import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
 import { SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useMemo, useState } from "react";
-import { CardTitle, DataColors, useRefreshWithTimer } from "../../Util";
+import { CardTitle, useDataColors, useRefreshWithTimer } from "../../Util";
 import { BarChart } from "./BarChart";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: SimResults | null;
@@ -11,10 +12,14 @@ type Props = {
 };
 
 export const TargetAuraUptimeCard = ({ data, running }: Props) => {
+  const { DataColors } = useDataColors();
+  const { t } = useTranslation();
   const [stats, timer] = useRefreshWithTimer(
     (d) => {
       return {
-        data: d?.statistics?.target_aura_uptime,
+        data: d?.statistics?.target_aura_uptime ? d?.statistics?.target_aura_uptime.map(
+          (s) => s.sources ? { sources: Object.fromEntries(Object.entries(s.sources).map(([k, v]) => [t<string>("elements."+k), v])) } : {}
+        ) : undefined,
       };
     },
     5000,
@@ -49,14 +54,14 @@ export const TargetAuraUptimeCard = ({ data, running }: Props) => {
         DataColors.reactableModifierKeys.indexOf(a) -
         DataColors.reactableModifierKeys.indexOf(b)
     );
-  }, [stats.data, target]);
+  }, [stats.data, DataColors.reactableModifierKeys, target]);
 
   return (
     <Card className="flex flex-col col-span-3 h-96">
       <div className="flex flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
           <CardTitle
-            title="Target Aura Uptime"
+            title={t<string>("result.target_aura_uptime")}
             tooltip="x"
             timer={timer}
           />
@@ -87,13 +92,14 @@ const Options = ({
   setTarget: (v: string) => void;
   targets: string[];
 }) => {
-  const label = <span className="text-xs font-mono text-gray-400">Target</span>;
+  const { t } = useTranslation();
+  const label = <span className="text-xs font-mono text-gray-400">{t<string>("viewer.target")}</span>;
 
   return (
     <FormGroup label={label} inline={true} className="!mb-2">
       <HTMLSelect value={target} onChange={(e) => setTarget(e.target.value)}>
         {targets.map((target) => (
-          <option value={target}>{Number(target) + 1}</option>
+          <option key={target} value={target}>{Number(target) + 1}</option>
         ))}
       </HTMLSelect>
     </FormGroup>

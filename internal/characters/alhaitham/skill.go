@@ -19,6 +19,7 @@ var skillHoldFrames []int
 const (
 	skillTapHitmark  = 19
 	skillHoldHitmark = 28
+	mirrorInterval   = 233
 	projectionICDKey = "alhaitham-projection-icd"
 	particleICDKey   = "alhaitham-particle-icd"
 )
@@ -130,7 +131,7 @@ func (c *char) mirrorGain(generated int) {
 
 	if c.mirrorCount == 0 {
 		c.lastInfusionSrc = c.Core.F
-		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
+		c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), mirrorInterval)
 		c.Core.Log.NewEvent("infusion added", glog.LogCharacterEvent, c.Index)
 	}
 
@@ -146,7 +147,7 @@ func (c *char) mirrorGain(generated int) {
 		c.mirrorCount = 3
 		if c.Core.F != c.lastInfusionSrc { // this avoids multiple queues of mirror loss if mirror overflow multiple times in same frame
 			c.lastInfusionSrc = c.Core.F
-			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), 234)
+			c.Core.Tasks.Add(c.mirrorLoss(c.Core.F, 1), mirrorInterval)
 		}
 		c.Core.Log.NewEvent("mirror overflowed", glog.LogCharacterEvent, c.Index).
 			Write("mirrors gained", generated).
@@ -184,7 +185,7 @@ func (c *char) mirrorLoss(src, consumed int) func() {
 
 		// queue up again if we still have mirrors
 		if c.mirrorCount > 0 {
-			c.Core.Tasks.Add(c.mirrorLoss(src, 1), 214) // not affected by hitlag, 448-234
+			c.Core.Tasks.Add(c.mirrorLoss(src, 1), mirrorInterval) // not affected by hitlag
 		}
 	}
 }

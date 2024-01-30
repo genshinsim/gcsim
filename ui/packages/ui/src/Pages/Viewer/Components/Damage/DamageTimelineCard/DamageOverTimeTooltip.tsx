@@ -3,7 +3,7 @@ import { ScaleLinear } from "d3-scale";
 import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { Line } from "@visx/shape";
-import { DataColors } from "../../Util";
+import { DataColorsConst } from "../../Util";
 import { MutableRefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors } from "@blueprintjs/core";
@@ -103,21 +103,21 @@ export const HoverLine = (props: HoverLineProps) => {
       {/* <DataPoint
           cx={x}
           x={props.xScale(point.x)}
-          fill={DataColors.qualitative3(1)}
+          fill={DataColorsConst.qualitative3(1)}
           path={props.maxRef}
           name={"dps-max"}
       />
       <DataPoint
           cx={x}
           x={props.xScale(point.x)}
-          fill={DataColors.qualitative2(3)}
+          fill={DataColorsConst.qualitative2(3)}
           path={props.minRef}
           name={"dps-min"}
       />
       <DataPoint
           cx={x}
           x={props.xScale(point.x)}
-          fill={DataColors.qualitative3(8)}
+          fill={DataColorsConst.qualitative3(8)}
           path={props.meanRef}
           name={"dps-mean"}
       /> */}
@@ -208,6 +208,7 @@ type TooltipProps = {
 }
 
 export const RenderTooltip = (props: TooltipProps) => {
+  const { t } = useTranslation();
   if (!props.tooltipOpen || !props.tooltipData || !props.tooltipLeft || !props.names) {
     return null;
   }
@@ -226,12 +227,12 @@ export const RenderTooltip = (props: TooltipProps) => {
         }}
         onMouseLeave={() => props.handles.mouseLeave()}>
       <div className="flex flex-col px-2 py-1 font-mono text-xs">
-        <ul className="grid grid-cols-[repeat(2,_min-content)] gap-x-2 justify-start">
-         <Item color={Colors.SEPIA4} name="time" value={point.x} suffix={"s"} />
-          <Item color={DataColors.qualitative4(3)} name="min" value={point.y.min} />
-          <Item color={DataColors.qualitative4(1)} name="max" value={point.y.max} />
-          <Item color={DataColors.qualitative4(8)} name="mean" value={point.y.mean} />
-          <Item color={DataColors.qualitative4(0)} name="std" value={point.y.sd} />
+        <ul className="grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-start">
+         <Item color={Colors.SEPIA4} name={t<string>("result.time")} value={point.x} suffix={t<string>("result.seconds_short")} />
+          <Item color={DataColorsConst.qualitative4(3)} name="min" value={point.y.min} />
+          <Item color={DataColorsConst.qualitative4(1)} name="max" value={point.y.max} />
+          <Item color={DataColorsConst.qualitative4(8)} name="mean" value={point.y.mean} />
+          <Item color={DataColorsConst.qualitative4(0)} name="std" value={point.y.sd} />
         </ul>
       </div>
     </div>

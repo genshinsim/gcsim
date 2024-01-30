@@ -1,6 +1,7 @@
 import { Button, Classes, Dialog } from "@blueprintjs/core";
 import { eventColor } from "./parse";
 import { Trans, useTranslation } from "react-i18next";
+import classNames from "classnames";
 
 export interface OptionsProp {
   isOpen: boolean;
@@ -14,7 +15,7 @@ export interface OptionsProp {
 }
 
 export function Options(props: OptionsProp) {
-  useTranslation();
+  const { t } = useTranslation();
 
   const cols = props.options.map((o, index) => {
     return (
@@ -49,20 +50,28 @@ export function Options(props: OptionsProp) {
           <div className="text-md font-medium">
             <Trans>viewer.log_options</Trans>
           </div>
-          <div className="grid grid-cols-3">{cols}</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3">{cols}</div>
           <div>{/* <ButtonGroup></ButtonGroup> */}</div>
         </div>
         <div className={Classes.DIALOG_FOOTER}>
-          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button onClick={() => props.handleSetPresets("simple")}>Simple</Button>
-            <Button onClick={() => props.handleSetPresets("advanced")}>Advanced</Button>
-            <Button onClick={() => props.handleSetPresets("verbose")}>Verbose</Button>
-            <Button onClick={() => props.handleSetPresets("debug")}>Debug</Button>
+          <div className={classNames(Classes.DIALOG_FOOTER_ACTIONS, "!flex !flex-col !gap-1.5 sm:!flex-row sm:!gap-0")}>
+            <Button onClick={() => props.handleSetPresets("simple")}>
+              {t<string>("viewer.simple")}
+            </Button>
+            <Button onClick={() => props.handleSetPresets("advanced")}>
+              {t<string>("viewer.advanced")}
+            </Button>
+            <Button onClick={() => props.handleSetPresets("verbose")}>
+              {t<string>("viewer.verbose")}
+            </Button>
+            <Button onClick={() => props.handleSetPresets("debug")}>
+              {t<string>("viewer.debug")}
+              </Button>
             <Button intent="danger" onClick={props.handleClear}>
-              <Trans>viewer.clear</Trans>
+              {t<string>("viewer.clear")}
             </Button>
             <Button intent="none" onClick={props.handleClose}>
-              <Trans>viewer.close</Trans>
+              {t<string>("viewer.close")}
             </Button>
           </div>
         </div>

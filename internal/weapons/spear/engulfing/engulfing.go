@@ -32,19 +32,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	atk := .21 + .07*float64(r)
-	max := 0.7 + 0.1*float64(r)
+	maxBonus := 0.7 + 0.1*float64(r)
 
 	val := make([]float64, attributes.EndStatType)
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("engulfing-lightning", -1),
 		AffectedStat: attributes.ATKP,
 		Amount: func() ([]float64, bool) {
-			er := char.NonExtraStat(attributes.ER)
+			er := max(char.NonExtraStat(attributes.ER)-1, 0)
 			c.Log.NewEvent("engulfing lightning snapshot", glog.LogWeaponEvent, char.Index).
 				Write("er", er)
 			bonus := atk * er
-			if bonus > max {
-				bonus = max
+			if bonus > maxBonus {
+				bonus = maxBonus
 			}
 			val[attributes.ATKP] = bonus
 			return val, true

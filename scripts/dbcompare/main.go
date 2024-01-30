@@ -37,10 +37,10 @@ func main() {
 		panic(err)
 	}
 	// fmt.Println(len(res))
-	fmt.Println("id,original,next,err")
+	fmt.Println("id,original,next,diff,err")
 	for _, v := range res {
 		dps, err := runSim(v)
-		fmt.Printf("%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, err)
+		fmt.Printf("%v,%v,%v,%v,%v\n", v.Id, v.Summary.MeanDpsPerTarget, dps, dps-v.Summary.MeanDpsPerTarget, err)
 	}
 }
 

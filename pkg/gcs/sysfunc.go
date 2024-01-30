@@ -35,6 +35,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("set_default_target", e.setDefaultTarget, env)
 	e.addSysFunc("set_particle_delay", e.setParticleDelay, env)
 	e.addSysFunc("kill_target", e.killTarget, env)
+	e.addSysFunc("is_target_dead", e.isTargetDead, env)
 	e.addSysFunc("pick_up_crystallize", e.pickUpCrystallize, env)
 
 	// math
@@ -417,6 +418,38 @@ func (e *Eval) killTarget(c *ast.CallExpr, env *Env) (Obj, error) {
 	e.Core.Combat.KillEnemy(idx - 1)
 
 	return &null{}, nil
+}
+
+func (e *Eval) isTargetDead(c *ast.CallExpr, env *Env) (Obj, error) {
+	// is_target_dead(1)
+	if !e.Core.Combat.DamageMode {
+		return nil, errors.New("damage mode is not activated")
+	}
+
+	if len(c.Args) != 1 {
+		return nil, fmt.Errorf("invalid number of params for is_target_dead, expected 1 got %v", len(c.Args))
+	}
+
+	t, err := e.evalExpr(c.Args[0], env)
+	if err != nil {
+		return nil, err
+	}
+	n, ok := t.(*number)
+	if !ok {
+		return nil, fmt.Errorf("is_target_dead argument target index should evaluate to a number, got %v", t.Inspect())
+	}
+	// n should be int
+	idx := int(n.ival)
+	if n.isFloat {
+		idx = int(n.fval)
+	}
+
+	// check if index is in range
+	if idx < 1 || idx > e.Core.Combat.EnemyCount() {
+		return nil, fmt.Errorf("index for is_target_dead is invalid, should be between %v and %v, got %v", 1, e.Core.Combat.EnemyCount(), idx)
+	}
+
+	return bton(!e.Core.Combat.Enemies()[idx-1].IsAlive()), nil
 }
 
 func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {

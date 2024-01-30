@@ -317,6 +317,29 @@ kill_target(arg);
 If `arg` is an invalid target (i.e. 3 when there are only 2 targets), then gcsim will exit with an error.
 :::
 
+## is_target_dead
+
+:::danger
+**THIS FUNCTION IS EXPERIMENTAL AND SUBJECT TO CHANGE.**
+
+**USE AT YOUR OWN RISK.**
+:::
+
+```
+is_target_dead(arg);
+```
+
+- `is_target_dead` will evaluates to 1 if the target with index `arg` is dead and 0 otherwise.
+
+:::danger
+`arg` must be a number or an expression that evaluates to a number.
+:::
+
+:::danger
+If `arg` is an invalid target (i.e. 3 when there are only 2 targets), then gcsim will exit with an error.
+:::
+
+
 ## pick_up_crystallize
 
 ```

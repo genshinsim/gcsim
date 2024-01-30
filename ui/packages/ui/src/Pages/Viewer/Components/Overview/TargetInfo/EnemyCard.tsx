@@ -2,7 +2,7 @@ import { Card } from "@blueprintjs/core";
 import { Enemy } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
 import { IconAnemo, IconCryo, IconDendro, IconElectro, IconGeo, IconHydro, IconPhysical, IconPyro } from "../../../../../Components/Icons";
-import { DataColors } from "../../Util";
+import { DataColorsConst } from "../../Util";
 
 type Props = {
   id: number;
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const EnemyCard = (props: Props) => {
-  const bgColor = DataColors.qualitative3(props.id);
+  const bgColor = DataColorsConst.qualitative3(props.id);
 
   return (
     <div className="flex pl-1 min-w-fit" style={{ background: bgColor }}>
@@ -24,20 +24,22 @@ export const EnemyCard = (props: Props) => {
 };
 
 const EnemyTitle = ({ id }: Props) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-row items-end gap-3">
-      <div className="text-gray-400 text-lg" style={{ color: DataColors.qualitative5(id) }}>
-        Target {id+1}
+      <div className="text-gray-400 text-lg" style={{ color: DataColorsConst.qualitative5(id) }}>
+        {t<string>("viewer.target")} {id+1}
       </div>
     </div>
   );
 };
 
 const EnemyInfo = ({ enemy }: Props) => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-row font-mono gap-3 h-full items-center">
-      <InfoItem name="lvl" value={enemy?.level} />
-      <InfoItem name="hp" value={enemy?.hp} />
+      <InfoItem name={t<string>("character.lvl")} value={enemy?.level} />
+      <InfoItem name={t<string>("stats.hp")} value={enemy?.hp} />
     </div>
   );
 };

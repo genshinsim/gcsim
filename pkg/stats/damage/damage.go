@@ -131,8 +131,12 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	}
 
 	// TODO: working under assumption that enemies are not removed from handler array upon death, subject to break...
+	bucketCount := len(result.DamageBuckets)
 	for e := range core.Combat.Enemies() {
-		result.Enemies[e].CumulativeDamage = make([]float64, len(b.buckets))
+		result.Enemies[e].CumulativeDamage = make([]float64, bucketCount)
+	}
+	if bucketCount == 0 {
+		return
 	}
 	for i := 0; i < len(b.cumuTarget); i++ {
 		for e, v := range b.cumuTarget[i] {

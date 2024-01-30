@@ -6,6 +6,7 @@ import { CardTitle, NoData, useRefreshWithTimer } from "../../Util";
 import { ByCharacterChart, ByCharacterLegend } from "./ByCharacter";
 import { ByElementChart, ByElementLegend } from "./ByElement";
 import { ByTargetChart, ByTargetLegend } from "./ByTarget";
+import { useTranslation } from "react-i18next";
 
 type GraphData = {
   byElement?: ElementStats[];
@@ -20,27 +21,31 @@ type Props = {
 }
 
 export default ({ data, running, names }: Props) => {
+  const { t } = useTranslation();
   const [graph, setGraph] = useState("element");
+
   const [stats, timer] = useRefreshWithTimer(d => {
     return {
-      byElement: d?.statistics?.dps_by_element,
+      byElement: d?.statistics?.dps_by_element ? d?.statistics?.dps_by_element.map(
+        (s) => s.elements ? { elements: Object.fromEntries(Object.entries(s.elements).map(([k, v]) => [t<string>("elements."+k), v])) } : {}
+      ) : undefined,
       byCharacter: d?.statistics?.character_dps,
       byTarget: d?.statistics?.dps_by_target,
     };
   }, 5000, data, running);
 
   return (
-    <Card className="flex flex-col col-span-full h-96">
-      <div className="flex flex-row justify-start gap-5">
+    <Card className="flex flex-col col-span-full min-h-[384px]">
+      <div className="flex flex-col sm:flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
-          <CardTitle title="Character DPS" tooltip="x" timer={timer} />
+          <CardTitle title={t<string>("result.character_dps")} tooltip="x" timer={timer} />
           <Options graph={graph} setGraph={setGraph} />
         </div>
-        <div className="flex flex-grow justify-center items-center">
+        <div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">
           <Legend data={stats} names={names} graph={graph} />
         </div>
       </div>
-      <ParentSize>
+      <ParentSize className="flex-grow">
         {({ width, height }) => (
           <Graph data={stats} names={names} width={width} height={height} graph={graph} />
         )}
@@ -50,18 +55,19 @@ export default ({ data, running, names }: Props) => {
 };
 
 const Options = ({ graph, setGraph }: { graph: string, setGraph: (v: string) => void }) => {
+  const { t } = useTranslation();
   const label = (
     <span className="text-xs font-mono text-gray-400">
-      Grouping
+      {t<string>("result.grouping")}
     </span>
   );
 
   return (
     <FormGroup label={label} inline={true} className="!mb-2">
       <HTMLSelect value={graph} onChange={(e) => setGraph(e.target.value)}>
-        <option value={"character"}>Character</option>
-        <option value={"element"}>Element</option>
-        <option value={"target"}>Target</option>
+        <option value={"character"}>{t<string>("db.character")}</option>
+        <option value={"element"}>{t<string>("result.element")}</option>
+        <option value={"target"}>{t<string>("viewer.target")}</option>
       </HTMLSelect>
     </FormGroup>
   );
