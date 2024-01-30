@@ -51,6 +51,7 @@ export default ({ sampler, data, sample, running }: Props) => {
       <NonIdealState
         icon="helper-management"
         action={<Generate sampler={sampler} data={data} sample={sample} running={running} />}
+        className="!px-2"
       />
     );
   }

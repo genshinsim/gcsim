@@ -41,7 +41,7 @@ export default ({ sample, error, retry }: Props) => {
   const cardClass = characterCardsClassNames(sample.character_details?.length ?? 4);
   return (
     <div className="flex flex-col gap-2 w-full 2xl:mx-auto 2xl:container py-6">
-      <div className="flex flex-row justify-between px-6 pb-2">
+      <div className="flex flex-row justify-between pl-6 pr-4 pb-2">
         <span className="text-lg font-bold font-mono">
           {t<string>("db.number_of_targets") + sample.target_details?.length}
         </span>
@@ -53,7 +53,7 @@ export default ({ sample, error, retry }: Props) => {
           <SendToSimulator config={sample.config} />
         </ButtonGroup>
       </div>
-      <div className="flex flex-row gap-2 justify-center flex-wrap">
+      <div className="flex flex-row gap-2 justify-center flex-wrap px-4 pb-2">
         {sample.character_details?.map((c) => (
           <CharacterCard
               key={c.name}
