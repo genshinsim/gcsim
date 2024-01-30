@@ -44,7 +44,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 	c.c6count = 0
 
 	breakthrough, ok := p.Params["breakthrough"]
-	if ok && breakthrough > 0 {
+	if !ok || breakthrough > 0 {
 		c.breakthrough = true
 	}
 

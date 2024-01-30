@@ -56,7 +56,7 @@ var ModifierString = []string{
 	"pyro",
 	"cryo",
 	"hydro",
-	"dendro (fuel)",
+	"dendro-fuel",
 	"",
 	"dendro",
 	"quicken",

@@ -6,65 +6,22 @@ import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { Bar, LinePath } from "@visx/shape";
 import { Threshold } from "@visx/threshold";
 import { useTranslation } from "react-i18next";
-import { DataColors, GraphAxisBottom, GraphAxisLeft, GraphGrid, NoData } from "../../Util";
+import { DataColorsConst, GraphAxisBottom, GraphAxisLeft, GraphGrid, NoData } from "../../Util";
 import { HoverLine, RenderTooltip, TooltipData, useTooltipHandles } from "./DamageOverTimeTooltip";
 import { useData } from "./DamageOverTimeData";
 import { useTooltip } from "@visx/tooltip";
 import { useRef } from "react";
+import { LegendGlyph } from ".";
+import { specialLocales } from "@ui/Translation/i18n";
 
 const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
 
-type Props = {
-  width: number;
-  height: number;
-  input?: BucketStats;
-  margin?: { left: number, right: number, top: number, bottom: number };
+type LegendProps = {
+  names: string[];
+  glyphs: LegendGlyph[];
 }
 
-
-type LegendGlyph = {
-  label: string;
-  fill: string;
-  fillOpacity: number;
-  stroke: string;
-  strokeOpacity: number;
-  strokeDashArray?: string;
-};
-
-const names = ["min", "mean", "std", "max"];
-const glyphs: LegendGlyph[] = [
-  {
-    label: "min",
-    fill: DataColors.qualitative2(3),
-    fillOpacity: 0.5,
-    stroke: DataColors.qualitative2(3),
-    strokeOpacity: 0,
-  },
-  {
-    label: "mean",
-    fill: DataColors.qualitative3(8),
-    fillOpacity: 1.0,
-    stroke: DataColors.qualitative3(8),
-    strokeOpacity: 0,
-  },
-  {
-    label: "std",
-    fill: DataColors.qualitative1(0),
-    fillOpacity: 0.2,
-    stroke: DataColors.qualitative3(0),
-    strokeOpacity: 0.5,
-    strokeDashArray: "0 5 0",
-  },
-  {
-    label: "max",
-    fill: DataColors.qualitative2(1),
-    fillOpacity: 0.35,
-    stroke: DataColors.qualitative2(1),
-    strokeOpacity: 0,
-  },
-];
-
-export const DamageOverTimeLegend = () => {
+export const DamageOverTimeLegend = ({names, glyphs}: LegendProps) => {
   const scale = scaleOrdinal({
     domain: names,
     range: glyphs,
@@ -104,13 +61,22 @@ export const DamageOverTimeLegend = () => {
   );
 };
 
+type GraphProps = {
+  width: number;
+  height: number;
+  names: string[];
+  input?: BucketStats;
+  margin?: { left: number, right: number, top: number, bottom: number };
+}
+
 export const DamageOverTimeGraph = (
     {
       width,
       height,
+      names,
       input,
       margin = defaultMargin
-    }: Props) => {
+    }: GraphProps) => {
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
   const numXTicks = xMax < 475 ? 5 : 20;
@@ -121,7 +87,7 @@ export const DamageOverTimeGraph = (
   const meanRef = useRef<SVGPathElement | null>(null);
   const maxRef = useRef<SVGPathElement | null>(null);
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { data, duration, maxValue } = useData(input);
 
   const xScale = scaleLinear<number>({
@@ -167,7 +133,7 @@ export const DamageOverTimeGraph = (
             clipBelowTo={yMax}
             curve={curveBasis}
             aboveAreaProps={{
-              fill: DataColors.qualitative1(0),
+              fill: DataColorsConst.qualitative1(0),
               fillOpacity: 0.2
             }}
           />
@@ -176,7 +142,7 @@ export const DamageOverTimeGraph = (
             x={(d) => xScale(d.x)}
             y={(d) => yScale((d.y.mean ?? 0) + (d.y.sd ?? 0))}
             strokeWidth={1}
-            stroke={DataColors.qualitative3(0)}
+            stroke={DataColorsConst.qualitative3(0)}
             opacity={0.5}
             strokeDasharray="0 8 0"
             curve={curveBasis}
@@ -186,7 +152,7 @@ export const DamageOverTimeGraph = (
             x={(d) => xScale(d.x)}
             y={(d) => yScale(Math.max((d.y.mean ?? 0) - (d.y.sd ?? 0), 0))}
             strokeWidth={1}
-            stroke={DataColors.qualitative3(0)}
+            stroke={DataColorsConst.qualitative3(0)}
             opacity={0.5}
             strokeDasharray="0 8 0"
             curve={curveBasis}
@@ -196,8 +162,8 @@ export const DamageOverTimeGraph = (
             x={(d) => xScale(d.x)}
             y={(d) => yScale(d.y.max ?? 0)}
             strokeWidth={1}
-            // stroke={DataColors.gray}
-            stroke={DataColors.qualitative2(1)}
+            // stroke={DataColorsConst.gray}
+            stroke={DataColorsConst.qualitative2(1)}
             curve={curveBasis}
             opacity={0.5}
             innerRef={maxRef}
@@ -207,7 +173,7 @@ export const DamageOverTimeGraph = (
             x={(d) => xScale(d.x)}
             y={(d) => yScale(d.y.min ?? 0)}
             strokeWidth={1}
-            stroke={DataColors.qualitative2(3)}
+            stroke={DataColorsConst.qualitative2(3)}
             curve={curveBasis}
             opacity={0.5}
             innerRef={minRef}
@@ -217,7 +183,7 @@ export const DamageOverTimeGraph = (
             x={(d) => xScale(d.x)}
             y={(d) => yScale(d.y.mean ?? 0)}
             strokeWidth={2}
-            stroke={DataColors.qualitative3(8)}
+            stroke={DataColorsConst.qualitative3(8)}
             curve={curveBasis}
             innerRef={meanRef}
           />
@@ -236,16 +202,18 @@ export const DamageOverTimeGraph = (
                 i18n.language, { notation: 'compact', maximumSignificantDigits: 3 })}
               numTicks={numYTicks}
               labelOffset={65}
-              label="Damage Over Time"
+              labelProps={specialLocales.includes(i18n.resolvedLanguage) ? { transform: "scale(1 1) translate(56 204)", style: { writingMode: "vertical-lr" }, textAnchor: "middle" } : undefined}
+              label={t<string>("result.dmg_over_time")}
           />
           <GraphAxisBottom
               hideTicks
               top={yMax}
               scale={xScale}
               axisLineClassName="stroke-2"
-              tickFormat={s => s + "s"}
+              tickFormat={s => s + t<string>("result.seconds_short")}
               numTicks={numXTicks}
-              label="Duration (secs)"
+              labelOffset={10}
+              label={`${t<string>("result.dur_long")} (${t<string>("result.seconds")})`}
           />
           <HoverLine
               data={data}

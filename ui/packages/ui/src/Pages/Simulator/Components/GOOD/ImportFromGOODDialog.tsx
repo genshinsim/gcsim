@@ -8,7 +8,7 @@ import {
   Toaster,
 } from "@blueprintjs/core";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../../../Stores/store";
 import { userDataActions } from "../../../../Stores/userDataSlice";
 import { IGOODImport, parseFromGOOD } from "./parseFromGOOD";
@@ -51,21 +51,17 @@ export function ImportFromGOODDialog(props: Props) {
       canEscapeKeyClose
       canOutsideClickClose
       icon="import"
-      title="Import from Genshin Optimizer/GOOD"
+      title={t<string>("simple.tools_import", { src: "Genshin Optimizer/GOOD" })}
       style={{ width: "85%" }}
     >
       <div className={Classes.DIALOG_BODY}>
-        <p>
-          Paste import data in GOOD format in the textbox below. (If you are coming from Genshin
-          Optimizer, you can export your database in GOOD format{" "}
-          <a href="https://frzyc.github.io/genshin-optimizer/#/setting" target="_blank" rel="noreferrer">
-            here
-          </a>
-          .
+        <p className="!pb-2">
+          <Trans i18nKey="simple.tools_import_pre_go">
+            <a href="https://frzyc.github.io/genshin-optimizer/#/setting" target="_blank" rel="noreferrer"/>
+          </Trans>
         </p>
-        <Callout intent="warning" title="Warning">
-          Importing will replace any existing GOOD import you already have. This action cannot be
-          reversed.
+        <Callout intent="warning">
+          {t<string>("simple.tools_import_warning", { src: "GOOD/Enka" })}
         </Callout>
         <textarea
           value={localStorage.getItem(lsKey) ?? ""}
@@ -73,14 +69,13 @@ export function ImportFromGOODDialog(props: Props) {
           className="w-full p-2 bg-gray-600 rounded-md mt-2"
           rows={7}
         />
-        <p className="font-bold">
-          Once your character data has been imported, you can add your imported character via Add
-          Character button and search for the character&apos;s name.
+        <p className="font-bold !pt-2">
+          {t<string>("simple.tools_import_after")}
         </p>
         {data ? (
           data.err === "" ? (
             <Callout intent="success" className="mt-2 p-2">
-              Data parsed successfully
+              {t<string>("simple.tools_import_post_go")}
             </Callout>
           ) : (
             <Callout intent="warning" className="mt-2 p-2">
@@ -93,10 +88,10 @@ export function ImportFromGOODDialog(props: Props) {
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <ButtonGroup>
             <Button onClick={handleLoad} disabled={!data || data.err !== ""} intent="primary">
-              Load
+            {t<string>("simple.import")}
             </Button>
             <Button onClick={props.onClose} intent="danger">
-              Cancel
+              {t<string>("db.cancel")}
             </Button>
           </ButtonGroup>
         </div>

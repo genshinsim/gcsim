@@ -5,8 +5,10 @@ import Chinese from "./locales/Chinese.json";
 import English from "./locales/English.json";
 import IngameNames from "./locales/IngameNames.json";
 import Japanese from "./locales/Japanese.json";
+import Korean from "./locales/Korean.json";
 import Russian from "./locales/Russian.json";
 import Spanish from "./locales/Spanish.json";
+import German from "./locales/German.json";
 
 const resources = {
   en: {
@@ -21,6 +23,10 @@ const resources = {
     translation: Japanese,
     game: IngameNames.Japanese,
   },
+  ko: {
+    translation: Korean,
+    game: IngameNames.Korean,
+  },
   es: {
     translation: Spanish,
     game: IngameNames.Spanish,
@@ -29,7 +35,14 @@ const resources = {
     translation: Russian,
     game: IngameNames.Russian,
   },
+  de: {
+    translation: German,
+    game: IngameNames.German,
+  },
 };
+
+// used in result tab for graph y axis text direction/offset handling
+export const specialLocales = ["zh", "ja", "ko"];
 
 i18n
   .use(initReactI18next)

@@ -4,12 +4,14 @@ import { SimResults } from "@gcsim/types";
 export interface Viewer {
   data: SimResults | null;
   hash: string | null;
+  recoveryConfig: string | null;
   error: string | null;
 }
 
 export const viewerInitialState: Viewer = {
   data: null,
   hash: null,
+  recoveryConfig: null,
   error: null,
 };
 
@@ -24,10 +26,12 @@ export const viewerSlice = createSlice({
     },
     start: (state) => {
       state.data = null;
+      state.recoveryConfig = null;
       state.error = null;
       return state;
     },
-    setError: (state, action: PayloadAction<{ error: string }>) => {
+    setError: (state, action: PayloadAction<{ recoveryConfig: string | null; error: string }>) => {
+      state.recoveryConfig = action.payload.recoveryConfig;
       state.error = action.payload.error;
       return state;
     },

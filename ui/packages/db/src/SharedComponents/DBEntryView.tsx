@@ -7,10 +7,8 @@ import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 //displays one database entry
 export default function DBEntryView({
   dbEntry,
-  hideDescription,
 }: {
   dbEntry: db.IEntry;
-  hideDescription?: boolean;
 }) {
   const { t: translate } = useTranslation();
   const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
@@ -47,11 +45,9 @@ export default function DBEntryView({
             create_date={dbEntry.create_date}
             description={dbEntry.description}
           />
-          {!hideDescription ? (
-            <div className="hidden p-1 max-h-7 opacity-50 lg:block lg:w-0 lg:min-w-full">
-              {dbEntry.description}
-            </div>
-          ) : null}
+          <div className="hidden p-1 max-h-7 opacity-50 lg:block lg:w-0 lg:min-w-full">
+            {dbEntry.description}
+          </div>
         </div>
         <div className="flex flex-col justify-center w-full lg:w-fit">
           <a
@@ -66,7 +62,7 @@ export default function DBEntryView({
         <div className="basis-full text-xs font-bold w-full flex place-content-start">
           {dbEntry.submitter === "migrated"
             ? "Unknown author"
-            : `Author: ${dbEntry.submitter}`}
+            : `${translate("db.author")} ${dbEntry.submitter}`}
         </div>
       </div>
     </>

@@ -1,7 +1,7 @@
 import { AxisBottom, AxisLeft, AxisRight, AxisScale, SharedAxisProps, TickFormatter, TickRendererProps } from "@visx/axis";
 import { ScaleInput } from "@visx/scale";
 import { Text } from "@visx/text";
-import { DataColors } from "./DataColors";
+import { DataColorsConst } from "./DataColors";
 
 type CustomProps<Scale extends AxisScale> = {
   tickFormat?: TickFormatter<ScaleInput<Scale>>
@@ -16,8 +16,8 @@ export const GraphAxisLeft = <Scale extends AxisScale,>({
     }: CustomProps<Scale> & SharedAxisProps<Scale>) => {
   return (
     <AxisLeft
-        stroke={DataColors.gray}
-        tickStroke={DataColors.gray}
+        stroke={DataColorsConst.gray}
+        tickStroke={DataColorsConst.gray}
         tickLineProps={{ opacity: 0.5 }}
         labelClassName="fill-gray-400 text-lg"
         tickClassName="fill-gray-400 font-mono text-xs"
@@ -35,8 +35,8 @@ export const GraphAxisBottom = <Scale extends AxisScale,>({
     }: CustomProps<Scale> & SharedAxisProps<Scale>) => {
   return (
     <AxisBottom
-        stroke={DataColors.gray}
-        tickStroke={DataColors.gray}
+        stroke={DataColorsConst.gray}
+        tickStroke={DataColorsConst.gray}
         tickLineProps={{ opacity: 0.5 }}
         labelClassName="fill-gray-400 font-mono text-base"
         tickClassName="fill-gray-400 font-mono text-xs"
@@ -54,8 +54,8 @@ export const GraphAxisRight = <Scale extends AxisScale,>({
     }: CustomProps<Scale> & SharedAxisProps<Scale>) => {
   return (
   <AxisRight
-      stroke={DataColors.gray}
-      tickStroke={DataColors.gray}
+      stroke={DataColorsConst.gray}
+      tickStroke={DataColorsConst.gray}
       tickLineProps={{ opacity: 0.5 }}
       labelClassName="fill-gray-400 text-lg"
       tickClassName="fill-gray-400 font-mono text-xs"

@@ -20,21 +20,25 @@ func init() {
 }
 
 type buffer struct {
-	events  [][]stats.DamageEvent
-	buckets []float64
-	cumu    [][]float64
+	events     [][]stats.DamageEvent
+	buckets    []float64
+	cumuChar   [][]float64
+	cumuTarget [][]float64
 }
 
 func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
-		events:  make([][]stats.DamageEvent, len(core.Player.Chars())),
-		buckets: make([]float64, 0),
-		cumu:    make([][]float64, 0),
+		events:     make([][]stats.DamageEvent, len(core.Player.Chars())),
+		buckets:    make([]float64, 0),
+		cumuChar:   make([][]float64, 0),
+		cumuTarget: make([][]float64, 0),
 	}
-	out.cumu = append(out.cumu, make([]float64, len(core.Player.Chars())))
+	out.cumuChar = append(out.cumuChar, make([]float64, len(core.Player.Chars())))
+	out.cumuTarget = append(out.cumuTarget, make([]float64, len(core.Combat.Enemies())))
 
 	core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		target := args[0].(combat.Target)
+		targetKey := target.Key()
 		attack := args[1].(*combat.AttackEvent)
 		damage := args[2].(float64)
 		crit := args[3].(bool)
@@ -46,13 +50,23 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 
 		bucket := core.F / bucketSize
-		last := out.cumu[len(out.cumu)-1]
-		for bucket >= len(out.cumu) {
+
+		last := out.cumuChar[len(out.cumuChar)-1]
+		for bucket >= len(out.cumuChar) {
 			newBucket := make([]float64, len(core.Player.Chars()))
 			copy(newBucket, last)
-			out.cumu = append(out.cumu, newBucket)
+			out.cumuChar = append(out.cumuChar, newBucket)
 		}
-		out.cumu[bucket][attack.Info.ActorIndex] += damage
+		out.cumuChar[bucket][attack.Info.ActorIndex] += damage
+
+		last = out.cumuTarget[len(out.cumuTarget)-1]
+		for bucket >= len(out.cumuTarget) {
+			newBucket := make([]float64, len(core.Combat.Enemies()))
+			copy(newBucket, last)
+			out.cumuTarget = append(out.cumuTarget, newBucket)
+		}
+		// TODO: subject to break if target key gen changes...
+		out.cumuTarget[bucket][targetKey-1] += damage
 
 		for bucket >= len(out.buckets) {
 			out.buckets = append(out.buckets, float64(0))
@@ -65,7 +79,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		event := stats.DamageEvent{
 			Frame:   attack.SourceFrame,
 			Source:  attack.Info.Abil,
-			Target:  int(target.Key()),
+			Target:  int(targetKey),
 			Element: attack.Info.Element.String(),
 			Crit:    crit,
 			Damage:  damage,
@@ -103,16 +117,30 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 		result.Characters[c].DamageCumulativeContrib = make([]float64, len(b.buckets))
 	}
 
-	for i := 0; i < len(b.cumu); i++ {
+	for i := 0; i < len(b.cumuChar); i++ {
 		var total float64
-		for _, v := range b.cumu[i] {
+		for _, v := range b.cumuChar[i] {
 			total += v
 		}
 
 		if total > 0 {
-			for c, v := range b.cumu[i] {
+			for c, v := range b.cumuChar[i] {
 				result.Characters[c].DamageCumulativeContrib[i] = v / total
 			}
+		}
+	}
+
+	// TODO: working under assumption that enemies are not removed from handler array upon death, subject to break...
+	bucketCount := len(result.DamageBuckets)
+	for e := range core.Combat.Enemies() {
+		result.Enemies[e].CumulativeDamage = make([]float64, bucketCount)
+	}
+	if bucketCount == 0 {
+		return
+	}
+	for i := 0; i < len(b.cumuTarget); i++ {
+		for e, v := range b.cumuTarget[i] {
+			result.Enemies[e].CumulativeDamage[i] = v
 		}
 	}
 }
