@@ -1,9 +1,10 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
 import { SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CardTitle, useRefreshWithTimer } from "../../Util";
 import { BarChart, BarChartLegend } from "./BarChart";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   data: SimResults | null;
@@ -13,18 +14,24 @@ type Props = {
 
 type Graphs = Map<string, string>;
 
-export const all_filter = "all";
-
 export const SourceDPSCard = ({ data, running, names }: Props) => {
+  const { t } = useTranslation();
   const graphs: Graphs = new Map([
     ["dps", "DPS"],
-    ["damage_instances", "Damage Instances"],
+    ["damage_instances", t<string>("result.dmg_instances")],
   ]);
   const [graph, setGraph] = useState("dps");
 
+  const all_filter = t<string>("result.all");
   //@ts-ignore
   const filters: string[] = [all_filter, ...(names || [])];
   const [filter, setFilter] = useState(all_filter);
+
+  // account for the possiblity of changing the language after having this card loaded
+  // without: on lang switch -> no data -> require changing the char dropdown value to see it again
+  useEffect(() => {
+    setFilter(all_filter);
+  }, [setFilter, all_filter]);
 
   const [stats, timer] = useRefreshWithTimer(
     (d) => {
@@ -42,10 +49,10 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
 
   return (
     <Card className="flex flex-col col-span-full min-h-96">
-      <div className="flex flex-row justify-start gap-5">
+      <div className="flex flex-col sm:flex-row justify-start gap-5">
         <div className="flex flex-col gap-2">
           <CardTitle
-            title={`Source ${graphs.get(graph)}`}
+            title={t<string>("result.source", { s: graphs.get(graph) })}
             tooltip="x"
             timer={timer}
           />
@@ -54,7 +61,7 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
             <Filters filter={filter} setFilter={setFilter} filters={filters} />
           </div>
         </div>
-        <div className="flex flex-grow justify-center items-center">
+        <div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">
           <BarChartLegend names={names} />
         </div>
       </div>
@@ -65,6 +72,7 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
             height={height}
             dps={chart_data}
             names={names}
+            all_filter={all_filter}
             filter={filter}
           />
         )}
@@ -82,7 +90,8 @@ const Options = ({
   setGraph: (v: string) => void;
   graphs: Graphs;
 }) => {
-  const label = <span className="text-xs font-mono text-gray-400">Type</span>;
+  const { t } = useTranslation();
+  const label = <span className="text-xs font-mono text-gray-400">{t<string>("result.type")}</span>;
 
   return (
     <FormGroup label={label} inline={true} className="!mb-2">
@@ -106,8 +115,9 @@ const Filters = ({
   setFilter: (v: string) => void;
   filters: string[];
 }) => {
+  const { t } = useTranslation();
   const label = (
-    <span className="text-xs font-mono text-gray-400">Character</span>
+    <span className="text-xs font-mono text-gray-400">{t<string>("db.character")}</span>
   );
 
   return (

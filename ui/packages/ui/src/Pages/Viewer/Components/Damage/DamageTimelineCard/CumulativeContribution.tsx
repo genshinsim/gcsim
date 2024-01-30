@@ -3,23 +3,21 @@ import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { AreaStack, Bar, LinePath } from "@visx/shape";
-import { DataColors, GraphAxisBottom, GraphAxisLeft, GraphGrid, NoData } from "../../Util";
+import { DataColorsConst, useDataColors, GraphAxisBottom, GraphAxisLeft, GraphGrid, NoData } from "../../Util";
 import { useTranslation } from "react-i18next";
 import { useTooltip } from "@visx/tooltip";
 import { HoverLine, RenderTooltip, TooltipData, useTooltipHandles } from "./CumulativeTooltip";
 import { useData } from "./CumulativeData";
+import { specialLocales } from "@ui/Translation/i18n";
 
 const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
 
-type Props = {
-  width: number;
-  height: number;
+type LegendProps = {
   names?: string[];
-  input?: CharacterBucketStats;
-  margin?: { left: number, right: number, top: number, bottom: number };
 }
 
-export const CumulativeLegend = ({ names }: { names?: string[] }) => {
+export const CumulativeLegend = ({ names }: LegendProps) => {
+  const { DataColors } = useDataColors();
   if (names == null) {
     return null;
   }
@@ -40,9 +38,9 @@ export const CumulativeLegend = ({ names }: { names?: string[] }) => {
               <div className="my-[2px] mr-[4px]">
                 <svg width={glpyhSize} height={glpyhSize}>
                   <rect
-                      fill={DataColors.qualitative2(label.index)}
+                      fill={DataColorsConst.qualitative2(label.index)}
                       fillOpacity={0.5}
-                      stroke={DataColors.qualitative4(label.index)}
+                      stroke={DataColorsConst.qualitative4(label.index)}
                       strokeWidth={2}
                       width={glpyhSize}
                       height={glpyhSize}
@@ -61,6 +59,14 @@ export const CumulativeLegend = ({ names }: { names?: string[] }) => {
   );
 };
 
+type GraphProps = {
+  width: number;
+  height: number;
+  names?: string[];
+  input?: CharacterBucketStats;
+  margin?: { left: number, right: number, top: number, bottom: number };
+}
+
 export const CumulativeGraph = (
     {
       width,
@@ -68,14 +74,14 @@ export const CumulativeGraph = (
       names,
       input,
       margin = defaultMargin
-    }: Props) => {
+    }: GraphProps) => {
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
   const numXTicks = xMax < 475 ? 5 : 20;
   const numYTicks = 10;
   const bucketSize = input?.bucket_size ?? 30;
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { data, keys, duration } = useData(input, names);
 
   const xScale = scaleLinear<number>({
@@ -125,12 +131,12 @@ export const CumulativeGraph = (
                       data={stack}
                       x={d => xScale(d.data.x)}
                       y={d => yScale(d[1])}
-                      stroke={DataColors.qualitative4(stack.key)}
+                      stroke={DataColorsConst.qualitative4(stack.key)}
                       strokeWidth={2}
                   />
                   <path
                       d={path(stack) || ''}
-                      fill={DataColors.qualitative2(stack.key)}
+                      fill={DataColorsConst.qualitative2(stack.key)}
                       fillOpacity={0.5}
                   />
                 </g>
@@ -151,16 +157,18 @@ export const CumulativeGraph = (
               tickFormat={s => s.toLocaleString(i18n.language, { style: "percent" })}
               numTicks={numYTicks}
               labelOffset={65}
-              label="% Damage Contribution"
+              labelProps={specialLocales.includes(i18n.resolvedLanguage) ? { transform: `scale(1 1) translate(56 204)`, style: { writingMode: "vertical-lr" }, textAnchor: "middle" } : undefined}
+              label={t<string>("result.cumu_contrib")}
           />
           <GraphAxisBottom
               hideTicks
               top={yMax}
               scale={xScale}
               axisLineClassName="stroke-2"
-              tickFormat={s => s + "s"}
+              tickFormat={s => s + t<string>("result.seconds_short")}
               numTicks={numXTicks}
-              label="Duration (secs)"
+              labelOffset={10}
+              label={`${t<string>("result.dur_long")} (${t<string>("result.seconds")})`}
           />
           <HoverLine
               data={data}

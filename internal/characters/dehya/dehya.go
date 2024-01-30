@@ -1,12 +1,13 @@
 package dehya
 
 import (
+	"errors"
+
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -98,14 +99,7 @@ func (c *char) onExitField() {
 func (c *char) Jump(p map[string]int) (action.Info, error) {
 	if !c.StatusIsActive(burstKey) {
 		if c.StatusIsActive(kickKey) {
-			c.Core.Log.NewEvent("dehya can't jump cancel her kick", glog.LogActionEvent, c.Index).
-				Write("action", action.ActionJump)
-			return action.Info{
-				Frames:          func(action.Action) int { return 1200 },
-				AnimationLength: kickHitmark,
-				CanQueueAfter:   kickHitmark,
-				State:           action.BurstState,
-			}, nil
+			return action.Info{}, errors.New("can't jump cancel burst kick")
 		}
 		return c.Character.Jump(p)
 	}

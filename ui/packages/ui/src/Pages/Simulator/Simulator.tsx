@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Viewport, SectionDivider } from "../../Components";
 import { ActionList } from "./Components";
 import { Team } from "./Team";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Toolbox } from "./Toolbox";
 import { ActionListTooltip, TeamBuilderTooltip } from "./Tooltips";
 import { useAppSelector, RootState, useAppDispatch } from "../../Stores/store";
@@ -11,14 +11,16 @@ import { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { appActions, defaultStats } from "../../Stores/appSlice";
 import { Character } from "@gcsim/types";
 import { debounce } from "lodash-es";
+import { OmnibarBlock } from "./Components/OmnibarBlock";
 
 export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { settings, cfg } = useAppSelector(
     (state: RootState) => {
       return {
         cfg: state.app.cfg,
-      settings: state.user.data.settings,
+        settings: state.user.data.settings,
       };
     }
   );
@@ -56,6 +58,15 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
             </>
           ) : null}
 
+          {settings.showNameSearch ? (
+            <>
+              <SectionDivider>
+                <Trans>simple.name_search</Trans>
+              </SectionDivider>
+              <OmnibarBlock />
+            </>
+          ) : null}
+
           <SectionDivider>
             <Trans>simple.action_list</Trans>
           </SectionDivider>
@@ -67,7 +78,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
           <div className="sticky bottom-0 bg-bp4-dark-gray-100 flex flex-col gap-y-1">
             {err !== "" && cfg !== "" ? (
               <div className="pl-2 pr-2 pt-2 mt-1">
-                <Callout intent={Intent.DANGER} title="Error: Config Invalid">
+                <Callout intent={Intent.DANGER} title={t<string>("viewer.error_encountered") + t<string>("viewer.config_invalid")}>
                   <pre className="whitespace-pre-wrap pl-5">{err}</pre>
                 </Callout>
               </div>

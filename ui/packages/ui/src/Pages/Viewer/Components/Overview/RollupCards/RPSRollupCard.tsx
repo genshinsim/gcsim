@@ -5,7 +5,7 @@ import { useRefresh } from "../../Util";
 import { RollupCard } from "./Template";
 
 export const RPSRollupCard = ({ data, color }: { data: SimResults | null; color: string }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const fmt = useCallback(
     (val?: number) => val?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }), [i18n]);
 
@@ -23,7 +23,7 @@ export const RPSRollupCard = ({ data, color }: { data: SimResults | null; color:
     <RollupCard
         key="rps"
         color={color}
-        title="Reactions Per Second (RPS)"
+        title={`${t("result.rps_long")} (RPS)`}
         value={fmt(rps?.mean)}
         auxStats={auxStats}
         tooltip="help"

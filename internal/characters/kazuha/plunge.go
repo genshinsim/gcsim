@@ -1,13 +1,14 @@
 package kazuha
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var plungePressFrames []int
@@ -38,14 +39,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// last action must be skill without glide cancel
 	if c.Core.Player.LastAction.Type != action.ActionSkill ||
 		c.Core.Player.LastAction.Param["glide_cancel"] != 0 {
-		c.Core.Log.NewEvent("only plunge after skill without glide cancel", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionLowPlunge)
-		return action.Info{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}, nil
+		return action.Info{}, errors.New("only plunge after skill without glide cancel")
 	}
 
 	act := action.Info{

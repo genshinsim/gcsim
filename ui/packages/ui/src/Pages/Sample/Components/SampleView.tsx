@@ -9,6 +9,7 @@ import { saveAs } from "file-saver";
 import { AdvancedPreset, AllSampleOptions, DebugPreset, DefaultSampleOptions, SimplePreset, VerbosePreset } from "./SampleOptions";
 import { Options } from "./Options";
 import Pako from "pako";
+import { useTranslation } from "react-i18next";
 
 type buffSetting = {
   start: number;
@@ -76,6 +77,7 @@ type SampleOptionsProps = {
 }
 
 const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
+  const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
 
   const toggle = (t: string) => {
@@ -111,7 +113,7 @@ const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
       <Button
           onClick={() => setOpen(true)}
           icon="cog"
-          text={"Settings"} />
+          text={t<string>("simple.settings")} />
       <Options
           isOpen={isOpen}
           handleClose={() => setOpen(false)}
@@ -137,6 +139,7 @@ type SamplerProps = {
 }
 
 function SamplerUI({ sample, data, team, searchable, settings, setSettings }: SamplerProps) {
+  const { t } = useTranslation();
   const parentRef = React.useRef<HTMLDivElement>(null);
   const searchRef = React.useRef<HTMLInputElement>(null);
   const [hl, sethl] = React.useState<buffSetting>({
@@ -193,51 +196,52 @@ function SamplerUI({ sample, data, team, searchable, settings, setSettings }: Sa
   };
 
   return (
+    <>
+    <div className="flex flex-col sm:flex-row justify-between">
+      <FormGroup label={t<string>("viewer.search")} inline>
+        <InputGroup
+          type="text"
+          inputRef={searchRef}
+          rightElement={
+            <FormGroup>
+              <Button
+                icon="arrow-down"
+                intent="warning"
+                onClick={() => {
+                  if (searchRef.current != null) {
+                    searchAndScroll(searchRef.current.value);
+                  }
+                }}
+              />
+              <Button
+                icon="reset"
+                intent="warning"
+                onClick={() => {
+                  if (searchRef.current != null) {
+                    searchRef.current.value = "";
+                  }
+                  lastSearchIndex = 0;
+                  rowVirtualizer.scrollToIndex(0);
+                }}
+              />
+            </FormGroup>
+          }
+        />
+      </FormGroup>
+      <ButtonGroup className="mb-[15px]">
+        <SampleOptions settings={settings} setSettings={setSettings} />
+        <Button
+            icon="bring-data"
+            text={t<string>("viewer.download")}
+            intent={Intent.SUCCESS}
+            onClick={() => {
+              const out = Pako.deflate(JSON.stringify(sample));
+              const blob = new Blob([out], { type: "application/base64" });
+              saveAs(blob, "sample.gz");
+            }} />
+      </ButtonGroup>
+    </div>
     <div className="flex flex-col overflow-x-auto h-[80vh]">
-      <div className="flex justify-between">
-        <FormGroup label="Search" inline>
-          <InputGroup
-            type="text"
-            inputRef={searchRef}
-            rightElement={
-              <FormGroup>
-                <Button
-                  icon="arrow-down"
-                  intent="warning"
-                  onClick={() => {
-                    if (searchRef.current != null) {
-                      searchAndScroll(searchRef.current.value);
-                    }
-                  }}
-                />
-                <Button
-                  icon="reset"
-                  intent="warning"
-                  onClick={() => {
-                    if (searchRef.current != null) {
-                      searchRef.current.value = "";
-                    }
-                    lastSearchIndex = 0;
-                    rowVirtualizer.scrollToIndex(0);
-                  }}
-                />
-              </FormGroup>
-            }
-          />
-        </FormGroup>
-        <ButtonGroup className="mb-[15px]">
-          <SampleOptions settings={settings} setSettings={setSettings} />
-          <Button
-              icon="bring-data"
-              text="Download"
-              intent={Intent.SUCCESS}
-              onClick={() => {
-                const out = Pako.deflate(JSON.stringify(sample));
-                const blob = new Blob([out], { type: "application/base64" });
-                saveAs(blob, "sample.gz");
-              }} />
-        </ButtonGroup>
-      </div>
       <Card className="flex-auto !bg-gray-600 !text-xs min-w-[60rem] ">
         <AutoSizer disableWidth={true}>
           {({ height, width }) => (
@@ -312,6 +316,7 @@ function SamplerUI({ sample, data, team, searchable, settings, setSettings }: Sa
         </AutoSizer>
       </Card>
     </div>
+    </>
   );
 }
 

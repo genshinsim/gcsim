@@ -1,12 +1,13 @@
 package xiao
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var highPlungeFrames []int
@@ -36,14 +37,7 @@ func init() {
 // Default = 0
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
-		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionHighPlunge)
-		return action.Info{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}, nil
+		return action.Info{}, errors.New("only plunge after using jump")
 	}
 
 	collision, ok := p["collision"]
@@ -95,14 +89,7 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 // Default = 0
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
-		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionLowPlunge)
-		return action.Info{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}, nil
+		return action.Info{}, errors.New("only plunge after using jump")
 	}
 
 	collision, ok := p["collision"]

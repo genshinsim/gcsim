@@ -1,6 +1,7 @@
 import { FormGroup, NumericInput } from "@blueprintjs/core";
 import { ExecutorSupplier, WasmExecutor } from "@gcsim/executors";
 import { UI } from "@gcsim/ui";
+import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "@gcsim/utils";
 import { useRef } from "react";
 
@@ -20,6 +21,7 @@ function wasmLocation() {
 }
 
 const App = ({}) => {
+  const { t } = useTranslation();
   const [workers, setWorkers] = useLocalStorage<number>("wasm-num-workers", 3);
 
   const supplier = useRef<ExecutorSupplier<WasmExecutor>>(() => {
@@ -41,7 +43,7 @@ const App = ({}) => {
         exec={supplier.current}
         gitCommit={import.meta.env.VITE_GIT_COMMIT_HASH}
         mode={import.meta.env.MODE}>
-      <FormGroup className="!m-0" label="Workers">
+      <FormGroup className="!m-0" label={t<string>("simple.workers")}>
         <NumericInput
           value={workers}
           onValueChange={(v) => updateWorkers(v)}

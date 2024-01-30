@@ -11,6 +11,7 @@ import { Sample, SimResults } from "@gcsim/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DefaultSampleOptions, Sampler, SampleRow, parseLogV2 } from "../../Sample/Components";
 import queryString from "query-string";
+import { useTranslation } from "react-i18next";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
@@ -50,12 +51,13 @@ export default ({ sampler, data, sample, running }: Props) => {
       <NonIdealState
         icon="helper-management"
         action={<Generate sampler={sampler} data={data} sample={sample} running={running} />}
+        className="!px-2"
       />
     );
   }
 
   return (
-    <div className="flex flex-grow flex-col gap-[15px] px-2">
+    <div className="w-full 2xl:mx-auto 2xl:container flex flex-grow flex-col gap-[15px] px-2">
       <Generate sampler={sampler} data={data} sample={sample} running={running} />
       <Sampler
           sample={sample.sample}
@@ -76,6 +78,7 @@ type GenerateProps = {
 }
 
 const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
+  const { t } = useTranslation();
   let startValue = "sample";
   switch (sample.seed) {
     case null:
@@ -102,13 +105,13 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
   }
   const [value, setValue] = useState(startValue);
   const options: OptionProps[] = [
-    { label: "Sample Seed", value: "sample" },
+    { label: t<string>("viewer.seed_sample"), value: "sample" },
     // { label: "Random", value: "rand" },
-    { label: "Min Seed", value: "min" },
-    { label: "Max Seed", value: "max" },
-    { label: "P25 Seed", value: "q1" },
-    { label: "P50 Seed", value: "q2" },
-    { label: "P75 Seed", value: "q3" },
+    { label: t<string>("viewer.seed_min"), value: "min" },
+    { label: t<string>("viewer.seed_max"), value: "max" },
+    { label: t<string>("viewer.seed_p", { p: 25 }), value: "q1" },
+    { label: t<string>("viewer.seed_p", { p: 50 }), value: "q2" },
+    { label: t<string>("viewer.seed_p", { p: 75 }), value: "q3" },
   ];
 
   const disabled = () => {
@@ -163,7 +166,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
       />
       <Button
         large={true}
-        text="Generate"
+        text={t<string>("viewer.generate")}
         icon="refresh"
         intent={Intent.PRIMARY}
         disabled={disabled()}

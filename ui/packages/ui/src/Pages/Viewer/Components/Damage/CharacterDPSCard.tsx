@@ -3,7 +3,7 @@ import { FloatStat, SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle, DataColors, FloatStatTooltipContent, NoData, OuterLabelPie, useRefreshWithTimer } from "../Util";
+import { CardTitle, useDataColors, FloatStatTooltipContent, NoData, OuterLabelPie, useRefreshWithTimer } from "../Util";
 
 type Props = {
   data: SimResults | null;
@@ -12,12 +12,13 @@ type Props = {
 }
 
 export default ({ data, running, names }: Props) => {
+  const { t } = useTranslation();
   const [dps, timer] = useRefreshWithTimer(
       d => d?.statistics?.character_dps, 10000, data, running);
 
   return (
     <Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
-      <CardTitle title="Character DPS Distribution" tooltip="x" timer={timer} />
+      <CardTitle title={t<string>("result.dist", { d: t<string>("result.character_dps") })} tooltip="x" timer={timer} />
       <DPSPie names={names} dps={dps} />
     </Card>
   );
@@ -29,6 +30,7 @@ type PieProps = {
 }
 
 const DPSPie = memo(({ names, dps }: PieProps) => {
+  const { DataColors } = useDataColors();
   const { i18n } = useTranslation();
   const { data } = useData(dps, names);
 
@@ -53,7 +55,7 @@ const DPSPie = memo(({ names, dps }: PieProps) => {
             }}
             tooltipContent={d => (
               <FloatStatTooltipContent
-                  title={d.name + " dps"}
+                  title={d.name + " DPS"}
                   data={d.value}
                   color={DataColors.characterLabel(d.index)}
                   percent={d.pct} />

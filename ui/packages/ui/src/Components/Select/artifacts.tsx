@@ -2,45 +2,9 @@ import { MenuItem } from "@blueprintjs/core";
 import { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
 import { IArtifact } from "@gcsim/types";
 import i18n from "i18next";
+import { valid_artifacts } from "../../Data";
 
-export const items = [
-  "archaicpetra",
-  "berserker",
-  "blizzardstrayer",
-  "bloodstainedchivalry",
-  "braveheart",
-  "crimsonwitchofflames",
-  "defenderswill",
-  "echoesofanoffering",
-  "emblemofseveredfate",
-  "gambler",
-  "gladiatorsfinale",
-  "heartofdepth",
-  "huskofopulentdreams",
-  "instructor",
-  "lavawalker",
-  "maidenbeloved",
-  "martialartist",
-  "noblesseoblige",
-  "oceanhuedclam",
-  "paleflame",
-  "prayersfordestiny",
-  "prayersforillumination",
-  "prayersforwisdom",
-  "prayerstospringtime",
-  "resolutionofsojourner",
-  "retracingbolide",
-  "scholar",
-  "shimenawasreminiscence",
-  "tenacityofthemillelith",
-  "theexile",
-  "thunderingfury",
-  "thundersoother",
-  "tinymiracle",
-  "vermillionhereafter",
-  "viridescentvenerer",
-  "wandererstroupe",
-];
+export const artifacts: IArtifact[] = valid_artifacts;
 
 export const render: ItemRenderer<IArtifact> = (item, { handleClick, modifiers, query }) => {
   if (!modifiers.matchesPredicate) {
@@ -109,5 +73,5 @@ function highlightText(text: string, query: string) {
 export const artifactSelectProps = {
   itemPredicate: filter,
   itemRenderer: render,
-  items: items,
+  items: artifacts,
 };

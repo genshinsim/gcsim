@@ -50,7 +50,7 @@ const SendTo = ({ config }: { config?: string }) => {
             {t<string>("viewer.this_will_overwrite")}
           </Callout>
           <Checkbox
-            label="Copy action list only (ignore character stats)"
+            label={t<string>("viewer.copy_list_only")}
             className="my-3 mx-1"
             checked={keepTeam}
             onClick={toggleKeepTeam}

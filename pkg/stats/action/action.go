@@ -8,7 +8,10 @@ import (
 )
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "action",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {

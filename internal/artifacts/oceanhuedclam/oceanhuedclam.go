@@ -75,7 +75,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			}
 
 			// OHC must either be inactive or this equipped character has to have an OHC bubble active
-			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != char.Index {
+			if c.Flags.Custom["OHCActiveChar"] != -1 && c.Flags.Custom["OHCActiveChar"] != float64(char.Index) {
 				return false
 			}
 
@@ -89,7 +89,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				s.bubbleDurationExpiry = c.F + 3*60
 				bubbleICDExpiry = c.F + 3.5*60
 
-				c.Flags.Custom["OHCActiveChar"] = char.Index
+				c.Flags.Custom["OHCActiveChar"] = float64(char.Index)
 
 				// Bubble pop task
 				c.Tasks.Add(func() {

@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -17,6 +18,8 @@ import (
 
 const (
 	yearningKey        = "yearning-effect"
+	healStacksKey      = "sodp-heal-stacks"
+	healSnapKey        = "sodp-heal-snap"
 	wavesOfDaysPastKey = "waves-of-days-past"
 )
 
@@ -25,11 +28,9 @@ func init() {
 }
 
 type Set struct {
-	Index      int
-	core       *core.Core
-	char       *character.CharWrapper
-	healStacks float64
-	snapHeal   float64
+	Index int
+	core  *core.Core
+	char  *character.CharWrapper
 }
 
 func (s *Set) SetIndex(idx int) { s.Index = idx }
@@ -37,10 +38,8 @@ func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		core:       c,
-		char:       char,
-		healStacks: 0,
-		snapHeal:   0,
+		core: c,
+		char: char,
 	}
 
 	if count >= 2 {
@@ -70,15 +69,15 @@ func (s *Set) OnHeal() func(args ...interface{}) bool {
 		if src.Caller != s.char.Index {
 			return false
 		}
-		s.healStacks += healAmt
-		if s.healStacks >= 15000 {
-			s.healStacks = 15000
+		s.core.Flags.Custom[healStacksKey] += healAmt
+		if s.core.Flags.Custom[healStacksKey] >= 15000 {
+			s.core.Flags.Custom[healStacksKey] = 15000
 		}
 		if s.core.Status.Duration(yearningKey) == 0 {
 			s.core.Status.Add(yearningKey, 6*60)
 			s.core.Tasks.Add(func() {
-				s.snapHeal = s.healStacks
-				s.healStacks = 0
+				s.core.Flags.Custom[healSnapKey] = s.core.Flags.Custom[healStacksKey]
+				s.core.Flags.Custom[healStacksKey] = 0
 				s.core.Status.Add(wavesOfDaysPastKey, 10*60)
 				s.core.Flags.Custom[wavesOfDaysPastKey] = 5
 			}, 6*60)
@@ -108,8 +107,10 @@ func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
 		}
 		if s.core.Flags.Custom[wavesOfDaysPastKey] > 0 {
 			s.core.Flags.Custom[wavesOfDaysPastKey]--
-			amt := s.snapHeal * 0.08
+			amt := s.core.Flags.Custom[healSnapKey] * 0.08
 			atk.Info.FlatDmg += amt
+			s.core.Log.NewEvent("sodp 4pc adding dmg", glog.LogArtifactEvent, atk.Info.ActorIndex).
+				Write("dmg_added", amt)
 		}
 		if s.core.Flags.Custom[wavesOfDaysPastKey] == 0 {
 			s.core.Status.Delete(wavesOfDaysPastKey)

@@ -2,7 +2,7 @@ import { ElementDPS, FloatStat } from "@gcsim/types";
 import { useData } from "@gcsim/ui/src/Pages/Viewer/Components/Damage/CharacterDPSCard";
 import { useData as useEleData } from "@gcsim/ui/src/Pages/Viewer/Components/Damage/ElementDPSCard";
 
-import { DataColors, OuterLabelPie } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
+import { useDataColors, OuterLabelPie } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
 import { NoDataIcon } from "@gcsim/ui/src/Pages/Viewer/Components/Util/NoData";
 import { ParentSize } from "@visx/responsive";
 
@@ -11,6 +11,7 @@ type Props = {
 }
 
 export const CharacterDPSPie = ({ dps }: Props) => {
+  const { DataColors } = useDataColors();
   const { data } = useData(dps, ["1", "2", "3", "4"]);
 
   if (dps == null) {
@@ -40,6 +41,7 @@ type ElementProps = {
 }
 
 export const ElementDPSPie = ({ dps }: ElementProps) => {
+  const { DataColors } = useDataColors();
   const { data } = useEleData(dps);
 
   if (dps == null) {

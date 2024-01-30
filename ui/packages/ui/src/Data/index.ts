@@ -1,4 +1,5 @@
 import charPipelineData from "./char_data.generated.json";
+import artifactPipelineData from "./artifact_data.generated.json";
 import weaponPipelineData from "./weapon_data.generated.json";
 
 export interface CharDataMap {
@@ -47,7 +48,12 @@ export function protoWeapTypeToDisplayString(w: string): string {
   }
 }
 
-export const valid_weapons: string[] = Object.keys(weaponPipelineData.data)
+export const valid_characters: string[] = Object.keys(charPipelineData.data);
+export const valid_artifacts: string[] = Object.keys(artifactPipelineData.data);
+export const valid_weapons: string[] = Object.keys(weaponPipelineData.data);
+// TODO: maybe move these somewhere else?
+export const valid_actions: string[] = ["attack", "charge", "aim", "skill", "burst", "low_plunge", "high_plunge", "dash", "jump", "walk", "swap"];
+export const valid_stats: string[] = ["hp", "hp%", "atk", "atk%", "def", "def%", "cr", "cd", "er", "heal", "em", "phys%", "pyro%", "electro%", "hydro%", "dendro%", "anemo%", "geo%", "cryo%"];
 
 let charData: CharDataMap = {};
 

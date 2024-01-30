@@ -3,7 +3,7 @@ import { ElementDPS, FloatStat, SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle, DataColors, FloatStatTooltipContent, NoData, OuterLabelPie, useRefreshWithTimer } from "../Util";
+import { CardTitle, FloatStatTooltipContent, NoData, OuterLabelPie, useDataColors, useRefreshWithTimer } from "../Util";
 
 type Props = {
   data: SimResults | null;
@@ -11,12 +11,13 @@ type Props = {
 }
 
 export default ({ data, running }: Props) => {
+  const { t } = useTranslation();
   const [dps, timer] = useRefreshWithTimer(
-      d => d?.statistics?.element_dps, 10000, data, running);
+      d => d?.statistics?.element_dps ? Object.fromEntries(Object.entries(d?.statistics?.element_dps).map(([k, v]) => [t<string>("elements."+k), v])) : undefined, 10000, data, running);
 
   return (
     <Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
-      <CardTitle title="Element DPS Distribution" tooltip="x" timer={timer} />
+      <CardTitle title={t<string>("result.dist", { d: t<string>("result.element_dps") })} tooltip="x" timer={timer} />
       <DPSPie dps={dps} />
     </Card>
   );
@@ -29,6 +30,7 @@ type PieProps = {
 const DPSPie = memo(({ dps }: PieProps) => {
   const { i18n } = useTranslation();
   const { data } = useData(dps);
+  const { DataColors } = useDataColors();
 
   if (dps == null) {
     return <NoData />;
@@ -51,7 +53,7 @@ const DPSPie = memo(({ dps }: PieProps) => {
             }}
             tooltipContent={d => (
               <FloatStatTooltipContent
-                  title={d.label + " dps"}
+                  title={d.label + " DPS"}
                   data={d.value}
                   color={DataColors.elementLabel(d.label)}
                   percent={d.pct} />

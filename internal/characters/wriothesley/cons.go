@@ -119,6 +119,9 @@ func (c *char) c2(snap *combat.Snapshot) {
 	if c.Base.Ascension < 4 {
 		return
 	}
+	if c.Base.Cons < 2 {
+		return
+	}
 	if !c.StatusIsActive(skillKey) {
 		return
 	}

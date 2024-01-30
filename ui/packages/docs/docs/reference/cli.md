@@ -50,7 +50,7 @@ or
 In case of file paths you might need to wrap it in " for it to be interpreted correctly as shown in the example.
 :::
 
-### Additional Options For `-options`
+### Additional Options For Substat Optimizer: `-options`
 
 The input has to be specified as `-options="<option list>"`. 
 The option list has the following format: `<option>=<value>` with `;` as the separator.
@@ -60,19 +60,10 @@ The option list has the following format: `<option>=<value>` with `;` as the sep
 | `total_liquid_substats` | Total liquid substats available to be assigned across all substats. | 20 |
 | `indiv_liquid_cap` | Total liquid substats that can be assigned to a single substat. | 10 |  
 | `fixed_substats_count` | Amount of fixed substats that are assigned to all substats. | 2 |
-
-:::caution
-It is recommended that these options are not touched, but they are still customizable:
-
-| option | description | default |
-| --- | --- | --- |
-| `sim_iter` | Number of iterations used when optimizing. Only change (increase) this if you are working with a team with extremely high standard deviation (>25% of mean). | 350 | 
-| `tol_mean` | Tolerance of changes in DPS mean used in ER optimization. | 0.015 |
-| `tol_sd` | Tolerance of changes in DPS SD used in ER optimization. | 0.33 |
-:::
+| `fine_tune` | 0 to disable and 1 to enable the fine-tune step. This step will compare ER vs DMG substats after having allocated all substats and cover when the initial ER heuristic fails due to not replacing `.<char>.burst.ready` with `.<char>.burst.ready && .<char>.energy == .<char>.energymax` in conditionals (Instead of `<char>`, put the name of the affected character). | 1 |
 
 #### Example
 
 ```
-./gcsim.exe -c test.txt -s -substatOptimFull -options="total_liquid_substats=10;fixed_substats_count=4"
+./gcsim.exe -c test.txt -s -substatOptimFull -options="total_liquid_substats=10;fixed_substats_count=4;fine_tune=0"
 ```

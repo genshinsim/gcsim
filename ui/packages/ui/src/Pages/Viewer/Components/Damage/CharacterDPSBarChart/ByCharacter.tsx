@@ -3,7 +3,7 @@ import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { range } from "lodash-es";
 import { useMemo } from "react";
-import { DataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
+import { useDataColors, FloatStatTooltipContent, HorizontalBarStack, NoData } from "../../Util";
 
 type Props = {
   width: number;
@@ -13,6 +13,7 @@ type Props = {
 }
 
 export const ByCharacterLegend = ({ names }: { names?: string[] }) => {
+  const { DataColors } = useDataColors();
   if (names == null) {
     return null;
   }
@@ -28,6 +29,7 @@ export const ByCharacterLegend = ({ names }: { names?: string[] }) => {
 };
 
 export const ByCharacterChart = ({ width, height, names, dps }: Props) => {
+  const { DataColors } = useDataColors();
   const { data, keys, xMax } = useData(dps, names);
 
   if (dps == null || names == null || keys.length == 0) {
@@ -54,7 +56,7 @@ export const ByCharacterChart = ({ width, height, names, dps }: Props) => {
         hoverColor={k => DataColors.characterLabel(k)}
         tooltipContent={(d, k) => (
           <FloatStatTooltipContent
-              title={d.name + " dps"}
+              title={d.name + " DPS"}
               data={d.data}
               color={DataColors.characterLabel(k)}
               percent={1}

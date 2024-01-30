@@ -25,6 +25,12 @@
         ".alhaitham.mirrors"
       ],
       "desc": "Current number of Mirrors that Alhaitham has."
+    },
+    {
+      "fields": [
+        ".alhaitham.c2-stacks"
+      ],
+      "desc": "Number of C2 stacks that are currently active."
     }
   ],
   "faruzan": [
@@ -215,6 +221,14 @@
         ".neuvillette.droplets-c6"
       ],
       "desc": "Number of Sourcewater droplets in range for C6."
+    }
+  ],
+  "chevreuse": [
+    {
+      "fields": [
+        ".chevreuse.overcharged-ball"
+      ],
+      "desc": "Whether Chevreuse has an Overcharged Ball or not."
     }
   ]
 }

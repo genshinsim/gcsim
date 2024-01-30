@@ -7,6 +7,8 @@
 package player
 
 import (
+	"errors"
+	"fmt"
 	"math"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -44,6 +46,10 @@ type Handler struct {
 	Stam            float64
 	LastStamUse     int
 	stamPercentMods []stamPercentMod
+
+	// airborne source
+	airborne AirborneSource
+	abUntil  int
 
 	// swap
 	SwapCD int
@@ -284,6 +290,10 @@ func (h *Handler) Tick() {
 			h.Stam = MaxStam
 		}
 	}
+	// remove airborne
+	if *h.F > h.abUntil {
+		h.airborne = Grounded
+	}
 	if h.SwapCD > 0 {
 		h.SwapCD--
 	}
@@ -292,4 +302,31 @@ func (h *Handler) Tick() {
 	for _, c := range h.chars {
 		c.Tick()
 	}
+}
+
+type AirborneSource int
+
+const (
+	Grounded AirborneSource = iota
+	AirborneXiao
+	AirborneVenti
+	AirborneKazuha
+	TerminateAirborne
+)
+
+func (h *Handler) SetAirborne(src AirborneSource, delay int) error {
+	if src < Grounded || src >= TerminateAirborne {
+		// do nothing
+		return fmt.Errorf("invalid airborne source: %v", src)
+	}
+	if delay <= 0 {
+		return errors.New("airborne delay must be greater than 0")
+	}
+	h.airborne = src
+	h.abUntil = *h.F + delay
+	return nil
+}
+
+func (h *Handler) Airborne() AirborneSource {
+	return h.airborne
 }

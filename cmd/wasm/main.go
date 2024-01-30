@@ -5,6 +5,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"slices"
 	"strconv"
 	"syscall/js"
 
@@ -177,7 +178,11 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 
 	aggregators = aggregators[:0]
 	for _, aggregator := range agg.Aggregators() {
-		a, err := aggregator(simcfg)
+		enabled := simcfg.Settings.CollectStats
+		if len(enabled) > 0 && !slices.Contains(enabled, aggregator.Name) {
+			continue
+		}
+		a, err := aggregator.New(simcfg)
 		if err != nil {
 			return marshal(err)
 		}

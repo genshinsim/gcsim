@@ -79,6 +79,14 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "mirrors":
 		return c.mirrorCount, nil
+	case "c2-stacks":
+		stacks := 0
+		for i := 1; i <= c2MaxStacks; i++ {
+			if c.StatusIsActive(c2ModName(i)) {
+				stacks++
+			}
+		}
+		return stacks, nil
 	default:
 		return c.Character.Condition(fields)
 	}

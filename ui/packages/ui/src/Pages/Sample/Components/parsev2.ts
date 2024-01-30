@@ -211,20 +211,15 @@ export function parseLogV2(
 
         e.icon = "queue";
         break;
+      case "cooldown":
+        // if (d.expiry != undefined) {
+        //   e.ended = e.frame + d.expiry;
+        //   e.msg += strFrameWithSec(e.ended);
+        // }
+        break;
       case "action":
         if (line.msg.includes("executed") && d.action === "swap") {
           e.msg += " to " + d.target;
-        }
-
-        if (line.msg.includes("cooldown")) {
-          // Add expiry frame to the end if exists
-          switch (d.expiry) {
-            case undefined:
-              break;
-            default:
-              e.msg += strFrameWithSec(d.expiry);
-              e.msg = d.type + " " + e.msg;
-          }
         }
         //trim "executed "
         e.msg = e.msg.replace("executed ", "");
@@ -337,23 +332,14 @@ export function parseLogV2(
         break;
       case "status":
         e.icon = "iso";
-
-        // Add expiry frame to the end if exists
-        switch (d.expiry) {
-          case undefined:
-            break;
-          default:
-            e.msg += strFrameWithSec(d.expiry);
-            e.msg = d.key + " " + e.msg;
-        }
+        e.msg = d.key + " " + e.msg;
 
         // this hacky but i don't care
-        if (e.ended === e.frame && line.msg.includes("refreshed")) {
+        if (e.ended === e.frame && (line.msg.includes("refreshed") || line.msg.includes("extended"))) {
           const idx = lines.findIndex((a) => {
             return (
               a.event === "status" &&
               line.char_index === a.char_index &&
-              !a.logs.overwrite &&
               a.logs.key === line.logs.key &&
               line.frame >= a.frame &&
               line.frame < a.ended
@@ -365,8 +351,9 @@ export function parseLogV2(
           }
         }
 
-        if (d.target != undefined) {
-          e.target = d.target;
+        if (e.ended != undefined) {
+          // maybe use e.target?
+          e.msg += strFrameWithSec(e.ended);
         }
         break;
       default:

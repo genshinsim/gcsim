@@ -48,11 +48,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillRecast()
 	}
 	c.hasSkillRecast = false
-	// calculate sanctum duration
+	// Initial cast duration is always 12s
 	dur := 720
-	if c.Base.Cons >= 2 {
-		dur = 960
-	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
@@ -120,7 +117,7 @@ func (c *char) skillHook() {
 			c.skillAttackInfo,
 			c.skillSnapshot,
 			combat.NewCircleHitOnTarget(trg, nil, 4.5),
-			10,
+			2,
 		)
 
 		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
@@ -172,6 +169,10 @@ func (c *char) skillRecast() (action.Info, error) {
 
 	// place field back down
 	c.Core.Tasks.Add(func() { // place field
+		// if C2, duration will be extended by 6s on recreation
+		if c.Base.Cons >= 2 {
+			dur += 360
+		}
 		c.addField(dur)
 	}, skillRecastHitmark+1)
 

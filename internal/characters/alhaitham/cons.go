@@ -11,7 +11,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c1IcdKey = "alhaitham-c1-icd"
+const (
+	c1IcdKey    = "alhaitham-c1-icd"
+	c2MaxStacks = 4
+)
 
 // When a Projection Attack hits an opponent, Universality: An Elaboration on Form's CD is decreased by 1.2s.
 // This effect can be triggered once every 1s.
@@ -33,14 +36,18 @@ func (c *char) c2(generated int) {
 	m[attributes.EM] = 50
 	for i := 0; i < generated; i++ {
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("alhaitham-c2-%v-stack", c.c2Counter+1), 480), // 8s
+			Base:         modifier.NewBaseWithHitlag(c2ModName(c.c2Counter+1), 480), // 8s
 			AffectedStat: attributes.EM,
 			Amount: func() ([]float64, bool) {
 				return m, true
 			},
 		})
-		c.c2Counter = (c.c2Counter + 1) % 4 // stacks are independent from each other, this will cycle them
+		c.c2Counter = (c.c2Counter + 1) % c2MaxStacks // stacks are independent from each other, this will cycle them
 	}
+}
+
+func c2ModName(num int) string {
+	return fmt.Sprintf("alhaitham-c2-%v-stack", num)
 }
 
 // When Particular Field: Fetters of Phenomena is unleashed, the following effects will become active

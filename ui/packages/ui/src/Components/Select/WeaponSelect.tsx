@@ -1,5 +1,6 @@
 import { Omnibar } from "@blueprintjs/select";
 import { IWeapon } from "@gcsim/types";
+import { useTranslation } from "react-i18next";
 import { weaponSelectProps } from "./weapons";
 
 const WeaponOmnibar = Omnibar.ofType<IWeapon>();
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export function WeaponSelect(props: Props) {
+  const { t } = useTranslation();
   return (
     <WeaponOmnibar
       resetOnSelect
@@ -18,7 +20,8 @@ export function WeaponSelect(props: Props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onItemSelect={props.onSelect}
-      overlayProps={{ usePortal: false }}
+      inputProps={{ placeholder: `${t("db.type_to_search")}` }}
+      className="!absolute !left-0 !right-0 !mx-auto !w-80"
     />
   );
 }

@@ -47,6 +47,12 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
+	// Apart from this, Normal Attack combo count will not reset for a short time after using Icefang Rush or sprinting.
+	switch c.Core.Player.CurrentState() {
+	case action.DashState, action.SkillState:
+		c.NormalCounter = c.savedNormalCounter
+	}
+
 	for i, mult := range attack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
@@ -92,7 +98,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
-	defer c.AdvanceNormalIndex()
+	defer func() {
+		c.AdvanceNormalIndex()
+		c.savedNormalCounter = c.NormalCounter
+	}()
 
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),

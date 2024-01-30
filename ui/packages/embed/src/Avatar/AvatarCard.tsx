@@ -1,6 +1,6 @@
 import { Card, Tag } from "@blueprintjs/core";
 import { Character } from "@gcsim/types";
-import { DataColors } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
+import { DataColorsConst } from "@gcsim/ui/src/Pages/Viewer/Components/Util";
 import ArtifactsIcon from "./ArtifactsIcon";
 import placeholder from "./default.png";
 import overlay from "./overlay.jpg";
@@ -126,7 +126,7 @@ const AvatarCard = ({ c, i, invalid, handleLoaded }: CardProps) => {
         }>
           <div className="flex flex-row gap-1 min-h-fit items-center">
             <span className="text-xs text-gray-400">lvl</span>
-            <span className={`font-bold`} style={{ color: DataColors.qualitative5(i) }}>
+            <span className={`font-bold`} style={{ color: DataColorsConst.qualitative5(i) }}>
               {c.level}
             </span>
           </div>
