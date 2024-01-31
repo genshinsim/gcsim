@@ -37,9 +37,9 @@ func (g *Generator) DumpUIJSON(path string) error {
 }
 
 type outData struct {
-	CharacterNames map[string]string
-	WeaponNames    map[string]string
-	ArtifactNames  map[string]string
+	CharacterNames map[string]string `json:"character_names"`
+	WeaponNames    map[string]string `json:"weapon_names"`
+	ArtifactNames  map[string]string `json:"artifact_names"`
 }
 
 func (g *Generator) writeTranslationJSON(path string) error {
