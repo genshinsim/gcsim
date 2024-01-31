@@ -1,4 +1,4 @@
-package generic
+package slingshot
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"

@@ -75,6 +75,12 @@ func main() {
 		panic(err)
 	}
 
+	log.Println("generate weapon template data...")
+	err = gw.GenerateTemplate()
+	if err != nil {
+		panic(err)
+	}
+
 	// generate artifact data
 	log.Println("running pipeline for artifacts...")
 	ga, err := artifact.NewGenerator(artifact.GeneratorConfig{

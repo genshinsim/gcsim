@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.SacrificialBow, common.NewSacrificial)
+	core.RegisterWeaponFunc(keys.SacrificialBow, common.NewSacrificial(base))
 }

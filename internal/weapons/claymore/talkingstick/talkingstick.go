@@ -11,5 +11,5 @@ import (
 // This effect can be triggered once every 12s.
 // TODO: https://github.com/genshinsim/gcsim/issues/850
 func init() {
-	core.RegisterWeaponFunc(keys.TalkingStick, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.TalkingStick, common.NewNoEffect(base))
 }

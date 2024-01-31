@@ -1,3 +1,4 @@
 package_name: lithic
 genshin_id: 13406
 key: lithicspear
+skip_data_func: true
