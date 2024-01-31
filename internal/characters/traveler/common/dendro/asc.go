@@ -15,7 +15,7 @@ const a1Key = "dmc-a1"
 // Lea Lotus Lamp will obtain one level of Overflowing Lotuslight every second it is on the field.
 //
 // - Gets removed on swap - from Kolibri
-func (c *char) a1Init() {
+func (c *Traveler) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -28,7 +28,7 @@ func (c *char) a1Init() {
 }
 
 // Increasing the Elemental Mastery of active character(s) within its AoE by 6.
-func (c *char) a1Buff(delay int) {
+func (c *Traveler) a1Buff(delay int) {
 	m := make([]float64, attributes.EndStatType)
 	// A1/C6 buff ticks every 0.3s and applies for 1s. probably counting from gadget spawn - from Kolibri
 	c.Core.Tasks.Add(func() {
@@ -51,7 +51,7 @@ func (c *char) a1Buff(delay int) {
 }
 
 // Overflowing Lotuslight has a maximum of 10 stacks.
-func (c *char) a1Stack(delay int) {
+func (c *Traveler) a1Stack(delay int) {
 	c.Core.Tasks.Add(func() {
 		if c.Core.Status.Duration(burstKey) > 0 && c.burstOverflowingLotuslight < 10 { // burst isn't expired, and stacks aren't capped
 			c.burstOverflowingLotuslight += 1
@@ -61,7 +61,7 @@ func (c *char) a1Stack(delay int) {
 
 // Every point of Elemental Mastery the Traveler possesses increases the DMG dealt
 // by Razorgrass Blade by 0.15% and the DMG dealt by Surgent Manifestation by 0.1%.
-func (c *char) a4Init() {
+func (c *Traveler) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}

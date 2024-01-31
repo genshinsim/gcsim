@@ -12,7 +12,7 @@ import (
 // Party members within the radius of Wake of Earth have their CRIT Rate increased by 10%
 //
 //	and have increased resistance against interruption.
-func (c *char) c1(ticks int) func() {
+func (c *Traveler) c1(ticks int) func() {
 	return func() {
 		// different Q fields can co-exist at C6 if you do the following:
 		// - cast another Q after Q cooldown is up (after 15s) but before Q field expires (before 20s)

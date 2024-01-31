@@ -16,7 +16,7 @@ const c4ICDKey = "travelerhydro-c4-icd"
 // Once every 2s, after a Dewdrop hits an opponent, if the Traveler is being protected by Aquacrest Aegis,
 // the DMG Absorption of the Aegis will be restored to 10% of the Traveler's Max HP. If the Traveler is not presently
 // being protected by an Aegis, one will be redeployed.
-func (c *char) c4() {
+func (c *Traveler) c4() {
 	existingShield := c.Core.Player.Shields.Get(shield.TravelerHydroC4)
 	if existingShield != nil {
 		// update hp
@@ -38,7 +38,7 @@ func (c *char) c4() {
 	})
 }
 
-func (c *char) makeC4CB() combat.AttackCBFunc {
+func (c *Traveler) makeC4CB() combat.AttackCBFunc {
 	if c.Base.Cons < 4 {
 		return nil
 	}
@@ -55,7 +55,7 @@ func (c *char) makeC4CB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) c4Remove() {
+func (c *Traveler) c4Remove() {
 	if c.Base.Cons < 4 {
 		return
 	}
@@ -70,7 +70,7 @@ func (c *char) c4Remove() {
 
 // When the Traveler picks up a Sourcewater Droplet, they will restore HP to a nearby party member with the lowest
 // remaining HP percentage based on 6% of said member's Max HP.
-func (c *char) c6() {
+func (c *Traveler) c6() {
 	lowest := c.Index
 	chars := c.Core.Player.Chars()
 	for i, char := range chars {

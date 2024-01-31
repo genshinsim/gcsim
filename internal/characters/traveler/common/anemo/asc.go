@@ -10,7 +10,7 @@ import (
 )
 
 // The last hit of a Normal Attack combo unleashes a wind blade, dealing 60% of ATK as Anemo DMG to all opponents in its path.
-func (c *char) a1() {
+func (c *Traveler) a1() {
 	if c.Base.Ascension < 1 || c.NormalCounter != c.NormalHitNum-1 {
 		return
 	}
@@ -44,7 +44,7 @@ const a4ICDKey = "traveleranemo-a4-icd"
 
 // Palm Vortex kills regenerate 2% HP for 5s.
 // This effect can only occur once every 5s.
-func (c *char) a4() {
+func (c *Traveler) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
