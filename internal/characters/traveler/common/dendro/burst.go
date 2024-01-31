@@ -25,7 +25,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 57 // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) (action.Info, error) {
+func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(2)
 

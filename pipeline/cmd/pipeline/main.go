@@ -53,6 +53,12 @@ func main() {
 		panic(err)
 	}
 
+	log.Println("generate character template data...")
+	err = g.GenerateCharTemplate()
+	if err != nil {
+		panic(err)
+	}
+
 	// generate weapon data
 	log.Println("running pipeline for weapons...")
 	gw, err := weapon.NewGenerator(weapon.GeneratorConfig{
