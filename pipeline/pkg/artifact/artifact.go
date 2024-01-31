@@ -3,13 +3,14 @@ package artifact
 import (
 	"fmt"
 	"log"
+	"sort"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Config struct {
 	Key       string `yaml:"key,omitempty"`
-	TextMapId string `yaml:"text_map_id,omitempty"`
+	TextMapId int64  `yaml:"text_map_id,omitempty"`
 
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
@@ -38,7 +39,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	}
 	g.artifacts = a
 
-	textIDCheck := make(map[string]bool)
+	textIDCheck := make(map[int64]bool)
 
 	for _, v := range a {
 		if _, ok := g.data[v.Key]; ok {
@@ -50,9 +51,23 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 		textIDCheck[v.TextMapId] = true
 		g.data[v.Key] = &model.ArtifactData{
 			TextMapId: v.TextMapId,
+			Key:       v.Key,
 		}
 		log.Printf("%v loaded ok\n", v.Key)
 	}
 
 	return g, nil
+}
+
+func (g *Generator) Data() []*model.ArtifactData {
+	keys := make([]string, 0, len(g.data))
+	for k := range g.data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	var res []*model.ArtifactData
+	for _, k := range keys {
+		res = append(res, g.data[k])
+	}
+	return res
 }

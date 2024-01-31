@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/artifact"
 	"github.com/genshinsim/gcsim/pipeline/pkg/character"
+	"github.com/genshinsim/gcsim/pipeline/pkg/translation"
 	"github.com/genshinsim/gcsim/pipeline/pkg/weapon"
 )
 
@@ -17,8 +18,9 @@ type config struct {
 	excelPath    string
 
 	// output paths
-	uiOut string
-	dbOut string
+	uiOut    string
+	dbOut    string
+	transOut string
 }
 
 func main() {
@@ -29,6 +31,7 @@ func main() {
 	flag.StringVar(&cfg.excelPath, "excels", "./pipeline/data/ExcelBinOutput", "folder to look for excel data dump")
 	flag.StringVar(&cfg.uiOut, "outui", "./ui/packages/ui/src/Data", "folder to output generated json for UI")
 	flag.StringVar(&cfg.dbOut, "outdb", "./ui/packages/db/src/Data", "folder to output generated json for DB")
+	flag.StringVar(&cfg.transOut, "outtrans", "./ui/packages/ui/src/Translation/locales", "folder to output generated json for DB")
 	flag.Parse()
 
 	// generate character data
@@ -86,6 +89,30 @@ func main() {
 
 	log.Println("generate artifacts data for ui...")
 	err = ga.DumpJSON(cfg.uiOut)
+	if err != nil {
+		panic(err)
+	}
+
+	// generate translation data
+	transCfg := translation.GeneratorConfig{
+		Characters: g.Data(),
+		Weapons:    gw.Data(),
+		Artifacts:  ga.Data(),
+		Languages: map[string]string{
+			"English":  "./pipeline/data/TextMap/TextMapEN.json",
+			"Chinese":  "./pipeline/data/TextMap/TextMapCHS.json",
+			"Japanese": "./pipeline/data/TextMap/TextMapJP.json",
+			"Korean":   "./pipeline/data/TextMap/TextMapKR.json",
+			"Spanish":  "./pipeline/data/TextMap/TextMapES.json",
+			"Russian":  "./pipeline/data/TextMap/TextMapRU.json",
+			"German":   "./pipeline/data/TextMap/TextMapDe.json",
+		},
+	}
+	ts, err := translation.NewGenerator(transCfg)
+	if err != nil {
+		panic(err)
+	}
+	err = ts.DumpUIJSON(cfg.transOut)
 	if err != nil {
 		panic(err)
 	}
