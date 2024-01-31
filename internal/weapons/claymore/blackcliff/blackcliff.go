@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.BlackcliffSlasher, common.NewBlackcliff)
+	core.RegisterWeaponFunc(keys.BlackcliffSlasher, common.NewBlackcliff(base))
 }

@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.OldMercsPal, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.OldMercsPal, common.NewNoEffect(base))
 }

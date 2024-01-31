@@ -1,3 +1,4 @@
 package_name: blackcliff
 genshin_id: 13404
 key: blackcliffpole
+skip_data_func: true

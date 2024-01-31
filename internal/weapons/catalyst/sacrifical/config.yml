@@ -1,3 +1,4 @@
-package_name: sacrifical
+package_name: sacrificial
 genshin_id: 14403
 key: sacrificialfragments
+skip_data_func: true

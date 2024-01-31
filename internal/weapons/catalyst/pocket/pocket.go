@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.PocketGrimoire, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.PocketGrimoire, common.NewNoEffect(base))
 }

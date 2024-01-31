@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.LithicBlade, common.NewLithic)
+	core.RegisterWeaponFunc(keys.LithicBlade, common.NewLithic(base))
 }

@@ -1,4 +1,4 @@
-package dragonbane
+package lion
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"

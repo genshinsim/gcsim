@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.TheUnforged, common.NewGoldenMajesty)
+	core.RegisterWeaponFunc(keys.TheUnforged, common.NewGoldenMajesty(base))
 }

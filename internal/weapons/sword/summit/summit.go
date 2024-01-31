@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.SummitShaper, common.NewGoldenMajesty)
+	core.RegisterWeaponFunc(keys.SummitShaper, common.NewGoldenMajesty(base))
 }

@@ -1,4 +1,4 @@
-package black
+package blacksword
 
 import (
 	"fmt"
