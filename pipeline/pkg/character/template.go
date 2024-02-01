@@ -9,7 +9,7 @@ import (
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pkg/model"
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/encoding/prototext"
 )
 
 type charData struct {
@@ -29,7 +29,11 @@ func (g *Generator) GenerateCharTemplate() error {
 			continue
 		}
 		// write the avatar data to []byte
-		b, err := proto.Marshal(dm)
+		opt := prototext.MarshalOptions{
+			Multiline: true,
+			Indent:    "   ",
+		}
+		b, err := opt.Marshal(dm)
 		if err != nil {
 			log.Printf("error marshalling %v data to proto\n", v.Key)
 			return err
@@ -63,7 +67,7 @@ import (
 	_ "embed"
 
     "github.com/genshinsim/gcsim/pkg/model"
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/encoding/prototext"
 )
 
 //go:embed data_gen.pb
@@ -72,7 +76,7 @@ var base *model.AvatarData
 
 func init() {
 	base = &model.AvatarData{}
-	err := proto.Unmarshal(pbData, base)
+	err := prototext.Unmarshal(pbData, base)
 	if err != nil {
 		panic(err)
 	}
