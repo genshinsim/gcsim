@@ -65,7 +65,7 @@ func RunSubstatOptim(simopt simulator.Options, verbose bool, additionalOptions s
 		os.Exit(1)
 	}
 
-	optimizer := NewSubstatOptimizer(optionsMap, sugarLog)
+	optimizer := NewSubstatOptimizer(optionsMap, sugarLog, verbose)
 	optimizer.Run(cfg, simopt, simcfg, gcsl)
 	output := optimizer.PrettyPrint(clean, optimizer.details)
 

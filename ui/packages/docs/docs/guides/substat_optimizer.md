@@ -172,5 +172,101 @@ It usually generates conservative ER requirements that are higher than what an E
 
 This is due to gcsim:
 - having much more detailed energy mechanics than what can reasonably be modelled in an ER calculator
-- modelling the actual particle rng (example: Fischl Oz) by running the config for many times
+- modelling the actual particle rng (example: Fischl Oz) by running the config for many times.
 :::
+
+## Verbose Output
+In the [Example](#example) above, if you also add the flag for verbose output:
+```
+./gcsim.exe -c test.txt -s -substatOptimFull -v
+```
+
+The substat optimizer will print additional information as it is running. You should see something like this in PowerShell:
+```
+2024-02-01T09:43:02.573-0700    WARN    warning: Config found to have existing substat information. Ignoring
+2024-02-01T09:43:02.575-0700    WARN    Warning: 4* artifact set detected. Optimizer currently assumes that ER substats take 5* values, and all other substats take 4* values.
+2024-02-01T09:43:02.575-0700    INFO    Starting ER Optimization...
+2024-02-01T09:43:03.011-0700    INFO    Alhaitham: ER Needed Distribution
+2024-02-01T09:43:03.011-0700    INFO     100-105  |████████████████████████████████████████████
+2024-02-01T09:43:03.011-0700    INFO    Bennett: ER Needed Distribution
+2024-02-01T09:43:03.011-0700    INFO     170-175  |██
+2024-02-01T09:43:03.011-0700    INFO     175-180  |███████
+2024-02-01T09:43:03.011-0700    INFO     180-185  |██████
+2024-02-01T09:43:03.011-0700    INFO     185-190  |█████████████
+2024-02-01T09:43:03.011-0700    INFO     190-195  |███████
+2024-02-01T09:43:03.011-0700    INFO     195-200  |██████
+2024-02-01T09:43:03.011-0700    INFO    Fischl: ER Needed Distribution
+2024-02-01T09:43:03.011-0700    INFO     115-120  |████
+2024-02-01T09:43:03.011-0700    INFO     120-125  |████████
+2024-02-01T09:43:03.011-0700    INFO     125-130  |█████████
+2024-02-01T09:43:03.011-0700    INFO     130-135  |███████
+2024-02-01T09:43:03.012-0700    INFO     135-140  |█████
+2024-02-01T09:43:03.012-0700    INFO     140-145  |█████
+2024-02-01T09:43:03.012-0700    INFO     145-150  |██
+2024-02-01T09:43:03.012-0700    INFO     150-155  |█
+2024-02-01T09:43:03.012-0700    INFO    Nahida: ER Needed Distribution
+2024-02-01T09:43:03.012-0700    INFO     100-105  |█████████████████
+2024-02-01T09:43:03.012-0700    INFO     105-110  |████████████████
+2024-02-01T09:43:03.012-0700    INFO     110-115  |████████
+2024-02-01T09:43:03.012-0700    INFO     115-120  |██
+2024-02-01T09:43:03.012-0700    INFO    Initial Calculated ER Liquid Substats by character:
+2024-02-01T09:43:03.012-0700    INFO    alhaitham: 0, bennett: 0, fischl: 0.2755, nahida: 0,
+2024-02-01T09:43:03.012-0700    INFO    Calculating optimal DMG substat distribution...
+2024-02-01T09:43:03.012-0700    DEBUG   Alhaitham
+2024-02-01T09:43:03.188-0700    DEBUG   Liquid Substat Counts: atk%: 5 em: 8 cr: 8 cd: 10
+2024-02-01T09:43:03.364-0700    DEBUG   Liquid Substat Counts: em: 8 cr: 8 cd: 10
+2024-02-01T09:43:03.557-0700    DEBUG   Liquid Substat Counts: em: 6 cr: 8 cd: 10
+2024-02-01T09:43:03.727-0700    DEBUG   Liquid Substat Counts: em: 4 cr: 8 cd: 10
+2024-02-01T09:43:03.896-0700    DEBUG   Liquid Substat Counts: em: 3 cr: 8 cd: 10
+2024-02-01T09:43:04.066-0700    DEBUG   Liquid Substat Counts: em: 2 cr: 8 cd: 10
+2024-02-01T09:43:04.066-0700    DEBUG   Bennett
+2024-02-01T09:43:04.239-0700    DEBUG   Liquid Substat Counts: atk%: 5 em: 10 cr: 8 cd: 10
+2024-02-01T09:43:04.410-0700    DEBUG   Liquid Substat Counts: atk%: 5 em: 10 cr: 3 cd: 10
+2024-02-01T09:43:04.591-0700    DEBUG   Liquid Substat Counts: atk%: 5 em: 10 cr: 3 cd: 5
+2024-02-01T09:43:04.767-0700    DEBUG   Liquid Substat Counts: atk%: 4 em: 10 cr: 3 cd: 5
+2024-02-01T09:43:04.936-0700    DEBUG   Liquid Substat Counts: atk%: 4 em: 9 cr: 3 cd: 5
+2024-02-01T09:43:05.106-0700    DEBUG   Liquid Substat Counts: atk%: 4 em: 9 cr: 2 cd: 5
+2024-02-01T09:43:05.106-0700    DEBUG   Fischl
+2024-02-01T09:43:05.278-0700    DEBUG   Liquid Substat Counts: atk%: 8 er: 5 em: 5 cr: 8 cd: 10
+2024-02-01T09:43:05.453-0700    DEBUG   Liquid Substat Counts: atk%: 8 er: 5 cr: 8 cd: 10
+2024-02-01T09:43:05.629-0700    DEBUG   Liquid Substat Counts: atk%: 3 er: 5 cr: 8 cd: 10
+2024-02-01T09:43:05.812-0700    DEBUG   Liquid Substat Counts: atk%: 1 er: 5 cr: 8 cd: 10
+2024-02-01T09:43:05.988-0700    DEBUG   Liquid Substat Counts: er: 5 cr: 8 cd: 10
+2024-02-01T09:43:06.165-0700    DEBUG   Liquid Substat Counts: er: 5 cr: 7 cd: 10
+2024-02-01T09:43:06.338-0700    DEBUG   Liquid Substat Counts: er: 5 cr: 6 cd: 10
+2024-02-01T09:43:06.506-0700    DEBUG   Liquid Substat Counts: er: 5 cr: 5 cd: 10
+2024-02-01T09:43:06.507-0700    DEBUG   Nahida
+2024-02-01T09:43:06.679-0700    DEBUG   Liquid Substat Counts: atk%: 5 em: 6 cr: 8 cd: 10
+2024-02-01T09:43:06.850-0700    DEBUG   Liquid Substat Counts: em: 6 cr: 8 cd: 10
+2024-02-01T09:43:07.019-0700    DEBUG   Liquid Substat Counts: em: 6 cr: 6 cd: 10
+2024-02-01T09:43:07.190-0700    DEBUG   Liquid Substat Counts: em: 5 cr: 6 cd: 10
+2024-02-01T09:43:07.361-0700    DEBUG   Liquid Substat Counts: em: 5 cr: 5 cd: 10
+2024-02-01T09:43:07.361-0700    INFO    alhaitham
+2024-02-01T09:43:07.361-0700    INFO    Liquid Substat Counts: em: 2 cr: 8 cd: 10
+2024-02-01T09:43:07.362-0700    INFO    bennett
+2024-02-01T09:43:07.362-0700    INFO    Liquid Substat Counts: atk%: 4 em: 9 cr: 2 cd: 5
+2024-02-01T09:43:07.362-0700    INFO    fischl
+2024-02-01T09:43:07.362-0700    INFO    Liquid Substat Counts: er: 5 cr: 5 cd: 10
+2024-02-01T09:43:07.362-0700    INFO    nahida
+2024-02-01T09:43:07.362-0700    INFO    Liquid Substat Counts: em: 5 cr: 5 cd: 10
+2024-02-01T09:43:07.362-0700    INFO    Fine tuning optimal ER vs DMG substat distribution...
+2024-02-01T09:43:09.470-0700    INFO    alhaitham
+2024-02-01T09:43:09.470-0700    INFO    Final Liquid Substat Counts: em: 2 cr: 8 cd: 10
+2024-02-01T09:43:09.470-0700    INFO    bennett
+2024-02-01T09:43:09.470-0700    INFO    Final Liquid Substat Counts: atk%: 4 em: 9 cr: 2 cd: 5
+2024-02-01T09:43:09.470-0700    INFO    fischl
+2024-02-01T09:43:09.470-0700    INFO    Final Liquid Substat Counts: er: 4 cr: 6 cd: 10
+2024-02-01T09:43:09.470-0700    INFO    nahida
+2024-02-01T09:43:09.470-0700    INFO    Final Liquid Substat Counts: em: 5 cr: 5 cd: 10
+2024-02-01T09:43:09.470-0700    INFO    Final config substat strings:
+alhaitham add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=79.28 cr=0.331 cd=0.7944;
+bennett add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.2976 er=0.1102 em=218.02 cr=0.1324 cd=0.4634;
+fischl add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.3306 em=39.64 cr=0.2648 cd=0.7944;
+nahida add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=138.74 cr=0.2317 cd=0.7944;
+2024-02-01T09:43:09.471-0700    INFO    Saved to the following location: .\test.txt
+Average duration of 101.21 seconds (min: 100.85 max: 114.57 std: 0.53)
+Average 7215548.82 damage over 101.21 seconds, resulting in 71292 dps (min: 59069.69 max: 76743.87 std: 1845.95)
+Simulation completed 1000 iterations   
+```
+
+Note the additional ER graphs showing how the ER req is distributed for each character, and the progress of the substat [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent).

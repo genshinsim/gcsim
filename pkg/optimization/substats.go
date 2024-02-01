@@ -18,13 +18,14 @@ type SubstatOptimizer struct {
 	logger     *zap.SugaredLogger
 	optionsMap map[string]float64
 	details    *SubstatOptimizerDetails
+	verbose    bool
 }
 
-func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLogger) *SubstatOptimizer {
+func NewSubstatOptimizer(optionsMap map[string]float64, sugarLog *zap.SugaredLogger, verbose bool) *SubstatOptimizer {
 	o := SubstatOptimizer{}
 	o.optionsMap = optionsMap
 	o.logger = sugarLog
-
+	o.verbose = verbose
 	return &o
 }
 
@@ -43,6 +44,7 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 	simcfg.Settings.CollectStats = []string{""}
 
 	o.details = NewSubstatOptimizerDetails(
+		o,
 		cfg,
 		simopt,
 		simcfg,
@@ -65,13 +67,10 @@ func (o *SubstatOptimizer) Run(cfg string, simopt simulator.Options, simcfg *inf
 	}
 
 	// TODO: Maybe add a configuration to only calculate ER?
-	debugLogs := o.details.optimizeERSubstats()
-	for _, debugLog := range debugLogs {
-		o.logger.Info(debugLog)
-	}
+	o.details.optimizeERSubstats()
 
 	o.logger.Info("Calculating optimal DMG substat distribution...")
-	debugLogs = o.details.optimizeNonERSubstats()
+	debugLogs := o.details.optimizeNonERSubstats()
 	for _, debugLog := range debugLogs {
 		o.logger.Info(debugLog)
 	}
@@ -115,6 +114,7 @@ func (o *SubstatOptimizer) PrettyPrint(output string, statsFinal *SubstatOptimiz
 }
 
 func NewSubstatOptimizerDetails(
+	optimizer *SubstatOptimizer,
 	cfg string,
 	simopt simulator.Options,
 	simcfg *info.ActionList,
@@ -124,6 +124,7 @@ func NewSubstatOptimizerDetails(
 	fixedSubstatCount int,
 ) *SubstatOptimizerDetails {
 	s := SubstatOptimizerDetails{}
+	s.optimizer = optimizer
 	s.cfg = cfg
 	s.simopt = simopt
 	s.simcfg = simcfg
