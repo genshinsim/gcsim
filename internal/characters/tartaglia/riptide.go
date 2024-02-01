@@ -18,7 +18,13 @@ func (c *char) aimedApplyRiptide(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	c.applyRiptide("aimed shot", t)
+	// apply if E state is up or attack has hydro
+	// covers:
+	// - phys aimed shot in E state
+	// - fully-charged aimed shot regardless of E state
+	if c.StatusIsActive(MeleeKey) || a.AttackEvent.Info.Element == attributes.Hydro {
+		c.applyRiptide("aimed shot", t)
+	}
 }
 
 // Swiftly fires a Hydro-imbued magic arrow, dealing AoE Hydro DMG and applying the Riptide status.
@@ -81,6 +87,11 @@ func (c *char) rtFlashCallback(a combat.AttackCB) {
 	if !ok {
 		return
 	}
+	// do nothing if attack does not have hydro
+	// - prevent phys ca from triggering this
+	if a.AttackEvent.Info.Element != attributes.Hydro {
+		return
+	}
 	// do nothing if no riptide on target
 	if !t.StatusIsActive(riptideKey) {
 		return
@@ -131,6 +142,11 @@ func (c *char) rtSlashCallback(a combat.AttackCB) {
 	// make sure it's actually an enemey
 	t, ok := a.Target.(*enemy.Enemy)
 	if !ok {
+		return
+	}
+	// do nothing if E is not activated
+	// - this can also be triggered by an aimed shot if E state is up when it hits the enemy
+	if !c.StatusIsActive(MeleeKey) {
 		return
 	}
 	// do nothing if no riptide on target
