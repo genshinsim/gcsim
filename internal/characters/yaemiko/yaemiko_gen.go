@@ -5,7 +5,7 @@ import (
 	_ "embed"
 
 	"github.com/genshinsim/gcsim/pkg/model"
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/encoding/prototext"
 )
 
 //go:embed data_gen.pb
@@ -14,7 +14,7 @@ var base *model.AvatarData
 
 func init() {
 	base = &model.AvatarData{}
-	err := proto.Unmarshal(pbData, base)
+	err := prototext.Unmarshal(pbData, base)
 	if err != nil {
 		panic(err)
 	}
