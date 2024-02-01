@@ -2,6 +2,7 @@ package tartaglia
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -35,11 +36,14 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		return action.Info{}, errors.New("aim called when not in ranged stance")
 	}
 	hold, ok := p["hold"]
-	if !ok || hold < attacks.AimParamPhys {
+	if !ok {
 		hold = attacks.AimParamLv1
 	}
-	if hold > attacks.AimParamLv1 {
-		hold = attacks.AimParamLv1
+	switch hold {
+	case attacks.AimParamPhys:
+	case attacks.AimParamLv1:
+	default:
+		return action.Info{}, fmt.Errorf("invalid hold param supplied, got %v", hold)
 	}
 	travel, ok := p["travel"]
 	if !ok {
