@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.SeasonedHuntersBow, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.SeasonedHuntersBow, common.NewNoEffect(base))
 }

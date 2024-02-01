@@ -33,7 +33,7 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 55    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) (action.Info, error) {
+func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Blade",
@@ -126,7 +126,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *Traveler) makeParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
@@ -140,7 +140,7 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) collectAmulets(collector *character.CharWrapper) bool {
+func (c *Traveler) collectAmulets(collector *character.CharWrapper) bool {
 	// if there are no amulets to collect, return
 	if c.abundanceAmulets <= 0 {
 		return false

@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.IronPoint, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.IronPoint, common.NewNoEffect(base))
 }

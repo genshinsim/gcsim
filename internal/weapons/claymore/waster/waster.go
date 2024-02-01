@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.WasterGreatsword, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.WasterGreatsword, common.NewNoEffect(base))
 }

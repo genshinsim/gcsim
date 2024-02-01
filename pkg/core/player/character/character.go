@@ -11,11 +11,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/task"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/queue"
 )
 
 type Character interface {
+	Base
+
 	Init() error // init function built into every char to setup any variables etc.
 
 	Attack(p map[string]int) (action.Info, error)
@@ -48,6 +51,11 @@ type Character interface {
 
 	ResetNormalCounter()
 	NextNormalCounter() int
+}
+
+// Base contains basic information for a character
+type Base interface {
+	Data() *model.AvatarData
 }
 
 type CharWrapper struct {

@@ -12,6 +12,7 @@ export class WasmExecutor implements Executor {
   private workers: Worker[];
   private workerCount: number;
   private isRunning: boolean;
+  private runStarted: number;
 
   constructor(wasm: string) {
     this.wasmPath = wasm;
@@ -21,6 +22,7 @@ export class WasmExecutor implements Executor {
     this.workers = [];
     this.workerCount = 3;
     this.isRunning = false;
+    this.runStarted = 0;
   }
 
   public ready(): boolean {
@@ -93,6 +95,7 @@ export class WasmExecutor implements Executor {
         cfg: string, updateResult: (result: SimResults, hash: string) => void
   ): Promise<boolean | void> {
     this.isRunning = true;
+    this.runStarted = performance.now()
 
     // 1. Create Aggregator & Workers
     const created = Promise.all([this.createAggregator(), this.createWorkers()]);
@@ -172,6 +175,11 @@ export class WasmExecutor implements Executor {
               if (completed >= maxIterations) {
                 this.isRunning = false;
                 resolve(true);
+                if (this.runStarted > 0) {
+                  const end = performance.now()
+                  console.log(`run time: ${end - this.runStarted} ms`)
+                  this.runStarted = 0
+                }
               }
               return;
             case Aggregator.Response.Done:
@@ -232,6 +240,12 @@ export class WasmExecutor implements Executor {
     // carry over, making executions after a cancel "less optimal".
     this.aggregator.terminate();
     this.aggregator = null;
+
+    if (this.runStarted > 0) {
+      const end = performance.now()
+      console.log(`cancelled with run time: ${end - this.runStarted} ms`)
+      this.runStarted = 0
+    }
   }
 
   public validate(cfg: string): Promise<ParsedResult> {

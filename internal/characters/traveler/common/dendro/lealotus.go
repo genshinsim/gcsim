@@ -18,11 +18,11 @@ type LeaLotus struct {
 	*gadget.Gadget
 	*reactable.Reactable
 	burstAtk     *combat.AttackEvent
-	char         *char
+	char         *Traveler
 	hitboxRadius float64
 }
 
-func (c *char) newLeaLotusLamp() *LeaLotus {
+func (c *Traveler) newLeaLotusLamp() *LeaLotus {
 	s := &LeaLotus{}
 	player := c.Core.Combat.Player()
 	c.burstPos = geometry.CalcOffsetPoint(

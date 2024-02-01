@@ -1,4 +1,4 @@
-package favonius
+package apprentice
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.ApprenticesNotes, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.ApprenticesNotes, common.NewNoEffect(base))
 }

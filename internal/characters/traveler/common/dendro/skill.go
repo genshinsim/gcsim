@@ -34,7 +34,7 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 35    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) (action.Info, error) {
+func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Razorgrass Blade",
@@ -71,7 +71,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
+func (c *Traveler) particleCB(a combat.AttackCB) {
 	if a.Target.Type() != targets.TargettableEnemy {
 		return
 	}
