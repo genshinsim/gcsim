@@ -66,7 +66,7 @@ func (stats *SubstatOptimizerDetails) getCharSubstatTotal(idxChar int) int {
 }
 
 func fmtHist(sortedArr []float64, start, binSize float64) []string {
-	valPerBlock := 0.01
+	valPerBlock := 1.0 / 350.0 * 8.0 * 1.0 // 1 iteration = 1/8th of a block
 
 	output := make([]string, 0)
 	binMin := make([]float64, 0)
@@ -121,12 +121,12 @@ func fmtHist(sortedArr []float64, start, binSize float64) []string {
 		// many fractions of 8 we need.
 		// https://en.wikipedia.org/wiki/Block_Elements
 		barChunks := int(binCount[i] / valPerBlock)
-		rem := int(math.Round(math.Mod(binCount[i], valPerBlock) * 8))
+		rem := int(math.Round(math.Mod(binCount[i], valPerBlock) / valPerBlock * 8))
 		bar := strings.Repeat("█", barChunks)
 		if rem > 0 {
-			bar += fmt.Sprint(int('█') + (8 - rem))
+			bar += fmt.Sprint(string(rune('█' + 8 - rem)))
 		}
-		output[i] = fmt.Sprintf("   %.0f-%.0f  |%s", binMin[i]*100, binMax[i]*100, bar)
+		output[i] = fmt.Sprintf(" %.0f-%.0f  |%s", binMin[i]*100, binMax[i]*100, bar)
 	}
 
 	return output
