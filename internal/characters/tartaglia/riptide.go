@@ -18,11 +18,11 @@ func (c *char) aimedApplyRiptide(a combat.AttackCB) {
 	if !ok {
 		return
 	}
-	// apply if E state is up or attack has hydro
+	// apply if attack has hydro or e state is up and it's physical
 	// covers:
-	// - phys aimed shot in E state
 	// - fully-charged aimed shot regardless of E state
-	if c.StatusIsActive(MeleeKey) || a.AttackEvent.Info.Element == attributes.Hydro {
+	// - phys aimed shot in E state
+	if a.AttackEvent.Info.Element == attributes.Hydro || (c.StatusIsActive(MeleeKey) && a.AttackEvent.Info.Element == attributes.Physical) {
 		c.applyRiptide("aimed shot", t)
 	}
 }
