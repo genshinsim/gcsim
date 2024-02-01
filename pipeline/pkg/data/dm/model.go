@@ -50,8 +50,8 @@ type AvatarExcel struct {
 	DefenseBase     float64         `json:"defenseBase"`
 	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
 	ID              int32           `json:"id"`
-	// NameTextMapHash int32           `json:"nameTextMapHash"`
-	UseType string `json:"useType,omitempty"`
+	NameTextMapHash int64           `json:"nameTextMapHash"`
+	UseType         string          `json:"useType,omitempty"`
 }
 
 //nolint:tagliatelle // need to match datamine
@@ -60,7 +60,7 @@ type PropGrowCurve struct {
 	GrowCurve string `json:"growCurve"`
 }
 
-type TextMap map[int32]string
+type TextMap map[int64]string
 
 //nolint:tagliatelle // need to match datamine
 type AvatarSkillDepot struct {

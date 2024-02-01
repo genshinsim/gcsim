@@ -3,6 +3,7 @@ package character
 import (
 	"fmt"
 	"log"
+	"sort"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/avatar"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -65,4 +66,17 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	}
 
 	return g, nil
+}
+
+func (g *Generator) Data() []*model.AvatarData {
+	keys := make([]string, 0, len(g.data))
+	for k := range g.data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	var res []*model.AvatarData
+	for _, k := range keys {
+		res = append(res, g.data[k])
+	}
+	return res
 }
