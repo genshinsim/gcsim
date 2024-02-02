@@ -14,25 +14,27 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+//nolint:tagliatelle // need to match datamine
 type propGrowCurve struct {
-	GrowCurve string `json:"grow_curve"`
+	GrowCurve string `json:"growCurve"`
 }
 
+//nolint:tagliatelle // need to match datamine
 type monsterExcelConfig struct {
-	MonsterName     string          `json:"monster_name"`
+	MonsterName     string          `json:"monsterName"`
 	Typ             string          `json:"type"`
-	HpDrops         []info.HpDrop   `json:"hp_drops"`
-	KillDropId      int             `json:"kill_drop_id"`
-	HpBase          float64         `json:"hp_base"`
-	PropGrowCurves  []propGrowCurve `json:"prop_grow_curves"`
-	FireSubHurt     float64         `json:"fire_sub_hurt"`
-	GrassSubHurt    float64         `json:"grass_sub_hurt"`
-	WaterSubHurt    float64         `json:"water_sub_hurt"`
-	ElecSubHurt     float64         `json:"elec_sub_hurt"`
-	WindSubHurt     float64         `json:"wind_sub_hurt"`
-	IceSubHurt      float64         `json:"ice_sub_hurt"`
-	RockSubHurt     float64         `json:"rock_sub_hurt"`
-	PhysicalSubHurt float64         `json:"physical_sub_hurt"`
+	HpDrops         []info.HpDrop   `json:"hpDrops"`
+	KillDropId      int             `json:"killDropId"`
+	HpBase          float64         `json:"hpBase"`
+	PropGrowCurves  []propGrowCurve `json:"propGrowCurves"`
+	FireSubHurt     float64         `json:"fireSubHurt"`
+	GrassSubHurt    float64         `json:"grassSubHurt"`
+	WaterSubHurt    float64         `json:"waterSubHurt"`
+	ElecSubHurt     float64         `json:"elecSubHurt"`
+	WindSubHurt     float64         `json:"windSubHurt"`
+	IceSubHurt      float64         `json:"iceSubHurt"`
+	RockSubHurt     float64         `json:"rockSubHurt"`
+	PhysicalSubHurt float64         `json:"physicalSubHurt"`
 	Id              int             `json:"id"`
 }
 
