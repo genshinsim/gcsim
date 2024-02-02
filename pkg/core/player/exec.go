@@ -17,6 +17,7 @@ import (
 //   - Player currently in animation
 var ErrActionNotReady = errors.New("action is not ready yet; cannot be executed")
 var ErrPlayerNotReady = errors.New("player still in animation; cannot execute action")
+var ErrInvalidAirborneAction = errors.New("player must use low_plunge or high_plunge while airborne")
 var ErrActionNoOp = errors.New("action is a noop")
 
 // ReadyCheck returns nil action is ready, else returns error representing why action is not ready
@@ -72,11 +73,6 @@ func (h *Handler) ReadyCheck(t action.Action, k keys.Char, param map[string]int)
 			// even though noop this action is still ready
 			return nil
 		}
-		if h.airborne != Grounded {
-			h.Log.NewEvent("character is airborne, cannot swap", glog.LogWarnings, -1).
-				Write("airborne_expiration", h.abUntil-*h.F)
-			return ErrActionNotReady
-		}
 		if h.SwapCD > 0 {
 			h.Events.Emit(event.OnActionFailed, h.active, t, param, action.SwapCD)
 			return ErrActionNotReady
@@ -120,6 +116,11 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	stamCheck := func(t action.Action, param map[string]int) (float64, bool) {
 		req := h.AbilStamCost(char.Index, t, param)
 		return req, h.Stam >= req
+	}
+
+	// special airborne handler; if airborne the next action MUST be attack otherwise error
+	if h.airborne != Grounded && t != action.ActionLowPlunge && t != action.ActionHighPlunge {
+		return ErrInvalidAirborneAction
 	}
 
 	var err error
@@ -171,10 +172,11 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 	case action.ActionAttack:
 		err = h.useAbility(t, param, char.Attack)
 	case action.ActionHighPlunge:
-		//TODO: there should be a flag that says airborne and only then can you plunge
 		err = h.useAbility(t, param, char.HighPlungeAttack)
+		h.airborne = Grounded
 	case action.ActionLowPlunge:
 		err = h.useAbility(t, param, char.LowPlungeAttack)
+		h.airborne = Grounded
 	case action.ActionSwap:
 		if h.active == h.charPos[k] {
 			return ErrActionNoOp

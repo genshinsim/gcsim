@@ -238,7 +238,8 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 			return queuePhase, nil
 		}
 		// this is now unexpected since action should be ready now
-		return nil, err
+		// wrap the error for more context
+		return nil, fmt.Errorf("error encountered on %v executing %v: %w", q.Char.String(), q.Action.String(), err)
 	}
 	//TODO: this check here is probably unnecessary
 	if l := s.popQueue(); l > 0 {
