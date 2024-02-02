@@ -276,7 +276,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	enemyInfo.Pos = profile.Pos
 	enemyInfo.HP = enemyInfo.HpBase * levelMultiplier[enemyInfo.HpGrowCurve-1][enemyInfo.Level-1]
 	if params.HpMultiplier != 0 {
-		enemyInfo.HP *= float64(params.HpMultiplier)
+		enemyInfo.HP *= params.HpMultiplier
 	} else {
 		mult, ok := abyssHpMultipliers[enemyInfo.MonsterName]
 		if !ok {

@@ -53,7 +53,7 @@ func main() {
 	}
 }
 
-func toEnemyProfile(enemyInfo monsterExcelConfig) info.EnemyProfile {
+func toEnemyProfile(enemyInfo *monsterExcelConfig) info.EnemyProfile {
 	hpGrowCurve := 1
 	if enemyInfo.PropGrowCurves[0].GrowCurve == "GROW_CURVE_HP_2" {
 		hpGrowCurve = 2
@@ -118,7 +118,7 @@ func runCodeGen() error {
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile("enemystat.go", content, 0644)
+	err = os.WriteFile("enemystat.go", content, 0o644)
 	if err != nil {
 		return err
 	}
@@ -127,8 +127,8 @@ func runCodeGen() error {
 
 func writeMonsterInfo(configs []monsterExcelConfig, out *bufio.Writer) error {
 	profiles := make([]info.EnemyProfile, len(configs))
-	for i, v := range configs {
-		profiles[i] = toEnemyProfile(v)
+	for i := range configs {
+		profiles[i] = toEnemyProfile(&configs[i])
 	}
 	t, err := template.New("enemystat").Funcs(elementMap).Parse(tmplEnemyStats)
 	if err != nil {
@@ -142,9 +142,10 @@ func writeMonsterInfo(configs []monsterExcelConfig, out *bufio.Writer) error {
 }
 
 func writeNameIds(configs []monsterExcelConfig, out *bufio.Writer) error {
-	used := []monsterExcelConfig{}
+	used := []*monsterExcelConfig{}
 	visited := map[string]bool{}
-	for _, v := range configs {
+	for i := range configs {
+		v := &configs[i]
 		if _, ok := visited[v.MonsterName]; !ok {
 			visited[v.MonsterName] = true
 			used = append(used, v)

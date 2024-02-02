@@ -14,7 +14,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
-var particleIdToElement = []attributes.Element{
+var particleIDToElement = []attributes.Element{
 	attributes.NoElement,
 	attributes.Pyro,
 	attributes.Dendro,
@@ -205,7 +205,7 @@ func (e *Enemy) tryHPDropParticle() {
 	if count <= 0 {
 		return
 	}
-	element := particleIdToElement[info.DropId%10] // 1st digit is particle type
+	element := particleIDToElement[info.DropId%10] // 1st digit is particle type
 	e.Core.Tasks.Add(
 		func() {
 			e.Core.Player.DistributeParticle(character.Particle{
