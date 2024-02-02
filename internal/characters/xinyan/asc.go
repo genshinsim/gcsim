@@ -28,18 +28,16 @@ func (c *char) a4() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PhyP] = 0.15
-	for _, char := range c.Core.Player.Chars() {
+	for i, char := range c.Core.Player.Chars() {
+		idx := i
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xinyan-a4", -1),
 			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-				if !c.Core.Player.Shields.PlayerIsShielded() {
-					return nil, false
-				}
 				shd := c.Core.Player.Shields.Get(shield.XinyanSkill)
 				if shd == nil {
 					return nil, false
 				}
-				return m, true
+				return m, c.Core.Player.Active() == idx
 			},
 		})
 	}

@@ -64,12 +64,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		// add shield
 		c.Core.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: c.Index,
+			Target:     c.Index,
 			Src:        c.Core.F,
 			ShieldType: shield.BeidouThunderShield,
 			Name:       "Beidou Skill",
 			HP:         shieldPer[c.TalentLvlSkill()]*c.MaxHP() + shieldBase[c.TalentLvlSkill()],
 			Ele:        attributes.Electro,
-			Expires:    c.Core.F + 900, // 15 sec
+			Expires:    c.Core.F + skillHitmark, // last until hitmark
 		})
 	}
 

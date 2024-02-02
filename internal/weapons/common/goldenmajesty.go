@@ -69,7 +69,7 @@ func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p i
 			AffectedStat: attributes.NoStat,
 			Amount: func() ([]float64, bool) {
 				m[attributes.ATKP] = atkbuff * float64(stacks)
-				if char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded() {
+				if c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
 					m[attributes.ATKP] *= 2
 				}
 				return m, true

@@ -29,6 +29,8 @@ func (c *Traveler) c4() {
 
 	// add shield
 	c.Core.Player.Shields.Add(&shield.Tmpl{
+		ActorIndex: c.Index,
+		Target:     c.Index,
 		Src:        c.Core.F,
 		ShieldType: shield.TravelerHydroC4,
 		Name:       "Traveler (Hydro) C4",

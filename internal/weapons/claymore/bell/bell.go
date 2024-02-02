@@ -52,6 +52,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		c.Player.Shields.Add(&shield.Tmpl{
 			ActorIndex: char.Index,
+			Target:     char.Index,
 			Src:        c.F,
 			ShieldType: shield.Bell,
 			Name:       "Bell",
@@ -67,7 +68,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Base:         modifier.NewBase("bell", -1),
 		AffectedStat: attributes.NoStat,
 		Amount: func() ([]float64, bool) {
-			return val, char.Index == c.Player.Active() && c.Player.Shields.PlayerIsShielded()
+			return val, c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active())
 		},
 	})
 

@@ -109,6 +109,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
 		ActorIndex: c.Index,
+		Target:     c.Index,
 		Src:        c.Core.F,
 		Name:       "Yun Jin Skill",
 		ShieldType: shield.YunjinSkill,
