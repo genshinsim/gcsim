@@ -10,9 +10,8 @@ import (
 )
 
 type Config struct {
-	Key       string `yaml:"key,omitempty"`
-	SetID     int64  `yaml:"set_id,omitempty"`
-	TextMapId int64  `yaml:"text_map_id,omitempty"` //TODO: get rid of this
+	Key   string `yaml:"key,omitempty"`
+	SetID int64  `yaml:"set_id,omitempty"`
 
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
@@ -59,7 +58,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 			return nil, fmt.Errorf("duplicated key %v found; second instance at %v", v.Key, v.RelativePath)
 		}
 		if _, ok := setIDCheck[v.SetID]; ok {
-			return nil, fmt.Errorf("duplicated set id %v found; second instance at %v", v.TextMapId, v.RelativePath)
+			return nil, fmt.Errorf("duplicated set id %v found; second instance at %v", v.SetID, v.RelativePath)
 		}
 		setIDCheck[v.SetID] = true
 		ad, err := g.src.GetSetData(v.SetID)
