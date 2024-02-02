@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -12,7 +13,7 @@ import (
 )
 
 type (
-	//Status is basic mod for keeping track Status; usually affected by hitlag
+	// Status is basic mod for keeping track Status; usually affected by hitlag
 	Status struct {
 		modifier.Base
 	}
@@ -48,6 +49,7 @@ type (
 
 	StatMod struct {
 		AffectedStat attributes.Stat
+		Extra        bool
 		Amount       StatModFunc
 		modifier.Base
 	}
@@ -113,7 +115,7 @@ func (c *CharWrapper) AddStatMod(mod StatMod) {
 
 func (c *CharWrapper) deleteMod(key string) {
 	m := modifier.Delete(&c.mods, key)
-	if m != nil {
+	if m != nil && (m.Expiry() > *c.f || m.Expiry() == -1) {
 		m.Event().SetEnded(*c.f)
 	}
 }
@@ -131,12 +133,12 @@ func (c *CharWrapper) modIsActive(key string) bool {
 	_, ok := modifier.FindCheckExpiry(&c.mods, key, *c.f)
 	return ok
 }
-func (e *CharWrapper) StatusIsActive(key string) bool             { return e.modIsActive(key) }
-func (e *CharWrapper) CooldownModIsActive(key string) bool        { return e.modIsActive(key) }
-func (e *CharWrapper) DamageReductionModIsActive(key string) bool { return e.modIsActive(key) }
-func (e *CharWrapper) HealBonusModIsActive(key string) bool       { return e.modIsActive(key) }
-func (e *CharWrapper) ReactBonusModIsActive(key string) bool      { return e.modIsActive(key) }
-func (e *CharWrapper) StatModIsActive(key string) bool            { return e.modIsActive(key) }
+func (c *CharWrapper) StatusIsActive(key string) bool             { return c.modIsActive(key) }
+func (c *CharWrapper) CooldownModIsActive(key string) bool        { return c.modIsActive(key) }
+func (c *CharWrapper) DamageReductionModIsActive(key string) bool { return c.modIsActive(key) }
+func (c *CharWrapper) HealBonusModIsActive(key string) bool       { return c.modIsActive(key) }
+func (c *CharWrapper) ReactBonusModIsActive(key string) bool      { return c.modIsActive(key) }
+func (c *CharWrapper) StatModIsActive(key string) bool            { return c.modIsActive(key) }
 
 // Expiry.
 
@@ -145,7 +147,7 @@ func (c *CharWrapper) getModExpiry(key string) int {
 	if m != -1 {
 		return c.mods[m].Expiry()
 	}
-	//must be 0 if doesn't exist. avoid using -1 b/c that's infinite
+	// must be 0 if doesn't exist. avoid using -1 b/c that's infinite
 	return 0
 }
 func (c *CharWrapper) StatusExpiry(key string) int { return c.getModExpiry(key) }
@@ -166,17 +168,18 @@ func (c *CharWrapper) StatusDuration(key string) int { return c.getModDuration(k
 
 // Extend.
 
-//extendMod returns true if mod is active and is extended
+// extendMod returns true if mod is active and is extended
 func (c *CharWrapper) extendMod(key string, ext int) bool {
 	m, active := modifier.FindCheckExpiry(&c.mods, key, *c.f)
 	if m == -1 {
 		return false
 	}
 	if !active {
-		return false //nothing to extend is not active
+		return false // nothing to extend is not active
 	}
-	//other wise add to expiry
-	c.mods[m].Extend(float64(ext))
+	// other wise add to expiry
+	mod := c.mods[m]
+	mod.Extend(mod.Key(), c.log, c.Index, ext)
 	return true
 }
 
@@ -185,8 +188,8 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 // Amount.
 
 func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []interface{} {
-	//skip if this is reaction damage
-	if a.Info.AttackTag >= combat.AttackTagNoneStat {
+	// skip if this is reaction damage
+	if a.Info.AttackTag >= attacks.AttackTagNoneStat {
 		return nil
 	}
 
@@ -205,42 +208,47 @@ func (c *CharWrapper) ApplyAttackMods(a *combat.AttackEvent, t combat.Target) []
 			n++
 			continue
 		}
-		if m.Expiry() > *c.f || m.Expiry() == -1 {
-			amt, ok := m.Amount(a, t)
-			if ok {
-				for k, v := range amt {
-					a.Snapshot.Stats[k] += v
-				}
-			}
-			c.mods[n] = v
-			n++
-			if c.debug {
-				modStatus := make([]string, 0)
-				if ok {
-					sb.WriteString(m.Key())
-					modStatus = append(
-						modStatus,
-						"status: added",
-						"expiry_frame: "+strconv.Itoa(m.Expiry()),
-					)
-					modStatus = append(
-						modStatus,
-						attributes.PrettyPrintStatsSlice(amt)...,
-					)
-					logDetails = append(logDetails, sb.String(), modStatus)
-					sb.Reset()
-				} else {
-					sb.WriteString(m.Key())
-					modStatus = append(
-						modStatus,
-						"status: rejected",
-						"reason: conditions not met",
-					)
-					logDetails = append(logDetails, sb.String(), modStatus)
-					sb.Reset()
-				}
+		if !(m.Expiry() > *c.f || m.Expiry() == -1) {
+			continue
+		}
+
+		amt, ok := m.Amount(a, t)
+		if ok {
+			for k, v := range amt {
+				a.Snapshot.Stats[k] += v
 			}
 		}
+		c.mods[n] = v
+		n++
+
+		if !c.debug {
+			continue
+		}
+		modStatus := make([]string, 0)
+
+		if ok {
+			sb.WriteString(m.Key())
+			modStatus = append(
+				modStatus,
+				"status: added",
+				"expiry_frame: "+strconv.Itoa(m.Expiry()),
+			)
+			modStatus = append(
+				modStatus,
+				attributes.PrettyPrintStatsSlice(amt)...,
+			)
+			logDetails = append(logDetails, sb.String(), modStatus)
+			sb.Reset()
+			continue
+		}
+		sb.WriteString(m.Key())
+		modStatus = append(
+			modStatus,
+			"status: rejected",
+			"reason: conditions not met",
+		)
+		logDetails = append(logDetails, sb.String(), modStatus)
+		sb.Reset()
 	}
 	c.mods = c.mods[:n]
 	return logDetails
@@ -256,7 +264,7 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 			n++
 			continue
 		}
-		//if not expired
+		// if not expired
 		if m.Expiry() == -1 || m.Expiry() > *c.f {
 			amt := m.Amount(a)
 			c.log.NewEvent("applying cooldown modifier", glog.LogActionEvent, c.Index).
@@ -273,8 +281,9 @@ func (c *CharWrapper) CDReduction(a action.Action, dur int) int {
 	return int(float64(dur) * cd)
 }
 
-func (c *CharWrapper) DamageReduction(char int) (amt float64) {
+func (c *CharWrapper) DamageReduction(char int) float64 {
 	n := 0
+	amt := 0.0
 	for _, v := range c.mods {
 		m, ok := v.(*DamageReductionMod)
 		if !ok {
@@ -295,8 +304,9 @@ func (c *CharWrapper) DamageReduction(char int) (amt float64) {
 	return amt
 }
 
-func (c *CharWrapper) HealBonus() (amt float64) {
+func (c *CharWrapper) HealBonus() float64 {
 	n := 0
+	amt := 0.0
 	for _, v := range c.mods {
 		m, ok := v.(*HealBonusMod)
 		if !ok {
@@ -317,10 +327,11 @@ func (c *CharWrapper) HealBonus() (amt float64) {
 	return amt
 }
 
-//TODO: consider merging this with just attack mods? reaction bonus should
-//maybe just be it's own stat instead of being a separate mod really
-func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) (amt float64) {
+// TODO: consider merging this with just attack mods? reaction bonus should
+// maybe just be it's own stat instead of being a separate mod really
+func (c *CharWrapper) ReactBonus(atk combat.AttackInfo) float64 {
 	n := 0
+	amt := 0.0
 	for _, v := range c.mods {
 		m, ok := v.(*ReactBonusMod)
 		if !ok {

@@ -1,11 +1,13 @@
 package tartaglia
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var (
@@ -25,16 +27,9 @@ func init() {
 // since E is aoe, so this should be considered aoe too
 // hitWeakPoint: tartaglia can proc Prototype Cresent's Passive on Geovishap's weakspots.
 // Evidence: https://youtu.be/oOfeu5pW0oE
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if !c.StatusIsActive(meleeKey) {
-		c.Core.Log.NewEvent("charge called when not in melee stance", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionCharge)
-		return action.ActionInfo{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	if !c.StatusIsActive(MeleeKey) {
+		return action.Info{}, errors.New("charge called when not in melee stance")
 	}
 
 	hitWeakPoint, ok := p["hitWeakPoint"]
@@ -45,10 +40,10 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Charged Attack",
-		AttackTag:    combat.AttackTagExtra,
-		ICDTag:       combat.ICDTagExtraAttack,
-		ICDGroup:     combat.ICDGroupDefault,
-		StrikeType:   combat.StrikeTypeSlash,
+		AttackTag:    attacks.AttackTagExtra,
+		ICDTag:       attacks.ICDTagExtraAttack,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeSlash,
 		Element:      attributes.Hydro,
 		Durability:   25,
 		HitWeakPoint: hitWeakPoint != 0,
@@ -58,18 +53,18 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		ai.Mult = mult[c.TalentLvlSkill()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2.2),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
-			c.meleeApplyRiptide, // call back for applying riptide
-			c.rtSlashCallback,   // call back for triggering slash
+			c.makeA4CB(),      // callback for applying riptide
+			c.rtSlashCallback, // callback for triggering slash
 		)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeFrames[action.ActionDash], // earliest cancel
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

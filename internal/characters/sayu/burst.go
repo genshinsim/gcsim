@@ -1,12 +1,12 @@
 package sayu
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
@@ -21,14 +21,15 @@ func init() {
 	burstFrames[action.ActionSwap] = 64    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// dmg
 	ai := combat.AttackInfo{
 		ActorIndex:       c.Index,
 		Abil:             "Yoohoo Art: Mujina Flurry",
-		AttackTag:        combat.AttackTagElementalBurst,
-		ICDTag:           combat.ICDTagNone,
-		ICDGroup:         combat.ICDGroupDefault,
+		AttackTag:        attacks.AttackTagElementalBurst,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		Mult:             burst[c.TalentLvlBurst()],
@@ -36,7 +37,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames: 0.02 * 60,
 	}
 	snap := c.Snapshot(&ai)
-	c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark)
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1.5}, 10)
+	c.Core.QueueAttackWithSnap(
+		ai,
+		snap,
+		combat.NewCircleHitOnTarget(burstArea.Shape.Pos(), nil, 4.5),
+		burstHitmark,
+	)
 
 	// heal
 	atk := snap.BaseAtk*(1+snap.Stats[attributes.ATKP]) + snap.Stats[attributes.ATK]
@@ -56,8 +63,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	if c.Base.Cons >= 6 {
 		// TODO: is it snapshots?
-		d.Info.FlatDmg += atk * math.Min(d.Snapshot.Stats[attributes.EM]*0.002, 4.0)
-		heal += math.Min(d.Snapshot.Stats[attributes.EM]*3, 6000)
+		d.Info.FlatDmg += atk * min(d.Snapshot.Stats[attributes.EM]*0.002, 4.0)
+		heal += min(d.Snapshot.Stats[attributes.EM]*3, 6000)
 	}
 
 	// make sure that this task gets executed:
@@ -67,26 +74,31 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		// first tick is at 145
 		for i := 145 - tickTaskDelay; i < 145+540-tickTaskDelay; i += 90 {
 			c.Core.Tasks.Add(func() {
-				active := c.Core.Player.ActiveChar()
-				//this is going to be a bit slow..
-				enemies := c.Core.Combat.EnemyByDistance(0, 0, 7) //TODO: no idea what the range of this check is
-				needHeal := len(enemies) == 0 || active.HPCurrent/active.MaxHP() <= .7
-				needAttack := !needHeal
-				if c.Base.Cons >= 1 {
-					needHeal = true
-					needAttack = true
+				// check for player
+				// only check HP of active character
+				char := c.Core.Player.ActiveChar()
+				hasC1 := c.Base.Cons >= 1
+				// C1 ignores HP limit
+				needHeal := c.Core.Combat.Player().IsWithinArea(burstArea) && (char.CurrentHPRatio() <= 0.7 || hasC1)
+
+				// check for enemy
+				enemy := c.Core.Combat.ClosestEnemyWithinArea(burstArea, nil)
+
+				// determine whether to attack or heal
+				// - C1 makes burst able to attack both an enemy and heal the player at the same time
+				needAttack := enemy != nil && (!needHeal || hasC1)
+				if needAttack {
+					d.Pattern = combat.NewCircleHitOnTarget(enemy, nil, c.qTickRadius)
+					c.Core.QueueAttackEvent(d, 0)
 				}
 				if needHeal {
 					c.Core.Player.Heal(player.HealInfo{
 						Caller:  c.Index,
-						Target:  c.Core.Player.Active(),
+						Target:  char.Index,
 						Message: "Muji-Muji Daruma",
 						Src:     heal,
 						Bonus:   d.Snapshot.Stats[attributes.Heal],
 					})
-				}
-				if needAttack {
-					c.Core.QueueAttackEvent(d, 0)
 				}
 			}, i)
 		}
@@ -95,32 +107,32 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(7)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
-//TODO: is this helper function needed?
+// TODO: is this helper function needed?
 func (c *char) createBurstSnapshot() *combat.AttackEvent {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Muji-Muji Daruma",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       burstSkill[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
-
-	return (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 5), // including A4
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
+	}
+	return &ae
 }

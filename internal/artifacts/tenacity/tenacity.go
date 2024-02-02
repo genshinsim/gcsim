@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -28,7 +29,7 @@ func (s *Set) SetIndex(idx int) { s.Index = idx }
 
 func (s *Set) Init() error { return nil }
 
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
 		core: c,
 	}
@@ -56,7 +57,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			if atk.Info.ActorIndex != char.Index {
 				return false
 			}
-			if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+			if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 				return false
 			}
 			if char.StatusIsActive(icdKey) {
@@ -66,7 +67,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			for _, this := range s.core.Player.Chars() {
 				this.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("tom-4pc", 180), //3s duration
+					Base:         modifier.NewBaseWithHitlag("tom-4pc", 180), // 3s duration
 					AffectedStat: attributes.ATKP,
 					Amount: func() ([]float64, bool) {
 						return m, true

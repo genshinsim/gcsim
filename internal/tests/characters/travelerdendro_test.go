@@ -4,17 +4,19 @@ import (
 	"log"
 	"testing"
 
-	"github.com/genshinsim/gcsim/internal/characters/travelerdendro"
+	"github.com/genshinsim/gcsim/internal/characters/traveler/common/dendro"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/aether"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestTravelerDendroBurstAttach(t *testing.T) {
-
 	c, trg := makeCore(2)
 	prof := defProfile(keys.AetherDendro)
 	prof.Base.Cons = 6
@@ -43,28 +45,28 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	for !c.Player.CanQueueNextAction() {
 		advanceCoreFrame(c)
 	}
-	//wait until dendro gadget is created
+	// wait until dendro gadget is created
 	for c.Combat.GadgetCount() < 1 {
 		advanceCoreFrame(c)
 	}
-	//skip an additional frame to be safe
+	// skip an additional frame to be safe
 	advanceCoreFrame(c)
 
-	//check that gadget has dendro on it
+	// check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
-	gr, ok := g.(*travelerdendro.LeaLotus)
+	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
 		t.Errorf("expecting gadget to be lea lotus. failed")
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.ModifierDendro] != 10 {
-		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
+	if gr.Durability[reactable.Dendro] != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
 	}
 
-	//pattern only hit gadet
-	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	// pattern only hit gadet
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -77,17 +79,15 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	advanceCoreFrame(c)
 
 	log.Println("after applying 100 cyro: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.ModifierCryo] != 80 {
-		t.Errorf("expecting 80 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierCryo])
+	if gr.Durability[reactable.Cryo] != 80 {
+		t.Errorf("expecting 80 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Cryo])
 	}
-	if gr.Durability[reactable.ModifierDendro] != 10 {
-		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
+	if gr.Durability[reactable.Dendro] != 10 {
+		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
 	}
-
 }
 
 func TestTravelerDendroBurstPyro(t *testing.T) {
-
 	c, trg := makeCore(1)
 	prof := defProfile(keys.AetherDendro)
 	prof.Base.Cons = 6
@@ -125,28 +125,28 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	for !c.Player.CanQueueNextAction() {
 		advanceCoreFrame(c)
 	}
-	//wait until dendro gadget is created
+	// wait until dendro gadget is created
 	for c.Combat.GadgetCount() < 1 {
 		advanceCoreFrame(c)
 	}
-	//skip an additional frame to be safe
+	// skip an additional frame to be safe
 	advanceCoreFrame(c)
 
-	//check that gadget has dendro on it
+	// check that gadget has dendro on it
 	g := c.Combat.Gadget(0)
-	gr, ok := g.(*travelerdendro.LeaLotus)
+	gr, ok := g.(*dendro.LeaLotus)
 	if !ok {
 		t.Errorf("expecting gadget to be lea lotus. failed")
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.ModifierDendro] != 10 {
-		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierDendro])
+	if gr.Durability[reactable.Dendro] != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
 	}
 
-	//pattern only hit gadet
-	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	// pattern only hit gadet
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -159,11 +159,11 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	advanceCoreFrame(c)
 
 	log.Printf("at f %v after applying 100 pyro: %v\n", c.F, gr.ActiveAuraString())
-	if gr.Durability[reactable.ModifierPyro] != 0 {
-		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.Durability[reactable.ModifierPyro])
+	if gr.Durability[reactable.Pyro] != 0 {
+		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Pyro])
 	}
 
-	//should get an explosion 60 frfames later
+	// should get an explosion 60 frfames later
 	for i := 0; i < 100; i++ {
 		advanceCoreFrame(c)
 	}
@@ -171,7 +171,6 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	if dmgCount != 1 {
 		t.Errorf("expected 1 dmg count, got %v", dmgCount)
 	}
-
 }
 
 // lotus is expected to tick at frame 37 after appearing, which is 54+37 after cast
@@ -209,11 +208,11 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	log.Println("casting burst: ", c.F)
 	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
 
-	//expecting to take a total of 54 frames to appear + 15s duration
+	// expecting to take a total of 54 frames to appear + 15s duration
 	totalDuration := 15 * 60
 	expectedCount := 1 + (totalDuration-37)/90
 
-	//add 100 for good measures in case bugs from extra ticks
+	// add 100 for good measures in case bugs from extra ticks
 	for i := 0; i < 54+totalDuration+100; i++ {
 		advanceCoreFrame(c)
 	}
@@ -221,7 +220,6 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	if dmgCount != expectedCount {
 		t.Errorf("expecting %v ticks, got %v", expectedCount, dmgCount)
 	}
-
 }
 
 func TestTravelerDendroBurstElectroTicks(t *testing.T) {
@@ -255,14 +253,14 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	p := make(map[string]int)
 	log.Println("casting burst: ", c.F)
 	c.Player.Exec(action.ActionBurst, keys.AetherDendro, p)
-	//wait until dendro gadget is created
+	// wait until dendro gadget is created
 	for c.Combat.GadgetCount() < 1 {
 		advanceCoreFrame(c)
 	}
 
-	//pattern only hit gadet
-	pattern := combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100)
-	pattern.SkipTargets[combat.TargettableEnemy] = true
+	// pattern only hit gadet
+	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
+	pattern.SkipTargets[targets.TargettableEnemy] = true
 
 	// check the cryo attaches
 	c.QueueAttackEvent(&combat.AttackEvent{
@@ -273,11 +271,11 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 		Pattern: pattern,
 	}, 0)
 
-	//first tick at 15, then tick every 54 after that
+	// first tick at 15, then tick every 54 after that
 	totalDuration := 15 * 60
 	expectedCount := 1 + (totalDuration-15)/54
 
-	//add 100 for good measures in case bugs from extra ticks
+	// add 100 for good measures in case bugs from extra ticks
 	for i := 0; i < totalDuration+100; i++ {
 		advanceCoreFrame(c)
 	}
@@ -285,5 +283,4 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	if dmgCount != expectedCount {
 		t.Errorf("expecting %v ticks, got %v", expectedCount, dmgCount)
 	}
-
 }

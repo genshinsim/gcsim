@@ -4,9 +4,9 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -16,13 +16,11 @@ func init() {
 type char struct {
 	*tmpl.Character
 	burstCounter    int
-	burstCounterICD int
 	grimheartStacks int
 	c1buff          []float64
-	particleDone    bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -41,7 +39,6 @@ func (c *char) Init() error {
 		c.c1buff = make([]float64, attributes.EndStatType)
 		c.c1buff[attributes.PhyP] = 0.3
 	}
-	c.burstStacks()
 	c.onExitField()
 	if c.Base.Cons >= 4 {
 		c.c4()

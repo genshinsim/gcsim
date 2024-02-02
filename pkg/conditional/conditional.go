@@ -7,6 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
+const countField = "count"
+
 func fieldsCheck(fields []string, expecting int, category string) error {
 	if len(fields) < expecting {
 		return fmt.Errorf(
@@ -37,9 +39,15 @@ func Eval(c *core.Core, fields []string) (any, error) {
 	case "gadgets":
 		return evalGadgets(c, fields)
 	case "keys":
-		return evalKeys(c, fields)
+		return evalKeys(fields)
 	case "state":
 		return int(c.Player.CurrentState()), nil
+	case "action":
+		return evalAction(fields)
+	case "previous-action":
+		return int(c.Player.LastAction.Type), nil
+	case "previous-char":
+		return int(c.Player.ByIndex(c.Player.LastAction.Char).Base.Key), nil
 	default:
 		// check if it's a char name; if so check char custom eval func
 		name := fields[0]

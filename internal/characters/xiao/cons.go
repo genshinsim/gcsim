@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,14 +31,14 @@ func (c *char) c2() {
 // When Xiao's HP falls below 50%, he gains a 100% DEF Bonus.
 func (c *char) c4() {
 	//TODO: in game this is actually a check every 0.3s. if hp is < 50% then buff is active until
-	//the next time check takes places
+	// the next time check takes places
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DEFP] = 1
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("xiao-c4", -1),
 		AffectedStat: attributes.DEFP,
 		Amount: func() ([]float64, bool) {
-			if c.HPCurrent/c.MaxHP() <= 0.5 {
+			if c.CurrentHPRatio() <= 0.5 {
 				return m, true
 			}
 			return nil, false
@@ -56,7 +57,7 @@ func (c *char) c6cb() combat.AttackCBFunc {
 	}
 	c.c6Count = 0
 	return func(a combat.AttackCB) {
-		if a.Target.Type() != combat.TargettableEnemy {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if !c.StatusIsActive(burstBuffKey) {

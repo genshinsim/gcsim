@@ -1,10 +1,8 @@
-//package modifier provides a universal way of handling a slice
-//of modifiers
+// package modifier provides a universal way of handling a slice
+// of modifiers
 package modifier
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
@@ -14,7 +12,7 @@ type Mod interface {
 	Event() glog.Event
 	SetEvent(glog.Event)
 	AffectedByHitlag() bool
-	Extend(float64)
+	Extend(string, glog.Logger, int, int)
 }
 
 type Base struct {
@@ -22,19 +20,28 @@ type Base struct {
 	Dur       int
 	Hitlag    bool
 	ModExpiry int
-	extension float64
+	extension int
 	event     glog.Event
 }
 
 func (t *Base) Key() string             { return t.ModKey }
-func (t *Base) Expiry() int             { return t.ModExpiry + int(math.Ceil(t.extension)) }
+func (t *Base) Expiry() int             { return t.ModExpiry + t.extension }
 func (t *Base) Event() glog.Event       { return t.event }
 func (t *Base) SetEvent(evt glog.Event) { t.event = evt }
 func (t *Base) AffectedByHitlag() bool  { return t.Hitlag }
-func (t *Base) Extend(amt float64) {
+func (t *Base) Extend(key string, logger glog.Logger, index, amt int) {
 	t.extension += amt
+	if t.extension < 0 {
+		t.extension = 0
+	}
 	t.event.SetEnded(t.Expiry())
+	logger.NewEvent("mod extended", glog.LogStatusEvent, index).
+		Write("key", key).
+		Write("amt", amt).
+		Write("expiry", t.Expiry()).
+		Write("ext", t.extension)
 }
+
 func (t *Base) SetExpiry(f int) {
 	if t.Dur == -1 {
 		t.ModExpiry = -1
@@ -58,9 +65,10 @@ func NewBaseWithHitlag(key string, dur int) Base {
 	}
 }
 
-//Delete removes a modifier. Returns true if deleted ok
-func Delete[K Mod](slice *[]K, key string) (m Mod) {
+// Delete removes a modifier. Returns true if deleted ok
+func Delete[K Mod](slice *[]K, key string) Mod {
 	n := 0
+	var m Mod
 	for i, v := range *slice {
 		if v.Key() == key {
 			m = (*slice)[i]
@@ -70,28 +78,30 @@ func Delete[K Mod](slice *[]K, key string) (m Mod) {
 		}
 	}
 	*slice = (*slice)[:n]
-	return
+	return m
 }
 
-//Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
-//TODO: consider adding a map here to track the index to assist with faster lookups
-func Add[K Mod](slice *[]K, mod K, f int) (overwrote bool, evt glog.Event) {
+// Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
+// TODO: consider adding a map here to track the index to assist with faster lookups
+func Add[K Mod](slice *[]K, mod K, f int) (bool, glog.Event) {
 	ind := Find(slice, mod.Key())
+	overwrote := false
+	var evt glog.Event
 
-	//if does not exist, make new and add
+	// if does not exist, make new and add
 	if ind == -1 {
 		*slice = append(*slice, mod)
-		return
+		return overwrote, evt
 	}
 
-	//otherwise check not expired
+	// otherwise check not expired
 	if (*slice)[ind].Expiry() > f || (*slice)[ind].Expiry() == -1 {
 		overwrote = true
 		evt = (*slice)[ind].Event()
 	}
 	(*slice)[ind] = mod
 
-	return
+	return overwrote, evt
 }
 
 func Find[K Mod](slice *[]K, key string) int {
@@ -115,7 +125,7 @@ func FindCheckExpiry[K Mod](slice *[]K, key string, f int) (int, bool) {
 	return ind, true
 }
 
-//LogAdd is a helper that logs mod add events
+// LogAdd is a helper that logs mod add events
 func LogAdd[K Mod](prefix string, index int, mod K, logger glog.Logger, overwrote bool, oldEvt glog.Event) {
 	var evt glog.Event
 	if overwrote {

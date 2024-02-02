@@ -5,12 +5,13 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,10 +26,10 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	//Hitting an opponent with a Normal Attack decreases the Stamina consumption
-	//of Sprint or Alternate Sprint by 14% for 5s. Additionally, using a Sprint
-	//or Alternate Sprint ability increases ATK by 20% for 5s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	// Hitting an opponent with a Normal Attack decreases the Stamina consumption
+	// of Sprint or Alternate Sprint by 14% for 5s. Additionally, using a Sprint
+	// or Alternate Sprint ability increases ATK by 20% for 5s.
 
 	w := &Weapon{}
 	r := p.Refine
@@ -59,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal {
+		if ae.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 

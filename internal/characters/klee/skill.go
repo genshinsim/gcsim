@@ -5,9 +5,11 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -16,8 +18,6 @@ var (
 )
 
 var bounceHitmarks = []int{71, 111, 140}
-
-const mineHitmark = 240
 
 func init() {
 	skillFrames = frames.InitAbilSlice(75)
@@ -35,11 +35,12 @@ func init() {
 
 // Has two parameters, "bounce" determines the number of bounces that hit
 // "mine" determines the number of mines that hit the enemy
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	type attackData struct {
 		ai   combat.AttackInfo
 		snap combat.Snapshot
 	}
+
 	bounce, ok := p["bounce"]
 	if !ok {
 		bounce = 1
@@ -49,10 +50,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Jumpy Dumpty",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagKleeFireDamage,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeBlunt,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagKleeFireDamage,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   40,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       jumpy[c.TalentLvlSkill()],
@@ -66,18 +68,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			snap: c.Snapshot(&ai),
 		}
 	}
+
 	minehits, ok := p["mine"]
 	if !ok {
 		minehits = 2
+	}
+	mineHitmark, ok := p["mine_delay"]
+	if !ok {
+		mineHitmark = 240
 	}
 	mineAttacks := make([]attackData, minehits)
 	mineAi := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Jumpy Dumpty Mine Hit",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagKleeFireDamage,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagKleeFireDamage,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               mine[c.TalentLvlSkill()],
@@ -101,13 +108,13 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		adjustedFrames = skillCanceledFrames
 	}
 
-	canQueueAfter := math.MaxInt32
+	canQueueAfter := math.MaxInt
 	for _, f := range adjustedFrames {
 		if f < canQueueAfter {
 			canQueueAfter = f
 		}
 	}
-	actionInfo := action.ActionInfo{
+	actionInfo := action.Info{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
 		AnimationLength: adjustedFrames[action.InvalidAction],
 		CanQueueAfter:   canQueueAfter,
@@ -118,25 +125,42 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		if release == 0 {
 			c.Core.Log.NewEvent("attempted klee skill cancel without burst", glog.LogWarnings, -1)
 		}
-		for i, data := range bounceAttacks {
-			c.Core.QueueAttackWithSnap(data.ai, data.snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		particleCB := c.makeParticleCB()
+		for i := range bounceAttacks {
+			c.Core.QueueAttackWithSnap(
+				bounceAttacks[i].ai,
+				bounceAttacks[i].snap,
+				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 4),
 				bounceHitmarks[i]-cooldownDelay,
-				c.a1,
+				c.makeA1CB(),
+				particleCB,
 			)
 		}
-		for _, data := range mineAttacks {
-			c.Core.QueueAttackWithSnap(data.ai, data.snap,
-				combat.NewCircleHit(c.Core.Combat.Player(), 1),
+		for i := range mineAttacks {
+			c.Core.QueueAttackWithSnap(
+				mineAttacks[i].ai,
+				mineAttacks[i].snap,
+				combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2),
 				mineHitmark-cooldownDelay,
 				c.c2,
 			)
 		}
 		c.c1(bounceHitmarks[0] - cooldownDelay)
-		if bounce > 0 {
-			c.Core.QueueParticle("klee", 4, attributes.Pyro, (bounceHitmarks[0]-cooldownDelay)+c.ParticleDelay)
-		}
 		c.SetCD(action.ActionSkill, 1200)
 	}, cooldownDelay)
-	return actionInfo
+	return actionInfo, nil
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Pyro, c.ParticleDelay)
+	}
 }

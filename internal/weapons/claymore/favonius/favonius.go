@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.FavoniusGreatsword, common.NewFavonius)
+	core.RegisterWeaponFunc(keys.FavoniusGreatsword, common.NewFavonius(base))
 }

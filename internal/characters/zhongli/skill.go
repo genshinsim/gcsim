@@ -3,6 +3,7 @@ package zhongli
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -28,28 +29,23 @@ func init() {
 	skillHoldFrames[action.ActionJump] = 55
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-	max, ok := p["res_count"]
-	if !ok {
-		max = 3
-	}
-
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	h := p["hold"]
 	nostele := p["hold_nostele"] > 0
 	if h > 0 || nostele {
-		return c.skillHold(max, !nostele)
+		return c.skillHold(!nostele), nil
 	}
-	return c.skillPress(max)
+	return c.skillPress(), nil
 }
 
-func (c *char) skillPress(max int) action.ActionInfo {
+func (c *char) skillPress() action.Info {
 	c.Core.Tasks.Add(func() {
-		c.newStele(1860, max)
+		c.newStele(1860)
 	}, skillPressHimark)
 
 	c.SetCDWithDelay(action.ActionSkill, 240, 22)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
@@ -57,37 +53,38 @@ func (c *char) skillPress(max int) action.ActionInfo {
 	}
 }
 
-func (c *char) skillHold(max int, createStele bool) action.ActionInfo {
-	//hold does dmg
+func (c *char) skillHold(createStele bool) action.Info {
+	// hold does dmg
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Stone Stele (Hold)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagElementalArt,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagElementalArt,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   142.9,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       skillHold[c.TalentLvlSkill()],
-		FlatDmg:    0.019 * c.MaxHP(),
+		FlatDmg:    c.a4Skill(),
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, skillHoldHitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10), 0, skillHoldHitmark)
 
-	//create a stele if less than zhongli's max stele count and desired by player
+	// create a stele if less than zhongli's max stele count and desired by player
 	if (c.steleCount < c.maxStele) && createStele {
 		c.Core.Tasks.Add(func() {
-			c.newStele(1860, max) //31 seconds
+			c.newStele(1860) // 31 seconds
 		}, skillHoldHitmark)
 	}
 
-	//make a shield - enemy debuff arrows appear 3-5 frames after the damage number shows up in game
+	// make a shield - enemy debuff arrows appear 3-5 frames after the damage number shows up in game
 	c.Core.Tasks.Add(func() {
 		c.addJadeShield()
 	}, skillHoldHitmark)
 
 	c.SetCDWithDelay(action.ActionSkill, 720, 47)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillHoldFrames),
 		AnimationLength: skillHoldFrames[action.InvalidAction],
 		CanQueueAfter:   skillHoldFrames[action.ActionDash], // earliest cancel

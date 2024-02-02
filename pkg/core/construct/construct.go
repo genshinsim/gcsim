@@ -1,5 +1,9 @@
 package construct
 
+import (
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+)
+
 type GeoConstructType int
 
 const (
@@ -43,4 +47,6 @@ type Construct interface {
 	Expiry() int
 	IsLimited() bool
 	Count() int
+	Direction() geometry.Point
+	Pos() geometry.Point
 }

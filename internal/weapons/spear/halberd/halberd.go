@@ -1,15 +1,16 @@
-﻿package halberd
+package halberd
 
 import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
@@ -25,7 +26,7 @@ func (w *Weapon) Init() error      { return nil }
 
 // Normal Attacks deal an additional 160/200/240/280/320% DMG.
 // Can only occur once every 10s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
@@ -40,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		// don't proc if not Normal Attack
-		if atk.Info.AttackTag != combat.AttackTagNormal {
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		// don't proc if on icd
@@ -54,14 +55,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Halberd Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagNone,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       dmg,
 		}
-		c.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 1)
+		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
 
 		return false
 	}, fmt.Sprintf("halberd-%v", char.Base.Key.String()))

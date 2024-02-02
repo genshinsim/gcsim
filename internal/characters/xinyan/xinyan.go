@@ -3,24 +3,25 @@ package xinyan
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 type char struct {
 	*tmpl.Character
-	shieldLevel   int
-	c1Buff        []float64
-	c2Buff        []float64
-	shieldTickSrc int
+	shieldLevel             int
+	shieldLevel2Requirement int
+	shieldLevel3Requirement int
+	c2Buff                  []float64
+	shieldTickSrc           int
 }
 
 func init() {
 	core.RegisterCharFunc(keys.Xinyan, NewChar)
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	t := tmpl.New(s)
 	t.CharWrapper = w
@@ -31,6 +32,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.SkillCon = 3
 	c.NormalHitNum = normalHitNum
 
+	c.shieldLevel2Requirement = 2
+	c.shieldLevel3Requirement = 3
+
 	w.Character = &c
 
 	c.shieldLevel = 1
@@ -39,11 +43,9 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.a1()
 	c.a4()
 
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
 	if c.Base.Cons >= 2 {
 		c.c2()
 	}

@@ -5,21 +5,27 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var attackHitmarks = []int{23, 25, 16, 48}
-var attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
-
-var attackFrames [][][]int
+var (
+	attackFrames          [][][]int
+	attackHitmarks        = []int{23, 25, 16, 48}
+	attackPoiseDMG        = []float64{82.9, 77.9, 98.3, 124.5}
+	attackHitlagHaltFrame = []float64{0.08, 0.08, 0.10, 0.10}
+	attackHitboxes        = [][][]float64{{{2.5}, {2.5}, {2.5}, {3.2, 6}}, {{3.5}, {3.5}, {3.5}, {3.8, 8}}}
+	attackOffsets         = [][]float64{{0.8, 0.8, 0.85, -1.5}, {0.8, 0.8, 0.8, -1.7}}
+)
 
 const normalHitNum = 4
 
-type IttoAttackState int
+type ittoAttackState int
 
 const (
-	InvalidAttackState IttoAttackState = iota - 1
+	InvalidAttackState ittoAttackState = iota - 1
 	attack0Stacks
 	attack1PlusStacks
 	attackEndState
@@ -50,7 +56,7 @@ func init() {
 	attackFrames[attack1PlusStacks][3][action.ActionCharge] = 52 // N4 -> CA1/CAF
 }
 
-func (c *char) attackState() IttoAttackState {
+func (c *char) attackState() ittoAttackState {
 	if c.Tags[strStackKey] == 0 {
 		// 0 stacks: use NX -> CA0 frames
 		return attack0Stacks
@@ -64,8 +70,7 @@ func (c *char) attackState() IttoAttackState {
 // When the 2nd and 4th strikes hit opponents, Itto will gain 1 and 2 stacks of Superlative Superstrength, respectively.
 // Max 5 stacks. Triggering this effect will refresh the current duration of any existing stacks.
 // Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill, "Masatsu Zetsugi: Akaushi Burst!"
-func (c *char) Attack(p map[string]int) action.ActionInfo {
-
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	// Additionally, Itto's Normal Attack combo does not immediately reset after sprinting or using his Elemental Skill
 	switch c.Core.Player.CurrentState() {
 	case action.DashState, action.SkillState:
@@ -77,10 +82,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ActorIndex:         c.Index,
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
-		AttackTag:          combat.AttackTagNormal,
-		ICDTag:             combat.ICDTagNormalAttack,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagNormal,
+		ICDTag:             attacks.ICDTagNormalAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           attackPoiseDMG[c.NormalCounter],
 		Element:            attributes.Physical,
 		Durability:         25,
 		HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
@@ -88,20 +94,26 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	// check burst status for radius
-	// TODO: proper hitbox
-	radius := 1.0
+	// check burst status for hitbox
+	attackIndex := 0
 	if c.StatModIsActive(burstBuffKey) {
-		radius = 2
+		attackIndex = 1
 	}
-
-	// TODO: hitmark is not getting adjusted for atk speed
-	c.Core.QueueAttack(
-		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), radius),
-		attackHitmarks[c.NormalCounter],
-		attackHitmarks[c.NormalCounter],
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		geometry.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+		attackHitboxes[attackIndex][c.NormalCounter][0],
 	)
+	if c.NormalCounter == 3 {
+		ap = combat.NewBoxHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+			attackHitboxes[attackIndex][c.NormalCounter][0],
+			attackHitboxes[attackIndex][c.NormalCounter][1],
+		)
+	}
+	// TODO: hitmark is not getting adjusted for atk speed
+	c.Core.QueueAttack(ai, ap, attackHitmarks[c.NormalCounter], attackHitmarks[c.NormalCounter])
 
 	// TODO: assume NAs always hit. since it is not possible to know if the next CA is CA0 or CA1/CAF when deciding what CA frames to return.
 	// Add superlative strength stacks on damage
@@ -123,10 +135,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		c.savedNormalCounter = c.NormalCounter
 	}()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames[state]),
 		AnimationLength: attackFrames[state][c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

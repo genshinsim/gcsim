@@ -3,29 +3,38 @@ package agg
 import (
 	"sync"
 
-	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-type Aggregator interface {
-	Add(result stats.Result, iteration int)
-	// TODO: Merge(other Aggregator) Aggregator for multi-threaded aggregations (optional optimization)
-	Flush(result *Result)
+type Config struct {
+	Name string
+	New  NewAggFunc
 }
 
-type NewAggFunc func(cfg *ast.ActionList) (Aggregator, error)
+type Aggregator interface {
+	Add(result stats.Result)
+	// TODO: Merge(other Aggregator) Aggregator for multi-threaded aggregations (optional optimization)
+	Flush(result *model.SimulationStatistics)
+}
+
+type NewAggFunc func(cfg *info.ActionList) (Aggregator, error)
 
 var (
 	mu          sync.Mutex
-	aggregators []NewAggFunc
+	aggregators = map[string]Config{}
 )
 
-func Register(f NewAggFunc) {
+func Register(cfg Config) {
 	mu.Lock()
 	defer mu.Unlock()
-	aggregators = append(aggregators, f)
+	if _, ok := aggregators[cfg.Name]; ok {
+		panic("duplicate aggregator registered: " + cfg.Name)
+	}
+	aggregators[cfg.Name] = cfg
 }
 
-func Aggregators() []NewAggFunc {
+func Aggregators() map[string]Config {
 	return aggregators
 }

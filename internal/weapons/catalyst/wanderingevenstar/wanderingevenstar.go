@@ -5,9 +5,9 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,7 +33,7 @@ func (w *Weapon) Init() error {
 // their Elemental Mastery as bonus ATK for 12s, with nearby party members gaining 30% of this buff for
 // the same duration. Multiple instances of this weapon can allow this buff to stack. This effect will
 // still trigger even if the character is not on the field.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		core: c,
 		char: char,
@@ -46,10 +46,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 func (w *Weapon) updateStats() {
 	val := make([]float64, attributes.EndStatType)
-	val[attributes.ATK] = w.atkBuff * w.char.Stat(attributes.EM)
+	val[attributes.ATK] = w.atkBuff * w.char.NonExtraStat(attributes.EM)
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("wanderingevenstar", 12*60),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return val, true
 		},
@@ -65,6 +66,7 @@ func (w *Weapon) updateStats() {
 		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("wanderingevenstar-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ATK,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
 				return valTeam, true
 			},

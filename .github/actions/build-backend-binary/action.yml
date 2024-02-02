@@ -1,0 +1,13 @@
+name: "build backend binary"
+description: "build backend binary; assume go has already been setup"
+inputs:
+  cmd:
+    required: true
+    description: "cmd to build"
+runs:
+  using: composite
+  steps:
+  - name: build binary
+    working-directory: ./backend/cmd/${{ inputs.cmd }}
+    shell: bash
+    run: "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ../../docker/binary/${{ inputs.cmd }}"

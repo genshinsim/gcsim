@@ -3,8 +3,10 @@ package collei
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames []int
@@ -17,20 +19,20 @@ func init() {
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim (Charged)",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Dendro,
 		Durability:           25,
 		Mult:                 fullaim[c.TalentLvlAttack()],
@@ -41,7 +43,7 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	a := action.ActionInfo{
+	a := action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
@@ -49,10 +51,16 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	c.Core.QueueAttack(ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		a.CanQueueAfter,
 		a.CanQueueAfter+travel,
 	)
 
-	return a
+	return a, nil
 }

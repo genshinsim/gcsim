@@ -9,7 +9,6 @@ import (
 )
 
 func TestEC(t *testing.T) {
-
 	c, _ := testCoreWithTrgs(1)
 	err := c.Init()
 	if err != nil {
@@ -25,13 +24,12 @@ func TestEC(t *testing.T) {
 			}
 		}
 		return false
-
 	}, "ec-dmg")
 
 	c.QueueAttackEvent(makeAOEAttack(attributes.Hydro, 25), 0)
 	c.Tick()
 	c.QueueAttackEvent(makeAOEAttack(attributes.Electro, 25), 0)
-	//tick once every 60 second. we should get 2 ticks total
+	// tick once every 60 second. we should get 2 ticks total
 	for i := 0; i < 121; i++ {
 		advanceCoreFrame(c)
 	}

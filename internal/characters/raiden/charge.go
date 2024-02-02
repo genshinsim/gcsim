@@ -3,8 +3,10 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var chargeFrames []int
@@ -13,23 +15,24 @@ const chargeHitmark = 22
 
 func init() {
 	// charge -> x
-	chargeFrames = frames.InitAbilSlice(37) //n1, skill, burst all at 37
+	chargeFrames = frames.InitAbilSlice(37) // n1, skill, burst all at 37
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 36
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
-		return c.swordCharge(p)
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(BurstKey) {
+		return c.swordCharge(), nil
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		HitlagHaltFrames:   0.02 * 60,
@@ -38,14 +41,19 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		Mult:               charge[c.TalentLvlAttack()],
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), chargeHitmark, chargeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 2.8, 4.8),
+		chargeHitmark,
+		chargeHitmark,
+	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
 
 var swordCAFrames []int
@@ -58,18 +66,19 @@ func init() {
 	swordCAFrames[action.ActionJump] = swordCAHitmarks[len(swordCAHitmarks)-1]
 }
 
-func (c *char) swordCharge(p map[string]int) action.ActionInfo {
+func (c *char) swordCharge() action.Info {
 	for i, mult := range chargeSword {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Musou Isshin (Charge Attack)",
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
 			Mult:               mult[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
-			HitlagHaltFrames:   0.02 * 60, //all raiden normals have 0.02s hitlag
+			HitlagHaltFrames:   0.02 * 60, // all raiden normals have 0.02s hitlag
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: true,
 		}
@@ -84,7 +93,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 5),
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.1}, 7.5, 8),
 				0,
 				0,
 				c.burstRestorefunc,
@@ -93,7 +102,7 @@ func (c *char) swordCharge(p map[string]int) action.ActionInfo {
 		}, swordCAHitmarks[i])
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(swordCAFrames),
 		AnimationLength: swordCAFrames[action.InvalidAction],
 		CanQueueAfter:   swordCAHitmarks[len(swordCAHitmarks)-1],

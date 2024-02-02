@@ -9,25 +9,25 @@ import (
 )
 
 func (c *CharWrapper) QueueCharTask(f func(), delay int) {
-	queue.Add(&c.queue, f, c.timePassed+float64(delay))
+	queue.Add(&c.queue, f, c.timePassed+delay)
 }
 
 func (c *CharWrapper) Tick() {
-	//decrement frozen time first
-	c.frozenFrames -= 1.0
-	left := 0.0
+	// decrement frozen time first
+	c.frozenFrames -= 1
+	left := 0
 	if c.frozenFrames < 0 {
 		left = -c.frozenFrames
 		c.frozenFrames = 0
 	}
-	//if any left then increase time passed
+	// if any left then increase time passed
 	if left <= 0 {
-		//do nothing this tick
+		// do nothing this tick
 		return
 	}
 	c.timePassed += left
 
-	//check char queue for any executable actions
+	// check char queue for any executable actions
 	queue.Run(&c.queue, c.timePassed)
 }
 
@@ -35,10 +35,10 @@ func (c *CharWrapper) FramePausedOnHitlag() bool {
 	return c.frozenFrames > 0
 }
 
-//ApplyHitlag adds hitlag to the character for specified duration
+// ApplyHitlag adds hitlag to the character for specified duration
 func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
-	//number of frames frozen is total duration * (1 - factor)
-	ext := dur * (1 - factor)
+	// number of frames frozen is total duration * (1 - factor)
+	ext := int(math.Ceil(dur * (1 - factor)))
 	c.frozenFrames += ext
 	var logs []string
 	var evt glog.Event
@@ -56,7 +56,8 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 
 	for i, v := range c.mods {
 		if v.AffectedByHitlag() && v.Expiry() != -1 && v.Expiry() > *c.f {
-			c.mods[i].Extend(ext)
+			mod := c.mods[i]
+			mod.Extend(mod.Key(), c.log, c.Index, ext)
 			if c.debug {
 				logs = append(logs, fmt.Sprintf("%v: %v", v.Key(), v.Expiry()))
 			}
@@ -66,5 +67,4 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	if c.debug {
 		evt.Write("mods affected", logs)
 	}
-
 }

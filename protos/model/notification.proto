@@ -1,0 +1,34 @@
+
+syntax = "proto3";
+package model;
+option go_package = "github.com/genshinsim/gcsim/pkg/model";
+
+message ComputeFailedEvent {
+    string db_id = 1;
+    string config = 2;
+    string submitter = 3;
+    string reason = 4;
+}
+
+message ComputeCompletedEvent {
+    string db_id = 1;
+    string share_id = 2;
+}
+
+message SubmissionDeleteEvent {
+    string db_id = 1;
+    string config = 2;
+    string submitter = 3;
+}
+
+message EntryReplaceEvent {
+    string db_id = 1;
+    string config = 2;
+    string old_config = 3;
+}
+
+message DescReplaceEvent {
+    string db_id = 1;
+    string desc = 2;
+    string old_desc = 3;
+}

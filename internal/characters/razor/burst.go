@@ -1,16 +1,24 @@
 package razor
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
+var (
+	burstFrames         []int
+	burstAttackHitboxes = [][]float64{{2.4}, {3.4, 3.4}, {2.4}, {2.4}}
+	burstAttackOffsets  = []float64{1, 0.5, 1, 1.8}
+)
 
 const (
 	burstHitmark = 32
@@ -25,19 +33,29 @@ func init() {
 	burstFrames[action.ActionSwap] = 63    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() {
-		c.ResetActionCooldown(action.ActionSkill) // A1: Using Lightning Fang resets the CD of Claw and Thunder.
-		c.AddStatus(burstBuffKey, 15*60, true)
+		c.a1CDReset()
+		// atk spd
+		val := make([]float64, attributes.EndStatType)
+		val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() ([]float64, bool) {
+				return val, true
+			},
+		})
 	}, burstHitmark)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Lightning Fang",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   51.75,
 		Element:    attributes.Electro,
 		Durability: 50,
 		Mult:       burstDmg[c.TalentLvlBurst()],
@@ -45,7 +63,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -54,64 +72,50 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(6)
 	c.Core.Tasks.Add(c.clearSigil, 7)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
-func (c *char) speedBurst() {
-	val := make([]float64, attributes.EndStatType)
-	val[attributes.AtkSpd] = burstATKSpeed[c.TalentLvlBurst()]
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("speed-burst", -1),
-		AffectedStat: attributes.AtkSpd,
-		Amount: func() ([]float64, bool) {
-			if !c.StatusIsActive(burstBuffKey) {
-				return nil, false
-			}
-			return val, true
-		},
-	})
-}
-
-func (c *char) wolfBurst() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		if c.Core.Player.Active() != c.Index {
-			return false
-		}
-		if !c.StatusIsActive(burstBuffKey) {
-			return false
-		}
-
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
+func (c *char) wolfBurst(normalCounter int) func(combat.AttackCB) {
+	done := false
+	return func(a combat.AttackCB) {
+		if done {
+			return
 		}
 
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
-			Abil:       "The Wolf Within",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeSlash,
+			Abil:       fmt.Sprintf("The Wolf Within %v", normalCounter),
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Electro,
 			Durability: 25,
-			Mult:       wolfDmg[c.TalentLvlBurst()] * atk.Info.Mult,
+			Mult:       wolfDmg[c.TalentLvlBurst()] * a.AttackEvent.Info.Mult,
 		}
 
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
-			1,
-			1,
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: burstAttackOffsets[normalCounter]},
+			burstAttackHitboxes[normalCounter][0],
 		)
+		if normalCounter == 1 {
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: burstAttackOffsets[normalCounter]},
+				burstAttackHitboxes[normalCounter][0],
+				burstAttackHitboxes[normalCounter][1],
+			)
+		}
+		c.Core.QueueAttack(ai, ap, 1, 1)
 
-		return false
-	}, "razor-wolf-burst")
+		done = true
+	}
 }
 
 func (c *char) onSwapClearBurst() {

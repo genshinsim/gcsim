@@ -10,7 +10,7 @@ import (
 )
 
 func (c *CharWrapper) UpdateBaseStats() error {
-	//calculate char base t.Stats
+	// calculate char base t.Stats
 	ck := c.Base.Key
 	isTraveler := false
 	//TODO: do something about traveler :(
@@ -35,17 +35,19 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	if lvl > 89 {
 		lvl = 89
 	}
-	//calculate base t.Stats
+	// calculate base t.Stats
 	c.Base.HP = b.BaseHP * curves.CharStatGrowthMult[lvl][b.HPCurve]
-	c.Base.Atk = b.BaseAtk * curves.CharStatGrowthMult[lvl][b.AtkCurve]
+	// += to account for potential base atk increases that are defined outside of curves like for Traveler
+	c.Base.Atk += b.BaseAtk * curves.CharStatGrowthMult[lvl][b.AtkCurve]
 	c.Base.Def = b.BaseDef * curves.CharStatGrowthMult[lvl][b.DefCurve]
-	//default cr/cd
+	// default er/cr/cd
+	c.BaseStats[attributes.ER] += 1
 	c.BaseStats[attributes.CD] += 0.5
 	c.BaseStats[attributes.CR] += 0.05
-	//track specialized stat
+	// track specialized stat
 	var spec [attributes.EndStatType]float64
 	var specw [attributes.EndStatType]float64
-	//calculate promotion bonus
+	// calculate promotion bonus
 	ind := -1
 	for i, v := range b.PromotionBonus {
 		if c.Base.MaxLevel >= v.MaxLevel {
@@ -53,16 +55,17 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		}
 	}
 	if ind > -1 {
-		//add hp/atk/bonus
+		c.Base.Ascension = ind
+		// add hp/atk/bonus
 		c.Base.HP += b.PromotionBonus[ind].HP
 		c.Base.Atk += b.PromotionBonus[ind].Atk
 		c.Base.Def += b.PromotionBonus[ind].Def
-		//add specialized
+		// add specialized
 		c.BaseStats[b.Specialized] += b.PromotionBonus[ind].Special
 		spec[b.Specialized] += b.PromotionBonus[ind].Special
 	}
 
-	//calculate weapon base stats
+	// calculate weapon base stats
 	bw, ok := curves.WeaponBaseMap[c.Weapon.Key]
 	if !ok {
 		return fmt.Errorf("error calculating weapon stat; unrecognized key %v", c.Weapon.Key)
@@ -75,11 +78,11 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	if lvl > 89 {
 		lvl = 89
 	}
-	c.Weapon.Atk = bw.BaseAtk * curves.WeaponStatGrowthMult[lvl][bw.AtkCurve]
-	//add weapon special stat
+	c.Weapon.BaseAtk = bw.BaseAtk * curves.WeaponStatGrowthMult[lvl][bw.AtkCurve]
+	// add weapon special stat
 	c.BaseStats[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
 	specw[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
-	//calculate promotion bonus
+	// calculate promotion bonus
 	ind = -1
 	for i, v := range bw.PromotionBonus {
 		if c.Weapon.MaxLevel >= v.MaxLevel {
@@ -87,21 +90,21 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		}
 	}
 	if ind > -1 {
-		c.Weapon.Atk += bw.PromotionBonus[ind].Atk //atk
+		c.Weapon.BaseAtk += bw.PromotionBonus[ind].Atk // atk
 	}
 
-	//misc data
+	// misc data
 	c.Base.Rarity = b.Rarity
-	c.Weapon.Class = b.WeaponType
+	c.Weapon.Class = b.WeaponClass
 	c.CharZone = b.Region
 	c.CharBody = b.Body
 
-	//only set it if not traveler - traveler code needs to set this manually
+	// only set it if not traveler - traveler code needs to set this manually
 	if !isTraveler {
 		c.Base.Element = b.Element
 	}
 
-	//log stats
+	// log stats
 	c.log.NewEvent(
 		"stat calc done for "+c.Base.Key.String(),
 		glog.LogCharacterEvent, c.Index,

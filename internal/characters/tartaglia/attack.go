@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 const normalHitNum = 6
@@ -41,9 +43,9 @@ func init() {
 
 // Normal attack
 // Perform up to 6 consecutive shots with a bow.
-func (c *char) Attack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(meleeKey) {
-		return c.meleeAttack(p)
+func (c *char) Attack(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(MeleeKey) {
+		return c.meleeAttack(), nil
 	}
 
 	travel, ok := p["travel"]
@@ -54,35 +56,44 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter]+travel,
 	)
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }
 
 var (
 	meleeFrames           [][]int
 	meleeHitmarks         = [][]int{{8}, {6}, {16}, {7}, {7}, {4, 20}}
 	meleeHitlagHaltFrames = [][]float64{{0.03}, {0.03}, {0.06}, {0.06}, {0.06}, {0.03, 0.12}}
+	meleeHitboxes         = [][][]float64{{{1.8}}, {{1.8}}, {{2}}, {{2}}, {{2.2}}, {{2, 3.2}, {2.2}}}
+	meleeOffsets          = [][]float64{{0.8}, {0.8}, {0.6}, {0.9}, {0.6}, {0.3, 1.5}}
+	meleeFanAngles        = []float64{300, 270, 300, 300, 360, 360}
 )
 
 func init() {
@@ -122,15 +133,15 @@ func init() {
 
 // Melee stance attack.
 // Perform up to 6 consecutive Hydro strikes.
-func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
+func (c *char) meleeAttack() action.Info {
 	for i, mult := range eAttack[c.NormalCounter] {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeSlash,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			HitlagFactor:       0.01,
@@ -138,13 +149,28 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 			Mult:               mult[c.TalentLvlSkill()],
 			HitlagHaltFrames:   meleeHitlagHaltFrames[c.NormalCounter][i] * 60,
 		}
+		ap := combat.NewCircleHitOnTargetFanAngle(
+			c.Core.Combat.Player(),
+			geometry.Point{Y: meleeOffsets[c.NormalCounter][i]},
+			meleeHitboxes[c.NormalCounter][i][0],
+			meleeFanAngles[c.NormalCounter],
+		)
+		if c.NormalCounter == 5 && i == 0 {
+			ai.StrikeType = attacks.StrikeTypeSpear
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: meleeOffsets[c.NormalCounter][i]},
+				meleeHitboxes[c.NormalCounter][i][0],
+				meleeHitboxes[c.NormalCounter][i][1],
+			)
+		}
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), .5),
+				ap,
 				0,
 				0,
-				c.meleeApplyRiptide, // riptide can trigger on the same hit that applies
+				c.makeA4CB(), // riptide can trigger on the same hit that applies
 				c.rtSlashCallback,
 			)
 		}, meleeHitmarks[c.NormalCounter][i])
@@ -152,7 +178,7 @@ func (c *char) meleeAttack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, meleeFrames),
 		AnimationLength: meleeFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   meleeHitmarks[c.NormalCounter][len(meleeHitmarks[c.NormalCounter])-1],

@@ -5,13 +5,15 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 func parseTarget(p *Parser) (parseFn, error) {
 	var err error
-	var r enemy.EnemyProfile
+	var r info.EnemyProfile
 	r.Resist = make(map[attributes.Element]float64)
+	r.ParticleElement = attributes.NoElement
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
 		case itemIdentifier:
@@ -60,16 +62,16 @@ func parseTarget(p *Parser) (parseFn, error) {
 					return nil, err
 				}
 				p.res.Settings.DamageMode = true
-			case "resist_frozen":
+			case "freeze_resist":
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
 				}
-				v, err := itemNumberToInt(item)
+				v, err := itemNumberToFloat64(item)
 				if err != nil {
 					return nil, err
 				}
-				r.ResistFrozen = v != 0
+				r.FreezeResist = v
 			default:
 				return nil, fmt.Errorf("<target> bad token at line %v - %v: %v", n.line, n.pos, n)
 			}
@@ -132,7 +134,6 @@ func parseTarget(p *Parser) (parseFn, error) {
 				return nil, err
 			}
 			r.ParticleDropCount = amt
-			r.ParticleDrops = nil // separate particle system
 		case itemElementKey:
 			s := n.Val
 			item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)

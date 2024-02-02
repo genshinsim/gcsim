@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -28,7 +29,7 @@ func (w *Weapon) Init() error      { return nil }
 
 const skillBuff = "scarletsands-skill"
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
@@ -38,13 +39,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("scarletsands", -1),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
-			em := char.Stat(attributes.EM)
+			em := char.NonExtraStat(attributes.EM)
 			mATK[attributes.ATK] = atkBuff * em
 			return mATK, true
 		},
 	})
 
+	icdKey := "scarletsands-icd"
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != char.Index {
@@ -53,10 +56,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
-		// TODO: is there icd?
+		if char.StatusIsActive(icdKey) {
+			return false
+		}
+		char.AddStatus(icdKey, 0.3*60, true)
 
 		// reset stacks if expired
 		if !char.StatModIsActive(skillBuff) {
@@ -69,8 +75,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(skillBuff, 10*60),
 			AffectedStat: attributes.ATK,
+			Extra:        true,
 			Amount: func() ([]float64, bool) {
-				em := char.Stat(attributes.EM)
+				em := char.NonExtraStat(attributes.EM)
 				mATK[attributes.ATK] = atkSkillBuff * em * float64(w.stacks)
 				return mATK, true
 			},

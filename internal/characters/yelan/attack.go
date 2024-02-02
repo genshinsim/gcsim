@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var attackFrames [][]int
@@ -26,20 +28,21 @@ func init() {
 // Normal attack damage queue generator
 // relatively standard with no major differences versus other bow characters
 // Has "travel" parameter, used to set the number of frames that the arrow is in the air (default = 10)
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
 	}
 
 	if c.Base.Cons >= 6 && c.Core.Status.Duration(c6Status) > 0 {
-		//c6 is default ICD group for some odd reason
+		// c6 is default ICD group for some odd reason
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Breakthrough Barb",
-			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagExtraAttack,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagExtra,
+			ICDTag:     attacks.ICDTagExtraAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}
@@ -48,11 +51,16 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		for i := range attack[c.NormalCounter] {
 			c.c6count++
 			if c.c6count >= 5 {
-				c.Core.Status.Delete(c6Status) //delete status after 5 arrows
+				c.Core.Status.Delete(c6Status) // delete status after 5 arrows
 			}
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					4,
+				),
 				attackHitmarks[c.NormalCounter][i],
 				attackHitmarks[c.NormalCounter][i]+travel,
 			)
@@ -61,10 +69,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-			AttackTag:  combat.AttackTagNormal,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypePierce,
+			AttackTag:  attacks.AttackTagNormal,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Physical,
 			Durability: 25,
 		}
@@ -73,7 +81,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			ai.Mult = mult[c.TalentLvlAttack()]
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
+				combat.NewBoxHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					geometry.Point{Y: -0.5},
+					0.1,
+					1,
+				),
 				attackHitmarks[c.NormalCounter][i],
 				attackHitmarks[c.NormalCounter][i]+travel,
 			)
@@ -82,10 +96,10 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 
 	defer c.AdvanceNormalIndex()
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

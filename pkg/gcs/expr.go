@@ -11,9 +11,11 @@ import (
 func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	switch v := ex.(type) {
 	case *ast.NumberLit:
-		return e.evalNumberLit(v, env), nil
+		return e.evalNumberLit(v), nil
 	case *ast.StringLit:
-		return e.evalStringLit(v, env), nil
+		return e.evalStringLit(v), nil
+	case *ast.FuncExpr:
+		return e.evalFuncExpr(v, env), nil
 	case *ast.Ident:
 		return e.evalIdent(v, env)
 	case *ast.UnaryExpr:
@@ -23,13 +25,15 @@ func (e *Eval) evalExpr(ex ast.Expr, env *Env) (Obj, error) {
 	case *ast.CallExpr:
 		return e.evalCallExpr(v, env)
 	case *ast.Field:
-		return e.evalField(v, env)
+		return e.evalField(v)
+	case *ast.MapExpr:
+		return e.evalMap(v, env)
 	default:
 		return &null{}, nil
 	}
 }
 
-func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
+func (e *Eval) evalNumberLit(n *ast.NumberLit) Obj {
 	return &number{
 		isFloat: n.IsFloat,
 		ival:    n.IntVal,
@@ -37,85 +41,83 @@ func (e *Eval) evalNumberLit(n *ast.NumberLit, env *Env) Obj {
 	}
 }
 
-func (e *Eval) evalStringLit(n *ast.StringLit, env *Env) Obj {
-	//strip the ""
+func (e *Eval) evalStringLit(n *ast.StringLit) Obj {
+	// strip the ""
 	return &strval{
 		str: strings.Trim(n.Value, "\""),
 	}
 }
 
+func (e *Eval) evalFuncExpr(n *ast.FuncExpr, env *Env) Obj {
+	return &funcval{
+		Args:      n.Func.Args,
+		Body:      n.Func.Body,
+		Signature: n.Func.Signature,
+		Env:       NewEnv(env),
+	}
+}
+
 func (e *Eval) evalIdent(n *ast.Ident, env *Env) (Obj, error) {
 	//TODO: this should be a variable
-	return env.v(n.Value)
+	res, err := env.v(n.Value)
+	if err != nil {
+		return nil, err
+	}
+	return *res, nil
 }
 
 func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
-	//c.Fun should be an Ident; otherwise panic here
-	ident, ok := c.Fun.(*ast.Ident)
-	if !ok {
+	v, err := e.evalExpr(c.Fun, env)
+	if err != nil {
+		return nil, err
+	}
+	switch v.(type) {
+	case *funcval:
+	case *bfuncval:
+	default:
 		return nil, fmt.Errorf("invalid function call %v", c.Fun.String())
 	}
 
-	//check if it's a system function
-	//otherwise check the function map
-	switch s := ident.Value; s {
-	case "f":
-		return e.f()
-	case "rand":
-		return e.rand()
-	case "randnorm":
-		return e.randnorm()
-	case "print":
-		//print outputs
-		return e.print(c, env)
-	case "wait":
-		//execute wait command
-		return e.wait(c, env)
-	case "set_target_pos":
-		return e.setTargetPos(c, env)
-	case "set_player_pos":
-		return e.setPlayerPos(c, env)
-	case "set_default_target":
-		return e.setDefaultTarget(c, env)
-	case "set_particle_delay":
-		return e.setParticleDelay(c, env)
-	case "kill_target":
-		return e.killTarget(c, env)
-	default:
-		//grab the function first
-		fn, err := env.fn(s)
+	if bfn, ok := v.(*bfuncval); ok { // is built-in
+		return bfn.Body(c, env)
+	}
+
+	fn := v.(*funcval)
+	// check number of param matches
+	if len(c.Args) != len(fn.Args) {
+		return nil, fmt.Errorf("unmatched number of params for fn %v", c.Fun.String())
+	}
+	// params are just variables assigned to a local env
+	// created from the function's env
+	local := NewEnv(fn.Env)
+	for i, v := range fn.Args {
+		param, err := e.evalExpr(c.Args[i], env)
 		if err != nil {
 			return nil, err
 		}
-		//check number of param matches
-		if len(c.Args) != len(fn.Args) {
-			return nil, fmt.Errorf("unmatched number of params for fn %v", s)
-		}
-		//params are just variables assigned to a local env
-		local := NewEnv(env)
-		for i, v := range fn.Args {
-			param, err := e.evalExpr(c.Args[i], env)
-			if err != nil {
-				return nil, err
-			}
-			n, ok := param.(*number)
-			if !ok {
-				return nil, fmt.Errorf("fn %v param %v does not evaluate to a number, got %v", s, v.Value, param.Inspect())
-			}
-			local.varMap[v.Value] = n
-		}
-		res, err := e.evalNode(fn.Body, local)
-		if err != nil {
-			return nil, err
-		}
-		switch v := res.(type) {
-		case *retval:
-			return v.res, nil
-		case *null:
+		local.varMap[v.Value] = &param
+	}
+	res, err := e.evalBlock(fn.Body, local)
+	if err != nil {
+		return nil, err
+	}
+	switch v := res.(type) {
+	case *retval:
+		return v.res, nil
+	case *null:
+		if _, ok := fn.Signature.ResultType.(*ast.NumberType); ok {
+			// force return to 0
 			return &number{}, nil
-		default:
-			return nil, fmt.Errorf("fn %v returned an invalid type; expecting a number got %v", s, res.Inspect())
 		}
+		return &null{}, nil
+	case *number:
+		if _, ok := fn.Signature.ResultType.(*ast.NumberType); ok {
+			// force return to 0
+			return v, nil
+		}
+		return nil, fmt.Errorf("fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
+	default:
+		return nil, fmt.Errorf("fn %v returned an invalid type; got %v", c.Fun.String(), res.Inspect())
 	}
 }
 
@@ -124,8 +126,8 @@ func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	//unary expressions should only result in number results
-	//otherwise panic for now?
+	// unary expressions should only result in number results
+	// otherwise panic for now?
 	r, ok := right.(*number)
 	if !ok {
 		return nil, fmt.Errorf("unary expression does not evaluate to a number, got %v ", right.Inspect())
@@ -140,7 +142,7 @@ func (e *Eval) evalUnaryExpr(b *ast.UnaryExpr, env *Env) (Obj, error) {
 }
 
 func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
-	//eval left, right, operator
+	// eval left, right, operator
 	left, err := e.evalExpr(b.Left, env)
 	if err != nil {
 		return nil, err
@@ -149,8 +151,8 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 	if err != nil {
 		return nil, err
 	}
-	//binary expressions should only result in number results
-	//otherwise panic for now?
+	// binary expressions should only result in number results
+	// otherwise panic for now?
 	l, ok := left.(*number)
 	if !ok {
 		return nil, fmt.Errorf("binary expression does not evaluate to a number, got %v ", left.Inspect())
@@ -188,7 +190,7 @@ func (e *Eval) evalBinaryExpr(b *ast.BinaryExpr, env *Env) (Obj, error) {
 	return &null{}, nil
 }
 
-func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
+func (e *Eval) evalField(n *ast.Field) (Obj, error) {
 	r, err := conditional.Eval(e.Core, n.Value)
 	if err != nil {
 		return nil, err
@@ -211,4 +213,22 @@ func (e *Eval) evalField(n *ast.Field, env *Env) (Obj, error) {
 		return nil, fmt.Errorf("field condition '.%v' does not evaluate to a number, got %v", strings.Join(n.Value, "."), v)
 	}
 	return num, nil
+}
+
+func (e *Eval) evalMap(m *ast.MapExpr, env *Env) (Obj, error) {
+	if len(m.Fields) == 0 { // empty map
+		return &mapval{}, nil
+	}
+
+	r := &mapval{
+		fields: make(map[string]Obj),
+	}
+	for k, v := range m.Fields {
+		obj, err := e.evalExpr(v, env)
+		if err != nil {
+			return nil, err
+		}
+		r.fields[k] = obj
+	}
+	return r, nil
 }

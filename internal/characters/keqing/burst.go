@@ -3,6 +3,7 @@ package keqing
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -18,39 +19,41 @@ func init() {
 	burstFrames[action.ActionSwap] = 122    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//first hit 56 frame
-	//first tick 82 frame
-	//last tick 162
-	//last hit 197
+func (c *char) Burst(p map[string]int) (action.Info, error) {
+	// first hit 56 frame
+	// first tick 82 frame
+	// last tick 162
+	// last hit 197
 
 	// trigger a4
 	c.a4()
 
-	//initial
+	// initial
 	ai := combat.AttackInfo{
 		Abil:       "Starward Sword (Initial)",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       burstInitial[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmark, burstHitmark)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
+	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
-	//8 hits
+	// 8 hits
 	ai.Abil = "Starward Sword (Consecutive Slash)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	for i := 82; i < 162; i += 11 {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), i, i)
+		c.Core.QueueAttack(ai, ap, i, i)
 	}
 
-	//final
+	// final
 	ai.Abil = "Starward Sword (Last Attack)"
 	ai.Mult = burstFinal[c.TalentLvlBurst()]
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), 197, 197)
+	c.Core.QueueAttack(ai, ap, 197, 197)
 
 	if c.Base.Cons >= 6 {
 		c.c6("burst")
@@ -59,10 +62,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(55)
 	c.SetCDWithDelay(action.ActionBurst, 720, 52)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

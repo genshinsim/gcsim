@@ -3,6 +3,7 @@ package xiao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -24,13 +25,14 @@ func init() {
 // Very standard - consistent with other characters like Xiangling
 // Note that his CAs share an ICD with his NAs when he is under the effects of his burst
 // TODO: No information available on whether regular CAs follow a similar pattern
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
@@ -39,12 +41,22 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), chargeHitmark, chargeHitmark)
+	radius := 3.0
+	if c.StatusIsActive(burstBuffKey) {
+		radius = 3.2
+	}
 
-	return action.ActionInfo{
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, radius, 200),
+		chargeHitmark,
+		chargeHitmark,
+	)
+
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

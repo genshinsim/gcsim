@@ -3,8 +3,10 @@ package collei
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
@@ -28,17 +30,17 @@ func init() {
 	skillFrames[action.ActionSwap] = 66
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// The game has ICD as AttackTagElementalArt, ICDTagElementalArt,
 	// ICDGroupColleiBoomerangForward, and ICDGroupColleiBoomerangBack. However,
 	// we believe this is unnecessary, so just use ICDTagNone.
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Floral Brush",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Dendro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -48,21 +50,24 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	var c6Cb func(a combat.AttackCB)
 	if c.Base.Cons >= 6 {
 		c6Triggered := false
-		c6Cb = func(_ combat.AttackCB) {
+		c6Cb = func(a combat.AttackCB) {
 			if c6Triggered {
 				return
 			}
 			c6Triggered = true
-			c.c6()
+			c.c6(a.Target)
 		}
 	}
+	particleCB := c.makeParticleCB()
+	//TODO: this should have its own position
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 2),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 2),
 			skillRelease,
 			hitmark,
 			c6Cb,
+			particleCB,
 		)
 	}
 
@@ -71,7 +76,7 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, skillRelease)
 
 	c.sproutShouldExtend = false
-	c.sproutShouldProc = c.Base.Cons >= 2
+	c.sproutShouldProc = c.Base.Cons >= 2 && c.Base.Ascension >= 1
 	c.Core.Tasks.Add(func() {
 		if !c.sproutShouldProc {
 			return
@@ -90,14 +95,26 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}, sproutHitmark)
 	}, skillReturn)
 
-	c.Core.QueueParticle("collei", 3, attributes.Dendro, skillHitmarks[0]+c.ParticleDelay)
-
 	c.SetCDWithDelay(action.ActionSkill, 720, 20)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) makeParticleCB() combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), 3, attributes.Dendro, c.ParticleDelay)
 	}
 }

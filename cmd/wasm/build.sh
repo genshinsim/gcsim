@@ -1,7 +1,12 @@
 #!/bin/bash
 
-rm -rf main.wasm
+# TODO: get from file or env
+SHARE_KEY=$GCSIM_SHARE_KEY
 
-# notice how we avoid spaces in $now to avoid quotation hell in go build command
-now=$(date +'%Y-%m-%d_%T')
-GOOS=js GOARCH=wasm go build -o main.wasm -ldflags "-X main.sha1ver=`git rev-parse HEAD` -X main.buildTime=$now"
+LDFLAGS=(
+  # "-w -s" # reduces binary size at cost of performance
+  "-X 'main.shareKey=${SHARE_KEY}'"
+)
+
+# reduces by ~2MB but makes really slow: -gcflags=all="-l -B -C -std"
+GOOS=js GOARCH=wasm go build -o main.wasm -ldflags="${LDFLAGS[*]}" $@

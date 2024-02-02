@@ -3,8 +3,10 @@ package diona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames []int
@@ -23,20 +25,20 @@ func init() {
 	aimedC4Frames[action.ActionJump] = aimedC4Hitmark
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim (Charged)",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagExtraAttack,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypePierce,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagExtraAttack,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Cryo,
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
@@ -47,31 +49,36 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	var a action.ActionInfo
+	var a action.Info
 
-	// TODO: assumes that Diona is always inside Q radius
-	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 {
-		a = action.ActionInfo{
+	if c.Base.Cons >= 4 && c.Core.Status.Duration("diona-q") > 0 && c.Core.Combat.Player().IsWithinArea(c.burstBuffArea) {
+		a = action.Info{
 			Frames:          frames.NewAbilFunc(aimedC4Frames),
 			AnimationLength: aimedC4Frames[action.InvalidAction],
 			CanQueueAfter:   aimedC4Hitmark,
 			State:           action.AimState,
 		}
 	} else {
-		a = action.ActionInfo{
+		a = action.Info{
 			Frames:          frames.NewAbilFunc(aimedFrames),
 			AnimationLength: aimedFrames[action.InvalidAction],
 			CanQueueAfter:   aimedHitmark,
 			State:           action.AimState,
 		}
-
 	}
 
-	c.Core.QueueAttack(ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		a.CanQueueAfter,
 		a.CanQueueAfter+travel,
 	)
 
-	return a
+	return a, nil
 }

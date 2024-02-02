@@ -3,9 +3,9 @@ package lisa
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -14,10 +14,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	c6icd int
+	previousDischargeCount int
+	c6icd                  int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 

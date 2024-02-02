@@ -3,15 +3,21 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 24
+const (
+	skillHitmark   = 24
+	particleICDKey = "kokomi-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(61)
@@ -21,7 +27,7 @@ func init() {
 
 // Skill handling - Handles primary damage instance
 // Deals Hydro DMG to surrounding opponents and heal nearby active characters once every 2s. This healing is based on Kokomi's Max HP.
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// skill duration is ~12.5s
 	// Plus 1 to avoid same frame issues with skill ticks
 	c.Core.Status.Add("kokomiskill", 12*60+30+1)
@@ -38,41 +44,53 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 
 	c.SetCDWithDelay(action.ActionSkill, 20*60, 20)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillHitmark,
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+	if c.Core.Rand.Float64() < 0.67 {
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Hydro, c.ParticleDelay)
 	}
 }
 
 // Helper function since this needs to be created both on skill use and burst use
 func (c *char) createSkillSnapshot() *combat.AttackEvent {
-
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Bake-Kurage",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-
-	return (&combat.AttackEvent{
+	ae := combat.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3}, 6),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
-	})
-
+	}
+	ae.Callbacks = append(ae.Callbacks, c.particleCB)
+	return &ae
 }
 
 // Helper function that handles damage, healing, and particle components of every tick of her E
 func (c *char) skillTick(d *combat.AttackEvent) {
-
 	// check if skill has burst bonus snapshot
 	// snapshot is between 1st and 2nd tick
 	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < c.skillLastUsed+100 {
@@ -81,35 +99,34 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 		d.Info.FlatDmg = c.burstDmgBonus(d.Info.AttackTag)
 	}
 
+	// handle damage
 	c.Core.QueueAttackEvent(d, 0)
 
-	maxhp := d.Snapshot.BaseHP*(1+d.Snapshot.Stats[attributes.HPP]) + d.Snapshot.Stats[attributes.HP]
-	src := skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()]
+	// handle healing
+	if c.Core.Combat.Player().IsWithinArea(d.Pattern) {
+		maxhp := d.Snapshot.BaseHP*(1+d.Snapshot.Stats[attributes.HPP]) + d.Snapshot.Stats[attributes.HP]
+		src := skillHealPct[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()]
 
-	// C2 handling
-	// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
-	// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
-	if c.Base.Cons >= 2 {
-		active := c.Core.Player.ActiveChar()
-		if active.HPCurrent/active.MaxHP() <= .5 {
-			bonus := 0.045 * maxhp
-			src += bonus
-			c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
-				Write("bonus", bonus)
+		// C2 handling
+		// Sangonomiya Kokomi gains the following Healing Bonuses with regard to characters with 50% or less HP via the following methods:
+		// Kurage's Oath Bake-Kurage: 4.5% of Kokomi's Max HP.
+		if c.Base.Cons >= 2 {
+			active := c.Core.Player.ActiveChar()
+			if active.CurrentHPRatio() <= 0.5 {
+				bonus := 0.045 * maxhp
+				src += bonus
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
+					Write("bonus", bonus)
+			}
 		}
-	}
 
-	c.Core.Player.Heal(player.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Core.Player.Active(),
-		Message: "Bake-Kurage",
-		Src:     src,
-		Bonus:   d.Snapshot.Stats[attributes.Heal],
-	})
-
-	// Particles are 0~1 (1:2) on every damage instance
-	if c.Core.Rand.Float64() < .6667 {
-		c.Core.QueueParticle("kokomi", 1, attributes.Hydro, c.ParticleDelay)
+		c.Core.Player.Heal(player.HealInfo{
+			Caller:  c.Index,
+			Target:  c.Core.Player.Active(),
+			Message: "Bake-Kurage",
+			Src:     src,
+			Bonus:   d.Snapshot.Stats[attributes.Heal],
+		})
 	}
 }
 

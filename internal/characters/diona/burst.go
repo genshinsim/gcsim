@@ -3,6 +3,7 @@ package diona
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -19,39 +20,46 @@ func init() {
 	burstFrames[action.ActionSwap] = 41    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Initial Hit
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Signature Mix (Initial)",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0, burstStart)
+	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 3), 0, burstStart)
 
+	// Ticks
 	ai.Abil = "Signature Mix (Tick)"
 	ai.Mult = burstDot[c.TalentLvlBurst()]
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6.5)
+
 	snap := c.Snapshot(&ai)
 	hpplus := snap.Stats[attributes.Heal]
 	maxhp := c.MaxHP()
 	heal := burstHealPer[c.TalentLvlBurst()]*maxhp + burstHealFlat[c.TalentLvlBurst()]
 
+	c.burstBuffArea = combat.NewCircleHitOnTarget(ap.Shape.Pos(), nil, 7)
 	// apparently lasts for 12.5
 	// TODO: assumes that field starts when it lands (which is dynamic ingame)
 	c.Core.Tasks.Add(func() {
 		// add burst status for C4 check
 		c.Core.Status.Add("diona-q", 750)
-		//ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
+		// ticks every 2s, first tick at t=2s (relative to field start), then t=4,6,8,10,12; lasts for 12.5s from field start
 		for i := 0; i < 6; i++ {
 			c.Core.Tasks.Add(func() {
-				c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 5), 0)
-				// c.Core.Log.NewEvent("diona healing", core.LogCharacterEvent, c.Index, "+heal", hpplus, "max hp", maxhp, "heal amount", heal)
+				// attack
+				c.Core.QueueAttackWithSnap(ai, snap, ap, 0)
+				// heal
+				if !c.Core.Combat.Player().IsWithinArea(c.burstBuffArea) {
+					return
+				}
 				c.Core.Player.Heal(player.HealInfo{
 					Caller:  c.Index,
 					Target:  c.Core.Player.Active(),
@@ -69,7 +77,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	// C1
 	if c.Base.Cons >= 1 {
-		//15 energy after ends, flat not affected by ER
+		// 15 energy after ends, flat not affected by ER
 		c.Core.Tasks.Add(func() {
 			c.AddEnergy("diona-c1", 15)
 		}, burstStart+750)
@@ -78,10 +86,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionBurst, 1200, 41)
 	c.ConsumeEnergy(43)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstStart,
 		State:           action.BurstState,
-	}
+	}, nil
 }

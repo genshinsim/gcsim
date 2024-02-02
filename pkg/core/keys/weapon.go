@@ -40,6 +40,10 @@ var weaponNames = []string{
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
+	"athousandfloatingdreams",
+	"balladoftheboundlessblue",
+	"balladofthefjords",
+	"beaconofthereedsea",
 	"beginnersprotector",
 	"blackcliffagate",
 	"blackclifflongsword",
@@ -49,6 +53,7 @@ var weaponNames = []string{
 	"blacktassel",
 	"bloodtaintedgreatsword",
 	"calamityqueller",
+	"cashflowsupervision",
 	"cinnabarspindle",
 	"compoundbow",
 	"coolsteel",
@@ -75,6 +80,9 @@ var weaponNames = []string{
 	"ferrousshadow",
 	"festeringdesire",
 	"filletblade",
+	"finaleofthedeep",
+	"fleuvecendreferryman",
+	"flowingpurity",
 	"forestregalia",
 	"freedomsworn",
 	"frostbearer",
@@ -86,20 +94,24 @@ var weaponNames = []string{
 	"harbingerofdawn",
 	"huntersbow",
 	"hunterspath",
+	"ibispiercer",
 	"ironpoint",
 	"ironsting",
+	"jadefallssplendor",
 	"kagotsurubeisshin",
 	"kagurasverity",
 	"katsuragikirinagamasa",
 	"keyofkhajnisut",
 	"kingssquire",
 	"kitaincrossspear",
+	"lightoffoliarincision",
 	"lionsroar",
 	"lithicblade",
 	"lithicspear",
 	"lostprayertothesacredwinds",
 	"luxurioussealord",
 	"magicguide",
+	"mailedflower",
 	"makhairaaquamarine",
 	"mappamare",
 	"memoryofdust",
@@ -114,18 +126,22 @@ var weaponNames = []string{
 	"otherworldlystory",
 	"pocketgrimoire",
 	"polarstar",
+	"portablepowersaw",
 	"predator",
 	"primordialjadecutter",
 	"primordialjadewingedspear",
+	"prospectorsdrill",
 	"prototypeamber",
 	"prototypearchaic",
 	"prototypecrescent",
 	"prototyperancour",
 	"prototypestarglitter",
 	"rainslasher",
+	"rangegauge",
 	"ravenbow",
 	"recurvebow",
 	"redhornstonethresher",
+	"rightfulreward",
 	"royalbow",
 	"royalgreatsword",
 	"royalgrimoire",
@@ -135,8 +151,10 @@ var weaponNames = []string{
 	"sacrificialbow",
 	"sacrificialfragments",
 	"sacrificialgreatsword",
+	"sacrificialjade",
 	"sacrificialsword",
 	"sapwoodblade",
+	"scionoftheblazingsun",
 	"seasonedhuntersbow",
 	"serpentspine",
 	"sharpshootersoath",
@@ -152,14 +170,20 @@ var weaponNames = []string{
 	"snowtombedstarsilver",
 	"solarpearl",
 	"songofbrokenpines",
+	"songofstillness",
+	"splendoroftranquilwaters",
 	"staffofhoma",
 	"staffofthescarletsands",
 	"summitshaper",
 	"swordofdescension",
+	"swordofnarzissenkreuz",
+	"talkingstick",
 	"thealleyflash",
 	"thebell",
 	"theblacksword",
 	"thecatch",
+	"thedockhandsassistant",
+	"thefirstgreatmagic",
 	"theflute",
 	"thestringless",
 	"theunforged",
@@ -167,8 +191,14 @@ var weaponNames = []string{
 	"thewidsith",
 	"thrillingtalesofdragonslayers",
 	"thunderingpulse",
+	"tidalshadow",
+	"tomeoftheeternalflow",
+	"toukaboushigure",
 	"travelershandysword",
+	"tulaytullahsremembrance",
 	"twinnephrite",
+	"ultimateoverlordsmegamagicsword",
+	"verdict",
 	"vortexvanquisher",
 	"wanderingevenstar",
 	"wastergreatsword",
@@ -178,9 +208,9 @@ var weaponNames = []string{
 	"whitetassel",
 	"windblumeode",
 	"wineandsong",
+	"wolffang",
 	"wolfsgravestone",
 	"xiphosmoonlight",
-	"athousandfloatingdreams",
 }
 
 const (
@@ -192,6 +222,10 @@ const (
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
+	AThousandFloatingDreams
+	BalladOfTheBoundlessBlue
+	BalladOfTheFjords
+	BeaconOfTheReedSea
 	BeginnersProtector
 	BlackcliffAgate
 	BlackcliffLongsword
@@ -201,6 +235,7 @@ const (
 	BlackTassel
 	BloodtaintedGreatsword
 	CalamityQueller
+	CashflowSupervision
 	CinnabarSpindle
 	CompoundBow
 	CoolSteel
@@ -227,6 +262,9 @@ const (
 	FerrousShadow
 	FesteringDesire
 	FilletBlade
+	FinaleOfTheDeep
+	FleuveCendreFerryman
+	FlowingPurity
 	ForestRegalia
 	FreedomSworn
 	Frostbearer
@@ -238,20 +276,24 @@ const (
 	HarbingerOfDawn
 	HuntersBow
 	HuntersPath
+	IbisPiercer
 	IronPoint
 	IronSting
+	JadefallsSplendor
 	KagotsurubeIsshin
 	KagurasVerity
 	KatsuragikiriNagamasa
 	KeyOfKhajNisut
 	KingsSquire
 	KitainCrossSpear
+	LightOfFoliarIncision
 	LionsRoar
 	LithicBlade
 	LithicSpear
 	LostPrayerToTheSacredWinds
 	LuxuriousSeaLord
 	MagicGuide
+	MailedFlower
 	MakhairaAquamarine
 	MappaMare
 	MemoryOfDust
@@ -266,18 +308,22 @@ const (
 	OtherworldlyStory
 	PocketGrimoire
 	PolarStar
+	PortablePowerSaw
 	Predator
 	PrimordialJadeCutter
 	PrimordialJadeWingedSpear
+	ProspectorsDrill
 	PrototypeAmber
 	PrototypeArchaic
 	PrototypeCrescent
 	PrototypeRancour
 	PrototypeStarglitter
 	Rainslasher
+	RangeGauge
 	RavenBow
 	RecurveBow
 	RedhornStonethresher
+	RightfulReward
 	RoyalBow
 	RoyalGreatsword
 	RoyalGrimoire
@@ -287,8 +333,10 @@ const (
 	SacrificialBow
 	SacrificialFragments
 	SacrificialGreatsword
+	SacrificialJade
 	SacrificialSword
 	SapwoodBlade
+	ScionOfTheBlazingSun
 	SeasonedHuntersBow
 	SerpentSpine
 	SharpshootersOath
@@ -304,14 +352,20 @@ const (
 	SnowTombedStarsilver
 	SolarPearl
 	SongOfBrokenPines
+	SongOfStillness
+	SplendorOfTranquilWaters
 	StaffOfHoma
 	StaffOfTheScarletSands
 	SummitShaper
 	SwordOfDescension
+	SwordOfNarzissenkreuz
+	TalkingStick
 	TheAlleyFlash
 	TheBell
 	TheBlackSword
 	TheCatch
+	TheDockhandsAssistant
+	TheFirstGreatMagic
 	TheFlute
 	TheStringless
 	TheUnforged
@@ -319,8 +373,14 @@ const (
 	TheWidsith
 	ThrillingTalesOfDragonSlayers
 	ThunderingPulse
+	TidalShadow
+	TomeOfTheEternalFlow
+	ToukabouShigure
 	TravelersHandySword
+	TulaytullahsRemembrance
 	TwinNephrite
+	UltimateOverlordsMegaMagicSword
+	Verdict
 	VortexVanquisher
 	WanderingEvenstar
 	WasterGreatsword
@@ -330,7 +390,7 @@ const (
 	WhiteTassel
 	WindblumeOde
 	WineAndSong
+	WolfFang
 	WolfsGravestone
 	XiphosMoonlight
-	ThousandFloatingDreams
 )

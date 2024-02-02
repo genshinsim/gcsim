@@ -3,16 +3,22 @@ package xinyan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 15
-const skillShieldStart = 28
+const (
+	skillHitmark     = 15
+	skillShieldStart = 28
+	particleICDKey   = "xinyan-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(62) // E -> Swap
@@ -22,13 +28,15 @@ func init() {
 	skillFrames[action.ActionJump] = 53    // E -> J
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sweeping Fervor",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           200,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -43,38 +51,55 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	hitOpponents := 0
 	cb := func(_ combat.AttackCB) {
 		hitOpponents++
-
-		// including a1
 		c.QueueCharTask(func() {
-			if hitOpponents >= 2 && c.shieldLevel < 3 {
+			if hitOpponents >= c.shieldLevel3Requirement && c.shieldLevel < 3 {
 				c.updateShield(3, defFactor)
-			} else if hitOpponents >= 1 && c.shieldLevel < 2 {
+			} else if hitOpponents >= c.shieldLevel2Requirement && c.shieldLevel < 2 {
 				c.updateShield(2, defFactor)
 			}
 		}, skillShieldStart-skillHitmark)
 	}
 
-	if c.Core.Player.Shields.Get(shield.ShieldXinyanSkill) == nil {
+	if c.Core.Player.Shields.Get(shield.XinyanSkill) == nil {
 		c.QueueCharTask(func() {
 			c.updateShield(1, defFactor)
 		}, skillShieldStart)
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), skillHitmark, skillHitmark, cb, c.c4)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3),
+		skillHitmark,
+		skillHitmark,
+		cb,
+		c.particleCB,
+		c.makeC1CB(),
+		c.makeC4CB(),
+	)
 
 	c.SetCDWithDelay(action.ActionSkill, 18*60, 13)
-	c.Core.QueueParticle("xinyan", 4, attributes.Pyro, skillHitmark+c.ParticleDelay)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionJump], // earliest cancel
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
 	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) shieldDot(src int) func() {
 	return func() {
-		if c.Core.Player.Shields.Get(shield.ShieldXinyanSkill) == nil {
+		if c.Core.Player.Shields.Get(shield.XinyanSkill) == nil {
 			return
 		}
 		if c.shieldLevel != 3 {
@@ -87,14 +112,21 @@ func (c *char) shieldDot(src int) func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Sweeping Fervor (DoT)",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       skillDot[c.TalentLvlSkill()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 1, 1)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
+			1,
+			1,
+			c.makeC1CB(),
+		)
 
 		c.Core.Tasks.Add(c.shieldDot(src), 2*60)
 	}
@@ -115,7 +147,7 @@ func (c *char) updateShield(level int, defFactor float64) {
 		c.shieldTickSrc = c.Core.F
 		c.Core.Tasks.Add(c.shieldDot(c.Core.F), 2*60)
 	}
-	shd := c.newShield(shieldhp, shield.ShieldXinyanSkill, 12*60)
+	shd := c.newShield(shieldhp, shield.XinyanSkill, 12*60)
 	c.Core.Player.Shields.Add(shd)
 	c.Core.Log.NewEvent("update shield level", glog.LogCharacterEvent, c.Index).
 		Write("previousLevel", previousLevel).

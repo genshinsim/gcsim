@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -25,8 +26,7 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
@@ -49,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal {
+		if ae.Info.AttackTag != attacks.AttackTagNormal {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
@@ -59,26 +59,33 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 			return false
 		}
 		c.Log.NewEvent("skywardatlas proc'd", glog.LogWeaponEvent, char.Index)
-		trg := args[0].(combat.Target)
+
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Skyward Atlas Proc",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       atk,
 		}
 		snap := char.Snapshot(&ai)
+
 		for i := 1; i <= 6; i++ {
-			c.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(trg, 1.2), i*(147+travel))
+			c.Tasks.Add(func() {
+				enemy := c.Combat.ClosestEnemyWithinArea(combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 15), nil)
+				if enemy != nil {
+					c.QueueAttackWithSnap(ai, snap, combat.NewCircleHitOnTarget(enemy, nil, 1.2), travel)
+				}
+			}, i*147)
 		}
 		char.AddStatus(icdKey, icd, true)
 		return false
 	}, fmt.Sprintf("skyward-atlas-%v", char.Base.Key.String()))
 
-	//permanent stat buff
+	// permanent stat buff
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = dmg
 	m[attributes.HydroP] = dmg

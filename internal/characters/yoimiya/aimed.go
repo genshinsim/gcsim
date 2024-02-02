@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames [][]int
@@ -38,7 +40,7 @@ func init() {
 }
 
 // Standard aimed attack
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -55,18 +57,19 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 	}
 
 	// used to adjust how long it takes for the kindling arrows to hit starting from CA arrow release
-	kindling_travel, ok := p["kindling_travel"]
+	kindlingTravel, ok := p["kindling_travel"]
 	if !ok {
-		kindling_travel = 30
+		kindlingTravel = 30
 	}
 
 	// Normal Arrow
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aimed Shot",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Pyro,
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
@@ -76,16 +79,24 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		HitlagOnHeadshotOnly: true,
 		IsDeployable:         true,
 	}
+	c2CB := c.makeC2CB()
 	c.Core.QueueAttack(
 		ai,
-		combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
 		aimedHitmarks[kindling],
 		aimedHitmarks[kindling]+travel,
+		c2CB,
 	)
 
 	// Kindling Arrows
 	if kindling > 0 {
-		ai.ICDTag = combat.ICDTagExtraAttack
+		ai.ICDTag = attacks.ICDTagExtraAttack
 		ai.Mult = aimExtra[c.TalentLvlAttack()]
 
 		// TODO:
@@ -104,17 +115,23 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 			// add a bit of extra delay for kindling arrows
 			c.Core.QueueAttack(
 				ai,
-				combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
+				combat.NewCircleHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					nil,
+					0.6,
+				),
 				aimedHitmarks[kindling],
-				aimedHitmarks[kindling]+kindling_travel,
+				aimedHitmarks[kindling]+kindlingTravel,
+				c2CB,
 			)
 		}
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames[kindling]),
 		AnimationLength: aimedFrames[kindling][action.InvalidAction],
 		CanQueueAfter:   aimedHitmarks[kindling],
 		State:           action.AimState,
-	}
+	}, nil
 }

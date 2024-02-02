@@ -1,13 +1,15 @@
 package gorou
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 var burstFrames []int
@@ -22,32 +24,25 @@ func init() {
 	burstFrames[action.ActionSwap] = 55    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Initial Hit
 	// A1/C6/Q duration all start on Initial Hit
 	c.Core.Tasks.Add(func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Juuga: Forward Unto Victory",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   40,
 			Element:    attributes.Geo,
-			StrikeType: combat.StrikeTypeBlunt,
 			Durability: 25,
 			Mult:       burst[c.TalentLvlBurst()],
+			FlatDmg:    c.a4Burst(),
+			UseDef:     true,
 		}
-		// A4 Part 2
-		// Juuga: Forward Unto Victory: Skill DMG and Crystal Collapse DMG increased by 15.6% of DEF
-		snap := c.Snapshot(&ai)
-		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 0.156
-
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHit(c.Core.Combat.Player(), 5),
-			0,
-		)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), 0, 0)
 
 		// Q General's Glory:
 		// Like the General's War Banner created by Inuzaka All-Round Defense, provides buffs to active characters
@@ -68,23 +63,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		c.qFieldSrc = c.Core.F
 		c.Core.Tasks.Add(c.gorouCrystalCollapse(c.Core.F), 90) // first crystal collapse is 1.5s after Hitmark Initial
 
-		// A1: After using Juuga: Forward Unto Victory, all nearby party members' DEF is increased by 25% for 12s.
-		for _, char := range c.Core.Player.Chars() {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(a1Key, 720),
-				AffectedStat: attributes.DEFP,
-				Amount: func() ([]float64, bool) {
-					return c.a1Buff, true
-				},
-			})
-		}
+		c.a1()
 
 		// C4
 		if c.Base.Cons >= 4 && c.geoCharCount > 1 {
 			// TODO: not sure if this actually snapshots stats
 			// ai := combat.AttackInfo{
 			// 	Abil:      "Inuzaka All-Round Defense C4",
-			// 	AttackTag: combat.AttackTagNone,
+			// 	AttackTag: attacks.AttackTagNone,
 			// }
 			c.healFieldStats, _ = c.Stats()
 			c.Core.Tasks.Add(c.gorouBurstHealField(c.Core.F), 90)
@@ -103,66 +89,87 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(7)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
-//recursive function for dealing damage
+// recursive function for dealing damage
 func (c *char) gorouCrystalCollapse(src int) func() {
 	return func() {
-		//do nothing if this has been overwritten
+		// do nothing if this has been overwritten
 		if c.qFieldSrc != src {
 			return
 		}
-		//do nothing if field expired
+		// do nothing if field expired
 		if c.Core.Status.Duration(generalGloryKey) == 0 {
 			return
 		}
-		//trigger damage
+		// trigger damage
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Crystal Collapse",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagElementalBurst,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Geo,
-			StrikeType: combat.StrikeTypeBlunt,
 			Durability: 25,
 			Mult:       burstTick[c.TalentLvlBurst()],
+			FlatDmg:    c.a4Burst(),
+			UseDef:     true,
 		}
-		//Juuga: Forward Unto Victory: Skill DMG and Crystal Collapse DMG increased by 15.6% of DEF
-		snap := c.Snapshot(&ai)
-		ai.FlatDmg = (snap.BaseDef*snap.Stats[attributes.DEFP] + snap.Stats[attributes.DEF]) * 0.156
-
-		c.Core.QueueAttackWithSnap(
-			ai,
-			snap,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
+		collapseArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 8)
+		enemy := c.Core.Combat.ClosestEnemyWithinArea(collapseArea, nil)
+		if enemy != nil {
 			//TODO: skill damage frames
-			1,
-		)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(enemy, nil, 3.5), 0, 1)
+		}
 
-		//tick every 1.5s
+		// suck in 1 crystallize shard
+		for _, g := range c.Core.Combat.Gadgets() {
+			cs, ok := g.(*reactable.CrystallizeShard)
+			// skip if no shard
+			if !ok {
+				continue
+			}
+			// skip if shard not in area
+			if !cs.IsWithinArea(collapseArea) {
+				continue
+			}
+			// approximate sucking in as 0.4m per frame (~8m distance took 20f to arrive at gorou)
+			distance := cs.Pos().Distance(collapseArea.Shape.Pos())
+			travel := int(math.Ceil(distance / 0.4))
+			// special check to account for edge case if shard just spawned and will arrive before it can be picked up
+			if c.Core.F+travel < cs.EarliestPickup {
+				continue
+			}
+			c.Core.Tasks.Add(func() {
+				cs.AddShieldKillShard()
+			}, travel)
+			break
+		}
+
+		// tick every 1.5s
 		c.Core.Tasks.Add(c.gorouCrystalCollapse(src), 90)
 	}
 }
 
 func (c *char) gorouBurstHealField(src int) func() {
 	return func() {
-		//do nothing if this has been overwritten
-		if c.qFieldHealSrc != src {
+		// do nothing if this has been overwritten
+		if c.qFieldSrc != src {
 			return
 		}
-		//do nothing if field expired
+		// do nothing if field expired
 		if c.Core.Status.Duration(generalGloryKey) == 0 {
 			return
 		}
-		//When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
-		//within its AoE by 50% of Gorou's own DEF every 1.5s.
+		// When General's Glory is in the "Impregnable" or "Crunch" states, it will also heal active characters
+		// within its AoE by 50% of Gorou's own DEF every 1.5s.
 		amt := c.Base.Def*(1+c.healFieldStats[attributes.DEFP]) + c.healFieldStats[attributes.DEF]
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
@@ -172,7 +179,7 @@ func (c *char) gorouBurstHealField(src int) func() {
 			Bonus:   c.Stat(attributes.Heal),
 		})
 
-		//tick every 1.5s
+		// tick every 1.5s
 		c.Core.Tasks.Add(c.gorouBurstHealField(src), 90)
 	}
 }

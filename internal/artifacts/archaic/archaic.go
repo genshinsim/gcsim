@@ -7,8 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -26,7 +26,7 @@ type Set struct {
 func (s *Set) SetIndex(idx int) { s.Index = idx }
 func (s *Set) Init() error      { return nil }
 
-func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{}
 
 	if count >= 2 {
@@ -50,8 +50,8 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			}
 
 			// Check shield
-			shd := core.Player.Shields.Get(shield.ShieldCrystallize)
-			if shd == nil {
+			shd := args[0].(shield.Shield)
+			if shd.Type() != shield.Crystallize {
 				return false
 			}
 			s.element = shd.Element()

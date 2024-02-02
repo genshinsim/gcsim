@@ -3,6 +3,7 @@ package nilou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -25,14 +26,14 @@ func init() {
 	burstFrames[action.ActionSwap] = 107
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Dance of Abzendegi: Distant Dreams, Listening Spring",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		FlatDmg:    c.MaxHP() * burst[c.TalentLvlBurst()],
@@ -40,7 +41,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 3),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		burstHitmark,
 		burstHitmark,
 		c.LingeringAeon,
@@ -49,12 +50,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(4)
 	c.SetCD(action.ActionBurst, 18*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) LingeringAeon(a combat.AttackCB) {
@@ -68,17 +69,17 @@ func (c *char) LingeringAeon(a combat.AttackCB) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Lingering Aeon",
-			AttackTag:  combat.AttackTagElementalBurst,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 			FlatDmg:    c.MaxHP() * burstAeon[c.TalentLvlBurst()],
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewDefSingleTarget(t.Key()),
+			combat.NewSingleTargetHit(t.Key()),
 			0,
 			0,
 		)

@@ -21,5 +21,4 @@ func TestOverload(t *testing.T) {
 	if trg[0].last.Info.Abil != "overload" {
 		t.Errorf("expecting overload, got %v", trg[0].last.Info.Abil)
 	}
-
 }

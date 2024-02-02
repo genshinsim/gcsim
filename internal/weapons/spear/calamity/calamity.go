@@ -7,9 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -33,7 +33,7 @@ func (w *Weapon) incStacks() func() {
 		if w.stacks < 6 {
 			w.stacks++
 			if w.stacks != 6 {
-				w.char.QueueCharTask(w.incStacks(), w.icd) //check again in 1s if stacks are not max
+				w.char.QueueCharTask(w.incStacks(), w.icd) // check again in 1s if stacks are not max
 			}
 		}
 		w.c.Log.NewEvent("calamity gained stack", glog.LogWeaponEvent, w.char.Index).
@@ -55,18 +55,18 @@ func (w *Weapon) checkBuffExpiry(src int) func() {
 	}
 }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	//Gain 12% All Elemental DMG Bonus. Obtain Consummation for 20s after using
-	//an Elemental Skill, causing ATK to increase by 3.2% per second. This ATK
-	//increase has a maximum of 6 stacks. When the character equipped with this
-	//weapon is not on the field, Consummation's ATK increase is doubled.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	// Gain 12% All Elemental DMG Bonus. Obtain Consummation for 20s after using
+	// an Elemental Skill, causing ATK to increase by 3.2% per second. This ATK
+	// increase has a maximum of 6 stacks. When the character equipped with this
+	// weapon is not on the field, Consummation's ATK increase is doubled.
 	w := &Weapon{
 		char: char,
 		c:    c,
 	}
 	r := p.Refine
 
-	//fixed elemental dmg bonus
+	// fixed elemental dmg bonus
 	dmg := .09 + float64(r)*.03
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.PyroP] = dmg
@@ -88,8 +88,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	buffDuration := 1200 // 20s * 60
 	w.icd = 60           // 1s * 60
 
-	//atk increase per stack after using skill
-	//double bonus if not on field
+	// atk increase per stack after using skill
+	// double bonus if not on field
 	atkbonus := .024 + float64(r)*.008
 	skillPressBonus := make([]float64, attributes.EndStatType)
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {

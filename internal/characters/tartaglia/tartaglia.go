@@ -4,18 +4,17 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
-	riptideDuration    = 18 * 60
 	riptideFlashICDKey = "riptide-flash-icd"
 	riptideKey         = "riptide"
 	riptideSlashICDKey = "riptide-slash-icd"
-	energyICDKey       = "riptide-energy-icd"
-	meleeKey           = "tartagliamelee"
+	particleICDKey     = "tartaglia-particle-icd"
+	MeleeKey           = "tartagliamelee"
 )
 
 func init() {
@@ -25,13 +24,14 @@ func init() {
 // tartaglia specific character implementation
 type char struct {
 	*tmpl.Character
-	eCast       int  // the frame tartaglia casts E to enter melee stance
-	c4Src       int  // used for c4
-	mlBurstUsed bool // used for c6
+	riptideDuration int
+	eCast           int  // the frame tartaglia casts E to enter melee stance
+	c4Src           int  // used for c4
+	mlBurstUsed     bool // used for c6
 }
 
 // Initializes character
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -40,8 +40,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 5
 	c.NormalHitNum = normalHitNum
 
-	c.eCast = 0
-	c.mlBurstUsed = false
+	c.riptideDuration = 10 * 60
 
 	w.Character = &c
 
@@ -49,6 +48,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
+	c.a1()
 	c.onExitField()
 	c.onDefeatTargets()
 
@@ -60,8 +60,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		return 20
 	}
 	return c.Character.ActionStam(a, p)

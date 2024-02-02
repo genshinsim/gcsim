@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var levelMultiplier = [][]float64{
@@ -247,17 +248,12 @@ var abyssHpMultipliers = map[string]float64{
 	"Monster_Hound_Planelurker_01": 2.0,
 }
 
-type HpDrop struct {
-	DropId    int     `json:"dropId"`
-	HpPercent float64 `json:"hpPercent"`
-}
-
 type TargetParams struct {
 	HpMultiplier float64
 	Particles    bool
 }
 
-func ConfigureTarget(profile *EnemyProfile, name string, params TargetParams) error {
+func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParams) error {
 	if !(1 <= profile.Level && profile.Level <= 100) {
 		return fmt.Errorf("invalid target level: must be between 1 and 100")
 	}
@@ -272,34 +268,34 @@ func ConfigureTarget(profile *EnemyProfile, name string, params TargetParams) er
 		}
 		return nil
 	}
-	info, err := getMonsterInfo(name)
+	enemyInfo, err := getMonsterInfo(name)
 	if err != nil {
 		return err
 	}
-	info.Level = profile.Level
-	info.Pos = profile.Pos
-	info.HP = info.HpBase * levelMultiplier[info.HpGrowCurve-1][info.Level-1]
+	enemyInfo.Level = profile.Level
+	enemyInfo.Pos = profile.Pos
+	enemyInfo.HP = enemyInfo.HpBase * levelMultiplier[enemyInfo.HpGrowCurve-1][enemyInfo.Level-1]
 	if params.HpMultiplier != 0 {
-		info.HP *= float64(params.HpMultiplier)
+		enemyInfo.HP *= float64(params.HpMultiplier)
 	} else {
-		mult, ok := abyssHpMultipliers[info.MonsterName]
+		mult, ok := abyssHpMultipliers[enemyInfo.MonsterName]
 		if !ok {
 			mult = 2.5
 		}
-		info.HP *= mult
+		enemyInfo.HP *= mult
 	}
 	if !params.Particles {
-		info.ParticleDropThreshold = profile.ParticleDropThreshold
-		info.ParticleDropCount = profile.ParticleDropCount
-		info.ParticleElement = profile.ParticleElement
-		info.ParticleDrops = []HpDrop{}
+		enemyInfo.ParticleDropThreshold = profile.ParticleDropThreshold
+		enemyInfo.ParticleDropCount = profile.ParticleDropCount
+		enemyInfo.ParticleElement = profile.ParticleElement
+		enemyInfo.ParticleDrops = []info.HpDrop{}
 	}
-	*profile = info
+	*profile = enemyInfo
 	return nil
 }
 
 //go:generate go run github.com/genshinsim/gcsim/scripts/enemystat
-func getMonsterInfo(name string) (EnemyProfile, error) {
+func getMonsterInfo(name string) (info.EnemyProfile, error) {
 	codeName, ok := shortcuts[name]
 	if !ok {
 		codeName = name

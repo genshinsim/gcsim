@@ -3,8 +3,10 @@ package gorou
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames []int
@@ -18,20 +20,20 @@ func init() {
 }
 
 // Aimed charge attack damage queue generator
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim Charge Attack",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagNone,
-		ICDGroup:             combat.ICDGroupDefault,
-		StrikeType:           combat.StrikeTypeBlunt,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagNone,
+		ICDGroup:             attacks.ICDGroupDefault,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Geo,
 		Durability:           25,
 		Mult:                 aimed[c.TalentLvlAttack()],
@@ -41,12 +43,23 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
+		aimedHitmark,
+		aimedHitmark+travel,
+	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
 		State:           action.AimState,
-	}
+	}, nil
 }

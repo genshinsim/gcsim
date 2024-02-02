@@ -2,12 +2,15 @@ package zhongli
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 type stoneStele struct {
 	src    int
 	expiry int
 	c      *char
+	dir    geometry.Point
+	pos    geometry.Point
 }
 
 func (s *stoneStele) OnDestruct() {
@@ -21,3 +24,5 @@ func (s *stoneStele) Type() construct.GeoConstructType { return construct.GeoCon
 func (s *stoneStele) Expiry() int                      { return s.expiry }
 func (s *stoneStele) IsLimited() bool                  { return true }
 func (s *stoneStele) Count() int                       { return 1 }
+func (s *stoneStele) Direction() geometry.Point        { return s.dir }
+func (s *stoneStele) Pos() geometry.Point              { return s.pos }

@@ -4,31 +4,36 @@ package shield
 
 import "github.com/genshinsim/gcsim/pkg/core/attributes"
 
-type ShieldType int
+type Type int
 
 const (
-	ShieldCrystallize ShieldType = iota //lasts 15 seconds
-	ShieldNoelleSkill
-	ShieldNoelleA1
-	ShieldZhongliJadeShield
-	ShieldDionaSkill
-	ShieldBeidouThunderShield
-	ShieldXinyanSkill
-	ShieldXinyanC2
-	ShieldKaeyaC4
-	ShieldYanfeiC4
-	ShieldBell
-	ShieldYunjinSkill
-	ShieldThomaSkill
-	ShieldCandaceSkill
-	EndShieldType
+	Crystallize Type = iota // lasts 15 seconds
+	NoelleSkill
+	NoelleA1
+	ZhongliJadeShield
+	DionaSkill
+	BeidouThunderShield
+	XinyanSkill
+	XinyanC2
+	KaeyaC4
+	YanfeiC4
+	Bell
+	YunjinSkill
+	ThomaSkill
+	CandaceSkill
+	LaylaSkill
+	BaizhuBurst
+	KiraraSkill
+	TravelerHydroC4
+	EndType
 )
 
 type Shield interface {
+	ShieldOwner() int
 	Key() int
-	Type() ShieldType
+	Type() Type
 	ShieldStrength(ele attributes.Element, bonus float64) float64
-	OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) //return dmg taken and shield stays
+	OnDamage(dmg float64, ele attributes.Element, bonus float64) (float64, bool) // return dmg taken and shield stays
 	OnExpire()
 	OnOverwrite()
 	Expiry() int

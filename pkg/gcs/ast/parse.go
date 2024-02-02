@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
@@ -49,16 +50,16 @@ func (t Token) precedence() precedence {
 }
 
 // Parse returns the ActionList and any error that prevents the ActionList from being parsed
-func (p *Parser) Parse() (*ActionList, error) {
+func (p *Parser) Parse() (*info.ActionList, Node, error) {
 	var err error
 	for state := parseRows; state != nil; {
 		state, err = state(p)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 	}
 
-	//sanity checks
+	// sanity checks
 	if len(p.charOrder) > 4 {
 		p.res.Errors = append(p.res.Errors, fmt.Errorf("config contains a total of %v characters; cannot exceed 4", len(p.charOrder)))
 	}
@@ -70,21 +71,21 @@ func (p *Parser) Parse() (*ActionList, error) {
 	initialCharFound := false
 	for _, v := range p.charOrder {
 		p.res.Characters = append(p.res.Characters, *p.chars[v])
-		//check if active is part of the team
+		// check if active is part of the team
 		if v == p.res.InitialChar {
 			initialCharFound = true
 		}
-		//check number of set
+		// check number of set
 		count := 0
 		for _, c := range p.chars[v].Sets {
 			count += c
 		}
 		if count > 5 {
-			p.res.Errors = append(p.res.Errors, fmt.Errorf("character %v have more than 5 total set items", v.String()))
+			p.res.Errors = append(p.res.Errors, fmt.Errorf("character %v has more than 5 total set items", v.String()))
 		}
 	}
 
-	if !initialCharFound {
+	if !initialCharFound && p.res.InitialChar != 0 {
 		p.res.Errors = append(p.res.Errors, fmt.Errorf("active char %v not found in team", p.res.InitialChar))
 	}
 
@@ -92,14 +93,14 @@ func (p *Parser) Parse() (*ActionList, error) {
 		p.res.Errors = append(p.res.Errors, errors.New("config does not contain any targets"))
 	}
 
-	//set some sane defaults; leave pos default to 0,0
+	// set some sane defaults; leave pos default to 0,0
 	for i := range p.res.Targets {
 		if p.res.Targets[i].Pos.R == 0 {
 			p.res.Targets[i].Pos.R = 1
 		}
 	}
 
-	//check all targets have hp if damage mode
+	// check all targets have hp if damage mode
 	if p.res.Settings.DamageMode {
 		for i, v := range p.res.Targets {
 			if v.HP == 0 {
@@ -108,26 +109,26 @@ func (p *Parser) Parse() (*ActionList, error) {
 		}
 	}
 
-	//build the err msgs
+	// build the err msgs
 	p.res.ErrorMsgs = make([]string, 0, len(p.res.Errors))
 	for _, v := range p.res.Errors {
 		p.res.ErrorMsgs = append(p.res.ErrorMsgs, v.Error())
 	}
 
-	return p.res, nil
+	return p.res, p.prog, nil
 }
 
 func parseRows(p *Parser) (parseFn, error) {
 	switch n := p.peek(); n.Typ {
 	case itemCharacterKey:
 		p.next()
-		//check if this is character stats etc or an action
+		// check if this is character stats etc or an action
 		if p.peek().Typ != itemActionKey {
-			//not an ActionStmt
-			//set up char and set key
+			// not an ActionStmt
+			// set up char and set key
 			key, ok := shortcut.CharNameToKey[n.Val]
 			if !ok {
-				//this would never happen
+				// this would never happen
 				return nil, fmt.Errorf("ln%v: unexpected error; invalid char key %v", n.line, n.Val)
 			}
 			if _, ok := p.chars[key]; !ok {
@@ -137,17 +138,17 @@ func parseRows(p *Parser) (parseFn, error) {
 			return parseCharacter, nil
 		}
 		p.backup()
-		//parse action item
+		// parse action item
 		// return parseProgram, nil
 		node, err := p.parseStatement()
 		if err != nil {
 			return nil, err
 		}
-		p.res.Program.append(node)
+		p.prog.append(node)
 		return parseRows, nil
 	case keywordActive:
 		p.next()
-		//next should be char then end line
+		// next should be char then end line
 		char, err := p.consume(itemCharacterKey)
 		if err != nil {
 			return nil, fmt.Errorf("ln%v: setting active char: invalid char %v", char.line, char.Val)
@@ -164,14 +165,17 @@ func parseRows(p *Parser) (parseFn, error) {
 	case keywordEnergy:
 		p.next()
 		return parseEnergy, nil
+	case keywordHurt:
+		p.next()
+		return parseHurt, nil
 	case keywordOptions:
 		p.next()
 		return parseOptions, nil
 	case itemEOF:
 		return nil, nil
-	default: //default should be look for gcsl
+	default: // default should be look for gcsl
 		node, err := p.parseStatement()
-		p.res.Program.append(node)
+		p.prog.append(node)
 		if err != nil {
 			return nil, err
 		}
@@ -180,7 +184,7 @@ func parseRows(p *Parser) (parseFn, error) {
 }
 
 func (p *Parser) parseStatement() (Node, error) {
-	//some statements end in semi, other don't
+	// some statements end in semi, other don't
 	hasSemi := true
 	stmtType := ""
 	var node Node
@@ -209,7 +213,9 @@ func (p *Parser) parseStatement() (Node, error) {
 		node, err = p.parseSwitch()
 		hasSemi = false
 	case keywordFn:
-		node, err = p.parseFn()
+		// this is parsing any function declaration that does not start with let x =
+		// functionally the same as a let stmt
+		node, err = p.parseFnStmt()
 		hasSemi = false
 	case keywordWhile:
 		node, err = p.parseWhile()
@@ -222,23 +228,23 @@ func (p *Parser) parseStatement() (Node, error) {
 		hasSemi = false
 	case itemIdentifier:
 		p.next()
-		//check if = after
+		// check if = after
 		if x := p.peek(); x.Typ == itemAssign {
 			p.backup()
 			node, err = p.parseAssign()
 			break
 		}
-		//it's an expr if no assign
+		// it's an expr if no assign
 		p.backup()
 		fallthrough
 	default:
 		node, err = p.parseExpr(Lowest)
 	}
-	//check if any of the parse error'd
+	// check if any of the parse error'd
 	if err != nil {
 		return node, err
 	}
-	//check for semi
+	// check for semi
 	if hasSemi {
 		n, err := p.consume(itemTerminateLine)
 		if err != nil {
@@ -248,45 +254,17 @@ func (p *Parser) parseStatement() (Node, error) {
 	return node, nil
 }
 
-func (p *Parser) parseLet() (Stmt, error) {
-	//var ident = expr;
-	n := p.next()
-
-	ident, err := p.consume(itemIdentifier)
-	if err != nil {
-		//next token not an identifier
-		return nil, fmt.Errorf("ln%v: expecting identifier after let, got %v", ident.line, ident.Val)
-	}
-
-	a, err := p.consume(itemAssign)
-	if err != nil {
-		//next token not and identifier
-		return nil, fmt.Errorf("ln%v: expecting = after identifier in let statement, got %v", a.line, a.Val)
-	}
-
-	expr, err := p.parseExpr(Lowest)
-
-	stmt := &LetStmt{
-		Pos:   n.pos,
-		Ident: ident,
-		Val:   expr,
-	}
-
-	return stmt, err
-}
-
 // expecting ident = expr
 func (p *Parser) parseAssign() (Stmt, error) {
-
 	ident, err := p.consume(itemIdentifier)
 	if err != nil {
-		//next token not and identifier
+		// next token not and identifier
 		return nil, fmt.Errorf("ln%v: expecting identifier in assign statement, got %v", ident.line, ident.Val)
 	}
 
 	a, err := p.consume(itemAssign)
 	if err != nil {
-		//next token not and identifier
+		// next token not and identifier
 		return nil, fmt.Errorf("ln%v: expecting = after identifier in assign statement, got %v", a.line, a.Val)
 	}
 
@@ -303,7 +281,6 @@ func (p *Parser) parseAssign() (Stmt, error) {
 	}
 
 	return stmt, nil
-
 }
 
 func (p *Parser) parseIf() (Stmt, error) {
@@ -320,25 +297,25 @@ func (p *Parser) parseIf() (Stmt, error) {
 		return nil, err
 	}
 
-	//expecting a { next
+	// expecting a { next
 	if n := p.peek(); n.Typ != itemLeftBrace {
 		return nil, fmt.Errorf("ln%v: expecting { after if, got %v", n.line, n.Val)
 	}
 
-	stmt.IfBlock, err = p.parseBlock() //parse block here
+	stmt.IfBlock, err = p.parseBlock() // parse block here
 	if err != nil {
 		return nil, err
 	}
 
-	//stop if no else
+	// stop if no else
 	if n := p.peek(); n.Typ != keywordElse {
 		return stmt, nil
 	}
 
-	//skip the else keyword
+	// skip the else keyword
 	p.next()
 
-	//expecting another stmt (should be either if or block)
+	// expecting another stmt (should be either if or block)
 	block, err := p.parseStatement()
 	switch block.(type) {
 	case *IfStmt, *BlockStmt:
@@ -353,8 +330,7 @@ func (p *Parser) parseIf() (Stmt, error) {
 }
 
 func (p *Parser) parseSwitch() (Stmt, error) {
-
-	//switch expr { }
+	// switch expr { }
 	n, err := p.consume(keywordSwitch)
 	if err != nil {
 		panic("unreachable")
@@ -364,27 +340,24 @@ func (p *Parser) parseSwitch() (Stmt, error) {
 		Pos: n.pos,
 	}
 
-	//condition can be optional; if next item is itemLeftBrace then simply set condition to 1
+	// condition can be optional; if next item is itemLeftBrace then simply set condition to 1
 	if n := p.peek(); n.Typ != itemLeftBrace {
 		stmt.Condition, err = p.parseExpr(Lowest)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		stmt.Condition = &NumberLit{
-			Pos:    n.pos,
-			IntVal: 1,
-		}
+		stmt.Condition = nil
 	}
 
 	if n := p.next(); n.Typ != itemLeftBrace {
 		return nil, fmt.Errorf("ln%v: expecting { after switch, got %v", n.line, n.Val)
 	}
 
-	//look for cases while not }
+	// look for cases while not }
 	for n := p.next(); n.Typ != itemRightBrace; n = p.next() {
 		var err error
-		//expecting case expr: block
+		// expecting case expr: block
 		switch n.Typ {
 		case keywordCase:
 			cs := &CaseStmt{
@@ -394,7 +367,7 @@ func (p *Parser) parseSwitch() (Stmt, error) {
 			if err != nil {
 				return nil, err
 			}
-			//colon, then read until we hit next case
+			// colon, then read until we hit next case
 			if n := p.peek(); n.Typ != itemColon {
 				return nil, fmt.Errorf("ln%v: expecting : after case, got %v", n.line, n.Val)
 			}
@@ -404,7 +377,7 @@ func (p *Parser) parseSwitch() (Stmt, error) {
 			}
 			stmt.Cases = append(stmt.Cases, cs)
 		case keywordDefault:
-			//colon, then read until we hit next case
+			// colon, then read until we hit next case
 			if p.peek().Typ != itemColon {
 				return nil, fmt.Errorf("ln%v: expecting : after default, got %v", n.line, n.Val)
 			}
@@ -415,24 +388,22 @@ func (p *Parser) parseSwitch() (Stmt, error) {
 		default:
 			return nil, fmt.Errorf("ln%v: expecting case or default token, got %v", n.line, n.Val)
 		}
-
 	}
 
 	return stmt, nil
 }
 
 func (p *Parser) parseCaseBody() (*BlockStmt, error) {
-	n := p.next() //start with :
+	n := p.next() // start with :
 	block := newBlockStmt(n.pos)
 	var node Node
 	var err error
-	//parse line by line until we hit }
+	// parse line by line until we hit }
 	for {
-		//make sure we don't get any illegal lines
+		// make sure we don't get any illegal lines
 		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
-				n := p.next()
 				n = p.next()
 				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.line, n.Val)
 			}
@@ -445,7 +416,7 @@ func (p *Parser) parseCaseBody() (*BlockStmt, error) {
 		case itemEOF:
 			return nil, fmt.Errorf("reached end of file without closing }")
 		}
-		//parse statement here
+		// parse statement here
 		node, err = p.parseStatement()
 		if err != nil {
 			return nil, err
@@ -469,12 +440,12 @@ func (p *Parser) parseWhile() (Stmt, error) {
 		return nil, err
 	}
 
-	//expecting a { next
+	// expecting a { next
 	if n := p.peek(); n.Typ != itemLeftBrace {
 		return nil, fmt.Errorf("ln%v: expecting { after while, got %v", n.line, n.Val)
 	}
 
-	stmt.WhileBlock, err = p.parseBlock() //parse block here
+	stmt.WhileBlock, err = p.parseBlock() // parse block here
 
 	return stmt, err
 }
@@ -504,11 +475,11 @@ func (p *Parser) parseFor() (Stmt, error) {
 	var err error
 
 	if n := p.peek(); n.Typ == itemLeftBrace {
-		stmt.Body, err = p.parseBlock() //parse block here
+		stmt.Body, err = p.parseBlock() // parse block here
 		return stmt, err
 	}
 
-	//init
+	// init
 	if p.existVarDecl() {
 		if n := p.peek(); n.Typ == keywordLet {
 			stmt.Init, err = p.parseLet()
@@ -522,18 +493,18 @@ func (p *Parser) parseFor() (Stmt, error) {
 		if n := p.peek(); n.Typ != itemTerminateLine {
 			return nil, fmt.Errorf("ln%v: expecting ; after statement, got %v", n.line, n.Val)
 		}
-		p.next() //skip ;
+		p.next() // skip ;
 	}
 
-	//cond
+	// cond
 	stmt.Cond, err = p.parseExpr(Lowest)
 	if err != nil {
 		return nil, err
 	}
 
-	//post
+	// post
 	if n := p.peek(); n.Typ == itemTerminateLine {
-		p.next() //skip ;
+		p.next() // skip ;
 		if n := p.peek(); n.Typ != itemLeftBrace {
 			stmt.Post, err = p.parseAssign()
 			if err != nil {
@@ -542,85 +513,18 @@ func (p *Parser) parseFor() (Stmt, error) {
 		}
 	}
 
-	//expecting a { next
+	// expecting a { next
 	if n := p.peek(); n.Typ != itemLeftBrace {
 		return nil, fmt.Errorf("ln%v: expecting { after for, got %v", n.line, n.Val)
 	}
 
-	stmt.Body, err = p.parseBlock() //parse block here
+	stmt.Body, err = p.parseBlock() // parse block here
 
 	return stmt, err
 }
 
-func (p *Parser) parseFn() (Stmt, error) {
-	//fn ident(...ident){ block }
-	//consume fn
-	n := p.next()
-	stmt := &FnStmt{
-		Pos: n.pos,
-	}
-
-	//ident next
-	n, err := p.consume(itemIdentifier)
-	if err != nil {
-		return nil, fmt.Errorf("ln%v: expecting identifier after fn, got %v", n.line, n.Val)
-	}
-	stmt.FunVal = n
-
-	if l := p.peek(); l.Typ != itemLeftParen {
-		return nil, fmt.Errorf("ln%v: expecting { after identifier, got %v", l.line, l.Val)
-	}
-
-	stmt.Args, err = p.parseFnArgs()
-	if err != nil {
-		return nil, err
-	}
-	stmt.Body, err = p.parseBlock()
-	if err != nil {
-		return nil, err
-	}
-
-	//check that args are not duplicates
-	chk := make(map[string]bool)
-	for _, v := range stmt.Args {
-		if _, ok := chk[v.Value]; ok {
-			return nil, fmt.Errorf("fn %v contains duplicated param name %v", stmt.FunVal.Val, v.Value)
-		}
-		chk[v.Value] = true
-	}
-
-	return stmt, nil
-}
-
-func (p *Parser) parseFnArgs() ([]*Ident, error) {
-	//consume (
-	var args []*Ident
-	p.next()
-	for n := p.next(); n.Typ != itemRightParen; n = p.next() {
-		a := &Ident{}
-		//expecting ident, comma
-		if n.Typ != itemIdentifier {
-			return nil, fmt.Errorf("ln%v: expecting identifier in param list, got %v", n.line, n.Val)
-		}
-		a.Pos = n.pos
-		a.Value = n.Val
-
-		args = append(args, a)
-
-		//if next token is a comma, then there should be another ident after that
-		//otherwise we have a problem
-		if l := p.peek(); l.Typ == itemComma {
-			p.next() //consume the comma
-			if l = p.peek(); l.Typ != itemIdentifier {
-				return nil, fmt.Errorf("ln%v: expecting another identifier after comma in param list, got %v", n.line, n.Val)
-			}
-		}
-	}
-	return args, nil
-}
-
 func (p *Parser) parseReturn() (Stmt, error) {
-	n := p.next() //return
+	n := p.next() // return
 	stmt := &ReturnStmt{
 		Pos: n.pos,
 	}
@@ -648,22 +552,7 @@ func (p *Parser) parseCtrl() (Stmt, error) {
 }
 
 func (p *Parser) parseCall(fun Expr) (Expr, error) {
-	// ident has aready been consumed
-	// switch fun.(type) {
-	// case *Ident:
-	// case *FnExpr:
-	// default:
-	// 	panic("invalid fun expression to function call")
-	// }
-
-	//for our purpose, we do not allow closure or functions returning
-	//anything other than a number; therefore call must start with
-	//a ident
-	if _, ok := fun.(*Ident); !ok {
-		return nil, fmt.Errorf("expecting function calls to start with ident, got %v", fun.String())
-	}
-
-	//expecting (params)
+	// expecting (params)
 	n, err := p.consume(itemLeftParen)
 	if err != nil {
 		return nil, fmt.Errorf("expecting ( after ident, got %v", fun.String())
@@ -675,19 +564,18 @@ func (p *Parser) parseCall(fun Expr) (Expr, error) {
 	expr.Args, err = p.parseCallArgs()
 
 	return expr, err
-
 }
 
 func (p *Parser) parseCallArgs() ([]Expr, error) {
 	var args []Expr
 
 	if p.peek().Typ == itemRightParen {
-		//consume the right paren
+		// consume the right paren
 		p.next()
 		return args, nil
 	}
 
-	//next should be an expression
+	// next should be an expression
 	exp, err := p.parseExpr(Lowest)
 	if err != nil {
 		return args, err
@@ -695,7 +583,7 @@ func (p *Parser) parseCallArgs() ([]Expr, error) {
 	args = append(args, exp)
 
 	for p.peek().Typ == itemComma {
-		p.next() //skip the comma
+		p.next() // skip the comma
 		exp, err = p.parseExpr(Lowest)
 		if err != nil {
 			return args, err
@@ -714,10 +602,10 @@ func (p *Parser) parseCallArgs() ([]Expr, error) {
 // check if it's a valid character action, assuming current token is "character"
 func (p *Parser) peekValidCharAction() bool {
 	p.next()
-	//check if this is character stats etc or an action
+	// check if this is character stats etc or an action
 	if p.peek().Typ != itemActionKey {
 		p.backup()
-		//not an ActionStmt
+		// not an ActionStmt
 		return false
 	}
 	p.backup()
@@ -726,37 +614,35 @@ func (p *Parser) peekValidCharAction() bool {
 
 // parseBlock return a node contain and BlockStmt
 func (p *Parser) parseBlock() (*BlockStmt, error) {
-	//should be surronded by {}
+	// should be surronded by {}
 	n, err := p.consume(itemLeftBrace)
 	if err != nil {
 		return nil, fmt.Errorf("ln%v: expecting {, got %v", n.line, n.Val)
 	}
 	block := newBlockStmt(n.pos)
 	var node Node
-	//parse line by line until we hit }
+	// parse line by line until we hit }
 	for {
-		//make sure we don't get any illegal lines
+		// make sure we don't get any illegal lines
 		switch n := p.peek(); n.Typ {
 		case itemCharacterKey:
 			if !p.peekValidCharAction() {
-				n := p.next()
 				n = p.next()
 				return nil, fmt.Errorf("ln%v: expecting action after character token, got %v", n.line, n.Val)
 			}
 		case itemRightBrace:
-			p.next() //consume the braces
+			p.next() // consume the braces
 			return block, nil
 		case itemEOF:
 			return nil, fmt.Errorf("reached end of file without closing }")
 		}
-		//parse statement here
+		// parse statement here
 		node, err = p.parseStatement()
 		if err != nil {
 			return nil, err
 		}
 		block.append(node)
 	}
-
 }
 func (p *Parser) parseExpr(pre precedence) (Expr, error) {
 	t := p.next()
@@ -792,14 +678,14 @@ func (p *Parser) parseIdent() (Expr, error) {
 }
 
 func (p *Parser) parseField() (Expr, error) {
-	//next is field, keep parsing as long as it is still fields
-	//then concat them all together
+	// next is field, keep parsing as long as it is still fields
+	// then concat them all together
 	n := p.next()
 	fields := make([]string, 0, 5)
 	for ; n.Typ == itemField; n = p.next() {
 		fields = append(fields, strings.Trim(n.Val, "."))
 	}
-	//we would have consumed one too many here
+	// we would have consumed one too many here
 	p.backup()
 	return &Field{Pos: n.pos, Value: fields}, nil
 }
@@ -810,10 +696,10 @@ func (p *Parser) parseString() (Expr, error) {
 }
 
 func (p *Parser) parseNumber() (Expr, error) {
-	//string, int, float, or bool
+	// string, int, float, or bool
 	n := p.next()
 	num := &NumberLit{Pos: n.pos}
-	//try parse int, if not ok then try parse float
+	// try parse int, if not ok then try parse float
 	iv, err := strconv.ParseInt(n.Val, 10, 64)
 	if err == nil {
 		num.IntVal = iv
@@ -825,6 +711,23 @@ func (p *Parser) parseNumber() (Expr, error) {
 		}
 		num.IsFloat = true
 		num.FloatVal = fv
+	}
+	return num, nil
+}
+
+func (p *Parser) parseBool() (Expr, error) {
+	// bool is a number (true = 1, false = 0)
+	n := p.next()
+	num := &NumberLit{Pos: n.pos}
+	switch n.Val {
+	case TrueVal:
+		num.IntVal = 1
+		num.FloatVal = 1
+	case FalseVal:
+		num.IntVal = 0
+		num.FloatVal = 0
+	default:
+		return nil, fmt.Errorf("ln%v: expecting boolean, got %v", n.line, n.Val)
 	}
 	return num, nil
 }
@@ -860,7 +763,7 @@ func (p *Parser) parseBinaryExpr(left Expr) (Expr, error) {
 }
 
 func (p *Parser) parseParen() (Expr, error) {
-	//skip the paren
+	// skip the paren
 	p.next()
 
 	exp, err := p.parseExpr(Lowest)
@@ -874,4 +777,47 @@ func (p *Parser) parseParen() (Expr, error) {
 	p.next() // consume the right paren
 
 	return exp, nil
+}
+
+func (p *Parser) parseMap() (Expr, error) {
+	// skip the paren
+	n := p.next()
+	expr := &MapExpr{Pos: n.pos}
+
+	if p.peek().Typ == itemRightSquareParen { // empty map
+		p.next()
+		return expr, nil
+	}
+
+	expr.Fields = make(map[string]Expr)
+	// loop until we hit square paren
+	for {
+		// we're expecting ident = int
+		i, err := p.consume(itemIdentifier)
+		if err != nil {
+			return nil, fmt.Errorf("ln%v: expecting identifier in map expression, got %v", i.line, i.Val)
+		}
+
+		a, err := p.consume(itemAssign)
+		if err != nil {
+			return nil, fmt.Errorf("ln%v: expecting = after identifier in map expression, got %v", a.line, a.Val)
+		}
+
+		e, err := p.parseExpr(Lowest)
+		if err != nil {
+			return nil, err
+		}
+		expr.Fields[i.Val] = e
+
+		// if we hit ], return; if we hit , keep going, other wise error
+		n := p.next()
+		switch n.Typ {
+		case itemRightSquareParen:
+			return expr, nil
+		case itemComma:
+			// do nothing, keep going
+		default:
+			return nil, fmt.Errorf("ln%v: <action param> bad token %v", n.line, n)
+		}
+	}
 }

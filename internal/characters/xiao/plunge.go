@@ -1,11 +1,13 @@
 package xiao
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 var highPlungeFrames []int
@@ -33,16 +35,9 @@ func init() {
 // High Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
-		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionHighPlunge)
-		return action.ActionInfo{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}
+		return action.Info{}, errors.New("only plunge after using jump")
 	}
 
 	collision, ok := p["collision"]
@@ -52,42 +47,49 @@ func (c *char) HighPlungeAttack(p map[string]int) action.ActionInfo {
 
 	if collision > 0 {
 		c.plungeCollision(collisionHitmark)
+	}
+
+	poiseDMG := 150.0
+	highPlungeRadius := 5.0
+	if c.StatusIsActive(burstBuffKey) {
+		poiseDMG = 225
+		highPlungeRadius = 6
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "High Plunge",
-		AttackTag:  combat.AttackTagPlunge,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagPlunge,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   poiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       highplunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), highPlungeHitmark, highPlungeHitmark, c.c6cb())
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, highPlungeRadius),
+		highPlungeHitmark,
+		highPlungeHitmark,
+		c.c6cb(),
+	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(highPlungeFrames),
 		AnimationLength: highPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   highPlungeFrames[action.ActionAttack],
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
 
 // Low Plunge attack damage queue generator
 // Use the "collision" optional argument if you want to do a falling hit on the way down
 // Default = 0
-func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
+func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.Core.Player.CurrentState() != action.JumpState {
-		c.Core.Log.NewEvent("only plunge after using jump", glog.LogActionEvent, c.Index).
-			Write("action", action.ActionLowPlunge)
-		return action.ActionInfo{
-			Frames:          func(action.Action) int { return 1200 },
-			AnimationLength: 1200,
-			CanQueueAfter:   1200,
-			State:           action.Idle,
-		}
+		return action.Info{}, errors.New("only plunge after using jump")
 	}
 
 	collision, ok := p["collision"]
@@ -99,25 +101,39 @@ func (c *char) LowPlungeAttack(p map[string]int) action.ActionInfo {
 		c.plungeCollision(collisionHitmark)
 	}
 
+	poiseDMG := 100.0
+	lowPlungeRadius := 3.0
+	if c.StatusIsActive(burstBuffKey) {
+		poiseDMG = 150
+		lowPlungeRadius = 4
+	}
+
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Low Plunge",
-		AttackTag:  combat.AttackTagPlunge,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagPlunge,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   poiseDMG,
 		Element:    attributes.Physical,
 		Durability: 25,
 		Mult:       lowplunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), lowPlungeHitmark, lowPlungeHitmark, c.c6cb())
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, lowPlungeRadius),
+		lowPlungeHitmark,
+		lowPlungeHitmark,
+		c.c6cb(),
+	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeFrames[action.ActionSkill],
 		State:           action.PlungeAttackState,
-	}
+	}, nil
 }
 
 // Plunge normal falling attack damage queue generator
@@ -126,12 +142,13 @@ func (c *char) plungeCollision(delay int) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Plunge Collision",
-		AttackTag:  combat.AttackTagPlunge,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagPlunge,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 0,
 		Mult:       plunge[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1), delay, delay)
 }

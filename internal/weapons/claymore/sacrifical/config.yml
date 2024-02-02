@@ -1,0 +1,4 @@
+package_name: sacrificial
+genshin_id: 12403
+key: sacrificialgreatsword
+skip_data_func: true

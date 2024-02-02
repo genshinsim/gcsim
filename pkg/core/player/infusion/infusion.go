@@ -1,45 +1,45 @@
 package infusion
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
 type WeaponInfusion struct {
 	Key             string
 	Ele             attributes.Element
-	Tags            []combat.AttackTag
+	Tags            []attacks.AttackTag
 	Expiry          float64
 	CanBeOverridden bool
 }
 
 const MaxTeamSize = 4
 
-type InfusionHandler struct {
+type Handler struct {
 	f        *int
 	log      glog.Logger
 	debug    bool
 	infusion [MaxTeamSize]WeaponInfusion
 }
 
-func New(f *int, log glog.Logger, debug bool) InfusionHandler {
-	return InfusionHandler{
+func New(f *int, log glog.Logger, debug bool) Handler {
+	return Handler{
 		f:     f,
 		log:   log,
 		debug: debug,
 	}
 }
 
-func (i *InfusionHandler) ExtendInfusion(char int, factor, dur float64) {
-	//if infusion is active, extend it
+func (i *Handler) ExtendInfusion(char int, factor, dur float64) {
+	// if infusion is active, extend it
 	if i.infusion[char].Expiry < float64(*i.f) || i.infusion[char].Expiry == -1 {
 		return
 	}
 	i.infusion[char].Expiry += dur * (1 - factor)
 }
 
-func (i *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...combat.AttackTag) {
+func (i *Handler) AddWeaponInfuse(char int, key string, ele attributes.Element, dur int, canBeOverriden bool, tags ...attacks.AttackTag) {
 	if !i.infusion[char].CanBeOverridden && i.infusion[char].Expiry > float64(*i.f) {
 		return
 	}
@@ -56,18 +56,18 @@ func (i *InfusionHandler) AddWeaponInfuse(char int, key string, ele attributes.E
 	i.infusion[char] = inf
 }
 
-func (i *InfusionHandler) WeaponInfuseIsActive(char int, key string) bool {
+func (i *Handler) WeaponInfuseIsActive(char int, key string) bool {
 	if i.infusion[char].Key != key {
 		return false
 	}
-	//check expiry
+	// check expiry
 	if i.infusion[char].Expiry < float64(*i.f) && i.infusion[char].Expiry > -1 {
 		return false
 	}
 	return true
 }
 
-func (i *InfusionHandler) Infused(char int, a combat.AttackTag) attributes.Element {
+func (i *Handler) Infused(char int, a attacks.AttackTag) attributes.Element {
 	if i.infusion[char].Key != "" {
 		ok := false
 		for _, v := range i.infusion[char].Tags {

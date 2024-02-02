@@ -4,9 +4,9 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -15,10 +15,11 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	bunnies []bunny
+	burstRadius float64
+	bunnies     []*Bunny
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -27,7 +28,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 	c.BurstCon = 3
 	c.SkillCon = 5
 
-	c.bunnies = make([]bunny, 0, 2)
+	c.burstRadius = 2
+	c.bunnies = make([]*Bunny, 0, 2)
 
 	if c.Base.Cons >= 4 {
 		c.SetNumCharges(action.ActionSkill, 2)
@@ -41,6 +43,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 func (c *char) Init() error {
 	c.a1()
 	if c.Base.Cons >= 2 {
+		c.c2()
 		c.overloadExplode()
 	}
 	return nil

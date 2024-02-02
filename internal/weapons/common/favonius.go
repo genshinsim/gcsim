@@ -8,20 +8,26 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Favonius struct {
 	Index int
+	data  *model.WeaponData
 }
 
-func (b *Favonius) SetIndex(idx int) { b.Index = idx }
-func (b *Favonius) Init() error      { return nil }
+func (b *Favonius) SetIndex(idx int)        { b.Index = idx }
+func (b *Favonius) Init() error             { return nil }
+func (b *Favonius) Data() *model.WeaponData { return b.data }
 
-func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	b := &Favonius{}
+func NewFavonius(data *model.WeaponData) core.NewWeaponFunc {
+	b := &Favonius{data: data}
+	return b.NewWeapon
+}
 
+func (b *Favonius) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	const icdKey = "favonius-cd"
 
 	prob := 0.50 + float64(p.Refine)*0.1
@@ -29,7 +35,11 @@ func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfi
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
+		dmg := args[2].(float64)
 		crit := args[3].(bool)
+		if dmg == 0 {
+			return false
+		}
 		if !crit {
 			return false
 		}
@@ -50,7 +60,7 @@ func NewFavonius(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfi
 		//TODO: used to be 80
 		c.QueueParticle("favonius-"+char.Base.Key.String(), 3, attributes.NoElement, char.ParticleDelay)
 
-		//adds a modifier to track icd; this should be fine since it's per char and not global
+		// adds a modifier to track icd; this should be fine since it's per char and not global
 		char.AddStatus(icdKey, cd, true)
 
 		return false

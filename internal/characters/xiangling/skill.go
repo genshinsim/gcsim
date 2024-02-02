@@ -3,8 +3,10 @@ package xiangling
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -12,6 +14,7 @@ var skillFrames []int
 const (
 	infuseWindow     = 30
 	infuseDurability = 20
+	particleICDKey   = "xiangling-particle-icd"
 )
 
 func init() {
@@ -21,35 +24,58 @@ func init() {
 	skillFrames[action.ActionSwap] = 38
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Guoba",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       guobaTick[c.TalentLvlSkill()],
 	}
 
-	// guoba spawns at cd frame
-	c.Core.Status.Add("xianglingguoba", 500+13)
+	// delay in frames from guoba expiry until the a4 chili pepper is picked up
+	a4Delay, ok := p["a4_delay"]
+	if !ok {
+		a4Delay = -1
+	}
+	if a4Delay > 10*60 {
+		a4Delay = 10 * 60
+	}
 
+	// guoba spawns at cd frame
 	// lasts 7.3 seconds, shoots every 100 frames
-	// delay := 126 // first tick at 126
-	// snap := c.Snapshot(&ai)
-	guoba := c.newGuoba(ai)
 	c.Core.Tasks.Add(func() {
+		guoba := c.newGuoba(ai)
+		c.AddStatus("xianglingguoba", guoba.Duration, false)
 		c.Core.Combat.AddGadget(guoba)
+		// queue up a4 relative to guoba expiry
+		if a4Delay < 0 {
+			return
+		}
+		c.a4(guoba.Duration + a4Delay)
 	}, 13)
 
 	c.SetCDWithDelay(action.ActionSkill, 12*60, 13)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
 	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 1*60, false)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
 }

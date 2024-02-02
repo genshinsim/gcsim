@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,7 +31,7 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	// Gain 12% All Elemental DMG Bonus. Obtain the Tireless Hunt effect after
 	// hitting an opponent with a Charged Attack. This effect increases Charged
 	// Attack DMG by 160% of Elemental Mastery. This effect will be removed after
@@ -59,7 +60,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagExtra {
+		if atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		// The buff is a ping dependent action, we're assuming the first hit won't
@@ -73,7 +74,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if !char.StatusIsActive(buffKey) {
 			return false
 		}
-		baseDmgAdd := atk.Snapshot.Stats[attributes.EM] * caBoost
+		baseDmgAdd := char.Stat(attributes.EM) * caBoost
 		atk.Info.FlatDmg += baseDmgAdd
 		procCount -= 1
 		if procCount <= 0 {

@@ -1,24 +1,25 @@
 package xingqiu
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-//start a new orbital or extended if already active; duration is length
-//and delay is first tick starting
-func (c *char) applyOrbital(duration int, delay int) {
+// start a new orbital or extended if already active; duration is length
+// and delay is first tick starting
+func (c *char) applyOrbital(duration, delay int) {
 	src := c.Core.F
 	c.Core.Log.NewEvent(
 		"Applying orbital", glog.LogCharacterEvent, c.Index,
 	).Write(
 		"current status", c.StatusExpiry(orbitalKey),
 	)
-	//check if orbitals already active, if active extend duration
-	//other wise start first tick func
+	// check if orbitals already active, if active extend duration
+	// other wise start first tick func
 	if !c.orbitalActive {
-		//use hitlag affected queue
+		// use hitlag affected queue
 		c.QueueCharTask(c.orbitalTickTask(src), delay)
 		c.orbitalActive = true
 		c.Core.Log.NewEvent(
@@ -54,9 +55,10 @@ func (c *char) orbitalTickTask(src int) func() {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Xingqiu Orbital",
-			AttackTag:  combat.AttackTagNone,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagNone,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Hydro,
 			Durability: 25,
 		}
@@ -70,9 +72,9 @@ func (c *char) orbitalTickTask(src int) func() {
 			"src", src,
 		)
 
-		//queue up next instance
+		// queue up next instance
 		c.QueueCharTask(c.orbitalTickTask(src), 135)
 
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), -1, 1)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2), -1, 1)
 	}
 }

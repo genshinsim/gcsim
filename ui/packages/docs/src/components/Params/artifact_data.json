@@ -1,0 +1,9 @@
+{
+  "huskofopulentdreams": [
+    {
+      "ability": "Husk of Opulent Dreams",
+      "param": "stacks",
+      "desc": "Number of stacks for the 4pc affect to gain at the beginning. Default 0, maximum 4."
+    }
+  ]
+}

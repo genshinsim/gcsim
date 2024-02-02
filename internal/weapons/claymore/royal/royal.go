@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.RoyalGreatsword, common.NewRoyal)
+	core.RegisterWeaponFunc(keys.RoyalGreatsword, common.NewRoyal(base))
 }

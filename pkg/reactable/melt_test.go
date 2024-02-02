@@ -27,7 +27,7 @@ func TestCryoMelt(t *testing.T) {
 	}
 	trg.React(next)
 	trg.AttachOrRefill(next)
-	//check to see if src has amped flag now
+	// check to see if src has amped flag now
 
 	if next.Info.Amped != true && next.Info.AmpMult != 1.5 {
 		t.Errorf("expecting amped to be true with factor 1.5, got %v: %v", next.Info.Amped, next.Info.AmpMult)
@@ -57,7 +57,7 @@ func TestPyroMelt(t *testing.T) {
 	}
 	trg.React(next)
 	trg.AttachOrRefill(next)
-	//check to see if src has amped flag now
+	// check to see if src has amped flag now
 
 	if next.Info.Amped != true && next.Info.AmpMult != 2 {
 		t.Errorf("expecting amped to be true with factor 2, got %v: %v", next.Info.Amped, next.Info.AmpMult)
@@ -99,7 +99,7 @@ func TestPyroFrozenCryoMelt(t *testing.T) {
 	}
 	trg.React(next)
 	trg.AttachOrRefill(next)
-	//check to see if src has amped flag now
+	// check to see if src has amped flag now
 
 	if next.Info.Amped != true && next.Info.AmpMult != 2 {
 		t.Errorf("expecting amped to be true with factor 2, got %v: %v", next.Info.Amped, next.Info.AmpMult)

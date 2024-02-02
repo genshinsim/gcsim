@@ -1,4 +1,4 @@
-﻿package fruitoffulfillment
+package fruitoffulfillment
 
 import (
 	"fmt"
@@ -8,9 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -35,7 +35,7 @@ func (w *Weapon) Init() error      { return nil }
 // For every 0.3s, 1 stack of Wax and Wane can be gained. Max 5 stacks.
 // For every 6s that go by without an Elemental Reaction being triggered, 1 stack will be lost.
 // This effect can be triggered even when the character is off-field.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		core: c,
 		char: char,
@@ -85,7 +85,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}
 
-	for i := event.Event(event.ReactionEventStartDelim + 1); i < event.ReactionEventEndDelim; i++ {
+	for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
 		w.core.Events.Subscribe(i, f, fmt.Sprintf("fruitoffulfillment-%v", w.char.Base.Key.String()))
 	}
 

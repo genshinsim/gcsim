@@ -3,6 +3,7 @@ package tighnari
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -23,7 +24,7 @@ func init() {
 	burstFrames[action.ActionSwap] = 115
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 0
@@ -32,41 +33,33 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Tanglevine Shaft",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Dendro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
+	ap := combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 1)
+
 	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
-			burstRelease,
-			burstHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, burstRelease, burstHitmarks[i]+travel)
 	}
 
 	ai.Abil = "Secondary Tanglevine Shaft"
 	ai.Mult = burstSecond[c.TalentLvlBurst()]
 	for i := 0; i < 6; i++ {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 0.1),
-			burstHitmarks[i]+travel,
-			burstSecondHitmarks[i]+travel,
-		)
+		c.Core.QueueAttack(ai, ap, burstHitmarks[i]+travel, burstSecondHitmarks[i]+travel)
 	}
 
 	c.ConsumeEnergy(7)
 	c.SetCD(action.ActionBurst, 12*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap],
 		State:           action.BurstState,
-	}
+	}, nil
 }

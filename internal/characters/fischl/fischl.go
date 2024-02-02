@@ -5,9 +5,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -17,20 +18,24 @@ func init() {
 type char struct {
 	*tmpl.Character
 	// field use for calculating oz damage
-	ozSnapshot    combat.AttackEvent
-	ozSource      int  // keep tracks of source of oz aka resets
-	ozActive      bool // purely used for gscl conditional purposes
-	ozActiveUntil int  // used for oz ticks, a4, c1 and c6
-	ozTickSrc     int  // used for oz recast attacks
-	ozTravel      int
+	ozPos           geometry.Point
+	ozSnapshot      combat.AttackEvent
+	ozSource        int  // keep tracks of source of oz aka resets
+	ozActive        bool // purely used for gscl conditional purposes
+	ozActiveUntil   int  // used for oz ticks, a4, c1 and c6
+	ozTickSrc       int  // used for oz recast attacks
+	ozTravel        int
+	burstOzSpawnSrc int // prevent double oz spawn from burst
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	c.ozSource = -1
 	c.ozActive = false
@@ -73,7 +78,7 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to recast oz
 	if a == action.ActionSkill && p["recast"] != 0 && c.ozActive {
 		return !c.StatusIsActive(skillRecastCDKey), action.SkillCD

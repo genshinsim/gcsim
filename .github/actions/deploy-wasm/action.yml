@@ -1,0 +1,38 @@
+name: "Deploy WASM"
+description: "builds and deploys the gcsim WASM binary to cloudflare R2"
+inputs:
+  rcloneConfig:
+    required: true
+    description: rclone config for cloudflare R2
+  branch:
+    required: true
+    description: name of the branch
+  shareKey:
+    required: true
+    description: "key for signing share results"
+
+runs:
+  using: composite
+  steps:
+  - name: Build WASM
+    working-directory: ./cmd/wasm
+    shell: bash
+    run: ./build.sh -o ./dist/$GITHUB_SHA/main.wasm
+    env:
+      GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
+
+  - name: Optimize WASM
+    uses: NiklasEi/wasm-opt-action@v2
+    with:
+      file: cmd/wasm/dist/${{ github.sha }}/main.wasm
+      output: cmd/wasm/dist/${{ github.sha }}/main.wasm
+      options: --enable-bulk-memory -Oz  
+
+  - name: Upload to R2
+    uses: AnimMouse/setup-rclone@v1 
+    with:
+      rclone_config: ${{ inputs.rcloneConfig }}
+      disable_base64: true
+  - name: sync
+    shell: bash
+    run: rclone sync ./cmd/wasm/dist/ r2rclone:wasm/${{ inputs.branch }}/ --progress 

@@ -32,17 +32,14 @@ func AtkSpdAdjust(f int, atkspd float64) int {
 	if atkspd > 0.6 {
 		atkspd = 0.6
 	}
-	return f + int(-0.5*atkspd*float64(f))
+	return f - int(min(atkspd, 0.1+(atkspd-0.1)/2)*float64(f))
 }
 
 func NewAttackFunc(c *character.Character, slice [][]int) func(action.Action) int {
+	n := c.NormalCounter
+	atkspd := c.Stat(attributes.AtkSpd)
 	return func(next action.Action) int {
-		//back out what last attack was
-		n := c.NormalCounter - 1
-		if n < 0 {
-			n = c.NormalHitNum - 1
-		}
-		return AtkSpdAdjust(slice[n][next], c.Stat(attributes.AtkSpd))
+		return AtkSpdAdjust(slice[n][next], atkspd)
 	}
 }
 

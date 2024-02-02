@@ -57,19 +57,18 @@ func TestOrderPrecedence(t *testing.T) {
 
 	for _, test := range tests {
 		p := New(test.input)
-		res, err := p.Parse()
+		_, prog, err := p.Parse()
 		if err != nil {
 			t.Error(err)
 			t.FailNow()
 		}
 		// prettyPrint(res)
-		actual := res.Program.String()
-		//strip \n
+		actual := prog.String()
+		// strip \n
 		actual = strings.TrimSuffix(actual, "\n")
 		if actual != test.expected {
 			t.Errorf("expected=%q, got %q", test.expected, actual)
 		}
-
 	}
 }
 
@@ -117,39 +116,13 @@ const cfg = `
 func TestCfg(t *testing.T) {
 	p := New(cfg)
 	fmt.Printf("parsing:\n %v\n", cfg)
-	res, err := p.Parse()
+	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 	fmt.Println("output:")
-	fmt.Println(res.Program.String())
-}
-
-const fntest = `
-active bennett;
-fn y(x) {
-    print(x);
-    return x +1;
-}
-
-let z = f(2);
-
-print(z);
-
-print("hi");
-`
-
-func TestFnCall(t *testing.T) {
-	p := New(fntest)
-	res, err := p.Parse()
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-
-	fmt.Println("output:")
-	fmt.Println(res.Program.String())
+	fmt.Println(prog.String())
 }
 
 const charaction = `
@@ -160,14 +133,14 @@ active xingqiu;
 
 func TestCharAction(t *testing.T) {
 	p := New(charaction)
-	res, err := p.Parse()
+	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
 	fmt.Println("output:")
-	fmt.Println(res.Program.String())
+	fmt.Println(prog.String())
 }
 
 const charstats = `
@@ -202,20 +175,31 @@ energy every interval=480,720 amount=1;
 
 func TestCharAdd(t *testing.T) {
 	p := New(charstats)
-	res, err := p.Parse()
+	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	spew.Config.Dump(res)
+	spew.Config.Dump(prog)
 }
 
 func TestField(t *testing.T) {
 	p := New(`if .status.field > 0 { print("hi"); }`)
-	res, err := p.Parse()
+	_, prog, err := p.Parse()
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	spew.Config.Dump(res)
+	spew.Config.Dump(prog)
+}
+
+func parseAndPrint(s string, t *testing.T) {
+	p := New(s)
+	_, prog, err := p.Parse()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	fmt.Println("output:")
+	fmt.Println(prog.String())
 }

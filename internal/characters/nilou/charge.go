@@ -5,8 +5,10 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var chargeFrames []int
@@ -21,26 +23,31 @@ func init() {
 	chargeFrames[action.ActionSwap] = chargeHitmarks[len(chargeHitmarks)-1]
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	for i, mult := range charge {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Charge %v", i),
-			AttackTag:  combat.AttackTagExtra,
-			ICDTag:     combat.ICDTagNormalAttack,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeSlash,
+			AttackTag:  attacks.AttackTagExtra,
+			ICDTag:     attacks.ICDTagNormalAttack,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeSlash,
 			Element:    attributes.Physical,
 			Durability: 25,
 			Mult:       mult[c.TalentLvlAttack()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2.3), chargeHitmarks[i], chargeHitmarks[i]) // supposed to be offset z=0.5
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 2.3),
+			chargeHitmarks[i],
+			chargeHitmarks[i],
+		)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

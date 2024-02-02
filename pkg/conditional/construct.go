@@ -8,8 +8,8 @@ import (
 )
 
 func evalConstruct(c *core.Core, fields []string) (int, error) {
-	//.construct.count.<name>
-	//.construct.duration.<name>
+	// .construct.count.<name>
+	// .construct.duration.<name>
 	if err := fieldsCheck(fields, 3, "construct"); err != nil {
 		return 0, err
 	}
@@ -21,7 +21,7 @@ func evalConstruct(c *core.Core, fields []string) (int, error) {
 	}
 
 	switch v := fields[1]; v {
-	case "count":
+	case countField:
 		return c.Constructs.CountByType(key), nil
 	case "duration":
 		return c.Constructs.Expiry(key), nil

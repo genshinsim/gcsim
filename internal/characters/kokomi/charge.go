@@ -3,6 +3,7 @@ package kokomi
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -25,13 +26,14 @@ func init() {
 
 // Standard charge attack
 // CA has no travel time
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -44,12 +46,24 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		windup = 14
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), chargeHitmark-windup, chargeHitmark-windup)
+	radius := 3.5
+	if c.Core.Status.Duration(burstKey) > 0 {
+		radius = 4
+	}
 
-	return action.ActionInfo{
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, radius),
+		chargeHitmark-windup,
+		chargeHitmark-windup,
+		c.makeBurstHealCB(),
+		c.makeC4CB(),
+	)
+
+	return action.Info{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

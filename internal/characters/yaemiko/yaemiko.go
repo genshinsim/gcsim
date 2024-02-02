@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
@@ -21,12 +21,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	kitsunes         []*kitsune
-	totemParticleICD int
-	c4buff           []float64
+	kitsuneDetectionRadius float64
+	kitsunes               []*kitsune
+	c4buff                 []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -44,6 +44,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 
 func (c *char) Init() error {
 	c.a4()
+	if c.Base.Cons >= 2 {
+		c.kitsuneDetectionRadius = 20
+	} else {
+		c.kitsuneDetectionRadius = 12.5
+	}
 	if c.Base.Cons >= 4 {
 		c.c4buff = make([]float64, attributes.EndStatType)
 		c.c4buff[attributes.ElectroP] = .20

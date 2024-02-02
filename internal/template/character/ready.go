@@ -5,12 +5,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 )
 
-func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
-	//for dash and charge need to check for stam usage as well
+func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	// for dash and charge need to check for stam usage as well
 
 	switch a {
 	case action.ActionBurst:
-		if c.Energy != c.EnergyMax {
+		if !c.Core.Flags.IgnoreBurstEnergy && c.Energy != c.EnergyMax {
 			return false, action.InsufficientEnergy
 		}
 		if c.AvailableCDCharge[a] <= 0 {

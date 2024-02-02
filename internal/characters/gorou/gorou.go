@@ -4,9 +4,10 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
@@ -25,8 +26,8 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	eFieldArea     combat.AttackPattern
 	eFieldSrc      int
-	qFieldHealSrc  int
 	qFieldSrc      int
 	gorouBuff      []float64
 	geoCharCount   int
@@ -36,7 +37,7 @@ type char struct {
 	healFieldStats [attributes.EndStatType]float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -87,7 +88,7 @@ func (c *char) Init() error {
 	case 2:
 		c.c6Buff[attributes.CD] = 0.2
 	default:
-		//can't be less than 1 so this is 3 or 4
+		// can't be less than 1 so this is 3 or 4
 		c.c6Buff[attributes.CD] = 0.4
 	}
 

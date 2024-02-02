@@ -3,12 +3,13 @@ package yoimiya
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -17,14 +18,12 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	a1stack   int
-	lastPart  int
-	a1bonus   []float64
-	a4bonus   []float64
+	a1Stacks  int
+	a4Bonus   []float64
 	abApplied bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -39,16 +38,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-	c.a1bonus = make([]float64, attributes.EndStatType)
-	c.a4bonus = make([]float64, attributes.EndStatType)
-	c.a1()
+	c.a4Bonus = make([]float64, attributes.EndStatType)
 	c.onExit()
 	c.burstHook()
 	if c.Base.Cons >= 1 {
 		c.c1()
-	}
-	if c.Base.Cons >= 2 {
-		c.c2()
 	}
 	return nil
 }
@@ -56,8 +50,8 @@ func (c *char) Init() error {
 func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
-	//infusion to normal attack only
-	if c.StatusIsActive(skillKey) && ai.AttackTag == combat.AttackTagNormal {
+	// infusion to normal attack only
+	if c.StatusIsActive(skillKey) && ai.AttackTag == attacks.AttackTagNormal {
 		ai.Element = attributes.Pyro
 		ai.Mult = skill[c.TalentLvlSkill()] * ai.Mult
 		c.Core.Log.NewEvent("skill mult applied", glog.LogCharacterEvent, c.Index).

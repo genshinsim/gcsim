@@ -1,0 +1,4 @@
+package_name: favonius
+genshin_id: 11401
+key: favoniussword
+skip_data_func: true

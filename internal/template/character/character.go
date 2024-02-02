@@ -1,6 +1,8 @@
 package character
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -49,13 +51,13 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	s := combat.Snapshot{
 		CharLvl:     c.Base.Level,
 		ActorEle:    c.Base.Element,
-		BaseAtk:     c.Base.Atk + c.Weapon.Atk,
+		BaseAtk:     c.Base.Atk + c.Weapon.BaseAtk,
 		BaseDef:     c.Base.Def,
 		BaseHP:      c.Base.HP,
 		SourceFrame: c.Core.F,
 	}
 
-	var evt glog.Event = nil
+	var evt glog.Event
 	var debug []interface{}
 
 	if c.Core.Flags.LogDebug {
@@ -68,10 +70,10 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 			Write("icd_group", a.ICDGroup)
 	}
 
-	//snapshot the stats
+	// snapshot the stats
 	s.Stats, debug = c.Stats()
 
-	//check infusion
+	// check infusion
 	var inf attributes.Element
 	if !a.IgnoreInfusion {
 		inf = c.Core.Player.Infused(c.Index, a.AttackTag)
@@ -80,7 +82,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 		}
 	}
 
-	//check if we need to log
+	// check if we need to log
 	if c.Core.Flags.LogDebug {
 		evt.WriteBuildMsg(debug...)
 		evt.Write("final_stats", attributes.PrettyPrintStatsSlice(s.Stats[:]))
@@ -105,4 +107,26 @@ func (c *Character) AdvanceNormalIndex() {
 
 func (c *Character) NextNormalCounter() int {
 	return c.NormalCounter + 1
+}
+
+func (c *Character) Attack(map[string]int) (action.Info, error) {
+	return action.Info{}, fmt.Errorf("%v: action attack not implemented", c.CharWrapper.Base.Key)
+}
+func (c *Character) Aimed(map[string]int) (action.Info, error) {
+	return action.Info{}, fmt.Errorf("%v: action aimed not implemented", c.CharWrapper.Base.Key)
+}
+func (c *Character) ChargeAttack(map[string]int) (action.Info, error) {
+	return action.Info{}, fmt.Errorf("%v: action charge not implemented", c.CharWrapper.Base.Key)
+}
+func (c *Character) HighPlungeAttack(map[string]int) (action.Info, error) {
+	return action.Info{}, fmt.Errorf("%v: action high_plunge not implemented", c.CharWrapper.Base.Key)
+}
+func (c *Character) LowPlungeAttack(map[string]int) (action.Info, error) {
+	return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.CharWrapper.Base.Key)
+}
+func (c *Character) Skill(map[string]int) (action.Info, error) {
+	return action.Info{}, fmt.Errorf("%v: action skill not implemented", c.CharWrapper.Base.Key)
+}
+func (c *Character) Burst(map[string]int) (action.Info, error) {
+	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.CharWrapper.Base.Key)
 }

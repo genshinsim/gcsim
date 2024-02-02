@@ -1,4 +1,4 @@
-package mouunsmoon
+package wavebreaker
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.WavebreakersFin, common.NewWavebreaker)
+	core.RegisterWeaponFunc(keys.WavebreakersFin, common.NewWavebreaker(base))
 }

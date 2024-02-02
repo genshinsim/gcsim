@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -19,11 +19,10 @@ type char struct {
 	skillBuff []float64
 	burstBuff []float64
 	c2buff    []float64
-	c4bonus   []float64
 	c4count   int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -56,9 +55,5 @@ func (c *char) Init() error {
 		c.c2buff[attributes.CD] = 0.15
 	}
 
-	if c.Base.Cons >= 4 {
-		c.c4bonus = make([]float64, attributes.EndStatType)
-		c.c4()
-	}
 	return nil
 }

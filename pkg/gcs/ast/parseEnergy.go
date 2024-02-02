@@ -6,8 +6,8 @@ import (
 )
 
 func parseEnergy(p *Parser) (parseFn, error) {
-	//energy once interval=300 amount=1 #once at frame 300
-	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	// energy once interval=300 amount=1 #once at frame 300
+	// energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	n := p.next()
 	switch n.Typ {
 	case itemIdentifier:
@@ -27,21 +27,21 @@ func parseEnergy(p *Parser) (parseFn, error) {
 }
 
 func parseEnergyOnce(p *Parser) (parseFn, error) {
-	//energy once interval=300 amount=1 #once at frame 300
+	// energy once interval=300 amount=1 #once at frame 300
 	var err error
-	p.res.Energy.Active = true
-	p.res.Energy.Once = true
+	p.res.EnergySettings.Active = true
+	p.res.EnergySettings.Once = true
 
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "interval":
+			case IntervalVal:
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err == nil {
-					p.res.Energy.Start, err = itemNumberToInt(n)
+					p.res.EnergySettings.Start, err = itemNumberToInt(n)
 				}
-			case "amount":
+			case AmountVal:
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
@@ -50,7 +50,7 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-				p.res.Energy.Amount = count
+				p.res.EnergySettings.Amount = count
 			default:
 				return nil, fmt.Errorf("ln%v: unrecognized energy event specified: %v", n.line, n.Val)
 			}
@@ -67,21 +67,21 @@ func parseEnergyOnce(p *Parser) (parseFn, error) {
 }
 
 func parseEnergyEvery(p *Parser) (parseFn, error) {
-	//energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
+	// energy every interval=300,600 amount=1 #randomly every 300 to 600 frames
 	var err error
-	p.res.Energy.Active = true
-	p.res.Energy.Once = false
+	p.res.EnergySettings.Active = true
+	p.res.EnergySettings.Once = false
 
 	for n := p.next(); n.Typ != itemEOF; n = p.next() {
 		switch n.Typ {
 		case itemIdentifier:
 			switch n.Val {
-			case "interval":
+			case IntervalVal:
 				n, err = p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
 				}
-				p.res.Energy.Start, err = itemNumberToInt(n)
+				p.res.EnergySettings.Start, err = itemNumberToInt(n)
 				if err != nil {
 					return nil, err
 				}
@@ -90,11 +90,11 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-				p.res.Energy.End, err = itemNumberToInt(n)
+				p.res.EnergySettings.End, err = itemNumberToInt(n)
 				if err != nil {
 					return nil, err
 				}
-			case "amount":
+			case AmountVal:
 				item, err := p.acceptSeqReturnLast(itemAssign, itemNumber)
 				if err != nil {
 					return nil, err
@@ -103,7 +103,7 @@ func parseEnergyEvery(p *Parser) (parseFn, error) {
 				if err != nil {
 					return nil, err
 				}
-				p.res.Energy.Amount = count
+				p.res.EnergySettings.Amount = count
 			default:
 				return nil, fmt.Errorf("ln%v: unrecognized energy event specified: %v", n.line, n.Val)
 			}

@@ -3,9 +3,9 @@ package mona
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 const (
@@ -19,12 +19,13 @@ func init() {
 
 type char struct {
 	*tmpl.Character
+	a4Stats  []float64
 	c2icd    int
 	c6Src    int
 	c6Stacks int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -49,9 +50,6 @@ func (c *char) Init() error {
 	}
 	if c.Base.Cons >= 4 {
 		c.c4()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6CAReset()
 	}
 	return nil
 }

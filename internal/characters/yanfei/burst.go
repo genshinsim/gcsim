@@ -3,6 +3,7 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -27,7 +28,7 @@ func init() {
 }
 
 // Burst - Deals burst damage and adds status for charge attack bonus
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// +1 is to make sure the scarlet seal grant works correctly on the last frame
 	// TODO: Not 100% sure whether this adds a seal at the exact moment the burst ends or not
 	c.AddStatus(burstBuffKey, 15*60+1, true)
@@ -35,7 +36,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(burstBuffKey, 15*60),
 		Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
-			if atk.Info.AttackTag == combat.AttackTagExtra {
+			if atk.Info.AttackTag == attacks.AttackTagExtra {
 				return c.burstBuff, true
 			}
 			return nil, false
@@ -60,10 +61,11 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Done Deal",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           200,
 		Element:            attributes.Pyro,
 		Durability:         50,
 		Mult:               burst[c.TalentLvlBurst()],
@@ -71,7 +73,13 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 0, burstHitmark, addSeal)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5),
+		0,
+		burstHitmark,
+		addSeal,
+	)
 
 	c.Core.Tasks.Add(c.burstAddSealHook(), 60)
 
@@ -80,12 +88,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(5)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionJump], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 // Recurring task to add seals every second while burst is up

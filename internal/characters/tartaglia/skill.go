@@ -5,10 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -73,8 +75,8 @@ func init() {
 
 // Cast: AoE strong hydro damage
 // Melee Stance: infuse NA/CA to hydro damage
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(meleeKey) {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(MeleeKey) {
 		cdDelay := 11
 		switch c.Core.Player.CurrentState() {
 		case action.WalkState,
@@ -96,26 +98,27 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 				canQueueAfter = f
 			}
 		}
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          frames.NewAbilFunc(adjustedFrames),
 			AnimationLength: adjustedFrames[action.InvalidAction],
 			CanQueueAfter:   canQueueAfter,
 			State:           action.SkillState,
-		}
+		}, nil
 	}
 
 	c.eCast = c.Core.F
-	c.AddStatus(meleeKey, 30*60, true)
+	c.AddStatus(MeleeKey, 30*60, true)
 	c.Core.Log.NewEvent("Foul Legacy activated", glog.LogCharacterEvent, c.Index).
 		Write("rtexpiry", c.Core.F+30*60)
 
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Foul Legacy: Raging Tide",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   51.75,
 		Element:    attributes.Hydro,
 		Durability: 50,
 		Mult:       skill[c.TalentLvlSkill()],
@@ -131,11 +134,11 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		hitmark = skillDashHitmark
 		cdDelay = 0
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), hitmark, hitmark)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), hitmark, hitmark)
 
 	src := c.eCast
 	c.QueueCharTask(func() {
-		if src == c.eCast && c.StatusIsActive(meleeKey) {
+		if src == c.eCast && c.StatusIsActive(MeleeKey) {
 			c.onExitMeleeStance(0)
 			c.ResetNormalCounter()
 		}
@@ -155,18 +158,29 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 			canQueueAfter = f
 		}
 	}
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(adjustedFrames),
 		AnimationLength: adjustedFrames[action.InvalidAction],
 		CanQueueAfter:   canQueueAfter,
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
 	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 3*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Hydro, c.ParticleDelay)
 }
 
 // Hook to end Tartaglia's melee stance prematurely if he leaves the field
 func (c *char) onExitField() {
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
-		if c.StatusIsActive(meleeKey) {
+		if c.StatusIsActive(MeleeKey) {
 			// TODO: need to verify if this is correct
 			// but if childe is currently in melee stance and skill is on CD that means that
 			// the button has lit up yet from original skill press
@@ -211,5 +225,5 @@ func (c *char) onExitMeleeStance(delay int) {
 	} else {
 		c.SetCDWithDelay(action.ActionSkill, skillCD, delay)
 	}
-	c.DeleteStatus(meleeKey)
+	c.DeleteStatus(MeleeKey)
 }

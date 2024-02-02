@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -13,9 +14,21 @@ import (
 // Fires 2 additional arrows per Aimed Shot, each dealing 33% of the original arrow's DMG.
 func (c *char) c1(ai combat.AttackInfo, travel int) {
 	ai.Abil = "Aim (Charged) C1"
-	ai.Mult = ai.Mult / 3.0
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
+	ai.Mult /= 3.0
+	for i := 0; i < 2; i++ {
+		c.Core.QueueAttack(
+			ai,
+			combat.NewBoxHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				geometry.Point{Y: -0.5},
+				0.1,
+				1,
+			),
+			aimedHitmark,
+			aimedHitmark+travel,
+		)
+	}
 }
 
 // C2:
@@ -31,12 +44,12 @@ func (c *char) c2(a combat.AttackCB) {
 		return
 	}
 
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("venti-c2-anemo", 600),
 		Ele:   attributes.Anemo,
 		Value: -0.12,
 	})
-	e.AddResistMod(enemy.ResistMod{
+	e.AddResistMod(combat.ResistMod{
 		Base:  modifier.NewBaseWithHitlag("venti-c2-phys", 600),
 		Ele:   attributes.Physical,
 		Value: -0.12,
@@ -74,7 +87,7 @@ func (c *char) c6(ele attributes.Element) func(a combat.AttackCB) {
 		if !ok {
 			return
 		}
-		e.AddResistMod(enemy.ResistMod{
+		e.AddResistMod(combat.ResistMod{
 			Base:  modifier.NewBaseWithHitlag("venti-c6-"+ele.String(), 600),
 			Ele:   ele,
 			Value: -0.20,

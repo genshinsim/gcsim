@@ -9,25 +9,28 @@ import (
 	"os"
 	"strings"
 	"text/template"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type base struct {
 	HP  float64 `json:"hp"`
-	Atk float64 `json:"attack"`
-	Def float64 `json:"defense"`
+	Atk float64 `json:"atk"`
+	Def float64 `json:"def"`
 }
 
 type curve struct {
 	HP  string `json:"hp"`
-	Atk string `json:"attack"`
-	Def string `json:"defense"`
+	Atk string `json:"atk"`
+	Def string `json:"def"`
 }
 
 type promo struct {
-	Max         int     `json:"maxlevel"`
+	MaxLevel    int     `json:"max_level"`
 	HP          float64 `json:"hp"`
-	Atk         float64 `json:"attack"`
-	Def         float64 `json:"defense"`
+	Atk         float64 `json:"atk"`
+	Def         float64 `json:"def"`
 	Specialized float64 `json:"specialized"`
 }
 
@@ -37,30 +40,36 @@ type data struct {
 	Base          base    `json:"base"`
 	Curve         curve   `json:"curve"`
 	Specialized   string  `json:"specialized"`
-	PromotionData []promo `json:"promotion"`
+	PromotionData []promo `json:"promotion_data"`
 }
 
 type profile struct {
-	Body       string
-	Element    string
-	Rarity     string
-	Region     string
-	WeaponType string
+	Body       string `json:"body"`
+	Element    string `json:"element"`
+	Rarity     string `json:"rarity"`
+	Region     string `json:"region"`
+	WeaponType string `json:"weapon_type"`
 }
 
 func main() {
+	if err := mainImpl(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func mainImpl() error {
 	b, err := fetch("src/data/stats/characters.json")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	var d map[string]data
 	if err := json.Unmarshal([]byte(b), &d); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// fix the specialized key
-	for k, v := range d {
+	for k, v := range d { //nolint:gocritic // map values are not addressable/can't edit without copying and writing back
 		v.Specialized = SpecKeyToStat[v.Specialized]
 		v.Key = CharNameToKey[k]
 
@@ -72,13 +81,13 @@ func main() {
 		// fetch char profile
 		b, err := fetch(fmt.Sprintf("src/data/English/characters/%s.json", k))
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		if err := json.Unmarshal([]byte(b), &v.profile); err != nil {
-			log.Fatal(err)
+			return err
 		}
 
-		v.Body = strings.Title(strings.ToLower(v.Body))
+		v.Body = cases.Title(language.Und, cases.NoLower).String(strings.ToLower(v.Body))
 		// special case for traveler and aloy
 		if v.Region == "" {
 			v.Region = "Unknown"
@@ -98,17 +107,15 @@ func main() {
 	// fmt.Println(d)
 	of, err := os.Create("./_output.go")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer of.Close()
 
 	t, err := template.New("out").Parse(tmpl)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	if err := t.Execute(of, d); err != nil {
-		log.Fatal(err)
-	}
+	return t.Execute(of, d)
 }
 
 func fetch(path string) (string, error) {
@@ -118,7 +125,7 @@ func fetch(path string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("%v: %v", resp.Status, path)
 	}
 
@@ -131,7 +138,7 @@ var tmpl = `package curves
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
+
 	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
@@ -144,7 +151,7 @@ var CharBaseMap = map[keys.Char]CharBase{
 		Body: profile.Body {{- $value.Body}},
 		Element: attributes. {{- $value.Element}},
 		Region: profile.Zone {{- $value.Region}},
-		WeaponType: weapon.WeaponClass {{- $value.WeaponType}},
+		WeaponType: info.WeaponClass {{- $value.WeaponType}},
 		HPCurve: {{$value.Curve.HP}},
 		AtkCurve: {{$value.Curve.Atk}},
 		DefCurve: {{$value.Curve.Def}},
@@ -250,4 +257,11 @@ var CharNameToKey = map[string]string{
 	"tighnari":          "Tighnari",
 	"candace":           "Candace",
 	"nilou":             "Nilou",
+	"alhaitham":         "Alhaitham",
+	"layla":             "Layla",
+	"wanderer":          "Wanderer",
+	"baizhu":            "Baizhu",
+	"dehya":             "Dehya",
+	"yaoyao":            "Yaoyao",
+	"mika":              "Mika",
 }

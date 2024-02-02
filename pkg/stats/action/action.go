@@ -8,7 +8,10 @@ import (
 )
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "action",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {
@@ -20,7 +23,7 @@ type buffer struct {
 
 type activeFailure struct {
 	start  int
-	reason action.ActionFailure
+	reason action.Failure
 }
 
 func (b buffer) addFailure(core *core.Core, char int, active activeFailure) {
@@ -34,7 +37,7 @@ func (b buffer) addFailure(core *core.Core, char int, active activeFailure) {
 	b.failures[char] = append(b.failures[char], interval)
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		energySpent:    make([]float64, len(core.Player.Chars())),
 		failures:       make([][]stats.ActionFailInterval, len(core.Player.Chars())),
@@ -71,7 +74,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 	core.Events.Subscribe(event.OnActionFailed, func(args ...interface{}) bool {
 		char := args[0].(int)
 		e := args[1].(action.Action)
-		reason := args[3].(action.ActionFailure)
+		reason := args[3].(action.Failure)
 
 		// Assumes we will continue trying an action until it succeeds.
 		// If we ever give up trying actions, this will no longer be accurate

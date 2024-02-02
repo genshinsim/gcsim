@@ -1,6 +1,7 @@
 package nahida
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -32,10 +33,10 @@ func (c *char) c2() {
 		ae := args[1].(*combat.AttackEvent)
 
 		switch ae.Info.AttackTag {
-		case combat.AttackTagBurningDamage:
-		case combat.AttackTagBloom:
-		case combat.AttackTagHyperbloom:
-		case combat.AttackTagBurgeon:
+		case attacks.AttackTagBurningDamage:
+		case attacks.AttackTagBloom:
+		case attacks.AttackTagHyperbloom:
+		case attacks.AttackTagBurgeon:
 		default:
 			return false
 		}
@@ -54,7 +55,7 @@ func (c *char) c2() {
 		return false
 	}, "nahida-c2-reaction-dmg-buff")
 
-	cb := func(rx event.Event) event.EventHook {
+	cb := func(rx event.Event) event.Hook {
 		return func(args ...interface{}) bool {
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
@@ -63,7 +64,7 @@ func (c *char) c2() {
 			if !t.StatusIsActive(skillMarkKey) {
 				return false
 			}
-			t.AddDefMod(enemy.DefMod{
+			t.AddDefMod(combat.DefMod{
 				Base:  modifier.NewBaseWithHitlag("nahida-c2", 480),
 				Value: -0.3,
 			})
@@ -84,17 +85,13 @@ func (c *char) c4() {
 		Base:         modifier.NewBase("nahida-c4", -1),
 		AffectedStat: attributes.EM,
 		Amount: func() ([]float64, bool) {
-			x, y := c.Core.Combat.Player().Pos()
-			count := 0
-			for _, v := range c.Core.Combat.EnemiesWithinRadius(x, y, 30) {
-				enemy, ok := c.Core.Combat.Enemy(v).(*enemy.Enemy)
-				if !ok {
-					continue
-				}
-				if enemy.StatusIsActive(skillMarkKey) {
-					count++
-				}
-			}
+			enemies := c.Core.Combat.EnemiesWithinArea(
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 30),
+				func(t combat.Enemy) bool {
+					return t.StatusIsActive(skillMarkKey)
+				},
+			)
+			count := len(enemies)
 			if count > 4 {
 				count = 4
 			}
@@ -120,45 +117,36 @@ const (
 // is considered Elemental Skill DMG and can be triggered once every 0.2s. This
 // effect can last up to 10s and will be removed after Nahida has unleashed 6
 // instances of Tri-Karma Purification: Karmic Oblivion.
-func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		e, ok := args[0].(*enemy.Enemy)
+func (c *char) makeC6CB() combat.AttackCBFunc {
+	if c.Base.Cons < 6 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
-			return false
-		}
-		if c.Core.Player.Active() != c.Index {
-			return false
-		}
-		if c.c6Count >= 6 {
-			return false
-		}
-		if c.StatusIsActive(c6ICDKey) {
-			return false
-		}
-		if !c.StatusIsActive(c6ActiveKey) {
-			return false
-		}
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != c.Index {
-			return false
-		}
-		switch ae.Info.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
-		default:
-			return false
+			return
 		}
 		if !e.StatusIsActive(skillMarkKey) {
-			return false
+			return
 		}
-		c.AddStatus(c6ICDKey, 12, true) //TODO: hitlag?
-		c.c6Count++
+		if c.c6Count >= 6 {
+			return
+		}
+		if !c.StatusIsActive(c6ActiveKey) {
+			return
+		}
+		if c.StatusIsActive(c6ICDKey) {
+			return
+		}
+		c.AddStatus(c6ICDKey, 0.2*60, true)
+
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNahidaC6,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNahidaC6,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Dendro,
 			Durability: 25,
 			Mult:       2,
@@ -176,12 +164,11 @@ func (c *char) c6() {
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewDefSingleTarget(e.Key()),
+				combat.NewSingleTargetHit(e.Key()),
 				1,
 			)
 		}
 
-		return false
-	}, "nahida-c6")
-
+		c.c6Count++
+	}
 }

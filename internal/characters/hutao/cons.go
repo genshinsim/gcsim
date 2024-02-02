@@ -25,10 +25,8 @@ func (c *char) c6() {
 		c.checkc6(false)
 		return false
 	}, "hutao-c6")
-	// check for C6 proc every 2s regardless of hurt
-	c.QueueCharTask(func() {
-		c.checkc6(true)
-	}, 120)
+	// check for C6 proc every 2s from start of sim regardless of hurt
+	c.checkc6(true)
 }
 
 func (c *char) checkc6(check1HP bool) {
@@ -41,19 +39,19 @@ func (c *char) checkc6(check1HP bool) {
 		return
 	}
 	// check if hp less than 25%
-	if c.HPCurrent/c.MaxHP() > .25 {
+	if c.CurrentHPRatio() > 0.25 {
 		return
 	}
 	// check if hp is less than 2 for the 2s check
-	if check1HP && c.HPCurrent >= 2 {
+	if check1HP && c.CurrentHP() >= 2 {
 		return
 	}
 	// if dead, revive back to 1 hp
-	if c.HPCurrent <= -1 {
-		c.HPCurrent = 1
+	if c.CurrentHPRatio() <= 0 {
+		c.SetHPByAmount(1)
 	}
 
-	//increase crit rate to 100%
+	// increase crit rate to 100%
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("hutao-c6", 600),
 		AffectedStat: attributes.CR,
@@ -73,7 +71,7 @@ func (c *char) c4() {
 	c.c4buff[attributes.CR] = 0.12
 	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
 		t, ok := args[0].(*enemy.Enemy)
-		//do nothing if not an enemy
+		// do nothing if not an enemy
 		if !ok {
 			return false
 		}
@@ -81,7 +79,7 @@ func (c *char) c4() {
 			return false
 		}
 		for i, char := range c.Core.Player.Chars() {
-			//does not affect hutao
+			// does not affect hutao
 			if c.Index == i {
 				continue
 			}

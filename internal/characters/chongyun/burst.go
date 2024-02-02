@@ -3,6 +3,7 @@ package chongyun
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -21,36 +22,51 @@ func init() {
 	burstFrames[action.ActionJump] = 66    // Q -> J
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Spirit Blade: Cloud-Parting Star",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   100,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
+	c4CB := c.makeC4Callback()
+
 	// Spirit Blade 1-3
 	for _, hitmark := range burstHitmarks {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), hitmark, hitmark)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
+			hitmark,
+			hitmark,
+			c4CB,
+		)
 	}
 
 	// extra Spirit Blade at C6
 	if c.Base.Cons >= 6 {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 5), burstHitmarkC6, burstHitmarkC6)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
+			burstHitmarkC6,
+			burstHitmarkC6,
+			c4CB,
+		)
 	}
 
 	c.SetCD(action.ActionBurst, 720)
 	c.ConsumeEnergy(6)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

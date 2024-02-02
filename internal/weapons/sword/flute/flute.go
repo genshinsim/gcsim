@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
@@ -31,7 +32,7 @@ const (
 	durationKey = "flute-stack-duration"
 )
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
@@ -45,38 +46,38 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if c.Player.Active() != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		char.AddStatus(icdKey, 30, true) //every 0.5s
+		char.AddStatus(icdKey, 30, true) // every 0.5s
 		if !char.StatusIsActive(durationKey) {
 			stacks = 0
 		}
 		stacks++
-		//stacks lasts 30s
+		// stacks lasts 30s
 		char.AddStatus(durationKey, 1800, true)
 
 		if stacks == 5 {
-			//trigger dmg at 5 stacks
+			// trigger dmg at 5 stacks
 			stacks = 0
 			char.DeleteStatus(durationKey)
 
 			ai := combat.AttackInfo{
 				ActorIndex: char.Index,
 				Abil:       "Flute Proc",
-				AttackTag:  combat.AttackTagWeaponSkill,
-				ICDTag:     combat.ICDTagNone,
-				ICDGroup:   combat.ICDGroupDefault,
+				AttackTag:  attacks.AttackTagWeaponSkill,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeDefault,
 				Element:    attributes.Physical,
 				Durability: 100,
 				Mult:       0.75 + 0.25*float64(r),
 			}
 			trg := args[0].(combat.Target)
-			c.QueueAttack(ai, combat.NewCircleHit(trg, 2), 0, 1)
-
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 0, 1)
 		}
 		return false
 	}, fmt.Sprintf("flute-%v", char.Base.Key.String()))

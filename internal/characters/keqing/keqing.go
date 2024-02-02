@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -21,7 +21,7 @@ type char struct {
 	c6buff []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -40,9 +40,6 @@ func (c *char) Init() error {
 	c.a4buff[attributes.CR] = 0.15
 	c.a4buff[attributes.ER] = 0.15
 
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
 	if c.Base.Cons >= 4 {
 		c.c4buff = make([]float64, attributes.EndStatType)
 		c.c4buff[attributes.ATKP] = 0.25
@@ -55,7 +52,7 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if stiletto is on-field
 	if a == action.ActionSkill && c.Core.Status.Duration(stilettoKey) > 0 {
 		return true, action.NoFailure
@@ -64,8 +61,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Acti
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		return 25
 	}
 	return c.Character.ActionStam(a, p)

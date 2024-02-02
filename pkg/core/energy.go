@@ -1,12 +1,13 @@
 package core
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, delay int) {
@@ -28,12 +29,12 @@ func (c *Core) QueueParticle(src string, num float64, ele attributes.Element, de
 }
 
 func (c *Core) SetupOnNormalHitEnergy() {
-	var current [MaxTeamSize][weapon.EndWeaponClass]float64
+	var current [MaxTeamSize][info.EndWeaponClass]float64
 
 	// https://genshin-impact.fandom.com/wiki/Energy#Energy_Generated_by_Normal_Attacks
 	// Base Probability
 	for i := range current {
-		current[i][weapon.WeaponClassSword] = 0.10 // WeaponClassSword
+		current[i][info.WeaponClassSword] = 0.10 // WeaponClassSword
 	}
 	// Probability Increase Per Fail
 	inc := []float64{
@@ -48,32 +49,32 @@ func (c *Core) SetupOnNormalHitEnergy() {
 	icd := 0
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagNormal && atk.Info.AttackTag != combat.AttackTagExtra {
+		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
-		//check icd
+		// check icd
 		if icd > c.F {
 			return false
 		}
-		//check chance
+		// check chance
 		char := c.Player.ByIndex(atk.Info.ActorIndex)
 
 		if c.Rand.Float64() > current[atk.Info.ActorIndex][char.Weapon.Class] {
-			//increment chance
+			// increment chance
 			current[atk.Info.ActorIndex][char.Weapon.Class] += inc[char.Weapon.Class]
 			return false
 		}
 
-		//add energy
+		// add energy
 		char.AddEnergy("na-ca-on-hit", 1)
 		// Add this log in sim if necessary to see as AddEnergy already generates a log
 		c.Log.NewEvent("random energy on normal", glog.LogDebugEvent, char.Index).
 			Write("char", atk.Info.ActorIndex).
 			Write("chance", current[atk.Info.ActorIndex][char.Weapon.Class])
-		//set icd
+		// set icd
 		icd = c.F + 12
 		current[atk.Info.ActorIndex][char.Weapon.Class] = 0
-		if char.Weapon.Class == weapon.WeaponClassSword {
+		if char.Weapon.Class == info.WeaponClassSword {
 			current[atk.Info.ActorIndex][char.Weapon.Class] = 0.10
 		}
 		return false
@@ -85,9 +86,8 @@ func (c *Core) SetupOnNormalHitEnergy() {
 			for j := range current[i] {
 				current[i][j] = 0
 			}
-			current[i][weapon.WeaponClassSword] = 0.10
+			current[i][info.WeaponClassSword] = 0.10
 		}
 		return false
 	}, "random-energy-restore-on-hit-swap")
-
 }

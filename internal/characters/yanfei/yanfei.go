@@ -6,9 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -22,10 +22,9 @@ type char struct {
 	sealCount         int
 	burstBuff         []float64
 	a1Buff            []float64
-	a4HitlagApplied   bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -53,7 +52,6 @@ func (c *char) Init() error {
 	c.a1Buff = make([]float64, attributes.EndStatType)
 	c.burstBuff = make([]float64, attributes.EndStatType)
 	c.burstBuff[attributes.DmgP] = burstBonus[c.TalentLvlBurst()]
-	c.a4()
 	c.onExitField()
 	if c.Base.Cons >= 2 {
 		c.c2()
@@ -62,8 +60,7 @@ func (c *char) Init() error {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	switch a {
-	case action.ActionCharge:
+	if a == action.ActionCharge {
 		if !c.StatusIsActive(sealBuffKey) {
 			c.sealCount = 0
 		}

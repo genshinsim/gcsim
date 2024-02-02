@@ -1,0 +1,247 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .main-page-button-container {
+    @apply h-28 basis-full p-2 sm:basis-1/2;
+  }
+  .main-page-button {
+    @apply bg-gray-700 hover:bg-gray-600 hover:cursor-pointer rounded-md h-full w-full flex justify-center items-center;
+  }
+  .main-page-card { 
+    @apply rounded-md h-full w-full flex justify-center items-center;
+  }
+
+  .main-page-row {
+    @apply grid sm:grid-cols-1 md:grid-cols-2 sm:gap-1 md:gap-4;
+  }
+}
+
+@layer utilities {
+
+  .artifact-top-left {
+    top: 0;
+    position: absolute;
+    left: 0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+  .artifact-top-right-gap {
+    top: 0;
+    position: absolute;
+    left: 0;
+    clip-path: polygon(2% 0, 100% 0, 100% 98%);
+  }
+  .artifact-bottom-right {
+    top: 0;
+    left: 0;
+      clip-path: polygon(100% 100%, 0 100%, 100% 0);
+  }
+  .artifact-bottom-left-gap {
+    top: 0;
+    left: 0;
+      clip-path: polygon(98% 100%, 0 100%, 0 2%);
+  }
+  .artifact-left{
+    top: 0;
+    left: 0;
+    position: absolute;
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100% );
+  }
+  .artifact-left-gap{
+    top: 0;
+    left: 0;
+    position: absolute;
+      clip-path: polygon(0 0, 49% 0, 49% 100%, 0 100% );
+  }
+  .artifact-right{
+    top: 0;
+    left: 0;
+      clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100% );
+  }
+  .artifact-right-gap{
+    top: 0;
+    left: 0;
+      clip-path: polygon(51% 0, 100% 0, 100% 100%, 51% 100% );
+  }
+
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+}
+
+}
+
+body {
+  /* background-color: #293742; */
+  background-color: #1C2127;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+div.sample-header {
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  background-color: rgb(75 85 99);
+  text-align: center;
+  z-index: 10;
+}
+
+div.sticky-header {
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+}
+
+.character-parent {
+  position: relative;
+  z-index: 0;
+}
+.character-image {
+  z-index: -1;
+}
+.character-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.weapon-parent {
+  position: relative;
+}
+.weapon-name {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.character-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("./Components/Images/overlay.jpg");
+  background-size: cover;
+  mix-blend-mode: luminosity;
+  background-position: center;
+  opacity: 0.75;
+  z-index: -1;
+}
+.svg-inline--fa.fa-w-13 {
+  width: 0.8125em;
+}
+.svg-inline--fa.fa-w-17 {
+  width: 1.0625em;
+}
+.substat-header {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  text-align: center;
+  vertical-align: -0.125em;
+  width: 1em;
+}
+
+.language-selector {
+  background-color: #5c7080;
+  margin-left: 0.5em;
+  padding: 0.3em;
+}
+
+.editor {
+  counter-reset: line;
+  border: 1px solid #ced4da;
+}
+
+.editor #codeArea {
+  outline: none;
+  padding-left: 60px !important;
+}
+
+.editor pre {
+  padding-left: 60px !important;
+}
+
+.editor .editorLineNumber {
+  position: absolute;
+  left: 0px;
+  color: #cccccc;
+  text-align: right;
+  width: 40px;
+  font-weight: 100;
+}
+
+div.bp4-navbar-heading a, div.main-page-button-container a,
+div.bp4-navbar-heading a:hover, div.main-page-button-container a:hover {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/* for hiding table columns */
+@media screen and (max-width: 1225px) and (min-width: 1045px) {
+		.priority-5{
+			display:none;
+		}
+	}
+	
+	@media screen and (max-width: 1045px) and (min-width: 770px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+	}
+
+  @media screen and (max-width: 770px) and (min-width: 565px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+		.priority-3{
+			display:none;
+		}
+	}
+	
+	@media screen and (max-width: 565px) and (min-width: 300px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+		.priority-3{
+			display:none;
+		}
+	}
+	
+	@media screen and (max-width: 300px) {
+		.priority-5{
+			display:none;
+		}
+		.priority-4{
+			display:none;
+		}
+		.priority-3{
+			display:none;
+		}
+		.priority-2{
+			display:none;
+		}
+	
+	}

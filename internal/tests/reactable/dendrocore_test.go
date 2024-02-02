@@ -1,14 +1,15 @@
-﻿package reactable_test
+package reactable_test
 
 import (
 	"log"
 	"testing"
 
-	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -25,7 +26,7 @@ func TestModifyDendroCore(t *testing.T) {
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
 		trg := args[0].(combat.Target)
 		ae := args[1].(*combat.AttackEvent)
-		if trg.Type() == combat.TargettableEnemy && ae.Info.Abil == "bloom" {
+		if trg.Type() == targets.TargettableEnemy && ae.Info.Abil == "bloom" {
 			count++
 		}
 		return false
@@ -34,9 +35,9 @@ func TestModifyDendroCore(t *testing.T) {
 		if g, ok := args[0].(*reactable.DendroCore); ok {
 			log.Println("replacing gadget on dendro core")
 			c.Combat.ReplaceGadget(g.Key(), &fakeCore{
-				Gadget: gadget.New(c, core.Coord{X: 0, Y: 0, R: 0.2}, combat.GadgetTypDendroCore),
+				Gadget: gadget.New(c, geometry.Point{X: 0, Y: 0}, 0.2, combat.GadgetTypDendroCore),
 			})
-			//prevent blowing up
+			// prevent blowing up
 			g.OnKill = nil
 			g.OnExpiry = nil
 			g.OnCollision = nil
@@ -49,7 +50,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
@@ -58,7 +59,7 @@ func TestModifyDendroCore(t *testing.T) {
 			Element:    attributes.Hydro,
 			Durability: 50,
 		},
-		Pattern: combat.NewCircleHit(combat.NewCircle(0, 0, 1), 100),
+		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
 	}, 0)
 
 	// should create a seed, explodes after 5s
@@ -74,7 +75,7 @@ func TestModifyDendroCore(t *testing.T) {
 		t.Errorf("gadget not a fake core??")
 	}
 
-	//make sure no blow up
+	// make sure no blow up
 	for i := 0; i < 600; i++ {
 		advanceCoreFrame(c)
 	}
@@ -82,7 +83,6 @@ func TestModifyDendroCore(t *testing.T) {
 	if count != 0 {
 		t.Errorf("expecting 0 dmg count, got %v", count)
 	}
-
 }
 
 type fakeCore struct {
@@ -92,4 +92,8 @@ type fakeCore struct {
 func (f *fakeCore) Tick()                                                  {}
 func (f *fakeCore) HandleAttack(*combat.AttackEvent) float64               { return 0 }
 func (f *fakeCore) Attack(*combat.AttackEvent, glog.Event) (float64, bool) { return 0, false }
-func (f *fakeCore) ApplyDamage(*combat.AttackEvent, float64)               {}
+func (f *fakeCore) SetDirection(trg geometry.Point)                        {}
+func (f *fakeCore) SetDirectionToClosestEnemy()                            {}
+func (f *fakeCore) CalcTempDirection(trg geometry.Point) geometry.Point {
+	return geometry.DefaultDirection()
+}

@@ -3,8 +3,10 @@ package venti
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillPressFrames []int
@@ -25,20 +27,21 @@ func init() {
 	skillHoldFrames[action.ActionHighPlunge] = 116
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:   c.Index,
 		Abil:         "Skyward Sonnett",
-		AttackTag:    combat.AttackTagElementalArt,
-		ICDTag:       combat.ICDTagNone,
-		ICDGroup:     combat.ICDGroupDefault,
+		AttackTag:    attacks.AttackTagElementalArt,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypePierce,
 		Element:      attributes.Anemo,
 		Durability:   50,
 		Mult:         skillPress[c.TalentLvlSkill()],
 		HitWeakPoint: true,
 	}
 
-	act := action.ActionInfo{
+	act := action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
 		CanQueueAfter:   skillPressFrames[action.ActionDash], // earliest cancel
@@ -48,15 +51,19 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	cd := 360
 	cdstart := 21
 	hitmark := 51
+	radius := 3.0
+	trg := c.Core.Combat.PrimaryTarget()
 	var count float64 = 3
 	if p["hold"] != 0 {
 		cd = 900
 		cdstart = 34
 		hitmark = 74
+		radius = 6
+		trg = c.Core.Combat.Player()
 		count = 4
 		ai.Mult = skillHold[c.TalentLvlSkill()]
 
-		act = action.ActionInfo{
+		act = action.Info{
 			Frames:          frames.NewAbilFunc(skillHoldFrames),
 			AnimationLength: skillHoldFrames[action.InvalidAction],
 			CanQueueAfter:   skillHoldFrames[action.ActionHighPlunge], // earliest cancel
@@ -64,10 +71,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 4), 0, hitmark, c.c2)
-	c.Core.QueueParticle("venti", count, attributes.Anemo, hitmark+c.ParticleDelay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, radius), 0, hitmark, c.c2, c.makeParticleCB(count))
 
 	c.SetCDWithDelay(action.ActionSkill, cd, cdstart)
 
-	return act
+	return act, nil
+}
+
+func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
+	done := false
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if done {
+			return
+		}
+		done = true
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Anemo, c.ParticleDelay)
+	}
 }

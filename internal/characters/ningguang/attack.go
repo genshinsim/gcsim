@@ -5,6 +5,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -49,7 +50,7 @@ func init() {
 	attackFrames[attackTypeTwirl][action.ActionWalk] = 42
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -79,9 +80,9 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		done = true
 	}
 
-	r := 0.1
+	r := 0.5
 	if c.Base.Cons >= 1 {
-		r = 2
+		r = 3.5
 	}
 
 	nextAttack := attackOptions[c.prevAttack][c.Core.Rand.Intn(2)]
@@ -92,10 +93,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal (%s)", nextAttack),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagNormalAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   45,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       attack[c.TalentLvlAttack()],
@@ -104,7 +106,12 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	for i := 0; i < 2; i++ {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), r),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				r,
+			),
 			attackHitmarks[nextAttack],
 			attackHitmarks[nextAttack]+travel,
 			cb,
@@ -112,13 +119,13 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	}
 
 	c.prevAttack = nextAttack
-
-	return action.ActionInfo{
+	atkspd := c.Stat(attributes.AtkSpd)
+	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(attackFrames[nextAttack][next], c.Stat(attributes.AtkSpd))
+			return frames.AtkSpdAdjust(attackFrames[nextAttack][next], atkspd)
 		},
 		AnimationLength: attackFrames[nextAttack][action.InvalidAction],
 		CanQueueAfter:   attackLockout[nextAttack],
 		State:           action.NormalAttackState,
-	}
+	}, nil
 }

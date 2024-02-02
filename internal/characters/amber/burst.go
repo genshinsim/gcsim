@@ -3,8 +3,10 @@ package amber
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -21,32 +23,49 @@ func init() {
 	burstFrames[action.ActionSwap] = 60     // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		Abil:       "Fiery Rain",
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupAmber,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupAmber,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstTick[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
 
-	//2sec duration, tick every .4 sec in zone 1
-	//2sec duration, tick every .6 sec in zone 2
-	//2sec duration, tick every .2 sec in zone 3
+	burstCenter := c.Core.Combat.PrimaryTarget().Pos()
+	// 2sec duration, spawn arrow every .4s at a random position, burstRadius from burst center
+	for i := 24; i <= 120; i += 24 {
+		arrowPos := geometry.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(arrowPos, nil, c.burstRadius),
+			burstStart+i)
+	}
 
-	//TODO: properly implement random hits and hit box range. right now everything is just radius 3
-	for i := 24; i < 120; i += 24 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstStart+i)
+	// 2sec duration, spawn arrow every .6s at a random position burstRadius from burst center
+	for i := 36; i <= 120; i += 36 {
+		arrowPos := geometry.CalcRandomPointFromCenter(burstCenter, c.burstRadius, c.burstRadius, c.Core.Rand)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(arrowPos, nil, c.burstRadius),
+			burstStart+i)
 	}
-	for i := 36; i < 120; i += 36 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstStart+i)
-	}
-	for i := 12; i < 120; i += 12 {
-		c.Core.QueueAttackWithSnap(ai, snap, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstStart+i)
+
+	// 2sec duration, spawn arrow every .2s between 0.1m and burstRadius from burst center
+	for i := 12; i <= 120; i += 12 {
+		arrowPos := geometry.CalcRandomPointFromCenter(burstCenter, 0.1, c.burstRadius, c.Core.Rand)
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			combat.NewCircleHitOnTarget(arrowPos, nil, c.burstRadius),
+			burstStart+i)
 	}
 
 	if c.Base.Cons >= 6 {
@@ -66,10 +85,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCDWithDelay(action.ActionBurst, 720, 56)
 	c.ConsumeEnergy(59)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

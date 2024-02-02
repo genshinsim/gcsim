@@ -257,6 +257,154 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.AThousandFloatingDreams: {
+		AtkCurve:         GROW_CURVE_ATTACK_304,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          44.33580017089844,
+		BaseSpecialized:  57.599998474121094,
+		Specialized:      attributes.EM,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.BalladOfTheBoundlessBlue: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.06666699796915054,
+		Specialized:      attributes.ER,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.BalladOfTheFjords: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.CR,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.BeaconOfTheReedSea: {
+		AtkCurve:         GROW_CURVE_ATTACK_301,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          45.9364013671875,
+		BaseSpecialized:  0.07199999690055847,
+		Specialized:      attributes.CR,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
 	keys.BeginnersProtector: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -551,6 +699,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          49.137699127197266,
 		BaseSpecialized:  0.035999998450279236,
 		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.CashflowSupervision: {
+		AtkCurve:         GROW_CURVE_ATTACK_302,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          47.5369987487793,
+		BaseSpecialized:  0.04800000041723251,
+		Specialized:      attributes.CR,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -1536,6 +1721,117 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.FinaleOfTheDeep: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.FleuveCendreFerryman: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_101,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.10000000149011612,
+		Specialized:      attributes.ER,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.FlowingPurity: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.ForestRegalia: {
 		AtkCurve:         GROW_CURVE_ATTACK_202,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
@@ -1935,6 +2231,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.IbisPiercer: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.IronPoint: {
 		AtkCurve:         GROW_CURVE_ATTACK_101,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -1998,6 +2331,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.JadefallsSplendor: {
+		AtkCurve:         GROW_CURVE_ATTACK_301,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          45.9364013671875,
+		BaseSpecialized:  0.1080000028014183,
+		Specialized:      attributes.HPP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
 			},
 		},
 	},
@@ -2220,6 +2590,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.LightOfFoliarIncision: {
+		AtkCurve:         GROW_CURVE_ATTACK_304,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          44.33580017089844,
+		BaseSpecialized:  0.19200000166893005,
+		Specialized:      attributes.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
 			},
 		},
 	},
@@ -2483,6 +2890,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		},
 	},
 	keys.MappaMare: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  24,
+		Specialized:      attributes.EM,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.MailedFlower: {
 		AtkCurve:         GROW_CURVE_ATTACK_202,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
 		BaseAtk:          43.734901428222656,
@@ -2947,6 +3391,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.PortablePowerSaw: {
+		AtkCurve:         GROW_CURVE_ATTACK_204,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          41.067100524902344,
+		BaseSpecialized:  0.11999999731779099,
+		Specialized:      attributes.HPP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.Predator: {
 		AtkCurve:         GROW_CURVE_ATTACK_201,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
@@ -3055,6 +3536,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.ProspectorsDrill: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
 			},
 		},
 	},
@@ -3280,6 +3798,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.RangeGauge: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.RavenBow: {
 		AtkCurve:         GROW_CURVE_ATTACK_102,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -3388,6 +3943,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.RightfulReward: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.HPP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
 			},
 		},
 	},
@@ -3724,6 +4316,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.SacrificialJade: {
+		AtkCurve:         GROW_CURVE_ATTACK_204,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          41.067100524902344,
+		BaseSpecialized:  0.07999999821186066,
+		Specialized:      attributes.CR,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.SacrificialSword: {
 		AtkCurve:         GROW_CURVE_ATTACK_204,
 		SpecializedCurve: GROW_CURVE_CRITICAL_201,
@@ -3767,6 +4396,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          43.734901428222656,
 		BaseSpecialized:  0.06666699796915054,
 		Specialized:      attributes.ER,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.ScionOfTheBlazingSun: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.03999999910593033,
+		Specialized:      attributes.CR,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -4337,6 +5003,80 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.SongOfStillness: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.09000000357627869,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.SplendorOfTranquilWaters: {
+		AtkCurve:         GROW_CURVE_ATTACK_304,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          44.33580017089844,
+		BaseSpecialized:  0.19200000166893005,
+		Specialized:      attributes.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
 	keys.StaffOfHoma: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
@@ -4454,6 +5194,80 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 		BaseAtk:          38.74129867553711,
 		BaseSpecialized:  0.07660000026226044,
 		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.SwordOfNarzissenkreuz: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.09000000357627869,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.TalkingStick: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.03999999910593033,
+		Specialized:      attributes.CR,
 		PromotionBonus: []PromoData{
 			{
 				MaxLevel: 20,
@@ -4630,6 +5444,80 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.TheDockhandsAssistant: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.09000000357627869,
+		Specialized:      attributes.HPP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.TheFirstGreatMagic: {
+		AtkCurve:         GROW_CURVE_ATTACK_301,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          45.9364013671875,
+		BaseSpecialized:  0.14399999380111694,
+		Specialized:      attributes.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
 			},
 		},
 	},
@@ -4892,6 +5780,117 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.TidalShadow: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.09000000357627869,
+		Specialized:      attributes.ATKP,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.TomeOfTheEternalFlow: {
+		AtkCurve:         GROW_CURVE_ATTACK_304,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          44.33580017089844,
+		BaseSpecialized:  0.19200000166893005,
+		Specialized:      attributes.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
+	keys.ToukabouShigure: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  36,
+		Specialized:      attributes.EM,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.TravelersHandySword: {
 		AtkCurve:         GROW_CURVE_ATTACK_102,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -4929,6 +5928,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.TulaytullahsRemembrance: {
+		AtkCurve:         GROW_CURVE_ATTACK_302,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          47.5369987487793,
+		BaseSpecialized:  0.09600000083446503,
+		Specialized:      attributes.CD,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
+			},
+		},
+	},
 	keys.TwinNephrite: {
 		AtkCurve:         GROW_CURVE_ATTACK_102,
 		SpecializedCurve: GROW_CURVE_CRITICAL_101,
@@ -4963,6 +5999,80 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      116.69999694824219,
+			},
+		},
+	},
+	keys.UltimateOverlordsMegaMagicSword: {
+		AtkCurve:         GROW_CURVE_ATTACK_202,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          43.734901428222656,
+		BaseSpecialized:  0.06666699796915054,
+		Specialized:      attributes.ER,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
+	keys.Verdict: {
+		AtkCurve:         GROW_CURVE_ATTACK_302,
+		SpecializedCurve: GROW_CURVE_CRITICAL_301,
+		BaseAtk:          47.5369987487793,
+		BaseSpecialized:  0.04800000041723251,
+		Specialized:      attributes.CR,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      31.100000381469727,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      62.20000076293945,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      93.4000015258789,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      124.5,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      155.60000610351562,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      186.6999969482422,
 			},
 		},
 	},
@@ -5291,6 +6401,43 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			},
 		},
 	},
+	keys.WolfFang: {
+		AtkCurve:         GROW_CURVE_ATTACK_201,
+		SpecializedCurve: GROW_CURVE_CRITICAL_201,
+		BaseAtk:          42.4010009765625,
+		BaseSpecialized:  0.05999999865889549,
+		Specialized:      attributes.CR,
+		PromotionBonus: []PromoData{
+			{
+				MaxLevel: 20,
+				Atk:      0,
+			},
+			{
+				MaxLevel: 40,
+				Atk:      25.899999618530273,
+			},
+			{
+				MaxLevel: 50,
+				Atk:      51.900001525878906,
+			},
+			{
+				MaxLevel: 60,
+				Atk:      77.80000305175781,
+			},
+			{
+				MaxLevel: 70,
+				Atk:      103.69999694824219,
+			},
+			{
+				MaxLevel: 80,
+				Atk:      129.6999969482422,
+			},
+			{
+				MaxLevel: 90,
+				Atk:      155.60000610351562,
+			},
+		},
+	},
 	keys.WolfsGravestone: {
 		AtkCurve:         GROW_CURVE_ATTACK_301,
 		SpecializedCurve: GROW_CURVE_CRITICAL_301,
@@ -5362,43 +6509,6 @@ var WeaponBaseMap = map[keys.Weapon]WeaponBase{
 			{
 				MaxLevel: 90,
 				Atk:      155.60000610351562,
-			},
-		},
-	},
-	keys.ThousandFloatingDreams: {
-		AtkCurve:         GROW_CURVE_ATTACK_304,
-		SpecializedCurve: GROW_CURVE_CRITICAL_301,
-		BaseAtk:          44.3358,
-		BaseSpecialized:  57.6,
-		Specialized:      attributes.EM,
-		PromotionBonus: []PromoData{
-			{
-				MaxLevel: 20,
-				Atk:      0,
-			},
-			{
-				MaxLevel: 40,
-				Atk:      31.100000381469727,
-			},
-			{
-				MaxLevel: 50,
-				Atk:      62.20000076293945,
-			},
-			{
-				MaxLevel: 60,
-				Atk:      93.4000015258789,
-			},
-			{
-				MaxLevel: 70,
-				Atk:      124.5,
-			},
-			{
-				MaxLevel: 80,
-				Atk:      155.60000610351562,
-			},
-			{
-				MaxLevel: 90,
-				Atk:      186.6999969482422,
 			},
 		},
 	},

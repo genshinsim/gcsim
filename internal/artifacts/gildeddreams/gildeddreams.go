@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/player/artifact"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -62,7 +62,7 @@ func (s *Set) Init() error {
 // character, and Elemental Mastery is increased by 50 for every party member with a different Elemental Type. Each of the aforementioned
 // buffs will count up to 3 characters. This effect can be triggered once every 8s. The character who equips this can still trigger its
 // effects when not on the field.
-func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (artifact.Set, error) {
+func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
 		c:    c,
 		char: char,
@@ -104,7 +104,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			return false
 		}
 
-		for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
+		for i := event.ReactionEventStartDelim + 1; i < event.OnShatter; i++ {
 			c.Events.Subscribe(i, add, fmt.Sprintf("gd-4pc-%v", char.Base.Key.String()))
 		}
 	}

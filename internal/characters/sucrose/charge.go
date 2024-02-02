@@ -3,8 +3,10 @@ package sucrose
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var chargeFrames []int
@@ -22,14 +24,14 @@ func init() {
 	chargeFrames[action.ActionSwap] = chargeHitmark // idk if this is correct or not
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Charge Attack",
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
@@ -42,16 +44,23 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		windup = 15
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3), chargeHitmark-windup, chargeHitmark-windup)
-
+	var c4cb combat.AttackCBFunc
 	if c.Base.Cons >= 4 {
-		c.c4()
+		c4cb = c.makeC4Callback()
 	}
 
-	return action.ActionInfo{
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -0.2}, 3.2, 7.5),
+		chargeHitmark-windup,
+		chargeHitmark-windup,
+		c4cb,
+	)
+
+	return action.Info{
 		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

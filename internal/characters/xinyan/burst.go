@@ -3,8 +3,10 @@ package xinyan
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var burstFrames []int
@@ -19,27 +21,36 @@ func init() {
 	burstFrames[action.ActionSwap] = 86    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Riff Revolution",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Physical,
 		Durability:         100,
 		Mult:               burstDmg[c.TalentLvlBurst()],
 		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), burstInitialHitmark, burstInitialHitmark)
+	c1CB := c.makeC1CB()
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
+		burstInitialHitmark,
+		burstInitialHitmark,
+		c1CB,
+	)
 
 	// 7 hits
 	ai = combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Riff Revolution (DoT)",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurstPyro,
-		ICDGroup:           combat.ICDGroupDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurstPyro,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               burstDot[c.TalentLvlBurst()],
@@ -47,12 +58,24 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	// 1st DoT
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), 0, 0)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+			0,
+			0,
+			c1CB,
+		)
 		ai.CanBeDefenseHalted = false // only the first DoT has hitlag
 		// 2nd DoT onwards
 		c.QueueCharTask(func() {
 			for i := 0; i < 6; i++ {
-				c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), i*17, i*17)
+				c.Core.QueueAttack(
+					ai,
+					combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 4),
+					i*17,
+					i*17,
+					c1CB,
+				)
 			}
 		}, 17)
 	}, burstDoT1Hitmark)
@@ -69,10 +92,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(5)
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 1)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionAttack], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

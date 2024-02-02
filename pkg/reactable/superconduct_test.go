@@ -7,7 +7,6 @@ import (
 )
 
 func TestSuperconduct(t *testing.T) {
-
 	c, trg := testCoreWithTrgs(1)
 	err := c.Init()
 	if err != nil {
@@ -25,7 +24,6 @@ func TestSuperconduct(t *testing.T) {
 }
 
 func TestFrozenSuperconduct(t *testing.T) {
-
 	c, trg := testCoreWithTrgs(1)
 	err := c.Init()
 	if err != nil {
@@ -33,7 +31,7 @@ func TestFrozenSuperconduct(t *testing.T) {
 		t.FailNow()
 	}
 
-	//trigger a freeze
+	// trigger a freeze
 	c.QueueAttackEvent(makeAOEAttack(attributes.Cryo, 25), 0)
 	c.Tick()
 	c.QueueAttackEvent(makeAOEAttack(attributes.Hydro, 25), 0)

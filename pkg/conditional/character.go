@@ -30,7 +30,11 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 		return evalCharacterAbil(c, char, act, fields[2])
 	}
 
+	charCat := "character " + typ
+
 	switch typ {
+	case "id":
+		return int(char.Base.Key), nil
 	case "cons":
 		return char.Base.Cons, nil
 	case "energy":
@@ -44,27 +48,27 @@ func evalCharacter(c *core.Core, key keys.Char, fields []string) (any, error) {
 	case "weapon":
 		return int(char.Weapon.Key), nil
 	case "status":
-		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
 		}
 		return char.StatusDuration(fields[2]), nil
 	case "mods":
-		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
 		}
 		return char.StatusDuration(fields[2]), nil
 	case "infusion":
-		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
 		}
 		return c.Player.WeaponInfuseIsActive(char.Index, fields[2]), nil
 	case "tags":
-		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
 		}
 		return char.Tag(fields[2]), nil
 	case "stats":
-		if err := fieldsCheck(fields, 3, "character "+typ); err != nil {
+		if err := fieldsCheck(fields, 3, charCat); err != nil {
 			return 0, err
 		}
 		return evalCharacterStats(char, fields[2])

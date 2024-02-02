@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -26,43 +27,39 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-const bounceKey = "eye-of-preception-bounce"
+const bounceKey = "eye-of-perception-bounce"
 
 func (w *Weapon) chain(count int, c *core.Core, char *character.CharWrapper) func(a combat.AttackCB) {
 	if count == 4 {
 		return nil
 	}
+	done := false
 	return func(a combat.AttackCB) {
-		//check target is an enemey
+		// check target is an enemey
 		t, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
 		}
-		t.SetTag(bounceKey, c.F+36)
-		x, y := a.Target.Shape().Pos()
-		trgs := c.Combat.EnemyByDistance(x, y, a.Target.Key())
-		next := -1
-		for _, v := range trgs {
-			trg, ok := c.Combat.Enemy(v).(*enemy.Enemy)
-			if !ok {
-				continue
-			}
-			if trg.GetTag(bounceKey) < c.F {
-				next = v
-				break
-			}
-		}
-
-		if next == -1 {
+		// shouldn't proc more than one chain if multiple enemies are hit
+		if done {
 			return
 		}
+		done = true
 
-		cb := w.chain(count+1, c, char)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.Enemy(next).Key()), 10, cb)
+		next := c.Combat.ClosestEnemyWithinArea(
+			combat.NewCircleHitOnTarget(t, nil, 8),
+			func(e combat.Enemy) bool {
+				return !e.StatusIsActive(bounceKey)
+			},
+		)
+		if next != nil {
+			next.AddStatus(bounceKey, 36, true)
+			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(next, nil, 0.6), 10, w.chain(count+1, c, char))
+		}
 	}
 }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
@@ -73,9 +70,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	w.ai = combat.AttackInfo{
 		ActorIndex: char.Index,
 		Abil:       "Eye of Preception Proc",
-		AttackTag:  combat.AttackTagWeaponSkill,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagWeaponSkill,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 		Durability: 100,
 		Mult:       dmg,
@@ -86,17 +84,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if ae.Info.ActorIndex != char.Index {
 			return false
 		}
-		if ae.Info.AttackTag != combat.AttackTagNormal && ae.Info.AttackTag != combat.AttackTagExtra {
+		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra {
 			return false
 		}
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
 		char.AddStatus(icdKey, cd, true)
-
-		cb := w.chain(0, c, char)
 		w.snap = char.Snapshot(&w.ai)
-		c.QueueAttackWithSnap(w.ai, w.snap, combat.NewDefSingleTarget(c.Combat.DefaultTarget), 10, cb)
+
+		enemy := c.Combat.ClosestEnemyWithinArea(
+			combat.NewCircleHitOnTarget(c.Combat.Player(), nil, 8),
+			func(e combat.Enemy) bool {
+				return !e.StatusIsActive(bounceKey)
+			},
+		)
+		if enemy != nil {
+			enemy.AddStatus(bounceKey, 36, true)
+			c.QueueAttackWithSnap(w.ai, w.snap, combat.NewCircleHitOnTarget(enemy, nil, 0.6), 10, w.chain(0, c, char))
+		}
 
 		return false
 	}, fmt.Sprintf("perception-%v", char.Base.Key.String()))

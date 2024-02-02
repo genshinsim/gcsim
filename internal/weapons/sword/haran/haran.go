@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -30,17 +31,17 @@ const (
 	maxWavespikeStacks = 2
 )
 
-//Obtain 12% All Elemental DMG Bonus. When other nearby party members use
-//Elemental Skills, the character equipping this weapon will gain 1 Wavespike
-//stack. Max 2 stacks. This effect can be triggered once every 0.3s. When the
-//character equipping this weapon uses an Elemental Skill, all stacks of
-//Wavespike will be consumed to gain Rippling Upheaval: each stack of Wavespike
-//consumed will increase Normal Attack DMG by 20% for 8s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+// Obtain 12% All Elemental DMG Bonus. When other nearby party members use
+// Elemental Skills, the character equipping this weapon will gain 1 Wavespike
+// stack. Max 2 stacks. This effect can be triggered once every 0.3s. When the
+// character equipping this weapon uses an Elemental Skill, all stacks of
+// Wavespike will be consumed to gain Rippling Upheaval: each stack of Wavespike
+// consumed will increase Normal Attack DMG by 20% for 8s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
-	//perm buff
+	// perm buff
 	m := make([]float64, attributes.EndStatType)
 	base := 0.09 + float64(r)*0.03
 	m[attributes.PyroP] = base
@@ -60,19 +61,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 
 	wavespikeStacks := 0
 
-	nonActiveFn := func() bool {
-		//once every 0.3s
+	nonActiveFn := func() {
+		// once every 0.3s
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
-		//add stacks
+		// add stacks
 		wavespikeStacks++
 		if wavespikeStacks > maxWavespikeStacks {
 			wavespikeStacks = maxWavespikeStacks
 		}
 		c.Log.NewEvent("Haran gained a wavespike stack", glog.LogWeaponEvent, char.Index).Write("stack", wavespikeStacks)
 		char.AddStatus(icdKey, 18, true)
-		return false
 	}
 
 	val := make([]float64, attributes.EndStatType)
@@ -81,7 +81,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag("ripping-upheaval", 480),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if atk.Info.AttackTag != combat.AttackTagNormal {
+				if atk.Info.AttackTag != attacks.AttackTagNormal {
 					return nil, false
 				}
 				return val, true
@@ -95,9 +95,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 	c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
 		if c.Player.Active() == char.Index {
 			return activeFn()
-		} else {
-			return nonActiveFn()
 		}
+		nonActiveFn()
+		return false
 	}, fmt.Sprintf("wavespike-%v", char.Base.Key.String()))
 
 	return w, nil

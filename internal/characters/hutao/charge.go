@@ -3,6 +3,7 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -25,27 +26,25 @@ func init() {
 	chargeFrames[action.ActionJump] = chargeHitmark
 
 	// charge (paramita) -> x
-	ppChargeFrames = frames.InitAbilSlice(44)
+	ppChargeFrames = frames.InitAbilSlice(42)
 	ppChargeFrames[action.ActionBurst] = 33
 	ppChargeFrames[action.ActionDash] = ppChargeHitmark
 	ppChargeFrames[action.ActionJump] = ppChargeHitmark
-	ppChargeFrames[action.ActionSwap] = 42
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.StatModIsActive(paramitaBuff) {
-		return c.ppChargeAttack(p)
+		return c.ppChargeAttack(), nil
 	}
 
-	//check for particles
+	// check for particles
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupPoleExtraAttack,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
@@ -53,26 +52,38 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, chargeHitmark)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			0.8,
+		),
+		0,
+		chargeHitmark,
+	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
 
-func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ppChargeAttack() action.Info {
+	// pp slide: add 1.8s to paramita on charge attack start which gets removed once the charge attack ends
+	c.ExtendStatus(paramitaBuff, 1.8*60)
 
 	//TODO: currently assuming snapshot is on cast since it's a bullet and nothing implemented re "pp slide"
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupPoleExtraAttack,
-		StrikeType:         combat.StrikeTypeSlash,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
@@ -80,9 +91,21 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.5), 0, ppChargeHitmark, c.ppParticles, c.applyBB)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			0.8,
+		),
+		0,
+		ppChargeHitmark,
+		c.particleCB,
+		c.applyBB,
+	)
 
-	//frames changes if previous action is normal
+	// frames changes if previous action is normal
 	prevState := -1
 	if c.Core.Player.LastAction.Char == c.Index && c.Core.Player.LastAction.Type == action.ActionAttack {
 		prevState = c.NormalCounter - 1
@@ -103,15 +126,13 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		case 0: // N1
 			if next == action.ActionDash {
 				return 1 // N1D
-			} else {
-				return 2 // N1J
 			}
+			return 2 // N1J
 		case 1: // N2
 			if next == action.ActionDash {
 				return 4 // N2D
-			} else {
-				return 5 // N2J
 			}
+			return 5 // N2J
 		case 2: // N3
 			return 2
 		case 3: // N4
@@ -123,10 +144,15 @@ func (c *char) ppChargeAttack(p map[string]int) action.ActionInfo {
 		}
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          ff,
 		AnimationLength: ppChargeFrames[action.InvalidAction],
 		CanQueueAfter:   1,
 		State:           action.ChargeAttackState,
+		OnRemoved: func(next action.AnimationState) {
+			if next != action.BurstState {
+				c.ExtendStatus(paramitaBuff, -1.8*60)
+			}
+		},
 	}
 }

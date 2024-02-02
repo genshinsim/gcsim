@@ -23,5 +23,16 @@ internal/characters/replace.txt
 ./cmd/gcsim/*.json
 cmd/gcsim/gcsim
 !release-notes.txt
-\.vscode/
 **/node_modules
+.env
+**/protos_gen
+keys.json
+tagger_mapping.json
+/app/*
+cmd/gcsim/run_optimizer_full.bat
+backend/cmd/compute/compute
+backend/docker/hash.txt
+backend/docker/binary
+computebin
+.cache
+.npm

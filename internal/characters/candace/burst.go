@@ -3,11 +3,12 @@ package candace
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -28,15 +29,15 @@ func init() {
 	burstFrames[action.ActionSwap] = 49
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.waveCount = 0
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sacred Rite: Wagtail's Tide (Q)",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeDefault,
 		Element:            attributes.Hydro,
 		Durability:         25,
 		FlatDmg:            burstDmg[c.TalentLvlBurst()] * c.MaxHP(),
@@ -45,7 +46,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -65,12 +66,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(4)
 	c.SetCD(action.ActionBurst, 15*60)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
@@ -84,16 +85,16 @@ func (c *char) burstInfuseFn(char *character.CharWrapper, src int) {
 		return
 	}
 	switch char.Weapon.Class {
-	case weapon.WeaponClassClaymore,
-		weapon.WeaponClassSpear,
-		weapon.WeaponClassSword:
+	case info.WeaponClassClaymore,
+		info.WeaponClassSpear,
+		info.WeaponClassSword:
 		c.Core.Player.AddWeaponInfuse(
 			char.Index,
 			"candace-q-infuse",
 			attributes.Hydro,
 			60,
 			true,
-			combat.AttackTagNormal, combat.AttackTagExtra, combat.AttackTagPlunge,
+			attacks.AttackTagNormal, attacks.AttackTagExtra, attacks.AttackTagPlunge,
 		)
 	}
 	c.QueueCharTask(func() { c.burstInfuseFn(char, src) }, 30)
@@ -113,10 +114,10 @@ func (c *char) burstSwap() {
 		ai := combat.AttackInfo{
 			ActorIndex:         c.Index,
 			Abil:               "Sacred Rite: Wagtail's Tide (Wave)",
-			AttackTag:          combat.AttackTagElementalBurst,
-			ICDTag:             combat.ICDTagNone,
-			ICDGroup:           combat.ICDGroupDefault,
-			StrikeType:         combat.StrikeTypeDefault,
+			AttackTag:          attacks.AttackTagElementalBurst,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeDefault,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			FlatDmg:            burstWaveDmg[c.TalentLvlBurst()] * c.MaxHP(),
@@ -125,7 +126,7 @@ func (c *char) burstSwap() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 3.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
 			waveHitmark,
 			waveHitmark,
 		)
@@ -143,7 +144,7 @@ func (c *char) burstInit(char *character.CharWrapper) {
 			if !c.StatusIsActive(burstKey) {
 				return nil, false
 			}
-			if atk.Info.AttackTag != combat.AttackTagNormal {
+			if atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil, false
 			}
 			if atk.Info.Element == attributes.Physical || atk.Info.Element == attributes.NoElement {

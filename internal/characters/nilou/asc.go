@@ -1,6 +1,7 @@
 package nilou
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -25,7 +26,7 @@ const (
 // is considered DMG dealt by Dendro Cores produced by Bloom.
 // Should the party not meet the conditions for this Passive Talent, any existing Golden Chalice’s Bounty effects will be canceled.
 func (c *char) a1() {
-	if !c.onlyBloomTeam {
+	if c.Base.Ascension < 1 || !c.onlyBloomTeam {
 		return
 	}
 
@@ -46,11 +47,10 @@ func (c *char) a1() {
 			return false
 		}
 
-		x, y := g.Gadget.Pos()
-		b := newBountifulCore(c.Core, x, y, atk)
+		b := newBountifulCore(c.Core, g.Gadget.Pos(), atk)
 		b.Gadget.SetKey(g.Gadget.Key())
 		c.Core.Combat.ReplaceGadget(g.Key(), b)
-		//prevent blowing up
+		// prevent blowing up
 		g.Gadget.OnExpiry = nil
 		g.Gadget.OnKill = nil
 
@@ -87,11 +87,15 @@ func (c *char) a1() {
 // by Golden Chalice’s Bounty to increase by 9%.
 // The maximum increase in Bountiful Core DMG that can be achieved this way is 400%.
 func (c *char) a4() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	for _, this := range c.Core.Player.Chars() {
+		// TODO: a4 should be an extra buff
 		this.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(a4Mod, 30*60),
 			Amount: func(ai combat.AttackInfo) (float64, bool) {
-				if ai.AttackTag != combat.AttackTagBloom {
+				if ai.AttackTag != attacks.AttackTagBloom {
 					return 0, false
 				}
 

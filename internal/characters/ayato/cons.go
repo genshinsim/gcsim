@@ -1,11 +1,12 @@
 package ayato
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -21,7 +22,7 @@ func (c *char) c1() {
 				if !ok {
 					return nil, false
 				}
-				if a.Info.AttackTag != combat.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
+				if a.Info.AttackTag != attacks.AttackTagNormal || x.HP()/x.MaxHP() > 0.5 {
 					return nil, false
 				}
 				return m, true
@@ -45,24 +46,33 @@ func (c *char) c2() {
 	})
 }
 
-func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+// After using Kamisato Art: Kyouka, Ayato's next Shunsuiken attack will create
+// 2 extra Shunsuiken strikes when they hit opponents, each one dealing 450% of Ayato's ATK as DMG.
+// Both these Shunsuiken attacks will not be affected by Namisen.
+func (c *char) makeC6CB() combat.AttackCBFunc {
+	if c.Base.Cons < 6 || !c.c6Ready {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
 		if c.Core.Player.Active() != c.Index {
-			return false
+			return
 		}
-		if !c.c6ready {
-			return false
+		if !c.c6Ready {
+			return
 		}
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.AttackTag != combat.AttackTagNormal {
-			return false
-		}
+		c.c6Ready = false
+
+		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
 		ai := combat.AttackInfo{
 			Abil:               "Ayato C6",
 			ActorIndex:         c.Index,
-			AttackTag:          combat.AttackTagNormal,
-			ICDTag:             combat.ICDTagNormalAttack,
-			ICDGroup:           combat.ICDGroupDefault,
+			AttackTag:          attacks.AttackTagNormal,
+			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Hydro,
 			Durability:         25,
 			Mult:               4.5,
@@ -71,11 +81,13 @@ func (c *char) c6() {
 			CanBeDefenseHalted: false,
 			IsDeployable:       true,
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 20, 20)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 2), 22, 22)
-
-		c.Core.Log.NewEvent("ayato c6 proc'd", glog.LogCharacterEvent, c.Index)
-		c.c6ready = false
-		return false
-	}, "ayato-c6")
+		for i := 0; i < 2; i++ {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 8, 7),
+				20+i*2,
+				20+i*2,
+			)
+		}
+	}
 }

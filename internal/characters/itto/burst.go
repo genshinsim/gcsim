@@ -35,7 +35,7 @@ func init() {
 // - On hit, the 1st and 3rd strikes of his attack combo will each grant Arataki Itto 1 stack of Superlative Superstrength.
 // - Decreases Itto's Elemental and Physical RES by 20%.
 // The Raging Oni King state will be cleared when Itto leaves the field.
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// N1 pre-stack tech. If Itto did N1 -> Q, then add a stack before Q def to atk conversion
 	// https://library.keqingmains.com/evidence/characters/geo/itto#itto-n1-burst-cancel-ss-stack
 	if p["prestack"] != 0 && c.Core.Player.CurrentState() == action.NormalAttackState && c.NormalCounter == 1 {
@@ -47,8 +47,8 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		ActorIndex: c.Index,
 		Abil:       "Royal Descent: Behold, Itto the Evil! (Stat Snapshot)",
 	}
-	snapshot := c.Snapshot(&aiSnapshot)
-	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[attributes.DEFP]) + snapshot.Stats[attributes.DEF]
+	c.Snapshot(&aiSnapshot)
+	burstDefSnapshot := c.Base.Def*(1+c.NonExtraStat(attributes.DEFP)) + c.NonExtraStat(attributes.DEF)
 	mult := defconv[c.TalentLvlBurst()]
 
 	// TODO: Confirm exact timing of buff
@@ -58,6 +58,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstBuffKey, burstDuration),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return mATK, true
 		},
@@ -111,12 +112,12 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 1080) // 18s * 60
 	c.ConsumeEnergy(1)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) onExitField() {

@@ -5,9 +5,12 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -16,9 +19,13 @@ var (
 )
 
 const (
-	skillOzSpawn     = 32
+	skillOzSpawn     = 18 // same as CD start
+	skillOzHitmark   = 38
+	skillOzFirstTick = 64
+	ozTickInterval   = 59 // assume consistent 59f tick rate
 	skillRecastCD    = 92 // 2f CD delay
 	skillRecastCDKey = "fischl-skill-recast-cd"
+	particleICDKey   = "fischl-particle-icd"
 )
 
 func init() {
@@ -34,18 +41,18 @@ func init() {
 	skillRecastFrames[action.ActionJump] = 5
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if p["recast"] != 0 && c.ozActive && !c.StatusIsActive(skillRecastCDKey) {
-		return c.skillRecast()
+		return c.skillRecast(), nil
 	}
 	// always trigger electro no ICD on initial summon
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Oz (Summon)",
-		AttackTag:  combat.AttackTagElementalArt,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupFischl,
-		StrikeType: combat.StrikeTypePierce,
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupFischl,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       birdSum[c.TalentLvlSkill()],
@@ -57,30 +64,49 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		radius = 3
 	}
 	// hitmark is 5 frames after oz spawns
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.PrimaryTarget(), radius), skillOzSpawn, skillOzSpawn+5)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, radius),
+		skillOzSpawn,
+		skillOzHitmark,
+	)
 
 	// CD Delay is 18 frames, but things break if Delay > CanQueueAfter
 	// so we add 18 to the duration instead. this probably mess up CDR stuff
-	c.SetCD(action.ActionSkill, 25*60+18) // 18 frames until CD starts
+	c.SetCD(action.ActionSkill, 25*60+skillOzSpawn)
 
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(skillRecastCDKey, skillRecastCD, false)
-	}, 18)
+	}, skillOzSpawn)
 
 	// set oz to active at the start of the action
 	c.ozActive = true
 	// set on field oz to be this one
-	c.queueOz("Skill", skillOzSpawn)
+	c.queueOz("Skill", skillOzSpawn, skillOzFirstTick)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.1*60, true)
+	if c.Core.Rand.Float64() < .67 {
+		// TODO: this delay used to be 120
+		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay)
 	}
 }
 
-func (c *char) skillRecast() action.ActionInfo {
+func (c *char) skillRecast() action.Info {
 	c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	c.Core.Tasks.Add(func() {
 		c.ozTickSrc = c.Core.F // reset attack timer
@@ -89,7 +115,7 @@ func (c *char) skillRecast() action.ActionInfo {
 		c.Core.Log.NewEvent("Recasting oz", glog.LogCharacterEvent, c.Index).
 			Write("next expected tick", c.Core.F+60)
 	}, 2) // 2f delay
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
 		CanQueueAfter:   skillRecastFrames[action.ActionDash], // earliest cancel
@@ -97,7 +123,7 @@ func (c *char) skillRecast() action.ActionInfo {
 	}
 }
 
-func (c *char) queueOz(src string, ozSpawn int) {
+func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 	// calculate oz duration
 	dur := 600
 	if c.Base.Cons == 6 {
@@ -105,6 +131,7 @@ func (c *char) queueOz(src string, ozSpawn int) {
 	}
 	spawnFn := func() {
 		// setup variables for tracking oz
+		c.ozActive = true
 		c.ozSource = c.Core.F
 		c.ozTickSrc = c.Core.F
 		c.ozActiveUntil = c.Core.F + dur
@@ -113,21 +140,26 @@ func (c *char) queueOz(src string, ozSpawn int) {
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       fmt.Sprintf("Oz (%v)", src),
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagElementalArt,
-			ICDGroup:   combat.ICDGroupFischl,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagElementalArt,
+			ICDGroup:   attacks.ICDGroupFischl,
+			StrikeType: attacks.StrikeTypePierce,
 			Element:    attributes.Electro,
 			Durability: 25,
 			Mult:       birdAtk[c.TalentLvlSkill()],
 		}
+		player := c.Core.Combat.Player()
+		c.ozPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 1.5}, player.Direction())
+
 		snap := c.Snapshot(&ai)
 		c.ozSnapshot = combat.AttackEvent{
 			Info:        ai,
 			Snapshot:    snap,
-			Pattern:     combat.NewDefSingleTarget(c.Core.Combat.DefaultTarget),
 			SourceFrame: c.Core.F,
 		}
-		c.Core.Tasks.Add(c.ozTick(c.Core.F), 60)
+		c.ozSnapshot.Callbacks = append(c.ozSnapshot.Callbacks, c.particleCB)
+
+		c.Core.Tasks.Add(c.ozTick(c.Core.F), firstTick)
 		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
 			Write("source", src).
 			Write("expected end", c.ozActiveUntil).
@@ -135,9 +167,9 @@ func (c *char) queueOz(src string, ozSpawn int) {
 	}
 	if ozSpawn > 0 {
 		c.Core.Tasks.Add(spawnFn, ozSpawn)
-	} else {
-		spawnFn()
+		return
 	}
+	spawnFn()
 }
 
 func (c *char) ozTick(src int) func() {
@@ -152,17 +184,18 @@ func (c *char) ozTick(src int) func() {
 			Write("src", src)
 		// trigger damage
 		ae := c.ozSnapshot
+		ae.Pattern = combat.NewBoxHit(
+			c.ozPos,
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		)
 		c.Core.QueueAttackEvent(&ae, c.ozTravel)
-		// check for orb
-		// Particle check is 67% for particle, from datamine
-		// TODO: this delay used to be 120
-		if c.Core.Rand.Float64() < .67 {
-			c.Core.QueueParticle("fischl", 1, attributes.Electro, c.ParticleDelay)
-		}
 
 		// queue up next hit only if next hit oz is still active
-		if c.Core.F+60 <= c.ozActiveUntil {
-			c.Core.Tasks.Add(c.ozTick(src), 60)
+		if c.Core.F+ozTickInterval <= c.ozActiveUntil {
+			c.Core.Tasks.Add(c.ozTick(src), ozTickInterval)
 		}
 	}
 }

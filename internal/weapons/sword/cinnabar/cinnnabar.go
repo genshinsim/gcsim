@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
@@ -32,7 +33,7 @@ const (
 // Elemental Skill DMG is increased by 40% of DEF. The effect will be triggered
 // no more than once every 1.5s and will be cleared 0.1s after the Elemental
 // Skill deals DMG.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
@@ -42,23 +43,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		if atk.Info.ActorIndex != char.Index {
 			return false
 		}
-		if atk.Info.AttackTag != combat.AttackTagElementalArt && atk.Info.AttackTag != combat.AttackTagElementalArtHold {
+		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
 			return false
 		}
-		//don't do anything if we're in icd period
+		// don't do anything if we're in icd period
 		if char.StatusIsActive(icdKey) {
 			return false
 		}
-		//otherwise if this is first time proc'ing, set the duration and queue
-		//task to set icd
+		// otherwise if this is first time proc'ing, set the duration and queue
+		// task to set icd
 		if !char.StatusIsActive(durationKey) {
 			//TODO: we're assuming icd starts after the effect
 			char.QueueCharTask(func() {
-				char.AddStatus(icdKey, 90, false) //icd lasts for 1.5s
-			}, 6) //icd starts 6 frames after
+				char.AddStatus(icdKey, 90, false) // icd lasts for 1.5s
+			}, 6) // icd starts 6 frames after
 			char.AddStatus(durationKey, 6, false)
 		}
-		damageAdd := (atk.Snapshot.BaseDef*(1+atk.Snapshot.Stats[attributes.DEFP]) + atk.Snapshot.Stats[attributes.DEF]) * defPer
+		damageAdd := (char.Base.Def*(1+char.Stat(attributes.DEFP)) + char.Stat(attributes.DEF)) * defPer
 		atk.Info.FlatDmg += damageAdd
 
 		c.Log.NewEvent("Cinnabar Spindle proc dmg add", glog.LogPreDamageMod, char.Index).

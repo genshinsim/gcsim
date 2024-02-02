@@ -3,10 +3,10 @@ package xingqiu
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -36,11 +36,11 @@ There is an approximately 1 second interval between summoned Hydro Sword waves, 
 Each wave of Hydro Swords is capable of applying one (1) source of Hydro status, and each individual sword is capable of getting a crit.
 **/
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
-	//apply hydro every 3rd hit
-	//triggered on normal attack
-	//also applies hydro on cast if p=1
-	//how we doing that?? trigger 0 dmg?
+func (c *char) Burst(p map[string]int) (action.Info, error) {
+	// apply hydro every 3rd hit
+	// triggered on normal attack
+	// also applies hydro on cast if p=1
+	// how we doing that?? trigger 0 dmg?
 
 	/** c2
 	Extends the duration of Guhua Sword: Raincutter by 3s.
@@ -50,17 +50,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	if c.Base.Cons >= 2 {
 		dur += 3
 	}
-	dur = dur * 60
+	dur *= 60
 	c.AddStatus(burstKey, dur+33, true) // add 33f for anim
-
-	orbital, ok := p["orbital"]
-	if !ok {
-		orbital = 1
-	}
-
-	if orbital == 1 {
-		c.applyOrbital(dur, burstHitmark)
-	}
+	c.applyOrbital(dur, burstHitmark)
 
 	c.burstCounter = 0
 	c.numSwords = 2
@@ -70,31 +62,35 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.SetCD(action.ActionBurst, 20*60)
 	c.ConsumeEnergy(3)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstHitmark,
 		State:           action.BurstState,
-	}
+	}, nil
 }
 
 func (c *char) summonSwordWave() {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Guhua Sword: Raincutter",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
 		Element:    attributes.Hydro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	//only if c.nextRegen is true and first sword
+	// only if c.nextRegen is true and first sword
 	var c2cb, c6cb func(a combat.AttackCB)
 	if c.nextRegen {
 		done := false
-		c6cb = func(_ combat.AttackCB) {
+		c6cb = func(a combat.AttackCB) {
+			if a.Target.Type() != targets.TargettableEnemy {
+				return
+			}
 			if done {
 				return
 			}
@@ -116,7 +112,7 @@ func (c *char) summonSwordWave() {
 
 			icd = c.Core.F + 1
 			c.Core.Tasks.Add(func() {
-				e.AddResistMod(enemy.ResistMod{
+				e.AddResistMod(combat.ResistMod{
 					Base:  modifier.NewBaseWithHitlag("xingqiu-c2", 4*60),
 					Ele:   attributes.Hydro,
 					Value: -0.15,
@@ -127,12 +123,24 @@ func (c *char) summonSwordWave() {
 
 	for i := 0; i < c.numSwords; i++ {
 		//TODO: this snapshot timing is off? perhaps should be 0?
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.1), 20, 20, c2cb, c6cb)
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				0.5,
+			),
+			20,
+			20,
+			c2cb,
+			c6cb,
+		)
 		c6cb = nil
 		c.burstCounter++
 	}
 
-	//figure out next wave # of swords
+	// figure out next wave # of swords
 	switch c.numSwords {
 	case 2:
 		c.numSwords = 3
@@ -148,67 +156,5 @@ func (c *char) summonSwordWave() {
 	case 5:
 		c.numSwords = 2
 		c.nextRegen = false
-	}
-
-	c.AddStatus(burstICDKey, 60, true)
-}
-
-func (c *char) burstStateHook() {
-	c.Core.Events.Subscribe(event.OnStateChange, func(args ...interface{}) bool {
-		//check if buff is up
-		if !c.StatusIsActive(burstKey) {
-			return false
-		}
-		next := args[1].(action.AnimationState)
-		//ignore if not normal
-		if next != action.NormalAttackState {
-			return false
-		}
-		//ignore if on ICD
-		if c.StatusIsActive(burstICDKey) {
-			return false
-		}
-		//this should start a new ticker if not on ICD and state is correct
-		c.summonSwordWave()
-		c.Core.Log.NewEvent("xq burst on state change", glog.LogCharacterEvent, c.Index).
-			Write("state", next).
-			Write("icd", c.StatusExpiry(burstICDKey))
-		c.burstTickSrc = c.Core.F
-		//use the hitlag affected queue for this
-		c.QueueCharTask(c.burstTickerFunc(c.Core.F), 60) //check every 1sec
-
-		return false
-	}, "xq-burst-animation-check")
-}
-
-func (c *char) burstTickerFunc(src int) func() {
-	return func() {
-		//check if buff is up
-		if !c.StatusIsActive(burstKey) {
-			return
-		}
-		if c.burstTickSrc != src {
-			c.Core.Log.NewEvent("xq burst tick check ignored, src diff", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("new src", c.burstTickSrc)
-			return
-		}
-		//stop if we are no longer in normal animation state
-		state := c.Core.Player.CurrentState()
-		if state != action.NormalAttackState {
-			c.Core.Log.NewEvent("xq burst tick check stopped, not normal state", glog.LogCharacterEvent, c.Index).
-				Write("src", src).
-				Write("state", state)
-			return
-		}
-		c.Core.Log.NewEvent("xq burst triggered from ticker", glog.LogCharacterEvent, c.Index).
-			Write("src", src).
-			Write("state", state).
-			Write("icd", c.StatusExpiry(burstICDKey))
-		//we can trigger a wave here b/c we're in normal state still and src is still the same
-		c.summonSwordWave()
-		//in theory this should not hit an icd?
-		//use the hitlag affected queue for this
-		c.QueueCharTask(c.burstTickerFunc(src), 60) //check every 1sec
 	}
 }

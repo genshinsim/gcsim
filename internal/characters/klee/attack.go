@@ -6,6 +6,7 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -14,7 +15,9 @@ var (
 	attackFrames          [][]int
 	attackFramesWithLag   [][]int
 	attackHitmarks        = []int{16, 23, 37}
+	attackPoiseDMG        = []float64{65, 65, 130}
 	attackHitmarksWithLag []int
+	attackRadius          = []float64{1, 1, 1.5}
 )
 
 const normalHitNum = 3
@@ -75,7 +78,7 @@ func add9FrameLag(frames []int) {
 	}
 }
 
-func (c *char) Attack(p map[string]int) action.ActionInfo {
+func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
@@ -84,10 +87,11 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
-		AttackTag:  combat.AttackTagNormal,
-		ICDTag:     combat.ICDTagKleeFireDamage,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeBlunt,
+		AttackTag:  attacks.AttackTagNormal,
+		ICDTag:     attacks.ICDTagKleeFireDamage,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   attackPoiseDMG[c.NormalCounter],
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
@@ -100,10 +104,15 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 1),
+			combat.NewCircleHit(
+				c.Core.Combat.Player(),
+				c.Core.Combat.PrimaryTarget(),
+				nil,
+				attackRadius[c.NormalCounter],
+			),
 			0,
 			travel,
-			c.a1,
+			c.makeA1CB(),
 		)
 		c.c1(travel)
 		done = true
@@ -127,7 +136,7 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 			canQueueAfter = f
 		}
 	}
-	actionInfo := action.ActionInfo{
+	actionInfo := action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, adjustedFrames),
 		AnimationLength: adjustedFrames[c.NormalCounter][action.InvalidAction],
 		CanQueueAfter:   canQueueAfter,
@@ -143,5 +152,5 @@ func (c *char) Attack(p map[string]int) action.ActionInfo {
 		},
 	}
 	actionInfo.QueueAction(tryPerformAttack, adjustedHitmarks[c.NormalCounter])
-	return actionInfo
+	return actionInfo, nil
 }

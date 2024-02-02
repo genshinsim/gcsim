@@ -4,47 +4,52 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
-var reactions = map[event.Event]combat.ReactionType{
-	event.OnOverload:           combat.Overload,
-	event.OnSuperconduct:       combat.Superconduct,
-	event.OnMelt:               combat.Melt,
-	event.OnVaporize:           combat.Vaporize,
-	event.OnFrozen:             combat.Freeze,
-	event.OnElectroCharged:     combat.ElectroCharged,
-	event.OnSwirlHydro:         combat.SwirlHydro,
-	event.OnSwirlCryo:          combat.SwirlCryo,
-	event.OnSwirlElectro:       combat.SwirlElectro,
-	event.OnSwirlPyro:          combat.SwirlPyro,
-	event.OnCrystallizeCryo:    combat.CrystallizeCryo,
-	event.OnCrystallizeElectro: combat.CrystallizeElectro,
-	event.OnCrystallizeHydro:   combat.CrystallizeHydro,
-	event.OnCrystallizePyro:    combat.CrystallizePyro,
-	event.OnAggravate:          combat.Aggravate,
-	event.OnSpread:             combat.Spread,
-	event.OnQuicken:            combat.Quicken,
-	event.OnBloom:              combat.Bloom,
-	event.OnHyperbloom:         combat.Hyperbloom,
-	event.OnBurgeon:            combat.Burgeon,
-	event.OnBurning:            combat.Burning,
+var eventToReaction = map[event.Event]reactions.ReactionType{
+	event.OnOverload:           reactions.Overload,
+	event.OnSuperconduct:       reactions.Superconduct,
+	event.OnMelt:               reactions.Melt,
+	event.OnVaporize:           reactions.Vaporize,
+	event.OnFrozen:             reactions.Freeze,
+	event.OnShatter:            reactions.Shatter,
+	event.OnElectroCharged:     reactions.ElectroCharged,
+	event.OnSwirlHydro:         reactions.SwirlHydro,
+	event.OnSwirlCryo:          reactions.SwirlCryo,
+	event.OnSwirlElectro:       reactions.SwirlElectro,
+	event.OnSwirlPyro:          reactions.SwirlPyro,
+	event.OnCrystallizeCryo:    reactions.CrystallizeCryo,
+	event.OnCrystallizeElectro: reactions.CrystallizeElectro,
+	event.OnCrystallizeHydro:   reactions.CrystallizeHydro,
+	event.OnCrystallizePyro:    reactions.CrystallizePyro,
+	event.OnAggravate:          reactions.Aggravate,
+	event.OnSpread:             reactions.Spread,
+	event.OnQuicken:            reactions.Quicken,
+	event.OnBloom:              reactions.Bloom,
+	event.OnHyperbloom:         reactions.Hyperbloom,
+	event.OnBurgeon:            reactions.Burgeon,
+	event.OnBurning:            reactions.Burning,
 }
 
 func init() {
-	stats.Register(NewStat)
+	stats.Register(stats.Config{
+		Name: "reaction",
+		New:  NewStat,
+	})
 }
 
 type buffer struct {
 	events [][]stats.ReactionEvent
 }
 
-func NewStat(core *core.Core) (stats.StatsCollector, error) {
+func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		events: make([][]stats.ReactionEvent, len(core.Player.Chars())),
 	}
 
-	eventSubFunc := func(reaction combat.ReactionType) func(args ...interface{}) bool {
+	eventSubFunc := func(reaction reactions.ReactionType) func(args ...interface{}) bool {
 		return func(args ...interface{}) bool {
 			target := args[0].(combat.Target)
 			attack := args[1].(*combat.AttackEvent)
@@ -60,7 +65,7 @@ func NewStat(core *core.Core) (stats.StatsCollector, error) {
 		}
 	}
 
-	for k, v := range reactions {
+	for k, v := range eventToReaction {
 		core.Events.Subscribe(k, eventSubFunc(v), "stats-reaction-log")
 	}
 

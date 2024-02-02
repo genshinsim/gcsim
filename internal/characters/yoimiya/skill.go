@@ -3,14 +3,18 @@ package yoimiya
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
 const (
-	skillKey   = "yoimiyaskill"
-	skillStart = 11
+	skillKey       = "yoimiyaskill"
+	particleICDKey = "yoimiya-particle-icd"
+	skillStart     = 11
 )
 
 func init() {
@@ -22,20 +26,31 @@ func init() {
 	skillFrames[action.ActionSwap] = 31
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.AddStatus(skillKey, 600+skillStart, true) // activate for 10
 	if !c.StatusIsActive(a1Key) {
-		c.a1stack = 0
+		c.a1Stacks = 0
 	}
 
 	c.SetCDWithDelay(action.ActionSkill, 1080, 11)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
 	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 2*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Pyro, c.ParticleDelay)
 }
 
 func (c *char) onExit() {

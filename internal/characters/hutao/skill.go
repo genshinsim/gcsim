@@ -3,11 +3,13 @@ package hutao
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -29,10 +31,9 @@ func init() {
 	skillFrames[action.ActionJump] = 37
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	bonus := ppatk[c.TalentLvlSkill()] * c.MaxHP()
-	max := (c.Base.Atk + c.Weapon.Atk) * 4
+	max := (c.Base.Atk + c.Weapon.BaseAtk) * 4
 	if bonus > max {
 		bonus = max
 	}
@@ -40,56 +41,61 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(paramitaBuff, 540+skillStart),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return c.ppbuff, true
 		},
 	})
-	//TODO; this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
+	//TODO: this applies a1 at the end of paramita without checking for "pp extend" (if that's real)
 	c.applyA1 = true
 	c.QueueCharTask(c.a1, 540+skillStart)
 
-	//remove some hp
+	// remove some hp
 	c.Core.Player.Drain(player.DrainInfo{
 		ActorIndex: c.Index,
 		Abil:       "Paramita Papilio",
-		Amount:     .30 * c.HPCurrent,
+		Amount:     0.30 * c.CurrentHP(),
 	})
 
-	//trigger 0 damage attack; matters because this breaks freeze
+	// trigger 0 damage attack; matters because this breaks freeze
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Paramita (0 dmg)",
-		AttackTag:  combat.AttackTagNone,
-		ICDTag:     combat.ICDTagNone,
-		ICDGroup:   combat.ICDGroupDefault,
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 3), skillStart, skillStart)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), skillStart, skillStart)
 
 	c.SetCDWithDelay(action.ActionSkill, 960, 14)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
-	}
+	}, nil
 }
 
-func (c *char) ppParticles(ac combat.AttackCB) {
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
+	}
 	if !c.StatModIsActive(paramitaBuff) {
 		return
 	}
 	if c.StatusIsActive(paramitaEnergyICD) {
 		return
 	}
-	c.AddStatus(paramitaEnergyICD, 300, true)
-	var count float64 = 2
+	c.AddStatus(paramitaEnergyICD, 5*60, true)
+
+	count := 2.0
 	if c.Core.Rand.Float64() < 0.5 {
 		count = 3
 	}
-	//TODO: this used to be 80
-	c.Core.QueueParticle("hutao", count, attributes.Pyro, c.ParticleDelay)
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay) // TODO: this used to be 80
 }
 
 func (c *char) applyBB(a combat.AttackCB) {
@@ -98,17 +104,17 @@ func (c *char) applyBB(a combat.AttackCB) {
 		return
 	}
 	if !trg.StatusIsActive(bbDebuff) {
-		//start ticks
+		// start ticks
 		trg.QueueEnemyTask(c.bbtickfunc(c.Core.F, trg), 240)
-		trg.SetTag(bbDebuff, c.Core.F) //to track current bb source
+		trg.SetTag(bbDebuff, c.Core.F) // to track current bb source
 	}
 
-	trg.AddStatus(bbDebuff, 570, true) //lasts 8s + 1.5s
+	trg.AddStatus(bbDebuff, 570, true) // lasts 8s + 1.5s
 }
 
 func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 	return func() {
-		//do nothing if source changed
+		// do nothing if source changed
 		if trg.Tags[bbDebuff] != src {
 			return
 		}
@@ -118,23 +124,23 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 		c.Core.Log.NewEvent("Blood Blossom checking for tick", glog.LogCharacterEvent, c.Index).
 			Write("src", src)
 
-		//queue up one damage instance
+		// queue up one damage instance
 		ai := combat.AttackInfo{
 			ActorIndex: c.Index,
 			Abil:       "Blood Blossom",
-			AttackTag:  combat.AttackTagElementalArt,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
-			StrikeType: combat.StrikeTypeDefault,
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Pyro,
 			Durability: 25,
 			Mult:       bb[c.TalentLvlSkill()],
 		}
-		//if cons 2, add flat dmg
+		// if cons 2, add flat dmg
 		if c.Base.Cons >= 2 {
 			ai.FlatDmg += c.MaxHP() * 0.1
 		}
-		c.Core.QueueAttack(ai, combat.NewDefSingleTarget(trg.Key()), 0, 0)
+		c.Core.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 0)
 
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("Blood Blossom ticked", glog.LogCharacterEvent, c.Index).
@@ -142,7 +148,7 @@ func (c *char) bbtickfunc(src int, trg *enemy.Enemy) func() {
 				Write("dur", trg.StatusExpiry(bbDebuff)).
 				Write("src", src)
 		}
-		//queue up next instance
+		// queue up next instance
 		trg.QueueEnemyTask(c.bbtickfunc(src, trg), 240)
 	}
 }

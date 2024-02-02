@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 )
 
 func init() {
 	core.RegisterWeaponFunc(keys.TheViridescentHunt, NewWeapon)
-
 }
 
 type Weapon struct {
@@ -24,10 +24,10 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	//Upon hit, Normal and Charged Attacks have a 50% chance to generate a Cyclone, which will continuously
-	//attract surrounding opponents, dealing 40% of ATK as DMG to these opponents every 0.5s for 4s. This
-	//effect can only occur once every 14s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	// Upon hit, Normal and Charged Attacks have a 50% chance to generate a Cyclone, which will continuously
+	// attract surrounding opponents, dealing 40% of ATK as DMG to these opponents every 0.5s for 4s. This
+	// effect can only occur once every 14s.
 	w := &Weapon{}
 	r := p.Refine
 
@@ -45,10 +45,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 		trg := args[0].(combat.Target)
 
-		//only proc on normal and charge attack
+		// only proc on normal and charge attack
 		switch atk.Info.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
 		default:
 			return false
 		}
@@ -64,22 +64,23 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		ai := combat.AttackInfo{
 			ActorIndex: char.Index,
 			Abil:       "Viridescent",
-			AttackTag:  combat.AttackTagWeaponSkill,
-			ICDTag:     combat.ICDTagNone,
-			ICDGroup:   combat.ICDGroupDefault,
+			AttackTag:  attacks.AttackTagWeaponSkill,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Physical,
 			Durability: 100,
 			Mult:       mult,
 		}
 
 		for i := 0; i <= 240; i += 30 {
-			c.QueueAttack(ai, combat.NewCircleHit(trg, 3), 0, i+1)
+			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 3), 0, i+1)
 		}
 
 		char.AddStatus(icdKey, cd, true)
 
 		return false
-	}, fmt.Sprintf("veridescent-%v", char.Base.Key.String()))
+	}, fmt.Sprintf("viridescent-%v", char.Base.Key.String()))
 
 	return w, nil
 }

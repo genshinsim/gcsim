@@ -3,6 +3,7 @@ package noelle
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -27,15 +28,15 @@ func init() {
 	burstFrames[action.ActionWalk] = 90
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// TODO: Assume snapshot happens immediately upon cast since the conversion buffs the two burst hits
 	// Generate a "fake" snapshot in order to show a listing of the applied mods in the debug
 	aiSnapshot := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Sweeping Time (Stat Snapshot)",
 	}
-	snapshot := c.Snapshot(&aiSnapshot)
-	burstDefSnapshot := snapshot.BaseDef*(1+snapshot.Stats[attributes.DEFP]) + snapshot.Stats[attributes.DEF]
+	c.Snapshot(&aiSnapshot)
+	burstDefSnapshot := c.Base.Def*(1+c.NonExtraStat(attributes.DEFP)) + c.NonExtraStat(attributes.DEF)
 	mult := defconv[c.TalentLvlBurst()]
 	if c.Base.Cons >= 6 {
 		mult += 0.5
@@ -43,22 +44,25 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	// Add mod for def to attack burst conversion
 	c.burstBuff[attributes.ATK] = mult * burstDefSnapshot
 
-	dur := 900 + burstStart //default duration
+	dur := 900 + burstStart // default duration
 	if c.Base.Cons >= 6 {
 		// https://library.keqingmains.com/evidence/characters/geo/noelle#noelle-c6-burst-extension
 		// check extension
-		ext, ok := p["extend"]
-		if ok {
+		getExt := func() int {
+			ext, ok := p["extend"]
+			if !ok {
+				return 10 // to maintain prev default behaviour of full extension
+			}
 			if ext < 0 {
 				ext = 0
 			}
 			if ext > 10 {
 				ext = 10
 			}
-		} else {
-			ext = 10 // to maintain prev default behaviour of full extension
+			return ext
 		}
 
+		ext := getExt()
 		dur += ext * 60
 		c.Core.Log.NewEvent("noelle c6 extension applied", glog.LogCharacterEvent, c.Index).
 			Write("total_dur", dur).
@@ -68,6 +72,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag("noelle-burst", dur),
 		AffectedStat: attributes.ATK,
+		Extra:        true,
 		Amount: func() ([]float64, bool) {
 			return c.burstBuff, true
 		},
@@ -77,17 +82,14 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		Write("atk added", c.burstBuff[attributes.ATK]).
 		Write("mult", mult)
 
-	// every Q hit can proc her heal
-	done := false
-	cb := c.skillHealCB(done)
-
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Sweeping Time (Burst)",
-		AttackTag:          combat.AttackTagElementalBurst,
-		ICDTag:             combat.ICDTagElementalBurst,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalBurst,
+		ICDTag:             attacks.ICDTagElementalBurst,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           150,
 		Element:            attributes.Geo,
 		Durability:         25,
 		Mult:               burst[c.TalentLvlBurst()],
@@ -95,41 +97,39 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 		HitlagHaltFrames:   0.15 * 60,
 		CanBeDefenseHalted: true,
 	}
+
 	// Burst part
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 6.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5),
 			0,
 			0,
-			cb,
+			c.skillHealCB(),
 		)
-		// reset healDone so the Skill part can proc her heal
-		done = false
-		cb = c.skillHealCB(done)
 	}, 24)
 
 	// Skill part
-	// Burst and Skill part of Q have the same hitlag values
+	// Burst and Skill part of Q have the same hitlag values and both can heal
 	c.QueueCharTask(func() {
 		ai.Abil = "Sweeping Time (Skill)"
 		ai.Mult = burstskill[c.TalentLvlBurst()]
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHit(c.Core.Combat.Player(), 4.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4),
 			0,
 			0,
-			cb,
+			c.skillHealCB(),
 		)
 	}, 65)
 
 	c.SetCD(action.ActionBurst, 900)
 	c.ConsumeEnergy(8)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

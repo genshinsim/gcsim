@@ -2,15 +2,17 @@ package curves
 
 type CharStatCurve int
 
+//nolint:stylecheck,revive // want to match dm here
 const (
-	GROW_CURVE_HP_S4     CharStatCurve = iota + 1 //"GROW_CURVE_HP_S4"
-	GROW_CURVE_ATTACK_S4                          //"GROW_CURVE_ATTACK_S4"
-	GROW_CURVE_HP_S5                              //"GROW_CURVE_HP_S5"
-	GROW_CURVE_ATTACK_S5                          //"GROW_CURVE_ATTACK_S5"
+	GROW_CURVE_HP_S4     CharStatCurve = iota + 1 // "GROW_CURVE_HP_S4"
+	GROW_CURVE_ATTACK_S4                          // "GROW_CURVE_ATTACK_S4"
+	GROW_CURVE_HP_S5                              // "GROW_CURVE_HP_S5"
+	GROW_CURVE_ATTACK_S5                          // "GROW_CURVE_ATTACK_S5"
 )
 
 type WeaponStatCurve int
 
+//nolint:stylecheck,revive // want to match dm here
 const (
 	GROW_CURVE_ATTACK_101 WeaponStatCurve = iota
 	GROW_CURVE_ATTACK_102

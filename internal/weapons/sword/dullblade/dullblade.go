@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.DullBlade, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.DullBlade, common.NewNoEffect(base))
 }

@@ -1,0 +1,4 @@
+package_name: talkingstick
+genshin_id: 12424
+key: talkingstick
+skip_data_func: true

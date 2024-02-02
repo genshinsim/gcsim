@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -24,12 +25,12 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
-	//Elemental Skill and Elemental Burst DMG increased by 12%. After a Normal Attack, Charged Attack,
-	//Elemental Skill or Elemental Burst hits an opponent, 1 stack of Ashen Nightstar will be gained for 12s.
-	//When 1/2/3/4 stacks of Ashen Nightstar are present, ATK is increased by 10/20/30/48%. The stack of Ashen
-	//Nightstar created by the Normal Attack, Charged Attack, Elemental Skill or Elemental Burst will be counted
-	//independently of the others.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	// Elemental Skill and Elemental Burst DMG increased by 12%. After a Normal Attack, Charged Attack,
+	// Elemental Skill or Elemental Burst hits an opponent, 1 stack of Ashen Nightstar will be gained for 12s.
+	// When 1/2/3/4 stacks of Ashen Nightstar are present, ATK is increased by 10/20/30/48%. The stack of Ashen
+	// Nightstar created by the Normal Attack, Charged Attack, Elemental Skill or Elemental Burst will be counted
+	// independently of the others.
 	w := &Weapon{}
 	r := p.Refine
 
@@ -82,13 +83,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		}
 
 		switch atk.Info.AttackTag {
-		case combat.AttackTagNormal:
+		case attacks.AttackTagNormal:
 			char.AddStatus(normalKey, stackDuration, true)
-		case combat.AttackTagExtra:
+		case attacks.AttackTagExtra:
 			char.AddStatus(chargedKey, stackDuration, true)
-		case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold:
+		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
 			char.AddStatus(skillKey, stackDuration, true)
-		case combat.AttackTagElementalBurst:
+		case attacks.AttackTagElementalBurst:
 			char.AddStatus(burstKey, stackDuration, true)
 		}
 
@@ -101,7 +102,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		Base: modifier.NewBase("polar-star-dmg", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
 			switch atk.Info.AttackTag {
-			case combat.AttackTagElementalArt, combat.AttackTagElementalArtHold, combat.AttackTagElementalBurst:
+			case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold, attacks.AttackTagElementalBurst:
 				return mDmg, true
 			}
 			return nil, false

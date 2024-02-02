@@ -4,13 +4,19 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
-const skillHitmark = 11
+const (
+	skillHitmark   = 11
+	particleICDKey = "thoma-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(46)
@@ -20,14 +26,14 @@ func init() {
 }
 
 // Skill attack damage queue generator
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Blazing Blessing",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeDefault,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSlash,
 		Element:            attributes.Pyro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
@@ -38,13 +44,6 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// snapshot unknown
 	// snap := c.Snapshot(&ai)
 
-	// 3 or 4, 1:1 ratio
-	var count float64 = 3
-	if c.Core.Rand.Float64() < 0.5 {
-		count = 4
-	}
-	c.Core.QueueParticle("thoma", count, attributes.Pyro, skillHitmark+c.ParticleDelay)
-
 	c.Core.Tasks.Add(func() {
 		shieldamt := (shieldpp[c.TalentLvlSkill()]*c.MaxHP() + shieldflat[c.TalentLvlSkill()])
 		c.genShield("Thoma Skill", shieldamt, false)
@@ -53,9 +52,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	// damage component not final
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 2),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 1}, 3, 270),
 		skillHitmark,
 		skillHitmark,
+		c.particleCB,
 	)
 
 	player, ok := c.Core.Combat.Player().(*avatar.Player)
@@ -68,15 +68,32 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	}, 9)
 
 	cd := 15
+	// TODO: this should only active if a char protected by Thoma's shield is hit, should also proc on stuff like Dori Q self attack
 	if c.Base.Cons >= 1 {
-		cd = 12 // the CD reduction activates when a character protected by Thoma's shield is hit. Since it is almost impossible for this not to activate, we set the duration to 12 for sim purposes.
+		cd = 12
 	}
 	c.SetCDWithDelay(action.ActionSkill, cd*60, 9)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash],
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
 	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 0.3*60, true)
+
+	count := 3.0
+	if c.Core.Rand.Float64() < 0.5 {
+		count = 4
+	}
+	c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Pyro, c.ParticleDelay)
 }

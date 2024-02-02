@@ -1,13 +1,13 @@
-﻿package emeraldorb
+package emeraldorb
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/weapon"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -23,8 +23,8 @@ type Weapon struct {
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-//Upon causing a Vaporize, Electro-Charged, Frozen, or a Hydro-infused Swirl reaction, increases ATK by 20/25/30/35/40% for 12s.
-func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile) (weapon.Weapon, error) {
+// Upon causing a Vaporize, Electro-Charged, Frozen, or a Hydro-infused Swirl reaction, increases ATK by 20/25/30/35/40% for 12s.
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
 
@@ -58,10 +58,12 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p weapon.WeaponProfile
 		return false
 	}
 
-	c.Events.Subscribe(event.OnVaporize, addBuff, "emeraldorb-"+char.Base.Key.String())
-	c.Events.Subscribe(event.OnElectroCharged, addBuff, "emeraldorb-"+char.Base.Key.String())
-	c.Events.Subscribe(event.OnFrozen, addBuff, "emeraldorb-"+char.Base.Key.String())
-	c.Events.Subscribe(event.OnSwirlHydro, addBuff, "emeraldorb-"+char.Base.Key.String())
+	subKey := "emeraldorb-" + char.Base.Key.String()
+
+	c.Events.Subscribe(event.OnVaporize, addBuff, subKey)
+	c.Events.Subscribe(event.OnElectroCharged, addBuff, subKey)
+	c.Events.Subscribe(event.OnFrozen, addBuff, subKey)
+	c.Events.Subscribe(event.OnSwirlHydro, addBuff, subKey)
 
 	return w, nil
 }

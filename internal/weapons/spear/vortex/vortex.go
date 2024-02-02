@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.VortexVanquisher, common.NewGoldenMajesty)
+	core.RegisterWeaponFunc(keys.VortexVanquisher, common.NewGoldenMajesty(base))
 }

@@ -155,6 +155,7 @@ var (
 		0.95,
 	}
 
+	//nolint:unused // will be used if enemy attacks are implemented properly someday
 	skillAtkDecrease = []float64{
 		0.12,
 		0.12,

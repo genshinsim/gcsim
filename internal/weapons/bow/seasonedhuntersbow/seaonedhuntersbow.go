@@ -1,4 +1,4 @@
-﻿package seasonedhuntersbow
+package seasonedhuntersbow
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.SeasonedHuntersBow, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.SeasonedHuntersBow, common.NewNoEffect(base))
 }

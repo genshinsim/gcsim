@@ -3,12 +3,17 @@ package shield
 import "github.com/genshinsim/gcsim/pkg/core/attributes"
 
 type Tmpl struct {
+	ActorIndex int
 	Name       string
 	Src        int
-	ShieldType ShieldType
+	ShieldType Type
 	Ele        attributes.Element
 	HP         float64
 	Expires    int
+}
+
+func (t *Tmpl) ShieldOwner() int {
+	return t.ActorIndex
 }
 
 func (t *Tmpl) Desc() string {
@@ -31,7 +36,7 @@ func (t *Tmpl) Key() int {
 	return t.Src
 }
 
-func (t *Tmpl) Type() ShieldType {
+func (t *Tmpl) Type() Type {
 	return t.ShieldType
 }
 

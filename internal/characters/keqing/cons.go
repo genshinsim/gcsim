@@ -13,35 +13,37 @@ import (
 
 const c2ICDKey = "keqing-c2-icd"
 
-func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		e, ok := args[0].(*enemy.Enemy)
+// When Keqing's Normal and Charged Attacks hit opponents affected by Electro,
+// they have a 50% chance of producing an Elemental Particle.
+// This effect can only occur once every 5s.
+func (c *char) makeC2CB() combat.AttackCBFunc {
+	if c.Base.Cons < 2 {
+		return nil
+	}
+	return func(a combat.AttackCB) {
+		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
-			return false
-		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
+			return
 		}
 		if c.Core.Player.Active() != c.Index {
-			return false
+			return
 		}
 		if !e.AuraContains(attributes.Electro) {
-			return false
+			return
 		}
 		if c.StatusIsActive(c2ICDKey) {
-			return false
+			return
 		}
 		if c.Core.Rand.Float64() < 0.5 {
-			c.AddStatus(c2ICDKey, 300, true)
-			c.Core.QueueParticle("keqing", 1, attributes.Electro, c.ParticleDelay)
+			c.AddStatus(c2ICDKey, 5*60, true)
+			c.Core.QueueParticle("keqing-c2", 1, attributes.Electro, c.ParticleDelay)
 			c.Core.Log.NewEvent("keqing c2 proc'd", glog.LogCharacterEvent, c.Index)
 		}
-		return false
-	}, "keqing-c2")
+	}
 }
 
 func (c *char) c4() {
+	//nolint:unparam // ignoring for now, event refactor should get rid of bool return of event sub
 	cb := func(args ...interface{}) bool {
 		atk := args[1].(*combat.AttackEvent)
 		if atk.Info.ActorIndex != c.Index {

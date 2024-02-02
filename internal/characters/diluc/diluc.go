@@ -4,11 +4,12 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/player/character/profile"
 )
 
 func init() {
@@ -17,22 +18,25 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	eCounter int
-	a4buff   []float64
-	c2buff   []float64
-	c2stack  int
-	c4buff   []float64
+	eCounter           int
+	a4buff             []float64
+	c2buff             []float64
+	c2stack            int
+	c4buff             []float64
 	savedNormalCounter int
+	c6Count            int
 }
 
 const eWindowKey = "diluc-e-window"
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
 	c.EnergyMax = 40
 	c.NormalHitNum = normalHitNum
+	c.SkillCon = 3
+	c.BurstCon = 5
 
 	c.eCounter = 0
 
@@ -42,7 +46,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ profile.CharacterProfile)
 }
 
 func (c *char) Init() error {
-
 	c.a4buff = make([]float64, attributes.EndStatType)
 	c.a4buff[attributes.PyroP] = 0.2
 
@@ -59,7 +62,7 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.ActionFailure) {
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	// check if it is possible to use next skill
 	if a == action.ActionSkill && c.StatusIsActive(eWindowKey) {
 		return true, action.NoFailure
@@ -72,11 +75,11 @@ func (c *char) Snapshot(ai *combat.AttackInfo) combat.Snapshot {
 	ds := c.Character.Snapshot(ai)
 
 	if c.StatusIsActive(burstBuffKey) {
-		//infusion to attacks only
+		// infusion to attacks only
 		switch ai.AttackTag {
-		case combat.AttackTagNormal:
-		case combat.AttackTagPlunge:
-		case combat.AttackTagExtra:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagPlunge:
+		case attacks.AttackTagExtra:
 		default:
 			return ds
 		}

@@ -1,0 +1,86 @@
+{
+  "alleyhunter": [
+    {
+      "ability": "Alley Hunter",
+      "param": "stacks",
+      "desc": "Number of stacks to gain at the beginning. Default 0, maximum 10."
+    }
+  ],
+  "forestregalia": [
+    {
+      "ability": "Forest Regalia",
+      "param": "pickup_delay",
+      "desc": "Number of frames until the Leaf is picked up by the active character after every proc."
+    }
+  ],
+  "lostprayertothesacredwinds": [
+    {
+      "ability": "Lost Prayer to the Sacred Winds",
+      "param": "stacks",
+      "desc": "Number of stacks to gain at the beginning. Default 0, maximum 4."
+    }
+  ],
+  "moonpiercer": [
+    {
+      "ability": "Moonpiercer",
+      "param": "pickup_delay",
+      "desc": "Number of frames until the Leaf is picked up by the active character after every proc."
+    }
+  ],
+  "predator": [
+    {
+      "ability": "Predator",
+      "param": "passive",
+      "desc": "0 for passive disabled, 1 for enabled (default)."
+    }
+  ],
+  "sacrificialjade": [
+    {
+      "ability": "Sacrificial Jade",
+      "param": "stacks",
+      "desc": "1 to enable the passive in the beginning, 0 default."
+    }
+  ],
+  "sapwoodblade": [
+    {
+      "ability": "Sapwood Blade",
+      "param": "pickup_delay",
+      "desc": "Number of frames until the Leaf is picked up by the active character after every proc."
+    }
+  ],
+  "serpentspine": [
+    {
+      "ability": "Serpent Spine",
+      "param": "stacks",
+      "desc": "Number of stacks to gain at the beginning. Default 0, maximum 5."
+    }
+  ],
+  "skywardatlas": [
+    {
+      "ability": "Skyward Atlas",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    }
+  ],
+  "swordofdescension": [
+    {
+      "ability": "Sword of Descension",
+      "param": "passive",
+      "desc": "0 for passive disabled, 1 for enabled (default)."
+    }
+  ],
+  "swordofnarzissenkreuz": [
+    {
+      "ability": "Sword of Narzissenkreuz",
+      "param": "arkhe",
+      "desc": "0 for Pneuma, 1 for Ousia (default)."
+    }
+  ],
+  "ultimateoverlordsmegamagicsword": [
+    {
+      "ability": "\"Ultimate Overlord's Mega Magic Sword\"",
+      "param": "melusines",
+      "desc": "Number of melusines that have been helped. Default 6, min 0, max 6. The atk% gained per melusine is 1/6 of the base atk% from the passive."
+    }
+  ]
+}

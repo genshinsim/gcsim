@@ -5,12 +5,18 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{15, 29}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{15, 29}
+	chargeRadius   = []float64{2, 2.8}
+	chargeOffsets  = []float64{0.5, 1}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(76) // CA -> N1
@@ -22,13 +28,13 @@ func init() {
 }
 
 // Standard charge attack
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
-		AttackTag:  combat.AttackTagExtra,
-		ICDTag:     combat.ICDTagExtraAttack,
-		ICDGroup:   combat.ICDGroupDefault,
-		StrikeType: combat.StrikeTypeSlash,
+		AttackTag:  attacks.AttackTagExtra,
+		ICDTag:     attacks.ICDTagNormalAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
 	}
@@ -36,13 +42,22 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 0.3), chargeHitmarks[i], chargeHitmarks[i])
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				geometry.Point{Y: chargeOffsets[i]},
+				chargeRadius[i],
+			),
+			chargeHitmarks[i],
+			chargeHitmarks[i],
+		)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmarks[len(chargeHitmarks)-1],
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

@@ -3,14 +3,20 @@ package yunjin
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
-var skillFrames [][]int
-var skillHitmarks = []int{13, 50, 93}
-var skillCDStarts = []int{11, 48, 90}
+var (
+	skillFrames   [][]int
+	skillHitmarks = []int{13, 50, 93}
+	skillCDStarts = []int{11, 48, 90}
+)
+
+const particleICDKey = "yunjin-particle-icd"
 
 func init() {
 	skillFrames = make([][]int, 3)
@@ -40,7 +46,7 @@ func init() {
 // Has two parameters:
 // perfect = 1 if you are doing a perfect counter
 // hold = 1 or 2 for regular charging up to level 1 or 2
-func (c *char) Skill(p map[string]int) action.ActionInfo {
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// Hold parameter gets used in action frames to get earliest possible release frame
 	chargeLevel := p["hold"]
 	if chargeLevel > 2 {
@@ -55,10 +61,10 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Opening Flourish Press (E)",
-		AttackTag:          combat.AttackTagElementalArt,
-		ICDTag:             combat.ICDTagNone,
-		ICDGroup:           combat.ICDGroupDefault,
-		StrikeType:         combat.StrikeTypeBlunt,
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Geo,
 		Durability:         50,
 		Mult:               skillDmg[chargeLevel][c.TalentLvlSkill()],
@@ -67,34 +73,45 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		CanBeDefenseHalted: true,
 	}
 
-	// Particle should spawn after hit
+	var count float64
 	hitDelay := skillHitmarks[animIdx]
+	radius := 4.0
 	switch chargeLevel {
 	case 0:
 		ai.HitlagHaltFrames = 0.06 * 60
-		c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.ParticleDelay+hitDelay)
+		count = 2
 	case 1:
 		// 2 or 3, 1:1 ratio
 		if c.Core.Rand.Float64() < 0.5 {
-			c.Core.QueueParticle("yunjin", 2, attributes.Geo, c.ParticleDelay+hitDelay)
+			count = 2
 		} else {
-			c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.ParticleDelay+hitDelay)
+			count = 3
 		}
 		ai.Abil = "Opening Flourish Level 1 (E)"
 		ai.HitlagHaltFrames = 0.09 * 60
+		radius = 6
 	case 2:
-		c.Core.QueueParticle("yunjin", 3, attributes.Geo, c.ParticleDelay+hitDelay)
+		count = 3
 		ai.Durability = 100
 		ai.Abil = "Opening Flourish Level 2 (E)"
 		ai.HitlagHaltFrames = 0.12 * 60
+		radius = 8
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), 1), hitDelay, hitDelay)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius),
+		hitDelay,
+		hitDelay,
+		c.makeParticleCB(count),
+	)
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
+		ActorIndex: c.Index,
 		Src:        c.Core.F,
-		ShieldType: shield.ShieldYunjinSkill,
+		Name:       "Yun Jin Skill",
+		ShieldType: shield.YunjinSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Geo,
 		Expires:    c.Core.F + hitDelay,
@@ -107,10 +124,23 @@ func (c *char) Skill(p map[string]int) action.ActionInfo {
 		c.SetCDWithDelay(action.ActionSkill, 9*60, skillCDStarts[animIdx])
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[animIdx]),
 		AnimationLength: skillFrames[animIdx][action.InvalidAction],
 		CanQueueAfter:   skillFrames[animIdx][action.ActionJump], // earliest cancel
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
+	return func(a combat.AttackCB) {
+		if a.Target.Type() != targets.TargettableEnemy {
+			return
+		}
+		if c.StatusIsActive(particleICDKey) {
+			return
+		}
+		c.AddStatus(particleICDKey, 0.3*60, true)
+		c.Core.QueueParticle(c.Base.Key.String(), count, attributes.Geo, c.ParticleDelay)
 	}
 }

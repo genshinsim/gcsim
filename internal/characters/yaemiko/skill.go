@@ -3,12 +3,18 @@ package yaemiko
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
 
 // kitsune spawn frame
-const skillStart = 34
+const (
+	skillStart     = 34
+	particleICDKey = "yaemiko-particle-icd"
+)
 
 func init() {
 	skillFrames = frames.InitAbilSlice(37) // E -> N1/E
@@ -19,15 +25,25 @@ func init() {
 	skillFrames[action.ActionSwap] = 20    // E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) action.ActionInfo {
-
+func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() { c.makeKitsune() }, skillStart)
 	c.SetCDWithDelay(action.ActionSkill, 4*60, 16)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
 		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) particleCB(a combat.AttackCB) {
+	if a.Target.Type() != targets.TargettableEnemy {
+		return
 	}
+	if c.StatusIsActive(particleICDKey) {
+		return
+	}
+	c.AddStatus(particleICDKey, 2.5*60, true)
+	c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Electro, c.ParticleDelay) // TODO: this used to be 30?
 }

@@ -3,8 +3,10 @@ package venti
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 )
 
 var aimedFrames []int
@@ -18,19 +20,20 @@ func init() {
 	aimedFrames[action.ActionJump] = aimedHitmark
 }
 
-func (c *char) Aimed(p map[string]int) action.ActionInfo {
+func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10
 	}
-	weakspot, ok := p["weakspot"]
+	weakspot := p["weakspot"]
 
 	ai := combat.AttackInfo{
 		ActorIndex:           c.Index,
 		Abil:                 "Aim (Charged)",
-		AttackTag:            combat.AttackTagExtra,
-		ICDTag:               combat.ICDTagExtraAttack,
-		ICDGroup:             combat.ICDGroupVenti,
+		AttackTag:            attacks.AttackTagExtra,
+		ICDTag:               attacks.ICDTagExtraAttack,
+		ICDGroup:             attacks.ICDGroupVenti,
+		StrikeType:           attacks.StrikeTypePierce,
 		Element:              attributes.Anemo,
 		Durability:           25,
 		Mult:                 aim[c.TalentLvlAttack()],
@@ -40,15 +43,26 @@ func (c *char) Aimed(p map[string]int) action.ActionInfo {
 		IsDeployable:         true,
 	}
 
-	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), .1), aimedHitmark, aimedHitmark+travel)
+	c.Core.QueueAttack(
+		ai,
+		combat.NewBoxHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			geometry.Point{Y: -0.5},
+			0.1,
+			1,
+		),
+		aimedHitmark,
+		aimedHitmark+travel,
+	)
 	if c.Base.Cons >= 1 {
 		c.c1(ai, travel)
 	}
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames),
 		AnimationLength: aimedFrames[action.InvalidAction],
 		CanQueueAfter:   aimedHitmark,
 		State:           action.AimState,
-	}
+	}, nil
 }

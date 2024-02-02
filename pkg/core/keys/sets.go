@@ -12,23 +12,23 @@ func (s *Set) MarshalJSON() ([]byte, error) {
 	return json.Marshal(setNames[*s])
 }
 
-func (c *Set) UnmarshalJSON(b []byte) error {
-	var s string
-	if err := json.Unmarshal(b, &s); err != nil {
+func (s *Set) UnmarshalJSON(b []byte) error {
+	var str string
+	if err := json.Unmarshal(b, &str); err != nil {
 		return err
 	}
-	s = strings.ToLower(s)
+	str = strings.ToLower(str)
 	for i, v := range setNames {
-		if v == s {
-			*c = Set(i)
+		if v == str {
+			*s = Set(i)
 			return nil
 		}
 	}
 	return errors.New("unrecognized set key")
 }
 
-func (c Set) String() string {
-	return setNames[c]
+func (s Set) String() string {
+	return setNames[s]
 }
 
 var setNames = []string{
@@ -42,19 +42,26 @@ var setNames = []string{
 	"crimsonwitchofflames",
 	"deepwoodmemories",
 	"defenderswill",
+	"desertpavilionchronicle",
+	"vourukashasglow",
 	"echoesofanoffering",
 	"emblemofseveredfate",
+	"flowerofparadiselost",
 	"gambler",
 	"gladiatorsfinale",
 	"gildeddreams",
+	"goldentroupe",
 	"heartofdepth",
 	"huskofopulentdreams",
 	"instructor",
 	"lavawalker",
 	"luckydog",
 	"maidenbeloved",
+	"marechausseehunter",
 	"martialartist",
+	"nighttimewhispersintheechoingwoods",
 	"noblesseoblige",
+	"nymphsdream",
 	"oceanhuedclam",
 	"paleflame",
 	"prayersfordestiny",
@@ -65,6 +72,7 @@ var setNames = []string{
 	"retracingbolide",
 	"scholar",
 	"shimenawasreminiscence",
+	"songofdayspast",
 	"tenacityofthemillelith",
 	"theexile",
 	"thunderingfury",
@@ -87,19 +95,26 @@ const (
 	CrimsonWitchOfFlames
 	DeepwoodMemories
 	DefendersWill
+	DesertPavilionChronicle
+	VourukashasGlow
 	EchoesOfAnOffering
 	EmblemOfSeveredFate
+	FlowerOfParadiseLost
 	Gambler
 	GladiatorsFinale
 	GildedDreams
+	GoldenTroupe
 	HeartOfDepth
 	HuskOfOpulentDreams
 	Instructor
 	Lavawalker
 	LuckyDog
 	MaidenBeloved
+	MarechausseeHunter
 	MartialArtist
+	NighttimeWhispersInTheEchoingWoods
 	NoblesseOblige
+	NymphsDream
 	OceanHuedClam
 	PaleFlame
 	PrayersForDestiny
@@ -110,6 +125,7 @@ const (
 	RetracingBolide
 	Scholar
 	ShimenawasReminiscence
+	SongOfDaysPast
 	TenacityOfTheMillelith
 	TheExile
 	ThunderingFury

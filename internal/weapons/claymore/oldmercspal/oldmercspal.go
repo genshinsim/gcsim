@@ -1,4 +1,4 @@
-﻿package oldmercspal
+package oldmercspal
 
 import (
 	"github.com/genshinsim/gcsim/internal/weapons/common"
@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.OldMercsPal, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.OldMercsPal, common.NewNoEffect(base))
 }

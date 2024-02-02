@@ -7,24 +7,26 @@ import (
 	easyjson "github.com/mailru/easyjson"
 )
 
-//Debugw
-//Warnw
+// Debugw
+// Warnw
 
+//nolint:staticcheck // staticcheck can't know nocopy is from easyjson and not json: https://github.com/dominikh/go-tools/issues/836
 type keyVal struct {
 	Key string      `json:"key,nocopy"`
 	Val interface{} `json:"val"`
 }
 
+//nolint:staticcheck // staticcheck can't know nocopy is from easyjson and not json: https://github.com/dominikh/go-tools/issues/836
 //easyjson:json
 type LogEvent struct {
-	Typ      Source                 `json:"event"`
-	F        int                    `json:"frame"`
-	Ended    int                    `json:"ended"`
-	SrcChar  int                    `json:"char_index"`
-	Msg      string                 `json:"msg,nocopy"`
-	Logs     map[string]interface{} `json:"logs"`
-	Ordering map[string]int         `json:"ordering"`
-	counter  int
+	Event     Source                 `json:"event"`
+	Frame     int                    `json:"frame"`
+	Ended     int                    `json:"ended"`
+	CharIndex int                    `json:"char_index"`
+	Msg       string                 `json:"msg,nocopy"`
+	Logs      map[string]interface{} `json:"logs"`
+	Ordering  map[string]int         `json:"ordering"`
+	counter   int
 }
 
 //easyjson:json
@@ -39,7 +41,7 @@ func (e *LogEvent) Write(key string, value interface{}) Event {
 }
 
 func (e *LogEvent) WriteBuildMsg(keysAndValues ...interface{}) Event {
-	//should be even number
+	// should be even number
 	var key string
 	var ok bool
 	for i := 0; i < len(keysAndValues); i++ {
@@ -47,7 +49,7 @@ func (e *LogEvent) WriteBuildMsg(keysAndValues ...interface{}) Event {
 		if !ok {
 			log.Panicf("invalid key %v, expected type to be string", keysAndValues[i].(string))
 		}
-		//make sure there's a corresponding val
+		// make sure there's a corresponding val
 		i++
 		if i == len(keysAndValues) {
 			log.Panicf("expected an associated value after key %v, got nothing", key)
@@ -68,12 +70,12 @@ func (e *LogEvent) SetEnded(end int) Event {
 	return e
 }
 
-func (e *LogEvent) LogSource() Source { return e.Typ }
-func (e *LogEvent) StartFrame() int   { return e.F }
-func (e *LogEvent) Src() int          { return e.SrcChar }
+func (e *LogEvent) LogSource() Source { return e.Event }
+func (e *LogEvent) StartFrame() int   { return e.Frame }
+func (e *LogEvent) Src() int          { return e.CharIndex }
 
 type Ctrl struct {
-	//keep it in an array so we can keep track order it occured
+	// keep it in an array so we can keep track order it occured
 	// events []*Event
 	events map[int]*LogEvent
 	count  int
@@ -89,7 +91,7 @@ func New(f *int, size int) Logger {
 }
 
 func (c *Ctrl) Dump() ([]byte, error) {
-	var r EventArr = make(EventArr, 0, c.count)
+	r := make(EventArr, 0, c.count)
 	for i := 0; i < c.count; i++ {
 		v, ok := c.events[i]
 		if ok {
@@ -112,13 +114,13 @@ func (c *Ctrl) NewEventBuildMsg(typ Source, srcChar int, msg ...string) Event {
 
 func (c *Ctrl) NewEvent(msg string, typ Source, srcChar int) Event {
 	e := &LogEvent{
-		Msg:      msg,
-		F:        *c.f,
-		Ended:    *c.f,
-		Typ:      typ,
-		SrcChar:  srcChar,
-		Logs:     make(map[string]interface{}), //+5 from default just in case we need to add in more keys
-		Ordering: make(map[string]int),
+		Msg:       msg,
+		Frame:     *c.f,
+		Ended:     *c.f,
+		Event:     typ,
+		CharIndex: srcChar,
+		Logs:      make(map[string]interface{}), //+5 from default just in case we need to add in more keys
+		Ordering:  make(map[string]int),
 	}
 	// c.events = append(c.events, e)
 	c.events[c.count] = e

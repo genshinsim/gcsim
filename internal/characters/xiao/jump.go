@@ -13,14 +13,14 @@ func init() {
 	burstJumpFrames[action.ActionLowPlunge] = 5
 }
 
-func (c *char) Jump(p map[string]int) action.ActionInfo {
+func (c *char) Jump(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(burstBuffKey) {
-		return action.ActionInfo{
+		return action.Info{
 			Frames:          frames.NewAbilFunc(burstJumpFrames),
 			AnimationLength: burstJumpFrames[action.InvalidAction],
 			CanQueueAfter:   burstJumpFrames[action.ActionLowPlunge], // earliest cancel
 			State:           action.JumpState,
-		}
+		}, nil
 	}
 	return c.Character.Jump(p)
 }

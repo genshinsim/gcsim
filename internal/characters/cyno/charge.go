@@ -3,6 +3,7 @@ package cyno
 import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 )
@@ -19,18 +20,18 @@ func init() {
 	chargeFrames[action.ActionSwap] = 61
 }
 
-func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
-	if c.StatusIsActive(burstKey) {
-		return c.chargeB(p)
+func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	if c.StatusIsActive(BurstKey) {
+		return c.chargeB()
 	}
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Charge Attack",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupPoleExtraAttack,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Physical,
 		Durability:         25,
 		Mult:               charge[c.TalentLvlAttack()],
@@ -42,17 +43,22 @@ func (c *char) ChargeAttack(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 0.5),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			0.8,
+		),
 		0,
 		chargeHitmark,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
 		AnimationLength: chargeFrames[action.InvalidAction],
 		CanQueueAfter:   chargeHitmark,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }
 
 var (
@@ -69,16 +75,16 @@ func init() {
 	chargeBFrames[action.ActionSwap] = 63
 }
 
-func (c *char) chargeB(p map[string]int) action.ActionInfo {
+func (c *char) chargeB() (action.Info, error) {
 	c.tryBurstPPSlide(chargeBHitmark)
 
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
 		Abil:               "Pactsworn Pathclearer Charge",
-		AttackTag:          combat.AttackTagExtra,
-		ICDTag:             combat.ICDTagExtraAttack,
-		ICDGroup:           combat.ICDGroupPoleExtraAttack,
-		StrikeType:         combat.StrikeTypeSpear,
+		AttackTag:          attacks.AttackTagExtra,
+		ICDTag:             attacks.ICDTagExtraAttack,
+		ICDGroup:           attacks.ICDGroupPoleExtraAttack,
+		StrikeType:         attacks.StrikeTypeSpear,
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               chargeB[c.TalentLvlBurst()],
@@ -90,15 +96,20 @@ func (c *char) chargeB(p map[string]int) action.ActionInfo {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), 5),
+		combat.NewCircleHit(
+			c.Core.Combat.Player(),
+			c.Core.Combat.PrimaryTarget(),
+			nil,
+			0.8,
+		),
 		0,
 		chargeBHitmark,
 	)
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeBFrames),
 		AnimationLength: chargeBFrames[action.InvalidAction],
 		CanQueueAfter:   chargeBHitmark,
 		State:           action.ChargeAttackState,
-	}
+	}, nil
 }

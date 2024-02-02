@@ -1,0 +1,2791 @@
+{
+  "albedo": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "alhaitham": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be skill[hold=1]."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "aloy": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "amber": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only burst and aim followed by walk have proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "itto": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "baizhu": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "barbara": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Everything except charge and burst followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "beidou": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "bennett": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "candace": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "charlotte": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "chevreuse": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "chongyun": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "collei": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "cyno": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "dehya": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "diluc": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "diona": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "dori": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "eula": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Everything except normal followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "faruzan": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "fischl": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "freminet": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "furina": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "ganyu": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "gorou": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "hutao": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "jean": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "kazuha": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be skill."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "kaeya": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "ayaka": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "ayato": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "kaveh": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "keqing": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "kirara": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "klee": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "kuki": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "sara": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "layla": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "lisa": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "lynette": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "lyney": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "mika": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "mona": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "nahida": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "navia": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Normal Attacks do not have legal walk cancels recorded, but Skill and Burst do."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "neuvillette": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "nilou": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "ningguang": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "noelle": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Everything except normal followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "qiqi": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "raiden": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "razor": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "rosaria": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "kokomi": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "sayu": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "shenhe": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Everything except normal followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "heizou": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "sucrose": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "tartaglia": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk and walk followed by skill have proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "thoma": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "tighnari": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "traveleranemo": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "travelergeo": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "travelerelectro": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "travelerdendro": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "travelerhydro": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only skill and burst followed by walk have proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "venti": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be skill[hold=1]."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "wanderer": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Only available for a short time after Windfavored state ends."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "notes": "Swapping while Windfavored state is active is not legal."
+    }
+  ],
+  "wriothesley": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "xiangling": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "xiao": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "notes": "Previous action must be jump."
+    },
+    {
+      "ability": "high_plunge",
+      "notes": "Previous action must be jump."
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "xingqiu": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "xinyan": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "yaemiko": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "yanfei": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "yaoyao": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "yelan": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "yoimiya": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "aim",
+      "notes": "Only Fully-Charged Aimed Shot available. Physical Aimed Shot is not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "Only aim followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "yunjin": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "zhongli": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "notes": "No action followed by walk has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ]
+}

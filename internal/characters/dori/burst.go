@@ -6,9 +6,12 @@ import (
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/avatar"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/player"
+	"github.com/genshinsim/gcsim/pkg/core/reactions"
 )
 
 var burstFrames []int
@@ -25,30 +28,42 @@ func init() {
 	burstFrames[action.ActionSwap] = 56    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) action.ActionInfo {
+func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Alcazarzaray's Exactitude: Connector DMG",
-		AttackTag:  combat.AttackTagElementalBurst,
-		ICDTag:     combat.ICDTagElementalBurst,
-		ICDGroup:   combat.ICDGroupDoriBurst,
-		StrikeType: combat.StrikeTypeDefault,
+		AttackTag:  attacks.AttackTagElementalBurst,
+		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDGroup:   attacks.ICDGroupDoriBurst,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Electro,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 	snap := c.Snapshot(&ai)
 
+	burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 5}, 10)
+	burstPos := burstArea.Shape.Pos()
 	icdSrc := []int{math.MinInt32, math.MinInt32, math.MinInt32, math.MinInt32}
 	// 32 damage ticks
 	for i := 0; i < 32; i++ {
 		c.Core.Tasks.Add(func() {
+			p, ok := c.Core.Combat.Player().(*avatar.Player)
+			if !ok {
+				panic("target 0 should be Player but is not!!")
+			}
+			if !p.IsWithinArea(burstArea) {
+				return
+			}
+
+			// queue attack
+			distance := p.Pos().Distance(burstPos)
 			c.Core.QueueAttackWithSnap(
 				ai,
 				snap,
-				combat.NewDefBoxHit(1, -2),
+				combat.NewBoxHit(p, burstPos, geometry.Point{Y: -distance}, 1, distance),
 				0,
-			) // TODO: accurate hitbox
+			)
 
 			// dori self application
 			// TODO: change this to a ST attack later when self reactions need to be implemented
@@ -58,13 +73,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				Amount:     0,
 				External:   true,
 			})
-			p, ok := c.Core.Combat.Player().(*avatar.Player)
-			if !ok {
-				panic("target 0 should be Player but is not!!")
-			}
 			idx := c.Core.Player.ActiveChar().Index
-			if c.Core.F > icdSrc[idx]+combat.ICDGroupResetTimer[combat.ICDGroupDoriBurst] {
-				dur := combat.Durability(25)
+			if c.Core.F > icdSrc[idx]+attacks.ICDGroupResetTimer[attacks.ICDGroupDoriBurst] {
+				dur := reactions.Durability(25)
 				if p.AuraCount() == 0 {
 					dur = 20
 				}
@@ -72,6 +83,7 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 				icdSrc[idx] = c.Core.F
 			}
 
+			// C4
 			if c.Base.Cons >= 4 {
 				c.c4()
 			}
@@ -85,6 +97,9 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 
 	for i := 0; i < 6; i++ {
 		c.Core.Tasks.Add(func() {
+			if !c.Core.Combat.Player().IsWithinArea(burstArea) {
+				return
+			}
 			if c.Base.Cons >= 2 {
 				c.c2(c2Travel)
 			}
@@ -105,10 +120,10 @@ func (c *char) Burst(p map[string]int) action.ActionInfo {
 	c.ConsumeEnergy(4)
 	c.SetCDWithDelay(action.ActionBurst, 1200, 1) // 20s * 60
 
-	return action.ActionInfo{
+	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-	}
+	}, nil
 }

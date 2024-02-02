@@ -11,7 +11,7 @@ import (
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type propGrowCurve struct {
@@ -21,7 +21,7 @@ type propGrowCurve struct {
 type monsterExcelConfig struct {
 	MonsterName     string          `json:"monsterName"`
 	Typ             string          `json:"type"`
-	HpDrops         []enemy.HpDrop  `json:"hpDrops"`
+	HpDrops         []info.HpDrop   `json:"hpDrops"`
 	KillDropId      int             `json:"killDropId"`
 	HpBase          float64         `json:"hpBase"`
 	PropGrowCurves  []propGrowCurve `json:"propGrowCurves"`
@@ -53,13 +53,13 @@ func main() {
 	}
 }
 
-func toEnemyProfile(info monsterExcelConfig) enemy.EnemyProfile {
+func toEnemyProfile(enemyInfo monsterExcelConfig) info.EnemyProfile {
 	hpGrowCurve := 1
-	if info.PropGrowCurves[0].GrowCurve == "GROW_CURVE_HP_2" {
+	if enemyInfo.PropGrowCurves[0].GrowCurve == "GROW_CURVE_HP_2" {
 		hpGrowCurve = 2
 	}
-	drops := []enemy.HpDrop{}
-	for _, v := range info.HpDrops {
+	drops := []info.HpDrop{}
+	for _, v := range enemyInfo.HpDrops {
 		if v.DropId == 0 || v.HpPercent == 0 {
 			continue
 		}
@@ -67,30 +67,34 @@ func toEnemyProfile(info monsterExcelConfig) enemy.EnemyProfile {
 		pd.HpPercent /= 100
 		drops = append(drops, pd)
 	}
-	if info.KillDropId != 0 {
+	if enemyInfo.KillDropId != 0 {
 		// add killDropId as particle drop
-		drops = append(drops, enemy.HpDrop{
-			DropId:    info.KillDropId,
+		drops = append(drops, info.HpDrop{
+			DropId:    enemyInfo.KillDropId,
 			HpPercent: 0,
 		})
 	}
-	return enemy.EnemyProfile{
+	freezeResist := 0.0 // TODO: dm?
+	if enemyInfo.Typ == "MONSTER_BOSS" {
+		freezeResist = 1.0
+	}
+	return info.EnemyProfile{
 		Resist: map[attributes.Element]float64{
-			attributes.Pyro:     info.FireSubHurt,
-			attributes.Dendro:   info.GrassSubHurt,
-			attributes.Hydro:    info.WaterSubHurt,
-			attributes.Electro:  info.ElecSubHurt,
-			attributes.Anemo:    info.WindSubHurt,
-			attributes.Cryo:     info.IceSubHurt,
-			attributes.Geo:      info.RockSubHurt,
-			attributes.Physical: info.PhysicalSubHurt,
+			attributes.Pyro:     enemyInfo.FireSubHurt,
+			attributes.Dendro:   enemyInfo.GrassSubHurt,
+			attributes.Hydro:    enemyInfo.WaterSubHurt,
+			attributes.Electro:  enemyInfo.ElecSubHurt,
+			attributes.Anemo:    enemyInfo.WindSubHurt,
+			attributes.Cryo:     enemyInfo.IceSubHurt,
+			attributes.Geo:      enemyInfo.RockSubHurt,
+			attributes.Physical: enemyInfo.PhysicalSubHurt,
 		},
+		FreezeResist:  freezeResist,
 		ParticleDrops: drops,
-		ResistFrozen:  info.Typ == "MONSTER_BOSS",
-		HpBase:        info.HpBase,
+		HpBase:        enemyInfo.HpBase,
 		HpGrowCurve:   hpGrowCurve,
-		Id:            info.Id,
-		MonsterName:   info.MonsterName,
+		Id:            enemyInfo.Id,
+		MonsterName:   enemyInfo.MonsterName,
 	}
 }
 
@@ -122,7 +126,7 @@ func runCodeGen() error {
 }
 
 func writeMonsterInfo(configs []monsterExcelConfig, out *bufio.Writer) error {
-	profiles := make([]enemy.EnemyProfile, len(configs))
+	profiles := make([]info.EnemyProfile, len(configs))
 	for i, v := range configs {
 		profiles[i] = toEnemyProfile(v)
 	}
@@ -177,10 +181,14 @@ func readMonsterConfigs() ([]monsterExcelConfig, error) {
 var tmplEnemyStats = `// Code generated DO NOT EDIT.
 package enemy
 
-import "github.com/genshinsim/gcsim/pkg/core/attributes"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+)
 
-var monsterInfos = map[int]EnemyProfile{
-{{range .}} {{.Id}}: {
+var monsterInfos = map[int]info.EnemyProfile{
+{{range .}}
+	{{.Id}}: {
 		Resist: map[attributes.Element]float64{
 			attributes.Pyro: {{index .Resist Pyro}},
 			attributes.Dendro: {{index .Resist Dendro}},
@@ -191,19 +199,20 @@ var monsterInfos = map[int]EnemyProfile{
 			attributes.Geo: {{index .Resist Geo}},
 			attributes.Physical: {{index .Resist Physical}},
 		},
-		ParticleDrops: []HpDrop{
+		ParticleDrops: []info.HpDrop{
 		{{range .ParticleDrops}} {{if .DropId}} {
 				DropId: {{.DropId}},
 				HpPercent: {{.HpPercent}},
 			},
 		{{end}} {{end}}
 		},
-		ResistFrozen: {{.ResistFrozen}},
+		FreezeResist: {{.FreezeResist}},
 		HpBase: {{.HpBase}},
 		HpGrowCurve: {{.HpGrowCurve}},
 		Id: {{.Id}},
 		MonsterName : "{{.MonsterName}}",
-	}, {{end}}
+	},
+{{end}}
 }
 
 `
