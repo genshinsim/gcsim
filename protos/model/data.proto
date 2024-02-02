@@ -73,7 +73,7 @@ message ArtifactDataMap {
 }
 
 message ArtifactData { 
-  int32 id = 1 [ json_name = "id" ]; 
+  int64 set_id = 1 [ json_name = "id" ]; 
   int64 text_map_id = 2 [ json_name = "text_map_id"];
   string key = 3 [ json_name = "key" ];
 }

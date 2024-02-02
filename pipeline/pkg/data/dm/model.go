@@ -168,3 +168,19 @@ type WeaponPromote struct {
 	// RequiredPlayerLevel int32 `json:"requiredPlayerLevel,omitempty"`
 	// CoinCost            int32 `json:"coinCost,omitempty"`
 }
+
+//nolint:tagliatelle // need to match datamine
+type ReliquarySetExcel struct {
+	SetID        int64 `json:"setId"`
+	EquipAffixID int64 `json:"EquipAffixId"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type EquipAffixExcel struct {
+	AffixID         int64 `json:"affixId"`
+	ID              int64 `json:"id"`
+	NameTextMapHash int64 `json:"nameTextMapHash"`
+	Level           int32 `json:"level"`
+	// DescTextMapHash            int32         `json:"descTextMapHash"`
+	// AddProps []AddProp `json:"addProps"`
+}

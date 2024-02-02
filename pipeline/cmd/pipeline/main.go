@@ -87,7 +87,8 @@ func main() {
 	// generate artifact data
 	log.Println("running pipeline for artifacts...")
 	ga, err := artifact.NewGenerator(artifact.GeneratorConfig{
-		Root: cfg.artifactPath,
+		Root:   cfg.artifactPath,
+		Excels: cfg.excelPath,
 	})
 	if err != nil {
 		panic(err)
