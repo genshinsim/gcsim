@@ -1,4 +1,4 @@
-package generic
+package rust
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"

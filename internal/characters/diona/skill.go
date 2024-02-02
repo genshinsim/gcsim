@@ -118,6 +118,7 @@ func (c *char) pawsPewPew(f, travel, pawCount int) {
 			} else {
 				shd = &shield.Tmpl{
 					ActorIndex: c.Index,
+					Target:     -1,
 					Src:        c.Core.F,
 					ShieldType: shield.DionaSkill,
 					Name:       "Diona Skill",

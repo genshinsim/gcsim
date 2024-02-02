@@ -1,3 +1,4 @@
 package_name: blacktassel
 genshin_id: 13303
 key: blacktassel
+skip_data_func: true

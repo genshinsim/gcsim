@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.MemoryOfDust, common.NewGoldenMajesty)
+	core.RegisterWeaponFunc(keys.MemoryOfDust, common.NewGoldenMajesty(base))
 }

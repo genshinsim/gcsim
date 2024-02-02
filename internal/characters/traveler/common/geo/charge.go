@@ -32,7 +32,7 @@ func init() {
 	chargeFrames[1][action.ActionSwap] = chargeHitmarks[1][len(chargeHitmarks[1])-1] // CA -> Swap
 }
 
-func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+func (c *Traveler) ChargeAttack(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		AttackTag:  attacks.AttackTagExtra,

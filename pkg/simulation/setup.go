@@ -190,7 +190,7 @@ func SetupResonance(s *core.Core) {
 					return false
 				}
 				atk := args[1].(*combat.AttackEvent)
-				if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == atk.Info.ActorIndex {
+				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
 					t.AddResistMod(combat.ResistMod{
 						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
 						Ele:   attributes.Geo,
@@ -203,7 +203,7 @@ func SetupResonance(s *core.Core) {
 			val := make([]float64, attributes.EndStatType)
 			val[attributes.DmgP] = .15
 			atkf := func(ae *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				if s.Player.Shields.PlayerIsShielded() && s.Player.Active() == ae.Info.ActorIndex {
+				if s.Player.Shields.CharacterIsShielded(ae.Info.ActorIndex, s.Player.Active()) {
 					return val, true
 				}
 				return nil, false

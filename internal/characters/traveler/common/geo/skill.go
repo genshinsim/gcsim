@@ -53,7 +53,7 @@ func init() {
 	skillFrames[1][1][action.ActionSwap] = 40    // Short Hold E -> Swap
 }
 
-func (c *char) Skill(p map[string]int) (action.Info, error) {
+func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	shortHold, ok := p["short_hold"]
 	if !ok || shortHold < 0 {
 		shortHold = 0
@@ -113,7 +113,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *Traveler) makeParticleCB() combat.AttackCBFunc {
 	done := false
 	return func(a combat.AttackCB) {
 		if a.Target.Type() != targets.TargettableEnemy {
@@ -135,12 +135,12 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 type stone struct {
 	src    int
 	expiry int
-	char   *char
+	char   *Traveler
 	dir    geometry.Point
 	pos    geometry.Point
 }
 
-func (c *char) newStone(dur int, dir, pos geometry.Point) *stone {
+func (c *Traveler) newStone(dur int, dir, pos geometry.Point) *stone {
 	return &stone{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,

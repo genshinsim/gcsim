@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.MouunsMoon, common.NewWavebreaker)
+	core.RegisterWeaponFunc(keys.MouunsMoon, common.NewWavebreaker(base))
 }

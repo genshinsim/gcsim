@@ -34,7 +34,7 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 76    // Q -> Swap
 }
 
-func (c *char) Burst(p map[string]int) (action.Info, error) {
+func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	ai := combat.AttackInfo{
 		ActorIndex: c.Index,
 		Abil:       "Rising Waters",

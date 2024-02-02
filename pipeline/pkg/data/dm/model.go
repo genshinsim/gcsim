@@ -50,8 +50,8 @@ type AvatarExcel struct {
 	DefenseBase     float64         `json:"defenseBase"`
 	PropGrowCurves  []PropGrowCurve `json:"propGrowCurves"`
 	ID              int32           `json:"id"`
-	// NameTextMapHash int32           `json:"nameTextMapHash"`
-	UseType string `json:"useType,omitempty"`
+	NameTextMapHash int64           `json:"nameTextMapHash"`
+	UseType         string          `json:"useType,omitempty"`
 }
 
 //nolint:tagliatelle // need to match datamine
@@ -60,7 +60,7 @@ type PropGrowCurve struct {
 	GrowCurve string `json:"growCurve"`
 }
 
-type TextMap map[int32]string
+type TextMap map[int64]string
 
 //nolint:tagliatelle // need to match datamine
 type AvatarSkillDepot struct {
@@ -167,4 +167,20 @@ type WeaponPromote struct {
 	PromoteLevel   int32 `json:"promoteLevel,omitempty"`
 	// RequiredPlayerLevel int32 `json:"requiredPlayerLevel,omitempty"`
 	// CoinCost            int32 `json:"coinCost,omitempty"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type ReliquarySetExcel struct {
+	SetID        int64 `json:"setId"`
+	EquipAffixID int64 `json:"EquipAffixId"`
+}
+
+//nolint:tagliatelle // need to match datamine
+type EquipAffixExcel struct {
+	AffixID         int64 `json:"affixId"`
+	ID              int64 `json:"id"`
+	NameTextMapHash int64 `json:"nameTextMapHash"`
+	Level           int32 `json:"level"`
+	// DescTextMapHash            int32         `json:"descTextMapHash"`
+	// AddProps []AddProp `json:"addProps"`
 }

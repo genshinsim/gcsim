@@ -1763,6 +1763,9 @@ export namespace model {
 
         /** AvatarData skill_details */
         skill_details?: (model.IAvatarSkillsData|null);
+
+        /** AvatarData name_text_hash_map */
+        name_text_hash_map?: (number|Long|null);
     }
 
     /** Represents an AvatarData. */
@@ -1806,6 +1809,9 @@ export namespace model {
 
         /** AvatarData skill_details. */
         public skill_details?: (model.IAvatarSkillsData|null);
+
+        /** AvatarData name_text_hash_map. */
+        public name_text_hash_map: (number|Long);
 
         /**
          * Gets the default type url for AvatarData
@@ -1970,6 +1976,9 @@ export namespace model {
 
         /** WeaponData base_stats */
         base_stats?: (model.IWeaponStatsData|null);
+
+        /** WeaponData name_text_hash_map */
+        name_text_hash_map?: (number|Long|null);
     }
 
     /** Represents a WeaponData. */
@@ -1998,6 +2007,9 @@ export namespace model {
 
         /** WeaponData base_stats. */
         public base_stats?: (model.IWeaponStatsData|null);
+
+        /** WeaponData name_text_hash_map. */
+        public name_text_hash_map: (number|Long);
 
         /**
          * Gets the default type url for WeaponData
@@ -2109,11 +2121,14 @@ export namespace model {
     /** Properties of an ArtifactData. */
     interface IArtifactData {
 
-        /** ArtifactData id */
-        id?: (number|null);
+        /** ArtifactData set_id */
+        set_id?: (number|Long|null);
 
         /** ArtifactData text_map_id */
-        text_map_id?: (string|null);
+        text_map_id?: (number|Long|null);
+
+        /** ArtifactData key */
+        key?: (string|null);
     }
 
     /** Represents an ArtifactData. */
@@ -2125,11 +2140,14 @@ export namespace model {
          */
         constructor(properties?: model.IArtifactData);
 
-        /** ArtifactData id. */
-        public id: number;
+        /** ArtifactData set_id. */
+        public set_id: (number|Long);
 
         /** ArtifactData text_map_id. */
-        public text_map_id: string;
+        public text_map_id: (number|Long);
+
+        /** ArtifactData key. */
+        public key: string;
 
         /**
          * Gets the default type url for ArtifactData

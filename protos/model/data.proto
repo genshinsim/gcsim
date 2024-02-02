@@ -20,6 +20,7 @@ message AvatarData {
   string icon_name = 9 [ json_name = "icon_name" ];
   AvatarStatsData stats = 10 [ json_name = "stats" ];
   AvatarSkillsData skill_details = 11 [ json_name = "skill_details" ];
+  int64 name_text_hash_map = 12 [ json_name = "name_text_hash_map "];
 }
 
 message AvatarStatsData {
@@ -53,6 +54,7 @@ message WeaponData {
   WeaponClass weapon_class = 4 [ json_name = "weapon_class" ];
   string image_name = 5 [ json_name = "image_name" ];
   WeaponStatsData base_stats = 6 [ json_name = "base_stats" ];
+  int64 name_text_hash_map = 7 [ json_name = "name_text_hash_map "];
 }
 
 message WeaponStatsData {
@@ -71,8 +73,9 @@ message ArtifactDataMap {
 }
 
 message ArtifactData { 
-  int32 id = 1 [ json_name = "id" ]; 
-  string text_map_id = 2 [ json_name = "text_map_id"];
+  int64 set_id = 1 [ json_name = "id" ]; 
+  int64 text_map_id = 2 [ json_name = "text_map_id"];
+  string key = 3 [ json_name = "key" ];
 }
 
 message PromotionData {

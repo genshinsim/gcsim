@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func (c *char) c2() {
+func (c *Traveler) c2() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ER] = .16
 

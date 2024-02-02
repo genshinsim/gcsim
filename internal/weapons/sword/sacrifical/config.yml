@@ -1,3 +1,4 @@
-package_name: sacrifical
+package_name: sacrificial
 genshin_id: 11403
 key: sacrificialsword
+skip_data_func: true

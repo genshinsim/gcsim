@@ -59,13 +59,14 @@ func (a *DataSource) GetAvatarData(id, sub int32) (*model.AvatarData, error) {
 
 func (a *DataSource) parseChar(id, sub int32) (*model.AvatarData, error) {
 	var err error
-	_, ok := a.avatarExcel[id]
+	data, ok := a.avatarExcel[id]
 	if !ok {
 		return nil, fmt.Errorf("char with id %v not found", id)
 	}
 	c := &model.AvatarData{
-		SkillDetails: &model.AvatarSkillsData{},
-		Stats:        &model.AvatarStatsData{},
+		SkillDetails:    &model.AvatarSkillsData{},
+		Stats:           &model.AvatarStatsData{},
+		NameTextHashMap: data.NameTextMapHash,
 	}
 	c.Id = id
 	c.SubId = sub

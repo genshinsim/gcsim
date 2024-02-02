@@ -1,3 +1,4 @@
 package_name: favonius
 genshin_id: 15401
 key: favoniuswarbow
+skip_data_func: true

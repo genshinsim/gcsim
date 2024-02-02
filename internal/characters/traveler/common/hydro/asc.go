@@ -14,7 +14,7 @@ const a1ICDKey = "sourcewater-droplet-icd"
 // After the Dewdrop fired by the Hold Mode of the Aquacrest Saber hits an opponent, a Sourcewater Droplet will be
 // generated near to the Traveler. If the Traveler picks it up, they will restore 7% HP.
 // 1 Droplet can be created this way every second, and each use of Aquacrest Saber can create 4 Droplets at most.
-func (c *char) makeA1CB() combat.AttackCBFunc {
+func (c *Traveler) makeA1CB() combat.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
@@ -37,7 +37,7 @@ func (c *char) makeA1CB() combat.AttackCBFunc {
 	}
 }
 
-func (c *char) a1PickUp(count int) {
+func (c *Traveler) a1PickUp(count int) {
 	for _, g := range c.Core.Combat.Gadgets() {
 		if count == 0 {
 			return
@@ -70,7 +70,7 @@ func (c *char) a1PickUp(count int) {
 	}
 }
 
-func (c *char) newDroplet() *common.SourcewaterDroplet {
+func (c *Traveler) newDroplet() *common.SourcewaterDroplet {
 	player := c.Core.Combat.Player()
 	pos := geometry.CalcRandomPointFromCenter(
 		geometry.CalcOffsetPoint(

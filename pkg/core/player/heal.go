@@ -95,6 +95,7 @@ type DrainInfo struct {
 }
 
 func (h *Handler) Drain(di DrainInfo) {
+	h.Events.Emit(event.OnPlayerPreHPDrain, &di)
 	c := h.chars[di.ActorIndex]
 
 	prevHPRatio := c.CurrentHPRatio()

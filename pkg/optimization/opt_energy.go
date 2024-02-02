@@ -52,8 +52,7 @@ func (stats *SubstatOptimizerDetails) calculateERBaselineHandleFav(i int) {
 // We use the ignore_burst_energy mode to determine how much ER is needed for each character to successfully do the
 // multiple rotations 75% of the time.
 // TODO: Add option for user to set the percentile used for optimization
-func (stats *SubstatOptimizerDetails) optimizeERSubstats() []string {
-	var opDebug []string
+func (stats *SubstatOptimizerDetails) optimizeERSubstats() {
 	stats.simcfg.Settings.Iterations = 350
 
 	// For now going to ignore Raiden, since typically she won't be running maximum ER subs just to battery. The scaling isn't that strong
@@ -62,18 +61,16 @@ func (stats *SubstatOptimizerDetails) optimizeERSubstats() []string {
 	stats.findOptimalERforChars()
 
 	// Fix ER at previously found values then optimize all other substats
-	opDebug = append(opDebug, "Initial Calculated ER Liquid Substats by character:")
-	printVal := ""
+	stats.optimizer.logger.Info("Initial Calculated ER Liquid Substats by character:")
+	output := ""
 	for i := range stats.charProfilesInitial {
-		printVal += fmt.Sprintf(
-			"%v: %.4g, ",
-			stats.charProfilesInitial[i].Base.Key.String(),
-			float64(stats.charSubstatFinal[i][attributes.ER])*stats.substatValues[attributes.ER],
-		)
+		output +=
+			fmt.Sprintf("%v: %.4g, ",
+				stats.charProfilesInitial[i].Base.Key.String(),
+				float64(stats.charSubstatFinal[i][attributes.ER])*stats.substatValues[attributes.ER],
+			)
 	}
-	opDebug = append(opDebug, printVal)
-
-	return opDebug
+	stats.optimizer.logger.Info(output)
 }
 
 func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
@@ -87,6 +84,13 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 	for idxChar := range stats.charProfilesERBaseline {
 		// erDiff is the amount of ER we need
 		erLen := len(a.AdditionalErNeeded[idxChar])
+		if stats.optimizer.verbose {
+			hist := fmtHist(a.ErNeeded[idxChar], float64(int(a.ErNeeded[idxChar][0]*10))/10.0, 0.05)
+			stats.optimizer.logger.Infof("%v: ER Needed Distribution", stats.charProfilesInitial[idxChar].Base.Key.Pretty())
+			for _, val := range hist {
+				stats.optimizer.logger.Infoln(val)
+			}
+		}
 		erDiff := percentile(a.AdditionalErNeeded[idxChar], 0.8)
 
 		// find the closest whole count of ER subs

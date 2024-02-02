@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.BeginnersProtector, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.BeginnersProtector, common.NewNoEffect(base))
 }

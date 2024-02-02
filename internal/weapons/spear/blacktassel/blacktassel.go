@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	core.RegisterWeaponFunc(keys.BlackTassel, common.NewNoEffect)
+	core.RegisterWeaponFunc(keys.BlackTassel, common.NewNoEffect(base))
 }

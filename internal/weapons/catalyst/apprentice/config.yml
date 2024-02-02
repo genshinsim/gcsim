@@ -1,3 +1,4 @@
 package_name: apprentice
 genshin_id: 14101
 key: apprenticesnotes
+skip_data_func: true

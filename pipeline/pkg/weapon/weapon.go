@@ -3,6 +3,7 @@ package weapon
 import (
 	"fmt"
 	"log"
+	"sort"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/weapon"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -10,9 +11,12 @@ import (
 
 type Config struct {
 	PackageName string   `yaml:"package_name,omitempty"`
+	StructName  string   `yaml:"struct_name,omitempty"`
 	GenshinID   int32    `yaml:"genshin_id,omitempty"`
 	Key         string   `yaml:"key,omitempty"`
 	Shortcuts   []string `yaml:"shortcuts,omitempty"`
+
+	SkipDataFunc bool `yaml:"skip_data_func,omitempty"`
 
 	// extra fields to be populate but not read from yaml
 	RelativePath string `yaml:"-"`
@@ -63,4 +67,17 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	}
 
 	return g, nil
+}
+
+func (g *Generator) Data() []*model.WeaponData {
+	keys := make([]string, 0, len(g.data))
+	for k := range g.data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	var res []*model.WeaponData
+	for _, k := range keys {
+		res = append(res, g.data[k])
+	}
+	return res
 }
