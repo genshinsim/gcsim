@@ -175,3 +175,34 @@ func TestBasicToken(t *testing.T) {
 		}
 	}
 }
+
+func TestElseSpace(t *testing.T) {
+	input := `
+	if x > 1{}else{}
+	`
+
+	expected := []Token{
+		// function
+		{Typ: keywordIf, Val: "if"},
+		{Typ: itemIdentifier, Val: "x"},
+		{Typ: OpGreaterThan, Val: ">"},
+		{Typ: itemNumber, Val: "1"},
+		{Typ: itemLeftBrace, Val: "{"},
+		{Typ: itemRightBrace, Val: "}"},
+		{Typ: keywordElse, Val: "else"},
+		{Typ: itemLeftBrace, Val: "{"},
+		{Typ: itemRightBrace, Val: "}"},
+	}
+
+	l := lex(input)
+	i := 0
+	for n := l.nextItem(); n.Typ != itemEOF; n = l.nextItem() {
+		if expected[i].Typ != n.Typ && expected[i].Val != n.Val {
+			t.Errorf("expected %v got %v", expected[i], n)
+			t.FailNow()
+		}
+		if i < len(expected)-1 {
+			i++
+		}
+	}
+}
