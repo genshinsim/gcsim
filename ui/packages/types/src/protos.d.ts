@@ -2121,8 +2121,8 @@ export namespace model {
     /** Properties of an ArtifactData. */
     interface IArtifactData {
 
-        /** ArtifactData id */
-        id?: (number|null);
+        /** ArtifactData set_id */
+        set_id?: (number|Long|null);
 
         /** ArtifactData text_map_id */
         text_map_id?: (number|Long|null);
@@ -2140,8 +2140,8 @@ export namespace model {
          */
         constructor(properties?: model.IArtifactData);
 
-        /** ArtifactData id. */
-        public id: number;
+        /** ArtifactData set_id. */
+        public set_id: (number|Long);
 
         /** ArtifactData text_map_id. */
         public text_map_id: (number|Long);
