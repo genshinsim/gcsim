@@ -4,6 +4,7 @@ import "github.com/genshinsim/gcsim/pkg/core/attributes"
 
 type Tmpl struct {
 	ActorIndex int
+	Target     int
 	Name       string
 	Src        int
 	ShieldType Type
@@ -14,6 +15,10 @@ type Tmpl struct {
 
 func (t *Tmpl) ShieldOwner() int {
 	return t.ActorIndex
+}
+
+func (t *Tmpl) ShieldTarget() int {
+	return t.Target
 }
 
 func (t *Tmpl) Desc() string {

@@ -37,14 +37,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("bolide-4pc", -1),
 			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-				// TODO: works off field?
-				if c.Player.Active() != char.Index {
-					return nil, false
-				}
 				if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
 					return nil, false
 				}
-				if !c.Player.Shields.PlayerIsShielded() {
+				if !c.Player.Shields.CharacterIsShielded(char.Index, c.Player.Active()) {
 					return nil, false
 				}
 				return m, true

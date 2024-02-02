@@ -44,7 +44,7 @@ func (p *Player) HandleAttack(atk *combat.AttackEvent) float64 {
 	dmg, crit = p.calc(atk)
 
 	active := p.Core.Player.Active()
-	dmgLeft := p.Core.Player.Shields.OnDamage(active, dmg, atk.Info.Element)
+	dmgLeft := p.Core.Player.Shields.OnDamage(active, active, dmg, atk.Info.Element)
 	if dmgLeft > 0 {
 		p.Core.Player.Drain(player.DrainInfo{
 			ActorIndex: active,

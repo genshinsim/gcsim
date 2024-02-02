@@ -14,6 +14,7 @@ func (c *char) newShield(base float64, t shield.Type, dur int) *noelleShield {
 	n := &noelleShield{}
 	n.Tmpl = &shield.Tmpl{}
 	n.Tmpl.ActorIndex = c.Index
+	n.Tmpl.Target = -1
 	n.Tmpl.Src = c.Core.F
 	n.Tmpl.ShieldType = t
 	n.Tmpl.Name = "Noelle Skill"
