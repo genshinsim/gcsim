@@ -5,8 +5,8 @@ import (
 )
 
 type HpDrop struct {
-	DropId    int     `json:"dropId"`
-	HpPercent float64 `json:"hpPercent"`
+	DropId    int     `json:"drop_id"`
+	HpPercent float64 `json:"hp_percent"`
 }
 
 type EnemyProfile struct {

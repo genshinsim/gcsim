@@ -301,9 +301,12 @@ func getMonsterInfo(name string) (info.EnemyProfile, error) {
 		codeName = name
 	}
 	id, ok := monsterNameIds[codeName]
+	if !ok {
+		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
+	}
 	result, ok := monsterInfos[id]
 	if !ok {
-		return result, fmt.Errorf("invalid target name `%v`", name)
+		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}
 	return result.Clone(), nil
 }
