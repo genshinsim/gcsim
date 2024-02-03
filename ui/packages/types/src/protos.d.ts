@@ -1898,6 +1898,15 @@ export namespace model {
 
         /** AvatarSkillsData burst_energy_cost */
         burst_energy_cost?: (number|null);
+
+        /** AvatarSkillsData attack_scaling */
+        attack_scaling?: (model.IAvatarSkillExcelIndexData[]|null);
+
+        /** AvatarSkillsData skill_scaling */
+        skill_scaling?: (model.IAvatarSkillExcelIndexData[]|null);
+
+        /** AvatarSkillsData burst_scaling */
+        burst_scaling?: (model.IAvatarSkillExcelIndexData[]|null);
     }
 
     /** Represents an AvatarSkillsData. */
@@ -1921,8 +1930,89 @@ export namespace model {
         /** AvatarSkillsData burst_energy_cost. */
         public burst_energy_cost: number;
 
+        /** AvatarSkillsData attack_scaling. */
+        public attack_scaling: model.IAvatarSkillExcelIndexData[];
+
+        /** AvatarSkillsData skill_scaling. */
+        public skill_scaling: model.IAvatarSkillExcelIndexData[];
+
+        /** AvatarSkillsData burst_scaling. */
+        public burst_scaling: model.IAvatarSkillExcelIndexData[];
+
         /**
          * Gets the default type url for AvatarSkillsData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an AvatarSkillExcelIndexData. */
+    interface IAvatarSkillExcelIndexData {
+
+        /** AvatarSkillExcelIndexData group_id */
+        group_id?: (number|null);
+
+        /** AvatarSkillExcelIndexData index */
+        index?: (number|null);
+
+        /** AvatarSkillExcelIndexData level_data */
+        level_data?: (model.IAvatarSkillExcelLevelData[]|null);
+    }
+
+    /** Represents an AvatarSkillExcelIndexData. */
+    class AvatarSkillExcelIndexData implements IAvatarSkillExcelIndexData {
+
+        /**
+         * Constructs a new AvatarSkillExcelIndexData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarSkillExcelIndexData);
+
+        /** AvatarSkillExcelIndexData group_id. */
+        public group_id: number;
+
+        /** AvatarSkillExcelIndexData index. */
+        public index: number;
+
+        /** AvatarSkillExcelIndexData level_data. */
+        public level_data: model.IAvatarSkillExcelLevelData[];
+
+        /**
+         * Gets the default type url for AvatarSkillExcelIndexData
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an AvatarSkillExcelLevelData. */
+    interface IAvatarSkillExcelLevelData {
+
+        /** AvatarSkillExcelLevelData level */
+        level?: (number|null);
+
+        /** AvatarSkillExcelLevelData value */
+        value?: (number|null);
+    }
+
+    /** Represents an AvatarSkillExcelLevelData. */
+    class AvatarSkillExcelLevelData implements IAvatarSkillExcelLevelData {
+
+        /**
+         * Constructs a new AvatarSkillExcelLevelData.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IAvatarSkillExcelLevelData);
+
+        /** AvatarSkillExcelLevelData level. */
+        public level: number;
+
+        /** AvatarSkillExcelLevelData value. */
+        public value: number;
+
+        /**
+         * Gets the default type url for AvatarSkillExcelLevelData
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
