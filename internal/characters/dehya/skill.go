@@ -20,6 +20,7 @@ var (
 const (
 	skillHitmark           = 20
 	skillRecastHitmark     = 40
+	skillDoTAbil           = "Molten Inferno (DoT)"
 	skillMitigationAbil    = "Fiery Sanctum Mitigation"
 	skillSelfDoTAbil       = "Redmane's Blood"
 	skillSelfDoTStatus     = "dehya-redmanes-blood"
@@ -185,10 +186,7 @@ func (c *char) skillRecast() (action.Info, error) {
 
 	// place field back down
 	c.Core.Tasks.Add(func() { // place field
-		// if C2, duration will be extended by 6s on recreation
-		if c.Base.Cons >= 2 {
-			c.sanctumSavedDur += 360
-		}
+		c.c2IncreaseDur()
 		c.addField(c.sanctumSavedDur)
 	}, skillRecastHitmark+1)
 
@@ -216,7 +214,7 @@ func (c *char) pickUpField() {
 func (c *char) addField(dur int) {
 	ai := combat.AttackInfo{
 		ActorIndex:         c.Index,
-		Abil:               "Molten Inferno (DoT)",
+		Abil:               skillDoTAbil,
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
 		ICDGroup:           attacks.ICDGroupDefault,

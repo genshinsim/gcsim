@@ -36,6 +36,13 @@ func (c *char) c1() {
 }
 
 // When Dehya uses Molten Inferno: Ranging Flame, the duration of the recreated Fiery Sanctum field will be increased by 6s.
+func (c *char) c2IncreaseDur() {
+	if c.Base.Cons < 2 {
+		return
+	}
+	c.sanctumSavedDur += 360
+}
+
 // Additionally, when a Fiery Sanctum exists on the field, DMG dealt by its next coordinated attack will be
 // increased by 50% when active character(s) within the Fiery Sanctum field are attacked.
 func (c *char) c2() {
@@ -47,7 +54,7 @@ func (c *char) c2() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("dehya-sanctum-dot-c2", -1),
 		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			if atk.Info.Abil != "Molten Inferno (DoT)" || !c.hasC2DamageBuff {
+			if atk.Info.Abil != skillDoTAbil || !c.hasC2DamageBuff {
 				return nil, false
 			}
 			return val, true
