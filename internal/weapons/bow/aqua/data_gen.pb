@@ -1,63 +1,63 @@
-id:  15508
-key:  "aquasimulacra"
-rarity:  5
-weapon_class:  WEAPON_BOW
-image_name:  "UI_EquipIcon_Bow_Kirin"
-base_stats:  {
-   base_props:  {
-      prop_type:  FIGHT_PROP_BASE_ATTACK
-      initial_value:  44.33580017089844
-      curve:  GROW_CURVE_ATTACK_304
+id: 15508
+key: "aquasimulacra"
+rarity: 5
+weapon_class: WEAPON_BOW
+image_name: "UI_EquipIcon_Bow_Kirin"
+base_stats: {
+   base_props: {
+      prop_type: FIGHT_PROP_BASE_ATTACK
+      initial_value: 44.33580017089844
+      curve: GROW_CURVE_ATTACK_304
    }
-   base_props:  {
-      prop_type:  FIGHT_PROP_CRITICAL_HURT
-      initial_value:  0.19200000166893005
-      curve:  GROW_CURVE_CRITICAL_301
+   base_props: {
+      prop_type: FIGHT_PROP_CRITICAL_HURT
+      initial_value: 0.19200000166893005
+      curve: GROW_CURVE_CRITICAL_301
    }
-   promo_data:  {
-      max_level:  20
+   promo_data: {
+      max_level: 20
    }
-   promo_data:  {
-      max_level:  40
-      add_props:  {
-         prop_type:  FIGHT_PROP_BASE_ATTACK
-         value:  31.100000381469727
+   promo_data: {
+      max_level: 40
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 31.100000381469727
       }
    }
-   promo_data:  {
-      max_level:  50
-      add_props:  {
-         prop_type:  FIGHT_PROP_BASE_ATTACK
-         value:  62.20000076293945
+   promo_data: {
+      max_level: 50
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 62.20000076293945
       }
    }
-   promo_data:  {
-      max_level:  60
-      add_props:  {
-         prop_type:  FIGHT_PROP_BASE_ATTACK
-         value:  93.4000015258789
+   promo_data: {
+      max_level: 60
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 93.4000015258789
       }
    }
-   promo_data:  {
-      max_level:  70
-      add_props:  {
-         prop_type:  FIGHT_PROP_BASE_ATTACK
-         value:  124.5
+   promo_data: {
+      max_level: 70
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 124.5
       }
    }
-   promo_data:  {
-      max_level:  80
-      add_props:  {
-         prop_type:  FIGHT_PROP_BASE_ATTACK
-         value:  155.60000610351562
+   promo_data: {
+      max_level: 80
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 155.60000610351562
       }
    }
-   promo_data:  {
-      max_level:  90
-      add_props:  {
-         prop_type:  FIGHT_PROP_BASE_ATTACK
-         value:  186.6999969482422
+   promo_data: {
+      max_level: 90
+      add_props: {
+         prop_type: FIGHT_PROP_BASE_ATTACK
+         value: 186.6999969482422
       }
    }
 }
-name_text_hash_map:  4230231107
+name_text_hash_map: 4230231107

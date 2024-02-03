@@ -23,11 +23,10 @@ func (b *Blackcliff) SetIndex(idx int)        { b.Index = idx }
 func (b *Blackcliff) Init() error             { return nil }
 func (b *Blackcliff) Data() *model.WeaponData { return b.data }
 
-func NewBlackcliff(data *model.WeaponData) core.NewWeaponFunc {
-	b := &Blackcliff{
+func NewBlackcliff(data *model.WeaponData) *Blackcliff {
+	return &Blackcliff{
 		data: data,
 	}
-	return b.NewWeapon
 }
 
 func (b *Blackcliff) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
