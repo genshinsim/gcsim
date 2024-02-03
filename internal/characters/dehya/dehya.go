@@ -29,7 +29,7 @@ type char struct {
 	burstHitSrc        int // I am using this value as a counter because if I use frame I can get duplicates
 	c1FlatDmgRatioE    float64
 	c1FlatDmgRatioQ    float64
-	c6count            int
+	c6Count            int
 	burstJumpCancel    bool
 }
 

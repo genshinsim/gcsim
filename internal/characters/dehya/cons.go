@@ -125,7 +125,7 @@ func (c *char) c6() {
 			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 				return nil, false
 			}
-			val[attributes.CD] = 0.15 * float64(c.c6count)
+			val[attributes.CD] = 0.15 * float64(c.c6Count)
 
 			return val, true
 		},
@@ -134,29 +134,27 @@ func (c *char) c6() {
 
 const c6ICDKey = "dehya-c6-icd"
 
-func (c *char) c6cb() combat.AttackCBFunc {
+func (c *char) c6CB() combat.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
 
 	return func(a combat.AttackCB) {
-		trg := a.Target
-		if trg.Type() != targets.TargettableEnemy {
-			return
-		}
-		if c.Core.Player.Active() != c.Index {
-			return
-		}
-		if c.StatusIsActive(c6ICDKey) {
+		if a.Target.Type() != targets.TargettableEnemy {
 			return
 		}
 		if !a.IsCrit {
 			return
 		}
-		if c.c6count < 4 && a.IsCrit {
-			c.c6count++
-			c.AddStatus(c6ICDKey, 0.2*60, false)
-			c.ExtendStatus(burstKey, 0.5*60)
+		if c.c6Count == 4 {
+			return
 		}
+		if c.StatusIsActive(c6ICDKey) {
+			return
+		}
+		c.AddStatus(c6ICDKey, 0.2*60, true)
+
+		c.c6Count++
+		c.ExtendStatus(burstKey, 0.5*60)
 	}
 }

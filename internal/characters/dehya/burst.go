@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		FlatDmg:    (c.c1FlatDmgRatioQ + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
 
-	c.c6count = 0
+	c.c6Count = 0
 	c.sanctumSavedDur = 0
 	if c.StatusIsActive(dehyaFieldKey) {
 		// pick up field at start
@@ -68,7 +68,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstDoT1Hitmark,
 		burstDoT1Hitmark,
 		c.c4CB(),
-		c.c6cb(),
+		c.c6CB(),
 	)
 
 	c.ConsumeEnergy(15) //TODO: If this is ping related, this could be closer to 1 at 0 ping
@@ -118,7 +118,7 @@ func (c *char) burstPunch(src int, auto bool) action.Info {
 			0,
 			0,
 			c.c4CB(),
-			c.c6cb(),
+			c.c6CB(),
 		)
 		if !c.StatusIsActive(burstKey) {
 			c.burstHitSrc++
