@@ -112,7 +112,7 @@ func main() {
 			"Korean":   "./pipeline/data/TextMap/TextMapKR.json",
 			"Spanish":  "./pipeline/data/TextMap/TextMapES.json",
 			"Russian":  "./pipeline/data/TextMap/TextMapRU.json",
-			"German":   "./pipeline/data/TextMap/TextMapDe.json",
+			"German":   "./pipeline/data/TextMap/TextMapDE.json",
 		},
 	}
 	ts, err := translation.NewGenerator(transCfg)
