@@ -159,63 +159,61 @@ func (e *Enemy) attack(atk *combat.AttackEvent, evt glog.Event) (float64, bool) 
 	}
 
 	// check for particle drops
-	if e.prof.ParticleDropThreshold > 0 {
-		next := int(e.damageTaken / e.prof.ParticleDropThreshold)
-		if next > e.lastParticleDrop {
-			// check the count too
-			count := next - e.lastParticleDrop
-			e.lastParticleDrop = next
-			e.Core.Log.NewEvent("particle hp threshold triggered", glog.LogEnemyEvent, atk.Info.ActorIndex)
-			e.Core.Tasks.Add(
-				func() {
-					e.Core.Player.DistributeParticle(character.Particle{
-						Source: "hp_drop",
-						Num:    e.prof.ParticleDropCount * float64(count),
-						Ele:    e.prof.ParticleElement,
-					})
-				},
-				100, // TODO: should be subject to global delay maybe??
-			)
-		}
-	}
-
-	if e.prof.ParticleDrops != nil {
-		e.tryHPDropParticle()
+	count, element := e.tryHPDropParticle()
+	if count > 0 {
+		e.Core.Log.NewEvent("particle hp threshold triggered", glog.LogEnemyEvent, atk.Info.ActorIndex)
+		e.Core.Tasks.Add(
+			func() {
+				e.Core.Player.DistributeParticle(character.Particle{
+					Source: "hp_drop",
+					Num:    count,
+					Ele:    element,
+				})
+			},
+			100, // TODO: should be subject to global delay maybe??
+		)
 	}
 
 	return damage, isCrit
 }
 
-func (e *Enemy) tryHPDropParticle() {
-	if e.particleDropIndex >= len(e.prof.ParticleDrops) {
-		return
+func (e *Enemy) tryHPDropParticle() (float64, attributes.Element) {
+	// use particle drops from the enemy profile
+	if e.prof.ParticleDrops != nil {
+		if e.particleDropIndex >= len(e.prof.ParticleDrops) {
+			return 0, attributes.NoElement
+		}
+		info := e.prof.ParticleDrops[e.particleDropIndex]
+		if (e.HP() / e.MaxHP()) > info.HpPercent {
+			return 0, attributes.NoElement
+		}
+		e.particleDropIndex++
+		// 22010017: 1 particle geo
+		diff := info.DropId - 22010000
+		if diff < 0 || diff >= 100 {
+			log.Printf("WARN: invalid particle DropId `%v` found, ignoring", info.DropId)
+			return 0, attributes.NoElement
+		}
+		count := (info.DropId / 10) % 10 // 2nd digit is particle count
+		if count <= 0 {
+			return 0, attributes.NoElement
+		}
+		element := particleIDToElement[info.DropId%10] // 1st digit is particle type
+		return float64(count), element
 	}
-	info := e.prof.ParticleDrops[e.particleDropIndex]
-	if (e.HP() / e.MaxHP()) > info.HpPercent {
-		return
+
+	// use particle drops from gcsl
+	if e.prof.ParticleDropThreshold <= 0 {
+		return 0, attributes.NoElement
 	}
-	e.particleDropIndex++
-	// 22010017: 1 particle geo
-	diff := info.DropId - 22010000
-	if diff < 0 || diff >= 100 {
-		log.Printf("WARN: invalid particle DropId `%v` found, ignoring", info.DropId)
-		return
+	next := int(e.damageTaken / e.prof.ParticleDropThreshold)
+	if next <= e.lastParticleDrop {
+		return 0, attributes.NoElement
 	}
-	count := (info.DropId / 10) % 10 // 2nd digit is particle count
-	if count <= 0 {
-		return
-	}
-	element := particleIDToElement[info.DropId%10] // 1st digit is particle type
-	e.Core.Tasks.Add(
-		func() {
-			e.Core.Player.DistributeParticle(character.Particle{
-				Source: "hp_drop",
-				Num:    float64(count),
-				Ele:    element,
-			})
-		},
-		100, // TODO: should be subject to global delay maybe??
-	)
+	// check the count too
+	count := next - e.lastParticleDrop
+	e.lastParticleDrop = next
+	return e.prof.ParticleDropCount * float64(count), e.prof.ParticleElement
 }
 
 func (e *Enemy) applyDamage(atk *combat.AttackEvent, damage float64) float64 {
