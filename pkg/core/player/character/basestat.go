@@ -4,105 +4,56 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/curves"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func (c *CharWrapper) UpdateBaseStats() error {
-	// calculate char base t.Stats
-	ck := c.Base.Key
-	isTraveler := false
-	//TODO: do something about traveler :(
-	if ck < keys.TravelerDelim {
-		// male keys are odd, female keys are even
-		if ck%2 == 1 {
-			ck = keys.Aether
-		} else {
-			ck = keys.Lumine
+
+	data := c.Data()
+	if data == nil {
+		return fmt.Errorf("unexpected nil char data for %v", c.Base.Key)
+	}
+	base, err := AvatarBaseStat(c.Base, data)
+	if err != nil {
+		return err
+	}
+	asc := AvatarAsc(c.Base.MaxLevel, data)
+	for i, v := range base {
+		if i >= int(attributes.DelimBaseStat) {
+			break
 		}
-		isTraveler = true
+		c.BaseStats[i] += v
 	}
-	b, ok := curves.CharBaseMap[ck]
-	if !ok {
-		return fmt.Errorf("error calculating char stat; unrecognized key %v", ck)
-		// return
+	c.Base.Ascension = asc
+
+	wdata := c.Equip.Weapon.Data()
+	if wdata == nil {
+		return fmt.Errorf("unexpected nil weapon data for %v", c.Weapon.Key)
 	}
-	lvl := c.Base.Level - 1
-	if lvl < 0 {
-		lvl = 0
+	basew, err := WeaponBaseStat(c.Weapon, wdata)
+	if err != nil {
+		return nil
 	}
-	if lvl > 89 {
-		lvl = 89
-	}
-	// calculate base t.Stats
-	c.Base.HP = b.BaseHP * curves.CharStatGrowthMult[lvl][b.HPCurve]
-	// += to account for potential base atk increases that are defined outside of curves like for Traveler
-	c.Base.Atk += b.BaseAtk * curves.CharStatGrowthMult[lvl][b.AtkCurve]
-	c.Base.Def = b.BaseDef * curves.CharStatGrowthMult[lvl][b.DefCurve]
-	// default er/cr/cd
-	c.BaseStats[attributes.ER] += 1
-	c.BaseStats[attributes.CD] += 0.5
-	c.BaseStats[attributes.CR] += 0.05
-	// track specialized stat
-	var spec [attributes.EndStatType]float64
-	var specw [attributes.EndStatType]float64
-	// calculate promotion bonus
-	ind := -1
-	for i, v := range b.PromotionBonus {
-		if c.Base.MaxLevel >= v.MaxLevel {
-			ind = i
+	for i, v := range basew {
+		if i >= int(attributes.DelimBaseStat) {
+			break
 		}
-	}
-	if ind > -1 {
-		c.Base.Ascension = ind
-		// add hp/atk/bonus
-		c.Base.HP += b.PromotionBonus[ind].HP
-		c.Base.Atk += b.PromotionBonus[ind].Atk
-		c.Base.Def += b.PromotionBonus[ind].Def
-		// add specialized
-		c.BaseStats[b.Specialized] += b.PromotionBonus[ind].Special
-		spec[b.Specialized] += b.PromotionBonus[ind].Special
+		c.BaseStats[i] += v
 	}
 
-	// calculate weapon base stats
-	bw, ok := curves.WeaponBaseMap[c.Weapon.Key]
-	if !ok {
-		return fmt.Errorf("error calculating weapon stat; unrecognized key %v", c.Weapon.Key)
-		// return
-	}
-	lvl = c.Weapon.Level - 1
-	if lvl < 0 {
-		lvl = 0
-	}
-	if lvl > 89 {
-		lvl = 89
-	}
-	c.Weapon.BaseAtk = bw.BaseAtk * curves.WeaponStatGrowthMult[lvl][bw.AtkCurve]
-	// add weapon special stat
-	c.BaseStats[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
-	specw[bw.Specialized] += bw.BaseSpecialized * curves.WeaponStatGrowthMult[lvl][bw.SpecializedCurve]
-	// calculate promotion bonus
-	ind = -1
-	for i, v := range bw.PromotionBonus {
-		if c.Weapon.MaxLevel >= v.MaxLevel {
-			ind = i
-		}
-	}
-	if ind > -1 {
-		c.Weapon.BaseAtk += bw.PromotionBonus[ind].Atk // atk
-	}
+	//set base
+	c.Base.HP += base[attributes.BaseHP] + basew[attributes.BaseHP]
+	c.Base.Atk += base[attributes.BaseATK] + basew[attributes.BaseATK]
+	c.Base.Def += base[attributes.BaseDEF] + basew[attributes.BaseDEF]
 
 	// misc data
-	c.Base.Rarity = b.Rarity
-	c.Weapon.Class = b.WeaponClass
-	c.CharZone = b.Region
-	c.CharBody = b.Body
-
-	// only set it if not traveler - traveler code needs to set this manually
-	if !isTraveler {
-		c.Base.Element = b.Element
-	}
+	c.Base.Rarity = info.ConvertRarity(data.Rarity)
+	c.Weapon.Class = info.ConvertWeaponClass(data.WeaponClass)
+	c.CharZone = info.ConvertRegion(data.Region)
+	c.CharBody = info.ConvertBodyType(data.Body)
+	c.Base.Element = info.ConvertProtoElement(data.Element)
 
 	// log stats
 	c.log.NewEvent(
@@ -111,9 +62,88 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	).
 		Write("char_base", c.Base).
 		Write("weap_base", c.Weapon).
-		Write("spec_char", spec).
-		Write("spec_weap", specw).
 		Write("final_stats", c.BaseStats)
 
 	return nil
+}
+
+func AvatarAsc(maxLvl int, data *model.AvatarData) int {
+	ind := 0
+	for i, v := range data.Stats.PromoData {
+		if maxLvl >= int(v.MaxLevel) {
+			ind = i
+		}
+	}
+	if ind > -1 {
+		return ind
+	}
+	return 0
+}
+
+// TODO: this code should eventually be refactor into attributes service
+func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64, error) {
+	res := make([]float64, attributes.EndStatType)
+
+	lvl := char.Level - 1
+	if lvl < 0 {
+		lvl = 0
+	}
+	if lvl > 89 {
+		lvl = 89
+	}
+	res[attributes.BaseHP] = data.Stats.BaseHp * model.AvatarGrowCurveByLvl[lvl][data.Stats.HpCurve]
+	res[attributes.BaseATK] = data.Stats.BaseAtk * model.AvatarGrowCurveByLvl[lvl][data.Stats.AtkCurve]
+	res[attributes.BaseDEF] = data.Stats.BaseDef * model.AvatarGrowCurveByLvl[lvl][data.Stats.DefCruve]
+	// default er/cr/cd
+	res[attributes.ER] += 1
+	res[attributes.CD] += 0.5
+	res[attributes.CR] += 0.05
+
+	// calculate promotion bonus
+	ind := -1
+	for i, v := range data.Stats.PromoData {
+		if char.MaxLevel >= int(v.MaxLevel) {
+			ind = i
+		}
+	}
+	if ind > -1 {
+		for _, v := range data.Stats.PromoData[ind].AddProps {
+			t := info.ConvertProtoStat(v.PropType)
+			res[t] += v.Value
+		}
+	}
+
+	return res, nil
+}
+
+func WeaponBaseStat(weap info.WeaponProfile, data *model.WeaponData) ([]float64, error) {
+	res := make([]float64, attributes.EndStatType)
+	lvl := weap.Level - 1
+	if lvl < 0 {
+		lvl = 0
+	}
+	if lvl > 89 {
+		lvl = 89
+	}
+	//base props
+	for _, v := range data.BaseStats.BaseProps {
+		s := info.ConvertProtoStat(v.PropType)
+		//TODO: should this be cumulative?
+		res[s] = v.InitialValue * model.WeaponGrowCurveByLvl[lvl][v.Curve]
+	}
+
+	// calculate promotion bonus
+	ind := -1
+	for i, v := range data.BaseStats.PromoData {
+		if weap.MaxLevel >= int(v.MaxLevel) {
+			ind = i
+		}
+	}
+	if ind > -1 {
+		for _, v := range data.BaseStats.PromoData[ind].AddProps {
+			t := info.ConvertProtoStat(v.PropType)
+			res[t] += v.Value
+		}
+	}
+	return res, nil
 }
