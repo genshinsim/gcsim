@@ -10,7 +10,6 @@ import (
 )
 
 func (c *CharWrapper) UpdateBaseStats() error {
-
 	data := c.Data()
 	if data == nil {
 		return fmt.Errorf("unexpected nil char data for %v", c.Base.Key)
@@ -34,7 +33,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	}
 	basew, err := WeaponBaseStat(c.Weapon, wdata)
 	if err != nil {
-		return nil
+		return err
 	}
 	for i, v := range basew {
 		if i >= int(attributes.DelimBaseStat) {
@@ -43,7 +42,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 		c.BaseStats[i] += v
 	}
 
-	//set base
+	// set base
 	c.Base.HP += base[attributes.BaseHP] + basew[attributes.BaseHP]
 	c.Base.Atk += base[attributes.BaseATK] + basew[attributes.BaseATK]
 	c.Base.Def += base[attributes.BaseDEF] + basew[attributes.BaseDEF]
@@ -125,7 +124,7 @@ func WeaponBaseStat(weap info.WeaponProfile, data *model.WeaponData) ([]float64,
 	if lvl > 89 {
 		lvl = 89
 	}
-	//base props
+	// base props
 	for _, v := range data.BaseStats.BaseProps {
 		s := info.ConvertProtoStat(v.PropType)
 		//TODO: should this be cumulative?

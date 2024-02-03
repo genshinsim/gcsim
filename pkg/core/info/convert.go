@@ -103,10 +103,10 @@ func ConvertRegion(z model.ZoneType) ZoneType {
 	case model.ZoneType_ASSOC_TYPE_SUMERU:
 		return ZoneSumeru
 	case model.ZoneType_ASSOC_TYPE_RANGER:
-		//aloy
+		// aloy
 		return ZoneUnknown
 	case model.ZoneType_ASSOC_TYPE_MAINACTOR:
-		//traveler
+		// traveler
 		return ZoneUnknown
 	default:
 		return ZoneUnknown
@@ -160,5 +160,4 @@ func ConvertRarity(q model.QualityType) int {
 	default:
 		return 4
 	}
-
 }
