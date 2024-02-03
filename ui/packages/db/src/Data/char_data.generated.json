@@ -15,7 +15,8 @@
         "burst": 10068,
         "attack": 100543,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "1533656818"
     },
     "aetherdendro": {
       "id": 10000005,
@@ -32,7 +33,8 @@
         "burst": 10118,
         "attack": 100547,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1533656818"
     },
     "aetherelectro": {
       "id": 10000005,
@@ -49,7 +51,8 @@
         "burst": 10605,
         "attack": 100546,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1533656818"
     },
     "aethergeo": {
       "id": 10000005,
@@ -66,7 +69,8 @@
         "burst": 10078,
         "attack": 100545,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "1533656818"
     },
     "aetherhydro": {
       "id": 10000005,
@@ -83,7 +87,8 @@
         "burst": 10088,
         "attack": 100542,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1533656818"
     },
     "albedo": {
       "id": 10000038,
@@ -99,7 +104,8 @@
         "burst": 10388,
         "attack": 10386,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "4108620722"
     },
     "alhaitham": {
       "id": 10000078,
@@ -115,7 +121,8 @@
         "burst": 10785,
         "attack": 10781,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "4002157418"
     },
     "aloy": {
       "id": 10000062,
@@ -131,7 +138,8 @@
         "burst": 10625,
         "attack": 10621,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "3689108098"
     },
     "amber": {
       "id": 10000021,
@@ -147,7 +155,8 @@
         "burst": 10017,
         "attack": 10041,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "1966438658"
     },
     "ayaka": {
       "id": 10000002,
@@ -163,7 +172,8 @@
         "burst": 10019,
         "attack": 10024,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1006042610"
     },
     "ayato": {
       "id": 10000066,
@@ -179,7 +189,8 @@
         "burst": 10665,
         "attack": 10661,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1588620330"
     },
     "baizhu": {
       "id": 10000082,
@@ -195,7 +206,8 @@
         "burst": 10825,
         "attack": 10821,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "2984815066"
     },
     "barbara": {
       "id": 10000014,
@@ -211,7 +223,8 @@
         "burst": 10072,
         "attack": 10070,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3775299170"
     },
     "beidou": {
       "id": 10000024,
@@ -227,7 +240,8 @@
         "burst": 10245,
         "attack": 10241,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "2646367730"
     },
     "bennett": {
       "id": 10000032,
@@ -243,7 +257,8 @@
         "burst": 10323,
         "attack": 10321,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "968893378"
     },
     "candace": {
       "id": 10000072,
@@ -259,7 +274,8 @@
         "burst": 10725,
         "attack": 10721,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "3092975658"
     },
     "charlotte": {
       "id": 10000088,
@@ -274,7 +290,8 @@
         "burst": 10885,
         "attack": 10881,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3831162130"
     },
     "chevreuse": {
       "id": 10000090,
@@ -288,8 +305,9 @@
         "skill": 10902,
         "burst": 10905,
         "attack": 10901,
-        "burst_energy_cost": 80
-      }
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "540313842"
     },
     "chongyun": {
       "id": 10000036,
@@ -305,7 +323,8 @@
         "burst": 10403,
         "attack": 10401,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "2876340530"
     },
     "collei": {
       "id": 10000067,
@@ -321,7 +340,8 @@
         "burst": 10675,
         "attack": 10671,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "2948362178"
     },
     "cyno": {
       "id": 10000071,
@@ -337,7 +357,8 @@
         "burst": 10715,
         "attack": 10711,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1049891906"
     },
     "dehya": {
       "id": 10000079,
@@ -353,7 +374,8 @@
         "burst": 10795,
         "attack": 10791,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "2360533154"
     },
     "diluc": {
       "id": 10000016,
@@ -369,7 +391,8 @@
         "burst": 10165,
         "attack": 10160,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "3608180322"
     },
     "diona": {
       "id": 10000039,
@@ -385,7 +408,8 @@
         "burst": 10395,
         "attack": 10391,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1468367538"
     },
     "dori": {
       "id": 10000068,
@@ -401,7 +425,8 @@
         "burst": 10685,
         "attack": 10681,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "388272194"
     },
     "eula": {
       "id": 10000051,
@@ -417,7 +442,8 @@
         "burst": 10515,
         "attack": 10511,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3717667418"
     },
     "faruzan": {
       "id": 10000076,
@@ -433,7 +459,8 @@
         "burst": 10765,
         "attack": 10761,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "2387711994"
     },
     "fischl": {
       "id": 10000031,
@@ -449,7 +476,8 @@
         "burst": 10313,
         "attack": 10311,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "3277782506"
     },
     "freminet": {
       "id": 10000085,
@@ -464,7 +492,8 @@
         "burst": 10855,
         "attack": 10851,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "4201964354"
     },
     "furina": {
       "id": 10000089,
@@ -479,7 +508,8 @@
         "burst": 10895,
         "attack": 10891,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "2180900234"
     },
     "ganyu": {
       "id": 10000037,
@@ -495,7 +525,8 @@
         "burst": 10373,
         "attack": 10371,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "2679781122"
     },
     "gorou": {
       "id": 10000055,
@@ -511,7 +542,8 @@
         "burst": 10555,
         "attack": 10551,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3400133546"
     },
     "heizou": {
       "id": 10000059,
@@ -527,7 +559,8 @@
         "burst": 10595,
         "attack": 10591,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "646032090"
     },
     "hutao": {
       "id": 10000046,
@@ -543,7 +576,8 @@
         "burst": 10463,
         "attack": 10461,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "1940919994"
     },
     "itto": {
       "id": 10000057,
@@ -559,7 +593,8 @@
         "burst": 10575,
         "attack": 10571,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "3068316954"
     },
     "jean": {
       "id": 10000003,
@@ -575,7 +610,8 @@
         "burst": 10034,
         "attack": 10031,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3221566250"
     },
     "kaeya": {
       "id": 10000015,
@@ -591,7 +627,8 @@
         "burst": 10075,
         "attack": 10073,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "4119663210"
     },
     "kaveh": {
       "id": 10000081,
@@ -607,7 +644,8 @@
         "burst": 10815,
         "attack": 10811,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "466355514"
     },
     "kazuha": {
       "id": 10000047,
@@ -623,7 +661,8 @@
         "burst": 10475,
         "attack": 10471,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "88505754"
     },
     "keqing": {
       "id": 10000042,
@@ -639,7 +678,8 @@
         "burst": 10425,
         "attack": 10421,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "1864015138"
     },
     "kirara": {
       "id": 10000061,
@@ -655,7 +695,8 @@
         "burst": 10615,
         "attack": 10611,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "1456643042"
     },
     "klee": {
       "id": 10000029,
@@ -671,7 +712,8 @@
         "burst": 10295,
         "attack": 10291,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "3339083250"
     },
     "kokomi": {
       "id": 10000054,
@@ -687,7 +729,8 @@
         "burst": 10545,
         "attack": 10541,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "3914045794"
     },
     "kuki": {
       "id": 10000065,
@@ -703,7 +746,8 @@
         "burst": 10655,
         "attack": 10651,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "1940821986"
     },
     "layla": {
       "id": 10000074,
@@ -719,7 +763,8 @@
         "burst": 10745,
         "attack": 10741,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "2889777514"
     },
     "lisa": {
       "id": 10000006,
@@ -735,7 +780,8 @@
         "burst": 10062,
         "attack": 10060,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3344622722"
     },
     "lumineanemo": {
       "id": 10000007,
@@ -752,7 +798,8 @@
         "burst": 10068,
         "attack": 100553,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "3816664530"
     },
     "luminedendro": {
       "id": 10000007,
@@ -769,7 +816,8 @@
         "burst": 10118,
         "attack": 100557,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3816664530"
     },
     "lumineelectro": {
       "id": 10000007,
@@ -786,7 +834,8 @@
         "burst": 10605,
         "attack": 100556,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3816664530"
     },
     "luminegeo": {
       "id": 10000007,
@@ -803,7 +852,8 @@
         "burst": 10078,
         "attack": 100555,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "3816664530"
     },
     "luminehydro": {
       "id": 10000007,
@@ -820,7 +870,8 @@
         "burst": 10088,
         "attack": 100552,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3816664530"
     },
     "lynette": {
       "id": 10000083,
@@ -835,7 +886,8 @@
         "burst": 10835,
         "attack": 10831,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "1225226258"
     },
     "lyney": {
       "id": 10000084,
@@ -850,7 +902,8 @@
         "burst": 10845,
         "attack": 10841,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "2472444970"
     },
     "mika": {
       "id": 10000080,
@@ -866,7 +919,8 @@
         "burst": 10805,
         "attack": 10801,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "231911858"
     },
     "mona": {
       "id": 10000041,
@@ -882,7 +936,8 @@
         "burst": 10415,
         "attack": 10411,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "1113306282"
     },
     "nahida": {
       "id": 10000073,
@@ -898,7 +953,8 @@
         "burst": 10735,
         "attack": 10731,
         "burst_energy_cost": 50
-      }
+      },
+      "name_text_hash_map ": "712501082"
     },
     "navia": {
       "id": 10000091,
@@ -913,7 +969,8 @@
         "burst": 10915,
         "attack": 10911,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "2877588578"
     },
     "neuvillette": {
       "id": 10000087,
@@ -928,7 +985,8 @@
         "burst": 10875,
         "attack": 10871,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "1504902330"
     },
     "nilou": {
       "id": 10000070,
@@ -944,7 +1002,8 @@
         "burst": 10705,
         "attack": 10701,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "3850149970"
     },
     "ningguang": {
       "id": 10000027,
@@ -960,7 +1019,8 @@
         "burst": 10274,
         "attack": 10271,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "4127888970"
     },
     "noelle": {
       "id": 10000034,
@@ -976,7 +1036,8 @@
         "burst": 10343,
         "attack": 10341,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "1921418842"
     },
     "qiqi": {
       "id": 10000035,
@@ -992,7 +1053,8 @@
         "burst": 10353,
         "attack": 10351,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "168956722"
     },
     "raiden": {
       "id": 10000052,
@@ -1008,7 +1070,8 @@
         "burst": 10525,
         "attack": 10521,
         "burst_energy_cost": 90
-      }
+      },
+      "name_text_hash_map ": "3024507506"
     },
     "razor": {
       "id": 10000020,
@@ -1024,7 +1087,8 @@
         "burst": 10203,
         "attack": 10201,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "4160147242"
     },
     "rosaria": {
       "id": 10000045,
@@ -1040,7 +1104,8 @@
         "burst": 10453,
         "attack": 10451,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "4260733330"
     },
     "sara": {
       "id": 10000056,
@@ -1056,7 +1121,8 @@
         "burst": 10565,
         "attack": 10561,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1483922610"
     },
     "sayu": {
       "id": 10000053,
@@ -1072,7 +1138,8 @@
         "burst": 10535,
         "attack": 10531,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "2388785242"
     },
     "shenhe": {
       "id": 10000063,
@@ -1088,7 +1155,8 @@
         "burst": 10635,
         "attack": 10631,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "334242634"
     },
     "sucrose": {
       "id": 10000043,
@@ -1104,7 +1172,8 @@
         "burst": 10435,
         "attack": 10431,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1053433018"
     },
     "tartaglia": {
       "id": 10000033,
@@ -1120,7 +1189,8 @@
         "burst": 10333,
         "attack": 10331,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "3847143266"
     },
     "thoma": {
       "id": 10000050,
@@ -1136,7 +1206,8 @@
         "burst": 10505,
         "attack": 10501,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "3555115602"
     },
     "tighnari": {
       "id": 10000069,
@@ -1152,7 +1223,8 @@
         "burst": 10695,
         "attack": 10691,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "2506955778"
     },
     "venti": {
       "id": 10000022,
@@ -1168,7 +1240,8 @@
         "burst": 10225,
         "attack": 10221,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "2466140362"
     },
     "wanderer": {
       "id": 10000075,
@@ -1184,7 +1257,8 @@
         "burst": 10755,
         "attack": 10751,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "3230559562"
     },
     "wriothesley": {
       "id": 10000086,
@@ -1199,7 +1273,8 @@
         "burst": 10865,
         "attack": 10861,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "370151050"
     },
     "xiangling": {
       "id": 10000023,
@@ -1215,7 +1290,8 @@
         "burst": 10235,
         "attack": 10231,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1130996346"
     },
     "xiao": {
       "id": 10000026,
@@ -1231,7 +1307,8 @@
         "burst": 10265,
         "attack": 10261,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "1021947690"
     },
     "xingqiu": {
       "id": 10000025,
@@ -1247,7 +1324,8 @@
         "burst": 10385,
         "attack": 10381,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "4197635682"
     },
     "xinyan": {
       "id": 10000044,
@@ -1263,7 +1341,8 @@
         "burst": 10443,
         "attack": 10441,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "4273845410"
     },
     "yaemiko": {
       "id": 10000058,
@@ -1279,7 +1358,8 @@
         "burst": 10585,
         "attack": 10581,
         "burst_energy_cost": 90
-      }
+      },
+      "name_text_hash_map ": "2713453234"
     },
     "yanfei": {
       "id": 10000048,
@@ -1295,7 +1375,8 @@
         "burst": 10485,
         "attack": 10481,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "697277554"
     },
     "yaoyao": {
       "id": 10000077,
@@ -1311,7 +1392,8 @@
         "burst": 10775,
         "attack": 10771,
         "burst_energy_cost": 80
-      }
+      },
+      "name_text_hash_map ": "1732418482"
     },
     "yelan": {
       "id": 10000060,
@@ -1327,7 +1409,8 @@
         "burst": 10610,
         "attack": 10606,
         "burst_energy_cost": 70
-      }
+      },
+      "name_text_hash_map ": "2848374378"
     },
     "yoimiya": {
       "id": 10000049,
@@ -1343,7 +1426,8 @@
         "burst": 10495,
         "attack": 10491,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "2504399314"
     },
     "yunjin": {
       "id": 10000064,
@@ -1359,7 +1443,8 @@
         "burst": 10643,
         "attack": 10641,
         "burst_energy_cost": 60
-      }
+      },
+      "name_text_hash_map ": "655825874"
     },
     "zhongli": {
       "id": 10000030,
@@ -1375,7 +1460,8 @@
         "burst": 10303,
         "attack": 10301,
         "burst_energy_cost": 40
-      }
+      },
+      "name_text_hash_map ": "3862787418"
     }
   }
 }
