@@ -4,7 +4,7 @@ type Event int
 
 const (
 	OnEnemyHit     Event = iota // target, AttackEvent
-	OnPlayerHit                 // target, AttackEvent
+	OnPlayerHit                 // char, AttackEvent
 	OnGadgetHit                 // target, AttackEvent
 	OnEnemyDamage               // target, AttackEvent, amount, crit
 	OnGadgetDamage              // target, AttackEvent

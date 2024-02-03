@@ -38,8 +38,12 @@ const (
 func (c *char) c2() {
 	c.c2buff = make([]float64, attributes.EndStatType)
 	// we use OnPlayerHit here because he just has to get hit but triggers even if shielded
-	//TODO: double check if this event is even needed
-	c.Core.Events.Subscribe(event.OnPlayerHit, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHit, func(args ...interface{}) bool {
+		char := args[0].(int)
+		// don't trigger if diluc was not hit
+		if char != c.Index {
+			return false
+		}
 		if c.StatusIsActive(c2ICDKey) {
 			return false
 		}
