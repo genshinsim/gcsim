@@ -15,6 +15,7 @@ const (
 	AvatarSkillExcelConfigData      = `AvatarSkillExcelConfigData.json`
 	FetterInfoExcelConfigData       = `FetterInfoExcelConfigData.json`
 	AvatarPromoteExcelConfigData    = `AvatarPromoteExcelConfigData.json`
+	ProudSkillExcelConfigData       = `ProudSkillExcelConfigData.json`
 )
 
 func load(path string, res any) error {
@@ -107,6 +108,19 @@ func loadAvatarPromoteData(path string) (map[int32][]dm.AvatarPromote, error) {
 	data := make(map[int32][]dm.AvatarPromote)
 	for _, v := range res {
 		data[v.AvatarPromoteID] = append(data[v.AvatarPromoteID], v)
+	}
+	return data, nil
+}
+
+func loadProudSkillExcelData(path string) (map[int32][]dm.ProudSkillExcel, error) {
+	var res []dm.ProudSkillExcel
+	err := load(path, &res)
+	if err != nil {
+		return nil, err
+	}
+	data := make(map[int32][]dm.ProudSkillExcel)
+	for _, v := range res {
+		data[v.ProudSkillGroupID] = append(data[v.ProudSkillGroupID], v)
 	}
 	return data, nil
 }

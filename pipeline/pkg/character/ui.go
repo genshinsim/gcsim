@@ -23,6 +23,10 @@ func (g *Generator) writeCharDataJSON(path string) error {
 		// hide promodata from ui json; not needed
 		x := proto.Clone(v).(*model.AvatarData)
 		x.Stats = nil
+		// trim stat scaling too
+		x.SkillDetails.SkillScaling = nil
+		x.SkillDetails.AttackScaling = nil
+		x.SkillDetails.BurstScaling = nil
 		data[v.Key] = x
 	}
 	m := &model.AvatarDataMap{
