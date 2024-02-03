@@ -17,11 +17,10 @@ import (
 // ·Molten Inferno's DMG will be increased by 3.6% of her Max HP.
 // ·Leonine Bite's DMG will be increased by 6% of her Max HP.
 func (c *char) c1() {
-	c.c1var = []float64{0.0, 0.0}
 	if c.Base.Cons < 1 {
 		return
 	}
-	c.c1var = []float64{0.06, 0.036}
+	// 20% hp
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.HPP] = 0.2
 	c.AddStatMod(character.StatMod{
@@ -31,6 +30,9 @@ func (c *char) c1() {
 			return m, true
 		},
 	})
+	// abil flat dmg
+	c.c1FlatDmgRatioE = 0.036
+	c.c1FlatDmgRatioQ = 0.06
 }
 
 // When Dehya uses Molten Inferno: Ranging Flame, the duration of the recreated Fiery Sanctum field will be increased by 6s.

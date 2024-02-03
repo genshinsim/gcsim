@@ -27,7 +27,8 @@ type char struct {
 	sanctumICD         int
 	burstCounter       int
 	burstHitSrc        int // I am using this value as a counter because if I use frame I can get duplicates
-	c1var              []float64
+	c1FlatDmgRatioE    float64
+	c1FlatDmgRatioQ    float64
 	c6count            int
 	burstJumpCancel    bool
 }

@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstPunchAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1var[0] + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
+		FlatDmg:    (c.c1FlatDmgRatioQ + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
 
 	c.c6count = 0
@@ -99,7 +99,7 @@ func (c *char) burstPunch(src int, auto bool) action.Info {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstPunchAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1var[0] + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
+		FlatDmg:    (c.c1FlatDmgRatioQ + burstPunchHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
 
 	c.Core.Tasks.Add(func() {
@@ -152,7 +152,7 @@ func (c *char) burstKick(src int) action.Info {
 		Element:    attributes.Pyro,
 		Durability: 25,
 		Mult:       burstKickAtk[c.TalentLvlBurst()],
-		FlatDmg:    (c.c1var[0] + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
+		FlatDmg:    (c.c1FlatDmgRatioQ + burstKickHP[c.TalentLvlBurst()]) * c.MaxHP(),
 	}
 
 	c.Core.Tasks.Add(func() {
