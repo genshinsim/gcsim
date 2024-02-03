@@ -2,6 +2,7 @@ id: 10000087
 key: "neuvillette"
 rarity: QUALITY_ORANGE
 body: BODY_MALE
+region: ASSOC_TYPE_FONTAINE
 element: Water
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Neuvillette"

@@ -2,6 +2,7 @@ id: 10000090
 key: "chevreuse"
 rarity: QUALITY_PURPLE
 body: BODY_GIRL
+region: ASSOC_TYPE_FONTAINE
 element: Fire
 weapon_class: WEAPON_POLE
 icon_name: "UI_AvatarIcon_Chevreuse"

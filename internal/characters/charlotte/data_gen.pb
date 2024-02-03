@@ -2,6 +2,7 @@ id: 10000088
 key: "charlotte"
 rarity: QUALITY_PURPLE
 body: BODY_GIRL
+region: ASSOC_TYPE_FONTAINE
 element: Ice
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Charlotte"

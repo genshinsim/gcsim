@@ -2,6 +2,7 @@ id: 10000084
 key: "lyney"
 rarity: QUALITY_ORANGE
 body: BODY_BOY
+region: ASSOC_TYPE_FONTAINE
 element: Fire
 weapon_class: WEAPON_BOW
 icon_name: "UI_AvatarIcon_Liney"

@@ -2,6 +2,7 @@ id: 10000089
 key: "furina"
 rarity: QUALITY_ORANGE
 body: BODY_GIRL
+region: ASSOC_TYPE_FONTAINE
 element: Water
 weapon_class: WEAPON_SWORD_ONE_HAND
 icon_name: "UI_AvatarIcon_Furina"

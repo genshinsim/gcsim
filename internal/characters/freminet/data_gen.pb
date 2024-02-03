@@ -2,6 +2,7 @@ id: 10000085
 key: "freminet"
 rarity: QUALITY_PURPLE
 body: BODY_BOY
+region: ASSOC_TYPE_FONTAINE
 element: Ice
 weapon_class: WEAPON_CLAYMORE
 icon_name: "UI_AvatarIcon_Freminet"

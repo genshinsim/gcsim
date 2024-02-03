@@ -2,6 +2,7 @@ id: 10000086
 key: "wriothesley"
 rarity: QUALITY_ORANGE
 body: BODY_MALE
+region: ASSOC_TYPE_FONTAINE
 element: Ice
 weapon_class: WEAPON_CATALYST
 icon_name: "UI_AvatarIcon_Wriothesley"

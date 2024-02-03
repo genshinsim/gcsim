@@ -2,6 +2,7 @@ id: 10000091
 key: "navia"
 rarity: QUALITY_ORANGE
 body: BODY_LADY
+region: ASSOC_TYPE_FONTAINE
 element: Rock
 weapon_class: WEAPON_CLAYMORE
 icon_name: "UI_AvatarIcon_Navia"
