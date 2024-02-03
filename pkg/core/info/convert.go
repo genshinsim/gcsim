@@ -102,6 +102,8 @@ func ConvertRegion(z model.ZoneType) ZoneType {
 		return ZoneInazuma
 	case model.ZoneType_ASSOC_TYPE_SUMERU:
 		return ZoneSumeru
+	case model.ZoneType_ASSOC_TYPE_FONTAINE:
+		return ZoneFontaine
 	case model.ZoneType_ASSOC_TYPE_RANGER:
 		// aloy
 		return ZoneUnknown
